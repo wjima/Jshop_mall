@@ -1,0 +1,18 @@
+<ul class="layui-nav layui-nav-tree" lay-filter="test">
+    <li class="layui-nav-item layui-nav-itemed">
+        <a class="" href="{:url('index/index')}"><i class="iconfont icon-shouyeshouye"></i>首页</a>
+    </li>
+    {if $menu }{foreach $menu as $k=>$v}
+    <li class="layui-nav-item {if $v.selected} layui-nav-itemed{/if}">
+        <a class="menu-icon-{:strtolower($v['code'])}" href="javascript:;"><i class="iconfont icon-{:strtolower($v['code'])}"></i>{$v.name}</a>
+        <dl class="layui-nav-child">
+            {foreach $v['children'] as $x=>$y}
+            <dd class="{if $y.selected} layui-this{/if}">
+                <a href="{$y.id|get_operation_url}">{$y.name}</a>
+            </dd>
+            {/foreach}
+        </dl>
+    </li>
+    {/foreach}{/if}
+
+</ul>

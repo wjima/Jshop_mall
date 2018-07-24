@@ -1,0 +1,18 @@
+{include file="b2c@common/mini_header" /}
+<div class="block-content" style="position:relative;">
+    <div style="position:absolute;right:0;text-align:right;" >{:session('user.mobile')} 你好，<a style="color:red;" href="{:url('b2c/common/logout')}">退出</a></div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>选择店铺登陆</legend>
+    </fieldset>
+    <div>
+        {volist name="list" id="vo" empty="暂时没有店铺信息" }
+            <div style="margin-bottom:20px;font-size:24px;height:36px;line-height: 36px;"><a href="{:url('common/choose',array('id'=>$key))}">{:getSellerInfoById($key)}</a></div>
+        {/volist}
+
+    </div>
+</div>
+
+
+
+
+{include file="b2c@common/mini_footer" /}

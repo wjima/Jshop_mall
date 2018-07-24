@@ -1,0 +1,62 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label">图片ID：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="id" style="width:200px;" placeholder="请输入图片ID" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">图片名称：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name"  style="width:200px;" placeholder="请输入图片名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="image-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
+    </div>
+</form>
+<div class="table-body">
+    <table id="imagesTable" lay-filter="imagesTable"></table>
+</div>
+<script>
+    var table = '';
+
+    layui.use(['table','form','layer','laydate'],function(){
+        var layer = layui.layer;
+        //执行渲染
+        table = layui.table.render({
+            elem: '#imagesTable', //指定原始表格元素选择器（推荐id选择器）
+            height: '500px',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            id:'imagesTable',
+            url: "{:url('images/index')}",
+            cols: [[ //标题栏
+                {type:'numbers'},
+                {field: 'id', title: 'ID',width:350,align:'center'},
+                {field: 'name', title: '图片名称',align:'center'},
+                {field: 'url', title: '图片地址',width:100,align:'center',templet: function(data){
+                    return '<a href="javascript:void(0);" onclick=viewImage("'+data.url+'")><image style="max-width:30px;max-height:30px;" src="'+data.url+'"/></a>';
+                }},
+                {field: 'ctime',sort: true, width:200, title: '创建时间' ,align:'center'}
+            ]]
+        });
+
+        layui.form.on('submit(image-search)', function(data){
+            table.reload({
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    });
+
+</script>

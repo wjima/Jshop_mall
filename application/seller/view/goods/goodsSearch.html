@@ -1,0 +1,126 @@
+<form class="layui-form  seller-alone-form advance-goods-search" action="" method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品分类：</label>
+        <div class="layui-input-inline">
+            <select name="goods_cat_id" id="goods_cat_id" lay-filter="goods_cat_id">
+                <option value="">请选择分类</option>
+                {if condition="count($catList)>0"}
+                {volist name="catList" id="vo"}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+                {/if}
+            </select>
+        </div>
+        <div id="view"></div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品类型：</label>
+        <div class="layui-input-inline">
+            <select name="goods_type_id" id="goods_type_id" lay-filter="goods_type_id">
+                <option value="">请选择类型</option>
+                {if condition="count($typeList)>0"}
+                {volist name="typeList" id="vo"}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+                {/if}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品编号：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="bn" lay-verify="title" autocomplete="off" placeholder="请输入商品编号" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品品牌：</label>
+        <div class="layui-input-inline">
+            <select name="brand_id">
+                <option value="">请选择品牌</option>
+                {if condition="count($brandList)>0"}
+                {volist name="brandList" id="vo"}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+                {/if}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">推荐：</label>
+        <div class="layui-input-block">
+            <input type="checkbox" value="1" name="is_recommend" lay-skin="switch" lay-filter="switchTest" title="开关"><div class="layui-unselect layui-form-switch layui-form-onswitch" lay-skin="_switch"><em></em><i></i></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">热门：</label>
+        <div class="layui-input-block">
+            <input type="checkbox"  value="1" name="is_hot" lay-skin="switch" lay-filter="switchTest" title="开关"><div class="layui-unselect layui-form-switch layui-form-onswitch" lay-skin="_switch"><em></em><i></i></div>
+        </div>
+    </div>
+</form>
+
+
+<script id="cat_tpl" type="text/html">
+
+    <div class="layui-input-inline">
+        <select name="last_cat_id">
+            <option value="">请选择分类</option>
+            {{#  layui.each(d.list, function(index, item){ }}
+            <option value="{{ item.id }}">{{ item.name }}</option>
+            {{#  }); }}
+        </select>
+    </div>
+</script>
+
+<script>
+    layui.use(['form','laytpl'], function(){
+        var $ = layui.jquery;
+        var form = layui.form;
+        var laytpl = layui.laytpl;
+
+        form.render();
+        form.on('select(goods_cat_id)', function(data){
+            var cat_id = data.value;
+            var first_select = $("#goods_cat_id");
+
+            var getTpl = cat_tpl.innerHTML
+                ,view = document.getElementById('view');
+
+            if(cat_id){
+                JsPost('{:url("Goods/getCat")}',{'cat_id': cat_id},function (e) {
+                    layer.msg(e.msg, {
+                        icon: 16,
+                        shade: 0.01,
+                        time: 300
+                    });
+                    if(e.status){
+                        if(e.data.length>0){
+                            var tmpData = {};
+                            tmpData.list = e.data;
+                            laytpl(getTpl).render(tmpData, function(html){
+                                view.innerHTML = html;
+                            });
+                            form.render();
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    /**
+     * 获取表单数据
+     * @returns {*|jQuery}
+     */
+    function getFormData() {
+        var formData = $(".advance-goods-search").serializeArray();
+        var formDataTemp = {};
+        $.each(formData,function (i,obj) {
+            formDataTemp[obj.name]=obj.value;
+        });
+        return formDataTemp;
+    }
+</script>

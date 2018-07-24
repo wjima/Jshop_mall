@@ -1,0 +1,24 @@
+{
+    "name":        "apfelbox/php-file-download",
+    "type":        "library",
+    "description": "A library to help with creating downloads for files in PHP",
+    "keywords":    ["download"],
+    "homepage":    "https://github.com/apfelbox/PHP-File-Download",
+    "license":     "BSD-3-Clause",
+    "authors": [
+        {
+            "name":     "Jannik Zschiesche",
+            "email":    "hello@apfelbox.net",
+            "homepage": "http://apfelbox.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "skyzyx/mimetypes": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Apfelbox\\FileDownload\\": "src/"
+        }
+    }
+}

@@ -1,0 +1,169 @@
+<style>
+    #LAY-component-grid-list .demo-list .layui-card {
+        height: auto;
+    }
+    .layui-card{
+    	border: 1px solid #e9e9e9;
+    }
+    .layui-card .default_img{
+        text-align: center;
+        padding: 10px 10px 20px;
+    }
+    .layui-card .default_img>img{
+    	min-width: 200px;
+    	min-height: 200px;
+    }
+    .layui-card .template_operate{
+        text-align: center;
+        padding: 10px 0 10px 0;
+    }
+    .mould-content{
+    	overflow: hidden;
+    	text-align: center;
+    	padding-bottom: 10px;
+    }
+    .mould-content>div{
+    	display: inline-block;
+    	width: 49%;
+    }
+    .mould-content-right{
+    	float: right;
+    }
+    .mould-content-right>div{
+    	margin: 14px 0;
+    }
+</style>
+<div class="seller-alone-form">
+
+
+<div class="layui-tab layui-tab-brief" lay-filter="template">
+    <ul class="layui-tab-title" >
+        <li class="layui-this" lay-id="metemplate">我的模板</li>
+        <li lay-id="alltemplate">全部模板</li>
+    </ul>
+    <div class="layui-tab-content" style="">
+        <div class="layui-tab-item layui-show">
+            <div class="warning-msg">
+                <div class="warning-msg-content">
+                    <p>
+                        小程序上线流程：启用模板->上传模板->提交审核->查询进度->全网发布。查看<a href="https://www.kancloud.cn/jihainet/jshop/599522" target="_blank">[帮助手册]</a>快速上线
+                    </p>
+                </div>
+            </div>
+            {notempty name="tplist"}
+            <div class="layui-row layui-col-space10">
+                {volist name="tplist" id="vo"}
+                <div class="layui-col-sm6 layui-col-md6 layui-col-lg4">
+                    <div class="layui-card">
+                        <div class="default_img">
+                            <img src="{$vo.template.image_id|_sImage}">
+                        </div>
+                        <div class="mould-content">
+                            <div class="mould-content-left">
+                            	<p>模板名称：{$vo.template.name}</p><br/>
+	                            <p>模板版本：{$vo.template.version}</p><br/>
+	                            <p>模板描述：{$vo.template.user_desc}</p><br/>
+                            </div>
+                            
+                            <div class="site-text mould-content-right">
+                            	<a href="" style="color: red;">模板教程</a><br/>
+                                <div>
+	                                <button class="layui-btn layui-btn-xs layui-btn-normal" onclick="uploadTemplate({$vo.template.id})">上传模板</button>
+
+	                                <button class="layui-btn layui-btn-xs layui-btn-warm" onclick="doVerify({$vo.template.id})">提交审核</button>
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+            {/notempty}
+            {empty name="tplist"}
+
+            <div>
+                <div class="warning-msg">
+                    <div class="warning-msg-content">
+                        <i class="iconfont icon-tanhao"></i><p>您还未启用模板，请先挑选模板哦。<a href="javascript:void(0);" id="chooseTemplate" >[立即挑选]</a></p>
+                    </div>
+                </div>
+            </div>
+            {/empty}
+
+        </div>
+        <div class="layui-tab-item">
+            {if condition="$list"}
+            <div class="layui-row layui-col-space10">
+                {volist name="list" id="vo"}
+                <div class="layui-col-sm6 layui-col-md6 layui-col-lg4">
+                    <div class="layui-card">
+                        <div class="default_img">
+                            <img src="{$vo.image_id|_sImage}">
+                        </div>
+                        <div class="mould-content">
+                        	<div class="mould-content-left">
+	                            <p>模板名称：{$vo.name}</p><br/>
+	                            <p>模板版本：{$vo.version}</p><br/>
+	                            <p>模板描述：{$vo.user_desc}</p><br/>
+                            </div>
+                            <div class="template_operate mould-content-right">
+                            	<a href="" style="color: red;">模板教程</a><br/>
+                                {if condition="$vo.selected eq 'false' "}
+                                <button class="layui-btn layui-btn-sm" onclick="selectTemplate({$vo.id})">启用模板</button>
+                                {else/}
+                                已启用
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+            {else/}
+            暂无模板
+            {/if}
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    var  element;
+    layui.use(['form', 'laytpl', 'upload','element'], function () {
+        element = layui.element;
+        $("#chooseTemplate").click(function () {
+            element.tabChange("template","alltemplate");
+        });
+    });
+    //启用模板
+    function selectTemplate(template_id) {
+        JsPost("{:url('wechat/enableTemplate')}",{'id':template_id},function (e) {
+            layer.msg(e.msg);
+            if(e.status){
+                window.location.reload();
+            }
+        });
+    }
+    //上传模板
+    function uploadTemplate(template_id) {
+        JsGet("{:url('wechat/uploadTemplate')}?id=" + template_id,function (e) {
+            layer.msg(e.msg);
+            if(e.status){
+                 layer.open({
+                    type: 1,
+                    content: e.data,
+                    area: ['600px', '500px'],
+                    title: '上传模板',
+                    closeBtn: 1,
+                    shadeClose: false
+                });
+            }
+        });
+    }
+    /**
+     * 提交审核
+     */
+    function doVerify(template_id){
+        window.location.href="{:url('wechat/verify')}?id=" + template_id;
+    }
+</script>

@@ -1,0 +1,64 @@
+<blockquote class="layui-elem-quote layui-text seller-alone-form">
+    最多可定义5个页面标签和地址
+</blockquote>
+
+<div style="padding: 30px;" class="layui-form seller-alone-form ">
+    <form action="{:url('wechat/doVerify')}" method="post">
+    {volist name="pageList" id="page" key="pkey"}
+    <div class="layui-form-item">
+        <label class="layui-form-label">页面地址：</label>
+        <div class="layui-input-inline">
+            {$page.page}
+            <input value="{$page.page}" type="hidden" name="item[{$pkey}][page]">
+        </div>
+        <label class="layui-form-label">可选类目</label>
+        <div class="layui-input-inline">
+            <select name="item[{$pkey}][cat_id]">
+                <option value="">请选择类目</option>
+                {if condition="count($categoryList)>0"}
+                {volist name="categoryList" id="vo" key="ckey"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+                {/if}
+            </select>
+        </div>
+        <label class="layui-form-label">标签：</label>
+        <div class="layui-input-inline">
+            <input value="{$page.tag}" class="layui-input" name="item[{$pkey}][tag]">
+        </div>
+        <label class="layui-form-label">页面标题：</label>
+        <div class="layui-input-inline">
+            <input value="{$page.title}" class="layui-input" name="item[{$pkey}][title]">
+        </div>
+    </div>
+    {/volist}
+    <input type="hidden" name="th_template_id" value="{$th_template_id}">
+    <button class="layui-btn layui-btn-fluid save-verify" lay-submit lay-filter="save-verify">保存</button>
+    </form>
+</div>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+        form.on('submit(save-verify)', function(data){
+            formData = data.field;
+            if(!formData){
+                layer.msg('请先完善数据', {time: 1300});
+                return false;
+            }
+            JsPost(
+                "{:url('wechat/doVerify')}",formData,function (e) {
+                    if(e.status === true){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            window.location.href='{:url("wechat/template")}';
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300});
+                    }
+                }
+            );
+            return false;
+        });
+    });
+</script>

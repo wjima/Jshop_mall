@@ -1,0 +1,33 @@
+<div style="padding:30px" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">参数名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" id="name" value="{$name}" required lay-verify="required" placeholder="请输入参数名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">参数类型：</label>
+        <div class="layui-input-block">
+            <select name="type" id="type">
+                <option value="text" {if condition="$type eq 'text'"} selected{/if}>文本框</option>
+                <option value="radio" {if condition="$type eq 'radio'"} selected{/if}>单选框</option>
+                <option value="checkbox" {if condition="$type eq 'checkbox'"} selected{/if}>复选框</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">参数选项：</label>
+        <div class="layui-input-block">
+            <input type="text" name="value" value="{$value}" id="value" placeholder="多个用空格分开,文本框类型可不填" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <input type="hidden" name="id" id="params_id" value="{$id}">
+</div>
+
+<script>
+    //渲染表单
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

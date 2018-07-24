@@ -1,0 +1,105 @@
+<div class="layui-form" style="padding:20px;">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">发货单号：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.delivery_id}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.order_id}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户名：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.username}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">收货人：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.ship_name}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">快递公司：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.logi_name}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">快递单号：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.logi_no}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">收货电话：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$data.ship_mobile}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">创建时间：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <div class="layui-form-mid">{$data.ctime}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">收货地址：</label>
+            <div class="layui-input-inline seller-inline-8">
+                <div class="layui-form-mid">{$data.ship_address}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">发货备注：</label>
+            <div class="layui-input-inline seller-inline-8">
+                <div class="layui-form-mid">{$data.memo}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">明细：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">
+                <table id="billDeliveryItems" lay-filter="billDeliveryItems"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table'], function(){
+        layui.form.render();
+        layui.table.render({
+            elem: '#billDeliveryItems',
+            size: 'sm',
+            url: "{:url('billDelivery/items')}",
+            id: 'billDeliveryItems',
+            where: {
+                delivery_id: "{$data.delivery_id}"
+            },
+            response: {
+                statusName: 'status',
+                statusCode: 1
+            },
+            cols: [[
+                {field:'product_name', width:200, title:'货品名称', align:'center'},
+                {field:'nums', width:140, title:'发货数量', align:'center'}
+            ]]
+        });
+    });
+</script>

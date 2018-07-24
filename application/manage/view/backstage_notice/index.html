@@ -1,0 +1,108 @@
+<div class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label">公告标题：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="title" lay-verify="title" placeholder="请输入公告标题关键字" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">添加时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="ctime" name="ctime" lay-verify="title" placeholder="请选择时间段" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label">更新时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择时间段" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="notice-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm add"><i class="layui-icon">&#xe608;</i>添加</button>
+        </div>
+    </div>
+</div>
+
+<table id="backstageNotice" lay-filter="backstageNotice"></table>
+<script>
+    layui.use(['table','form','laydate'],function(){
+        var $ = layui.$,table = layui.table,date = layui.laydate;
+        //执行渲染
+        table.render({
+            elem: '#backstageNotice', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-320',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            id:'backstageNotice',
+            url: "{:url('BackstageNotice/index')}",
+            cols: [[ //标题栏
+                {type:'numbers'},
+                {field:'title', title:'公告名称', align:'center'},
+                {field:'is_pub', title:'发布状态', align:'center', width:100},
+                {field:'ctime', title:'创建时间', sort:true, align:'center', width:200},
+                {field:'utime',sort:true, title:'更新时间', align:'center', width:200},
+                {field:'sort', sort:true, title:'排序', align:'center', width:100},
+                {fixed:'right', width:150, title:'操作', align:'center', toolbar:'#backstageNoticeBar'}
+            ]] //设置表头
+            //,…… //更多参数参考右侧目录：基本参数选项
+        });
+
+        layui.form.on('submit(notice-search)', function(data){
+            layui.table.reload('backstageNotice', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        $(document).on('click','.add',function(){
+            window.location.href = "{:url('BackstageNotice/add')}";
+        });
+
+        //search
+        date.render({
+            elem:'#ctime',
+            range: '~'
+        });
+
+        date.render({
+            elem:'#utime',
+            range: '~'
+        });
+
+        //监听工具条
+        table.on('tool(backstageNotice)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的要删除么',{icon: 3}, function(index){
+                    JsGet("{:url('BackstageNotice/del')}?id="+data.id,function(res){
+                        if(res.status){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                        }
+                        layer.msg(res.msg);
+                    });
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                var str = "{:url('backstageNotice/edit',['id'=>'a_id'])}";
+                Url = str.replace('a_id',data.id);
+                window.location.href = Url;
+            }
+        });
+
+    })
+</script>
+<script type="text/html" id="backstageNoticeBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>

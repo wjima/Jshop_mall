@@ -1,0 +1,126 @@
+<form class="layui-form seller-alone-form" action="" style="min-height:600px;">
+    <input type="hidden" value="{$info.id}" name="id" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户账号：</label>
+        <div class="layui-form-mid">{$info.mobile}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">token：</label>
+        <div class="layui-form-mid">{$info.token}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺类型：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <select name="store_type" lay-filter="store_type">
+                <option value="1" {if $info.store_type == 1} selected=""  {/if}>共享店铺</option>
+                <option value="2" {if $info.store_type == 2} selected=""  {/if}>普通店铺</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>客户名称：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input name="seller_name" value="{$info.seller_name}" lay-verify="required" autocomplete="off" placeholder="请输入名称" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请输入客户公司名称，个体工商户请写法人姓名，个人就写姓名</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所在地区：</label>
+        <div class="layui-input-inline seller-inline-8">
+            {Jshop:area name='area_id' class="select-address" value="$info['area_id']"  /}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细地址：</label>
+        <div class="layui-input-inline">
+            <input type="input" name="address" value="{$info.address}" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺等级：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <select name="level" lay-verify="">
+                <option value="1" {if $info.level == 1} selected=""  {/if}>普通店铺</option>
+                <option value="2" {if $info.level == 2} selected=""  {/if}>中级店铺</option>
+                <option value="3" {if $info.level == 3} selected=""  {/if}>高级店铺</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺状态：</label>
+        <div class="layui-input-inline seller-inline-3">
+            <select name="status" lay-verify="">
+                <option value="1" {if $info.status == 1} selected=""  {/if}>正常</option>
+                <option value="2" {if $info.status == 2} selected=""  {/if}>待审核</option>
+                <option value="3" {if $info.status == 3} selected=""  {/if}>审核失败</option>
+                <option value="4" {if $info.status == 4} selected=""  {/if}>默认未提交</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>到期时间：</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{$info.expire_date}" lay-verify="required" class="layui-input" id="expire_date" name="expire_date">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注：</label>
+        <div class="layui-input-inline seller-inline-9">
+            <input type="input" name="memo" value="{$info.memo}" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">如果审核失败了，在此写原因</div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="seller">提交</button>
+            <a class="layui-btn layui-btn-primary" href="javascript:history.back(-1);">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+                ,layer = layui.layer
+                ,laydate = layui.laydate;
+        //时间插件
+        laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime'
+        });
+        form.on('select(store_type)', function(data){
+            layer.alert('注意，此选项很重要，如非必要，无需修改此配置');
+        });
+
+        //提交
+        form.on('submit(seller)', function(data){
+            console.log(data);
+            $.ajax({
+                url:"{:url('seller/edit')}",
+                type:'post',
+                data:data.field,
+                success:function(res){
+                    if(res.status == true){
+                        layer.msg('编辑成功');
+                        window.location.href='{:url("seller/index")}';
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            },"json");
+            return false;
+        });
+        //执行一个laydate实例
+        layui.laydate.render({
+            elem: '#expire_date', //指定元素
+            type:'datetime',
+            value: new Date({$info.expire_date}000)
+        });
+
+    });
+</script>

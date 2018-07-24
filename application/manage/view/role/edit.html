@@ -1,0 +1,15 @@
+<form style="padding:30px;" class="layui-form" id="edit_form">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色名称：</label>
+        <div class="layui-input-block">
+            <input name="name" id="edit_name" value="{$data.name}" placeholder="请输入角色名称" class="layui-input" type="text">
+
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

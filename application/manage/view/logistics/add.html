@@ -1,0 +1,29 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <div class="layui-form-item">
+        <label class="layui-form-label">公司名称：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="logi_name" required lay-verify="required" placeholder="请输入物流公司名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">公司编码：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="logi_code" required lay-verify="required" placeholder="请输入物流公司编码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sort" required lay-verify="required" placeholder="请输入顺序" value="100" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <button class="layui-btn layui-btn-fluid save-logistics" lay-submit lay-filter="add-logistics">立即提交</button>
+    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+</div>
+<script>
+    layui.use('form', function(){
+        //监听提交
+        layui.form.render();
+    });
+</script>

@@ -1,0 +1,54 @@
+<form class="layui-form refund_form" id="refund_form" action="" style="margin:10px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">退款单号：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$info.refund_id}</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-block">
+                <div class="layui-form-mid">{:format_mobile(get_user_info($info.user_id))}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_refund.status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">退款金额：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.money}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">退款方式：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{:get_payment_info($info.payment_code)}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">单据类型：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_refund.type[$info.type]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">单号：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.source_id}</div>
+            </div>
+        </div>
+    </div>
+</form>
+

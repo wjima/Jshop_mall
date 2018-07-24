@@ -1,0 +1,18 @@
+<div style="padding:30px" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" id="type_name" value="{$typeSpec.name}" required lay-verify="required" placeholder="请输入类型名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <input type="hidden" name="id" id="type_id" value="{$typeSpec.id}">
+    <button class="layui-btn layui-btn-fluid add-edit-btn">保存</button>
+</div>
+
+<script>
+    //渲染表单
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

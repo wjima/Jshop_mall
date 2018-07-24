@@ -1,0 +1,92 @@
+<?php
+/*
+ * Copyright (c) 2011-2012 [Ryan Parman](http://ryanparman.com)
+ * Copyright (c) 2011-2012 [Michael Dowling](https://github.com/mtdowling)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * <http://opensource.org/licenses/MIT>
+ */
+
+namespace Skyzyx\Components\Mimetypes;
+
+/**
+ * Provides mappings of file extensions to mimetypes
+ * @link https://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/docs/conf/mime.types
+ */
+class Mimetypes
+{
+    /**
+     * @var self
+     */
+    protected static $instance;
+
+    /**
+     * Returns an associative array with extension => mimetype mappings.
+     *
+     * Generated from source on {{ "now"|date('j M Y, g:ia T') }}.
+     *
+     * @return array An associative array with extension => mimetype mappings.
+     */
+    public function getMimeTypes()
+    {
+        return {{ mapping }};
+    }
+
+    /**
+     * Get a singleton instance of the class
+     *
+     * @return self
+     * @codeCoverageIgnore
+     */
+    public static function getInstance()
+    {
+        if (!self::$instance) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Get a mimetype value from a file extension
+     *
+     * @param string $extension File extension
+     *
+     * @return string|null
+     *
+     */
+    public function fromExtension($extension)
+    {
+        $mimetypes = $this->getMimeTypes();
+        return isset($mimetypes[$extension]) ? $mimetypes[$extension] : null;
+    }
+
+    /**
+     * Get a mimetype from a filename
+     *
+     * @param string $filename Filename to generate a mimetype from
+     *
+     * @return string|null
+     */
+    public function fromFilename($filename)
+    {
+        return $this->fromExtension(pathinfo($filename, PATHINFO_EXTENSION));
+    }
+}

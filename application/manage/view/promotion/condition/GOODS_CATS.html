@@ -1,0 +1,84 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="conditionEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="promotion_id" value="{$promotion_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">条件名称：</label>
+        <div class="layui-form-mid">指定商品分类</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品分类id：</label>
+        <div class="layui-input-inline">
+            <input name="params[cat_id]"  value="{$params.cat_id}" id="the_cat_val"  type="hidden">
+            <select name="goods_cat_id[]" id="goods_cat_id" lay-filter="goods_cat_id">
+                <option value="">请选择分类</option>
+                {if condition="count($catList)>0"}
+                {volist name="catList" id="vo"}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+                {/if}
+            </select>
+        </div>
+        <div id="view"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品数量：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input name="params[nums]" lay-verify="title" autocomplete="off" value="{:setDefault($params.nums,1)}" placeholder="商品数量" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">大于等于此商品数量才满足条件</div>
+    </div>
+</form>
+<script id="cat_tpl" type="text/html">
+    <div class="layui-input-inline">
+        <select name="goods_cat_id[]">
+            <option value="">请选择分类</option>
+            {{#  layui.each(d.list, function(index, item){ }}
+            <option value="{{ item.id }}">{{ item.name }}</option>
+            {{#  }); }}
+        </select>
+    </div>
+</script>
+<script>
+    var laytpl='';
+    layui.use(['form','laytpl'], function(){
+        laytpl = layui.laytpl;
+        layui.form.render();
+        layui.form.on('select(goods_cat_id)', function(data){
+            var cat_id = data.value;
+            var first_select = $("#goods_cat_id");
+
+            //此很重要，赋值的，最终取的就是这里的值  add by wht
+            $("#the_cat_val").val(cat_id);
+
+
+            var getTpl = cat_tpl.innerHTML
+                    ,view = document.getElementById('view');
+
+            if(cat_id){
+                $.ajax({
+                    url: '{:url("Goods/getCat")}',
+                    type: 'post',
+                    data: {
+                        'cat_id': cat_id,
+                    },
+                    dataType: 'json',
+                    success: function(e){
+                        if(e.status === true){
+                            if(e.data.length>0){
+                                var tmpData = {};
+                                tmpData.list = e.data;
+                                laytpl(getTpl).render(tmpData, function(html){
+                                    view.innerHTML = html;
+                                });
+                                layui.form.render();
+                            }
+                        }else{
+                            layer.msg(e.msg, {time: 1300});
+                        }
+                    }
+                })
+            }
+        });
+    });
+</script>

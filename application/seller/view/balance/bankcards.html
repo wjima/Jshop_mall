@@ -1,0 +1,111 @@
+<div class="seller-form" style="overflow:hidden;">
+    {volist name="list" id="vo"}
+        <div style="width:400px;height:250px;border:1px solid black;border-radius:15px;margin:10px;float:left;" class="card">
+            <div style="overflow:hidden;margin-top: 20px;">
+                <div style="float:left;margin-left: 30px"><img src="{$vo.bank_logo}" alt="">{$vo.card_type}</div>
+            </div>
+            <div>
+                <div style="float:left;margin-left: 80px;margin-top: 40px;font-size: 20px">
+                    {$vo.account_name}
+                    {if ($vo.is_default === 1)}<span style="margin-left: 120px;color: #FF0000;">默认</span>{/if}
+                </div>
+            </div>
+            <div style="text-align:center;font-size: 25px;margin-top: 100px">
+                {$vo.card_number}
+            </div>
+            <div style="text-align: center;margin-top: 20px">
+                {if ($vo.is_default === 2)}<button type="button" style="display: none" class="layui-btn layui-btn-radius layui-btn-sm layui-btn-primary" onclick="setDefault('{$vo.id}')">设置默认</button>{/if}
+                <button type="button" style="display: none;" class="layui-btn layui-btn-radius layui-btn-sm layui-btn-danger" onclick="removeCard('{$vo.id}')">删除</button>
+            </div>
+        </div>
+    {/volist}
+    <div style="border-radius:15px;width:400px;height:250px;border:1px solid #cdcdcd;margin:10px;float:left;text-align: center" onclick="add_card()">
+        <img src="__STATIC_IMAGES__add_card.png" alt="" style="margin: 100px auto;display:block">
+    </div>
+</div>
+<style type="text/css">
+    .card:hover {
+        box-shadow: 5px 5px 5px #778899;
+    }
+</style>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('balanceTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //提现操作
+        layui.form.on('submit(tocash)', function(data){
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        // 添加银行卡
+        layui.form.on('submit(add_card)', function(data) {
+            JsPost("{:url('addcard')}", data.field, function(res) {
+                if (res.status) {
+                    layer.close(window.box)
+                    layer.msg(res.msg, {time: 1300}, function () {
+                        location.reload()
+                    })
+                } else {
+                    layer.msg(res.msg)
+                }
+            });
+        });
+    });
+
+    $(".card").hover(function(){
+        $(this).find('button').show()
+    },function(){
+        $(this).find('button').hide()
+    });
+
+    // 设置默认卡
+    function setDefault (id) {
+        JsGet("{:url('setDefaultCard')}?id="+id, function (res) {
+            if (res.status) {
+                layer.msg(res.msg, {time: 1300}, function(){
+                    location.reload()
+                });
+            } else {
+                layer.msg(res.msg)
+            }
+        });
+    }
+
+    // 删除银行卡
+    function removeCard (id) {
+        layer.confirm('真的要删除么?', {icon: 3}, function (index) {
+            JsGet("{:url('delCard')}?id="+id, function (res) {
+                if (res.status) {
+                    layer.close(index)
+                    location.reload()
+                }
+                layer.msg(res.msg)
+            });
+        });
+    }
+
+    function add_card(){
+        $.ajax({
+            type:'get',
+            url: "{:url('addcard')}",
+            data:'',
+            success:function(e){
+                window.box = layer.open({
+                    type: 1,
+                    content: e,//
+                    area: ['450px', '500px'],
+                    title:'添加银行卡'
+                });
+            }
+        });
+    }
+
+</script>

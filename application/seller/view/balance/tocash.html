@@ -1,0 +1,51 @@
+<form class="layui-form seller-alone-form" id="tocashForm" action="">
+    <input type="hidden" id="id" name="id" value="{$info.id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现银行卡</label>
+        <div class="layui-input-block">
+            <select name="id" lay-filter="id">
+                {volist name="list" id="vo"}
+                <option value="{$vo.id}" {if $vo['is_default'] == 1}selected=""{/if}>{$vo.card_number}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">提现金额：</label>
+        <div class="layui-input-block">
+            <input name="money" lay-verify="money" autocomplete="off" value="{$info.name}" placeholder="请输入提现金额" class="layui-input" type="text">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">&nbsp;</label>
+        <div class="layui-form-mid layui-word-aux">没有找到提现的银行卡？&nbsp;<a href="{:url('bankcards')}">添加银行卡</a></div>
+    </div>
+</form>
+
+<script>
+layui.use(['form', 'table', 'laydate'], function() {
+    var form = layui.form, layer = layui.layer, laydate = layui.laydate;
+    layui.form.render();
+
+    //提交
+    form.on('submit(promotion)', function (data) {
+        $.ajax({
+            url: "{:url('promotion/edit')}",
+            type: 'post',
+            data: data.field,
+            success: function (res) {
+                if (res.status == true) {
+                    layer.msg('保存成功');
+                } else {
+                    layer.msg(res.msg);
+                }
+            }
+        }, "json");
+        return false;
+    });
+});
+
+
+
+</script>

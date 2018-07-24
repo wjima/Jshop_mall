@@ -1,0 +1,78 @@
+<form class="layui-form seller-alone-form" action="" style="min-height:600px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">优惠券名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input name="name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">优惠券名称会显示到前台，请合理输入此名称</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">启用状态：</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" checked  value="1" lay-text="启用|禁用">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权重：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" name="sort" required  lay-verify="required" value="100" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">数字越小，权重越大</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户领取：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="checkbox" name="auto_receive" lay-skin="switch" checked  value="1" lay-text="启用|禁用">
+        </div>
+        <div class="layui-form-mid layui-word-aux">启用后，用户可在前台直接领取</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input  type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="promotion">下一步</button>
+            <a class="layui-btn layui-btn-primary" href="javascript:history.back(-1);">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+                ,layer = layui.layer
+                ,laydate = layui.laydate;
+        //时间插件
+        laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime'
+        });
+
+
+        //提交
+        form.on('submit(promotion)', function(data){
+            console.log(data);
+            $.ajax({
+                url:"{:url('promotion/couponAdd')}",
+                type:'post',
+                data:data.field,
+                success:function(res){
+                    if(res.status == true){
+                        layer.msg('添加成功');
+                        window.location.href=res.data;
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            },"json");
+            return false;
+        });
+
+
+    });
+</script>

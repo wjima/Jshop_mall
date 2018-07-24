@@ -1,0 +1,71 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane" id="addcard">
+    <input type="hidden" name="bank_name" value="">
+    <input type="hidden" name="bank_code" value="">
+    <input type="hidden" name="card_type" value="">
+    <div class="layui-form-item" id="bank_name" style="display: none;">
+        <label class="layui-form-label">卡类型</label>
+        <div class="layui-form-mid"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">银行卡号</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="card_number" lay-verify="required|number" autocomplete="off" placeholder="请输入银行卡号" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">账户名</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="account_name" lay-verify="required" autocomplete="off" placeholder="请输入账户名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开户地</label>
+        <div class="layui-input-inline seller-inline-5">
+            {Jshop:area name='bank_area_id' class="select-address" lay-verify="required" /}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开户行</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="account_bank" lay-verify="required" autocomplete="off" placeholder="请输入开户行" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">设置默认</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="checkbox" name="is_default" lay-skin="switch" lay-text="是|否" checked value="1">
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="add_card">保存</button>
+</div>
+
+<script>
+layui.use(['form', 'table', 'laydate'], function() {
+    var form = layui.form, layer = layui.layer, laydate = layui.laydate;
+    form.render();
+    $("input[name=card_number]").blur(function(){
+        var cardNumber = $("input[name=card_number]").val();
+        if (cardNumber) {
+            JsGet("{:url('bankCardOrganization')}?card_number="+cardNumber, function(res){
+                if (res.status) {
+                    $("input[name=bank_name]").attr('value',res.data.name);
+                    $("input[name=bank_code]").attr('value',res.data.bank_code);
+                    $("input[name=card_type]").attr('value',res.data.type);
+                    $("#bank_name div").html(res.data.name + "&nbsp;" + res.data.type_name)
+                    $("#bank_name").css('display','block')
+                } else {
+                    $("input[name=bank_name]").val("")
+                    $("input[name=bank_code]").val("")
+                    $("input[name=card_type]").val("")
+                    $("#bank_name").css('display','none')
+                    layer.msg(res.msg);
+                }
+            })
+        }
+    })
+});
+
+
+
+</script>

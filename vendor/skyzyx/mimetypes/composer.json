@@ -1,0 +1,29 @@
+{
+    "name": "skyzyx/mimetypes",
+    "description": "Creates a JSON document containing a thorough list of file extensions => mime types as provided by the Apache httpd project.",
+    "homepage": "http://github.com/skyzyx/mimetypes",
+    "license": "MIT",
+    "keywords": ["mime", "mimetype", "dictionary", "map"],
+    "authors": [
+        {
+            "name": "Ryan Parman",
+            "homepage": "http://ryanparman.com"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "http://github.com/skyzyx/mimetypes/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "require-dev": {
+        "dflydev/apache-mime-types": "1.0.*@dev",
+        "twig/twig": "1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Skyzyx\\Components\\Mimetypes": "src/"
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+	"asa ascx ashx asmx asp aspx axd cs ini php rb": "text/plain",
+	"asax hta": "application/octet-stream",
+	"cfc cfm": "application/x-coldfusion",
+	"htc": "text/html",
+	"js": "text/javascript",
+	"m4a": "audio/mp4",
+	"m4v": "video/mp4",
+	"phps": "application/x-httpd-phps",
+	"resx": "text/xml",
+	"yml yaml": "text/yaml"
+}

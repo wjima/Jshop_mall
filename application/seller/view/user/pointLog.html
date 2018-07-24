@@ -1,0 +1,25 @@
+<table id="pointLog" lay-filter="pointLog"></table>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        table = layui.table.render({
+            elem: '#pointLog',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('User/pointLog')}?_ajax=1&user_id={$user_id}&seller_id={$seller_id}&flag=true",
+            id:'pointLog',
+            response: {
+                statusName: 'status',
+                statusCode: 1
+            },
+            cols: [[
+                {type:'numbers'},
+                {field:'type', title:'类型'},
+                {field:'num', title:'数量'},
+                {field:'balance', title:'余额'},
+                {field:'ctime', title:'时间'}
+            ]]
+        });
+    });
+</script>

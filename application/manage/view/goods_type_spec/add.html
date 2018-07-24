@@ -1,0 +1,58 @@
+
+<div style="padding:30px" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label">属性名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" id="name" required lay-verify="required" placeholder="请输入属性名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-block">
+            <input type="text" name="sort" required lay-verify="required" placeholder="请输入排序" value="100" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">属性值：</label>
+        <div class="layui-input-block">
+            <input type="text" name="value[]"  required lay-verify="required" placeholder="请输入属性值" autocomplete="off" class="layui-input" style="width: 80%;display: inline-block;">
+            <div class="layui-btn-group">
+                <button class="layui-btn layui-btn-primary layui-btn-sm add_value" style="height: 36px;"><i class="layui-icon"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="type_spec_add">保存</button>
+</div>
+
+<script>
+    //渲染表单
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+        //监听提交
+        form.on('submit(type_spec_add)', function(data){
+            formData = data.field;
+            saveSpec(formData);
+            return false;
+        });
+    });
+
+    $(".layui-form-pane").on('click','.add_value',function(){
+        var html=
+                '<div class="layui-form-item">'+
+                '<label class="layui-form-label">属性值：</label>'+
+                '<div class="layui-input-block">'+
+                '<input type="text" name="value[]" required lay-verify="required" placeholder="请输入属性值" autocomplete="off" class="layui-input" style="width: 80%;display: inline-block;">'+
+                '<div class="layui-btn-group">'+
+                '<button class="layui-btn layui-btn-primary layui-btn-sm del_value" style="height: 36px;margin-left:4px !important;"><i class="layui-icon"></i></button>'+
+                '</div>'+
+                '</div>'+
+                '</div>';
+        $(".layui-form-item").last().after(html);
+    });
+
+    $(".layui-form-pane").on('click','.del_value',function(){
+        var html=$(this).parent().parent().parent().remove();
+    });
+</script>

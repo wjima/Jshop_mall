@@ -1,0 +1,136 @@
+<style>
+    .layui-btn .layui-icon{
+        margin-right: 0;
+    }
+</style>
+
+<div class="table-body">
+	<table id="typeTable" lay-filter="test"></table>
+</div>
+
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+        table = layui.table.render({
+            elem: '#typeTable',
+            height: 'full-330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('Addons/index')}?_ajax=1",
+            id:'typeTable',
+            cols: [[
+                {type:'numbers'},
+                {field:'title', width:100,title:'插件名称'},
+                {field:'description', width:150,title:'插件描述'},
+                {field:'author', width:100,title:'作者'},
+                {field:'version', width:150,title:'版本号'},
+                {field:'price', width:130,title:'订购费用',templet:function (data) {
+					if(data.price=='0.00'){
+					    return '免费';
+					}
+					return data.price;
+                }},
+                {field:'buy', width:120,title:'是否订购',templet:function (data) {
+					if(data.buy==true){
+					    return '是';
+					}else{
+					    return '否';
+					}
+                }},
+                {field:'times', width:120,title:'总订购次数'},
+                {field:'operating',title:'操作',templet:function(data){
+                    var html='';
+                    if(data.buy==true){
+                        var html = '<a  class="layui-btn layui-btn-xs setting-class" data-id="' + data.id + '" data-name="'+data.title+'">配置</a>';
+                        if(data.seller_addon_status=='1'){
+                            html += '<a class="layui-btn layui-btn-danger layui-btn-xs stop-class" data-name="'+data.title+'" data-id="' + data.id + '">停用</a>';
+                        }else{
+                            html += '<a class="layui-btn layui-btn-danger layui-btn-xs stop-class" data-name="'+data.title+'" data-id="' + data.id + '">启用</a>';
+                        }
+					}else{
+						html = '<a  class="layui-btn layui-btn-xs buy-class" data-id="' + data.id + '" data-name="'+data.title+'">订购</a>';
+					}
+                    return html;
+                }}
+            ]]
+        });
+
+        //订购插件
+        $(document).on('click', '.buy-class', function(){
+            var id = $(this).attr('data-id');
+            var name = $(this).attr('data-name');
+            layer.confirm('确认订购插件：'+name+' 吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function(){
+                buyAddon(id);
+            });
+        });
+
+        //订购插件
+        function buyAddon(id){
+            JsPost('{:url("Addons/buy")}',{id:id},function (e) {
+                layer.msg(e.msg, {time: 1300}, function(){
+                    table.reload('typeTable');
+                });
+            });
+        }
+
+        //订购插件
+        $(document).on('click', '.setting-class', function(){
+            var id = $(this).attr('data-id');
+            var name = $(this).attr('data-name');
+            JsPost('{:url("Addons/setting")}',{id:id},function (e) {
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: [e.dialog.width, e.dialog.height],
+                        title:'插件配置',
+						btn:['保存','取消'],
+						yes:function (index,obj) {
+							var settingForm = obj.find('form');
+                            var addonData = settingForm.serializeArray();
+                            addonData.push({'name':'addons_id','value':id});
+							JsPost('{:url("Addons/doSetting")}',addonData,function (res) {
+							    if(res.status){
+							        layer.closeAll();
+                                    layer.msg(res.msg, {time: 1300}, function(){
+                                        table.reload('typeTable');
+                                    });
+								}else{
+                                    layer.msg(e.msg);
+                                }
+                            });
+                        }
+                    });
+				}else{
+                    layer.msg(e.msg);
+				}
+            });
+        });
+
+        //订购插件
+        $(document).on('click', '.stop-class', function(){
+            var id = $(this).attr('data-id');
+            var name = $(this).attr('data-name');
+            var type = $(this).html();
+            layer.confirm('确认'+type+'插件：'+name+' 吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function(){
+                changeStatus(id);
+            });
+        });
+
+        function changeStatus(id){
+            JsPost('{:url("Addons/changeStatus")}',{id:id},function (e) {
+                layer.msg(e.msg, {time: 1300}, function(){
+                    table.reload('typeTable');
+                });
+            });
+        }
+
+    });
+
+</script>

@@ -1,0 +1,49 @@
+<style>
+	.layui-form-label{
+		width: 100px;
+	}
+	.order-edit-btn{
+		margin: 0 auto;
+		display: block;
+		margin-top: 25px;
+	}
+</style>
+<div class="layui-form seller-alone-form">
+	<div class="layui-form-item" lay-size="sm">
+		<label class="layui-form-label">订单号：</label>
+		<div class="layui-form-mid seller-inline-3">{$order.order_id}</div>
+		<input type="hidden" id="order_id" value="{$order.order_id}">
+
+		<label class="layui-form-label">收货区域：</label>
+		<div class="layui-input-inline seller-inline-4 address-class">
+			{Jshop:area name='ship_area_id' class="select-address" value="$order.ship_area_id" /}
+		</div>
+	</div>
+	<div class="layui-form-item" lay-size="sm">
+		<label class="layui-form-label">收货人姓名：</label>
+		<div class="layui-input-inline seller-inline-3">
+			<input type="text" id="ship_name" value="{$order.ship_name}" class="layui-input">
+		</div>
+
+		<label class="layui-form-label">收货地址：</label>
+		<div class="layui-input-inline seller-inline-4">
+			<input type="text" id="ship_address" value="{$order.ship_address}" class="layui-input">
+		</div>
+	</div>
+	<div class="layui-form-item" lay-size="sm">
+		<label class="layui-form-label">收货人电话：</label>
+		<div class="layui-input-inline seller-inline-3">
+			<input type="text" id="ship_mobile" value="{$order.ship_mobile}" class="layui-input">
+		</div>
+
+		<label class="layui-form-label">订单总金额：</label>
+		{if $order_type == 1}
+			<div class="layui-input-inline seller-inline-4">
+				<input type="number" id="order_amount" value="{$order.order_amount}" class="layui-input">
+			</div>
+		{else}
+			<div class="layui-form-mid seller-inline-4">{$order.order_amount}</div>
+		{/if}
+	</div>
+	<button class="layui-btn layui-btn-fluid order-edit-btn">保存</button>
+</div>

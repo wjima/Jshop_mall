@@ -1,0 +1,113 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">商户：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <select name="seller_id" lay-verify="">
+                    <option value=""></option>
+                    {volist name="sellerList" id="vo"}
+                    <option value="{$vo.id}">{$vo.seller_name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">消息节点：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <select name="code" lay-verify="">
+                    <option value=""></option>
+                    {volist name="code" id="vo"}
+                    <option value="{$key}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">value：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" name="value" lay-verify="title" placeholder="请输入值" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="userTable" lay-filter="userTable"></table>
+</div>
+<script type="text/html" id="smsTpl">
+    <input type="checkbox" name="sms" value="{{d.id}}" seller_id="{{d.seller_id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.sms == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="messageTpl">
+    <input type="checkbox" name="message" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.message == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="wxTpl">
+    <input type="checkbox" name="wx_tpl_message" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.wx_tpl_message == 1 ? 'checked' : '' }}>
+</script>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        layui.table.render({
+            elem: '#userTable',
+            height: 'full-218',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('MessageCenter/index')}?_ajax=1",
+            id:'userTable',
+            cols: [[
+                {type:'numbers'},
+                {field:'seller_name', width:250,title:'商户名称'},
+                {field: 'code', title: '消息节点',templet:function(data){
+                    var html = '';
+                    html += data.code_name + '('+data.code+')';
+                    return html;
+                }},
+                {field:'sms', title:'短信', width:200, templet: '#smsTpl', unresize: true},
+                {field:'message', title:'站内消息', width:200, templet: '#messageTpl', unresize: true},
+                {field:'wx_tpl_message', title:'消息模板', width:200, templet: '#wxTpl', unresize: true}
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('userTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //监听性别操作
+        layui.form.on('switch(smsDemo)', function(obj){
+            console.log(this.name);
+            console.log(this.value);
+            var data = {
+                id:this.value
+            }
+            if(obj.elem.checked){
+                data[this.name] = 1;
+            }else{
+                data[this.name] = 2;
+            }
+            $.ajax({
+                type:'post',
+                url: "{:url('MessageCenter/edit')}",
+                data:data,
+                success:function(e){
+                    if(e.status){
+                       layer.msg('修改成功');
+                    }else{
+                        layer.msg(e.msg);
+                    }
+
+                }
+            });
+        });
+
+    });
+</script>

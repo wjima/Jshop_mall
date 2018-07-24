@@ -1,0 +1,82 @@
+<p style="margin:20px;padding-left: 200px;">
+    <input type="hidden" name="coordinate" value="{$coordinate}">
+    请输入地址:<input class="layui-iuput" style="width:300px;padding:3px 4px;" type="text" id="place"/>
+</p>
+<div id="container" style="min-width:100%;min-height:450px;"></div>
+<div class="layui-form-item" style="padding-left:230px;padding-top: 20px;">
+    <div class="layui-input-block">
+        <button type="button" id="save-map" class="layui-btn" lay-submit lay-filter="formDemo">保存当前位置</button>
+    </div>
+</div>
+<script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&libraries=place"></script>
+<script src="__STATIC_LIB__layui/layui.js"></script>
+<link rel="stylesheet" href="__STATIC_LIB__layui/css/layui.css">
+<script>
+
+    layui.use('layer',function(){
+        var $ = layui.$, layer = layui.layer;
+        var cityLocation,map,marker,center = null;
+        var markerImage = "http://api.map.baidu.com/images/marker_red_sprite.png";
+        var preLocationCenter = $("input[name=coordinate]").val();
+        if ( preLocationCenter  == '' )
+        {
+            cityLocation = new qq.maps.CityService({
+                complete: function (result) {
+                    center = new qq.maps.LatLng(result.detail.latLng.lat, result.detail.latLng.lng);
+                    setMap(center);
+                }
+            });
+            cityLocation.searchLocalCity();
+        }else{
+            var arr = preLocationCenter.split(',');
+            if(arr.length<2){
+                parent.layer.msg("坐标位置错误");
+                return false;
+            }
+            center = new qq.maps.LatLng(arr[0],arr[1]);
+            setMap(center);
+        }
+        function setMap(center){
+            map = new qq.maps.Map(document.getElementById('container'),{
+                center:center,
+                zoom:13
+            });
+
+            var size = new qq.maps.Size(20,27);
+            var origin = new qq.maps.Point(0, 0);
+            var icon = new qq.maps.MarkerImage(markerImage, size, origin);
+            //创建一个Marker
+            marker = new qq.maps.Marker({
+                icon: icon,
+                position: center,
+                animation: qq.maps.MarkerAnimation.DOWN,
+                map: map,
+                title: '选择门店位置'
+            });
+
+            var jump = function(event) {
+                marker.setPosition(event.latLng);
+            };
+            qq.maps.event.addListener(map, 'click', jump);
+
+            //搜索框提示
+            var ap = new qq.maps.place.Autocomplete(document.getElementById('place'));
+            //调用Poi检索类。用于进行本地检索、周边检索等服务。
+            var searchService = new qq.maps.SearchService({
+                map : map
+            });
+            //添加监听事件
+            qq.maps.event.addListener(ap, "confirm", function(res){
+                searchService.search(res.value);
+            });
+
+        }
+
+        $("#save-map").on('click',function(){
+            parent.$("#coordinate").val(marker.position.lat + ',' + marker.position.lng);
+            parent.layer.closeAll();
+        });
+        
+    });
+
+</script>

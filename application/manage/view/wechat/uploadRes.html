@@ -1,0 +1,17 @@
+{if condition="$publish_status eq 'true' "}
+<div style="text-align: center">
+    <label>上传成功</label>
+    <div>
+        <img src="{:url('wechat/getQrcode')}" width="200px" height="200px">
+    </div>
+    <button class="layui-btn layui-btn-primary" id="doVerify">去提交审核</button>
+</div>
+<script>
+    $("#doVerify").click(function () {
+        layer.closeAll();
+        doVerify({$template_id});
+    });
+</script>
+{else/}
+
+{/if}

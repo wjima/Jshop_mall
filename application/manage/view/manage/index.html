@@ -1,0 +1,117 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit  lay-filter="role-add"><i class="layui-icon">&#xe608;</i>添加</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="userTable" lay-filter="test"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var userTables =layui.table.render({
+            elem: '#userTable',
+            height: 'full-330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('manage/index')}?_ajax=1",
+            id:'userTable',
+            cols: [[
+                {type:'numbers'},
+                {field:'username', width:100,title:'账号'},
+                {field:'mobile',title:'手机号码'},
+                {field:'nickname',title:'昵称'},
+                {field:'role_name',title:'角色'},
+                {field: 'operating', title: '操作', width:250, align: 'center', fixed: 'right',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }},
+            ]]
+        });
+        //监听form提交  (add)
+        layui.form.on('submit(role-add)',function(data){
+            JsGet('{:url("manage/add")}',function (tpl) {
+                layer.open({
+                    type: 1,
+                    area: ['800px', '600px'],
+                    data:'',
+                    title: '添加管理员',
+                    content: tpl,
+                    btn:['保存','关闭'],
+                    yes:function (index,layero) {
+                        var thedata = $('#edit_form').serialize();
+                        JsPost('{:url("manage/add")}',thedata,function (re) {
+                            if(re.status){
+                                layer.msg('保存成功');
+                                layer.close(index);
+                                userTables.reload();
+                            }else{
+                                layer.msg(re.msg);
+                            }
+                        });
+
+
+
+                    }
+                });
+            });
+            return false;
+        });
+
+        //角色删除
+        $(document).on('click','.option-del',function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('您确定删除此管理员吗？', {
+                btn: ['确认','取消'] //按钮
+            }, function(){
+                //去删除
+                JsPost("{:url('manage/del')}",{'id':id},function(res){
+                    if(res.status){
+                        layer.msg('删除成功');
+                        userTables.reload();
+                    }else{
+                        layer.msg(res.msg);
+                    }
+
+                });
+            }, function(){
+                layer.close(1);
+            });
+        });
+
+        //编辑
+        $(document).on('click','.option-edit',function(){
+            var id = $(this).attr('data-id');
+
+            JsGet('{:url("manage/edit")}?id='+id,function (tpl) {
+                layer.open({
+                    type: 1,
+                    area: ['600px', '400px'],
+                    data:'',
+                    title: '编辑管理员',
+                    content: tpl,
+                    btn:['保存','关闭'],
+                    yes:function (index,layero) {
+                        var thedata = $('#edit_form').serialize();
+                        JsPost('{:url("manage/edit")}',thedata,function (re) {
+                            if(re.status){
+                                layer.msg('保存成功');
+                                layer.close(index);
+                                userTables.reload();
+                            }else{
+                                layer.msg(re.msg);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+    });
+</script>

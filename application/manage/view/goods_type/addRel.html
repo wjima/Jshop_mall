@@ -1,0 +1,36 @@
+<form action="" method="post" id="specForm" >
+<div style="padding: 30px;" class="layui-form ">
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型名称：</label>
+        <div class="layui-form-mid">
+            {$spec.name}
+            <input type="hidden" name="type_id" value="{$spec.id}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">请选择属性</label>
+        <div class="layui-input-block">
+            {volist name="specList" id="vo"}
+            <input type="checkbox" name="spec_id[]" lay-skin="primary" value="{$vo.id}" {if condition="in_array($vo[id],$typeSids)"}checked{/if}>{$vo.name}
+
+            {/volist}
+        </div>
+    </div>
+<!--
+    <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="goods_type">保存</button>
+-->
+</div>
+</form>
+<script>
+    //渲染表单
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+        //监听提交
+        /*form.on('submit(goods_type)', function(data){
+            formData = data.field;
+            saveRel(formData);
+            return false;
+        });*/
+    });
+</script>

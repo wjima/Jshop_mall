@@ -1,0 +1,133 @@
+<div class="layui-form seller-form" style="height: 40px">
+<button class="layui-btn layui-btn-primary layui-btn-sm">
+    <a href="/index.php/seller/worksheet/worklist">返回列表</a>
+</button>
+</div>
+<div class="layui-form seller-form" style="margin-top: 10px;height: 80px">
+    <p style="float:left;">工单号：</p> <p id="job_num">{$rel.job_num}</p>
+    <p style="margin-top: 5px">标&nbsp;&nbsp;&nbsp;&nbsp;题：{$rel.title} </p>
+    <p style="margin-top: 5px">
+        状&nbsp;&nbsp;&nbsp;&nbsp;态：<font color="green">{$rel.status}</font>
+    </p>
+</div>
+<div class="layui-form seller-form" style="margin-top: 10px;border-bottom: none;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend>沟通记录：</legend>
+    </fieldset>
+
+{volist name="rel.data" id="vo"}
+<ul class="class"+{$vo.seller_id} class="layui-timeline">
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+        <div class="layui-timeline-content layui-text">
+            <h3 class="layui-timeline-title">{$vo.create_time}</h3>
+            <p><pre>{$vo.event}</pre></p>
+           {if $vo.pic_path}
+            附件：<img class="img" id="{$vo.pic_id}" src="{$vo.pic_path}" style="width: 80px; height: 80px;margin-top: 10px" />
+            {/if}
+        </div>
+    </li>
+</ul>
+{/volist}
+</div>
+{if $rel.status !="已处理"}
+<div class="layui-form seller-form" style="height: 30px;border:none;">
+    <button id="button1" class="layui-btn layui-btn-xs">继续提问</button>
+    <button id="button2" class="layui-btn layui-btn-xs">问题已解决</button>
+</div>
+{/if}
+
+
+<script>
+
+    layui.use(['layer', 'laypage'], function(){
+        var layer = layui.layer;
+        var pid;
+        $('.img').click(function (e){
+            pid=e.target.id;
+
+        });
+
+
+
+        //结束工单询问
+        $("#button2").click(function () {
+            layer.confirm('点击确认后完成此工单，不能再提问了', {
+                btn: ['确定','再看一下'] //按钮
+            }, function(){
+
+                $.ajax({
+                    url: "/index.php/seller/worksheet/updata",
+                    type: "post",
+                    async: false,
+                    data: {"data": 1,"job_num": $("#job_num").text()}
+                });
+                layer.msg("工单已完成！");
+
+                location.reload();
+            }, function(){
+                layer.close();
+            });
+        })
+
+
+        $(document).on('click', '#button1', function() {
+
+            $.ajax({
+                url: '{:url("inquiries")}',
+                type: 'get',
+
+                success: function (e) {
+                    layer.open({
+                        type: 1,
+                        title: '追问',
+                        area: ['800px', '510px'], //宽高
+                        content: e
+                    });
+                }
+            });
+            $(document).on('click', '.layui-btn', function () {
+                var content = $("#content").val();
+                var pic = $("#image_value_image_id").val();
+                var job_num = $("#job_num").text();
+                var issub = false;
+                if (content.length < 10) {
+                    layer.msg("描述不得少于10个字符");
+                    issub = true;
+                    return false;
+                }
+                if (content.length > 200) {
+                    layer.msg("描述不得大于200个字符");
+                    issub = true;
+                    return false;
+                }
+
+                if (!issub) {
+                    $.ajax({
+                        url: "/index.php/seller/worksheet/adddetail",
+                        type: "post",
+                        async: false,
+                        data: {"content": content, "pic": pic, "job_num": job_num}
+                    });
+                    layer.msg("提交成功");
+                    layer.close(index);
+                    location.reload();
+                }
+            })
+        });
+        $(document).on("click",".img",function () {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area: ['1000px', '600px'],
+                skin: 'layui-layer-nobg', //没有背景色
+                shadeClose: true,
+                scrollbar:false,
+                content: "<img height='600px' width='1000px' src='"+$("#"+pid+"").attr("src")+"' />"
+            });
+        })
+    });
+
+</script>
+

@@ -1,0 +1,34 @@
+<div class="layui-form layui-form-pane" style="padding:30px">
+
+    {if $data['status']}
+
+    <table class="layui-table" lay-even lay-skin="row">
+        <thead>
+        <tr>
+            <th>时间</th>
+            <th>流转信息</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='data.data' id='vo'}
+        <tr>
+            <td style="text-align: center;">{$vo.datetime}</td>
+            <td>{$vo.remark}</td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+
+    {else/}
+
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>{$data.data}</th>
+        </tr>
+        </thead>
+    </table>
+
+    {/if}
+
+</div>

@@ -1,0 +1,19 @@
+<form style="padding:30px;" class="layui-form layui-form-pane payment">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式：</label>
+        <div class="layui-input-block">
+            <select name="payment_code" id="payment_code" lay-filter="payment_code" >
+                <option value="">请选择支付方式</option>
+                {volist name='data' id='vo'}
+                    <option value="{$vo.code}">{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

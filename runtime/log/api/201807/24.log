@@ -1,0 +1,365 @@
+---------------------------------------------------------------
+[2018-07-24T18:30:19+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.153545s][吞吐率：6.51req/s] [内存消耗：3,352.70kb] [文件加载：111]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.013645s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '68',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'method' => 'notice.noticeList',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.006023s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.000813s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.005676s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.000959s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `notice` [ RunTime:0.007623s ]
+[ sql ] [ SQL ] SELECT `id`,`title`,`ctime` FROM `notice` WHERE (  `type` = 1  AND `seller_id` = 4 ) AND `notice`.`isdel` IS NULL ORDER BY `id`  desc LIMIT 0,5 [ RunTime:0.001162s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:19+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.227004s][吞吐率：4.41req/s] [内存消耗：3,419.02kb] [文件加载：109]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.023702s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '68',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'method' => 'user.getstorename',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.003742s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.009126s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.017843s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.004615s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller_setting` [ RunTime:0.017530s ]
+[ sql ] [ SQL ] SELECT * FROM `seller_setting` WHERE  `seller_id` = 4  AND `skey` = 'shop_name' LIMIT 1 [ RunTime:0.000981s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:19+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.230839s][吞吐率：4.33req/s] [内存消耗：3,576.39kb] [文件加载：109]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.022258s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '71',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'method' => 'order.getcashpooling',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.005470s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.000568s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.013203s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.001026s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `order` [ RunTime:0.024503s ]
+[ sql ] [ SQL ] SELECT SUM(order_amount) AS tp_sum FROM `order` WHERE (  `utime` >= 1530374400  AND `utime` <= 1533052799  AND `pay_status` = 2 ) AND `order`.`isdel` IS NULL LIMIT 1 [ RunTime:0.004173s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:19+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.271320s][吞吐率：3.69req/s] [内存消耗：3,469.17kb] [文件加载：112]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.020777s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '88',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'code' => 'tpl1_slider',
+  'method' => 'advert.getAdvertList',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.002834s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.000748s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.007976s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.000988s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `advertisement` [ RunTime:0.016514s ]
+[ sql ] [ SQL ] SELECT `id`,`seller_id`,`position_id`,`code`,`name`,`img`,`type`,`val`,`sort` FROM `advertisement` WHERE  `seller_id` = 4  AND `code` = 'tpl1_slider' ORDER BY sort ASC LIMIT 0,5 [ RunTime:0.002867s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `advertisement` WHERE  `seller_id` = 4  AND `code` = 'tpl1_slider' ORDER BY sort ASC LIMIT 1 [ RunTime:0.001128s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `images` [ RunTime:0.028467s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = 'baa8a92063dc69bdda6b05c2fac0a06b' LIMIT 1 [ RunTime:0.011628s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '8b44a497e389946843ab3e99dba343be' LIMIT 1 [ RunTime:0.000656s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = 'ddb708cf68309e616665d90ca4c86e78' LIMIT 1 [ RunTime:0.000940s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:19+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.267095s][吞吐率：3.74req/s] [内存消耗：3,881.70kb] [文件加载：113]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.007746s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '90',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'where' => '{"hot":1}',
+  'method' => 'goods.getlist',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.003426s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.001779s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.019545s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.004205s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `goods` [ RunTime:0.018248s ]
+[ sql ] [ SQL ] SELECT * FROM `goods` WHERE (  `is_hot` = 1  AND `seller_id` = 4  AND `marketable` = 1 ) AND `goods`.`isdel` IS NULL ORDER BY sort asc LIMIT 0,10 [ RunTime:0.005884s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `goods` WHERE (  `is_hot` = 1  AND `seller_id` = 4  AND `marketable` = 1 ) AND `goods`.`isdel` IS NULL LIMIT 1 [ RunTime:0.000843s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `images` [ RunTime:0.007433s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '06f8f580bc6d79b91e555efb4b76dc22' LIMIT 1 [ RunTime:0.000544s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `label` [ RunTime:0.005932s ]
+[ sql ] [ SQL ] SELECT `name`,`style` FROM `label` WHERE  `id` IN (3) [ RunTime:0.000436s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '3a03c972ac9d92c2ca189cfc2ce9647c' LIMIT 1 [ RunTime:0.000495s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '8afde0b2af255a8443cf58032e193478' LIMIT 1 [ RunTime:0.000623s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '7595ac025fb82750600af01f94049f79' LIMIT 1 [ RunTime:0.001156s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = 'bc055e9dd9db4a799ad7682ad6cdf7ba' LIMIT 1 [ RunTime:0.000425s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:19+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.294953s][吞吐率：3.39req/s] [内存消耗：4,123.43kb] [文件加载：113]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.010921s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '96',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'where' => '{"recommend":1}',
+  'method' => 'goods.getlist',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.007786s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.005397s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.022174s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.002917s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `goods` [ RunTime:0.009630s ]
+[ sql ] [ SQL ] SELECT * FROM `goods` WHERE (  `is_recommend` = 1  AND `seller_id` = 4  AND `marketable` = 1 ) AND `goods`.`isdel` IS NULL ORDER BY sort asc LIMIT 0,10 [ RunTime:0.002857s ]
+[ sql ] [ SQL ] SELECT COUNT(*) AS tp_count FROM `goods` WHERE (  `is_recommend` = 1  AND `seller_id` = 4  AND `marketable` = 1 ) AND `goods`.`isdel` IS NULL LIMIT 1 [ RunTime:0.002811s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `images` [ RunTime:0.022987s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '06f8f580bc6d79b91e555efb4b76dc22' LIMIT 1 [ RunTime:0.001268s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `label` [ RunTime:0.004586s ]
+[ sql ] [ SQL ] SELECT `name`,`style` FROM `label` WHERE  `id` IN (3) [ RunTime:0.000435s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '3a03c972ac9d92c2ca189cfc2ce9647c' LIMIT 1 [ RunTime:0.000636s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '8afde0b2af255a8443cf58032e193478' LIMIT 1 [ RunTime:0.000509s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '08c5caf04090eff3ea0d94b8fbc3a373' LIMIT 1 [ RunTime:0.000447s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '308d4667eb43286f8160524aef4484c1' LIMIT 1 [ RunTime:0.001325s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '17bee2d061e4391318f85e785122b7a5' LIMIT 1 [ RunTime:0.000541s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = 'cbb4ce5ce08340f77a64aff65dcfb7db' LIMIT 1 [ RunTime:0.000574s ]
+[ sql ] [ SQL ] SELECT `url` FROM `images` WHERE  `id` = '7595ac025fb82750600af01f94049f79' LIMIT 1 [ RunTime:0.000377s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:20+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.180393s][吞吐率：5.54req/s] [内存消耗：3,378.99kb] [文件加载：111]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.005537s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '68',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'method' => 'coupon.couponlist',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.007242s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.000767s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.011395s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.010358s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `promotion` [ RunTime:0.019704s ]
+[ sql ] [ SQL ] SELECT `id`,`name`,`status`,`exclusive`,`stime`,`etime` FROM `promotion` WHERE (  `etime` > 1532428219  AND `status` = 1  AND `seller_id` = 4  AND `type` = 2  AND `auto_receive` = 1 ) AND `promotion`.`isdel` IS NULL [ RunTime:0.005498s ]
+---------------------------------------------------------------
+[2018-07-24T18:30:20+08:00] 127.0.0.1 POST /index.php/api.html
+[ info ] www.jb2c.com/index.php/api.html [运行时间：0.336849s][吞吐率：2.97req/s] [内存消耗：3,419.06kb] [文件加载：109]
+[ info ] [ SESSION ] INIT array (
+  'id' => '',
+  'var_session_id' => '',
+  'prefix' => 'jshop',
+  'type' => '',
+  'auto_start' => true,
+  'httponly' => true,
+  'secure' => false,
+)
+[ info ] [ BEHAVIOR ] Run Closure @app_init [ RunTime:0.005530s ]
+[ info ] [ LANG ] /Users/apple/W/jshop_b2c/thinkphp/lang/zh-cn.php
+[ info ] [ ROUTE ] array (
+)
+[ info ] [ HEADER ] array (
+  'host' => 'www.jb2c.com',
+  'connection' => 'keep-alive',
+  'content-length' => '68',
+  'accept' => 'application/json, text/plain, */*',
+  'origin' => 'http://www.jb2c.com',
+  'user-agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36',
+  'content-type' => 'application/x-www-form-urlencoded',
+  'referer' => 'http://www.jb2c.com/wap/index.html',
+  'accept-encoding' => 'gzip, deflate',
+  'accept-language' => 'zh-CN,zh;q=0.9,en;q=0.8',
+  'cookie' => 'PHPSESSID=8eed70516fb48d4959511065b4972630; redirect_url=%2Fseller%2Foperation_log%2Fgetlastlog.html',
+)
+[ info ] [ PARAM ] array (
+  'method' => 'user.getstorename',
+  'site_token' => '11111111111111111111111111111111',
+)
+[ info ] [ CACHE ] INIT File
+[ info ] [ BEHAVIOR ] Run Closure @action_begin [ RunTime:0.006122s ]
+[ info ] [ DB ] INIT mysql
+[ info ] [ LOG ] INIT file
+[ sql ] [ DB ] CONNECT:[ UseTime:0.036470s ] mysql:host=127.0.0.1;dbname=jshop_b2c;charset=utf8
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller` [ RunTime:0.033808s ]
+[ sql ] [ SQL ] SELECT * FROM `seller` WHERE (  `token` = '11111111111111111111111111111111' ) AND `seller`.`isdel` IS NULL LIMIT 1 [ RunTime:0.001812s ]
+[ sql ] [ SQL ] SHOW COLUMNS FROM `seller_setting` [ RunTime:0.015229s ]
+[ sql ] [ SQL ] SELECT * FROM `seller_setting` WHERE  `seller_id` = 4  AND `skey` = 'shop_name' LIMIT 1 [ RunTime:0.003575s ]

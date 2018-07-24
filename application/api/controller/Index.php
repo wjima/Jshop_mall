@@ -39,16 +39,6 @@ class Index extends Api
         }else{
             return error_code(14004);
         }
-        //判断必须输入site_token，否则没办法判断是哪个店铺的
-        if(!input('?param.site_token')){
-            return error_code(14005);
-        }
-        $sellerModel = new Seller();
-        $sellerInfo = $sellerModel->where(['token'=>input('param.site_token')])->find();
-        if(!$sellerInfo){
-            return error_code(14010);
-        }
-        $this->sellerId = $sellerInfo['id'];
 
         //判断是否需要登陆
         if($api[$method[0]]['method'][$method[1]]['is_login']){
@@ -61,7 +51,6 @@ class Index extends Api
                 return error_code(14007);
             }else{
                 $this->userId = $result['data']['user_id'];
-                $this->sellerId = $result['data']['seller_id'];
             }
         }else{
             $this->userId = 0;
@@ -69,7 +58,7 @@ class Index extends Api
 
         try {
             $c = controller($cname);
-            $c->setInit($this->sellerId,$this->userId);
+            $c->setInit($this->userId);
         } catch (\Exception $e) {
             return error_code(14008);
         }

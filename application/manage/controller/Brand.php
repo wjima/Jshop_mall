@@ -26,7 +26,7 @@ class Brand extends Manage
             $brandModel = new BrandsModel();
             return $brandModel->tableData(input('param.'));
         }
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
 
@@ -42,8 +42,7 @@ class Brand extends Manage
             $brandModel = new BrandsModel();
             return $brandModel->addData(input('param.'));
         }
-        return $this->fetch('add',['sellerList'=>getSellerList()]);
-
+        return $this->fetch();
     }
 
 
@@ -62,7 +61,7 @@ class Brand extends Manage
         {
             return $brandModel->saveData(input('param.'));
         }
-        $data = $brandModel->with('sellerInfo')->where('id',input('param.id/d'))->find();
+        $data = $brandModel->where('id',input('param.id/d'))->find();
         if (!$data) {
             return error_code(10002);
         }
@@ -77,7 +76,11 @@ class Brand extends Manage
      */
     public function del()
     {
-        $result = ['status'=>false,'msg'=>'删除失败','data'=>''];
+        $result = [
+            'status' => false,
+            'msg' => '删除失败',
+            'data' => []
+        ];
         $brandModel = new BrandsModel();
         if ($brandModel::destroy(input('param.id/d'))) {
             $result['status'] = true;
@@ -85,6 +88,5 @@ class Brand extends Manage
         }
         return $result;
     }
-
 
 }

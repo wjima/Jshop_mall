@@ -26,53 +26,18 @@ class  ArticleType extends Manage
         $articleTypeModel = new ArticleTypeModel();
         if(Request::isAjax())
         {
-            $data = ['status' => 0, 'msg'=>'该商户没有分类数据','data'=> []];
-            if (input('param.seller_id/d'))
-            {
-                $tree = $articleTypeModel->getList(input('param.seller_id/d'));
-                if ($tree)
-                {
-                    $data['status'] = 1;
-                    $data['msg'] = '获取成功';
-                    $data['data'] = $tree;
-                }
-            } else {
-                $data[ 'msg' ] = '请先选择商户';
-            }
-            return $data;
+            return $articleTypeModel->tableData(input('param.'));
         }
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
-
     /**
-     *  获取对应商户的列表
-     * @return array
+     *
+     *  分类添加
+     * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
-     */
-    public function getSellerTree ()
-    {
-        $articleTypeModel = new ArticleTypeModel();
-        $res = $articleTypeModel->getList(input('param.seller_id'));
-        if ($res)
-        {
-            $result['status'] = true;
-            $result['data'] = $res;
-        } else {
-            $result['status'] = false;
-            $result['data'] = [];
-        }
-
-        return $result;
-    }
-
-
-    /**
-     *  分类添加
-     * User:tianyu
-     * @return array|mixed|\PDOStatement|string|\think\Collection
      */
     public function add()
     {
@@ -82,7 +47,8 @@ class  ArticleType extends Manage
         {
             return $articleTypeModel->addData(input('param.'));
         }
-        return $this->fetch('add',['sellerList'=>getSellerList()]);
+        $list = $articleTypeModel->select();
+        return $this->fetch('',['list' => $list]);
     }
 
 
@@ -98,15 +64,9 @@ class  ArticleType extends Manage
     {
         $articleTypeModel = new ArticleTypeModel();
         $this->view->engine->layout(false);
-        if(Request::isPost())
-        {
-            $typeInfo = $articleTypeModel->with('sellerInfo')->where('id',input('param.id/d'))->find();
-            if (!$typeInfo)
-            {
-                return error_code(10002);
-            }
-            return $this->fetch('',['typeInfo'=>$typeInfo]);
-        }
+        $typeInfo = $articleTypeModel->where('id',input('param.id/d'))->find();
+        if (!$typeInfo) return error_code(10002);
+        return $this->fetch('',['typeInfo'=>$typeInfo]);
     }
 
 
@@ -120,7 +80,6 @@ class  ArticleType extends Manage
      */
     public function edit()
     {
-
         $this->view->engine->layout(false);
         $articleTypeModel = new ArticleTypeModel();
         if(Request::isPost())
@@ -128,11 +87,8 @@ class  ArticleType extends Manage
             return $articleTypeModel->editData(input('param.'));
         }
         $typeInfo = $articleTypeModel->where('id',input('param.id/d'))->find();
-        if (!$typeInfo)
-        {
-            return error_code(10002);
-        }
-        return $this->fetch('edit',['typeInfo'=>$typeInfo]);
+        if (!$typeInfo) return error_code(10002);
+        return $this->fetch('',['typeInfo'=>$typeInfo]);
     }
 
 

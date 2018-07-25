@@ -30,10 +30,22 @@ class ArticleType extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($seller_id = 0)
+    public function tableData( $post )
     {
-        $res = $this->with('sellerInfo')->where('seller_id',$seller_id)->select();
-        return $this->getTree($res);
+        if(isset($post['limit'])){
+            $limit = $post['limit'];
+        }else{
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $list->total();
+        $re['data'] = $this->getTree($data);
+        return $re;
     }
 
 
@@ -45,8 +57,13 @@ class ArticleType extends Common
      */
     public function addData($data)
     {
+        $result = [
+            'status' => true,
+            'msg' => '保存成功',
+            'data' => []
+        ];
+
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status' => true,'msg' => '保存成功','data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -71,8 +88,13 @@ class ArticleType extends Common
      */
     public function editData($data)
     {
+        $result = [
+            'status' => true,
+            'msg' => '保存成功',
+            'data' => []
+        ];
+
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status' => true,'msg' => '保存成功','data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -153,17 +175,6 @@ class ArticleType extends Common
     public function comments()
     {
         return $this->hasMany('Article');
-    }
-
-
-    /**
-     *
-     *  关联seller表
-     * @return \think\model\relation\HasOne
-     */
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind(['seller_name']);
     }
 
 }

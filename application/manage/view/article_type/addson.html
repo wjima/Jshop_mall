@@ -1,10 +1,6 @@
 <div style="padding:30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <input type="hidden" name="seller_id" value="{$typeInfo.seller_id}">
-    <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>商户：</label>
-        <div class="layui-form-mid">{$typeInfo.seller_id|getSellerInfoById}</div>
-    </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>上级分类：</label>
@@ -23,11 +19,11 @@
     </div>
 
     <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="submit_article_type">保存</button>
-    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+
 </div>
+
 <script>
     layui.use('form', function(){
         layui.form.render();
-        //各种基于事件的操作，下面会有进一步介绍
     });
 </script>

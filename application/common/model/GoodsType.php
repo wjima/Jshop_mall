@@ -204,19 +204,14 @@ class GoodsType extends Common
 
     /**
      * 获取列表
-     * @param bool $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($seller_id = false)
+    public function getList()
     {
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
-
+        $where = [];
         $res = $this->field('id, name')
             ->where($where)
             ->select();

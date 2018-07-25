@@ -53,12 +53,8 @@ class GoodsTypeSpec extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-11 16:44
      */
-    public function getAllSpec($seller_id = 0){
-        if(!$seller_id)
-        {
-            return [];
-        }
-        return $this->where(['seller_id'=>$seller_id])->select();
+    public function getAllSpec(){
+        return $this->where([])->select();
 
     }
 

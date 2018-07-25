@@ -25,8 +25,7 @@ class Categories extends Seller
         }
         else
         {
-            $seller_id = $this->sellerId;
-            $data = model('common/GoodsCat')->getList($seller_id);
+            $data = model('common/GoodsCat')->getList();
             if(count($data) > 0)
             {
                 $return_data = array(
@@ -62,10 +61,9 @@ class Categories extends Seller
         {
             //获取添加页面
             $this->assign('parent_id', $parent_id); //父级ID
-            $seller_id = $this->sellerId;
-            $parent = model('common/GoodsCat')->getAllCat($seller_id);
+            $parent = model('common/GoodsCat')->getAllCat();
             $this->assign('parent', $parent); //顶级分类
-            $type = model('common/GoodsType')->getList($seller_id);
+            $type = model('common/GoodsType')->getList();
             $this->assign('type', $type['data']);
             return $this->fetch('add');
         }
@@ -77,8 +75,7 @@ class Categories extends Seller
                 'type_id' => input('type_id'),
                 'name' => input('name'),
                 'image_id' => input('image_id'),
-                'sort' => input('sort'),
-                'seller_id' => $this->sellerId
+                'sort' => input('sort')
             );
             $result = model('common/GoodsCat')->add($data);
             if($result !== false)
@@ -113,10 +110,9 @@ class Categories extends Seller
         if(!Request::isPost())
         {
             //获取编辑页面
-            $seller_id = $this->sellerId;
-            $parent = model('common/GoodsCat')->getAllCat($seller_id, $id);
+            $parent = model('common/GoodsCat')->getAllCat($id);
             $this->assign('parent', $parent); //父级分类
-            $type = model('common/GoodsType')->getList($seller_id);
+            $type = model('common/GoodsType')->getList();
             $this->assign('type', $type['data']);
             $data = model('common/GoodsCat')->getCatInfo($id);
             $this->assign('data', $data); //分类信息
@@ -149,7 +145,7 @@ class Categories extends Seller
         if(!Request::isPost())
         {
             //查询是否可以删除
-            $result = model('common/GoodsCat')->getIsDel($id, $this->sellerId);
+            $result = model('common/GoodsCat')->getIsDel($id);
             if($result['is'])
             {
                 $return_data = array(
@@ -171,7 +167,7 @@ class Categories extends Seller
         else
         {
             //删除
-            $result = model('common/GoodsCat')->del($id, $this->sellerId);
+            $result = model('common/GoodsCat')->del($id);
             if($result)
             {
                 $return_data = array(

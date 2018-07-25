@@ -25,7 +25,6 @@ class GoodsParams extends Seller
         if (Request::isAjax()) {
             $goodsParamsModel       = new GPmodel();
             $filter              = input('request.');
-            $filter['seller_id'] = $this->sellerId;
             return $goodsParamsModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -51,7 +50,6 @@ class GoodsParams extends Seller
                 'name'      => input('post.name'),
                 'type'      => input('post.type'),
                 'value'     => input('post.value'),
-                'seller_id' => $this->sellerId,
             ];
             $goodsParamsModel = new GPmodel();
             $result           = $goodsParamsModel->doAdd($data);
@@ -87,7 +85,6 @@ class GoodsParams extends Seller
                 'name'      => input('post.name'),
                 'type'      => input('post.type'),
                 'value'     => input('post.value'),
-                'seller_id' => $this->sellerId,
             ];
             $result           = $goodsParamsModel->doAdd($data,$id);
             if ($result !== false) {
@@ -125,7 +122,6 @@ class GoodsParams extends Seller
         if ($id) {
             $goodsParamsModel    = new GPmodel();
             $filter['id']        = $id;
-            $filter['seller_id'] = $this->sellerId;
             $res                 = $goodsParamsModel->doDel($filter);
             if ($res) {
                 $result['msg']    = '删除成功';

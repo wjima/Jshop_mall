@@ -105,9 +105,9 @@ class GoodsParams extends Common
      * @param int $seller_id
      * @return array
      */
-    public function getAllParams($seller_id = 0)
+    public function getAllParams()
     {
-        $list = $this->where(['seller_id'=>$seller_id])->select();
+        $list = $this->where([])->select();
         if(!$list->isEmpty()){
             return $list->toArray();
         }

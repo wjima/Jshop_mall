@@ -23,7 +23,6 @@ class Brand extends Seller
     {
         if(Request::isAjax()) {
             $request = input('param.');
-            $request['seller_id'] = $this->sellerId;
             $brandModel = new BrandsModel();
             return $brandModel->tableData($request);
         }
@@ -43,7 +42,6 @@ class Brand extends Seller
         if(Request::isPost())
         {
             $data = input('param.');
-            $data['seller_id'] = $this->sellerId;
             $brandModel = new BrandsModel();
             return $brandModel->addData($data);
         }
@@ -67,10 +65,9 @@ class Brand extends Seller
         if(Request::isPost())
         {
             $data = input('param.');
-            $data['seller_id'] = $this->sellerId;
             return $brandModel->saveData($data);
         }
-        $data = $brandModel->where(['seller_id'=>$this->sellerId,'id'=>input('param.id/d')])->find();
+        $data = $brandModel->where(['id'=>input('param.id/d')])->find();
         if (!$data) {
             return error_code(10002);
         }
@@ -86,7 +83,7 @@ class Brand extends Seller
     {
         $res = ['status' => false, 'msg' => '删除失败','data' => ''];
         $brandModel = new BrandsModel();
-        if ($brandModel::destroy(['seller_id'=>$this->sellerId,'id'=>input('param.id/d')]))
+        if ($brandModel::destroy(['id'=>input('param.id/d')]))
         {
             $res['status'] = true;
             $res['msg'] = '删除成功';

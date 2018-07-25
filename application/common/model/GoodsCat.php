@@ -23,28 +23,17 @@ class GoodsCat extends Common
 
     /**
      * 获取商品分类列表
-     * @param bool $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($seller_id = false)
+    public function getList()
     {
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-            $data = $this->field('id, seller_id, parent_id, name, type_id, sort, image_id')
-                ->where($where)
-                ->order(['seller_id'=>'asc', 'sort'=>'asc'])
-                ->select();
-        }
-        else
-        {
-            $data = $this->field('id, seller_id, parent_id, name, type_id, sort, image_id')
-                ->order(['seller_id'=>'asc', 'sort'=>'asc'])
-                ->select();
-        }
+
+        $data = $this->field('id, seller_id, parent_id, name, type_id, sort, image_id')
+            ->order(['seller_id' => 'asc', 'sort' => 'asc'])
+            ->select();
 
         $return_data = $this->getTree($data);
         return $return_data;
@@ -130,13 +119,8 @@ class GoodsCat extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getAllCat($seller_id = self::PLATFORM_ID, $id = false)
+    public function getAllCat( $id = false)
     {
-        if($seller_id != self::PLATFORM_ID)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
-
         if($id)
         {
             $where[] = ['id', 'neq', $id];
@@ -305,19 +289,14 @@ class GoodsCat extends Common
     /**
      * 获取一个分类信息
      * @param $id
-     * @param bool $seller_id
      * @return array|null|\PDOStatement|string|\think\Model
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getCatInfo($id, $seller_id = false)
+    public function getCatInfo($id)
     {
         $where[] = ['id', 'eq', $id];
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
         $data = $this->field('id, name, parent_id, type_id, sort, image_id')
             ->where($where)
             ->find();
@@ -385,9 +364,9 @@ class GoodsCat extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getIsDel($id, $seller_id = false)
+    public function getIsDel($id)
     {
-        $info = $this->getCatInfo($id, $seller_id);
+        $info = $this->getCatInfo($id);
         if($info)
         {
             if($info['parent_id'] != self::TOP_CLASS_PARENT_ID)
@@ -421,22 +400,17 @@ class GoodsCat extends Common
     /**
      * 删除商品分类
      * @param $id
-     * @param bool $seller_id
      * @return bool|int
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function del($id, $seller_id = false)
+    public function del($id)
     {
-        $is_del = $this->getIsDel($id, $seller_id);
+        $is_del = $this->getIsDel($id);
         if($is_del['is'])
         {
             $where[] = ['id', 'eq', $id];
-            if($seller_id)
-            {
-                $where[] = ['seller_id', 'eq', $seller_id];
-            }
             $return_data = $this->where($where)
                 ->delete();
         }

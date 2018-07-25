@@ -168,7 +168,6 @@ class Brand extends Common
     //列表
     public function brandList($data){
         return $this->field('name,logo,sort,utime')
-            ->where('seller_id',$data['sellerId'])
             ->order($data['order'],$data['orderType'])
             ->page($data['page'],$data['pageSize'])
             ->select();
@@ -177,32 +176,24 @@ class Brand extends Common
     /**
      * 根据名称获取品牌信息
      * @param string $name
-     * @param $seller_id
      * @param bool $isForce 没有名称时，是否添加
      * @return int
      */
-    public function getInfoByName($name = '', $seller_id, $isForce = false)
+    public function getInfoByName($name = '',$isForce = false)
     {
-        if (!$name || !$seller_id) {
+        if (!$name) {
             return false;
         }
         $brand_id = 0;
-        $brand = $this->field('id')->where([['name', 'like', '%' . $name . '%'], ['seller_id', 'eq', $seller_id]])->find();
+        $brand = $this->field('id')->where([['name', 'like', '%' . $name . '%']])->find();
         if (!$brand && $isForce) {
             $this->save([
                 'name' => $name,
-                'seller_id' => $seller_id
             ]);
             $brand_id = $this->getLastInsID();
         } elseif ($brand) {
             $brand_id = $brand['id'];
         }
         return $brand_id;
-    }
-
-
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind(['seller_name']);
     }
 }

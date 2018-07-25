@@ -459,11 +459,8 @@ class GoodsCat extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-12 16:50
      */
-    public function getCatByParentId($parentId = 0, $seller_id = 0)
+    public function getCatByParentId($parentId = 0)
     {
-        if ($seller_id) {
-            $filter['seller_id'] = $seller_id;
-        }
         $filter['parent_id'] = $parentId;
 
         $data = $this->field('id, name, parent_id, type_id, sort, image_id')

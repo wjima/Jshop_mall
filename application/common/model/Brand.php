@@ -154,12 +154,9 @@ class Brand extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-12 17:32
      */
-    public function getAllBrand($seller_id = 0)
+    public function getAllBrand()
     {
         $filter = [];
-        if ($seller_id) {
-            $filter['seller_id'] = $seller_id;
-        }
         $data = $this->field('id,name')
             ->where($filter)
             ->order('sort asc')

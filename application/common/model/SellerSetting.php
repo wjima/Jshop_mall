@@ -149,9 +149,9 @@ class SellerSetting extends Common
 
 
     //取得参数
-    public function getValue($seller_id, $skey)
+    public function getValue($skey)
     {
-        $info = $this->where(array('seller_id' => $seller_id, 'skey' => $skey))->find();
+        $info = $this->where(array('skey' => $skey))->find();
         if($info){
             return $info['value'];
         }else{

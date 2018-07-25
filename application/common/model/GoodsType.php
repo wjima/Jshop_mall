@@ -119,12 +119,9 @@ class GoodsType extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-12 16:55
      */
-    public function getAllTypes($cat_id = 0,$seller_id=0)
+    public function getAllTypes($cat_id = 0)
     {
         $filter = [];
-        if($seller_id){
-            $filter['seller_id'] = $seller_id;
-        }
         if($cat_id){
             $filter['id'] = $cat_id;
         }

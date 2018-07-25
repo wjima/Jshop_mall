@@ -206,13 +206,11 @@ class Article extends Common
     /**
      *  获取指定id 的文章详情
      * User:tianyu
-     * @param $seller_id
      * @param $article_id
      * @return array
      */
-    public function articleDetail($seller_id,$article_id)
+    public function articleDetail($article_id)
     {
-        $where[] = ['seller_id','eq',$seller_id];
         $where[] = ['id','eq',$article_id];
         $where[] = ['is_pub','eq',self::IS_PUB_YES];
         $data = $this->field('id,seller_id,title,content,type_id,ctime,utime')->where($where)->find();

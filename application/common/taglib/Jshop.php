@@ -34,12 +34,12 @@ class Jshop extends TagLib
         ],
         //此标签增加了权限判断，只供商户端（seller）使用
         'sellerbrands' => [
-            'attr' => 'name,value,num,seller_id',
+            'attr' => 'name,value,num',
             'close' => 0
         ],
         //此标签增加了权限判断，只供商户端（seller）使用
         'sellergoods' => [
-            'attr' => 'name,value,num,seller_id',
+            'attr' => 'name,value,num',
             'close' => 0
         ]
     ];
@@ -248,11 +248,6 @@ class Jshop extends TagLib
             $tag['value'] = $this->autoBuildVar($tag['value']);
         }else{
             $tag['value'] = "";
-        }
-        if(isset($tag['seller_id'])){
-            $tag['seller_id'] = $this->autoBuildVar($tag['seller_id']);
-        }else{
-            $tag['seller_id'] = "";
         }
 
         if(isset($tag['num'])){

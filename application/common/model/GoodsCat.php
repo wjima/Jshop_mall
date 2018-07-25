@@ -248,15 +248,13 @@ class GoodsCat extends Common
     /**
      * 获取分类
      * @param $parent_id
-     * @param $seller_id
      * @return array|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getChildClass($seller_id, $parent_id = self::TOP_CLASS_PARENT_ID)
+    public function getChildClass($parent_id = self::TOP_CLASS_PARENT_ID)
     {
-        $where[] = array('seller_id', 'eq', $seller_id);
         $where[] = array('parent_id', 'eq', $parent_id);
 
         $data = $this->field('id, name, sort, image_id')

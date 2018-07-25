@@ -74,12 +74,6 @@ class Ietask extends Common
         if (isset($post['status']) && $post['status'] !== "") {
             $where[] = ['status', 'eq', $post['status']];
         }
-
-        if(isset($post['seller_id'])&&$post['seller_id']!=='')
-        {
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
-
         $result['where'] = $where;
         $result['whereOr'] = $whereOr;
 

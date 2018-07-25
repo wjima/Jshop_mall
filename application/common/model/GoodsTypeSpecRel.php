@@ -58,9 +58,9 @@ class GoodsTypeSpecRel extends Common
      * @param int $type_id
      * @return array|bool
      */
-    public function getRelTypeSpec($type_id=0,$seller_id=0)
+    public function getRelTypeSpec($type_id=0)
     {
-        if(!$type_id||!$seller_id){
+        if(!$type_id){
             return false;
         }
         $data = [];
@@ -72,7 +72,7 @@ class GoodsTypeSpecRel extends Common
             {
                 $data[$k]['type_id'] = $v['type_id'];
                 $data[$k]['spec_id'] = $v['spec_id'];
-                $data[$k]['spec'] = $goodsTypeSpecModel->getSpecInfo($v['spec_id'],$seller_id);
+                $data[$k]['spec'] = $goodsTypeSpecModel->getSpecInfo($v['spec_id']);
             }
         }
         return $data;

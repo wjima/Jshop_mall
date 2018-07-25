@@ -47,10 +47,6 @@ class GoodsType extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id'])&&$post['seller_id']!=='')
-        {
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['id'=>'desc'];
@@ -105,7 +101,6 @@ class GoodsType extends Common
                     }
                     $list[$k]['params'] = $params;
                 }
-                $list[$k]['seller_name'] = getSellerInfoById($v['seller_id'],'seller_name');
             }
         }
         return $list;
@@ -178,21 +173,19 @@ class GoodsType extends Common
     /**
      * 根据名称获取类型信息
      * @param string $name
-     * @param $seller_id
      * @param bool $isForce 没有名称时，是否添加
      * @return int
      */
-    public function getInfoByName($name = '', $seller_id, $isForce = false)
+    public function getInfoByName($name = '', $isForce = false)
     {
-        if (!$name || !$seller_id) {
+        if (!$name) {
             return false;
         }
         $type_id = 0;
-        $type = $this->field('id')->where([['name', 'like', '%' . $name . '%'], ['seller_id', 'eq', $seller_id]])->find();
+        $type = $this->field('id')->where([['name', 'like', '%' . $name . '%']])->find();
         if (!$type && $isForce) {
             $this->save([
                 'name' => $name,
-                'seller_id' => $seller_id
             ]);
             $type_id = $this->getLastInsID();
         } elseif ($type) {

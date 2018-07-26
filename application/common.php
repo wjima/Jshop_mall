@@ -536,41 +536,7 @@ function getMarketable($marketable='1'){
     return $status[$marketable];
 }
 
-/**
- * 根据商户id返回商户名称
- * @param int $seller_id
- * @return string
- */
-function getSellerInfoById($seller_id ,$field='seller_name')
-{
-    $seller_obj = new \app\common\model\Seller();
-    $seller = $seller_obj::withTrashed()->where(['id' => $seller_id])->find();
-    if($seller){
-        if($field == 'seller_name') {
-            return $seller->seller_name;
-        }elseif($field == 'store_type'){                    //如果是共享店铺返回true，否则就返回false
-            if($seller->store_type == $seller_obj::STORE_TYPE_SHARE){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return $seller[$field];
-        }
-    }else{
-        return "";
-    }
 
-
-    return $seller['seller_name'] ? $seller['seller_name'] : '未知商户';
-}
-
-//取店铺设置
-function getShopSetting($seller_id,$key)
-{
-    $sellerSettingModel = new \app\common\model\SellerSetting();
-    return $sellerSettingModel->getValue($seller_id,$key);
-}
 
 /**
  * 数组转xml

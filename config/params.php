@@ -29,10 +29,6 @@ return [
             '2' => '充值'
         ]
     ],
-    'payments' => [
-        'alipay' => '支付宝支付',
-        'wechatpay' => '微信支付'
-    ],
     'bill_aftersales' => [
         'status' => [
             '1' => '未审核',
@@ -141,7 +137,7 @@ return [
     ],
 
     //支付
-    'payments_seller_rel' => [
+    'payments' => [
         'status' => [
             '1' => '启用',
             '2' => '禁用'

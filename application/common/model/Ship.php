@@ -127,7 +127,6 @@ class Ship extends Common
      */
     /**
      * 获取配送费用
-     * @param $seller_id 商户id
      * @param int $area_id 地区id
      * @param int $weight 重量,单位g
      * @return string
@@ -138,16 +137,13 @@ class Ship extends Common
      *      $shiModel->getShipCost(1,1,1600);
      *      die();
      */
-    public function getShipCost($seller_id,$area_id = 0, $weight = 0)
+    public function getShipCost($area_id = 0, $weight = 0)
     {
-        if(!$seller_id){
-            return '0.00';
-        }
         $postfee = '0.00';
         //先判断是否包邮
-        $def = $this->where(['is_def' => self::IS_DEF_YES,'seller_id'=>$seller_id, 'status' => self::STATUS_YES])->find();
+        $def = $this->where(['is_def' => self::IS_DEF_YES,'status' => self::STATUS_YES])->find();
         if (!$def) {
-            $def = $this->where(['status' => self::STATUS_YES,'seller_id'=>$seller_id])->find();
+            $def = $this->where(['status' => self::STATUS_YES])->find();
             if (!$def) {//没有配送方式，返回0
                 return $postfee;
             }
@@ -189,18 +185,17 @@ class Ship extends Common
     /**
      * 根据地区获取配送方式
      * todo 地区判断以后再加
-     * @param int $seller_id
      * @param int $area_id
      * @return array|bool|null|\PDOStatement|string|\think\Model
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-01 15:36
      */
-    public function getShip($seller_id,$area_id = 0)
+    public function getShip($area_id = 0)
     {
-        $def = $this->where(['seller_id'=>$seller_id,'is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
+        $def = $this->where(['is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
         if (!$def) {
-            $def = $this->where(['seller_id'=>$seller_id,'status' => self::STATUS_YES])->find();
+            $def = $this->where(['status' => self::STATUS_YES])->find();
             if (!$def) {//没有配送方式，返回0
                 return false;
             }
@@ -381,9 +376,6 @@ class Ship extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if (isset($post['seller_id']) && $post['seller_id'] != "") {
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['id' => 'desc'];

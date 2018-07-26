@@ -25,9 +25,6 @@ class OperationLog extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = "id desc";

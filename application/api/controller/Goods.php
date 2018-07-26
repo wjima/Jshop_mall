@@ -21,13 +21,13 @@ class Goods extends Api
 
     //商品允许出现字段
     private $goodsAllowedFields = [
-        'id','bn','seller_id','name','brief','price','costprice','mktprice','image_id','goods_cat_id','goods_type_id','brand_id'
+        'id','bn','name','brief','price','costprice','mktprice','image_id','goods_cat_id','goods_type_id','brand_id'
         ,'is_nomal_virtual','marketable','stock','freeze_stock','weight','unit','intro','spes_desc','comments_count','view_count','buy_count','uptime'
         ,'downtime','sort','is_hot','is_recommend','ctime','utime','products','params'
     ];
     //货品允许字段
     private $productAllowedFields = [
-        'id','goods_id','seller_id','barcode','sn','price','costprice','mktprice','marketable','stock','freeze_stock','spes_desc','is_defalut'
+        'id','goods_id','barcode','sn','price','costprice','mktprice','marketable','stock','freeze_stock','spes_desc','is_defalut'
     ];
 
     private function allowedField($data,$type='goods')
@@ -154,7 +154,6 @@ class Goods extends Api
             }
         }
         $goodsModel = new GoodsModel();
-        $where[] = ['seller_id', 'eq', $this->sellerId];
         $where[] = ['marketable', 'eq',$goodsModel::MARKETABLE_UP];
 
 
@@ -202,7 +201,6 @@ class Goods extends Api
             'msg'    => '查询失败',
             'data'   => [ ]
         ];
-        $seller_id   = input('seller_id/d',0);
         $goods_id    = input('id/d',0);//商品ID
         $token    = input('token','');//token值 会员登录后传
         if(!$goods_id) {
@@ -245,7 +243,7 @@ class Goods extends Api
             return $return_data;
         }
         $goodsModel  = new GoodsModel();
-        $returnGoods = $goodsModel->getGoodsDetial($goods_id,'id,bn,name,seller_id,image_id,goods_cat_id,goods_type_id,brand_id,spes_desc');
+        $returnGoods = $goodsModel->getGoodsDetial($goods_id,'id,bn,name,image_id,goods_cat_id,goods_type_id,brand_id,spes_desc');
         if($returnGoods['status']) {
             $goods = $returnGoods['data'];
             if($goods['products']) {

@@ -20,8 +20,7 @@ class Categories extends Api
      */
     public function getTopCat()
     {
-        $seller_id = $this->sellerId;
-        $data = model('common/GoodsCat')->getChildClass($seller_id);
+        $data = model('common/GoodsCat')->getChildClass();
         $return = array(
             'status' => false,
             'msg' => '',
@@ -49,8 +48,7 @@ class Categories extends Api
     public function getChildCat()
     {
         $parent_id = input('parent_id');
-        $seller_id = $this->sellerId;
-        $data = model('common/GoodsCat')->getChildClass($seller_id, $parent_id);
+        $data = model('common/GoodsCat')->getChildClass($parent_id);
         $return = array(
             'status' => false,
             'msg' => '',
@@ -77,8 +75,7 @@ class Categories extends Api
      */
     public function getAllCat()
     {
-        $seller_id = $this->sellerId;
-        $data = model('common/GoodsCat')->getAllCat($seller_id);
+        $data = model('common/GoodsCat')->getAllCat();
         $return = array(
             'status' => false,
             'msg' => '',

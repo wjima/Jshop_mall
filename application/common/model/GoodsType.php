@@ -47,10 +47,6 @@ class GoodsType extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id'])&&$post['seller_id']!=='')
-        {
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['id'=>'desc'];
@@ -105,7 +101,6 @@ class GoodsType extends Common
                     }
                     $list[$k]['params'] = $params;
                 }
-                $list[$k]['seller_name'] = getSellerInfoById($v['seller_id'],'seller_name');
             }
         }
         return $list;
@@ -119,12 +114,9 @@ class GoodsType extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-12 16:55
      */
-    public function getAllTypes($cat_id = 0,$seller_id=0)
+    public function getAllTypes($cat_id = 0)
     {
         $filter = [];
-        if($seller_id){
-            $filter['seller_id'] = $seller_id;
-        }
         if($cat_id){
             $filter['id'] = $cat_id;
         }
@@ -181,21 +173,19 @@ class GoodsType extends Common
     /**
      * 根据名称获取类型信息
      * @param string $name
-     * @param $seller_id
      * @param bool $isForce 没有名称时，是否添加
      * @return int
      */
-    public function getInfoByName($name = '', $seller_id, $isForce = false)
+    public function getInfoByName($name = '', $isForce = false)
     {
-        if (!$name || !$seller_id) {
+        if (!$name) {
             return false;
         }
         $type_id = 0;
-        $type = $this->field('id')->where([['name', 'like', '%' . $name . '%'], ['seller_id', 'eq', $seller_id]])->find();
+        $type = $this->field('id')->where([['name', 'like', '%' . $name . '%']])->find();
         if (!$type && $isForce) {
             $this->save([
                 'name' => $name,
-                'seller_id' => $seller_id
             ]);
             $type_id = $this->getLastInsID();
         } elseif ($type) {
@@ -207,19 +197,14 @@ class GoodsType extends Common
 
     /**
      * 获取列表
-     * @param bool $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($seller_id = false)
+    public function getList()
     {
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
-
+        $where = [];
         $res = $this->field('id, name')
             ->where($where)
             ->select();

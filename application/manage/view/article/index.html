@@ -1,17 +1,6 @@
 <div class="layui-form seller-form"  action="" >
-    <div class="layui-form-item">
 
-        <div class="layui-inline">
-            <label class="layui-form-label">商户：</label>
-            <div class="layui-input-inline">
-                <select name="seller_id" lay-filter="seller" lay-verify="">
-                    {volist name='sellerList' id='vo'}
-                    <option value=""></option>
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
+    <div class="layui-form-item">
 
         <div class="layui-inline">
             <label class="layui-form-label">文章标题：</label>
@@ -19,6 +8,7 @@
                 <input type="text" name="title" lay-verify="title" placeholder="请输入标题关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
+
         <div class="layui-inline">
             <label class="layui-form-label">文章类型：</label>
             <div class="layui-input-inline">
@@ -43,12 +33,14 @@
                 <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择时间段" autocomplete="off" class="layui-input">
             </div>
         </div>
+
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="article_search"><i class="iconfont icon-chaxun"></i>筛选</button>
-
             <button type="button" class="layui-btn layui-btn-sm add-article"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
+
     </div>
+
 </div>
 
 
@@ -70,7 +62,6 @@
             url: "{:url('Article/index')}",
             cols: [[ //标题栏
                 {type: 'numbers'},
-                {field: 'seller_name', title: '商户名称',width:250},
                 {field: 'title', title: '文章标题'},
                 {field: 'cover', title: '封面图',align:'center',width:120, templet: function(data){
                         return '<a href="javascript:void(0);" onclick=viewImage("'+data.cover+'")><image style="max-width:30px;max-height:30px;" src="'+data.cover+'"/></a>';
@@ -119,12 +110,9 @@
             range: '~'
         });
 
-
-        //layui弹出层
         $(document).on('click','.add-article',function(){
             window.location.href = "{:url('Article/add')}";
         });
-
 
         //监听工具条
         table.on('tool(articleTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -133,18 +121,13 @@
             var tr = obj.tr; //获得当前行 tr 的DOM对象
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的要删除么',{icon: 3}, function(index){
-                    $.ajax({
-                        data:{id:data.id},
-                        url:"{:url('Article/del')}",
-                        type:'post',
-                        success:function(res){
-                            if(res.status){
-                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                layer.close(index);//向服务端发送删除指令
-                            }
-                            layer.msg(res.msg);
+                    JsGet("{:url('Article/del')}?id=" + data.id, function(res){
+                        if(res.status){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
                         }
-                    },'json');
+                        layer.msg(res.msg);
+                    })
                 });
             } else if(layEvent === 'edit'){ //编辑
                 var str = "{:url('Article/edit',array('id'=>'a_id'))}";
@@ -152,9 +135,9 @@
                 window.location.href = editUrl;
             }
         });
-
     })
 </script>
+
 <script type="text/html" id="articleBar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>

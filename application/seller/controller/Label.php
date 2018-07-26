@@ -24,7 +24,7 @@ class Label extends Seller
         //已存在标签
         $labelModel = new labelModel();
 
-        $labels = $labelModel->getAllLabel($this->sellerId);
+        $labels = $labelModel->getAllLabel();
         $this->assign('labels', $labels);
 
         $this->view->engine->layout(false);

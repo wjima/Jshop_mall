@@ -45,9 +45,9 @@ class GoodsTypeParams extends Common
      * @param int $type_id
      * @return array|bool
      */
-    public function getRelParams($type_id=0,$seller_id=0)
+    public function getRelParams($type_id=0)
     {
-        if(!$type_id||!$seller_id){
+        if(!$type_id){
             return false;
         }
         $data = [];
@@ -59,7 +59,7 @@ class GoodsTypeParams extends Common
             {
                 $data[$k]['type_id'] = $v['type_id'];
                 $data[$k]['params_id'] = $v['params_id'];
-                $data[$k]['params'] = $paramsModel->getParamsInfo($v['params_id'],$seller_id);
+                $data[$k]['params'] = $paramsModel->getParamsInfo($v['params_id']);
             }
         }
         return $data;

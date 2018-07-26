@@ -1,10 +1,6 @@
-<div style="padding: 30px;" class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
-    <input type="hidden" name="id" value="{$data.id}">
+<div style="padding: 30px;" class="layui-form seller-alone-form">
 
-    <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>商户：</label>
-        <div class="layui-form-mid">{$data.seller_id|getSellerInfoById}</div>
-    </div>
+    <input type="hidden" name="id" value="{$data.id}">
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i> 品牌名称：</label>
@@ -12,25 +8,27 @@
             <input type="text" name="name" required lay-verify="required" placeholder="请输入品牌名称" autocomplete="off" class="layui-input" value="{$data.name}">
         </div>
     </div>
+
     <div class="layui-form-item layui-upload">    	
     	<label class="layui-form-label"><i class="required-color">*</i> LOGO：</label>
     	<div class="layui-input-inline seller-inline-4">
         	{Jshop:image id='logo' name="logo" value="$data['logo']"/}
     	</div>
     </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">排序：</label>
         <div class="layui-input-inline seller-inline-4">
-            <input type="text" name="sort" required lay-verify="required" placeholder="请输入顺序" autocomplete="off" class="layui-input" value="{$data.sort}">
+            <input type="text" name="sort" required lay-verify="required" placeholder="数值越小越靠前" autocomplete="off" class="layui-input" value="{$data.sort}">
         </div>
     </div>
 
     <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="brand-edit">保存</button>
-    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+
 </div>
+
 <script>
     layui.use('form', function(){
-        //监听提交
         layui.form.render();
     });
 </script>

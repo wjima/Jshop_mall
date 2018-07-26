@@ -132,6 +132,12 @@ class Advertisement extends Manage
         return $this->fetch('getArticle');
     }
 
+    public function getArticleType()
+    {
+        $this->view->engine->layout(false);
+        return $this->fetch('getArticleType');
+    }
+
 
     /**
      * @return array|null|\PDOStatement|string|\think\Model
@@ -156,5 +162,18 @@ class Advertisement extends Manage
     {
         $goodsModel = new Goods();
         return $goodsModel->field('id,name')->where('id',input('param.id'))->find();
+    }
+
+
+    /**
+     * @return array|null|\PDOStatement|string|\think\Model
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function articleTypeInfo()
+    {
+        $articleType = new \app\common\model\ArticleType();
+        return $articleType->field('id,type_name')->where('id',input('param.id'))->find();
     }
 }

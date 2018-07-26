@@ -27,7 +27,9 @@ class Article extends Manage
         {
             return $article->tableData(input('param.'));
         }
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        $articleTypeModel = new articleTypeModel();
+        $list = $articleTypeModel->select();
+        return $this->fetch('', ['list' => $list]);
     }
 
 
@@ -43,7 +45,9 @@ class Article extends Manage
             $article = new articleModel();
             return $article->addData(input('param.'));
         }
-        return $this->fetch('add',['sellerList'=>getSellerList()]);
+        $articleTypeModel = new articleTypeModel();
+        $list = $articleTypeModel->select();
+        return $this->fetch('add',['list'=>$list]);
     }
 
 
@@ -57,12 +61,12 @@ class Article extends Manage
      */
     public function edit()
     {
-        $article = new articleModel();
+        $articleModel = new articleModel();
         if(Request::isPost())
         {
-            return $article->saveData(input('param.'));
+            return $articleModel->saveData(input('param.'));
         }
-        $info = $article->with('sellerInfo,articleType')->where('id',input('param.id/d'))->find();
+        $info = $articleModel->with('articleType')->where('id',input('param.id/d'))->find();
         if (!$info)
         {
             return error_code(10002);
@@ -80,7 +84,7 @@ class Article extends Manage
     {
         $article = new articleModel();
         $result = ['status' => true,'msg' => '删除成功','data'=>''];
-        if (!$article::destroy('id',input('param.id/d'))) {
+        if (!$article->destroy(input('param.id/d'))) {
             $result['status'] = false;
             $result['msg'] = '删除失败';
         }

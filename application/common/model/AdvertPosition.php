@@ -45,7 +45,7 @@ class AdvertPosition extends Common
         }
         $tableWhere = $this->tableWhere($post);
 
-        $list = $this->with('sellerInfo')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         $re['code'] = 0;
         $re['msg'] = '';
@@ -91,7 +91,7 @@ class AdvertPosition extends Common
             $result['msg'] = $validate->getError();
         } else {
             // 判断商户该模板是否已经添加
-            if (!$this->checkCode($data['seller_id'],$data['code'])) {
+            if (!$this->where('code', $data['code'])->find()) {
                 $result[ 'status' ] = false;
                 $result[ 'msg' ] = '该广告位模板已经添加';
             } else {
@@ -140,45 +140,21 @@ class AdvertPosition extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function del($id=0,$seller_id=0)
+    public function del($id=0)
     {
-        $where[] = ['id','eq',$id];
-        if ($seller_id) {
-            $where[] = ['seller_id','eq',$seller_id];
-        }
         //广告位下有广告禁止删除
         $result = ['status' => true,'msg' => '删除成功','data'=>''];
-        if ($this->advert()->where($where)->find()) {
+        if ($this->advert()->where('id', $id)->find()) {
             $result['status'] = false;
             $result['msg'] = '该广告位下有广告删除失败';
         } else {
-            if (!$this->where($where)->delete()) {
+            if (!$this->where('id', $id)->delete()) {
                 $result['status'] = false;
                 $result['msg'] = '删除成功';
             }
         }
         return $result;
     }
-
-
-    /**
-     *  判断该广告模板是否已经添加
-     * @param $seller_id
-     * @param $code
-     * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function checkCode($seller_id,$code)
-    {
-        if($this->where(['seller_id'=>$seller_id,'code'=>$code])->find())
-        {
-            return false;
-        }
-        return true;
-    }
-
 
 
     /**
@@ -189,9 +165,9 @@ class AdvertPosition extends Common
      */
     protected function tableFormat($list)
     {
-        foreach($list as $key => $val){
-            $list[$key]['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
-            $list[$key]['utime'] = date('Y-m-d H:i:s',$val['utime']);
+        foreach($list as $val){
+            $val['ctime'] = getTime($val['ctime']);
+            $val['utime'] = getTime($val['utime']);
         }
         return $list;
     }
@@ -219,10 +195,6 @@ class AdvertPosition extends Common
         if(isset($post['state']) && $post['state'] != ""){
             $where[] = ['state', 'eq', $post['state']];
         }
-        if(isset($post['seller_id']) && $post['seller_id'] != "")
-        {
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['sort ASC'];
@@ -230,12 +202,9 @@ class AdvertPosition extends Common
     }
 
 
-    public function changeState($id=0,$state=false,$seller_id=0)
+    public function changeState($id=0,$state=false)
     {
         $where[] = ['id','eq',$id];
-        if ($seller_id) {
-            $where[] = ['seller_id','eq',$seller_id];
-        }
         $result = ['status'=>true,'msg'=>'','data'=>''];
         switch($state)
         {
@@ -293,16 +262,6 @@ class AdvertPosition extends Common
         }
         return $result;
     }
-
-
-    /**
-     * @return \think\model\relation\HasOne
-     */
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind(['seller_name']);
-    }
-
 
     /**
      *  广告位 和 广告 一对多关联

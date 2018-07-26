@@ -46,7 +46,7 @@ class Notice extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->with('sellerInfo')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         $re['code'] = 0;
         $re['msg'] = '';
@@ -124,10 +124,6 @@ class Notice extends Common
             $etime = strtotime($date_array[1].'23:59:59',time());   //当天最后时间
             $where[] = ['ctime',['EGT',$stime],['ELT',$etime],'and'];
         }
-        if(isset($post['seller_id']) && $post['seller_id'] != "")
-        {
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['sort ASC'];
@@ -143,9 +139,9 @@ class Notice extends Common
      */
     protected function tableFormat($list)
     {
-        foreach($list as $key => $val)
+        foreach($list as $val)
         {
-            $list[$key]['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
+            $val['ctime'] = getTime($val['ctime']);
         }
         return $list;
     }
@@ -166,17 +162,6 @@ class Notice extends Common
     public function getNoticeList($type,$seller_id,$order,$orderType,$page,$pageSize)
     {
         return $this->field('id,title,ctime')->where('type',$type)->where('seller_id',$seller_id)->order($order,$orderType)->page($page,$pageSize)->select();
-    }
-
-
-    /**
-     *
-     *  关联seller表
-     * @return \think\model\relation\HasOne
-     */
-    public function sellerInfo()
-    {
-        return $this->hasOne('seller','id','seller_id')->bind(['seller_name']);
     }
 
 }

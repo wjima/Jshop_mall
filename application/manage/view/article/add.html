@@ -8,21 +8,14 @@
 <form class="layui-form seller-alone-form" action="" method="post">
 
     <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>选择商户：</label>
-        <div class="layui-input-inline seller-inline-5">
-            <select name="type_id" lay-filter="seller" lay-verify="required" style="z-index: 5">
-                <option value="">请选择商户</option>
-                {volist name='sellerList' id='vo'}
-                <option value="{$vo.id}">{$vo.seller_name}</option>
-                {/volist}
-            </select>
-        </div>
-    </div>
-
-    <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>选择分类：</label>
         <div class="layui-input-inline seller-inline-5">
-            <select name="type_id" id="type" lay-verify="required" style="z-index: 5"></select>
+            <select name="type_id" id="type" lay-verify="required" style="z-index: 5">
+                <option value="">请选择文章分类</option>
+                {volist name='list' id='vo'}
+                <option value="{$vo.id}">{$vo.type_name}</option>
+                {/volist}
+            </select>
         </div>
     </div>
 
@@ -65,7 +58,7 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="add_article">保存</button>
+            <button type="button" class="layui-btn" lay-submit lay-filter="add_article">保存</button>
             <button onclick="javascript:history.back(-1);" type="reset" class="layui-btn layui-btn-primary">返回</button>
         </div>
     </div>
@@ -75,41 +68,17 @@
     //Demo
     layui.use('form', function(){
         var form = layui.form;
-
-        // 监听选择的商户
-        form.on('select(seller)', function (data) {
-            JsPost("{:url('ArticleType/getSellerTree')}",{seller_id:data.value}, function(res){
-                if (res.data.length) {
-                    var optionstring = "";
-                    $.each(res.data, function(i,item){
-                        optionstring += "<option value=\"" + item.id + "\" >" + item.type_name + "</option>";
-                    });
-                    $("#type").html('<option value=""></option>' + optionstring);
-                } else {
-                    layer.msg('请先添加文章分类')
-                    $("#type").html('<option value=""></option>');
-                }
-                form.render('select');
-            })
-        })
-
         //监听提交
         form.on('submit(add_article)', function(data){
-            $.ajax({
-                url:"{:url('Article/add')}",
-                type:"post",
-                data:data.field,
-                success:function(res) {
-                    if(res.status){
-                        layer.msg(res.msg, {time: 1300},function(){
-                            window.location.href = "{:url('Article/index')}";
-                        });
-                    }else{
-                        layer.msg(res.msg);
-                    }
+            JsPost("{:url('Article/add')}", data.field, function(res){
+                if(res.status){
+                    layer.msg(res.msg, {time: 1300},function(){
+                        window.location.href = "{:url('Article/index')}";
+                    });
+                }else{
+                    layer.msg(res.msg);
                 }
-            },"json");
-            return false;
+            })
         });
     });
 </script>

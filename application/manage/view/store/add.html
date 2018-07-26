@@ -1,17 +1,4 @@
-
 <form class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
-
-    <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>商户名称：</label>
-        <div class="layui-input-inline seller-inline-4">
-            <select name="seller_id" lay-verify="required">
-                <option value=""></option>
-                {volist name='sellerList' id='vo'}
-                <option value="{$vo.id}">{$vo.seller_name}</option>
-                {/volist}
-            </select>
-        </div>
-    </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>门店名称：</label>

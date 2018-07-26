@@ -12,7 +12,12 @@
         <div class="layui-inline">
             <label class="layui-form-label">文章类型：</label>
             <div class="layui-input-inline">
-                <select name="type_id" id="type" lay-verify=""></select>
+                <select name="type_id" id="type" lay-verify="">
+                    <option value="">请选择文章分类</option>
+                    {volist name='list' id='vo'}
+                    <option value="{$vo.id}">{$vo.type_name}</option>
+                    {/volist}
+                </select>
             </div>
         </div>
 
@@ -86,18 +91,6 @@
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        });
-
-        // 监听选择的商户
-        layui.form.on('select(seller)', function (data) {
-            JsPost("{:url('ArticleType/getSellerTree')}",{seller_id:data.value}, function(res){
-                var optionstring = "";
-                $.each(res.data, function(i,item){
-                    optionstring += "<option value=\"" + item.id + "\" >" + item.type_name + "</option>";
-                });
-                $("#type").html('<option value=""></option>' + optionstring);
-                layui.form.render('select');
-            })
         });
 
         date.render({

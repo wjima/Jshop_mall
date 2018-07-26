@@ -30,7 +30,7 @@ class Store extends Manage
             return $storeModel->tableData(input('param.'));
         }
 
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
 
@@ -48,7 +48,7 @@ class Store extends Manage
             return $storeModel->addData(input('param.'));
         }
 
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
 
@@ -69,7 +69,7 @@ class Store extends Manage
             return $storeModel->editData(input('param.'));
         }
 
-        $info = $storeModel->with('sellerInfo')->where('id',input('param.id/d'))->find();
+        $info = $storeModel->where('id',input('param.id/d'))->find();
 
         if (!$info) {
 

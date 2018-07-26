@@ -26,7 +26,7 @@ class Notice extends Manage
         {
             return $noticeModel->tableData(input('param.'));
         }
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
     /*
@@ -40,7 +40,7 @@ class Notice extends Manage
         {
             return $noticeModel->addData(input('param.'));
         }
-        return $this->fetch('add',['sellerList'=>getSellerList()]);
+        return $this->fetch();
 
     }
 
@@ -61,7 +61,7 @@ class Notice extends Manage
         {
             return $noticeModel->saveData(input('param.'));
         }
-        $noticeInfo = $noticeModel->with('sellerInfo')->where('id',input('param.id/d'))->find();
+        $noticeInfo = $noticeModel->where('id',input('param.id/d'))->find();
         if (!$noticeInfo)
         {
             return error_code(10002);
@@ -78,7 +78,7 @@ class Notice extends Manage
     {
         $result = ['status' => true, 'msg' => '删除成功', 'data'  => ''];
         $noticeModel = new noticeModel();
-        if (!$noticeModel::destroy(input('param.id/d')))
+        if (!$noticeModel->destroy(input('param.id/d')))
         {
             $result['status'] = false;
             $result['msg'] = '删除失败';

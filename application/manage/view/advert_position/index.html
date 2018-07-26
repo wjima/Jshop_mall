@@ -2,28 +2,17 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">商户：</label>
+            <label class="layui-form-label seller-inline-2">广告位名称：</label>
             <div class="layui-input-inline seller-inline-4">
-                <select name="seller_id" lay-verify="">
-                    <option value=""></option>
-                    {volist name="sellerList" id="vo"}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label" style="width: 88px;">广告位名称：</label>
-            <div class="layui-input-inline">
-                <input type="text" name="name" lay-verify="title" style="width:150px;" placeholder="请输入广告位名称" autocomplete="off" class="layui-input">
+                <input type="text" name="name" placeholder="请输入广告位名称关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline"  style="width: 100px;">
-                <select name="state" lay-verify="">
-                    <option value=""></option>
+            <label class="layui-form-label seller-inline-2">启用状态：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <select name="state">
+                    <option value="">请选择</option>
                     <option value="1">启用</option>
                     <option value="2">禁用</option>
                 </select>
@@ -31,23 +20,25 @@
         </div>
 
         <div class="layui-inline">
-            <label class="layui-form-label">更新时间：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择" autocomplete="off" class="layui-input">
+            <label class="layui-form-label seller-inline-2">更新时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="utime" name="utime" placeholder="请选择日期" autocomplete="off" class="layui-input">
             </div>
         </div>
+
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="advertPosition-search"><i class="iconfont icon-chaxun"></i>筛选</button>
 
             <button type="button" class="layui-btn layui-btn-sm add-advertPosition"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
+
     </div>
 </form>
-
 
 <div class="table-body">
 	<table id="advertPositionTable" lay-filter="advertPositionTable"></table>
 </div>
+
 <script>
     layui.use(['table','form','layer','laydate'],function(){
         var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
@@ -62,7 +53,6 @@
             url: "{:url('AdvertPosition/index')}",
             cols: [[ //标题栏
                 {type:'numbers'},
-                {field:'seller_name', width:250,title:'商户名称'},
                 {field: 'name', title: '广告位名称',align:'center'},
                 {field: 'code', title: '广告位模板编码',align:'center'},
                 {field: 'ctime',sort: true, title: '创建时间' ,align:'center'},
@@ -96,57 +86,43 @@
 
         //layui弹出层
         $(document).on('click','.add-advertPosition',function(){
-            $.ajax({
-                type:'get',
-                url: "{:url('AdvertPosition/add')}",
-                success:function(e){
-                    window.box = layer.open({
-                        type: 1,
-                        content: e,
-                        area: ['600px', '400px'],
-                        title:'添加广告位'
-                    });
-                }
+            JsGet("{:url('AdvertPosition/add')}", function (e) {
+                window.box = layer.open({
+                    type: 1,
+                    content: e,
+                    area: ['400px', '450px'],
+                    title:'添加广告位'
+                });
             })
         });
 
 
         //ajax提交商品的添加
         form.on('submit(add-advertPosition)', function(data){
-            $.ajax({
-                url:"{:url('AdvertPosition/add')}",
-                type:'post',
-                data: data.field,
-                success:function(res){
-                    if(res.status == true){
-                        layer.close(window.box);
-                        layer.msg(res.msg, {time:1300},function(){
-                            table.reload('advertPositionTable');
-                        });
-                    }else{
-                        layer.msg(res.msg);
-                    }
+            JsPost("{:url('AdvertPosition/add')}", data.field, function(res){
+                if(res.status){
+                    layer.close(window.box);
+                    layer.msg(res.msg, {time:1300},function(){
+                        table.reload('advertPositionTable');
+                    });
+                }else{
+                    layer.msg(res.msg);
                 }
-            },'json');
+            })
         });
 
 
         form.on('submit(edit-advertPosition)',function(data){
-            $.ajax({
-                url:"{:url('AdvertPosition/edit')}",
-                type:"post",
-                data: data.field,
-                success:function(res){
-                    if(res.status == true){
-                        layer.close(window.box);
-                        layer.msg(res.msg,{time:1300},function(){
-                            table.reload('advertPositionTable');
-                        });
-                    }else{
-                        layer.msg(res.msg);
-                    }
+            JsPost("{:url('AdvertPosition/edit')}", data.field, function(res){
+                if(res.status){
+                    layer.close(window.box);
+                    layer.msg(res.msg,{time:1300},function(){
+                        table.reload('advertPositionTable');
+                    });
+                }else{
+                    layer.msg(res.msg);
                 }
-            },'json');
+            })
         });
 
 
@@ -154,41 +130,27 @@
         table.on('tool(advertPositionTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var tr = obj.tr; //获得当前行 tr 的DOM对象
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的要删除么',{icon: 3}, function(index){
-                    $.ajax({
-                        data:data,
-                        url:"{:url('AdvertPosition/del')}",
-                        type:'post',
-                        success:function(res){
-                            if(res.status == true){
-                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                layer.close(index);//向服务端发送删除指令
-                                layer.msg(res.msg);
-                            }else{
-                                layer.msg(res.msg);
-                            }
+                    JsGet("{:url('AdvertPosition/del')}?id=" + data.id, function(res){
+                        if(res.status){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
                         }
-                    },'json');
+                        layer.msg(res.msg);
+                    })
                 });
             } else if(layEvent === 'edit'){ //编辑
-                //do something
-                $.ajax({
-                    data:{id:data.id},
-                    url:"{:url('AdvertPosition/edit')}",
-                    type:'get',
-                    success:function(e){
-                        window.box = layer.open({
-                            type:1,
-                            content:e,
-                            area:['600px','400px'],
-                            title:'编辑广告位',
-                            maxmin:true
-                        })
-                    }
-                });
-
+                console.log(1111)
+                console.log(data.id)
+                JsGet("{:url('AdvertPosition/edit')}?id=" + data.id, function(e){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e,
+                        area: ['400px','450px'],
+                        title: '编辑广告位',
+                    })
+                })
             }
         });
 

@@ -25,7 +25,7 @@ class AdvertPosition extends Manage
         {
             return $position->tableData(input('param.'));
         }
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
 
@@ -44,7 +44,7 @@ class AdvertPosition extends Manage
         {
             return $position->addData(input('param.'));
         }
-        return $this->fetch('add',['list'=>config('adTpl.list'),'sellerList'=>getSellerList()]);
+        return $this->fetch('add',['list'=>config('adTpl.list')]);
     }
 
 
@@ -67,7 +67,8 @@ class AdvertPosition extends Manage
         if (!$info) {
             return error_code(10002);
         }
-        return $this->fetch('edit',['info'=>$info]);
+
+        return $this->fetch('',['info'=>$info]);
     }
 
 

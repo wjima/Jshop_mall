@@ -50,7 +50,7 @@ class Store extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->with('sellerInfo')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         $re['code'] = 0;
         $re['msg'] = '';
@@ -128,18 +128,6 @@ class Store extends Common
     }
 
 
-    protected function tableWhere($post)
-    {
-        $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
-        $result['where'] = $where;
-        $result['field'] = "*";
-        $result['order'] = ['ctime ASC'];
-        return $result;
-    }
-
     /**
      * 根据查询结果，格式化数据
      * @author sin
@@ -148,12 +136,12 @@ class Store extends Common
      */
     protected function tableFormat($list)
     {
-        foreach( $list as $key => $val )
+        foreach( $list as $val )
         {
-            $list[$key]['logo'] = _sImage($val['logo']);
-            $list[$key]['area'] = get_area($val['area_id']);
-            $list[$key]['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
-            $list[$key]['utime'] = date('Y-m-d H:i:s',$val['utime']);
+            $val['logo'] = _sImage($val['logo']);
+            $val['area'] = get_area($val['area_id']);
+            $val['ctime'] = getTime($val['ctime']);
+            $val['utime'] = getTime($val['utime']);
         }
 
         return $list;
@@ -209,8 +197,4 @@ class Store extends Common
 
     }
 
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind(['seller_name']);
-    }
 }

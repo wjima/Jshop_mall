@@ -23,34 +23,6 @@ class User extends Manage
     }
 
 
-    /**
-     * 积分页面
-     * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function point()
-    {
-        if(Request::isAjax())
-        {
-            $sellerUser = new SellerUser();
-            $input['seller_id'] = $this->sellerId;
-            $input['page'] = input('page');
-            $input['limit'] = input('limit');
-            $input['mobile'] = input('mobile');
-            $input['sex'] = input('sex');
-            $input['birthday'] = input('birthday');
-            $input['nickname'] = input('nickname');
-            $input['status'] = input('status');
-            return $sellerUser->adminPointList($input);
-        }
-        else
-        {
-            return $this->fetch('point');
-        }
-    }
-
 
     /**
      * 获取积分记录
@@ -63,19 +35,17 @@ class User extends Manage
     {
         $this->view->engine->layout(false);
         $user_id = input('user_id');
-        $seller_id = $this->sellerId;
         $flag = input('flag', 'false');
 
         if($flag == 'true')
         {
             $userPointLog = new UserPointLog();
-            $res = $userPointLog->pointLogList($user_id, $seller_id, false, input('page', 1), input('limit', 20));
+            $res = $userPointLog->pointLogList($user_id, false, input('page', 1), input('limit', 20));
             return $res;
         }
         else
         {
             $this->assign('user_id', $user_id);
-            $this->assign('seller_id', $seller_id);
             return $this->fetch('pointLog');
         }
     }
@@ -91,7 +61,6 @@ class User extends Manage
     {
         $this->view->engine->layout(false);
         $user_id = input('user_id');
-        $seller_id = $this->sellerId;
         $flag = input('flag', 'false');
 
         if($flag == 'true')
@@ -99,16 +68,15 @@ class User extends Manage
             $point = input('point');
             $memo = input('memo');
             $userPointLog = new UserPointLog();
-            $res = $userPointLog->setPoint($user_id, $seller_id, $point, $userPointLog::POINT_TYPE_ADMIN_EDIT, $memo);
+            $res = $userPointLog->setPoint($user_id, $point, $userPointLog::POINT_TYPE_ADMIN_EDIT, $memo);
             return $res;
         }
         else
         {
             $this->assign('user_id', $user_id);
-            $this->assign('seller_id', $seller_id);
-            $sellerUser = new SellerUser();
-            $point = $sellerUser->getInfo($user_id, $seller_id, 'point');
-            $this->assign('point', $point['point']);
+            $User = new User();
+            $user_info = $User->where(['id'=>$user_id])->find();
+            $this->assign('point', $user_info['point']);
             return $this->fetch('editPoint');
         }
     }

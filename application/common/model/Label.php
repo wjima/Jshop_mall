@@ -12,7 +12,7 @@ class Label extends Common
 {
     /**
      * 保存label数据
-     * @param $data ['ids'=>'模型主键id数组','label'=>'标签数组','seller_id'=>'商户id','model'=>'打标签模型']
+     * @param $data ['ids'=>'模型主键id数组','label'=>'标签数组','model'=>'打标签模型']
      * @return array
      */
     public function addData($data)
@@ -33,9 +33,6 @@ class Label extends Common
         foreach ($data['label'] as $key => $val) {
             $labels[$key]['name']  = $val['text'];
             $labels[$key]['style'] = $val['style'];
-            if (isset($data['seller_id'])) {
-                $labels[$key]['seller_id'] = $data['seller_id'];
-            }
             $label = self::where($labels[$key])->find();
             if ($label) {
                 $labels[$key]['id'] = $label['id'];
@@ -73,14 +70,10 @@ class Label extends Common
 
     /**
      * 获取所有标签
-     * @param int $seller_id
      * @return array
      */
-    public function getAllLabel($seller_id = 0)
+    public function getAllLabel()
     {
-        if ($seller_id) {
-            $this->where(['seller_id' => $seller_id]);
-        }
         if (!$this->select()->isEmpty()) {
             return $this->select()->toArray();
         }
@@ -90,10 +83,9 @@ class Label extends Common
     /**
      * 根据id获取名称
      * @param string $names 标签名称
-     * @param int $seller_id 商户id
      * @return array
      */
-    public function getIdsByName($names = '', $seller_id = 0, $isForce = false)
+    public function getIdsByName($names = '', $isForce = false)
     {
         $label      = [];
         $labelIds   = '';
@@ -102,13 +94,10 @@ class Label extends Common
             foreach ($labelArray as $key => $val) {
                 if ($val) {
                     $labelSql = $this->field('id')->where('name', 'like', '%' . $val . '%');
-                    if ($seller_id) {
-                        $labelSql->where('seller_id', '=', $seller_id);
-                    }
+
                     $id = $labelSql->find();
                     if (!$id && $isForce) {
                         $iData['name']      = $val;
-                        $iData['seller_id'] = $seller_id;
                         $this->save($iData);
                         $label_id = $this->getLastInsID();
                         $id['id'] = $label_id;
@@ -128,14 +117,12 @@ class Label extends Common
      * 获取所有选中数据的标签
      * @param $ids
      * @param $model_name
-     * @param int $seller_id
      * @return array
      */
-    public function getAllSelectLabel($ids, $model_name, $seller_id = 0)
+    public function getAllSelectLabel($ids, $model_name)
     {
         $model      = model($model_name);
         $filter[]   = ['id', 'in', $ids];
-        $filter[]   = ['seller_id', 'in', $seller_id];
         $dataLabels = $model::where($filter)->field('id,label_ids')->select();
         $labels     = [];
         if (!$dataLabels->isEmpty()) {
@@ -169,9 +156,6 @@ class Label extends Common
         foreach ((array)$data['label'] as $key => $val) {
             $labels[$key]['name']  = $val['text'];
             $labels[$key]['style'] = $val['style'];
-            if (isset($data['seller_id'])) {
-                $labels[$key]['seller_id'] = $data['seller_id'];
-            }
             $label = self::where($labels[$key])->find();
             if ($label) {
                 $labels[$key]['id'] = $label['id'];

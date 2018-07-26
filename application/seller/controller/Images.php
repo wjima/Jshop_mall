@@ -22,7 +22,6 @@ class Images extends Seller
 
         if(Request::isAjax()) {
             $filter = input('request.');
-            $filter['seller_id'] = $this->sellerId;
             return $imageModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -90,7 +89,6 @@ class Images extends Seller
                 $iData['name'] = $first['name'];
                 $iData['url']  = $url;
                 $iData['ctime']  = time();
-                $iData['seller_id']  = $this->sellerId;
                 $iData['path'] = ROOT_PATH .DIRECTORY_SEPARATOR.'public'.$savepath . $first['savename'];
                 $image_model   = new imageModel();
                 if($image_model->save($iData)) {
@@ -151,7 +149,6 @@ class Images extends Seller
     {
         $imageModel = new imageModel();
         $filter = input('request.');
-        $filter['seller_id'] = $this->sellerId;
         $filter['limit'] = input('size', '20');
         $filter['start'] = input('start', '0');
         $filter['page'] = ($filter['start'] / $filter['limit']) + 1;
@@ -316,7 +313,6 @@ class Images extends Seller
             $iData['name'] = $file_name;
             $iData['url'] = $url;
             $iData['ctime'] = time();
-            $iData['seller_id'] = $this->sellerId;
             $iData['path'] = $output_filename . $type;
             $image_model = new imageModel();
             if ($image_model->save($iData)) {

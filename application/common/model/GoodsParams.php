@@ -105,9 +105,9 @@ class GoodsParams extends Common
      * @param int $seller_id
      * @return array
      */
-    public function getAllParams($seller_id = 0)
+    public function getAllParams()
     {
-        $list = $this->where(['seller_id'=>$seller_id])->select();
+        $list = $this->where([])->select();
         if(!$list->isEmpty()){
             return $list->toArray();
         }
@@ -117,20 +117,16 @@ class GoodsParams extends Common
     /**
      * 获取参数信息
      * @param int $params_id
-     * @param int $seller_id
      * @return array|bool
      */
-    public function getParamsInfo($params_id=0,$seller_id=0)
+    public function getParamsInfo($params_id=0)
     {
-        if(!$params_id&&!$seller_id){
+        if(!$params_id){
             return false;
         }
         $filter = [];
         if($params_id){
             $filter['id'] = $params_id;
-        }
-        if($seller_id){
-            $filter['seller_id'] = $seller_id;
         }
 
         $info = $this->where($filter)->field('id,name,value,type')->find();

@@ -88,7 +88,7 @@ class User extends Common
         //插入数据库
         $this->data($data)->allowField(true)->save();
 
-        return $this->setSession($this,$data ,$loginType);
+        return $this->setSession($this ,$loginType);
     }
     //当是手机短信登陆的时候，如果没有账号，那么就调用此方法，创建用户。此方法停用了，用thirdAddf方法
 //    private function mobileAdd($mobile)
@@ -174,7 +174,7 @@ class User extends Common
         //判断是否是用户名登陆
         $userInfo = $this->where(array('username|mobile'=>$data['mobile'],'password'=>$this->enPassword($data['password'], $userInfo->ctime)))->find();
         if($userInfo){
-            $result = $this->setSession($userInfo, $data,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
+            $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
         }else{
             //写失败次数到session里
             if(session('?login_fail_num')){
@@ -240,7 +240,7 @@ class User extends Common
             }
         }
 
-        $result = $this->setSession($userInfo,$data ,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
+        $result = $this->setSession($userInfo ,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
 
 
         return $result;
@@ -311,7 +311,7 @@ class User extends Common
      * @param int $type         1的话就是登录,2的话就是更新
      * @return array
      */
-    public function setSession($userInfo,$data ,$loginType,$platform=1,$type=1)
+    public function setSession($userInfo ,$loginType,$platform=1,$type=1)
     {
         $result = [
             'status' => false,
@@ -325,32 +325,16 @@ class User extends Common
                 $result['status'] = true;
                 break;
             case 2:
-                if(isset($data['seller_id'])){
-                    //存数据到seller_user表,这样，有用户登陆的时候，商户就能看到用户列表增加用户了
-                    if(!isset($data['pid'])){
-                        $data['pid'] = 0;
-                    }
-                    $sellerUserModel = new SellerUser();
-                    $sellerUserModel->addInfo($userInfo['id'],$data['seller_id'],$data['pid']);
-
-
-                    $userTokenModel = new UserToken();
-                    $result = $userTokenModel->setToken($userInfo['id'], $data['seller_id'],$platform);
-                }else{
-                    $result['msg'] = '缺少卖家信息';
-                }
+                $userTokenModel = new UserToken();
+                $result = $userTokenModel->setToken($userInfo['id'],$platform);
 
                 break;
-        }
-
-        if(!isset($data['seller_id'])){
-            $data['seller_id'] = 0;
         }
 
         if ($type == 1)
         {
             $userLogModel = new UserLog();        //添加登录日志
-            $userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN,$data['seller_id']);
+            $userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
         }
 
         return $result;

@@ -52,14 +52,12 @@ class Articles extends Api
      */
     public function getArticleDetail()
     {
-        //seller_id  article_id
-        $seller_id = $this->sellerId;
         $article_id = input('article_id/d');
         if(!$article_id)
         {
             return $result = ['status' => false,'mag' => '缺少参数article_id'];
         }
         $article = new Article();
-        return $article->articleDetail($seller_id, $article_id);
+        return $article->articleDetail($article_id);
     }
 }

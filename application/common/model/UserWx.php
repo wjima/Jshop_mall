@@ -18,26 +18,21 @@ class UserWx extends Common
         );
         //根据code取openid和session_key
         $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
-        //如果是共享店铺，就取系统的配置信息，否则就取用户的配置信息
-        if(getSellerInfoById($seller_id,'store_type')){
-            $sid = 0;             //共享店铺的话，在userWx表里总共只有一条记录对应上去，独立店铺的话，是多个
-            $result = $wx->code_to_sessionkey(config('jshop.wxapp.appid'),config('jshop.wxapp.appsecret'),$code);
+
+        $sid = $seller_id;
+        //取小程序的appid
+        $weixinAuthor = new WeixinAuthor();
+        $authorInfo = $weixinAuthor->where(['seller_id'=>$seller_id])->find();
+        if(!$authorInfo){
+            $result['msg'] = '没有找到此小程序授权信息';
+            return $result;
+        }
+
+
+        if($authorInfo['bind_type'] == $authorInfo::BINDTYPEAUTHOR){
+            $result = $wx->c_code_to_sessionkey($authorInfo['appid'],$code);
         }else{
-            $sid = $seller_id;
-            //取小程序的appid
-            $weixinAuthor = new WeixinAuthor();
-            $authorInfo = $weixinAuthor->where(['seller_id'=>$seller_id])->find();
-            if(!$authorInfo){
-                $result['msg'] = '没有找到此小程序授权信息';
-                return $result;
-            }
-
-
-            if($authorInfo['bind_type'] == $authorInfo::BINDTYPEAUTHOR){
-                $result = $wx->c_code_to_sessionkey($authorInfo['appid'],$code);
-            }else{
-                $result = $wx->code_to_sessionkey($authorInfo['appid'],$authorInfo['appsecret'],$code);
-            }
+            $result = $wx->code_to_sessionkey($authorInfo['appid'],$authorInfo['appsecret'],$code);
         }
 
 

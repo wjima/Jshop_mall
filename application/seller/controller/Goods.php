@@ -42,11 +42,10 @@ class Goods extends Seller
     public function index()
     {
         $goodsModel = new goodsModel();
-        $statics    = $goodsModel->staticGoods(['seller_id' => $this->sellerId]);
+        $statics    = $goodsModel->staticGoods();
         $this->assign('statics', $statics);
         if (Request::isAjax()) {
             $filter              = input('request.');
-            $filter['seller_id'] = $this->sellerId;
             return $goodsModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -68,16 +67,16 @@ class Goods extends Seller
     {
         //分类
         $goodsCatModel = new GoodsCat();
-        $catList       = $goodsCatModel->getCatByParentId(0, $this->sellerId);
+        $catList       = $goodsCatModel->getCatByParentId(0);
         $this->assign('catList', $catList);
         //类型
         $goodsTypeModel = new GoodsType();
-        $typeList       = $goodsTypeModel->getAllTypes(0, $this->sellerId);
+        $typeList       = $goodsTypeModel->getAllTypes(0);
         $this->assign('typeList', $typeList);
 
         //品牌
         $brandModel = new Brand();
-        $brandList  = $brandModel->getAllBrand($this->sellerId);
+        $brandList  = $brandModel->getAllBrand();
         $this->assign('brandList', $brandList);
     }
 
@@ -95,7 +94,7 @@ class Goods extends Seller
         if ($id) {
 
             $goodsCatModel = new GoodsCat();
-            $catList       = $goodsCatModel->getCatByParentId($id, $this->sellerId);
+            $catList       = $goodsCatModel->getCatByParentId($id);
 
             return [
                 'data'   => $catList,
@@ -270,7 +269,6 @@ class Goods extends Seller
         $data['goods']['is_hot']        = input('post.goods.is_hot', '2');
         $open_spec                      = input('post.open_spec', 0);
         $specdesc                       = input('post.spec/a', []);
-        $data['goods']['seller_id']     = $this->sellerId;
 
         if ($specdesc && $open_spec) {
             $data['goods']['spes_desc'] = serialize($specdesc);
@@ -342,7 +340,6 @@ class Goods extends Seller
         $productsModel = new Products();
         //单规格
         $data['product']['goods_id']   = $goods_id;
-        $data['product']['seller_id']  = $this->sellerId;
         $data['product']['sn']         = $data['goods']['sn'];//货品编码
         $data['product']['price']      = $data['goods']['price'];//货品价格
         $data['product']['costprice']  = $data['goods']['costprice'];//货品成本价
@@ -413,7 +410,7 @@ class Goods extends Seller
             }
             //获取参数信息
             $goodsTypeParamsModel = new GoodsTypeParams();
-            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id, $this->sellerId);
+            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
             $this->assign('typeParams', $typeParams);
             //print_r($typeParams);die();
             $html             = $this->fetch('getSpec');
@@ -806,7 +803,7 @@ class Goods extends Seller
             }
             //获取参数信息
             $goodsTypeParamsModel = new GoodsTypeParams();
-            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id, $this->sellerId);
+            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
             $this->assign('typeParams', $typeParams);
             //解析参数信息
             $params = [];
@@ -1024,7 +1021,7 @@ class Goods extends Seller
             return $result;
         }
         $goodsModel = new goodsModel();
-        if ($goodsModel->save($iData, ['id' => $id, 'seller_id' => $this->sellerId])) {
+        if ($goodsModel->save($iData, ['id' => $id])) {
             $result['msg']    = '设置成功';
             $result['status'] = true;
         } else {

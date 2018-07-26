@@ -67,13 +67,12 @@ class UserLog extends Common
      * @param $user_id
      * @param string $state
      */
-    public function setLog( $user_id,$state,$seller_id = 0,$data = [] )
+    public function setLog( $user_id,$state,$data = [] )
     {
 
         $data = [
             'user_id' => $user_id,
             'state' => $state,
-            'seller_id' => $seller_id,
             'ctime' => time(),
             'params' => json_encode($data),
             'ip' => get_client_ip()

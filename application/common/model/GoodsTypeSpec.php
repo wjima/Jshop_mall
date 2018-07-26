@@ -53,12 +53,8 @@ class GoodsTypeSpec extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-11 16:44
      */
-    public function getAllSpec($seller_id = 0){
-        if(!$seller_id)
-        {
-            return [];
-        }
-        return $this->where(['seller_id'=>$seller_id])->select();
+    public function getAllSpec(){
+        return $this->where([])->select();
 
     }
 
@@ -80,7 +76,6 @@ class GoodsTypeSpec extends Common
                     'spec_id'=>$val['id']
                 ]);
                 $list[$key]['spec_value'] = $spec_value;
-                $list[$key]['seller_name'] = getSellerInfoById($val['seller_id'],'seller_name');
 
             }
         }
@@ -100,20 +95,16 @@ class GoodsTypeSpec extends Common
     /**
      * 获取参数信息
      * @param int $spec_id
-     * @param int $seller_id
      * @return array|bool
      */
-    public function getSpecInfo($spec_id=0,$seller_id=0)
+    public function getSpecInfo($spec_id=0)
     {
-        if(!$spec_id&&!$seller_id){
+        if(!$spec_id){
             return false;
         }
         $filter = [];
         if($spec_id){
             $filter['id'] = $spec_id;
-        }
-        if($seller_id){
-            $filter['seller_id'] = $seller_id;
         }
 
         $info = $this->where($filter)->field('id,name')->find();

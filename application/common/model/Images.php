@@ -41,9 +41,6 @@ class Images extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if (isset($post['seller_id']) && $post['seller_id'] != "") {
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if (isset($post['name']) && $post['name'] != "") {
             $where[] = ['name', 'like', '%'.$post['name'].'%'];
         }

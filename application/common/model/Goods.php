@@ -911,7 +911,7 @@ class Goods extends Common
         //警戒库存
         $sellerSettingModel = new SellerSetting();
 
-        $goods_stocks_warn = $sellerSettingModel->getValue($baseFilter['seller_id'],'goods_stocks_warn');
+        $goods_stocks_warn = $sellerSettingModel->getValue('goods_stocks_warn');
         $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
         unset($baseFilter['marketable']);
         $baseFilter[]=['stock','elt',$goods_stocks_warn];

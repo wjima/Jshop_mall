@@ -34,12 +34,12 @@ class Jshop extends TagLib
         ],
         //此标签增加了权限判断，只供商户端（seller）使用
         'sellerbrands' => [
-            'attr' => 'name,value,num,seller_id',
+            'attr' => 'name,value,num',
             'close' => 0
         ],
         //此标签增加了权限判断，只供商户端（seller）使用
         'sellergoods' => [
-            'attr' => 'name,value,num,seller_id',
+            'attr' => 'name,value,num',
             'close' => 0
         ]
     ];
@@ -161,6 +161,8 @@ class Jshop extends TagLib
         }else {
             $style = "";
         }
+        $full     = !empty($tag['full']) ? $tag['full'] : '1';      //传1或者2，如果是1就说明是省市区必须得输入到最后一个节点才有值，否则就是任意点都有值
+        
         $parse .= '
             <script>
                 $(function(){
@@ -223,12 +225,29 @@ class Jshop extends TagLib
                                         });
 
                                         //如果有返回值，就说明省市区没有选择到最终节点
-                                        $("input[name=\''.$tag['name'].'\']").val("");
+                                        if( '.$full.'== 1){
+                                            $("input[name=\''.$tag['name'].'\']").val("");
+                                        }else{
+                                            $("input[name=\''.$tag['name'].'\']").val($("select[name=\''.$tag['name'].'_"+i+"\']").val());
+                                        }
                                     }else{
                                         $("input[name=\''.$tag['name'].'\']").val($("select[name=\''.$tag['name'].'_"+i+"\']").val());
                                     }
                                 }
                             });
+                        }else{
+                            if( '.$full.' == 1){
+                                $("input[name=\''.$tag['name'].'\']").val("");
+                            }else{
+                                //第一级的元素就直接赋值为空就是了
+                                if(i == 1){
+                                    $("input[name=\''.$tag['name'].'\']").val("");
+                                }else{
+                                    i--;
+                                    $("input[name=\''.$tag['name'].'\']").val($("select[name=\''.$tag['name'].'_"+ i +"\']").val());
+                                }
+
+                            }
                         }
                     }
                 });
@@ -248,11 +267,6 @@ class Jshop extends TagLib
             $tag['value'] = $this->autoBuildVar($tag['value']);
         }else{
             $tag['value'] = "";
-        }
-        if(isset($tag['seller_id'])){
-            $tag['seller_id'] = $this->autoBuildVar($tag['seller_id']);
-        }else{
-            $tag['seller_id'] = "";
         }
 
         if(isset($tag['num'])){

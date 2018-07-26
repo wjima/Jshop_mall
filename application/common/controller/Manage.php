@@ -18,7 +18,6 @@ use Request;
 
 class Manage extends Base
 {
-    protected $sellerId = 0;
     protected function initialize()
     {
         parent::initialize();

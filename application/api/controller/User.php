@@ -25,7 +25,6 @@ class User extends Api
         $userModel = new UserModel();
 
         $data = input('param.');
-        $data['seller_id'] = $this->sellerId;
 
         return $userModel->toLogin($data, 2,$platform);
     }
@@ -37,7 +36,6 @@ class User extends Api
         $userModel = new UserModel();
 
         $data = input('param.');
-        $data['seller_id'] = $this->sellerId;
 
         return $userModel->smsLogin($data, 2,$platform);
     }

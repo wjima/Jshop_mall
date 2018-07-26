@@ -35,7 +35,7 @@ class UserPointLog extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function setPoint($user_id, $seller_id, $num, $type = self::POINT_TYPE_SIGN, $remarks = '')
+    public function setPoint($user_id, $num, $type = self::POINT_TYPE_SIGN, $remarks = '')
     {
         $return = [
             'status' => false,
@@ -43,10 +43,10 @@ class UserPointLog extends Common
         ];
 
         //获取积分账号信息
-        $seller_user_model = new SellerUser();
-        $seller_user = $seller_user_model->getInfo($user_id, $seller_id, 'id, point');
+        $user_model = new User();
+        $user_info = $user_model->where(['id'=>$user_id])->find();
 
-        $new_point = $seller_user['point'] + $num;
+        $new_point = $user_info + $num;
         //积分余额判断
         if($new_point < 0)
         {
@@ -60,7 +60,6 @@ class UserPointLog extends Common
             //插入记录
             $data = [
                 'user_id' => $user_id,
-                'seller_id' => $seller_id,
                 'type' => $type,
                 'num' => $num,
                 'balance' => $new_point,
@@ -70,8 +69,8 @@ class UserPointLog extends Common
             $this->insert($data);
 
             //插入主表
-            $where[] = ['id', 'eq', $seller_user['id']];
-            $seller_user_model->where($where)
+            $where[] = ['id', 'eq', $user_id];
+            $user_info->where($where)
                 ->setInc('point', $num);
 
             Db::commit();
@@ -303,7 +302,7 @@ class UserPointLog extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function pointLogList($user_id, $seller_id, $type = false, $page = 1, $limit = 20)
+    public function pointLogList($user_id, $type = false, $page = 1, $limit = 20)
     {
         $return = [
             'status' => false,
@@ -315,7 +314,6 @@ class UserPointLog extends Common
             $where[] = ['type', 'eq', $type];
         }
         $where[] = ['user_id', 'eq', $user_id];
-        $where[] = ['seller_id', 'eq', $seller_id];
 
         $res = $this->field('id, type, num, balance, remarks, ctime')
             ->where($where)

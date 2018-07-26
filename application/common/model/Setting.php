@@ -3,7 +3,7 @@
 namespace app\common\model;
 
 
-class SellerSetting extends Common
+class Setting extends Common
 {
     public $skeys = [
         'shop_name' => [
@@ -123,21 +123,20 @@ class SellerSetting extends Common
 
 
     //设置参数
-    public function setValue($seller_id, $skey, $value)
+    public function setValue($skey, $value)
     {
         $result = $this->check($skey, $value);
         if(!$result['status']){
             return $result;
         }
 
-        $info = $this->where(array('seller_id'=>$seller_id, 'skey'=>$skey))->find();
+        $info = $this->where(array('skey'=>$skey))->find();
         if($info){
             $info->value = $value;
             $info->save();
         }else{
             $model = new $this;
             $model->save([
-                'seller_id' => $seller_id,
                 'skey' => $skey,
                 'value' => $value
             ]);
@@ -200,9 +199,9 @@ class SellerSetting extends Common
     }
 
     //取得全部参数
-    public function getAll($seller_id)
+    public function getAll()
     {
-        $list = $this->where(array('seller_id' => $seller_id))->select();
+        $list = $this->select();
         foreach($this->skeys as $k => $v){
             foreach($list as $info){
                 if($info['skey'] == $k){
@@ -228,7 +227,7 @@ class SellerSetting extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this::with('sellerInfo')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
         $re['code'] = 0;
@@ -240,12 +239,7 @@ class SellerSetting extends Common
         return $re;
     }
 
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind([
-            'seller_name'
-        ]);
-    }
+
 
     /**
      * 根据输入的查询条件，返回所需要的where
@@ -256,9 +250,6 @@ class SellerSetting extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if(isset($post['skey']) && $post['skey'] != ""){
             $where[] = ['skey', 'eq', $post['skey']];
         }

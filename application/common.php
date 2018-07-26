@@ -782,16 +782,7 @@ function getUserWxInfo($seller_id,$user_id)
     }
 }
 
-/**
- * 根据条件返回店铺
- * @param array $where
- * @return array|PDOStatement|string|\think\Collection
- */
-function getSellerList($where = [])
-{
-    $sellerModel = new \app\common\model\Seller();
-    return $sellerModel->where($where)->select();
-}
+
 
 /**
  * 判断用户是否有新消息，用于前端显示小红点

@@ -7,11 +7,10 @@ class UserToken extends Common
     /**
      * 登陆存token
      * @param $user_id
-     * @param $seller_id
      * @param int $platform     如果是1，就是前端普通登陆，如果是2就是微信小程序登陆
      * @return array
      */
-    public function setToken($user_id, $seller_id,$platform=1){
+    public function setToken($user_id,$platform=1){
         $result = array(
             'status' => false,
             'data' => '',
@@ -19,19 +18,15 @@ class UserToken extends Common
         );
         $userModel = new User();
         $userInfo = $userModel->where(array('id'=>$user_id))->find();
-        $sellerModel = new Seller();
-        $sellerInfo = $sellerModel->where(array('id'=>$seller_id))->find();
-        if($userInfo && $sellerInfo){
+        if($userInfo){
             $data['user_id'] = $user_id;
-            $data['seller_id'] = $seller_id;
             $data['platform'] = $platform;
             $data['ctime'] = time();
-            $data['token'] = $this->algorithm($userInfo['id'],$userInfo['password'],$sellerInfo['id'],$platform,$data['ctime']);
+            $data['token'] = $this->algorithm($userInfo['id'],$userInfo['password'],$platform,$data['ctime']);
             $re = $this->save($data);
             if($re >0){
                 //删除掉旧的token
                 $where[] = ['user_id', 'eq', $user_id];
-                $where[] = ['seller_id', 'eq', $seller_id];
                 $where[] = ['platform', 'eq', $platform];
                 $where[] = ['token', 'neq', $data['token']];
                 $this->where($where)->delete();
@@ -48,9 +43,6 @@ class UserToken extends Common
         }else{
             if(!$userInfo){
                 $result['msg'] = "用户不存在";
-
-            }else{
-                $result['msg'] = "商户不存在";
             }
             return $result;
         }
@@ -90,7 +82,7 @@ class UserToken extends Common
         }
 
     }
-    private function algorithm($user_id,$password,$seller_id,$platform,$createtime){
-        return md5(md5($user_id.$password.$seller_id.$platform.$createtime).rand(1,10000));
+    private function algorithm($user_id,$password,$platform,$createtime){
+        return md5(md5($user_id.$password.$platform.$createtime).rand(1,10000));
     }
 }

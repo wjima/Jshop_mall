@@ -235,11 +235,9 @@ class AdvertPosition extends Common
      * @param array $where
      * @param string $order
      */
-    public function  getOptionsList($seller_id,$page,$limit)
+    public function  getOptionsList($page,$limit)
     {
-        $where[] = array('seller_id','eq',$seller_id);
-        $where[] = array('state','eq',self::POSITION_STATE_YES);
-        $list = $this->where($where)->page($page,$limit)->select();
+        $list = $this->where('state', self::POSITION_STATE_YES)->page($page,$limit)->select();
         if(!$list->isEmpty())
         {
             $list = $list->hidden(['ctime','utime']);

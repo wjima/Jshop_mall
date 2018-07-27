@@ -48,13 +48,12 @@ class Coupon extends Common
      * @param $promotion_id
      * @return array
      */
-    public function addData($seller_id,$user_id,$promotion_id)
+    public function addData($user_id,$promotion_id)
     {
         $result = ['status'=>false,'msg'=>'领取失败','data'=>'' ];
 
         $data = [
             'coupon_code' => $this->generate_promotion_code()[0],
-            'seller_id' => $seller_id,
             'promotion_id' => $promotion_id,
             'user_id' => $user_id
         ];
@@ -72,10 +71,10 @@ class Coupon extends Common
      * @param $coupon_code
      * @return array
      */
-    public function del($seller_id,$coupon_code)
+    public function del($coupon_code)
     {
         $result = ['status'=>false,'msg'=>'删除失败','data'=>''];
-        if ($this->where(['seller_id'=>$seller_id,'coupon_code'=>$coupon_code])->delete())
+        if ($this->where('coupon_code',$coupon_code)->delete())
         {
             $result['status'] = true;
             $result['msg'] = '删除成功';
@@ -96,9 +95,6 @@ class Coupon extends Common
         }
         if(isset($post['is_used']) && $post['is_used'] != ""){
             $where[] = ['is_used','eq',$post['is_used']];
-        }
-        if(isset($post['seller_id']) && $post['seller_id'] != "") {
-            $where[] = ['seller_id','eq',$post['seller_id']];
         }
         if(isset($post['date']) && $post['date'] != ""){
             $theDate = explode(' 到 ',$post['date']);
@@ -150,7 +146,6 @@ class Coupon extends Common
 
     /**
      * 获取 我的优惠券
-     * @param $seller_id
      * @param $user_id
      * @param string $promotion_id
      * @param string $display //all显示全部 no_used没有使用过的 yes_used使用过的
@@ -159,9 +154,8 @@ class Coupon extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getMyCoupon($seller_id, $user_id, $promotion_id = '', $display = 'all')
+    public function getMyCoupon($user_id, $promotion_id = '', $display = 'all')
     {
-        $where[] = ['seller_id','eq',$seller_id];
         $where[] = ['user_id','eq',$user_id];
         if($display == 'no_used')
         {
@@ -182,7 +176,6 @@ class Coupon extends Common
                 }
                 $list[$k]['stime'] = date('Y-m-d',$v['stime']);
                 $list[$k]['etime'] = date('Y-m-d',$v['etime']);
-
             }
         }
         return $list;
@@ -190,7 +183,6 @@ class Coupon extends Common
 
     /**
      * 根据优惠券编码取优惠券的信息,并判断是否可用
-     * @param $seller_id
      * @param $code //优惠券号码,多个优惠券的话，用个英文逗号分割
      * @param bool $check 校验是否是可用的
      * @return array|mixed
@@ -198,7 +190,7 @@ class Coupon extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function codeToInfo($seller_id,$code,$check=false)
+    public function codeToInfo($code,$check=false)
     {
         $result = [
             'status' => false,
@@ -210,7 +202,6 @@ class Coupon extends Common
 
         foreach($code_arr as $v){
             $where['coupon_code'] = $v;
-            $where['seller_id'] = $seller_id;
             $info = $this::with('promotion')->where($where)->find();
             if($info){
                 if($check){
@@ -295,9 +286,9 @@ class Coupon extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function usedMultipleCoupon($coupon_code, $seller_id, $user_id)
+    public function usedMultipleCoupon($coupon_code, $user_id)
     {
-        $res = $this->codeToInfo($seller_id, $coupon_code, true);
+        $res = $this->codeToInfo($coupon_code, true);
         if(!$res['status'])
         {
             return $res;

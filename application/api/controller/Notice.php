@@ -7,30 +7,22 @@ use app\common\controller\Api;
 
 class Notice extends Api
 {
-    //获取公告类型
-    public function noticeType()
-    {
-        $noticeModel = new NoticeModel;
-        $result      = array_values($noticeModel->getNoticeType());
-        if($result) {
-            $result_data = array(
-                'status' => true,
-                'msg'    => '获取成功',
-                'data'   => $result
-            );
-        }else {
-            $result_data = array(
-                'status' => false,
-                'msg'    => '获取失败',
-                'data'   => $result
-            );
-        }
-        return $result_data;
-    }
 
-    //获取公告列表
+
+    /**
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function noticeList()
     {
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+
         $noticeModel = new NoticeModel;
 
         //获取排序方法
@@ -43,33 +35,12 @@ class Notice extends Api
         $page = input('param.page',1);
         //获取公告类型
         $type   = input('param.type',1);
-        $result = $noticeModel->getNoticeList($type,$this->sellerId,$order,$orderType,$page,$pageSize);
-        $count  = count($result);
+        $data = $noticeModel->getNoticeList($type, $order, $orderType, $page, $pageSize);
 
-
-        if($result) {
-            $data = [
-                'list'      => $result,
-                'count'     => $count,
-                'order'     => $order,
-                'page'      => $page,
-                'pageSize'  => $pageSize
-            ];
-            $result_data = array(
-                'status'    => true,
-                'data' => $data,
-                'msg'       => '获取成功',
-
-            );
-        }else {
-            $result_data = array(
-                'status' => false,
-                'msg'    => '获取失败',
-                'data'   => $result
-            );
+        if($data) {
+            $result['data'] = $data;
         }
-        return $result_data;
-
+        return $result;
     }
 
 
@@ -83,25 +54,20 @@ class Notice extends Api
      */
     public function noticeInfo()
     {
+        $result = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => []
+        ];
         $noticeModel = new NoticeModel;
-        $seller_id   = $this->sellerId;
-        $id = input('id/d',0);
+        $data = $noticeModel->getNoticeInfo(input('param.id/d'));
 
-        $result = $noticeModel->where(['seller_id'=>$seller_id,'id'=>$id])->find();
-
-        if($result) {
-            $result_data = array(
-                'status' => true,
-                'msg'    => '获取成功',
-                'data'   => $result
-            );
-        }else {
-            $result_data = array(
-                'status' => false,
-                'msg'    => '获取失败',
-                'data'   => $result
-            );
+        if ($data) {
+            $result['status'] = true;
+            $result['msg'] = '获取成功';
+            $result['data'] = $data;
         }
-        return $result_data;
+
+        return $result;
     }
 }

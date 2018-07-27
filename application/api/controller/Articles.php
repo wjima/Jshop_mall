@@ -23,7 +23,7 @@ class Articles extends Api
     public function getArticleType()
     {
         $articleType = new ArticleType();
-        return $articleType->articleTypeList($this->sellerId);
+        return $articleType->articleTypeList();
     }
 
 
@@ -42,7 +42,7 @@ class Articles extends Api
             return $result = ['status'=>false,'msg'=>'缺少参数type_id'];
         }
         $article = new Article();
-        return $article->articleList($this->sellerId,$type_id,$page,$limit);
+        return $article->articleList($type_id,$page,$limit);
     }
 
     /**

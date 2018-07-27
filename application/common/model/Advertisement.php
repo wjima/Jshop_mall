@@ -63,7 +63,7 @@ class Advertisement extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->with('sellerInfo,advertPosition')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->with('advertPosition')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         $re['code'] = 0;
         $re['msg'] = '';
@@ -180,9 +180,6 @@ class Advertisement extends Common
             $eutime = strtotime($date_array[1].'23:59:59',time());
             $where[] = ['utime', ['EGT',$sutime],['ELT',$eutime],'and'];
         }
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['sort ASC'];
@@ -220,18 +217,16 @@ class Advertisement extends Common
      * @param $position_id
      * @return mixed
      */
-    public function getAdvertList($seller_id,$code,$page,$limit)
+    public function getAdvertList($code,$page,$limit)
     {
-        $where[] = ['seller_id','eq',$seller_id];
-        $where[] = ['code','eq',"$code"];
-        $list = $this->field('id,seller_id,position_id,code,name,img,type,val,sort')
-            ->where($where)
+        $list = $this->field('id,position_id,code,name,img,type,val,sort')
+            ->where('code', $code)
             ->order('sort ASC')
             ->page($page,$limit)
             ->select();
 
-        $count = $this->field('id,seller_id,position_id,code,name,img,type,val,sort')
-            ->where($where)
+        $count = $this->field('id,position_id,code,name,img,type,val,sort')
+            ->where('code', $code)
             ->order('sort ASC')
             ->page($page,$limit)
             ->count();
@@ -269,16 +264,6 @@ class Advertisement extends Common
     public function advertPosition()
     {
         return $this->hasOne('AdvertPosition','id','position_id')->bind(['pname'=>'name']);
-    }
-
-
-    /**
-     *  关联seller表
-     * @return \think\model\relation\HasOne
-     */
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind(['seller_name']);
     }
 
 }

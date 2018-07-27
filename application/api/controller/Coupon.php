@@ -24,7 +24,7 @@ class Coupon extends Api
         ];
 
         $promotionModel = new Promotion();
-        $res = $promotionModel->receiveCouponList($this->sellerId);
+        $res = $promotionModel->receiveCouponList();
 
         if ( $res )
         {
@@ -57,11 +57,9 @@ class Coupon extends Api
         }
 
         $promotionModel = new Promotion();
-        $res = $promotionModel->field('id,seller_id,name,type,status,exclusive,stime,etime')
-        ->where([
-            'seller_id' => $this->sellerId,
-            'id' => input('promotion_id')
-        ])->find();
+        $res = $promotionModel->field('id,name,type,status,exclusive,stime,etime')
+            ->where('id',input('promotion_id'))
+            ->find();
 
         if ( $res )
         {
@@ -87,7 +85,7 @@ class Coupon extends Api
             'msg' => '获取失败'
         ];
         $couponModel = new couponModel();
-        $res = $couponModel->getMyCoupon($this->sellerId, $this->userId, '', input('display', 'all'));
+        $res = $couponModel->getMyCoupon($this->userId, '', input('display', 'all'));
 
         if ( $res )
         {
@@ -113,18 +111,18 @@ class Coupon extends Api
         }
         //判断优惠券是否可以领取?
         $promotionModel = new Promotion();
-        if (!$promotionModel->receiveCoupon($this->sellerId,input('promotion_id')))
+        if (!$promotionModel->receiveCoupon(input('promotion_id')))
         {
             return error_code(15007);
         }
         //判断用户是否已领取?
         $couponModel = new couponModel();
-        $coupon = $couponModel->getMyCoupon($this->sellerId,$this->userId,input('promotion_id'));
+        $coupon = $couponModel->getMyCoupon($this->userId,input('promotion_id'));
         if ( !$coupon->isEmpty() )
         {
             return error_code(15008);
         }
 
-        return $couponModel->addData($this->sellerId,$this->userId,input('promotion_id'));
+        return $couponModel->addData($this->userId,input('promotion_id'));
     }
 }

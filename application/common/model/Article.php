@@ -58,7 +58,7 @@ class Article extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->with('sellerInfo,articleType')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->with('articleType')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         foreach($list as $key => $val)
         {
             $list[$key]['cover'] = _sImage($val['cover']);
@@ -150,10 +150,6 @@ class Article extends Common
         if(isset($post['is_pub']) && $post['is_pub'] != ""){
             $where[] = ['is_pub', 'eq', $post['is_pub']];
         }
-        if(isset($post['seller_id']) && $post['seller_id'] != "")
-        {
-            $where[] = ['seller_id','eq',$post['seller_id']];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['sort ASC'];
@@ -170,9 +166,8 @@ class Article extends Common
      * @param $limit
      * @return array
      */
-    public function articleList($seller_id,$type_id,$page,$limit)
+    public function articleList($type_id,$page,$limit)
     {
-        $where[] = ['seller_id','eq',$seller_id];
         $where[] = ['type_id','eq',$type_id];
         $where[] = ['is_pub','eq',self::IS_PUB_YES];
         $list = $this->where($where)->order('ctime DESC')->page($page,$limit)->select();
@@ -213,7 +208,7 @@ class Article extends Common
     {
         $where[] = ['id','eq',$article_id];
         $where[] = ['is_pub','eq',self::IS_PUB_YES];
-        $data = $this->field('id,seller_id,title,content,type_id,ctime,utime')->where($where)->find();
+        $data = $this->field('id,title,content,type_id,ctime,utime')->where($where)->find();
         if(!empty($data))
         {
             $result = [
@@ -240,12 +235,4 @@ class Article extends Common
         return $this->hasOne('ArticleType','id','type_id')->bind(['type_name']);
     }
 
-
-    /**
-     * @return \think\model\relation\HasOne
-     */
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind(['seller_name']);
-    }
 }

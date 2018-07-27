@@ -142,9 +142,9 @@ class ArticleType extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function articleTypeList($seller_id)
+    public function articleTypeList()
     {
-        $list = $this->where('seller_id',$seller_id)->select();
+        $list = $this->field('id,type_name')->select();
         if(!$list->isEmpty())
         {
             $result = [

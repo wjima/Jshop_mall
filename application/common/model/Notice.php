@@ -159,9 +159,15 @@ class Notice extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getNoticeList($type,$seller_id,$order,$orderType,$page,$pageSize)
+    public function getNoticeList($type,$order,$orderType,$page,$pageSize)
     {
-        return $this->field('id,title,ctime')->where('type',$type)->where('seller_id',$seller_id)->order($order,$orderType)->page($page,$pageSize)->select();
+        return $this->field('id,title,ctime')->where('type',$type)->order($order,$orderType)->page($page,$pageSize)->select();
+    }
+
+
+    public function getNoticeInfo ($id)
+    {
+        return $this->field('id,title, ctime')->where('id', $id)->find();
     }
 
 }

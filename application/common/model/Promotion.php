@@ -43,7 +43,7 @@ class Promotion extends Common
     }
 
     //购物车的数据传过来，然后去算优惠券
-    public function toCoupon(&$cart,$promotion_arr,$seller_id){
+    public function toCoupon(&$cart,$promotion_arr){
         $result = [
             'status' => false,
             'data' => '',
@@ -56,7 +56,6 @@ class Promotion extends Common
             $where[] = ['status','eq',self::STATUS_OPEN];
             $where[] = ['stime','lt',time()];
             $where[] = ['etime','gt',time()];
-            $where[] = ['seller_id','eq',$seller_id];
             $where[] = ['type','eq',self::TYPE_COUPON];
             $where[] = ['id','eq',$v['promotion_id']];
             $info = $this->where($where)->find();
@@ -119,7 +118,7 @@ class Promotion extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this::with('sellerInfo')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
         $re['code'] = 0;
@@ -137,9 +136,6 @@ class Promotion extends Common
         $where = [];
         $where[] = ['type', 'eq', $post['type']];
 
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if(isset($post['name']) && $post['name'] != ""){
             $where[] = ['name', 'like', '%'.$post['name'].'%'];
         }
@@ -156,9 +152,6 @@ class Promotion extends Common
                 $where[] = ['etime', '>', strtotime($theDate[0])];
             }
         }
-
-
-
 
         $result['where'] = $where;
         $result['field'] = "*";
@@ -193,17 +186,15 @@ class Promotion extends Common
     /**
      *
      *  获取可领取的优惠券
-     * @param $seller_id
      * @return array|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function receiveCouponList($seller_id)
+    public function receiveCouponList()
     {
         $where[] = ['etime','>',time()];                //判断优惠券失效时间 是否可领取
         $where[] = ['status','eq',self::STATUS_OPEN];   //启用状态
-        $where[] = ['seller_id','eq',$seller_id];
         $where[] = ['type','eq',self::TYPE_COUPON];     //促销 类型
         $where[] = ['auto_receive','eq',self::AUTO_RECEIVE_YES];    //自动领取状态
         return $this->field('id,name,status,exclusive,stime,etime')->where($where)->select();
@@ -219,20 +210,14 @@ class Promotion extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function receiveCoupon($seller_id,$promotion_id)
+    public function receiveCoupon($promotion_id)
     {
         $where[] = ['etime','>',time()];                //判断优惠券失效时间 是否可领取
         $where[] = ['status','eq',self::STATUS_OPEN];   //启用状态
-        $where[] = ['seller_id','eq',$seller_id];
         $where[] = ['type','eq',self::TYPE_COUPON];     //促销 类型
         $where[] = ['auto_receive','eq',self::AUTO_RECEIVE_YES];    //自动领取状态
         $where[] = ['id','eq',$promotion_id];
         return $this->field('id,name,status,exclusive,stime,etime')->where($where)->find();
     }
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind([
-            'seller_name'
-        ]);
-    }
+
 }

@@ -22,10 +22,9 @@ class Advert extends Api
     public function positionList()
     {
         $position = new AdvertPosition();
-        $seller_id = $this->sellerId;
         $page = input('page/d',1);
         $limit = input('limit/d',5);
-        return $position->getOptionsList($seller_id,$page,$limit);
+        return $position->getOptionsList($page,$limit);
     }
 
 
@@ -36,7 +35,6 @@ class Advert extends Api
      */
     public function getAdvertList()
     {
-        $seller_id = $this->sellerId;
         $code = input('code/s');
         if(!$code)
         {
@@ -49,7 +47,7 @@ class Advert extends Api
         $page = input('page/d',1);
         $limit = input('limit/d',5);
         $advert = new Advertisement();
-        return $advert->getAdvertList($seller_id,$code,$page,$limit);
+        return $advert->getAdvertList($code,$page,$limit);
     }
 
 }

@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 --
 -- 表的结构 `payments`
 --
-
+DROP TABLE payments;
 CREATE TABLE `payments` (
   `id` smallint(5) unsigned NOT NULL,
   `code` varchar(50) DEFAULT NULL COMMENT '支付类型编码',

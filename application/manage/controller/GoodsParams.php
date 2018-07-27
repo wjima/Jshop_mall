@@ -3,14 +3,13 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
-use app\common\model\GoodsParams as GPmodel;
-use app\common\model\Seller;
 use Request;
+use app\common\model\GoodsParams as GPmodel;
 
 /**
  * 商品参数
  * Class GoodsTypeSpec
- * @package app\seller\controller
+ * @package app\Manage\controller
  * User: wjima
  * Email:1457529125@qq.com
  * Date: 2018-01-09 20:07
@@ -23,12 +22,7 @@ class GoodsParams extends Manage
      */
     public function index()
     {
-        if (!Request::isAjax()) {
-            //所属商户
-            $seller      = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-        }else{
+        if (Request::isAjax()) {
             $goodsParamsModel       = new GPmodel();
             $filter              = input('request.');
             return $goodsParamsModel->tableData($filter);
@@ -56,7 +50,6 @@ class GoodsParams extends Manage
                 'name'      => input('post.name'),
                 'type'      => input('post.type'),
                 'value'     => input('post.value'),
-                'seller_id' => $this->sellerId,
             ];
             $goodsParamsModel = new GPmodel();
             $result           = $goodsParamsModel->doAdd($data);
@@ -92,7 +85,6 @@ class GoodsParams extends Manage
                 'name'      => input('post.name'),
                 'type'      => input('post.type'),
                 'value'     => input('post.value'),
-                'seller_id' => $this->sellerId,
             ];
             $result           = $goodsParamsModel->doAdd($data,$id);
             if ($result !== false) {
@@ -130,7 +122,6 @@ class GoodsParams extends Manage
         if ($id) {
             $goodsParamsModel    = new GPmodel();
             $filter['id']        = $id;
-            $filter['seller_id'] = $this->sellerId;
             $res                 = $goodsParamsModel->doDel($filter);
             if ($res) {
                 $result['msg']    = '删除成功';

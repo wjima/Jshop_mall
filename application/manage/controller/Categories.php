@@ -1,14 +1,13 @@
 <?php
 namespace app\Manage\controller;
 use app\common\controller\Manage;
-use app\common\model\Seller;
 use Request;
 use app\common\model\GoodsCat;
 
 /**
  * 商品分类
  * Class Categories
- * @package app\seller\controller
+ * @package app\Manage\controller
  * @author keinx
  */
 class Categories extends Manage
@@ -16,57 +15,35 @@ class Categories extends Manage
     /**
      * 商品分类列表
      * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
     public function index()
     {
         if(!Request::isAjax())
         {
-            //所属商户
-            $seller = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-
             //打开主页
             return $this->fetch('index');
         }
         else
         {
-            $seller_id = input('seller_id', false);
-            if($seller_id)
+            $data = model('common/GoodsCat')->getList();
+            if(count($data) > 0)
             {
-                $data = model('common/GoodsCat')->getList($seller_id);
-                if(count($data) > 0)
-                {
-                    $return_data = array(
-                        'status' => 1,
-                        'msg' => "数据获取成功",
-                        'count' => count($data),
-                        'data' => $data
-                    );
-                }
-                else
-                {
-                    $return_data = array(
-                        'status' => 0,
-                        'msg' => "没有分类快去添加一个吧",
-                        'count' => count($data),
-                        'data' => $data
-                    );
-                }
+                $return_data = array(
+                    'status' => 1,
+                    'msg' => "数据获取成功",
+                    'count' => count($data),
+                    'data' => $data
+                );
             }
             else
             {
                 $return_data = array(
                     'status' => 0,
-                    'msg' => "请先选择所属商户",
-                    'count' => 0,
-                    'data' => []
+                    'msg' => "没有分类快去添加一个吧",
+                    'count' => count($data),
+                    'data' => $data
                 );
             }
-
             return $return_data;
         }
     }
@@ -75,35 +52,19 @@ class Categories extends Manage
     /**
      * 添加商品分类
      * @param int $parent_id
-     * @param int $seller_id
      * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
-    public function add($parent_id = GoodsCat::TOP_CLASS_PARENT_ID, $seller_id = 0)
+    public function add($parent_id = GoodsCat::TOP_CLASS_PARENT_ID)
     {
         $this->view->engine->layout(false);
         if(!Request::isPost())
         {
             //获取添加页面
-            //父级ID
-            $this->assign('parent_id', $parent_id);
-            $this->assign('seller_id', $seller_id);
-
-            //顶级分类
-            $parent = model('common/GoodsCat')->getAllCat($seller_id);
-            $this->assign('parent', $parent);
-
-            //类型
-            $type = model('common/GoodsType')->getList($seller_id);
+            $this->assign('parent_id', $parent_id); //父级ID
+            $parent = model('common/GoodsCat')->getAllCat();
+            $this->assign('parent', $parent); //顶级分类
+            $type = model('common/GoodsType')->getList();
             $this->assign('type', $type['data']);
-
-            //所属商户
-            $seller = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-
             return $this->fetch('add');
         }
         else
@@ -114,8 +75,7 @@ class Categories extends Manage
                 'type_id' => input('type_id'),
                 'name' => input('name'),
                 'image_id' => input('image_id'),
-                'sort' => input('sort'),
-                'seller_id' => input('seller_id', 0)
+                'sort' => input('sort')
             );
             $result = model('common/GoodsCat')->add($data);
             if($result !== false)
@@ -142,18 +102,17 @@ class Categories extends Manage
     /**
      * 编辑商品分类
      * @param $id
-     * @param int $seller_id
-     * @return mixed
+     * @return array|mixed
      */
-    public function edit($id, $seller_id = 0)
+    public function edit($id)
     {
         $this->view->engine->layout(false);
         if(!Request::isPost())
         {
             //获取编辑页面
-            $parent = model('common/GoodsCat')->getAllCat($seller_id, $id);
+            $parent = model('common/GoodsCat')->getAllCat($id);
             $this->assign('parent', $parent); //父级分类
-            $type = model('common/GoodsType')->getList($seller_id);
+            $type = model('common/GoodsType')->getList();
             $this->assign('type', $type['data']);
             $data = model('common/GoodsCat')->getCatInfo($id);
             $this->assign('data', $data); //分类信息
@@ -186,7 +145,7 @@ class Categories extends Manage
         if(!Request::isPost())
         {
             //查询是否可以删除
-            $result = model('common/GoodsCat')->getIsDel($id, $this->sellerId);
+            $result = model('common/GoodsCat')->getIsDel($id);
             if($result['is'])
             {
                 $return_data = array(
@@ -208,7 +167,7 @@ class Categories extends Manage
         else
         {
             //删除
-            $result = model('common/GoodsCat')->del($id, $this->sellerId);
+            $result = model('common/GoodsCat')->del($id);
             if($result)
             {
                 $return_data = array(

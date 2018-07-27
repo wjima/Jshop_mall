@@ -54,9 +54,7 @@ class Record
     public function run($params)
     {
         $user       = session('user');
-        $seller     = session('seller');
         $opname     = $user['username'] ? $user['username'] : $user['mobile'];
-        $sellerName = $seller['seller_name'];
         if (Request::isPost()) {
             $forbidMethod = $this->getConf();
             $ctl          = strtolower(Request::controller());
@@ -71,7 +69,6 @@ class Record
                         $decs = $decs . '：' . ($postData['name'] ? $postData['name'] : $postData['id']);
                     }
                     $log      = [
-                        'seller_id'  => $seller['id'],
                         'manage_id'  => $user['id'],
                         'controller' => $ctl,
                         'method'     => $act,

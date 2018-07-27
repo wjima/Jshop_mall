@@ -81,7 +81,6 @@ class GoodsCat extends Common
         {
             $return_data[] = array(
                 'id' => $v['id'],
-                'seller_name' => getSellerInfoById($v['seller_id'], 'seller_name'),
                 'name_1' => $v['name_1'],
                 'name_2' => $v['name_2'],
                 'type_id' => $this->getTypeName($v['type_id']),
@@ -95,7 +94,6 @@ class GoodsCat extends Common
                 {
                     $return_data[] = array(
                         'id' => $vv['id'],
-                        'seller_name' => getSellerInfoById($v['seller_id'], 'seller_name'),
                         'name_1' => $vv['name_1'],
                         'name_2' => $vv['name_2'],
                         'type_id' => $this->getTypeName($vv['type_id']),

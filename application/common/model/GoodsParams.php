@@ -46,13 +46,6 @@ class GoodsParams extends Common
      */
     protected function tableFormat($list)
     {
-        if($list)
-        {
-            foreach((array)$list->toArray() as $key=>$val)
-            {
-                $list[$key]['seller_name'] = getSellerInfoById($val['seller_id'],'seller_name');
-            }
-        }
         return $list;
     }
 

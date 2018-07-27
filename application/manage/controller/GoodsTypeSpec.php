@@ -3,16 +3,15 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use Request;
 use app\common\model\GoodsType as typeModel;
 use app\common\model\GoodsTypeSpec as typeSpecModel;
 use app\common\model\GoodsTypeSpecValue;
-use app\common\model\Seller;
-use Request;
 
 /**
  * 商品类型属性
  * Class GoodsTypeSpec
- * @package app\seller\controller
+ * @package app\Manage\controller
  * User: wjima
  * Email:1457529125@qq.com
  * Date: 2018-01-09 20:07
@@ -26,14 +25,10 @@ class GoodsTypeSpec extends Manage
      */
     public function index()
     {
-        if (!Request::isAjax()) {
-            //所属商户
-            $seller      = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-        }else{
+        if (Request::isAjax()) {
             $typeSpecModel       = new typeSpecModel();
             $filter              = input('request.');
+            $filter['Manage_id'] = $this->ManageId;
             return $typeSpecModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -63,7 +58,7 @@ class GoodsTypeSpec extends Manage
             $spec = [
                 'name'      => $name,
                 'sort'      => $sort,
-                'seller_id' => $this->sellerId,
+                'Manage_id' => $this->ManageId,
             ];
 
             $result = $specModel->add($spec);
@@ -117,7 +112,7 @@ class GoodsTypeSpec extends Manage
         $id                = input('request.id/d');
         $goodsTypeModel    = new typeSpecModel();
         $filter            = [
-            'seller_id' => $this->sellerId,
+            'Manage_id' => $this->ManageId,
             'id'        => $id,
         ];
         $typeSpec          = $goodsTypeModel::get($filter);
@@ -137,7 +132,7 @@ class GoodsTypeSpec extends Manage
                 'id'        => $id,
                 'name'      => input('post.name', ''),
                 'sort'      => input('post.sort', 100),
-                'seller_id' => $this->sellerId,
+                'Manage_id' => $this->ManageId,
             ];
             $value          = input('post.value/a', []);
             if (!$value) {
@@ -196,7 +191,7 @@ class GoodsTypeSpec extends Manage
             $goodsTypeModel = new typeSpecModel();
             $goodsTypeModel->startTrans();
             $filter            = [
-                'seller_id' => $this->sellerId,
+                'Manage_id' => $this->ManageId,
                 'id'        => $id,
             ];
             if ($goodsTypeModel::destroy($filter)) {

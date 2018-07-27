@@ -3,6 +3,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use Request;
 use app\common\model\Goods as goodsModel;
 use app\common\model\GoodsType;
 use app\common\model\GoodsCat;
@@ -16,8 +17,6 @@ use app\common\model\GoodsTypeParams;
 use think\Queue;
 use app\common\validate\Goods as GoodsValidate;
 use app\common\validate\Products as ProductsValidate;
-use app\common\model\Seller;
-use Request;
 
 /***
  * 商品
@@ -42,17 +41,11 @@ class Goods extends Manage
      */
     public function index()
     {
-        if (!Request::isAjax()) {
-            //所属商户
-            $seller      = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-        }
         $goodsModel = new goodsModel();
         $statics    = $goodsModel->staticGoods();
         $this->assign('statics', $statics);
         if (Request::isAjax()) {
-            $filter = input('request.');
+            $filter              = input('request.');
             return $goodsModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -74,16 +67,16 @@ class Goods extends Manage
     {
         //分类
         $goodsCatModel = new GoodsCat();
-        $catList       = $goodsCatModel->getCatByParentId(0, $this->sellerId);
+        $catList       = $goodsCatModel->getCatByParentId(0);
         $this->assign('catList', $catList);
         //类型
         $goodsTypeModel = new GoodsType();
-        $typeList       = $goodsTypeModel->getAllTypes(0, $this->sellerId);
+        $typeList       = $goodsTypeModel->getAllTypes(0);
         $this->assign('typeList', $typeList);
 
         //品牌
         $brandModel = new Brand();
-        $brandList  = $brandModel->getAllBrand($this->sellerId);
+        $brandList  = $brandModel->getAllBrand();
         $this->assign('brandList', $brandList);
     }
 
@@ -101,7 +94,7 @@ class Goods extends Manage
         if ($id) {
 
             $goodsCatModel = new GoodsCat();
-            $catList       = $goodsCatModel->getCatByParentId($id, $this->sellerId);
+            $catList       = $goodsCatModel->getCatByParentId($id);
 
             return [
                 'data'   => $catList,
@@ -276,7 +269,6 @@ class Goods extends Manage
         $data['goods']['is_hot']        = input('post.goods.is_hot', '2');
         $open_spec                      = input('post.open_spec', 0);
         $specdesc                       = input('post.spec/a', []);
-        $data['goods']['seller_id']     = $this->sellerId;
 
         if ($specdesc && $open_spec) {
             $data['goods']['spes_desc'] = serialize($specdesc);
@@ -348,7 +340,6 @@ class Goods extends Manage
         $productsModel = new Products();
         //单规格
         $data['product']['goods_id']   = $goods_id;
-        $data['product']['seller_id']  = $this->sellerId;
         $data['product']['sn']         = $data['goods']['sn'];//货品编码
         $data['product']['price']      = $data['goods']['price'];//货品价格
         $data['product']['costprice']  = $data['goods']['costprice'];//货品成本价
@@ -419,7 +410,7 @@ class Goods extends Manage
             }
             //获取参数信息
             $goodsTypeParamsModel = new GoodsTypeParams();
-            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id, $this->sellerId);
+            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
             $this->assign('typeParams', $typeParams);
             //print_r($typeParams);die();
             $html             = $this->fetch('getSpec');
@@ -812,7 +803,7 @@ class Goods extends Manage
             }
             //获取参数信息
             $goodsTypeParamsModel = new GoodsTypeParams();
-            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id, $this->sellerId);
+            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
             $this->assign('typeParams', $typeParams);
             //解析参数信息
             $params = [];
@@ -1030,7 +1021,7 @@ class Goods extends Manage
             return $result;
         }
         $goodsModel = new goodsModel();
-        if ($goodsModel->save($iData, ['id' => $id, 'seller_id' => $this->sellerId])) {
+        if ($goodsModel->save($iData, ['id' => $id])) {
             $result['msg']    = '设置成功';
             $result['status'] = true;
         } else {
@@ -1040,4 +1031,32 @@ class Goods extends Manage
         return $result;
     }
 
+    /**
+     * 更新排序
+     * @return array
+     */
+    public function updateSort()
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        $field  = input('post.field/s');
+        $value  = input('post.value/d');
+        $id     = input('post.id/d', '0');
+        if (!$field || !$value || !$id) {
+            $result['msg']    = '参数丢失';
+            $result['status'] = false;
+        }
+        $goodsModel = new goodsModel();
+        if ($goodsModel->updateGoods($id, [$field => $value])) {
+            $result['msg']    = '更新成功';
+            $result['status'] = true;
+        } else {
+            $result['msg']    = '更新失败';
+            $result['status'] = false;
+        }
+        return $result;
+    }
 }

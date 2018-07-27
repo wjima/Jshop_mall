@@ -8,7 +8,7 @@ use app\common\model\UserToken;
 use app\common\model\GoodsCollection;
 use app\common\model\Products;
 use app\common\model\GoodsCat;
-use app\common\model\SellerSetting;
+use app\common\model\Setting;
 
 
 /**
@@ -84,8 +84,8 @@ class Goods extends Common
             $where[] = ['seller_id', 'eq', $post['seller_id']];
         }
         if (isset($post['warn']) && $post['warn'] == "true") {
-            $sellerSettingModel = new SellerSetting();
-            $goods_stocks_warn = $sellerSettingModel->getValue($post['seller_id'],'goods_stocks_warn');
+            $SettingModel = new Setting();
+            $goods_stocks_warn = $SettingModel->getValue($post['seller_id'],'goods_stocks_warn');
             $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
             $where[] = ['stock', 'elt', $goods_stocks_warn];
         }
@@ -150,7 +150,6 @@ class Goods extends Common
             if($val['label_ids']){
                 $list[$key]['label_ids'] = getLabel($val['label_ids']);
             }
-            $list[$key]['seller_name'] = getSellerInfoById($val['seller_id'],'seller_name');
         }
         return $list;
     }
@@ -909,9 +908,9 @@ class Goods extends Common
         $baseFilter['marketable']=self::MARKETABLE_DOWN;
         $totalMarketableDown = $this->where($baseFilter)->count('id');
         //警戒库存
-        $sellerSettingModel = new SellerSetting();
+        $SettingModel = new Setting();
 
-        $goods_stocks_warn = $sellerSettingModel->getValue('goods_stocks_warn');
+        $goods_stocks_warn = $SettingModel->getValue('goods_stocks_warn');
         $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
         unset($baseFilter['marketable']);
         $baseFilter[]=['stock','elt',$goods_stocks_warn];

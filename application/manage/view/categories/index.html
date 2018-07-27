@@ -6,25 +6,7 @@
 <form class="layui-form seller-form" action="">
 	<div class="layui-form-item">
 		<div class="layui-inline">
-			<label class="layui-form-label">所属商户：</label>
-			<div class="layui-input-inline seller-inline-3">
-				<select name="seller_id" id="seller_id">
-					<option value="">-- 全部 --</option>
-					{foreach $seller_list as $key=>$vo}
-					<option value="{$vo.id}">{$vo.seller_name}</option>
-					{/foreach}
-				</select>
-			</div>
-		</div>
-		<div class="layui-inline">
-			<div class="layui-input-inline">
-				<button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-			</div>
-		</div>
-	</div>
-	<div class="layui-form-item">
-		<div class="layui-inline">
-			<button class="layui-btn layui-btn-sm add-class-all"><i class="layui-icon">&#xe608;</i> 添加</button>
+			<button class="layui-btn layui-btn-sm add-class"><i class="layui-icon">&#xe608;</i> 添加</button>
 		</div>
 	</div>
 </form>
@@ -34,12 +16,12 @@
 </div>
 
 <script>
-    var window_box, table;
-    layui.use(['table', 'layer', 'form'], function(){
-        var layer = layui.layer, $ = layui.jquery, form = layui.form;
+    var window_box;
+    layui.use(['table', 'layer'], function(){
+        var layer = layui.layer, $ = layui.jquery, table = layui.table;
 
         //获取商品分类数据
-        table = layui.table.render({
+        table.render({
             id: 'categories',
             elem: '#categories',
             url: '{:url("categories/index")}',
@@ -50,7 +32,6 @@
             },
             cols: [[
                 {type: 'numbers'},
-				{field: 'seller_name', title: '所属商户', width: 250, align: 'center'},
                 {field: 'name_1', title: '一级分类', width:200, align: 'center'},
                 {field: 'name_2', title: '二级分类', width:200, align: 'center'},
                 {field: 'type_id', title: '所属类型', width:150, align: 'center'},
@@ -65,19 +46,17 @@
         //添加分类
         $(document).on('click', '.add-class', function(){
             var id = $(this).attr('data-id');
-            let seller_id = $(this).attr('data-seller_id');
             $.ajax({
                 url: '{:url("categories/add")}',
                 type: 'get',
                 data: {
-                    'parent_id': id,
-					'seller_id': seller_id
+                    'parent_id': id
                 },
                 success: function(e){
                     window_box = layer.open({
                         type: 1,
                         title: '添加分类',
-                        area: ['430px', '580px'], //宽高
+                        area: ['430px', '510px'], //宽高
                         content: e
                     });
                 }
@@ -85,42 +64,14 @@
             return false;
         });
 
-        //添加分类顶部的按钮
-        $(document).on('click', '.add-class-all', function(){
-            let seller_id = $("#seller_id").val();
-            if(seller_id) {
-                $.ajax({
-                    url: '{:url("categories/add")}',
-                    type: 'get',
-                    data: {
-                        'seller_id': seller_id
-                    },
-                    success: function(e){
-                        window_box = layer.open({
-                            type: 1,
-                            title: '添加分类',
-                            area: ['430px', '580px'], //宽高
-                            content: e
-                        });
-                    }
-                });
-			} else {
-                layer.msg('请先选择所属商户，在点击添加');
-			}
-
-            return false;
-        });
-
         //编辑分类
         $(document).on('click', '.edit-class', function(){
             var id = $(this).attr('data-id');
-            let seller_id = $(this).attr('data-seller_id');
             $.ajax({
                 url: '{:url("categories/edit")}',
                 type: 'get',
                 data: {
-                    'id': id,
-					'seller_id': seller_id
+                    'id': id
                 },
                 success: function(e){
                     window_box = layer.open({
@@ -179,7 +130,6 @@
             var name = $("#name").val();
             var image_id = $("#image_value_image_id").val();
             var sort = $("#sort").val();
-            let seller_id = $("#form_seller_id").val();
 
             var error = false;
             if(name.length > 6 || name.length < 1){
@@ -192,7 +142,7 @@
                 layer.msg('请填写1-100的排序值，越小越靠前', {time: 1300});
                 return false;
             }
-            
+
             if(!error){
                 $.ajax({
                     url: '{:url("categories/add")}',
@@ -202,8 +152,7 @@
                         'type_id': type_id,
                         'name': name,
                         'image_id': image_id,
-                        'sort': sort,
-						'seller_id': seller_id
+                        'sort': sort
                     },
                     dataType: 'json',
                     success: function(e){
@@ -257,15 +206,6 @@
                     }
                 });
             }
-        });
-
-        //筛选条件
-        form.on('submit(*)', function(data){
-            table.reload({
-                where: data.field,
-                page: {curr: 1}
-            });
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });
 </script>

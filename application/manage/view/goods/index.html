@@ -3,7 +3,7 @@
 		background-color: #fff;
 		padding: 10px;
 		margin-top: 10px;
-		border: 1px solid #e6e6e6;		
+		border: 1px solid #e6e6e6;
 	}
 
 	.layui-tab-card>.layui-tab-title{
@@ -24,17 +24,7 @@
 
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">所属商户：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <select name="seller_id" id="seller_id">
-                    <option value="">-- 全部 --</option>
-                    {foreach $seller_list as $key=>$vo}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/foreach}
-                </select>
-            </div>
-        </div>
+
         <div class="layui-inline">
             <label class="layui-form-label">商品名称：</label>
             <div class="layui-input-inline seller-inline-4">
@@ -58,15 +48,26 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" id="addGoods" lay-filter="goods-add"><i class="layui-icon">&#xe608;</i>添加商品</button>
+        </div>
+        <div class="layui-inline">
             <label class="layui-form-label">批量操作：</label>
             <div class="layui-input-inline seller-inline-2">
                 <select name="batchOperate" id="batchOperate" lay-filter="batchOperate">
                     <option value=""></option>
                     <option value="marketable_up">上架</option>
                     <option value="marketable_down">下架</option>
+                    <option value="label">打标签</option>
+                    <option value="dellabel">去标签</option>
                     <option value="del">删除</option>
                 </select>
             </div>
+        </div>
+        <div class="layui-inline">
+                <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="import-goods"><i class="layui-icon"></i>导入商品</button>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-goods"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
         </div>
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" id="Goods" lay-submit lay-filter="advance-goods-search"><i class="iconfont icon-shaixuan"></i>高级筛选</button>
@@ -88,12 +89,48 @@
 	</div>
 </div>
 
+
+<div id="exportGoods" style="display: none;">
+    <form class="layui-form export-form"  action="" >
+        <div class="layui-form-item">
+            <div class="layui-margin-10">
+                <blockquote class="layui-elem-quote layui-text">
+                    请先选中或筛选要导出的商品
+                </blockquote>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">任务名称：</label>
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="importGoods" style="display: none;">
+    <form class="layui-form import-form" method="post" action="{:url('ietask/import')}" enctype="multipart/form-data">
+        <div class="layui-form-item">
+            <div class="layui-margin-10">
+                <blockquote class="layui-elem-quote layui-text">
+                    请先下载<a href="{:url('ietask/importTemplete',['tplName'=>'goods'])}">导入模板</a>
+                </blockquote>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">
+                    <input type="file" class="layui-file" name="importFile" id="importFile">
+                    <input type="hidden" name="model" value="Goods">
+                </label>
+            </div>
+        </div>
+    </form>
+</div>
 <script>
     var table, window_box;
     layui.use(['form', 'layedit','upload', 'laydate','table','element'], function(){
         var upload = layui.upload;
         var element = layui.element;
         var filter = {};
+
         table = layui.table.render({
             elem: '#goodsTable',
             height: 'full-330',
@@ -111,7 +148,7 @@
                         return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
                 {field:'name', width:250,title:'名称', align: 'center'},
-                {field:'seller_name', width:250,title:'所属商户', align: 'center'},
+                {field:'sort', edit: 'text', width:80,title:'排序', align: 'center'},
                 {field:'label_ids', width:120,title:'标签', align: 'center',templet:function (data) {
                     return getLabel(data.label_ids);
                 }},
@@ -139,6 +176,90 @@
             ]]
         });
 
+        layui.table.on('edit(test)', function(obj){
+
+            JsPost("{:url('goods/updateSort')}",{'field':obj.field,'value':obj.value,'id':obj.data.id},function(res){
+                    layer.msg(res.msg, {time:1500}, function(){
+                        if(res.status){
+                            table.reload();
+                        }
+                    });
+                }
+            );
+        });
+
+        //商品导入
+        layui.form.on('submit(import-goods)', function(data) {
+            layer.open({
+                type: 1,
+                title:'商品导入',
+                area: ['400px', '290px'], //宽高
+                btn:['确定','取消'],
+                content: $("#importGoods").html(),
+                yes:function (index,obj) {
+                    $(obj).find('.import-form').ajaxSubmit({
+                        type:'post',
+                        dataType:'json',
+                        success:function(result){
+                            layer.msg(result.msg, {time:1500}, function(){
+                                if(result.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+                            });
+                        },
+                        error:function(result){
+                            layer.msg("导入失败");
+                        }
+                    });
+                },btn2:function () {
+                    layer.closeAll();
+                }
+            });
+        });
+
+        //商品导出
+        layui.form.on('submit(export-goods)', function(data){
+
+                layer.open({
+                    type: 1,
+                    title:'商品导出',
+                    area: ['400px', '290px'], //宽高
+                    btn:['确定','取消'],
+                    content: $("#exportGoods").html(),
+                    yes:function () {
+                        //判断是否有选中
+                        var checkStatus = layui.table.checkStatus('goodsTable');
+                        var checkData = checkStatus.data;
+                        var length = checkStatus.data.length;
+                        if(length){
+                            var ids = [];
+                            $.each(checkData,function (i,obj) {
+                                ids.push(obj.id);
+                            });
+                            var selectIds =ids.toString();
+                            $(".export-form").append("<input type='hidden' name='ids' value='"+selectIds+"'>");
+                        }
+                        var filter=$(".seller-form").serialize();
+                        $(".export-form").append("<input type='hidden' name='filter' value='"+filter+"'>");
+
+                        var data = $(".export-form").serializeArray();
+                        data.push({'name':'model','value':'Goods'});
+                        JsPost("{:url('Ietask/export')}",data,function(res){
+                            layer.msg(res.msg, {time:1500}, function(){
+                                if(res.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+                            });
+                            }
+                        );
+                    },btn2:function () {
+                        layer.closeAll();
+                    }
+                });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
 
         element.on('tab(goods-tab)', function (data) {
             var type = this.getAttribute('lay-id');

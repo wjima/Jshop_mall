@@ -1,16 +1,5 @@
 <div style="padding:30px" class="layui-form layui-form-pane">
     <div class="layui-form-item">
-        <label class="layui-form-label">所属商家：</label>
-        <div class="layui-input-block">
-            <select name="form_seller_id" id="form_seller_id" lay-verify="required" lay-search="">
-                <option value="0" {eq name="$seller_id" value="0"}selected{/eq}>--请选择--</option>
-                {foreach $seller_list as $key=>$vo}
-                <option value="{$vo.id}" {eq name="$seller_id" value="$vo.id"}selected{/eq}>{$vo.seller_name}</option>
-                {/foreach}
-            </select>
-        </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">所属分类：</label>
         <div class="layui-input-block">
             <select name="parent_id" id="parent_id" lay-verify="required" lay-search="">

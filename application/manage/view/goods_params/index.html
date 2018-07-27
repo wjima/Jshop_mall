@@ -6,20 +6,6 @@
 <form class="layui-form seller-form" action="">
 	<div class="layui-form-item">
 		<div class="layui-inline">
-			<label class="layui-form-label">所属商户：</label>
-			<div class="layui-input-inline seller-inline-3">
-				<select name="seller_id" id="seller_id">
-					<option value="">-- 全部 --</option>
-					{foreach $seller_list as $key=>$vo}
-					<option value="{$vo.id}">{$vo.seller_name}</option>
-					{/foreach}
-				</select>
-			</div>
-		</div>
-		<div class="layui-inline">
-			<button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-		</div>
-		<div class="layui-inline">
 			<button class="layui-btn add-class layui-btn-sm"><i class="layui-icon">&#xe608;</i> 添加</button>
 		</div>
 	</div>
@@ -42,7 +28,6 @@
             id:'typeTable',
             cols: [[
                 {type:'numbers'},
-                {field:'seller_name', width:100,title:'所属商户'},
                 {field:'name', width:100,title:'名称'},
                 {field:'type', width:100,title:'类型',templet:function (data) {
 					if(data.type=='text'){
@@ -63,7 +48,7 @@
             ]]
         });
         layui.form.on('submit(*)', function(data){
-            table.reload({
+            layui.table.reload('userTable', {
                 where: data.field
                 ,page: {
                     curr: 1 //重新从第 1 页开始

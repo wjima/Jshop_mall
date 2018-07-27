@@ -3,18 +3,17 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use Request;
 use app\common\model\GoodsType as typeModel;
 use app\common\model\GoodsTypeSpec;
 use app\common\model\GoodsTypeSpecRel;
 use app\common\model\GoodsParams;
 use app\common\model\GoodsTypeParams;
-use app\common\model\Seller;
-use Request;
 
 /**
  * 商品类型
  * Class GoodsType
- * @package app\seller\controller
+ * @package app\Manage\controller
  * User: wjima
  * Email:1457529125@qq.com
  * Date: 2018-01-09 20:07
@@ -28,12 +27,7 @@ class GoodsType extends Manage
      */
     public function index()
     {
-        if (!Request::isAjax()) {
-            //所属商户
-            $seller      = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-        }else{
+        if (Request::isAjax()) {
             $typeModel           = new typeModel();
             $filter              = input('request.');
             return $typeModel->tableData($filter);
@@ -59,7 +53,6 @@ class GoodsType extends Manage
             //存储添加内容
             $data   = [
                 'name'      => input('post.name'),
-                'seller_id' => $this->sellerId,
             ];
             $result = model('common/GoodsType')->add($data);
             if ($result !== false) {
@@ -93,11 +86,11 @@ class GoodsType extends Manage
             $this->assign('spec', $spec);
 
             $typeSpecModel = new GoodsTypeSpec();
-            $specList      = $typeSpecModel->getAllSpec($this->sellerId);
+            $specList      = $typeSpecModel->getAllSpec();
             $this->assign('specList', $specList);
             //获取已关联属性
             $typeSpecRelModel = new GoodsTypeSpecRel();
-            $typeSpec         = $typeSpecRelModel->getRelTypeSpec($id, $this->sellerId);
+            $typeSpec         = $typeSpecRelModel->getRelTypeSpec($id);
 
             $this->assign('typeSpec', $typeSpec);
 
@@ -157,7 +150,6 @@ class GoodsType extends Manage
             $data           = [
                 'id'        => input('post.id', 0),
                 'name'      => input('post.name', ''),
-                'seller_id' => $this->sellerId,
             ];
             $goodsTypeModel::update($data, ['id' => $data['id']]);
 
@@ -189,7 +181,7 @@ class GoodsType extends Manage
             $goodsTypeModel = new typeModel();
             $goodsTypeModel->startTrans();
 
-            if ($goodsTypeModel->where(['id' => $id, 'seller_id' => $this->sellerId])->delete()) {
+            if ($goodsTypeModel->where(['id' => $id])->delete()) {
                 $typeSpecRelModel = new GoodsTypeSpecRel();
 
                 if (!$typeSpecRelModel::get(['type_id' => $id])) {
@@ -229,12 +221,12 @@ class GoodsType extends Manage
             $this->assign('spec_id', $id);
 
             $goodsParamsModel = new GoodsParams();
-            $params           = $goodsParamsModel->getAllParams($this->sellerId);
+            $params           = $goodsParamsModel->getAllParams();
             $this->assign('params', $params);
 
             //获取已绑定参数
             $goodsTypeParamsModel = new GoodsTypeParams();
-            $typeParams           = $goodsTypeParamsModel->getRelParams($id, $this->sellerId);
+            $typeParams           = $goodsTypeParamsModel->getRelParams($id);
             $this->assign('typeParams', $typeParams);
 
             $typePids = [];

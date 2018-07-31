@@ -28,7 +28,7 @@ class Advertisement extends Manage
             $advertisement = new advertisementModel();
             return  $advertisement->tableData(input('param.'));
         }
-        return $this->fetch('',['sellerList'=>getSellerList()]);
+        return $this->fetch();
     }
 
     /**
@@ -43,7 +43,7 @@ class Advertisement extends Manage
         {
             return $advertisement->addData(input('param.'));
         }
-        return $this->fetch('add',['sellerList'=>getSellerList(),'type'=>config('params.advertType')['type']]);
+        return $this->fetch('add',['type'=>config('params.advertType')['type']]);
     }
 
 
@@ -63,7 +63,7 @@ class Advertisement extends Manage
             return $advertisement->saveData(input('param.'));
         }
         $advertisementModel = new advertisementModel();
-        $info = $advertisementModel->with('sellerInfo')->where('id',input('param.id/d'))->find();
+        $info = $advertisementModel->where('id',input('param.id/d'))->find();
         if (!$info)
         {
             return error_code(10002);

@@ -37,4 +37,7 @@ return [
     ],
     'login_fail_num' => 3,              //登陆失败次数，如果每天登陆失败次数超过次数字，就会显示图片验证码
     'tocash_money_low' => '100' ,       //最低提现金额
+    'authorization_url'=>'https://jshop.jihainet.com', //授权查询地址
+    'product'=>'Jshop-B2C标准版',//产品名称
+    'version'=>'v1.0',//版本号
 ];

@@ -8,14 +8,10 @@ namespace app\manage\controller;
 
 use app\common\controller\Manage as ManageController;
 use app\common\model\ManageRole;
-use app\common\model\Operation;
-use app\common\model\SellerManage;
-use app\common\model\SellerRole;
-use app\common\model\SellerRoleOperationRel;
-use app\common\model\User;
 use app\common\model\Manage as ManageModel;
 use app\common\model\ManageRoleRel;
 use Request;
+use org\Curl;
 
 
 class Manage extends ManageController
@@ -162,6 +158,46 @@ class Manage extends ManageController
         return $manageModel->chengePwd(session('manage.id'), input('param.password'), input('param.newPwd'));
     }
 
+    /**
+     * 获取查询授权信息
+     * @return array
+     */
+    public function getVersion()
+    {
+        $return  = [
+            'msg'    => '授权查询失败',
+            'data'   => '',
+            'status' => false,
+        ];
+        $product = config('jshop.product');
+        $version = config('jshop.version');
+        $url     = config('jshop.authorization_url') . '/index.php/b2c/Authorization/verification';
+        $domain  = $_SERVER['SERVER_NAME'];
+        $curl    = new Curl();
+        $params  = [
+            'domain'  => $domain,
+            'product' => $product,
+            'version' => $version,
+            'time'    => time(),
+        ];
+        $data    = $curl::post($url, $params);
+        $data =  \GuzzleHttp\json_decode($data,true);
+        if ($data['status']) {//未授权
+            $return['data']['is_authorization'] = $data['data']['is_authorization'];
+            $return['data']['version']          = $version;
+            $return['data']['product']          = $product;
+            $return['data']['changeLog']        = $data['data']['changeLog'];
+            $return['msg']                      = '授权查询成功';
+            $return['status']                   = true;
+            return $return;
+        } else {
+            $return['data']['product']          = $product;
+            $return['data']['version']          = $version;
+            $return['data']['changeLog']        = '未查询到授权信息';
+            $return['data']['is_authorization'] = false;
+            return $return;
+        }
+    }
 
 
 

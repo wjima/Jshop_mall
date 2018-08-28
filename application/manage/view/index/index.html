@@ -114,28 +114,11 @@
 			<div class="layui-col-md4">
 				<div class="layui-card">
 					<div class="layui-card-header">
-						<i class="iconfont icon-gonggao"></i>系统公告
+						<i class="iconfont icon-gonggao"></i>版本信息
 					</div>
+
 					<div class="layui-card-body layui-text" id="view">
-<!--						<table class="layui-table">
-							<tbody>
-								<tr>
-									<td><i>1</i>最新公告内容最新公告内容</td>
-								</tr>
-								<tr>
-									<td><i>2</i>最新公告内容最新公告内容</td>
-								</tr>
-								<tr>
-									<td><i>3</i>最新公告内容最新公告内容</td>
-								</tr>
-								<tr>
-									<td><i>3</i>最新公告内容最新公告内容</td>
-								</tr>
-								<tr>
-									<td><i>3</i>最新公告内容最新公告内容</td>
-								</tr>
-							</tbody>
-						</table>-->
+
 					</div>
 				</div>
 			</div>
@@ -226,6 +209,56 @@
                 {{# } }}
             </script>
 
+			<script id="version" type="text/html">
+				<table class="layui-table">
+					<colgroup>
+						<col width="100">
+						<col>
+					</colgroup>
+					<tbody>
+					<tr>
+						<td>产品名称</td>
+						<td>
+							{{ d.product }}
+						</td>
+					</tr>
+					<tr>
+						<td>当前版本</td>
+						<td>
+							{{ d.version }} <a href="javascript:void(0);" target="_blank" style="padding-left: 15px;">更新日志</a>
+						</td>
+					</tr>
+					<tr>
+						<td>是否授权</td>
+						<td>
+							{{# if(d.is_authorization ==true){ }}
+							<a href="" style="color: green;">已授权</a>
+							{{#  }else{ }}
+							<a href="" style="color: red;">未授权</a>
+							{{#  } }}
+						</td>
+					</tr>
+					<tr>
+						<td>产品授权</td>
+						<td style="padding-bottom: 0;">
+							<div class="layui-btn-container">
+								{{# if(d.is_authorization ==true){ }}
+								<a href="http://fly.layui.com/download/layuiAdmin/" target="_blank"
+								   class="layui-btn  layui-btn-sm">下载更新</a>
+								{{#  }else{ }}
+								<a href="http://www.layui.com/admin/" target="_blank"
+								   class="layui-btn layui-btn-danger  layui-btn-sm">获取授权</a>
+								<a href="http://fly.layui.com/download/layuiAdmin/" target="_blank"
+								   class="layui-btn  layui-btn-sm">立即下载</a>
+								{{#  } }}
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</script>
+
+
 			<script id="oplog" type="text/html">
 
 				{{#  if(d.length === 0){ }}
@@ -253,17 +286,18 @@
 				</table>
 				{{# } }}
 			</script>
+
+
 			<script type="text/javascript">
 				layui.use(['laytpl','layer'],function(){
 					var $ = layui.$, laytpl = layui.laytpl,layer = layui.layer;
-
-                    //获取总后台公告消息列表
-					$.get("{:url('manage/BackstageNotice/show')}?_ajax=1&limit=5",function(data){
-						var getTpl = demo.innerHTML,view = document.getElementById('view');
+					$.get("{:url('manage/manage/getVersion')}",function(data){
+						var getTpl = version.innerHTML,view = document.getElementById('view');
 						laytpl(getTpl).render(data.data, function(html){
 							view.innerHTML = html;
 						});
 					});
+
 
                     //获取历史登录记录
                     $.get("{:url('seller/User/userLogList',array('state'=>1))}",function(data){

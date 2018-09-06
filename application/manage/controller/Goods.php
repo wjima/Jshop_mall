@@ -445,7 +445,7 @@ class Goods extends Manage
             if (!$goods['status']) {
                 return '商品不存在';
             }
-            $products = $goods['data']->products->toArray();
+            $products = $goods['data']->products;
         }
         if ($spec) {
             $specValue = [];

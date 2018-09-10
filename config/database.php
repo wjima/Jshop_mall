@@ -13,7 +13,7 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '127.0.0.1',
+    'hostname'        => 'localhost',
     // 数据库名
     'database'        => 'jshop_b2c',
     // 用户名
@@ -21,7 +21,7 @@ return [
     // 密码
     'password'        => 'root',
     // 端口
-    'hostport'        => '',
+    'hostport'        => '3306',
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
@@ -51,5 +51,5 @@ return [
     // 是否需要进行SQL性能分析
     'sql_explain'     => false,
     // Query类
-    'query'           => '\\think\\db\\Query',
+    'query'           => '\think\db\Query',
 ];

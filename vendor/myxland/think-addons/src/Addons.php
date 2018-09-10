@@ -1,11 +1,10 @@
 <?php
-
 namespace myxland\addons;
 
 use think\Config;
 use think\Container;
-use think\View;
 use think\Db;
+use think\facade\View;
 
 
 /**
@@ -22,7 +21,7 @@ abstract class Addons
      * @var view
      * @access protected
      */
-    protected $view = null;
+    private $view = null;
 
     // 当前错误信息
     protected $error;
@@ -50,22 +49,23 @@ abstract class Addons
      */
     public function __construct()
     {
+
+
         // 获取当前插件目录
         $this->addons_path = ADDON_PATH . $this->getName() . DIRECTORY_SEPARATOR;
         // 读取当前插件配置信息
         if (is_file($this->addons_path . 'config.php')) {
             $this->config_file = $this->addons_path . 'config.php';
         }
-
+        $this->app = Container::get('app');
         // 初始化视图模型
         $config = ['view_path' => $this->addons_path];
 
-        $this->app = Container::get('app');
-
-        $template_config = $this->app['config']->pull('template');
+        // 初始化视图模型
+        $template_config = \config('template.');
         $config          = array_merge($template_config, $config);
-
-        $this->view = Container::get('view')->init(
+        $view            = new view();
+        $this->view      = $view::init(
             $config
         );
 
@@ -236,5 +236,12 @@ abstract class Addons
         $dialog['width'] = $info['dialog_width']?$info['dialog_width']:'600px';
         $dialog['height'] = $info['dialog_height']?$info['dialog_height']:'520px';
         return $dialog;
+    }
+
+    //todo 临时这么处理，后期调整
+    function __destruct()
+    {
+        $this->view->engine(['view_path'=> '']);
+        // TODO: Implement __destruct() method.
     }
 }

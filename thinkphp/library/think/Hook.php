@@ -135,6 +135,7 @@ class Hook
         $tags    = $this->get($tag);
 
         foreach ($tags as $key => $name) {
+
             $results[$key] = $this->execTag($name, $tag, $params);
 
             if (false === $results[$key]) {
@@ -164,6 +165,7 @@ class Hook
                 $class = $this->bind[$class];
             }
             $method = [$class, self::$portal];
+
         }
 
         return Container::getInstance()->invoke($method, [$params]);
@@ -200,7 +202,6 @@ class Hook
             $call  = [$class, $method];
             $class = $class . '->' . $method;
         }
-
         $result = Container::getInstance()->invoke($call, [$params]);
 
         if ($app->isDebug()) {

@@ -119,5 +119,7 @@ class Appletmessage extends Addons
 
     }
 
-
+    public function testhook($param){
+        #echo '第二个';
+    }
 }

@@ -26,7 +26,6 @@ class Common extends Model
         $re['msg'] = '';
         $re['count'] = $list->total();
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
 
         return $re;
     }

@@ -8,7 +8,6 @@ use think\console\input\Option;
 use think\facade\Config;
 
 //用户目录
-#define("TASKS_PATH", dirname(ROOT_PATH).'/tasks');
 define("START_PATH", ROOT_PATH);
 // 载入taskphp入口文件
 require_once ROOT_PATH . '/vendor/taskphp/taskphp/src/taskphp/base.php';

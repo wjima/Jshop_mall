@@ -1246,212 +1246,191 @@ class Order extends Common
 
     /**
      * 自动取消订单
-     * @param $seller_setting
+     * @param $setting
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function autoCancel($seller_setting)
+    public function autoCancel($setting)
     {
         $orderLog = new OrderLog();
-        foreach($seller_setting as $k => $v)
+        unset($where);
+        $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
+        $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        $where[] = ['ctime', '<=', time()-$setting*86400];
+
+        $order_info = $this->where($where)
+            ->select();
+
+        if(count($order_info)>0)
         {
-            unset($where);
-            $where[] = ['seller_id', 'eq', $k];
-            $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
-            $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-            $where[] = ['ctime', '<=', time()-$v*86400];
+            Db::startTrans();
+            try{
+                //更改状态和库存
+                unset($order_ids);
+                $order_ids = [];
+                foreach ($order_info as $kk => $vv)
+                {
+                    $order_ids[] = $vv['order_id'];
 
-            $order_info = $this->where($where)
-                ->select();
-
-            if(count($order_info)>0)
-            {
-                Db::startTrans();
-                try{
-                    //更改状态和库存
-                    unset($order_ids);
-                    $order_ids = [];
-                    foreach ($order_info as $kk => $vv)
-                    {
-                        $order_ids[] = $vv['order_id'];
-
-                        //订单记录
-                        $orderLog->addLog($vv['order_id'], $vv['user_id'], $vv['seller_id'], $orderLog::LOG_TYPE_AUTO_CANCEL, '订单后台自动取消', $vv);
-                    }
-                    //状态修改
-                    unset($w);
-                    $w[] = ['order_id', 'in', $order_ids];
-                    $d['status'] = self::ORDER_STATUS_CANCEL;
-                    $d['utime'] = time();
-                    $this->where($w)
-                        ->update($d);
-
-                    //修改库存
-                    $itemModel = new OrderItems();
-                    $goods = $itemModel->field('product_id, nums')->where($w)->select();
-                    $goodsModel = new Goods();
-                    foreach ($goods as $vv)
-                    {
-                        $goodsModel->changeStock($vv['product_id'], 'cancel', $vv['nums']);
-                    }
-                    Db::commit();
-                }catch(\Exception $e){
-                    Db::rollback();
+                    //订单记录
+                    $orderLog->addLog($vv['order_id'], $vv['user_id'],$orderLog::LOG_TYPE_AUTO_CANCEL, '订单后台自动取消', $vv);
                 }
+                //状态修改
+                unset($w);
+                $w[] = ['order_id', 'in', $order_ids];
+                $d['status'] = self::ORDER_STATUS_CANCEL;
+                $d['utime'] = time();
+                $this->where($w)
+                    ->update($d);
+
+                //修改库存
+                $itemModel = new OrderItems();
+                $goods = $itemModel->field('product_id, nums')->where($w)->select();
+                $goodsModel = new Goods();
+                foreach ($goods as $vv)
+                {
+                    $goodsModel->changeStock($vv['product_id'], 'cancel', $vv['nums']);
+                }
+                Db::commit();
+            }catch(\Exception $e){
+                Db::rollback();
             }
         }
+
     }
 
     /**
      * 自动签收订单
-     * @param $seller_setting
+     * @param $setting
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function autoSign($seller_setting)
+    public function autoSign($setting)
     {
         $orderLog = new OrderLog();
-        foreach($seller_setting as $k => $v)
-        {
-            unset($where);
-            $where[] = ['seller_id', 'eq', $k];
-            $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-            $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-            $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-            $where[] = ['utime', '<=', time()-$v*86400];
 
-            $order_list = $this->field('order_id, user_id, seller_id')->where($where)->select();
-            if(count($order_list)>0)
-            {
-                unset($order_ids);
-                unset($wh);
-                $order_ids = [];
-                foreach ($order_list as $vv)
-                {
-                    $order_ids[] = $vv['order_id'];
-                }
-                $wh[] = ['order_id', 'in', $order_ids];
-                $data['confirm'] = self::CONFIRM_RECEIPT;
-                $data['confirm_time'] = time();
-                $data['utime'] = time();
-                $this->where($wh)->update($data);
+        $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
+        $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
+        $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        $where[] = ['utime', '<=', time() - $setting * 86400];
 
-                //订单记录
-                $orderLog->addLogs($order_list, $orderLog::LOG_TYPE_AUTO_SIGN, '订单后台自动签收', $where);
+        $order_list = $this->field('order_id, user_id')->where($where)->select();
+        if (count($order_list) > 0) {
+            unset($order_ids);
+            unset($wh);
+            $order_ids = [];
+            foreach ($order_list as $vv) {
+                $order_ids[] = $vv['order_id'];
             }
+            $wh[]                 = ['order_id', 'in', $order_ids];
+            $data['confirm']      = self::CONFIRM_RECEIPT;
+            $data['confirm_time'] = time();
+            $data['utime']        = time();
+            $this->where($wh)->update($data);
+
+            //订单记录
+            $orderLog->addLogs($order_list, $orderLog::LOG_TYPE_AUTO_SIGN, '订单后台自动签收', $where);
         }
+
     }
 
     /**
      * 自动评价订单
-     * @param $seller_setting
+     * @param $setting
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function autoEvaluate($seller_setting)
+    public function autoEvaluate($setting)
     {
         $orderLog = new OrderLog();
-        foreach($seller_setting as $k => $v)
-        {
-            unset($where);
-            //查询订单
-            $where[] = ['seller_id', 'eq', $k];
-            $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-            $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-            $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-            $where[] = ['confirm', 'eq', self::CONFIRM_RECEIPT];
-            $where[] = ['is_comment', 'eq', self::NO_COMMENT];
-            $where[] = ['confirm_time', '<=', time()-$v*86400];
-            $order_info = $this::with('items')->field('order_id, user_id')->where($where)
-                ->select()->toArray();
 
-            unset($order_ids);
-            $order_ids = [];
-            $order_items = [];
-            foreach($order_info as $vo)
-            {
-                $order_ids[] = $vo['order_id'];
-                if(count($vo['items']) > 0)
-                {
-                    foreach($vo['items'] as &$vv)
-                    {
-                        $vv['user_id'] = $vo['user_id'];
-                    }
-                    $order_items = array_merge($order_items, $vo['items']);
+        //查询订单
+        $where[]    = ['pay_status', 'eq', self::PAY_STATUS_YES];
+        $where[]    = ['ship_status', 'eq', self::SHIP_STATUS_YES];
+        $where[]    = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        $where[]    = ['confirm', 'eq', self::CONFIRM_RECEIPT];
+        $where[]    = ['is_comment', 'eq', self::NO_COMMENT];
+        $where[]    = ['confirm_time', '<=', time() - $setting * 86400];
+        $order_info = $this::with('items')->field('order_id, user_id')->where($where)
+            ->select()->toArray();
+
+        unset($order_ids);
+        $order_ids   = [];
+        $order_items = [];
+        foreach ($order_info as $vo) {
+            $order_ids[] = $vo['order_id'];
+            if (count($vo['items']) > 0) {
+                foreach ($vo['items'] as &$vv) {
+                    $vv['user_id'] = $vo['user_id'];
                 }
-                //订单记录
-                $orderLog->addLog($vo['order_id'], $vo['user_id'], $k, $orderLog::LOG_TYPE_AUTO_EVALUATION, '订单后台自动评价', $where);
+                $order_items = array_merge($order_items, $vo['items']);
             }
-
-            //更新订单
-            unset($wheres);
-            $wheres[] = ['order_id', 'in', $order_ids];
-            $data['is_comment'] = self::ALREADY_COMMENT;
-            $data['utime'] = time();
-            $this->where($wheres)->update($data);
-
-            //查询评价商品
-            unset($goods_comment);
-            $goods_comment = [];
-            foreach ($order_items as $vo)
-            {
-                $goods_comment[] = [
-                    'score' => 1,
-                    'user_id' => $vo['user_id'],
-                    'goods_id' => $vo['goods_id'],
-                    'order_id' => $vo['order_id'],
-                    'addon' => $vo['addon'],
-                    'content' => '用户'.$v.'天内未对商品做出评价，已由系统自动评价。',
-                    'ctime' => time()
-                ];
-            }
-            model('common/GoodsComment')->insertAll($goods_comment);
+            //订单记录
+            $orderLog->addLog($vo['order_id'], $vo['user_id'], $orderLog::LOG_TYPE_AUTO_EVALUATION, '订单后台自动评价', $where);
         }
+
+        //更新订单
+        unset($wheres);
+        $wheres[]           = ['order_id', 'in', $order_ids];
+        $data['is_comment'] = self::ALREADY_COMMENT;
+        $data['utime']      = time();
+        $this->where($wheres)->update($data);
+
+        //查询评价商品
+        unset($goods_comment);
+        $goods_comment = [];
+        foreach ($order_items as $vo) {
+            $goods_comment[] = [
+                'score'    => 1,
+                'user_id'  => $vo['user_id'],
+                'goods_id' => $vo['goods_id'],
+                'order_id' => $vo['order_id'],
+                'addon'    => $vo['addon'],
+                'content'  => '用户' . $setting . '天内未对商品做出评价，已由系统自动评价。',
+                'ctime'    => time(),
+            ];
+        }
+        model('common/GoodsComment')->insertAll($goods_comment);
+
     }
 
     /**
      * 自动完成订单
-     * @param $seller_setting
+     * @param $setting
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function autoComplete($seller_setting)
+    public function autoComplete($setting)
     {
         $orderLog = new OrderLog();
-        foreach($seller_setting as $k => $v)
-        {
-            unset($where);
-            $where[] = ['seller_id', 'eq', $k];
-            $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-            $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-            $where[] = ['ctime', '<=', time()-$v*86400];
+        unset($where);
+        $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
+        $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        $where[] = ['ctime', '<=', time() - $setting * 86400];
 
-            $order_list = $this->field('order_id, user_id, seller_id')
-                ->where($where)
-                ->select();
+        $order_list = $this->field('order_id, user_id')
+            ->where($where)
+            ->select();
 
-            if(count($order_list)>0)
-            {
-                unset($order_ids);
-                unset($wh);
-                $order_ids = [];
-                foreach ($order_list as $vv)
-                {
-                    $order_ids[] = $vv['order_id'];
-                }
-                $wh[] = ['order_id', 'in', $order_ids];
-                $data['status'] = self::ORDER_STATUS_COMPLETE;
-                $data['utime'] = time();
-                $this->where($wh)
-                    ->update($data);
-
-                //订单记录
-                $orderLog->addLogs($order_list, $orderLog::LOG_TYPE_COMPLETE, '订单后台自动完成', $where);
+        if (count($order_list) > 0) {
+            unset($order_ids);
+            unset($wh);
+            $order_ids = [];
+            foreach ($order_list as $vv) {
+                $order_ids[] = $vv['order_id'];
             }
+            $wh[]           = ['order_id', 'in', $order_ids];
+            $data['status'] = self::ORDER_STATUS_COMPLETE;
+            $data['utime']  = time();
+            $this->where($wh)
+                ->update($data);
+
+            //订单记录
+            $orderLog->addLogs($order_list, $orderLog::LOG_TYPE_COMPLETE, '订单后台自动完成', $where);
         }
     }
 

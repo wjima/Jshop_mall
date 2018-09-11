@@ -14,6 +14,8 @@ class Thirdwx
      */
     public static function run()
     {
+        return true;
+        /*
         Utils::log('刷新token开始时间：' . date('Y-m-d H:i:s') . PHP_EOL);
 
         $weixinAuthorModel = new WeixinAuthor();
@@ -36,6 +38,6 @@ class Thirdwx
                 }
             }
         }
-        Utils::log('刷新token结束时间：' . date('Y-m-d H:i:s') . PHP_EOL);
+        Utils::log('刷新token结束时间：' . date('Y-m-d H:i:s') . PHP_EOL);*/
     }
 }

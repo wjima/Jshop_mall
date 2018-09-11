@@ -6,7 +6,6 @@
  * @license    https://gitee.com/cqcqphper/taskPHP
  */
 namespace taskphp\queue\drives;
-use PDO;
 
 /**
  * 队列驱动-Redis
@@ -18,7 +17,7 @@ use PDO;
  * 1 环境中有redis，业务不需要ack
  */
 class Redis{
-    
+
     /**
      * 设置属性
      * @var array
@@ -27,8 +26,9 @@ class Redis{
         'prefix'=>'queue',
         'host'=>'127.0.0.1',
         'port'=>'6379',
+        'password'   => '',
     ];
-    
+
     /**
      * @var \Redis
      */
@@ -40,13 +40,16 @@ class Redis{
      */
     public function __construct(array $options = []){
         if(!extension_loaded('redis')){
-            \taskphp\Ui::showLog('ERROR:redis module has not been opened');die;
+            \taskphp\Console::log('ERROR:redis module has not been opened');die;
         }
         $this->_options = array_merge($this->_options,$options);
         $this->redis = new \Redis();
         $this->redis->connect($this->_options['host'],$this->_options['port']);
+        if ('' != $this->_options['password']) {
+            $this->redis->auth($this->_options['password']);
+        }
     }
-    
+
     /**
      * 读取缓存
      * @access public
@@ -54,11 +57,11 @@ class Redis{
      * @return mixed
      */
     public function get($name = false) {
-        $value    = $this->handler->get($this->_options['prefix'] . $name);
-        $jsonData = json_decode($value, true);
-        return (null === $jsonData) ? $value : $jsonData; //检测是否为JSON数据 true 返回JSON解析数组, false返回源数据
+        $value    = $this->redis->get($this->_options['prefix'] . $name);
+        $value=unserialize($value);
+        return $value;
     }
-    
+
     /**
      * 写入缓存
      * @access public
@@ -68,22 +71,21 @@ class Redis{
      */
     public function set($name, $value) {
         $name = $this->_options['prefix'] . $name;
-        //对数组/对象数据进行缓存处理，保证数据完整性
-        $value = (is_object($value) || is_array($value)) ? json_encode($value) : $value;
+        $value=serialize($value);
         $result = $this->redis->set($name, $value);
         return $result;
     }
-    
+
     /**
      * 删除缓存
      * @access public
      * @param string $name 缓存变量名
      * @return boolen
      */
-    public static function rm($name) {
-        return $this->redis->delete($this->options['prefix'] . $name);
+    public function rm($name) {
+        return $this->redis->delete($this->_options['prefix'] . $name);
     }
-    
+
     /**
      * 加入
      * @param string $key 表头
@@ -111,7 +113,7 @@ class Redis{
                 $wh=false;
                 break;
             }
-    
+
             if($timeout==0){
                 sleep(1);
             }elseif($timeout>0 && $second<$timeout){
@@ -123,7 +125,7 @@ class Redis{
         }
         return $res;
     }
-    
+
     /**
      * 删除 key 集合中的子集
      * @param unknown $key
@@ -143,7 +145,7 @@ class Redis{
         unset($data[$son_key]);
         return $this->set($key, $data);
     }
-    
+
     /**
      * 清除缓存
      * @access public

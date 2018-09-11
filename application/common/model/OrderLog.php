@@ -41,17 +41,15 @@ class OrderLog extends Common
      * 添加记录
      * @param $order_id
      * @param $user_id
-     * @param $seller_id
      * @param $type
      * @param $msg
      * @param $data
      * @return int|string
      */
-    public function addLog($order_id, $user_id, $seller_id, $type, $msg, $data)
+    public function addLog($order_id, $user_id, $type, $msg, $data)
     {
         $info['order_id'] = $order_id;
         $info['user_id'] = $user_id;
-        $info['seller_id'] = $seller_id;
         $info['type'] = $type;
         $info['msg'] = $msg;
         $info['data'] = json_encode($data);
@@ -78,7 +76,6 @@ class OrderLog extends Common
             $all[] = [
                 'order_id' => $v['order_id'],
                 'user_id' => $v['user_id'],
-                'seller_id' => $v['seller_id'],
                 'type' => $type,
                 'msg' => $msg,
                 'data' => json_encode($data),
@@ -112,7 +109,7 @@ class OrderLog extends Common
             return $return;
         }
         $where[] = ['order_id', 'eq', $order_id];
-        $res = $this->field('id, order_id, user_id, seller_id, type, msg, ctime')
+        $res = $this->field('id, order_id, user_id, type, msg, ctime')
             ->where($where)
             ->order('ctime desc')
             ->select();

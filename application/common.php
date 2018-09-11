@@ -705,29 +705,6 @@ function sendMessage($seller_id, $user_id, $code, $params)
     return $messageCenter->sendSellerMessage($seller_id, $user_id, $code, $params);
 }
 
-/**
- * 获取商户订阅插件
- * @param int $seller_id
- * @return mixed|string
- */
-function getSellerAddons($seller_id = 0)
-{
-    if(!$seller_id){
-        return [];
-    }
-    $key          = 'seller-' . $seller_id . '-addons';
-    $sellerAddons = \think\facade\Cache::get($key);
-    $sellerAddons = json_decode($sellerAddons, true);
-    if ($sellerAddons) {
-        return $sellerAddons;
-    }
-    $seller_addon = new \app\common\model\SellerAddons();
-    $addons       = $seller_addon->getSellerAddons($seller_id);
-    $addons = array_column($addons,'name');
-    $sellerAddons = json_encode($addons);
-    \think\facade\Cache::set($key, $sellerAddons);
-    return $addons;
-}
 
 /**
  * 根据商户id和用户id获取openid
@@ -783,4 +760,14 @@ function bankCardNoFormat($cardNo){
         }
     }
     return $str;
+}
+
+/**
+ * 获取系统设置
+ * @param string $key
+ * @return array
+ */
+function getSystemSetting($key = ''){
+    $systemSettingModel = new \app\common\model\Setting();
+    return $systemSettingModel->getValue($key);
 }

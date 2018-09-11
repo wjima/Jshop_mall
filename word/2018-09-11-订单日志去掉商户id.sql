@@ -1,0 +1,1 @@
+ALTER TABLE `order_log` DROP `seller_id`;

@@ -37,12 +37,11 @@ class TemplateOrder extends Common
      * @param int $template_id
      * @return bool|mixed
      */
-    public function getTempOrder($seller_id = 0, $appid = '', $template_id = 0){
-        if (!$seller_id || !$appid) {
+    public function getTempOrder($appid = '', $template_id = 0){
+        if (!$appid) {
             return false;
         }
         $filter=[
-            'seller_id' => $seller_id,
             'appid' => $appid,
         ];
         if($template_id!=false){

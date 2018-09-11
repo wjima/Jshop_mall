@@ -71,13 +71,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                {if condition="$authorInfo.bind_type eq '1'"}
-                <a class="layui-btn " href="{:url('wechat/reAuthor')}" >重新授权</a>
-                <button class="layui-btn layui-btn-danger" lay-filter="cancleAuthor" id="cancleAuthor">取消授权</button><button class="layui-btn" lay-filter="setAdmin" id="setAdmin">设置接口地址</button>
-                {else/}
                 <a class="layui-btn" href="{:url('wechat/edit',['id'=>$authorInfo.id])}" lay-filter="editinfo">完善信息</a>
-                <button class="layui-btn layui-btn-danger" lay-submit="" lay-filter="changeAuthor" id="changeAuthor">变更授权</button>
-                {/if}
             </div>
         </div>
         {else/}

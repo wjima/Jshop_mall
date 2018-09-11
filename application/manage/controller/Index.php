@@ -40,13 +40,13 @@ class Index extends Manage
         $this->assign('closeauthor',$closeauthor);
         //获取是否授权
         $weixinAuthorModel = new WeixinAuthor();
-        $authorInfo = $weixinAuthorModel->getAuthorInfo($this->sellerId,'b2c','bind_type,id,head_img');
+        $authorInfo = $weixinAuthorModel->getAuthorInfo('b2c','bind_type,id,head_img');
         if($authorInfo){
             $this->assign('is_author','true');
         }else{
             $this->assign('is_author','false');
         }
-        hook('sellerindex', $this);
+        hook('adminindex', $this);
 
         return $this->fetch();
     }

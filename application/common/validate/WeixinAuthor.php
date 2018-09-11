@@ -15,7 +15,6 @@ class WeixinAuthor extends Validate
 
 
     public $rule = [
-        'seller_id'   => 'require|number',
         'nick_name'  => 'require',
         'appid'   => 'require',
         'appsecret'      => 'require',
@@ -23,7 +22,6 @@ class WeixinAuthor extends Validate
     ];
 
     public $message = [
-        'seller_id.require' => '商户id不能为空',
         'nick_name.require'  => '小程序名称不能为空',
         'appid.require'      => 'AppId不能为空',
         'appsecret.require'  => 'AppSecret不能为空',

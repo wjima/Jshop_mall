@@ -41,15 +41,13 @@ class WeixinAuthor extends Common
 
     /**
      * 获取author授权信息
-     * @param int $seller_id
      * @param string $authorType
      * @param string $fields
      * @return array|null|\PDOStatement|string|\think\Model
      */
-    public function getAuthorInfo($seller_id = 0, $authorType = 'b2c',$fields='*')
+    public function getAuthorInfo($authorType = 'b2c',$fields='*')
     {
         $authorInfo = $this->where([
-            'seller_id' => $seller_id,
             'author_type' => $authorType
         ])->field($fields)->find();
 

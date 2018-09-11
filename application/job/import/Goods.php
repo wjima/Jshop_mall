@@ -64,29 +64,28 @@ class Goods
                     $goods['bn'] = $val['bn'];
                     $goods['brief'] = $val['brief'];
                     if(!empty($val['cat_name'])){
-                        $cat_id = model('common/GoodsCat')->getInfoByName($val['cat_name'],$file['seller_id'],true);
+                        $cat_id = model('common/GoodsCat')->getInfoByName($val['cat_name'],true);
                         $goods['goods_cat_id'] = $cat_id;
                     }
                     if(!empty($val['type_name'])){
-                        $type_id = model('common/GoodsType')->getInfoByName($val['type_name'],$file['seller_id'],true);
+                        $type_id = model('common/GoodsType')->getInfoByName($val['type_name'],true);
                         $goods['goods_type_id'] = $type_id;
                     }
                     if(!empty($val['brand_name'])){
-                        $brand_id = model('common/Brand')->getInfoByName($val['brand_name'],$file['seller_id'],true);
+                        $brand_id = model('common/Brand')->getInfoByName($val['brand_name'],true);
                         $goods['brand_id'] = $brand_id;
                     }
                     $goods['is_nomal_virtual'] = ($val['is_nomal_virtual']=='是')?$goodsModel::VIRTUAL_NO:$goodsModel::VIRTUAL_YES;
                     $goods['marketable'] = $goodsModel::MARKETABLE_DOWN;
                     $goods['weight'] = $val['weight'];
                     $goods['unit'] = $val['unit'];
-                    $goods['seller_id'] = $file['seller_id'];
                     $goods['intro'] = $val['intro'];
                     $goods['spes_desc'] = $val['spes_desc'];
                     $goods['params'] = $val['params'];
                     $goods['sort'] = $val['sort'];
                     $goods['is_recommend'] = ($val['is_recommend']=='是')?'1':'2';
                     $goods['is_hot'] = ($val['is_hot']=='是')?'1':'2';
-                    $goods['label_ids'] = model('common/Label')->getIdsByName($val['label_ids'],$file['seller_id'],true);//todo 标签分隔
+                    $goods['label_ids'] = model('common/Label')->getIdsByName($val['label_ids'],true);//todo 标签分隔
                     $product['spes_desc'] = $val['product_spes_desc'];
                     $product['sn'] = $val['sn'];
                     $product['price'] = $val['price'];
@@ -108,7 +107,7 @@ class Goods
                     }else{
                         $goodsModel->startTrans();
                         //判断商品编码是否存在，如果存在则更新，然后添加货品信息
-                        $goodsData=$goodsModel->field('id')->where(['seller_id'=>$file['seller_id'],'bn'=>$goods['bn']])->find();
+                        $goodsData=$goodsModel->field('id')->where(['bn'=>$goods['bn']])->find();
                         if(isset($goodsData['id'])&&$goodsData['id']!=''){
                              $res = $goodsModel->updateGoods($goodsData['id'],$goods);
                              if($res===false){
@@ -127,14 +126,13 @@ class Goods
                         }else{
                             Log::record("商品id".$goods_id);
                             $product['goods_id']=$goods_id;
-                            $product['seller_id']=$file['seller_id'];
                             $product['marketable']=$goodsModel::MARKETABLE_DOWN;
                             $productValidate = new ProductsValidate();
                             if(!$productValidate->check($product)){
                                 $message[] = $productValidate->getError();
                                 Log::record($goods['name'].implode(',',$message));
                             }
-                            $productData = $productModel->field('id')->where(['seller_id'=>$file['seller_id'],'sn'=>$goods['sn']])->find();
+                            $productData = $productModel->field('id')->where(['sn'=>$goods['sn']])->find();
                             if(isset($productData)&&$productData['id']!=''){
                                 $res=$productModel->updateProduct($productData['id'],$product);
                             }else{

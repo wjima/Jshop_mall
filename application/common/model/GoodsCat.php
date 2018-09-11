@@ -444,25 +444,23 @@ class GoodsCat extends Common
     /**
      * 根据名称获取分类信息
      * @param string $name
-     * @param $seller_id
      * @param bool $isForce
      * @return bool|int|mixed|string
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getInfoByName($name = '', $seller_id, $isForce = false)
+    public function getInfoByName($name = '', $isForce = false)
     {
-        if (!$name || !$seller_id) {
+        if (!$name ) {
             return false;
         }
         $cat_id = 0;
-        $cat = $this->field('id')->where([['name', 'like', '%' . $name . '%'], ['seller_id', 'eq', $seller_id]])->find();
+        $cat = $this->field('id')->where([['name', 'like', '%' . $name . '%']])->find();
 
         if (!$cat && $isForce) {
             $this->save([
                 'name' => $name,
-                'seller_id' => $seller_id
             ]);
             $cat_id = $this->getLastInsID();
         } elseif ($cat) {

@@ -24,7 +24,6 @@ class Ietask extends Manage{
 
         if(Request::isAjax()) {
             $filter = input('request.');
-            $filter['seller_id'] = $this->sellerId;
             return $ietaskModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -48,7 +47,7 @@ class Ietask extends Manage{
         $filter = input('filter/s', '');
         $job = input('model/s', '');
         if (!$taskname) {
-            $taskname = md5($this->sellerId . time());
+            $taskname = md5(time());
         }
         if(!$job){
             return $result;
@@ -63,7 +62,6 @@ class Ietask extends Manage{
         $where = array_merge((array)$where, (array)$filter);
         $ietaskModle = new ietaskModel();
 
-        $data['seller_id'] = $this->sellerId;
         $data['name'] = $taskname;
         $data['type'] = $ietaskModle::TYPE_EXPORT;
         $data['status'] = $ietaskModle::WAIT_STATUS;

@@ -1,7 +1,0 @@
-<div class="imgdiv">
-    <img src="{$data.src}"  class="layui-upload-img" style="width: 100px;height:100px;">
-    <div id="operate">
-        <div><a class="del" onclick="delImg(this,'{$data.image_id}')">删除</a>|<a class="setmain" onclick="setDefault(this,'{$data.image_id}')">设为主图</a>|<a class="croppic" data-id="{$data.image_id}" onclick="croppic(this,'{$data.src }')">裁剪</a></div>
-    </div>
-    <input type='hidden' name='goods[img][]' value="{$data.image_id}">
-</div>

@@ -30,18 +30,6 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label seller-inline-3">是否认证：</label>
-            <div class="layui-form-mid ">
-                {if condition="$authorInfo.verify_type_info eq '-1'"}
-                <div style="color: #FF5722;">未认证</div>
-                {elseif condition="$authorInfo.verify_type_info eq '0'"/}
-                <div style="color: #5FB878;">已认证</div>
-                {else/}
-                <div style="color: #2F4056;">未知</div>
-                {/if}
-            </div>
-        </div>
-        <div class="layui-form-item">
             <label class="layui-form-label seller-inline-3">AppId：</label>
             <div class="layui-form-mid ">{$authorInfo.appid}</div>
         </div>

@@ -20,7 +20,6 @@ class Ship extends Manage
         if (Request::isAjax()) {
             $shiModel            = new ShipModel();
             $filter              = input('request.');
-            $filter['seller_id'] = $this->sellerId;
             return $shiModel->tableData($filter);
         }
         return $this->fetch();
@@ -77,7 +76,6 @@ class Ship extends Manage
                 'type'               => $type,
                 'def_area_fee'       => input('post.def_area_fee', '1'),
                 'sort'               => input('post.sort'),
-                'seller_id'          => $this->sellerId,
                 'area_fee'=>$area_fee,
             ];
             $shiModel = new ShipModel();
@@ -156,7 +154,6 @@ class Ship extends Manage
                 'type'               => $type,
                 'def_area_fee'       => input('post.def_area_fee', '1'),
                 'sort'               => input('post.sort'),
-                'seller_id'          => $this->sellerId,
                 'area_fee'           => $area_fee,
             ];
             $shiModel = new ShipModel();
@@ -175,7 +172,6 @@ class Ship extends Manage
         }
         $filter = [
             'id'=>input('param.id/d'),
-            'seller_id'=>$this->sellerId,
         ];
         $data = $shiModel->getInfo($filter);
         $this->assign('data', $data);
@@ -194,7 +190,6 @@ class Ship extends Manage
         $id          = input('post.id/d');
         $filter = [
             'id' => $id,
-            'seller_id' => $this->sellerId,
         ];
         $res         = $shiModel->where($filter)->delete();
         if (!$res) {

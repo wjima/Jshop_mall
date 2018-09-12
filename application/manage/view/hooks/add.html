@@ -1,0 +1,29 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i> 编码：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入钩子名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label"><i class="required-color">*</i> 描述：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <textarea name="description" placeholder="请输入钩子描述" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label"><i class="required-color">*</i> 类型：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="radio" name="type" value="1" title="控制器" checked>
+            <input type="radio" name="type" value="2" title="视图" >
+        </div>
+    </div>
+    <button class="layui-btn layui-btn-fluid save-hooks" lay-submit lay-filter="add-hooks">保存</button>
+</div>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

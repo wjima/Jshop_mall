@@ -24,7 +24,7 @@ class Label extends Manage
         //已存在标签
         $labelModel = new labelModel();
 
-        $labels = $labelModel->getAllLabel($this->sellerId);
+        $labels = $labelModel->getAllLabel();
         $this->assign('labels', $labels);
 
         $this->view->engine->layout(false);
@@ -40,7 +40,6 @@ class Label extends Manage
     {
         if (Request::isPost()) {
             $data = input('param.');
-            $data['seller_id'] = $this->sellerId;
             $labelModel = new labelModel();
             return $labelModel->addData($data);
         }
@@ -60,7 +59,7 @@ class Label extends Manage
         //已存在标签
         $labelModel = new labelModel();
 
-        $labels = $labelModel->getAllSelectLabel($ids,$model,$this->sellerId);
+        $labels = $labelModel->getAllSelectLabel($ids,$model);
         $this->assign('labels', json_encode($labels,320));
 
         $this->view->engine->layout(false);
@@ -76,7 +75,6 @@ class Label extends Manage
         if (Request::isPost()) {
             $data = input('param.');
             $data['label'] = input('param.label/a',[]);
-            $data['seller_id'] = $this->sellerId;
             $labelModel = new labelModel();
             return $labelModel->delData($data);
         }

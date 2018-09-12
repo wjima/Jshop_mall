@@ -771,3 +771,16 @@ function getSystemSetting($key = ''){
     $systemSettingModel = new \app\common\model\Setting();
     return $systemSettingModel->getValue($key);
 }
+
+/***
+ * 获取插件配置信息
+ * @param string $name 插件名称
+ * @return array
+ */
+function getAddonsConfig($name = ''){
+    if(!$name){
+        return [];
+    }
+    $addonModel = new \app\common\model\Addons();
+    return $addonModel->getSetting($name);
+}

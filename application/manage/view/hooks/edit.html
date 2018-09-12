@@ -1,0 +1,34 @@
+<div style="padding: 30px;" class="layui-form seller-alone-form">
+
+    <input type="hidden" name="id" value="{$data.id}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i> 编码：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入钩子编码" autocomplete="off" class="layui-input" value="{$data.name}">
+        </div>
+    </div>
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label"><i class="required-color">*</i> 描述：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <textarea name="description" placeholder="请输入钩子描述" class="layui-textarea">{$data.description}</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label"><i class="required-color">*</i> 类型：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="radio" name="type" value="1" title="控制器" {if $data.type eq 1}checked{/if}>
+            <input type="radio" name="type" value="2" title="视图" {if $data.type eq 2}checked{/if}>
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="hooks-edit">保存</button>
+
+</div>
+
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

@@ -130,4 +130,48 @@ class Hooks extends Common
             return true;
         }
     }
+
+    /**
+     * 添加钩子
+     * User:mark
+     * @param $data
+     * @return array
+     */
+    public function addData($data)
+    {
+        $result = [
+            'status' => true,
+            'msg' => '保存成功',
+            'data'=> []
+        ];
+        if (!$this->allowField(true)->save($data))
+        {
+            $result['status'] = false;
+            $result['msg'] = '保存失败';
+        }
+        return $result;
+    }
+
+    /**
+     * 修改钩子
+     * User:mark
+     * @param $data
+     * @return array
+     */
+    public function saveData($data)
+    {
+        $result = [
+            'status' => true,
+            'msg' => '保存成功',
+            'data' => []
+        ];
+        if (!$this->allowField(true)->save($data,['id'=>$data['id']]))
+        {
+            $result['status'] = false;
+            $result['msg'] = '保存失败';
+        }
+        return $result;
+    }
+
+
 }

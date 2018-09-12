@@ -133,6 +133,7 @@ class Addons extends Common
         $uData = [
             'config' => json_encode($params['setting']),
         ];
+
         $res   = $this->save($uData, [
             'id' => $addon['id'],
         ]);

@@ -189,6 +189,7 @@ class Addons extends Manage
         ];
         $data = input('post.');
         $addonsModel = new addonsModel();
+
         if($addonsModel->doSetting($data)){
             $result['status'] = true;
             $result['msg'] = '配置信息保存成功';

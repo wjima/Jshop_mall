@@ -55,7 +55,7 @@ Loader::addNamespace('addons', ADDON_PATH);
  */
 function hook($hook, $params = [])
 {
-    Hook::listen($hook, $params);
+    return Hook::listen($hook, $params);
 }
 
 /**

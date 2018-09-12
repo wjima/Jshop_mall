@@ -1,0 +1,29 @@
+<form class="layui-form" action="#" method="post">
+    <div style="padding: 30px;" class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i> APPID：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="setting[appid]" required lay-verify="required" placeholder="请输入APPID" autocomplete="off" class="layui-input" value="{$params.appid}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i> APPKEY：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="setting[appkey]" required lay-verify="required" placeholder="请输入APPKEY" autocomplete="off" class="layui-input" value="{$params.appkey}">
+            </div>
+        </div>
+        <div class="layui-form-item center-align">
+            申请地址：<a href="https://aihecong.com/" target="_blank">https://aihecong.com/</a>
+        </div>
+
+    </div>
+
+<script>
+    layui.use('element', function () {
+        //监听提交
+        var $ = layui.jquery
+            , element = layui.element;
+    });
+</script>
+</form>

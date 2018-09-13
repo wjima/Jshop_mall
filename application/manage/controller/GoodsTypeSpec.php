@@ -28,7 +28,6 @@ class GoodsTypeSpec extends Manage
         if (Request::isAjax()) {
             $typeSpecModel       = new typeSpecModel();
             $filter              = input('request.');
-            $filter['Manage_id'] = $this->ManageId;
             return $typeSpecModel->tableData($filter);
         }
         return $this->fetch('index');
@@ -57,8 +56,7 @@ class GoodsTypeSpec extends Manage
 
             $spec = [
                 'name'      => $name,
-                'sort'      => $sort,
-                'Manage_id' => $this->ManageId,
+                'sort'      => $sort
             ];
 
             $result = $specModel->add($spec);
@@ -102,9 +100,9 @@ class GoodsTypeSpec extends Manage
 
     /**
      * 编辑属性
-     * User:wjima
-     * Email:1457529125@qq.com
-     * @return mixed
+     * @return array|mixed
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function edit()
     {
@@ -112,7 +110,6 @@ class GoodsTypeSpec extends Manage
         $id                = input('request.id/d');
         $goodsTypeModel    = new typeSpecModel();
         $filter            = [
-            'Manage_id' => $this->ManageId,
             'id'        => $id,
         ];
         $typeSpec          = $goodsTypeModel::get($filter);
@@ -131,8 +128,7 @@ class GoodsTypeSpec extends Manage
             $data           = [
                 'id'        => $id,
                 'name'      => input('post.name', ''),
-                'sort'      => input('post.sort', 100),
-                'Manage_id' => $this->ManageId,
+                'sort'      => input('post.sort', 100)
             ];
             $value          = input('post.value/a', []);
             if (!$value) {
@@ -191,7 +187,6 @@ class GoodsTypeSpec extends Manage
             $goodsTypeModel = new typeSpecModel();
             $goodsTypeModel->startTrans();
             $filter            = [
-                'Manage_id' => $this->ManageId,
                 'id'        => $id,
             ];
             if ($goodsTypeModel::destroy($filter)) {

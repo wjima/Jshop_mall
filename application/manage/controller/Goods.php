@@ -779,7 +779,7 @@ class Goods extends Manage
                     $spec[$key]['name']      = $val['spec']['name'];
                     $spec[$key]['specValue'] = $val['spec']['getSpecValue'];
                     if ($spes_desc) {
-                        foreach ($spec[$key]['specValue'] as $vkey => $vval) {
+                        foreach ((array)$spec[$key]['specValue'] as $vkey => $vval) {
                             $spec[$key]['specValue'][$vkey]['isSelected'] = 'false';
                             foreach ($spes_desc as $gk => $gv) {
                                 foreach ($gv as $v) {

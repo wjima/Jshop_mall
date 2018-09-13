@@ -696,7 +696,7 @@ class User extends Api
      */
     public function getStoreName()
     {
-        $name = getShopSetting($this->sellerId, 'shop_name');
+        $name = '';
         $operating_mode = config('app.operating_mode');
         if($operating_mode == 'review')
         {
@@ -735,7 +735,7 @@ class User extends Api
         if(!input('?param.key')){
             return error_code(10003);
         }
-        $result['data'] = getShopSetting($this->sellerId,input('param.key'));
+        $result['data'] = '';//getShopSetting($this->sellerId,input('param.key'));
 
         switch (input('param.key'))
         {

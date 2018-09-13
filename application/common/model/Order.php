@@ -179,11 +179,6 @@ class Order extends Common
             ->where($where)
             ->count();
 
-        foreach ($data as &$v)
-        {
-            $v['seller_name'] = getSellerInfoById($v['seller_id'], 'seller_name');
-        }
-
         return array('data' => $data, 'count' => $count);
     }
 
@@ -558,19 +553,19 @@ class Order extends Common
         switch($order_info['text_status'])
         {
             case self::ALL_PENDING_PAYMENT: //待付款
-                $cancel = getShopSetting($order_info['seller_id'], 'order_cancel_time')*86400;
+                $cancel = 7*86400;
                 $ctime = $order_info['ctime'];
                 $remaining = $ctime + $cancel - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
                 break;
             case self::ALL_PENDING_RECEIPT: //待收货
-                $sign = getShopSetting($order_info['seller_id'], 'order_autoSign_time')*86400;
+                $sign = 15*86400;
                 $utime = $order_info['utime'];
                 $remaining = $utime + $sign - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
                 break;
             case self::ALL_PENDING_EVALUATE: //待评价
-                $eval = getShopSetting($order_info['seller_id'], 'order_autoEval_time')*86400;
+                $eval = 15*86400;
                 $confirm = $order_info['confirm_time'];
                 $remaining = $confirm + $eval - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);

@@ -110,7 +110,7 @@ class UserPointLog extends Common
         }
 
         //获取店铺签到积分设置
-        $sign_point_type = getShopSetting($seller_id, 'sign_point_type'); //签到积分奖励类型
+        $sign_point_type = self::SIGN_RANDOM_POINT; //getShopSetting($seller_id, 'sign_point_type'); //签到积分奖励类型
 
         //判断是固定积分计算还是随机积分计算
         if($sign_point_type == self::SIGN_RANDOM_POINT)
@@ -179,8 +179,8 @@ class UserPointLog extends Common
      */
     protected function signRandomPointCalculation($seller_id)
     {
-        $sign_random_min = getShopSetting($seller_id, 'sign_random_min'); //最小随机
-        $sign_random_max = getShopSetting($seller_id, 'sign_random_max'); //最大随机
+        $sign_random_min = 1; //getShopSetting($seller_id, 'sign_random_min'); //最小随机
+        $sign_random_max = 10; //getShopSetting($seller_id, 'sign_random_max'); //最大随机
         $point = mt_rand($sign_random_min, $sign_random_max); //随机积分
         //$point = $this->signAppointDatePointCalculation($seller_id, $point); //判断计算指定日期
         return $point;
@@ -198,9 +198,9 @@ class UserPointLog extends Common
      */
     protected function signFixedPointCalculation($user_id, $seller_id)
     {
-        $first_sign_point = getShopSetting($seller_id, 'first_sign_point'); //首次签到积分
-        $continuity_sign_additional = getShopSetting($seller_id, 'continuity_sign_additional'); //连续签到追加
-        $sign_most_point = getShopSetting($seller_id, 'sign_most_point'); //签到最多积分
+        $first_sign_point = 1;//getShopSetting($seller_id, 'first_sign_point'); //首次签到积分
+        $continuity_sign_additional = 1;//getShopSetting($seller_id, 'continuity_sign_additional'); //连续签到追加
+        $sign_most_point = 10;//getShopSetting($seller_id, 'sign_most_point'); //签到最多积分
 
         //获取连续签到天数
         $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
@@ -251,27 +251,27 @@ class UserPointLog extends Common
      */
     protected function signAppointDatePointCalculation($seller_id, $old_point)
     {
-        $sign_appoint_date_status = getShopSetting($seller_id, 'sign_appoint_date_status'); //指定日期
+        $sign_appoint_date_status = '';//getShopSetting($seller_id, 'sign_appoint_date_status'); //指定日期
         $nowDate = date('Y-m-d', time());
         if($sign_appoint_date_status)
         {
             //开启指定日期
-            $sign_appoint_date = getShopSetting($seller_id, 'sign_appoint_date'); //特殊指定日期
+            $sign_appoint_date = '';//getShopSetting($seller_id, 'sign_appoint_date'); //特殊指定日期
             $sign_appoint_date = json_decode($sign_appoint_date, true);
             if(in_array($nowDate, $sign_appoint_date))
             {
                 //当前是指定日期
-                $sign_appoint_data_type = getShopSetting($seller_id, 'sign_appoint_data_type'); //特殊指定日期奖励类型
+                $sign_appoint_data_type = '';//getShopSetting($seller_id, 'sign_appoint_data_type'); //特殊指定日期奖励类型
                 if($sign_appoint_data_type == self::SIGN_APPOINT_DATE_RATE)
                 {
                     //倍率
-                    $sign_appoint_date_rate = getShopSetting($seller_id, 'sign_appoint_date_rate'); //特殊指定日期倍数
+                    $sign_appoint_date_rate = 2;getShopSetting($seller_id, 'sign_appoint_date_rate'); //特殊指定日期倍数
                     $point = $old_point * $sign_appoint_date_rate;
                 }
                 else
                 {
                     //追加
-                    $sign_appoint_date_additional = getShopSetting($seller_id, 'sign_appoint_date_additional'); //特殊指定日期追加数量
+                    $sign_appoint_date_additional = 1;//getShopSetting($seller_id, 'sign_appoint_date_additional'); //特殊指定日期追加数量
                     $point = $old_point + $sign_appoint_date_additional;
                 }
             }
@@ -359,7 +359,7 @@ class UserPointLog extends Common
      */
     public function orderComplete($user_id, $seller_id, $money, $order_id)
     {
-        $orders_reward_proportion = getShopSetting($seller_id, 'orders_reward_proportion');
+        $orders_reward_proportion = 10;//getShopSetting($seller_id, 'orders_reward_proportion');
         $point = floor($money / $orders_reward_proportion);
         $this->setPoint($user_id, $seller_id, $point, self::POINT_TYPE_REBATE, '订单:'.$order_id.'的积分奖励');
     }

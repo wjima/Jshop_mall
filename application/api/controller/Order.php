@@ -340,14 +340,14 @@ class Order extends Api
             return $info;
         }
 
-        $reship = [
-            'reship_name' => getShopSetting($this->sellerId,'reship_name'),
-            'reship_mobile' => getShopSetting($this->sellerId,'reship_mobile'),
-            'reship_area' => get_area(getShopSetting($this->sellerId,'reship_area_id')),
-            'reship_address' => getShopSetting($this->sellerId,'reship_address'),
-        ];
+//        $reship = [
+//            'reship_name' => getShopSetting($this->sellerId,'reship_name'),
+//            'reship_mobile' => getShopSetting($this->sellerId,'reship_mobile'),
+//            'reship_area' => get_area(getShopSetting($this->sellerId,'reship_area_id')),
+//            'reship_address' => getShopSetting($this->sellerId,'reship_address'),
+//        ];
         $result['data']['info'] = $info['data'];
-        $result['data']['reship'] = $reship;
+//        $result['data']['reship'] = $reship;
         $result['status'] = true;
         return $result;
 

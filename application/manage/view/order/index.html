@@ -61,17 +61,6 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">所属商户：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <select name="seller_id" id="seller_id">
-                    <option value="">-- 全部 --</option>
-                    {foreach $seller_list as $key=>$vo}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/foreach}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label class="layui-form-label">用户：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="username" placeholder="用户名、昵称、手机" autocomplete="off" class="layui-input">
@@ -150,7 +139,6 @@
                 {type:'checkbox', fixed: 'left'},
                 {field: 'order_id', title: '订单号', width:140, align: 'center', fixed: 'left'},
                 {field: 'ctime', title: '下单时间', width:160, align: 'center'},
-                {field: 'seller_name', title: '所属商户', width:160, align: 'center'},
                 {field: 'status_text', title: '订单状态', width: 90, align: 'center'},
                 {field: 'username', title: '用户名', width:120, align: 'center'},
                 {field: 'ship_mobile', title: '收货人手机号', width:120, align: 'center'},

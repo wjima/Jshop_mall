@@ -46,18 +46,12 @@ class Order extends Manage
             ];
             $this->assign('count', $counts);
 
-            //所属商户
-            $seller = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-
             return $this->fetch('index');
         }
         else
         {
             $input = array(
                 'order_id' => input('order_id'),
-                'seller_id' => input('seller_id'),
                 'username' => input('username'),
                 'ship_mobile' => input('ship_mobile'),
                 'order_unified_status' => input('order_unified_status'),
@@ -105,7 +99,8 @@ class Order extends Manage
     public function view($id)
     {
         $this->view->engine->layout(false);
-        $order_info = model('common/Order')->getOrderInfoByOrderID($id);
+        $orderModel = new \app\common\model\Order();
+        $order_info = $orderModel->getOrderInfoByOrderID($id);
         $this->assign('order', $order_info);
 
         $orderLog = new OrderLog();

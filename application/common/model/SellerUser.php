@@ -229,8 +229,8 @@ class SellerUser extends Common
                 'money' => 0
             ]
         ];
-        $point_discounted_proportion = getShopSetting($seller_id, 'point_discounted_proportion');
-        $orders_point_proportion = getShopSetting($seller_id, 'orders_point_proportion');
+        $point_discounted_proportion = 10; //getShopSetting($seller_id, 'point_discounted_proportion');
+        $orders_point_proportion = 10; //getShopSetting($seller_id, 'orders_point_proportion');
 
         //这个订单可以用积分兑换多少钱
         $max_money = $money*($orders_point_proportion/100);

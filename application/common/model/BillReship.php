@@ -140,7 +140,7 @@ class BillReship extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this::with('sellerInfo')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         $re['sql'] = $this->getLastSql();
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
@@ -220,11 +220,4 @@ class BillReship extends Common
     {
         return $this->hasMany('BillReshipItems','reship_id','reship_id');
     }
-    public function sellerInfo()
-    {
-        return $this->hasOne('Seller','id','seller_id')->bind([
-            'seller_name'
-        ]);
-    }
-
 }

@@ -16,7 +16,6 @@ class BillPayments extends Manage
             $data = input('param.');
             return $BillPaymentsModel->tableData($data);
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch('index');
     }
     //支付单查看

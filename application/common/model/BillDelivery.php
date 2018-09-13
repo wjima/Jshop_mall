@@ -272,13 +272,9 @@ class BillDelivery extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($seller_id = false, $page = 1, $limit = 20, $input = [])
+    public function getList($page = 1, $limit = 20, $input = [])
     {
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
-
+        $where = [];
         if($input['delivery_id'])
         {
             $where[] = ['delivery_id', 'like', '%'.$input['delivery_id'].'%'];

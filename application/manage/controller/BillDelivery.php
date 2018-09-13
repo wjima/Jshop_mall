@@ -2,7 +2,6 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
-use app\common\model\Seller;
 use Request;
 
 /**
@@ -23,14 +22,14 @@ class BillDelivery extends Manage
     {
         if(Request::isAjax())
         {
-            $seller_id = input('seller_id', false);
             $page = input('page', 1);
             $limit = input('limit', 20);
             $input['delivery_id'] = input('delivery_id');
             $input['order_id'] = input('order_id');
             $input['logi_no'] = input('logi_no');
             $input['mobile'] = input('mobile');
-            $res = model('Common/BillDelivery')->getList($seller_id, $page, $limit, $input);
+            $billDeliveryModel = new \app\common\model\BillDelivery();
+            $res = $billDeliveryModel->getList($page, $limit, $input);
             if($res['status'])
             {
                 foreach($res['data'] as $k => &$v)
@@ -43,13 +42,7 @@ class BillDelivery extends Manage
             }
             return $res;
         }
-        else
-        {
-            //所属商户
-            $seller = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-        }
+
         return $this->fetch('index');
     }
 

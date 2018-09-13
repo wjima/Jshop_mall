@@ -26,7 +26,6 @@ class Promotion extends Manage
 
             return $promotionModel->tableData($request);
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch();
 
     }
@@ -43,7 +42,6 @@ class Promotion extends Manage
 
             return $promotionModel->tableData($request);
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch();
 
     }
@@ -82,7 +80,6 @@ class Promotion extends Manage
                 'msg' => ''
             ];
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch();
     }
     //添加优惠券
@@ -120,7 +117,6 @@ class Promotion extends Manage
                 'msg' => ''
             ];
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch('couponAdd');
     }
 

@@ -15,7 +15,6 @@ class BillRefund extends Manage
             $billRefundModel = new BillRefundModel();
             return $billRefundModel->tableData($data);
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch('index');
     }
 

@@ -17,7 +17,6 @@ class MessageCenter extends Manage
             $data = input('param.');
             return $messageCenterModel->tableData($data);
         }
-        $this->assign('sellerList',getSellerList());
         $this->assign('code',$messageCenterModel->seller_tpl);
         return $this->fetch('index');
 

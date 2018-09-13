@@ -1,17 +1,6 @@
 <form class="layui-form seller-form"  action="">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">所属商户：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <select name="seller_id" id="seller_id">
-                    <option value="">-- 全部 --</option>
-                    {foreach $seller_list as $key=>$vo}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/foreach}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label class="layui-form-label">发货单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="delivery_id" lay-verify="title"  placeholder="请输入发货单号" autocomplete="off" class="layui-input">

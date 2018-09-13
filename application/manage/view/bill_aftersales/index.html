@@ -1,17 +1,6 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item" style="margin-bottom:0;">
         <div class="layui-inline">
-            <label class="layui-form-label">商户：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <select name="seller_id" lay-verify="">
-                    <option value=""></option>
-                    {volist name="sellerList" id="vo"}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label class="layui-form-label">售后单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="aftersales_id" lay-verify="title" placeholder="请输入售后单号" autocomplete="off" class="layui-input">
@@ -72,7 +61,6 @@
             url: "{:url('billAftersales/index')}?_ajax=1",
             id:'billAftersales',
             cols: [[
-                {field:'seller_name', width:250,title:'商户名称'},
                 {field:'aftersales_id', width:140, sort: true,title:'售后单号'},
                 {field:'order_id', width:140, sort: true,title:'订单号'},
                 {field:'status_name', width:100,title:'状态'},

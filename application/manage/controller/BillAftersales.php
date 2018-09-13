@@ -15,7 +15,6 @@ class BillAftersales extends Manage
             $billAfterSalesModel = new BillAfterSalesModel();
             return $billAfterSalesModel->tableData($data);
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch('index');
     }
 

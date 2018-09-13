@@ -16,7 +16,6 @@ class BillReship extends Manage
             $billReshipModel = new BillReshipModel;
             return $billReshipModel->tableData($data);
         }
-        $this->assign('sellerList',getSellerList());
         return $this->fetch('index');
     }
 

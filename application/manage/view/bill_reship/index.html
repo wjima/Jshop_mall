@@ -1,17 +1,6 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item" style="margin-bottom:0;">
         <div class="layui-inline">
-            <label class="layui-form-label">商户：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <select name="seller_id" lay-verify="">
-                    <option value=""></option>
-                    {volist name="sellerList" id="vo"}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label class="layui-form-label">退货单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="reship_id" lay-verify="title" placeholder="请输入退货单号" autocomplete="off" class="layui-input">
@@ -68,7 +57,6 @@
             url: "{:url('billReship/index')}?_ajax=1",
             id:'billReship',
             cols: [[
-                {field:'seller_name', width:250,title:'商户名称'},
                 {field:'reship_id', width:140, sort: true,title:'退货单号'},
                 {field:'order_id',width:140,title:'订单号'},
                 {field:'user_id', width:150,minWidth: 50,title:'用户'},

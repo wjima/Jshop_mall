@@ -1,10 +1,6 @@
 <form class="layui-form seller-alone-form" action="" style="min-height:600px;">
     <input type="hidden" id="id" name="id" value="{$info.id}" />
     <div class="layui-form-item">
-        <label class="layui-form-label">商户名称：</label>
-        <div class="layui-form-mid">{$info.seller_id|getSellerInfoById}</div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">促销名称：</label>
         <div class="layui-input-inline seller-inline-5">
             <input name="name" lay-verify="title" autocomplete="off" value="{$info.name}" placeholder="请输入标题" class="layui-input" type="text">

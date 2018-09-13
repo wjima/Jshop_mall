@@ -54,7 +54,7 @@
                 {field:'type',title:'类型'},
                 {field:'ctime',width:200,title:'创建时间'},
                 {field:'ctime',width:200,title:'更新时间'},
-                {field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
+                {field: 'operating', title: '操作', width:180, align: 'center',templet:function(data){
                     var html = '';
                     if(data.type == "待审核"){
                         html += '<a  class="layui-btn layui-btn-xs option-yes" data-type="2" data-id="' + data.id + '">通过</a>';

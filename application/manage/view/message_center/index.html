@@ -1,17 +1,6 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">商户：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <select name="seller_id" lay-verify="">
-                    <option value=""></option>
-                    {volist name="sellerList" id="vo"}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label class="layui-form-label">消息节点：</label>
             <div class="layui-input-inline seller-inline-4">
                 <select name="code" lay-verify="">
@@ -62,7 +51,6 @@
             id:'userTable',
             cols: [[
                 {type:'numbers'},
-                {field:'seller_name', width:250,title:'商户名称'},
                 {field: 'code', title: '消息节点',templet:function(data){
                     var html = '';
                     html += data.code_name + '('+data.code+')';

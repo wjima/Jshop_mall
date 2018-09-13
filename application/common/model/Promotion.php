@@ -23,13 +23,12 @@ class Promotion extends Common
 
 
     //购物车的数据传过来，然后去算促销
-    public function toPromotion($cart,$seller_id){
+    public function toPromotion($cart){
         //return $cart;       //暂时先返回去，不做促销，做好了之后再放开。
         //按照权重取所有已生效的促销列表
         $where[] = ['status','eq',self::STATUS_OPEN];
         $where[] = ['stime','lt',time()];
         $where[] = ['etime','gt',time()];
-        $where[] = ['seller_id','eq',$seller_id];
         $where[] = ['type','eq',self::TYPE_PROMOTION];
         $list = $this->where($where)->order('sort','asc')->select();
         foreach($list as $v){
@@ -203,7 +202,6 @@ class Promotion extends Common
     /**
      *
      *  获取指定id 的优惠券是否可以领取
-     * @param $seller_id
      * @param $promotion_id
      * @return array|null|\PDOStatement|string|\think\Model
      * @throws \think\db\exception\DataNotFoundException

@@ -1,15 +1,5 @@
 <form class="layui-form seller-alone-form" action="" style="min-height:600px;">
     <div class="layui-form-item">
-        <label class="layui-form-label">商户名称：</label>
-        <div class="layui-input-inline seller-inline-6">
-            <select name="seller_id" lay-verify="">
-                {volist name="sellerList" id="vo"}
-                <option value="{$vo.id}">{$vo.seller_name}</option>
-                {/volist}
-            </select>
-        </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">优惠券名称：</label>
         <div class="layui-input-inline seller-inline-5">
             <input name="name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" type="text">

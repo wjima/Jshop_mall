@@ -1,17 +1,6 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item" style="margin-bottom:0;">
         <div class="layui-inline">
-            <label class="layui-form-label">商户：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <select name="seller_id" lay-verify="">
-                    <option value=""></option>
-                    {volist name="sellerList" id="vo"}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label class="layui-form-label">退款单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="refund_id" lay-verify="title" placeholder="请输入退款单号" autocomplete="off" class="layui-input">
@@ -62,7 +51,6 @@
             url: "{:url('billRefund/index')}?_ajax=1",
             id:'billRefund',
             cols: [[
-                {field:'seller_name', width:250,title:'商户名称'},
                 {field:'refund_id', width:140, sort: true,title:'退款单号'},
                 {field:'money',width:100,title:'退款金额'},
                 {field:'payment_code', width:140, sort: true,title:'退款方式'},

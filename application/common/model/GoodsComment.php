@@ -109,10 +109,8 @@ class GoodsComment extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getListSeller($seller_id = false, $page = 1, $limit = 10, $order_id = '', $evaluate = 'all', $display = 'all', $mobile = false)
+    public function getListSeller($page = 1, $limit = 10, $order_id = '', $evaluate = 'all', $display = 'all', $mobile = false)
     {
-        $goods_ids = model('common/Goods')->getGoodsIdBySellerId($seller_id);
-        $where[] = ['goods_id', 'in', $goods_ids];
         if($order_id != '')
         {
             $where[] = ['order_id', 'eq', $order_id];
@@ -144,7 +142,6 @@ class GoodsComment extends Common
 
             $v['images_url'] = $imagesArr;
             $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
-            $v['seller_name'] = getSellerInfoById($v['goods']['seller_id'], 'seller_name');
         }
 
         $count = $this->where($where)

@@ -2,6 +2,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\GoodsComment;
 use app\common\model\Seller;
 use app\common\model\SellerUser;
 use app\common\model\UserLog;
@@ -21,7 +22,6 @@ class User extends Manage
             return $this->fetch('index');
         }
     }
-
 
 
     /**
@@ -136,13 +136,13 @@ class User extends Manage
     {
         if(Request::isPost())
         {
-            $seller_id = input('seller_id', false);
             $page = input('page', 1);
             $limit = input('limit', 20);
             $order_id = input('order_id', '');
             $evaluate = input('evaluate', 'all');
             $mobile = input('mobile', false);
-            $res = model('common/GoodsComment')->getListSeller($seller_id, $page, $limit, $order_id, $evaluate, 'all', $mobile);
+            $goodsCommentModel = new GoodsComment();
+            $res = $goodsCommentModel->getListSeller($page, $limit, $order_id, $evaluate, 'all', $mobile);
             if($res['status'])
             {
                 $return = [
@@ -165,11 +165,6 @@ class User extends Manage
         }
         else
         {
-            //所属商户
-            $seller = new Seller();
-            $seller_list = $seller->getAllSellerList();
-            $this->assign('seller_list', $seller_list);
-
             return $this->fetch('comment');
         }
     }

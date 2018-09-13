@@ -22,9 +22,7 @@ class Sms extends ManageController
 
             return $smsModel->tableData(input('param.'));
         }else{
-            $this->assign('sellerList',getSellerList());
             $messageCenterModel = new MessageCenter();
-            $this->assign('sellerTpl',$messageCenterModel->seller_tpl);
             $this->assign('platformTpl',$messageCenterModel->platform_tpl);
             $this->assign('smsTpl',$smsModel->sms_tpl);
             return $this->fetch('index');

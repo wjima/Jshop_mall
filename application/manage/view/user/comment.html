@@ -1,17 +1,6 @@
 <form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">所属商户：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <select name="seller_id" id="seller_id">
-                    <option value="">-- 全部 --</option>
-                    {foreach $seller_list as $key=>$vo}
-                    <option value="{$vo.id}">{$vo.seller_name}</option>
-                    {/foreach}
-                </select>
-            </div>
-        </div>
-        <div class="layui-inline">
             <label style="width:120px" class="layui-form-label">用户手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
@@ -63,9 +52,15 @@
             },
             cols: [[
                 {type:'numbers'},
-                {field:'seller_name', width:250, title:'所属商户', align:'center'},
                 {field:'nickname', width:210, title:'用户', align:'center', templet: function(data) {
-                    return data.user.nickname?data.user.nickname:data.user.mobile;
+                    if(data.user)
+                    {
+                        return data.user.nickname?data.user.nickname:data.user.mobile;
+                    }
+                    else
+                    {
+                        return data.user_id;
+                    }
                 }},
                 {field:'evaluate', width:150, sort:true, title:'评价类型', align:'center', templet: function (data) {
                     if (data.score == 1) {

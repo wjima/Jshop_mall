@@ -7,36 +7,6 @@
         </div>
     </div>
     <div class="layui-inline">
-        <label class="layui-form-label">商户：</label>
-        <div class="layui-input-inline seller-inline-4">
-            <select name="seller_id" lay-verify="">
-                <option value=""></option>
-                <option value="0">平台</option>
-                {volist name="sellerList" id="vo"}
-                <option value="{$vo.id}">{$vo.seller_name}</option>
-                {/volist}
-            </select>
-        </div>
-    </div>
-    <div class="layui-inline">
-        <label class="layui-form-label">类型：</label>
-        <div class="layui-input-inline seller-inline-4" >
-            <select name="code">
-                <option value="">请选择</option>
-                <optgroup label="平台消息">
-                    {volist name="platformTpl" id="vo"}
-                        <option value="{$key}">{$vo.name}({$key})</option>
-                    {/volist}
-                </optgroup>
-                <optgroup label="商户消息">
-                    {volist name="sellerTpl" id="vo"}
-                    <option value="{$key}">{$vo.name}({$key})</option>
-                    {/volist}
-                </optgroup>
-            </select>
-        </div>
-    </div>
-    <div class="layui-inline">
         <label class="layui-form-label">状态：</label>
         <div class="layui-input-inline seller-inline-2" >
             <select name="status" lay-verify="">
@@ -94,12 +64,10 @@
                     return html;
                 }},
                 {field:'user_mobile',width:140,title:'用户'},
-                {field:'seller_name',width:200,title:'商户'},
-                {field:'code',width:150,title:'类型'},
                 {field:'content', title:'内容'},
                 {field:'ctime', width:180, title:'时间', align:'center'},
 
-                {field:'operating', title:'操作', width:80, align:'center',templet:function(data){
+                {field:'operating', title:'操作', width:120, align:'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-del" data-id="' + data.id + '">删除</a>';
                     return html;

@@ -304,9 +304,8 @@ class Order extends Manage
      */
     public function statistics()
     {
-        $seller_id = $this->sellerId;
-        $payres = model('common/BillPayments')->statistics($seller_id);
-        $deliveryres = model('common/BillDelivery')->statistics($seller_id);
+        $payres = model('common/BillPayments')->statistics();
+        $deliveryres = model('common/BillDelivery')->statistics();
 
         $data = [
             'legend' => [

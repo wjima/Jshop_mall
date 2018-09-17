@@ -300,13 +300,13 @@
 
 
                     //获取历史登录记录
-                    $.get("{:url('seller/User/userLogList',array('state'=>1))}",function(data){
+                    $.get("{:url('manage/User/userLogList',array('state'=>1))}",function(data){
                         var getTpl = log.innerHTML,view = document.getElementById('loginLog');
                         laytpl(getTpl).render(data.data,function(html){
                             view.innerHTML = html;
                         })
                     });
-					JsGet("{:url('seller/OperationLog/getLastLog')}",function (data) {
+					JsGet("{:url('manage/OperationLog/getLastLog')}",function (data) {
                         var getTpl = oplog.innerHTML,view = document.getElementById('oplog-table');
                         laytpl(getTpl).render(data.data,function(html){
                             view.innerHTML = html;

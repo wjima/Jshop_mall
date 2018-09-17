@@ -439,14 +439,13 @@ class BillPayments extends Common
 
     /**
      * 支付单统计
-     * @param $seller_id
      * @return array
      */
-    public function statistics($seller_id)
+    public function statistics()
     {
         $num = 7;
         $day = date('Y-m-d', strtotime('-'.$num.' day'));
-        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM bill_payments WHERE from_unixtime(ctime) >= "'.$day.'" AND `seller_id` = '.$seller_id.' AND `status` = 2 AND `type` = 1 GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
+        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM bill_payments WHERE from_unixtime(ctime) >= "'.$day.'" AND `status` = 2 AND `type` = 1 GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
         $res = Db::query($sql);
         $data = get_lately_days($num, $res);
         return ['day' => $data['day'], 'data' => $data['data']];

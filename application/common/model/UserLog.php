@@ -17,9 +17,10 @@ class UserLog extends Common
     //总后台的登陆记录
     public function getList( $user_id, $limit = 10 )
     {
-        $where[] = ['user_id','eq',$user_id];
-        $where[] = ['seller_id' ,'eq',0];           //相当于此用户登陆总后台的记录
-
+        $where = [];
+        if($user_id){
+            $where[] = ['user_id','eq',$user_id];
+        }
         $data = $this->where($where)
             ->order('ctime DESC')
             ->paginate($limit);
@@ -36,9 +37,6 @@ class UserLog extends Common
         $where = [];
         if(isset($post['user_id']) && $post['user_id'] != ""){
             $where[] = ['user_id', 'eq', $post['user_id']];
-        }
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
         }
         $result['where'] = $where;
         $result['field'] = "*";

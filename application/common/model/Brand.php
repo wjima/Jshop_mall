@@ -1,10 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tian yu
- * Date: 2018/1/8 0008
- * Time: 16:08
- */
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: mark <jima@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\common\model;
 use think\Validate;
 use think\model\concern\SoftDelete;

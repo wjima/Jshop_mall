@@ -1,5 +1,11 @@
 <?php
-
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: mark <jima@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
@@ -13,7 +19,6 @@ use think\facade\Cache;
 use think\facade\Log;
 use app\common\validate\WeixinAuthor as wxAuthorValidate;
 use app\common\model\TemplateOrder;
-
 
 
 class Wechat extends Manage

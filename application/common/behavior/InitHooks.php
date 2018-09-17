@@ -1,4 +1,11 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: mark <jima@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\common\behavior;
 
 /**
@@ -9,7 +16,6 @@ namespace app\common\behavior;
  */
 
 use think\facade\Cache;
-use think\facade\Config;
 use think\facade\Hook;
 use app\common\model\Hooks;
 use app\common\model\Addons;

@@ -1,15 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mark
- * Date: 2018/3/18
- * Time: 下午2:47
- */
-
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: mark <jima@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\common\controller;
 
-use think\Container;
-use app\common\model\Operation;
 class Wechat extends Base
 {
     public function index()

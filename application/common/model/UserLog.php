@@ -10,7 +10,6 @@ class UserLog extends Common
     const USER_LOGIN = 1;     //登录
     const USER_LOGOUT = 2;    //退出
     const USER_REG = 3;    //注册
-
     const USER_EDIT = 4;    //用户编辑信息
 
 

@@ -1,2 +1,3 @@
 .idea/*
 runtime/*
+config/database.php

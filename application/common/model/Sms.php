@@ -158,13 +158,56 @@ class Sms extends Common
         return $msg;
     }
     private function send_sms($mobile,$content){
-        $content = $content.'【jShop】';
-        //$content = iconv("utf-8","gb2312",$content);
-        $content = urlencode($content);      //内容
-        $str = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=169&account=hnhaitao&password=000000wht&mobile=".$mobile."&content=".$content."&sendTime=&extno=";
-        $re = file_get_contents($str);
+        $response=array();
+        $content='【满屋彩】'.$content;
+        $data['username'] ="manwucai";
+        $data['password'] ="ManWuCai1234";
+        $data['epid'] ="122888";
+        $data['phone'] =$mobile;
+        $data['message'] = iconv('utf-8','gb2312', $content);//urlencode($content);
+        $data['linkid'] ="";
+        $data['subcode'] ="";
+        unset($getAttr);
+
+        foreach($data as $k=>$v)
+        {
+            if($getAttr)
+            {
+                $getAttr .= "&{$k}={$v}";
+            }
+            else
+            {
+                $getAttr .= "?{$k}={$v}";
+            }
+        }
+        $url='http://q.hl95.com:8061/'.$getAttr;
+
+        // error_log(var_export($url,true),3,__FILE__.'/log');
+
+        /*
+        $response= $this->httpClient->get($url);
+        */
+        $ch = curl_init();
+        $this_header = array(
+            "content-type: application/x-www-form-urlencoded;
+		charset=gb2312"
+        );
+
+        curl_setopt($ch,CURLOPT_HTTPHEADER,$this_header);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            error_log(var_export('Errno' . curl_error($ch), true), 3, __FILE__ . '.log');
+//            echo 'Errno' . curl_error($ch);
+        }
+        // error_log(var_export($result, true), 3, __FILE__ . '.log');
         return array('status'=>true,'msg'=>"发送成功！");
     }
+
 
     protected function tableWhere($post)
     {

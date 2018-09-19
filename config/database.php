@@ -15,11 +15,11 @@ return [
     // 服务器地址
     'hostname'        => 'localhost',
     // 数据库名
-    'database'        => 'b2c',
+    'database'        => 'jshop_b2c',
     // 用户名
-    'username'        => 'b2c',
+    'username'        => 'root',
     // 密码
-    'password'        => '123456',
+    'password'        => 'root',
     // 端口
     'hostport'        => '3306',
     // 连接dsn

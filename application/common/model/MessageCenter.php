@@ -14,7 +14,7 @@ class MessageCenter extends Common
 
 
     //商户类型，只有商户类型才存表
-    public $seller_tpl = [
+    public $tpl = [
         'create_order' => [
             'name' => '下单成功时',
             'sms' => self::SEND_FALSE,
@@ -53,42 +53,13 @@ class MessageCenter extends Common
         ],
     ];
 
-    //平台类型消息
-    public $platform_tpl = [
-        'aftersales_add' => [                              //当用户提交售后单的时候，发送
-            'name' => '新售后单通知',
-            'sms' => self::SEND_FALSE,
-            'message' => self::SEND_TRUE
-        ],
-        'wx_authorize_notice' => [                              //微信授权通知，成功和失败都通过此发送
-            'name' => '微信授权通过时',
-            'sms' => self::SEND_TRUE,
-            'message' => self::SEND_TRUE
-        ],
-        'wxapp_tpl_examine_notice' => [                              //微信小程序模板审核结果通知，成功和失败都通过此发送
-            'name' => '微信小程序模板审核结果',
-            'sms' => self::SEND_TRUE,
-            'message' => self::SEND_TRUE
-        ],
-        'platform_expire' => [                              //平台到期通知
-            'name' => '平台到期通知',
-            'sms' => self::SEND_TRUE,
-            'message' => self::SEND_TRUE
-        ],
-        'modify_domain' => [                              //平台到期通知
-            'name' => '域名设置通知',
-            'sms' => self::SEND_FALSE,
-            'message' => self::SEND_TRUE
-        ],
-    ];
-
     //取得商户消息配置参数,返回layui的格式
-    public function getSellerTpl($seller_id)
+    public function getTpl()
     {
         //取商户的消息配置信息
-        $list = $this->where(array('seller_id' => $seller_id))->select();
+        $list = $this->select();
         $data = [];
-        foreach($this->seller_tpl as $k => $v){
+        foreach($this->tpl as $k => $v){
             $v['code'] = $k;
             foreach($list as $vv){
                 if($vv['code'] == $k){
@@ -109,20 +80,19 @@ class MessageCenter extends Common
 
     /**
      * 商户发送消息给用户
-     * @param $seller_id            商户id
      * @param $user_id              接受者id
      * @param $code                 模板编码
      * @param $params               参数
      */
-    public function sendSellerMessage($seller_id,$user_id,$code,$params)
+    public function sendMessage($user_id,$code,$params)
     {
-        if(!isset($this->seller_tpl[$code])){
+        if(!isset($this->tpl[$code])){
             return error_code(10100);
         }
-        $info = $this->seller_tpl[$code];
+        $info = $this->tpl[$code];
 
-        //判断用户是否有设置
-        $conf = $this->where(['seller_id'=> $seller_id,'code'=>$code])->find();
+        //判断后台是否设置
+        $conf = $this->where(['code'=>$code])->find();
         if($conf){
             $info['sms'] = $conf['sms'];
             $info['message'] = $conf['message'];
@@ -139,17 +109,16 @@ class MessageCenter extends Common
         //站内消息
         if($info['message'] == self::SEND_TRUE){
             $messageModel = new Message();
-            $messageModel->send($user_id,$code,$params,$seller_id);
+            $messageModel->send($user_id,$code,$params);
         }
-        if($info['wx_tpl_message'] == self::SEND_TRUE){
-            //微信模板消息【小程序，公众号都走这里】
-            hook('sendwxmessage', ['params' => [
-                'user_id'   => $user_id,
-                'code'      => $code,
-                'params'    => $params,
-                'seller_id' => $seller_id,
-            ]]);
-        }
+//        if($info['wx_tpl_message'] == self::SEND_TRUE){
+//            //微信模板消息【小程序，公众号都走这里】
+//            hook('sendwxmessage', ['params' => [
+//                'user_id'   => $user_id,
+//                'code'      => $code,
+//                'params'    => $params,
+//            ]]);
+//        }
 
 
 
@@ -161,48 +130,6 @@ class MessageCenter extends Common
 
     }
 
-    /**
-     * 平台发送消息的接口
-     * @param $seller_id          接受者的$seller_id 如果是商户的话，这里要传seller_id而不是user_id
-     * @param $code             消息编码
-     * @param $params           参数
-     * @return array
-     */
-    public function sendPlatformMessage($seller_id,$code,$params)
-    {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
-
-       if(!isset($this->platform_tpl[$code])){
-            return error_code(10100);
-        }
-        $info = $this->platform_tpl[$code];
-
-        $user_id = getSellerInfoById($seller_id,'user_id');
-        if($user_id == ""){
-            $result['msg'] = "店铺没有找到对应用户";
-            return $result;
-        }
-
-        if($info['sms'] == self::SEND_TRUE){
-            $mobile = get_user_info($user_id,'mobile');
-            if($mobile){
-                $smsModel = new Sms();
-                $smsModel->send($mobile,$code,$params);
-            }
-
-        }
-        if($info['message'] == self::SEND_TRUE){
-            $messageModel = new Message();
-            $messageModel->send($user_id,$code,$params,$seller_id);
-        }
-        $result['status'] = true;
-
-        return $result;
-    }
 
     /**
      * 返回layui的table所需要的格式
@@ -239,9 +166,7 @@ class MessageCenter extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
+
         if(isset($post['code']) && $post['code'] != ""){
             $where[] = ['code', 'eq', $post['code']];
         }
@@ -261,8 +186,8 @@ class MessageCenter extends Common
     protected function tableFormat($list)
     {
         foreach($list as $k => $v){
-            if(isset($this->seller_tpl[$v['code']])){
-                $list[$k]['code_name'] = $this->seller_tpl[$v['code']]['name'];
+            if(isset($this->tpl[$v['code']])){
+                $list[$k]['code_name'] = $this->tpl[$v['code']]['name'];
             }else{
                 $list[$k]['code_name'] = self::SEND_FALSE;
             }
@@ -271,4 +196,5 @@ class MessageCenter extends Common
         }
         return $list;
     }
+
 }

@@ -23,7 +23,7 @@ class Message extends Common
      * @param $code                 模板编码
      * @param $params               参数
      */
-    public function send($user_id,$code,$params,$seller_id = 0)
+    public function send($user_id,$code,$params)
     {
         $content = $this->temp($code,$params);
         if($content == ''){
@@ -31,7 +31,6 @@ class Message extends Common
         }
 
         $data['user_id'] = $user_id;
-        $data['seller_id'] = $seller_id;
         $data['code'] = $code;
         $data['params'] = json_encode($params);
         $data['content'] = $content;
@@ -106,10 +105,9 @@ class Message extends Common
      * @param $user_id      用户id
      * @param $seller_id    平台id，如果是0的话，就是只看平台发送的消息
      */
-    public function hasNew($user_id,$seller_id)
+    public function hasNew($user_id)
     {
         $where['user_id'] = $user_id;
-        $where['seller_id'] = $seller_id;
         $where['status'] = self::STATUS_UNREAD;
         $re =  $this->tableData($where);
         if($re['data']->isempty()){
@@ -148,14 +146,6 @@ class Message extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ''){
-            if($post['seller_id'] == '0'){
-                $where[] = ['seller_id', 'eq', $post['seller_id']];
-            }else{
-                $where[] = ['seller_id', 'in', [$post['seller_id'],0]];
-            }
-
-        }
         if(isset($post['id']) && $post['id'] != ""){
             $where[] = ['id', 'eq', $post['id']];
         }
@@ -216,6 +206,7 @@ class Message extends Common
         }
         return $list;
     }
+
 
     public function userInfo()
     {

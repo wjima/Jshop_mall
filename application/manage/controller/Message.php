@@ -28,7 +28,7 @@ class Message extends ManageController
             return $messageModel->tableData(input('param.'));
         }else{
             $messageCenterModel = new MessageCenter();
-            $this->assign('platformTpl',$messageCenterModel->platform_tpl);
+            $this->assign('tpl',$messageCenterModel->tpl);
             return $this->fetch('index');
         }
     }

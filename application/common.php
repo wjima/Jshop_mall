@@ -699,10 +699,10 @@ function is_user_point($user_id, $seller_id, $num)
  * @param $params
  * @return array
  */
-function sendMessage($seller_id, $user_id, $code, $params)
+function sendMessage($user_id, $code, $params)
 {
     $messageCenter = new \app\common\model\MessageCenter();
-    return $messageCenter->sendSellerMessage($seller_id, $user_id, $code, $params);
+    return $messageCenter->sendMessage($user_id, $code, $params);
 }
 
 
@@ -732,10 +732,10 @@ function getUserWxInfo($seller_id,$user_id)
  * @param $user_id
  * @param int $seller_id
  */
-function hasNewMessage($user_id,$seller_id = 0)
+function hasNewMessage($user_id)
 {
     $messageModel = new \app\common\model\Message();
-    $re = $messageModel->hasNew($user_id,$seller_id);
+    $re = $messageModel->hasNew($user_id);
     return $re;
 }
 

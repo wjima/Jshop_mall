@@ -41,6 +41,7 @@ class User extends Common
     /**
      * 注册添加用户
      * @param array $data 新建用户的数据数组
+     * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
      *
      */
     public function toAdd($data, $loginType=1)
@@ -90,18 +91,7 @@ class User extends Common
 
         return $this->setSession($this ,$loginType);
     }
-    //当是手机短信登陆的时候，如果没有账号，那么就调用此方法，创建用户。此方法停用了，用thirdAddf方法
-//    private function mobileAdd($mobile)
-//    {
-//        $data['mobile'] = $mobile;
-//        $data['nickname'] = $mobile;
-//        $data['avatar'] = config('jshop.default_image');
-//        $data['ctime'] = time();
-//        //插入数据库
-//        $this->data($data)->save();
-//
-//        return $this->id;
-//    }
+
 
     /**
      *第三方添加用户，或者总管理员添加用户，不需要校验等一系列的东西，直接创建账户，所以在外面就要先校验好数据
@@ -274,20 +264,6 @@ class User extends Common
 //            }
         }elseif($code == 'login'){
             //登陆
-        }elseif($code == 'seller_reg'){
-            //商户注册登陆,判断是否是已经审核通过的商户
-            if (!$userInfo) {
-                $result['msg'] = '请先注册账号';
-                return $result;
-            }
-            $sellerModel = new Seller();
-            $sellerInfo = $sellerModel->where(['user_id'=>$userInfo['id'],'status'=>$sellerModel::STATUS_NORMAL])->find();
-            if($sellerInfo){
-                if (!$userInfo) {
-                    $result['msg'] = '商户账号正常，不需要重新申请';
-                    return $result;
-                }
-            }
         } elseif ($code === 'veri') {
             // 找回密码
         }else{
@@ -327,7 +303,6 @@ class User extends Common
             case 2:
                 $userTokenModel = new UserToken();
                 $result = $userTokenModel->setToken($userInfo['id'],$platform);
-
                 break;
         }
 

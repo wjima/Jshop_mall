@@ -3,8 +3,6 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\GoodsComment;
-use app\common\model\Seller;
-use app\common\model\SellerUser;
 use app\common\model\UserLog;
 use app\common\model\User as UserModel;
 use app\common\model\UserPointLog;
@@ -91,12 +89,9 @@ class User extends Manage
     //用户统计
     public function statistics()
     {
-
-        $seller_id = $this->sellerId;
-        $where['seller_id'] = $seller_id;
         $userLogModel = new UserLog();
-        $list_login = $userLogModel->statistics(7,$this->sellerId,$userLogModel::USER_LOGIN);
-        $list_reg = $userLogModel->statistics(7,$this->sellerId,$userLogModel::USER_REG);
+        $list_login = $userLogModel->statistics(7,$userLogModel::USER_LOGIN);
+        $list_reg = $userLogModel->statistics(7,$userLogModel::USER_REG);
 
         $data = [
             'legend' => [
@@ -142,7 +137,7 @@ class User extends Manage
             $evaluate = input('evaluate', 'all');
             $mobile = input('mobile', false);
             $goodsCommentModel = new GoodsComment();
-            $res = $goodsCommentModel->getListSeller($page, $limit, $order_id, $evaluate, 'all', $mobile);
+            $res = $goodsCommentModel->getListComments($page, $limit, $order_id, $evaluate, 'all', $mobile);
             if($res['status'])
             {
                 $return = [

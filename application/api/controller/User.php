@@ -4,7 +4,6 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\model\Balance;
-use app\common\model\SellerUser;
 use app\common\model\UserBankcards;
 use app\common\model\UserPointLog;
 use app\common\model\UserTocash;
@@ -56,12 +55,8 @@ class User extends Api
         }
         $userWxModel = new UserWx();
 
-        return $userWxModel->codeToInfo(input('param.code'),$this->sellerId);
+        return $userWxModel->codeToInfo(input('param.code'));
 
-//        if(!$re['status']){
-//            return $re;
-//        }
-//        return $userWxModel->toCreate($re['data'],input('param.edata'),input('param.iv'),$this->sellerId);
     }
 
     /**
@@ -144,7 +139,6 @@ class User extends Api
     {
         $userModel = new UserModel();
         $data = input('post.');
-        $data['seller_id'] = $this->sellerId;
         return $userModel->toAdd($data,2);
     }
 
@@ -216,7 +210,7 @@ class User extends Api
         }
 
         $goodsBrowsingModel = new GoodsBrowsing();
-        return $goodsBrowsingModel->toAdd($this->userId, $this->sellerId, input("param.goods_id"));
+        return $goodsBrowsingModel->toAdd($this->userId, input("param.goods_id"));
     }
     //删除商品浏览足迹
     public function delGoodsBrowsing()
@@ -232,7 +226,7 @@ class User extends Api
         }
 
         $goodsBrowsingModel = new GoodsBrowsing();
-        return $goodsBrowsingModel->toDel($this->userId, $this->sellerId, input("param.goods_ids"));
+        return $goodsBrowsingModel->toDel($this->userId,input("param.goods_ids"));
     }
     //取得商品浏览足迹
     public function goodsBrowsing()
@@ -254,7 +248,7 @@ class User extends Api
         }
 
         $goodsBrowsingModel = new GoodsBrowsing();
-        return $goodsBrowsingModel->getList($this->userId, $this->sellerId, $page , $limit);
+        return $goodsBrowsingModel->getList($this->userId, $page , $limit);
     }
 
     //添加商品收藏（关注）
@@ -273,7 +267,7 @@ class User extends Api
 
         $goodsCollectionModel = new GoodsCollection();
 
-        return $goodsCollectionModel->toDo($this->userId, $this->sellerId, input("param.goods_id"));
+        return $goodsCollectionModel->toDo($this->userId, input("param.goods_id"));
     }
     //取得商品收藏记录（关注）
     public function goodsCollectionList()
@@ -295,7 +289,7 @@ class User extends Api
         }
 
         $goodsCollectionModel = new GoodsCollection();
-        return $goodsCollectionModel->getList($this->userId, $this->sellerId,$page , $limit);
+        return $goodsCollectionModel->getList($this->userId,$page , $limit);
     }
 
     /**
@@ -577,25 +571,20 @@ class User extends Api
             //没有order_id
             return error_code(13401);
         }
-        if(!input('seller/a'))
-        {
-            //没有seller信息
-            return error_code(13402);
-        }
+
 
         $order_id = input('order_id');
         $goods = input('goods/a');
-        $seller = input('seller/a');
 
         //判断这个订单是否可以评价
-        $res = model('common/Order')->isOrderComment($order_id, $this->sellerId, $this->userId);
+        $res = model('common/Order')->isOrderComment($order_id, $this->userId);
         if(!$res['status'])
         {
             //已经评价或者存在问题
             return $res;
         }
         //添加评价
-        $result = model('common/sellerComment')->addComment($order_id, $seller, $goods, $this->sellerId, $this->userId);
+        $result = model('common/GoodsComment')->addComment($order_id, $goods, $this->userId);
         return $result;
     }
 
@@ -620,9 +609,8 @@ class User extends Api
     public function isSign()
     {
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
         $userPointLog = new UserPointLog();
-        $res = $userPointLog->isSign($user_id, $seller_id);
+        $res = $userPointLog->isSign($user_id);
         return $res;
     }
 
@@ -636,9 +624,8 @@ class User extends Api
     public function sign()
     {
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
         $userPointLog = new UserPointLog();
-        $res = $userPointLog->sign($user_id, $seller_id);
+        $res = $userPointLog->sign($user_id);
         return $res;
     }
 
@@ -652,9 +639,8 @@ class User extends Api
     public function myPoint()
     {
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
-        $sellerUser = new SellerUser();
-        $point = $sellerUser->getInfo($user_id, $seller_id, 'point');
+        $userModel = new User();
+        $point = $userModel->getInfo($user_id, 'point');        //user模型里可能没有此功能，需要去确认
         if($point['point'])
         {
             $return = [
@@ -684,48 +670,15 @@ class User extends Api
     public function pointLog()
     {
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
         $userPointLog = new UserPointLog();
-        $res = $userPointLog->pointLogList($user_id, $seller_id);
+        $res = $userPointLog->pointLogList($user_id);
         return $res;
     }
-
-    /**
-     * 获取店铺名称
-     * @return array
-     */
-    public function getStoreName()
-    {
-        $name = '';
-        $operating_mode = config('app.operating_mode');
-        if($operating_mode == 'review')
-        {
-            //审核模式
-            $return_data = [
-                'status' => true,
-                'mode' => '7881f454af469aa8',
-                'data' => $name,
-                'msg' => '获取成功'
-            ];
-        }
-        else
-        {
-            //正式模式
-            $return_data = [
-                'status' => true,
-                'mode' => '31e70f53929daa89',
-                'data' => $name,
-                'msg' => '获取成功'
-            ];
-        }
-        return $return_data;
-    }
-
     /**
      * 获取店铺设置
      * @return array|mixed
      */
-    function getSellerSetting()
+    function getSetting()
     {
         $result = [
             'status' => true,
@@ -735,7 +688,7 @@ class User extends Api
         if(!input('?param.key')){
             return error_code(10003);
         }
-        $result['data'] = '';//getShopSetting($this->sellerId,input('param.key'));
+        $result['data'] = '';
 
         switch (input('param.key'))
         {

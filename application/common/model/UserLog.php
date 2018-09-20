@@ -81,10 +81,8 @@ class UserLog extends Common
     /**
      * 按天统计商户下面的数据
      */
-    public function statistics($day,$seller_id,$state)
+    public function statistics($day,$state)
     {
-
-        $where['seller_id'] = $seller_id;
         $where['state'] = $state;
         $field = 'state,DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums';
 

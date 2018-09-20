@@ -137,7 +137,7 @@ return [
                 'is_login' => false
             ],
             'getsellersetting' => [
-                'code' => 'getSellerSetting',
+                'code' => 'getSetting',
                 'is_login' => false
             ],
             'getdefaultbankcard' => [

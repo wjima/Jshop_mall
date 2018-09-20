@@ -98,7 +98,6 @@ class GoodsComment extends Common
 
     /**
      * 获取商家全部的评论列表
-     * @param $seller_id
      * @param int $page
      * @param int $limit
      * @param string $order_id
@@ -109,7 +108,7 @@ class GoodsComment extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getListSeller($page = 1, $limit = 10, $order_id = '', $evaluate = 'all', $display = 'all', $mobile = false)
+    public function getListComments($page = 1, $limit = 10, $order_id = '', $evaluate = 'all', $display = 'all', $mobile = false)
     {
         if($order_id != '')
         {
@@ -267,5 +266,79 @@ class GoodsComment extends Common
             ];
         }
         return $return;
+    }
+    /**
+     * 添加评价
+     * @param $order_id
+     * @param $goods
+     * @param $user_id
+     * @return array
+     */
+    public function addComment($order_id, $goods, $user_id)
+    {
+        Db::startTrans();
+        try{
+            //插入商品评价
+            $goods_data = [];
+            foreach($goods as $k => $v)
+            {
+                $score = 0;
+                if($v['evaluate']['praise'])
+                {
+                    $score = 1;
+                }
+                elseif($v['evaluate']['difference'])
+                {
+                    $score = -1;
+                }
+                $images = '';
+                if ($v['images'])
+                {
+                    foreach($v['images'] as $kk => $vv)
+                    {
+                        $images .= $vv['id'].',';
+                    }
+                }
+                $images = rtrim($images, ",");
+                $addon = model('common/OrderItems')->getAddon($v['product']);
+                $goods_data[] = [
+                    'comment_id' => 0,
+                    'score' => $score,
+                    'user_id' => $user_id,
+                    'goods_id' => $k,
+                    'order_id' => $order_id,
+                    'images' => $images,
+                    'content' => $v['textarea'],
+                    'addon' => $addon
+                ];
+            }
+            $this->saveAll($goods_data);
+            //修改评价状态
+            $order_data['is_comment'] = 2;
+            model('common/Order')->save($order_data, ['order_id' => $order_id]);
+            Db::commit();
+            $result = true;
+        }catch(\Exception $e){
+            Db::rollback();
+            $result = false;
+        }
+
+        if($result)
+        {
+            $return_data = [
+                'status' => true,
+                'msg' => '评价成功',
+                'data' => []
+            ];
+        }
+        else
+        {
+            $return_data = [
+                'status' => false,
+                'msg' => '评价失败',
+                'data' => []
+            ];
+        }
+        return $return_data;
     }
 }

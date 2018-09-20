@@ -19,7 +19,7 @@ class GoodsBrowsing extends Common
     protected $createTime = 'ctime';
 
 
-    public function toAdd($userId, $sellerId, $goodsId)
+    public function toAdd($userId, $goodsId)
     {
         $result = array(
             'status' => false,
@@ -33,7 +33,6 @@ class GoodsBrowsing extends Common
             return $result;
         }
         $data['user_id'] = $userId;
-        $data['seller_id'] = $sellerId;
         $data['goods_id'] = $goodsId;
         $data['goods_name'] = $goodsInfo['name'];
 
@@ -46,11 +45,10 @@ class GoodsBrowsing extends Common
     /**
      * 删除浏览记录
      * @param $userId
-     * @param $sellerId
      * @param $goodsId
      * @return array
      */
-    public function toDel($userId, $sellerId, $goods_ids)
+    public function toDel($userId, $goods_ids)
     {
         $result = array(
             'status' => false,
@@ -58,7 +56,6 @@ class GoodsBrowsing extends Common
             'msg' => ''
         );
         $where[] = ['user_id','eq',$userId];
-        $where[] = ['seller_id','eq',$sellerId];
         $where[] = ['goods_id','in',$goods_ids];
 
         $info = $this->where($where)->select();
@@ -72,17 +69,16 @@ class GoodsBrowsing extends Common
     }
 
     //取用户的浏览记录,倒叙，并去重
-    public function getList($user_id, $seller_id, $page = 1,$limit = 10)
+    public function getList($user_id, $page = 1,$limit = 10)
     {
         $result = array(
             'status' => true,
             'data' => [],
             'msg' => ''
         );
-        $where[] = array('seller_id', 'eq', $seller_id);
         $where[] = array('user_id', 'eq', $user_id);
 
-        $field = ['id','goods_id','goods_name','ctime','seller_id','user_id'];
+        $field = ['id','goods_id','goods_name','ctime','user_id'];
         $list = $this::with('goods')
             ->field($field)
             ->where($where)
@@ -100,7 +96,7 @@ class GoodsBrowsing extends Common
             if($v['goods']){
                 $list[$k]['goods']['image_url'] = _sImage($v['goods']['image_id']);
             }
-            $list[$k]['isCollection'] = model('common/GoodsCollection')->check($v['user_id'], $v['seller_id'], $v['goods_id']);
+            $list[$k]['isCollection'] = model('common/GoodsCollection')->check($v['user_id'], $v['goods_id']);
         }
         
         $result['data']['list'] = $list;

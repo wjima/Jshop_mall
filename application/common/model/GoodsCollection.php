@@ -18,20 +18,18 @@ class GoodsCollection extends Common
     /**
      * 如果收藏了，就取消收藏，如果没有收藏，就收藏
      * @param $userId
-     * @param $sellerId
      * @param $goodsId
      * @return array
      */
-    public function toDo($userId, $sellerId, $goodsId)
+    public function toDo($userId, $goodsId)
     {
         $where['user_id'] = $userId;
-        $where['seller_id'] = $sellerId;
         $where['goods_id'] = $goodsId;
         $collectionInfo = $this->where($where)->find();
         if($collectionInfo){
-            return $this->toDel($userId, $sellerId, $goodsId);
+            return $this->toDel($userId, $goodsId);
         }else{
-            return $this->toAdd($userId, $sellerId, $goodsId);
+            return $this->toAdd($userId, $goodsId);
         }
 
     }
@@ -39,14 +37,12 @@ class GoodsCollection extends Common
     /**
      * 检查是否收藏了此商品
      * @param $userId
-     * @param $sellerId
      * @param $goodsId
      * @return array
      */
-    public function check($userId, $sellerId, $goodsId)
+    public function check($userId, $goodsId)
     {
         $where['user_id'] = $userId;
-        $where['seller_id'] = $sellerId;
         $where['goods_id'] = $goodsId;
         $collectionInfo = $this->where($where)->find();
         if($collectionInfo){
@@ -60,11 +56,10 @@ class GoodsCollection extends Common
     /**
      * 取消收藏
      * @param $userId
-     * @param $sellerId
      * @param $goodsId
      * @return array
      */
-    private function toDel($userId, $sellerId, $goodsId)
+    private function toDel($userId, $goodsId)
     {
         $result = array(
             'status' => true,
@@ -72,7 +67,6 @@ class GoodsCollection extends Common
             'msg' => '取消收藏成功'
         );
         $where['user_id'] = $userId;
-        $where['seller_id'] = $sellerId;
         $where['goods_id'] = $goodsId;
         $re = $this->where($where)->delete();
 
@@ -82,11 +76,10 @@ class GoodsCollection extends Common
     /**
      * 收藏
      * @param $userId
-     * @param $sellerId
      * @param $goodsId
      * @return array
      */
-    private function toAdd($userId, $sellerId, $goodsId)
+    private function toAdd($userId, $goodsId)
     {
         $result = array(
             'status' => false,
@@ -100,7 +93,6 @@ class GoodsCollection extends Common
             return $result;
         }
         $data['user_id'] = $userId;
-        $data['seller_id'] = $sellerId;
         $data['goods_id'] = $goodsId;
         $data['goods_name'] = $goodsInfo['name'];
 
@@ -110,14 +102,13 @@ class GoodsCollection extends Common
         $result['msg'] = '收藏成功';
         return $result;
     }
-    public function getList($user_id, $seller_id,$page = 1,$limit = 10,$where = [], $order = "id asc")
+    public function getList($user_id,$page = 1,$limit = 10,$where = [], $order = "id asc")
     {
         $result = array(
             'status' => true,
             'data' => [],
             'msg' => ''
         );
-        $where[] = array('seller_id', 'eq', $seller_id);
         $where[] = array('user_id', 'eq', $user_id);
 
         $list = $this::with('goods')

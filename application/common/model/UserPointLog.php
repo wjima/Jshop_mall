@@ -26,7 +26,6 @@ class UserPointLog extends Common
     /**
      * 积分设置
      * @param $user_id
-     * @param $seller_id
      * @param $num
      * @param int $type
      * @param string $remarks
@@ -87,13 +86,12 @@ class UserPointLog extends Common
     /**
      * 签到
      * @param int $user_id
-     * @param int $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function sign($user_id, $seller_id)
+    public function sign($user_id)
     {
         $return = [
             'status' => false,
@@ -102,7 +100,7 @@ class UserPointLog extends Common
         ];
 
         //判断是否已经签到
-        $res = $this->isSign($user_id, $seller_id);
+        $res = $this->isSign($user_id);
         if($res['status'])
         {
             $return['msg'] = '今天已经签到，无需重复签到';
@@ -110,23 +108,23 @@ class UserPointLog extends Common
         }
 
         //获取店铺签到积分设置
-        $sign_point_type = self::SIGN_RANDOM_POINT; //getShopSetting($seller_id, 'sign_point_type'); //签到积分奖励类型
+        $sign_point_type = self::SIGN_RANDOM_POINT; //getShopSetting( 'sign_point_type'); //签到积分奖励类型
 
         //判断是固定积分计算还是随机积分计算
         if($sign_point_type == self::SIGN_RANDOM_POINT)
         {
             //随机计算
-            $point = $this->signRandomPointCalculation($seller_id);
+            $point = $this->signRandomPointCalculation();
         }
         else
         {
             //固定计算
-            $point = $this->signFixedPointCalculation($user_id, $seller_id);
+            $point = $this->signFixedPointCalculation($user_id);
         }
         $return['data'] = $point;
 
         //插入数据库
-        $result = $this->setPoint($user_id, $seller_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得'.$point.'个积分');
+        $result = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得'.$point.'个积分');
         $return['msg'] = $result['msg'];
         if($result['status'])
         {
@@ -140,13 +138,12 @@ class UserPointLog extends Common
     /**
      * 判断今天是否签到
      * @param $user_id
-     * @param $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function isSign($user_id, $seller_id)
+    public function isSign($user_id)
     {
         $return = [
             'status' => false,
@@ -154,7 +151,6 @@ class UserPointLog extends Common
         ];
 
         $where[] = ['user_id', 'eq', $user_id];
-        $where[] = ['seller_id', 'eq', $seller_id];
         $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
         $where[] = ['DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")', 'eq', date('Y-m-d', time())];
 
@@ -174,15 +170,14 @@ class UserPointLog extends Common
 
     /**
      * 签到随机积分计算
-     * @param $seller_id
      * @return float|int
      */
-    protected function signRandomPointCalculation($seller_id)
+    protected function signRandomPointCalculation()
     {
-        $sign_random_min = 1; //getShopSetting($seller_id, 'sign_random_min'); //最小随机
-        $sign_random_max = 10; //getShopSetting($seller_id, 'sign_random_max'); //最大随机
+        $sign_random_min = 1; //getShopSetting( 'sign_random_min'); //最小随机
+        $sign_random_max = 10; //getShopSetting( 'sign_random_max'); //最大随机
         $point = mt_rand($sign_random_min, $sign_random_max); //随机积分
-        //$point = $this->signAppointDatePointCalculation($seller_id, $point); //判断计算指定日期
+        //$point = $this->signAppointDatePointCalculation( $point); //判断计算指定日期
         return $point;
     }
 
@@ -190,24 +185,22 @@ class UserPointLog extends Common
     /**
      * 签到指定积分计算
      * @param $user_id
-     * @param $seller_id
      * @return float|int|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    protected function signFixedPointCalculation($user_id, $seller_id)
+    protected function signFixedPointCalculation($user_id)
     {
-        $first_sign_point = 1;//getShopSetting($seller_id, 'first_sign_point'); //首次签到积分
-        $continuity_sign_additional = 1;//getShopSetting($seller_id, 'continuity_sign_additional'); //连续签到追加
-        $sign_most_point = 10;//getShopSetting($seller_id, 'sign_most_point'); //签到最多积分
+        $first_sign_point = 1;//getShopSetting('first_sign_point'); //首次签到积分
+        $continuity_sign_additional = 1;//getShopSetting('continuity_sign_additional'); //连续签到追加
+        $sign_most_point = 10;//getShopSetting('sign_most_point'); //签到最多积分
 
         //获取连续签到天数
         $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
         $day = date('Y-m-d', strtotime('-'.$max_continuity_day.' day'));
 
         $where[] = ['user_id', 'eq', $user_id];
-        $where[] = ['seller_id', 'eq', $seller_id];
         $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
         $where[] = ['from_unixtime(ctime)', '>=', $day];
         $res = $this->field('DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d") as day')
@@ -238,40 +231,39 @@ class UserPointLog extends Common
         $point = $first_sign_point + $continuity_sign_additional * $int;
         $point = ($point > $sign_most_point) ? $sign_most_point : $point;
 
-        //$point = $this->signAppointDatePointCalculation($seller_id, $point); //判断计算指定日期
+        //$point = $this->signAppointDatePointCalculation($point); //判断计算指定日期
         return $point;
     }
 
 
     /**
      * 指定日期签到积分计算
-     * @param $seller_id
      * @param $old_point
      * @return float|int|mixed
      */
-    protected function signAppointDatePointCalculation($seller_id, $old_point)
+    protected function signAppointDatePointCalculation($old_point)
     {
-        $sign_appoint_date_status = '';//getShopSetting($seller_id, 'sign_appoint_date_status'); //指定日期
+        $sign_appoint_date_status = '';//getShopSetting( 'sign_appoint_date_status'); //指定日期
         $nowDate = date('Y-m-d', time());
         if($sign_appoint_date_status)
         {
             //开启指定日期
-            $sign_appoint_date = '';//getShopSetting($seller_id, 'sign_appoint_date'); //特殊指定日期
+            $sign_appoint_date = '';//getShopSetting('sign_appoint_date'); //特殊指定日期
             $sign_appoint_date = json_decode($sign_appoint_date, true);
             if(in_array($nowDate, $sign_appoint_date))
             {
                 //当前是指定日期
-                $sign_appoint_data_type = '';//getShopSetting($seller_id, 'sign_appoint_data_type'); //特殊指定日期奖励类型
+                $sign_appoint_data_type = '';//getShopSetting('sign_appoint_data_type'); //特殊指定日期奖励类型
                 if($sign_appoint_data_type == self::SIGN_APPOINT_DATE_RATE)
                 {
                     //倍率
-                    $sign_appoint_date_rate = 2;getShopSetting($seller_id, 'sign_appoint_date_rate'); //特殊指定日期倍数
+                    $sign_appoint_date_rate = 2;getShopSetting('sign_appoint_date_rate'); //特殊指定日期倍数
                     $point = $old_point * $sign_appoint_date_rate;
                 }
                 else
                 {
                     //追加
-                    $sign_appoint_date_additional = 1;//getShopSetting($seller_id, 'sign_appoint_date_additional'); //特殊指定日期追加数量
+                    $sign_appoint_date_additional = 1;//getShopSetting( 'sign_appoint_date_additional'); //特殊指定日期追加数量
                     $point = $old_point + $sign_appoint_date_additional;
                 }
             }
@@ -293,7 +285,6 @@ class UserPointLog extends Common
     /**
      * 获取积分记录
      * @param $user_id
-     * @param $seller_id
      * @param bool $type
      * @param int $page
      * @param int $limit
@@ -350,18 +341,17 @@ class UserPointLog extends Common
     /**
      * 订单完成送积分操作
      * @param $user_id
-     * @param $seller_id
      * @param $money
      * @param $order_id
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function orderComplete($user_id, $seller_id, $money, $order_id)
+    public function orderComplete($user_id, $money, $order_id)
     {
-        $orders_reward_proportion = 10;//getShopSetting($seller_id, 'orders_reward_proportion');
+        $orders_reward_proportion = 10;//getShopSetting( 'orders_reward_proportion');
         $point = floor($money / $orders_reward_proportion);
-        $this->setPoint($user_id, $seller_id, $point, self::POINT_TYPE_REBATE, '订单:'.$order_id.'的积分奖励');
+        $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单:'.$order_id.'的积分奖励');
     }
 
     /**
@@ -393,10 +383,6 @@ class UserPointLog extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
-
         if(isset($post['mobile']) && $post['mobile'] != ""){
             if($user_id = get_user_id($post['mobile'])){
                 $where[] = ['user_id', 'eq', $user_id];

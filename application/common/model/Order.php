@@ -1201,10 +1201,9 @@ class Order extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function isOrderComment($order_id, $seller_id, $user_id)
+    public function isOrderComment($order_id, $user_id)
     {
         $where[] = ['order_id', 'eq', $order_id];
-        $where[] = ['seller_id', 'eq', $seller_id];
         $where[] = ['user_id', 'eq', $user_id];
 
         $res = $this->where($where)

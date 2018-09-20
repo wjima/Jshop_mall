@@ -124,10 +124,6 @@ return [
                 'code' => 'sign',
                 'is_login' => true
             ],
-            'mypoint' => [
-                'code' => 'myPoint',
-                'is_login' => true
-            ],
             'pointlog' => [
                 'code' => 'pointLog',
                 'is_login' => true

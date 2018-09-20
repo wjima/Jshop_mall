@@ -5,13 +5,6 @@ var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.addgoodsb
 
 //接口统一封装
 function api(method,data,callback,show = true){
-  //没有店铺token跳转到列表
-  if (config.site_token.length < 1) {
-    wx.redirectTo({
-      url: '/pages/other/storeList/storeList',
-    });
-    return false;
-  }
   //如果是需要登陆的，增加token
   if (methodToken.indexOf(method)>= 0){
     var userToken = wx.getStorageSync('userToken');
@@ -20,12 +13,10 @@ function api(method,data,callback,show = true){
     }else{
       data.token = userToken;
       data.method = method;
-      data.site_token = config.site_token;
       post(data, callback, show);
     }
   }else{
     data.method = method;
-    data.site_token = config.site_token;
     post(data, callback, show);
   }
   
@@ -458,8 +449,7 @@ function uploadImage(num,callback){
           filePath: tempFilePaths[i],
           name: 'upfile',
           formData: {
-            method: 'images.upload',
-            site_token: config.site_token
+            method: 'images.upload'
           },
           success: function (res) {
             var obj = JSON.parse(res.data);

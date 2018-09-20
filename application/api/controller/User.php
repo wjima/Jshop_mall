@@ -152,7 +152,7 @@ class User extends Api
         ];
         $userModel = new UserModel();
         $userInfo = $userModel
-            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,status')
+            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,status')
             ->where(array('id'=>$this->userId))
             ->find();
         if($userInfo){
@@ -630,35 +630,35 @@ class User extends Api
     }
 
     /**
-     * 我的积分
+     * 我的积分 废弃了，积分去user.info接口里找
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function myPoint()
-    {
-        $user_id = $this->userId;
-        $userModel = new User();
-        $point = $userModel->getInfo($user_id, 'point');        //user模型里可能没有此功能，需要去确认
-        if($point['point'])
-        {
-            $return = [
-                'status' => true,
-                'msg' => '获取成功',
-                'data' => $point['point']
-            ];
-        }
-        else
-        {
-            $return = [
-                'status' => false,
-                'msg' => '获取失败',
-                'data' => $point['point']
-            ];
-        }
-        return $return;
-    }
+//    public function myPoint()
+//    {
+//        $user_id = $this->userId;
+//        $userModel = new User();
+//        $point = $userModel->getInfo($user_id, 'point');        //user模型里可能没有此功能，需要去确认
+//        if($point['point'])
+//        {
+//            $return = [
+//                'status' => true,
+//                'msg' => '获取成功',
+//                'data' => $point['point']
+//            ];
+//        }
+//        else
+//        {
+//            $return = [
+//                'status' => false,
+//                'msg' => '获取失败',
+//                'data' => $point['point']
+//            ];
+//        }
+//        return $return;
+//    }
 
     /**
      * 积分记录

@@ -27,7 +27,6 @@ class Cart extends Common
 
     /**
      * 单个加入购物车
-     * @param $seller_id
      * @param $user_id
      * @param $product_id
      * @param $nums
@@ -37,7 +36,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function add($seller_id,$user_id,$product_id,$nums,$type)
+    public function add($user_id,$product_id,$nums,$type)
     {
         $result = [
             'status' => false,
@@ -55,7 +54,6 @@ class Cart extends Common
 
         $where[] = array('product_id', 'eq', $product_id);
         $where[] = array('user_id', 'eq', $user_id);
-        $where[] = array('seller_id', 'eq', $seller_id);
 
         $cat_info = $this->where($where)->find();
 
@@ -88,7 +86,6 @@ class Cart extends Common
             $data['product_id'] = $product_id;
             $data['nums'] = $nums;
             $data['user_id'] = $user_id;
-            $data['seller_id'] = $seller_id;
             $result['data'] = $this->insertGetId($data);
 
         }
@@ -101,13 +98,11 @@ class Cart extends Common
     /**
      * 移除购物车
      * @param $ids
-     * @param bool $seller_id
      * @param bool $user_id
      * @return int
      */
-    public function del($seller_id, $user_id, $ids = "")
+    public function del($user_id, $ids = "")
     {
-        $where[] = array('seller_id', 'eq', $seller_id);
         $where[] = array('user_id', 'eq', $user_id);
         if($ids != ""){
             $where[] = array('id', 'in', $ids);
@@ -120,7 +115,6 @@ class Cart extends Common
 
     /**
      * 获取购物车列表
-     * @param $sellerId
      * @param $userId
      * @param string $id
      * @param string $display
@@ -129,7 +123,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($sellerId, $userId, $id = '', $display = '')
+    public function getList($userId, $id = '', $display = '')
     {
         $result = array(
             'status' => false,
@@ -137,7 +131,6 @@ class Cart extends Common
             'msg' => ''
         );
         $where[] = ['user_id', 'eq', $userId];
-        $where[] = ['seller_id', 'eq', $sellerId];
         if($id != '' && $display == '')
         {
             $where[] = ['id', 'in', $id];
@@ -172,7 +165,7 @@ class Cart extends Common
                 $list[$k]['is_select'] = true;
             }
             //判断商品是否已收藏
-            $list[$k]['isCollection'] = model('common/GoodsCollection')->check($v['user_id'], $v['seller_id'], $list[$k]['products']['goods_id']);
+            $list[$k]['isCollection'] = model('common/GoodsCollection')->check($v['user_id'],$list[$k]['products']['goods_id']);
         }
         $data['list'] = $list;
         $result['data'] = $data;
@@ -191,7 +184,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($sellerId, $userId, $id = '', $display = '', $area_id = false,$point = 0,$coupon_code = "")
+    public function info($userId, $id = '', $display = '', $area_id = false,$point = 0,$coupon_code = "")
     {
         $result = [
             'status' => false,
@@ -212,7 +205,7 @@ class Cart extends Common
             ],
             'msg' => ""
         ];
-        $cartList = $this->getList($sellerId, $userId, $id, $display);
+        $cartList = $this->getList($userId, $id, $display);
 
         if(!$cartList['status']){
             $result['msg'] = $cartList['msg'];
@@ -236,22 +229,22 @@ class Cart extends Common
         if($area_id)
         {
             $shipModel = new Ship();
-            $result['data']['cost_freight'] = $shipModel->getShipCost($sellerId,$area_id, $result['data']['weight']);
+            $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight']);
             $result['data']['amount'] += $result['data']['cost_freight'];
         }
 
         //接下来算订单促销金额
         $promotionModel = new Promotion();
-        $result['data'] = $promotionModel->toPromotion($result['data'],$sellerId);
+        $result['data'] = $promotionModel->toPromotion($result['data']);
 
         //加入有优惠券，判断优惠券是否可用
         if($coupon_code != ""){
             $couponModel = new Coupon();
-            $couponInfo = $couponModel->codeToInfo($sellerId,$coupon_code,true);
+            $couponInfo = $couponModel->codeToInfo($coupon_code,true);
             if(!$couponInfo['status']){
                 return $couponInfo;
             }
-            $re = $promotionModel->toCoupon($result['data'],$couponInfo['data'],$sellerId);
+            $re = $promotionModel->toCoupon($result['data'],$couponInfo['data']);
             if(!$re['status']){
                 return $re;       //优惠券不符合使用规则，后期会把不符合的原因写出来
             }
@@ -276,7 +269,6 @@ class Cart extends Common
 
         $where[] = ['id', 'eq', $input['id']];
         $where[] = ['user_id', 'eq', $input['user_id']];
-        $where[] = ['seller_id', 'eq', $input['seller_id']];
         $res = $this->where($where)
             ->update(['nums'=>$input['nums']]);
 

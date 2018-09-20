@@ -38,7 +38,7 @@ class Cart extends Api
 
 
 
-        return model('common/Cart')->add($this->sellerId,$this->userId,input('product_id'),input('nums'),$type);
+        return model('common/Cart')->add($this->userId,input('product_id'),input('nums'),$type);
 
     }
 
@@ -51,10 +51,9 @@ class Cart extends Api
     public function del()
     {
         $ids = input('param.ids',"");
-        $seller_id = $this->sellerId;
         $user_id = $this->userId;
 
-        $result = model('common/Cart')->del($seller_id, $user_id,$ids);
+        $result = model('common/Cart')->del($user_id,$ids);
         if($result)
         {
             $return_data = array(
@@ -81,7 +80,7 @@ class Cart extends Api
      */
     public function getList()
     {
-        return (model('common/Cart')->info($this->sellerId, $this->userId, input('ids',""), input('display', ''), input('area_id', false), input('point', 0), input('coupon_code', '')));
+        return (model('common/Cart')->info($this->userId, input('ids',""), input('display', ''), input('area_id', false), input('point', 0), input('coupon_code', '')));
     }
 
 
@@ -92,7 +91,6 @@ class Cart extends Api
     public function setNums()
     {
         $input['user_id'] = $this->userId;
-        $input['seller_id'] = $this->sellerId;
         $input['id'] = input('id');
         $input['nums'] = input('nums', 1);
         if($input['nums'] <= 0)
@@ -103,7 +101,7 @@ class Cart extends Api
         if(!$result['status']){
             return $result;
         }
-        return model('common/Cart')->info($this->sellerId,$this->userId,  input('param.ids',""));
+        return model('common/Cart')->info($this->userId,  input('param.ids',""));
 
     }
 }

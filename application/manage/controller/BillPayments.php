@@ -3,8 +3,6 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\BillPayments as BillPaymentsModel;
-use app\common\model\Payments;
-use app\common\model\PaymentsSellerRel;
 use Request;
 
 class BillPayments extends Manage

@@ -75,9 +75,6 @@ class BillPayments extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if(isset($post['payment_id']) && $post['payment_id'] != ""){
             $where[] = ['payment_id', 'like', '%'.$post['payment_id'].'%'];
         }
@@ -140,23 +137,24 @@ class BillPayments extends Common
      * @return mixed
      */
     public function pay($source_str, $payment_code, $user_id = '', $type = self::TYPE_ORDER,$params = []){
+
+        //判断支付方式是否开启
+        $paymentsModel = new Payments();
+        $paymentInfo = $paymentsModel
+            ->where([
+                'payment_code'=>$payment_code,
+                'status' => $paymentsModel::PAYMENT_STATUS_YES
+            ])->find();
+        if(!$paymentInfo){
+            return error_code(10050);
+        }
         $result = $this->toAdd($source_str, $payment_code, $user_id, $type,$params);
         if(!$result['status']){
             return $result;
         }
-        //判断支付方式是否开启
-        $paymentsSellerRelModel = new PaymentsSellerRel();
-        $psrInfo = $paymentsSellerRelModel->where(['seller_id'=>$result['data']['seller_id'],'payment_code'=>$payment_code,'status' => $paymentsSellerRelModel::PAYMENT_STATUS_YES])->find();
-        if(!$psrInfo){
-            return error_code(10050);
-        }
-        //判断是否是共享店铺，如果是共享店铺，取平台的支付配置信息
-        if(getSellerInfoById($result['data']['seller_id'],'store_type')){
-            $conf = config('jshop.payment.'.$payment_code);
-        }else{
-            //取此支付方式的配置信息，然后去支付,
-            $conf = json_decode($psrInfo['params'],true);
-        }
+
+
+        $conf = json_decode($paymentInfo['params'],true);
 
         //去支付
         $payment = \org\Payment::create($payment_code,$conf);       //'wechatpay'
@@ -190,18 +188,10 @@ class BillPayments extends Common
         if(!$paymentRel['status']){
             return $paymentRel;
         }
-        //判断商户是否有该支付方式
-        $paymentsSellerRelModel = new PaymentsSellerRel();
-        $psrInfo = $paymentsSellerRelModel->where(['seller_id'=>$paymentRel['data']['seller_id'],'payment_code'=>$payment_code,'status' => $paymentsSellerRelModel::PAYMENT_STATUS_YES])->find();
-        if(!$psrInfo){
-            return error_code(10050);
-        }
-
 
         Db::startTrans();
         try {
             $data['payment_id'] = get_sn(2);
-            $data['seller_id'] = $paymentRel['data']['seller_id'];
             $data['money'] = $paymentRel['data']['money'];
             if($user_id == ''){
                 $data['user_id'] = $paymentRel['data']['user_id'];
@@ -283,27 +273,9 @@ class BillPayments extends Common
                     foreach($billPaymentRelList as $k => $v){
                         $orderModel->pay($v['source_id'], $payment_code);
                     }
-                    //订单支付成功的话，如果是共享店铺的话，做分润
-                    if(getSellerInfoById($billPaymentInfo['seller_id'],'store_type')){
-                        //取店铺所对应的创始人的user_id
-                        $user_id = getSellerInfoById($billPaymentInfo['seller_id'],'user_id');
-                        if($user_id != ""){
-                            //算费率
-                            $money = round($billPaymentInfo['money'] * (1 - config("jshop.rate")),2);
-
-                            $balanceModel = new Balance();
-                            $re = $balanceModel->change($user_id,$balanceModel::TYPE_LIQUIDATION,$money,$payment_id);
-                            if(!$re['status']){
-                                trace("支付单".$billPaymentInfo['payment_id']."支付成功，但是去分润失败,报:".$re['msg'],'money');
-                            }
-                        }else{
-                            trace("支付单".$billPaymentInfo['payment_id']."支付成功，但是没有找到店铺的创始人账号，所以分润失败",'money');
-                        }
-                    }
                 }elseif(false){
                     //::todo 其他业务逻辑
                 }
-
             }
             Db::commit();
             $result['status'] = true;
@@ -332,7 +304,6 @@ class BillPayments extends Common
         $result = [
             'status' => false,
             'data' => [],
-//                'seller_id' => '',              //店铺id
 //                'user_id' => '',                //用户id
 //                'money' => 0,                   //总金额
 //                'rel' => array()
@@ -342,19 +313,7 @@ class BillPayments extends Common
         if($type == self::TYPE_ORDER){
             //如果是订单生成支付单的话，取第一条订单的店铺id，后面的所有订单都要保证是此店铺的id
             $orderModel = new Order();
-            $order_info = $orderModel->where(array('order_id'=>$source_arr[0]))->find();
-            if($order_info){
-                if($order_info->seller_id){
-                    $data['seller_id'] = $order_info->seller_id;
-                    $data['user_id'] = $order_info->user_id;
-                }else{
-                    $result['msg'] = '此订单没有店铺信息';
-                    return $result;
-                }
-            }else{
-                $result['msg'] = '没有找到此订单';
-                return $result;
-            }
+
             $data['money'] = 0;
             foreach($source_arr as $k => $v){
                 $where['order_id'] = $v;
@@ -362,10 +321,6 @@ class BillPayments extends Common
                 $where['status'] = $orderModel::ORDER_STATUS_NORMAL;
                 $order_info = $orderModel->where($where)->find();
                 if($order_info){
-                    if(!$order_info->seller_id || $order_info->seller_id != $data['seller_id']){
-                        $result['msg'] = '多个订单批量支付，必须是同一个商户的订单才可以';
-                        return $result;
-                    }
                     $data['rel'][] = array(
                         'source_id' => $v,
                         'money' => $order_info->order_amount,
@@ -391,20 +346,16 @@ class BillPayments extends Common
     /**
      * 取支付单明细
      * @param $payment_id
-     * @param $seller_id
-     * @param $user_id
      * @return array|null|\PDOStatement|string|\think\Model
      */
-    public function getInfo($payment_id, $seller_id, $user_id)
+    public function getInfo($payment_id)
     {
         $result = [
             'status' => true,
             'data' => '',
             'msg' => ''
         ];
-        $where['seller_id'] = $seller_id;
         $where['payment_id'] = $payment_id;
-        $where['user_id'] = $user_id;
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
             $result['msg'] = '没有找到此支付记录';

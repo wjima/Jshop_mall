@@ -183,14 +183,16 @@ class Setting extends Common
         }
 
         if($skey == 'shop_mobile'){
-            $isMob="/^1[34578]{1}\d{9}$/";
+            if($value != ''){
+                $isMob="/^1[34578]{1}\d{9}$/";
 
-            $isTel="/^([0-9]{3,4}-)?[0-9]{7,8}$/";
+                $isTel="/^([0-9]{3,4}-)?[0-9]{7,8}$/";
 
-            if(!preg_match($isMob,$value) && !preg_match($isTel,$value))
-            {
-                $result['msg'] = '联系方式号码格式错误';
-                return $result;
+                if(!preg_match($isMob,$value) && !preg_match($isTel,$value))
+                {
+                    $result['msg'] = '联系方式号码格式错误';
+                    return $result;
+                }
             }
         }
 

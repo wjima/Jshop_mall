@@ -86,12 +86,9 @@ class Goods extends Common
         if (isset($post['id']) && $post['id'] != "") {
             $where[] = ['id', 'in', $post['id']];
         }
-        if (isset($post['seller_id']) && $post['seller_id'] != "") {
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if (isset($post['warn']) && $post['warn'] == "true") {
             $SettingModel = new Setting();
-            $goods_stocks_warn = $SettingModel->getValue($post['seller_id'],'goods_stocks_warn');
+            $goods_stocks_warn = $SettingModel->getValue('goods_stocks_warn');
             $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
             $where[] = ['stock', 'elt', $goods_stocks_warn];
         }
@@ -252,17 +249,13 @@ class Goods extends Common
         $productsModel = new Products();
         $preModel = '';
         if($fields=='*'){
-            $preModel = 'brand,seller,goodsCat';
+            $preModel = 'brand,goodsCat';
         } else {
-            if (stripos($fields, 'seller_id') !== false) {
-                $preModel .= 'seller,';
-            }
+
             if (stripos($fields, 'brand_id') !== false) {
                 $preModel .= 'brand,';
             }
-            if (stripos($fields, 'image_id') !== false) {
-                $preModel .= 'seller,';
-            }
+
             if (stripos($fields, 'goods_cat_id') !== false) {
                 $preModel .= 'goodsCat,';
             }
@@ -411,17 +404,6 @@ class Goods extends Common
         return $this->hasOne('Brand','id','brand_id')->field('id,name,logo')->bind([ 'brand_name' => 'name' ]);
     }
 
-    /**
-     * 获取店铺名称
-     * @return $this
-     * User: wjima
-     * Email:1457529125@qq.com
-     * Date: 2018-01-31 11:45
-     */
-    public function seller()
-    {
-        return $this->hasOne('Seller','id','seller_id')->field('id,seller_name')->bind([ 'seller_name' => 'seller_name' ]);
-    }
 
     /**
      * 获取分类名称
@@ -595,7 +577,7 @@ class Goods extends Common
             }
             $tokenData            = $return_token['data'];
             $goodsCollectionModel = new GoodsCollection();
-            $isfav                = $goodsCollectionModel->check($tokenData['user_id'],$tokenData['seller_id'],$goods_id);
+            $isfav                = $goodsCollectionModel->check($tokenData['user_id'],$goods_id);
             if($isfav) {
                 $favRes = 'true';
             }
@@ -773,11 +755,6 @@ class Goods extends Common
     {
         return [
             [
-                'id' => 'seller_id',
-                'desc' => '商户名称',
-                'modify'=>'getSellerInfoById',
-            ],
-            [
                 'id' => 'name',
                 'desc' => '商品名称',
             ],
@@ -931,36 +908,6 @@ class Goods extends Common
     }
 
 
-    /**
-     * 通过商家ID获取所有商品ID
-     * @param $seller_id
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getGoodsIdBySellerId($seller_id)
-    {
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-            $goods_id_array = $this->field('id')
-                ->where($where)
-                ->select();
-        }
-        else
-        {
-            $goods_id_array = $this->field('id')
-                ->select();
-        }
-
-        $goods_ids = [];
-        foreach ($goods_id_array as $k => $v)
-        {
-            $goods_ids[] = $v['id'];
-        }
-        return $goods_ids;
-    }
 
     /**
      * 获取重量

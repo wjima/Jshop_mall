@@ -1,0 +1,171 @@
+<!-- 上部信息 -->
+<view class='body'>
+  <!-- 顶部信息 -->
+  <view class='delivery'>
+    <image src='../../../image/backimg.png'></image>
+    <view class='delivery-content' wx:if="{{order.text_status == 'pending_payment'}}">
+      <text class='content-top'>待付款</text>
+      <text class='content-mid'></text>
+      <text class='content-bot'>请于{{order.remaining}}内完成付款操作</text>
+    </view>
+    <view class='delivery-content' wx:elif="{{order.text_status == 'pending_delivery'}}">
+      <text class='content-top'>待发货</text>
+      <text class='content-mid'></text>
+      <text class='content-bot'></text>
+    </view>
+    <view class='delivery-content' wx:elif="{{order.text_status == 'pending_receipt'}}">
+      <text class='content-top'>待签收</text>
+      <text class='content-mid'>快递公司：<text wx:if="{{order.delivery[0].logi_name}}">{{order.delivery[0].logi_name}}</text><text wx:else>暂无信息</text>
+      </text>
+      <text class='content-bot'>快递单号：<text wx:if="{{order.delivery[0].logi_no}}">{{order.delivery[0].logi_no}}</text><text wx:else>暂无信息</text></text>
+    </view>
+    <view class='delivery-content' wx:elif="{{order.text_status == 'pending_evaluate'}}">
+      <text class='content-top'>待评价</text>
+      <text class='content-mid'></text>
+      <text class='content-bot'>{{order.remaining}}后将会自动评价</text>
+    </view>
+    <view class='delivery-content' wx:elif="{{order.text_status == 'completed'}}">
+      <text class='content-top'>已完成</text>
+      <text class='content-mid'></text>
+      <text class='content-bot'></text>
+    </view>
+    <view class='delivery-content' wx:elif="{{order.text_status == 'cancel'}}">
+      <text class='content-top'>已取消</text>
+      <text class='content-mid'></text>
+      <text class='content-bot'></text>
+    </view>
+    <view class='delivery-content' wx:else>
+      <text class='content-top'>交易成功</text>
+      <text class='content-mid'></text>
+      <text class='content-bot'></text>
+    </view>
+  </view>
+  <!-- 物流信息 -->
+  <view class='delivery-information'>
+    <image class='car' src='../../../image/car-green.png'></image>
+    <view class='information-content' wx:if="{{order.text_status == 'pending_payment'}}">
+      <text>付款后将为你安排发货</text>
+      <text class='information-time'></text>
+    </view>
+    <view class='information-content' wx:elif="{{order.text_status == 'pending_delivery'}}">
+      <text>正在为你忙碌打包中</text>
+      <text class='information-time'>2018-02-06  04:24:25</text>
+    </view>
+    <view class='information-content' wx:elif="{{order.text_status == 'pending_receipt'}}">
+      <text>已为你发货，请注意查收</text>
+      <text class='information-time'>{{order.delivery[0].ctime}}</text>
+    </view>
+    <view class='information-content' wx:elif="{{order.text_status == 'cancel'}}">
+      <text>订单已取消</text>
+      <text class='information-time'></text>
+    </view>
+    <view class='information-content' wx:else>
+      <text>你已签收</text>
+      <text class='information-time'>{{order.delivery[0].confirm_time}}</text>
+    </view>
+    <image class='right' src='../../../image/right.png'></image>
+  </view>
+  <!-- 收货地址 -->
+  <view class='address'>
+    <image class='gps' src='../../../image/gps.png'></image>
+    <view class='information-content'>
+      <view>
+        <text class='username'>收货人：{{order.ship_name}}</text>
+        <text class='phone'>{{order.ship_mobile}}</text>
+      </view>
+      <text class='add'>收货地址：{{order.ship_area_name}}-{{order.ship_address}}</text>
+    </view>
+  </view>
+  <!-- 商品信息 -->
+  <view class='goods'>
+    <view class='goods-lists' wx:for="{{order.items}}" wx:key="index" bindtap='showGoods' data-goods_id="{{item.goods_id}}">
+      <image src='{{item.image_url}}'></image>
+      <view class='goods-content'>
+        <view class='goods-content-header'>
+          <text class='goods-header-left'>{{item.name}}</text> 
+          <text class='style' wx:if="{{item.addon}}">{{item.addon}}</text>         
+        </view>
+        <view class='promotion-list' wx:if="{{item.promotion_list.length == undefined}}">
+          <view class='promotion_on' wx:for="{{item.promotion_list}}" wx:key="ind" wx:for-item="vo">{{vo}}</view>          
+        </view>
+        <view class='goods-content-footer'>
+          <text class='goods-header-right'>¥{{item.price}}</text>
+          <text class='num'>x{{item.nums}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 支付信息 -->
+  <view class='pay-information'>
+    <view class="weui-cell">
+      <view class="weui-cell__bd">快递运费</view>
+      <view class="weui-cell__ft">￥{{order.cost_freight}}</view>
+    </view>
+    <view class="weui-cell">
+      <view class="weui-cell__bd">商品优惠</view>
+      <view class="weui-cell__ft">￥{{order.goods_pmt}}</view>
+    </view>
+    <view class="weui-cell">
+      <view class="weui-cell__bd">订单优惠</view>
+      <view class="weui-cell__ft">￥{{order.order_pmt}}</view>
+    </view>
+    <view class="weui-cell">
+      <view class="weui-cell__bd">合计价格</view>
+      <view class="weui-cell__ft price">￥{{order.order_amount}}</view>
+    </view>
+    <view class="weui-cell" wx:if="{{order.text_status != 'pending_payment'}}">
+      <view class="weui-cell__bd">支付方式</view>
+      <view class="weui-cell__ft">{{order.payment_code}}</view>
+    </view>
+  </view>
+  <!-- 订单信息 -->
+  <view class='remark'>
+    <view><text>订单编号：</text>{{order.order_id}}</view>
+    <view><text>下单时间：</text>{{order.ctime}}</view>
+    <view wx:if="{{order.text_status != 'pending_payment'}}"><text>支付时间：</text>{{order.payment_time}}</view>
+    <view><text>买家留言：</text>{{order.memo}}</view>
+  </view>
+</view>
+<!-- 底部信息 -->
+<view class='footer'>
+  <!-- <view class='footer-left'>
+    <view class='left-bot' wx:if="{{order.text_status == 'pending_payment'}}">
+      <text>将在{{order.remaining}}后自动取消订单</text>
+    </view>
+    <view class='left-bot' wx:elif="{{order.text_status == 'pending_receipt'}}">
+      <text>将在{{order.remaining}}后自动确认收货</text>
+    </view>
+    <view class='left-bot' wx:elif="{{order.text_status == 'pending_evaluate'}}">
+      <text>将在{{order.remaining}}后自动评价</text>
+    </view>
+  </view> -->
+  <view class='footer-right'>
+    <!-- 待付款 -->
+    <view wx:if="{{order.text_status == 'pending_payment'}}">
+      <view bindtap='cancelOrder' data-id="{{order.order_id}}">取消订单</view>
+      <view class='footer-right-red' bindtap='payment' data-id="{{order.order_id}}" data-amount="{{order.order_amount}}">立即支付</view>
+    </view>
+    <!-- 待发货 -->
+    <view wx:elif="{{order.text_status == 'pending_delivery'}}">
+      <view class='footer-right-red' bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
+    </view>
+    <!-- 待收货 -->
+    <view wx:elif="{{order.text_status == 'pending_receipt'}}">
+      <view bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
+      <view bindtap='logistics' data-id="{{order.order_id}}">查看物流</view>
+      <view class='footer-right-red' bindtap='sign' data-id="{{order.order_id}}">确认收货</view>
+    </view>
+    <!-- 待评价 -->
+    <view wx:elif="{{order.text_status == 'pending_evaluate'}}">
+      <view bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
+      <view class='footer-right-red' bindtap='evaluate' data-id="{{order.order_id}}">立即评价</view>
+    </view>
+    <!-- 已完成已取消 -->
+    <view wx:elif="{{order.text_status == 'completed' || order.text_status == 'cancel'}}">
+    </view>
+    <!-- 其他 -->
+    <view wx:else>
+      <view class='footer-right-red' bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
+    </view>
+  </view>
+</view>

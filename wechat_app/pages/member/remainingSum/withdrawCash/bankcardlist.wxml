@@ -1,0 +1,16 @@
+<view>
+    <!-- 银行卡列表 -->
+    <view wx:for="{{cardList}}" wx:key="index" class='balance-top' data-id='{{item.id}}' bindtap='selectCard'>
+        <image class='bank-logo' src='{{item.bank_logo}}'></image>
+        <view class='balance-content'>
+            <text class='bank-name'>{{item.bank_name}}</text>
+            <text class='bank-num'>{{item.card_number}} {{item.card_type}}</text>
+        </view>
+        <image class='bank-select' src='../../../image/right.png'></image>
+    </view>
+
+    <!-- 添加银行卡 -->
+    <view class='balance-bottom' bindtap='addbank'>
+        <button>添加银行卡</button>
+    </view>
+</view>

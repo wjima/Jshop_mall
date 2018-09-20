@@ -1,0 +1,33 @@
+.top{
+  margin-top: 30rpx;
+  text-align: center;
+}
+.top image{
+  width: 100rpx;
+  height: 100rpx;
+}
+.top>text{
+  display: block;
+  font-size: 26rpx;
+  color: #999;
+  margin: 20rpx 0;
+}
+.price{
+  color: #fc0000;
+}
+.mid{
+  margin: 40rpx 0;
+  
+}
+.weui-cell{
+  position: static;
+  border: none;
+  font-size: 30rpx;
+  border-bottom: 2rpx #cfcfcf solid;  
+}
+.weui-btn{
+  width: 400rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 30rpx;
+}

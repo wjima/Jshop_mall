@@ -1,0 +1,12 @@
+.page{
+  color: #666;
+}
+.weui-article__h1{
+  text-align: center;  
+}
+.weui-article__title{
+  text-align: right;
+}
+.weui-article__p{
+  text-indent:2em;
+}

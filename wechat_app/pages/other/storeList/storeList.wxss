@@ -1,0 +1,78 @@
+.store-history{
+  width: 750rpx;
+  margin: 0 auto;
+}
+.store-history-title{
+  display: block;
+  width: 750rpx;
+  text-align: center;
+  margin-bottom: 20rpx;
+  font-size: 30rpx;
+}
+.store-box{
+  overflow: hidden;
+  width: 690rpx;
+  padding: 20rpx 30rpx 0;
+  border-bottom: 8rpx solid #f9f9f9;
+}
+.store-logo{
+  width: 160rpx;
+  height: 160rpx;
+}
+.store-box-right{
+  display: inline-block;
+  width: 490rpx;
+  float: right;
+  padding: 0 20rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+.store-name{
+  display: block;
+}
+.store-address{
+  display: block;
+}
+
+
+.store-all{
+  width: 690rpx;
+  padding: 0 30rpx;
+  background-color: #f9f9f9;
+}
+.store-all-title{
+  display: block;
+  width: 750rpx;
+  text-align: center;
+  margin-bottom: 20rpx;
+  font-size: 30rpx;
+}
+.store-all-box{
+  display: inline-block;
+  width: 220rpx;
+  margin-right: 15rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+  background-color: #fff;
+  padding-bottom: 10rpx;
+}
+.store-all-box:nth-child(3n+1){
+  margin-right: 0;
+}
+.store-all-logo{
+  width: 220rpx;
+  height: 220rpx;
+}
+.store-all-name{
+  display: block;
+  text-align: center;
+  font-size: 24rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.store-all-address{
+  display: block;
+  text-align: center;
+  font-size: 20rpx;
+}

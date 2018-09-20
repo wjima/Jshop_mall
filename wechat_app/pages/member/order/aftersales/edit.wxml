@@ -1,0 +1,103 @@
+<view class='cart-content'>
+  <view class='header'>
+    <image src='../../../image/backimg.png'></image>
+    <view class='header-content'>
+      <text class='header-content-top'>退款单状态</text>
+      <text class='header-content-bot'>{{status_name}} {{refund_name}} {{reship_name}}...</text>
+    </view>
+  </view>
+  <view class='refund-service'>
+    <view class="refund-service-list">
+      <view class="refund-service-list-left">售后类型</view>
+      <view class="refund-service-list-right rf-ror">
+        {{type_name}}
+      </view>
+    </view>
+    <view class="refund-service-list">
+      <view class="refund-service-list-left">退款金额</view>
+      <view class="refund-service-list-right price">
+        <text>{{refund}}元</text>
+      </view>
+    </view>
+  </view>
+
+   <view class='upload' wx:if="{{images.length > 0}}">
+    <view>图片凭证</view>
+    <view class='upload-img'>
+       <image wx:for="{{images}}" wx:key="index"  src='{{item.url}}' mode="{{mode}}"></image> 
+    </view>
+  </view> 
+
+  <!-- 问题描述 -->
+  <view class='problem-description'>
+    <text class='problem-title'>问题描述</text>
+    <view class="problem-body">
+      <text wx:if="{{reason}}">{{reason}}</text>
+      <text wx:else>暂无描述</text>
+    </view>
+  </view>
+
+  <!-- 问题描述 -->
+  <view class='problem-description' wx:if="{{status == 3}}">
+    <text class='problem-title'>回复信息</text>
+    <view class="problem-body">
+      <text>{{mark}}</text>
+    </view>
+  </view>
+
+  <view class="list-body touch-item" wx:for="{{items}}" wx:key="{{key}}">
+    <!-- 商品信息 -->
+    <view class="content">
+      <!-- 商品图片 -->
+      <image class='thumbnail' src='{{item.image_url}}' ></image>
+      <!-- 商品详情 -->
+      <view class='list-body-right'>
+        <view class='body-right-title'>
+          <!-- 商品名称 -->
+          <text data-id="{{item.products.goods_id}}">{{item.name}}</text>
+        </view>
+        <view class='body-right-style'>
+          <!-- 商品规格 -->
+          <text>{{item.addon}} x{{item.nums}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class='seller-info' wx:if="{{status==2 && reship_status==1}}">
+    <view class='seller-info-header'>退货邮寄信息</view>
+    <view class='seller-info-body'>
+      <view><text>收件人：</text><text>{{reship_info.reship_name}}</text></view>
+      <view><text>联系方式：</text><text>{{reship_info.reship_mobile}}</text></view>
+      <view><text>邮寄地址：</text><text>{{reship_info.reship_area}}{{reship_info.reship_address}}</text></view>
+    </view>
+  </view>
+  <view class='deliver' wx:if="{{status==2 && reship_status==1}}">
+    <view class='deliver-body'>
+      <view class='deliver-body-bot'>
+        <text>快递公司：</text>
+        <input type='number' bindblur='logicodeChange' placeholder-class='deliver-input' placeholder='请填写快递公司名称'></input>
+      </view>
+      <view class='deliver-body-bot'>
+        <text>物流单号：</text>
+        <input type='number' bindblur='loginoChange' placeholder-class='deliver-input' placeholder='请填写物流单号'></input>
+      </view>      
+    </view>
+  </view>
+  <view class='deliver-text' wx:if="{{status==2 && reship_status>1}}">
+    <view class='deliver-header'>快递信息</view>
+    <view class='deliver-body'>
+      <view class='deliver-body-top'>
+        <text>快递公司：</text>
+        <text>{{logi_code}}</text>
+      </view>
+      <view class='deliver-body-bot'>
+        <text>物流单号：</text>
+        <text>{{logi_no}}</text>
+      </view>
+    </view>
+  </view>
+  <view class='submit' wx:if="{{status==2 && reship_status==1}}">
+    <button class="weui-btn" bindtap="submitBtn" type="warn">提交</button>
+  </view>
+  
+</view>

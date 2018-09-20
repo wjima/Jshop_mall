@@ -1,0 +1,111 @@
+.collect-list{
+  border-top: 2rpx solid #e8e8e8;
+}
+.collect-details{
+  padding: 30rpx 30rpx 20rpx 30rpx;
+  overflow: hidden;
+  border-bottom: 2rpx solid #e8e8e8;
+}
+.details-left{
+  width: 160rpx;
+  height: 160rpx;
+}
+.details-right{
+  display: inline-block;
+  width: 510rpx;
+  float: right;
+}
+.name{
+  width: 500rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 32rpx;
+  color: 666;  
+}
+.style{
+  font-size: 24rpx;
+  color: #999;
+  margin: 12rpx 0 20rpx;
+}
+.price{
+  font-size: 32rpx;
+  color: #FF3B44;
+}
+.touch-item {
+  font-size: 28rpx;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden
+}
+.content {
+  width: 700rpx;
+  padding: 0; 
+  line-height: 44rpx;
+  margin-right:0;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  -webkit-transform: translateX(240rpx);
+  transform: translateX(240rpx);
+  margin-left: -240rpx;
+  overflow: hidden;
+}
+.loading{
+  text-align:center;
+  font-size:28rpx;
+  margin:20rpx 0;
+  color:#999;
+}
+.touch-move-active .content,
+.touch-move-active .collect-del {
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+}
+.collect-del{
+  width: 190rpx;
+  display: flex;
+  color: #fff;
+  -webkit-transform: translateX(162rpx);
+  transform: translateX(162rpx);
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  overflow: hidden;
+  height: 160rpx;
+}
+.collect{
+  width: 160rpx;
+  height: 160rpx;
+  display: inline-block;
+  line-height: 160rpx;
+  text-align: center;
+  background-color: #FFAA33;
+}
+.list-body{  
+  border-bottom: 2rpx solid #E8E8E8;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.left-slip{
+  width: 20rpx;
+  height: 40rpx;
+  position: absolute;
+  right: 16rpx;
+  top: 66rpx;
+}
+.none-img{
+  margin: 100rpx auto;
+  text-align: center;
+}
+.none-img image{
+  width: 200rpx;
+  height: 200rpx;
+}
+.none-img text{
+  display: block;
+  color:#bbb;
+  font-size:32rpx;
+}

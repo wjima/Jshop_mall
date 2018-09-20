@@ -1,0 +1,22 @@
+<scroll-view scroll-y="true" scroll-into-view="{{toView}}" style="height:100vh;" bindscrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
+    <!-- 循环 -->
+    <view class='balancelist' wx:for="{{lists}}" wx:key="index">
+        <view class="balancelist-item">
+            <view class="balancelist-content">
+                <view class="balancelist-top">
+                    <text class='balancelist-title'>{{item.type}}</text>
+                    <text class='balancelist-time'>{{item.ctime}}</text>
+                </view>
+                <view class="balancelist-bottom">
+                    <text class='balancelist-sum'>余额: {{item.balance}}</text>
+                    <text class='balancelist-num'>{{item.money}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 加载操作 -->
+    <view class="loading" id='loading' hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
+    <view class="loading" id='loading' hidden="{{!loadingComplete}}">已载入全部</view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../image/page1copy.png'></image><text>没有数据</text></view>
+</scroll-view>

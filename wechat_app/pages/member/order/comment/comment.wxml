@@ -1,0 +1,69 @@
+<!-- 订单评论 -->
+<view>
+  <!-- 订单商品循环 -->
+  <view wx:for="{{goodsList}}" wx:key="index">
+    <view class='top'>
+      <!-- 商品图片 -->
+      <image class='goods-img' src='{{item.image_url}}'></image>
+      <!-- 好中差评 -->
+      <view class='top-right'>
+        <!-- 好评 -->
+        <view class='comment-img' bindtap='evaluate' data-goodsid="{{item.goods_id}}" data-type="praise">
+          <image src='{{evaluate[item.goods_id].praise?"../../../image/redflower.png":"../../../image/whiteflower.png"}}' data-goodsid="{{item.goods_id}}" data-type="praise"></image>
+          <text data-goodsid="{{item.goods_id}}" data-type="praise">好评</text>
+        </view>
+        <!-- 中评 -->
+        <view class='comment-img' bindtap='evaluate' data-goodsid="{{item.goods_id}}" data-type="secondary">
+          <image src='{{evaluate[item.goods_id].secondary?"../../../image/redflower.png":"../../../image/whiteflower.png"}}' data-goodsid="{{item.goods_id}}" data-type="secondary"></image>
+          <text data-goodsid="{{item.goods_id}}" data-type="secondary">中评</text>
+        </view>
+        <!-- 差评 -->
+        <view class='comment-img' bindtap='evaluate' data-goodsid="{{item.goods_id}}" data-type="difference">
+          <image src='{{evaluate[item.goods_id].difference?"../../../image/redflower.png":"../../../image/whiteflower.png"}}' data-goodsid="{{item.goods_id}}" data-type="difference"></image>
+          <text data-goodsid="{{item.goods_id}}" data-type="difference">差评</text>
+        </view>
+      </view>
+    </view>
+    <view class='mid'>
+      <view class='mid-text'>
+        <textarea class="mid-textarea" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" placeholder-class='mid-textarea-p' bindinput="textarea" data-goodsid="{{item.goods_id}}" />
+      </view>
+      <view class='upload-img' wx:for="{{images[item.goods_id]}}" wx:key="indexs" wx:for-item="items" wx:for-index="indexss">
+        <image src='{{items.url}}' bindtap='delImage' data-index="{{indexss}}" data-goodsid="{{item.goods_id}}"></image>
+      </view>
+      <view class='upload-img' bindtap='uploadImage' data-goodsid="{{item.goods_id}}" wx:if="{{images[item.goods_id].length<5}}">
+        <image src='../../../image/addimg.png' data-goodsid="{{item.goods_id}}"></image>
+      </view>
+    </view>
+  </view>
+  <!-- 店铺评价 -->
+  <view class='bot'>
+    <view class='bot-top'>
+      <view class='shop'>
+        <image src='../../../image/shop.png'></image>
+        <text>店铺评分</text>
+      </view>
+      <view class='star-img'>
+        <text>描述相符</text>
+        <view class='star-view' wx:for="{{starOne}}" wx:key="index">
+          <image src="{{item?'../../../image/redstar.png':'../../../image/star.png'}}" bindtap='star' data-index="{{index}}" data-type="1"></image>
+        </view>
+      </view>
+      <view class='star-img'>
+        <text>描述相符</text>
+        <view class='star-view' wx:for="{{starTwo}}" wx:key="index">
+          <image src="{{item?'../../../image/redstar.png':'../../../image/star.png'}}" bindtap='star' data-index="{{index}}" data-type="2"></image>
+        </view>
+      </view>
+      <view class='star-img'>
+        <text>描述相符</text>
+        <view class='star-view' wx:for="{{starThree}}" wx:key="index">
+          <image src="{{item?'../../../image/redstar.png':'../../../image/star.png'}}" bindtap='star' data-index="{{index}}" data-type="3"></image>
+        </view>
+      </view>
+    </view>
+    <view class='submit'>
+      <button class="weui-btn" type="warn" bindtap='submit'>提交评论</button>
+    </view>
+  </view>
+</view>

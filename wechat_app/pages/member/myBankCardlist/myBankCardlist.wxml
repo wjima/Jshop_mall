@@ -1,0 +1,26 @@
+<view class='mybackcardlist'>
+    <view wx:if="{{lists.length > 0}}">
+        <view wx:for="{{lists}}" wx:key="index" class="card-detail">
+            <view class='default-ico'>
+                <view class='default' wx:if="{{item.is_default == 1}}"></view>
+                <view class='default-text' wx:if="{{item.is_default == 1}}">默</view>
+            </view>
+            <view class="cardlist-item">
+                <image class="banklogo" src='{{item.bank_logo}}'></image>
+                <view class="bankcard">
+                    <text class='bankcard-title'>{{item.card_type}}</text>
+                    <text class='bankcard-num'>{{item.card_number}}</text>
+                </view>
+                <view class='bankcard-btn'>
+                    <button class="install-bankcard" data-id="{{item.id}}" bindtap='setDefault' wx:if="{{item.is_default == 2}}">设为默认</button>
+                    <button class="delete-bankcard" data-id="{{item.id}}" bindtap='delCard'>删除</button>
+                </view>
+            </view>
+        </view>
+    </view>
+    
+    <!-- 添加银行卡 -->
+    <view class='mybackcardlist-bottom' bindtap='addCard'>
+        <button>添加银行卡</button>
+    </view>
+</view>

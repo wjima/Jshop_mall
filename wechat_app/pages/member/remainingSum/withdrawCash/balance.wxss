@@ -1,0 +1,79 @@
+/* pages/member/remainingSum/withdrawCash/Balance.wxss */
+page{
+  background-color: #f9f9f9;
+}
+.balance-top{
+  position: relative;
+  padding: 10rpx;
+  background-color: #fff;
+  margin: 20rpx 0;
+}
+.bank-logo{
+  width: 189rpx;
+  height: 54rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.balance-content{
+  display: inline-block;
+  margin-left: 189rpx;
+}
+.balance-content>text{
+  display: block;
+}
+.bank-name{
+  font-size: 24rpx;
+  color: #333;
+}
+.bank-num{
+  font-size: 22rpx;
+  color: #999;
+}
+.right-arrow{
+  width: 14rpx;
+  height: 24rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10rpx;
+}
+.balance-mid{
+  padding: 10rpx 20rpx 20rpx;
+  background-color: #fff;
+}
+.balance-mid-title{
+  font-size: 24rpx;
+  color: #666;
+}
+.balance-mid-input{
+  position: relative;
+  overflow: hidden;
+  padding: 10rpx;
+}
+.balance-mid-input text{
+  float: left;
+  font-size: 60rpx;
+}
+.balance-mid-input input{
+  position: absolute;
+  padding: 10rpx 10rpx 10rpx 60rpx;
+  width: 100%;
+  height:100rpx;
+  border-bottom: 1px solid #e5e5e5;
+  box-sizing: border-box;
+  font-size: 76rpx;
+}
+.balance-bottom{
+  width: 80%;
+  margin: 40rpx auto 0;
+}
+.balance-bottom button{
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  width: 100%;
+  background-color: #ff3b44;
+  color: #fff;
+  font-size: 30rpx;
+}

@@ -1,0 +1,250 @@
+.cart-content{
+  background-color: #f3f3f3;
+  height: 100vh;
+}
+.content {
+  width: 700rpx;
+  padding: 25rpx 25rpx 15rpx;
+  line-height: 44rpx;
+  margin:0 0 18rpx -240rpx;
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  -webkit-transform: translateX(240rpx);
+  transform: translateX(240rpx);
+  overflow: hidden;
+  background-color: #fff; 
+}
+.list-body{  
+  border-bottom: 2rpx solid #f3f3f3;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.thumbnail{
+  width: 160rpx;
+  height: 160rpx;
+}
+.list-body-right{
+  width: 504rpx;
+  float: right;
+  display: inline-block; 
+}
+.body-right-title{
+  color: #666;
+  font-size: 32rpx;
+  overflow: hidden;  
+}
+.body-right-title text{
+  width: 284rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.body-right-title image{
+  width: 14rpx;
+  height: 24rpx;
+  float: right;
+  position: relative;
+  top: 12rpx;
+}
+.body-right-style{
+  color: #999;
+  font-size: 24rpx;
+  margin: 12rpx 0 18rpx;
+}
+.body-right-price{
+  overflow: hidden;
+}
+.body-right-price text{
+  color: #FF3B44;
+  font-size: 32rpx;
+}
+.content-top{
+  border-bottom: 14rpx solid #f3f3f3;
+}
+.problem-description{
+  width: 690rpx;
+  padding: 30rpx 30rpx 20rpx;
+  border-bottom: 16rpx solid #f3f3f3;
+  background-color: #fff;
+}
+.problem-title{
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+  display: block;
+}
+.problem-description .weui-cell{  
+  background-color: #f8f8f8; 
+  position: static;
+}
+.problem-description .weui-textarea{
+  height: 5.3em !important;
+  border: none !important;
+}
+.problem-description .weui-textarea-counter{
+  font-size: 32rpx;
+  color: #999;
+}
+.refund-service .refund-service-list{
+  height: 54rpx;
+  border-bottom: 2rpx solid #e8e8e8;
+  background-color: #fff;
+  padding:10px 15px;
+  align-items:center;
+  overflow: hidden;
+  position:relative;
+}
+.refund-service-list-left{
+  color: #666;
+  font-size: 28rpx;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.refund-service-list-right{
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 30rpx;
+  transform: translateY(-50%);
+}
+.rf-ror{
+  font-size: 28rpx;
+  color: #666;
+}
+.price{
+  color: #FF3B44;
+  font-size: 28rpx;
+}
+.upload{
+  width: 690rpx;
+  padding: 4rpx 30rpx 0;
+  background-color: #fff;
+  margin: 16rpx 0;
+  color: #666;
+  font-size: 30rpx;
+}
+.upload-img>image{
+  width: 166rpx;
+  height: 166rpx;
+  margin-right: 6rpx;
+  position: relative;
+  border: 2rpx solid #ccc;
+  box-sizing: border-box;
+}
+.upload-img>image:last-child{
+  margin-right: 0;  
+}
+.submit{
+  padding-top: 20rpx;
+  padding-bottom: 80rpx;
+  background-color: #f3f3f3;
+}
+.problem-body{
+  /* background-color: #f8f8f8; */
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #666;
+  height: 120rpx;
+}
+.refund-bottom{
+  padding: 8rpx 30rpx;
+  color: #666;
+  font-size: 26rpx;
+}
+.submit{
+  padding-top: 20rpx;
+  padding-bottom: 80rpx;
+  background-color: #f3f3f3;
+  margin-top: 30rpx;
+}
+.weui-btn{
+  width: 690rpx;
+  margin: 0 auto;
+  background-color: #FF3B44 !important;
+}
+.deliver{
+  background-color: #fff;
+}
+.deliver-header{
+  padding: 16rpx 30rpx 0;
+  font-size:36rpx;
+  color:#666;
+  margin-bottom:8rpx;
+}
+.deliver-body>view{
+   padding: 10rpx 30rpx 20rpx;
+   border-top: 2rpx solid #f1f1f1; 
+   position: relative;
+}
+.deliver-body>view>text{
+  font-size: 28rpx;
+  color: #666;
+  margin-right: 10rpx;
+}
+.deliver-body>view>picker{
+  display: inline-block;
+  font-size: 28rpx;
+  color: #666;
+  width: 500rpx;
+}
+.deliver-body>view>input{
+  display: inline-block;
+  font-size: 28rpx;
+  color: #666;
+  width: 500rpx;
+  position: absolute;
+  top: 16rpx; 
+}
+.deliver-text{
+  background-color: #fff;
+}
+.seller-info{
+  background-color: #fff;
+  margin-bottom: 16rpx;
+}
+.seller-info-header{
+  padding: 16rpx 30rpx 0;
+  font-size:36rpx;
+  color:#666;
+  margin-bottom:8rpx;
+}
+.seller-info-body>view{
+  padding: 20rpx 30rpx 20rpx;
+  border-top: 2rpx solid #f1f1f1; 
+  position: relative;
+  font-size: 28rpx;
+  color: #666;
+}
+.seller-info-body>view>text:first-child{
+  display: inline-block;
+  width: 144rpx;
+  text-align: right;
+  margin-right: 10rpx;
+}
+.header{
+  height: 190rpx; 
+}
+.header>image{
+  width: 750rpx;
+  height: 190rpx; 
+}
+.header-content{
+  width: 500rpx;  
+  position: absolute;
+  top: 26rpx;
+  left: 100rpx;
+  color: #fff;
+}
+.header-content>text{
+  display: block;
+}
+.header-content-top{
+  font-size: 32rpx;
+}
+.header-content-bot{
+  font-size: 24rpx;
+}

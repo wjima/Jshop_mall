@@ -1,0 +1,55 @@
+<scroll-view scroll-y="true" style="height:100vh;" bindscrolltolower="lower" enable-back-to-top="true" scroll-into-view="{{toView}}" lower-threshold="45">
+  <view class="body">
+    <!-- 全部订单 -->
+    <view class='orderlist'>
+      <view wx:for="{{order}}" wx:key="{{index}}">
+        <view class='listdetails'>
+          <!-- 状态名称 -->
+          <view class='top'>
+            <text class='number'>售后单号：{{item.aftersales_id}}</text>
+            <text wx:if="{{item.status == 1}}">待审核</text>
+            <text wx:elif="{{item.status == 2}}">审核通过</text>
+            <text wx:elif="{{item.status == 3}}">审核拒绝</text>
+          </view>
+          <!-- 订单信息 -->
+          <view class='mid'>
+            <!-- 子订单货品 -->
+            <view class='mid-top' wx:for="{{item.order.items}}" wx:for-item="v" wx:key='k'>
+              <image class='goods-img' src='{{v.image_url}}'></image>
+              <view class='mid-top-right'>
+                <view class='name-price'>
+                  <view class='name'>{{v.name}}</view>                  
+                </view>
+                <view class='style-num'>
+                  <text class='style' wx:if="{{v.addon}}">{{v.addon}}</text>                  
+                </view>
+                <view class='market-price'>
+                  <text class='cost-price'>¥{{v.price}}</text>
+                  <text class='price-gray'>¥{{v.mktprice}}</text>
+                  <text class='num'>x{{v.nums}}</text>
+                </view>                
+              </view>
+            </view>
+            <!-- 合计金额 -->
+            <view class='mid-bot'>
+              <view>
+                <text>共计{{item.countnum}}件商品</text>
+                <text>合计：¥{{item.order.order_amount}}（含运费¥{{item.order.cost_freight}})</text>
+              </view>
+            </view>
+          </view>
+          <!-- 订单操作 -->
+          <view class='bottom'>
+            <view>
+              <view class='bottom-right' bindtap='showOrder' data-id="{{item.aftersales_id}}">查看详情</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 加载功能 -->
+    <view class="loading" id="loading" hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
+    <view class="loading" id="loading" hidden="{{!loadingComplete}}">已载入全部</view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../../image/page1copy.png'></image><text>没有数据</text></view>
+  </view>
+</scroll-view>

@@ -1,0 +1,217 @@
+/**index.wxss**/
+.search-input{
+  background-color: #fff;
+  position:relative;
+}
+swiper{
+  height: 376rpx;
+}
+swiper-item{
+  width: 750rpx;
+  height: 376rpx;
+}
+.slide-image{
+  width: 100%;
+  height: 100%; 
+}
+.news-coupons{
+  border-bottom: 16rpx solid #f3f3f3; 
+}
+.news-coupons .news-coupons-mid{
+  width: 700rpx;
+  margin: 10rpx auto;
+}
+.news-coupons .news{
+  font-size: 26rpx;
+  color: #888;
+  margin: 16rpx 0 0;
+}
+.news image{
+  width: 28rpx;
+  height: 26rpx;
+  margin-right: 16rpx;
+}
+.swiper_news{
+    height: 34rpx;
+    width: 86vw;
+    display: inline-block;
+}  
+.swiper_item {
+  font-size: 24rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 2px;
+}
+.news-coupons .coupons{
+  overflow: hidden;
+}
+.news-coupons .coupons view{
+  width: 33.2%;
+  height: 120rpx;
+  line-height: 120rpx;
+  float: left;
+  text-align: center;
+  margin-top: 16rpx;
+  font-size: 24rpx;
+}
+.coupons>view:first-child{
+  color: rgb(249, 164, 203);
+  background-color: rgb(255, 245, 244);
+  border-left: 2rpx dashed rgb(249, 164, 203);
+}
+.coupons>view:nth-child(2){
+  color: rgb(253, 179, 58);
+  background-color: rgb(253, 244, 237);
+  border-left: 2rpx dashed rgb(253, 179, 58);
+}
+.coupons>view:last-child{
+  color: rgb(244, 144, 155);
+  background-color: rgb(255, 241, 241);
+  border-left: 2rpx dashed rgb(244, 144, 155);
+}
+.button-list{
+  border-bottom: 2rpx solid #f3f3f3;
+}
+.button-list .button-list-mid{
+  width: 660rpx;
+  margin: 40rpx auto 8rpx;
+  overflow: hidden;
+}
+.button-list .button-list-mid .nav{
+  width: 25%;
+  float: left;
+  text-align: center;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 32rpx;
+}
+.button-list .button-list-mid .nav image{
+  width: 94rpx;
+  height: 94rpx;
+  border-radius: 90rpx;
+}
+.button-list .button-list-mid .nav text{
+  display: block;
+}
+.seller-recommends{
+  text-align: center;
+  background-color: #f9f9f9;
+}
+.hot-recommends{
+  text-align: center;
+  background-color: #f9f9f9;
+}
+.seller-recommends-mid,.hot-recommends-mid{
+  width: 700rpx;
+  margin: 0 auto;
+}
+.recommends-img{
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 6rpx;
+}
+.recommends-header{
+  font-size: 32rpx;
+  color: #666;  
+  margin: 0 0 20rpx;
+  padding-top: 20rpx;
+}
+.seller-recommends-body{
+  overflow: hidden;
+}
+.seller-recommends-body .seller-body-mid{
+  width: 242rpx;
+  float: left;
+   text-align: center; 
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 12rpx; 
+  margin-right: 12rpx;
+  box-sizing: border-box;
+}
+ .seller-recommends-body>view:nth-child(3n+0){
+  background-color: #f9f9f9;
+} 
+.seller-recommends-body>view:nth-child(3n+0) .seller-body-mid{
+  margin-right: 0;
+}
+.seller-recommends-body .seller-body-mid .pic{
+  width: 242rpx;
+  height: 242rpx;
+  box-sizing: border-box;
+}
+.recommends-body-bottom{
+  border-top: none;
+  box-sizing: border-box;
+  padding: 10rpx 6rpx;
+  margin: -10rpx auto 0;
+  position: relative;
+  text-align: left;
+  background-color: #fff
+}
+.price-cart{
+  position: absolute;
+  bottom: 6rpx;
+  text-align: left;
+  color: #FF3A59;
+  font-size: 32rpx;
+  width: 220rpx;
+}
+.hot-recommends-body .price-cart{
+  width: 340rpx;
+}
+.seller-recommends .recommends-body-bottom{  
+  width: 242rpx; 
+  height: 150rpx;  
+}
+.seller-recommends .name{
+  width: 232rpx;
+}
+hot-recommends .name{
+  width: 356rpx;
+}
+.recommends-body-bottom image.icon{
+  width: 44rpx;
+  height: 44rpx;
+  float: right;
+}
+.hot-recommends-body{
+  overflow: hidden;
+}
+.hot-recommends-body image.icon{
+  width: 56rpx;
+  height: 56rpx;
+}
+.hot-recommends-body .hot-body-mid{
+  width: 366rpx;
+  float: left;
+  margin-bottom: 18rpx;
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 18rpx;
+}
+.hot-recommends-body .hot-body-mid:nth-child(2n+0){
+  margin-right: 0
+}
+.hot-body-mid .pic{
+  width: 366rpx;
+  height: 366rpx;
+  box-sizing: border-box;
+}
+.hot-recommends .recommends-body-bottom{
+  width: 366rpx;
+  height: 160rpx;
+}
+.name{
+  overflow:hidden;
+  text-overflow: ellipsis;  
+  display:-webkit-box; 
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2; 
+  white-space: normal;
+}
+.loading{
+  font-size:22rpx;
+  color:#bbb;
+}

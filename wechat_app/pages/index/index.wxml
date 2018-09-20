@@ -1,0 +1,128 @@
+<!-- 主页 -->
+
+<!-- 固定头部 -->
+<view class="header-input topnav {{scrollTop>50 ? 'topnav' : 'bottomnav'}}">
+  <!-- 搜索条 -->
+  <!--confirm-type="搜索" bindconfirm="search" value="{{key}}"-->
+  <input class="search-input" placeholder="搜索商品" bindfocus="searchNav">
+    <icon size='15' type='search'></icon> 
+  </input>
+  <!-- 客服按钮 -->
+  <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" wx:if="{{store_type == 2}}">
+    <image src='../image/img.png'></image>
+  </button>
+  <button class="message" hover-class="none" bindtap='storeList' wx:if="{{store_type == 1}}">
+    <image src='../image/store_list.png'></image>
+  </button>
+</view>
+
+<view scroll-y="true" style="height:100vh;" bindscroll="scroll" bindscrolltoupper="xlsx">
+  <!-- 轮播广告图 -->
+  <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+    <block wx:for="{{slideImg}}" wx:key="{{index}}">
+      <swiper-item>
+        <image src="{{item.img}}" class="slide-image" bindtap="slideDetail" data-type="{{item.type}}" data-val="{{item.val}}" />
+      </swiper-item>
+    </block>  
+  </swiper>
+
+  <view class="content">
+
+    <!-- 公告优惠券 -->
+    <view class='news-coupons'>
+      <view class='news-coupons-mid' wx:if="{{notice.length > 0 || coupon.length > 0}}">
+        <!-- 公告 -->
+        <view class='news' wx:if="{{notice.length > 0}}">
+          <image src='../image/news.png'></image>
+          <swiper class="swiper_news" vertical="true" autoplay="true" circular="true" interval="3000">
+            <swiper-item wx:for="{{notice}}" wx:key="{{index}}">
+              <view class="swiper_item" bindtap='goNotice' data-id="{{item.id}}">{{item.title}}</view>
+            </swiper-item>
+          </swiper>        
+        </view>
+
+        <!-- 优惠券 -->
+        <view class='coupons' wx:if="{{coupon.length > 0}}">
+          <block wx:for="{{coupon}}" wx:key="{{index}}" wx:for-index="index" wx:for-item="item">
+            <view bindtap='getCoupon' data-id="{{item.id}}">{{item.name}}</view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- 导航图标 -->
+    <view class='button-list'>
+      <view class='button-list-mid'>
+        <view class='nav' bindtap='allCategories'><image src='../image/group10.png'></image><text>全部分类</text></view>
+        <view class='nav' bindtap='hotSale'><image src='../image/group11.png'></image><text>热卖商品</text></view>
+        <!-- <view class='nav' bindtap='balance'><image src='../image/group12.png'></image><text>余额提现</text></view> -->
+        <!-- <view class='nav' bindtap='myInformation'><image src='../image/group13.png'></image><text>我的资料</text></view> -->
+        <view class='nav' bindtap='myOrder'><image src='../image/group14.png'></image><text>我的订单</text></view>
+        <view class='nav' bindtap='myCollection'><image src='../image/group15.png'></image><text>我的收藏</text></view>
+        <!-- <view class='nav' bindtap='fineBalance'><image src='../image/group16.png'></image><text>余额明细</text></view> -->
+        <!-- <view class='nav' bindtap='recharge'><image src='../image/group17.png'></image><text>会员充值</text></view> -->
+      </view>
+    </view>
+
+    <!-- 店家推荐 -->
+    <view class='seller-recommends'>
+      <!-- <view class='seller-recommends-mid'> -->
+        <!-- 店家推荐标题 -->
+        <view class='recommends-header'>
+          <image class='recommends-img' src='../image/seller.png'></image><text>店家推荐</text>
+        </view>
+        <!-- 店家推荐商品列表 -->
+        <view class='seller-recommends-body'>
+          <!-- 商品 -->
+          <view wx:for="{{recommend}}" wx:key="{{index}}">
+            <view bindtap="goodsDetail" data-id="{{item.id}}" class='seller-body-mid'>
+              <!-- 商品图片 -->
+              <image class='pic' src='{{item.image_url}}'></image>
+              <!-- 商品信息 -->
+              <view class='recommends-body-bottom'>
+                <text class='name'>{{item.name}}</text>
+                <view class='price-cart'>
+                  <text class='price'>￥{{item.price}}</text>
+                  <image class='icon' src='../image/cart.png'></image>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      <!-- </view> -->
+    </view>
+
+    <!-- 热卖推荐 -->
+    <view class='hot-recommends'>
+      <!-- <view class='hot-recommends-mid'> -->
+
+        <!-- 热门推荐标题 -->
+        <view class='recommends-header'>
+          <image class='recommends-img' src='../image/hot.png'></image><text>店铺热卖</text>
+        </view>
+
+        <!-- 热门推荐商品 -->
+        <view class='hot-recommends-body'>
+          <!-- 循环商品 -->
+          <view class='hot-body-mid' wx:for="{{hotGoods}}" wx:key="{{index}}">
+            <!-- 绑定商品 -->
+            <view bindtap="goodsDetail" data-id="{{item.id}}">
+              <!-- 商品图片 -->
+              <image class='pic' src='{{item.image_url}}'></image>
+              <!-- 商品名称和价格 -->
+              <view class='recommends-body-bottom'>
+                <text class='name'>{{item.name}}</text>
+                <view class='price-cart'>
+                  <text class='price'>￥{{item.price}}</text>
+                  <image class='icon' src='../image/cart.png'></image>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="loading" id="loading" hidden="{{!loadingComplete}}">——— 我们是有底线的 ———</view>
+      <!-- </view> -->
+    </view>
+
+  </view>
+</view>

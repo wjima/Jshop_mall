@@ -1,0 +1,246 @@
+.body{
+  height: 100%;
+}
+.delivery{
+  border-top: 2rpx solid #d2d2d2;
+}
+.delivery>image{
+  width: 750rpx;
+  height: 190rpx; 
+}
+.delivery-content{
+  width: 500rpx;  
+  position: absolute;
+  top: 26rpx;
+  left: 100rpx;
+  color: #fff;
+}
+.delivery-content>text{
+  display: block;
+}
+.content-top{
+  font-size: 32rpx;
+}
+.content-mid{
+  margin: 10rpx 0 0rpx;
+}
+.content-mid ,.content-bot{
+  font-size: 24rpx;
+}
+.delivery-information{
+  width: 690rpx;
+  padding: 20rpx 30rpx;
+  color: #379B2D;
+  font-size: 26rpx;
+  overflow: hidden;
+  border-bottom: 2rpx solid #eee;
+  display: flex;
+}
+.car{
+  width: 46rpx;
+  height: 36rpx;
+  margin: auto;
+}
+.information-content>text{
+  display: block;
+  font-size: 24rpx;
+}
+.information-content{
+  display: inline-block;
+  width: 606rpx;
+  margin: 0 0 0 30rpx;
+}
+.address .information-content{
+  width: 630rpx;
+}
+.information-time{
+  font-size: 24rpx;
+  color: #999;
+}
+.right{
+  width: 14rpx;
+  height: 24rpx;
+  margin: auto;
+}
+.address{
+  width: 690rpx;
+  padding: 20rpx 30rpx;
+  overflow: hidden;
+  border-bottom: 16rpx solid #f3f3f3;
+  font-size: 28rpx;
+  color: #999;
+  display: flex;
+}
+.gps{
+  width: 46rpx;
+  height: 46rpx;
+  margin:auto;
+}
+.username{
+  font-size: 28rpx;
+  color: #666;
+}
+.address .right{
+  margin-bottom: 40rpx;
+}
+.username{
+  display: inline-block;
+  width: 50%;
+}
+.phone{
+  width: 49%;
+  display: inline-block;
+  text-align: right;
+  font-size: 26rpx;
+}
+.goods{
+  margin-top: 16rpx;
+  background-color: #F9F9F9;
+  color: #666;
+  overflow: hidden;
+}
+.goods image{
+  width: 160rpx;
+  height: 160rpx;
+}
+.goods-lists{
+  overflow: hidden;
+  padding: 20rpx 30rpx;
+  border-bottom: 4rpx solid #fff;
+}
+.goods-content{
+  display: inline-block;
+  width: 500rpx;
+  float: right; 
+  font-size: 30rpx;
+  color: #666;
+}
+.goods-content-header{
+  overflow: hidden;
+}
+.goods-header-left{
+  width: 500rpx;
+  display: inline-block;
+  overflow:hidden;
+  text-overflow: ellipsis;  
+  display:-webkit-box; 
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2; 
+  white-space: normal;
+  font-size: 26rpx;
+}
+.goods-header-right{
+  margin-right: 10rpx;
+  color: #FF3B44;
+  font-size: 24rpx;
+}
+.goods-content-footer{
+  overflow: hidden;
+  height: 28rpx;
+  line-height: 28rpx;
+}
+.style{
+  color: #999;
+  font-size: 20rpx;
+  margin: 14rpx 0; 
+  display: block;
+}
+.num{
+  float: right;
+  margin-right: 10rpx;
+  font-size: 20rpx;
+}
+.goods-btn{
+  width: 160rpx;
+  height: 56rpx;
+  margin-top: 20rpx;
+  line-height: 56rpx;
+  border: 2rpx solid #ccc;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 60rpx;
+  font-size: 28rpx;
+  color: #666;
+  float: right;
+  margin-right: 60rpx; 
+}
+.weui-cells{
+  position: static;
+}
+.weui-cell{
+  color: #666;
+  font-size: 28rpx !important;
+  border-bottom: 2rpx solid #f1f1f1;
+  position: static;
+}
+.weui-cell__ft{
+  color: #666;
+}
+.price{
+  color: #FF3B44;
+}
+.remark{
+  width: 690rpx;
+  margin: 20rpx auto 120rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+.footer{
+  width: 750rpx;
+  height: 100rpx;
+  position: fixed;
+  bottom: 0rpx; 
+  border-top: 2rpx solid #f1f1f1;
+  background-color: #f8f8f8;
+  overflow: hidden;
+}
+.footer-left{
+  height: 100rpx;
+  margin-left: 10rpx;
+  max-width: 320rpx;
+  font-size: 24rpx;
+  float: left;
+  display: flex;
+}
+.left-bot{
+  color: #999;
+  margin: auto;
+}
+.footer-right{
+  width: 350rpx;
+  line-height: 100rpx;
+  display: inline-block;
+  text-align: right;
+  padding-right: 24rpx;
+  font-size: 24rpx;
+  float: right;
+}
+.footer-right>view>view{
+  display: inline-block;
+  padding: 0 10rpx;
+  height: 48rpx;
+  border:2rpx solid #ccc;
+  border-radius: 40rpx;
+  color: #999;
+  margin-top:22rpx;
+  line-height: 50rpx;
+  margin-right: 10rpx;
+}
+.footer-right>view>view:last-child{
+  margin: 0;
+}
+.footer-right-red{
+  border: 2rpx solid #FF3B44 !important;
+  color: #FF3B44 !important;
+}
+.promotion_on{
+  background-color:#FF3B44;
+  color:#fff;
+  font-size: 18rpx;
+  border-radius: 10rpx;
+  padding: 0 10rpx;
+  display: inline-block;
+  height:28rpx;
+  line-height:28rpx;
+  margin-right: 10rpx;
+}

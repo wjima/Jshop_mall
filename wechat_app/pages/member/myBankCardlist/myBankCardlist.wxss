@@ -1,0 +1,100 @@
+/* pages/member/mybankcardlist/mybankcardlist.wxss */
+page{
+  background-color: #f5f5f5;
+}
+.card-detail{
+  padding: 20rpx;
+  position: relative;
+}
+.cardlist-item{
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  padding: 60rpx 20rpx 120rpx;
+  position: relative;
+}
+.banklogo{
+  width: 252rpx;
+  height: 72rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 30rpx;
+}
+.bankcard{
+  margin-left:252rpx;
+  width: 418rpx;
+  text-align: center;
+}
+.bankcard-title{
+  display: block;
+  font-size: 32rpx;
+}
+.bankcard-num{
+  font-size: 30rpx;
+  color: #666;
+  display: block;
+}
+.mybackcardlist-bottom{
+  width: 80%;
+  margin: 40rpx auto 0;
+}
+.mybackcardlist-bottom button{
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  width: 100%;
+  background-color: #ff3b44;
+  color: #fff;
+  font-size: 30rpx;
+}
+.bankcard-btn{
+  position: absolute;
+  right: 20rpx;
+  bottom: 0rpx;
+}
+.bankcard-btn button{
+  padding: 0rpx 16rpx;
+  border-radius: 10rpx;
+  background-color: #ff3b44;
+  margin-left: 20rpx;
+  color: #fff;
+  display: inline-block;
+  border: none;
+  font-size: 20rpx;
+}
+.bankcard-btn .default-bankcard{
+  background-color: #ccc !important;
+}
+.default{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:11;
+    color:#ffffff;
+    width:0rpx;
+    height:0rpx;
+    border-bottom:solid 100rpx transparent;
+    border-right:solid 100rpx transparent;
+    border-top:solid 100rpx #ff3b44;
+}
+.default-text{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index: 12;
+    color:#ffffff;
+    margin-top:4rpx;
+    margin-left:14rpx;
+    font-size:30rpx;
+}
+.default-ico{
+    position:absolute;
+    top:20rpx;
+    left:20rpx;
+    z-index:10;
+    border-top-left-radius:20rpx;
+    overflow: hidden;
+    width:100rpx;
+    height:100rpx;
+}

@@ -1,0 +1,74 @@
+<!--pages/itemlist/itemlist.wxml-->
+<view class="header-input">
+  <input class="search-input" placeholder="搜索商品" bindfocus="searchNav">
+     <icon size='15' type='search'></icon> 
+  </input>
+  <view class='message'>
+      <image src='../../image/list.png'></image>
+  </view>
+</view>
+<view class='itemlist-content'>
+  <view class='content-header'>
+    <view class='comprehensive' bindtap="comprehensive">
+      <text>综合</text>
+      <view>
+        <image wx:if="{{searchData.order.key == 'id'}}" src='../../image/bottom.png'></image>
+        <image wx:if="{{searchData.order.key != 'id'}}" src='../../image/bottom-none.png'></image>
+      </view>
+    </view>
+    <view class='sales-volume' bindtap="salesVolume">
+      <text>销量</text>
+      <view>
+        <image wx:if="{{searchData.order.key == 'buy_count' && searchData.order.sort == 'asc' }}" src='../../image/top.png'></image>
+        <image wx:if="{{!(searchData.order.key == 'buy_count' && searchData.order.sort == 'asc') }}" src='../../image/top-none.png'></image>
+        <image wx:if="{{searchData.order.key == 'buy_count' && searchData.order.sort == 'desc' }}" src='../../image/bottom.png'></image>
+        <image wx:if="{{ !(searchData.order.key == 'buy_count' && searchData.order.sort == 'desc')}}" src='../../image/bottom-none.png'></image>
+      </view>
+    </view>
+    <view class='price' bindtap="priceSort">
+      <text>价格</text>
+      <view>
+        <image wx:if="{{searchData.order.key == 'price' && searchData.order.sort == 'asc' }}" src='../../image/top.png'></image>
+        <image wx:if="{{!(searchData.order.key == 'price' && searchData.order.sort == 'asc') }}" src='../../image/top-none.png'></image>
+        <image wx:if="{{searchData.order.key == 'price' && searchData.order.sort == 'desc' }}" src='../../image/bottom.png'></image>
+        <image wx:if="{{ !(searchData.order.key == 'price' && searchData.order.sort == 'desc')}}" src='../../image/bottom-none.png'></image>
+      </view>
+    </view>
+    <view class="filter show{{showView?'show':''}}" bindtap="onChangeShowState"><text>筛选</text><image src='../../image/filter.png'></image></view>
+  </view>
+  <view class="content-title hide{{showView?'show':''}}">
+    <text>价格区间（元）</text>
+    <view class='content-title-input'>
+      <view class='content-title-input-left'>
+        <input placeholder-class='input-placeholder' value='{{minPrice}}' bindblur='minPrice' type='number' placeholder='最低价'></input>
+        <text>一</text>
+        <input placeholder-class='input-placeholder' value='{{maxPrice}}' bindblur='maxPrice' type='number' placeholder='最高价'></input>
+      </view>
+      <view class='confirm' bindtap="searchPrice">确认</view>
+    </view>
+  </view>
+  <scroll-view scroll-y="true" scroll-into-view="{{toView}}" style="height:86vh;" bindscrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
+    <view class='content-body' wx:for="{{goodsList}}" wx:key="{{index}}">
+      <view class='every-commodity' bindtap="goodsDetail" data-id="{{item.id}}">
+        <image class='commodity-pic' src='{{item.image_url}}'></image>
+        <view class='every-commodity-right'>
+          <text class='commodity-name'>{{item.name}}</text>
+          <view class='preferential'>
+            <text wx:for="{{item.label_ids}}" wx:key="ind" wx:for-item="items" class="lable_{{items.style}}">{{items.name}}</text>
+          </view>
+          <view class='preferential'>
+            <text wx:for="{{item.products[0].promotion_list}}" wx:key="ind" wx:for-item="items" class='{{items.type==2?"promotion_on":"promotion_off"}}'>{{items.name}}</text>
+          </view>
+          <view class='price-cart'>
+            <text class='price'>￥{{item.price}}</text>
+            <image class='cart-img' src='../../image/cart.png'></image>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 加载操作 -->
+  <view class="loading" hidden="{{!loading}}"><view class="weui-loading"></view>正在载入更多...</view>
+  <view class="loading" hidden="{{!loadingComplete}}">已加载全部</view>
+  <view class='none-img' wx:if="{{nodata}}"><image src='../../image/listnothing.png'></image><text>抱歉，没有找到相关的商品哦~</text></view>
+  </scroll-view>
+</view>

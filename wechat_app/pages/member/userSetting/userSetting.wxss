@@ -1,0 +1,39 @@
+page{
+  background-color: #f9f9f9;
+}
+.content-body{
+  overflow: hidden;
+  background-color: #fff;
+  margin-top:4rpx;
+}
+.content-body .content-view{
+  width: 696rpx;
+  height: 60rpx; 
+  line-height: 60rpx; 
+  padding: 10rpx 30rpx 10rpx 24rpx;
+  border-bottom: 2rpx solid #f2f2f2;
+}
+.member-icon{
+  width: 34rpx;
+  height: 36rpx;
+  margin-right: 12rpx;
+  position: relative;
+  top: 8rpx;
+}
+.member-text{
+  color: #666;
+  font-size: 24rpx;
+}
+.out-bottom{
+  width: 80%;
+  margin: 40rpx auto 0;
+}
+.out-bottom button{
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  width: 100%;
+  background-color: #ff3b44;
+  color: #fff;
+  font-size: 30rpx;
+}

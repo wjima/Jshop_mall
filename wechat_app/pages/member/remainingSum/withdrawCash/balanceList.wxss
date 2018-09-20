@@ -1,0 +1,59 @@
+/* pages/member/remainingSum/withdrawCash/balanceList.wxss */
+page{
+  background-color: #f5f5f5;
+}
+.balancelist-item{
+  width: 100%;
+  background-color: #fff;
+  margin-bottom: 20rpx;
+  padding: 30rpx 20rpx;
+  box-sizing: border-box;
+  font-size: 26rpx;
+}
+.balancelist-top{
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+.balancelist-bottom{
+  overflow: hidden;
+}
+.balancelist-title{
+  font-size: 26rpx;
+}
+.balancelist-sum{
+  color: #999;
+  font-size: 24rpx;
+}
+.balancelist-time{
+  color: #999;
+  font-size: 24rpx;
+  float: right;
+}
+.balancelist-num{
+  color: #ff3b44;
+  font-size: 36rpx;
+  float: right;
+  font-weight: 600;
+}
+.loading{
+  text-align:center;
+  font-size:28rpx;
+  margin:20rpx 0;
+  color:#999;
+}
+.none-img{
+  margin: 100rpx auto;
+  text-align: center;
+}
+.none-img image{
+  width: 200rpx;
+  height: 200rpx;
+}
+.none-img text{
+  display: block;
+  color:#bbb;
+  font-size:32rpx;
+}
+.balancelist{
+    margin-top: 18rpx;
+}

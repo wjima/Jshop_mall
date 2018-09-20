@@ -1,0 +1,27 @@
+<view>
+  <view class='top' wx:if="{{status}}">
+    <icon type="success" size="{{item}}" size="70"/>
+    <text>支付成功</text>
+    <view class='price'>￥<text>{{money}}</text></view>
+  </view>
+  <view class='mid'>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell" wx:if="{{paymentCode}}">
+        <view class="weui-cell__bd">支付方式</view>
+        <view class="weui-cell__ft">{{paymentCode}}</view>
+      </view>
+      <view class="weui-cell" wx:if="{{paymentId != ''}}">
+        <view class="weui-cell__bd">支付单号</view>
+        <view class="weui-cell__ft">{{paymentId}}</view>
+      </view>
+      <view class="weui-cell" wx:if="{{orderId != ''}}">
+        <view class="weui-cell__bd">订单号</view>
+        <view class="weui-cell__ft">{{orderId}}</view>
+      </view>
+    </view>
+  </view>
+  <view class='bot'>
+    <button class="weui-btn" type="warn" plain="true" bindtap='orderInfo' data-id="{{rel[0].source_id}}" wx:if="{{paymentId != ''}}">查看详情</button>
+    <button class="weui-btn" type="warn" plain="true" bindtap='orderInfo' data-id="{{orderId}}" wx:if="{{orderId != ''}}">查看详情</button>
+  </view>
+</view>

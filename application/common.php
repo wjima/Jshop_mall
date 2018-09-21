@@ -249,10 +249,10 @@ function get_user_info($user_id,$field = 'mobile')
     }
 }
 //返回商品信息
-function get_goods_info($goods_id,$seller_id,$field = 'name')
+function get_goods_info($goods_id,$field = 'name')
 {
     $goodsModel = new \app\common\model\Goods();
-    $info = $goodsModel->where(['id'=>$goods_id,'seller_id'=>$seller_id])->find();
+    $info = $goodsModel->where(['id'=>$goods_id])->find();
     if($info){
         if($field == 'image_id'){
             return _sImage($info[$field]);

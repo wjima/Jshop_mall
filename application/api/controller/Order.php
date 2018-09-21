@@ -200,7 +200,7 @@ class Order extends Api
         $area_id = input('param.area_id', false);
         $point = input('point', 0);
         $coupon_code = input('coupon_code', '');
-        return model('common/Order')->toAdd($this->sellerId, $this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code);
+        return model('common/Order')->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code);
     }
 
     /**

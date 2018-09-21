@@ -1029,7 +1029,6 @@ class Order extends Common
 
     /**
      * 生成订单方法
-     * @param $seller_id
      * @param $user_id
      * @param $cart_ids
      * @param $uship_id
@@ -1042,7 +1041,7 @@ class Order extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($seller_id,$user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false)
+    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false)
     {
         $result = [
             'status' => false,
@@ -1054,7 +1053,7 @@ class Order extends Common
         if(!$ushopInfo){
             return error_code(11050);
         }
-        $orderInfo = $this->formatOrderItems($seller_id,$user_id,$cart_ids,$area_id,$point,$coupon_code);
+        $orderInfo = $this->formatOrderItems($user_id,$cart_ids,$area_id,$point,$coupon_code);
 
         if(!$orderInfo['status']){
             return $orderInfo;
@@ -1073,16 +1072,15 @@ class Order extends Common
         }
         $order['cost_freight'] = $orderInfo['data']['cost_freight'];
         $order['user_id'] = $user_id;
-        $order['seller_id'] = $seller_id;
 
         //收货地址信息
         $order['ship_area_id'] = $ushopInfo['area_id'];
         $order['ship_address'] = $ushopInfo['address'];
         $order['ship_name'] = $ushopInfo['name'];
         $order['ship_mobile'] = $ushopInfo['mobile'];
-        $shipInfo = model('common/Ship')->getShip($seller_id,$ushopInfo['area_id']);
+        $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
         $order['logistics_id'] = $shipInfo['id'];
-        $order['cost_freight'] = model('common/Ship')->getShipCost($seller_id,$ushopInfo['area_id'], $orderInfo['data']['weight']);
+        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight']);
 
         $order['weight'] = $orderInfo['data']['weight'];;
         $order['order_pmt'] = isset($orderInfo['data']['order_pmt'])?$orderInfo['data']['order_pmt']:0;
@@ -1115,7 +1113,7 @@ class Order extends Common
             if($coupon_code)
             {
                 $coupon = new Coupon();
-                $coupon_res = $coupon->usedMultipleCoupon($coupon_code, $seller_id, $user_id);
+                $coupon_res = $coupon->usedMultipleCoupon($coupon_code, $user_id);
                 if(!$coupon_res['status'])
                 {
                     return $coupon_res;
@@ -1124,16 +1122,16 @@ class Order extends Common
 
             //清除购物车信息
             $cartModel = new Cart();
-            $cartModel->del($seller_id,$user_id,$cart_ids);
+            $cartModel->del($user_id,$cart_ids);
 
             //订单记录
             $orderLog = new OrderLog();
-            $orderLog->addLog($order['order_id'], $user_id, $seller_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
+            $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
 
             $result['status'] = true;
             $result['data'] = $order;
             Db::commit();
-            sendMessage($seller_id, $user_id, 'create_order', $order);
+            sendMessage($user_id, 'create_order', $order);
             return $result;
         } catch (\Exception $e) {
             Db::rollback();
@@ -1144,7 +1142,6 @@ class Order extends Common
 
     /**
      * 订单前执行
-     * @param $seller_id
      * @param $user_id
      * @param $cart_ids
      * @param $area_id
@@ -1155,10 +1152,10 @@ class Order extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function formatOrderItems($seller_id,$user_id,$cart_ids,$area_id,$point, $coupon_code)
+    public function formatOrderItems($user_id,$cart_ids,$area_id,$point, $coupon_code)
     {
         $cartModel = new Cart();
-        $cartList = $cartModel->info($seller_id,$user_id,$cart_ids,'',$area_id, $point, $coupon_code);
+        $cartList = $cartModel->info($user_id,$cart_ids,'',$area_id, $point, $coupon_code);
         if(!$cartList['status']){
             return $cartList;
         }
@@ -1171,7 +1168,7 @@ class Order extends Common
             $item['price'] = $v['products']['price'];
             $item['costproce'] = $v['products']['costprice'];
             $item['mktprice'] = $v['products']['mktprice'];
-            $item['image_url'] = get_goods_info($v['products']['goods_id'],$seller_id,'image_id');
+            $item['image_url'] = get_goods_info($v['products']['goods_id'],'image_id');
             $item['nums'] = $v['nums'];
             $item['amount'] = $v['products']['amount'];
             $item['promotion_amount'] = isset($v['products']['promotion_amount'])?$v['products']['promotion_amount']:0;

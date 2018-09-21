@@ -153,10 +153,6 @@ class Order extends Common
         {
             $where[] = array('o.user_id', 'eq', $input['user_id']);
         }
-        if(!empty($input['seller_id']))
-        {
-            $where[] = array('o.seller_id', 'eq', $input['seller_id']);
-        }
         if(!empty($input['order_unified_status']))
         {
             $where = array_merge($where, $this->getReverseStatus($this->status_relation[$input['order_unified_status']], '`o`.'));
@@ -166,7 +162,7 @@ class Order extends Common
         $limit = $input['limit']?$input['limit']:20;
 
         $data = $this->alias('o')
-            ->field('o.order_id, o.seller_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
+            ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
             ->join('user u', 'o.user_id = u.id', 'left')
             ->where($where)
             ->order('ctime desc')
@@ -174,7 +170,7 @@ class Order extends Common
             ->select();
 
         $count = $this->alias('o')
-            ->field('o.order_id, o.seller_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
+            ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
             ->join('user u', 'o.user_id = u.id', 'left')
             ->where($where)
             ->count();
@@ -324,10 +320,6 @@ class Order extends Common
         {
             $where[] = array('user_id', 'eq', $input['user_id']);
         }
-//        if(!empty($input['seller_id']))
-//        {
-            $where[] = array('seller_id', 'eq', $input['seller_id']);
-//        }
 
         $page = $input['page']?$input['page']:1;
         $limit = $input['limit']?$input['limit']:20;
@@ -359,19 +351,10 @@ class Order extends Common
             $user_id = false;
         }
 
-        if($input['seller_id'])
-        {
-            $seller_id = $input['seller_id'];
-        }
-        else
-        {
-            $seller_id = false;
-        }
-
         $data = [];
         foreach ($ids as $k => $v)
         {
-            $data[$v] = $this->orderCount($v, $seller_id, $user_id);
+            $data[$v] = $this->orderCount($v, $user_id);
         }
         return $data;
     }
@@ -379,18 +362,13 @@ class Order extends Common
     /**
      * 订单数量统计
      * @param $id
-     * @param bool $seller_id
      * @param bool $user_id
      * @return int|string
      */
-    protected function orderCount($id = 'all', $seller_id = false, $user_id = false)
+    protected function orderCount($id = 'all', $user_id = false)
     {
         $where = [];
         //都需要验证的
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
         if($user_id)
         {
             $where[] = ['user_id', 'eq', $user_id];
@@ -499,24 +477,15 @@ class Order extends Common
      * 获取订单信息
      * @param $id
      * @param $user_id
-     * @param $seller_id
      * @return bool|null|static
      * @throws \think\exception\DbException
      */
-    public function getOrderInfoByOrderID($id, $seller_id = false, $user_id = false)
+    public function getOrderInfoByOrderID($id, $user_id = false)
     {
         $order_info = $this->get($id); //订单信息
 
         if(!$order_info){
             return false;
-        }
-
-        if($seller_id)
-        {
-            if($seller_id != $order_info['seller_id'])
-            {
-                return false;
-            }
         }
 
         if($user_id)
@@ -749,23 +718,19 @@ class Order extends Common
     /**
      * 取消订单操作
      * @param $id
-     * @param bool $seller_id
      * @param bool $user_id
      * @return bool|static
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function cancel($id, $seller_id = false, $user_id = false)
+    public function cancel($id,$user_id = false)
     {
         $where[] = array('order_id', 'in', $id);
         $where[] = array('pay_status', 'eq', self::PAY_STATUS_NO);
         $where[] = array('status', 'eq', self::ORDER_STATUS_NORMAL);
         $where[] = array('ship_status', 'eq', self::SHIP_STATUS_NO);
-        if($seller_id)
-        {
-            $where[] = array('seller_id', 'eq', $seller_id);
-        }
+
         if($user_id)
         {
             $where[] = array('user_id', 'eq', $user_id);
@@ -785,7 +750,7 @@ class Order extends Common
                 {
                     $order_ids[] = $v['order_id'];
                     //订单记录
-                    $orderLog->addLog($v['order_id'], $v['user_id'], $v['seller_id'], $orderLog::LOG_TYPE_CANCEL, '订单取消操作', $where);
+                    $orderLog->addLog($v['order_id'], $v['user_id'], $orderLog::LOG_TYPE_CANCEL, '订单取消操作', $where);
                 }
                 //状态修改
                 $w[] = ['order_id', 'in', $order_ids];
@@ -822,11 +787,10 @@ class Order extends Common
      * @param $seller_id
      * @return int
      */
-    public function del($order_ids, $user_id, $seller_id)
+    public function del($order_ids, $user_id)
     {
         $where[] = array('order_id', 'in', $order_ids);
         $where[] = array('user_id', 'eq', $user_id);
-        $where[] = array('seller_id', 'eq', $seller_id);
 
         $result = $this->where($where)
             ->delete();
@@ -990,7 +954,7 @@ class Order extends Common
      * @param $seller_id
      * @return false|int
      */
-    public function confirm($order_id, $user_id, $seller_id)
+    public function confirm($order_id, $user_id)
     {
         $where[] = array('order_id', 'eq', $order_id);
         $where[] = array('pay_status', 'neq', self::PAY_STATUS_NO);
@@ -998,7 +962,6 @@ class Order extends Common
         $where[] = array('status', 'eq', self::ORDER_STATUS_NORMAL);
         $where[] = array('confirm', 'neq', self::CONFIRM_RECEIPT);
         $where[] = array('user_id', 'eq', $user_id);
-        $where[] = array('seller_id', 'eq', $seller_id);
 
         $data['confirm'] = self::CONFIRM_RECEIPT;
         $data['confirm_time'] = time();
@@ -1016,7 +979,7 @@ class Order extends Common
             $w[] = ['order_id', 'eq', $order_id];
             $info = $this->where($w)
                 ->find();
-            $orderLog->addLog($order_id, $info['user_id'], $info['seller_id'], $orderLog::LOG_TYPE_SIGN, '确认签收操作', $where);
+            $orderLog->addLog($order_id, $info['user_id'], $orderLog::LOG_TYPE_SIGN, '确认签收操作', $where);
 
             $return = true;
             Db::commit();

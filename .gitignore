@@ -1,3 +1,4 @@
 .idea/*
 runtime/*
 config/database.php
+h5/node_modules/*

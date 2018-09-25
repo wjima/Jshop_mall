@@ -31,10 +31,6 @@
                     </div>
                 </div>
             </div>
-            <!-- 数据全部加载完毕显示 -->
-            <span slot="doneTip">啦啦啦，啦啦啦，没有数据啦~~</span>
-            <!-- 加载中提示，不指定，将显示默认加载中图标 -->
-            <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
         </yd-infinitescroll>
         <yd-backtop></yd-backtop>
     </div>

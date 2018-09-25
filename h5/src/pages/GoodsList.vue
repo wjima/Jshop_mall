@@ -12,12 +12,6 @@
                     </yd-list-other>
                 </yd-list-item>
             </yd-list>
-
-            <!-- 数据全部加载完毕显示 -->
-            <span slot="doneTip" class="data-none">全都被你看完了</span>
-
-            <!-- 加载中提示，不指定，将显示默认加载中图标 -->
-            <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
         </yd-infinitescroll>
         <yd-backtop></yd-backtop>
     </div>

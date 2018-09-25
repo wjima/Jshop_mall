@@ -11,10 +11,6 @@
                     </div>
                 </li>
             </ul>
-            <!-- 数据全部加载完毕显示 -->
-            <span slot="doneTip">没有更多记录啦~~</span>
-            <!-- 加载中提示，不指定，将显示默认加载中图标 -->
-            <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
         </yd-infinitescroll>
     </div>
 </template>

@@ -34,10 +34,8 @@ class Payments extends Common
         }
         //如果已经添加，那么就给他更新
         $where['code'] = $data['code'];
-        dump($data);
 
         if($this->allowField(true)->save($data,$where)){
-            dump($this->getLastSql());
             $result['status'] = true;
             $result['msg'] = '保存成功';
         }

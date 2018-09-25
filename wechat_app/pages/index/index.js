@@ -49,19 +49,16 @@ Page({
 
   //获取我的推荐码
   getMyShareCode: function () {
-      var token = app.db.get('userToken');
-      if (token) {
-          app.api.sharecode(function (e) {
-                let inviteCode = 0;
-                if (e.status) {
-                    //获取邀请码成功
-                    wx.setStorage({
-                        key: "myInviteCode",
-                        data: e.data
-                    });
-                }
-          });
-      }
+    app.api.sharecode(function (e) {
+          let inviteCode = 0;
+          if (e.status) {
+              //获取邀请码成功
+              wx.setStorage({
+                  key: "myInviteCode",
+                  data: e.data
+              });
+          }
+    });
   },
 
   //页面显示

@@ -2,7 +2,7 @@
 namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\BillPayments;
-use app\common\model\PaymentsSellerRel;
+use app\common\model\Payments as PaymentsModel;
 use Request;
 
 /**
@@ -24,8 +24,9 @@ class Payments extends Api
             'data' => '',
             'msg' => ''
         ];
-        $paymentsSRModel = new PaymentsSellerRel();
-        $result['data'] = $paymentsSRModel->getList($this->sellerId);
+        //$paymentsSRModel = new PaymentsSellerRel();
+        $paymentsModel = new PaymentsModel();
+        $result['data'] = $paymentsModel->getList();
         return $result;
     }
 

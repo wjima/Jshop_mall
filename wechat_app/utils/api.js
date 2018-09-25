@@ -1,7 +1,7 @@
 var config = require('config.js');
 var common = require('common.js');
 //需要token才能访问的数组
-var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.addgoodsbrowsing', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode'];
+var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend'];
 
 //接口统一封装
 function api(method,data,callback,show = true){
@@ -42,7 +42,7 @@ function post(data,callback,show){
       if (res.data.status) {
         callback(res.data);
       } else {
-        error(res.data, callback);
+        error(res.data, callback,data);
       }
     },
     fail: function (res) {
@@ -100,11 +100,13 @@ function post2(path, data, callback, show = true) {
 }
 
 //接口错误信息处理
-function error(res,callback){
+function error(res,callback,postData){
   switch (res.data) {
     case 14007:   //token验证失败，需要从新登录
-      common.jumpToLogin();
-      
+      //判断是否是需要登陆的接口
+      if (methodToken.indexOf(postData.method) >= 0) {
+        common.jumpToLogin();
+      }
       break;
     case 2:
       ;
@@ -308,11 +310,17 @@ function goodsParameter(data, callback) {
     callback(res);
   });
 }
-//商品浏览记录添加接口
+//商品浏览记录添加接口，此接口有点特殊，登陆状态在这里判断，而不是在基类里判断
 function goodsHistory(data, callback) {
-  api('user.addgoodsbrowsing', data, function (res) {
-    callback(res);
-  }, false);
+  //如果本地有token，那么就去增加浏览记录，否则，就不增加，极个别情况，登陆状态失效了，可能会跳转到登陆页面，此种情况不考虑
+  var userToken = wx.getStorageSync('userToken');
+  if (userToken) {
+    data.token = userToken;
+    api('user.addgoodsbrowsing', data, function (res) {
+      callback(res);
+    }, false);
+  }
+  
 }
 //商品收藏添加和移除接口
 function goodsCollection(data, callback) {
@@ -674,9 +682,17 @@ function recommendList(data, callback) {
 }
 //获取用户邀请码
 function sharecode(callback) {
-    api('user.sharecode', {}, function (res) {
+  var userToken = wx.getStorageSync('userToken');
+  if (userToken) {
+    var data = {};
+    data.token = userToken;
+    api('user.sharecode', data, function (res) {
+      //如果不是身份过期的话，就执行
+      if((res.status == false && data == 14007)){
         callback(res);
-    });
+      }
+    }); 
+  }
 }
 //获取文章列表
 function getarticleList(data,callback){

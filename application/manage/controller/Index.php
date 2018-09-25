@@ -18,12 +18,12 @@ class Index extends Manage
     {
         $orderModel = new Order();
         //未发货数量
-        $unpaid_count = $orderModel->where(['seller_id'=>$this->sellerId,'status'=>1,'pay_status'=>1,'ship_status'=>1])->count();
+        $unpaid_count = $orderModel->where(['status'=>1,'pay_status'=>1,'ship_status'=>1])->count();
         //待发货数量
-        $unship_count = $orderModel->where(['seller_id'=>$this->sellerId,'status'=>1,'pay_status'=>2,'ship_status'=>1])->count();
+        $unship_count = $orderModel->where(['status'=>1,'pay_status'=>2,'ship_status'=>1])->count();
         //待售后数量
         $billAfterSalesModel = new BillAftersales();
-        $afterSales_count = $billAfterSalesModel->where('seller_id',$this->sellerId)->count();
+        $afterSales_count = $billAfterSalesModel->count();
 
         //hook('testhook', $params);//php中钩子
 
@@ -32,11 +32,11 @@ class Index extends Manage
         $this->assign('after_sales_count',$afterSales_count);
 
         $goodsModel = new Goods();
-        $goodsStatics=$goodsModel->staticGoods(['seller_id'=>$this->sellerId]);
+        $goodsStatics=$goodsModel->staticGoods();
         $this->assign('goods_statics',$goodsStatics);
 
         //是否关闭弹窗
-        $closeauthor = Cache::get($this->sellerId."closeauthor",'false');
+        $closeauthor = Cache::get("closeauthor",'false');
         $this->assign('closeauthor',$closeauthor);
         //获取是否授权
         $weixinAuthorModel = new WeixinAuthor();
@@ -56,17 +56,12 @@ class Index extends Manage
      */
     public function tagSelectBrands()
     {
-        if(!input('?param.seller_id')){
-            return "请传入商户参数";
-        }
         $this->view->engine->layout(false);
         if(input('param.type') != 'show'){
             $request = input('param.');
-            $request['seller_id'] = input('param.seller_id');
             $brandModel = new Brand();
             return $brandModel->tableData($request);
         }else{
-            $this->assign('seller_id',input('param.seller_id'));
             return $this->fetch('tagSelectBrands');
         }
 
@@ -76,19 +71,14 @@ class Index extends Manage
      */
     public function tagSelectGoods()
     {
-        if(!input('?param.seller_id')){
-            return "请传入商户参数";
-        }
         $this->view->engine->layout(false);
         if(input('param.type') != 'show'){
             $request = input('param.');
-            $request['seller_id'] = input('param.seller_id');
             $goodModel = new Goods();
             $request['marketable'] = $goodModel::MARKETABLE_UP;     //必须是上架的商品
             return $goodModel->tableData($request);
 
         }else{
-            $this->assign('seller_id',input('param.seller_id'));
             return $this->fetch('tagSelectGoods');
         }
 

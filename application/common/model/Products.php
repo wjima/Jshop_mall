@@ -109,7 +109,6 @@ class Products extends Common
                 'list' => [
                     [
                         'id'=> 0,
-                        'seller_id' => $product['seller_id'],
                         'user_id' => '',
                         'product_id' => $id,
                         'nums' => 1,
@@ -119,7 +118,7 @@ class Products extends Common
                 ]
             ];
             $promotionModel = new Promotion();
-            $cart = $promotionModel->toPromotion($miniCart,$product['seller_id']);
+            $cart = $promotionModel->toPromotion($miniCart);
             //把促销信息和新的价格等，覆盖到这里
             if($cart['list'][0]['products']['promotion_list']){
                 $newProduct = $cart['list'][0]['products'];

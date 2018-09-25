@@ -1,9 +1,8 @@
 module.exports = {
   app_id: '',
-  site_token: '11111111111111111111111111111111',
   session_key: '',
-  api_url: 'http://www.jb2c.com/',
-  cdn_url: 'http://www.jb2c.com/',
+  api_url: 'http://b2c.jihainet.com/',
+  cdn_url: 'http://b2c.jihainet.com/',
   default_image: '',
   app_title: 'Jshop_b2c',
   app_description: 'Jshop_b2c',

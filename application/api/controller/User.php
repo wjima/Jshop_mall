@@ -805,7 +805,7 @@ class User extends Api
     public function getBankCardOrganization()
     {
         $card_code = input('param.card_code/d');
-        if (!$card_code) return error_code(10051);
+        if (!$card_code) return error_code(11017);
         $bankCardsModel = new UserBankcards();
         return $bankCardsModel->bankCardsOrganization($card_code);
     }

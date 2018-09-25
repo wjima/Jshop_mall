@@ -3,15 +3,15 @@
         <yd-cell-group>
             <yd-cell-item v-if="showType">
                 <span slot="left">卡类型：</span>
-                <yd-input slot="right" v-model="fullName" placeholder="银行卡类型" readonly></yd-input>
+                <yd-input slot="right" v-model="fullName" placeholder="银行卡类型" readonly disabled></yd-input>
             </yd-cell-item>
             <yd-cell-item>
                 <span slot="left">银行卡号：</span>
-                <yd-input slot="right" v-model="cardCode" ref="code" min="16" max="19" placeholder="请输入银行卡号"></yd-input>
+                <yd-input slot="right" v-model="cardCode" ref="code" regex="bankcard" placeholder="请输入银行卡号"></yd-input>
             </yd-cell-item>
             <yd-cell-item>
                 <span slot="left">持卡人：</span>
-                <yd-input slot="right" v-model="name" placeholder="请输入持卡人姓名"></yd-input>
+                <yd-input slot="right" v-model="name" :on-focus="checkCard" placeholder="请输入持卡人姓名"></yd-input>
             </yd-cell-item>
             <yd-cell-item arrow>
                 <span slot="left">开户地区：</span>
@@ -41,8 +41,9 @@ export default {
             name: '', // 持卡人姓名
             cardCode: '', // 银行卡号
             showType: false, // 类型显示
-            bankName: '', // 银行
-            cardType: '', // 银行卡类型
+            bankName: '', // 银行名称
+            cardType: '', // 卡类型
+            cardTypeName: '', // 卡类型名称
             bankCode: '', // 银行缩写
             areaId: '', // 银行卡开户地区id,
             accountBank: '', // 开户银行
@@ -57,19 +58,7 @@ export default {
     computed: {
         // 计算银行名称 卡片类型
         fullName () {
-            let cardTypeName = ''
-            switch (this.cardType) {
-            case 1:
-                cardTypeName = '储蓄卡'
-                break
-            case 2:
-                cardTypeName = '信用卡'
-                break
-            default:
-                cardTypeName = '未知'
-                break
-            }
-            return this.bankName + cardTypeName
+            return this.bankName + this.cardTypeName
         }
     },
     methods: {
@@ -78,29 +67,12 @@ export default {
             this.areaId = ret.itemValue3
             this.area = ret.itemName1 + ' ' + ret.itemName2 + ' ' + ret.itemName3
         },
-        // 获取银行名称  卡类型
-        getBankName () {
-            this.$api.getBankCardOrganization({card_code: this.cardCode}, res => {
-                if (res.status) {
-                    const _data = res.data
-                    this.bankName = _data.name
-                    this.cardType = _data.type
-                    this.bankCode = _data.bank_code
-                    this.showType = true
-                } else {
-                    this.bankName = ''
-                    this.cardType = ''
-                    this.bankCode = ''
-                    this.showType = false
-                }
-            })
-        },
         // 提交
         submitHandler () {
             if (!this.cardCode) {
                 this.$dialog.toast({mes: '请输入银行卡号', timeout: 1000})
             } else if (!this.bankName && !this.cardType && !this.bankCode) {
-                this.$dialog.toast({mes: '该卡片异常,请确认', timeout: 1000})
+                this.$dialog.toast({mes: '请输入正确的银行卡号', timeout: 1000})
             } else if (!/^[\u4E00-\u9FA5]{2,4}$/.test(this.name)) {
                 this.$dialog.toast({mes: '请输入正确的持卡人名称', timeout: 1000})
             } else if (!this.areaId) {
@@ -126,27 +98,25 @@ export default {
                                 this.$router.go(-1)
                             }
                         })
-                    } else {
-                        this.$dialog.toast({
-                            mes: res.msg,
-                            timeout: false
-                        })
                     }
                 })
             }
-        }
-    },
-    watch: {
-        // 监听用户输入卡号 请求接口
-        cardCode () {
-            if (this.cardCode.length >= 16 && this.cardCode.length <= 19) {
-                this.getBankName()
-            } else {
-                this.bankName = ''
-                this.cardType = ''
-                this.bankCode = ''
-                this.showType = false
-            }
+        },
+        // 暂通过持卡人input进入焦点事件请求api获取银行信息
+        checkCard () {
+            this.$api.getBankCardOrganization({card_code: this.cardCode}, res => {
+                if (res.status) {
+                    const _data = res.data
+                    this.bankName = _data.name
+                    this.cardType = _data.type
+                    this.bankCode = _data.bank_code
+                    this.cardTypeName = _data.type_name
+                    this.showType = true
+                } else {
+                    this.bankName = this.cardType = this.bankCode = this.cardTypeName = ''
+                    this.showType = false
+                }
+            })
         }
     }
 }

@@ -77,17 +77,16 @@ class Advertisement extends Manage
     /**
      *
      *  获取对应商户的广告位列表
-     * @param int $seller_id
      *
      * @return array|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function positionList($seller_id=0)
+    public function positionList()
     {
         $positionModel = new advertisementModel();
-        return $positionModel->field('id,code,name')->where('seller_id',$seller_id)->select();
+        return $positionModel->field('id,code,name')>select();
     }
 
 

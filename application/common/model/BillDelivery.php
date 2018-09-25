@@ -93,7 +93,6 @@ class BillDelivery extends Common
         $bull_delivery = array(
             'delivery_id' => $delivery_id,
             'order_id' => $order['order_id'],
-            'seller_id' => $order['seller_id'],
             'user_id' => $order['user_id'],
             'logi_code' => $logi_code,
             'logi_no' => $logi_no,
@@ -115,7 +114,7 @@ class BillDelivery extends Common
 
             //订单记录
             $orderLog = new OrderLog();
-            $orderLog->addLog($bull_delivery['order_id'], $bull_delivery['user_id'], $bull_delivery['seller_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+            $orderLog->addLog($bull_delivery['order_id'], $bull_delivery['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
 
             //插入发货详单，修改库存
             $goodsModel = new Goods();
@@ -149,7 +148,7 @@ class BillDelivery extends Common
             Db::commit();
 
             //发送发货成功信息
-            sendMessage($bull_delivery['seller_id'], $bull_delivery['user_id'], 'delivery_notice', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+            sendMessage($bull_delivery['user_id'], 'delivery_notice', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
         }catch(\Exception $e){
             Db::rollback();
         }
@@ -263,7 +262,6 @@ class BillDelivery extends Common
 
     /**
      * 获取发货单列表
-     * @param bool $seller_id
      * @param int $page
      * @param int $limit
      * @param array $input
@@ -322,19 +320,15 @@ class BillDelivery extends Common
     /**
      * 获取发货单详情
      * @param $delivery_id
-     * @param bool $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getDeliveryInfo($delivery_id, $seller_id = false)
+    public function getDeliveryInfo($delivery_id)
     {
         $where[] = ['delivery_id', 'eq', $delivery_id];
-        if($seller_id)
-        {
-            $where[] = ['seller_id', 'eq', $seller_id];
-        }
+
         $res = $this::with('items')->where($where)
             ->find();
         if($res)

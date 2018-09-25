@@ -3,7 +3,6 @@ namespace app\Manage\controller;
 use app\common\controller\Manage;
 use app\common\model\BillDelivery;
 use app\common\model\OrderLog;
-use app\common\model\Seller;
 use Request;
 
 /**

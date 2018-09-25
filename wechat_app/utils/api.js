@@ -1,17 +1,10 @@
 var config = require('config.js');
 var common = require('common.js');
 //需要token才能访问的数组
-var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.addgoodsbrowsing', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.mypoint', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode'];
+var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.addgoodsbrowsing', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode'];
 
 //接口统一封装
 function api(method,data,callback,show = true){
-  //没有店铺token跳转到列表
-  if (config.site_token.length < 1) {
-    wx.redirectTo({
-      url: '/pages/other/storeList/storeList',
-    });
-    return false;
-  }
   //如果是需要登陆的，增加token
   if (methodToken.indexOf(method)>= 0){
     var userToken = wx.getStorageSync('userToken');
@@ -20,12 +13,10 @@ function api(method,data,callback,show = true){
     }else{
       data.token = userToken;
       data.method = method;
-      data.site_token = config.site_token;
       post(data, callback, show);
     }
   }else{
     data.method = method;
-    data.site_token = config.site_token;
     post(data, callback, show);
   }
   
@@ -458,8 +449,7 @@ function uploadImage(num,callback){
           filePath: tempFilePaths[i],
           name: 'upfile',
           formData: {
-            method: 'images.upload',
-            site_token: config.site_token
+            method: 'images.upload'
           },
           success: function (res) {
             var obj = JSON.parse(res.data);
@@ -574,12 +564,6 @@ function isSign(callback) {
 //签到操作
 function sign(callback) {
   api('user.sign', {}, function (res) {
-      callback(res);
-  });
-}
-//我的积分
-function myPoint(callback) {
-  api('user.mypoint', {}, function (res) {
       callback(res);
   });
 }
@@ -755,7 +739,6 @@ module.exports = {
   changeAvatar: changeAvatar,
   isSign: isSign,
   sign: sign,
-  myPoint: myPoint,
   pointLog: pointLog,
   getStoreByToken: getStoreByToken,
   getStoreName: getStoreName,

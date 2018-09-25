@@ -7,29 +7,29 @@ Page({
   //页面加载处理
   onLoad: function () {
     var page = this;
-    this.getWxCode(function(code){
-      var data = {
-        code: code
-      };
-      app.api.login1(data, function (res) {
-        if(!res.status){
-          wx.showToast({
-            title: res.msg,
-            icon: 'success',
-            duration: 2000,
-            success: function (res) {
-              wx.navigateBack({
-                delta: 1
-              })
-            }
-          })
-        }else{
-          page.setData({
-            open_id: res.data
-          });
-        }
-      });
-    });
+    // this.getWxCode(function(code){   暂时注释掉
+    //   var data = {
+    //     code: code
+    //   };
+    //   app.api.login1(data, function (res) {
+    //     if(!res.status){
+    //       wx.showToast({
+    //         title: res.msg,
+    //         icon: 'success',
+    //         duration: 2000,
+    //         success: function (res) {
+    //           wx.navigateBack({
+    //             delta: 1
+    //           })
+    //         }
+    //       })
+    //     }else{
+    //       page.setData({
+    //         open_id: res.data
+    //       });
+    //     }
+    //   });
+    // });
     //取店铺的配置信息，拿到店铺logo
     app.api.getSellerSetting('shop_logo',function(res){
       if(res.status){

@@ -34,23 +34,9 @@ Page({
           statusData: res.data
         })
       });
-
-      page.myPoint();
     });
   },
 
-  //获取我的积分
-  myPoint: function () {
-      app.db.userToken(function (token) {
-          app.api.myPoint(function (res) {
-                if (res.status) {
-                    page.setData({
-                        point: res.data
-                    });
-                }
-          });
-      });
-  },
 
   //查看全部订单
   orderAll: function () {

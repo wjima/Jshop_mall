@@ -26,12 +26,12 @@ class BillAftersales extends Common
      * 订单售后状态，返回退款的金额和退货的明细
      * @param $orderId
      */
-    public function orderAftersalesSatatus($order_id, $seller_id = false, $user_id = false)
+    public function orderAftersalesSatatus($order_id, $user_id = false)
     {
 
         //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
         $orderModel = new Order();
-        $orderInfo = $orderModel->getOrderInfoByOrderID($order_id, $seller_id , $user_id );
+        $orderInfo = $orderModel->getOrderInfoByOrderID($order_id , $user_id );
         if(!$orderInfo){
             return false;
         }
@@ -59,7 +59,6 @@ class BillAftersales extends Common
 
     /**
      * 创建售后单
-     * @param $seller_id            店铺id，会去和order_id所对应的订单里的seller_id比对，防止店铺之间串
      * @param $order_id             发起售后的订单
      * @param $type                 售后类型，1退款，2退款退货，如果是退款
      * @param $items                如果是退款退货，退货的明细 以 [[order_item_id=>nums]]的二维数组形式传值
@@ -67,7 +66,7 @@ class BillAftersales extends Common
      * @param string $reason        售后理由
      * @return bool
      */
-    public function toAdd($seller_id,$user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0)
+    public function toAdd($user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0)
     {
         $result = [
             'status' => false,
@@ -76,7 +75,7 @@ class BillAftersales extends Common
         ];
 
 
-        $orderInfo = $this->orderAftersalesSatatus($order_id,$seller_id,$user_id);
+        $orderInfo = $this->orderAftersalesSatatus($order_id,$user_id);
         if(!$orderInfo){
             return error_code(13101);
         }
@@ -113,7 +112,6 @@ class BillAftersales extends Common
         Db::startTrans();
         try {
             $data['order_id'] = $order_id;
-            $data['seller_id'] = $seller_id;
             $data['user_id'] = $user_id;
             $data['type'] = $type;
             $data['refund'] = $refund;
@@ -150,7 +148,6 @@ class BillAftersales extends Common
     /**
      * 平台审核通过或者审核不通过
      * 如果审核通过了，是退款单的话，自动生成退款单，并做订单完成状态，如果是退货的话，自动生成退款单和退货单，如果
-     * @param $seller_id
      * @param $aftersales_id
      * @param $type
      * @param array $items
@@ -158,7 +155,7 @@ class BillAftersales extends Common
      * @param int $refund
      * @return bool
      */
-    public function audit($seller_id,$aftersales_id, $status,$refund = 0,$mark="",$items = [] ){
+    public function audit($aftersales_id, $status,$refund = 0,$mark="",$items = [] ){
         $result = [
             'status' => false,
             'data' => [],
@@ -166,7 +163,6 @@ class BillAftersales extends Common
         ];
         $where = [
             'aftersales_id'=>$aftersales_id,
-            'seller_id'=>$seller_id,
             'status'=>self::STATUS_WAITAUDIT
         ];
         $info = $this->where($where)->find();
@@ -174,7 +170,7 @@ class BillAftersales extends Common
             return error_code(13207);
         }
 
-        $orderInfo = $this->orderAftersalesSatatus($info['order_id'],$seller_id,$info['user_id']);
+        $orderInfo = $this->orderAftersalesSatatus($info['order_id'],$info['user_id']);
 
         if(!$orderInfo){
             return error_code(13101);
@@ -213,7 +209,7 @@ class BillAftersales extends Common
                 //如果有退款，生成退款单
                 if($refund > 0){
                     $billRefundModel = new BillRefund();
-                    $refund_re = $billRefundModel->toAdd($seller_id,$info['user_id'],$info['order_id'],$billRefundModel::TYPE_ORDER,$refund,$info['aftersales_id']);
+                    $refund_re = $billRefundModel->toAdd($info['user_id'],$info['order_id'],$billRefundModel::TYPE_ORDER,$refund,$info['aftersales_id']);
                     if(!$refund_re['status']){
                         Db::rollback();
                         return $refund_re;
@@ -457,7 +453,6 @@ class BillAftersales extends Common
             'msg' => ''
         ];
 
-        $where['seller_id'] = $data['seller_id'];
         $where['user_id'] = $data['user_id'];
         $result['data']['list'] = $this::with(['order'=>['items']])
             ->where($where)
@@ -478,7 +473,7 @@ class BillAftersales extends Common
      * 获取售后单信息
      * @param $aftersales_id
      */
-    public function getInfo($aftersales_id,$seller_id,$user_id)
+    public function getInfo($aftersales_id,$user_id)
     {
         $result = [
             'status' => false,
@@ -486,7 +481,6 @@ class BillAftersales extends Common
             'msg' => ''
         ];
         $where['aftersales_id'] = $aftersales_id;
-        $where['seller_id'] = $seller_id;
         $where['user_id'] = $user_id;
         $info = $this::with(['billReship'=>['items'],'items','images','billRefund'])
             ->where($where)

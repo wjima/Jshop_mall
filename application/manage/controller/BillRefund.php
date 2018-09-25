@@ -3,7 +3,6 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\BillRefund as BillRefundModel;
-use app\common\model\PaymentsSellerRel;
 use Request;
 
 class BillRefund extends Manage

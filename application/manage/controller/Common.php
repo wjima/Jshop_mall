@@ -3,7 +3,6 @@ namespace app\Manage\controller;
 
 use app\common\model\Brand;
 use app\common\model\Goods;
-use app\common\model\Seller;
 use Request;
 use think\Container;
 use app\common\controller\Base;

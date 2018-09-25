@@ -25,8 +25,7 @@ class Order extends Api
     {
         $order_ids = input('order_ids');
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
-        $result = model('common/Order')->cancel($order_ids, $seller_id, $user_id);
+        $result = model('common/Order')->cancel($order_ids, $user_id);
         if($result !== false)
         {
             $return_data = array(
@@ -55,8 +54,7 @@ class Order extends Api
     {
         $order_ids = input('order_ids');
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
-        $result = model('common/Order')->del($order_ids, $user_id, $seller_id);
+        $result = model('common/Order')->del($order_ids, $user_id);
         if($result)
         {
             $return_data = array(
@@ -84,8 +82,7 @@ class Order extends Api
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
-        $result = model('common/Order')->getOrderInfoByOrderID($order_id, $seller_id, $user_id);
+        $result = model('common/Order')->getOrderInfoByOrderID($order_id, $user_id);
         if($result)
         {
             $return_data = array(
@@ -114,8 +111,7 @@ class Order extends Api
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
-        $result = model('common/Order')->confirm($order_id, $user_id, $seller_id);
+        $result = model('common/Order')->confirm($order_id, $user_id);
         if($result)
         {
             $return_data = array(
@@ -150,8 +146,7 @@ class Order extends Api
             'source' => input('source'),
             'page' => input('page'),
             'limit' => input('limit'),
-            'user_id' => $this->userId,
-            'seller_id' => $this->sellerId
+            'user_id' => $this->userId
         );
         $data = model('common/Order')->getListFromApi($input);
 
@@ -200,7 +195,7 @@ class Order extends Api
         $area_id = input('param.area_id', false);
         $point = input('point', 0);
         $coupon_code = input('coupon_code', '');
-        return model('common/Order')->toAdd($this->sellerId, $this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code);
+        return model('common/Order')->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code);
     }
 
     /**
@@ -213,13 +208,12 @@ class Order extends Api
     public function getShip()
     {
         $area_id     = input('area_id',0);
-        $seller_id = $this->sellerId;
         $return_data = [
             'status' => false,
             'data'   => '',
             'msg'    => '暂未设置配送方式',
         ];
-        $ship        = model('common/Ship')->getShip($seller_id,$area_id);
+        $ship        = model('common/Ship')->getShip($area_id);
         if($ship) {
             $return_data['status'] = true;
             $return_data['data']   = $ship;
@@ -237,8 +231,7 @@ class Order extends Api
             'status' => input('status'),
             'page' => input('page'),
             'limit' => input('limit'),
-            'user_id' => $this->userId,
-            'seller_id' => $this->sellerId
+            'user_id' => $this->userId
         );
         $data = model('common/Order')->getListFromWxApi($input);
 
@@ -280,7 +273,6 @@ class Order extends Api
     {
         $input = array(
             'user_id' => $this->userId,
-            'seller_id' => $this->sellerId,
             'ids' => input('ids', '1,2,3,4')
         );
         $data = model('common/Order')->getOrderStatusNum($input);
@@ -313,7 +305,6 @@ class Order extends Api
             'page' => input('page/d',1),
             'limit' => input('limit/d',config('jshop.page_limit')),
             'user_id' => $this->userId,
-            'seller_id' => $this->sellerId,
         ];
         $asModel = new BillAftersales();
         return $asModel->getListApi($data);
@@ -335,7 +326,7 @@ class Order extends Api
             return error_code(13222);
         }
         $asModel = new BillAftersales();
-        $info = $asModel->getInfo(input('param.aftersales_id'),$this->sellerId,$this->userId);
+        $info = $asModel->getInfo(input('param.aftersales_id'),$this->userId);
         if(!$info['status']){
             return $info;
         }
@@ -370,7 +361,7 @@ class Order extends Api
             return error_code(13100);
         }
         $asModel = new BillAftersales();
-        $orderInfo = $asModel->orderAftersalesSatatus(input('param.order_id'),$this->sellerId,$this->userId);
+        $orderInfo = $asModel->orderAftersalesSatatus(input('param.order_id'),$this->userId);
         if($orderInfo){
             $result['status'] = true;
             $result['data'] = $orderInfo;
@@ -414,7 +405,7 @@ class Order extends Api
 
 
         $billAftersalesModel = new BillAftersales();
-        return  $billAftersalesModel->toAdd($this->sellerId,$this->userId,input('param.order_id'),input('param.type'),$items,$images,input('param.reason',''),$refund);
+        return  $billAftersalesModel->toAdd($this->userId,input('param.order_id'),input('param.type'),$items,$images,input('param.reason',''),$refund);
     }
 
     /**

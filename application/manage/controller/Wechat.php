@@ -10,7 +10,6 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use Request;
-use app\common\model\WeixinAuthor;
 use app\common\model\Template;
 use app\common\model\Setting;
 
@@ -47,21 +46,20 @@ class Wechat extends Manage
         $settingModel = new Setting();
 
         if(Request::isAjax()){
-            foreach(input('param.') as $k => $v){
+            foreach(input('param.') as $k => $v) {
                 $result = $settingModel->setValue($k, $v);
                 //如果出错，就返回，如果是没有此参数，就默认跳过
-                if(!$result['status'] && $result['data'] != 10008){
+                if (!$result['status'] && $result['data'] != 10008) {
                     return $result;
                 }
             }
+            $result['status'] = true;
+            $result['msg']    = '保存成功';
+            return $result;
         }
-        $result = array(
-            'status' => true,
-            'data' => [],
-            'msg' => '保存成功'
-        );
         return $result;
     }
+
 
     /**
      *展示授权信息

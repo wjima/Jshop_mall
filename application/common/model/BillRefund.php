@@ -24,7 +24,7 @@ class BillRefund extends Common
     const TYPE_ORDER = 1;       //单据类型 订单
 
 
-    public function toAdd($seller_id,$user_id,$source_id,$type,$money,$aftersales_id)
+    public function toAdd($user_id,$source_id,$type,$money,$aftersales_id)
     {
         $result = [
             'status' => false,
@@ -37,7 +37,6 @@ class BillRefund extends Common
 
         $data['refund_id'] = get_sn(6);
         $data['money'] = $money;
-        $data['seller_id'] = $seller_id;
         $data['user_id'] = $user_id;
         $data['aftersales_id'] = $aftersales_id;
         $data['source_id'] = $source_id;

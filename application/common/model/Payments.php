@@ -12,9 +12,16 @@ class Payments extends Common
 
 
     //判断支付方式是否可用
-    public function enable($payment_code)
+    public function getPayment($code,$status = false,$is_online = false)       //旧有的方法enable修改而成
     {
-        return Payments::where(array('payment_code' => $payment_code))->find();
+        $where[] = ['code', 'eq', $code];
+        if($status){
+            $where[] = ['status', 'eq', $status];
+        }
+        if($is_online){
+            $where[] = ['is_online', 'eq', $is_online];
+        }
+        return $this->where($where)->find();
     }
 
 
@@ -80,6 +87,20 @@ class Payments extends Common
             $list[$key]['is_online'] = config('params.payments')['is_online'][$val['is_online']];;
         }
         return $list;
+    }
+
+    public function getList($enable = 1){
+
+        $where = [];
+        if($enable != 0){
+            $where['status'] = $enable;
+        }
+
+        $list = $this
+            ->field('code,name,sort,memo,status,is_online')
+            ->where($where)->order('sort asc')->select();
+        return $list;
+
     }
 
 

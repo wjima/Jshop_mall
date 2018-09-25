@@ -140,11 +140,7 @@ class BillPayments extends Common
 
         //判断支付方式是否开启
         $paymentsModel = new Payments();
-        $paymentInfo = $paymentsModel
-            ->where([
-                'payment_code'=>$payment_code,
-                'status' => $paymentsModel::PAYMENT_STATUS_YES
-            ])->find();
+        $paymentInfo = $paymentsModel->getPayment($payment_code, $paymentsModel::PAYMENT_STATUS_YES);
         if(!$paymentInfo){
             return error_code(10050);
         }
@@ -179,7 +175,7 @@ class BillPayments extends Common
         ];
         //判断支付方式
         $paymentsModel = new Payments();
-        $paymentsInfo = $paymentsModel->where(array('code'=>$payment_code))->find();
+        $paymentsInfo = $paymentsModel->getPayment($payment_code, $paymentsModel::PAYMENT_STATUS_YES);
         if(!$paymentsInfo){
             return error_code(10058);
         }

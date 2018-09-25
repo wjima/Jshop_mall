@@ -6,5 +6,5 @@ interface Payment
 {
     function pay($paymentInfo);
     function callback();
-    function refund($refundInfo,$paymentInfo,$seller_token);
+    function refund($refundInfo,$paymentInfo);
 }

@@ -147,7 +147,7 @@ class wechatpay implements Payment
 
         return $result;
     }
-    public function refund($refundInfo,$paymentInfo,$seller_token){
+    public function refund($refundInfo,$paymentInfo){
         $result = [
             'status' => false,
             'data' => [],

@@ -22,7 +22,7 @@
     <div class="layui-input-block">
         <button type="button" class="layui-btn layui-btn-sm" id="sslcert"><i class="layui-icon"></i>上传cert证书</button>
         <input type="hidden" name="params[sslcert]" id="hidden_sslcert" value="{$paymentInfo.params.sslcert}">
-        <span id="span_sslcert">{$paymentSRInfo.params.sslcert}</span>
+        <span id="span_sslcert">{$paymentInfo.params.sslcert}</span>
     </div>
 </div>
 <div class="layui-form-item">
@@ -41,7 +41,7 @@
         //上传cert证书
         layui.upload.render({
             elem: '#sslcert'
-            ,url: "{:url('seller/Payments/uploadCert')}"
+            ,url: "{:url('uploadCert')}"
             ,accept: 'file' //普通文件
             ,exts: 'pem' //只允许上传压缩文件
             ,done: function(res){
@@ -57,7 +57,7 @@
         //上传key证书
         layui.upload.render({
             elem: '#sslkey'
-            ,url: "{:url('seller/Payments/uploadCert')}"
+            ,url: "{:url('uploadCert')}"
             ,accept: 'file' //普通文件
             ,exts: 'pem' //只允许上传压缩文件
             ,done: function(res){

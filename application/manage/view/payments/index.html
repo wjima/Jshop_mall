@@ -23,8 +23,6 @@
         </div>
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="payments-search"><i class="iconfont icon-chaxun"></i>筛选</button>
-
-            <button type="button" class="layui-btn layui-btn-sm add-payments"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
     </div>
 </div>
@@ -61,27 +59,6 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
-
-
-//        //监听form提交  (add)
-//        form.on('submit(add-payments)',function(data){
-//            $.ajax({
-//                url:"{:url('payments/add')}",
-//                type:'post',
-//                data:data.field,
-//                success:function(res){
-//                    if(res.status == true){
-//                        layer.close(window.box);
-//                        layer.msg(res.msg, {time:1300},function(){
-//                            table.reload('paymentsSellerTable');
-//                        });
-//                    }else{
-//                        layer.msg(res.msg);
-//                    }
-//                }
-//
-//            },"json");
-//        });
 
 
         //监听表单提交  (edit)
@@ -134,7 +111,7 @@
                                     //保存支付方式
                                     $.ajax({
                                         type:'post',
-                                        url: "{:url('payments/add')}",
+                                        url: "{:url('payments/edit')}",
                                         data: $('#payment_form').serialize(),
                                         success:function(res){
                                             if(res.status){

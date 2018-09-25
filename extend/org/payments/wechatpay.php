@@ -154,13 +154,13 @@ class wechatpay implements Payment
             'msg' => ''
         ];
         if(isset($this->config['sslcert']) && $this->config['sslcert'] != ''){
-            $this->config['sslcert'] = $seller_token.DS.$this->config['sslcert'];
+
         }else{
             $result['msg'] = "微信支付cert证书没有上传，不能在线退款";
             return $result;
         }
         if(isset($this->config['sslkey']) && $this->config['sslkey'] != ''){
-            $this->config['sslkey'] = $seller_token.DS.$this->config['sslkey'];
+
         }else{
             $result['msg'] = "微信支付key证书没有上传，不能在线退款";
             return $result;

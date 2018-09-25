@@ -1,6 +1,10 @@
 <template>
     <div class="user">
-        <userheader :avatar="user.avatar" :name="user.nickname"></userheader>
+        <userheader
+            :avatar="user.avatar"
+            :name="user.nickname"
+            @upload="uploadAvatar"
+        ></userheader>
         <yd-cell-group>
             <yd-cell-item arrow>
                 <img slot="icon" src="../../static/image/orderform.png">
@@ -92,6 +96,31 @@ export default {
             // 获取订单不同状态的数量
             this.$api.getOrderStatusSum({}, res => {
                 this.orderNum = res.data
+            })
+        },
+        // 用户头像上传
+        uploadAvatar (e) {
+            let file = e.target.files[0]
+            let param = new FormData()
+            param.append('upfile', file, file.name)
+            this.$api.uploadFile('image', param, res => {
+                if (res.status) {
+                    let avatar = res.data.url  // 上传成功的图片地址
+                    // 执行头像修改
+                    console.log(this)
+                    this.$api.changeAvatar({
+                        avatar: avatar
+                    }, res => {
+                        console.log(res)
+                        if (res.status) {
+                            this.user.avatar = res.data.avatar
+                            this.$dialog.toast({
+                                mes: res.msg,
+                                timeout: 1300
+                            })
+                        }
+                    })
+                }
             })
         }
     },

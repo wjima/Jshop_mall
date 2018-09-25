@@ -7,6 +7,7 @@ import common from './common'
 let methodToken = [
     'user.info',
     'user.editinfo',
+    'user.changeavatar',
     'user.logout',
     'user.addgoodsbrowsing',
     'user.delgoodsbrowsing',
@@ -176,6 +177,11 @@ function login (data, callback) {
 // 用户信息
 function userInfo (data, callback) {
     post('user.info', data, callback)
+}
+
+// 上传头像
+function changeAvatar (data, callback) {
+    post('user.changeavatar', data, callback)
 }
 
 // 编辑用户信息
@@ -548,6 +554,7 @@ export default {
     login: login,
     sms: sms,
     userInfo: userInfo,
+    changeAvatar: changeAvatar,
     editInfo: editInfo,
     smsLogin: smsLogin,
     notice: notice,

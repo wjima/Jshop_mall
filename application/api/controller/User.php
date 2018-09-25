@@ -179,6 +179,8 @@ class User extends Api
         $userModel = new UserModel();
         if($userModel->changeAvatar($this->userId,input('param.avatar'))){
             $result['status'] = true;
+            $result['data']['avatar'] = input('param.avatar');
+            $result['msg'] = '保存成功';
         }
         return $result;
     }

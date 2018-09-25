@@ -97,6 +97,12 @@ function throttle (fn, context, delay) {
     }, delay)
 }
 
+// 获取验证码
+function getCaptcha () {
+    let randomNumber = Math.random() * 10 + 1
+    return window.apiUrl.replace('api', 'captcha') + '?' + randomNumber
+}
+
 export default {
     setStorage: setStorage,
     getStorage: getStorage,
@@ -107,5 +113,6 @@ export default {
     formatMoney: formatMoney,
     errorToBack: errorToBack,
     successToShow: successToShow,
-    throttle: throttle
+    throttle: throttle,
+    getCaptcha: getCaptcha
 }

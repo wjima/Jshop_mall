@@ -15,6 +15,11 @@
                         <span slot="left">登录密码：</span>
                         <yd-input slot="right" type="password" v-model="password" placeholder="请输入密码"></yd-input>
                     </yd-cell-item>
+                    <yd-cell-item v-if="isShowCaptcha">
+                        <span class="w4" slot="left">验证码：</span>
+                        <yd-input slot="right" type="text" v-model="captcha" placeholder="请输入验证码"></yd-input>
+                        <img slot="right" :src="localCaptcha" alt="" @click="reloadCaptcha" width="150">
+                    </yd-cell-item>
                 </div>
             </yd-tab-panel>
             <yd-tab-panel label="手机号登陆">
@@ -51,7 +56,10 @@ export default {
             pid: '', // 邀请码
             mobile: null,
             password: null,
-            code: null, // 验证码
+            code: null, // 短信验证码
+            isShowCaptcha: false, // 是否需要登录验证码
+            captcha: '', // 用户输入的验证码
+            localCaptcha: this.GLOBAL.getCaptcha(), // 验证码图片
             countDown: false // 发送验证码倒计时 发送成功后修改为true倒计时启动
         }
     },
@@ -131,6 +139,15 @@ export default {
                             if (res.status) {
                                 this.GLOBAL.setStorage('user_token', res.data)
                                 this.redirectHandler()
+                            } else {
+                                // 需要输入验证码
+                                if (res.data === 10013) {
+                                    this.isShowCaptcha = true
+                                }
+                                // 密码错误刷新
+                                if (this.isShowCaptcha) {
+                                    this.localCaptcha = this.GLOBAL.getCaptcha()
+                                }
                             }
                         })
                     }
@@ -167,6 +184,10 @@ export default {
             } else {
                 this.$router.replace({path: '/register'})
             }
+        },
+        // 刷新验证码
+        reloadCaptcha () {
+            this.localCaptcha = this.GLOBAL.getCaptcha()
         }
     }
 }

@@ -14,4 +14,4 @@ ALTER TABLE `label` DROP `seller_id`;
 ALTER TABLE `goods_type_spec` DROP `seller_id`;
 ALTER TABLE `goods_type` DROP `seller_id`;
 ALTER TABLE `goods_params` DROP `seller_id`;
-ALTER TABLE `goods_cat` DROP `parent_id`;
+ALTER TABLE `goods_cat` DROP `seller_id`;

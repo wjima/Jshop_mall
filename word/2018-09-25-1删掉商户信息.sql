@@ -1,0 +1,17 @@
+ALTER TABLE `wsdetail` DROP `seller_id`;
+ALTER TABLE `worksheet` DROP `seller_id`;
+ALTER TABLE `weixin_publish` DROP `seller_id`;
+ALTER TABLE `user_wx` DROP `seller_id`;
+ALTER TABLE `user_token` DROP `seller_id`;
+ALTER TABLE `template_order` DROP `seller_id`;
+DROP TABLE system_setting;
+ALTER TABLE `ship` DROP `seller_id`;
+ALTER TABLE `promotion` DROP `seller_id`;
+ALTER TABLE `products` DROP `seller_id`;
+ALTER TABLE `notice` DROP `seller_id`;
+ALTER TABLE `login_log` DROP `seller_id`;
+ALTER TABLE `label` DROP `seller_id`;
+ALTER TABLE `goods_type_spec` DROP `seller_id`;
+ALTER TABLE `goods_type` DROP `seller_id`;
+ALTER TABLE `goods_params` DROP `seller_id`;
+ALTER TABLE `goods_cat` DROP `parent_id`;

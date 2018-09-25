@@ -84,8 +84,6 @@ export default {
                         if (res.status) {
                             this.countDown = true
                             this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1300})
-                        } else {
-                            this.$dialog.toast({mes: res.msg, timeout: 1300})
                         }
                     })
                 }, 1000)
@@ -113,8 +111,6 @@ export default {
                                 this.$router.replace('/index')
                             }
                         })
-                    } else {
-                        this.$dialog.toast({mes: res.msg, timeout: 1300, icon: 'error'})
                     }
                 })
             }

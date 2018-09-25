@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title ? to.meta.title : ''
     // 如果将要跳转的页面需要登录 用户没有登录将跳转登录页面
     if (to.meta.isLogin) {
-        if (!window.localStorage.getItem('user_token')) {
+        if (!Common.getStorage('user_token')) {
             Common.jumpToLogin()
         }
     }

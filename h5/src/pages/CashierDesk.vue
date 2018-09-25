@@ -83,8 +83,6 @@ export default {
                 this.$api.pay(data, res => {
                     if (res.status) {
                         this.StandardPost(res.data.url, res.data.data)
-                    } else {
-                        this.$dialog.alert({mes: res.msg})
                     }
                 })
             } else if (code === 'offline') {

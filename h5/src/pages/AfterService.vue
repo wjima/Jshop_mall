@@ -115,8 +115,6 @@ export default {
             }, res => {
                 if (res.status) {
                     this.$dialog.toast({mes: '提交成功', time: 1500, icon: 'success'})
-                } else {
-                    this.$dialog.toast({mes: res.msg, time: 1500})
                 }
             })
         }

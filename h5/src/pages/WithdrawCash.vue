@@ -97,8 +97,6 @@ export default {
                     if (res.status) {
                         this.$router.go(-1)
                         this.$dialog.toast({mes: '提现成功', timout: 1000})
-                    } else {
-                        this.$dialog.toast({mes: res.msg, timeout: 1000})
                     }
                 })
             }

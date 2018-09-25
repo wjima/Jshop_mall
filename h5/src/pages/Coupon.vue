@@ -31,7 +31,9 @@ export default {
     methods: {
         userCoupon () {
             this.$api.userCoupon({}, res => {
-                this.couponList = res.data
+                if (res.status) {
+                    this.couponList = res.data
+                }
             })
         }
     }

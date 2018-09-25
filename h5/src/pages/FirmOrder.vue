@@ -83,7 +83,6 @@ export default {
                     this.order_pmt = resData.order_pmt
                     this.coupon_pmt = resData.coupon_pmt
                 } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1300, icon: 'error'})
                     this.getCartList(this.userShip.area_id, '')
                 }
             })

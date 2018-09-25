@@ -163,8 +163,6 @@ export default {
                     if (res.status) {
                         this.sendDone = true
                         this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1500})
-                    } else {
-                        this.$dialog.toast({mes: res.msg, icon: 'error', timeout: 1500})
                     }
                 })
             }, 1000)
@@ -232,8 +230,6 @@ export default {
                         this.$router.push({path: '/login'})
                     }
                 })
-            } else {
-                this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
             }
         }
     },

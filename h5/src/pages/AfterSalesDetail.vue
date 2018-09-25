@@ -156,8 +156,6 @@ export default {
                     } else {
                         this.statusName = '申请驳回'
                     }
-                } else {
-                    this.$dialog.alert({mes: res.msg})
                 }
             })
         },

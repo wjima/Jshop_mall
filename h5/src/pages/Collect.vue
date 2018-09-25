@@ -150,8 +150,6 @@ export default {
                     this.restSlide()
                     // 删除
                     this.list.splice(index, 1)
-                } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                 }
             })
         }

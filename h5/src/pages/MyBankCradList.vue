@@ -57,8 +57,6 @@ export default{
                             this.bankCardList()
                         }
                     })
-                } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1000})
                 }
             })
         },
@@ -79,8 +77,6 @@ export default{
                                 if (res.status) {
                                     this.bankCardList()
                                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})
-                                } else {
-                                    this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                                 }
                             })
                         }

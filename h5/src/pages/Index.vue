@@ -1,12 +1,12 @@
 <template>
 	<div class="index">
-        <search></search>
-        <indexslider></indexslider>
-        <rollnotice></rollnotice>
-        <indexcoupon :couponList="couponList" v-if="couponList.length"></indexcoupon>
-        <indexgrids></indexgrids>
-        <indexlistrec></indexlistrec>
-        <indexlisthot></indexlisthot>
+        <search></search>   <!-- 搜索框 -->
+        <indexslider></indexslider> <!-- 轮播图 -->
+        <rollnotice></rollnotice>   <!-- 公告 -->
+        <indexcoupon :couponList="couponList"></indexcoupon>   <!-- 优惠券 -->
+        <indexgrids></indexgrids>   <!-- 菜单menu -->
+        <indexlistrec></indexlistrec>   <!-- 推荐商品列表 -->
+        <indexlisthot></indexlisthot>   <!-- 热卖商品列表 -->
         <yd-backtop></yd-backtop>
 	</div>
 </template>
@@ -23,7 +23,6 @@ import indexlistrec from '../components/IndexListRec.vue'
 export default {
     data () {
         return {
-            sellerName: '',
             couponList: []
         }
     },
@@ -32,17 +31,9 @@ export default {
     },
     // 实例创建并挂载后调用此方法
     mounted () {
-        this.getSellerName()
         this.getCouponList()
     },
     methods: {
-        // 获取商户名称
-        getSellerName () {
-            this.$api.getStoreName({}, res => {
-                this.sellerName = res.data
-                document.title = res.data
-            })
-        },
         // 获取商户优惠券信息
         getCouponList () {
             this.$api.couponList({}, res => {
@@ -50,13 +41,6 @@ export default {
                     this.couponList = res.data
                 }
             })
-        }
-    },
-    activated () {
-        if (this.sellerName) {
-            document.title = this.sellerName
-        } else {
-            this.getSellerName()
         }
     }
 }

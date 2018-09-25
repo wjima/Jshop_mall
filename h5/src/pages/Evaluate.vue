@@ -182,8 +182,6 @@ export default {
                     setTimeout(() => {
                         this.$router.go(-1)
                     }, 1000)
-                } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                 }
             })
         }

@@ -58,8 +58,6 @@ export default {
                 if (res.status) {
                     this.shipList()
                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})
-                } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                 }
             })
         },
@@ -80,8 +78,6 @@ export default {
                                 if (res.status) {
                                     this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1000})
                                     this.shipList()
-                                } else {
-                                    this.$dialog.toast({mes: res.msg, icon: 'error', timeout: 1000})
                                 }
                             })
                         }

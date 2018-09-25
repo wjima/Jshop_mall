@@ -130,7 +130,7 @@ export default {
     methods: {
         // 获取商品详情
         goodsDetail () {
-            this.$api.goodsDetail({id: this.goodsId}, res => {
+            this.$api.goodsDetail({id: this.goodsId, token: this.GLOBAL.getStorage('user_token')}, res => {
                 if (res.status && res.data.length !== 0) {
                     this.goodsData = res.data
                     // 获取用户是否收藏
@@ -166,7 +166,9 @@ export default {
         // 获取商品参数信息
         goodsParams () {
             this.$api.goodsParams({id: this.goodsId}, res => {
-                this.params = res.data
+                if (res.status) {
+                    this.params = res.data
+                }
             })
         },
         // 获取商品评论信息
@@ -251,8 +253,6 @@ export default {
             this.$api.addCart({product_id: this.goodsProduct.id, nums: this.num}, res => {
                 if (res.status) {
                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})
-                } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                 }
             })
         },
@@ -262,8 +262,6 @@ export default {
                 if (res.status) {
                     let cartIds = res.data
                     this.$router.push({path: '/firmorder', query: {cartIds}})
-                } else {
-                    this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                 }
             })
         }

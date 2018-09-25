@@ -284,8 +284,6 @@ export default {
                     }
                     this.ids = arr
                     this.cartList(this.ids)
-                } else {
-                    this.$dialog.toast({mes: res.msg, time: 1500, icon: 'error'})
                 }
             })
         }

@@ -1,5 +1,5 @@
 <template>
-    <div class="indexcoupon">
+    <div class="indexcoupon"  v-if="couponList.length">
         <div class="indexcoupon-item" v-for="(item, index) in couponList.slice(0, 3)" :key="index" @click="userGetCoupon(index)">
             {{ item.name }}
         </div>
@@ -9,7 +9,7 @@
 <script>
 export default {
     props: {
-        couponList: [Array, Object],
+        couponList: Array,
         default () {
             return []
         }
@@ -18,8 +18,6 @@ export default {
         userGetCoupon (index) {
             this.$api.getCoupon({promotion_id: this.couponList[index].id}, res => {
                 if (res.status) {
-                    this.$dialog.toast({mes: res.msg, timeout: 1300, icon: 'success'})
-                } else {
                     this.$dialog.toast({mes: res.msg, timeout: 1300})
                 }
             })

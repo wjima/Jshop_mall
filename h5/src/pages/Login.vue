@@ -112,8 +112,6 @@ export default {
                         if (res.status) {
                             this.countDown = true
                             this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1000})
-                        } else {
-                            this.$dialog.toast({mes: res.msg, icon: 'error', timeout: 1000})
                         }
                     })
                 }, 1000)
@@ -130,9 +128,7 @@ export default {
                         this.$dialog.toast({mes: '请输入密码!', timeout: 1000})
                     } else {
                         this.$api.login({mobile: this.mobile, password: this.password}, res => {
-                            if (!res.status) {
-                                this.$dialog.toast({mes: res.msg, timeout: 1000})
-                            } else {
+                            if (res.status) {
                                 this.GLOBAL.setStorage('user_token', res.data)
                                 this.redirectHandler()
                             }
@@ -148,9 +144,7 @@ export default {
                             data['pid'] = this.pid
                         }
                         this.$api.smsLogin(data, res => {
-                            if (!res.status) {
-                                this.$dialog.toast({mes: res.msg, timeout: 1000})
-                            } else {
+                            if (res.status) {
                                 // 邀请码登录成功后删除  防止重复推荐
                                 this.GLOBAL.removeStorage('pid')
                                 this.GLOBAL.removeStorage('time')

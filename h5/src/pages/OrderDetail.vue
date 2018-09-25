@@ -130,8 +130,6 @@ export default {
                                 if (res.status) {
                                     this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1000})
                                     this.orderDetail()
-                                } else {
-                                    this.$dialog.toast({mes: res.msg, icon: 'error', timeout: 1000})
                                 }
                             })
                         }
@@ -158,8 +156,6 @@ export default {
                                 if (res.status) {
                                     this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1000})
                                     this.orderDetail()
-                                } else {
-                                    this.$dialog.toast({mes: res.msg, icon: 'error', timeout: 1000})
                                 }
                             })
                         }

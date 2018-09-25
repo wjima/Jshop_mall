@@ -79,20 +79,6 @@ const ApiUrl = () => {
     return apiUrl
 }
 
-// 商户token
-const SiteToken = () => {
-    let site_token
-    if (process.env.NODE_ENV === 'development') {
-        // 开发环境
-        site_token = '11111111111111111111111111111111'
-    } else if (process.env.NODE_ENV === 'production') {
-        // 生产环境
-        if (!window.siteToken) common.errorToBack('缺少配置参数!')
-        site_token = window.siteToken
-    }
-    return site_token
-}
-
 // 接口token验证
 function post (method, data, callback, show = true) {
     // 如果是需要登陆的，增加token
@@ -100,7 +86,6 @@ function post (method, data, callback, show = true) {
         data.token = common.getStorage('user_token')
     }
     data.method = method
-    data.site_token = SiteToken()
     sendPost(ApiUrl(), qs.stringify(data), {}, callback)
 }
 
@@ -114,7 +99,6 @@ function uploadFile (type, param, callback) {
     let config1 = {
         headers: {'Content-Type': 'multipart/form-data'}
     }
-    param.site_token = SiteToken()
     sendPost(ApiUrl(), param, config1, callback)
 }
 
@@ -559,11 +543,6 @@ function cashList (data, callback) {
     post('user.cashlist', data, callback)
 }
 
-// 资金池
-function cashPooling (data, callback) {
-    post('order.getcashpooling', data, callback)
-}
-
 export default {
     reg: reg,
     login: login,
@@ -641,7 +620,6 @@ export default {
     getBalanceList: getBalanceList,
     userToCash: userToCash,
     cashList: cashList,
-    cashPooling: cashPooling,
     articleList: articleList,
     post: post
 }

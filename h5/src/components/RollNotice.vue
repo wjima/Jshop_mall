@@ -5,9 +5,6 @@
                 {{ item.title }}
             </yd-rollnotice-item>
         </yd-rollnotice>
-        <div class="cashPool">
-            资金池 <span>{{ cashPool }}</span> 元
-        </div>
     </div>
 </template>
 
@@ -16,17 +13,13 @@ export default {
     data () {
         return {
             noticeList: [],
-            cashPool: ''
         }
     },
     created () {
         this.$api.notice({}, res => {
             if (res.status) {
-                this.noticeList = res.data.list
+                this.noticeList = res.data
             }
-        })
-        this.$api.cashPooling({}, res => {
-            this.cashPool = res.data.data
         })
     },
     methods: {

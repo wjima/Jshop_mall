@@ -94,8 +94,6 @@ export default {
                                 this.$router.go(-1)
                             }
                         })
-                    } else {
-                        this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                     }
                 })
             } else {
@@ -116,8 +114,6 @@ export default {
                                 this.$router.go(-1)
                             }
                         })
-                    } else {
-                        this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'error'})
                     }
                 })
             }

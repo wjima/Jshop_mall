@@ -167,7 +167,7 @@ class Notice extends Common
 
     public function getNoticeInfo ($id)
     {
-        return $this->field('id,title, ctime')->where('id', $id)->find();
+        return $this->field('id,title,content,ctime')->where('id', $id)->find();
     }
 
 }

@@ -105,7 +105,7 @@ export default {
             param.append('upfile', file, file.name)
             this.$api.uploadFile('image', param, res => {
                 if (res.status) {
-                    let avatar = res.data.url  // 上传成功的图片地址
+                    let avatar = res.data.url // 上传成功的图片地址
                     // 执行头像修改
                     console.log(this)
                     this.$api.changeAvatar({

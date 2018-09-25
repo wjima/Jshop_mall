@@ -12,7 +12,7 @@
 export default {
     data () {
         return {
-            noticeList: [],
+            noticeList: []
         }
     },
     created () {

@@ -25,7 +25,14 @@ Vue.prototype.GLOBAL = Common
 
 const router = new VueRouter({
     mode: 'hash',
-    routes: routers
+    routes: routers,
+    scrollBehavior (to, from, savedPosition) {
+        console.log(savedPosition)
+        if (savedPosition) {
+            return savedPosition
+        }
+        return {x: 0, y: 0}
+    }
 })
 
 const that = new Vue({
@@ -38,6 +45,7 @@ const that = new Vue({
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title ? to.meta.title : ''
     // 如果将要跳转的页面需要登录 用户没有登录将跳转登录页面
+    console.log(this)
     if (to.meta.isLogin) {
         if (!Common.getStorage('user_token')) {
             Common.jumpToLogin()

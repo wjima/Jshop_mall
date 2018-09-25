@@ -1,18 +1,16 @@
 <template>
-    <div id="app" style="height: 100%;">
-        <yd-layout>
-            <navbar slot="navbar" :title="$route.meta.title" v-show="$route.meta.navShow"></navbar>
-            <transition name="router-fade" mode="out-in">
-                <keep-alive>
-                    <router-view v-if="$route.meta.keepAlive" class="top"></router-view>
-                </keep-alive>
-            </transition>
-            <transition name="router-fade" mode="out-in">
-                <router-view v-if="!$route.meta.keepAlive" class="top"></router-view>
-            </transition>
-            <tabbar slot="tabbar" v-show="$route.meta.tabShow"></tabbar>
-        </yd-layout>
-    </div>
+    <yd-layout id="app">
+        <navbar slot="navbar" :title="$route.meta.title" v-show="$route.meta.navShow"></navbar>
+        <transition name="router-fade" mode="out-in">
+            <keep-alive>
+                <router-view v-if="$route.meta.keepAlive" class="top"></router-view>
+            </keep-alive>
+        </transition>
+        <transition name="router-fade" mode="out-in">
+            <router-view v-if="!$route.meta.keepAlive" class="top"></router-view>
+        </transition>
+        <tabbar slot="tabbar" v-show="$route.meta.tabShow"></tabbar>
+    </yd-layout>
 </template>
 
 <script>

@@ -147,22 +147,17 @@ class BillRefund extends Common
         }
 
         //取此支付方式的信息，然后去支付
-        $paymentsSellerRelModel = new PaymentsSellerRel();
-        $psrInfo = $paymentsSellerRelModel->where(['seller_id'=>$seller_id,'payment_code'=>$info['payment_code'],'status' => $paymentsSellerRelModel::PAYMENT_STATUS_YES])->find();
-        if(!$psrInfo){
+        $paymentsModel = new Payments();
+        $paymentInfo = $paymentsModel->getPayment($info['payment_code'], $paymentsModel::PAYMENT_STATUS_YES);
+        if(!$paymentInfo){
             return error_code(10050);
         }
-        //判断是否是共享店铺，如果是共享店铺，取平台的支付配置信息
-        if(getSellerInfoById($result['data']['seller_id'],'store_type')){
-            $conf = config('jshop.payment.'.$info['payment_code']);
-        }else{
-            //取此支付方式的配置信息，然后去支付,
-            $conf = json_decode($psrInfo['params'],true);
-        }
+
+        $conf = json_decode($paymentInfo['params'],true);
 
         //去退款
         $payment = \org\Payment::create($info['payment_code'],$conf);
-        $re = $payment->refund($info,$paymentsInfo,getSellerInfoById($seller_id,'token'));
+        $re = $payment->refund($info,$paymentsInfo);
 
         Db::startTrans();
         try {

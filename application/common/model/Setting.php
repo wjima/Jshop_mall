@@ -119,6 +119,35 @@ class Setting extends Common
             'name' => '指定日期追加',
             'value' => 10
         ],
+        'wx_nick_name'=>[
+            'name'=>'小程序名称',
+            'value' => 'JSHOP',
+        ],
+        'wx_appid'=>[
+            'name'=>'AppId',
+            'value' => '000000',
+        ],
+        'wx_app_secret'=>[
+            'name'=>'AppSecret',
+            'value' => '000000',
+        ],
+        'wx_user_name'=>[
+            'name'=>'原始Id',
+            'value' => '000000',
+        ],
+        'wx_principal_name'=>[
+            'name'=>'主体信息',
+            'value' => '河南吉海网络科技有限公司',
+        ],
+        'wx_signature'=>[
+            'name'=>'简介',
+            'value' => 'Jshop小程序是一款标准B2C商城小程序',
+        ],
+        //小程序logo
+        'wx_head_img'=>[
+            'name'=>'Logo',
+            'value'=>''
+        ]
     ];
 
 

@@ -23,13 +23,6 @@
                     <div class="delete" @click="deleteItem" :data-index="index">删除</div>
                 </li>
             </ul>
-
-            <!-- 数据全部加载完毕显示 -->
-            <span class="data-none" slot="doneTip">全都被你看完了</span>
-
-            <!-- 加载中提示，不指定，将显示默认加载中图标 -->
-            <img slot="loadingTip" src="http://static.ydcss.com/uploads/ydui/loading/loading10.svg"/>
-
         </yd-infinitescroll>
     </div>
 </template>

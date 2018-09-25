@@ -38,8 +38,8 @@ class GoodsCat extends Common
     public function getList()
     {
 
-        $data = $this->field('id, seller_id, parent_id, name, type_id, sort, image_id')
-            ->order(['seller_id' => 'asc', 'sort' => 'asc'])
+        $data = $this->field('id, parent_id, name, type_id, sort, image_id')
+            ->order([ 'sort' => 'asc'])
             ->select();
 
         $return_data = $this->getTree($data);
@@ -60,25 +60,23 @@ class GoodsCat extends Common
             if($v['parent_id'] == self::TOP_CLASS_PARENT_ID)
             {
                 $new_data[$v['id']]['id'] = $v['id'];
-                $new_data[$v['id']]['seller_id'] = $v['seller_id'];
                 $new_data[$v['id']]['name_1'] = $v['name'];
                 $new_data[$v['id']]['name_2'] = '';
                 $new_data[$v['id']]['type_id'] = $v['type_id'];
                 $new_data[$v['id']]['image_id'] = $v['image_id'];
                 $new_data[$v['id']]['sort'] = $v['sort'];
-                $new_data[$v['id']]['operating'] = $this->getOperating($v['id'], self::TOP_CLASS, $v['seller_id']);
+                $new_data[$v['id']]['operating'] = $this->getOperating($v['id'], self::TOP_CLASS);
             }
             else
             {
                 $new_data[$v['parent_id']]['subclass'][] = array(
                     'id' => $v['id'],
-                    'seller_id' => $v['seller_id'],
                     'name_1' => '',
                     'name_2' => $v['name'],
                     'type_id' => $v['type_id'],
                     'image_id' => $v['image_id'],
                     'sort' => $v['sort'],
-                    'operating' => $this->getOperating($v['id'], self::SUB_CLASS, $v['seller_id'])
+                    'operating' => $this->getOperating($v['id'], self::SUB_CLASS)
                 );
             }
         }
@@ -117,7 +115,6 @@ class GoodsCat extends Common
 
     /**
      * 获取全部分类
-     * @param int $seller_id
      * @param bool $id //排除分类ID
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -232,19 +229,19 @@ class GoodsCat extends Common
      * @param int $type
      * @return string
      */
-    protected function getOperating($id, $type = self::TOP_CLASS, $seller_id = 0)
+    protected function getOperating($id, $type = self::TOP_CLASS)
     {
         $html = '';
         if($type == self::TOP_CLASS)
         {
-            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs add-class" data-id="'.$id.'" data-seller_id="'.$seller_id.'">添加</a>';
-            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'" data-seller_id="'.$seller_id.'">编辑</a>';
-            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'" data-seller_id="'.$seller_id.'">删除</a>';
+            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs add-class" data-id="'.$id.'">添加</a>';
+            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
+            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
         }
         elseif($type == self::SUB_CLASS)
         {
-            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'" data-seller_id="'.$seller_id.'">编辑</a>';
-            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'" data-seller_id="'.$seller_id.'">删除</a>';
+            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
+            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
         }
         return $html;
     }
@@ -361,7 +358,6 @@ class GoodsCat extends Common
     /**
      * 判断这个分类是否可以删除
      * @param $id
-     * @param $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -490,13 +486,12 @@ class GoodsCat extends Common
         if($cat_parent_id == $cat_id){
             return true;
         }
-        //取父商品分类的信息，要用到里面的seller_id
         $info = $this->where(['id'=>$cat_parent_id])->find();
         if(!$info){
             return false;
         }
 
-        $children = $this->where(['parent_id'=>$info['id'],'seller_id'=>$info['seller_id']])->select();
+        $children = $this->where(['parent_id'=>$info['id']])->select();
         foreach($children as $k => $v){
             if($this->isChild($v['id'],$cat_id)){
                 return true;

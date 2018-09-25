@@ -5,7 +5,6 @@ use app\common\controller\Manage;
 use app\common\model\BillAftersales;
 use app\common\model\Operation;
 use app\common\model\Order;
-use app\common\model\SellerSetting;
 use think\facade\Cache;
 use app\common\model\WeixinAuthor;
 use app\common\model\Goods;

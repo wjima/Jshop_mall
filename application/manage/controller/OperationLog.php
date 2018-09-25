@@ -20,7 +20,6 @@ class OperationLog extends Manage
         if(Request::isAjax())
         {
             $request = input('param.');
-            $request['seller_id'] = $this->sellerId;
             return $logModel->tableData($request);
         }
         return $this->fetch();
@@ -29,7 +28,6 @@ class OperationLog extends Manage
     public function getLastLog(){
         $logModel = new LogModel();
         $request['limit'] = 10;//最近10条数据
-        $request['seller_id'] = $this->sellerId;
         return $logModel->tableData($request);
     }
 

@@ -14,9 +14,9 @@ class Role extends Manage
     public function index()
     {
         if(Request::isAjax()){
-            $sellerRoleModel = new ManageRole();
+            $manageRoleModel = new ManageRole();
             $data = input('param.');
-            return $sellerRoleModel->tableData($data);
+            return $manageRoleModel->tableData($data);
         }else{
             return $this->fetch('index');
         }

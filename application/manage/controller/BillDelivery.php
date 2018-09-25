@@ -7,7 +7,6 @@ use Request;
 /**
  * 发货单
  * Class BillDelivery
- * @package app\seller\controller
  */
 class BillDelivery extends Manage
 {
@@ -55,8 +54,7 @@ class BillDelivery extends Manage
     {
         $this->view->engine->layout(false);
         $delivery_id = input('delivery_id');
-        $seller_id = $this->sellerId;
-        $res = model('common/BillDelivery')->getDeliveryInfo($delivery_id, $seller_id);
+        $res = model('common/BillDelivery')->getDeliveryInfo($delivery_id);
         if($res['status'])
         {
             $res['data']['username'] = get_user_info($res['data']['user_id'], 'nickname');

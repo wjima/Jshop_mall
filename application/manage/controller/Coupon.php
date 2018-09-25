@@ -22,7 +22,6 @@ class Coupon extends Manage
         }
         //获取优惠券列表
         $promotionModel = new Promotion();
-        $where['seller_id'] = $this->sellerId;
         $where['type'] = $promotionModel::TYPE_COUPON;
         $list = $promotionModel->tableData($where);
         return $this->fetch('',['list'=>$list]);

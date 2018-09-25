@@ -12,7 +12,6 @@ use app\common\controller\Manage;
 use app\common\model\WeixinPublish;
 use Request;
 use org\ThirdWx;
-use app\common\model\SellerSetting;
 use app\common\model\WeixinAuthor;
 use app\common\model\Template;
 use think\facade\Cache;
@@ -166,7 +165,6 @@ class Wechat extends Manage
         $weixinAuthor      = $authorizer_info['authorizer_info'];
         $weixinAuthorModel = new WeixinAuthor();
         $iData             = [
-            'seller_id'                => $this->sellerId,
             'nick_name'                => $weixinAuthor['nick_name'],
             'head_img'                 => $weixinAuthor['head_img'],
             'signature'                => $weixinAuthor['signature'],
@@ -188,15 +186,14 @@ class Wechat extends Manage
             $iData['miniprograminfo'] = json_encode($weixinAuthor['MiniProgramInfo']);
         }
         $checkbelong = $weixinAuthorModel->getAuthorInfoByAppId($iData['appid']);
-        if ($checkbelong && $checkbelong['seller_id'] !== $this->sellerId) {
+        if ($checkbelong) {
             $this->error("授权失败", 'Index/index');
         }
         if (!$checkbelong) {
             //授权http加入队列
             $jobClass             = 'app\\job\\Thirdwx@exec';
             $params['authorType'] = $this->authorType;
-            $params['seller_id']  = $this->sellerId;
-            $params['seller_name'] = session('seller.seller_name');
+            //$params['seller_name'] = session('seller.seller_name');
             \think\Queue::push($jobClass, $params);//加入添加站点http队列
         }
         $exist = $weixinAuthorModel->field('id')->where(['user_name' => $iData['user_name']])->find();
@@ -204,7 +201,7 @@ class Wechat extends Manage
             $weixinAuthorModel->save($iData, ['id' => $exist['id']]);
         } else {
             if (!$weixinAuthorModel->doAdd($iData)) {
-                Log::record("商户：" . $this->sellerId . '授权信息保存失败');
+                Log::record("商户：" . '授权信息保存失败');
             }
         }
         if ($authorization_info) {
@@ -270,13 +267,12 @@ class Wechat extends Manage
         }
         $tpOrderModel = new TemplateOrder();
 
-        $orderId = $tpOrderModel->getTempOrder($this->sellerId, $this->author['appid'], $template_id);
+        $orderId = $tpOrderModel->getTempOrder($this->author['appid'], $template_id);
         if ($orderId) {
             $result['msg'] = '您已启用过该模板，请不要重复启用';
             return $result;
         }
         $iData = [
-            'seller_id'   => $this->sellerId,
             'template_id' => $template_id,
             'appid'       => $this->author['appid'],
         ];
@@ -295,7 +291,7 @@ class Wechat extends Manage
      */
     public function closeAuthor()
     {
-        Cache::set($this->sellerId . "closeauthor", 'true');
+        Cache::set("closeauthor", 'true');
         $result = [
             'status' => true,
             'data'   => '',

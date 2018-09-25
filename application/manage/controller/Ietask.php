@@ -125,7 +125,6 @@ class Ietask extends Manage{
                 'filename' => $info->getFilename(),
                 'file_size' => $file->getInfo('size'),
                 'file_path' => $savepath . $info->getSaveName(),
-                'seller_id' => $this->sellerId,
             ];
             $ietaskModle = new ietaskModel();
 

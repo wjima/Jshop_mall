@@ -16,9 +16,6 @@ class Order extends Manage
     /**
      * 订单列表
      * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
     public function index()
     {
@@ -32,6 +29,7 @@ class Order extends Manage
             $input = [
                 'ids' => '0,1,2,3,4,5,6,7'
             ];
+
             $count = model('common/Order')->getOrderStatusNum($input);
             $counts = [
                 'all' => $count[0],
@@ -59,7 +57,7 @@ class Order extends Manage
                 'page' => input('page'),
                 'limit' => input('limit')
             );
-            $data = model('common/Order')->getListFromManage($input);
+            $data = model('common/Order')->getListFromAdmin($input);
 
             if(count($data['data']) > 0)
             {

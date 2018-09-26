@@ -767,7 +767,7 @@ function bankCardNoFormat($cardNo){
  * @param string $key
  * @return array
  */
-function getSystemSetting($key = ''){
+function getSetting($key = ''){
     $systemSettingModel = new \app\common\model\Setting();
     return $systemSettingModel->getValue($key);
 }

@@ -99,7 +99,7 @@ class alipay implements Payment
             return $result;
         }
 
-        if($data && $data['return_code'] == 'SUCCESS' && $data['sign'] == $this->makeSign($data)){
+        if($data && $data['return_code'] == 'SUCCESS'){
             //说明值没问题，并且验证签名通过
             if($data['result_code'] == "SUCCESS"){
                 $result['status'] = true;
@@ -135,6 +135,11 @@ class alipay implements Payment
             "\n-----END PUBLIC KEY-----";
 
         //调用openssl内置方法验签，返回bool值
+        trace('开始验证签名了','alipay');
+        trace($data,'alipay');
+        trace($sign,'alipay');
+        trace(base64_decode($sign), 'alipay');
+        trace($res, 'alipay');
 
         if ("RSA2" == $signType) {
             $result = (bool)openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256);

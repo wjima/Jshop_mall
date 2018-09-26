@@ -1,0 +1,55 @@
+<style type="text/css">
+	.view-head{
+		border: 1px solid #ccc;
+		background-color: #f7f7f7;
+		margin-left: 5px;
+		padding: 0 22px;
+	}
+	.view-data{
+		width: 238px;
+		padding: 0 7px;
+		height: 37px;
+	}
+	table{
+		border: 1px solid #ccc;
+		border-collapse:collapse;
+		margin-bottom: 50px;
+	}	
+	
+</style>
+<div class="layui-form layui-form-pane" style="padding:30px">
+    <input type="hidden" id="input_order_id" value="{$order_id}">
+    <input type="hidden" id="input_type" value="{$type}">
+    {foreach $data.rel as $key=>$vo}
+    <table>
+    	<tr>
+    		<th class="view-head">订单号</th>
+    		<td class="view-data">{$vo.source_id}</td>
+    	</tr>
+    	<tr>
+    		<td class="view-head">订单总价</td>
+    		<td class="view-data">￥{$vo.money}元</td>
+    	</tr>
+    </table>       
+    {/foreach}
+    <hr>
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式：</label>
+        <div class="layui-input-inline" style="width:200px">
+            <select name="payment_code" id="payment_code" lay-verify="required" lay-search="">
+                {foreach $data.payments as $key=>$vo}
+                <option value="{$vo.code}">{$vo.name}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid goto-pay">确认</button>
+</div>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

@@ -87,14 +87,14 @@ class User extends Api
 
         $userWxModel = new UserWx();
 
-        $re = $userWxModel->bindMobile(input('param.open_id'),input('param.edata'),input('param.iv'),$this->sellerId,$pid);
+        $re = $userWxModel->bindMobile(input('param.open_id'),input('param.edata'),input('param.iv'),$pid);
         if(!$re['status']){
             return $re;
         }
 
         //绑定好手机号码了，去登陆,去取user_token
         $userTokenModel = new UserToken();
-        return $userTokenModel->setToken($re['data']['user_id'], $re['data']['seller_id'],2);
+        return $userTokenModel->setToken($re['data']['user_id'],2);
 
     }
 

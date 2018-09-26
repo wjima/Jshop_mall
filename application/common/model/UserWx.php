@@ -10,7 +10,7 @@ class UserWx extends Common
     protected $updateTime = 'utime';
 
 
-    public function codeToInfo($code, $seller_id){
+    public function codeToInfo($code){
         $result = array(
             'status' => false,
             'data' => '',
@@ -19,34 +19,17 @@ class UserWx extends Common
         //根据code取openid和session_key
         $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
 
-        $sid = $seller_id;
-        //取小程序的appid
-        $weixinAuthor = new WeixinAuthor();
-        $authorInfo = $weixinAuthor->where(['seller_id'=>$seller_id])->find();
-        if(!$authorInfo){
-            $result['msg'] = '没有找到此小程序授权信息';
-            return $result;
-        }
-
-
-        if($authorInfo['bind_type'] == $authorInfo::BINDTYPEAUTHOR){
-            $result = $wx->c_code_to_sessionkey($authorInfo['appid'],$code);
-        }else{
-            $result = $wx->code_to_sessionkey($authorInfo['appid'],$authorInfo['appsecret'],$code);
-        }
-
+        $result = $wx->code_to_sessionkey(getSetting('wx_appid'),getSetting('wx_app_secret'),$code);
 
         if(!$result['status']){
             return $result;
         }
-        $where['seller_id'] = $sid;
         $where['openid'] = $result['data']['openid'];
         $info = $this->where($where)->find();
         if($info){
             //更新session_key
             $this->save(['session_key'=>$result['data']['session_key']],$where);
         }else{
-            $data['seller_id'] = $sid;
             $data['openid'] = $result['data']['openid'];
             $data['session_key'] = $result['data']['session_key'];
             $this->save($data);
@@ -57,25 +40,18 @@ class UserWx extends Common
     }
 
     //根据微信的信息，创建用户,但是没有登陆，没有手机号码，等他手机号码传过来后再登陆
-    public function toCreate($openid,$edata,$iv, $seller_id){
+    public function toCreate($openid,$edata,$iv){
         $result = [
             'status' => false,
             'data' => '',
             'msg' => ''
         ];
-        //共享店铺seller_id是0，是是统一的。
-        if(getSellerInfoById($seller_id,'store_type')){
-            $info = $this->where(['openid'=>$openid, 'seller_id'=>0])->find();
-        }else{
-            $info = $this->where(['openid'=>$openid, 'seller_id'=>$seller_id])->find();
-        }
-
+        $info = $this->where(['openid'=>$openid])->find();
         if(!$info){
-            $result['msg'] = '查无此appid,请重新授权';
-            return $result;
+            return error_code(11002);
         }
         //解密数据信息
-        $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
+        $wx =   new \org\Wx();
         $result = $wx->decrypt($edata,$iv,$info['session_key']);
         if(!$result['status']){
             return $result;
@@ -109,21 +85,16 @@ class UserWx extends Common
         ];
     }
     //根据微信的信息，绑定手机号码
-    public function bindMobile($openid,$edata,$iv,$seller_id,$pid){
+    public function bindMobile($openid,$edata,$iv,$pid){
         $result = [
             'status' => false,
             'data' => '',
             'msg' => ''
         ];
-        //共享店铺seller_id是0，是是统一的。
-        if(getSellerInfoById($seller_id,'store_type')){
-            $info = $this->where(['openid'=>$openid, 'seller_id'=>0])->find();
-        }else{
-            $info = $this->where(['openid'=>$openid, 'seller_id'=>$seller_id])->find();
-        }
+
+        $info = $this->where(['openid'=>$openid])->find();
         if(!$info){
-            $result['msg'] = '查无此appid,请重新授权';
-            return $result;
+            return error_code(11002);
         }
         //解密数据信息
         $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
@@ -162,7 +133,6 @@ class UserWx extends Common
             Db::commit();
             $result['status'] = true;
             $result['data']['user_id'] = $data['user_id'];
-            $result['data']['seller_id'] = $seller_id;
             return $result;
         } catch (\Exception $e) {
             Db::rollback();

@@ -178,20 +178,6 @@ class BillDelivery extends Common
     }
 
     /**
-     * 获取发货的订单信息
-     * User:tianyu
-     * @param $order_id
-     * @return array|null|\PDOStatement|string|\think\Model
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getInfo($order_id)
-    {
-        return $this->where('order_id',$order_id)->find();
-    }
-
-    /**
      * 获取物流信息接口
      * User:tianyu
      * @param string $order_id
@@ -200,64 +186,50 @@ class BillDelivery extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getLogisticsInformation($order_id = '')
+    public function getLogisticsInformation($order_id)
     {
-        $order_info = $this->getInfo($order_id);
-
-        if(!empty($order_info['logi_information']) && $order_info['logi_status'])
-        {
-            //从数据库取数据
-            $data['data'] = json_decode($order_info['logi_information'],true);
-            $data['status'] = true;
-
-        }else{
-            //获取物流接口参数查询
-            $data = $this->logistics_query($order_info['logi_code'],$order_info['logi_no']);
-
-            if($data['status'])
-            {
-                $information = [
-                    'logi_information'  =>  json_encode($data['data']),
-                    'logi_status'       =>  $data['end']
-                ];
-
-                $this->allowField(true)->save($information,['order_id'=>$order_id]);
+        // 根据订单号获取发货单详情
+        $deliveryInfo = $this->where('order_id', $order_id)->find();
+        // 查询快递信息接口需要快递公司编码 和 物流单号 缺一不可
+        if ($deliveryInfo) {
+            if ( !$deliveryInfo[ 'logi_code' ] && !$deliveryInfo[ 'logi_no' ] ) {
+                return error_code(10051);
             }
+            // 获取物流信息
+            return $this->logistics_query($deliveryInfo['logi_code'], $deliveryInfo['logi_no']);
+        } else {
+            return $result = [
+                'status' => false,
+                'msg' => '该订单不存在',
+                'data' => []
+            ];
         }
-
-        return $data;
     }
 
     /**
      *  api获取快递信息
      * User:tianyu
-     * @param $code   //快递公司编码
-     * @param $no       //物流单号
+     * @param $no       快递公司编码
+     * @param $code     物流单号
      * @return mixed
      */
-    public function logistics_query( $code, $no )
+    private function logistics_query( $no, $code )
     {
-
-        $exp = new Exp(config('jshop.api_express_key'));
-
-        $res = $exp->query($code,$no);
-
-        if($res['error_code'] == 0)
-        {
-            $result = [
-                'status' => true,
-                'data'  =>  $res['result']['list'],
-                'end'   =>  $res['result']['status']
-            ];
-            return $result;
-        }
-
         $result = [
             'status' => false,
-            'data' => $res['reason']
+            'msg' => '',
+            'data' => []
         ];
-        return $result;
+        $exp = new Exp(config('jshop.api_express_key'));
+        $res = $exp->query($no,$code);
+        // 错误码，0表示查询正常，其他表示查询不到物流信息或发生了其他错误
+        if($res['error_code'] === 0) {
+            $result['status'] = true;
+            $result['data'] = $res['result']['list'];
+        }
+        $result[ 'msg' ] = $res[ 'reason' ]; // 查询的结果文字描述
 
+        return $result;
     }
 
     /**

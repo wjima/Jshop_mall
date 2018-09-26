@@ -1,0 +1,1 @@
+alter table `bill_delivery` drop column logi_information, drop column logi_status;

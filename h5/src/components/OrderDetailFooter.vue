@@ -52,6 +52,10 @@ export default {
         // 评价
         evaluate () {
             this.$emit('evaluate')
+        },
+        // 查看物流信息
+        logistics () {
+            this.$emit('logistics')
         }
 
     }

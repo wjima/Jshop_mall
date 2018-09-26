@@ -225,7 +225,7 @@ class BillDelivery extends Common
         // 错误码，0表示查询正常，其他表示查询不到物流信息或发生了其他错误
         if($res['error_code'] === 0) {
             $result['status'] = true;
-            $result['data'] = $res['result']['list'];
+            $result['data'] = array_reverse($res['result']['list']);
         }
         $result[ 'msg' ] = $res[ 'reason' ]; // 查询的结果文字描述
 

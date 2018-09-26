@@ -58,7 +58,18 @@
             @afterSales="afterSales"
             @pay="pay"
             @evaluate="evaluate"
+            @logistics="logistics"
         ></orderdetailfooter>
+        <yd-popup v-model="showLogistics" position="center" width="80%" height="80%">
+            <div style="background-color:#fff;">
+                <yd-timeline>
+                    <yd-timeline-item v-for="(item, index) in logisticsInfo" :key="index">
+                        <p>{{ item.remark }}</p>
+                        <p style="margin-top: 10px;">{{ item.datetime }}</p>
+                    </yd-timeline-item>
+                </yd-timeline>
+            </div>
+        </yd-popup>
     </div>
 </template>
 
@@ -75,7 +86,9 @@ export default {
     data () {
         return {
             order_id: this.$route.query.order_id, // 传过来的order_id
-            order: [] // 订单详情
+            order: [], // 订单详情
+            showLogistics: false, // 是否显示物流信息窗口
+            logisticsInfo: [] // 物流信息
         }
     },
     created () {
@@ -177,6 +190,15 @@ export default {
         // 评价
         evaluate () {
             this.$router.push({path: '/evaluate', query: {order_id: this.order_id}})
+        },
+        // 查看物流信息详情
+        logistics () {
+            this.$api.logistics({order_id: this.order_id}, res => {
+                if (res.status) {
+                    this.showLogistics = true
+                    this.logisticsInfo = res.data
+                }
+            })
         }
     }
 }

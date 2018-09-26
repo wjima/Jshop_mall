@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
+import _this from '../main'
 import common from './common'
-import { Loading } from 'vue-ydui/dist/lib.rem/dialog';
 
 // 需要登陆的，都写到这里，否则就是不需要登陆的接口
 let methodToken = [
@@ -71,7 +71,8 @@ const ApiUrl = () => {
     let apiUrl
     if (process.env.NODE_ENV === 'development') {
         // 开发环境
-        apiUrl = 'http://www.b2c.com/index.php/api.html'
+        apiUrl = 'http://mwc.jihainet.com/api.html'
+        // apiUrl = 'http://www.manwucai.com/index.php/api.html'
     } else if (process.env.NODE_ENV === 'production') {
         // 生产环境
         if (!window.apiUrl) common.errorToBack('缺少配置参数!')
@@ -105,10 +106,10 @@ function uploadFile (type, param, callback) {
 
 // axios 发送请求统一处理
 function sendPost (url, data, config = {}, callback) {
-    Loading.open(Object.keys(config).length ? '上传中...' : '加载中...')
+    _this.$dialog.loading.open(Object.keys(config).length ? '上传中...' : '加载中...')
     axios.post(url, data, config).then(response => {
         callback(response.data)
-        Loading.close()
+        _this.$dialog.loading.close()
         if (!response.data.status) {
             // 输出错误显示
             common.errorToBack(response.data.msg)
@@ -158,7 +159,7 @@ function sendPost (url, data, config = {}, callback) {
             default:
                 break
             }
-            Loading.close()
+            _this.$dialog.loading.close()
             common.errorToBack(err.message)
         }
     })

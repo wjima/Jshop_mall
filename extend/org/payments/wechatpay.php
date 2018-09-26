@@ -40,12 +40,7 @@ class wechatpay implements Payment
         //当时JSAPI的时候，也就是小程序的时候，openid必传
         if($params['trade_type'] == 'JSAPI'){
             //取openid
-            if(getSellerInfoById($paymentInfo['seller_id'],'store_type')){
-                $userWxInfo = model('common/UserWx')->where(['user_id'=>$paymentInfo['user_id'],'seller_id'=>0])->find();
-            }else{
-                $userWxInfo = model('common/UserWx')->where(['user_id'=>$paymentInfo['user_id'],'seller_id'=>$paymentInfo['seller_id']])->find();
-            }
-
+            $userWxInfo = model('common/UserWx')->where(['user_id'=>$paymentInfo['user_id']])->find();
             if(!$userWxInfo){
                 return error_code(11002);
             }

@@ -20,7 +20,7 @@ class Order
     public static function cancle()
     {
         Utils::log('自动取消订单任务开始时间：' . date('Y-m-d H:i:s') . PHP_EOL);
-        $setting = getSystemSetting('order_cancel_time');
+        $setting = getSetting('order_cancel_time');
         $order   = model('common/Order');
         $order->autoCancel($setting);
         Utils::log('自动取消订单任务结束时间：' . date('Y-m-d H:i:s') . PHP_EOL);
@@ -32,7 +32,7 @@ class Order
     public static function complete()
     {
         Utils::log('自动完成订单任务开始时间：'.date('Y-m-d H:i:s').PHP_EOL);
-        $setting = getSystemSetting('order_complete_time');
+        $setting = getSetting('order_complete_time');
         model('common/Order')->autoComplete($setting);
         Utils::log('自动完成订单任务结束时间：'.date('Y-m-d H:i:s').PHP_EOL);
     }
@@ -44,7 +44,7 @@ class Order
     {
         Utils::log('自动评价订单任务开始时间：'.date('Y-m-d H:i:s').PHP_EOL);
 
-        $setting = getSystemSetting('order_autoEval_time');
+        $setting = getSetting('order_autoEval_time');
         model('common/Order')->autoEvaluate($setting);
         Utils::log('自动评价订单任务结束时间：'.date('Y-m-d H:i:s').PHP_EOL);
     }
@@ -55,7 +55,7 @@ class Order
     public static function sign()
     {
         Utils::log('自动签收订单任务开始时间：'.date('Y-m-d H:i:s').PHP_EOL);
-        $setting = getSystemSetting('order_autoSign_time');
+        $setting = getSetting('order_autoSign_time');
         model('common/Order')->autoSign($setting);
 
         Utils::log('自动签收订单任务结束时间：'.date('Y-m-d H:i:s').PHP_EOL);

@@ -40,7 +40,7 @@ class alipay implements Payment
 
 
         //业务参数
-        $ydata["subject"] = 'jshop商品';          //商品名称,此处用商户名称代替
+        $ydata["subject"] = 'jshopgoods';          //商品名称,此处用商户名称代替
         $ydata["out_trade_no"] = $paymentInfo['payment_id'];     //平台订单号
         $ydata["total_amount"] = $paymentInfo['money'];          //总金额，精确到小数点两位
         $ydata["product_code"] = "QUICK_WAP_WAY";
@@ -135,7 +135,7 @@ class alipay implements Payment
             "\n-----END PUBLIC KEY-----";
 
         //调用openssl内置方法验签，返回bool值
-        trace('开始验证签名了','alipay');
+        trace('start','alipay');
         trace($data,'alipay');
         trace($sign,'alipay');
         trace(base64_decode($sign), 'alipay');

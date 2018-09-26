@@ -211,48 +211,50 @@ class Advertisement extends Common
 
 
     /**
-     *  根据广告位获取广告信息列表
-     * User:tianyu
-     * @param $seller_id
-     * @param $position_id
-     * @return mixed
+     *
+     *  根据广告位code 获取广告列表
+     * @param $code
+     * @param $page
+     * @param $limit
+     *
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getAdvertList($code,$page,$limit)
     {
-        $list = $this->field('id,position_id,code,name,img,type,val,sort')
-            ->where('code', $code)
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+
+
+        $field = 'id,position_id,code,name,img,type,val,sort';
+        $where[] = ['code', 'eq', $code];
+
+        $list = $this
+            ->field($field)
+            ->where($where)
             ->order('sort ASC')
             ->page($page,$limit)
             ->select();
 
-        $count = $this->field('id,position_id,code,name,img,type,val,sort')
-            ->where('code', $code)
-            ->order('sort ASC')
-            ->page($page,$limit)
+        $count = $this
+            ->field($field)
+            ->where($where)
             ->count();
+
         if(!$list->isEmpty())
         {
             foreach($list as $key => $val)
             {
                 $list[$key]['img'] = _sImage($val['img']);
             }
-            $result = [
-                'status' =>  true,
-                'msg'    =>  '获取成功',
-                'data'   =>  [
-                    'list' => $list,
-                    'count' => $count,
-                    'page' => $page,
-                    'limit' => $limit
-                ]
-            ];
-        }else{
-            $result = [
-                'status' => false,
-                'msg'   =>  '获取失败',
-                'data'  =>  ''
-            ];
         }
+        $result['data']['list'] = $list;
+        $result['data']['count'] = $count;
         return $result;
     }
 

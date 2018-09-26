@@ -10,7 +10,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const GenerateAssetPlugin = require('generate-asset-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -113,7 +112,6 @@ const webpackConfig = merge(baseWebpackConfig, {
       children: true,
       minChunks: 3
     }),
-
     // copy custom static assets
     new CopyWebpackPlugin([
       {
@@ -121,14 +119,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-    ]),
-      new GenerateAssetPlugin({
-          filename: 'config.json',
-          fn: (compilation, cb) => {
-              cb(null, createServerConfig(compilation));
-          },
-          extraFiles: []
-      })
+    ])
   ]
 })
 
@@ -153,14 +144,6 @@ if (config.build.productionGzip) {
 if (config.build.bundleAnalyzerReport) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
-}
-
-let createServerConfig = (compilation) => {
-    let cfgJson = {
-        apiUrl: '',
-        siteToken: ''
-    }
-    return JSON.stringify(cfgJson)
 }
 
 module.exports = webpackConfig

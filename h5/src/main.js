@@ -42,18 +42,17 @@ const that = new Vue({
     template: '<App/>'
 })
 
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title ? to.meta.title : ''
+router.beforeEach((route, redirect, next) => {
+    document.title = route.meta.title ? route.meta.title : ''
     // 如果将要跳转的页面需要登录 用户没有登录将跳转登录页面
-    console.log(this)
-    if (to.meta.isLogin) {
+    if (route.meta.isLogin) {
         if (!Common.getStorage('user_token')) {
             Common.jumpToLogin()
         }
     }
     // 如果未匹配到路由 跳转至首页 (防止用户手动输入地址出错)
-    if (to.matched.length === 0) {
-        from.name ? next({name: from.name}) : next('/index')
+    if (route.matched.length === 0) {
+        redirect.name ? next({name: redirect.name}) : next('/index')
     } else {
         next()
     }

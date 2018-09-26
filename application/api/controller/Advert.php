@@ -29,21 +29,17 @@ class Advert extends Api
 
 
     /**
+     *
      *  获取广告列表
-     * User:tianyu
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getAdvertList()
     {
-        $code = input('code/s');
-        if(!$code)
-        {
-            $result = [
-                'status' => false,
-                'msg'   =>  '缺少必须参数code'
-            ];
-            return $result;
-        }
+        $code = input('code/s', '');
+        if (!$code) return error_code(10051);
         $page = input('page/d',1);
         $limit = input('limit/d',5);
         $advert = new Advertisement();

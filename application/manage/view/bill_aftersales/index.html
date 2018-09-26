@@ -71,6 +71,9 @@
                 {field:'ctime',width:170,title:'申请时间'},
                 {field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
                     var html = '';
+                    if(data.status == 1){
+                        html += '<a  class="layui-btn layui-btn-xs option-audit" data-id="' + data.aftersales_id + '">操作</a>';
+                    }
                     html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.aftersales_id + '">明细</a>';
                     return html;
                 }},
@@ -85,6 +88,43 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
+    //审核操作
+    $(document).on('click','.option-audit',function(){
+        $.ajax({
+            type:'get',
+            url: "{:url('billAftersales/audit')}",
+            data:'aftersales_id='+$(this).attr('data-id'),
+            success:function(e){
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['800px', '650px'],
+                        title:'售后单审核',
+                        btn: ['确认','取消'],
+                        yes: function(index, layero){
+                            $.ajax({
+                                type:'post',
+                                url: "{:url('billAftersales/audit')}",
+                                data: $('#aftersales_form').serialize(),
+                                success:function(res){
+                                    if(res.status){
+                                        layer.msg('保存成功');
+                                        window.setTimeout("window.location.reload();",500);     //如果想做的更好就关掉弹出框，然后表格重新加载即可
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+
+            }
+        });
+    });
         //查看操作
         $(document).on('click','.option-view',function(){
             $.ajax({

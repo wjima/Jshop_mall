@@ -59,8 +59,14 @@
                 {field:'source_id', sort: true,title:'单号'},
                 {field:'user_id', width:150,minWidth: 50,title:'用户'},
                 {field:'ctime',width:170,title:'创建时间'},
-                {field: 'operating', title: '操作', width:100, align: 'center',templet:function(data){
+                {field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
                     var html = '';
+                    if(data.status == 1){
+                        html += '<a  class="layui-btn layui-btn-xs option-audit" data-id="' + data.refund_id + '">退款</a>';
+                    }
+                    if(data.status == 3){
+                        html += '<a  class="layui-btn layui-btn-xs option-reaudit" data-id="' + data.refund_id + '">再次退款</a>';
+                    }
                     html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.refund_id + '">明细</a>';
                     return html;
                 }},
@@ -75,7 +81,62 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
+        //审核操作
+        $(document).on('click','.option-audit',function(){
+            $.ajax({
+                type:'get',
+                url: "{:url('billRefund/refund')}",
+                data:'refund_id='+$(this).attr('data-id'),
+                success:function(e){
+                    if(e.status){
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['600px', '400px'],
+                            title:'退款单审核',
+                            btn: ['确认','取消'],
+                            yes: function(index, layero){
+                                $.ajax({
+                                    type:'post',
+                                    url: "{:url('billRefund/refund')}",
+                                    data: $('#refund_form').serialize(),
+                                    success:function(res){
+                                        if(res.status){
+                                            layer.msg('退款成功');
+                                        }else{
+                                            layer.msg(res.msg);
+                                        }
+                                        layer.close(index);
+                                        layui.table.reload('billRefund');
+                                        return false;
+                                    }
+                                });
+                            }
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
 
+                }
+            });
+        });
+        //退款失败后，再次退款
+        $(document).on('click','.option-reaudit',function(){
+            $.ajax({
+                type:'post',
+                url: "{:url('billRefund/reaudit')}",
+                data: 'refund_id='+$(this).attr('data-id'),
+                success:function(res){
+                    if(res.status){
+                        layer.msg('保存成功');
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                    layui.table.reload('billRefund');;
+                    return false;
+                }
+            });
+        });
         //查看操作
         $(document).on('click','.option-view',function(){
             $.ajax({

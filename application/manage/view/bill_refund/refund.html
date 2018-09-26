@@ -1,0 +1,72 @@
+<form class="layui-form refund_form" id="refund_form" action="" style="margin:10px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">退款单号：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$info.refund_id}</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-block">
+                <div class="layui-form-mid">{:get_user_info($info.user_id)}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_refund.status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">单据类型：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_refund.type[$info.type]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">单号：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.source_id}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">退款金额：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.money}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">退款方式：</label>
+            <div class="layui-input-inline" style="width:130px;">
+                <div class="layui-form-mid">
+                    <select name="payment_code" lay-verify="">
+                        {volist name="payment_list"  id="payment"}
+                            <option value="{$payment.code}" {if $payment['code'] == $info.payment_code} selected=""  {/if} >{$payment.name}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">审核结果：</label>
+        <div class="layui-input-block">
+            <input type="hidden" name="refund_id" value="{$info.refund_id}" />
+            <input name="status" value="2" title="通过" checked="" type="radio">
+            <input name="status" value="3" title="拒绝" type="radio">
+        </div>
+    </div>
+
+</form>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

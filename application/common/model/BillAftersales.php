@@ -218,7 +218,7 @@ class BillAftersales extends Common
                 //如果有退货，生成退货单
                 if($info['type'] == self::TYPE_RESHIP && $items){
                     $billReship = new BillReship();
-                    $reship_re = $billReship->toAdd($seller_id,$info['user_id'],$info['order_id'],$info['aftersales_id'],$aftersalesItems['data']);
+                    $reship_re = $billReship->toAdd($info['user_id'],$info['order_id'],$info['aftersales_id'],$aftersalesItems['data']);
                     if(!$reship_re['status']){
                         Db::rollback();
                         return $reship_re;
@@ -389,9 +389,6 @@ class BillAftersales extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if(isset($post['order_id']) && $post['order_id'] != ""){
             $where[] = ['order_id', 'like', '%'.$post['order_id'].'%'];
         }

@@ -19,7 +19,7 @@ class BillReship extends Common
     const STATUS_SHIPPED = 2;        //状态，已发货
     const STATUS_SUCCESS = 3;       //状态，已收货
 
-    public function toAdd($seller_id,$user_id,$order_id,$aftersales_id,$aftersalesItems)
+    public function toAdd($user_id,$order_id,$aftersales_id,$aftersalesItems)
     {
         $result = [
             'status' => false,
@@ -33,7 +33,6 @@ class BillReship extends Common
         $data['reship_id'] = get_sn(7);
         $data['order_id'] = $order_id;
         $data['aftersales_id'] = $aftersales_id;
-        $data['seller_id'] = $seller_id;
         $data['user_id'] = $user_id;
         $re = $this->save($data);
         if($re){
@@ -65,14 +64,13 @@ class BillReship extends Common
 
     /**
      * 用户发送退货包裹
-     * @param $seller_id            店铺id
      * @param $user_id              用户id
      * @param $reship_id            退货单id
      * @param $logi_code            退货物流公司
      * @param $logi_no              退货订单号
      * @return array
      */
-    public function sendReship($seller_id,$user_id,$reship_id,$logi_code,$logi_no)
+    public function sendReship($user_id,$reship_id,$logi_code,$logi_no)
     {
         $result = [
             'status' => false,
@@ -82,7 +80,6 @@ class BillReship extends Common
 
         $where = [
             'reship_id' => $reship_id,
-            'seller_id' => $seller_id,
             'user_id' => $user_id,
             'status' => self::STATUS_WAIT_SHIP
         ];
@@ -107,7 +104,7 @@ class BillReship extends Common
      * @param $reship_id
      * @return array|\think\Config
      */
-    public function confirmReship($seller_id,$reship_id)
+    public function confirmReship($reship_id)
     {
         $result = [
             'status' => false,
@@ -117,7 +114,6 @@ class BillReship extends Common
 
         $where = [
             'reship_id' => $reship_id,
-            'seller_id' => $seller_id,
             'status' => self::STATUS_SHIPPED
         ];
         $info = $this->where($where)->find();
@@ -156,9 +152,6 @@ class BillReship extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
         if(isset($post['reship_id']) && $post['reship_id'] != ""){
             $where[] = ['reship_id', 'like', '%'.$post['reship_id'].'%'];
         }

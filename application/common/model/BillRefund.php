@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use think\Db;
 
 class BillRefund extends Common
 {
@@ -64,7 +65,7 @@ class BillRefund extends Common
      * @param string $payment_code      退款方式，如果和退款单上的一样，说明没有修改，原路返回，否则只记录状态，不做实际退款
      * @return array|\think\Config
      */
-    public function toRefund($seller_id,$refund_id,$status,$payment_code="")
+    public function toRefund($refund_id,$status,$payment_code="")
     {
         $result = [
             'status' => false,
@@ -74,7 +75,6 @@ class BillRefund extends Common
 
         $where = [
             'refund_id' => $refund_id,
-            'seller_id' => $seller_id,
             'status' => self::STATUS_NOREFUND
         ];
         $info = $this->where($where)->find();
@@ -86,7 +86,7 @@ class BillRefund extends Common
             //退款同意
             //如果前端传过来的退款方式和退款单上的退款方式一样的话，就说明是原路返回，试着调用支付方式的退款方法,如果不一样的话，就直接做退款单的退款状态为已退款就可以了
             if($payment_code == $info['payment_code']){
-                return $this->paymentRefund($seller_id,$refund_id);
+                return $this->paymentRefund($refund_id);
             }else{
                 //只修改状态，不做实际退款，实际退款线下去退。
                 $data['status'] = self::STATUS_REFUND;
@@ -114,7 +114,7 @@ class BillRefund extends Common
     /**
      * 如果是在线支付的原路退还，去做退款操作
      */
-    public function paymentRefund($seller_id,$refund_id)
+    public function paymentRefund($refund_id)
     {
         $result = [
             'status' => false,
@@ -123,11 +123,7 @@ class BillRefund extends Common
         ];
 
         $where[] = ['refund_id' ,'eq', $refund_id];
-        $where[] = ['seller_id' , 'eq', $seller_id];
         $where[] = ['status' ,'neq', self::STATUS_REFUND];
-
-
-
 
         $info = $this->where($where)->find();
         if(!$info){
@@ -161,10 +157,6 @@ class BillRefund extends Common
 
         Db::startTrans();
         try {
-            //如果是共享店铺，那么是在线付款方式的话，就给把商户的分账再扣回来
-
-
-
             if($re['status']){
                 $data['status'] = self::STATUS_REFUND;
             }else{
@@ -210,9 +202,6 @@ class BillRefund extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['seller_id']) && $post['seller_id'] != ""){
-            $where[] = ['seller_id', 'eq', $post['seller_id']];
-        }
 //        if(isset($post['source_id']) && $post['source_id'] != ""){      //这个得关联查询：：todo
 //            $where[] = ['order_id', 'like', '%'.$post['order_id'].'%'];
 //        }
@@ -253,7 +242,7 @@ class BillRefund extends Common
                 $list[$k]['status_name'] = config('params.bill_refund')['status'][$v['status']];
             }
             if($v['user_id']) {
-                $list[$k]['user_id'] = format_mobile(get_user_info($v['user_id']));
+                $list[$k]['user_id'] = get_user_info($v['user_id']);
             }
 
             if($v['ctime']) {

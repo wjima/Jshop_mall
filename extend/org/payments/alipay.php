@@ -131,13 +131,10 @@ class alipay implements Payment
     private function verify($data, $sign, $signType = 'RSA') {
         $pubKey=$this->config['alipay_public_key'];
         $pubKey = wordwrap($pubKey, 64, "\n", true);
-        $res = "-----BEGIN PUBLIC KEY-----\n$pubKey\n-----END PUBLIC KEY-----";
+        $res = "-----BEGIN PUBLIC KEY-----\n$pubKey-----END PUBLIC KEY-----";
 
         //调用openssl内置方法验签，返回bool值
         trace('start','alipay');
-        trace($data,'alipay');
-        trace($sign,'alipay');
-        trace(base64_decode($sign), 'alipay');
         trace($res, 'alipay');
 
         if ("RSA2" == $signType) {

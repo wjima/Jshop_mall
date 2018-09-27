@@ -61,9 +61,10 @@
             @logistics="logistics"
         ></orderdetailfooter>
         <yd-popup v-model="showLogistics" position="center" width="80%" height="80%">
-            <div style="background-color:#fff;">
+            <div class="express-info">
+                <div class="express-num">{{ logisticsInfo.company }}：{{ logisticsInfo.no }}</div>
                 <yd-timeline>
-                    <yd-timeline-item v-for="(item, index) in logisticsInfo" :key="index">
+                    <yd-timeline-item v-for="(item, index) in logisticsInfo.list" :key="index">
                         <p>{{ item.remark }}</p>
                         <p style="margin-top: 10px;">{{ item.datetime }}</p>
                     </yd-timeline-item>
@@ -205,4 +206,21 @@ export default {
 </script>
 
 <style>
+    .express-info{
+        background-color: #fff;
+        position: relative;
+    }
+    .express-num{
+        position: fixed;
+        top: -1px;
+        background-color: #e5e5e5;
+        width: 100%;
+        height: .8rem;
+        line-height: .8rem;
+        z-index: 10086;
+    }
+    .express-info .yd-timeline{
+        margin-top: calc(.5rem - 1px);
+        font-size: .1rem;
+    }
 </style>

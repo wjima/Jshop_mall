@@ -130,9 +130,8 @@ class alipay implements Payment
 
     private function verify($data, $sign, $signType = 'RSA') {
         $pubKey=$this->config['alipay_public_key'];
-        $res = "-----BEGIN PUBLIC KEY-----\n" .
-            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqGO790Hr8q9fqr7E/5Xvium3//yfZIK+DiAXoQFLqSHqBGn79QJV0mFwjO3XWHN3ycAs3jv3jv1tdqCZlaUuUGTZuU6U+FRiQKOy7FVLJiiPDBhlVra6avxzWEOVcr7XlMn5nqeVvkmsIdXxdS+mQviS2Reaj4zcyv4bBxHNqlcgiGOKpQiSdh+N552CWW3hQUPFNWNXwTUb/fHYQ8DUUpvrH7mxAdCnrFIOlggaoqiGI8DtSOqOTgWGJ1n40/47xXZ+ipYKFtmI2IbGO+ygIyzcV/AkexnNWasblwwoZcnZmCEGVPJC9ssAtPy7pC9FTWDZZQ2I3UeqnDnP9ENTGwIDAQAB".//wordwrap($pubKey, 64, "\n", true) .
-            "\n-----END PUBLIC KEY-----";
+        $pubKey = wordwrap($pubKey, 64, "\n", true);
+        $res = "-----BEGIN PUBLIC KEY-----\n$pubKey\n-----END PUBLIC KEY-----";
 
         //调用openssl内置方法验签，返回bool值
         trace('start','alipay');

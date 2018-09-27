@@ -315,7 +315,6 @@ class GoodsComment extends Common
                     }
                 }
                 $images = rtrim($images, ",");
-                $addon = $orderItemsModel->getAddon($v['product']);
                 $goods_data[] = [
                     'comment_id' => 0,
                     'score' => $score,
@@ -324,13 +323,9 @@ class GoodsComment extends Common
                     'order_id' => $order_id,
                     'images' => $images,
                     'content' => $v['textarea'],
-                    'addon' => $addon
+                    'addon' => $item_info['addon']
                 ];
             }
-            dump($goods_data);
-            dump($items);
-            dump($orderItemsModel->getLastSql());
-            die();
             $this->saveAll($goods_data);
             //修改评价状态
             $order_data['is_comment'] = 2;

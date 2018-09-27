@@ -5,6 +5,9 @@
         <div class="layui-input-inline seller-inline-3">
             <select name="position_id" id="position" lay-verify="required">
                 <option value="">请选择广告位</option>
+                {volist name='list' id='vo'}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
             </select>
         </div>
     </div>

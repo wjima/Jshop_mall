@@ -1,0 +1,1 @@
+alter table `advert_position` drop column state;

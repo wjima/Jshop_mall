@@ -15,9 +15,6 @@ class AdvertPosition extends Common
     protected $createTime = 'ctime';
     protected $updateTime = 'utime';
 
-    const POSITION_STATE_YES = 1;       //广告位启用
-    const POSITION_STATE_NO = 2;        //广告位禁用
-
     protected $rule =   [
         'name'  =>  'require|max:50',
         'sort'  =>   'number',
@@ -202,28 +199,28 @@ class AdvertPosition extends Common
     }
 
 
-    public function changeState($id=0,$state=false)
-    {
-        $where[] = ['id','eq',$id];
-        $result = ['status'=>true,'msg'=>'','data'=>''];
-        switch($state)
-        {
-            case 'true':
-                $this->save(['state'=>self::POSITION_STATE_YES],$where);
-                $result['msg'] = '已'.config('params.advertisement')['position'][self::POSITION_STATE_YES];
-                break;
-            case 'false':
-                $this->save(['state'=>self::POSITION_STATE_NO],$where);
-                $result['msg'] = '已'.config('params.advertisement')['position'][self::POSITION_STATE_NO];
-                break;
-            default:
-                $result['status'] = false;
-                $result['msg'] = '非法操作';
-                break;
-        }
-
-        return $result;
-    }
+//    public function changeState($id=0,$state=false)
+//    {
+//        $where[] = ['id','eq',$id];
+//        $result = ['status'=>true,'msg'=>'','data'=>''];
+//        switch($state)
+//        {
+//            case 'true':
+//                $this->save(['state'=>self::POSITION_STATE_YES],$where);
+//                $result['msg'] = '已'.config('params.advertisement')['position'][self::POSITION_STATE_YES];
+//                break;
+//            case 'false':
+//                $this->save(['state'=>self::POSITION_STATE_NO],$where);
+//                $result['msg'] = '已'.config('params.advertisement')['position'][self::POSITION_STATE_NO];
+//                break;
+//            default:
+//                $result['status'] = false;
+//                $result['msg'] = '非法操作';
+//                break;
+//        }
+//
+//        return $result;
+//    }
 
 
     /**
@@ -232,32 +229,26 @@ class AdvertPosition extends Common
      * @param $seller_id
      * @param int $page
      * @param int $limit
-     * @param array $where
      * @param string $order
      */
     public function  getOptionsList($page,$limit)
     {
-        $list = $this->where('state', self::POSITION_STATE_YES)->page($page,$limit)->select();
-        if(!$list->isEmpty())
-        {
-            $list = $list->hidden(['ctime','utime']);
-            $result = [
-                'status' => true,
-                'msg'   => '获取成功',
-                'data' => [
-                    'list' => $list,
-                    'count' => count($list),
-                    'page' => $page,
-                    'limit' => $limit
-                ]
-            ];
-        }else{
-            $result = [
-                'status' => false,
-                'msg'   => '获取失败',
-                'data' => ''
-            ];
-        }
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+
+        $field = 'id,name,code';
+        $list = $this->field($field)->page($page,$limit)->select();
+
+        $count = $this->field($field)->count();
+
+        $result['data'] = [
+            'list' => $list,
+            'count' => $count
+        ];
+
         return $result;
     }
 

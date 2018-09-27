@@ -278,11 +278,6 @@ class GoodsComment extends Common
      */
     public function addComment($order_id, $items, $user_id)
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '',
-            'data' => []
-        ];
         $orderModel = new Order();
         $orderItemsModel = new OrderItems();
 
@@ -302,10 +297,10 @@ class GoodsComment extends Common
             foreach($items as $k => $v)
             {
                 //判断此条记录是否是此订单下面的
-//                $item_info = $orderItemsModel->where(['id'=>$k,'order_id'=>$order_id])->find();
-//                if(!$item_info){
-//                    continue;       //说明没有此条记录，就不需要评论了
-//                }
+                $item_info = $orderItemsModel->where(['id'=>$k,'order_id'=>$order_id])->find();
+                if(!$item_info){
+                    continue;       //说明没有此条记录，就不需要评论了
+                }
 
                 $score = 5;
                 if($v['score'] >= 1 &&   $v[score <= 5]){
@@ -332,6 +327,10 @@ class GoodsComment extends Common
                     'addon' => $addon
                 ];
             }
+            dump($goods_data);
+            dump($items);
+            dump($orderItemsModel->getLastSql());
+            die();
             $this->saveAll($goods_data);
             //修改评价状态
             $order_data['is_comment'] = 2;

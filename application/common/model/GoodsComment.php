@@ -302,10 +302,10 @@ class GoodsComment extends Common
             foreach($items as $k => $v)
             {
                 //判断此条记录是否是此订单下面的
-                $item_info = $orderItemsModel->where(['id'=>$k,'order_id'=>$order_id])->find();
-                if(!$item_info){
-                    continue;       //说明没有此条记录，就不需要评论了
-                }
+//                $item_info = $orderItemsModel->where(['id'=>$k,'order_id'=>$order_id])->find();
+//                if(!$item_info){
+//                    continue;       //说明没有此条记录，就不需要评论了
+//                }
 
                 $score = 5;
                 if($v['score'] >= 1 &&   $v[score <= 5]){
@@ -347,7 +347,7 @@ class GoodsComment extends Common
             $return_data = [
                 'status' => false,
                 'msg' => '评价失败.'.$e->getMessage(),
-                'data' => []
+                'data' => $goods_data
             ];
         }
         return $return_data;

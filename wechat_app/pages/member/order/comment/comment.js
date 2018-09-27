@@ -155,12 +155,12 @@ Page({
     var page = this;
     var data = {
       order_id: page.data.orderId,
-      goods: {},
+      items: {},
     };
     for (var key in page.data.images) {
-      data.goods[key] = {
+      data.items[key] = {
         images: page.data.images[key],
-        scores: page.data.scores[key],
+        score: page.data.scores[key],
         textarea: page.data.textarea[key],
       }
     }
@@ -169,9 +169,9 @@ Page({
         wx.showToast({
           title: res.msg,
           success: function () {
-            wx.navigateBack({
-              delta: 1
-            });
+            // wx.navigateBack({
+            //   delta: 1
+            // });
           }
         });
       });

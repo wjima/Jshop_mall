@@ -337,25 +337,16 @@ class GoodsComment extends Common
             $order_data['is_comment'] = 2;
             $orderModel->save($order_data, ['order_id' => $order_id]);
             Db::commit();
-            $result = true;
-        }catch(\Exception $e){
-            Db::rollback();
-            $result = false;
-        }
-
-        if($result)
-        {
             $return_data = [
                 'status' => true,
                 'msg' => '评价成功',
                 'data' => []
             ];
-        }
-        else
-        {
+        }catch(\Exception $e){
+            Db::rollback();
             $return_data = [
                 'status' => false,
-                'msg' => '评价失败',
+                'msg' => '评价失败.'.$e->getMessage(),
                 'data' => []
             ];
         }

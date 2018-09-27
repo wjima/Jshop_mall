@@ -135,18 +135,13 @@ class alipay implements Payment
             "\n-----END PUBLIC KEY-----";
 
         //调用openssl内置方法验签，返回bool值
-        trace('start','alipay');
-        trace($data,'alipay');
-        trace($sign,'alipay');
-        trace(base64_decode($sign), 'alipay');
-        trace($res, 'alipay');
 
         if ("RSA2" == $signType) {
             $result = (bool)openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256);
         } else {
             $result = (bool)openssl_verify($data, base64_decode($sign), $res);
         }
-
+        trace($result, 'alipay');
         return $result;
     }
 

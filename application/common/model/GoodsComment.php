@@ -319,7 +319,7 @@ class GoodsComment extends Common
                     'comment_id' => 0,
                     'score' => $score,
                     'user_id' => $user_id,
-                    'goods_id' => $k,
+                    'goods_id' => $item_info['goods_id'],
                     'order_id' => $order_id,
                     'images' => $images,
                     'content' => $v['textarea'],

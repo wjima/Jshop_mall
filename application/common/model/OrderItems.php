@@ -54,20 +54,4 @@ class OrderItems extends Common
         }
         return $return;
     }
-
-
-    /**
-     * 获取规格
-     * @param $id
-     * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getAddon($id)
-    {
-        $where[] = ['id', 'eq', $id];
-        $res = $this->field('addon')->where($where)->find();
-        return $res['addon'];
-    }
 }

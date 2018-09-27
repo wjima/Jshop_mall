@@ -6,15 +6,15 @@
                     <img class="goods-img" :src="item.image_url"/>
                     <div class="evaluateheader-img">
                         <div class="good" @click="clickEvaluate(item.goods_id,$event)" data-type="praise">
-                            <img :src="evaluate[item.goods_id].praise ? '../../static/image/redflower.png' : '../../static/image/whiteflower.png'" data-type="praise"/>
+                            <img :src="evaluate[item.goods_id].praise ? './static/image/redflower.png' : './static/image/whiteflower.png'" data-type="praise"/>
                             <p data-type="praise">好评</p>
                         </div>
                         <div class="average" @click="clickEvaluate(item.goods_id,$event)" data-type="secondary">
-                            <img :src="evaluate[item.goods_id].secondary ? '../../static/image/redflower.png' : '../../static/image/whiteflower.png'" data-type="secondary"/>
+                            <img :src="evaluate[item.goods_id].secondary ? './static/image/redflower.png' : './static/image/whiteflower.png'" data-type="secondary"/>
                             <p data-type="secondary">中评</p>
                         </div>
                         <div class="bad" @click="clickEvaluate(item.goods_id,$event)" data-type="difference">
-                            <img :src="evaluate[item.goods_id].difference ? '../../static/image/redflower.png' : '../../static/image/whiteflower.png'" data-type="difference"/>
+                            <img :src="evaluate[item.goods_id].difference ? './static/image/redflower.png' : './static/image/whiteflower.png'" data-type="difference"/>
                             <p data-type="difference">差评</p>
                         </div>
                     </div>

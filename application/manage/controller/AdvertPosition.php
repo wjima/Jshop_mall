@@ -76,11 +76,11 @@ class AdvertPosition extends Manage
      *  广告位启/禁用
      * @return array
      */
-    public function changeState()
-    {
-        $positionModel = new positionModel();
-        return $positionModel->changeState(input('param.id/d'),input('param.state'));
-    }
+//    public function changeState()
+//    {
+//        $positionModel = new positionModel();
+//        return $positionModel->changeState(input('param.id/d'),input('param.state'));
+//    }
 
     /**
      *  广告位删除

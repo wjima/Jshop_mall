@@ -39,6 +39,7 @@
                             </div>
                             <div class="footer-bottom" v-else-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 1">
                                 <yd-button type="hollow" shape="circle" class="left-btn" @click.native="showDetail(item.order_id)">查看</yd-button>
+                                <yd-button type="hollow" shape="circle" class="left-btn" @click.native="logistics(item.order_id)">物流信息</yd-button>
                                 <yd-button type="hollow" shape="circle" class="right-btn" @click.native="confirm(item.order_id)">确认收货</yd-button>
                             </div>
                             <div class="footer-bottom" v-else-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 1">
@@ -54,6 +55,17 @@
             </yd-tab-panel>
             <yd-backtop></yd-backtop>
         </yd-tab>
+        <yd-popup v-model="showLogistics" width="80%" height="80%">
+            <div class="express-info">
+                <div class="express-num">{{ logisticsInfo.company }}：{{ logisticsInfo.no }}</div>
+                <yd-timeline>
+                    <yd-timeline-item v-for="(item, index) in logisticsInfo.list" :key="index">
+                        <p>{{ item.remark }}</p>
+                        <p style="margin-top: 10px;">{{ item.datetime }}</p>
+                    </yd-timeline-item>
+                </yd-timeline>
+            </div>
+        </yd-popup>
     </div>
 </template>
 
@@ -94,7 +106,9 @@ export default {
                     page: 1,
                     status: 4
                 }
-            ]
+            ],
+            showLogistics: false, // 是否显示物流窗口
+            logisticsInfo: [] // 物流信息
         }
     },
     props: {
@@ -184,6 +198,15 @@ export default {
         // 评价
         evaluate (id) {
             this.$router.push({path: '/evaluate', query: {order_id: id}})
+        },
+        // 查看物流信息
+        logistics (id) {
+            this.$api.logistics({order_id: id}, res => {
+                if (res.status) {
+                    this.showLogistics = true
+                    this.logisticsInfo = res.data
+                }
+            })
         }
     },
     watch: {
@@ -193,3 +216,23 @@ export default {
     }
 }
 </script>
+
+<style>
+    .express-info{
+        background-color: #fff;
+        position: relative;
+    }
+    .express-num{
+        position: fixed;
+        top: -1px;
+        background-color: #e5e5e5;
+        width: 100%;
+        height: .8rem;
+        line-height: .8rem;
+        z-index: 10086;
+    }
+    .express-info .yd-timeline{
+        margin-top: calc(.5rem - 1px);
+        font-size: .1rem;
+    }
+</style>

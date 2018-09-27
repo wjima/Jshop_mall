@@ -194,4 +194,25 @@ class Categories extends Manage
             return $return_data;
         }
     }
+
+    /**
+     * 获取所有一级分类
+     */
+    public function getAll()
+    {
+        $result        = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => [],
+        ];
+        $goodsCatModel = new GoodsCat();
+        $catList     = $goodsCatModel->field('id,name,sort')->where([['parent_id','=','0']])->order('sort asc')->select();
+        if (!$catList->isEmpty()) {
+            $result['data']   = $catList->toArray();
+            $result['status'] = true;
+            $result['msg']    = '获取成功';
+        }
+        return $result;
+    }
+
 }

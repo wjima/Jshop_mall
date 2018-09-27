@@ -312,27 +312,6 @@
                             view.innerHTML = html;
                         })
                     });
-                    //点击获取公告内容
-					$(document).on('click','.notice',function(){
-						var id = $(this).attr('id');
-						var loadIndex = layer.load(1, {shade: 0.8});
-						$.get("{:url('manage/BackstageNotice/getInfo')}?id="+id,function(res) {
-							layer.open({
-								type: 1,
-								title: '公告信息',
-								shadeClose: true,
-								shade: 0.8,
-								maxmin: false, //开启最大化最小化按钮
-								area: ['700px', '450px'],
-								content: '<div style="padding: 50px; line-height: 22px;font-weight: 300;">' +
-								'<h2 style="text-align: center">'+res.title+'</h2><br>' +
-								''+res.content+'</div>'
-							});
-
-						});
-						layer.close(loadIndex);
-					});
-
 				});
 		        // 路径配置
 		        require.config({

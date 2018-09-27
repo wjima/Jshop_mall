@@ -2,18 +2,21 @@
   width: 690rpx;
   padding: 0 30rpx;
   overflow: hidden;
+}
+.top2 {
   border-bottom: 2rpx solid #e8e8e8;
 }
 .goods-img{
   width: 88rpx;
   height: 88rpx;
+  float:left;
 }
 .top-right{
-  display: inline-block;
   widows: 600rpx;
-  text-align: center;
-  float: right;
+  float: left;
+  text-align:left;
   padding-top: 10rpx;
+  font-size:30rpx;
 }
 .comment-img{
   display: inline-block;

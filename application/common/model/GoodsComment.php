@@ -1,6 +1,8 @@
 <?php
 namespace app\common\model;
 
+use think\Db;
+
 /**
  * 商品评价表
  * Class GoodsComment

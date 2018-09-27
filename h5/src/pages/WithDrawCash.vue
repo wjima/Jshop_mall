@@ -151,7 +151,7 @@ export default {
         margin-top: .2rem;
     }
     .withdrawcash .banklogo{
-        width: .6rem;
+        width: 2.2rem;
         height: .6rem;
         position: absolute;
         top: 50%;
@@ -205,7 +205,6 @@ export default {
         border-bottom: 1px solid #e5e5e5;
     }
     .cardlist .banklogo{
-        width: .6rem;
         height: .6rem;
         position: absolute;
         top: 50%;
@@ -213,7 +212,7 @@ export default {
     }
     .bankcard{
         display: inline-block;
-        margin-left: .7rem;
+        margin-left: 2.4rem;
     }
     .bankcard p{
         margin-top: .1rem;

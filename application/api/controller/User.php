@@ -563,7 +563,7 @@ class User extends Api
      */
     public function orderEvaluate()
     {
-        if(!input('goods/a'))
+        if(!input('items/a'))
         {
             //缺少评价商品信息
             return error_code(13400);
@@ -576,17 +576,10 @@ class User extends Api
 
 
         $order_id = input('order_id');
-        $goods = input('goods/a');
+        $items = input('items/a');
 
-        //判断这个订单是否可以评价
-        $res = model('common/Order')->isOrderComment($order_id, $this->userId);
-        if(!$res['status'])
-        {
-            //已经评价或者存在问题
-            return $res;
-        }
         //添加评价
-        $result = model('common/GoodsComment')->addComment($order_id, $goods, $this->userId);
+        $result = model('common/GoodsComment')->addComment($order_id, $items, $this->userId);
         return $result;
     }
 

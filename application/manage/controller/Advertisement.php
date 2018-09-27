@@ -43,7 +43,12 @@ class Advertisement extends Manage
         {
             return $advertisement->addData(input('param.'));
         }
-        return $this->fetch('add',['type'=>config('params.advertType')['type']]);
+        $positionModel = new advertPositionModel();
+        $positionList = $positionModel->select();
+        return $this->fetch('add',[
+            'list' => $positionList,
+            'type'=>config('params.advertType')['type']
+        ]);
     }
 
 
@@ -70,7 +75,11 @@ class Advertisement extends Manage
         }
         $positionModel = new advertPositionModel();
         $position = $positionModel->where('id',$info['position_id'])->find();
-        return $this->fetch('edit',['position'=>$position,'info'=>$info,'type'=>config('params.advertType')['type']]);
+        return $this->fetch('edit',[
+                'position'=>$position,
+                'info'=>$info,
+                'type'=>config('params.advertType')['type']
+            ]);
     }
 
 
@@ -86,7 +95,7 @@ class Advertisement extends Manage
     public function positionList()
     {
         $positionModel = new advertisementModel();
-        return $positionModel->field('id,code,name')>select();
+        return $positionModel->field('id,code,name')->select();
     }
 
 

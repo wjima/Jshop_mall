@@ -1,0 +1,1 @@
+drop table backstage_notice

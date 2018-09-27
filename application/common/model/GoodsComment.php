@@ -346,7 +346,7 @@ class GoodsComment extends Common
             Db::rollback();
             $return_data = [
                 'status' => false,
-                'msg' => '评价失败.'.$e->getMessage(),
+                'msg' => '评价失败11.'.$e->getMessage(),
                 'data' => $goods_data
             ];
         }

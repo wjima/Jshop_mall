@@ -276,22 +276,40 @@ class GoodsComment extends Common
      * @param $user_id
      * @return array
      */
-    public function addComment($order_id, $goods, $user_id)
+    public function addComment($order_id, $items, $user_id)
     {
+        $return_data = [
+            'status' => false,
+            'msg' => '',
+            'data' => []
+        ];
+        $orderModel = new Order();
+        $orderItemsModel = new OrderItems();
+
+        //判断这个订单是否可以评价
+        $res = $orderModel->isOrderComment($order_id, $user_id);
+        if(!$res['status'])
+        {
+            //已经评价或者存在问题
+            return $res;
+        }
+
+
         Db::startTrans();
         try{
             //插入商品评价
             $goods_data = [];
-            foreach($goods as $k => $v)
+            foreach($items as $k => $v)
             {
-                $score = 0;
-                if($v['evaluate']['praise'])
-                {
-                    $score = 1;
+                //判断此条记录是否是此订单下面的
+                $item_info = $orderItemsModel->where(['id'=>$k,'order_id'=>$order_id])->find();
+                if(!$item_info){
+                    continue;       //说明没有此条记录，就不需要评论了
                 }
-                elseif($v['evaluate']['difference'])
-                {
-                    $score = -1;
+
+                $score = 5;
+                if($v['score'] >= 1 &&   $v[score <= 5]){
+                    $score = $v['score'];
                 }
                 $images = '';
                 if ($v['images'])
@@ -302,7 +320,7 @@ class GoodsComment extends Common
                     }
                 }
                 $images = rtrim($images, ",");
-                $addon = model('common/OrderItems')->getAddon($v['product']);
+                $addon = $orderItemsModel->getAddon($v['product']);
                 $goods_data[] = [
                     'comment_id' => 0,
                     'score' => $score,
@@ -317,27 +335,18 @@ class GoodsComment extends Common
             $this->saveAll($goods_data);
             //修改评价状态
             $order_data['is_comment'] = 2;
-            model('common/Order')->save($order_data, ['order_id' => $order_id]);
+            $orderModel->save($order_data, ['order_id' => $order_id]);
             Db::commit();
-            $result = true;
-        }catch(\Exception $e){
-            Db::rollback();
-            $result = false;
-        }
-
-        if($result)
-        {
             $return_data = [
                 'status' => true,
                 'msg' => '评价成功',
                 'data' => []
             ];
-        }
-        else
-        {
+        }catch(\Exception $e){
+            Db::rollback();
             $return_data = [
                 'status' => false,
-                'msg' => '评价失败',
+                'msg' => '评价失败.'.$e->getMessage(),
                 'data' => []
             ];
         }

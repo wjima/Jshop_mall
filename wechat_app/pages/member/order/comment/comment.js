@@ -7,12 +7,9 @@ Page({
     orderId: '',
     goodsList: [],
     images: {}, //已上传的图片
-    evaluate: {}, //好中差评价
-    product: {}, //货品号
+    scores: {}, //1~5想星好评
     textarea: {}, //输入框内容
-    starOne: [true, true, true, true, true],
-    starTwo: [true, true, true, true, true],
-    starThree: [true, true, true, true, true],
+    stars: {},
   },
 
   //加载执行
@@ -29,36 +26,31 @@ Page({
     var data = {
       order_id: order_id
     }
-    app.db.userToken(function (token) {
-      app.api.orderDetails(data, function (res) {
-        if (!res.status) {
-          app.common.errorToBack(res.msg);
-        }
-        if (res.data.text_status !== 'pending_evaluate') {
-          app.common.errorToBack('该订单状态有误不能评价');
-        }
-        var images = {};
-        var evaluate = {};
-        var textarea = {};
-        var product = {};
-        for (var i = 0; i < res.data.items.length; i++) {
-          var key = res.data.items[i].goods_id
-          images[key] = [];
-          evaluate[key] = {
-            praise: true,
-            secondary: false,
-            difference: false
-          };
-          product[key] = res.data.items[i].id,
-          textarea[key] = '';
-        }
-        page.setData({
-          images: images,
-          goodsList: res.data.items,
-          evaluate: evaluate,
-          textarea: textarea,
-          product: product
-        });
+    app.api.orderDetails(data, function (res) {
+      if (!res.status) {
+        app.common.errorToBack(res.msg);
+      }
+      if (res.data.text_status !== 'pending_evaluate') {
+        app.common.errorToBack('该订单状态有误不能评价');
+      }
+      var images = {};
+      var scores = {};
+      var stars = {};
+      var textarea = {};
+      for (var i = 0; i < res.data.items.length; i++) {
+        var key = res.data.items[i].id
+        images[key] = [];
+        scores[key] = 5;   //默认五星好评
+        stars[key] = [true, true, true, true, false];
+        textarea[key] = '';
+      }
+      console.log(stars);
+      page.setData({
+        images: images,
+        goodsList: res.data.items,
+        textarea: textarea,
+        scores: scores,
+        stars: stars,
       });
     });
   },
@@ -99,10 +91,10 @@ Page({
 
   //评分点击
   star: function (e) {
-    var index = e.target.dataset.index;
     var newData = [];
+    var index = e.target.dataset.index;
+    var goods_id = e.target.dataset.goodsid;
     var page = this;
-    var types = e.target.dataset.type;
     for (var i = 0; i < 5; i++) {
       if(i <= index){
         newData.push(true);
@@ -110,19 +102,16 @@ Page({
         newData.push(false);
       }
     }
-    if (types == "1"){
-      page.setData({
-        starOne: newData
-      });
-    } else if (types == "2") {
-      page.setData({
-        starTwo: newData
-      });
-    } else if (types == "3") {
-      page.setData({
-        starThree: newData
-      });
-    }
+    var stars = this.data.stars;
+    var scores = this.data.scores;
+    stars[goods_id] = newData;
+    scores[goods_id] = i+1;
+    console.log(stars);
+    console.log(scores);
+    page.setData({
+      stars: stars,
+      scores:scores
+    });
   },
 
   //评价点击
@@ -166,34 +155,13 @@ Page({
     var page = this;
     var data = {
       order_id: page.data.orderId,
-      goods: {},
-      seller: {
-        starOne: 0,
-        starTwo: 0,
-        starThree: 0
-      }
+      items: {},
     };
-    for (var i = 0; i < page.data.starOne.length; i++) {
-      if (page.data.starOne[i]) {
-        data.seller.starOne++;
-      }
-    }
-    for (var i = 0; i < page.data.starTwo.length; i++) {
-      if (page.data.starTwo[i]) {
-        data.seller.starTwo++;
-      }
-    }
-    for (var i = 0; i < page.data.starThree.length; i++) {
-      if (page.data.starThree[i]) {
-        data.seller.starThree++;
-      }
-    }
     for (var key in page.data.images) {
-      data.goods[key] = {
+      data.items[key] = {
         images: page.data.images[key],
-        evaluate: page.data.evaluate[key],
+        score: page.data.scores[key],
         textarea: page.data.textarea[key],
-        product: page.data.product[key]
       }
     }
     app.db.userToken(function (token) {
@@ -201,9 +169,9 @@ Page({
         wx.showToast({
           title: res.msg,
           success: function () {
-            wx.navigateBack({
-              delta: 1
-            });
+            // wx.navigateBack({
+            //   delta: 1
+            // });
           }
         });
       });

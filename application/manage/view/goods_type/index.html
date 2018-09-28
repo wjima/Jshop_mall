@@ -18,6 +18,8 @@
 <script>
     var table;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+
         table = layui.table.render({
             elem: '#typeTable',
             height: 'full-330',
@@ -84,49 +86,37 @@
                     window_box = layer.open({
                         type: 1,
                         title: '添加类型',
-                        area: ['400px', '240px'], //宽高
-                        content: e
+                        area: ['750px', '440px'], //宽高
+                        content: e,
+                        btn:['保存','关闭'],
+                        success:function (layero,index) {
+                            layero.addClass('layui-form');//添加form标识
+                            layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');
+                            form.render();
+                        },
+                        yes:function () {
+                            form.on('submit(fromContent)', function (data) {
+                                JsPost("{:url('GoodsType/add')}", data.field, function(res){
+                                    if(res.status){
+                                        layer.close(window_box);
+                                        layer.msg(e.msg, {time: 1300}, function(){
+                                            table.reload('typeTable');
+                                        });
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                })
+                            });
+                        }
                     });
                 }
             });
             return false;
         });
 
-        //添加保存数据
-        $(document).on('click', '.add-save-btn', function(){
-            var name = $("#name").val();
-            var error = false;
-            if(name.length > 6 || name.length < 1){
-                error = true;
-                layer.msg('分类名称在1-6个字符之间', {time: 1300});
-                return false;
-            }
-
-            if(!error){
-                $.ajax({
-                    url: '{:url("GoodsType/add")}',
-                    type: 'post',
-                    data: {
-                        'name': name,
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        if(e.status === true){
-                            layer.close(window_box);
-                            layer.msg(e.msg, {time: 1300}, function(){
-                                table.reload('typeTable');
-                            });
-                        }else{
-                            layer.msg(e.msg, {time: 1300});
-                        }
-                    }
-                })
-            }
-        });
 
         //编辑属性
         $(document).on('click', '.edit-class', function(){
-            console.log("s");
             var id = $(this).attr('data-id');
             $.ajax({
                 url: '{:url("GoodsType/edit")}',

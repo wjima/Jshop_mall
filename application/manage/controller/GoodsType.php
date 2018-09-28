@@ -12,9 +12,11 @@ use app\common\controller\Manage;
 use Request;
 use app\common\model\GoodsType as typeModel;
 use app\common\model\GoodsTypeSpec;
+use app\common\model\GoodsTypeSpecValue;
 use app\common\model\GoodsTypeSpecRel;
 use app\common\model\GoodsParams;
 use app\common\model\GoodsTypeParams;
+use think\Db;
 
 /**
  * 商品类型
@@ -57,16 +59,94 @@ class GoodsType extends Manage
                 'data'   => '',
             ];
             //存储添加内容
-            $data   = [
+            $typeData   = [
                 'name'      => input('post.name'),
             ];
-            $result = model('common/GoodsType')->add($data);
-            if ($result !== false) {
+            $params_name = input('post.params_name/a',[]);
+            $paramsData = [];
+            foreach($params_name as $key=>$val){
+                $paramsData[$key]['id'] = input('post.params_id.'.$key);
+                $paramsData[$key]['name'] = input('post.params_name.'.$key);
+                $paramsData[$key]['type'] = input('post.params_type.'.$key);
+                $paramsData[$key]['value'] = input('post.params_value.'.$key);
+            }
+            //属性值
+            $typeSpecData = [];
+            $type_name = input('post.type_name/a',[]);
+            foreach($type_name as $key=>$val){
+                $typeSpecData[$key]['id'] = input('post.type_id.'.$key);
+                $typeSpecData[$key]['name'] = input('post.type_name.'.$key);
+                $typeSpecData[$key]['sort'] = input('post.type_sort.'.$key);
+                $typeSpecData[$key]['value'] = explode(' ',input('post.type_value.'.$key));
+            }
+            $goodsType = new typeModel();
+
+            Db::startTrans();
+            $result = $goodsType->add($typeData);
+            $type_id = $goodsType->getLastInsID();
+            if($result !== false){
+
+                $goodsTypeParamsModel = new GoodsTypeParams();
+                $typeParamsRel = [];
+
+                foreach($paramsData as $key=>$val){
+                    $goodsParamsModel = new GoodsParams();
+                    if($val['id']){
+                        $goodsParamsModel->save($val,['id'=>$val['id']]);
+                    }else{
+                        unset($val['id']);
+                        $res=$goodsParamsModel->save($val);
+                        $val['id'] = $goodsParamsModel->getLastInsID();
+                    }
+                    $typeParamsRel[$key]['params_id'] =$val['id'];
+                    $typeParamsRel[$key]['type_id'] =$type_id;
+                }
+                $goodsTypeParamsModel->saveAll($typeParamsRel);
+                //保存属性
+                $goodsTypeSpecValue = new GoodsTypeSpecValue();
+                $goodsTypeSpecRel = new GoodsTypeSpecRel();
+                $typeSpecRel = [];
+                foreach($typeSpecData as $key=>$value){
+                    $goodsTypeSpec = new GoodsTypeSpec();
+
+                    if($value['id']){
+                        $goodsTypeSpec->save($value,['id'=>$value['id']]);
+                        $goodsTypeSpecValue->where([['spec_id','=',$value['id']]])->delete();
+                        $specValue = $value['value'];
+                        $tempSpecValue = [];
+                        foreach($specValue as $sk=>$sv){
+                            $tempSpecValue[] = [
+                                'spec_id'=>$value['id'],
+                                'value'=>$sv,
+                            ];
+                        }
+                        $goodsTypeSpecValue->saveAll($tempSpecValue);
+                    }else{
+                        unset($value['id']);
+                        $res=$goodsTypeSpec->save($value);
+                        $value['id'] = $goodsTypeSpec->getLastInsID();
+                        $specValue = $value['value'];
+                        $tempSpecValue = [];
+                        foreach($specValue as $sk=>$sv){
+                            $tempSpecValue[] = [
+                                'spec_id'=>$value['id'],
+                                'value'=>$sv,
+                            ];
+                        }
+                        $goodsTypeSpecValue->saveAll($tempSpecValue);
+                    }
+                    $typeSpecRel[$key]['spec_id'] =$value['id'];
+                    $typeSpecRel[$key]['type_id'] =$type_id;
+                }
+                $goodsTypeSpecRel->saveAll($typeSpecRel);
+                Db::commit();
                 $return_data = [
                     'status' => true,
                     'msg'    => '添加成功',
                     'data'   => $result,
                 ];
+            }else{
+                Db::rollback();
             }
             return $return_data;
         }
@@ -267,6 +347,28 @@ class GoodsType extends Manage
             return $return_data;
         }
     }
+
+    /**
+     * 获取所有类型
+     */
+    public function getAll()
+    {
+        $result     = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => [],
+        ];
+        $typeModel = new typeModel();
+        $typeList  = $typeModel->field('id,name')->where([])->select();
+        if (!$typeList->isEmpty()) {
+            $result['data']   = $typeList->toArray();
+            $result['status'] = true;
+            $result['msg']    = '获取成功';
+        }
+        return $result;
+    }
+
+
 
 
 }

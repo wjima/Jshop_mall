@@ -136,4 +136,13 @@ class GoodsParams extends Manage
         }
         return $result;
     }
+
+    /**
+     * 弹窗参数列表
+     */
+    public function getlist(){
+        $this->view->engine->layout(false);
+        return $this->fetch('getlist');
+    }
+
 }

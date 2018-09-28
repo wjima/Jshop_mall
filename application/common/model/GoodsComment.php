@@ -278,11 +278,6 @@ class GoodsComment extends Common
      */
     public function addComment($order_id, $items, $user_id)
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '',
-            'data' => []
-        ];
         $orderModel = new Order();
         $orderItemsModel = new OrderItems();
 
@@ -320,16 +315,15 @@ class GoodsComment extends Common
                     }
                 }
                 $images = rtrim($images, ",");
-                $addon = $orderItemsModel->getAddon($v['product']);
                 $goods_data[] = [
                     'comment_id' => 0,
                     'score' => $score,
                     'user_id' => $user_id,
-                    'goods_id' => $k,
+                    'goods_id' => $item_info['goods_id'],
                     'order_id' => $order_id,
                     'images' => $images,
                     'content' => $v['textarea'],
-                    'addon' => $addon
+                    'addon' => $item_info['addon']
                 ];
             }
             $this->saveAll($goods_data);
@@ -346,8 +340,8 @@ class GoodsComment extends Common
             Db::rollback();
             $return_data = [
                 'status' => false,
-                'msg' => '评价失败.'.$e->getMessage(),
-                'data' => []
+                'msg' => '评价失败11.'.$e->getMessage(),
+                'data' => $goods_data
             ];
         }
         return $return_data;

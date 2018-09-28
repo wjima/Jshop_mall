@@ -90,4 +90,24 @@ class Brand extends Manage
         return $result;
     }
 
+    /**
+     * 获取所有品牌
+     */
+    public function getAll()
+    {
+        $result     = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => [],
+        ];
+        $brandModel = new BrandsModel();
+        $brandList  = $brandModel->field('id,name,sort')->where([])->order('sort asc')->select();
+        if (!$brandList->isEmpty()) {
+            $result['data']   = $brandList->toArray();
+            $result['status'] = true;
+            $result['msg']    = '获取成功';
+        }
+        return $result;
+    }
+
 }

@@ -169,9 +169,9 @@ Page({
         wx.showToast({
           title: res.msg,
           success: function () {
-            // wx.navigateBack({
-            //   delta: 1
-            // });
+            wx.navigateBack({
+              delta: 1
+            });
           }
         });
       });

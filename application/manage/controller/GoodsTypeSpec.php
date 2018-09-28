@@ -218,4 +218,12 @@ class GoodsTypeSpec extends Manage
     }
 
 
+
+    /**
+     * 弹窗属性列表
+     */
+    public function getlist(){
+        $this->view->engine->layout(false);
+        return $this->fetch('getlist');
+    }
 }

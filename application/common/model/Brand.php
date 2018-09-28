@@ -140,7 +140,7 @@ class Brand extends Common
      */
     protected function tableFormat($list)
     {
-        foreach($list as $val){
+        foreach($list as &$val){
             $val['logo'] = _sImage($val['logo']);
             $val['utime'] = getTime($val['utime']);
         }
@@ -164,14 +164,6 @@ class Brand extends Common
             ->select();
 
         return $data;
-    }
-
-    //列表
-    public function brandList($data){
-        return $this->field('name,logo,sort,utime')
-            ->order($data['order'],$data['orderType'])
-            ->page($data['page'],$data['pageSize'])
-            ->select();
     }
 
     /**

@@ -277,10 +277,22 @@ class Goods extends Manage
         $specdesc                       = input('post.spec/a', []);
 
         if ($specdesc && $open_spec) {
+            if(count($specdesc) == 1){//优化只一个规格的情况
+                $product = input('post.product/a',[]);
+                foreach((array)$specdesc as $key=>$val){
+                    foreach($val as $k=>$v){
+                        $temp_product_key  = $key.':'.$v;
+                        if(!isset($product[$temp_product_key])){
+                            unset($specdesc[$key][$k]);
+                        }
+                    }
+                }
+            }
             $data['goods']['spes_desc'] = serialize($specdesc);
         } else {
             $data['goods']['spes_desc'] = '';
         }
+
         //商品参数处理
         $params     = [];
         $tempParams = input('post.goods.params/a', []);

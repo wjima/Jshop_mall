@@ -282,6 +282,8 @@ class Goods extends Common
             if($list['spes_desc']) {
                 $default     = [ ];
                 $defaultSpec = '';
+                $spesDesc     = unserialize($list['spes_desc']);
+
                 foreach($list['products'] as $key => $val) {
                     if($val['is_defalut'] == '1') {
                         $default     = $val;
@@ -290,7 +292,6 @@ class Goods extends Common
                     //unset($val['isdel']);
                     //$list['products'][$key] = $val;
                 }
-
                 $list['default'] = $default;
                 $spec            = explode(',',$defaultSpec);
                 $tmpDefaultSpec  = [ ];
@@ -300,9 +301,10 @@ class Goods extends Common
                     $tmpDefaultSpec[$key]['sku_value'] = $specValue;
                 }
 
-                $spesDesc     = unserialize($list['spes_desc']);
                 $tempSpecDesc = [ ];
                 $i            = 0;
+
+
                 foreach((array)$spesDesc as $key => $val) {
                     $tempSpecDesc[$i]['sku_name'] = $key;
 

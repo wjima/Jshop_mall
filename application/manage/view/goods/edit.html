@@ -430,7 +430,7 @@
             loaderHtml: '<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div> ',
             onAfterImgCrop: function (res) {
                 if (res.status=='success') {
-                    image.html(res.image_html);
+                    image.replaceWith(res.image_html);
                     layer.msg("裁剪成功");
                 } else {
                     layer.msg(res.msg);

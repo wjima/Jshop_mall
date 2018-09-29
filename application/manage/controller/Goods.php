@@ -444,6 +444,7 @@ class Goods extends Manage
         $this->view->engine->layout(false);
         $spec     = input('post.spec/a');
         $goods_id = input('post.goods_id/d', 0);
+        $goods    = input('post.goods/a', []);
         $products = [];
         if ($goods_id) {
             $goodsModel = new goodsModel();
@@ -460,7 +461,13 @@ class Goods extends Manage
                 $this->spec[] = $key;
             }
             $items = $this->getSkuItem($spec, -1);
-
+            foreach ((array)$items as $key => $val) {
+                $items[$key]['price']     = $goods['price'];
+                $items[$key]['costprice'] = $goods['costprice'];
+                $items[$key]['mktprice']  = $goods['mktprice'];
+                $items[$key]['sn']        = $goods['sn'] . '-' . ($key + 1);
+                $items[$key]['stock']     = $goods['stock'];
+            }
             if ($products) {
                 foreach ($items as $key => $val) {
                     foreach ($products as $product) {
@@ -476,7 +483,6 @@ class Goods extends Manage
         $html             = $this->fetch('getSpecHtml');
         $result['data']   = $html;
         $result['status'] = true;
-
         return $result;
 
     }

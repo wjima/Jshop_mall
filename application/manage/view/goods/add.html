@@ -578,6 +578,7 @@
         var list = $('#spec_select input[type=checkbox]:checked');
         if(list.length>0){
             var data = $("#spec_form").serialize();
+            console.log(data);
             $.ajax({
                 url: '{:url("Goods/getSpecHtml")}',
                 type: 'post',
@@ -663,7 +664,7 @@
             loaderHtml: '<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div> ',
             onAfterImgCrop: function (res) {
                 if (res.status=='success') {
-                    image.html(res.image_html);
+                    image.replaceWith(res.image_html);
                     layer.msg("裁剪成功");
                 } else {
                     layer.msg(res.msg);

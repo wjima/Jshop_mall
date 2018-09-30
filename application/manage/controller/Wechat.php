@@ -28,6 +28,7 @@ class Wechat extends Manage
      */
     public function edit()
     {
+
         $settingModel = new Setting();
         $data = $settingModel->getAll();
         $this->assign('data', $data);
@@ -71,6 +72,9 @@ class Wechat extends Manage
         $this->assign('data', $data);
         $wechat = config('thirdwx.');
         $this->assign('wechat', $wechat);
+
+        $host = \request()->host();
+        $this->assign('weixin_host',$host);
         return $this->fetch('edit');
     }
 

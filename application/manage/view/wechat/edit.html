@@ -7,9 +7,22 @@
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label seller-inline-2">url：</label>
-        <div class="layui-form-mid ">{$wechat.authorization_url}</div>
+        <label class="layui-form-label seller-inline-2">request合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">socket合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">uploadFile合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">downloadFile合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>小程序名称：</label>
         <div class="layui-input-inline seller-inline-5">
@@ -96,3 +109,8 @@
         });
     });
 </script>
+<style>
+    .seller-inline-2{
+        width: 140px !important;
+    }
+</style>

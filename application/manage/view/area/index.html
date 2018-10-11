@@ -1,15 +1,21 @@
 <div class="layui-form seller-alone-form">
     <div class="layui-form-item">
+        <div class="layui-inline">
+
         <label class="layui-form-label">地区管理：</label>
         <div class="layui-input-inline" id="province_box">
             <select name="province" lay-filter="province" id="province">
                 <option value="0">请选择省</option>
             </select>
         </div>
+        </div>
+            <div class="layui-inline">
+        <span class="layui-btn layui-btn-sm  add-area">添加</span>
+        <span class="layui-btn layui-btn-sm  edit-area">编辑</span>
+        <span class="layui-btn layui-btn-sm layui-btn-danger  del-area">删除</span>
+            </div>
     </div>
-    <span class="layui-btn layui-btn-xs add-area">添加</span>
-    <span class="layui-btn layui-btn-xs edit-area">编辑</span>
-    <span class="layui-btn layui-btn-danger layui-btn-xs del-area">删除</span>
+
 
 
 
@@ -18,6 +24,7 @@
 
 
 <div class="table-body">
+    <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
     <table id="areaTable" lay-filter="areaTable"></table>
 </div>
 
@@ -26,9 +33,7 @@
 
 <script>
     var table = '';
-    function openchild(obj,id) {
 
-    }
     layui.use(['form','table'], function(){
         var form = layui.form, layer = layui.layer, $ = layui.jquery;
         var a_id = 0, b_id = 0, c_id = 0, d_id = 0, depth = 1, action_id;
@@ -39,28 +44,132 @@
             height: '500px',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
+            limit:'50',
             id:'areaTable',
             url: "{:url('area/getlist')}",
             cols: [[
                 {field: 'name', title: '地区名称',align:'center',templet:function (data) {
                     var indent = getIndent(data.depth);
                     if(data.child=='true'){
-                        return "<a href='javascript:void(0);' class='openchild' onclick='openchild(this,"+data.id+")'><i class='layui-icon'></i></a>"+indent+data.name;
+                        return "<a href='javascript:void(0);' class='openchild option-show' data-id='" + data.id + "'><i class='layui-icon'></i></a>"+indent+data.name;
                     }else{
                         return indent+data.name;
                     }
                 }},
                 {field: 'type', title: '添加子地区',align:'center',templet:function (data) {
-                    return '<button class="layui-btn  layui-btn-xs" onclick="addChild('+data.id+')"><i class="layui-icon"></i>添加</button>';
+                    return '<button class="layui-btn  layui-btn-xs add-table-area" data-id="' + data.id + '"><i class="layui-icon"></i>添加</button>';
                 }},
                 {field: 'file_name', title: '编辑',align:'center',templet:function (data) {
-                    return '<button class="layui-btn layui-btn-xs" onclick="downfile('+data.id+')">编辑</button>';
+                    return '<button class="layui-btn layui-btn-xs edit-table-area" data-id="' + data.id + '">编辑</button>';
                 }},
                 {field: 'status', title: '删除',align:'center',templet:function (data) {
-                    return '<button class="layui-btn layui-btn-sm layui-btn-danger layui-btn-xs" onclick="delArea('+data.id+')">删除</button>';
+                    return '<button class="layui-btn layui-btn-sm layui-btn-danger layui-btn-xs delete-area"  data-id="' + data.id + '">删除</button>';
                 }}
-            ]]
+            ]],
+            done: function(res, curr, count){
+                $("#parent_url").empty();
+                $("#parent_url").append('<a  href="javascript:;" class="option-show" data-id=data.id >返回顶级</a>');
+                $.each( res.parents, function(i, n){
+                    $("#parent_url").append('<span lay-separator="">/</span><a  href="javascript:;" class="option-show" data-id="' + n.id + '" >'+ n.name+'</a>');
+                    pid = n.id;
+                });
+            }
+        });
+
+        $(document).on('click','.option-show',function(){
+            var id = $(this).attr('data-id');
+            layui.table.reload('areaTable', {
+                where: {parent_id:id}
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        });
+        $(document).on('click','.add-table-area',function(){
+            action_id = $(this).attr('data-id');
+            window_box = layer.open({
+                type: 1,
+                title: '添加',
+                area: ['420px', '250px'], //宽高
+                content: '<div style="padding:20px;">\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <label class="layui-form-label">地区名称：</label>\n' +
+                '        <div class="layui-input-block">\n' +
+                '          <input type="text" id="area_name" autocomplete="off" placeholder="请输入地区名称" class="layui-input">\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <label class="layui-form-label">排序：</label>\n' +
+                '        <div class="layui-input-block">\n' +
+                '          <input type="number" id="area_sort" autocomplete="off" placeholder="排序数字越小越靠前" class="layui-input">\n' +
+                '        </div>\n' +
+                '    </div>\n' +
+                '    <div class="layui-form-item">\n' +
+                '        <span class="layui-btn layui-btn-fluid add-save">添加</span>\n' +
+                '    </div>\n' +
+                '</div>'
+            });
+        });
+        $(document).on('click','.edit-table-area',function(){
+            action_id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("area/edit")}',
+                type: 'get',
+                data: {
+                    "id": action_id
+                },
+                dataType: 'json',
+                success: function(e){
+                    if(e.status){
+                        window_box = layer.open({
+                            type: 1,
+                            title: '编辑',
+                            area: ['420px', '250px'],
+                            content: '<div style="padding:20px;">\n' +
+                            '    <div class="layui-form-item">\n' +
+                            '        <label class="layui-form-label">地区名称：</label>\n' +
+                            '        <div class="layui-input-block">\n' +
+                            '          <input type="text" id="area_name" autocomplete="off" value="'+e.data.name+'" placeholder="请输入地区名称" class="layui-input">\n' +
+                            '        </div>\n' +
+                            '    </div>\n' +
+                            '    <div class="layui-form-item">\n' +
+                            '        <label class="layui-form-label">排序：</label>\n' +
+                            '        <div class="layui-input-block">\n' +
+                            '          <input type="number" id="area_sort" autocomplete="off" value="'+e.data.sort+'" placeholder="排序数字越小越靠前" class="layui-input">\n' +
+                            '        </div>\n' +
+                            '    </div>\n' +
+                            '    <div class="layui-form-item">\n' +
+                            '        <span class="layui-btn layui-btn-fluid edit-save">修改</span>\n' +
+                            '    </div>\n' +
+                            '</div>'
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            location.reload();
+                        });
+                    }
+                }
+            });
+        });
+        $(document).on('click','.delete-area',function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('确认删除？', {
+                btn: ['删除', '取消']
+            }, function(){
+                $.ajax({
+                    url: '{:url("area/del")}',
+                    type: 'get',
+                    data: {
+                        "id": id
+                    },
+                    dataType: 'json',
+                    success: function(e){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload();
+                        });
+                    }
+                })
+            });
         });
 
 
@@ -430,7 +539,7 @@
                     dataType: 'json',
                     success: function(e){
                         layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
+                            table.reload();
                         });
                     }
                 })
@@ -439,3 +548,8 @@
 
     });
 </script>
+<style>
+    .seller-alone-form .layui-input{
+        margin-bottom:0px;
+    }
+</style>

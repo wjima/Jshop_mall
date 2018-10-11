@@ -65,25 +65,25 @@ class Area extends Manage
      */
     public function add()
     {
-        $data['name'] = input('name');
+        $areaModel         = new AreaModel();
+        $data['name']      = input('name');
+        $id                = $areaModel->max('id');
+        $data['id']        = $id + 1;
         $data['parent_id'] = input('parent_id');
-        $data['depth'] = input('depth');
-        $data['sort'] = input('sort');
-        $result = model('common/Area')->add($data);
-        if($result)
-        {
+        $data['depth']     = input('depth');
+        $data['sort']      = input('sort');
+        $result            = $areaModel->add($data);
+        if ($result) {
             $return_data = array(
                 'status' => true,
-                'msg' => '添加成功',
-                'data' => $result
+                'msg'    => '添加成功',
+                'data'   => $result,
             );
-        }
-        else
-        {
+        } else {
             $return_data = array(
                 'status' => false,
-                'msg' => '添加失败',
-                'data' => $result
+                'msg'    => '添加失败',
+                'data'   => $result,
             );
         }
         return $return_data;
@@ -157,10 +157,11 @@ class Area extends Manage
     public function getlist()
     {
         if (Request::isAjax()) {
-            $areaModel            = new AreaModel();
-            $filter              = input('request.');
-            $filter['limit'] = 1000;
-            $filter['parent_id'] = 0;
+            $areaModel       = new AreaModel();
+            $filter          = input('request.');
+            if (!isset($filter['parent_id']) || !$filter['parent_id']) {
+                $filter['parent_id'] = 0;
+            }
             return $areaModel->tableData($filter);
         }
         return $this->fetch();

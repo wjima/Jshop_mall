@@ -1,0 +1,1 @@
+ALTER TABLE `area` ADD `sort` INT(10) NOT NULL DEFAULT '100' COMMENT '地区排序' AFTER `postal_code`;

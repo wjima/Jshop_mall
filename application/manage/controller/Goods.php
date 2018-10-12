@@ -626,6 +626,7 @@ class Goods extends Manage
             $product     = input('post.product/a', []);
             $total_stock = $price = $costprice = $mktprice = 0;
             $isExitDefalut = false;
+            $exit_product = [];
             foreach ($product as $key => $val) {
                 $tmp_product['goods']['price']        = !empty($val['price']) ? $val['price'] : 0;
                 $tmp_product['goods']['costprice']    = !empty($val['costprice']) ? $val['costprice'] : 0;
@@ -658,11 +659,17 @@ class Goods extends Manage
                     if (in_array($val['id'], $productIds)) {
                         $productIds = unsetByValue($productIds, $val['id']);
                     }
+                    if($val['id']){
+                        $exit_product[] = $val['id'];
+                    }
+
                 } else {
                     $productRes = $productsModel->doAdd($data['product']);
+                    if(is_numeric($productRes)){
+                        $exit_product[] = $productRes;
+                    }
                 }
                 if ($productRes === false) {
-
                     $goodsModel->rollback();
                     $result['msg'] = '货品数据保存失败';
                     return $result;
@@ -675,6 +682,7 @@ class Goods extends Manage
                     $mktprice  = $tmp_product['goods']['mktprice'];
                 }
             }
+
             if(!$isExitDefalut){
                 $result['msg'] = '请选择默认货品';
                 $goodsModel->rollback();
@@ -686,7 +694,8 @@ class Goods extends Manage
             $upData['costprice'] = $costprice;
             $upData['mktprice']  = $mktprice;
             $goodsModel->updateGoods($goods_id, $upData);
-
+            //删除多余规格
+            $productsModel->where([['id','not in',$exit_product],['goods_id','=',$goods_id]])->delete();
         } else {
             $sn                          = get_sn(4);
             $data['goods']['sn']         = input('post.goods.sn', $sn);//货品编码

@@ -154,7 +154,7 @@ Page({
   submit: function () {
     var page = this;
     var data = {
-      order_id: page.data.orderId,
+      order_id: 'asdf',//page.data.orderId,
       items: {},
     };
     for (var key in page.data.images) {
@@ -166,14 +166,15 @@ Page({
     }
     app.db.userToken(function (token) {
       app.api.orderEvaluate(data, function (res) {
-        wx.showToast({
-          title: res.msg,
-          success: function () {
-            wx.navigateBack({
-              delta: 1
-            });
-          }
-        });
+        console.log(res);
+        // wx.showToast({
+        //   title: res.msg,
+        //   success: function () {
+        //     wx.navigateBack({
+        //       delta: 1
+        //     });
+        //   }
+        // });
       });
     });
   }

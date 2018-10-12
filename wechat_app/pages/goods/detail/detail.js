@@ -126,10 +126,10 @@ Page({
         goodsId: options.id
       });
     }
-    //店铺
-    if (options.scene) {
-      app.config.site_token = e.scene;
-    }
+    // //店铺
+    // if (options.scene) {
+    //   app.config.site_token = e.scene;
+    // }
     //被邀请码
     if (options.invite) {
         wx.setStorage({
@@ -156,7 +156,7 @@ Page({
 
     //刷新页面
     onShow: function () {
-        let userToken = wx.getStorageSync('userToken');
+        let userToken = app.db.get('userToken');
         let myInviteCode = wx.getStorageSync('myInviteCode');
         if (userToken && !myInviteCode) {
             app.api.sharecode(function (e) {
@@ -215,11 +215,12 @@ Page({
           if (res.data.isfav == 'false') {
             isfav = false;
           }
+          var spes_desc = page.getSpes(res.data);
           page.setData({
             goodsImg: res.data.album,
             goodsInfo: res.data,
             productId: res.data.default.id,
-            goodsSpesDesc: res.data.spes_desc,
+            goodsSpesDesc: spes_desc,
             status: st,
             isfav: isfav
           });
@@ -490,6 +491,14 @@ Page({
         nums: nu
       });
     }
+  },
+  getSpes: function(detail){
+    if(!detail.spes_desc){
+      return [];
+    }
+    console.log(detail);
+
+    return detail.spes_desc;
   },
   
   //客服功能

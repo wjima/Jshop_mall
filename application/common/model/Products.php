@@ -69,9 +69,9 @@ class Products extends Common
         }
         $goodsModel = new Goods();
 
-        $goods                 = $goodsModel->where(['id'=>$product['goods_id']])->field('name,image_id,bn,marketable')->find();//后期调整
-        //判断如果是下架状态，就返回false
-        if(!($goods && $goods['marketable'] == $goodsModel::MARKETABLE_UP)){
+        $goods                 = $goodsModel->where(['id'=>$product['goods_id']])->field('name,image_id,bn,marketable,spes_desc')->find();//后期调整
+        //判断如果没有商品，就返回false
+        if(!($goods)){
             return $result;
         }
 
@@ -84,8 +84,60 @@ class Products extends Common
 
         $product['stock'] = $goodsModel->getStock($product);
 
-
         $product['price'] = $goodsModel->getPrice($product);
+
+        //如果是多规格商品，算多规格
+        if($goods['spes_desc']) {
+            $defaultSpec = [];
+            $spesDesc     = unserialize($goods['spes_desc']);
+
+            //设置on的效果
+            $productSpesDesc = getProductSpesDesc($product['spes_desc']);
+            foreach($spesDesc as $k => $v){
+                foreach($v as $j){
+                    $defaultSpec[$k][$j]['name'] = $j;
+                    if($productSpesDesc[$k] == $j){
+                        $defaultSpec[$k][$j]['is_default'] = true;
+                    }else{
+                        $defaultSpec[$k][$j]['product_id'] = 0;
+                    }
+                }
+            }
+            //取出刨除去当前id的其他兄弟货品
+            $product_list = $this->where(
+                [
+                    ['goods_id','eq',$product['goods_id']],
+                    ['id','neq',$id],
+                ]
+            )->select();
+            if(!$product_list->isEmpty()){
+                $product_list = $product_list->toArray();
+            }else{
+                $product_list = [];
+            }
+            foreach($product_list as $k => $v){
+                $product_list[$k]['temp_spes_desc'] = getProductSpesDesc($v['spes_desc']);
+            }
+            //遍历二维多规格信息，设置货品id
+            foreach($defaultSpec as $k => $j){
+                foreach($j as $v => $l){
+                    //如果是默认选中的，不需要找货品信息
+                    if(isset($l['is_default'])){
+                        continue;
+                    }
+                    $tempProductSpesDesc = $productSpesDesc;
+                    $tempProductSpesDesc[$k] = $v;
+                    //循环所有货品，找到对应的多规格
+                    foreach($product_list as $a){
+                        if(!array_diff_assoc($a['temp_spes_desc'],$tempProductSpesDesc)){
+                            $defaultSpec[$k][$v]['product_id'] = $a['id'];
+                            break;           //找到了，就不循环剩下的货品了，没意义
+                        }
+                    }
+                }
+            }
+            $product['default_spes_desc'] = $defaultSpec;
+        }
 
         $product['amount'] = $product['price'];       //商品总价格,商品单价乘以数量
         $product['promotion_list'] = [];             //促销列表

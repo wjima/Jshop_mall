@@ -264,57 +264,29 @@ class Goods extends Common
         $list = $this::with($preModel)->field($fields)->where([ 'id' => $gid ])->find();
         if($list) {
             //$list = $list->toArray();
-            $list['products'] = $this->products($list['id']);
+            //$list['products'] = $this->products($list['id']);
 
             if(isset($list['image_id'])){
                 $image_url         = _sImage($list['image_id']);
                 $list['image_url'] = $image_url;
             }
-            if($list['products']){
-                $list['default']   = $list['products'][0];
-            }
+//            if($list['products']){
+//                $list['default']   = $list['products'][0];
+//            }
             if(isset($list['label_ids'])){
                 $list['label_ids'] = getLabel($list['label_ids']);
             }else{
                 $list['label_ids'] = [];
             }
+            //取默认货品
+            $default_product = $productsModel->where([])->find();
+            if(!$default_product){
+                return error_code(10000);
+            }
+            $list['product'] = $productsModel->getProductInfo($default_product['id']);
 
             if($list['spes_desc']) {
-                $default     = [ ];
-                $defaultSpec = '';
-                $spesDesc     = unserialize($list['spes_desc']);
-
-                foreach($list['products'] as $key => $val) {
-                    if($val['is_defalut'] == '1') {
-                        $default     = $val;
-                        $defaultSpec = $val['spes_desc'];
-                    }
-                    //unset($val['isdel']);
-                    //$list['products'][$key] = $val;
-                }
-                $list['default'] = $default;
-                $spec            = explode(',',$defaultSpec);
-                $tmpDefaultSpec  = [ ];
-                foreach($spec as $key => $value) {
-                    list($specName,$specValue) = explode(':',$value);
-                    $tmpDefaultSpec[$key]['sku_name']  = $specName;
-                    $tmpDefaultSpec[$key]['sku_value'] = $specValue;
-                }
-
-                $tempSpecDesc = [ ];
-                $i            = 0;
-
-
-                foreach((array)$spesDesc as $key => $val) {
-                    $tempSpecDesc[$i]['sku_name'] = $key;
-
-                    foreach($val as $k => $v) {
-                        $tempSpecDesc[$i]['sku_value'][$k]['name']       = $v;
-                        $tempSpecDesc[$i]['sku_value'][$k]['is_defalut'] = $this->getDefaultSpec($tmpDefaultSpec,$key,$v);
-                    }
-                    $i++;
-                }
-                $list['spes_desc'] = $tempSpecDesc;
+                $list['spes_desc'] = unserialize($list['spes_desc']);;
             }
             //取出图片集
             $imagesModel = new GoodsImages();

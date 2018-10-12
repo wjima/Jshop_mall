@@ -784,3 +784,16 @@ function getAddonsConfig($name = ''){
     $addonModel = new \app\common\model\Addons();
     return $addonModel->getSetting($name);
 }
+//货品上的多规格信息，自动拆分成二维数组
+function getProductSpesDesc($str_spes_desc){
+    if($str_spes_desc == ""){
+        return [];
+    }
+    $spes = explode(',',$str_spes_desc);
+    $re = [];
+    foreach($spes as $v){
+        $val = explode(':',$v);
+        $re[$val[0]] = $val[1];
+    }
+    return $re;
+}

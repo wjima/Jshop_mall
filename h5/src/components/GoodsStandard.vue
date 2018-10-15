@@ -1,30 +1,44 @@
 <template>
-    <div class="goodsstandard" v-if="spes.length">
+    <div class="goodsstandard" v-if="Object.keys(spes).length">
         <div class="standard-content" v-for="(item, index) in spes" :key="index">
             <div class="standard-content-header">
-               <p>{{ item.sku_name }}</p>
+               <p>{{ index }}</p>
             </div>
-            <div :class="sku.is_defalut | setDefaultActive" v-for="(sku, key) in item.sku_value" :key="key" @click="change(item.sku_name, sku.name)">{{ sku.name }}</div>
+            <div :class="sku | setDefaultActive" v-for="(sku, key) in item" :key="key" @click="change(index, key)">{{ sku.name }}</div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    props: ['spes', 'products'],
+    props: {
+        spes: {
+            type: [Array, Object, Boolean],
+            default () {
+                return []
+            }
+        }
+    },
     filters: {
         // 设置 默认及选中 的样式
-        setDefaultActive (index) {
-            if (index === '1') {
+        setDefaultActive (key) {
+            if (key.hasOwnProperty('is_default')) {
                 return 'red'
             } else {
-                return ''
+                if (!key.product_id) {
+                    return 'gray'
+                } else {
+                    return ''
+                }
             }
         }
     },
     methods: {
-        change (index, val) {
-            this.$emit('changeSpes', {index, val})
+        // 切换商品规格
+        change (index, key) {
+            if (this.spes[index][key].hasOwnProperty('product_id') && this.spes[index][key].product_id) {
+                this.$emit('changeSpes', this.spes[index][key].product_id)
+            }
         }
     }
 }

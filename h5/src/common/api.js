@@ -82,7 +82,7 @@ const ApiUrl = () => {
 }
 
 // 接口token验证
-function post (method, data, callback, show = true) {
+function post (method, data, callback) {
     // 如果是需要登陆的，增加token
     if (methodToken.indexOf(method) >= 0) {
         data.token = common.getStorage('user_token')
@@ -248,6 +248,11 @@ function goodsDetail (data, callback) {
 // 获取商品参数信息
 function goodsParams (data, callback) {
     post('goods.getgoodsparams', data, callback)
+}
+
+// 获取设置默认货品
+function getProductInfo (data, callback) {
+    post('goods.getproductinfo', data, callback)
 }
 
 // 获取商品评论信息
@@ -567,6 +572,7 @@ export default {
     goodsDetail: goodsDetail,
     goodsParams: goodsParams,
     goodsComment: goodsComment,
+    getProductInfo: getProductInfo,
     addCart: addCart,
     articleInfo: articleInfo,
     removeCart: removeCart,

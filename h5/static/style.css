@@ -485,6 +485,10 @@
     background-color: #FF3B44;
     color: #fff !important;
 }
+.gray{
+    background-color: #cdcdcd;
+    color: #fff !important;
+}
 .goodstitle{
     background-color: #fff;
     text-align: left;
@@ -1011,7 +1015,7 @@
     text-align: center;
     color: #888;
 }
-.datasetting .datasetting-content .yd-cell-right .yd-datetime-input{    
+.datasetting .datasetting-content .yd-cell-right .yd-datetime-input{
     justify-content: center;
     color: #888;
 }
@@ -1027,7 +1031,7 @@
     display: flex;
     -webkit-box-align: center;
     align-items: center;
-    color: #666;       
+    color: #666;
 }
 .search-input .search-icon:after {
     content: "\E626";

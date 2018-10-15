@@ -32,9 +32,9 @@ export default {
     props: {
         config: 'config',
         product: {
-            type: [Array, Object],
+            type: [Object, Array],
             default () {
-                return []
+                return {}
             }
         },
         brief: {

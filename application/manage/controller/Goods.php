@@ -258,7 +258,7 @@ class Goods extends Manage
         ];
         $bn                             = get_sn(3);
         $data['goods']['name']          = input('post.goods.name', '');
-        $data['goods']['goods_cat_id']  = input('post.goods_cat_id.1', 0);
+        $data['goods']['goods_cat_id']  = input('post.goods_cat_id.0', 0);
         $data['goods']['goods_type_id'] = input('post.goods_type_id', 0);
         $data['goods']['brand_id']      = input('post.goods.brand_id', 0);
         $data['goods']['bn']            = input('post.goods.bn', $bn);

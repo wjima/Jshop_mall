@@ -279,7 +279,7 @@ class Goods extends Common
                 $list['label_ids'] = [];
             }
             //取默认货品
-            $default_product = $productsModel->where([])->find();
+            $default_product = $productsModel->where('goods_id', $gid)->find();
             if(!$default_product){
                 return error_code(10000);
             }

@@ -4,14 +4,19 @@
             :imgList="goodsData.album"
         ></slider>
         <goodstitle
-            :product="goodsProduct"
+            :product="productSpes"
             :brief="goodsData.brief"
             :buyCount="goodsData.buy_count"
             :unit="goodsData.unit"
         ></goodstitle>
-        <goodsservice :promotion="checkPromotion"></goodsservice>
-        <goodsstandard :spes="goodsSpes" :products="goodsData.products" @changeSpes="changeSpes"></goodsstandard>
-        <goodsnum :stock="stock" @num="goodsNum"></goodsnum>
+        <goodsservice
+            :promotion="checkPromotion"
+        ></goodsservice>
+        <goodsstandard
+            :spes="productSpes.default_spes_desc"
+            @changeSpes="changeSpes"
+        ></goodsstandard>
+        <goodsnum :stock="productSpes.stock" @num="goodsNum"></goodsnum>
         <yd-tab>
             <yd-tab-panel label="图文详情">
                 <ul v-html="goodsData.intro"></ul>
@@ -47,7 +52,12 @@
                 </ul>
             </yd-tab-panel>
         </yd-tab>
-        <goodsdetailfooter :is_fav="is_fav" @collection="collection" @addCart="add" @buyNow="buyNow"></goodsdetailfooter>
+        <goodsdetailfooter
+            :is_fav="is_fav"
+            @collection="collection"
+            @addCart="add"
+            @buyNow="buyNow"
+        ></goodsdetailfooter>
     </div>
 </template>
 
@@ -65,9 +75,7 @@ export default {
             pageSize: 5, // 商品评论分页数量
             goodsId: this.$route.query.goods_id ? this.$route.query.goods_id : '', // vueRouter传过来的商品id
             goodsData: [], // 商品数据
-            goodsSpes: [], // 商品全部规格
-            goodsProducts: [], // 商品全部规格信息
-            goodsProduct: [], // 选中的商品规格信息
+            productSpes: [], // 商品全部规格
             promotion: [], // 促销信息
             stock: '', // 选中规格的库存数量
             params: [], // 商品参数信息
@@ -90,30 +98,6 @@ export default {
         this.goodsComment()
     },
     computed: {
-        // 获取当前选中规格的商品价格及库存信息
-        product: {
-            get () {
-                return this.goodsProduct
-            },
-            set (spes) {
-                if (this.goodsSpes.length !== 0) {
-                    let goodsProducts = []
-                    for (let i in this.goodsData.products) {
-                        if (this.goodsData.products[i].spes_desc === spes) {
-                            goodsProducts = this.goodsData.products[i]
-                        }
-                    }
-                    this.goodsProduct = goodsProducts
-                    this.stock = goodsProducts.stock
-                    this.promotion = this.goodsProduct.promotion_list
-                } else {
-                    // 单规格商品
-                    this.goodsProduct = this.goodsData.default
-                    this.stock = this.goodsData.default.stock
-                    this.promotion = this.goodsData.promotion_list
-                }
-            }
-        },
         // 促销信息重新计算满足的条件 如果存在不满足的条件 就不显示促销信息
         checkPromotion () {
             if (this.promotion) {
@@ -139,16 +123,8 @@ export default {
                     } else {
                         this.is_fav = true
                     }
-                    // 是否有多规格属性
-                    if (res.data.spes_desc) {
-                        this.goodsSpes = res.data.spes_desc
-                    }
-                    // 商品默认规格
-                    if (res.data.products) {
-                        this.goodsProduct = res.data.default
-                        this.stock = res.data.default.stock
-                        this.promotion = res.data.default.promotion_list
-                    }
+                    // 商品规格信息
+                    this.productSpes = res.data.product.data
                     // 添加用户浏览足迹
                     if (this.GLOBAL.getStorage('user_token')) {
                         this.goodsBrowsing()
@@ -208,28 +184,13 @@ export default {
                 }
             })
         },
-        // 切换商品规格
-        changeSpes (event) {
-            for (let i in this.goodsSpes) {
-                if (this.goodsSpes[i].sku_name === event.index) {
-                    for (let j in this.goodsSpes[i].sku_value) {
-                        if (this.goodsSpes[i].sku_value[j].name === event.val) {
-                            this.$set(this.goodsSpes[i].sku_value[j], 'is_defalut', '1')
-                        } else {
-                            this.$set(this.goodsSpes[i].sku_value[j], 'is_defalut', '2')
-                        }
-                    }
-                    let spes = []
-                    for (let i in this.goodsSpes) {
-                        for (let j in this.goodsSpes[i].sku_value) {
-                            if (this.goodsSpes[i].sku_value[j].is_defalut === '1') {
-                                spes += this.goodsSpes[i].sku_name + ':' + this.goodsSpes[i].sku_value[j].name + ','
-                            }
-                        }
-                    }
-                    this.product = spes.toString().replace(/,$/, '')
+        // 更改默认货品
+        changeSpes (id) {
+            this.$api.getProductInfo({id: id}, res => {
+                if (res.status) {
+                    this.productSpes = res.data
                 }
-            }
+            })
         },
         // 子组件传过来的商品数量
         goodsNum (num) {
@@ -250,7 +211,7 @@ export default {
         },
         // 加入购物车
         add () {
-            this.$api.addCart({product_id: this.goodsProduct.id, nums: this.num}, res => {
+            this.$api.addCart({product_id: this.productSpes.id, nums: this.num}, res => {
                 if (res.status) {
                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})
                 }
@@ -258,7 +219,7 @@ export default {
         },
         // 立即购买
         buyNow () {
-            this.$api.addCart({product_id: this.goodsProduct.id, nums: this.num, type: 2}, res => {
+            this.$api.addCart({product_id: this.productSpes.id, nums: this.num, type: 2}, res => {
                 if (res.status) {
                     let cartIds = res.data
                     this.$router.push({path: '/firmorder', query: {cartIds}})

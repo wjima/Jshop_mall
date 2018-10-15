@@ -456,11 +456,12 @@ Page({
         if (res.data.stock < 1) {
           st = false;
         }
-
-
-
+        var goodsInfo = page.data.goodsInfo;
+        goodsInfo.product = res.data;
         page.setData({
           goodsSpesDesc: page.getSpes(res.data),
+          productId: res.data.id,
+          goodsInfo: goodsInfo,
           status: st,
           nums:1
         });

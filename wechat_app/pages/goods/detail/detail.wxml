@@ -29,8 +29,8 @@
     <!-- 商品价格和销量 -->
     <view class='price-salesvolume'>
       <view class='commodity-price'>
-        <text class='current-price'>￥{{goodsInfo.price}}</text>
-        <text class='cost-price'>￥{{goodsInfo.mktprice}}</text>
+        <text class='current-price'>￥{{goodsInfo.product.price}}</text>
+        <text class='cost-price'>￥{{goodsInfo.product.mktprice}}</text>
       </view>
       <view class='commodity-salesvolume'>销量：{{goodsInfo.buy_count}}件</view>
     </view>
@@ -42,9 +42,9 @@
         <text wx:for="{{goodsInfo.label_ids}}" wx:key="ind" wx:for-item="items" class="lable_{{items.style}}">{{items.name}}</text>
       </view>
       <!-- 促销信息 -->
-      <view class='sales-promotion' wx:if="{{goodsInfo.default.promotion_list.length !== 0}}">
+      <view class='sales-promotion' wx:if="{{goodsInfo.product.promotion_list.length !== 0}}">
         <text class='salespromotion-service-name'>促销</text>
-        <text wx:for="{{goodsInfo.default.promotion_list}}" wx:key="inde" wx:for-item="items" class='salespromotion-service-body' wx:if="{{items.type == 2}}">{{items.name}}</text>
+        <text wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items" class='salespromotion-service-body' wx:if="{{items.type == 2}}">{{items.name}}</text>
         
       </view>
       <!-- 服务信息 -->
@@ -75,7 +75,7 @@
           <input type="number" bindchange="bindManual" value="{{nums}}"/>  
           <text class="{{maxStatus}}" bindtap="bindPlus">+</text>  
         </view>
-        <text>库存 </text><text> {{goodsInfo.default.stock}}</text>
+        <text>库存 </text><text> {{goodsInfo.product.stock}}</text>
       </view>
     </view>
 

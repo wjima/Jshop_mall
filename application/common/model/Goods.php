@@ -283,7 +283,11 @@ class Goods extends Common
             if(!$default_product){
                 return error_code(10000);
             }
-            $list['product'] = $productsModel->getProductInfo($default_product['id']);
+            $product_info = $productsModel->getProductInfo($default_product['id']);
+            if(!$product_info['status']){
+                return $product_info;
+            }
+            $list['product'] = $product_info['data'];
 
             if($list['spes_desc']) {
                 $list['spes_desc'] = unserialize($list['spes_desc']);;

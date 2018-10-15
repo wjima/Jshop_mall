@@ -62,9 +62,9 @@
     <view class='color-number'>
       <!-- 规格 -->
       <view class='color' wx:for="{{goodsSpesDesc}}" wx:key="{{index}}">
-        <text class='salespromotion-service-name'>{{item.sku_name}}</text>
-        <block wx:for="{{item.sku_value}}" wx:for-item="i" wx:key="{{index-1}}">
-          <view class='{{i.is_defalut == "1" ? "pitch-on" : ""}}' data-key="{{item.sku_name}}" data-id="{{i.name}}" bindtap="selectSku">{{i.name}}</view>
+        <text class='salespromotion-service-name'>{{index}}</text>
+        <block wx:for="{{item}}" wx:for-item="i" wx:key="{{index-1}}">
+          <view class='{{i.is_default ? "pitch-on" : ""}}' data-key="{{i.product_id}}" data-id="{{i.name}}" bindtap="selectSku">{{i.name}}</view>
         </block>
       </view>
       <!-- 库存 -->

@@ -304,6 +304,12 @@ function goodsInfo(data, callback) {
     callback(res);
   });
 }
+//货品详情获取接口
+function productInfo(data, callback) {
+  api('goods.getproductinfo', data, function (res) {
+    callback(res);
+  });
+}
 //商品参数获取接口
 function goodsParameter(data, callback) {
   api('goods.getgoodsparams', data, function (res) {
@@ -716,6 +722,8 @@ module.exports = {
   goodsList: goodsList,
   cartList: cartList,
   goodsInfo: goodsInfo,
+  productInfo: productInfo,
+  productInfo: productInfo,
   goodsParameter: goodsParameter,
   goodsHistory: goodsHistory,
   goodsCollection: goodsCollection,

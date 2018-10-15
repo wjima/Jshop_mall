@@ -19,7 +19,6 @@ Page({
     selected2: false, //买家评价切换
     goodsInfo: [], //商品信息
     goodsAllParameter: [], //商品产品参数
-    goodsAllProducts: [], //全部商品规格
     goodsSpesDesc: [],
     minStatus: 'normal',
     maxStatus: 'normal',
@@ -70,7 +69,7 @@ Page({
   //数量改变设置
   setNumsData: function () {
     var nums = this.data.nums;
-    var stock = this.data.goodsInfo.default.stock;
+    var stock = this.data.goodsInfo.product.stock;
     var minStatus = 'normal';
     var maxStatus = 'normal';
     
@@ -208,24 +207,23 @@ Page({
           });
         } else {
           var st = true;
-          if (res.data.default.stock < 1) {
+          if (res.data.product.stock < 1) {
             st = false;
           }
           var isfav = true;
           if (res.data.isfav == 'false') {
             isfav = false;
           }
-          var spes_desc = page.getSpes(res.data);
+          var spes_desc = page.getSpes(res.data.product);
           page.setData({
             goodsImg: res.data.album,
             goodsInfo: res.data,
-            productId: res.data.default.id,
+            productId: res.data.product.id,
             goodsSpesDesc: spes_desc,
             status: st,
             isfav: isfav
           });
           WxParse.wxParse('detial', 'html', res.data.intro, page, 5); //解析商品图文详情
-          page.setAllProducts(res.data.products); //存储全部规格货品
           page.goodsAllParameter(); //获取产品参数
           page.setNumsData(res.data);
         }
@@ -300,21 +298,6 @@ Page({
           goodsAllParameter: res.data
         });
       }
-    });
-  },
-
-  //设置全部规格货品
-  setAllProducts: function (data) {
-    var sku_list = [];
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].spes_desc) {
-        sku_list[data[i].spes_desc] = data[i];
-      } else {
-        sku_list['one'] = data[i];
-      }
-    }
-    this.setData({
-      goodsAllProducts: sku_list
     });
   },
 
@@ -393,7 +376,7 @@ Page({
   goodsAddCart: function () {
     var page = this;
     app.db.userToken(function (token) {
-      page.getNowProduct(); //获取当前选中的货品信息
+      //page.getNowProduct(); //获取当前选中的货品信息
       var data = {
         product_id: page.data.productId,
         nums: page.data.nums
@@ -407,40 +390,40 @@ Page({
   },
 
   //获取当前选中的货品
-  getNowProduct: function () {
-    if (this.data.goodsSpesDesc) {
-      var now = '';
-      var data = this.data.goodsSpesDesc;
-      for (var key in data) {
-        for (var key2 in data[key].sku_value) {
-          if (data[key].sku_value[key2].is_defalut == 1) {
-            now = now + ',' + data[key].sku_name + ':' + data[key].sku_value[key2].name
-          }
-        }
-      }
-      now = now.substring(1);
-      if (this.data.goodsAllProducts[now].id) {
-        this.setData({
-          productId: this.data.goodsAllProducts[now].id
-        });
-        return this.data.goodsAllProducts[now];
-      } else {
-        wx.showToast({
-          title: '该货品不存在，请重新选择规格'
-        });
-        return false;
-      }
-    } else {
-      //没有开启多规格不需要设置ProductID
-      return false;
-    }
-  },
+  // getNowProduct: function () {
+  //   if (this.data.goodsSpesDesc) {
+  //     var now = '';
+  //     var data = this.data.goodsSpesDesc;
+  //     for (var key in data) {
+  //       for (var key2 in data[key].sku_value) {
+  //         if (data[key].sku_value[key2].is_defalut == 1) {
+  //           now = now + ',' + data[key].sku_name + ':' + data[key].sku_value[key2].name
+  //         }
+  //       }
+  //     }
+  //     now = now.substring(1);
+  //     if (this.data.goodsAllProducts[now].id) {
+  //       this.setData({
+  //         productId: this.data.goodsAllProducts[now].id
+  //       });
+  //       return this.data.goodsAllProducts[now];
+  //     } else {
+  //       wx.showToast({
+  //         title: '该货品不存在，请重新选择规格'
+  //       });
+  //       return false;
+  //     }
+  //   } else {
+  //     //没有开启多规格不需要设置ProductID
+  //     return false;
+  //   }
+  // },
 
   //立即购买
   buyNow: function () {
     var page = this;
     app.db.userToken(function (token) {
-      page.getNowProduct(); //获取当前选中的货品信息
+      //page.getNowProduct(); //获取当前选中的货品信息
       var data = {
         product_id: page.data.productId,
         nums: page.data.nums,
@@ -456,49 +439,63 @@ Page({
   
   //规格选择
   selectSku: function (obj) {
-    var spes_desc = this.data.goodsSpesDesc;
-    for (var key in spes_desc) {
-      if (spes_desc[key].sku_name == obj.target.dataset.key) {
-        for (var key_2 in spes_desc[key].sku_value) {
-          if (spes_desc[key].sku_value[key_2].name == obj.target.dataset.id) {
-            spes_desc[key].sku_value[key_2].is_defalut = 1;
-          }else{
-            spes_desc[key].sku_value[key_2].is_defalut = 2;
-          }
-        }
-      }
+    console.log(obj);
+    var id = obj.target.dataset.key;
+    if(id == "" || id == "0"){
+      app.common.errorToBack("出错了",0);
+      return false;
     }
-    this.setData({
-      goodsSpesDesc : spes_desc
+
+    var data = {
+      id: id,
+    }
+    var page = this;
+    app.api.productInfo(data, function (res) {
+      if(res.status){
+        var st = true;
+        if (res.data.stock < 1) {
+          st = false;
+        }
+
+
+
+        page.setData({
+          goodsSpesDesc: page.getSpes(res.data),
+          status: st,
+          nums:1
+        });
+      }
     });
+    //重新请求接口，获得接口信息
+    // this.setData({
+    //   goodsSpesDesc : spes_desc
+    // });
 
     //获取当前规格渲染价格和库存
-    var s = this.getNowProduct();
-    if(s) {
-      var goodsInfo = this.data.goodsInfo;
-      goodsInfo.price = s.price;
-      goodsInfo.mktprice = s.mktprice;
-      goodsInfo.default.stock = s.stock;
-      var st = true;
-      var nu = 1;
-      if (goodsInfo.default.stock < 1){
-        st = false;
-        nu = 0;
-      }
-      this.setData({
-        goodsInfo: goodsInfo,
-        status: st,
-        nums: nu
-      });
-    }
+    // var s = this.getNowProduct();
+    // if(s) {
+    //   var goodsInfo = this.data.goodsInfo;
+    //   goodsInfo.price = s.price;
+    //   goodsInfo.mktprice = s.mktprice;
+    //   goodsInfo.product.stock = s.stock;
+    //   var st = true;
+    //   var nu = 1;
+    //   if (goodsInfo.product.stock < 1){
+    //     st = false;
+    //     nu = 0;
+    //   }
+    //   this.setData({
+    //     goodsInfo: goodsInfo,
+    //     status: st,
+    //     nums: nu
+    //   });
+    // }
   },
-  getSpes: function(detail){
-    if(!detail.spes_desc){
+  getSpes: function (product){
+    if(!product.default_spes_desc){
       return [];
     }
-    console.log(detail);
-
-    return detail.spes_desc;
+    return product.default_spes_desc;
   },
   
   //客服功能

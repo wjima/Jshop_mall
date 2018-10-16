@@ -124,7 +124,7 @@ export default {
                         this.is_fav = true
                     }
                     // 商品规格信息
-                    this.productSpes = res.data.product.data
+                    this.productSpes = res.data.product
                     // 添加用户浏览足迹
                     if (this.GLOBAL.getStorage('user_token')) {
                         this.goodsBrowsing()

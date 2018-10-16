@@ -19,6 +19,7 @@
     "jquery": "^2.2.1",
     "moment": "^2.22.1",
     "vue": "^2.5.2",
+    "vue-aliplayer": "0.0.7",
     "vue-awesome-mui": "^1.7.3",
     "vue-moment": "^3.2.0",
     "vue-pickers": "^1.0.6",

@@ -105,7 +105,8 @@ swiper{
 }
 .salespromotion-service-name{
   color: #A5A5A5;
-  margin-right: 26rpx;   
+  margin-right: 26rpx;
+  float: left;
 }
 .sales-promotion{
   padding: 20rpx 25rpx; 
@@ -174,22 +175,33 @@ swiper{
 .color,.specifications,.number{
   padding: 22rpx 25rpx;
   border-bottom: 2rpx solid #f3f3f3;
+  overflow: hidden;
 } 
-.color view,.specifications view{
+.color .salespromotion-service-b,.specifications .salespromotion-service-b{
+  width: 620rpx;
+  display: inline-block;
+  float: left;
+}
+.color .salespromotion-service-b>view,.specifications .salespromotion-service-b>view{
   width: 140rpx;
   height: 56rpx;
   display: inline-block;
   text-align: center;
-  border: 2rpx solid #f3f3f3;
+  border: 2rpx solid #e0e0e0;
   border-radius: 8rpx;
   color: #666;
   line-height: 56rpx;
   margin-right: 22rpx;
+  margin-bottom: 4rpx;
 }
 .pitch-on{
   border: 2rpx solid #FF3B44;
   background-color: #FF3B44;
   color: #fff !important;
+}
+.nothing{
+  border: 2rpx dashed #e0e0e0 !important;
+  color: #999 !important;
 }
 .number{
   padding: 22rpx 25rpx;

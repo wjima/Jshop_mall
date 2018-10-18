@@ -201,7 +201,7 @@ swiper{
 }
 .nothing{
   border: 2rpx dashed #e0e0e0 !important;
-  color: #999 !important;
+  color: #c9c9c9 !important;
 }
 .number{
   padding: 22rpx 25rpx;

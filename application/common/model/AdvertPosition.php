@@ -87,8 +87,8 @@ class AdvertPosition extends Common
             $result['status'] = false;
             $result['msg'] = $validate->getError();
         } else {
-            // 判断商户该模板是否已经添加
-            if (!$this->where('code', $data['code'])->find()) {
+            // 判断该模板是否已经添加
+            if ($this->where('code', $data['code'])->find()) {
                 $result[ 'status' ] = false;
                 $result[ 'msg' ] = '该广告位模板已经添加';
             } else {

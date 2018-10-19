@@ -1,0 +1,1 @@
+ALTER TABLE `advert_position` DROP `seller_id`;

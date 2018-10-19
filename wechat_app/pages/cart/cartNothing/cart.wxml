@@ -1,0 +1,83 @@
+<view class='cart-content'>
+  
+  <!-- 商品信息 -->
+  <view class="list-body touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" wx:for="{{cartData.list}}" wx:key="{{key}}">
+    <!-- 商品信息 -->
+    <view class="content">
+      <view class="check-box">
+        <image class="{{item.is_select?'hide':'show'}}" bindtap="checkbox" src='../../image/unchecked.png' data-id="{{index}}"></image>
+        <image class="{{item.is_select?'show':'hide'}}" bindtap="checkbox" src='../../image/checked.png' data-id="{{index}}"></image>
+      </view>
+      <!-- 商品图片 -->
+      <image bindtap='goodsDetail' data-id="{{item.products.goods_id}}" class='thumbnail' src='{{item.products.image_path}}'></image>
+      <!-- 商品详情 -->
+      <view class='list-body-right'>
+        <view class='body-right-title' bindtap='goodsDetail' data-id="{{item.products.goods_id}}">
+          <!-- 商品名称 -->
+          {{item.products.name}}
+        </view>
+        <image class='right-img' src='../../image/right.png'></image> 
+        <view class='body-right-style' bindtap='goodsDetail' data-id="{{item.products.goods_id}}">
+          <!-- 商品规格 -->
+          <view wx:if="{{item.products.spes_desc}}">{{item.products.spes_desc}}</view>
+          <view style="height:22rpx;" wx:else><text></text></view>
+        </view>
+        <!-- 商品优惠信息 -->
+        <view wx:if="{{item.products.promotion_list.length != 0}}">
+          <text wx:for="{{item.products.promotion_list}}" wx:for-item="val" wx:key="{{ind}}" class="{{val.type == 2?'promotion_on':'promotion_off'}}">{{val.name}}</text>
+        </view>
+        <view class='body-right-price'>
+          <!-- 商品价格 -->
+          <text bindtap='goodsDetail' data-id="{{item.products.goods_id}}">￥{{item.products.price}}</text>
+          <!-- 输入框 -->
+          <view class="stepper">
+            <text class="{{item.minStatus}}" bindtap="bindMinus" data-id="{{item.id}}">-</text>
+            <input type="number" bindchange="bindManual" value="{{item.nums}}" data-id="{{item.id}}"/>
+            <text class="{{item.maxStatus}}" bindtap="bindPlus" data-id="{{item.id}}">+</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 划出来收藏和删除 -->
+    <view class='collect-del'>
+      <view class="{{item.isCollection?'uncollect':'collect'}}" catchtap="collection" data-goodsid="{{item.products.goods_id}}"><text wx:if="{{item.isCollection}}">取消收藏</text><text wx:else>收藏</text></view>
+      <view class="del" catchtap="del" data-index="{{index}}" data-cartid="{{item.id}}">删除</view>
+    </view>
+  </view>
+  <!-- 购物车为空 -->
+  <view class='cart-none' wx:if="{{cartData.list.length == 0 && isLoad == true}}">
+    <image src='../../image/null.png'></image>
+    <text>购物车空空一片快去逛逛吧！</text>
+    <navigator url='../../index/index' hover-class='none' open-type="switchTab">去首页逛逛吧</navigator>
+  </view>  
+</view>
+<!-- 订单信息 -->
+  <view class='preferential' wx:if="{{cartData.list.length > 0}}">
+    <view class='preferential-left' wx:if="{{cartNums > 0}}">
+      <text class='preferential-title'>订单活动：</text>
+      <text wx:for="{{cartData.promotion_list}}" wx:key="index" class="{{item.type == 2?'promotion_on':'promotion_off'}}">{{item.name}}</text>
+    </view>
+    <view class='preferential-right'>
+      <view><text class='preferential-title'>商品优惠：</text>￥{{cartData.goods_pmt}}</view>
+      <view><text class='preferential-title'>订单优惠：</text>￥{{cartData.order_pmt}}</view>
+    </view>
+  </view>
+
+<!-- 统一固定底部 -->
+<view class='cart-footer' wx:if="{{cartData.length != 0}}">
+  <view class='cart-footer-left'>
+    <view class="check-box checkall">
+      <image class="{{checkboxAll?'hide':'show'}}" bindtap="checkboxAll" src='../../image/unchecked.png'></image>
+      <image class="{{checkboxAll?'show':'hide'}}" bindtap="checkboxAll" src='../../image/checked.png'></image>      
+    </view>  
+    <text>全选</text>     
+    <view class='footer-left-right'>
+      <text>合计：</text>
+      <text class='total'>￥{{cartData.amount}}</text> 
+      <view>不包含运费</view>    
+    </view>
+  </view>  
+  <view class='cart-footer-right'>
+    <text class='{{goSettlement?"checkout":"checknone"}}' bindtap='settlement'>去结算</text>
+  </view>
+</view>

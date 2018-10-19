@@ -1,0 +1,22 @@
+<!-- 店铺列表 -->
+<!-- 历史纪录列表 -->
+<view class='store-history'>
+  <!-- <text class='store-history-title'>最近访问的店铺</text> -->
+  <view class='store-box' wx:for="{{store_list}}" wx:for-index="index" wx:for-item="item" wx:key="key" data-id="{{item.token}}" bindtap='gotoStore'>
+    <image src='{{item.logo}}' class='store-logo' data-id="{{item.token}}" bindtap='gotoStore'></image>
+    <view class='store-box-right'>
+      <text class='store-name' data-id="{{item.token}}" bindtap='gotoStore'>{{item.name}}</text>
+      <text class='store-address' data-id="{{item.token}}" bindtap='gotoStore'>{{item.address}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 全部店铺列表 -->
+<!-- <view class='store-all'>
+  <text class='store-all-title'>全部店铺</text>
+  <view class='store-all-box' wx:for="{{all_store}}" wx:for-index="index" wx:for-item="item" wx:key="key" data-id="{{item.token}}" bindtap='gotoStore'>
+    <image src='{{item.logo}}' class='store-all-logo' data-id="{{item.token}}" bindtap='gotoStore'></image>
+    <text class='store-all-name' data-id="{{item.token}}" bindtap='gotoStore'>{{item.name}}</text>
+    <text class='store-all-address' data-id="{{item.token}}" bindtap='gotoStore'>{{item.address}}</text>
+  </view>
+</view> -->

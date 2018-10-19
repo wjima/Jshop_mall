@@ -1,0 +1,105 @@
+html{
+	background-color: #F2F2F2;
+}
+.mini-content{
+	background-color: #fff;
+	min-height: 400px;
+}
+.layui-layout-admin .layui-header{
+	background-color: #f2f2f2;
+	width: 1150px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.state{
+	float: right;
+    margin-top: 15px;
+    color: #666;
+    padding: 5px 8px;
+    border: 1px solid #FFFF33;
+    background-color: #FFFFCC;
+}
+.login-content{
+	width: 100%;
+	background: url(../images/01b17e5620981b6ac7254878c91827.jpg) no-repeat;
+	background-size: 100% 100%;
+	padding: 100px 0;
+	min-width: 1150px;	
+}
+.login-content-mid{
+	width: 1150px;
+	overflow: hidden;
+	margin: 0 auto;
+}
+.layui-container{
+	background-color: #fff;
+	padding: 20px;
+	padding-top: 5px;
+	width: 400px;
+	float: right;
+}
+.layui-tab-content{
+	padding: 20px 0 10px;
+	width: 60%;
+	min-width: 360px;
+	display: inline-block;
+}
+.layui-btn-fluid{
+	width: 330px;
+	margin-left: 0;
+}
+.layui-form-item{
+	margin-bottom: 20px;
+}
+.layui-form-item .layui-input-inline{
+	width: 220px;
+}
+.logo{
+	display: inline-block;
+}
+@media screen and (max-width: 450px){
+	.layui-form-item .layui-input-inline{
+		display: inline-block;
+		margin: 0;
+		left: -1px;
+	}
+	.layui-form-item .layui-input-inline+.layui-form-mid{
+		display: inline-block;
+		margin: 0;
+		top: 0;
+		float: right;
+		right: 85px;
+	}
+}
+.identifying-code .layui-input-inline{
+	width: 225px;
+}
+.identifying-code .layui-input-inline .layui-input{
+	width: 109px;
+	display: inline-block;
+}
+.identifying-code .layui-input-inline #btn{
+	position: relative;
+	top: -1px;
+}
+.login-footer{
+	width: 1150px;
+	margin: 50px auto 0;
+	text-align: center;
+	
+}
+.login-footer a{
+	font-size: 12px;
+	color: #666;
+    text-decoration: none;
+    margin: 0 10px;
+}
+.copyright{
+	margin-top: 10px;
+	font-size: 12px;
+	color: #666;
+}
+.reg-content{
+	width: 400px;
+	margin-left: 500px;
+}

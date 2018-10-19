@@ -1,0 +1,108 @@
+<table class="layui-table" lay-size="sm">
+    <colgroup>
+        <col width="150">
+        <col width="200">
+        <col>
+    </colgroup>
+    <thead>
+    <tr>
+        <th>默认货品</th>
+        <th>货号</th>
+        <th>规格</th>
+        <th>库存</th>
+        <th>销售价</th>
+        <th>成本价</th>
+        <th>市场价</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="items" id="vo" key="key"}
+    {if condition="vo.id"}
+    <tr>
+        <td>
+            <input type="hidden" name="product[{$vo.spec_name}][id]" value="{$vo.product_id}">
+            <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" value="1" {if condition="$vo['is_defalut'] eq 1"} checked="true"  {elseif condition="$key eq 1 "/}checked="true"{/if} class="isdefalut" lay-filter="isdefalut">
+        </td>
+        <td>
+            <input type="text" name="product[{$vo.spec_name}][sn]" value="{$vo.sn}"  placeholder="货号" autocomplete="off" class="layui-input">
+        </td>
+        <td>
+            {$vo.spec_name}
+        </td>
+        <td>
+            <input type="text" name="product[{$vo.spec_name}][stock]" value="{$vo.stock}"   placeholder="库存" autocomplete="off" class="layui-input">
+        </td>
+        <td>
+            <input type="text" name="product[{$vo.spec_name}][price]" value="{$vo.price}"   placeholder="销售价" autocomplete="off" class="layui-input">
+        </td>
+        <td>
+            <input type="text" name="product[{$vo.spec_name}][costprice]" value="{$vo.costprice}"   placeholder="成本价" autocomplete="off" class="layui-input">
+        </td>
+        <td>
+            <input type="text" name="product[{$vo.spec_name}][mktprice]" value="{$vo.mktprice}"  placeholder="市场价" autocomplete="off" class="layui-input">
+        </td>
+        <td>
+            <a class="layui-btn layui-btn-danger layui-btn-xs del-class" >删除</a>
+        </td>
+    </tr>
+    {else}
+        <tr>
+            <td>
+                <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" {if condition="$key eq 1 "}checked{/if}value="1">
+            </td>
+            <td>
+                <input type="text" name="product[{$vo.spec_name}][sn]"  placeholder="货号" autocomplete="off" class="layui-input">
+            </td>
+            <td>
+                {$vo.spec_name}
+            </td>
+            <td>
+                <input type="text" name="product[{$vo.spec_name}][stock]"  placeholder="库存" autocomplete="off" class="layui-input">
+            </td>
+            <td>
+                <input type="text" name="product[{$vo.spec_name}][price]"  placeholder="销售价" autocomplete="off" class="layui-input">
+            </td>
+            <td>
+                <input type="text" name="product[{$vo.spec_name}][costprice]" placeholder="成本价" autocomplete="off" class="layui-input">
+            </td>
+            <td>
+                <input type="text" name="product[{$vo.spec_name}][mktprice]"  placeholder="市场价" autocomplete="off" class="layui-input">
+            </td>
+            <td>
+                <a class="layui-btn layui-btn-danger layui-btn-xs del-class" >删除</a>
+            </td>
+        </tr>
+    {/if}
+    {/volist}
+    </tbody>
+</table>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+
+        form.on('checkbox(isdefalut)', function(data){
+            if(data.elem.checked){
+                var checkedName = $(data.elem).attr("name");
+                $(".isdefalut").each(function (i,dom) {
+                    var name = $(dom).attr("name");
+                    if(name != checkedName){
+                        $(dom).attr("checked",false);
+                        $(dom).attr("value","0");
+                        $("#more_spec .layui-form-checkbox").removeClass('layui-form-checked');
+                    }else {
+                        $(dom).attr("checked", true);
+                        $(dom).attr("value","1");
+                    }
+                });
+                $(data.othis).addClass("layui-form-checked");
+            }else{
+                $(dom).attr("checked",false);
+                $(dom).attr("value","0");
+                $("#more_spec .layui-form-checkbox").removeClass('layui-form-checked');
+            }
+        });
+    });
+</script>

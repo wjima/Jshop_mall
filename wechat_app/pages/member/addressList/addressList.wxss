@@ -1,0 +1,82 @@
+/* pages/member/addressList/addressList.wxss */
+page{
+  background-color: #f5f5f5;
+}
+.orderadd{
+  width: 100%;
+  background-color: #fff;
+  padding: 30rpx 20rpx;
+  position: relative;
+  font-size: 26rpx;
+  box-sizing: border-box;
+  margin-bottom: 10rpx;
+}
+.orderadd-header{
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 10rpx;
+}
+.orderadd-header-tag{
+    background-color: #ef4f4f;
+    color: #fff;
+    padding: 6rpx 12rpx;
+    border-radius: 20rpx;
+    font-size: 24rpx;
+}
+.orderadd-header-del{
+    background-color: #fff;
+    float: right;
+    height: 50rpx;
+    line-height: 50rpx;
+    color: #666;
+    font-size: 24rpx;
+    border-radius: 4rpx;
+}
+.orderadd-top{
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+.orderadd-num{
+  float: right;
+  color: #999;
+  font-size: 24rpx;
+}
+.orderadd-bottom{
+  color: #999;
+  position: relative;
+}
+.orderadd-detail{
+  width: 686rpx;
+  display: inline-block;
+}
+.right-img{
+  width: 14rpx;
+  height: 24rpx;  
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.add-button{
+  position: fixed;
+  bottom: 0;
+  background-color: #fff;
+  padding: 20rpx 20rpx 14rpx;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.add-button button{
+  height: 66rpx;
+  line-height: 66rpx;
+  font-size: 26rpx;
+  text-align: center;
+  width: 48%;
+  background-color: #fff !important;
+  color: #666;
+  display: inline-block;
+  border-right: 2rpx solid #e0e0e0 !important;
+}
+.add-button button:last-child{
+    float: right; 
+}

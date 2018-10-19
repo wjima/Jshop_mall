@@ -1,0 +1,14 @@
+<!-- 搜索页面 -->
+<view class="header-input">
+  <input class="search-input" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+     <icon size='15' type='search'></icon> 
+  </input>
+  <view class='message' bindtap='search'>
+      <image src='../../image/search.png'></image>
+  </view>
+</view>
+
+<!-- 搜索词记录 -->
+<view class='keys'>
+  <view class='key' wx:for="{{keys}}" wx:key="index" bindtap='{{navType}}' data-key="{{item}}">{{item}}</view>
+</view>

@@ -1,0 +1,20 @@
+<scroll-view scroll-y="true" scroll-into-view="{{toView}}" style="height:100vh;" bindscrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
+    <view class='recommendlist'>
+        <view class='recommend-item'>
+            <!-- 循环 -->
+            <view class='recommend-content' wx:for="{{lists}}" wx:key="index">
+                <image class='user-img' src='{{item.avatar}}'></image>
+                <view class='content-right'>
+                    <text class='user-name'>昵称：{{item.nickname}}</text>
+                    <text class='user-num'>手机：{{item.mobile}}</text>
+                    <text class='user-time'>推荐时间：{{item.ctime}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 加载操作 -->
+    <view class="loading" id='loading' hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
+    <view class="loading" id='loading' hidden="{{!loadingComplete}}">已载入全部</view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../image/page1copy.png'></image><text>没有数据</text></view>
+</scroll-view>

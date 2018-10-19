@@ -1,0 +1,40 @@
+<view class='content'>
+  <view class="page__bd">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/man.png'></image>
+          <view class="weui-label">昵称</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" bindblur='nicknameChange' value='{{nickname}}' placeholder-class='p-class' placeholder="请输入昵称" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/calendar.png'></image>
+          <view class="weui-label">生日</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date" value="{{birthday}}" start="1949-10-01" end="{{endtime}}" bindchange="bindDateChange">
+            <view class="weui-input">{{birthday}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_select">
+        <view class="weui-cell__hd weui-cell__hd_in-select-after">
+          <image class='header-img' src='../../image/city.png'></image>
+          <view class="weui-label">性别</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker bindchange="bindSexChange" value="{{sex}}" range-key='name' range="{{objectSex}}">
+            <view class="weui-input">{{objectSex[sex].name}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <view class="weui-btn-area">
+      <button class="weui-btn" type="" bindtap="showTopTips">确认修改</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,20 @@
+<div style="padding:30px;" class="layui-form layui-form-pane">
+
+    <input type="hidden" name="id" value="{$typeInfo.id}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>分类名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="type_name" required lay-verify="required" placeholder="请输入名称" value="{$typeInfo.type_name}" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="edit_article_type">保存</button>
+
+</div>
+
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

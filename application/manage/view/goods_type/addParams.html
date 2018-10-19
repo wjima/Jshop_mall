@@ -1,0 +1,26 @@
+<form action="" method="post" id="paramsForm" >
+    <div style="padding: 30px;" class="layui-form ">
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型名称：</label>
+            <div class="layui-form-mid">
+                {$spec_name}
+                <input type="hidden" name="type_id" value="{$spec_id}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">请选择参数</label>
+            <div class="layui-input-block">
+                {volist name="params" id="vo"}
+                <input type="checkbox" name="params_id[]" lay-skin="primary" value="{$vo.id}" {if condition="in_array($vo[id],$typePids)"}checked{/if}>{$vo.name}
+                {/volist}
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    //渲染表单
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

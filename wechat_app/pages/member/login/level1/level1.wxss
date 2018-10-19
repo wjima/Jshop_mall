@@ -1,0 +1,22 @@
+.top{
+  text-align: center;
+  margin: 100rpx auto;
+}
+.top>image{
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+}
+.mid{
+  width: 650rpx;
+  margin: 0 auto;
+}
+.weui-btn{
+  font-size: 32rpx;
+}
+.bot{
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 30rpx;
+}

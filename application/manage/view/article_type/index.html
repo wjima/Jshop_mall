@@ -1,0 +1,126 @@
+<div class="layui-form seller-form">
+
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<div class="layui-input-inline">
+				<button class="layui-btn layui-btn-sm add-article-type"><i class="layui-icon">&#xe608;</i> 添加</button>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="table-body">
+	<table id="articleTypeTable" lay-filter="articleTypeTable"></table>
+</div>
+
+<script>
+    layui.use(['table','form','layer'],function(){
+        var layer = layui.layer, table = layui.table,form = layui.form;
+        //执行渲染
+        table.render({
+            elem: '#articleTypeTable', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-220',
+            cellMinWidth: '80',
+            id:'articleTypeTable',
+            url: "{:url('ArticleType/index')}",
+            cols: [[ //标题栏
+                {type: 'numbers'},
+                {field: 'type_name', title: '文章分类名称'},
+                {fixed: 'right', width:240, title:'操作',align:'center', toolbar:'#articleTypeBar'}
+            ]] //设置表头
+            //,…… //更多参数参考右侧目录：基本参数选项
+        });
+
+        form.on('submit(seller)', function(data){
+            layui.table.reload('articleTypeTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        $(document).on('click','.add-article-type',function(){
+            JsGet("{:url('ArticleType/add')}", function(e){
+                window.box = layer.open({
+                    type: 1,
+                    content: e,
+                    area: ['400px', '300px'],
+                    title:'添加文章分类'
+                });
+			})
+        });
+
+        //ajax提交 添加
+        form.on('submit(submit_article_type)', function(data){
+            JsPost("{:url('ArticleType/add')}", data.field, function(res){
+                if(res.status){
+                    layer.close(window.box);
+                    layer.msg(res.msg, {time:1300},function(){
+                        table.reload('articleTypeTable');
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+			})
+        });
+
+        //修改   edit
+        form.on('submit(edit_article_type)',function(data){
+            JsPost("{:url('ArticleType/edit')}", data.field, function(res){
+                if(res.status){
+                    layer.close(window.box);
+                    layer.msg(res.msg, {time: 1300},function(){
+                        table.reload('articleTypeTable');
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+			})
+        });
+
+        //监听工具条
+        table.on('tool(articleTypeTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的要删除么',{icon: 3}, function(index){
+                    JsGet("{:url('ArticleType/del')}?id=" + data.id, function(res){
+                        if(res.status){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                        }
+                        layer.msg(res.msg);
+					})
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                JsGet("{:url('ArticleType/edit')}?id=" + data.id, function(e){
+                    window.box = layer.open({
+                        type:1,
+                        content:e,
+                        area:['400px','300px'],
+                        title:'修改文章分类'
+                    })
+				})
+            }else if(layEvent === 'add_type'){   //添加子分类
+                JsGet("{:url('ArticleType/addSon')}?id=" + data.id, function(e){
+                    window.box = layer.open({
+                        type:1,
+                        content:e,
+                        area:['400px','300px'],
+                        title:'添加子分类'
+                    })
+				})
+            }
+        });
+    })
+</script>
+
+<script type="text/html" id="articleTypeBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add_type">添加子分类</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>

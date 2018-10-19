@@ -1,0 +1,12 @@
+<!-- 登录注册第一个页面 -->
+<view class='body '>
+  <view class='top'>
+    <image src='{{logo}}'></image>
+  </view>
+  <view class='mid'>
+    <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="weui-btn" type="primary">微信用户手机号码登录</button>
+  </view>
+  <view class='bot' bindtap="showMobileLogin">
+    <text>手机号码登录/注册</text>
+  </view>
+</view>

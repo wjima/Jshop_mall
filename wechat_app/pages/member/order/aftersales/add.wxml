@@ -1,0 +1,76 @@
+<view class='cart-content'>
+  <checkbox-group class='content-top' bindchange="checkboxChange">
+    <view class="list-body touch-item"  wx:for="{{items}}" wx:key='index'> 
+      <!-- 商品信息 -->
+      <view class="content">
+        <view class="check-box">
+          <checkbox value="{{index}}"  disabled="{{type_list[1].disabled}}" checked="true"/>
+        </view>
+        <!-- 商品图片 -->
+        <image class='thumbnail' src='{{item.image_url}}'></image>
+        <!-- 商品详情 -->
+        <view class='list-body-right'>
+          <view class='body-right-title'>
+            <!-- 商品名称 -->
+            <text bindtap='goodsDetail' data-id="{{item.products.goods_id}}">{{item.name}}</text>
+          </view>
+          <view class='body-right-style'>
+            <!-- 商品规格 -->
+            <text >{{item.addon}}X{{item.nums}}</text>
+          </view>
+        </view>
+      </view>    
+    </view> 
+    
+  </checkbox-group>
+
+  
+
+  <view class='refund-service'>
+    <!-- <view class="weui-cells weui-cells_after-title"> -->
+      <view class="refund-service-list">
+        <view class="refund-service-list-left">服务类型</view>
+        <view class="refund-service-list-right rf-ror">
+           <radio-group class="radio-group" bindchange="radioChange">
+            <label class="radio" wx:for="{{type_list}}" wx:key="item">
+              <radio value="{{item.value}}" checked="{{item.checked}}" color="#ff3b44" disabled="{{item.disabled}}" />
+              <text>{{item.name}}</text>
+            </label>
+          </radio-group> 
+        </view>
+      </view>
+      <view class="refund-service-list">
+        <view class="refund-service-list-left">退款金额</view>
+        <view class="refund-service-list-right price">
+          <input type="digit" bindinput="bindRefundChange" disabled="{{refund_input_noedit}}" value="{{refund}}" /><text>元</text>
+        </view>
+      </view>
+      <view class='refund-bottom' hidden="{{type_list[1].disabled}}">最多可退<text>{{refund_show}}</text>元</view>  
+    <!-- </view> -->
+  </view>
+
+  <view class='upload'>
+    <view>上传凭证</view>
+    <view class='upload-img'>
+      <image bindtap="delImage" wx:for="{{images}}" wx:key="index" data-index="{{index}}" src='{{item.url}}' mode="{{mode}}"><view class='delImageicon'>×</view></image>
+      <image class='uploadimg' bindtap="upImage" wx:if="{{images.length < image_max}}" src='../../../image/upload.png'></image>
+    </view>
+  </view>
+
+  <!-- 问题描述 -->
+  <view class='problem-description'>
+    <text class='problem-title'>问题描述</text>
+    <view class="problem-body">
+      <view class="">
+        <textarea class="" bindinput="bindReasonChange" placeholder-class='problem-textarea' placeholder="请您在此描述问题"/>
+        <view class="weui-textarea-counter">{{reason_size}}/200</view>
+      </view>
+    </view>
+  </view> 
+
+  <view class='submit'>
+    <button class="weui-btn" bindtap="submitBtn" type="warn">提交</button>
+  </view>
+
+</view>
+

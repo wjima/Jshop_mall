@@ -1,0 +1,60 @@
+page{
+  height: 100vh;
+  background-color: #f3f3f3;
+}
+.weui-cells_after-title{
+  margin-top: 18rpx;
+}
+.weui-cells:before {
+  border-top:none;
+}
+.weui-cells:after{
+  border-bottom: none;
+}
+.weui-cell:before{
+  border-top: none;
+}
+.weui-cell{
+  border-bottom: 2rpx solid #f3f3f3;
+}
+.weui-label{
+  font-size: 32rpx;
+  color: #666;
+  display: inline-block;
+}
+.p-class{
+  font-size: 28rpx;
+  color: #ccc;
+}
+.weui-input{
+  font-size: 32rpx;
+  color: #666;
+}
+picker .weui-input{
+  font-size: 28rpx;
+  color: #ccc;
+}
+.weui-vcode-btn{
+  width: 180rpx;
+  height: 60rpx;
+  line-height: 56rpx;
+  text-align: center;
+  border: 2rpx solid #FF3B44;
+  border-radius: 30rpx;
+  font-size: 32rpx;
+  color: #FF3B44;
+  box-sizing: border-box;
+  margin-right: 30rpx;
+}
+.weui-btn{
+  background-color: #FF3B44 ;
+  color: #fff;
+  font-size: 32rpx;
+}
+.header-img{
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 18rpx;
+  position: relative;
+  top: 6rpx;
+}

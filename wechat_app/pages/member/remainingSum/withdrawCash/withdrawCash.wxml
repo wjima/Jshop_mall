@@ -1,0 +1,24 @@
+<view>
+  <view class='withdrawcash-top'>
+    <text class='withdrawcash-title'>账户余额（元）</text>
+    <text class='withdrawcash-num'>{{balance}}</text>
+  </view>
+  <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='balance'>
+      <image class='member-icon' src='../../../image/tixian.png'></image>
+      <text class='member-text'>提现</text>
+    </view>
+  </view>
+  <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='balancelist'>
+      <image class='member-icon' src='../../../image/mingxi.png'></image>
+      <text class='member-text'>余额明细</text>
+    </view>
+  </view>
+  <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='cashlist'>
+      <image class='member-icon' src='../../../image/jilu.png'></image>
+      <text class='member-text'>提现记录</text>
+    </view>
+  </view>
+</view>

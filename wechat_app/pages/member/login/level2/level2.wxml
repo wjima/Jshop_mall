@@ -1,0 +1,23 @@
+<!-- 登录注册第二个页面 -->
+<view class='body'>
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder-class='text-body' bindblur="mobileChange" placeholder="请输入手机号码" />
+      </view>
+    </view>
+    <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder-class='text-body' bindblur="codeChange" placeholder="请输入验证码" />
+      </view>
+      <view class="weui-cell__ft">
+        <view class="weui-vcode-btn {{is_show?'show':'hide'}}" bindtap="clickVerify">获取验证码</view>
+        <view class="weui-vcode-btn {{is_show?'hide':'show'}}">重新发送{{last_time}}秒</view>
+      </view>
+    </view>    
+  </view>
+  <button class="weui-btn" bindtap="showTopTips" type="primary">登录</button>
+  <view class='bot' bindtap="showWxLogin">
+    <text>微信用户一键登录</text>
+  </view>
+</view>

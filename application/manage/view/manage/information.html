@@ -1,0 +1,85 @@
+
+<div class="layui-card" style="padding:10px;">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">账号信息</li>
+            <li>修改密码</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form" action="" style="padding-top: 20px;">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">用户名：</label>
+                        <div class="layui-form-mid">
+                            {$manage_info['username']}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机号：</label>
+                        <div class="layui-form-mid">{$manage_info['mobile']}</div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账号状态：</label>
+                        <div class="layui-form-mid">{$params['manage']['status'][$manage_info['status']]}</div>
+                    </div>
+
+
+                </form>
+            </div>
+
+
+            <div class="layui-tab-item">
+                <form class="layui-form" action="" style="padding-top: 20px;" id="editForm">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">原密码：</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="password" required lay-verify="required" placeholder="请输入当前密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">新密码：</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="newPwd" required lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">确认密码：</label>
+                        <div class="layui-input-inline">
+                            <input type="password" name="rePwd" required lay-verify="required" placeholder="确认新密码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" lay-submit lay-filter="editPwd">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','layer','laydate'],function(){
+        var $ = layui.$, form = layui.form, layer = layui.layer,laydate = layui.laydate;
+
+        //修改密码
+        form.on('submit(editPwd)',function(data){
+            JsPost("{:url('Manage/editPwd')}",data.field,function(res){
+                if ( res.status ) {
+                    $("#editForm")[0].reset();
+                }
+                layer.msg(res.msg);
+            })
+        });
+
+    });
+
+</script>

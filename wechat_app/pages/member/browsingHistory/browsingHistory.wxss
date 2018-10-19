@@ -1,0 +1,125 @@
+.touch-item {
+ font-size: 28rpx;
+ display: flex;
+ justify-content: space-between;
+ width: 100%;
+ overflow: hidden
+}
+.content {
+ width: 750rpx;
+ padding: 0; 
+ line-height: 44rpx;
+ margin-right:0;
+ -webkit-transition: all 0.4s;
+ transition: all 0.4s;
+ -webkit-transform: translateX(240rpx);
+ transform: translateX(240rpx);
+ margin-left: -240rpx;
+ overflow: hidden;
+}
+
+.list-top{
+  padding: 10rpx 30rpx;
+  font-size: 28rpx;
+  color: #666;
+  background-color: #fafafa;
+}
+.list-bot{
+  padding: 20rpx 30rpx 10rpx;
+  overflow: hidden;
+}
+.bot-left{
+  width: 160rpx;
+  height: 160rpx;
+}
+.bot-right{
+  display: inline-block;
+  width: 510rpx;
+  float: right;
+}
+.name{
+  width: 500rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 32rpx;
+  color: 666;  
+}
+.style{
+  font-size: 24rpx;
+  color: #999;
+  margin: 12rpx 0 20rpx;
+}
+.price{
+  font-size: 32rpx;
+  color: #FF3B44;
+}
+.loading{
+  text-align:center;
+  font-size:28rpx;
+  margin:20rpx 0;
+  color:#999;
+}
+.touch-move-active .content,
+.touch-move-active .collect-del {
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+}
+.collect-del{
+  width: 240rpx;
+  display: flex;
+  color: #fff;
+  -webkit-transform: translateX(240rpx);
+  transform: translateX(240rpx);
+  -webkit-transition: all 0.4s;
+  transition: all 0.4s;
+  overflow: hidden;
+  height: 160rpx;
+  margin-top: 20rpx;
+}
+.collect,.uncollect,.del{
+  width: 50%;
+  height: 160rpx;
+  display: inline-block;
+  float: left;
+  line-height: 160rpx;
+  text-align: center;
+}
+.collect{
+  background-color: #FFAA33;
+}
+.uncollect{
+  background-color: #CCCCCC;
+  /* line-height: 1 */
+}
+.del{
+  background-color: #FF3B44;
+}
+.list-body{  
+  border-bottom: 2rpx solid #E8E8E8;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.left-slip{
+  width: 20rpx;
+  height: 40rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 80rpx;
+}
+.none-img{
+  margin: 100rpx auto;
+  text-align: center;
+}
+.none-img image{
+  width: 200rpx;
+  height: 200rpx;
+}
+.none-img text{
+  display: block;
+  color:#bbb;
+  font-size:32rpx;
+}

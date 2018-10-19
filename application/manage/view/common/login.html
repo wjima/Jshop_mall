@@ -1,0 +1,60 @@
+{include file="common/mini_header" /}
+<div class="login-content">
+	<div class="login-content-mid">
+		<div class="layui-container">
+			<div>
+				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-tab-content layui-form-pane">
+                            <form class="layui-form" action="" method="post">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">账号：</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="mobile" value="admin" lay-verify="required" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">密码：</label>
+                                    <div class="layui-input-inline">
+                                        <input type="password" name="password" value="000000" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-inline">
+                                        <input class="layui-btn layui-btn-fluid" lay-submit lay-filter="password_login" type="submit" value="登录" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+				</div>
+
+				没有账号？
+				<a href="{:url('b2c/common/reg')}">立即注册</a>
+
+			</div>
+		</div>
+	</div>
+</div>	
+		<script>
+			layui.use(['element', 'form'], function() {
+				//密码登陆
+				layui.form.on('submit(password_login)', function(data) {
+					$.ajax({
+						type: "POST",
+						url: "{:url('manage/common/login')}",
+						data: data.field,
+						success: function(data) {
+							if(data.status) {
+								layer.msg('登陆成功，跳转中...');
+								setTimeout("window.location.href='" + data.data + "'; ", 1500);
+							} else {
+								layer.msg(data.msg);
+							}
+						}
+					});
+					return false;
+				});
+			});
+		</script>
+		{include file="common/mini_footer" /}

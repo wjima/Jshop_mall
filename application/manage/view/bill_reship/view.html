@@ -1,0 +1,74 @@
+<form class="layui-form reship_form" id="reship_form" action="" style="margin:10px;">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">退货单号：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.reship_id}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.order_id}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{:format_mobile(get_user_info($info.user_id))}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_reship.status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">物流公司：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{:get_logi_info($info['logi_code'])}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">物流单号：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$info.logi_no}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">退货商品：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">
+                <table id="billAftersalesItems" lay-filter="billAftersalesItems"></table>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['form', 'table'], function(){
+        layui.form.render();
+        console.log(stringToJson(htmlDecodeByRegExp('{$info.items_json}')));
+        layui.table.render({
+            elem: '#billAftersalesItems'
+            ,size: 'sm'
+            ,cols: [[ //标题栏
+                {field: 'name', title: '商品名称', width: 120}
+                ,{field: 'nums', title: '退货数量', minWidth: 150}
+            ]]
+            ,data: stringToJson(htmlDecodeByRegExp('{$info.items_json}'))
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+    });
+</script>

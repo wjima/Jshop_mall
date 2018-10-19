@@ -1,0 +1,47 @@
+<table id="typeTable" lay-filter="typeTable"></table>
+
+<script>
+    layui.use(['form', 'laydate','table'], function(){
+        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+        table.render({
+            elem: '#typeTable',
+            height: '330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('GoodsTypeSpec/index')}?_ajax=1",
+            id:'typeTable',
+            cols: [[
+                {type:'numbers'},
+                {field: 'name', width: 100, title: '名称'},
+                {field: 'spec_value', width: 200, title: '属性值',templet:function(data){
+                    var html="";
+                    if(data.spec_value.length>0){
+                        $.each(data.spec_value,function(i,j){
+                            html = html + "|"+ j.value;
+                        });
+                        html=html.substr(1);
+                        return html;
+                    }else{
+                        return '无属性值';
+                    }
+                }},
+                {field: 'sort', width: 100, title: '排序'},
+                {fixed: 'right',title:'操作',align:'center', toolbar:'#typeBar'}
+            ]]
+        });
+        form.on('submit(goods-search)', function(data){
+            layui.table.reload('typeTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+</script>
+
+<script type="text/html" id="typeBar">
+    <a class="layui-btn layui-btn-xs" lay-event="selectType">选择</a>
+</script>

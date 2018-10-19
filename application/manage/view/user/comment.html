@@ -1,0 +1,152 @@
+<form class="layui-form seller-form" action="">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label style="width:120px" class="layui-form-label">用户手机号码：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="order_id" placeholder="请输入订单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">评价类型：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <select name="evaluate" id="evaluate">
+                    <option value="all">-- 全部 --</option>
+                    <option value="1">好评</option>
+                    <option value="0">中评</option>
+                    <option value="-1">差评</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline" style="margin-left: 17px;">
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="CommentTable" lay-filter="test"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        layui.table.render({
+            elem: '#CommentTable',
+            height: 'full-210',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('user/comment')}",
+            id:'CommentTable',
+            method: 'post',
+            response: {
+                statusName: 'status',
+                statusCode: true
+            },
+            cols: [[
+                {type:'numbers'},
+                {field:'nickname', width:210, title:'用户', align:'center', templet: function(data) {
+                    if(data.user)
+                    {
+                        return data.user.nickname?data.user.nickname:data.user.mobile;
+                    }
+                    else
+                    {
+                        return data.user_id;
+                    }
+                }},
+                {field:'evaluate', width:150, sort:true, title:'评价类型', align:'center', templet: function (data) {
+                    if (data.score == 1) {
+                        return '好评';
+                    } else if (data.score == 0) {
+                        return '中评';
+                    } else if (data.score == -1) {
+                        return '差评';
+                    }
+                }},
+                {field:'goods_name', width:250, sort:true, title:'商品名称', align:'center', templet: function (data) {
+                    return data.goods.name;
+                }},
+                {field:'content', width:150, title:'评价内容', align:'center'},
+                {field:'order_id', width:190, title:'订单号', align:'center'},
+                {field:'ctime', width:230, sort:true, title:'评价时间', align:'center'},
+                {field:'display', width:150, sort:true, title:'前台显示', align:'center', templet:function(data){
+                        if(data.display === 1){
+                            return '<a href="javascript:void(0);" class="display" data-id="'+data.id+'">隐藏</a>';
+                        }else{
+                            return '<a href="javascript:void(0);" class="display" data-id="'+data.id+'">显示</a>';
+                        }
+                    }},
+                {field:'operating', width:200, title:'操作', align:'center', templet:function(data){
+                        var html = '';
+                        html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
+                        return html;
+                }, fixed:'right'}
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('CommentTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //前台展示设置
+        $(document).on("click", '.display', function () {
+            var id = $(this).attr('data-id');
+            layer.confirm('是否确认该操作？', {
+                title: "提示",
+                btn: ['是', '否']
+            }, function () {
+                JsPost("{:url('Goods/setDisplay')}",{'id':id},function(res){
+                    layer.msg(res.msg);
+                    layui.table.reload('CommentTable');
+                });
+            }, function(){
+                layer.closeAll();
+            });
+        });
+
+        //回复
+        $(document).on("click", '.comment-return', function () {
+            var id = $(this).attr('data-id');
+            JsPost("{:url('Goods/getCommentInfo')}", {'id':id}, function(res) {
+                if(res.status) {
+                    var seller_content = res.data.seller_content == null?'':res.data.seller_content;
+                    window_box = layer.open({
+                        type: 1,
+                        title: "商家回复",
+                        area: ['450px', '300px'], //宽高
+                        btn:['保存','关闭'],
+                        content: '<div style="padding:20px"><input type="hidden" id="return-id" value="'+id+'">' +
+                        '<div><span>用户评价：</span>'+res.data.content+'</div>' +
+                        '<div><span>商家回复：</span><textarea class="layui-textarea" name="return-content" id="return-content" cols="10" rows="5">'+seller_content+'</textarea></div></div>',
+                        yes:function () {
+                            var id = $("#return-id").val();
+                            var return_content = $("#return-content").val();
+                            JsPost("{:url('Goods/sellerContent')}", {'id':id, "seller_content":return_content}, function(res) {
+                                layer.closeAll();
+                                layer.msg(res.msg);
+                                layui.table.reload('CommentTable');
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(res.msg);
+                    layui.table.reload('CommentTable');
+                }
+            });
+            return false;
+        });
+    });
+</script>

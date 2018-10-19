@@ -1,0 +1,99 @@
+<form class="layui-form aftersales_form" id="aftersales_form" action="" style="margin:10px;">
+    <input type="hidden" name="aftersales_id" value="{$info.payment_id}" />
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">支付单号：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$info.payment_id}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-inline  seller-inline-2">
+                <div class="layui-form-mid">{:get_user_info($info.user_id)}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">支付方式：</label>
+            <div class="layui-input-inline  seller-inline-2">
+                <div class="layui-form-mid">{:config('params.payments')[$info['payment_code']]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">支付金额：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$info.money}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">类型：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$params.bill_payments.type[$info.type]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$params.bill_payments.status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">创建时间：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{:getTime($info.utime)}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">更新时间：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{:getTime($info.utime)}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        .layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+            margin:0;
+        }
+
+    </style>
+    <div class="layui-form-item">
+        <label class="layui-form-label">明细：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">
+                <table id="billPaymentsRel" lay-filter="billPaymentsRel"></table>
+            </div>
+        </div>
+    </div>
+
+
+</form>
+
+
+<script>
+    layui.use(['form', 'table'], function(){
+        layui.form.render();
+        layui.table.render({
+            elem: '#billPaymentsRel'
+            ,size: 'sm'
+            ,cols: [[ //标题栏
+                {field: 'source_id', title: '单号', width: 200}
+                ,{field: 'money', title: '金额', minWidth: 150}
+            ]]
+            ,data: stringToJson(htmlDecodeByRegExp('{$info.rel_json}'))
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+    });
+</script>

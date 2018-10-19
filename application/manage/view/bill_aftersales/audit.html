@@ -1,0 +1,127 @@
+<form class="layui-form aftersales_form" id="aftersales_form" action="" style="margin:10px;">
+    <input type="hidden" name="aftersales_id" value="{$info.aftersales_id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">售后单号：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$info.aftersales_id}</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-block">
+                <div class="layui-form-mid">{:get_user_info($info.user_id)}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_aftersales.status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">售后类型：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_aftersales.type[$info.type]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline" style="width:100px;">
+                <div class="layui-form-mid">{$params.bill_aftersales.status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$info.reason}</div>
+        </div>
+    </div>
+
+    {if $info.images}
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">
+                {volist name="info.images" id="image" empty="暂时图片"}
+                <a href="{:_sImage($image['image_id'])}" target="_blank" style="padding:1px;border:1px solid #cdcdcd;height:50px;width:50px;display:block;float:left;margin-right:1px;" >
+                    <img style="max-height:50px;max-height:50px;" src="{:_sImage($image['image_id'])}" />
+                </a>
+                {/volist}
+            </div>
+        </div>
+    </div>
+    {/if}
+    <style>
+        .layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+            margin:0;
+        }
+
+    </style>
+    <div class="layui-form-item">
+        <label class="layui-form-label">退货商品：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">
+                <table id="billAftersalesItems" lay-filter="billAftersalesItems"></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">退款金额：</label>
+        <div class="layui-input-block">
+            <input name="refund" value="{$info.refund}" required="" style="width:150px;" lay-verify="required" placeholder="退款金额" autocomplete="off" class="layui-input" type="text">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">审核结果：</label>
+        <div class="layui-input-block">
+            <input name="status" value="2" title="通过" checked="" type="radio">
+            <input name="status" value="3" title="拒绝" type="radio">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">
+                <input name="mark" value="" required="" lay-verify="required" placeholder="请输入备注" style="width:380px;" autocomplete="off" class="layui-input" type="text">
+            </div>
+        </div>
+    </div>
+
+
+
+</form>
+
+
+<script>
+    layui.use(['form', 'table'], function(){
+        layui.form.render();
+        console.log(stringToJson(htmlDecodeByRegExp('{$info.items_json}')));
+        layui.table.render({
+            elem: '#billAftersalesItems'
+            ,size: 'sm'
+            ,cols: [[ //标题栏
+                {field: 'order_items_id', title: '', width: 50,templet:function(data){
+                    return '<input name="order_items_id['+data.order_items_id+']" lay-skin="primary" checked="" title="" type="checkbox">';
+                }}
+                ,{field: 'name', title: '商品名称', width: 120}
+                ,{field: 'nums', title: '退货数量', minWidth: 150,templet:function(data){
+                    return '<input name="aftersaleeItems['+data.order_items_id+']" style="width:50px;" value="'+data.nums+'"  type="text">';
+                }}
+            ]]
+            ,data: stringToJson(htmlDecodeByRegExp('{$info.items_json}'))
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+    });
+</script>

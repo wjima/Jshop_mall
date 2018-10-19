@@ -1,0 +1,47 @@
+<form style="padding:30px;" class="layui-form" id="edit_form">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名：</label>
+        {if $manageInfo}
+        <div class="layui-form-mid">
+            <input type="hidden" name="id" value="{$manageInfo.id}" />
+            {$manageInfo.username}({$manageInfo.username})
+        </div>
+        {else /}
+            <div class="layui-input-inline seller-inline-6">
+                <input name="username" value="{$data.username}" placeholder="请输入用户名" class="layui-input" type="text">
+            </div>
+        {/if}
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input name="mobile" value="{$manageInfo.mobile}" placeholder="请输入管理员手机号码" class="layui-input" type="text">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input name="password" value="" placeholder="请输入密码" class="layui-input" type="text">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-form-mid layui-word-aux">编辑账号的时候，如果密码为空则是不修改密码，否则，就是修改密码</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色：</label>
+        <div class="layui-input-inline seller-inline-6">
+            {volist name="roleList" id="vo"}
+                <input type="checkbox" name="role_id[{$vo.id}]" lay-skin="primary" title="{$vo.name}" {if isset($vo['checked']) && $vo['checked']}checked=""{/if} >
+            {/volist}
+
+
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

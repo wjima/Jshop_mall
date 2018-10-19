@@ -1,0 +1,22 @@
+<view>
+  <view class="orderadd">
+    <view class="orderadd-header">
+      <text class='orderadd-header-tag'>默认地址</text>
+      <button class='orderadd-header-del'>删除</button>   
+    </view>
+    <view class="orderadd-content">
+      <view class="orderadd-top">
+        <text class='orderadd-user'>收货人：张三</text>
+        <text class='orderadd-num'>13000000000</text>
+      </view>
+      <view class="orderadd-bottom">
+        <text class='orderadd-detail'>收货地址：山西省 太原市 小店区 啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</text>
+        <image class='right-img' src='../../image/right.png'></image>
+      </view>
+    </view>
+  </view>
+  <view class='add-button'>
+    <button bindtap='address'>新增收货地址</button>
+    <button>使用微信地址</button>
+  </view>
+</view>

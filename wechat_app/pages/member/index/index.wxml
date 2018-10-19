@@ -1,0 +1,136 @@
+<!-- 顶部信息 -->
+<view class='member-content'>
+  <view class='content-header'>
+    <view class='header-top'>
+      <!-- <view class='top-left'>
+        <text class='remaining-sum'>余额</text>
+        <text class='remainingsum-num'>666.66</text>
+        <navigator class='recharge'>充值</navigator>
+      </view> -->
+      <!-- 头像昵称 -->
+      <view class='top-mid'>
+        <open-data class='head-sculpture' type="userAvatarUrl"></open-data>
+        <open-data class='username' type="userNickName"></open-data>
+        <!-- <image mode='aspectFill' class='head-sculpture' bindtap='chooseAvatar' src='{{avatar}}'></image> -->
+        <!-- <text class='username'>{{nickname}} </text> -->
+      </view>
+       <!-- <view class='top-right'>
+        <text class='accumulate-points'>积分</text>
+        <text class='accumulatepoints-num'>{{point}}</text>
+      </view> -->
+      <image bindtap='setting' class='user-setting' src='../../image/chilun.png'></image>
+    </view>
+    <image class='bg' src='../../image/bg.png'></image>
+    <!-- 手机号绑定 -->
+    <view class='header-bottom' bindtap='bindMobile'>
+      <view wx:if="{{bindMobile}}" class='header-bottom-left'>
+        <image src='../../image/phone.png'></image>
+        <text>绑定手机号</text>
+      </view>
+      <image wx:if="{{bindMobile}}" class='header-bottom-right right-arrow' src='../../image/right.png'></image>
+    </view>
+  </view>
+</view>
+
+<!-- 订单信息 -->
+<view class='content-order content-body'>
+  <!-- 订单标题 -->
+  <view class='content-order-top content-view'>
+    <view class='order-top-left'>
+      <image class='member-icon' src='../../image/orderform.png'></image>
+      <text class='member-text'>我的订单</text>
+    </view>
+    <view class='order-top-right' bindtap='orderAll'>
+      <text>查看全部订单</text>
+      <image class='order-top-right-img right-arrow' src='../../image/right.png'></image>
+    </view>
+  </view>
+  <!-- 订单功能 -->
+  <view class='content-order-bottom'>
+    <!-- 待付款 -->
+    <view bindtap='orderNoPay'>
+      <image src='../../image/pendingdelivery.png'></image>
+      <text class='order-text'>待付款</text>
+      <text class='order-num' wx:if="{{statusData[1] != 0}}">{{statusData[1]}}</text>
+    </view>
+    <!-- 待发货 -->
+    <view bindtap='orderNoShip'>
+      <image src='../../image/pendingdelivery2.png'></image>
+      <text>待发货</text>
+      <text class='order-num' wx:if="{{statusData[2] != 0}}">{{statusData[2]}}</text>
+    </view>
+    <!-- 待收货 -->
+    <view bindtap='orderNoReceiving'>
+      <image src='../../image/pendingdelivery3.png'></image>
+      <text>待收货</text>
+      <text class='order-num' wx:if="{{statusData[3] != 0}}">{{statusData[3]}}</text>
+    </view>
+    <!-- 退换货 -->
+    <view bindtap='orderAftermarket'>
+      <image src='../../image/pendingdelivery4.png'></image>
+      <text>退换货</text>
+    </view>
+  </view>
+</view>
+
+<!-- 功能模块第一部分 -->
+<view class='content-one content-body'>
+  <!-- 积分签到 -->
+  <!-- <view class='sign-in content-view' bindtap='sign'>
+    <image class='member-icon' src='../../image/signin.png'></image>
+    <text class='member-text'>积分签到</text>
+  </view> -->
+  <!-- 我的优惠券 -->
+  <view class='coupon content-view' bindtap='coupon'>
+    <image class='member-icon' src='../../image/coupon.png'></image>
+    <text class='member-text'>我的优惠券</text>
+  </view>
+  <!-- 我的购物车 -->
+  <view class='content-view' bindtap='cart'>
+    <image class='member-icon' src='../../image/member-cart.png'></image>
+    <text class='member-text'>我的购物车</text>
+  </view>
+  <!-- 余额提现 -->
+   <view class='content-view' bindtap='withdrawCash'>
+    <image class='member-icon' src='../../image/remainingsum.png'></image>
+    <text class='member-text'>我的余额</text>
+  </view>
+</view>
+
+<!-- 功能模块第二部分 -->
+<view class='content-two content-body'>
+  <!-- 我的关注 -->
+  <view class='content-view' bindtap='attention'>
+    <image class='member-icon' src='../../image/heart.png'></image>
+    <text class='member-text'>我的关注</text>
+  </view>
+  <!-- 我的足迹 -->
+  <view class='content-view' bindtap='browsingHistory'>
+    <image class='member-icon' src='../../image/footer.png'></image>
+    <text class='member-text'>我的足迹</text>
+  </view>
+</view>
+
+<!-- 功能模块第三部分 -->
+  <!-- <view class='content-three content-body'>   -->
+  <!-- 余额明细  -->
+   <!-- <view class='content-view' bindtap='details'>
+    <image class='member-icon' src='../../image/remainingsum-member.png'></image>
+    <text class='member-text'>余额明细</text>
+  </view> 
+ </view>   -->
+
+<!-- 功能模块第四部分 -->
+ <view class='content-four content-body'> 
+  <!-- 收货地址管理 -->
+   <view class='content-view' bindtap='addressList'>
+    <image class='member-icon' src='../../image/set.png'></image>
+    <text class='member-text'>收货地址管理</text>
+  </view> 
+  <!--
+  <view class='content-view' bindtap='setUserInfo'>
+    <image class='member-icon' src='../../image/set.png'></image>
+    <text class='member-text'>安全中心</text>
+  </view>
+   -->
+ </view>

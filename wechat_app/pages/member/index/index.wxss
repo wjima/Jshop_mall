@@ -1,0 +1,165 @@
+.header-top{
+  font-size: 24rpx;
+  color: #fff;
+  width: 700rpx;
+  margin: 20rpx auto 0; 
+  text-align: center;
+  overflow: hidden;
+  z-index: 1000;
+  position: relative;
+}
+.header-top>view{
+  display: inline-block;
+  width: 33%;
+}
+.top-left{
+  float: left;
+  margin-top: 50rpx;
+}
+.user-setting{
+  position: absolute;
+  right: 20rpx;
+  top: 10rpx;
+  width: 40rpx;
+  height: 40rpx;
+}
+.recharge{
+  width: 116rpx;
+  height: 34rpx;
+  border-radius: 18rpx;
+  border: 2rpx solid #fff;
+  margin: 16rpx auto 0;
+}
+.top-right{
+  float: right;
+  margin-top: 50rpx;
+}
+.username{
+  font-size: 28rpx;
+}
+.head-sculpture{
+  overflow: hidden;
+  display: block;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.remaining-sum, .remainingsum-num, .username, .accumulate-points, .accumulatepoints-num{
+  display: block;
+  margin-bottom: 6rpx;
+}
+.remainingsum-num, .accumulatepoints-num{
+  font-size: 28rpx;
+}
+.bg{
+  position: absolute;
+  width: 750rpx;
+  height: 290rpx;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+.header-bottom{
+  width: 690;
+  padding: 0 30rpx 10rpx;
+  overflow: hidden;
+  margin-top: 100rpx;
+  border-bottom: 16rpx solid #f3f3f3;
+}
+.header-bottom-left{
+  float: left;
+  font-size: 28rpx;
+  color: #999;
+}
+.header-bottom-left image{
+  width: 40rpx;
+  height: 40rpx;
+  position: relative;
+  left: -6rpx;
+}
+.header-bottom-left text{
+  position: relative;
+  margin-left: 20rpx;
+  top: -8rpx;
+}
+.content-body{
+  overflow: hidden;
+  border-bottom: 16rpx solid #F3F3F3;
+}
+.header-bottom-right{
+  float: right;
+}
+.member-icon{
+  width: 34rpx;
+  height: 36rpx;
+  margin-right: 12rpx;
+  position: relative;
+  top: 8rpx;
+}
+.member-text{
+  color: #666;
+  font-size: 24rpx;
+}
+.order-top-left{
+  float: left;
+}
+.order-top-right{
+  float: right;
+}
+.order-top-right text{
+  font-size: 24rpx;
+  color: #999;
+}
+.order-top-right-img{
+  
+  margin-left: 12rpx;
+}
+.right-arrow{
+  width: 14rpx;
+  height: 24rpx;
+  position: relative;
+  top: 2rpx;
+}
+.content-order-bottom{
+  overflow: hidden;
+  color: #666; 
+  font-size: 24rpx;
+  padding: 34rpx 0 20rpx;
+}
+.content-order-bottom > view{
+  width: 25%;
+  text-align: center;
+  float: left;
+  position: relative;
+}
+.content-order-bottom > view image{
+  width: 40rpx;
+  height: 36rpx;
+}
+.content-order-bottom > view text{
+  display: block;
+}
+.order-num{
+  display: block;
+  width: 24rpx;
+  height: 24rpx;
+  line-height: 26rpx;
+  background-color: #FF3B44;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 50%;
+  position: absolute;
+  right: 64rpx;
+  top: -12rpx;
+}
+.content-body .content-view{
+  width: 696rpx;
+  height: 60rpx; 
+  line-height: 60rpx; 
+  padding: 10rpx 30rpx 10rpx 24rpx;
+  border-bottom: 2rpx solid #f2f2f2;
+}
+.content-four{
+  border: none;
+}

@@ -1,0 +1,76 @@
+<view class="page__bd">
+    <view class="weui-cells weui-cells_after-title">
+        <!-- 银行卡号 -->
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+                <view class="weui-label">银行卡号</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" bindchange="cardNumber" placeholder="请输入银行卡号"/>
+            </view>
+        </view>
+
+        <!-- 银行名 -->
+        <view wx:if="{{bankName}}" class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+                <view class="weui-label">银行名称</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" disabled='true' placeholder="{{bankName}}" value='{{bankName}}'/>
+            </view>
+        </view>
+
+        <!-- 银行卡类型 -->
+        <view wx:if="{{cardTypeName}}" class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+                <view class="weui-label">银行卡类型</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" disabled='true' placeholder="{{cardTypeName}}" value='{{cardTypeName}}'/>
+            </view>
+        </view>
+
+        <!-- 持卡人 -->
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+                <view class="weui-label">持卡人</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" bindchange="accountName" placeholder="请输入持卡人姓名"/>
+            </view>
+        </view>
+
+        <!-- 开户行名 -->
+        <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__hd">
+                <view class="weui-label">开户行名</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" bindchange="accountBank" placeholder="请输入开户银行名" />
+            </view>
+        </view>
+
+        <!-- 开户行地区 -->
+        <view class="weui-cell weui-cell_select">
+            <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                <view class="weui-label">开户行地区</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="region" bindchange="regionChange" value="{{region}}" custom-item="{{customItem}}">
+                    <view class="weui-select weui-select_in-select-after">{{region[0]}}，{{region[1]}}，{{region[2]}}</view>
+                </picker>
+            </view>
+        </view>
+        
+        <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">设置为默认</view>
+            <view class="weui-cell__ft">
+                <switch bindchange="isDefault" checked />
+            </view>
+        </view>
+    </view>
+
+    <view class="weui-btn-area">
+        <button class="weui-btn" bindtap="addCard">确定</button>
+    </view>
+</view>

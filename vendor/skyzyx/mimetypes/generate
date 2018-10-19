@@ -1,0 +1,98 @@
+#! /usr/bin/env php
+<?php
+/*
+ * Copyright (c) 2011 Ryan Parman
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * <http://opensource.org/licenses/MIT>
+ */
+
+require(__DIR__ . '/vendor/autoload.php');
+
+$repository = new Dflydev\ApacheMimeTypes\FlatRepository(__DIR__ . '/mime.types');
+$mimes = $repository->dumpExtensionToType();
+
+
+##################################################################################
+# READ AND APPLY CUSTOMIZATIONS
+
+$customize_json = __DIR__ . '/customize.json';
+
+if (file_exists($customize_json))
+{
+	$entries = json_decode(file_get_contents($customize_json), true);
+
+	foreach ($entries as $extensions => $type)
+	{
+		$extensions = explode(' ', $extensions);
+
+		foreach ($extensions as $extension)
+		{
+			$mimes[$extension] = $type;
+		}
+	}
+}
+
+
+##################################################################################
+# WRITE JSON DOCUMENT
+
+ksort($mimes);
+$mimetypes_json = __DIR__ . '/mimetypes.json';
+
+$pprint = version_compare(PHP_VERSION, '5.4.0') ? JSON_PRETTY_PRINT : null;
+
+if (file_put_contents($mimetypes_json, json_encode($mimes, $pprint)))
+{
+	echo print_r($mimes, true)
+		. PHP_EOL
+		. "\033[01;32mSuccessfully wrote " . $mimetypes_json . "\033[00m"
+		. PHP_EOL;
+}
+else
+{
+	echo 'Failed to write ' . $mimetypes_json . '. Please ensure that this file system location is writable.' . PHP_EOL;
+}
+
+
+##################################################################################
+# WRITE PHP CLASS
+
+Twig_Autoloader::register();
+
+$twig = new Twig_Environment(
+	new Twig_Loader_Filesystem(__DIR__),
+	array(
+		'autoescape'  => false,
+		'auto_reload' => true,
+	)
+);
+
+file_put_contents(
+	__DIR__ . '/src/Skyzyx/Components/Mimetypes/Mimetypes.php',
+	$twig->render('template.twig', array(
+		'mapping' => var_export($mimes, true)
+	))
+);
+
+echo "\033[01;32mSuccessfully wrote " . __DIR__ . '/src/Skyzyx/Components/Mimetypes/Mimetypes.php' . "\033[00m" . PHP_EOL;
+
+// Done.
+echo PHP_EOL;

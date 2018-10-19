@@ -1,0 +1,62 @@
+/* pages/classify.wxss */
+.classify-content{
+  padding-top: 120rpx;
+  width: 100%;
+   /* height: 990rpx;   */
+  overflow: hidden; 
+  position: relative;
+}
+.classify-content-left{
+  width: 210rpx; 
+  height: 100%; 
+  background-color: #f7f7f7; 
+  display: inline-block;
+  font-size: 30rpx;
+  color: #666;
+   float: left; 
+}
+.classify-content-left view{
+  height: 122rpx;
+  width: 210rpx;
+  line-height: 120rpx;
+  text-align: center;
+  border-bottom: 2rpx solid #fff;
+}
+.classify-content-left view:last-child{
+  border-bottom: none; 
+}
+.classify-content-left .choose{
+  background-color: #fff;
+  border-left: 8rpx solid #FF3B44;
+  border-bottom: none;
+  color: #FF3B44;
+  box-sizing: border-box;
+}
+.classify-content-right{
+  display: inline-block;
+  width: 540rpx;
+  font-size: 26rpx;
+  text-align: center;
+  color: #666;
+  height: 100%; 
+  float: right;
+}
+.classify-content-righ .right-header{
+  font-size: 32rpx;
+}
+.classify-content-right .right-body{
+  overflow: hidden;
+  /* margin-top: 30rpx; */
+}
+.classify-content-right .right-body view{
+  width: 33.2%;
+  float: left;
+  margin: 30rpx 0;
+}
+.classify-content-right .right-body view text{
+  display: block;
+}
+.classify-content-right .right-body view image{
+  width: 120rpx;
+  height: 120rpx;
+}

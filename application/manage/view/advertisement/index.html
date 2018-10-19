@@ -1,0 +1,131 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label seller-inline-2">广告名称：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入广告名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label seller-inline-2">更新时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择更新时间段" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="advertisement-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+
+            <button type="button" class="layui-btn layui-btn-sm add-advertisement"><i class="layui-icon">&#xe608;</i> 添加</button>
+        </div>
+
+    </div>
+</form>
+
+<div class="table-body">
+	<table id="advertisement" lay-filter="advertisement"></table>
+</div>
+
+<script>
+    layui.use(['table','form','layer','laydate'],function(){
+        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+        //执行渲染
+        table.render({
+            elem: '#advertisement', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-320',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            id:'advertisement',
+            url: "{:url('Advertisement/index')}",
+            cols: [[ //标题栏
+                {type:'numbers'},
+                {field: 'name', title: '广告名称',align:'center'},
+                {field: 'img', title: '广告图片',align:'center',width:120, templet: function(data){
+                    return '<a href="javascript:void(0);" onclick=viewImage("'+data.img+'")><image style="max-width:30px;max-height:30px;" src="'+data.img+'"/></a>';
+                }},
+                {field: 'advertType', title: '广告类型',align:'center',width:100},
+                {field: 'value', title: '广告地址',align:'center'},
+                {field: 'pname', title: '所属广告位',align:'center'},
+                {field: 'ctime',sort: true, title: '创建时间' ,align:'center'},
+                {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
+                {field: 'sort', sort: true, title: '排序',align:'center',width:80},
+                {fixed: 'right', width:150, title:'操作',align:'center', toolbar:'#advertisementBar'}
+            ]] //设置表头
+            //,…… //更多参数参考右侧目录：基本参数选项
+        });
+
+        date.render({
+            elem:'#utime',
+            range: '~'
+        });
+
+        form.on('submit(advertisement-search)', function(data){
+            layui.table.reload('advertisement', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //添加
+        $(document).on('click','.add-advertisement',function(){
+            window.location.href = "{:url('Advertisement/add')}";
+        });
+
+        form.on('submit(add-advertisement)', function(data){
+            JsPost("{:url('Advertisement/add')}",{data:data.field},function(res){
+                if(res.status){
+                    layer.close(window.box);
+                    layer.msg(res.msg, {time:1300},function(){
+                        table.reload('advertisement');
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+        });
+
+        form.on('submit(edit-advertisement)',function(data){
+            JsPost("{:url('Advertisement/edit')}",{data:data.field},function(res){
+                if(res.status){
+                    layer.close(window.box);
+                    layer.msg(res.msg, {time:1300},function(){
+                        table.reload('advertisement');
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+        });
+
+        //监听工具条
+        table.on('tool(advertisement)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的要删除么',{icon: 3}, function(index){
+                    JsGet("{:url('Advertisement/del')}?id=" + data.id, function(res){
+                        if(res.status){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                        }
+                        layer.msg(res.msg);
+                    })
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                window.location.href = "{:url('Advertisement/edit')}?id="+data.id;
+            }
+        });
+
+    })
+</script>
+
+<script type="text/html" id="advertisementBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>

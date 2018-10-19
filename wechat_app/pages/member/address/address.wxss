@@ -1,0 +1,28 @@
+/* pages/member/address/address.wxss */
+page{
+  background-color: #f9f9f9;
+}
+.weui-cell{
+  padding-bottom: 20rpx;
+  padding-top: 20rpx;
+}
+.weui-label{
+  width: 180rpx;
+  font-size: 28rpx;
+}
+.weui-input{
+  font-size: 28rpx;
+}
+.weui-cell__bd{
+  font-size: 28rpx;
+}
+.weui-btn{
+  height: 70rpx;
+  line-height: 70rpx;
+  background-color: #ff3b44;
+  font-size: 30rpx;
+  color: #fff;
+}
+.weui-select{
+  border-right: none;
+}

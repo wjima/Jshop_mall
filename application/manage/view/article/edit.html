@@ -1,0 +1,85 @@
+<style>
+    #container{
+        padding: 0px;
+        border-radius:0px;
+        border-width:0px;
+    }
+</style>
+<form class="layui-form seller-alone-form" action="" method="post">
+
+    <input type="hidden" name="id" value="{$info.id}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>文章分类：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <select name="type_id" lay-verify="required" style="z-index: 5">
+                <option value="{$info.type_id}">{$info.type_name}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>文章标题：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="title" value="{$info.title}" required  lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>封面图：</label>
+        <div class="layui-input-inline seller-inline-5">
+            {Jshop:image id='img' name='cover' required lay-verify='required' value="$info['cover']"/}
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text" >
+        <label class="layui-form-label"><i class="required-color">*</i>文章内容：</label>
+        <div class="layui-input-inline" style="z-index: 1">
+            <textarea id="container" name="content" style="width:100%;height:300px;" required  lay-verify="required" type="text/plain" class="layui-textarea">{$info.content}</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item" style="margin: 20px;">
+        <label class="layui-form-label">是否发布：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="is_pub" value="1" {eq name="$info.is_pub" value="1"}checked{/eq} title="立即发布">
+            <input type="radio" name="is_pub" value="2" {eq name="$info.is_pub" value="2"}checked{/eq} title="暂不发布">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="sort" value="{$info.sort}" required  lay-verify="required" placeholder="从小到大排列" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" lay-submit lay-filter="edit_article">保存</button>
+            <button onclick="javascript:history.back(-1)" type="reset" class="layui-btn layui-btn-primary">返回</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(edit_article)', function(data){
+            JsPost("{:url('Article/edit')}", data.field, function(res){
+                if(res.status){
+                    layer.msg(res.msg, {time:1300},function(){
+                        window.location.href = "{:url('Article/index')}";
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            })
+        });
+    });
+</script>
+<script type="text/javascript">
+    var ue = UE.getEditor('container');
+</script>

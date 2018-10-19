@@ -1,0 +1,23 @@
+<scroll-view scroll-y="true" style="height:100vh;" bindscrolltolower="lower" enable-back-to-top="true" lower-threshold="45" scroll-into-view="{{toView}}">
+  <view class='body'>
+    <view wx:for="{{listData}}" wx:key="index">
+      <view class='{{item.is_used==1?"coupon-red":"coupon-gray"}}'>
+        <view class='{{item.is_used==1?"red-left":"gray-left"}}'>        
+          {{item.name}}          
+        </view>
+        <view class='overdue' wx:if="{{item.date_status}}">
+          <image src='../../image/overdue.png'></image>
+        </view>
+        <view class='{{item.is_used==1?"red-right":"gray-right"}}'>
+          <text>{{item.stime}}</text>
+          <text>到</text>
+          <text>{{item.etime}}</text>
+        </view>
+      </view>
+    </view>
+    <!-- 加载操作 -->
+    <view class="loading" id="loading" hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
+    <view class="loading" id="loading" hidden="{{!loadingComplete}}">已载入全部</view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../image/page1copy.png'></image><text>没有数据</text></view>
+  </view>
+</scroll-view>

@@ -1,0 +1,74 @@
+.content-top>view{
+  width: 690rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  padding: 0 30rpx;
+  font-size: 28rpx;
+  border-top: 2rpx solid #e8e8e8;
+  overflow: hidden;
+}
+.order-left{
+  color: #999;
+}
+.order-number .order-right{
+  float: right;
+  color: #666;
+}
+.order-price .order-right{
+  float: right;
+  color: #ff3b44;
+}
+.content-bot{
+  border-top: 18rpx solid #f3f3f3;
+}
+.content-bot>view{ 
+  width: 690rpx;
+  padding: 0rpx 30rpx 26rpx;
+  border-bottom: 2rpx solid #e8e8e8;
+  position: relative;
+}
+.content-bot .left-img{
+  display: inline-block;
+  height: 82rpx;
+  width: 102rpx;
+  border-right: 2rpx solid #f4f4f4;
+}
+.content-bot .left-img image{
+  width: 80rpx;
+  height: 64rpx;
+  position: relative;
+  top: 8rpx;
+}
+.content-bot-right{
+  display: inline-block;
+  margin-left: 30rpx;
+  position: relative;
+  top: 16rpx;
+}
+.safe image{
+  width: 26rpx;
+  height: 28rpx;
+}
+.right-image{
+  width: 14rpx;
+  height: 24rpx;
+  position: absolute;
+  right: 30rpx;
+  top: 60rpx;
+}
+.right-toptext{
+  font-size: 32rpx;
+  color: #666;
+}
+.right-bottext{
+  font-size: 28rpx;
+  color: #999;
+  display: block;
+  margin-top: 10rpx;
+}
+.safe>text{
+  display: inline-block;
+}
+.remaining-sum-pay, .cash-on-delivery{
+  display: none;
+}

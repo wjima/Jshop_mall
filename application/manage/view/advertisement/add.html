@@ -1,0 +1,254 @@
+<div style="padding: 30px;" class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>广告位：</label>
+        <div class="layui-input-inline seller-inline-3">
+            <select name="position_id" id="position" lay-verify="required">
+                <option value="">请选择广告位</option>
+                {volist name='list' id='vo'}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>广告名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入广告名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label"><i class="required-color">*</i>广告图片：</label>
+        <div class="layui-input-inline seller-inline-5">
+            {Jshop:image id='img' name="img"/}
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>广告类型：</label>
+        <div class="layui-input-inline seller-inline-3">
+            <select name="type" lay-filter="type" lay-verify="required">
+                {volist name='type' id='vo'}
+                <option value="{$i}" {eq name="$i" value="2"}selected{/eq}>{$vo}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <div id="div1"  style="display: none">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>广告链接URL：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="url" name="url" required placeholder="请输入合法的URL链接,必须以http://开头" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+    <div id="div2"  style="display: none">
+        <input type="hidden" name="goods_id" id="goods_id">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>广告商品：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="goods" name="goods" readonly="readonly" required placeholder="请选择广告商品" autocomplete="off" class="layui-input" onclick="goods_list()">
+            </div>
+        </div>
+    </div>
+
+    <div id="div3"  style="display: none">
+        <input type="hidden" name="article_id" id="article_id">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>广告文章：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="article" name="article" readonly="readonly" required placeholder="请选择广告文章" autocomplete="off" class="layui-input" onclick="article_list()">
+            </div>
+        </div>
+    </div>
+
+    <div id="div4"  style="display: none">
+        <input type="hidden" name="article_type_id" id="article_type_id">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>文章分类：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="article_type" name="article_type" readonly="readonly" required placeholder="请选择文章分类" autocomplete="off" class="layui-input" onclick="article_type_list()">
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">广告排序：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="sort" required lay-verify="required" value="100" placeholder="数值越小越靠前" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" lay-submit lay-filter="add-advertisement">保存</button>
+            <button onclick="javascript:history.back(-1);" type="reset" class="layui-btn layui-btn-primary">取消</button>
+        </div>
+    </div>
+    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+</div>
+<script>
+    layui.use(['form','table'], function(){
+        var $ = layui.$,form = layui.form,table = layui.table;
+        //监听提交
+        form.render();
+        var type = $('select[name=type] option:selected').val();
+
+        if(type === '1') {
+            $("#div1").show();
+        }else if(type === '2') {
+            $("#div2").show();
+        }else if(type === '3'){
+            $("#div3").show();
+        } else {
+            $("#div4").show()
+        }
+
+
+        form.on('select(type)', function(data){
+            if (data.value === '1') {
+                $("#div1").show();
+                $("#div2").hide();
+                $("#div3").hide();
+                $("#div4").hide();
+            }
+            if (data.value === '2') {
+                $("#div1").hide();
+                $("#div2").show();
+                $("#div3").hide();
+                $("#div4").hide();
+            }
+            if (data.value === '3') {
+                $("#div1").hide();
+                $("#div2").hide();
+                $("#div3").show();
+                $("#div4").hide();
+            }
+            if (data.value === '4') {
+                $("#div1").hide()
+                $("#div2").hide()
+                $("#div3").hide()
+                $("#div4").show()
+            }
+        });
+
+        //监听文章列表页工具条
+        table.on('tool(articleTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if(layEvent === 'selectArticle'){ //选择
+                $("#article").val(data.title);
+                $("#article_id").val(data.id);
+                $("#goods").val('');
+                $("#goods_id").val('');
+                $("#url").val('');
+                $("#article_type_id").val('');
+                $("#article_type").val('');
+                layer.close(window.box);
+            }
+        });
+
+        //监听商品列表页工具条
+        table.on('tool(goodsTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+            if(layEvent === 'selectGoods'){ //选择
+                $("#goods").val(data.name);
+                $("#goods_id").val(data.id);
+                $("#article_id").val('');
+                $("#article").val('');
+                $("#url").val('');
+                $("#article_type_id").val('');
+                $("#article_type").val('');
+                layer.close(window.box);
+            }
+        });
+
+        // 监听文章分类列表页工具条
+        table.on('tool(articleTypeTable)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+            var tr = obj.tr;
+
+            if(layEvent === 'selectType'){ //选择
+                $("#article_type_id").val(data.id);
+                $("#article_type").val(data.type_name.replace(/\└―/g, ''));
+                $("#goods").val('');
+                $("#goods_id").val('');
+                $("#article_id").val('');
+                $("#article").val('');
+                $("#url").val('');
+                layer.close(window.box);
+            }
+        })
+
+        if($("#url").val())
+        {
+            $("#article_id").val('');
+            $("#article").val('');
+            $("#goods").val('');
+            $("#goods_id").val('');
+            $("#article_type_id").val('');
+            $("#article_type").val('');
+        }
+
+        //表单提交
+        form.on('submit(add-advertisement)', function(data){
+            JsPost("{:url('Advertisement/add')}", data.field, function(res){
+                if(res.status){
+                    layer.msg(res.msg, {time:1300},function(){
+                        window.location.href = "{:url('advertisement/index')}";
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            })
+        });
+
+    });
+
+    function goods_list()
+    {
+        JsGet("{:url('Advertisement/getGoods')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'商品列表'
+            });
+        });
+    }
+
+    function article_list()
+    {
+        JsGet("{:url('Advertisement/getArticle')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'文章列表'
+            });
+        });
+    }
+
+    function article_type_list()
+    {
+        JsGet("{:url('Advertisement/getArticleType')}", function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title: '文章分类列表'
+            })
+        })
+    }
+</script>

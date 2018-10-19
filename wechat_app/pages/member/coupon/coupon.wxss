@@ -1,0 +1,105 @@
+scroll-view{
+  background-color: #f3f3f3;
+}
+.body{
+  padding-top: 20rpx;
+}
+.coupon-red, .coupon-gray{
+  width: 694rpx;
+  height: 162rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 14rpx;
+  overflow: hidden;
+}
+.red-left,.red-right,.gray-left,.gray-right{
+  display: inline-block;
+}
+.red-left,.gray-left{
+  width: 60%;
+  height: 100%;
+  color: #fff;
+  font-size: 30rpx;
+  /* padding-top: 24rpx; */
+  float: left;
+  line-height: 162rpx;
+  text-align: center;
+}
+.red-right,.gray-right{
+  width: 40%;
+  height: 100%;
+  background-color: #fff;
+  font-size: 24rpx;
+  float: right;
+  text-align: center;
+  color: #999;
+  box-sizing: border-box;
+  padding-top: 26rpx; 
+}
+.red-right{
+  border-left: 4rpx dotted rgb(255, 33, 80);
+}
+.gray-right{
+  border-left: 4rpx dotted rgb(153, 153, 153);
+} 
+.red-right text,.gray-right text{
+  display: block;
+}
+.red-left{  
+  background-color: rgb(255, 33, 80);
+}
+.gray-left{
+  background-color: rgb(153, 153, 153);
+}
+.coupon-gray{
+  position: relative;
+}
+.overdue{  
+  position: absolute;
+  top: 20rpx;
+  right: 206rpx;
+}
+.overdue>image{
+  width: 152rpx;
+  height: 126rpx;
+}
+.price, .detail{
+  display: inline-block;
+}
+.num{
+  font-size: 78rpx;
+}
+.price{
+  width: 40%;
+  text-align: right;
+  padding-right: 10rpx;
+}
+.detail{
+  width: 55%;
+}
+.detail>text{
+  display: block;
+}
+.right-title{
+  font-size: 28rpx;
+  color: #666;
+  padding-top: 20rpx;
+}
+.loading{
+  text-align:center;
+  font-size:28rpx;
+  margin:20rpx 0;
+  color:#999;
+}
+.none-img{
+  margin: 100rpx auto;
+  text-align: center;
+}
+.none-img image{
+  width: 200rpx;
+  height: 200rpx;
+}
+.none-img text{
+  display: block;
+  color:#bbb;
+  font-size:32rpx;
+}

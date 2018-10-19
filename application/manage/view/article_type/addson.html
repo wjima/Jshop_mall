@@ -1,0 +1,27 @@
+<div style="padding:30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>上级分类：</label>
+        <div class="layui-input-block">
+            <select name="pid">
+                <option value="{$typeInfo.id}">{$typeInfo.type_name}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>分类名称：</label>
+        <div class="layui-input-block">
+            <input type="text" name="type_name" required lay-verify="required" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="submit_article_type">保存</button>
+
+</div>
+
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

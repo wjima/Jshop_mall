@@ -1,0 +1,12 @@
+<view class="articlelist">
+  <view class="articlelist-item" wx:for="{{list}}" wx:key="{{index}}" >
+    <image class='articlelist-img' src='{{item.cover}}' mode='{{mode}}'></image>
+    <view class='articlelist-item-body'>
+      <text class="articlelist-title" bindtap="detail" data-id="{{item.id}}">{{item.title}}</text>
+      <text class="articlelist-time" bindtap="detail" data-id="{{item.id}}">{{item.utime}}</text>
+    </view>
+  </view>
+  <view class="articlelist-bottom">
+  已加载全部
+  </view>
+</view>

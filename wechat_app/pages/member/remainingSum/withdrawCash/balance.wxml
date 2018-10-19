@@ -1,0 +1,32 @@
+<view>
+    <view wx:if="{{isCard}}">
+        <view class='balance-top' bindtap='bankcardlist'>
+            <image class='bank-logo' src='{{cardInfo.bank_logo}}'></image>
+            <view class='balance-content'>
+                <text class='bank-name'>{{cardInfo.bank_name}}</text>
+                <text class='bank-num'>{{cardInfo.card_number}} {{cardInfo.card_type}}</text>
+            </view>
+            <image class='order-top-right-img right-arrow' src='../../../image/right.png'></image>
+        </view>
+    </view>
+    <view wx:else>
+        <view class='balance-top' bindtap='bankcardlist'>
+            <image class='bank-logo' src='../../../image/yl.png'></image>
+            <view class='balance-content'>
+                <text class='bank-name'>请点击添加银行卡</text>
+            </view>
+            <image class='order-top-right-img right-arrow' src='../../../image/right.png'></image>
+        </view>
+    </view>    
+    <view class='balance-mid'>
+        <text class='balance-mid-title'>提现金额（收取0.1%服务费）</text>
+        <view class='balance-mid-input'>
+            <text>￥</text>
+            <input type='number' bindchange="changeMoney"></input>
+        </view>
+    </view>
+
+    <view class='balance-bottom' bindtap='confirmWithdraw'>
+        <button>确认提现</button>
+    </view>
+</view>

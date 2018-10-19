@@ -1,0 +1,24 @@
+<scroll-view scroll-y="true" style="height:100vh;" bindscrolltolower="lower" enable-back-to-top="true" scroll-into-view="{{toView}}" lower-threshold="45">
+  <view class='collect-list'>
+    <!-- 单条数据信息 -->
+    <view wx:for="{{goodsList}}" wx:key="index" class="collect-details touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove">
+      <!-- 商品信息 -->
+      <view class='content' bindtap='goods' data-id="{{item.goods_id}}">
+        <image class='details-left' src='{{item.goods.image_url}}'></image>
+        <view class='details-right'>
+          <text class='name'>{{item.goods_name}}</text>
+          <text class='price'>¥{{item.goods.price}}</text>
+        </view>
+        <image class='left-slip' src='../../image/right.png'></image>
+      </view>
+      <!-- 右滑移除 -->
+      <view class='collect-del'>
+        <view class='collect' catchtap="collection" data-goodsid="{{item.goods_id}}" data-index="{{index}}">取消收藏</view>
+      </view>
+    </view>
+    <!-- 加载操作 -->
+    <view class="loading" id="loading" hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
+    <view class="loading" id="loading" hidden="{{!loadingComplete}}">已载入全部</view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../image/page1copy.png'></image><text>没有数据</text></view>
+  </view>
+</scroll-view>

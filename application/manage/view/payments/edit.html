@@ -1,0 +1,54 @@
+<form class="layui-form payment_form" id="payment_form" action="" style="margin:10px;">
+    <input type="hidden" name="code" value="{$code}" />
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付方式：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$paymentInfo.name}({$code})</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$params.payments.is_online[$paymentInfo.is_online]}</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid">{$paymentInfo.memo}</div>
+        </div>
+    </div>
+        {switch $code }
+            {case wechatpay }
+                {include file="payments/tpl/wechatpay" /}
+            {/case}
+            {case alipay }
+                {include file="payments/tpl/alipay" /}
+            {/case}
+            {case offline }
+                {include file="payments/tpl/offline" /}
+            {/case}
+        {/switch}
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-block">
+            <input type="text" name="sort" required style="width:60px;"  lay-verify="required" value="{$paymentInfo.sort}" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态：</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" {if $paymentInfo.status == 1}checked{/if}  value="1" lay-text="启用{$paymentInfo.status}|禁用">
+        </div>
+    </div>
+</form>
+
+
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+</script>

@@ -1,0 +1,32 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <input type="hidden" name="id" value="{$info.id}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i> 名称：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="name" value="{$info.name}" required lay-verify="required" placeholder="请输入广告位名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i> 模板：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="code" value="{$info.code}" required lay-verify="required" placeholder="请输入广告位编码" autocomplete="off" class="layui-input" disabled>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label  class="layui-form-label seller-inline-2">排序：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="sort" value="{$info.sort}" required lay-verify="required" placeholder="请输入顺序" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="edit-advertPosition">保存</button>
+</div>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

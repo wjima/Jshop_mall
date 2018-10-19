@@ -1,0 +1,314 @@
+
+<style>
+    .seller-inline-1{
+        height: 25px;
+    }
+    .layui-table .layui-form-label{
+        padding: 3px 3px;
+    }
+    .selectArea{
+        color:#46a751;
+    }
+    .div-none{
+        display: none;
+    }
+    .layui-form-radio{
+        float: left;
+    }
+</style>
+<form class="layui-form seller-alone-form" action="{:url('ship/add')}" method="post">
+
+    <div style="padding: 30px;" class="layui-form ">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>配送方式：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="name" value="{$data.name}" required lay-verify="required" placeholder="请输入配送方式名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>物流公司：</label>
+            <div class="layui-input-inline">
+                <select name="logi_code" required lay-verify="required" id="logi_code" lay-filter="logi_code">
+                    <option value="">请选择</option>
+                    {if condition="count($logisticsList)>0"}
+                    {volist name="logisticsList" id="vo"}
+                    <option value="{$vo.logi_code}" {if condition="$vo.logi_code eq $data.logi_code"} selected {/if}>{$vo.logi_name}</option>
+                    {/volist}
+                    {/if}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否包邮：</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="free_postage" value="1" title="是" {if condition="$data.free_postage eq 1"} checked="" {/if} >
+                <input type="radio" name="free_postage" value="2" title="否" {if condition="$data.free_postage eq 2"} checked="" {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">货到付款：</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="has_cod" value="2" title="是" {if condition="$data.has_cod eq 2"} checked="" {/if}>
+                <input type="radio" name="has_cod" value="1" title="否" {if condition="$data.has_cod eq 1"} checked="" {/if}>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否默认：</label>
+            <div class="layui-input-inline">
+                <input type="radio" name="is_def" value="1" title="是" {if condition="$data.is_def eq 1"} checked="" {/if}>
+                <input type="radio" name="is_def" value="2" title="否" {if condition="$data.is_def eq 2"} checked="" {/if}>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否启用：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox"  name="status" lay-skin="switch" {if condition="$data.status eq 1"} checked="" {/if} lay-filter="switchTest" lay-text="启用|停用">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">重量设置：</label>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">首重重量：</label>
+                <div class="layui-input-inline">
+                    <select name="firstunit" id="firstunit" lay-filter="firstunit" key="key">
+                        <option value="">请选择</option>
+                        {volist name="params.ship_unit" id="vo" }
+                        <option value="{$key}" {if condition="$key eq $data.firstunit"} selected {/if}>{$vo}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">续重重量：</label>
+                <div class="layui-input-inline">
+                    <select name="continueunit" id="continueunit" lay-filter="continueunit" key="key">
+                        <option value="">请选择</option>
+                        {volist name="params.ship_unit" id="vo" }
+                        <option value="{$key}" {if condition="$key eq $data.continueunit"} selected {/if}>{$vo}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">配送费用：</label>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">首重费用：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="firstunit_price" value="{$data.firstunit_price}" required value="10" lay-verify="required" placeholder="请输入首重费用" autocomplete="off" class="layui-input">
+
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">续重费用：</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="continueunit_price" value="{$data.continueunit_price}" required value="10" lay-verify="required" placeholder="请输入续重费用" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="sort" required lay-verify="required" placeholder="请输入顺序" value="{$data.sort|default='100'}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">地区类型：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" class="radio-left" value="1" lay-filter="type" title="所有地区" {if condition="$data.type eq 1"} checked="" {/if} >
+                <input type="radio" name="type" class="radio-left" value="2" lay-filter="type" title="部分地区" {if condition="$data.type eq 2"} checked="" {/if}>
+                <div class="layui-form-mid layui-word-aux">设置部分地区后，未配置地区采用默认配置</div>
+            </div>
+        </div>
+        <div class="layui-form-item {if condition="$data.type eq 1"} div-none {/if}">
+            <div class="layui-input-block">
+                <table class="layui-table" lay-size="sm">
+                    <thead>
+                    <tr>
+                        <th>选择地区</th>
+                        <th >首重费用</th>
+                        <th>续重费用</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="view">
+                    {empty name="data[area_fee]"}
+                    <tr data-id="0">
+                        <td>
+                            <input type='hidden' name='area_id[0]' value=''>
+                            <a href="javascript:void(0);" class="selectArea">请选择地区</a>
+                        </td>
+                        <td>
+                            <label class="layui-form-label">首重费用：</label>
+                            <input type="text" name="firstunit_area_price[0]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+                        </td>
+                        <td>
+                            <label class="layui-form-label">续重费用：</label>
+                            <input type="text" name="continueunit_area_price[0]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+                        </td>
+                        <td>
+                            <a class="layui-btn layui-btn-xs addarea-class">
+                                添加地区
+                            </a>
+                            <a class="layui-btn layui-btn-danger layui-btn-xs del-class">
+                                删除
+                            </a>
+                        </td>
+                    </tr>
+                    {else /}
+                    {volist name="data[area_fee]" id="vo"}
+                    <tr data-id="{$key}">
+                        <td>
+                            已选择地区：{$vo.area_html}
+                            <input type='hidden' name='area_id[{$key}]' value='{$vo.area_value}'>
+                            <a href="javascript:void(0);" class="selectArea">请选择地区</a>
+                        </td>
+                        <td>
+                            <label class="layui-form-label">首重费用：</label>
+                            <input type="text" name="firstunit_area_price[{$key}]" required value="{$vo.firstunit_area_price}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+                        </td>
+                        <td>
+                            <label class="layui-form-label">续重费用：</label>
+                            <input type="text" name="continueunit_area_price[{$key}]" required value="{$vo.continueunit_area_price}" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+                        </td>
+                        <td>
+                            <a class="layui-btn layui-btn-xs addarea-class">
+                                添加地区
+                            </a>
+                            <a class="layui-btn layui-btn-danger layui-btn-xs del-class">
+                                删除
+                            </a>
+                        </td>
+                    </tr>
+                    {/volist}
+                    {/empty}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="layui-form-item">
+
+            <div class="layui-input-block" style="padding-top: 20px;">
+            <input type="hidden" name="id" value="{$data.id}">
+            <button class="layui-btn save-ship" lay-submit="" lay-filter="add-ship">保存</button>
+            <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary" lay-filter="cancleAuthor">返回</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script id="tr_tpl" type="text/html">
+    <tr data-id="{{ d.id }}">
+        <td>
+            <input type='hidden' name='area_id[{{ d.id }}]' value=''>
+            <a href="javascript:void(0);" class="selectArea">请选择地区</a>
+        </td>
+        <td>
+            <label class="layui-form-label">首重费用：</label>
+            <input type="text" name="firstunit_area_price[{{ d.id }}]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+        </td>
+        <td>
+            <label class="layui-form-label">续重费用：</label>
+            <input type="text" name="continueunit_area_price[{{ d.id }}]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+        </td>
+        <td>
+            <a class="layui-btn layui-btn-xs addarea-class">
+                添加地区
+            </a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs del-class">
+                删除
+            </a>
+        </td>
+    </tr>
+</script>
+
+
+<script>
+    var laytpl='';
+
+    layui.use(['table','form','layer','laytpl','tree'],function(){
+        var form = layui.form;
+        laytpl = layui.laytpl;
+        form.render();
+        form.on('submit(add-ship)', function(data){
+            JsPost("{:url('ship/edit')}",data.field,function (res) {
+                if(res.status == true){
+                    layer.msg(res.msg, {icon: 6},function(){
+                        window.location.href = "{:url('ship/index')}";
+                    });
+                }else{
+                    layer.msg(res.msg,{icon: 5});
+                }
+            });
+            return false;
+        });
+        form.on('radio(type)', function(data){
+            console.log(data.elem); //得到radio原始DOM对象
+            console.log(data.value); //被点击的radio的value值
+            if(data.value=='2'){
+                $(".div-none").show();
+            }else{
+                $(".div-none").hide();
+            }
+        });
+    });
+
+    //选择地区
+    $(".layui-table").on('click','.selectArea',function (e) {
+        var tdObj = $(this);
+        var tr = tdObj.parent().parent();
+        var id = tr.attr("data-id");
+        var value = tdObj.parent().find('input').val();
+        JsPost('{:url("ship/chooseArea")}',{data:value},function (e) {
+            layer.open({
+                type: 1,
+                area: ['700px', '450px'],
+                data:value,
+                title: '选择地区',
+                closeBtn: 0,
+                shadeClose: true,
+                content: e.data,
+                btn:['保存','关闭'],
+                yes:function (index,layero) {
+                    console.log(index);
+                    var checked = getAllChecked();
+                    if(checked){
+                        var html = '已选择地区：';
+                        $.each(checked,function (i,obj) {
+                            if(obj.pid==0){
+                                html=html+obj.name+',';
+                            }
+                        });
+                        html = html.substring(0,html.length-1)+'。<a href="javascript:void(0);" class="selectArea">请选择地区</a>';
+                        html = html+"<input type='hidden' name='area_id["+id+"]' value='"+JSON.stringify(checked)+"'>";
+                        tdObj.parent().html(html);
+                        layer.closeAll();
+                    }
+                }
+            });
+        });
+    });
+    $(".layui-table").on('click','.addarea-class',function (e) {
+        var getTpl = tr_tpl.innerHTML;
+        var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');
+
+        var tmpData={};
+        tmpData.id=parseInt(lastId)+1;
+        laytpl(getTpl).render(tmpData, function(html){
+            $("#view").append(html);
+        });
+    });
+    $(".layui-table").on('click','.del-class',function (e) {
+        $(this).parent().parent().remove();
+    })
+
+</script>

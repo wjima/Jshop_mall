@@ -1,0 +1,63 @@
+/* 全局样式表 */
+
+/* 引入富文本解析插件样式 */
+@import "/component/wxParse/wxParse.wxss";
+@import "weui.wxss";
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+} 
+.header-input{
+  width: 690rpx;
+  padding: 18rpx 32rpx 40rpx;
+  position: fixed;
+  z-index: 1000;
+}
+.search-input{
+  width: 532rpx;
+  height: 60rpx;
+  border-radius: 100rpx;
+  font-size: 24rpx;
+  padding-left: 76rpx;
+  background-color: #efefef;
+  opacity: .7; 
+  position: relative;
+}
+.search-input icon{  
+  position: absolute; 
+  top: 50%;
+  transform: translateY(-50%);
+  left: 30rpx;
+}
+.message{
+  width: 40rpx;
+  height: 40rpx;
+  position: absolute; 
+  top: 30rpx;
+  right: 40rpx;
+  overflow:visible;
+  background-color:transparent;
+  line-height:normal;
+  padding-right:0;
+  padding-left:0;
+}
+.header-input button::after{
+  border: none;
+  border-radius:0;
+}
+.message image{
+  width: 100%;
+  height: 100%;
+}
+.navigator-hover{
+  background: none;
+}
+.topnav{
+  background: linear-gradient(rgba(0, 0, 0, .7),rgba(0, 0, 0, 0));
+}

@@ -1,0 +1,20 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">appid11：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="text" name="params[appid]" value="{$paymentInfo.params.appid}" required lay-verify="required" placeholder="请输入appid" autocomplete="off" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">RSA私钥：</label>
+    <div class="layui-input-block">
+        <textarea placeholder="请输入私钥" class="layui-textarea" lay-verify="required" name="params[rsa_private_key]">{$paymentInfo.params.rsa_private_key}</textarea>
+        <div class="layui-form-mid">请输入私钥内容，并确定应用的公钥已经上传到支付宝里了</div>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">支付宝公钥：</label>
+    <div class="layui-input-block">
+        <textarea placeholder="请输入支付宝公钥" class="layui-textarea" lay-verify="required" name="params[alipay_public_key]">{$paymentInfo.params.alipay_public_key}</textarea>
+        <div class="layui-form-mid">请输入支付宝公钥，<a style="color:red;" href="https://docs.open.alipay.com/291/105972" target="_blank">上传应用公钥并获取支付宝公钥</a> </div>
+    </div>
+</div>

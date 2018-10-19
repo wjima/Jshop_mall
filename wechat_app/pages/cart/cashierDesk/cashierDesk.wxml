@@ -1,0 +1,57 @@
+<view class='cashierdesk-content'>
+  <!-- 订单号和金额 -->
+  <view class='content-top'>
+    <!-- 订单号 -->
+    <view class='order-number'>
+      <text class='order-left'>订单编号</text>
+      <text class='order-right'>{{orderId}}</text>
+    </view>
+    <!-- 订单金额 -->
+    <view class='order-price'>
+      <text class='order-left'>订单金额</text>
+      <text class='order-right'>￥{{orderAmount}}</text>
+    </view>
+  </view>
+
+  <!-- 支付方式 -->
+  <view class='content-bot'>
+    <view wx:for="{{paymentType}}" wx:key="index">
+      <!-- 微信支付 -->
+      <view class='wechat-pay' bindtap='wechatPay' wx:if="{{item.code=='wechatpay'}}">
+        <view class='left-img'><image src='../../image/wechat.png'></image></view>
+        <view class='content-bot-right'>
+          <text class='right-toptext'>{{item.name}}</text>
+          <text class='right-bottext'>{{item.memo}}</text>
+        </view>
+        <image class='right-image' src='../../image/right.png'></image>
+      </view>
+      <!-- 余额支付 -->
+      <view class='remaining-sum-pay' bindtap='balance' wx:if="{{item.code=='balancepay'}}">
+        <view class='left-img'><image src='../../image/remainingsum-pay.png'></image></view>
+        <view class='content-bot-right'>
+          <text class='right-toptext'>余额支付</text>
+          <text class='right-bottext'>当前余额：0.00</text>
+        </view>
+        <image class='right-image' src='../../image/right.png'></image>
+      </view>
+      <!-- 货到付款 -->
+      <view class='cash-on-delivery' bindtap='delivery' wx:if="{{item.code=='deliverypay'}}">
+        <view class='left-img'><image src='../../image/payment.png'></image></view>
+        <view class='content-bot-right'>
+          <text class='right-toptext'>{{item.name}}</text>
+          <text class='right-bottext'>{{item.memo}}</text>
+        </view>
+        <image class='right-image' src='../../image/right.png'></image>
+      </view>
+      <!-- 线下支付 -->
+      <view class='cash-on-offline' bindtap='offline' wx:if="{{item.code=='offline'}}">
+        <view class='left-img'><image src='../../image/payment.png'></image></view>
+        <view class='content-bot-right'>
+          <text class='right-toptext'>{{item.name}}</text>
+          <text class='right-bottext'>{{item.memo}}</text>
+        </view>
+        <image class='right-image' src='../../image/right.png'></image>
+      </view>
+    </view>
+  </view>
+</view>

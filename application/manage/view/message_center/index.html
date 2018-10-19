@@ -1,0 +1,64 @@
+<div class="table-body">
+    <table id="userTable" lay-filter="userTable"></table>
+</div>
+<script type="text/html" id="smsTpl">
+    <input type="checkbox" name="sms" value="{{d.code}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.sms == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="messageTpl">
+    <input type="checkbox" name="message" value="{{d.code}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.message == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="wxTpl">
+    <input type="checkbox" name="wx_tpl_message" value="{{d.code}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.wx_tpl_message == 1 ? 'checked' : '' }}>
+</script>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        layui.table.render({
+            elem: '#userTable',
+            height: 'full-218',
+            cellMinWidth: '80',
+            page: false,
+            limit:'20',
+            url: "{:url('MessageCenter/index')}?_ajax=1",
+            id:'userTable',
+            cols: [[
+                {type:'numbers'},
+                {field: 'code', title: '消息节点',templet:function(data){
+                    var html = '';
+                    html += data.name + '('+data.code+')';
+                    return html;
+                }},
+                {field:'sms', title:'短信', width:200, templet: '#smsTpl', unresize: true},
+                {field:'message', title:'站内消息', width:200, templet: '#messageTpl', unresize: true},
+                //{field:'wx_tpl_message', title:'消息模板', width:200, templet: '#wxTpl', unresize: true}
+            ]]
+        });
+        //监听操作
+        layui.form.on('switch(smsDemo)', function(obj){
+            console.log(this.name);
+            console.log(this.value);
+            var data = {
+                code:this.value
+            }
+            if(obj.elem.checked){
+                data[this.name] = 1;
+            }else{
+                data[this.name] = 2;
+            }
+            $.ajax({
+                type:'post',
+                url: "{:url('MessageCenter/edit')}",
+                data:data,
+                success:function(e){
+                    if(e.status){
+                       layer.msg('修改成功');
+                    }else{
+                        layer.msg(e.msg);
+                    }
+
+                }
+            });
+        });
+
+    });
+</script>

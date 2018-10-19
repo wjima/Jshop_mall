@@ -1,0 +1,94 @@
+<form id="spec_form">
+
+<div id="spec_select" style="display: none">
+{volist name="spec" id="vo"}
+    <div class="layui-form-item" pane>
+        <label class="layui-form-label">{$vo.name}</label>
+        <div class="layui-input-block">
+            {volist name="vo.specValue" id="v"}
+                <input type="checkbox" name="spec[{$vo.name}][]" value="{$v.value}" lay-skin="primary" title="{$v.value}" lay-filter="spec_select">
+            {/volist}
+        </div>
+    </div>
+{/volist}
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-sm generate-spec">生成规格</button>
+        </div>
+    </div>
+
+    <div id="more_spec">
+
+    </div>
+
+</div>
+<div id="no_spec">
+<div class="layui-form-item">
+    <label class="layui-form-label">销售价：</label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods[price]" placeholder="￥" autocomplete="off" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">成本价：</label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods[costprice]" placeholder="￥" autocomplete="off" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">市场价：</label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods[mktprice]" placeholder="￥" autocomplete="off" class="layui-input">
+    </div>
+</div>
+
+<div class="layui-form-item">
+    <label class="layui-form-label">货号：</label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods[sn]" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
+    </div>
+</div>
+
+<div class="layui-form-item">
+    <label class="layui-form-label">库存：</label>
+    <div class="layui-input-inline">
+        <input type="text" name="goods[stock]" lay-verify="title" autocomplete="off" placeholder="请输入商品库存" class="layui-input">
+    </div>
+</div>
+</div>
+</form>
+
+{if condition="$canOpenSpec eq 'true' "}
+<div class="layui-form-item">
+    <label class="layui-form-label" >开启规格：</label>
+    <div class="layui-input-inline">
+        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="false" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">开启</button>
+    </div>
+</div>
+{/if}
+{notempty name="typeParams"}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"><legend>商品参数</legend></fieldset>
+{volist name="typeParams" id="vo"}
+<div class="layui-form-item">
+    <label class="layui-form-label">{$vo.params.name}：</label>
+    <div class="layui-input-inline">
+        {if condition="$vo.params.type eq 'text'"}
+        <input type="text" name="goods[params][{$vo.params.name}]"  class="layui-input">
+        {elseif condition="$vo.params.type eq 'checkbox'"/}
+            {volist name="$vo.params.value" id="params"}
+            <input type="checkbox" name="goods[params][{$vo.params.name}][{$params}]" lay-skin="primary" title="{$params}">
+            {/volist}
+        {elseif condition="$vo.params.type eq 'radio'"/}
+            {volist name="$vo.params.value" id="params" key="p"}
+            <input type="radio" name="goods[params][{$vo.params.name}]" value="{$params}" title="{$params}" {if condition="$p eq 1"}checked{/if}>
+            {/volist}
+        {/if}
+    </div>
+</div>
+{/volist}
+{/notempty}
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

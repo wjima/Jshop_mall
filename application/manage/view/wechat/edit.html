@@ -1,0 +1,116 @@
+<form class="layui-form seller-alone-form" method="post" action="{:url('Wechat/doEdit')}">
+    <div class="warning-msg">
+        <div class="warning-msg-content">
+            <p>请先登录公众平台<a target="_blank" href="https://mp.weixin.qq.com">mp.weixin.qq.com</a>配置url，再根据页面要求填写信息并保存
+                <a href="#" target="_blank" >[帮助手册]</a></p>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">request合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">socket合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">uploadFile合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">downloadFile合法域名：</label>
+        <div class="layui-form-mid ">{$weixin_host}</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>小程序名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" required lay-verify="required" name="wx_nick_name" value="{$data.wx_nick_name.value}" class="layui-input" placeholder="请输入小程序名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>AppId：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_appid" required lay-verify="required" value="{$data.wx_appid.value}" autocomplete="off" placeholder="请输入小程序AppId" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            请至微信小程序平台 设置》开发设置 中复制粘贴过来
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>AppSecret：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_app_secret" required lay-verify="required" value="{$data.wx_app_secret.value}" autocomplete="off" placeholder="请输入小程序AppSecret" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            请至微信小程序平台 设置》开发设置 中复制粘贴过来
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>原始Id：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_user_name" required lay-verify="required" value="{$data.wx_user_name.value}" autocomplete="off" placeholder="请输入小程序原始Id" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            请至微信小程序平台 设置》开发设置 中复制粘贴过来
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>主体信息：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_principal_name" required lay-verify="required" value="{$data.wx_principal_name.value}" autocomplete="off" placeholder="请输入小程序主体信息" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            请至微信小程序平台 设置》基本设置 中复制粘贴过来
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">简介：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <textarea placeholder="请输入小程序简介" name="wx_signature" class="layui-textarea">{$data.wx_signature.value}</textarea>
+        </div>
+    </div>
+    <br />
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">Logo：</label>
+        <div class="layui-input-inline seller-inline-5">
+            {Jshop:image id='head_img' name="wx_head_img" value="$data['wx_head_img']['value']"/}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn " lay-submit="" lay-filter="save">保存</button>
+            <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancleAuthor">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','laytpl','upload'], function() {
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.render();
+        form.on('submit(save)', function(data){
+            formData = data.field;
+            if(!formData){
+                layer.msg('请先完善数据', {time: 1300});
+                return false;
+            }
+            JsPost('{:url("Wechat/doEdit")}',formData,function (e) {
+                if(e.status === true){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        window.location.href='{:url("Wechat/info")}';
+                    });
+                }else{
+                    layer.msg(e.msg, {time: 1300});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<style>
+    .seller-inline-2{
+        width: 140px !important;
+    }
+</style>

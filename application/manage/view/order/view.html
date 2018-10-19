@@ -1,0 +1,182 @@
+<style>
+	.layui-form-label{
+		width: 100px;
+		padding: 5px 15px;
+	}
+	.layui-form-mid{
+		padding: 5px 0 !important;
+	}
+</style>
+<div class="layui-form seller-alone-form">
+	<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+		<ul class="layui-tab-title">
+			<li class="layui-this">基本信息</li>
+			<li>收货人信息</li>
+			<li>商品信息</li>
+			<li>备注信息</li>
+			<li>订单记录</li>
+		</ul>
+	  	<div class="layui-tab-content">
+	  	
+			<!--订单信息-->
+			<div class="layui-tab-item layui-show">
+				<div class="layui-form-item" lay-size="sm">
+					<label class="layui-form-label">订单号：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.order_id}</div>
+
+					<label class="layui-form-label">订单总金额：</label>
+					<div class="layui-form-mid seller-inline-4">￥{$order.order_amount}元</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">支付状态：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.order.pay_status')[$order.pay_status]}</div>
+
+					<label class="layui-form-label">发货状态：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.order.ship_status')[$order.ship_status]}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">订单状态：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.order.status')[$order.status]}</div>
+
+					<label class="layui-form-label">已支付金额：</label>
+					<div class="layui-form-mid seller-inline-4">￥{$order.payed}元</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">支付方式：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.payment_type')[$order.payment_code]}</div>
+
+					<label class="layui-form-label">配送方式：</label>
+					<div class="layui-form-mid seller-inline-4">{if $order.logistics}{$order.logistics['logi_name']}{/if}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发票类型：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.order.tax_type')[$order.tax_type]}</div>
+
+					<label class="layui-form-label">发票内容：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.tax_content}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">税号：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.tax_code}</div>
+
+					<label class="layui-form-label">发票抬头：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.tax_title}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">订单优惠金额：</label>
+					<div class="layui-form-mid seller-inline-4">￥{$order.order_pmt}</div>
+
+					<label class="layui-form-label">商品优惠金额：</label>
+					<div class="layui-form-mid seller-inline-4">￥{$order.goods_pmt}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">商品总重量：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.weight}</div>
+
+					<label class="layui-form-label">商品总价：</label>
+					<div class="layui-form-mid seller-inline-4">￥{$order.goods_amount}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">下单来源：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.order.source')[$order.source]}</div>
+
+					<label class="layui-form-label">下单时间：</label>
+					<div class="layui-form-mid seller-inline-4">{:date('Y-m-d H:i:s', $order.ctime)}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">配送费用：</label>
+					<div class="layui-form-mid seller-inline-4">￥{$order.cost_freight}元</div>
+
+					<label class="layui-form-label">收货状态：</label>
+					<div class="layui-form-mid seller-inline-4">{:config('params.order.confirm')[$order.confirm]}</div>
+				</div>
+			</div>
+
+			<!--收货人信息-->
+			<div class="layui-tab-item">
+				<div class="layui-form-item">
+					<label class="layui-form-label">收货时间：</label>
+					<div class="layui-form-mid seller-inline-4">{if $order.confirm == 2}{:date('Y-m-d H:i:s', $order.confirm_time)}{else/}未收货{/if}</div>
+
+					<label class="layui-form-label">收货区域：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.ship_area_name}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">收货人姓名：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.ship_name}</div>
+
+					<label class="layui-form-label">收货人电话：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.ship_mobile}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">收货地址：</label>
+					<div class="layui-form-mid seller-inline-9">{$order.ship_address}</div>
+				</div>
+			</div>
+
+			<!--商品详情-->
+			<div class="layui-tab-item">
+				<table class="layui-table" lay-size="sm">
+					<thead>
+						<tr>
+							<th>商品名称</th>
+							<th>商品单价</th>
+							<th>购买数量</th>
+							<th>商品总价</th>
+							<th>货品编码</th>
+							<th>商品编码</th>
+							<th>商品总重量</th>
+							<th>发货数量</th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach $order.items as $key=>$vo}
+							<tr>
+								<td>{$vo.name} - {$vo.addon}</td>
+								<td>{$vo.price}</td>
+								<td>{$vo.nums}</td>
+								<td>{$vo.amount}</td>
+								<td>{$vo.sn}</td>
+								<td>{$vo.bn}</td>
+								<td>{$vo.weight}</td>
+								<td>{if $vo.sendnums}{$vo.sendnums}{else /}0{/if}</td>
+							</tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</div>
+
+			<!--备注信息-->
+			<div class="layui-tab-item">
+				<div class="layui-form-item">
+					<label class="layui-form-label">买家备注：</label>
+					<div class="layui-form-mid seller-inline-9">{$order.memo}</div>
+				</div>
+			</div>
+
+			<!--订单记录-->
+			<div class="layui-tab-item">
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>订单号</th>
+						<th>操作类型</th>
+						<th>描述</th>
+						<th>时间</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order_log as $key=>$vo}
+					<tr>
+						<td>{$vo.order_id}</td>
+						<td>{$vo.type}</td>
+						<td>{$vo.msg}</td>
+						<td>{$vo.ctime}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div> 
+</div>	

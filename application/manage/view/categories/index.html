@@ -1,0 +1,211 @@
+<style>
+    .layui-btn .layui-icon{
+        margin-right: 0;
+    }
+</style>
+<form class="layui-form seller-form" action="">
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<button class="layui-btn layui-btn-sm add-class"><i class="layui-icon">&#xe608;</i> 添加</button>
+		</div>
+	</div>
+</form>
+
+<div class="table-body">
+	<table id="categories" lay-data="{id: 'categories'}"></table>
+</div>
+
+<script>
+    var window_box;
+    layui.use(['table', 'layer'], function(){
+        var layer = layui.layer, $ = layui.jquery, table = layui.table;
+
+        //获取商品分类数据
+        table.render({
+            id: 'categories',
+            elem: '#categories',
+            url: '{:url("categories/index")}',
+            method: 'post',
+            response: {
+                statusName: 'status',
+                statusCode: 1
+            },
+            cols: [[
+                {type: 'numbers'},
+                {field: 'name_1', title: '一级分类', width:200, align: 'center'},
+                {field: 'name_2', title: '二级分类', width:200, align: 'center'},
+                {field: 'type_id', title: '所属类型', width:150, align: 'center'},
+                {field: 'image_id', title: '图标', width:65, align: 'center', templet: function(data){
+                    return '<a href="javascript:void(0);" onclick=viewImage("'+data.image_id+'")><image style="max-width:30px;max-height:30px;" src="'+data.image_id+'"/></a>';
+                }},
+                {field: 'sort', title: '排序', width:100, align: 'center'},
+                {field: 'operating', title: '操作', align: 'center'}
+            ]]
+        });
+
+        //添加分类
+        $(document).on('click', '.add-class', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("categories/add")}',
+                type: 'get',
+                data: {
+                    'parent_id': id
+                },
+                success: function(e){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '添加分类',
+                        area: ['430px', '510px'], //宽高
+                        content: e
+                    });
+                }
+            });
+            return false;
+        });
+
+        //编辑分类
+        $(document).on('click', '.edit-class', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("categories/edit")}',
+                type: 'get',
+                data: {
+                    'id': id
+                },
+                success: function(e){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑分类',
+                        area: ['430px', '510px'], //宽高
+                        content: e
+                    });
+                }
+            })
+        });
+
+        //删除分类
+        $(document).on('click', '.del-class', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("categories/del")}',
+                type: 'get',
+                data: {
+                    'id': id
+                },
+                success: function(e){
+                    if(e.status === true){
+                        layer.confirm('确认删除分类：'+e.data.name+' 吗？', {
+                            title: '提示', btn: ['确认', '取消'] //按钮
+                        }, function(){
+                            delClass(id);
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300});
+                    }
+                }
+            });
+        });
+
+        //删除操作
+        function delClass(id){
+            $.ajax({
+                url: '{:url("categories/del")}',
+                type: 'post',
+                data: {
+                    'id': id
+                },
+                success: function(e){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        table.reload('categories');
+                    });
+                }
+            });
+        }
+
+        //添加保存数据
+        $(document).on('click', '.add-save-btn', function(){
+            var parent_id = $("#parent_id").val();
+            var type_id = $("#type_id").val();
+            var name = $("#name").val();
+            var image_id = $("#image_value_image_id").val();
+            var sort = $("#sort").val();
+
+            var error = false;
+            if(name.length > 6 || name.length < 1){
+                error = true;
+                layer.msg('分类名称在1-6个字符之间', {time: 1300});
+                return false;
+            }
+            if(sort < 1 || sort > 100){
+                error = true;
+                layer.msg('请填写1-100的排序值，越小越靠前', {time: 1300});
+                return false;
+            }
+
+            if(!error){
+                $.ajax({
+                    url: '{:url("categories/add")}',
+                    type: 'post',
+                    data: {
+                        'parent_id': parent_id,
+                        'type_id': type_id,
+                        'name': name,
+                        'image_id': image_id,
+                        'sort': sort
+                    },
+                    dataType: 'json',
+                    success: function(e){
+                        if(e.status === true){
+                            layer.close(window_box);
+                            layer.msg(e.msg, {time: 1300}, function(){
+                                table.reload('categories');
+                            });
+                        }else{
+                            layer.msg(e.msg, {time: 1300});
+                        }
+                    }
+                })
+            }
+        });
+
+        //编辑保存数据
+        $(document).on('click', '.edit-save-btn', function(){
+            var id = $("#id").val();
+            var parent_id = $("#parent_id").val();
+            var type_id = $("#type_id").val();
+            var name = $("#name").val();
+            var image_id = $("#image_value_image_id").val();
+            var sort = $("#sort").val();
+
+            if(name.length > 6){
+                layer.msg('分类名称不能大于6个字符');
+                return false;
+            }else{
+                $.ajax({
+                    url: '{:url("categories/edit")}',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'id': id,
+                        'parent_id': parent_id,
+                        'type_id': type_id,
+                        'name': name,
+                        'image_id': image_id,
+                        'sort': sort
+                    },
+                    success: function(e){
+                        if(e.status === true){
+                            layer.close(window_box);
+                            layer.msg(e.msg, {item: 1300}, function(){
+                                table.reload('categories');
+                            });
+                        }else{
+                            layer.msg(e.msg, {time: 1300});
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>

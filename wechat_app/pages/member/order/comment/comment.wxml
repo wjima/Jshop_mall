@@ -1,0 +1,39 @@
+<!-- 订单评论 -->
+<view>
+  <!-- 订单商品循环 -->
+  <view wx:for="{{goodsList}}" wx:key="index">
+    <view class='top'>
+      <!-- 商品图片 -->
+      <view class='top-left'>
+      
+      </view>
+      <image class='goods-img' src='{{item.image_url}}'></image>
+      <!-- 好中差评 -->
+      <view class='top-right'>
+        这是一个商品标题，对这就是一个商品标题
+      </view>
+    </view>
+    <view class='top2 top'>
+      <view class='star-img'>
+        <text>评分</text>
+        <view class='star-view' wx:for="{{stars[item.id]}}" wx:key="index" wx:for-item="vo">
+          <image src="{{vo?'../../../image/redstar.png':'../../../image/star.png'}}" bindtap='star' data-index="{{index}}" data-goodsid="{{item.id}}"></image>
+        </view>
+      </view>
+    </view>
+    <view class='mid'>
+      <view class='mid-text'>
+        <textarea class="mid-textarea" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" placeholder-class='mid-textarea-p' bindinput="textarea" data-goodsid="{{item.id}}" />
+      </view>
+      <view class='upload-img' wx:for="{{images[item.id]}}" wx:key="indexs" wx:for-item="items" wx:for-index="indexss">
+        <image src='{{items.url}}' bindtap='delImage' data-index="{{indexss}}" data-goodsid="{{item.id}}"></image>
+      </view>
+      <view class='upload-img' bindtap='uploadImage' data-goodsid="{{item.id}}" wx:if="{{images[item.id].length<5}}">
+        <image src='../../../image/addimg.png' data-goodsid="{{item.id}}"></image>
+      </view>
+    </view>
+  </view>
+  <view class='submit'>
+      <button class="weui-btn" type="warn" bindtap='submit'>提交评论</button>
+    </view>
+</view>

@@ -1,0 +1,76 @@
+<div class="layui-form-item">
+    <label class="layui-form-label">appid：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="text" name="params[appid]" value="{$paymentInfo.params.appid}" required lay-verify="required" placeholder="请输入appid" autocomplete="off" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">mch_id：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="text" name="params[mch_id]" value="{$paymentInfo.params.mch_id}" required  lay-verify="required" placeholder="请输入商户号" autocomplete="off" class="layui-input">
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">key：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="text" name="params[key]" value="{$paymentInfo.params.key}" required  lay-verify="required" placeholder="请输入key" autocomplete="off" class="layui-input">
+    </div>
+</div>
+
+<div class="layui-form-item">
+    <label class="layui-form-label">cert证书</label>
+    <div class="layui-input-block">
+        <button type="button" class="layui-btn layui-btn-sm" id="sslcert"><i class="layui-icon"></i>上传cert证书</button>
+        <input type="hidden" name="params[sslcert]" id="hidden_sslcert" value="{$paymentInfo.params.sslcert}">
+        <span id="span_sslcert">{$paymentInfo.params.sslcert}</span>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">key证书</label>
+    <div class="layui-input-block">
+        <button type="button" class="layui-btn layui-btn-sm" id="sslkey"><i class="layui-icon"></i>上传key证书</button>
+        <input type="hidden" name="params[sslkey]" id="hidden_sslkey" value="{$paymentInfo.params.sslkey}">
+        <span id="span_sslkey">{$paymentInfo.params.sslkey}</span>
+    </div>
+</div>
+
+<script>
+    layui.use('upload', function() {
+        var $ = layui.jquery;
+
+        //上传cert证书
+        layui.upload.render({
+            elem: '#sslcert'
+            ,url: "{:url('uploadCert')}"
+            ,accept: 'file' //普通文件
+            ,exts: 'pem' //只允许上传压缩文件
+            ,done: function(res){
+                if(res.status){
+                    $('#hidden_sslcert').val(res.data);
+                    $('#span_sslcert').html(res.data);
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        });
+
+        //上传key证书
+        layui.upload.render({
+            elem: '#sslkey'
+            ,url: "{:url('uploadCert')}"
+            ,accept: 'file' //普通文件
+            ,exts: 'pem' //只允许上传压缩文件
+            ,done: function(res){
+                if(res.status){
+                    $('#hidden_sslkey').val(res.data);
+                    $('#span_sslkey').html(res.data);
+                }else{
+                    layer.msg(res.msg);
+                }
+            }
+        });
+
+    });
+
+
+</script>

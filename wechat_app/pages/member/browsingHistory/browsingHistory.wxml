@@ -1,0 +1,30 @@
+<scroll-view scroll-y="true" scroll-into-view="{{toView}}" style="height:100vh;" bindscrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
+  <view wx:for="{{goodsList}}" wx:key="index" class="list-body touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove">
+  <view class='content'>
+    <!-- 单条数据信息 -->
+    <view class='history-list'>
+      <!-- 商品信息 -->
+      <view class='list-bot' bindtap='goods' data-id="{{item.goods_id}}">
+        <image class='bot-left' src='{{item.goods.image_url}}'></image>
+        <view class='bot-right'>
+          <text class='name'>{{item.goods_name}}</text>
+          <text class='price'>¥{{item.goods.price}}</text>
+          <view class='time'>
+            {{item.ctime}}
+          </view>
+        </view>
+        <image class='left-slip' src='../../image/right.png'></image>
+      </view>
+    </view>
+    </view>
+    <!-- 删除收藏操作 -->
+    <view class='collect-del'>
+      <view class="{{item.isCollection?'uncollect':'collect'}}" catchtap="collection" data-goodsid="{{item.goods_id}}"><text wx:if="{{item.isCollection}}">取消收藏</text><text wx:else>收藏</text></view>
+      <view class="del" catchtap="del" data-index="{{index}}" data-goodsid="{{item.goods_id}}">删除</view>
+    </view>
+  </view>
+  <!-- 加载操作 -->
+  <view class="loading" id='loading' hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
+  <view class="loading" id='loading' hidden="{{!loadingComplete}}">已载入全部</view>
+  <view class='none-img' wx:if="{{nodata}}"><image src='../../image/page1copy.png'></image><text>没有数据</text></view>
+</scroll-view>

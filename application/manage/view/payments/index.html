@@ -1,0 +1,149 @@
+<div class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">支付名称：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <select name="code" lay-verify="">
+                    <option value=""></option>
+                    {volist name="paymentList" id="vo"}
+                    <option value="{$vo.code}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">支付状态：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <select name="status" lay-verify="">
+                    <option value=""></option>
+                    <option value="1">启用</option>
+                    <option value="2">禁用</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="payments-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
+    </div>
+</div>
+<div class="table-body">
+	<table id="paymentsSellerTable" lay-filter="paymentsSellerTable"></table>
+</div>
+<script>
+    layui.use(['table','form','layer'], function(){
+        var table = layui.table,form = layui.form,layer = layui.layer;
+        //第一个实例
+        table.render({
+            elem: '#paymentsSellerTable', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-260',
+            cellMinWidth: '80',
+            id:'paymentsSellerTable',
+            url: "{:url('payments/index')}",
+            cols: [[ //表头
+                {type:'numbers'},
+                {field: 'name',title:'支付方式名称',align:'center'},
+                {field: 'code', title: '支付类型编码',align:'center'},
+                {field: 'is_online', title: '类型',align:'center'},
+                {field: 'status', title: '状态', sort: true,align:'center',width:100,templet: '#status', unresize: true},
+                {field: 'sort', title: '排序',align:'center',width:100},
+                {fixed: 'right', width:150,title:'操作', align:'center', toolbar: '#payments'}
+            ]]
+        });
+
+        form.on('submit(payments-search)', function(data){
+            table.reload('paymentsSellerTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        //监听表单提交  (edit)
+        form.on('submit(edit-payments)', function(data){
+            $.ajax({
+                url:"{:url('payments/edit')}",
+                type:'post',
+                data: data.field,
+                success:function(res){
+                    if(res.status == true){
+                        layer.close(window.box);
+                        layer.msg(res.msg, {time:1300},function(){
+                            table.reload('paymentsSellerTable');
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            },'json');
+        });
+
+
+        //监听 操作状态
+        form.on('switch(status)', function(obj){
+            JsPost("{:url('Payments/changeStatus')}",{id:this.value,status:obj.elem.checked},function(res){
+                    layer.msg(res.msg);
+            });
+        });
+
+
+        //监听工具条
+        table.on('tool(paymentsSellerTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if(layEvent === 'edit'){ //编辑
+                $.ajax({
+                    data:{code:data.code},
+                    url:"{:url('payments/edit')}",
+                    type:'get',
+                    success:function(res){
+                        if(res.status){
+                            window.box = layer.open({
+                                type: 1,
+                                content: res.data,
+                                area: ['600px', '700px'],
+                                title:'编辑支付方式',
+                                btn: ['保存','取消'],
+                                yes: function(index, layero){
+                                    //保存支付方式
+                                    $.ajax({
+                                        type:'post',
+                                        url: "{:url('payments/edit')}",
+                                        data: $('#payment_form').serialize(),
+                                        success:function(res){
+                                            if(res.status){
+                                                layer.msg(res.msg);
+                                                layer.close(window.box);
+                                                layer.msg(res.msg,{time:1300},function(){
+                                                    table.reload('paymentsSellerTable');
+                                                });
+                                            }else{
+                                                layer.msg(res.msg);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }else{
+                            layer.msg(res.msg);
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+    });
+</script>
+
+<script type="text/html" id="status">
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="status" {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="payments">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>

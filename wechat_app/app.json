@@ -1,0 +1,88 @@
+{
+  "pages": [           
+    "pages/index/index",
+    "pages/member/order/orderDetail/orderDetail",
+    "pages/goods/classify/classify",
+    "pages/goods/itemList/itemList",
+    "pages/goods/detail/detail",
+    "pages/goods/search/search",
+    "pages/cart/cartNothing/cart",
+    "pages/member/info/info",
+    "pages/cart/cashierDesk/cashierDesk",
+    "pages/cart/firmOrder/firmOrder",
+    "pages/cart/paySuccess/paySuccess",
+    "pages/member/index/index",
+    "pages/member/userSetting/userSetting",
+    "pages/member/order/orderList/orderList",
+    "pages/member/login/level1/level1",
+    "pages/member/login/level2/level2",
+    "pages/member/collect/collect",
+    "pages/member/data/data",
+    "pages/member/coupon/coupon",
+    "pages/member/address/address",
+    "pages/member/addressList/addressList",
+    "pages/member/order/aftersales/add",
+    "pages/member/order/aftersales/edit",
+    "pages/member/browsingHistory/browsingHistory",
+    "pages/member/order/comment/comment",
+    "pages/other/notice/notice",
+    "pages/other/article/article",
+    "pages/other/articleList/articleList",
+    "pages/member/order/aftersalesList/aftersalesList",
+    "pages/member/remainingSum/withdrawCash/withdrawCash",
+    "pages/member/remainingSum/withdrawCash/balance",
+    "pages/member/remainingSum/withdrawCash/balanceList",
+    "pages/member/remainingSum/withdrawCash/cashList",
+    "pages/member/remainingSum/withdrawCash/bankcardlist",
+    "pages/member/remainingSum/withdrawCash/addBank",
+    "pages/member/remainingSum/withdrawCash/fineBalance",
+    "pages/other/storeList/storeList",
+    "pages/member/ship/ship",
+    "pages/member/recommendList/recommendList",
+    "pages/member/myBankCardlist/myBankCardlist"
+  ],
+  "window": {
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "JShop云商",
+    "navigationBarTextStyle":"black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#FF3A59",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "pages/image/dollar6.png",
+        "selectedIconPath": "pages/image/dollar4.png"
+      },
+      {
+        "pagePath": "pages/goods/classify/classify",
+        "text": "全部分类",
+        "iconPath": "pages/image/dollar3.png",
+        "selectedIconPath": "pages/image/dollar7.png"
+      },
+      {
+        "pagePath": "pages/cart/cartNothing/cart",
+        "text": "购物车",
+        "iconPath": "pages/image/dollar2.png",
+        "selectedIconPath": "pages/image/dollar8.png"
+      },
+      {
+        "pagePath": "pages/member/index/index",
+        "text": "个人中心",
+        "iconPath": "pages/image/dollar.png",
+        "selectedIconPath": "pages/image/dollar5.png"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 10000,
+    "uploadFile": 10000,
+    "downloadFile": 10000
+  },
+  "debug": false
+}

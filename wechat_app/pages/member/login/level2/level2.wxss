@@ -1,0 +1,35 @@
+.body{
+  width: 650rpx;
+  padding: 100rpx 50rpx;
+}
+.weui-cells{
+  position: static;
+}
+.weui-cell{
+  position: static;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+.weui-vcode-btn{
+  border: none;
+  color: #ccc;
+  font-size: 24rpx;
+}
+.text-body{
+  color: #ccc;
+  font-size: 28rpx;
+}
+.weui-btn{
+  margin-top: 60rpx;
+}
+.hide{
+ display: none;
+}
+.show{
+ display: block;
+}
+.bot{
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 30rpx;
+}

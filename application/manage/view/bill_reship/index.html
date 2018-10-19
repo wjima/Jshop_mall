@@ -1,0 +1,123 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item" style="margin-bottom:0;">
+        <div class="layui-inline">
+            <label class="layui-form-label">退货单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="reship_id" lay-verify="title" placeholder="请输入退货单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label style="width:120px" class="layui-form-label">用户手机号码：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">退货状态：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <select name="status" lay-verify="">
+                    <option value=""></option>
+                    <option value="1">待退货</option>
+                    <option value="2">运输中</option>
+                    <option value="3">已收退货</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">物流单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="logi_no" lay-verify="title" placeholder="请输入物流单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*">提交</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="billReship" lay-filter="test"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        layui.table.render({
+            elem: '#billReship',
+            height: 'full-330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('billReship/index')}?_ajax=1",
+            id:'billReship',
+            cols: [[
+                {field:'reship_id', width:140, sort: true,title:'退货单号'},
+                {field:'order_id',width:140,title:'订单号'},
+                {field:'user_id', width:150,minWidth: 50,title:'用户'},
+                {field:'status_name', width:100,title:'状态'},
+                {field:'logi_code',title:'物流公司'},
+                {field:'logi_no',title:'物流单号'},
+                {field:'ctime',width:170,title:'创建时间'},
+                {field:'utime',width:170,title:'更新时间'},
+                {field: 'operating', title: '操作', width:200, align: 'center', fixed: 'right',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
+                    return html;
+                }},
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('billReship', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //确认收货操作
+        $(document).on('click','.option-audit',function(){
+            $.ajax({
+                type:'get',
+                url: "{:url('billReship/confirmReship')}",
+                data:'reship_id='+$(this).attr('data-id'),
+                success:function(e){
+                    if(e.status){
+                        layer.msg('确认收货成功');
+
+                    }else{
+                        layer.msg(e.msg);
+                    }
+
+                }
+            });
+        });
+        //查看操作
+        $(document).on('click','.option-view',function(){
+            $.ajax({
+                type:'get',
+                url: "{:url('billReship/view')}",
+                data:'reship_id='+$(this).attr('data-id'),
+                success:function(e){
+                    if(e.status){
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['600px', '400px'],
+                            title:'退货单查看'
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
+
+                }
+            });
+        });
+    });
+</script>

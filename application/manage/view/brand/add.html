@@ -1,0 +1,32 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i> 品牌名称：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入品牌名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label"><i class="required-color">*</i> LOGO：</label>
+        <div class="layui-input-inline seller-inline-4">
+        	{Jshop:image id='logo' name="logo"/}
+        </div>	
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="sort" required lay-verify="required" value="100" placeholder="数值越小越靠前" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid save-brand" lay-submit lay-filter="add-brand">保存</button>
+
+</div>
+
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

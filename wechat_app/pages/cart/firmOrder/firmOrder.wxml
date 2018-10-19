@@ -1,0 +1,110 @@
+<view class='firmorder-content'>
+  <!-- 用户收货地址 -->
+  <view class='userinfo' bindtap='selectAddress' wx-if="{{isAddress}}">
+    <image class='gps-img' src='../../image/gps.png'></image>
+    <view class='userinfo-body'>
+      <!-- 收货人信息 -->
+      <view class='userinfo-body-top'>
+        <text class='consignee'>收货人：</text>   
+        <text class='consignee-name'>{{name}}</text>     
+        <text class='phone-num'>{{mobile}}</text>
+      </view>
+      <!-- 收货地址信息 -->
+      <view class='userinfo-body-bottom'>
+        <view class='address'>
+          <text>收货地址：</text>
+          <text>{{area}} {{address}}</text>
+        </view>
+        <image src='../../image/right.png'></image>
+      </view>
+    </view>
+    <!-- 底部装饰线 -->
+    <!-- <image class='userinfo-btm' src='../../image/firmorder.png'></image> -->
+  </view>
+  <!-- 没有用户收货地址的时候 -->
+  <view class='userinfo' bindtap='selectAddress' wx-if="{{!isAddress}}">
+    <view class='userinfo-body noaddress'>
+      <image class="gps-ico" src='../../image/gps.png'></image>
+      <text>请选择收货地址信息</text>
+      <image class="right-ico" src='../../image/right.png'></image>
+    </view>
+  </view>
+
+  <!-- 商品信息 -->
+  <view class='order-list'>
+    <view wx:for="{{productData}}" wx:key="{{index}}">
+      <view class='list-details'>
+        <image class='thumbnail' src='{{item.products.image_path}}'></image>
+        <view class='order-details'>
+          <text class='name'>{{item.products.name}}</text>
+          <view class='size-style'>
+            <text wx:if="{{item.products.spes_desc}}">{{item.products.spes_desc}}</text>
+          </view>
+          <view class='preferential'>
+            <text wx:for="{{item.products.promotion_list}}" wx:key="indexss" wx:for-item="vv" class="{{vv.type==1?'promotion_off':'promotion_on'}}">{{vv.name}}</text>
+          </view>
+          <view class='price-num'>
+            <text class='price'>¥{{item.products.price}}</text>
+            <text class='num'>x{{item.nums}}</text>          
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class='price-list'>
+     <view class='price-details' bindtap="couponbtn" data-statu="open" wx:if="{{couponitems.length > 0}}">
+      <text class='price-details-left'>优惠券</text>
+      <text class='price-details-right'>{{usedCouponName}}</text>
+    </view> 
+    <view class='price-details'>
+      <text class='price-details-left'>订单活动</text>
+      <text class='price-details-right'><text wx:for="{{cartData.promotion_list}}" wx:for-item="vv" wx:key="ind" class="{{vv.type==2?'promotion_on':'promotion_off'}}">{{vv.name}}</text></text>
+    </view>
+    <view class='price-calculation'>
+      <view>
+        <text class='price-details-left'>商品小计</text>
+        <text class='price-details-right'>¥{{goodsAmount}}</text>
+      </view>
+      <view wx:if="{{goodsPmt != '0.00'}}">
+        <text class='price-details-left'>商品优惠</text>
+        <text class='price-details-right'>-¥{{goodsPmt}}</text>
+      </view>
+      <view wx:if="{{couponPmt != '0.00'}}">
+        <text class='price-details-left'>优惠券</text>
+        <text class='price-details-right'>-¥{{couponPmt}}</text>
+      </view>
+      <view wx:if="{{orderPmt !== '0.00'}}">
+        <text class='price-details-left'>订单优惠</text>
+        <text class='price-details-right'>-¥{{orderPmt}}</text>
+      </view>
+      <view>
+        <text class='price-details-left'>运费</text>
+        <text class='price-details-right'>+¥{{costFreight}}</text>
+      </view>
+    </view>
+    <view class='price-details buyer'>
+      <text class='price-details-left'>买家留言</text>
+      <input placeholder-class='buyer-input' type='text' bindchange="buyerMessage" placeholder='50字以内（选填）'></input>
+    </view>
+  </view>  
+  <view class='firmorder-footer'>
+    <view class='firmorder-footer-right'>
+      <view class='pay-num'>
+        <text>需付：</text>
+        <text class='total-price'>¥{{totalAmount}}</text>
+      </view>
+      <view class='immediate-pay' bindtap='payNow'>立即支付</view>
+    </view>
+  </view>
+</view>
+<view class="modal-box" bindtap="couponbtn" data-statu="close" wx:if="{{showcoupon}}" catchtouchmove="move"></view>
+<view class="modal-body" animation="{{animationData}}" data-statu="close" wx:if="{{showcoupon}}" catchtouchmove="move">
+  <view class='modal-content'>
+    <radio-group class="radio-group" bindchange="radioChange">
+      <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon' bindchange="radioChange">
+          <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text><radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
+      </label>
+    </radio-group>
+  </view>
+  <view class="close" bindtap="couponbtn" data-statu="close" >关闭</view>
+</view>

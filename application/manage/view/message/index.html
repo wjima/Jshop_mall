@@ -1,0 +1,127 @@
+<form class="layui-form seller-form"  action="">
+<div class="layui-form-item">
+    <div class="layui-inline">
+        <label style="width:120px" class="layui-form-label">用户手机号码：</label>
+        <div class="layui-input-inline seller-inline-3">
+            <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">类型：</label>
+        <div class="layui-input-inline seller-inline-4" >
+            <select name="code">
+                <option value="">请选择</option>
+                <optgroup label="平台消息">
+                    {volist name="tpl" id="vo"}
+                        <option value="{$key}">{$vo.name}({$key})</option>
+                    {/volist}
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">状态：</label>
+        <div class="layui-input-inline seller-inline-2" >
+            <select name="status" lay-verify="">
+                <option value=""></option>
+                <option value="1">未读</option>
+                <option value="2">已读</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">起止时间：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input  type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+
+    <div class="layui-inline">
+        <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+    </div>
+</div>
+</form>
+
+<div class="table-body">
+    <table id="message" lay-filter="test"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function(){
+        //时间插件
+        layui.laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime'
+        });
+        //获取列表数据
+        layui.table.render({
+            elem: '#message',
+            height: 'full-330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit: '20',
+            url: "{:url('Message/index')}?_ajax=1",
+            id: 'message',
+            method: 'post',
+            cols: [[
+                {type:'numbers'},
+                {field:'status', width:80, title:'状态', align:'center',templet:function(data){
+                    var html = '';
+                    if(data.status == '1'){
+                        html += '未读';
+                    }else{
+                        html += '已读';
+                    }
+                    return html;
+                }},
+                {field:'user_mobile',width:140,title:'用户'},
+                {field:'seller_name',width:200,title:'商户'},
+                {field:'code',width:150,title:'类型'},
+                {field:'content', title:'内容'},
+                {field:'ctime', width:180, title:'时间', align:'center'},
+
+                {field:'operating', title:'操作', width:80, align:'center',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-del" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }}
+            ]]
+        });
+
+        //搜索操作
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('message', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //删除操作
+        $(document).on('click', '.option-del', function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('确定要删除此消息吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                $.ajax({
+                    type:'get',
+                    url: "{:url('Message/del')}",
+                    data:'id='+id,
+                    success:function(e){
+                        layer.msg(e.msg);
+                        if(e.status){
+                            layui.table.reload('message');
+                        }
+                    }
+                });
+            }, function(){
+
+            });
+
+        });
+    });
+</script>

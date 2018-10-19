@@ -1,0 +1,380 @@
+<form class="layui-form seller-form" action="">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="order_id" style="width:200px;" placeholder="订单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">下单时间：</label>
+            <div class="layui-input-inline">
+                <input style="width:200px" type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">订单来源：</label>
+            <div class="layui-input-inline" style="width:165px">
+                <select name="source" id="source">
+                    <option value="">-- 全部 --</option>
+                    {foreach $source as $key=>$vo}
+                    <option value="{$key}">{$vo}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" style="width:165px;" placeholder="用户名、昵称、手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">手机号：</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="ship_mobile" style="width:165px" placeholder="收货人手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline" style="margin-left: 17px;">
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="order" lay-data="{id: 'order'}"></table>
+</div>
+
+<script>
+    var window_box;
+    layui.use(['table', 'layer', 'laydate', 'form'], function(){
+        var layer = layui.layer,
+            $ = layui.jquery,
+            table = layui.table,
+            laydate = layui.laydate,
+            form = layui.form;
+
+        //时间插件
+        laydate.render({
+            elem: '#date',
+            range: '到',
+            format: 'yyyy-MM-dd'
+        });
+
+        //获取订单数据
+        table.render({
+            id: 'order',
+            elem: '#order',
+            height: 'full-380',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: '{:url("order/wait")}',
+            method: 'post',
+            response: {
+                statusName: 'status',
+                statusCode: 1
+            },
+            cols: [[
+                {field: 'order_id', title: '订单号', width:180, align: 'center', fixed: 'left'},
+                {field: 'ctime', title: '下单时间', width:180, align: 'center'},
+                {field: 'username', title: '用户名', width:150, align: 'center'},
+                {field: 'ship_mobile', title: '收货人手机号', width:150, align: 'center'},
+                {field: 'area_name', title: '收货地址', width:300, align: 'center'},
+                {field: 'pay_status', title: '支付状态', width:130, align: 'center'},
+                {field: 'ship_status', title: '发货状态', width:130, align: 'center'},
+                {field: 'order_amount', title: '订单总额', width:130, align: 'center', templet:function(data){return '￥'+data.order_amount}},
+                {field: 'source', title: '订单来源', width:130, align: 'center'},
+                {field: 'operating', title: '操作', width:300, align: 'center', fixed: 'right'}
+            ]]
+        });
+
+        //筛选条件
+        form.on('submit(*)', function(data){
+            layui.table.reload('order', {
+                where: data.field,
+                page: {curr: 1}
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //查看订单
+        $(document).on('click', '.view-order', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("order/view")}',
+                type: 'get',
+                data: {
+                    'id': id
+                },
+                success: function(e){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '订单详情',
+                        area: ['800px', '445px'], //宽高
+                        content: e
+                    });
+                }
+            });
+        });
+
+        //编辑订单
+        $(document).on('click', '.edit-order', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("order/edit")}',
+                type: 'get',
+                data: {
+                    'id': id
+                },
+                success: function(e){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑订单',
+                        area: ['770px', '350px'], //宽高
+                        content: e
+                    });
+                }
+            })
+        });
+
+        //保存编辑订单
+        $(document).on('click', '.order-edit-btn', function(){
+            var order_id = $("#order_id").val();
+            var ship_area_id = $("input[name='ship_area_id']").val();
+            var ship_address = $("#ship_address").val();
+            var ship_name = $("#ship_name").val();
+            var ship_mobile = $("#ship_mobile").val();
+
+            $.ajax({
+                url: '{:url("order/edit")}',
+                type: 'post',
+                data: {
+                    'order_id': order_id,
+                    'ship_area_id': ship_area_id,
+                    'ship_address': ship_address,
+                    'ship_name': ship_name,
+                    'ship_mobile': ship_mobile
+                },
+                success: function(e){
+                    layer.close(window_box);
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        table.reload('order');
+                    });
+                }
+            });
+        });
+
+        //单个去支付订单页面展示
+        $(document).on('click', '.pay-order', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("bill_payments/pay")}',
+                type: 'get',
+                data: {
+                    'order_id': id,
+                    'type': 1
+                },
+                success: function(e){
+                    if(e.status){
+                        window_box = layer.open({
+                            type: 1,
+                            title: '支付订单',
+                            area: ['530px', '290px'], //宽高
+                            content: e.data.tpl
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload('order');
+                        });
+                    }
+                }
+            });
+        });
+
+        //多个去支付订单页面展示
+        var pay_order_array = function(){ //获取选中数据
+            var checkStatus = table.checkStatus('order'), data = checkStatus.data;
+            var ids = '';
+            $.each(data, function(){
+                ids += this.order_id+',';
+            });
+            ids = ids.substring(0, ids.length-1);
+
+            $.ajax({
+                url: '{:url("bill_payments/pay")}',
+                type: 'get',
+                data: {
+                    'order_id': ids,
+                    'type': 1
+                },
+                success: function(e){
+                    if(e.status){
+                        window_box = layer.open({
+                            type: 1,
+                            title: '支付订单',
+                            area: ['530px', '620px'], //宽高
+                            content: e.data.tpl
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload('order');
+                        });
+                    }
+                }
+            });
+        };
+        $('#pay-order-array').on('click', function(){
+            pay_order_array ? pay_order_array.call(this) : '';
+        });
+
+        //去支付
+        $(document).on('click', '.goto-pay', function(){
+            var order_id = $("#input_order_id").val();
+            var type = $("#input_type").val();
+            var pay_type = $("#pay_type").val();
+            $.ajax({
+                url: '{:url("bill_payments/toPay")}',
+                type: 'get',
+                data: {
+                    'order_id': order_id,
+                    'type': type,
+                    'pay_code': pay_type
+                },
+                success: function(e){
+                    layer.close(window_box);
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        table.reload('order');
+                    });
+                }
+            });
+        });
+
+        //发货页面
+        $(document).on('click', '.ship-order', function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: '{:url("order/ship")}',
+                type: 'get',
+                data: {
+                    'order_id': id
+                },
+                success: function(e){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '支付订单',
+                        area: ['800px', '800px'], //宽高
+                        content: e
+                    });
+                }
+            });
+        });
+
+        //发货生成
+        $(document).on('click', '.order-ship-btn', function(){
+            var ship_data = [];
+            var order_id = $("#order_id").val();
+            var logi_no = $("#logi_no").val();
+            var memo = $("#memo").val();
+            var flag = true;
+            $(".order-ship-nums").each(function(){
+                var ship_num = $(this).val();
+                var max = $(this).attr('max');
+                var id = $(this).attr('data-id');
+                if(ship_num > max || ship_num < 0){
+                    flag = false;
+                    layer.msg('发货数量不符合真实情况');
+                    return false;
+                }else{
+                    var item = [id, ship_num];
+                    ship_data.push(item);
+                }
+            });
+            if(flag){
+                $.ajax({
+                    url: '{:url("order/ship")}',
+                    type: 'post',
+                    data: {
+                        'order_id': order_id,
+                        'logi_no': logi_no,
+                        'memo': memo,
+                        'ship_data': ship_data
+                    },
+                    success: function(e){
+                        layer.close(window_box);
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload('order');
+                        });
+                    }
+                });
+            }
+        });
+
+        //取消订单
+        $(document).on('click', '.cancel-order', function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('确认取消订单号：'+id+' 的订单吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function(){
+                $.ajax({
+                    url: '{:url("order/cancel")}',
+                    type: 'post',
+                    data: {
+                        'id': id
+                    },
+                    success: function(e){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload('order');
+                        });
+                    }
+                });
+            });
+        });
+
+        //完成订单
+        $(document).on('click', '.complete-order', function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('确认设置订单号：'+id+' 为完成吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function(){
+                $.ajax({
+                    url: '{:url("order/complete")}',
+                    type: 'post',
+                    data: {
+                        'id': id
+                    },
+                    success: function(e){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload('order');
+                        });
+                    }
+                });
+            });
+        });
+
+        //删除订单
+        $(document).on('click', '.del-order', function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('确认删除订单号：'+id+' 的订单吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function(){
+                $.ajax({
+                    url: '{:url("order/del")}',
+                    type: 'post',
+                    data: {
+                        'id': id
+                    },
+                    success: function(e){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            table.reload('order');
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>

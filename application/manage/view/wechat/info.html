@@ -1,0 +1,57 @@
+<style>
+    .layui-img{
+        width: 80px;
+        height: 80px;
+        margin-right: 10px;
+        /*border-radius: 50%;*/
+    }
+    .text-content{
+        padding: 10px;
+    }
+    .text-content .layui-input-inline{
+    	margin-top: 5px;
+    }
+    
+</style>
+<div class="layui-form layui-border-box layui-table-view">
+    <div class="">
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">小程序名称：</label>
+            <div class="layui-form-mid ">{$data.wx_nick_name.value}</div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">AppId：</label>
+            <div class="layui-form-mid ">{$data.appid}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">AppSecret：</label>
+            <div class="layui-form-mid ">{$data.appsecret}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">原始Id：</label>
+            <div class="layui-form-mid ">{$data.user_name}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">主体：</label>
+            <div class="layui-form-mid ">{$data.principal_name}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">小程序简介：</label>
+            <div class="layui-form-mid ">{$data.signature}</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">小程序logo：</label>
+            <div class="layui-form-mid "><img class="layui-img" src="{$data.head_img}"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-3">小程序二维码：</label>
+            <div class="layui-form-mid "><img class="layui-img" src="{$data.qrcode_url}"></div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <a class="layui-btn" href="{:url('wechat/edit',['id'=>$data.id])}" lay-filter="editinfo">完善信息</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+{include file="common/mini_header" /}
+<div class="login-content">
+	<div class="login-content-mid">
+		<div class="layui-container">
+			<div>
+				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+					<ul class="layui-tab-title">
+						<li class="layui-this">注册账号</li>
+					</ul>
+					<div class="layui-tab-content">
+						<div class="layui-tab-item layui-show">
+							<div class="layui-tab-content layui-form-pane">
+								<form class="layui-form" action="" method="post">
+									<div class="layui-form-item">
+										<label class="layui-form-label">手机号：</label>
+										<div class="layui-input-inline">
+											<input type="tel" id="mobile" name="mobile" lay-verify="required|phone" autocomplete="off" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-form-item identifying-code">
+										<label class="layui-form-label">验证码：</label>
+										<div class="layui-input-inline">
+											<input type="text" name="code" lay-verify="" autocomplete="off" class="layui-input">
+											<input id="btn" class="layui-btn" style="width:112px;" type="button" value="获取验证码" onclick="setSms(this)" />
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">密码：</label>
+										<div class="layui-input-inline">
+											<input type="password" name="password" autocomplete="off" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">密码：</label>
+										<div class="layui-input-inline">
+											<input type="password" name="re_password" autocomplete="off" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<div class="layui-input-inline">
+											<input class="layui-btn layui-btn-fluid" lay-submit lay-filter="reg" type="submit" value="注册" />
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div>
+					已有账号？
+					<a href="{:url('b2c/common/login')}">立即登陆</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>		
+		<script>
+			layui.use(['element', 'form'], function() {
+				//手机号码登陆
+				layui.form.on('submit(reg)', function(data) {
+					$.ajax({
+						type: "POST",
+						url: "{:url('b2c/common/reg')}",
+						data: data.field,
+						success: function(data) {
+							if(data.status) {
+								layer.msg('注册成功，跳转中...');
+								setTimeout("window.location.href='" + data.data + "'; ", 1500);
+							} else {
+								layer.msg(data.msg);
+							}
+						}
+					});
+					return false;
+				});
+			});
+			//发送短信验证码
+			function setSms(obj) {
+				$.ajax({
+					type: "POST",
+					url: "{:url('b2c/common/sms')}",
+					data: "mobile=" + $('#mobile').val() + "&code=reg",
+					success: function(data) {
+						if(data.status) {
+							sms_btn_time($(obj));
+						}
+						layer.msg(data.msg);
+					}
+				});
+			}
+		</script>
+		{include file="common/mini_footer" /}

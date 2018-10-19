@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="novice@jihainet.com"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Jshop小程序商城管理平台</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont2.css"/>
+    <link rel="stylesheet" href="__STATIC_LIB__layui/css/layui.css">
+    <link rel="stylesheet" href="__STATIC_LIB__layui/css/layui.seller.css">
+    <link rel="stylesheet" type="text/css" href="__STATIC_CSS__style.css"/>
+    <script src="__STATIC_JS__jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__STATIC_LIB__layui/layui.js"></script>
+    <script>
+        <!-- 定义全局变量 -->
+        var Jshop_Host = "{$jshopHost}";
+        var Jshop_Image = "{:url('images/uploadImage')}";
+        var manage_Image = "{:url('images/manage')}";
+    </script>
+    <script src="__STATIC_JS__jshop.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.all.min.js"> </script>
+
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">    
+	<ul class="layui-nav">
+        <li class="layui-nav-item" lay-unselect="">
+            <a href="javascript:;">
+                <img src="{:_sImage(session('user.avatar'))}" class="layui-nav-img">{:session('manage.username')}
+            </a>
+            <dl class="layui-nav-child">
+				<dd><a href="{:url('Manage/information')}">个人中心</a></dd>
+			    <dd><a href="{:url('Common/logout')}">退出</a></dd>
+			</dl>
+        </li>
+    </ul>
+    <div class="layui-side layui-bg-black">
+    	
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            {include file="common/menu" /}
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <span class="layui-breadcrumb" style="visibility: visible;">
+                <i class="iconfont icon-shouyeshouye"></i>
+                {volist name="nav" id="vo"}
+                    {if $vo.url == ""}
+                        <a><cite>{$vo.name}</cite></a>
+                    {else /}
+                        <a href="{$vo.url}">{$vo.name}</a>
+                    {/if}
+
+                {/volist}
+            </span>
+            {__CONTENT__}
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        <p>吉海科技 © jihainet.com - 版权所有</p>
+        <a href="">问题请求|产品建议请上吉海论坛</a>
+        <a href="https://www.kancloud.cn/jihainet/jshop" target="_blank">《使用手册》</a>
+    </div>
+</div>
+<script>
+    layui.use('element', function() {
+        var element = layui.element;
+
+    });
+    
+</script>
+</body>
+</html>

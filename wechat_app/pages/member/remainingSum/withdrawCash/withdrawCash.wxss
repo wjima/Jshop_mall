@@ -1,0 +1,37 @@
+/* pages/member/remainingSum/withdrawCash/withdrawCash.wxss */
+page{
+  background: #f9f9f9;
+}
+.withdrawcash-top{
+  padding: 20rpx 30rpx 10rpx 24rpx;
+  background-color: #f95b62;
+  color: #fff;
+}
+.withdrawcash-title{
+  font-size: 28rpx;
+  display: block
+}
+.withdrawcash-num{
+  font-size: 70rpx;
+  display: block;
+  margin-top: 20rpx;
+}
+.content-view{
+  width: 696rpx;
+  height: 60rpx; 
+  line-height: 60rpx; 
+  padding: 10rpx 30rpx 10rpx 24rpx;
+  border-bottom: 2rpx solid #f2f2f2;
+  background-color: #fff
+}
+.member-icon{
+  width: 34rpx;
+  height: 36rpx;
+  margin-right: 12rpx;
+  position: relative;
+  top: 8rpx;
+}
+.member-text{
+  color: #666;
+  font-size: 24rpx;
+}

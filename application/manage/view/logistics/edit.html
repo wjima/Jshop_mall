@@ -1,0 +1,28 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input type="hidden" name="id" value="{$data.id}">
+    <div class="layui-form-item">
+        <label class="layui-form-label">品牌名称：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入品牌名称" autocomplete="off" class="layui-input" value="{$data.name}">
+        </div>
+    </div>
+    <div class="layui-form-item layui-upload">
+        <label class="layui-form-label">品牌LOGO：</label>
+        {Jshop:image id='logo' name="logo" value="$data['logo']"/}
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="sort" required lay-verify="required" placeholder="请输入顺序" autocomplete="off" class="layui-input" value="{$data.sort}">
+        </div>
+    </div>
+
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="brand-edit">立即提交</button>
+    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+</div>
+<script>
+    layui.use('form', function(){
+        //监听提交
+        layui.form.render();
+    });
+</script>

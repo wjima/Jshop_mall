@@ -1,0 +1,273 @@
+<style>
+    .layui-form-item label{
+        width: 120px;
+    }
+</style>
+<div class="layui-card" style="padding:10px;">
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li class="layui-this">店铺设置</li>
+            <li>商品设置</li>
+            <li>订单管理</li>
+            <li>积分设置</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form seller-alone-form" action="" method="post">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['shop_name']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="shop_name" value="{$data['shop_name']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入店铺名称" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">店铺名称会显示到前台，请合理输入此名称</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['shop_mobile']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-3">
+                            <input type="text" name="shop_mobile" value="{$data['shop_mobile']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入店铺电话或手机号" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['shop_logo']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-6">
+                            {Jshop:image id='shop_logo' value="$data['shop_logo']['value']" name="shop_logo"/}
+                            </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['goods_stocks_warn']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="text" name="goods_stocks_warn" value="{$data['goods_stocks_warn']['value']}" lay-verify="title" autocomplete="off" placeholder="数量" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">商品低库存的报警数量，当商品库存低于此数量是会在后台提示</div>
+                    </div>
+
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['order_cancel_time']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="text" name="order_cancel_time" value="{$data['order_cancel_time']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">未付款订单取消的时间间隔，单位为天</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['order_complete_time']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="text" name="order_complete_time" value="{$data['order_complete_time']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">已付款的订单完成的时间间隔，单位为天</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['order_autoSign_time']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="text" name="order_autoSign_time" value="{$data['order_autoSign_time']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">发货后的订单自动确认收货时间,单位为天</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['order_autoEval_time']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="text" name="order_autoEval_time" value="{$data['order_autoEval_time']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">确认收货后的订单自动评价时间间隔,单位为天</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['reship_name']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-3">
+                            <input type="text" name="reship_name" value="{$data['reship_name']['value']}" lay-verify="title" autocomplete="off" placeholder="收货人名称" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">用户退货时的收货人姓名</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['reship_mobile']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-3">
+                            <input type="text" name="reship_mobile" value="{$data['reship_mobile']['value']}" lay-verify="title" autocomplete="off" placeholder="收货人手机号码" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">用户退货时的收货人联系方式</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['reship_area_id']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-4 address-class">
+                            {Jshop:area name='reship_area_id' value="data['reship_area_id']['value']" class="select-address" /}
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">退货的邮寄地区</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['reship_address']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="reship_address" value="{$data['reship_address']['value']}" lay-verify="title" autocomplete="off" placeholder="退货地址" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">退货的详细地址</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['point_discounted_proportion']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="number" name="point_discounted_proportion" value="{$data['point_discounted_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">多少积分可以折现1元人民币</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['orders_point_proportion']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="number" name="orders_point_proportion" value="{$data['orders_point_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" max="100" min="0">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">（%）单个订单积分折现最大百分比</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['orders_reward_proportion']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="number" name="orders_reward_proportion" value="{$data['orders_reward_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">订单多少人民币奖励1个积分</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['sign_point_type']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-7">
+                            <input type="radio" lay-filter="sign_point_type" name="sign_point_type" value="1" title="固定奖励" {eq name="$data['sign_point_type']['value']" value="1"}checked{/eq}>
+                            <input type="radio" lay-filter="sign_point_type" name="sign_point_type" value="2" title="随机奖励" {eq name="$data['sign_point_type']['value']" value="2"}checked{/eq}>
+                        </div>
+                        <input type="hidden" id="sign_point_type" value="{$data['sign_point_type']['value']}">
+                    </div>
+
+                    <div class="sign-random">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{$data['sign_random_min']['name']}：</label>
+                            <div class="layui-input-inline seller-inline-2">
+                                <input type="text" name="sign_random_min" value="{$data['sign_random_min']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">签到随机最小奖励积分</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{$data['sign_random_max']['name']}：</label>
+                            <div class="layui-input-inline seller-inline-2">
+                                <input type="text" name="sign_random_max" value="{$data['sign_random_max']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">签到随机最大奖励积分</div>
+                        </div>
+                    </div>
+
+                    <div class="sign-fixed">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{$data['first_sign_point']['name']}：</label>
+                            <div class="layui-input-inline seller-inline-2">
+                                <input type="text" name="first_sign_point" value="{$data['first_sign_point']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">起始签到奖励积分</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{$data['continuity_sign_additional']['name']}：</label>
+                            <div class="layui-input-inline seller-inline-2">
+                                <input type="text" name="continuity_sign_additional" value="{$data['continuity_sign_additional']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">连续签到追加积分</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{$data['sign_most_point']['name']}：</label>
+                            <div class="layui-input-inline seller-inline-2">
+                                <input type="text" name="sign_most_point" value="{$data['sign_most_point']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">连续签到奖励积分单日上限</div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //保存商品
+        form.on('submit(save)', function(data){
+            formData = data.field;
+            if(!formData){
+                layer.msg('请先完善数据', {time: 1300});      //layer.msg(JSON.stringify(data.field));
+                return false;
+            }
+            $.ajax({
+                url: '{:url("Setting/index")}',
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                success: function(e){
+                    if(e.status === true){
+                        layer.msg('保存成功');
+                    }else{
+                        layer.msg(e.msg, {time: 1300});
+                    }
+                }
+            });
+            return false;
+        });
+
+        //积分奖励类型切换
+        var type = $("#sign_point_type").val();
+        if(type == 1){
+            $(".sign-random").hide();
+            $(".sign-fixed").show();
+        }else{
+            $(".sign-random").show();
+            $(".sign-fixed").hide();
+        }
+        form.on('radio(sign_point_type)', function(data){
+            if(data.value == 1){
+                $(".sign-random").hide();
+                $(".sign-fixed").show();
+            }else{
+                $(".sign-random").show();
+                $(".sign-fixed").hide();
+            }
+        });
+    });
+</script>

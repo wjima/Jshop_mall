@@ -1,0 +1,179 @@
+{if condition="$canOpenSpec eq 'true' "}
+<div class="layui-form-item">
+    <label class="layui-form-label" >开启规格：</label>
+    <div class="layui-input-inline">
+        {if condition="$items"}
+        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="true" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">关闭</button>
+        {else/}
+        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="false" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">开启</button>
+        {/if}
+    </div>
+</div>
+{/if}
+<div id="spec_select" {if condition="$items"}{else/}style="display:none;"{/if}>
+    <div id="spec_form"  >
+        {volist name="spec" id="vo"}
+        <div class="layui-form-item" pane>
+            <label class="layui-form-label">{$vo.name}</label>
+            <div class="layui-input-block">
+                {volist name="vo.specValue" id="v"}
+                <input type="checkbox" name="spec[{$vo.name}][]" {if condition="$v['isSelected'] eq 'true'"} checked="true"  {/if} value="{$v.value}" lay-skin="primary" title="{$v.value}" lay-filter="spec_select">
+                {/volist}
+            </div>
+        </div>
+        {/volist}
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-sm generate-spec">生成规格</button>
+        </div>
+    </div>
+
+    <div id="more_spec" >
+        {if condition="$items"}
+        <table class="layui-table" lay-size="sm">
+            <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>默认货品</th>
+                <th>货号</th>
+                <th>规格</th>
+                <th>库存</th>
+                <th>销售价</th>
+                <th>成本价</th>
+                <th>市场价</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="items" id="vo"}
+            <tr>
+                <td>
+                    <input type="hidden" name="product[{$vo.spec_name}][id]" value="{$vo.product_id}">
+                    <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" value="1" {if condition="$vo['is_defalut'] eq 1"} checked="true"  {/if} class="isdefalut" lay-filter="isdefalut">
+                </td>
+                <td>
+                    <input type="text" name="product[{$vo.spec_name}][sn]" value="{$vo.sn}"  placeholder="货号" autocomplete="off" class="layui-input">
+                </td>
+                <td>
+                    {$vo.spec_name}
+                </td>
+                <td>
+                    <input type="text" name="product[{$vo.spec_name}][stock]" value="{$vo.stock}"  placeholder="库存" autocomplete="off" class="layui-input">
+                </td>
+                <td>
+                    <input type="text" name="product[{$vo.spec_name}][price]" value="{$vo.price}"  placeholder="销售价" autocomplete="off" class="layui-input">
+                </td>
+                <td>
+                    <input type="text" name="product[{$vo.spec_name}][costprice]" value="{$vo.costprice}"  placeholder="成本价" autocomplete="off" class="layui-input">
+                </td>
+                <td>
+                    <input type="text" name="product[{$vo.spec_name}][mktprice]" value="{$vo.mktprice}"  placeholder="市场价" autocomplete="off" class="layui-input">
+                </td>
+                <td>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs del-class" >删除</a>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {else/}
+        {/if}
+    </div>
+</div>
+<div id="no_spec" {if condition="$items"}style="display:none;"{else/}{/if}>
+    <div class="layui-form-item">
+        <label class="layui-form-label">销售价：</label>
+        <div class="layui-input-inline">
+            <input type="hidden" name="product[id]" value="{$product.id}">
+            <input type="text" name="goods[price]" value="{$goods.price}" placeholder="￥" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">成本价：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="goods[costprice]" value="{$goods.costprice}" placeholder="￥" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">市场价：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="goods[mktprice]" value="{$goods.mktprice}" placeholder="￥" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">货号：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="goods[sn]" value="{$goods.bn}" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">库存：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="goods[stock]" value="{$goods.stock}"  lay-verify="title" autocomplete="off" placeholder="请输入商品库存" class="layui-input">
+        </div>
+    </div>
+</div>
+
+{notempty name="typeParams"}
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"><legend>商品参数</legend></fieldset>
+{volist name="typeParams" id="vo"}
+<div class="layui-form-item">
+    <label class="layui-form-label">{$vo.params.name}：</label>
+    <div class="layui-input-inline">
+        {if condition="$vo.params.type eq 'text'"}
+            <input type="text" name="goods[params][{$vo.params.name}]" value="{$goodsParams[$vo.params.name]}" class="layui-input">
+        {elseif condition="$vo.params.type eq 'checkbox'"/}
+            {volist name="$vo.params.value" id="params"}
+                {if condition="$goodsParams[$vo['params']['name']]"}
+                <input type="checkbox" name="goods[params][{$vo.params.name}][{$params}]" lay-skin="primary" title="{$params}" {if condition="in_array($params, $goodsParams[$vo['params']['name']])"}checked{/if}>
+                {else}
+                <input type="checkbox" name="goods[params][{$vo.params.name}][{$params}]" lay-skin="primary" title="{$params}">
+                {/if}
+            {/volist}
+        {elseif condition="$vo.params.type eq 'radio'"/}
+            {volist name="$vo.params.value" id="params" key="p"}
+                {if condition="$goodsParams[$vo['params']['name']]"}
+                    <input type="radio" name="goods[params][{$vo.params.name}]" value="{$params}" title="{$params}" {if condition="$params eq $goodsParams[$vo['params']['name']]"}checked{/if}>
+                {else}
+                    <input type="radio" name="goods[params][{$vo.params.name}]" value="{$params}" title="{$params}" {if condition="$p eq 1"}checked{/if}>
+                {/if}
+            {/volist}
+        {/if}
+    </div>
+</div>
+{/volist}
+{/notempty}
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+        form.on('checkbox(isdefalut)', function(data){
+            if(data.elem.checked){
+                var checkedName = $(data.elem).attr("name");
+                $(".isdefalut").each(function (i,dom) {
+                    var name = $(dom).attr("name");
+                    if(name != checkedName){
+                        $(dom).attr("checked",false);
+                        $(dom).attr("value","0");
+                        $("#more_spec .layui-form-checkbox").removeClass('layui-form-checked');
+                    }else {
+                        $(dom).attr("checked", true);
+                        $(dom).attr("value","1");
+                    }
+                });
+                $(data.othis).addClass("layui-form-checked");
+            }else{
+                $(dom).attr("checked",false);
+                $(dom).attr("value","0");
+                $("#more_spec .layui-form-checkbox").removeClass('layui-form-checked');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,257 @@
+.firmorder-content{
+  padding-bottom:100rpx;
+}
+.userinfo{
+  padding: 20rpx 30rpx 40rpx;
+  overflow: hidden; 
+  border-bottom: 16rpx solid #f3f3f3;
+  display: flex;
+  position: relative;
+}
+.gps-img{
+  width: 44rpx;
+  height: 44rpx;
+  display: inline-block;
+  margin: auto;
+}
+.userinfo-body{
+  display: inline-block;
+  width: 620rpx;
+  overflow: hidden;
+  font-size: 28rpx;
+  margin-left: 20rpx 
+}
+.userinfo-body>text{
+  position: relative;
+  bottom: 6rpx;
+  margin-left: 10rpx;
+}
+.userinfo-body-top{
+  margin-bottom: 10rpx;
+}
+.consignee,.consignee-name{
+  font-size: 28rpx;
+  color: #666;
+}
+.phone-num{
+  font-size: 26rpx;
+  color: #999;
+  float: right;
+}
+.address{
+  display: inline-block;
+  width: 572rpx;
+}
+.address text{
+  font-size: 26rpx;
+  color: #999;
+}
+.userinfo-body-bottom{
+  overflow: hidden;
+  display: flex;
+}
+.userinfo-body-bottom image{
+  width: 14rpx;
+  height: 24rpx; 
+  float: right;
+  margin: auto;
+}
+.list-details{
+  margin: 16rpx 0;
+  padding: 20rpx 30rpx;
+  background-color: #f9f9f9;
+  overflow: hidden;
+}
+.thumbnail{
+  width: 160rpx;
+  height: 160rpx;
+}
+.order-details{
+  width: 500rpx;
+  float: right;
+}
+.order-details .name{
+  width: 500rpx;
+  font-size: 26rpx;
+  color: #666;
+  overflow:hidden;
+  text-overflow: ellipsis;  
+  display:-webkit-box; 
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2; 
+  white-space: normal;
+}
+.size-style{
+  font-size: 24rpx;
+  color: #999;
+}
+.price-num{
+  width: 500rpx;
+  overflow: hidden;
+  font-size: 28rpx;
+}
+.price-num .price{  
+  color: #FF3B44;
+}
+.price-num .num{
+  color: #666;
+  float: right;
+  font-size: 24rpx;
+}
+.price-list{
+  font-size: 28rpx;
+  color: #666;
+}
+.price-details{
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 30rpx;
+  border-bottom: 2rpx solid #f1f1f1; 
+  overflow: hidden;
+}
+.price-calculation{
+  padding: 10rpx 30rpx;
+  border-bottom: 2rpx solid #f1f1f1; 
+}
+.price-calculation>view{
+  overflow: hidden;
+}
+.price-calculation>view>.price-details-right{
+  color: #FF3B44;
+}
+.price-details-right{
+  float: right;
+}
+.buyer text{
+  float: left;
+}
+.buyer input{
+  height: 80rpx;
+  width: 400rpx;
+  display: inline-block;
+  margin-left: 30rpx;
+}
+.buyer-input{
+  color: #b3b3b3;
+}
+.firmorder-footer{
+  height: 100rpx;
+  width: 750rpx;
+  line-height: 100rpx;
+  background-color: #f8f8f8;
+  position: fixed;
+  bottom: 0;
+  overflow: hidden;
+  z-index:999;
+}
+.firmorder-footer-right{
+  float: right;
+  font-size: 32rpx;
+  text-align:right;
+}
+.total-price{
+  color: #FF3B44;
+}
+.immediate-pay{
+  width: 212rpx;
+  height: 100rpx;
+  color: #fff;
+  background-color: #FF3B44;
+  float: right;
+  display: inline-block;
+  text-align: center;
+  font-size: 28rpx;
+  margin-left: 20rpx;
+}
+.gps-ico{
+  width:40rpx;
+  height:40rpx;
+}
+.right-ico{
+  width:20rpx;
+  height:40rpx;
+  float:right;
+}
+.noaddress{
+  width:100%;
+}
+.promotion_on{
+  background-color:#FF3B44;
+  color:#fff;
+  font-size: 18rpx;
+  border-radius: 10rpx;
+  padding: 0 10rpx;
+  display: inline-block;
+  height:28rpx;
+  line-height:28rpx;
+}
+.promotion_off{
+  background-color:#ccc;
+  color:#fff;
+  font-size: 18rpx;
+  border-radius: 10rpx;
+  padding: 0 10rpx;
+  display: inline-block;
+  height:28rpx;
+  line-height:28rpx;
+}
+.preferential{
+  height: 40rpx;
+  line-height: 28rpx;
+}
+.pay-num{
+  display: inline-block;
+}
+.userinfo-btm{
+  position: absolute;
+  width: 100vw;
+  height: 20rpx;
+  bottom: 0;
+  left: 0;
+}
+.modal-box{
+  position:fixed;
+  width:100%;
+  height:100%;
+  top:0px;
+  background:rgba(0,0,0,0.4);
+  overflow: hidden;
+  z-index: 1000;
+  /* position: relative; */
+  }
+.modal-body{
+  position:absolute;
+  bottom: 0;
+  background-color: #fff;
+  height: 700rpx;
+  width: 100%;
+  z-index: 1001;
+}
+.modal-content{
+  width: 690rpx;
+  margin: 30rpx;
+}
+.radio-group label{
+  display: block;
+  color: #888;
+  font-size: 26rpx;
+  overflow: hidden;
+  border-bottom: 2rpx solid #f1f1f1; 
+  padding-bottom: 10rpx;
+  margin-bottom: 16rpx;
+}
+.radio-group label radio {  
+  transform:scale(0.7);
+  float: right;
+}
+.close{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  line-height: 80rpx;
+  height: 80rpx;
+  text-align: center;
+  background-color: #FF3B44;
+  color: #fff;
+  font-size: 28rpx;
+}

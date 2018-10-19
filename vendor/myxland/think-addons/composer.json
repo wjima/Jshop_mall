@@ -1,0 +1,29 @@
+{
+    "name": "myxland/think-addons",
+    "description": "Thinkphp 5.1 Addons Library",
+    "type": "think-extend",
+    "license": "Apache-2.0",
+    "version": "1.0",
+    "authors": [
+        {
+            "name": "HWJ",
+            "email": "myxland@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "topthink/think-helper": ">=1.0.4",
+        "topthink/think-installer": ">=1.0.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "myxland\\addons\\": "src/"
+        },
+        "files": [
+            "src/helper.php"
+        ]
+    },
+    "post-install-cmd": [
+        "myxland\\wechat\\ComposerScripts::sendConfig"
+    ]
+}

@@ -1,0 +1,33 @@
+<style type="text/css">
+	.layui-container{
+    	width: 400px;
+    	text-align: center;
+    	/*line-height: 200px;*/
+    }
+    .layui-container .layui-col-md6 .wechat{
+    	height: 70px;
+    	width: 70px;
+    	display: block;
+    	margin: 50px auto 15px;
+    	
+    }
+    .layui-container .layui-col-md6 .add{
+    	width: 85px;
+    	height: 85px;
+    	display: block;
+    	margin: 40px auto 10px;
+    }
+    .layui-container .layui-col-md6 a{
+    	display: block;
+    }
+    .bindwxa-left{
+    	border-right: 1px solid #ccc;
+    }
+</style>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <a href="{:url('wechat/edit')}" class="bindwxa"><img class="add" src="__STATIC_IMAGES__add.png"/>手动绑定</a>
+        </div>
+</div>
+</div>

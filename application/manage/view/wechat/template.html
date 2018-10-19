@@ -1,0 +1,79 @@
+<style>
+    #LAY-component-grid-list .demo-list .layui-card {
+        height: auto;
+    }
+    .layui-card{
+    	border: 1px solid #e9e9e9;
+    }
+    .layui-card .default_img{
+        text-align: center;
+        padding: 10px 10px 20px;
+    }
+    .layui-card .default_img>img{
+    	min-width: 200px;
+    	min-height: 200px;
+    }
+    .layui-card .template_operate{
+        text-align: center;
+        padding: 10px 0 10px 0;
+    }
+    .mould-content{
+    	overflow: hidden;
+    	text-align: center;
+    	padding-bottom: 10px;
+    }
+    .mould-content>div{
+    	display: inline-block;
+    	width: 49%;
+    }
+    .mould-content-right{
+    	float: right;
+    }
+    .mould-content-right>div{
+    	margin: 14px 0;
+    }
+</style>
+<div class="seller-alone-form">
+
+
+<div class="layui-tab layui-tab-brief" lay-filter="template">
+    <div class="layui-tab-content" style="">
+
+        <div class="">
+            <div class="warning-msg">
+                <div class="warning-msg-content">
+                    <p>
+                        小程序上线流程：下载模板->上传模板->提交审核->查询进度->全网发布。查看<a href="https://www.kancloud.cn/jihainet/jshop/599522" target="_blank">[帮助手册]</a>快速上线
+                    </p>
+                </div>
+            </div>
+            {if condition="$data[data]"}
+            <div class="layui-row layui-col-space10">
+                {volist name="$data[data]" id="vo"}
+                <div class="layui-col-sm6 layui-col-md6 layui-col-lg4">
+                    <div class="layui-card">
+                        <div class="default_img">
+                            <img src="{$vo.image_id}">
+                        </div>
+                        <div class="mould-content">
+                        	<div class="mould-content-left">
+	                            <p>模板名称：{$vo.name}</p><br/>
+	                            <p>模板版本：{$vo.version}</p><br/>
+	                            <p>模板描述：{$vo.user_desc}</p><br/>
+                            </div>
+                            <div class="template_operate mould-content-right">
+                            	<a href="" style="color: red;">模板教程</a><br/>
+                                <a href="{$vo.url}" class="layui-btn layui-btn-sm" target="_blank">下载模板</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+            {else/}
+            暂无模板
+            {/if}
+        </div>
+    </div>
+</div>
+</div>

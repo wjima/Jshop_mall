@@ -88,7 +88,7 @@ class AdvertPosition extends Common
             $result['msg'] = $validate->getError();
         } else {
             // 判断商户该模板是否已经添加
-            if (!$this->where('code', $data['code'])->find()) {
+            if ($this->where('code', $data['code'])->find()) {
                 $result[ 'status' ] = false;
                 $result[ 'msg' ] = '该广告位模板已经添加';
             } else {
@@ -141,13 +141,13 @@ class AdvertPosition extends Common
     {
         //广告位下有广告禁止删除
         $result = ['status' => true,'msg' => '删除成功','data'=>''];
-        if ($this->advert()->where('id', $id)->find()) {
+        if ($this->advert()->where('position_id', $id)->find()) {
             $result['status'] = false;
             $result['msg'] = '该广告位下有广告删除失败';
         } else {
             if (!$this->where('id', $id)->delete()) {
                 $result['status'] = false;
-                $result['msg'] = '删除成功';
+                $result['msg'] = '删除失败';
             }
         }
         return $result;

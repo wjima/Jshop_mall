@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>初始数据配置 - Jshop小程序商城安装</title>
+    <link rel="stylesheet" href="style/layui/css/layui.css">
+    <link rel="stylesheet" href="style/css/install.css">
+</head>
+<body>
+<div class="layui-main">
+    <h1 class="site-h1">初始数据配置</h1>
+    <form class="layui-form" action="index.php?type=step5-1" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">管理员账号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_account" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="<?php echo $config['account']; ?>" />
+            </div>
+            <label class="layui-form-label">管理员密码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="admin_password" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="<?php echo $config['password']; ?>" />
+            </div>
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="demo" title="安装演示数据">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="btn-box">
+                <a class="layui-btn layui-btn-small layui-btn-normal" href="./index.php?type=<?php echo $config['createPage']?>">上一步</a>
+                <button type="submit" class="layui-btn layui-btn-small" lay-submit >下一步</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="style/layui/layui.js"></script>
+<script>
+layui.use(['form','layer'], function(){
+    let form = layui.form(), layer = layui.layer;
+
+    //监听提交
+    form.on('submit(formDemo)', function(data){
+        layer.msg(JSON.stringify(data.field));
+        return false;
+    });
+});
+</script>
+</body>
+</html>

@@ -37,9 +37,29 @@ Jshop小程序商城，是一款开源的电商系统，为中小企业提供最
 
 建议使用环境：Linux + Nginx1.14 + PHP7 + MySQL5.6
 
+#### 部署说明
+
+[安装部署](https://b2c.jihainet.com/)
+
+#### nginx 伪静态配置
+~~~
+    location / {
+        if (!-e $request_filename){
+            rewrite  ^(.*)$  /index.php?s=$1  last;   break;
+        }
+    }
+~~~
 #### 安全&缺陷
 如果你发现了一个安全漏洞或缺陷，请发送邮件到 jima@jihainet.com。所有的安全漏洞都将及时得到解决。
 
 
 #### License
+
+本项目包含的第三方源码和二进制文件之版权信息另行标注。
+
+版权所有Copyright © 2018 by 吉海科技 (http://jihainet.com)
+
+All rights reserved。
+
 Jshop小程序商城授权协议，请参阅 [LICENSE.txt](LICENSE.txt)
+

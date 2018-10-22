@@ -23,8 +23,11 @@ html{
 	width: 100%;
 	background: url(../images/login-bg.png) no-repeat;
 	background-size: 100% 100%;
-	padding: 115px 0;
-	min-width: 1150px;	
+	background-position: center;
+    padding: 115px 0;
+    min-width: 1900px;
+    height:600px;
+    box-sizing: border-box;
 }
 .login-content-mid{
 	width: 1150px;
@@ -38,8 +41,14 @@ html{
 	width: 400px;
 	float: right;
 }
+.login-header{
+    text-align: center;
+    padding: 0 0 15px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
 .layui-tab-content{
-	padding: 20px 0 10px;
+	padding: 25px 0 10px;
 	width: 60%;
 	min-width: 360px;
 	display: inline-block;
@@ -49,7 +58,7 @@ html{
 	margin-left: 0;
 }
 .layui-form-item{
-	margin-bottom: 20px;
+	margin-bottom: 25px;
 }
 .layui-form-item .layui-input-inline{
 	width: 220px;

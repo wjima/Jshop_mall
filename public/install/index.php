@@ -11,12 +11,12 @@ $config = array(
     'endPage'       => 'step5-1',       //安装成功页面
     'errorPage'     => 'step5-2',       //安装失败页面
     'sqlDir'        => './database/',   //数据库所在目录
-    'prefix'        => 'jshop_',        //默认表前缀
+    'prefix'        => '',              //默认表前缀
     'sqlName'       => 'jshop',         //数据库文件名称
     'demoData'      => 'demo',          //演示数据文件名称
     'databaseUrl'   => '../../config/database.php',     //database.php文件地址
     'account'       => 'admin',         //默认账号
-    'password'      => 'admin888'       //默认密码
+    'password'      => '123456'       //默认密码
 );
 
 //数据库配置
@@ -34,7 +34,7 @@ $errorTitle = '出错了';
 $errorMsg = '';
 
 //检测是否已安装
-if(file_exists('./install.lock'))
+if(file_exists('././config/install.lock'))
 {
     $errorTitle = '系统已安装';
     $errorMsg = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock 文件';

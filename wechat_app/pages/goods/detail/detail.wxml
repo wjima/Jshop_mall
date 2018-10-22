@@ -65,8 +65,9 @@
         <text class='salespromotion-service-name'>{{index}}</text>
         <view class='salespromotion-service-b'>
           <block wx:for="{{item}}" wx:for-item="i" wx:key="{{index-1}}">
-            <view class='{{i.is_default ? "pitch-on" : ""}} ' data-key="{{i.product_id}}" data-id="{{i.name}}" bindtap="selectSku">{{i.name}}</view>
-            <view class='nothing'>蓝色</view>
+            <view wx:if="{{i.is_default}}" class='pitch-on'>{{i.name}}</view>
+            <view wx:elif="{{i.product_id != 0}}" class='{{i.is_default ? "pitch-on" : ""}} ' data-key="{{i.product_id}}" data-id="{{i.name}}" bindtap="selectSku">{{i.name}}</view>
+            <view wx:elif="{{i.product_id == 0}}" class='nothing'>{{i.name}}</view>
           </block>
         </view>
       </view>

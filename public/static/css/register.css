@@ -21,9 +21,9 @@ html{
 }
 .login-content{
 	width: 100%;
-	background: url(../images/01b17e5620981b6ac7254878c91827.jpg) no-repeat;
+	background: url(../images/login-bg.png) no-repeat;
 	background-size: 100% 100%;
-	padding: 100px 0;
+	padding: 115px 0;
 	min-width: 1150px;	
 }
 .login-content-mid{

@@ -39,7 +39,7 @@ Jshop小程序商城，是一款开源的电商系统，为中小企业提供最
 
 #### 部署说明
 
-[安装部署](https://b2c.jihainet.com/)
+[安装部署](https://gitee.com/hnjihai/jshop_mall/wikis/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2?sort_id=881805)
 
 #### nginx 伪静态配置
 ~~~
@@ -57,7 +57,7 @@ Jshop小程序商城，是一款开源的电商系统，为中小企业提供最
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2018 by 吉海科技 (http://jihainet.com)
+版权所有Copyright © 2018 by 吉海科技 (https://www.jihainet.com)
 
 All rights reserved。
 

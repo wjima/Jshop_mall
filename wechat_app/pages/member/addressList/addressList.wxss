@@ -23,6 +23,13 @@ page{
     border-radius: 20rpx;
     font-size: 24rpx;
 }
+.orderadd-header-tag-green{
+    background-color: #04be02;
+    color: #fff;
+    padding: 6rpx 12rpx;
+    border-radius: 20rpx;
+    font-size: 24rpx;
+}
 .orderadd-header-del{
     background-color: #fff;
     float: right;

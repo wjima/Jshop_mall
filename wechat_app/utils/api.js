@@ -1,7 +1,7 @@
 var config = require('config.js');
 var common = require('common.js');
 //需要token才能访问的数组
-var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend'];
+var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode', 'user.getusership', 'user.vuesaveusership', 'user.removeship', 'user.setdefship', 'user.getshipdetail', 'user.editship'];
 
 //接口统一封装
 function api(method,data,callback,show = true){
@@ -702,11 +702,45 @@ function sharecode(callback) {
 }
 //获取文章列表
 function getarticleList(data,callback){
-  console.log(data);
   api('articles.getArticleList', data, function (res) {
     callback(res);
   });
-
+}
+//获取收货地址列表
+function getUserShip(callback) {
+    api('user.getusership', {}, function (res) {
+        callback(res);
+    });
+}
+//存储收货地址
+function addSaveAddress(data, callback) {
+    api('user.vuesaveusership', data, function (res) {
+        callback(res);
+    });
+}
+//删除收货地址
+function removeship(data, callback) {
+    api('user.removeship', data, function (res) {
+        callback(res);
+    });
+}
+//设置默认收货地址
+function setdefship(data, callback) {
+    api('user.setdefship', data, function (res) {
+        callback(res);
+    });
+}
+//获取收货地址详情
+function getshipdetail(data, callback) {
+    api('user.getshipdetail', data, function (res) {
+        callback(res);
+    });
+}
+//编辑收货地址
+function editship(data, callback) {
+    api('user.editship', data, function (res) {
+        callback(res);
+    });
 }
 
 module.exports = {
@@ -779,5 +813,11 @@ module.exports = {
   userBalance: userBalance,
   recommendList: recommendList,
   sharecode: sharecode,
-  getarticleList: getarticleList
+  getarticleList: getarticleList,
+  getUserShip: getUserShip,
+  addSaveAddress: addSaveAddress,
+  removeship: removeship,
+  setdefship: setdefship,
+  getshipdetail: getshipdetail,
+  editship: editship
 }

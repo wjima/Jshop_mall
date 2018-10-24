@@ -71,6 +71,10 @@ Page({
             county_name: county_name,
             postal_code: postal_code
         }
+        let regionName = [province_name, city_name, county_name];
+        page.setData({
+            region: regionName
+        });
         app.api.getAreaId(data, function (res) {
             if(res.status) {
                 page.setData({

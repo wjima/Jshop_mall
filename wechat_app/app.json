@@ -39,7 +39,8 @@
     "pages/other/storeList/storeList",
     "pages/member/ship/ship",
     "pages/member/recommendList/recommendList",
-    "pages/member/myBankCardlist/myBankCardlist"
+    "pages/member/myBankCardlist/myBankCardlist",
+    "pages/member/address/editAddress"
   ],
   "window": {
     "backgroundTextStyle":"light",

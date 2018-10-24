@@ -20,7 +20,7 @@ Page({
     hotLimit: 8,
     ajaxStatus: true,
     loadingComplete: false,
-    store_type: 2, //默认独立店铺
+    store_type: 2, //独立店铺
   },
 
   //页面加载处理
@@ -34,11 +34,6 @@ Page({
             data: e.invite
         });
     }
-    //设置店铺类型
-    this.setData({
-      store_type: app.config.store_type
-    });
-    this.getStoreName(); //获取店铺名称
     this.slideImg(); //获取幻灯片广告数据
     this.notice(); //获取公告数据
     this.coupon(); //获取优惠券数据
@@ -78,28 +73,6 @@ Page({
       }
   },
 
-  //获取店铺名称
-  getStoreName: function () {
-    let page = this;
-    app.api.getStoreName(function (res) {
-      let name = app.config.app_title;
-      if(res.data != ''){
-        name = res.data;
-      }
-      if (res.mode == '7881f454af469aa8') {
-        page.setData({
-          store_type: 2
-        });
-      }
-      wx.setNavigationBarTitle({
-        title: name
-      });
-      page.setData({
-        appTitle: name
-      });
-    });
-  },
-
   //顶部搜索栏阴影效果
   scroll: function (e) {
     var that = this, scrollTop = that.data.scrollTop;
@@ -125,9 +98,11 @@ Page({
     //异步获取公告数据，因为公告要求有实时性，所以不缓存
     app.api.noticeList(function (res) {
       if(res.status){
-        page.setData({
-          notice: res.data.list
-        });
+        if (res.data.list){
+          page.setData({
+            notice: res.data.list
+          });
+        }
       }
     });
   },

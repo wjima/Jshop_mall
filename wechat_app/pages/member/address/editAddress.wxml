@@ -6,7 +6,7 @@
                 <view class="weui-label">姓名</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input" bindchange="getName" placeholder="请输入姓名"/>
+                <input class="weui-input" bindchange="getName" value='{{name}}' placeholder="请输入姓名"/>
             </view>
         </view>
 
@@ -16,7 +16,7 @@
                 <view class="weui-label">手机号</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input" bindchange="getMobile" placeholder="请输入手机号号码"/>
+                <input class="weui-input" bindchange="getMobile" value='{{mobile}}' placeholder="请输入手机号号码"/>
             </view>
         </view>
 
@@ -38,20 +38,12 @@
                 <view class="weui-label">详细地址</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input" bindchange="getAddress" placeholder="请输入详细地址" />
-            </view>
-        </view>
-        
-        <view class="weui-cell weui-cell_switch">
-            <view class="weui-cell__bd">设置为默认</view>
-            <view class="weui-cell__ft">
-                <switch bindchange="isDefault" checked />
+                <input class="weui-input" bindchange="getAddress" value='{{address}}' placeholder="请输入详细地址" />
             </view>
         </view>
     </view>
 
     <view class="weui-btn-area">
-        <button class="weui-btn" bindtap="addAddress">保存</button>
+        <button class="weui-btn" bindtap="editAddress">保存</button>
     </view>
 </view>
-

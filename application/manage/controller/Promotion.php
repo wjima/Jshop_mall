@@ -51,9 +51,6 @@ class Promotion extends Manage
     {
 
         if(Request::isPost()){
-            if(!input('?param.seller_id')){
-                return error_code(10011);
-            }
             if(!input('?param.name')){
                 return error_code(15001);
             }
@@ -71,7 +68,6 @@ class Promotion extends Manage
             $data['status'] = input('param.status/d',1);
             $data['sort'] = input('param.sort/d',100);
             $data['exclusive'] = input('param.exclusive/d',1);
-            $data['seller_id'] = input('param.seller_id/d');
             $promotionModel = new PromotionModel();
             $id = $promotionModel->insertGetId($data);
             return [
@@ -86,9 +82,6 @@ class Promotion extends Manage
     public function couponAdd()
     {
         if(Request::isPost()){
-            if(!input('?param.seller_id')){
-                return error_code(10011);
-            }
             if(!input('?param.name')){
                 return error_code(15001);
             }
@@ -108,7 +101,6 @@ class Promotion extends Manage
             $data['auto_receive'] = input('param.auto_receive/d',2);
             $data['sort'] = input('param.sort/d',100);
             $data['type'] = $promotionModel::TYPE_COUPON;
-            $data['seller_id'] = input('param.seller_id/d');
 
             $id = $promotionModel->insertGetId($data);
             return [
@@ -292,18 +284,16 @@ class Promotion extends Manage
             return error_code(10002);
         }
 
-
         $conditionModel = new PromotionCondition();
 
         if(Request::isPOST()){
             $data = input('param.');
-            $data['seller_id'] = $pinfo['seller_id'];
             return $conditionModel->addData($data);
         }
 
         //如果是修改，就取数据，否则就是新增，直接渲染模板
         if(input('?param.id')){
-            $info = $conditionModel->getInfo(input('param.id'),$pinfo['seller_id']);
+            $info = $conditionModel->getInfo(input('param.id'));
             if(!$info){
                 return error_code(15004);
             }
@@ -313,14 +303,13 @@ class Promotion extends Manage
             $code = input('param.condition_code');
             $this->assign('promotion_id',input('param.promotion_id/d'));
             $this->assign('code',$code);
-            $this->assign('seller_id',$pinfo['seller_id']);
         }
 
         //初始化数据
         switch ($code){
             case 'GOODS_CATS':
                 $goodsCatModel = new GoodsCat();
-                $catList       = $goodsCatModel->getCatByParentId(0, $pinfo['seller_id']);
+                $catList       = $goodsCatModel->getCatByParentId(0);
                 $this->assign('catList', $catList);
 
                 break;
@@ -345,7 +334,7 @@ class Promotion extends Manage
         }
 
         $conditionModel = new PromotionCondition();
-        return $conditionModel->toDel(input('param.id'),$info['seller_id']);
+        return $conditionModel->toDel(input('param.id'));
     }
 
     //促销结果列表
@@ -403,13 +392,12 @@ class Promotion extends Manage
 
 
         if(Request::isPOST()){$data = input('param.');
-            $data['seller_id'] = $info['seller_id'];
             return $resultModel->addData($data);
         }
 
         //如果是修改，就取数据，否则就是新增，直接渲染模板
         if(input('?param.id')){
-            $info = $resultModel->getInfo(input('param.id'),$info['seller_id']);
+            $info = $resultModel->getInfo(input('param.id'));
             if(!$info){
                 return error_code(15004);
             }

@@ -1,15 +1,52 @@
-//添加收货地址
+//修改收货地址
 const app = getApp(); //获取全局app.js
 
 Page({
     //页面的初始数据
     data: {
+        id: 0, //ID
         name: '', //姓名
         mobile: '', //手机号
         region: ['河南省', '郑州市', '中原区'], //开户行地区
         areaId: 410102, //开户行地区ID
         address: '', //详细地址
-        is_def: 1, //是否默认
+        is_def: 2
+    },
+
+
+    //生命周期函数--监听页面加载
+    onLoad: function (options) {
+        let id = options.id;
+        this.getAddressInfo(id);
+    },
+
+
+    //获取地址详细信息
+    getAddressInfo: function (id) {
+        let page = this;
+        let data = {
+            'id': id
+        }
+        app.api.getshipdetail(data, function (res) {
+            if(res.status){
+                let region = res.data.area_name.split(" ");
+                page.setData({
+                    id: id,
+                    name: res.data.name,
+                    mobile: res.data.mobile,
+                    region: region,
+                    areaId: res.data.area_id,
+                    address: res.data.address,
+                    is_def: res.data.is_def
+                });
+            }else{
+                wx.showModal({
+                    title: '提示',
+                    content: '获取收货地址信息出现问题',
+                    showCancel: false
+                });
+            }
+        });
     },
 
 
@@ -36,19 +73,6 @@ Page({
         let address = e.detail.value;
         this.setData({
             address: address
-        });
-    },
-
-
-    //获取是否默认
-    isDefault: function (e) {
-        let is_def = 2
-        if (e.detail.value) {
-            //默认
-            is_def = 1;
-        }
-        this.setData({
-            is_def: is_def
         });
     },
 
@@ -87,24 +111,26 @@ Page({
 
 
     //添加地址
-    addAddress: function () {
+    editAddress: function () {
         let page = this;
         let data = {
+            'id': page.data.id,
             'name': page.data.name,
             'mobile': page.data.mobile,
             'area_id': page.data.areaId,
             'address': page.data.address,
             'is_def': page.data.is_def
         }
+
         app.db.userToken(function (token) {
-            app.api.addSaveAddress(data, function(res){
+            app.api.editship(data, function (res) {
                 if (res.status) {
                     wx.showToast({
-                        title: '添加成功',
+                        title: '保存成功',
                         icon: 'success',
                         mask: true,
                         complete: function () {
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 wx.navigateBack(1);
                             }, 1500);
                         }

@@ -135,7 +135,7 @@
               {{item.content}}
             </view>
             <view class='comment-img'>
-                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/static/images/default.png'}}" wx:key="indexs" wx:for-item="vo"  mode="{{mode}}" src='{{vo}}'></image>
+                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/pages/image/default_avatar.png'}}" wx:key="indexs" wx:for-item="vo"  mode="{{mode}}" src='{{vo}}'></image>
             </view>
           </view>
         </view>

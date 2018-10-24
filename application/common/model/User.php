@@ -308,8 +308,8 @@ class User extends Common
 
         if ($type == 1)
         {
-            $userLogModel = new UserLog();        //添加登录日志
-            $userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
+            //$userLogModel = new UserLog();        //添加登录日志
+            //$userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
         }
 
         return $result;
@@ -339,8 +339,8 @@ class User extends Common
         }
         $re = $this->save($data,['id'=>$id]);
         if($re){
-            $userLogModel = new UserLog();
-            $userLogModel->setLog($id,$userLogModel::USER_EDIT);
+            //$userLogModel = new UserLog();
+            //$userLogModel->setLog($id,$userLogModel::USER_EDIT);
             $result['status'] = true;
             $result['msg'] = '保存成功';
             return $result;

@@ -226,6 +226,10 @@ class Manage extends Common
             'msg' => ''
         ];
         session('manage',$userInfo->toArray());
+
+        $userLogModel = new UserLog();//添加登录日志
+        $userLogModel->setLog($userInfo->id,$userLogModel::USER_LOGIN);
+
         $result['status'] = true;
         return $result;
     }

@@ -58,9 +58,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">权限许可：</label>
         <div class="layui-input-block">
-            <input type="radio" name="perm_type" value="1" title="主体权限" {if !isset($info) || $info.perm_type == '1'} checked=""{/if}>
-            <input type="radio" name="perm_type" value="2" title="半主体权限" {if $info.perm_type == '2'} checked=""{/if}>
-            <input type="radio" name="perm_type" value="3" title="关联权限" {if $info.perm_type == '3'} checked=""{/if}>
+            <input type="radio" name="perm_type" value="1" title="主体权限-在菜单上和给角色设置权限上都显示" {if !isset($info) || $info.perm_type == '1'} checked=""{/if}><br />
+            <input type="radio" name="perm_type" value="2" title="半主体权限-只在给角色设置权限上显示" {if $info.perm_type == '2'} checked=""{/if}><br />
+            <input type="radio" name="perm_type" value="3" title="关联权限-不在菜单上和角色设置权限的时候显示，权限依附于所属的菜单节点" {if $info.perm_type == '3'} checked=""{/if}>
         </div>
     </div>
     <div class="layui-form-item">

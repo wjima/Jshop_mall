@@ -51,9 +51,6 @@ class Promotion extends Manage
     {
 
         if(Request::isPost()){
-            if(!input('?param.seller_id')){
-                return error_code(10011);
-            }
             if(!input('?param.name')){
                 return error_code(15001);
             }
@@ -71,7 +68,6 @@ class Promotion extends Manage
             $data['status'] = input('param.status/d',1);
             $data['sort'] = input('param.sort/d',100);
             $data['exclusive'] = input('param.exclusive/d',1);
-            $data['seller_id'] = input('param.seller_id/d');
             $promotionModel = new PromotionModel();
             $id = $promotionModel->insertGetId($data);
             return [

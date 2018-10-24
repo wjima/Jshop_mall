@@ -50,6 +50,6 @@ class Common extends Base
     public function logout()
     {
         session('manage', null);
-        $this->success('退出成功','/');
+        $this->success('退出成功','/manage');
     }
 }

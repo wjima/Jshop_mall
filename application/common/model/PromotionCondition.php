@@ -223,9 +223,6 @@ class PromotionCondition extends Common
     protected function tableWhere($post)
     {
         $result['where'] = [];
-        if(isset($post['seller_id'])){
-            $result['where']['p.seller_id'] = $post['seller_id'];
-        }
         if(isset($post['promotion_id'])){
             $result['where']['pc.promotion_id'] = $post['promotion_id'];
         }
@@ -291,6 +288,7 @@ class PromotionCondition extends Common
 
 
         $data['params'] = json_encode($data['params']);
+
         if($data['id'] != ''){
             //更新
             $info = $this->getInfo($data['id']);
@@ -331,7 +329,7 @@ class PromotionCondition extends Common
             'data' => '',
             'msg' => ''
         ];
-        if(!isset($data['code']) || !isset($data['promotion_id']) || !isset($data['params'])|| !isset($data['seller_id'])){
+        if(!isset($data['code']) || !isset($data['promotion_id']) || !isset($data['params'])){
             return error_code(10003);
         }
         if(!isset($this->code[$data['code']])){

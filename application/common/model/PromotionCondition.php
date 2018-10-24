@@ -261,9 +261,8 @@ class PromotionCondition extends Common
         return $list;
     }
     //取信息
-    public function getInfo($id,$sellerId){
+    public function getInfo($id){
         $where['pc.id'] = $id;
-        $where['p.seller_id'] = $sellerId;
         $info = $this
             ->field('pc.*')
             ->alias('pc')
@@ -294,7 +293,7 @@ class PromotionCondition extends Common
         $data['params'] = json_encode($data['params']);
         if($data['id'] != ''){
             //更新
-            $info = $this->getInfo($data['id'],$data['seller_id']);
+            $info = $this->getInfo($data['id']);
             if($info){
                 if($this->allowField(true)->save($data,['id'=>$data['id']])){
                     $result['status'] = true;
@@ -308,7 +307,6 @@ class PromotionCondition extends Common
             //添加
             //先判断是否有此促销
             $promotionModel = new Promotion();
-            $where['seller_id'] = $data['seller_id'];
             $where['id'] = $data['promotion_id'];
             $promotionInfo = $promotionModel->where($where)->find();
             if($promotionInfo){
@@ -390,14 +388,14 @@ class PromotionCondition extends Common
 
 
 
-    public function toDel($id,$seller_id)
+    public function toDel($id)
     {
         $result = [
             'status' => false,
             'data' => '',
             'msg' => ''
         ];
-        $info = $this->getInfo($id,$seller_id);
+        $info = $this->getInfo($id);
         if($info){
             $this->where(['id'=>$info['id'],'promotion_id'=>$info['promotion_id']])->delete();
             $result['status'] = true;

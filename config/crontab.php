@@ -47,16 +47,5 @@ return [
         'worker_count'=>1,
         //crontad格式 :秒 分 时 天 月 年 周
         'crontab'     =>'1 * * * * * *',
-    ],
-    'rftoken'=>[
-        'callback'=>['app\\crontab\\Thirdwx','run'],//刷新token
-        //指定任务进程最大内存  系统默认为512M
-        'worker_memory'      =>'100M',
-        //开启任务进程的多线程模式
-        'worker_pthreads'   =>false,
-        //任务的进程数 系统默认1
-        'worker_count'=>1,
-        //crontad格式 :秒 分 时 天 月 年 周
-        'crontab'     =>'1 * * * * * *',
-    ],
+    ]
 ];

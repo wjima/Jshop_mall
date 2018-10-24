@@ -258,7 +258,8 @@ class Goods extends Manage
         ];
         $bn                             = get_sn(3);
         $data['goods']['name']          = input('post.goods.name', '');
-        $data['goods']['goods_cat_id']  = input('post.goods_cat_id.0', 0);
+        $goods_cat_id                   = end(input('post.goods_cat_id/a'));
+        $data['goods']['goods_cat_id']  = $goods_cat_id;
         $data['goods']['goods_type_id'] = input('post.goods_type_id', 0);
         $data['goods']['brand_id']      = input('post.goods.brand_id', 0);
         $data['goods']['bn']            = input('post.goods.bn', $bn);
@@ -579,6 +580,7 @@ class Goods extends Manage
         $res            = $this->getEditSpec($goods['data']['goods_type_id'], $goods['data']);
         $this->assign('spec_html', $res['data']);
         $goodsCatModel = new GoodsCat();
+
         $catInfo       = $goodsCatModel->getCatInfo($goods['data']['goods_cat_id']);
         $this->assign('catInfo', $catInfo);
         $childCat = $goodsCatModel->getCatByParentId($catInfo['parent_id']);

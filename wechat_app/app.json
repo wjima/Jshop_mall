@@ -45,7 +45,7 @@
   "window": {
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "JShop云商",
+    "navigationBarTitleText": "Jshop云商",
     "navigationBarTextStyle":"black"
   },
   "tabBar": {

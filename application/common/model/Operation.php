@@ -118,48 +118,6 @@ class Operation extends Common
     }
 
     /**
-     * 返回卖家端的菜单信息
-     * @param $parent_menu_id
-     * @return array
-     */
-    public function sellerMenu($seller_id,$user_id, $controllerName, $actionName)
-    {
-        $parent_menu_id = self::MENU_SELLER;
-        //如果判断用户是否是此店铺的管理员或者超级管理员
-        $sellerManageModel = new SellerManage();
-        $sellerList = $sellerManageModel->getSellerManage($user_id,$seller_id);
-
-        if(!isset($sellerList[$seller_id])){
-            return [];
-        }
-        //根据菜单取菜单on的样式
-        $onMenu = $this->getMenuNode($parent_menu_id, $controllerName, $actionName);
-
-        //如果是超级管理员，直接返回
-        if($sellerList[$seller_id] == $sellerManageModel::TYPE_SUPER){
-            //直接取所有数据，然后返回
-            $list = $this->where(['perm_type'=>self::PERM_TYPE_SUB])->order('sort asc')->select();
-            return $this->createTree($list,$parent_menu_id,'parent_menu_id',$onMenu);
-        }
-        //到这里就说明用户是店铺的普通管理员，那么就取所有的角色所对应的权限
-        $list = $this
-            ->distinct(true)
-            ->field('o.*')
-            ->alias('o')
-            ->join('seller_role_operation_rel sror', 'o.id = sror.operation_id')
-            ->where('sror.seller_role_id','IN',$sellerList[$seller_id])
-            ->where('o.perm_type',self::PERM_TYPE_SUB)
-            ->order('o.sort asc')
-            ->select();
-        if($list->isEmpty()){
-            return [];       //可怜的，一个权限都没有
-        }
-
-        //取当前操作所对应的operation
-        //$list = $list->toArray();
-        return $this->createTree($list,$parent_menu_id,'parent_menu_id',$onMenu);
-    }
-    /**
      * 返回管理端的菜单信息
      * @param $parent_menu_id
      * @return array
@@ -167,10 +125,16 @@ class Operation extends Common
     public function manageMenu($manage_id, $controllerName, $actionName)
     {
         $parent_menu_id = self::MENU_MANAGE;
-        //如果判断用户是否是此店铺的管理员或者超级管理员
         $manageModel = new Manage();
-
-
+        $manageRoleRel = new ManageRoleRel();
+        //取此管理员的所有角色
+        $roles = $manageRoleRel->where('manage_id',$manage_id)->select();
+        if(!$roles->isEmpty()){
+            $roles = $roles->toArray();
+            $roles = array_column($roles,'role_id');
+        }else{
+            $roles = [];
+        }
         //根据菜单取菜单on的样式
         $onMenu = $this->getMenuNode($parent_menu_id, $controllerName, $actionName);
 
@@ -180,23 +144,22 @@ class Operation extends Common
             $list = $this->where(['perm_type'=>self::PERM_TYPE_SUB])->order('sort asc')->select();
             return $this->createTree($list,$parent_menu_id,'parent_menu_id',$onMenu);
         }
-//        //到这里就说明用户是店铺的普通管理员，那么就取所有的角色所对应的权限
-//        $list = $this
-//            ->distinct(true)
-//            ->field('o.*')
-//            ->alias('o')
-//            ->join('seller_role_operation_rel sror', 'o.id = sror.operation_id')
-//            ->where('sror.seller_role_id','IN',$sellerList[$seller_id])
-//            ->where('o.perm_type',self::PERM_TYPE_SUB)
-//            ->order('o.sort asc')
-//            ->select();
-//        if($list->isEmpty()){
-//            return [];       //可怜的，一个权限都没有
-//        }
-//
-//        //取当前操作所对应的operation
-//        //$list = $list->toArray();
-//        return $this->createTree($list,$parent_menu_id,$onMenu);
+        //到这里就说明用户是店铺的普通管理员，那么就取所有的角色所对应的权限
+        $list = $this
+            ->distinct(true)
+            ->field('o.*')
+            ->alias('o')
+            ->join('manage_role_operation_rel mror', 'o.id = mror.operation_id')
+            ->where('mror.manage_role_id','IN',$roles)
+            ->where('o.perm_type',self::PERM_TYPE_SUB)
+            ->order('o.sort asc')
+            ->select();
+        if($list->isEmpty()){
+            return [];       //可怜的，一个权限都没有
+        }
+        $list = $list->toArray();
+        $re = $this->createTree($list,$parent_menu_id,"parent_menu_id",$onMenu);        //构建菜单树
+        return  $re;
     }
 
     /**

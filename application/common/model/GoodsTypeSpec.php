@@ -21,12 +21,6 @@ use app\common\model\GoodsTypeSpecValue;
  */
 class GoodsTypeSpec extends Common
 {
-    /**
-     * 表名
-     * @var string
-     */
-    protected $table='goods_type_spec';
-
 
     public function getSpecValue()
     {

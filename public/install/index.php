@@ -11,7 +11,7 @@ $config = array(
     'endPage'       => 'step5-1',       //安装成功页面
     'errorPage'     => 'step5-2',       //安装失败页面
     'sqlDir'        => './database/',   //数据库所在目录
-    'prefix'        => '',              //默认表前缀
+    'prefix'        => 'jshop_',        //默认表前缀
     'sqlName'       => 'jshop',         //数据库文件名称
     'demoData'      => 'demo',          //演示数据文件名称
     'databaseUrl'   => '../../config/database.php',     //database.php文件地址
@@ -23,9 +23,9 @@ $config = array(
 $db_config = array(
     'DB_HOST' => 'localhost',
     'DB_PORT' => '3306',
-    'DB_NAME' => '',
-    'DB_PREFIX' => '',
-    'DB_USER' => '',
+    'DB_NAME' => 'jshop',
+    'DB_PREFIX' => 'jshop_',
+    'DB_USER' => 'root',
     'DB_PASS' => '',
 );
 
@@ -34,7 +34,7 @@ $errorTitle = '出错了';
 $errorMsg = '';
 
 //检测是否已安装
-if(file_exists('././config/install.lock'))
+if(file_exists('./install.lock'))
 {
     $errorTitle = '系统已安装';
     $errorMsg = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock 文件';
@@ -67,6 +67,7 @@ if($get == $config['importPage'])
             $db_config['DB_USER'] = $_POST['DB_USER'];
             $db_config['DB_PASS'] = $_POST['DB_PASS'];
             $_SESSION['db'] = $db_config;
+
         }
     }
 }
@@ -76,8 +77,10 @@ if($get == $config['endPage'])
 {
     if($_SERVER['REQUEST_METHOD'] == 'POST')
     {
+
         //连接数据库
         $db = $_SESSION['db'];
+
         $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
         //获取错误信息
         $error = $link->connect_error;
@@ -100,17 +103,20 @@ if($get == $config['endPage'])
             }
             $link->select_db($db['DB_NAME']);
         }
+
         //导入sql数据并创建表
         if(!file_exists($sqlPath = $config['sqlDir'].$config['sqlName'] . '.sql'))
         {
             $errorMsg = '文件丢失:' . $sqlPath;
             die(require $config['errorPage'].'.html');
         }
+
         // 获取数据
         $sql_str = file_get_contents($sqlPath);
+
         //修改表前缀
-        //$sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db_config['DB_PREFIX'], $sql_str));
-        $sql_array = preg_split("/;[\r\n]+/", $sql_str);
+        $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
+
         //循环query
         foreach($sql_array as $k => $v)
         {
@@ -124,17 +130,17 @@ if($get == $config['endPage'])
         $account = $_POST['admin_account'];
         $time = time();
         $password = md5(md5($_POST['admin_password']).$time);
-        $add_user_sql = 'INSERT INTO `user` (`username`, `password`, `sex`, `balance`, `ctime`, `utime`, `status`, `pid`) VALUES ("'.$account.'", "'.$password.'", "3", "0.00", "'.$time.'", "'.$time.'", "1", "0");';
+
+        $add_user_sql = "INSERT INTO `".$db['DB_PREFIX']."manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES (13, '".$account."', '".$password."', '', NULL, NULL, ".$time.", ".$time.", 1);";
         $link->query($add_user_sql);
 
         //判断是否添加演示数据
-//        if(isset($_POST['demo']) && $_POST['demo'] == 'on')
-//        {
-//            $demoPath = $config['sqlDir'].$config['demoData'] . '.sql';
-//            $demo_sql = file_get_contents($demoPath);
-//            $link->query($demo_sql);
-//        }
-
+        if(isset($_POST['demo']) && $_POST['demo'] == 'on')
+        {
+            $demoPath = $config['sqlDir'].$config['demoData'] . '.sql';
+            $demo_sql = file_get_contents($demoPath);
+            $link->query($demo_sql);
+        }
         $link->close();
         $db_str = <<<php
 <?php

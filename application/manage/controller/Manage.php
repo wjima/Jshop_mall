@@ -19,6 +19,7 @@ use org\Curl;
 
 class Manage extends ManageController
 {
+
     public function index()
     {
         if(Request::isAjax()){

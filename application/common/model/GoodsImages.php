@@ -20,7 +20,6 @@ namespace app\common\model;
  */
 class GoodsImages extends Common
 {
-    protected $table='goods_images';
 
     /**
      * 批量保存商品图片

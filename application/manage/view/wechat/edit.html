@@ -2,7 +2,7 @@
     <div class="warning-msg">
         <div class="warning-msg-content">
             <p>请先登录公众平台<a target="_blank" href="https://mp.weixin.qq.com">mp.weixin.qq.com</a>配置url，再根据页面要求填写信息并保存
-                <a href="#" target="_blank" >[帮助手册]</a></p>
+                <a href="https://www.kancloud.cn/jihainet/jshop_operate/" target="_blank" >[帮助手册]</a></p>
         </div>
     </div>
 
@@ -99,7 +99,7 @@
             JsPost('{:url("Wechat/doEdit")}',formData,function (e) {
                 if(e.status === true){
                     layer.msg(e.msg, {time: 1300}, function(){
-                        window.location.href='{:url("Wechat/info")}';
+                        window.location.reload();
                     });
                 }else{
                     layer.msg(e.msg, {time: 1300});

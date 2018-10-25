@@ -149,7 +149,7 @@ class Operation extends Common
             ->distinct(true)
             ->field('o.*')
             ->alias('o')
-            ->join('manage_role_operation_rel mror', 'o.id = mror.operation_id')
+            ->join(config('database.prefix').'manage_role_operation_rel mror', 'o.id = mror.operation_id')
             ->where('mror.manage_role_id','IN',$roles)
             ->where('o.perm_type',self::PERM_TYPE_SUB)
             ->order('o.sort asc')

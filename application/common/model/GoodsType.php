@@ -25,8 +25,6 @@ use app\common\model\GoodsTypeParams;
  */
 class GoodsType extends Common
 {
-    protected $table='goods_type';
-
     /**
      * 添加商品类型
      * @param $data

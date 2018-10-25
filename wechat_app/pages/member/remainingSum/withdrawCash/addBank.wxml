@@ -36,7 +36,7 @@
                 <view class="weui-label">持卡人</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input" bindchange="accountName" placeholder="请输入持卡人姓名"/>
+                <input class="weui-input" bindinput="accountName" placeholder="请输入持卡人姓名"/>
             </view>
         </view>
 
@@ -46,7 +46,7 @@
                 <view class="weui-label">开户行名</view>
             </view>
             <view class="weui-cell__bd">
-                <input class="weui-input" bindchange="accountBank" placeholder="请输入开户银行名" />
+                <input class="weui-input" bindinput="accountBank" placeholder="请输入开户银行名" />
             </view>
         </view>
 

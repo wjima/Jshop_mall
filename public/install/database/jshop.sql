@@ -41,7 +41,6 @@ INSERT INTO `jshop_addons` (`id`, `name`, `title`, `description`, `status`, `con
 
 CREATE TABLE `jshop_advertisement` (
   `id` int(10) UNSIGNED NOT NULL,
-  `seller_id` int(10) UNSIGNED DEFAULT '0' COMMENT '店铺id',
   `position_id` int(10) UNSIGNED DEFAULT '0' COMMENT '广告位置id',
   `name` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '广告名称',
   `img` char(32) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '广告图片id',
@@ -52,7 +51,6 @@ CREATE TABLE `jshop_advertisement` (
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '广告位置编码',
   `type` tinyint(3) UNSIGNED DEFAULT NULL COMMENT '类型  1url  2商品  3文章'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告表';
-
 -- --------------------------------------------------------
 
 --

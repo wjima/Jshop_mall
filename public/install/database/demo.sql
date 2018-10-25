@@ -1,45 +1,60 @@
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
---
--- Database: `jshop_b2c`
---
-
+TRUNCATE TABLE `jshop_advertisement`;
 --
 -- Dumping data for table `jshop_advertisement`
 --
 
-INSERT INTO `jshop_advertisement` (`id`, `seller_id`, `position_id`, `name`, `img`, `val`, `sort`, `ctime`, `utime`, `code`, `type`) VALUES
-  (1, 0, 1, '广告', '4a6f179672c7f1ec02582eb104607dd2', '4', 100, 1540172656, 1540460353, 'tpl1_slider', 2);
+INSERT INTO `jshop_advertisement` (`id`, `position_id`, `name`, `img`, `val`, `sort`, `ctime`, `utime`, `code`, `type`) VALUE
+  (1, 1, '广告', '4a6f179672c7f1ec02582eb104607dd2', '4', 100, 1540172656, 1540460353, 'tpl1_slider', 2);
 
+--
+-- Truncate table before insert `jshop_advert_position`
+--
+
+TRUNCATE TABLE `jshop_advert_position`;
 --
 -- Dumping data for table `jshop_advert_position`
 --
 
-INSERT INTO `jshop_advert_position` (`id`, `name`, `code`, `ctime`, `utime`, `state`, `sort`) VALUES
+INSERT  INTO `jshop_advert_position` (`id`, `name`, `code`, `ctime`, `utime`, `state`, `sort`) VALUES
   (1, '首页广告位', 'tpl1_slider', 1540172590, 1540221472, 1, 100);
 
+--
+-- Truncate table before insert `jshop_article`
+--
+
+TRUNCATE TABLE `jshop_article`;
 --
 -- Dumping data for table `jshop_article`
 --
 
-INSERT INTO `jshop_article` (`id`, `title`, `cover`, `content`, `type_id`, `ctime`, `utime`, `sort`, `is_pub`, `isdel`) VALUES
+INSERT  INTO `jshop_article` (`id`, `title`, `cover`, `content`, `type_id`, `ctime`, `utime`, `sort`, `is_pub`, `isdel`) VALUES
   (1, '测试', 'a422f452969f04e4493af4728eec3ab8', '<p>这是测试标题</p>', 1, 1540179322, 1540453631, 100, 1, NULL);
 
+--
+-- Truncate table before insert `jshop_article_type`
+--
+
+TRUNCATE TABLE `jshop_article_type`;
 --
 -- Dumping data for table `jshop_article_type`
 --
 
-INSERT INTO `jshop_article_type` (`id`, `pid`, `type_name`) VALUES
+INSERT  INTO `jshop_article_type` (`id`, `pid`, `type_name`) VALUES
   (1, 0, '111'),
   (2, 1, '1');
 
 --
+-- Truncate table before insert `jshop_brand`
+--
+
+TRUNCATE TABLE `jshop_brand`;
+--
 -- Dumping data for table `jshop_brand`
 --
 
-INSERT INTO `jshop_brand` (`id`, `name`, `logo`, `sort`, `utime`, `isdel`) VALUES
+INSERT  INTO `jshop_brand` (`id`, `name`, `logo`, `sort`, `utime`, `isdel`) VALUES
   (1, '依嬅莎', '56020c21a0e3b07e9906c1c6f06bee6a', 100, 1540008147, NULL),
   (2, '玖姿', '14b44959327363e274c8a2ba9dba3ace', 100, 1537860157, NULL),
   (3, '裂帛', '03ca799895a0b094bca75116e322539c', 100, 1537860168, NULL),
@@ -59,10 +74,15 @@ INSERT INTO `jshop_brand` (`id`, `name`, `logo`, `sort`, `utime`, `isdel`) VALUE
   (17, '测试品牌', 'c667372acee834c7e4bc36fb51c3bee9', 100, 1540463441, 1540463441);
 
 --
+-- Truncate table before insert `jshop_goods`
+--
+
+TRUNCATE TABLE `jshop_goods`;
+--
 -- Dumping data for table `jshop_goods`
 --
 
-INSERT INTO `jshop_goods` (`id`, `bn`, `name`, `brief`, `price`, `costprice`, `mktprice`, `image_id`, `goods_cat_id`, `goods_type_id`, `brand_id`, `is_nomal_virtual`, `marketable`, `stock`, `freeze_stock`, `weight`, `unit`, `intro`, `spes_desc`, `params`, `comments_count`, `view_count`, `buy_count`, `uptime`, `downtime`, `sort`, `is_recommend`, `is_hot`, `label_ids`, `ctime`, `utime`, `isdel`) VALUES
+INSERT  INTO `jshop_goods` (`id`, `bn`, `name`, `brief`, `price`, `costprice`, `mktprice`, `image_id`, `goods_cat_id`, `goods_type_id`, `brand_id`, `is_nomal_virtual`, `marketable`, `stock`, `freeze_stock`, `weight`, `unit`, `intro`, `spes_desc`, `params`, `comments_count`, `view_count`, `buy_count`, `uptime`, `downtime`, `sort`, `is_recommend`, `is_hot`, `label_ids`, `ctime`, `utime`, `isdel`) VALUES
   (1, '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '可调节袖 系带收腰设', '450.00', '0.00', '600.00', 'b419e4164d5726d057b2ae195f9a96df', 18, 1, 14, 1, 1, 2796, 0, '400.00', '件', '<p><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-1\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/></p><p><a style=\"margin: 0px; padding: 0px; color: rgb(51, 85, 170); outline: 0px;\"></a></p><p style=\"margin-top: 0px; margin-bottom: 0px; padding: 0px; line-height: 1.4; color: rgb(64, 64, 64); font-family: tahoma, arial, 宋体, sans-serif; font-size: 14px; white-space: normal; background-color: rgb(255, 255, 255);\"><a href=\"https://meidian.play.m.jaeapp.com/?iid=991593&cpp=0\" target=\"_blank\" style=\"margin: 0px; padding: 0px; text-decoration-line: none; color: rgb(51, 85, 170); outline: 0px;\"><img alt=\"\" src=\"https://img.alicdn.com/imgextra/i1/356060330/O1CN011EJBA7NKQe5fuXI_!!356060330.jpg\" class=\"img-ks-lazyload\"/></a></p><p><a style=\"margin: 0px; padding: 0px; color: rgb(51, 85, 170); outline: 0px;\"></a></p><p><a style=\"margin: 0px; padding: 0px; color: rgb(51, 85, 170); outline: 0px;\"></a></p><p><img src=\"https://gdp.alicdn.com/imgextra/i2/356060330/O1CN011EJBA7UknUQjGCt_!!356060330.jpg\" class=\"img-ks-lazyload\"/></p><ul style=\"list-style-type: none;\" class=\" list-paddingleft-2\"><li><p><br/></p></li></ul><p><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-2\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i4/356060330/TB2L0NmwhSYBuNjSsphXXbGvVXa-356060330.jpg\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i2/356060330/TB26FUOnLuSBuNkHFqDXXXfhVXa-356060330.jpg\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i4/356060330/TB2CinchHZnBKNjSZFhXXc.oXXa-356060330.jpg\" width=\"730\" height=\"1046\" class=\"img-ks-lazyload\"/></p><p><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-3\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i3/356060330/TB2XcAnnIyYBuNkSnfoXXcWgVXa-356060330.jpg\" width=\"249\" height=\"47\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i4/356060330/TB2eItzhP7nBKNjSZLeXXbxCFXa-356060330.jpg\" width=\"730\" height=\"1168\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i4/356060330/TB20a1OwmBYBeNjy0FeXXbnmFXa-356060330.jpg\" width=\"608\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i2/356060330/TB24SvFhHArBKNjSZFLXXc_dVXa-356060330.jpg\" width=\"730\" height=\"1168\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i1/356060330/TB2QndxwbGYBuNjy0FoXXciBFXa-356060330.jpg\" width=\"608\" class=\"img-ks-lazyload\"/></p><p><img src=\"https://img.alicdn.com/imgextra/i4/356060330/TB2EntxwbGYBuNjy0FoXXciBFXa-356060330.jpg\" width=\"730\" height=\"1168\" class=\"img-ks-lazyload\"/></p><p>翻领垂性风衣</p><p>柔软亲肤面料 可调节袖口 饰有侧边口袋 配有同色腰带可调节腰身</p><p><img src=\"https://img.alicdn.com/imgextra/i4/356060330/TB2jlFQwk9WBuNjSspeXXaz5VXa-356060330.jpg\" width=\"249\" height=\"40\" class=\"img-ks-lazyload\"/></p><table width=\"730\"><tbody style=\"margin: 0px; padding: 0px;\"><tr style=\"margin: 0px; padding: 0px;\" class=\"firstRow\"><td width=\"363\" style=\"margin: 0px; padding: 0px; border-color: rgb(0, 0, 0);\"><img src=\"https://img.alicdn.com/imgextra/i1/356060330/TB2TVtZwh1YBuNjy1zcXXbNcXXa-356060330.jpg\" width=\"363\" height=\"581\" class=\"img-ks-lazyload\"/></td><td width=\"4\" style=\"margin: 0px; padding: 0px; border-color: rgb(0, 0, 0);\"><br/></td><td width=\"363\" style=\"margin: 0px; padding: 0px; border-color: rgb(0, 0, 0);\"><img src=\"https://img.alicdn.com/imgextra/i2/356060330/TB2BFJ2weuSBuNjy1XcXXcYjFXa-356060330.jpg\" width=\"363\" height=\"581\" class=\"img-ks-lazyload\"/></td></tr><tr style=\"margin: 0px; padding: 0px; font-size: 20px; text-align: center; line-height: 20px;\"><td style=\"margin: 0px; padding: 20px 0px 40px; border-color: rgb(0, 0, 0);\">里约红</td><td style=\"margin: 0px; padding: 20px 0px 40px; border-color: rgb(0, 0, 0);\"><br/></td><td style=\"margin: 0px; padding: 20px 0px 40px; border-color: rgb(0, 0, 0);\">蒸汽灰</td></tr></tbody></table><table width=\"730\"><tbody style=\"margin: 0px; padding: 0px;\"><tr style=\"margin: 0px; padding: 0px;\" class=\"firstRow\"><td colspan=\"3\" style=\"margin: 0px; padding: 0px; border-color: rgb(0, 0, 0);\"><img src=\"https://img.alicdn.com/imgextra/i3/356060330/TB2W1snnIyYBuNkSnfoXXcWgVXa-356060330.jpg\" width=\"730\" class=\"img-ks-lazyload\"/></td></tr></tbody></table><p><br/></p>', 'a:2:{s:6:\"颜色\";a:4:{i:0;s:6:\"红色\";i:1;s:6:\"白色\";i:2;s:6:\"绿色\";i:3;s:6:\"蓝色\";}s:6:\"规格\";a:4:{i:0;s:7:\"规格1\";i:1;s:7:\"规格2\";i:2;s:7:\"规格3\";i:3;s:7:\"规格4\";}}', 'a:1:{s:6:\"材质\";s:6:\"化纤\";}', 0, 0, 0, NULL, NULL, 100, 1, 1, NULL, NULL, 1540430157, NULL),
   (2, '5446546546', '七匹狼羽绒服男短款2018冬季新款男士中年休闲爸爸装男装潮流外套', '8周年店庆，22号10点到11点 全场商品3件6折', '600.00', '590.00', '590.00', '6ee0f5a5ac6c53418852ee6cc78aeb48', 10, 1, 11, 1, 1, 679, 0, '0.00', '件', '<p><span style=\"margin: 0px; padding: 0px;\"></span></p><table width=\"790\"><tbody style=\"margin: 0px; padding: 0px;\"><tr style=\"margin: 0px; padding: 0px;\" class=\"firstRow\"><td style=\"margin: 0px; padding: 0px;\"><img src=\"https://gdp.alicdn.com/imgextra/i2/673765387/O1CN011pfI4eEVQ0tsN0d_!!673765387.jpg\" alt=\" 关联_01.jpg\"/></td></tr><tr style=\"margin: 0px; padding: 0px;\"><td style=\"margin: 0px; padding: 0px;\"><img src=\"https://gdp.alicdn.com/imgextra/i4/673765387/O1CN011pfI4d2HD5YEdXz_!!673765387.jpg\" alt=\"日常关联_02.jpg\"/></td></tr><tr style=\"margin: 0px; padding: 0px;\"><td style=\"margin: 0px; padding: 0px;\"><img src=\"https://gdp.alicdn.com/imgextra/i2/673765387/O1CN011pfI4dbubdTN6I3_!!673765387.jpg\" alt=\" 关联_02.jpg\"/></td></tr><tr style=\"margin: 0px; padding: 0px;\"><td style=\"margin: 0px; padding: 0px; word-break: break-all;\"><img src=\"https://gdp.alicdn.com/imgextra/i4/673765387/O1CN011pfI4cntvLq6gYj_!!673765387.jpg\" alt=\" 关联_03.jpg\"/><img src=\"https://img.alicdn.com/imgextra/i2/673765387/O1CN011pfI4SjnNEgZQh0_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4RO6TCEQIvw_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4QHbG78TFxQ_!!673765387.jpg\" class=\"img-ks-lazyload\" width=\"655\" height=\"920\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4RtZ8DLTMDY_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/673765387/O1CN011pfI4QkfUSd7rW9_!!673765387.jpg\" class=\"img-ks-lazyload\" width=\"768\" height=\"1090\"/><img src=\"https://img.alicdn.com/imgextra/i2/673765387/O1CN011pfI4QkfYdJGYEt_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4RuPpXFhCoV_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i1/673765387/O1CN011pfI4PT18Z29Y2d_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/673765387/O1CN011pfI4L7zrmbNYMe_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i2/673765387/O1CN011pfI4Svq7HOnDG7_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i1/673765387/O1CN011pfI4SjltuQdcqx_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i1/673765387/O1CN011pfI4RuQMql2UKL_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4UeVxXNXGAH_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i2/673765387/O1CN011pfI4SYAgWQx8nC_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/673765387/O1CN011pfI4RuQu5aBV68_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4PT3PqFBsZ1_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i2/673765387/O1CN011pfI4RtYWvyEIyC_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/673765387/O1CN011pfI4QkhdXpsyzq_!!673765387.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/673765387/O1CN011pfI4PT2XqSiuGV_!!673765387.jpg\" class=\"img-ks-lazyload\"/></td></tr></tbody></table><p><br/><br/></p>', 'a:2:{s:6:\"颜色\";a:3:{i:1;s:6:\"白色\";i:3;s:6:\"蓝色\";i:4;s:6:\"紫色\";}s:6:\"规格\";a:2:{i:0;s:7:\"规格1\";i:1;s:7:\"规格2\";}}', '', 0, 0, 0, NULL, NULL, 100, 1, 1, NULL, NULL, 1540430156, NULL),
   (4, '78678657865', '芙娜妮2018秋冬吊带连衣裙女两件套条纹针织打底衫背带PU皮裙套装', '品牌: 芙娜妮适用年龄: 25-29周岁尺码: S M L XL图案: 条纹风格: 街头街头: 欧美领型: 圆领腰型: 中腰衣门襟: 套头颜色分类: 红色袖型: 其他组合形式: 两件套', '200.00', '200.00', '200.00', 'fce63f9c69c6c4ec606b544fcc7610a2', 4, 1, 15, 1, 1, 560, 0, '0.00', '件', '<p><span style=\"margin: 0px; padding: 0px;\"></span></p><p>&nbsp;</p><p></p><p><span style=\"text-decoration:line-through;\"><strong style=\"margin: 0px; padding: 0px;\"></strong></span></p><p><span style=\"text-decoration:line-through;\"><strong style=\"margin: 0px; padding: 0px;\"></strong></span></p><p><span style=\"margin: 0px; padding: 0px;\"></span></p><p>&nbsp;</p><p></p><p><span style=\"text-decoration:line-through;\"><strong style=\"margin: 0px; padding: 0px;\"></strong></span></p><p><span style=\"text-decoration:line-through;\"><strong style=\"margin: 0px; padding: 0px;\"></strong></span></p><p><span style=\"margin: 0px; padding: 0px;\"></span></p><p>&nbsp;</p><p></p><p><span style=\"text-decoration:line-through;\"><strong style=\"margin: 0px; padding: 0px;\"></strong></span></p><p><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-1\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/><img src=\"https://img.alicdn.com/imgextra/i2/736758035/O1CN0129E4r0DXqQB56xr_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4r0DXdxMNWfc_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i1/736758035/O1CN0129E4qrPklkfSb1Q_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i2/736758035/O1CN0129E4qugWFnVdi9z_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-2\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4r0cEVb02gru_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-3\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4r27gqRgoy5s_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4r14jhXApfi7_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4r0XTf29jB3f_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4r14jZFNpwke_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4r0DXVhNJ4y3_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4qrPku4ykal1_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4qs1U57QX8jF_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4qrPkyH4d8zf_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i1/736758035/O1CN0129E4qpdKv3Jadpn_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4qq0IAjL7qin_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4qs1V1KFIdzp_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4qrmHpEdYuys_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img class=\"desc_anchor img-ks-lazyload\" id=\"desc-module-4\" src=\"https://assets.alicdn.com/kissy/1.0.0/build/imglazyload/spaceball.gif\"/><img src=\"https://img.alicdn.com/imgextra/i4/736758035/O1CN0129E4qquo7wgQ2T0_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4qsGrStbpeLC_!!736758035.jpg\" class=\"img-ks-lazyload\"/><img src=\"https://img.alicdn.com/imgextra/i3/736758035/O1CN0129E4r1VkIrPvXuk_!!736758035.jpg\" class=\"img-ks-lazyload\"/></p><p><br/></p>', 'a:2:{s:6:\"颜色\";a:2:{i:0;s:6:\"红色\";i:1;s:6:\"白色\";}s:6:\"规格\";a:2:{i:0;s:7:\"规格1\";i:1;s:7:\"规格2\";}}', '', 0, 0, 0, NULL, NULL, 100, 1, 1, NULL, NULL, 1540281588, NULL),
@@ -77,45 +97,15 @@ INSERT INTO `jshop_goods` (`id`, `bn`, `name`, `brief`, `price`, `costprice`, `m
   (16, '321321321', '213213', '', '999.00', '9999.00', '9999.00', '8c2ee9e17f1dfb42f773109b2776ff81', 3, 1, 0, 1, 1, 999, 0, '321.00', '件', '', '', '', 0, 0, 0, NULL, NULL, 100, 1, 1, NULL, NULL, 1540463411, 1540463411);
 
 --
--- Dumping data for table `jshop_goods_cat`
+-- Truncate table before insert `jshop_goods_images`
 --
 
-INSERT INTO `jshop_goods_cat` (`id`, `parent_id`, `name`, `type_id`, `sort`, `image_id`, `utime`) VALUES
-  (3, 0, '精选上衣', 0, 100, '', NULL),
-  (4, 0, '浪漫裙装', 0, 100, '', NULL),
-  (5, 0, '女装下装', 0, 100, '', NULL),
-  (6, 9, '家居服', 1, 100, 'a496465d657cd5fbeb90f10e25e16086', 1539941157),
-  (8, 0, '女鞋', 0, 100, '', NULL),
-  (9, 0, '女包', 0, 100, '', NULL),
-  (10, 3, '毛呢外套', 0, 100, 'a422f452969f04e4493af4728eec3ab8', 1540172964),
-  (11, 3, '羽绒服', 0, 100, '9ca906f23d05dc9db1de552bfefa36fc', 1539940964),
-  (12, 3, '棉服', 0, 100, 'f4f98826b4db681ab21433c3fecc8326', 1539940902),
-  (13, 3, '卫衣', 0, 100, 'b9857035fa36ca4fbbeadc72e3ead0bb', 1539940850),
-  (14, 3, '毛针织衫', 0, 100, 'de21cc610a10fada67ef1974bdacf9fb', 1539940683),
-  (15, 9, '皮草', 1, 100, 'b68a51db26eb5c35e4f9b16f0c41d455', 1540459969),
-  (16, 3, '衬衫', 0, 100, 'db1b8c0257b08a5542e10125fcef8fc1', 1539940635),
-  (17, 3, 'T恤', 0, 100, 'd74ea8dc93080b9e4ae686f4a14dbe96', 1539940585),
-  (18, 0, '风衣', 1, 100, 'd47c3377663dfbb925ea9a40a1488155', 1540186606),
-  (19, 9, '单肩包', 0, 100, '443c2d9ddb8b769ceddcd6f2bee5908b', 1539941054),
-  (20, 9, '斜挎包', 0, 100, 'dea52ed56c999be5583ba568aff9029a', 1539941097),
-  (21, 9, '手提包', 0, 100, '8fec591f6b83a0edaa973e3ea35ae8ee', 1539941013),
-  (22, 8, '高跟鞋', 0, 100, 'e51a16d2996d29939e7031434fbc3c29', 1540172563),
-  (23, 8, '运动鞋', 0, 100, 'fe91f59b549fab49ca2db1ea9883f8d3', 1540172488),
-  (24, 8, '帆布鞋', 0, 100, 'cd2c104a7d9100e12f7529d6b2c3f209', 1540172536),
-  (26, 5, '牛仔裤', 0, 100, '2776b0176aa478be959d762326c4e58f', 1540459686),
-  (27, 5, '九分裤', 0, 100, '160b5dfcb243deffb794ce3d0ac48431', 1540172257),
-  (28, 5, '直筒裤', 0, 100, '7e9d7a60a7d40c9e908c45ed092de558', 1540172331),
-  (29, 4, '连衣裙', 0, 100, 'aea2675adb10467d6dfbd92ab9321a33', 1540172373),
-  (30, 4, '碎花裙', 0, 100, 'f8b31c241ad346fceb55f83fcf2874bb', 1540172412),
-  (31, 4, '短裙', 0, 100, 'af547e9f2513965d6eaf56b4dcc276ec', 1540172457),
-  (32, 9, '啊发发', 0, 100, '', NULL),
-  (33, 9, '456', 0, 100, 'b55ea82d8c05abdc06da42331ac3820b', NULL);
-
+TRUNCATE TABLE `jshop_goods_images`;
 --
 -- Dumping data for table `jshop_goods_images`
 --
 
-INSERT INTO `jshop_goods_images` (`goods_id`, `image_id`) VALUES
+INSERT  INTO `jshop_goods_images` (`goods_id`, `image_id`) VALUES
   (1, '8ef876168670ddb5c37941a867172f28'),
   (1, '1e6a5117d2a6082b565ad4d1c9e58c0d'),
   (1, '2606549d84e2ded23935ddcc2d562c43'),
@@ -139,33 +129,63 @@ INSERT INTO `jshop_goods_images` (`goods_id`, `image_id`) VALUES
   (11, 'd04e0aba7ce7aaeee6364aae8821797b');
 
 --
+-- Truncate table before insert `jshop_goods_params`
+--
+
+TRUNCATE TABLE `jshop_goods_params`;
+--
+-- Truncate table before insert `jshop_goods_type`
+--
+
+TRUNCATE TABLE `jshop_goods_type`;
+--
 -- Dumping data for table `jshop_goods_type`
 --
 
-INSERT INTO `jshop_goods_type` (`id`, `name`, `params`) VALUES
+INSERT  INTO `jshop_goods_type` (`id`, `name`, `params`) VALUES
   (1, '上衣', NULL);
 
+--
+-- Truncate table before insert `jshop_goods_type_params`
+--
+
+TRUNCATE TABLE `jshop_goods_type_params`;
+--
+-- Truncate table before insert `jshop_goods_type_spec`
+--
+
+TRUNCATE TABLE `jshop_goods_type_spec`;
 --
 -- Dumping data for table `jshop_goods_type_spec`
 --
 
-INSERT INTO `jshop_goods_type_spec` (`id`, `name`, `sort`) VALUES
+INSERT  INTO `jshop_goods_type_spec` (`id`, `name`, `sort`) VALUES
   (1, '颜色', 100),
   (2, '规格', 100);
 
 --
+-- Truncate table before insert `jshop_goods_type_spec_rel`
+--
+
+TRUNCATE TABLE `jshop_goods_type_spec_rel`;
+--
 -- Dumping data for table `jshop_goods_type_spec_rel`
 --
 
-INSERT INTO `jshop_goods_type_spec_rel` (`spec_id`, `type_id`) VALUES
+INSERT  INTO `jshop_goods_type_spec_rel` (`spec_id`, `type_id`) VALUES
   (1, 1),
   (2, 1);
 
 --
+-- Truncate table before insert `jshop_goods_type_spec_value`
+--
+
+TRUNCATE TABLE `jshop_goods_type_spec_value`;
+--
 -- Dumping data for table `jshop_goods_type_spec_value`
 --
 
-INSERT INTO `jshop_goods_type_spec_value` (`id`, `spec_id`, `value`, `sort`) VALUES
+INSERT  INTO `jshop_goods_type_spec_value` (`id`, `spec_id`, `value`, `sort`) VALUES
   (1, 1, '红色', 100),
   (2, 1, '白色', 100),
   (3, 1, '绿色', 100),
@@ -188,10 +208,15 @@ INSERT INTO `jshop_goods_type_spec_value` (`id`, `spec_id`, `value`, `sort`) VAL
   (31, 2, '111', 100);
 
 --
+-- Truncate table before insert `jshop_images`
+--
+
+TRUNCATE TABLE `jshop_images`;
+--
 -- Dumping data for table `jshop_images`
 --
 
-INSERT INTO `jshop_images` (`id`, `name`, `url`, `path`, `type`, `ctime`, `isdel`) VALUES
+INSERT  INTO `jshop_images` (`id`, `name`, `url`, `path`, `type`, `ctime`, `isdel`) VALUES
   ('022bbf0657d3b9ed38a97dd746b2e84c', '0.jpg', 'https://b2c.jihainet.com/static/uploads/e8/87/87/5bca86083380f.jpg', '', 'local', 1539999240, NULL),
   ('0385f8221a24f7dd3ac09db1b78fd8d0', 'b3.jpg', 'https://b2c.jihainet.com/static/uploads/97/06/7d/5bd0271e42170.jpg', '', 'local', 1540368158, NULL),
   ('03ca799895a0b094bca75116e322539c', '裂帛.png', 'http://b2c.jihainet.com/static/uploads/2d/6f/d5/5ba9e21e12188.png', '', 'local', 1537860126, NULL),
@@ -277,10 +302,15 @@ INSERT INTO `jshop_images` (`id`, `name`, `url`, `path`, `type`, `ctime`, `isdel
   ('fe91f59b549fab49ca2db1ea9883f8d3', '270x270.jpg', 'https://b2c.jihainet.com/static/uploads/46/92/b7/5bcd2ac6d1d2c.jpg', '', 'local', 1540172486, NULL);
 
 --
+-- Truncate table before insert `jshop_products`
+--
+
+TRUNCATE TABLE `jshop_products`;
+--
 -- Dumping data for table `jshop_products`
 --
 
-INSERT INTO `jshop_products` (`id`, `goods_id`, `barcode`, `sn`, `price`, `costprice`, `mktprice`, `marketable`, `stock`, `freeze_stock`, `spes_desc`, `is_defalut`, `isdel`) VALUES
+INSERT  INTO `jshop_products` (`id`, `goods_id`, `barcode`, `sn`, `price`, `costprice`, `mktprice`, `marketable`, `stock`, `freeze_stock`, `spes_desc`, `is_defalut`, `isdel`) VALUES
   (1, 1, NULL, 'P5378659179491', '450.00', '0.00', '600.00', 1, 198, 2, '颜色:红色,规格:规格1', 1, NULL),
   (2, 1, NULL, 'P5378659179512', '0.10', '0.00', '600.00', 2, 196, 1, '颜色:白色,规格:规格1', 2, NULL),
   (3, 1, NULL, 'P5378659179940', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:蓝色,规格:规格1', 2, NULL),

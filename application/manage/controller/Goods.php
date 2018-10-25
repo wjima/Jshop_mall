@@ -136,7 +136,6 @@ class Goods extends Manage
             return $result;
         }
         $data = $checkData['data'];
-
         //验证商品数据
         $goodsModel    = new goodsModel();
         $productsModel = new Products();
@@ -455,10 +454,10 @@ class Goods extends Manage
             'data'   => '',
         ];
         $this->view->engine->layout(false);
-        $spec     = input('post.spec/a');
-        $goods_id = input('post.goods_id/d', 0);
-        $goods    = input('post.goods/a', []);
-        $products = [];
+        $spec         = input('post.spec/a');
+        $goods_id     = input('post.goods_id/d', 0);
+        $goodsDefault = input('post.goods/a', []);
+        $products     = [];
         if ($goods_id) {
             $goodsModel = new goodsModel();
             $goods      = $goodsModel->getOne($goods_id, 'id,image_id');
@@ -475,12 +474,13 @@ class Goods extends Manage
             }
             $items = $this->getSkuItem($spec, -1);
             foreach ((array)$items as $key => $val) {
-                $items[$key]['price']     = $goods['price'];
-                $items[$key]['costprice'] = $goods['costprice'];
-                $items[$key]['mktprice']  = $goods['mktprice'];
-                $items[$key]['sn']        = $goods['sn'] . '-' . ($key + 1);
-                $items[$key]['stock']     = $goods['stock'];
+                $items[$key]['price']     = $goodsDefault['price'];
+                $items[$key]['costprice'] = $goodsDefault['costprice'];
+                $items[$key]['mktprice']  = $goodsDefault['mktprice'];
+                $items[$key]['sn']        = $goodsDefault['sn'] . '-' . ($key + 1);
+                $items[$key]['stock']     = $goodsDefault['stock'];
             }
+
             if ($products) {
                 foreach ($items as $key => $val) {
                     foreach ($products as $product) {
@@ -606,6 +606,7 @@ class Goods extends Manage
             $result['msg'] = $checkData['msg'];
             return $result;
         }
+
         $data = $checkData['data'];
         //验证商品数据
         $goodsModel    = new goodsModel();
@@ -623,12 +624,17 @@ class Goods extends Manage
         $productIds = array_column($products, 'id');
 
         $open_spec = input('post.open_spec', 0);
+
         if ($open_spec) {
             //多规格
             $product     = input('post.product/a', []);
             $total_stock = $price = $costprice = $mktprice = 0;
             $isExitDefalut = false;
             $exit_product = [];
+            if(isset($product['id'])&&$product['id']){
+                unset($product['id']);
+            }
+
             foreach ($product as $key => $val) {
                 $tmp_product['goods']['price']        = !empty($val['price']) ? $val['price'] : 0;
                 $tmp_product['goods']['costprice']    = !empty($val['costprice']) ? $val['costprice'] : 0;
@@ -642,6 +648,7 @@ class Goods extends Manage
                 if($tmp_product['goods']['is_defalut'] == $productsModel::DEFALUT_YES ){
                     $isExitDefalut = true;
                 }
+
                 if (isset($val['id'])) {
                     $tmp_product['product']['id'] = $val['id'];
                     $checkData                    = $this->checkProductInfo($tmp_product, $goods_id, true);
@@ -656,7 +663,7 @@ class Goods extends Manage
                 }
                 $data['product'] = $checkData['data']['product'];
 
-                if (isset($val['id'])) {
+                if (isset($val['id'])&&$val['id']) {
                     $productRes = $productsModel->updateProduct($val['id'], $data['product']);
                     if (in_array($val['id'], $productIds)) {
                         $productIds = unsetByValue($productIds, $val['id']);
@@ -664,8 +671,8 @@ class Goods extends Manage
                     if($val['id']){
                         $exit_product[] = $val['id'];
                     }
-
                 } else {
+                    unset($data['product']['id']);
                     $productRes = $productsModel->doAdd($data['product']);
                     if(is_numeric($productRes)){
                         $exit_product[] = $productRes;

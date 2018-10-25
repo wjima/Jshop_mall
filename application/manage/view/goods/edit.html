@@ -343,7 +343,7 @@
     $(".layui-body").on("click", ".generate-spec", function () {
         var list = $('#spec_select input[type=checkbox]:checked');
         if (list.length > 0) {
-            var data = $("#spec_form input[type=checkbox]:checked").serialize();
+            var data = $("#spec_form input").serialize();
             data = data+'&goods_id='+$("#goods_id").val();
             $.ajax({
                 url: '{:url("Goods/getSpecHtml")}',

@@ -87,7 +87,11 @@
                 data:data.field,
                 success:function(res){
                     if(res.status == true){
-                        layer.msg('保存成功');
+                        layer.msg('保存成功', {
+                            time: 2000
+                        }, function(){
+                            window.location.href="{:url('coupon')}";
+                        });
                     }else{
                         layer.msg(res.msg);
                     }

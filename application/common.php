@@ -797,3 +797,22 @@ function getProductSpesDesc($str_spes_desc){
     }
     return $re;
 }
+
+//返回用户信息
+function get_manage_info($manage_id,$field = 'username')
+{
+    $user = app\common\model\Manage::get($manage_id);
+    if($user){
+        if($field == 'nickname') {
+            $nickname = $user['nickname'];
+            if ($nickname == '') {
+                $nickname = format_mobile($user['mobile']);
+            }
+            return $nickname;
+        }else{
+            return $user->$field;
+        }
+    }else{
+        return "";
+    }
+}

@@ -9,7 +9,7 @@
 /**
  * 记录操作日志
  */
-namespace app\seller\behavior;
+namespace app\manage\behavior;
 
 use app\common\model\Operation;
 use app\common\model\OperationLog;
@@ -55,15 +55,16 @@ class Record
 
     public function run($params)
     {
-        $user       = session('user');
+        $user       = session('manage');
         $opname     = $user['username'] ? $user['username'] : $user['mobile'];
         if (Request::isPost()) {
             $forbidMethod = $this->getConf();
             $ctl          = strtolower(Request::controller());
             $act          = strtolower(Request::action());
+
             if (!in_array($ctl . '@' . $act, $forbidMethod)) {
                 $operation = new Operation();
-                $opinfo    = $operation->getOperationInfo($ctl, $act, $operation::MENU_SELLER);     //这里第三个参数要传模块的id，这里是商户端，以后还可能有总管理端，add by wht
+                $opinfo    = $operation->getOperationInfo($ctl, $act, $operation::MENU_MANAGE);     //这里第三个参数要传模块的id，这里是商户端，以后还可能有总管理端，add by wht
                 if ($opinfo['status']) {
                     $postData = input('post.');
                     $decs     = $opinfo['data']['act']['name'];

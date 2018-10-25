@@ -7,7 +7,7 @@
           <view class="weui-label">昵称</view>
         </view>
         <view class="weui-cell__bd">
-          <input class="weui-input" bindblur='nicknameChange' value='{{nickname}}' placeholder-class='p-class' placeholder="请输入昵称" />
+          <input class="weui-input" bindinput='nicknameChange' value='{{nickname}}' placeholder-class='p-class' placeholder="请输入昵称" />
         </view>
       </view>
       <view class="weui-cell weui-cell_input">

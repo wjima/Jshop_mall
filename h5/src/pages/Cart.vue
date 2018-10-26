@@ -99,7 +99,6 @@ export default {
                         arr.push(this.list[i].id)
                     }
                 }
-                console.log(arr)
                 return arr
             },
             set (val) {
@@ -157,14 +156,11 @@ export default {
             }, res => {
                 if (res.status) {
                     const _list = res.data.list
-                    for (let i in _list) {
-                        _list[i].products.price = this.GLOBAL.formatMoney(_list[i].products.price, 2, '')
-                    }
-                    this.list = [..._list]
                     this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '')
                     this.promotion = res.data.promotion_list
                     this.goods_pmt = this.GLOBAL.formatMoney(res.data.goods_pmt, 2, '')
                     this.order_pmt = this.GLOBAL.formatMoney(res.data.order_pmt, 2, '')
+                    this.list = [..._list]
                 }
             })
         },
@@ -178,24 +174,16 @@ export default {
             this.$api.cartList(data, res => {
                 if (res.status) {
                     const _list = res.data.list
-                    for (let i in _list) {
-                        _list[i].products.price = this.GLOBAL.formatMoney(_list[i].products.price, 2, '')
-                    }
-                    this.list = [..._list]
+                    let arr = []
+                    _list.forEach(val => {
+                        if (val.is_select) arr.push(val.id)
+                    })
+                    this.ids = arr
                     this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '')
-                    // 设置全部选中
-                    if (this.list.length) {
-                        let arr = []
-                        for (let i in this.list) {
-                            if (this.list[i].is_select) {
-                                arr.push(this.list[i].id)
-                            }
-                        }
-                        this.ids = arr
-                    }
                     this.promotion = res.data.promotion_list
                     this.goods_pmt = this.GLOBAL.formatMoney(res.data.goods_pmt, 2, '')
                     this.order_pmt = this.GLOBAL.formatMoney(res.data.order_pmt, 2, '')
+                    this.list = [..._list]
                 }
             })
         },

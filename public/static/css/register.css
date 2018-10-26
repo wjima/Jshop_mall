@@ -4,6 +4,8 @@ html{
 .mini-content{
 	background-color: #fff;
 	min-height: 400px;
+	max-height: 600px;
+	overflow: hidden;
 }
 .layui-layout-admin .layui-header{
 	background-color: #f2f2f2;
@@ -20,14 +22,41 @@ html{
     background-color: #FFFFCC;
 }
 .login-content{
-	width: 100%;
-	background: url(../images/01b17e5620981b6ac7254878c91827.jpg) no-repeat;
-	background-size: 100% 100%;
-	padding: 100px 0;
-	min-width: 1150px;	
+	width: 1150px;
+    background: url(../images/login-bg.png) no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+    padding: 100px 0;
+    min-width: 1150px;
+    height:550px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: inline-block;
+}
+.login-content-l{
+    display: inline-block;
+    height: 550px;
+    width: calc(100% / 2 - 1150px / 2);
+    float: left;
+    /*background: -webkit-linear-gradient(left, rgb(49,167,217), rgb(78,229,235));
+    background: -o-linear-gradient(right, rgb(49,167,217), rgb(78,229,235));
+    background: -moz-linear-gradient(right, rgb(49,167,217), rgb(78,229,235));
+    background: linear-gradient(to right, rgb(49,167,217), rgb(78,229,235));*/
+    background-color: rgb(78,229,235);
+}
+.login-content-r{
+    display: inline-block;
+    height: 550px;
+    width: calc(100% / 2 - 1150px / 2);
+    float: right;
+    /*background: -webkit-linear-gradient(left, rgb(51,168,220), rgb(78,229,245));
+    background: -o-linear-gradient(right, rgb(51,168,220), rgb(78,229,245));
+    background: -moz-linear-gradient(right, rgb(51,168,220), rgb(78,229,245));
+    background: linear-gradient(to right, rgb(51,168,220), rgb(78,229,245));*/
+    background-color: rgb(51,168,220);
 }
 .login-content-mid{
-	width: 1150px;
+	width: 100%;
 	overflow: hidden;
 	margin: 0 auto;
 }
@@ -38,18 +67,30 @@ html{
 	width: 400px;
 	float: right;
 }
+.login-header{
+    text-align: center;
+    padding: 0 0 15px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
 .layui-tab-content{
-	padding: 20px 0 10px;
+	padding: 10px 0 ;
 	width: 60%;
 	min-width: 360px;
 	display: inline-block;
 }
-.layui-btn-fluid{
-	width: 330px;
-	margin-left: 0;
+.login-content .layui-btn-fluid{
+	width: 280px;
+	margin-left: 50px;
+}
+.login-b{
+    padding-left: 42px;
 }
 .layui-form-item{
-	margin-bottom: 20px;
+	margin-bottom: 25px;
+}
+.layui-form-item:last-child{
+    margin-bottom: 0;
 }
 .layui-form-item .layui-input-inline{
 	width: 220px;
@@ -84,7 +125,7 @@ html{
 }
 .login-footer{
 	width: 1150px;
-	margin: 50px auto 0;
+	margin: 20px auto 0;
 	text-align: center;
 	
 }

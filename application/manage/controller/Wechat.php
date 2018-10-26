@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | JSHOP [ 小程序 ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
@@ -28,7 +28,8 @@ class Wechat extends Manage
      */
     public function edit()
     {
-
+        $host = \request()->host();
+        $this->assign('weixin_host',$host);
         $settingModel = new Setting();
         $data = $settingModel->getAll();
         $this->assign('data', $data);
@@ -86,7 +87,6 @@ class Wechat extends Manage
         $templateModel = new Template();
         $data          = $templateModel->getAllTemplate($templateModel::TYPE_MINI);
         $this->assign('data', $data);
-
         return $this->fetch('template');
     }
 

@@ -103,6 +103,18 @@ function getCaptcha () {
     return window.apiUrl.replace('api', 'captcha') + '?' + randomNumber
 }
 
+function hecong () {
+    // 测试环境
+    let entId
+    if (process.env.NODE_ENV === 'development') {
+        entId = '10519'
+    } else if (process.env.NODE_ENV === 'production'){
+        // 正式环境
+        entId = window.entId
+    }
+    return entId
+}
+
 export default {
     setStorage: setStorage,
     getStorage: getStorage,
@@ -114,5 +126,6 @@ export default {
     errorToBack: errorToBack,
     successToShow: successToShow,
     throttle: throttle,
-    getCaptcha: getCaptcha
+    getCaptcha: getCaptcha,
+    hecong: hecong
 }

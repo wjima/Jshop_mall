@@ -1,0 +1,49 @@
+<view class="page__bd">
+    <view class="weui-cells weui-cells_after-title">
+        <!-- 姓名 -->
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+                <view class="weui-label">姓名</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" bindinput="getName" value='{{name}}' placeholder="请输入姓名"/>
+            </view>
+        </view>
+
+        <!-- 手机号 -->
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__hd">
+                <view class="weui-label">手机号</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" bindinput="getMobile" value='{{mobile}}' placeholder="请输入手机号号码"/>
+            </view>
+        </view>
+
+        <!-- 所在地区 -->
+        <view class="weui-cell weui-cell_select">
+            <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                <view class="weui-label">所在地区</view>
+            </view>
+            <view class="weui-cell__bd">
+                <picker mode="region" bindchange="regionChange" value="{{region}}" custom-item="{{customItem}}">
+                    <view class="weui-select weui-select_in-select-after">{{region[0]}}，{{region[1]}}，{{region[2]}}</view>
+                </picker>
+            </view>
+        </view>
+
+        <!-- 详细地址 -->
+        <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__hd">
+                <view class="weui-label">详细地址</view>
+            </view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" bindinput="getAddress" value='{{address}}' placeholder="请输入详细地址" />
+            </view>
+        </view>
+    </view>
+
+    <view class="weui-btn-area">
+        <button class="weui-btn" bindtap="editAddress">保存</button>
+    </view>
+</view>

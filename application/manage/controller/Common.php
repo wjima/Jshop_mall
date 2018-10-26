@@ -7,6 +7,7 @@ use Request;
 use think\Container;
 use app\common\controller\Base;
 use app\common\model\Manage;
+use app\common\model\UserLog;
 
 class Common extends Base
 {
@@ -49,7 +50,12 @@ class Common extends Base
      */
     public function logout()
     {
+        //增加退出日志
+        if(session('manage.id')){
+            $userLogModel = new UserLog();
+            $userLogModel->setLog(session('manage.id'),$userLogModel::USER_LOGOUT);
+        }
         session('manage', null);
-        $this->success('退出成功','/');
+        $this->success('退出成功','/manage');
     }
 }

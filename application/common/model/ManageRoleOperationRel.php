@@ -55,7 +55,7 @@ class ManageRoleOperationRel extends Common
         $list = $this
             ->field('o.*')
             ->alias('sror')
-            ->join('operation o', 'o.id = sror.operation_id')
+            ->join(config('database.prefix').'operation o', 'o.id = sror.operation_id')
             ->where($where)
             ->select();
         foreach($list as $k => $v){
@@ -116,7 +116,7 @@ class ManageRoleOperationRel extends Common
             ->distinct(true)
             ->field('o.*')
             ->alias('sror')
-            ->join('operation o', 'o.id = sror.operation_id')
+            ->join(config('database.prefix').'operation o', 'o.id = sror.operation_id')
             ->where('sror.seller_role_id','IN',$sellerList[$seller_id])
             ->select();
         if($list->isEmpty()){

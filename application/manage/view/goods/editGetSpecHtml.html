@@ -1,17 +1,6 @@
-{if condition="$canOpenSpec eq 'true' "}
-<div class="layui-form-item">
-    <label class="layui-form-label" >开启规格：</label>
-    <div class="layui-input-inline">
-        {if condition="$items"}
-        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="true" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">关闭</button>
-        {else/}
-        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="false" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">开启</button>
-        {/if}
-    </div>
-</div>
-{/if}
+<div id="spec_form">
 <div id="spec_select" {if condition="$items"}{else/}style="display:none;"{/if}>
-    <div id="spec_form"  >
+    <div id="spec_form_item"  >
         {volist name="spec" id="vo"}
         <div class="layui-form-item" pane>
             <label class="layui-form-label">{$vo.name}</label>
@@ -120,6 +109,23 @@
         </div>
     </div>
 </div>
+</div>
+
+
+{if condition="$canOpenSpec eq 'true' "}
+<div class="layui-form-item">
+    <label class="layui-form-label" >开启规格：</label>
+    <div class="layui-input-inline">
+        {if condition="$items"}
+        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="true" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">关闭</button>
+        {else/}
+        <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="false" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">开启</button>
+        {/if}
+    </div>
+</div>
+{/if}
+
+
 
 {notempty name="typeParams"}
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"><legend>商品参数</legend></fieldset>

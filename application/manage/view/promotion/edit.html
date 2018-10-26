@@ -88,7 +88,11 @@ layui.use(['form', 'table', 'laydate'], function(){
             data:data.field,
             success:function(res){
                 if(res.status == true){
-                    layer.msg('保存成功');
+                    layer.msg('保存成功', {
+                        time: 2000
+                    }, function(){
+                        window.location.href="{:url('index')}";
+                    });
                 }else{
                     layer.msg(res.msg);
                 }

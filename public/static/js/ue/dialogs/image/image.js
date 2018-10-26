@@ -147,6 +147,40 @@
         this.container = utils.isString(target) ? document.getElementById(target) : target;
         this.init();
     }
+
+    /**
+     * 中文字符串截取
+     * 原文：https://blog.csdn.net/low584710047/article/details/45691625
+     * @param str
+     * @param n
+     * @returns {*}
+     * @constructor
+     */
+     function substr(str, n) {//字符串截取 包含对中文处理
+        if (str.replace(/[\u4e00-\u9fa5]/g, "**").length <= n) {
+            return str;
+        }
+        else {
+            var len = 0;
+            var tmpStr = "";
+            for (var i = 0; i < str.length; i++) {//遍历字符串
+                if (/[\u4e00-\u9fa5]/.test(str[i])) {//中文 长度为两字节
+                    len += 2;
+                }
+                else {
+                    len += 1;
+                }
+                if (len > n) {
+                    break;
+                }
+                else {
+                    tmpStr += str[i];
+                }
+            }
+            return tmpStr + " ...";
+        }
+    }
+
     RemoteImage.prototype = {
         init: function () {
             this.initContainer();
@@ -900,28 +934,47 @@
         pushData: function (list) {
             var i, item, img, icon, _this = this,
                 urlPrefix = editor.getOpt('imageManagerUrlPrefix');
-            for (i = 0; i < list.length; i++) {
-                if(list[i] && list[i].url) {
-                    item = document.createElement('li');
-                    img = document.createElement('img');
-                    icon = document.createElement('span');
 
-                    domUtils.on(img, 'load', (function(image){
-                        return function(){
-                            _this.scale(image, image.parentNode.offsetWidth, image.parentNode.offsetHeight);
-                        }
-                    })(img));
-                    img.width = 113;
-                    img.setAttribute('src', urlPrefix + list[i].url + (list[i].url.indexOf('?') == -1 ? '?noCache=':'&noCache=') + (+new Date()).toString(36) );
-                    img.setAttribute('_src', urlPrefix + list[i].url);
-                    img.setAttribute('image_id', list[i].image_id);
-                    domUtils.addClass(icon, 'icon');
+            if(list.length <= 0){
+                item = document.createElement('li');
+                image_text = document.createElement('span');
+                image_text.textContent = '--暂无图片--';
+                item.setAttribute('style',"width: 97%;text-align: center;background-color: #fff;");
+                item.appendChild(image_text);
+                this.list.insertBefore(item, this.clearFloat);
+            }else{
+                for (i = 0; i < list.length; i++) {
+                    if(list[i] && list[i].url) {
+                        item = document.createElement('li');
+                        img = document.createElement('img');
+                        icon = document.createElement('span');
+                        text = document.createElement('a');
 
-                    item.appendChild(img);
-                    item.appendChild(icon);
-                    this.list.insertBefore(item, this.clearFloat);
+                        domUtils.on(img, 'load', (function(image){
+                            return function(){
+                                _this.scale(image, image.parentNode.offsetWidth, image.parentNode.offsetHeight);
+                            }
+                        })(img));
+                        img.width = 113;
+                        img.setAttribute('src', urlPrefix + list[i].url + (list[i].url.indexOf('?') == -1 ? '?noCache=' : '&noCache=') + (+new Date()).toString(36));
+                        img.setAttribute('_src', urlPrefix + list[i].url);
+                        img.setAttribute('image_id', list[i].image_id);
+                        domUtils.addClass(icon, 'icon');
+                        title = substr(list[i].name, 12);
+                        text.textContent = title;
+                        text.setAttribute("style", "position: absolute;left: 0px;padding-left: 4px;width: 100%;bottom: 0px;text-decoration: none;color: #0e0e0e;background-color:#e5e5e5");
+                        text.setAttribute('title', title);
+                        text.setAttribute('target', '_blank');
+                        text.setAttribute('href', urlPrefix + list[i].url + (list[i].url.indexOf('?') == -1 ? '?noCache=' : '&noCache=') + (+new Date()).toString(36));
+
+                        item.appendChild(img);
+                        item.appendChild(icon);
+                        item.appendChild(text);
+                        this.list.insertBefore(item, this.clearFloat);
+                    }
                 }
             }
+
         },
         /* 改变图片大小 */
         scale: function (img, w, h, type) {

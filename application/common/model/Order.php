@@ -163,7 +163,7 @@ class Order extends Common
 
         $data = $this->alias('o')
             ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
-            ->join('user u', 'o.user_id = u.id', 'left')
+            ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
             ->where($where)
             ->order('ctime desc')
             ->page($page, $limit)
@@ -171,7 +171,7 @@ class Order extends Common
 
         $count = $this->alias('o')
             ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
-            ->join('user u', 'o.user_id = u.id', 'left')
+            ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
             ->where($where)
             ->count();
 

@@ -1,11 +1,12 @@
 <?php
 // +----------------------------------------------------------------------
-// | JSHOP [ 小程序 ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
+
 namespace app\common\model;
 
 use app\common\model\GoodsTypeSpec;
@@ -24,8 +25,6 @@ use app\common\model\GoodsTypeParams;
  */
 class GoodsType extends Common
 {
-    protected $table='goods_type';
-
     /**
      * 添加商品类型
      * @param $data

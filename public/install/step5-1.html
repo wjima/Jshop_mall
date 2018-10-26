@@ -11,10 +11,11 @@
     <h1 class="site-h1">安装完成</h1>
     <blockquote class="layui-elem-quote">
         <h1>安装已经成功</h1>
-        <p>账号:&nbsp;<?php echo $config['account']; ?>&nbsp;密码:&nbsp;<?php echo $config['password']; ?>&nbsp;</p>
+        <p>账号:&nbsp;<?php echo $_POST['admin_account']; ?>&nbsp;密码:&nbsp;<?php echo $_POST['admin_password']; ?>&nbsp;</p>
     </blockquote>
     <div class="btn-box">
-        <a href="/index.php/manage" class="layui-btn layui-btn-small">前往登录</a>
+        <a href="/" class="layui-btn layui-btn-small">前往前台浏览</a>
+        <a href="/manage" class="layui-btn layui-btn-small">前往后台登录</a>
     </div>
 </div>
 </body>

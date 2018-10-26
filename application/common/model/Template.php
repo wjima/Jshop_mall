@@ -1,12 +1,11 @@
 <?php
 // +----------------------------------------------------------------------
-// | JSHOP [ 小程序 ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
-
 namespace app\common\model;
 use org\Curl;
 
@@ -45,7 +44,6 @@ class Template extends Common
             'keywords' => $keywords,
             'time'     => time(),
         ];
-
         $data = $curl::post($url, $params);
 
         $data = json_decode($data, true);

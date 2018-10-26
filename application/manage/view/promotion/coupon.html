@@ -64,6 +64,7 @@
                 {field: 'operating', title: '操作', width:200, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/couponEdit')}?id=' + data.id + '">编辑</a>';
+                    //html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-upload" data-id="' + data.id + '" >下载</a>';
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';
                     return html;
                 }}
@@ -99,5 +100,37 @@
                 layer.close(1);
             });
         });
+        //优惠券下载
+        $(document).on('click','.option-upload',function(){
+            var id = $(this).attr('data-id');
+            $.ajax({
+                type:'get',
+                url: "{:url('promotion/couponUpload')}",
+                data:'',
+                success:function(e){
+                    if(e.status){
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,//
+                            area: ['400px', '500px'],
+                            title:'下载优惠券',
+                            btn: ['确定','取消'],
+                            yes: function(index, layero){
+                                if($('#condition_code').val() == ''){
+                                    layer.msg('请选择促销条件');
+                                    return false;
+                                }
+                                layer.close(index);
+                                callback($('#condition_code').val());
+//
+                            }
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
+                }
+            });
+        });
+
     });
 </script>

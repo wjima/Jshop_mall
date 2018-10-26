@@ -206,7 +206,7 @@ class PromotionCondition extends Common
         $list = $this
             ->field($tableWhere['field'])
             ->alias('pc')
-            ->join('promotion p','p.id = pc.promotion_id')
+            ->join(config('database.prefix').'promotion p','p.id = pc.promotion_id')
             ->where($tableWhere['where'])
             ->select();
 
@@ -223,9 +223,6 @@ class PromotionCondition extends Common
     protected function tableWhere($post)
     {
         $result['where'] = [];
-        if(isset($post['seller_id'])){
-            $result['where']['p.seller_id'] = $post['seller_id'];
-        }
         if(isset($post['promotion_id'])){
             $result['where']['pc.promotion_id'] = $post['promotion_id'];
         }
@@ -261,13 +258,12 @@ class PromotionCondition extends Common
         return $list;
     }
     //取信息
-    public function getInfo($id,$sellerId){
+    public function getInfo($id){
         $where['pc.id'] = $id;
-        $where['p.seller_id'] = $sellerId;
         $info = $this
             ->field('pc.*')
             ->alias('pc')
-            ->join('promotion p','p.id = pc.promotion_id')
+            ->join(config('database.prefix').'promotion p','p.id = pc.promotion_id')
             ->where($where)->find();
         if($info){
             $info['params'] = json_decode($info['params'],true);
@@ -292,9 +288,10 @@ class PromotionCondition extends Common
 
 
         $data['params'] = json_encode($data['params']);
+
         if($data['id'] != ''){
             //更新
-            $info = $this->getInfo($data['id'],$data['seller_id']);
+            $info = $this->getInfo($data['id']);
             if($info){
                 if($this->allowField(true)->save($data,['id'=>$data['id']])){
                     $result['status'] = true;
@@ -308,7 +305,6 @@ class PromotionCondition extends Common
             //添加
             //先判断是否有此促销
             $promotionModel = new Promotion();
-            $where['seller_id'] = $data['seller_id'];
             $where['id'] = $data['promotion_id'];
             $promotionInfo = $promotionModel->where($where)->find();
             if($promotionInfo){
@@ -333,7 +329,7 @@ class PromotionCondition extends Common
             'data' => '',
             'msg' => ''
         ];
-        if(!isset($data['code']) || !isset($data['promotion_id']) || !isset($data['params'])|| !isset($data['seller_id'])){
+        if(!isset($data['code']) || !isset($data['promotion_id']) || !isset($data['params'])){
             return error_code(10003);
         }
         if(!isset($this->code[$data['code']])){
@@ -390,14 +386,14 @@ class PromotionCondition extends Common
 
 
 
-    public function toDel($id,$seller_id)
+    public function toDel($id)
     {
         $result = [
             'status' => false,
             'data' => '',
             'msg' => ''
         ];
-        $info = $this->getInfo($id,$seller_id);
+        $info = $this->getInfo($id);
         if($info){
             $this->where(['id'=>$info['id'],'promotion_id'=>$info['promotion_id']])->delete();
             $result['status'] = true;

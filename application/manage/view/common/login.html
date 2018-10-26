@@ -1,9 +1,11 @@
 {include file="common/mini_header" /}
+<div class="login-content-l"></div>
 <div class="login-content">
 	<div class="login-content-mid">
 		<div class="layui-container">
 			<div>
 				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+				    <h3 class="login-header">登录</h3>
                     <div class="layui-tab-item layui-show">
                         <div class="layui-tab-content layui-form-pane">
                             <form class="layui-form" action="" method="post">
@@ -28,14 +30,11 @@
                         </div>
                     </div>
 				</div>
-
-				没有账号？
-				<a href="{:url('b2c/common/reg')}">立即注册</a>
-
 			</div>
 		</div>
 	</div>
-</div>	
+</div>
+<div class="login-content-r"></div>
 		<script>
 			layui.use(['element', 'form'], function() {
 				//密码登陆

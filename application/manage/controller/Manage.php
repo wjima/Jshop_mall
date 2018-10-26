@@ -1,8 +1,8 @@
 <?php
 // +----------------------------------------------------------------------
-// | JSHOP [ 小程序 ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
@@ -19,6 +19,7 @@ use org\Curl;
 
 class Manage extends ManageController
 {
+
     public function index()
     {
         if(Request::isAjax()){
@@ -37,11 +38,14 @@ class Manage extends ManageController
         $manageRoleList = $manageRoleModel->select();
 
         if(Request::isPost()){
-            if(!input('?param.username')){
+            if(!input('?param.username') || input('param.username') == ""){
                 return error_code(11008);
             }
-            if(!input('?param.mobile')){
+            if(!input('?param.mobile') || input('param.mobile') == ""){
                 return error_code(11080);
+            }
+            if(!input('?param.password') || strlen(input('param.password')) < 6 || strlen(input('param.password')) > 12){
+                return error_code(11009);
             }
             return $manageModel->toAdd(input('param.'));
         }

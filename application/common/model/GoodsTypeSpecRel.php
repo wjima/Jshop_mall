@@ -1,11 +1,12 @@
 <?php
 // +----------------------------------------------------------------------
-// | JSHOP [ 小程序 ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
+
 namespace app\common\model;
 
 /**
@@ -18,8 +19,6 @@ namespace app\common\model;
  */
 class GoodsTypeSpecRel extends Common
 {
-    protected $table='goods_type_spec_rel';
-
     /***
      * User: wjima
      * Email:1457529125@qq.com

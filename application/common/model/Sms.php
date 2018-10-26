@@ -158,10 +158,12 @@ class Sms extends Common
         return $msg;
     }
     private function send_sms($mobile,$content){
-        $content = $content.'【jShop】';
+        $sms_password = config('?jshop.sms_password')?config('jshop.sms_password'):getSetting('sms_password');      //为了演示效果，此密码从配置文件中取，如果正式使用，请删除此行，并在后台店铺设置里配置密码即可。
+        
+        $content = $content.'【'.getSetting('sms_prefix').'】';
         //$content = iconv("utf-8","gb2312",$content);
         $content = urlencode($content);      //内容
-        $str = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=169&account=hnhaitao&password=000000wht&mobile=".$mobile."&content=".$content."&sendTime=&extno=";
+        $str = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=".getSetting('sms_user_id')."&account=".getSetting('sms_account')."&password=".$sms_password."&mobile=".$mobile."&content=".$content."&sendTime=&extno=";
         $re = file_get_contents($str);
         return array('status'=>true,'msg'=>"发送成功！");
     }

@@ -1,10 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tian yu
- * Date: 2018/1/26 0026
- * Time: 12:00
- */
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: tianyu <tianyu@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\common\model;
 
 use think\Validate;
@@ -87,11 +88,7 @@ class AdvertPosition extends Common
             $result['status'] = false;
             $result['msg'] = $validate->getError();
         } else {
-<<<<<<< HEAD
-            // 判断商户该模板是否已经添加
-=======
             // 判断该模板是否已经添加
->>>>>>> d31fa30298b04095d36a36624d940f1965ecfb3f
             if ($this->where('code', $data['code'])->find()) {
                 $result[ 'status' ] = false;
                 $result[ 'msg' ] = '该广告位模板已经添加';

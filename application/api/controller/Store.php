@@ -1,10 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/3/20 0020
- * Time: 22:00
- */
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: tianyu <tianyu@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\api\controller;
 
 use app\common\controller\Api;

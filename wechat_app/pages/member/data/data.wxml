@@ -1,0 +1,88 @@
+<view class='content'>
+  <view class="page__bd">
+    <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">错误提示</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/man.png'></image>
+          <view class="weui-label">姓名</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder-class='p-class' placeholder="请输入您的姓名" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/calendar.png'></image>
+          <view class="weui-label">出生日期</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="date" value="{{date}}" start="1900-01-01" end="2018-01-01" bindchange="bindDateChange">
+            <view class="weui-input">{{date}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_select">
+        <view class="weui-cell__hd weui-cell__hd_in-select-after">
+          <image class='header-img' src='../../image/city.png'></image>
+          <view class="weui-label">所在城市</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker bindchange="bindCountryChange" value="{{countryIndex}}" range="{{countries}}">
+            <view class="weui-input">{{countries[countryIndex]}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input weui-cell_vcode">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/phone-num.png'></image>
+          <view class="weui-label">手机号</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder-class='p-class' placeholder="请输入手机号" />
+        </view>
+        <view class="weui-cell__ft">
+          <view class="weui-vcode-btn">验证</view>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input weui-cell_vcode">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/identifyingcode.png'></image>
+          <view class="weui-label">验证码</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder-class='p-class' placeholder="请输入验证码" />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input weui-cell_warn">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/password.png'></image>
+          <view class="weui-label">密码</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder-class='p-class' placeholder="请输入密码" />
+        </view>
+        <view class="weui-cell__ft">
+          <icon type="warn" size="23" color="#E64340"></icon>
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input weui-cell_warn">
+        <view class="weui-cell__hd">
+          <image class='header-img' src='../../image/re-password.png'></image>
+          <view class="weui-label">确认密码</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" placeholder-class='p-class' placeholder="请再次输入密码" />
+        </view>
+        <view class="weui-cell__ft">
+          <icon type="warn" size="23" color="#E64340"></icon>
+        </view>
+      </view>
+    </view>
+    <view class="weui-btn-area">
+      <button class="weui-btn" type="" bindtap="showTopTips">确认修改</button>
+    </view>
+  </view>
+</view>

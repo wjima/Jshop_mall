@@ -1,11 +1,12 @@
 <?php
 // +----------------------------------------------------------------------
-// | JSHOP [ 小程序 ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2017~2018 http://jihainet.com All rights reserved.
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
+
 namespace app\common\model;
 
 
@@ -19,7 +20,6 @@ namespace app\common\model;
  */
 class GoodsImages extends Common
 {
-    protected $table='goods_images';
 
     /**
      * 批量保存商品图片

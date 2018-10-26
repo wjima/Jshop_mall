@@ -331,7 +331,8 @@ class BillDelivery extends Common
     {
         $num = 7;
         $day = date('Y-m-d', strtotime('-'.$num.' day'));
-        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM bill_delivery WHERE from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
+        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM '.config('database.prefix')
+            .'bill_delivery WHERE from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
         $res = Db::query($sql);
         $data = get_lately_days($num, $res);
         return $data['data'];

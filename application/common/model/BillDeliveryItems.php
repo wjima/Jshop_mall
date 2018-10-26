@@ -23,7 +23,7 @@ class BillDeliveryItems extends Common
         $where[] = ['d.delivery_id', 'eq', $delivery_id];
         $res = $this->alias('d')
             ->field('d.nums as nums, o.name as product_name')
-            ->join('order_items o', 'd.order_items_id = o.id', 'left')
+            ->join(config('database.prefix').'order_items o', 'd.order_items_id = o.id', 'left')
             ->where($where)
             ->select();
         if($res)

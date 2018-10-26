@@ -64,7 +64,7 @@
                 {field: 'operating', title: '操作', width:200, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/couponEdit')}?id=' + data.id + '">编辑</a>';
-                    html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-upload" data-id="' + data.id + '" >下载</a>';
+                    //html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-upload" data-id="' + data.id + '" >下载</a>';
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';
                     return html;
                 }}

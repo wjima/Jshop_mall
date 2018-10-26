@@ -201,6 +201,7 @@ php;
         //创建数据库链接配置文件
         file_put_contents($config['databaseUrl'], $db_str);
         @touch('./install.lock');
+        @touch(dirname(dirname(dirname(__FILE__))).'/config/install.lock');
     }
 }
 

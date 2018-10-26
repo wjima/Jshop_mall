@@ -4661,6 +4661,17 @@ CREATE TABLE `jshop_payments` (
   `status` smallint(1) UNSIGNED NOT NULL DEFAULT '2' COMMENT '启用状态 1=启用 2=停用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付方式表';
 
+
+--
+-- Dumping data for table `jshop_hooks`
+--
+
+INSERT INTO `jshop_payments` (`id`, `code`, `name`, `is_online`, `params`, `sort`, `memo`, `status`) VALUES
+  (1, 'wechatpay', '微信支付', 1, '{\"appid\":\"\",\"mch_id\":\"\",\"key\":\"\",\"sslcert\":\"\",\"sslkey\":\"\"}', 100, '点击去微信支付', 2),
+  (2, 'alipay', '支付宝支付', 1, '{\"appid\":\"\",\"rsa_private_key\":\"\",\"alipay_public_key\":\"\"}', 100, '点击去支付宝支付', 2),
+  (3, 'offline', '线下支付', 2, '', 100, '联系客服进行线下付款', 1);
+
+
 -- --------------------------------------------------------
 
 --

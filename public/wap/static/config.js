@@ -1,2 +1,2 @@
-window.apiUrl = 'https://b2c.jihainet.com/api.html';
-window.entId = '';
+window.apiUrl = '/index.php/api.html';
+window.entId = '10519';

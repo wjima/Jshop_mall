@@ -1025,13 +1025,17 @@
     padding: .22rem 0 .2rem .2rem;
 }
 .search-input form i{
-    padding-left: 8px;
+    /*padding-left: 8px;
     padding-right: 5px;
     line-height: 28px;
     display: flex;
     -webkit-box-align: center;
-    align-items: center;
+    align-items: center;*/
     color: #666;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: .4rem;
 }
 .search-input .search-icon:after {
     content: "\E626";
@@ -1048,8 +1052,8 @@
     background-color: #fff;
     opacity: .7;
     padding: 0 .2rem 0 .6rem;
-    position: relative;
-    top: -.59rem;
+    /*position: relative;*/
+    /*top: -.59rem;*/
 }
 .cart .cartlist ul,.cart .cartlist li {
     list-style: none;

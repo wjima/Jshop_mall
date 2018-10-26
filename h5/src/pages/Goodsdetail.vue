@@ -44,9 +44,11 @@
                         </div>
                         <p>{{ item.ctime }}  &nbsp;&nbsp;&nbsp;&nbsp;{{ item.addon }}</p>
                         <p>{{ item.content }}</p>
-                        <p v-if="item.images_url.length">
-                            <img :src="img" v-for="(img, key) in item.images_url" :key="key" width="10px">
-                        </p>
+                        <div class="comment-imgs" v-if="item.images_url.length">
+                            <div class="comment-img" v-for="(img, key) in item.images_url" :key="key">
+                            	<img :src="img">
+                            </div>
+                        </div>
                     </li>
                     <li style="text-align: center">
                     <yd-button size="small" type="hollow" color="#F00" shape="circle" v-if="load" @click.native="loadMore">加载更多评论</yd-button>
@@ -274,5 +276,29 @@ export default {
     }
     .goodsdetail-back i {
         font-size: .3rem;
+    }
+    .goodsdetail .comment-imgs{
+        width: 100%;
+        overflow: hidden;
+        margin-top: .15rem;
+    }
+    .goodsdetail .comment-imgs .comment-img{
+        width: 25%;
+        height: 2rem;
+        margin-right: 3%;
+        background-color: #fff;
+        float: left;
+        position: relative;
+    }
+    .goodsdetail .comment-imgs .comment-img:nth-child(3n){
+        margin-right: 0;
+    }
+    .goodsdetail .comment-imgs .comment-img img{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        max-height: 100%;
+        max-width: 100%;
+        transform: translate(-50%, -50%);
     }
 </style>

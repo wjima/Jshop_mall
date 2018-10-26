@@ -25,9 +25,12 @@ H5端采用Vue开发，数据和页面分离，可以使前端页面访问效果
 - 后台演示：[https://b2c.jihainet.com/manage/](https://b2c.jihainet.com/manage/)
 - QQ交流群：823732583
 - 小程序体验二维码
+
 ![输入图片说明](https://images.gitee.com/uploads/images/2018/1018/184408_a1c0d706_8503.jpeg "gh_03bc4364b4dc_344.jpg")
 
 - 安卓APP体验二维码
+
+![输入图片说明](https://images.gitee.com/uploads/images/2018/1026/163026_31132341_8503.png "1540542519.png")
  
 
 

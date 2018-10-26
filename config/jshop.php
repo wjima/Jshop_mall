@@ -18,5 +18,5 @@ return [
     'tocash_money_low' => '100' ,       //最低提现金额
     'authorization_url'=>'https://jshop.jihainet.com', //授权查询地址
     'product'=>'Jshop-b2c标准版',//产品名称
-    'version'=>'v1.0',//版本号
+    'version'=>'v1.0.1',//版本号
 ];

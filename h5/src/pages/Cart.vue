@@ -99,6 +99,7 @@ export default {
                         arr.push(this.list[i].id)
                     }
                 }
+                console.log(arr)
                 return arr
             },
             set (val) {
@@ -155,7 +156,15 @@ export default {
                 nums: nums
             }, res => {
                 if (res.status) {
-                    this.cartList(this.ids)
+                    const _list = res.data.list
+                    for (let i in _list) {
+                        _list[i].products.price = this.GLOBAL.formatMoney(_list[i].products.price, 2, '')
+                    }
+                    this.list = [..._list]
+                    this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '')
+                    this.promotion = res.data.promotion_list
+                    this.goods_pmt = this.GLOBAL.formatMoney(res.data.goods_pmt, 2, '')
+                    this.order_pmt = this.GLOBAL.formatMoney(res.data.order_pmt, 2, '')
                 }
             })
         },

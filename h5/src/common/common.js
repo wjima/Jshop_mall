@@ -107,7 +107,7 @@ function hecong () {
     // 测试环境
     let entId
     if (process.env.NODE_ENV === 'development') {
-        entId = '5b8f2f0f721b2807c58dad7e'
+        entId = '10519'
     } else if (process.env.NODE_ENV === 'production'){
         // 正式环境
         entId = window.entId

@@ -55,14 +55,8 @@ export default {
                 entId : _this.GLOBAL.hecong(),
                 button: false,
                 appearance: {
-                    panel: {
-                        tone: '#ff3b44',
-                        position: 'center',
-                        headHeight:50
-                    },
                     panelMobile: {
-                        tone: '#ff3b44',
-                        position: 'center',
+                        tone: '#FF3B44',
                         sideMargin: 30,
                         ratio: 'part',
                         headHeight:50

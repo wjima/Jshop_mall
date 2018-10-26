@@ -1,10 +1,10 @@
 <template>
     <div class="goodsdetailfooter">
         <div class="goodsdetailfooter-left">
-            <router-link tag="div" class="customservice" to="">
+            <div class="customservice" @click="showChat">
                 <img src="../../static/image/customservice.png"/>
                 <p>客服</p>
-            </router-link>
+            </div>
             <div class="goods-cart" @click="collection" v-show="!is_fav">
                 <img src="../../static/image/star.png"/>
                 <p>收藏</p>
@@ -48,6 +48,27 @@ export default {
         },
         collection () {
             this.$emit('collection')
+        },
+        showChat () {
+            let _this = this
+            window._AIHECONG('ini', {
+                entId : _this.GLOBAL.hecong(),
+                button: false,
+                appearance: {
+                    panel: {
+                        tone: '#ff3b44',
+                        position: 'center',
+                        headHeight:50
+                    },
+                    panelMobile: {
+                        tone: '#ff3b44',
+                        position: 'center',
+                        sideMargin: 30,
+                        ratio: 'part',
+                        headHeight:50
+                    }
+                }
+            });
         }
     }
 }

@@ -1,5 +1,8 @@
 <template>
     <div class="goodsdetail">
+        <div class="goodsdetail-back">
+            <i class="iconfont icon-zuo" @click="goBack"></i>
+        </div>
         <slider
             :imgList="goodsData.album"
         ></slider>
@@ -252,5 +255,21 @@ export default {
         left: 10px;
         transform: translateY(-50%);
         color: #a0a0a0;
+    }
+    .goodsdetail-back {
+        position: absolute;
+        top: .3rem;
+        left: .3rem;
+        color: #fff;
+        z-index: 999;
+        width: .7rem;
+        height: .7rem;
+        line-height: .7rem;
+        text-align: center;
+        background-color: rgba(0,0,0,.3);
+        border-radius: 50%;
+    }
+    .goodsdetail-back i {
+        font-size: .3rem;
     }
 </style>

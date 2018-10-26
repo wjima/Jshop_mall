@@ -19,7 +19,3 @@
         position: relative;
     }
 </style>
-
-<script type="text/babel">
-
-</script>

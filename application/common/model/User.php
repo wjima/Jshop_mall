@@ -406,9 +406,6 @@ class User extends Common
             if($v['status']) {
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
             }
-            if($v['mobile']) {
-                $list[$k]['mobile'] = format_mobile($v['mobile']);
-            }
         }
         return $list;
     }

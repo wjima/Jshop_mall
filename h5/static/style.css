@@ -1036,6 +1036,7 @@
     top: 50%;
     transform: translateY(-50%);
     left: .4rem;
+    z-index: 1001;
 }
 .search-input .search-icon:after {
     content: "\E626";

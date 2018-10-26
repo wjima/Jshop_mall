@@ -44,7 +44,6 @@ class Template extends Common
             'keywords' => $keywords,
             'time'     => time(),
         ];
-
         $data = $curl::post($url, $params);
 
         $data = json_decode($data, true);

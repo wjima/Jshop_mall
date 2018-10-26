@@ -220,7 +220,7 @@ class PromotionResult extends Common
         $list = $this
             ->field($tableWhere['field'])
             ->alias('pr')
-            ->join('promotion p','p.id = pr.promotion_id')
+            ->join(config('database.prefix').'promotion p','p.id = pr.promotion_id')
             ->where($tableWhere['where'])
             ->select();
 
@@ -278,7 +278,7 @@ class PromotionResult extends Common
         $info = $this
             ->field('pr.*')
             ->alias('pr')
-            ->join('promotion p','p.id = pr.promotion_id')
+            ->join(config('database.prefix').'promotion p','p.id = pr.promotion_id')
             ->where($where)->find();
         if($info){
             $info['params'] = json_decode($info['params'],true);

@@ -228,6 +228,9 @@ export default {
                     this.$router.push({path: '/firmorder', query: {cartIds}})
                 }
             })
+        },
+        goBack () {
+            this.$router.back(-1)
         }
     }
 }

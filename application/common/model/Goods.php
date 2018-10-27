@@ -208,7 +208,6 @@ class Goods extends Common
             ->order($order)
             ->page($page,$limit)
             ->select();
-        $result['sql'] = $this->getLastSql();
         $total = $this
             ->field($fields)
             ->where($where)

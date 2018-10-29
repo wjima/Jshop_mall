@@ -1,0 +1,1 @@
+ALTER TABLE `jshop_ship` ADD `goodsmoney` DECIMAL(20,2) NOT NULL DEFAULT '0.00' COMMENT '商品总额满多少免运费' AFTER `area_fee`;

@@ -431,4 +431,21 @@ class Promotion extends Manage
         return $resultModel->toDel(input('param.id'),$info['seller_id']);
     }
 
+    //优惠券下载
+    public function couponUpload()
+    {
+        if(!input('?param.id')){
+            return error_code(10000);
+        }
+
+
+
+        $this->assign('id',input('param.id'));
+        return [
+            'status' => true,
+            'data' => $this->fetch('resultAdd'),
+            'msg' => ''
+        ];
+    }
+
 }

@@ -28,14 +28,14 @@ html{
     background-position: center;
     padding: 100px 0;
     min-width: 1150px;
-    height:600px;
+    height:550px;
     box-sizing: border-box;
     margin: 0 auto;
     display: inline-block;
 }
 .login-content-l{
     display: inline-block;
-    height: 600px;
+    height: 550px;
     width: calc(100% / 2 - 1150px / 2);
     float: left;
     /*background: -webkit-linear-gradient(left, rgb(49,167,217), rgb(78,229,235));
@@ -46,7 +46,7 @@ html{
 }
 .login-content-r{
     display: inline-block;
-    height: 600px;
+    height: 550px;
     width: calc(100% / 2 - 1150px / 2);
     float: right;
     /*background: -webkit-linear-gradient(left, rgb(51,168,220), rgb(78,229,245));
@@ -125,7 +125,7 @@ html{
 }
 .login-footer{
 	width: 1150px;
-	margin: 50px auto 0;
+	margin: 20px auto 0;
 	text-align: center;
 	
 }

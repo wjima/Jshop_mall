@@ -27,7 +27,7 @@ const routers = [
         component: resolve => require(['../pages/Classify'], resolve),
         name: 'Classify',
         meta: {
-            navShow: false,
+            navShow: true,
             tabShow: true,
             title: '全部分类',
             keepAlive: true
@@ -118,6 +118,7 @@ const routers = [
         component: resolve => require(['../pages/AllOrder'], resolve),
         name: 'AllOrder',
         meta: {
+            navShow: true,
             tabShow: false,
             title: '订单列表',
             keepAlive: false,

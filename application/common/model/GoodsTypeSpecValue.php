@@ -19,12 +19,6 @@ namespace app\common\model;
  */
 class GoodsTypeSpecValue extends Common
 {
-    /**
-     * 表名
-     * @var string
-     */
-    protected $table='goods_type_spec_value';
-
 
     public function addAll($data = [ ])
     {

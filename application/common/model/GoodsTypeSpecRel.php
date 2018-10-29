@@ -19,8 +19,6 @@ namespace app\common\model;
  */
 class GoodsTypeSpecRel extends Common
 {
-    protected $table='goods_type_spec_rel';
-
     /***
      * User: wjima
      * Email:1457529125@qq.com

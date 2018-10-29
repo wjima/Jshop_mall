@@ -28,7 +28,8 @@ class Wechat extends Manage
      */
     public function edit()
     {
-
+        $host = \request()->host();
+        $this->assign('weixin_host',$host);
         $settingModel = new Setting();
         $data = $settingModel->getAll();
         $this->assign('data', $data);
@@ -86,7 +87,6 @@ class Wechat extends Manage
         $templateModel = new Template();
         $data          = $templateModel->getAllTemplate($templateModel::TYPE_MINI);
         $this->assign('data', $data);
-
         return $this->fetch('template');
     }
 

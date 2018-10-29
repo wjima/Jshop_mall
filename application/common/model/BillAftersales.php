@@ -46,7 +46,7 @@ class BillAftersales extends Common
         foreach($orderInfo['items'] as $k => $v){
             $orderInfo['items'][$k]['reship_nums'] = $afterSalesItemsModel
                 ->alias('asi')
-                ->join('bill_aftersales a','asi.aftersales_id = a.aftersales_id')
+                ->join(config('database.prefix').'bill_aftersales a','asi.aftersales_id = a.aftersales_id')
                 ->where([
                     ['asi.order_items_id','eq',$v['id']],
                     ['a.status','eq',self::STATUS_SUCCESS]

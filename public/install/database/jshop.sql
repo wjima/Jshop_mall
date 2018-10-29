@@ -1,9 +1,3 @@
---
--- Host: localhost:3306
--- Generation Time: Oct 19, 2018 at 11:12 AM
--- Server version: 5.6.35
--- PHP Version: 7.1.8
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -14,10 +8,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `addons`
+-- Table structure for table `jshop_addons`
 --
 
-CREATE TABLE `addons` (
+CREATE TABLE `jshop_addons` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '主键',
   `name` varchar(40) CHARACTER SET utf8 NOT NULL COMMENT '插件名或标识',
   `title` varchar(20) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '中文名',
@@ -30,15 +24,23 @@ CREATE TABLE `addons` (
   `utime` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='插件表';
 
+--
+-- Dumping data for table `jshop_addons`
+--
+
+INSERT INTO `jshop_addons` (`id`, `name`, `title`, `description`, `status`, `config`, `author`, `version`, `ctime`, `utime`) VALUES
+  (2, 'hecong', '合从在线客服插件', '合从在线客服，申请地址https://aihecong.com/', 1, '{\"appid\":\"\",\"appkey\":\"\"}', 'mark', '0.1', 1538029352, 1538029352),
+  (3, 'appletmessage', '微信小程序模板消息', '微信小程序模板消息', 1, '{\"display\":\"1\",\"template\":{\"create_order\":{\"title\":\"\\u4e0b\\u5355\\u6210\\u529f\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u5546\\u6237\\u540d\",\"code\":\"seller_name\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u4e0b\\u5355\\u65f6\\u95f4\",\"code\":\"ctime\"},{\"title\":\"\\u8ba2\\u5355\\u72b6\\u6001\",\"code\":\"status\"},{\"title\":\"\\u8ba2\\u5355\\u91d1\\u989d\",\"code\":\"order_amount\"}]},\"order_payed\":{\"title\":\"\\u652f\\u4ed8\\u6210\\u529f\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u5546\\u6237\\u540d\",\"code\":\"seller_name\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u4e0b\\u5355\\u65f6\\u95f4\",\"code\":\"ctime\"},{\"title\":\"\\u8ba2\\u5355\\u72b6\\u6001\",\"code\":\"status\"},{\"title\":\"\\u8ba2\\u5355\\u91d1\\u989d\",\"code\":\"order_amount\"}]},\"delivery_notice\":{\"title\":\"\\u8ba2\\u5355\\u53d1\\u8d27\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u4f1a\\u5458\\u540d\\u79f0\",\"code\":\"user_name\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u4e0b\\u5355\\u65f6\\u95f4\",\"code\":\"ctime\"},{\"title\":\"\\u7269\\u6d41\\u516c\\u53f8\",\"code\":\"logi_name\"},{\"title\":\"\\u7269\\u6d41\\u5355\\u53f7\",\"code\":\"logi_no\"},{\"title\":\"\\u6536\\u8d27\\u5730\\u5740\",\"code\":\"rec_address\"},{\"title\":\"\\u5907\\u6ce8\",\"code\":\"memo\"}]},\"refund_success\":{\"title\":\"\\u8ba2\\u5355\\u9000\\u6b3e\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u9000\\u6b3e\\u91d1\\u989d\",\"code\":\"refund_money\"},{\"title\":\"\\u9000\\u6b3e\\u65f6\\u95f4\",\"code\":\"refund_time\"},{\"title\":\"\\u9000\\u6b3e\\u539f\\u56e0\",\"code\":\"refund_reason\"},{\"title\":\"\\u9000\\u6b3e\\u72b6\\u6001\",\"code\":\"refund_status\"}]}}}', 'mark', '0.1', 1538029414, 1538029414),
+  (5, 'test', '插件测试', 'thinkph5插件测试', 1, '{\"display\":\"1\"}', 'byron sampson', '0.1', 1540104045, 1540104045);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `advertisement`
+-- Table structure for table `jshop_advertisement`
 --
 
-CREATE TABLE `advertisement` (
+CREATE TABLE `jshop_advertisement` (
   `id` int(10) UNSIGNED NOT NULL,
-  `seller_id` int(10) UNSIGNED DEFAULT '0' COMMENT '店铺id',
   `position_id` int(10) UNSIGNED DEFAULT '0' COMMENT '广告位置id',
   `name` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '广告名称',
   `img` char(32) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '广告图片id',
@@ -49,14 +51,13 @@ CREATE TABLE `advertisement` (
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '广告位置编码',
   `type` tinyint(3) UNSIGNED DEFAULT NULL COMMENT '类型  1url  2商品  3文章'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告表';
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `advert_position`
+-- Table structure for table `jshop_advert_position`
 --
 
-CREATE TABLE `advert_position` (
+CREATE TABLE `jshop_advert_position` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '幻灯片名称',
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '广告位置编码',
@@ -69,10 +70,10 @@ CREATE TABLE `advert_position` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `area`
+-- Table structure for table `jshop_area`
 --
 
-CREATE TABLE `area` (
+CREATE TABLE `jshop_area` (
   `id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '地区ID',
   `parent_id` int(10) UNSIGNED DEFAULT '0' COMMENT '父级ID',
   `depth` tinyint(1) UNSIGNED DEFAULT '0' COMMENT '地区深度',
@@ -82,10 +83,10 @@ CREATE TABLE `area` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='地区表';
 
 --
--- Dumping data for table `area`
+-- Dumping data for table `jshop_area`
 --
 
-INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
+INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
   (110000, 0, 1, '北京市', 100000, 100),
   (110100, 110000, 2, '北京市', 100000, 100),
   (110101, 110100, 3, '东城区', 0, 100),
@@ -107,7 +108,6 @@ INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) V
   (120000, 0, 1, '天津市', 0, 100),
   (120100, 120000, 2, '天津市', 0, 100),
   (120101, 120100, 3, '和平区', 0, 100),
-  (120102, 120100, 3, '河东区', 0, 100),
   (120103, 120100, 3, '河西区', 0, 100),
   (120104, 120100, 3, '南开区', 0, 100),
   (120105, 120100, 3, '河北区', 0, 100),
@@ -125,7 +125,6 @@ INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) V
   (130000, 0, 1, '河北省', 0, 100),
   (130100, 130000, 2, '石家庄市', 0, 100),
   (130101, 130100, 3, '市辖区', 0, 100),
-  (130102, 130100, 3, '长安区', 0, 100),
   (130104, 130100, 3, '桥西区', 0, 100),
   (130105, 130100, 3, '新华区', 0, 100),
   (130107, 130100, 3, '井陉矿区', 0, 100),
@@ -1546,10 +1545,10 @@ INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) V
   (361026, 361000, 3, '宜黄县', 0, 100),
   (361027, 361000, 3, '金溪县', 0, 100),
   (361028, 361000, 3, '资溪县', 0, 100),
-  (361029, 361000, 3, '东乡县', 0, 100);
-INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
+  (361029, 361000, 3, '东乡县', 0, 100),
   (361030, 361000, 3, '广昌县', 0, 100),
-  (361100, 360000, 2, '上饶市', 0, 100),
+  (361100, 360000, 2, '上饶市', 0, 100);
+INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
   (361101, 361100, 3, '市辖区', 0, 100),
   (361102, 361100, 3, '信州区', 0, 100),
   (361103, 361100, 3, '广丰区', 0, 100),
@@ -3003,10 +3002,10 @@ INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) V
   (532324, 532300, 3, '南华县', 0, 100),
   (532325, 532300, 3, '姚安县', 0, 100),
   (532326, 532300, 3, '大姚县', 0, 100),
-  (532327, 532300, 3, '永仁县', 0, 100);
-INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
+  (532327, 532300, 3, '永仁县', 0, 100),
   (532328, 532300, 3, '元谋县', 0, 100),
-  (532329, 532300, 3, '武定县', 0, 100),
+  (532329, 532300, 3, '武定县', 0, 100);
+INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
   (532331, 532300, 3, '禄丰县', 0, 100),
   (532500, 530000, 2, '红河哈尼族彝族自治州', 0, 100),
   (532501, 532500, 3, '市辖区', 0, 100),
@@ -3595,15 +3594,18 @@ INSERT INTO `area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) V
   (659006, 659000, 3, '铁门关市', 0, 100),
   (710000, 0, 1, '台湾省', 0, 100),
   (810000, 0, 1, '香港特别行政区', 0, 100),
-  (820000, 0, 1, '澳门特别行政区', 0, 100);
+  (820001, 110000, 1, '多对多', 0, 2),
+  (820002, 110101, 4, '1区', 0, 1),
+  (820003, 441581, 1, '东海镇', 0, 1),
+  (820004, 820001, 1, 'rrtrer', 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `article`
+-- Table structure for table `jshop_article`
 --
 
-CREATE TABLE `article` (
+CREATE TABLE `jshop_article` (
   `id` int(11) UNSIGNED NOT NULL,
   `title` varchar(200) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '文章标题',
   `cover` char(32) DEFAULT NULL COMMENT '文章封面图',
@@ -3619,10 +3621,10 @@ CREATE TABLE `article` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `article_type`
+-- Table structure for table `jshop_article_type`
 --
 
-CREATE TABLE `article_type` (
+CREATE TABLE `jshop_article_type` (
   `id` int(11) UNSIGNED NOT NULL,
   `pid` int(11) DEFAULT NULL COMMENT '父id',
   `type_name` varchar(32) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '分类名称'
@@ -3631,10 +3633,10 @@ CREATE TABLE `article_type` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `backstage_notice`
+-- Table structure for table `jshop_backstage_notice`
 --
 
-CREATE TABLE `backstage_notice` (
+CREATE TABLE `jshop_backstage_notice` (
   `id` int(11) UNSIGNED NOT NULL,
   `title` varchar(200) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '公告标题',
   `content` longtext CHARACTER SET utf8mb4 COMMENT '公告内容',
@@ -3648,10 +3650,10 @@ CREATE TABLE `backstage_notice` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `balance`
+-- Table structure for table `jshop_balance`
 --
 
-CREATE TABLE `balance` (
+CREATE TABLE `jshop_balance` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户id',
   `type` smallint(2) UNSIGNED NOT NULL COMMENT '类型',
@@ -3665,10 +3667,10 @@ CREATE TABLE `balance` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_aftersales`
+-- Table structure for table `jshop_bill_aftersales`
 --
 
-CREATE TABLE `bill_aftersales` (
+CREATE TABLE `jshop_bill_aftersales` (
   `aftersales_id` varchar(20) NOT NULL COMMENT '售后单id',
   `order_id` varchar(20) DEFAULT NULL COMMENT '订单ID 关联order.id',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户ID 关联user.id',
@@ -3684,10 +3686,10 @@ CREATE TABLE `bill_aftersales` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_aftersales_images`
+-- Table structure for table `jshop_bill_aftersales_images`
 --
 
-CREATE TABLE `bill_aftersales_images` (
+CREATE TABLE `jshop_bill_aftersales_images` (
   `aftersales_id` varchar(20) NOT NULL COMMENT '售后单id',
   `image_id` char(32) NOT NULL COMMENT '图片ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品图片关联表';
@@ -3695,10 +3697,10 @@ CREATE TABLE `bill_aftersales_images` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_aftersales_items`
+-- Table structure for table `jshop_bill_aftersales_items`
 --
 
-CREATE TABLE `bill_aftersales_items` (
+CREATE TABLE `jshop_bill_aftersales_items` (
   `id` int(10) UNSIGNED NOT NULL,
   `aftersales_id` varchar(20) NOT NULL COMMENT '售后单id',
   `order_items_id` int(10) UNSIGNED DEFAULT NULL COMMENT '订单明细ID 关联order_items.id',
@@ -3716,10 +3718,10 @@ CREATE TABLE `bill_aftersales_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_delivery`
+-- Table structure for table `jshop_bill_delivery`
 --
 
-CREATE TABLE `bill_delivery` (
+CREATE TABLE `jshop_bill_delivery` (
   `delivery_id` varchar(20) NOT NULL,
   `order_id` varchar(20) NOT NULL COMMENT '订单ID 关联order.id',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户id 关联user.id',
@@ -3741,10 +3743,10 @@ CREATE TABLE `bill_delivery` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_delivery_items`
+-- Table structure for table `jshop_bill_delivery_items`
 --
 
-CREATE TABLE `bill_delivery_items` (
+CREATE TABLE `jshop_bill_delivery_items` (
   `id` int(10) UNSIGNED NOT NULL,
   `delivery_id` varchar(20) NOT NULL COMMENT '发货单号 关联bill_delivery.id',
   `order_items_id` int(10) UNSIGNED DEFAULT NULL COMMENT '订单明细ID 关联order_items.id',
@@ -3754,10 +3756,10 @@ CREATE TABLE `bill_delivery_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_payments`
+-- Table structure for table `jshop_bill_payments`
 --
 
-CREATE TABLE `bill_payments` (
+CREATE TABLE `jshop_bill_payments` (
   `payment_id` varchar(20) NOT NULL COMMENT '支付单号',
   `money` decimal(10,2) DEFAULT '0.00' COMMENT '支付金额',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户ID 关联user.id',
@@ -3775,10 +3777,10 @@ CREATE TABLE `bill_payments` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_payments_rel`
+-- Table structure for table `jshop_bill_payments_rel`
 --
 
-CREATE TABLE `bill_payments_rel` (
+CREATE TABLE `jshop_bill_payments_rel` (
   `payment_id` varchar(20) NOT NULL COMMENT '支付单编号',
   `source_id` varchar(20) NOT NULL COMMENT '资源编号',
   `money` decimal(8,2) UNSIGNED NOT NULL COMMENT '金额'
@@ -3787,10 +3789,10 @@ CREATE TABLE `bill_payments_rel` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_refund`
+-- Table structure for table `jshop_bill_refund`
 --
 
-CREATE TABLE `bill_refund` (
+CREATE TABLE `jshop_bill_refund` (
   `refund_id` varchar(20) NOT NULL,
   `aftersales_id` varchar(20) NOT NULL COMMENT '售后单id',
   `money` decimal(10,2) UNSIGNED DEFAULT NULL COMMENT '退款金额',
@@ -3808,10 +3810,10 @@ CREATE TABLE `bill_refund` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_reship`
+-- Table structure for table `jshop_bill_reship`
 --
 
-CREATE TABLE `bill_reship` (
+CREATE TABLE `jshop_bill_reship` (
   `reship_id` varchar(20) NOT NULL,
   `order_id` varchar(20) NOT NULL COMMENT '订单ID 关联order.id',
   `aftersales_id` varchar(20) NOT NULL COMMENT '售后单id',
@@ -3827,10 +3829,10 @@ CREATE TABLE `bill_reship` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `bill_reship_items`
+-- Table structure for table `jshop_bill_reship_items`
 --
 
-CREATE TABLE `bill_reship_items` (
+CREATE TABLE `jshop_bill_reship_items` (
   `id` int(10) UNSIGNED NOT NULL,
   `reship_id` varchar(20) NOT NULL COMMENT '退款单单id',
   `order_items_id` int(10) UNSIGNED DEFAULT NULL COMMENT '订单明细ID 关联order_items.id',
@@ -3848,10 +3850,10 @@ CREATE TABLE `bill_reship_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `brand`
+-- Table structure for table `jshop_brand`
 --
 
-CREATE TABLE `brand` (
+CREATE TABLE `jshop_brand` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '品牌ID',
   `name` varchar(50) DEFAULT NULL COMMENT '品牌名称',
   `logo` char(32) DEFAULT NULL COMMENT '品牌LOGO 图片ID',
@@ -3863,10 +3865,10 @@ CREATE TABLE `brand` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
+-- Table structure for table `jshop_cart`
 --
 
-CREATE TABLE `cart` (
+CREATE TABLE `jshop_cart` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户ID 关联user.id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT '货品ID',
@@ -3876,10 +3878,10 @@ CREATE TABLE `cart` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `coupon`
+-- Table structure for table `jshop_coupon`
 --
 
-CREATE TABLE `coupon` (
+CREATE TABLE `jshop_coupon` (
   `coupon_code` varchar(20) NOT NULL COMMENT '优惠券编码',
   `promotion_id` int(10) UNSIGNED NOT NULL COMMENT '优惠券id',
   `is_used` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '是否使用1未使用，2已使用',
@@ -3892,10 +3894,10 @@ CREATE TABLE `coupon` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods`
+-- Table structure for table `jshop_goods`
 --
 
-CREATE TABLE `goods` (
+CREATE TABLE `jshop_goods` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '商品ID',
   `bn` varchar(30) DEFAULT NULL COMMENT '商品编码',
   `name` varchar(200) DEFAULT NULL COMMENT '商品名称',
@@ -3933,10 +3935,10 @@ CREATE TABLE `goods` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_browsing`
+-- Table structure for table `jshop_goods_browsing`
 --
 
-CREATE TABLE `goods_browsing` (
+CREATE TABLE `jshop_goods_browsing` (
   `id` int(10) UNSIGNED NOT NULL COMMENT 'ID',
   `goods_id` int(10) UNSIGNED DEFAULT NULL COMMENT '商品id 关联goods.id',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户id',
@@ -3948,10 +3950,10 @@ CREATE TABLE `goods_browsing` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_cat`
+-- Table structure for table `jshop_goods_cat`
 --
 
-CREATE TABLE `goods_cat` (
+CREATE TABLE `jshop_goods_cat` (
   `id` int(10) UNSIGNED NOT NULL,
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上级分类id',
   `name` varchar(20) DEFAULT NULL COMMENT '分类名称',
@@ -3964,10 +3966,10 @@ CREATE TABLE `goods_cat` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_collection`
+-- Table structure for table `jshop_goods_collection`
 --
 
-CREATE TABLE `goods_collection` (
+CREATE TABLE `jshop_goods_collection` (
   `id` int(10) UNSIGNED NOT NULL COMMENT 'ID',
   `goods_id` int(10) UNSIGNED DEFAULT NULL COMMENT '商品id 关联goods.id',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户id',
@@ -3978,10 +3980,10 @@ CREATE TABLE `goods_collection` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_comment`
+-- Table structure for table `jshop_goods_comment`
 --
 
-CREATE TABLE `goods_comment` (
+CREATE TABLE `jshop_goods_comment` (
   `id` int(10) UNSIGNED NOT NULL,
   `comment_id` int(10) UNSIGNED DEFAULT '0' COMMENT '父级评价ID',
   `score` tinyint(1) DEFAULT '5' COMMENT '评价1-5星',
@@ -3999,10 +4001,10 @@ CREATE TABLE `goods_comment` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_images`
+-- Table structure for table `jshop_goods_images`
 --
 
-CREATE TABLE `goods_images` (
+CREATE TABLE `jshop_goods_images` (
   `goods_id` int(10) UNSIGNED NOT NULL COMMENT '商品ID',
   `image_id` char(32) NOT NULL COMMENT '图片ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品图片关联表';
@@ -4010,10 +4012,10 @@ CREATE TABLE `goods_images` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_params`
+-- Table structure for table `jshop_goods_params`
 --
 
-CREATE TABLE `goods_params` (
+CREATE TABLE `jshop_goods_params` (
   `id` int(10) NOT NULL,
   `name` varchar(50) DEFAULT NULL COMMENT '参数名称',
   `value` text COMMENT '参数值',
@@ -4025,10 +4027,10 @@ CREATE TABLE `goods_params` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_type`
+-- Table structure for table `jshop_goods_type`
 --
 
-CREATE TABLE `goods_type` (
+CREATE TABLE `jshop_goods_type` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(20) DEFAULT NULL COMMENT '类型名称',
   `params` text COMMENT '参数序列号存储 array(参数组名=>array(''参数1'',''参数二''))'
@@ -4037,10 +4039,10 @@ CREATE TABLE `goods_type` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_type_params`
+-- Table structure for table `jshop_goods_type_params`
 --
 
-CREATE TABLE `goods_type_params` (
+CREATE TABLE `jshop_goods_type_params` (
   `params_id` int(10) UNSIGNED DEFAULT '0' COMMENT '商品参数id',
   `type_id` int(10) UNSIGNED DEFAULT '0' COMMENT '商品类型id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -4048,10 +4050,10 @@ CREATE TABLE `goods_type_params` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_type_spec`
+-- Table structure for table `jshop_goods_type_spec`
 --
 
-CREATE TABLE `goods_type_spec` (
+CREATE TABLE `jshop_goods_type_spec` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(30) DEFAULT NULL COMMENT '商品类型属性名称',
   `sort` smallint(5) UNSIGNED DEFAULT '100' COMMENT '商品类型属性排序 越小越靠前'
@@ -4060,10 +4062,10 @@ CREATE TABLE `goods_type_spec` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_type_spec_rel`
+-- Table structure for table `jshop_goods_type_spec_rel`
 --
 
-CREATE TABLE `goods_type_spec_rel` (
+CREATE TABLE `jshop_goods_type_spec_rel` (
   `spec_id` int(10) UNSIGNED NOT NULL COMMENT '属性ID',
   `type_id` int(10) UNSIGNED DEFAULT NULL COMMENT '类型ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品类型和属性关联表';
@@ -4071,10 +4073,10 @@ CREATE TABLE `goods_type_spec_rel` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goods_type_spec_value`
+-- Table structure for table `jshop_goods_type_spec_value`
 --
 
-CREATE TABLE `goods_type_spec_value` (
+CREATE TABLE `jshop_goods_type_spec_value` (
   `id` int(10) UNSIGNED NOT NULL,
   `spec_id` int(10) UNSIGNED DEFAULT NULL COMMENT '属性ID 关联goods_type_spec.id',
   `value` varchar(50) DEFAULT NULL COMMENT '属性值',
@@ -4084,10 +4086,10 @@ CREATE TABLE `goods_type_spec_value` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hooks`
+-- Table structure for table `jshop_hooks`
 --
 
-CREATE TABLE `hooks` (
+CREATE TABLE `jshop_hooks` (
   `id` int(10) NOT NULL,
   `name` varchar(50) DEFAULT NULL COMMENT '钩子名称',
   `description` text NOT NULL COMMENT '钩子描述',
@@ -4098,21 +4100,21 @@ CREATE TABLE `hooks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `hooks`
+-- Dumping data for table `jshop_hooks`
 --
 
-INSERT INTO `hooks` (`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES
-  (1, 'testhook', '测试钩子', 1, 'appletmessage,test', 1538029316, 1538029316),
+INSERT INTO `jshop_hooks` (`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES
+  (1, 'testhook', '测试钩子', 1, 'appletmessage,test', 1538029316, 1540173219),
   (2, 'sendwxmessage', '发送微信消息', 1, 'appletmessage', 1538029328, 1538029328),
   (3, 'kefu', '在线客服', 1, 'hecong', 1538029339, 1538029339);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ietask`
+-- Table structure for table `jshop_ietask`
 --
 
-CREATE TABLE `ietask` (
+CREATE TABLE `jshop_ietask` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(200) DEFAULT NULL COMMENT '任务名称',
   `message` varchar(255) DEFAULT NULL COMMENT '任务消息',
@@ -4130,10 +4132,10 @@ CREATE TABLE `ietask` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `images`
+-- Table structure for table `jshop_images`
 --
 
-CREATE TABLE `images` (
+CREATE TABLE `jshop_images` (
   `id` char(32) NOT NULL COMMENT '图片ID',
   `name` varchar(50) DEFAULT NULL COMMENT '图片名称',
   `url` varchar(255) DEFAULT NULL COMMENT '绝对地址',
@@ -4146,10 +4148,10 @@ CREATE TABLE `images` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `jobs`
+-- Table structure for table `jshop_jobs`
 --
 
-CREATE TABLE `jobs` (
+CREATE TABLE `jshop_jobs` (
   `id` int(11) NOT NULL,
   `queue` varchar(255) NOT NULL,
   `payload` longtext NOT NULL,
@@ -4163,10 +4165,10 @@ CREATE TABLE `jobs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `label`
+-- Table structure for table `jshop_label`
 --
 
-CREATE TABLE `label` (
+CREATE TABLE `jshop_label` (
   `id` int(10) NOT NULL,
   `name` varchar(20) DEFAULT NULL COMMENT '标签名称',
   `style` varchar(20) DEFAULT 'hot' COMMENT '标签样式'
@@ -4175,10 +4177,10 @@ CREATE TABLE `label` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login_log`
+-- Table structure for table `jshop_login_log`
 --
 
-CREATE TABLE `login_log` (
+CREATE TABLE `jshop_login_log` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'id',
   `user_id` int(11) UNSIGNED NOT NULL COMMENT '用户id',
   `state` tinyint(1) DEFAULT NULL COMMENT '登录 1  退出2,3注册',
@@ -4190,56 +4192,23 @@ CREATE TABLE `login_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `logistics`
+-- Table structure for table `jshop_logistics`
 --
 
-CREATE TABLE `logistics` (
+CREATE TABLE `jshop_logistics` (
   `id` int(10) UNSIGNED NOT NULL,
   `logi_name` varchar(30) DEFAULT NULL COMMENT '物流公司名称',
   `logi_code` varchar(50) DEFAULT NULL COMMENT '物流公司编码',
   `sort` tinyint(3) UNSIGNED DEFAULT '100' COMMENT '排序 越小越靠前'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='物流公司表';
 
---
--- Dumping data for table `logistics`
---
-
-INSERT INTO `logistics` (`id`, `logi_name`, `logi_code`, `sort`) VALUES
-  (1, '顺丰', 'sf', 1),
-  (2, '申通', 'sto', 2),
-  (3, '圆通', 'yt', 3),
-  (4, '韵达', 'yd', 4),
-  (5, '天天', 'tt', 5),
-  (6, 'EMS', 'ems', 6),
-  (7, '中通', 'zto', 7),
-  (8, '百世', 'ht', 8),
-  (9, '全峰', 'qf', 9),
-  (10, '德邦', 'db', 10),
-  (11, '国通', 'gt', 11),
-  (12, '如风达', 'rfd', 12),
-  (13, '京东快递', 'jd', 13),
-  (14, '宅急送', 'zjs', 14),
-  (15, 'EMS国际', 'emsg', 15),
-  (16, 'Fedex国际', 'fedex', 16),
-  (17, '邮政国内', 'yzgn', 17),
-  (18, 'UPS国际快递', 'ups', 18),
-  (19, '中铁快运', 'ztky', 19),
-  (20, '佳吉快运', 'jiaji', 20),
-  (21, '速尔快递', 'suer', 21),
-  (22, '信丰物流', 'xfwl', 22),
-  (23, '优速快递', 'yousu', 23),
-  (24, '中邮物流', 'zhongyou', 24),
-  (25, '天地华宇', 'tdhy', 25),
-  (26, '安信达快递', 'axd', 26),
-  (27, '快捷快递', 'kuaijie', 27);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manage`
+-- Table structure for table `jshop_manage`
 --
 
-CREATE TABLE `manage` (
+CREATE TABLE `jshop_manage` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '用户ID',
   `username` varchar(20) DEFAULT NULL COMMENT '用户名',
   `password` char(32) DEFAULT NULL COMMENT '密码 md5(md5()+创建时间)',
@@ -4251,20 +4220,13 @@ CREATE TABLE `manage` (
   `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '1 = 正常 2 = 停用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员表';
 
---
--- Dumping data for table `manage`
---
-
-INSERT INTO `manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES
-  (13, 'admin', 'ff92a240d11b05ebd392348c35f781b2', '', NULL, NULL, NULL, NULL, 1);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manage_role`
+-- Table structure for table `jshop_manage_role`
 --
 
-CREATE TABLE `manage_role` (
+CREATE TABLE `jshop_manage_role` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(50) DEFAULT NULL COMMENT '角色名称',
   `utime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '更新时间'
@@ -4273,10 +4235,10 @@ CREATE TABLE `manage_role` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manage_role_operation_rel`
+-- Table structure for table `jshop_manage_role_operation_rel`
 --
 
-CREATE TABLE `manage_role_operation_rel` (
+CREATE TABLE `jshop_manage_role_operation_rel` (
   `manage_role_id` int(10) NOT NULL,
   `operation_id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺角色操作权限关联表';
@@ -4284,10 +4246,10 @@ CREATE TABLE `manage_role_operation_rel` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manage_role_rel`
+-- Table structure for table `jshop_manage_role_rel`
 --
 
-CREATE TABLE `manage_role_rel` (
+CREATE TABLE `jshop_manage_role_rel` (
   `manage_id` int(10) UNSIGNED NOT NULL COMMENT '管理员ID 关联manage.id',
   `role_id` int(10) UNSIGNED DEFAULT NULL COMMENT '角色ID 关联role.id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员和角色关系表';
@@ -4295,10 +4257,10 @@ CREATE TABLE `manage_role_rel` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `message`
+-- Table structure for table `jshop_message`
 --
 
-CREATE TABLE `message` (
+CREATE TABLE `jshop_message` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) NOT NULL COMMENT '用户id',
   `code` varchar(60) NOT NULL COMMENT '消息编码',
@@ -4312,10 +4274,10 @@ CREATE TABLE `message` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `message_center`
+-- Table structure for table `jshop_message_center`
 --
 
-CREATE TABLE `message_center` (
+CREATE TABLE `jshop_message_center` (
   `id` int(11) UNSIGNED NOT NULL,
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '编码',
   `sms` tinyint(1) UNSIGNED NOT NULL COMMENT '1 启用  2禁用',
@@ -4326,10 +4288,10 @@ CREATE TABLE `message_center` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notice`
+-- Table structure for table `jshop_notice`
 --
 
-CREATE TABLE `notice` (
+CREATE TABLE `jshop_notice` (
   `id` int(11) UNSIGNED NOT NULL,
   `title` varchar(200) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '公告标题',
   `content` longtext CHARACTER SET utf8mb4 COMMENT '公告内容',
@@ -4342,10 +4304,10 @@ CREATE TABLE `notice` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `operation`
+-- Table structure for table `jshop_operation`
 --
 
-CREATE TABLE `operation` (
+CREATE TABLE `jshop_operation` (
   `id` int(10) UNSIGNED NOT NULL,
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT '父ID',
   `name` varchar(50) DEFAULT NULL COMMENT '操作名称',
@@ -4357,10 +4319,10 @@ CREATE TABLE `operation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='权限表';
 
 --
--- Dumping data for table `operation`
+-- Dumping data for table `jshop_operation`
 --
 
-INSERT INTO `operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES
+INSERT INTO `jshop_operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES
   (2, 1, '管理后台', 'manage', 'm', 1, 1, 200),
   (91, 88, '添加物流公司', 'add', 'a', 0, 3, 100),
   (155, 129, '商品评价查看', 'getcommentinfo', 'a', 129, 3, 100),
@@ -4372,7 +4334,7 @@ INSERT INTO `operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu
   (243, 238, '积分编辑', 'editPoint', 'a', 241, 2, 100),
   (244, 2, '控制面板', 'Setting', 'c', 2, 1, 200),
   (245, 244, '店铺设置', 'index', 'a', 244, 1, 100),
-  (246, 2, '支付方式', 'Payments', 'c', 0, 1, 100),
+  (246, 2, '支付方式', 'Payments', 'c', 2, 2, 100),
   (247, 246, '支付方式列表', 'index', 'a', 244, 1, 100),
   (248, 246, '支付方式添加', 'add', 'a', 247, 2, 100),
   (249, 246, '支付方式修改', 'edit', 'a', 247, 2, 100),
@@ -4517,7 +4479,7 @@ INSERT INTO `operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu
   (407, 404, '发货单明细', 'items', 'a', 405, 3, 100),
   (408, 2, '消息中心', 'MessageCenter', 'c', 0, 1, 100),
   (409, 408, '消息配置', 'index', 'a', 244, 1, 100),
-  (410, 2, '角色管理', 'Role', 'c', 0, 1, 100),
+  (410, 2, '角色管理', 'Role', 'c', 2, 2, 100),
   (411, 410, '角色管理', 'index', 'a', 238, 1, 100),
   (412, 410, '角色添加', 'add', 'a', 411, 2, 100),
   (413, 410, '角色删除', 'del', 'a', 411, 2, 100),
@@ -4568,15 +4530,19 @@ INSERT INTO `operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu
   (475, 464, '卸载插件', 'uninstall', 'a', 465, 2, 100),
   (476, 464, '插件配置', 'setting', 'a', 465, 2, 100),
   (477, 464, '保存配置', 'doSetting', 'a', 465, 3, 100),
-  (478, 464, '插件启用/停用', 'changeStatus', 'a', 465, 2, 100);
+  (478, 464, '插件启用/停用', 'changeStatus', 'a', 465, 2, 100),
+  (479, 2, '微信管理', 'Wechat', 'c', 2, 1, 100),
+  (480, 479, '小程序配置', 'edit', 'a', 479, 1, 100),
+  (481, 479, '模板列表', 'template', 'a', 479, 1, 100),
+  (482, 479, '保存配置', 'doEdit', 'a', 479, 2, 100);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `operation_log`
+-- Table structure for table `jshop_operation_log`
 --
 
-CREATE TABLE `operation_log` (
+CREATE TABLE `jshop_operation_log` (
   `id` int(10) UNSIGNED NOT NULL,
   `manage_id` int(10) UNSIGNED DEFAULT NULL COMMENT '管理员ID',
   `controller` varchar(50) DEFAULT NULL COMMENT '操作的控制器名',
@@ -4590,10 +4556,10 @@ CREATE TABLE `operation_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order`
+-- Table structure for table `jshop_order`
 --
 
-CREATE TABLE `order` (
+CREATE TABLE `jshop_order` (
   `order_id` varchar(20) NOT NULL,
   `goods_amount` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '商品总价',
   `payed` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '已支付的金额',
@@ -4637,10 +4603,10 @@ CREATE TABLE `order` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_items`
+-- Table structure for table `jshop_order_items`
 --
 
-CREATE TABLE `order_items` (
+CREATE TABLE `jshop_order_items` (
   `id` int(10) UNSIGNED NOT NULL,
   `order_id` varchar(20) NOT NULL COMMENT '订单ID 关联order.id',
   `goods_id` int(10) UNSIGNED DEFAULT NULL COMMENT '商品ID 关联goods.id',
@@ -4662,29 +4628,13 @@ CREATE TABLE `order_items` (
   `utime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单明细表';
 
---
--- Dumping data for table `order_items`
---
-
-INSERT INTO `order_items` (`id`, `order_id`, `goods_id`, `product_id`, `sn`, `bn`, `name`, `price`, `costprice`, `mktprice`, `image_url`, `nums`, `amount`, `promotion_amount`, `promotion_list`, `weight`, `sendnums`, `addon`, `utime`) VALUES
-  (1, '15378660674172', 1, 7, 'P5378659179993', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '450.00', NULL, '0.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '450.00', '0.00', '[]', '400.00', 0, '颜色:红色,规格:规格3', 1537866067),
-  (2, '15379429984146', 1, 2, 'P5378659179512', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '0.10', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '0.10', '0.00', '[]', '400.00', 0, '颜色:白色,规格:规格1', 1537942998),
-  (3, '15379473874089', 1, 2, 'P5378659179512', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '0.10', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '0.10', '0.00', '[]', '400.00', 0, '颜色:白色,规格:规格1', 1537947387),
-  (4, '15379491106204', 1, 1, 'P5378659179491', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '450.00', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '450.00', '0.00', '[]', '400.00', 0, '颜色:红色,规格:规格1', 1537949110),
-  (5, '15379497406979', 1, 2, 'P5378659179512', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '0.10', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '0.10', '0.00', '[]', '400.00', 1, '颜色:白色,规格:规格1', 1537949740),
-  (6, '15379531244507', 1, 1, 'P5378659179491', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '450.00', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '450.00', '0.00', '[]', '400.00', 0, '颜色:红色,规格:规格1', 1537953124),
-  (7, '15379531879445', 1, 1, 'P5378659179491', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '450.00', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '450.00', '0.00', '[]', '400.00', 0, '颜色:红色,规格:规格1', 1537953187),
-  (8, '15379534034009', 1, 2, 'P5378659179512', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '0.10', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '0.10', '0.00', '[]', '400.00', 1, '颜色:白色,规格:规格1', 1537953403),
-  (9, '15380213346461', 1, 1, 'P5378659179491', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '450.00', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '450.00', '0.00', '[]', '400.00', 1, '颜色:红色,规格:规格1', 1538021334),
-  (10, '15380213346461', 1, 2, 'P5378659179512', '118336505', 'DKCHENPIN2018秋新款天丝中长款修身风衣外套女', '0.10', NULL, '600.00', 'http://b2c.jihainet.com/static/uploads/b7/03/ed/5ba9e78922087.jpg', 1, '0.10', '0.00', '[]', '400.00', 1, '颜色:白色,规格:规格1', 1538021334);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_log`
+-- Table structure for table `jshop_order_log`
 --
 
-CREATE TABLE `order_log` (
+CREATE TABLE `jshop_order_log` (
   `id` int(10) UNSIGNED NOT NULL COMMENT 'ID',
   `order_id` varchar(20) DEFAULT NULL COMMENT '订单ID',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户ID',
@@ -4694,47 +4644,13 @@ CREATE TABLE `order_log` (
   `ctime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '创建时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单记录表';
 
---
--- Dumping data for table `order_log`
---
-
-INSERT INTO `order_log` (`id`, `order_id`, `user_id`, `type`, `msg`, `data`, `ctime`) VALUES
-  (1, '15378660674172', 1, 1, '订单创建', '{\"order_id\":\"15378660674172\",\"goods_amount\":450,\"order_amount\":450,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537866067),
-  (2, '15379429984146', 1, 1, '订单创建', '{\"order_id\":\"15379429984146\",\"goods_amount\":0.1,\"order_amount\":0.1,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537942998),
-  (3, '15379429984146', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u6210\\u529f\"', 1537943035),
-  (4, '15379473874089', 1, 1, '订单创建', '{\"order_id\":\"15379473874089\",\"goods_amount\":0.1,\"order_amount\":0.1,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537947387),
-  (5, '15379473874089', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u6210\\u529f\"', 1537947543),
-  (6, '15378660674172', 1, 7, '订单取消操作', '[[\"order_id\",\"in\",\"15378660674172\"],[\"pay_status\",\"eq\",1],[\"status\",\"eq\",1],[\"ship_status\",\"eq\",1]]', 1537947753),
-  (7, '15379491106204', 2, 1, '订单创建', '{\"order_id\":\"15379491106204\",\"goods_amount\":450,\"order_amount\":450,\"cost_freight\":\"0.00\",\"user_id\":2,\"ship_area_id\":110101,\"ship_address\":\"\\u6d4b\\u8bd5\\u5730\\u5740\",\"ship_name\":\"\\u5468\\u5929\\u5b87\",\"ship_mobile\":\"13233214433\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537949110),
-  (8, '15379497406979', 1, 1, '订单创建', '{\"order_id\":\"15379497406979\",\"goods_amount\":0.1,\"order_amount\":0.1,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"117.136.104.195\"}', 1537949740),
-  (9, '15379497406979', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u6210\\u529f\"', 1537949750),
-  (10, '15379531244507', 1, 1, '订单创建', '{\"order_id\":\"15379531244507\",\"goods_amount\":450,\"order_amount\":450,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537953124),
-  (11, '15379531879445', 1, 1, '订单创建', '{\"order_id\":\"15379531879445\",\"goods_amount\":450,\"order_amount\":450,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537953187),
-  (12, '15379534034009', 1, 1, '订单创建', '{\"order_id\":\"15379534034009\",\"goods_amount\":0.1,\"order_amount\":0.1,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":400,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.117\"}', 1537953403),
-  (13, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u6210\\u529f\"', 1538018897),
-  (14, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538019225),
-  (15, '15379534034009', 1, 3, '订单发货操作', '[\"15379534034009\",\"sf\",\"836198574698\",\"\",[[\"8\",\"1\"]]]', 1538019542),
-  (16, '15379534034009', 1, 4, '确认签收操作', '[[\"order_id\",\"eq\",\"15379534034009\"],[\"pay_status\",\"neq\",1],[\"ship_status\",\"neq\",1],[\"status\",\"eq\",1],[\"confirm\",\"neq\",2],[\"user_id\",\"eq\",1]]', 1538019605),
-  (17, '15379497406979', 1, 3, '订单发货操作', '[\"15379497406979\",\"sf\",\"89987879\",\"\",[[\"5\",\"1\"]]]', 1538021179),
-  (18, '15379497406979', 1, 4, '确认签收操作', '[[\"order_id\",\"eq\",\"15379497406979\"],[\"pay_status\",\"neq\",1],[\"ship_status\",\"neq\",1],[\"status\",\"eq\",1],[\"confirm\",\"neq\",2],[\"user_id\",\"eq\",1]]', 1538021248),
-  (19, '15380213346461', 1, 1, '订单创建', '{\"order_id\":\"15380213346461\",\"goods_amount\":450.1,\"order_amount\":450.1,\"cost_freight\":\"0.00\",\"user_id\":1,\"ship_area_id\":440105,\"ship_address\":\"\\u65b0\\u6e2f\\u4e2d\\u8def397\\u53f7\",\"ship_name\":\"\\u5f20\\u4e09\",\"ship_mobile\":\"020-81167888\",\"logistics_id\":null,\"weight\":800,\"order_pmt\":0,\"goods_pmt\":0,\"coupon_pmt\":0,\"coupon\":\"[]\",\"memo\":\"\",\"ip\":\"223.88.55.133\"}', 1538021334),
-  (20, '15380213346461', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u6210\\u529f\"', 1538021348),
-  (21, '15380213346461', 1, 3, '订单发货操作', '[\"15380213346461\",\"sf\",\"yujghgjhgjghyj\",\"\",[[\"9\",\"1\"],[\"10\",\"1\"]]]', 1538021359),
-  (22, '15380213346461', 1, 4, '确认签收操作', '[[\"order_id\",\"eq\",\"15380213346461\"],[\"pay_status\",\"neq\",1],[\"ship_status\",\"neq\",1],[\"status\",\"eq\",1],[\"confirm\",\"neq\",2],[\"user_id\",\"eq\",1]]', 1538021369),
-  (23, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538025285),
-  (24, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538041276),
-  (25, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538041727),
-  (26, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538044425),
-  (27, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538044874),
-  (28, '15379534034009', 1, NULL, '2', '\"\\u8ba2\\u5355\\u652f\\u4ed8\\u5931\\u8d25\\uff0c\\u8be5\\u8ba2\\u5355\\u5df2\\u652f\\u4ed8\"', 1538045367);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payments`
+-- Table structure for table `jshop_payments`
 --
 
-CREATE TABLE `payments` (
+CREATE TABLE `jshop_payments` (
   `id` smallint(5) UNSIGNED NOT NULL,
   `code` varchar(50) DEFAULT NULL COMMENT '支付类型编码',
   `name` varchar(50) DEFAULT NULL COMMENT '支付类型名称',
@@ -4745,22 +4661,24 @@ CREATE TABLE `payments` (
   `status` smallint(1) UNSIGNED NOT NULL DEFAULT '2' COMMENT '启用状态 1=启用 2=停用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付方式表';
 
+
 --
--- Dumping data for table `payments`
+-- Dumping data for table `jshop_hooks`
 --
 
-INSERT INTO `payments` (`id`, `code`, `name`, `is_online`, `params`, `sort`, `memo`, `status`) VALUES
-  (1, 'wechatpay', '微信支付', 1, '{\"appid\":\"wxd9d17d7370b11efd\",\"mch_id\":\"1497851492\",\"key\":\"12345678901234567890123456789012\",\"sslcert\":\"5bab26b2a878a.pem\",\"sslkey\":\"5bab26b675d71.pem\"}', 222, '点击去微信支付', 1),
-  (2, 'alipay', '支付宝支付', 1, '{\"appid\":\"2018060560313727\",\"rsa_private_key\":\"MIIEowIBAAKCAQEA18Km\\/YKsi6vcwLHYarzlILEuXEkYzDXX8JCTM9\\/4wJNKY+X4kq0HskiAu1eOhMUFRGCM3jb6xpSKL47kjkR6gf4aM+er2pHBWyzNiBWaWJtLMr31HGBquGhbcV28aCCMrA81WVy6TJolzGg+FeHrwPngoLormkCgeG9TMywPjqXDZgsrmO5yz9jvQWkHc0NsnvhZGqBw8sDD5P6ZP\\/yoVM\\/5ny3TNKDB6gAuu\\/aProSLVlptn982vblmL6fcWTfxbXg\\/Kc7JWDj908ChloJZlIuPmMP+yb2btuuv3R9sExFY25lZF7GU\\/+FP13rRQVc6E\\/v\\/SUl4WuNU+8qg5Pq7HQIDAQABAoIBADzfZDG9\\/mRhlqSfCIoExThWBNhwnxhuUIBEqeNG222poKFSrrDjNHquTfONHl6DH5tNCjFfnZ0NJ3eHfyBMXavzPv1J7Yh6+ux4VXyBa8x3891bDp507Wcduj7fzVorZMTefZS6vq0CCIwFFQ8jcFo\\/pYpzO\\/4HIb8Y2YZkdfcudLFFzBeypTn91f5y49Tb1iAENPUoV\\/HRiUhG7b9Tjs0tMJq47niGkrWb6IuOMAcFS1qtfIM1jBhAj8ftMqMc6KKXdt04qAjSRFxi3T8pH8I7EukPwBQsiSxNZETg53Sc+gm44WbaX7BLbgB+132mVuxSRLsWrMLlOUEApriXWlkCgYEA72bJapc76Uw7UgQ9oLQT7GBQV2kY0Rj8F7poZVIBL91BMMCIxgQ6MMma8S+FgSPP\\/jyNCc5+32cyEyt7QR74aNtKuE70GTLW2EY8WgpqvAtdj+M\\/rVmk2VbVNHog9OPoB6vZknevgCa\\/+c6zSx2JnOOXhrxZa06Su09UpU3Lj2sCgYEA5rhAUqOC5X5eEHvEDlWFzI\\/seNroxo9XzixM9fRVRQH0qVvlXEDctK3GfOJwSYiqYi5BCYloU2GKV5QYvo52MsO+IoWvOVxDFs\\/1EYzVsuwGFLJZ2kImQPALLSES87c6K\\/XrGJ7nUySSXXvu32FHXKILynfmqnmxbrHVjAkTKZcCgYB0o0WasxgzcDqumPZVp6bVUY+TJtc6eMvJ274lLzD42vl6ATQiFcksH+1neNm4s3QQz\\/t\\/PaY+vg59nH+umKI6pCzhY0Y2SLi4InAhBlY+S+NHyVYq5TQV1+KEcMRBzBAuPKICZGGTNE3wLa7Y+Akl8RTQRk\\/ioiOHMv1wlFiLBQKBgQC9YtlJ\\/HZiM4y7Mx0INyORe0K9IdSZyOhmkO7LpjioYKaYrppjU8rXdR3NPYK2mbxiw10XmvdMGnEY2rRFF2Pm386fP+VJzHY1r5aXRWfVavDC5HPlOQ91lpVWAiQwcmMJ2t+UYju4f\\/i1TBoUuyF85HeRR0LNBP+kwc1tGbXlGQKBgAnlO8bPx3viY8pLNMsgclorGVX1j\\/glCeygvTjS1L3cXAa8u4gdSxdLa6Qw3eJh3inDNL4IZk1Hz4OcZZVTKSONvv8HS6sUs+S0sJPlSPzktVoX89TpK9Ygwj6pPCt2oQfuclMRzVL\\/akR3DJupjE+ic\\/z3wowMR5oWftIUQ7Qj\",\"alipay_public_key\":\"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqGO790Hr8q9fqr7E\\/5Xvium3\\/\\/yfZIK+DiAXoQFLqSHqBGn79QJV0mFwjO3XWHN3ycAs3jv3jv1tdqCZlaUuUGTZuU6U+FRiQKOy7FVLJiiPDBhlVra6avxzWEOVcr7XlMn5nqeVvkmsIdXxdS+mQviS2Reaj4zcyv4bBxHNqlcgiGOKpQiSdh+N552CWW3hQUPFNWNXwTUb\\/fHYQ8DUUpvrH7mxAdCnrFIOlggaoqiGI8DtSOqOTgWGJ1n40\\/47xXZ+ipYKFtmI2IbGO+ygIyzcV\\/AkexnNWasblwwoZcnZmCEGVPJC9ssAtPy7pC9FTWDZZQ2I3UeqnDnP9ENTGwIDAQAB\"}', 100, '点击去支付宝支付', 1),
+INSERT INTO `jshop_payments` (`id`, `code`, `name`, `is_online`, `params`, `sort`, `memo`, `status`) VALUES
+  (1, 'wechatpay', '微信支付', 1, '{\"appid\":\"\",\"mch_id\":\"\",\"key\":\"\",\"sslcert\":\"\",\"sslkey\":\"\"}', 100, '点击去微信支付', 2),
+  (2, 'alipay', '支付宝支付', 1, '{\"appid\":\"\",\"rsa_private_key\":\"\",\"alipay_public_key\":\"\"}', 100, '点击去支付宝支付', 2),
   (3, 'offline', '线下支付', 2, '', 100, '联系客服进行线下付款', 1);
+
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Table structure for table `jshop_products`
 --
 
-CREATE TABLE `products` (
+CREATE TABLE `jshop_products` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '货品ID',
   `goods_id` int(10) UNSIGNED DEFAULT NULL COMMENT '商品id 关联goods.id',
   `barcode` varchar(128) DEFAULT NULL COMMENT '货品条码',
@@ -4776,34 +4694,13 @@ CREATE TABLE `products` (
   `isdel` bigint(12) UNSIGNED DEFAULT NULL COMMENT '删除标志'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='货品表';
 
---
--- Dumping data for table `products`
---
-
-INSERT INTO `products` (`id`, `goods_id`, `barcode`, `sn`, `price`, `costprice`, `mktprice`, `marketable`, `stock`, `freeze_stock`, `spes_desc`, `is_defalut`, `isdel`) VALUES
-  (1, 1, NULL, 'P5378659179491', '450.00', '0.00', '600.00', 1, 199, 3, '颜色:红色,规格:规格1', 1, NULL),
-  (2, 1, NULL, 'P5378659179512', '0.10', '0.00', '600.00', 2, 197, 2, '颜色:白色,规格:规格1', 2, NULL),
-  (3, 1, NULL, 'P5378659179940', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:蓝色,规格:规格1', 2, NULL),
-  (4, 1, NULL, 'P5378659179961', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:白色,规格:规格2', 2, NULL),
-  (5, 1, NULL, 'P5378659179972', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:绿色,规格:规格2', 2, NULL),
-  (6, 1, NULL, 'P5378659179981', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:蓝色,规格:规格2', 2, NULL),
-  (7, 1, NULL, 'P5378659179993', '450.00', '0.00', '0.00', 2, 196, 0, '颜色:红色,规格:规格3', 2, NULL),
-  (8, 1, NULL, 'P5378659180005', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:白色,规格:规格3', 2, NULL),
-  (9, 1, NULL, 'P5378659180001', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:绿色,规格:规格3', 2, NULL),
-  (10, 1, NULL, 'P5378659180011', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:蓝色,规格:规格3', 2, NULL),
-  (11, 1, NULL, 'P5378659180024', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:红色,规格:规格4', 2, NULL),
-  (12, 1, NULL, 'P5378659180035', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:白色,规格:规格4', 2, NULL),
-  (13, 1, NULL, 'P5378659180105', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:绿色,规格:规格4', 2, NULL),
-  (14, 1, NULL, 'P5378659180100', '450.00', '0.00', '0.00', 2, 200, 0, '颜色:蓝色,规格:规格4', 2, NULL),
-  (22, 1, NULL, 'P5379429769422', '0.00', '0.00', '0.00', 1, 0, 0, 'id', 2, NULL);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `promotion`
+-- Table structure for table `jshop_promotion`
 --
 
-CREATE TABLE `promotion` (
+CREATE TABLE `jshop_promotion` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(40) NOT NULL COMMENT '促销名称',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '启用状态，1开启，2关闭',
@@ -4819,10 +4716,10 @@ CREATE TABLE `promotion` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `promotion_condition`
+-- Table structure for table `jshop_promotion_condition`
 --
 
-CREATE TABLE `promotion_condition` (
+CREATE TABLE `jshop_promotion_condition` (
   `id` int(11) NOT NULL,
   `promotion_id` int(10) UNSIGNED DEFAULT NULL COMMENT '促销ID',
   `code` varchar(50) DEFAULT NULL COMMENT '促销条件编码',
@@ -4832,10 +4729,10 @@ CREATE TABLE `promotion_condition` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `promotion_result`
+-- Table structure for table `jshop_promotion_result`
 --
 
-CREATE TABLE `promotion_result` (
+CREATE TABLE `jshop_promotion_result` (
   `id` int(11) NOT NULL,
   `promotion_id` int(10) UNSIGNED DEFAULT NULL COMMENT '促销ID',
   `code` varchar(50) DEFAULT NULL COMMENT '促销条件编码',
@@ -4845,57 +4742,21 @@ CREATE TABLE `promotion_result` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role`
+-- Table structure for table `jshop_setting`
 --
 
-CREATE TABLE `role` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `name` varchar(50) DEFAULT NULL COMMENT '角色名称',
-  `utime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `role_operation_rel`
---
-
-CREATE TABLE `role_operation_rel` (
-  `role_id` int(10) UNSIGNED NOT NULL COMMENT '角色ID 关联role.id',
-  `operation_id` int(10) UNSIGNED DEFAULT NULL COMMENT '权限ID 关联operation.id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色权限表';
-
--- --------------------------------------------------------
-
---
--- Table structure for table `setting`
---
-
-CREATE TABLE `setting` (
+CREATE TABLE `jshop_setting` (
   `skey` varchar(50) NOT NULL DEFAULT '' COMMENT '键',
   `value` text COMMENT '值'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺设置表';
 
---
--- Dumping data for table `setting`
---
-
-INSERT INTO `setting` (`skey`, `value`) VALUES
-  ('wx_appid', 'wxd9d17d7370b11efd'),
-  ('wx_app_secret', '172c182d95a872fbd6148f5f1b4901e6'),
-  ('wx_head_img', ''),
-  ('wx_nick_name', 'JSHOP云商'),
-  ('wx_principal_name', '河南吉海网络科技有限公司'),
-  ('wx_signature', 'Jshop小程序是一款标准B2C商城小程序'),
-  ('wx_user_name', 'gh_03bc4364b4dc');
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ship`
+-- Table structure for table `jshop_ship`
 --
 
-CREATE TABLE `ship` (
+CREATE TABLE `jshop_ship` (
   `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(50) DEFAULT NULL COMMENT '配送方式名称',
   `has_cod` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '是否货到付款 1=不是货到付款 2=是货到付款',
@@ -4918,10 +4779,10 @@ CREATE TABLE `ship` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sms`
+-- Table structure for table `jshop_sms`
 --
 
-CREATE TABLE `sms` (
+CREATE TABLE `jshop_sms` (
   `id` int(10) UNSIGNED NOT NULL,
   `mobile` varchar(15) NOT NULL COMMENT '手机号码',
   `code` varchar(60) NOT NULL,
@@ -4932,23 +4793,13 @@ CREATE TABLE `sms` (
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '1未使用，2已使用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `sms`
---
-
-INSERT INTO `sms` (`id`, `mobile`, `code`, `params`, `content`, `ctime`, `ip`, `status`) VALUES
-  (1, '15237211882', 'login', '{\"code\":596181}', '您正在登陆账号，验证码是596181，请勿告诉他人。', 1537865641, '223.88.55.117', 2),
-  (2, '13233214433', 'reg', '{\"code\":888459}', '您正在注册账号，验证码是888459，请勿告诉他人。', 1537949040, '223.88.55.117', 2),
-  (3, '15237211882', 'login', '{\"code\":340114}', '您正在登陆账号，验证码是340114，请勿告诉他人。', 1537949518, '117.136.104.195', 2),
-  (4, '15237211882', 'login', '{\"code\":504347}', '您正在登陆账号，验证码是504347，请勿告诉他人。', 1537953168, '223.88.55.117', 2);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `store`
+-- Table structure for table `jshop_store`
 --
 
-CREATE TABLE `store` (
+CREATE TABLE `jshop_store` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'id',
   `seller_id` int(10) UNSIGNED DEFAULT NULL COMMENT '商户id',
   `store_name` varchar(125) DEFAULT NULL COMMENT '门店名称',
@@ -4965,10 +4816,10 @@ CREATE TABLE `store` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `template`
+-- Table structure for table `jshop_template`
 --
 
-CREATE TABLE `template` (
+CREATE TABLE `jshop_template` (
   `id` int(10) NOT NULL,
   `name` varchar(200) DEFAULT NULL COMMENT '模板名称',
   `th_template_id` int(10) UNSIGNED DEFAULT NULL COMMENT '模板ID，第三方平台id',
@@ -4986,20 +4837,13 @@ CREATE TABLE `template` (
   `utime` int(10) DEFAULT NULL COMMENT '数据更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模板列表';
 
---
--- Dumping data for table `template`
---
-
-INSERT INTO `template` (`id`, `name`, `th_template_id`, `create_time`, `user_desc`, `source_appid`, `developer`, `version`, `image_id`, `desc`, `qr_demo`, `type`, `ext_json`, `ctime`, `utime`) VALUES
-  (1, '小程序商城模板1', 12, 1521426178, '发布上线1.0', 'wxd9d17d7370b11efd', 'Jshop云商', '1.0.14', NULL, NULL, NULL, 1, '{\n    \"extEnable\": true,\n    \"extAppid\": \"{{$appid}}\",\n    \"directCommit\": false,\n      \"ext\": {\n      \"name\": \"{{$nick_name}}\",\n      \"attr\":{\n        \"api_url\":\"https://jshop.jihainet.com/index.php/api.html\",\n        \"cdn_url\":\"\",\n        \"app_title\":\"{{$nick_name}}\",\n        \"app_description\":\"{{$signature}}\",\n        \"app_logo\":\"{{$app_logo}}\",\n        \"site_token\":\"{{$site_token}}\"\n      }\n    },\n    \"pages\": [\n	\"pages/index/index\",\n	\"pages/member/order/orderDetail/orderDetail\",\n	\"pages/goods/classify/classify\",\n	\"pages/goods/itemList/itemList\",\n	\"pages/goods/detail/detail\",\n	\"pages/cart/cartNothing/cart\",\n	\"pages/member/info/info\",\n	\"pages/cart/cashierDesk/cashierDesk\",\n	\"pages/cart/firmOrder/firmOrder\",\n	\"pages/cart/paySuccess/paySuccess\",\n	\"pages/member/index/index\",\n	\"pages/member/order/orderList/orderList\",\n	\"pages/member/login/level1/level1\",\n	\"pages/member/login/level2/level2\",\n	\"pages/member/collect/collect\",\n	\"pages/member/data/data\",\n	\"pages/member/coupon/coupon\",\n	\"pages/member/order/aftersales/add\",\n	\"pages/member/order/aftersales/edit\",\n	\"pages/member/browsingHistory/browsingHistory\",\n	\"pages/member/order/comment/comment\",    \n	\"pages/other/notice/notice\",\n	\"pages/other/article/article\",\n	\"pages/member/order/aftersalesList/aftersalesList\"\n    ],\n    \"window\": {\n	    \"backgroundTextStyle\":\"light\",\n	    \"navigationBarBackgroundColor\": \"#fff\",\n	    \"navigationBarTitleText\": \"{{$nick_name}}\",\n	    \"navigationBarTextStyle\":\"black\"\n    },\n    \"tabBar\": {\n	    \"color\": \"#999\",\n	    \"selectedColor\": \"#FF3A59\",\n	    \"backgroundColor\": \"#fff\",\n      \"list\": [\n        {\n	\"pagePath\": \"pages/index/index\",\n        \"text\": \"首页\",\n        \"iconPath\": \"pages/image/dollar6.png\",\n        \"selectedIconPath\": \"pages/image/dollar4.png\"\n        },\n        {\n          \"pagePath\": \"pages/goods/classify/classify\",\n          \"text\": \"全部分类\",\n          \"iconPath\": \"pages/image/dollar3.png\",\n          \"selectedIconPath\": \"pages/image/dollar7.png\"\n        },\n        {\n          \"pagePath\": \"pages/cart/cartNothing/cart\",\n          \"text\": \"购物车\",\n          \"iconPath\": \"pages/image/dollar2.png\",\n          \"selectedIconPath\": \"pages/image/dollar8.png\"\n        },\n        {\n          \"pagePath\": \"pages/member/index/index\",\n          \"text\": \"个人中心\",\n          \"iconPath\": \"pages/image/dollar.png\",\n          \"selectedIconPath\": \"pages/image/dollar5.png\"\n        }\n      ]\n    },\n    \"networkTimeout\": {\n	    \"request\": 10000,\n	    \"connectSocket\": 10000,\n	    \"uploadFile\": 10000,\n	    \"downloadFile\": 10000\n    }\n\n}', 1521432582, 1521432582);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `template_order`
+-- Table structure for table `jshop_template_order`
 --
 
-CREATE TABLE `template_order` (
+CREATE TABLE `jshop_template_order` (
   `id` int(10) NOT NULL,
   `template_id` int(10) UNSIGNED DEFAULT '0' COMMENT '模板id',
   `appid` varchar(50) DEFAULT NULL COMMENT '商户appid',
@@ -5010,10 +4854,10 @@ CREATE TABLE `template_order` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Table structure for table `jshop_user`
 --
 
-CREATE TABLE `user` (
+CREATE TABLE `jshop_user` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '用户ID',
   `username` varchar(20) DEFAULT NULL COMMENT '用户名',
   `password` char(32) DEFAULT NULL COMMENT '密码 md5(md5()+创建时间)',
@@ -5031,21 +4875,13 @@ CREATE TABLE `user` (
   `isdel` bigint(12) UNSIGNED DEFAULT NULL COMMENT '删除标志 有数据就是删除'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`, `password`, `mobile`, `sex`, `birthday`, `avatar`, `nickname`, `balance`, `point`, `ctime`, `utime`, `status`, `pid`, `isdel`) VALUES
-  (1, NULL, NULL, '15237211882', 3, NULL, '/static/images/default.png', NULL, '0.00', 0, 1537865655, 1537934810, 1, 0, NULL),
-  (2, NULL, '6beece40d9ea3c1ceca785a9f94e98ba', '13233214433', 3, NULL, 'https://b2c.jihainet.com/static/uploads/b4/10/f7/5bab3d8e8847e.jpg', '13233****33', '0.00', 0, 1537949060, 1537949070, 1, 0, NULL);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_bankcards`
+-- Table structure for table `jshop_user_bankcards`
 --
 
-CREATE TABLE `user_bankcards` (
+CREATE TABLE `jshop_user_bankcards` (
   `id` int(10) UNSIGNED NOT NULL COMMENT 'ID号',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户ID',
   `bank_name` varchar(60) DEFAULT NULL COMMENT '银行名称',
@@ -5063,10 +4899,10 @@ CREATE TABLE `user_bankcards` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_log`
+-- Table structure for table `jshop_user_log`
 --
 
-CREATE TABLE `user_log` (
+CREATE TABLE `jshop_user_log` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'id',
   `user_id` int(11) UNSIGNED NOT NULL COMMENT '用户id',
   `state` tinyint(1) DEFAULT NULL COMMENT '登录 1  退出2,3注册',
@@ -5075,27 +4911,13 @@ CREATE TABLE `user_log` (
   `ip` varchar(15) DEFAULT NULL COMMENT 'ip地址'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `user_log`
---
-
-INSERT INTO `user_log` (`id`, `user_id`, `state`, `ctime`, `params`, `ip`) VALUES
-  (1, 1, 1, 1537865655, '[]', '223.88.55.117'),
-  (2, 2, 1, 1537949060, '[]', '223.88.55.117'),
-  (3, 2, 1, 1537949298, '[]', '218.26.55.173'),
-  (4, 1, 1, 1537949533, '[]', '117.136.104.195'),
-  (5, 2, 1, 1537949950, '[]', '223.88.55.117'),
-  (6, 2, 1, 1537950684, '[]', '218.26.55.173'),
-  (7, 1, 1, 1537953183, '[]', '223.88.55.117'),
-  (8, 2, 1, 1538985271, '[]', '223.88.55.164');
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_point_log`
+-- Table structure for table `jshop_user_point_log`
 --
 
-CREATE TABLE `user_point_log` (
+CREATE TABLE `jshop_user_point_log` (
   `id` int(10) UNSIGNED NOT NULL COMMENT 'ID',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT '用户ID',
   `type` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '类型 1=签到 2=购物返积分 3=购物使用积分',
@@ -5108,10 +4930,10 @@ CREATE TABLE `user_point_log` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_ship`
+-- Table structure for table `jshop_user_ship`
 --
 
-CREATE TABLE `user_ship` (
+CREATE TABLE `jshop_user_ship` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户id 关联user.id',
   `area_id` int(10) UNSIGNED DEFAULT NULL COMMENT '收货地区ID',
@@ -5122,21 +4944,13 @@ CREATE TABLE `user_ship` (
   `is_def` tinyint(1) UNSIGNED DEFAULT NULL COMMENT '是否默认 1=默认 2=不默认'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `user_ship`
---
-
-INSERT INTO `user_ship` (`id`, `user_id`, `area_id`, `address`, `name`, `mobile`, `utime`, `is_def`) VALUES
-  (1, 1, 440105, '新港中路397号', '张三', '020-81167888', 1537866053, 1),
-  (2, 2, 110101, '测试地址', '周天宇', '13233214433', 1537949101, 1);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_tocash`
+-- Table structure for table `jshop_user_tocash`
 --
 
-CREATE TABLE `user_tocash` (
+CREATE TABLE `jshop_user_tocash` (
   `id` int(10) UNSIGNED NOT NULL COMMENT 'ID号',
   `user_id` int(10) UNSIGNED DEFAULT NULL COMMENT '用户ID',
   `money` decimal(8,2) UNSIGNED NOT NULL DEFAULT '0.00' COMMENT '提现金额',
@@ -5153,32 +4967,23 @@ CREATE TABLE `user_tocash` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_token`
+-- Table structure for table `jshop_user_token`
 --
 
-CREATE TABLE `user_token` (
+CREATE TABLE `jshop_user_token` (
   `token` char(32) NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
   `platform` smallint(2) NOT NULL DEFAULT '1' COMMENT '平台类型，1就是默认，2就是微信小程序',
   `ctime` bigint(12) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户token';
 
---
--- Dumping data for table `user_token`
---
-
-INSERT INTO `user_token` (`token`, `user_id`, `platform`, `ctime`) VALUES
-  ('2b38b390c5f4eee8e0919122aa1579d3', 2, 1, 1538985271),
-  ('4f78e86c436a34684693c16ec3d381f5', 1, 2, 1537934810),
-  ('7f98fa567f098a6353f3be8053370a1c', 1, 1, 1537953183);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_wx`
+-- Table structure for table `jshop_user_wx`
 --
 
-CREATE TABLE `user_wx` (
+CREATE TABLE `jshop_user_wx` (
   `id` int(10) UNSIGNED NOT NULL COMMENT '用户ID',
   `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '关联用户表',
   `openid` varchar(50) NOT NULL,
@@ -5197,20 +5002,13 @@ CREATE TABLE `user_wx` (
   `utime` bigint(12) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
---
--- Dumping data for table `user_wx`
---
-
-INSERT INTO `user_wx` (`id`, `user_id`, `openid`, `session_key`, `unionid`, `avatar`, `nickname`, `gender`, `language`, `city`, `province`, `country`, `country_code`, `mobile`, `ctime`, `utime`) VALUES
-  (1, 1, 'otdEl0Uz_TYsgWYHLiDtyxkpqmrU', 'WefLZfi13TuREFRcOCeAww==', '', NULL, NULL, 0, '', '', '', '', '86', '15237211882', 1537934803, 1537934810);
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `weixin_author`
+-- Table structure for table `jshop_weixin_author`
 --
 
-CREATE TABLE `weixin_author` (
+CREATE TABLE `jshop_weixin_author` (
   `id` int(10) NOT NULL,
   `nick_name` varchar(255) DEFAULT NULL COMMENT '授权方昵称',
   `head_img` varchar(255) DEFAULT NULL COMMENT '授权方头像',
@@ -5238,10 +5036,10 @@ CREATE TABLE `weixin_author` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `weixin_publish`
+-- Table structure for table `jshop_weixin_publish`
 --
 
-CREATE TABLE `weixin_publish` (
+CREATE TABLE `jshop_weixin_publish` (
   `id` int(10) UNSIGNED NOT NULL,
   `template_id` int(10) UNSIGNED DEFAULT '0' COMMENT '模板id，不是第三方平台模板id',
   `ctime` int(10) UNSIGNED DEFAULT '0' COMMENT '购买模板时间',
@@ -5260,10 +5058,10 @@ CREATE TABLE `weixin_publish` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `worksheet`
+-- Table structure for table `jshop_worksheet`
 --
 
-CREATE TABLE `worksheet` (
+CREATE TABLE `jshop_worksheet` (
   `id` int(11) NOT NULL,
   `phone` char(11) NOT NULL,
   `status` char(10) NOT NULL DEFAULT '未处理',
@@ -5277,10 +5075,10 @@ CREATE TABLE `worksheet` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wsdetail`
+-- Table structure for table `jshop_wsdetail`
 --
 
-CREATE TABLE `wsdetail` (
+CREATE TABLE `jshop_wsdetail` (
   `id` int(11) NOT NULL,
   `job_num` char(20) NOT NULL,
   `event` text NOT NULL,
@@ -5293,15 +5091,15 @@ CREATE TABLE `wsdetail` (
 --
 
 --
--- Indexes for table `addons`
+-- Indexes for table `jshop_addons`
 --
-ALTER TABLE `addons`
+ALTER TABLE `jshop_addons`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `advertisement`
+-- Indexes for table `jshop_advertisement`
 --
-ALTER TABLE `advertisement`
+ALTER TABLE `jshop_advertisement`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`),
   ADD KEY `seller_id` (`seller_id`),
@@ -5309,131 +5107,131 @@ ALTER TABLE `advertisement`
   ADD KEY `sort` (`sort`);
 
 --
--- Indexes for table `advert_position`
+-- Indexes for table `jshop_advert_position`
 --
-ALTER TABLE `advert_position`
+ALTER TABLE `jshop_advert_position`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `article`
+-- Indexes for table `jshop_article`
 --
-ALTER TABLE `article`
+ALTER TABLE `jshop_article`
   ADD PRIMARY KEY (`id`),
   ADD KEY `isdel` (`isdel`);
 
 --
--- Indexes for table `article_type`
+-- Indexes for table `jshop_article_type`
 --
-ALTER TABLE `article_type`
+ALTER TABLE `jshop_article_type`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `backstage_notice`
+-- Indexes for table `jshop_backstage_notice`
 --
-ALTER TABLE `backstage_notice`
+ALTER TABLE `jshop_backstage_notice`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `balance`
+-- Indexes for table `jshop_balance`
 --
-ALTER TABLE `balance`
+ALTER TABLE `jshop_balance`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `bill_aftersales`
+-- Indexes for table `jshop_bill_aftersales`
 --
-ALTER TABLE `bill_aftersales`
+ALTER TABLE `jshop_bill_aftersales`
   ADD PRIMARY KEY (`aftersales_id`);
 
 --
--- Indexes for table `bill_aftersales_images`
+-- Indexes for table `jshop_bill_aftersales_images`
 --
-ALTER TABLE `bill_aftersales_images`
+ALTER TABLE `jshop_bill_aftersales_images`
   ADD KEY `aftersales_id` (`aftersales_id`);
 
 --
--- Indexes for table `bill_aftersales_items`
+-- Indexes for table `jshop_bill_aftersales_items`
 --
-ALTER TABLE `bill_aftersales_items`
+ALTER TABLE `jshop_bill_aftersales_items`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `bill_delivery`
+-- Indexes for table `jshop_bill_delivery`
 --
-ALTER TABLE `bill_delivery`
+ALTER TABLE `jshop_bill_delivery`
   ADD PRIMARY KEY (`delivery_id`);
 
 --
--- Indexes for table `bill_delivery_items`
+-- Indexes for table `jshop_bill_delivery_items`
 --
-ALTER TABLE `bill_delivery_items`
+ALTER TABLE `jshop_bill_delivery_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `bill_payments`
+-- Indexes for table `jshop_bill_payments`
 --
-ALTER TABLE `bill_payments`
+ALTER TABLE `jshop_bill_payments`
   ADD PRIMARY KEY (`payment_id`),
   ADD KEY `payment_id` (`payment_id`),
   ADD KEY `status` (`status`),
   ADD KEY `type` (`type`);
 
 --
--- Indexes for table `bill_payments_rel`
+-- Indexes for table `jshop_bill_payments_rel`
 --
-ALTER TABLE `bill_payments_rel`
+ALTER TABLE `jshop_bill_payments_rel`
   ADD KEY `payment_id` (`payment_id`);
 
 --
--- Indexes for table `bill_refund`
+-- Indexes for table `jshop_bill_refund`
 --
-ALTER TABLE `bill_refund`
+ALTER TABLE `jshop_bill_refund`
   ADD PRIMARY KEY (`refund_id`),
   ADD KEY `refund_id` (`refund_id`),
   ADD KEY `aftersales_id` (`aftersales_id`),
   ADD KEY `type` (`type`);
 
 --
--- Indexes for table `bill_reship`
+-- Indexes for table `jshop_bill_reship`
 --
-ALTER TABLE `bill_reship`
+ALTER TABLE `jshop_bill_reship`
   ADD PRIMARY KEY (`reship_id`);
 
 --
--- Indexes for table `bill_reship_items`
+-- Indexes for table `jshop_bill_reship_items`
 --
-ALTER TABLE `bill_reship_items`
+ALTER TABLE `jshop_bill_reship_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `reship_id` (`reship_id`),
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `brand`
+-- Indexes for table `jshop_brand`
 --
-ALTER TABLE `brand`
+ALTER TABLE `jshop_brand`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`),
   ADD KEY `sort` (`sort`),
   ADD KEY `isdel` (`isdel`);
 
 --
--- Indexes for table `cart`
+-- Indexes for table `jshop_cart`
 --
-ALTER TABLE `cart`
+ALTER TABLE `jshop_cart`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `coupon`
+-- Indexes for table `jshop_coupon`
 --
-ALTER TABLE `coupon`
+ALTER TABLE `jshop_coupon`
   ADD PRIMARY KEY (`coupon_code`);
 
 --
--- Indexes for table `goods`
+-- Indexes for table `jshop_goods`
 --
-ALTER TABLE `goods`
+ALTER TABLE `jshop_goods`
   ADD PRIMARY KEY (`id`),
   ADD KEY `isdel` (`isdel`),
   ADD KEY `is_hot` (`is_hot`),
@@ -5442,158 +5240,158 @@ ALTER TABLE `goods`
   ADD KEY `mktprice` (`mktprice`);
 
 --
--- Indexes for table `goods_browsing`
+-- Indexes for table `jshop_goods_browsing`
 --
-ALTER TABLE `goods_browsing`
+ALTER TABLE `jshop_goods_browsing`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `isdel` (`isdel`);
 
 --
--- Indexes for table `goods_cat`
+-- Indexes for table `jshop_goods_cat`
 --
-ALTER TABLE `goods_cat`
+ALTER TABLE `jshop_goods_cat`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`),
   ADD KEY `seller_id` (`parent_id`);
 
 --
--- Indexes for table `goods_collection`
+-- Indexes for table `jshop_goods_collection`
 --
-ALTER TABLE `goods_collection`
+ALTER TABLE `jshop_goods_collection`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `goods_id` (`goods_id`);
 
 --
--- Indexes for table `goods_comment`
+-- Indexes for table `jshop_goods_comment`
 --
-ALTER TABLE `goods_comment`
+ALTER TABLE `jshop_goods_comment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `display` (`display`),
   ADD KEY `goods_id` (`goods_id`);
 
 --
--- Indexes for table `goods_images`
+-- Indexes for table `jshop_goods_images`
 --
-ALTER TABLE `goods_images`
+ALTER TABLE `jshop_goods_images`
   ADD KEY `goods_id` (`goods_id`);
 
 --
--- Indexes for table `goods_params`
+-- Indexes for table `jshop_goods_params`
 --
-ALTER TABLE `goods_params`
+ALTER TABLE `jshop_goods_params`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `goods_type`
+-- Indexes for table `jshop_goods_type`
 --
-ALTER TABLE `goods_type`
+ALTER TABLE `jshop_goods_type`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `goods_type_spec`
+-- Indexes for table `jshop_goods_type_spec`
 --
-ALTER TABLE `goods_type_spec`
+ALTER TABLE `jshop_goods_type_spec`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sort` (`sort`);
 
 --
--- Indexes for table `goods_type_spec_value`
+-- Indexes for table `jshop_goods_type_spec_value`
 --
-ALTER TABLE `goods_type_spec_value`
+ALTER TABLE `jshop_goods_type_spec_value`
   ADD PRIMARY KEY (`id`),
   ADD KEY `spec_id` (`spec_id`),
   ADD KEY `sort` (`sort`);
 
 --
--- Indexes for table `hooks`
+-- Indexes for table `jshop_hooks`
 --
-ALTER TABLE `hooks`
+ALTER TABLE `jshop_hooks`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `ietask`
+-- Indexes for table `jshop_ietask`
 --
-ALTER TABLE `ietask`
+ALTER TABLE `jshop_ietask`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `images`
+-- Indexes for table `jshop_images`
 --
-ALTER TABLE `images`
+ALTER TABLE `jshop_images`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`),
   ADD KEY `id_2` (`id`),
   ADD KEY `isdel` (`isdel`);
 
 --
--- Indexes for table `jobs`
+-- Indexes for table `jshop_jobs`
 --
-ALTER TABLE `jobs`
+ALTER TABLE `jshop_jobs`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `label`
+-- Indexes for table `jshop_label`
 --
-ALTER TABLE `label`
+ALTER TABLE `jshop_label`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `login_log`
+-- Indexes for table `jshop_login_log`
 --
-ALTER TABLE `login_log`
+ALTER TABLE `jshop_login_log`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `logistics`
+-- Indexes for table `jshop_logistics`
 --
-ALTER TABLE `logistics`
+ALTER TABLE `jshop_logistics`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `logi_code` (`logi_code`),
   ADD KEY `sort` (`sort`);
 
 --
--- Indexes for table `manage`
+-- Indexes for table `jshop_manage`
 --
-ALTER TABLE `manage`
+ALTER TABLE `jshop_manage`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indexes for table `manage_role`
+-- Indexes for table `jshop_manage_role`
 --
-ALTER TABLE `manage_role`
+ALTER TABLE `jshop_manage_role`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `message`
+-- Indexes for table `jshop_message`
 --
-ALTER TABLE `message`
+ALTER TABLE `jshop_message`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `message_center`
+-- Indexes for table `jshop_message_center`
 --
-ALTER TABLE `message_center`
+ALTER TABLE `jshop_message_center`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `notice`
+-- Indexes for table `jshop_notice`
 --
-ALTER TABLE `notice`
+ALTER TABLE `jshop_notice`
   ADD PRIMARY KEY (`id`),
   ADD KEY `isdel` (`isdel`),
   ADD KEY `sort` (`sort`);
 
 --
--- Indexes for table `operation`
+-- Indexes for table `jshop_operation`
 --
-ALTER TABLE `operation`
+ALTER TABLE `jshop_operation`
   ADD PRIMARY KEY (`id`),
   ADD KEY `parent_id` (`parent_id`),
   ADD KEY `id` (`id`),
@@ -5601,50 +5399,50 @@ ALTER TABLE `operation`
   ADD KEY `sort` (`sort`);
 
 --
--- Indexes for table `operation_log`
+-- Indexes for table `jshop_operation_log`
 --
-ALTER TABLE `operation_log`
+ALTER TABLE `jshop_operation_log`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `order`
+-- Indexes for table `jshop_order`
 --
-ALTER TABLE `order`
+ALTER TABLE `jshop_order`
   ADD PRIMARY KEY (`order_id`);
 
 --
--- Indexes for table `order_items`
+-- Indexes for table `jshop_order_items`
 --
-ALTER TABLE `order_items`
+ALTER TABLE `jshop_order_items`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `order_log`
+-- Indexes for table `jshop_order_log`
 --
-ALTER TABLE `order_log`
+ALTER TABLE `jshop_order_log`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `payments`
+-- Indexes for table `jshop_payments`
 --
-ALTER TABLE `payments`
+ALTER TABLE `jshop_payments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `status` (`status`),
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `products`
+-- Indexes for table `jshop_products`
 --
-ALTER TABLE `products`
+ALTER TABLE `jshop_products`
   ADD PRIMARY KEY (`id`),
   ADD KEY `isdel` (`isdel`),
   ADD KEY `goods_id` (`goods_id`),
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `promotion`
+-- Indexes for table `jshop_promotion`
 --
-ALTER TABLE `promotion`
+ALTER TABLE `jshop_promotion`
   ADD PRIMARY KEY (`id`),
   ADD KEY `isdel` (`isdel`),
   ADD KEY `sort` (`sort`),
@@ -5652,138 +5450,131 @@ ALTER TABLE `promotion`
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `promotion_condition`
+-- Indexes for table `jshop_promotion_condition`
 --
-ALTER TABLE `promotion_condition`
+ALTER TABLE `jshop_promotion_condition`
   ADD PRIMARY KEY (`id`),
   ADD KEY `promotion_id` (`promotion_id`);
 
 --
--- Indexes for table `promotion_result`
+-- Indexes for table `jshop_promotion_result`
 --
-ALTER TABLE `promotion_result`
+ALTER TABLE `jshop_promotion_result`
   ADD PRIMARY KEY (`id`),
   ADD KEY `promotion_id` (`promotion_id`);
 
 --
--- Indexes for table `role`
+-- Indexes for table `jshop_setting`
 --
-ALTER TABLE `role`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id` (`id`);
-
---
--- Indexes for table `setting`
---
-ALTER TABLE `setting`
+ALTER TABLE `jshop_setting`
   ADD PRIMARY KEY (`skey`),
   ADD KEY `skey` (`skey`);
 
 --
--- Indexes for table `ship`
+-- Indexes for table `jshop_ship`
 --
-ALTER TABLE `ship`
+ALTER TABLE `jshop_ship`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`),
   ADD KEY `sort` (`sort`),
   ADD KEY `sort_2` (`sort`);
 
 --
--- Indexes for table `sms`
+-- Indexes for table `jshop_sms`
 --
-ALTER TABLE `sms`
+ALTER TABLE `jshop_sms`
   ADD PRIMARY KEY (`id`),
   ADD KEY `mobile` (`mobile`),
   ADD KEY `status` (`status`);
 
 --
--- Indexes for table `store`
+-- Indexes for table `jshop_store`
 --
-ALTER TABLE `store`
+ALTER TABLE `jshop_store`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `template`
+-- Indexes for table `jshop_template`
 --
-ALTER TABLE `template`
+ALTER TABLE `jshop_template`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `template_order`
+-- Indexes for table `jshop_template_order`
 --
-ALTER TABLE `template_order`
+ALTER TABLE `jshop_template_order`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user`
+-- Indexes for table `jshop_user`
 --
-ALTER TABLE `user`
+ALTER TABLE `jshop_user`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_bankcards`
+-- Indexes for table `jshop_user_bankcards`
 --
-ALTER TABLE `user_bankcards`
+ALTER TABLE `jshop_user_bankcards`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_log`
+-- Indexes for table `jshop_user_log`
 --
-ALTER TABLE `user_log`
+ALTER TABLE `jshop_user_log`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_point_log`
+-- Indexes for table `jshop_user_point_log`
 --
-ALTER TABLE `user_point_log`
+ALTER TABLE `jshop_user_point_log`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_ship`
+-- Indexes for table `jshop_user_ship`
 --
-ALTER TABLE `user_ship`
+ALTER TABLE `jshop_user_ship`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_tocash`
+-- Indexes for table `jshop_user_tocash`
 --
-ALTER TABLE `user_tocash`
+ALTER TABLE `jshop_user_tocash`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user_token`
+-- Indexes for table `jshop_user_token`
 --
-ALTER TABLE `user_token`
+ALTER TABLE `jshop_user_token`
   ADD PRIMARY KEY (`token`);
 
 --
--- Indexes for table `user_wx`
+-- Indexes for table `jshop_user_wx`
 --
-ALTER TABLE `user_wx`
+ALTER TABLE `jshop_user_wx`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `weixin_author`
+-- Indexes for table `jshop_weixin_author`
 --
-ALTER TABLE `weixin_author`
+ALTER TABLE `jshop_weixin_author`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `weixin_publish`
+-- Indexes for table `jshop_weixin_publish`
 --
-ALTER TABLE `weixin_publish`
+ALTER TABLE `jshop_weixin_publish`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `worksheet`
+-- Indexes for table `jshop_worksheet`
 --
-ALTER TABLE `worksheet`
+ALTER TABLE `jshop_worksheet`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `wsdetail`
+-- Indexes for table `jshop_wsdetail`
 --
-ALTER TABLE `wsdetail`
+ALTER TABLE `jshop_wsdetail`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -5791,292 +5582,287 @@ ALTER TABLE `wsdetail`
 --
 
 --
--- AUTO_INCREMENT for table `addons`
+-- AUTO_INCREMENT for table `jshop_addons`
 --
-ALTER TABLE `addons`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键';
+ALTER TABLE `jshop_addons`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=6;
 --
--- AUTO_INCREMENT for table `advertisement`
+-- AUTO_INCREMENT for table `jshop_advertisement`
 --
-ALTER TABLE `advertisement`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `advert_position`
---
-ALTER TABLE `advert_position`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `article`
---
-ALTER TABLE `article`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `article_type`
---
-ALTER TABLE `article_type`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `backstage_notice`
---
-ALTER TABLE `backstage_notice`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `balance`
---
-ALTER TABLE `balance`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `bill_aftersales_items`
---
-ALTER TABLE `bill_aftersales_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `bill_delivery_items`
---
-ALTER TABLE `bill_delivery_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `bill_reship_items`
---
-ALTER TABLE `bill_reship_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `brand`
---
-ALTER TABLE `brand`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '品牌ID';
---
--- AUTO_INCREMENT for table `cart`
---
-ALTER TABLE `cart`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `goods`
---
-ALTER TABLE `goods`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品ID';
---
--- AUTO_INCREMENT for table `goods_browsing`
---
-ALTER TABLE `goods_browsing`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
---
--- AUTO_INCREMENT for table `goods_cat`
---
-ALTER TABLE `goods_cat`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `goods_collection`
---
-ALTER TABLE `goods_collection`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
---
--- AUTO_INCREMENT for table `goods_comment`
---
-ALTER TABLE `goods_comment`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `goods_params`
---
-ALTER TABLE `goods_params`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `goods_type`
---
-ALTER TABLE `goods_type`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `goods_type_spec`
---
-ALTER TABLE `goods_type_spec`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `goods_type_spec_value`
---
-ALTER TABLE `goods_type_spec_value`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `hooks`
---
-ALTER TABLE `hooks`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `ietask`
---
-ALTER TABLE `ietask`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `jobs`
---
-ALTER TABLE `jobs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `label`
---
-ALTER TABLE `label`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `login_log`
---
-ALTER TABLE `login_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id';
---
--- AUTO_INCREMENT for table `logistics`
---
-ALTER TABLE `logistics`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
---
--- AUTO_INCREMENT for table `manage`
---
-ALTER TABLE `manage`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID', AUTO_INCREMENT=14;
---
--- AUTO_INCREMENT for table `manage_role`
---
-ALTER TABLE `manage_role`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `message`
---
-ALTER TABLE `message`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `message_center`
---
-ALTER TABLE `message_center`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `notice`
---
-ALTER TABLE `notice`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `operation`
---
-ALTER TABLE `operation`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=479;
---
--- AUTO_INCREMENT for table `operation_log`
---
-ALTER TABLE `operation_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `order_items`
---
-ALTER TABLE `order_items`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
---
--- AUTO_INCREMENT for table `order_log`
---
-ALTER TABLE `order_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=29;
---
--- AUTO_INCREMENT for table `payments`
---
-ALTER TABLE `payments`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `products`
---
-ALTER TABLE `products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '货品ID', AUTO_INCREMENT=23;
---
--- AUTO_INCREMENT for table `promotion`
---
-ALTER TABLE `promotion`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `promotion_condition`
---
-ALTER TABLE `promotion_condition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10016;
---
--- AUTO_INCREMENT for table `promotion_result`
---
-ALTER TABLE `promotion_result`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10011;
---
--- AUTO_INCREMENT for table `role`
---
-ALTER TABLE `role`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `ship`
---
-ALTER TABLE `ship`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10001;
---
--- AUTO_INCREMENT for table `sms`
---
-ALTER TABLE `sms`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `store`
---
-ALTER TABLE `store`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id', AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `template`
---
-ALTER TABLE `template`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `template_order`
---
-ALTER TABLE `template_order`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID', AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `user_bankcards`
---
-ALTER TABLE `user_bankcards`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID号';
---
--- AUTO_INCREMENT for table `user_log`
---
-ALTER TABLE `user_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id', AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `user_point_log`
---
-ALTER TABLE `user_point_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
---
--- AUTO_INCREMENT for table `user_ship`
---
-ALTER TABLE `user_ship`
+ALTER TABLE `jshop_advertisement`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
--- AUTO_INCREMENT for table `user_tocash`
+-- AUTO_INCREMENT for table `jshop_advert_position`
 --
-ALTER TABLE `user_tocash`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID号';
+ALTER TABLE `jshop_advert_position`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT for table `user_wx`
+-- AUTO_INCREMENT for table `jshop_article`
 --
-ALTER TABLE `user_wx`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID', AUTO_INCREMENT=2;
+ALTER TABLE `jshop_article`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT for table `weixin_author`
+-- AUTO_INCREMENT for table `jshop_article_type`
 --
-ALTER TABLE `weixin_author`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `jshop_article_type`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
--- AUTO_INCREMENT for table `weixin_publish`
+-- AUTO_INCREMENT for table `jshop_backstage_notice`
 --
-ALTER TABLE `weixin_publish`
+ALTER TABLE `jshop_backstage_notice`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_balance`
+--
+ALTER TABLE `jshop_balance`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT for table `worksheet`
+-- AUTO_INCREMENT for table `jshop_bill_aftersales_items`
 --
-ALTER TABLE `worksheet`
+ALTER TABLE `jshop_bill_aftersales_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_bill_delivery_items`
+--
+ALTER TABLE `jshop_bill_delivery_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+--
+-- AUTO_INCREMENT for table `jshop_bill_reship_items`
+--
+ALTER TABLE `jshop_bill_reship_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_brand`
+--
+ALTER TABLE `jshop_brand`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '品牌ID', AUTO_INCREMENT=18;
+--
+-- AUTO_INCREMENT for table `jshop_cart`
+--
+ALTER TABLE `jshop_cart`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+--
+-- AUTO_INCREMENT for table `jshop_goods`
+--
+ALTER TABLE `jshop_goods`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品ID', AUTO_INCREMENT=17;
+--
+-- AUTO_INCREMENT for table `jshop_goods_browsing`
+--
+ALTER TABLE `jshop_goods_browsing`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=85;
+--
+-- AUTO_INCREMENT for table `jshop_goods_cat`
+--
+ALTER TABLE `jshop_goods_cat`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+--
+-- AUTO_INCREMENT for table `jshop_goods_collection`
+--
+ALTER TABLE `jshop_goods_collection`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `jshop_goods_comment`
+--
+ALTER TABLE `jshop_goods_comment`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `jshop_goods_params`
+--
+ALTER TABLE `jshop_goods_params`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `jshop_goods_type`
+--
+ALTER TABLE `jshop_goods_type`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `jshop_goods_type_spec`
+--
+ALTER TABLE `jshop_goods_type_spec`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `jshop_goods_type_spec_value`
+--
+ALTER TABLE `jshop_goods_type_spec_value`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+--
+-- AUTO_INCREMENT for table `jshop_hooks`
+--
+ALTER TABLE `jshop_hooks`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `jshop_ietask`
+--
+ALTER TABLE `jshop_ietask`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `jshop_jobs`
+--
+ALTER TABLE `jshop_jobs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_label`
+--
+ALTER TABLE `jshop_label`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `jshop_login_log`
+--
+ALTER TABLE `jshop_login_log`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id';
+--
+-- AUTO_INCREMENT for table `jshop_logistics`
+--
+ALTER TABLE `jshop_logistics`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+--
+-- AUTO_INCREMENT for table `jshop_manage`
+--
+ALTER TABLE `jshop_manage`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID', AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT for table `jshop_manage_role`
+--
+ALTER TABLE `jshop_manage_role`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `jshop_message`
+--
+ALTER TABLE `jshop_message`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+--
+-- AUTO_INCREMENT for table `jshop_message_center`
+--
+ALTER TABLE `jshop_message_center`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+--
+-- AUTO_INCREMENT for table `jshop_notice`
+--
+ALTER TABLE `jshop_notice`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_operation`
+--
+ALTER TABLE `jshop_operation`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=483;
+--
+-- AUTO_INCREMENT for table `jshop_operation_log`
+--
+ALTER TABLE `jshop_operation_log`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+--
+-- AUTO_INCREMENT for table `jshop_order_items`
+--
+ALTER TABLE `jshop_order_items`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+--
+-- AUTO_INCREMENT for table `jshop_order_log`
+--
+ALTER TABLE `jshop_order_log`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=90;
+--
+-- AUTO_INCREMENT for table `jshop_payments`
+--
+ALTER TABLE `jshop_payments`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `jshop_products`
+--
+ALTER TABLE `jshop_products`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '货品ID', AUTO_INCREMENT=60;
+--
+-- AUTO_INCREMENT for table `jshop_promotion`
+--
+ALTER TABLE `jshop_promotion`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `jshop_promotion_condition`
+--
+ALTER TABLE `jshop_promotion_condition`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10018;
+--
+-- AUTO_INCREMENT for table `jshop_promotion_result`
+--
+ALTER TABLE `jshop_promotion_result`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10013;
+--
+-- AUTO_INCREMENT for table `jshop_ship`
+--
+ALTER TABLE `jshop_ship`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10002;
+--
+-- AUTO_INCREMENT for table `jshop_sms`
+--
+ALTER TABLE `jshop_sms`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+--
+-- AUTO_INCREMENT for table `jshop_store`
+--
+ALTER TABLE `jshop_store`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id', AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `jshop_template`
+--
+ALTER TABLE `jshop_template`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `jshop_template_order`
+--
+ALTER TABLE `jshop_template_order`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `jshop_user`
+--
+ALTER TABLE `jshop_user`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID', AUTO_INCREMENT=33;
+--
+-- AUTO_INCREMENT for table `jshop_user_bankcards`
+--
+ALTER TABLE `jshop_user_bankcards`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID号';
+--
+-- AUTO_INCREMENT for table `jshop_user_log`
+--
+ALTER TABLE `jshop_user_log`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id', AUTO_INCREMENT=45;
+--
+-- AUTO_INCREMENT for table `jshop_user_point_log`
+--
+ALTER TABLE `jshop_user_point_log`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=14;
+--
+-- AUTO_INCREMENT for table `jshop_user_ship`
+--
+ALTER TABLE `jshop_user_ship`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+--
+-- AUTO_INCREMENT for table `jshop_user_tocash`
+--
+ALTER TABLE `jshop_user_tocash`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID号';
+--
+-- AUTO_INCREMENT for table `jshop_user_wx`
+--
+ALTER TABLE `jshop_user_wx`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID', AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `jshop_weixin_author`
+--
+ALTER TABLE `jshop_weixin_author`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_weixin_publish`
+--
+ALTER TABLE `jshop_weixin_publish`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `jshop_worksheet`
+--
+ALTER TABLE `jshop_worksheet`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT for table `wsdetail`
+-- AUTO_INCREMENT for table `jshop_wsdetail`
 --
-ALTER TABLE `wsdetail`
+ALTER TABLE `jshop_wsdetail`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;

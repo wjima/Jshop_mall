@@ -37,10 +37,10 @@ export default {
     data () {
         return {
             tab: [
-                {title: '首页', link: '/index', type: 'iconfont icon-shouye', active: true},
-                {title: '全部分类', link: '/classify', type: 'iconfont  icon-fenlei', active: false},
-                {title: '购物车', link: '/cart', type: 'iconfont  icon-gouwuche1', active: false},
-                {title: '个人中心', link: '/user', type: 'iconfont  icon-user', active: false}
+                {title: '首页', link: '/index', type: 'iconfont icon-shouyeshouye1', active: true},
+                {title: '全部分类', link: '/classify', type: 'iconfont icon-fenlei1', active: false},
+                {title: '购物车', link: '/cart', type: 'iconfont icon-gouwuche', active: false},
+                {title: '个人中心', link: '/user', type: 'iconfont icon-icongerenzhongxin', active: false}
             ]
         }
     },

@@ -1,11 +1,4 @@
 <script src="__STATIC_LIB__echarts/build/dist/echarts.js"></script>
-{if condition="($is_author neq 'true') && ($store_type eq 2)"}
-<div class="warning-msg">
-	<div class="warning-msg-content">
-		<i class="iconfont icon-tanhao"></i><p>您还未绑定微信小程序，请及时绑定并体验更多功能。<a href="javascript:void(0);" id="bind">[立即绑定]</a></p>
-	</div>
-</div>
-{/if}
 <div class="layadmin-tabsbody-item layui-show">
 	<div class="layui-fluid">
 		<div class="layui-row layui-col-space15">
@@ -225,7 +218,7 @@
 					<tr>
 						<td>当前版本</td>
 						<td>
-							{{ d.version }} <a href="javascript:void(0);" target="_blank" style="padding-left: 15px;">更新日志</a>
+							{{ d.version }} <a href="https://gitee.com/hnjihai/jshop_mall" target="_blank" style="padding-left: 15px;">更新日志</a>
 						</td>
 					</tr>
 					<tr>
@@ -377,53 +370,3 @@
 		</div>
 	</div>
 </div>
-{if condition="($closeauthor eq 'false') && ($is_author eq 'false') && ($store_type eq 2)"}
-<script>
-    layui.use(['laytpl','layer'],function(){
-        JsGet("{:url('wechat/index')}",function (e) {
-            if(e.status){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['400px', '300px'],
-                    title: "请先绑定小程序",
-                    closeBtn: 1,
-                    shadeClose: false,
-                    btnAlign:'c',
-                    btn:['不绑定，先逛逛'],
-                    yes:function (index) {
-                        //随便逛逛
-                        JsGet("{:url('wechat/closeAuthor')}",function (e) {
-                            layer.closeAll();
-                        });
-                    }
-                });
-			}else{
-                layer.closeAll();
-			}
-        });
-	})
-</script>
-{/if}
-<script>
-    $("#bind").click(function () {
-        JsGet("{:url('wechat/index')}",function (e) {
-            window.box = layer.open({
-                type: 1,
-                content: e.data,
-                area: ['400px', '300px'],
-                title: "绑定小程序",
-                closeBtn: 1,
-                shadeClose: false,
-                btnAlign:'c',
-                btn:['不绑定，先逛逛'],
-                yes:function (index) {
-                    //随便逛逛
-                    JsGet("{:url('wechat/closeAuthor')}",function (e) {
-                        layer.closeAll();
-                    });
-                }
-            });
-        });
-    });
-</script>

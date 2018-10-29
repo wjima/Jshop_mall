@@ -1,10 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tian yu
- * Date: 2018/1/19 0019
- * Time: 11:18
- */
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: tianyu <tianyu@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;

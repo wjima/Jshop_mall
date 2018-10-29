@@ -147,7 +147,23 @@ class Setting extends Common
         'wx_head_img'=>[
             'name'=>'Logo',
             'value'=>''
-        ]
+        ],
+        'sms_user_id' => [
+            'name' => '短信通道用户ID',
+            'value' => ''
+        ],
+        'sms_account' => [
+            'name' => '短信通道用户名',
+            'value' => ''
+        ],
+        'sms_password' => [
+            'name' => '短信通道用户密码',
+            'value' => ''
+        ],
+        'sms_prefix' => [
+            'name' => '短信前缀',
+            'value' => 'Jshop'
+        ],
     ];
 
 

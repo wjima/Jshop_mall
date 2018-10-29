@@ -45,4 +45,9 @@ export default {
 </script>
 
 <style>
+    .standard-content .gray{
+        border: 1px dashed #f3f3f3 !important;
+        color: #eaeaea !important;
+        background-color: #fff !important;
+    }
 </style>

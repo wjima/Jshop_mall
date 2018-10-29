@@ -46,21 +46,19 @@
                 <option value="">请选择分类</option>
                 {if condition="count($catList)>0"}
                     {volist name="catList" id="vo"}
-                        <option value="{$vo.id}" {if condition="$catInfo.parent_id eq $vo.id"} selected{/if}>{$vo.name}</option>
+                        <option value="{$vo.id}" {if condition="$catInfo[0]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
                     {/volist}
                 {/if}
             </select>
         </div>
         <div id="view">
-            {if condition="$catInfo.parent_id neq '' "}
+            {if condition="$secondCat"}
             <div class="layui-input-inline">
                 <select name="goods_cat_id[]">
                     <option value="">请选择分类</option>
-                    {if condition="count($childCat)>0"}
-                    {volist name="childCat" id="vo"}
-                    <option value="{$vo.id}" {if condition="$catInfo.id eq $vo.id"} selected{/if}>{$vo.name}</option>
+                    {volist name="secondCat" id="vo"}
+                    <option value="{$vo.id}" {if condition="$catInfo[1]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
                     {/volist}
-                    {/if}
                 </select>
             </div>
             {/if}
@@ -252,11 +250,12 @@
                             if(e.data.length>0){
                                 var tmpData = {};
                                 tmpData.list = e.data;
-                                console.log(tmpData);
                                 laytpl(getTpl).render(tmpData, function(html){
                                     view.innerHTML = html;
                                 });
                                 form.render();
+                            }else{
+                                $("#view").html("");
                             }
                         }else{
                             layer.msg(e.msg, {time: 1300});

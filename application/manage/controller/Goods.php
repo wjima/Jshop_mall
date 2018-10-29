@@ -258,6 +258,7 @@ class Goods extends Manage
         $bn                             = get_sn(3);
         $data['goods']['name']          = input('post.goods.name', '');
         $goods_cat_id                   = input('post.goods_cat_id/a');
+        $goods_cat_id                   = array_filter($goods_cat_id);
         $data['goods']['goods_cat_id']  = $goods_cat_id[count($goods_cat_id)-1];
         $data['goods']['goods_type_id'] = input('post.goods_type_id', 0);
         $data['goods']['brand_id']      = input('post.goods.brand_id', 0);
@@ -477,8 +478,10 @@ class Goods extends Manage
                 $items[$key]['price']     = $goodsDefault['price'];
                 $items[$key]['costprice'] = $goodsDefault['costprice'];
                 $items[$key]['mktprice']  = $goodsDefault['mktprice'];
-                $items[$key]['sn']        = $goodsDefault['sn'] . '-' . ($key + 1);
-                $items[$key]['stock']     = $goodsDefault['stock'];
+                if (isset($goodsDefault['sn']) && $goodsDefault['sn']) {
+                    $items[$key]['sn'] = $goodsDefault['sn'] . '-' . ($key + 1);
+                }
+                $items[$key]['stock'] = $goodsDefault['stock'];
             }
 
             if ($products) {
@@ -581,10 +584,12 @@ class Goods extends Manage
         $this->assign('spec_html', $res['data']);
         $goodsCatModel = new GoodsCat();
 
-        $catInfo       = $goodsCatModel->getCatInfo($goods['data']['goods_cat_id']);
-        $this->assign('catInfo', $catInfo);
-        $childCat = $goodsCatModel->getCatByParentId($catInfo['parent_id']);
-        $this->assign('childCat', $childCat);
+        $catInfo       = $goodsCatModel->getCatByLastId($goods['data']['goods_cat_id']);
+        $catInfo = _krsort($catInfo);
+        $this->assign('catInfo',$catInfo);
+
+        $secondCat = $goodsCatModel->getCatByParentId($catInfo[0]['id']);
+        $this->assign('secondCat', $secondCat);
 
         $this->_common();
         return $this->fetch('edit');

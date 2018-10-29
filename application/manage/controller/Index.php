@@ -22,7 +22,7 @@ class Index extends Manage
         $unship_count = $orderModel->where(['status'=>1,'pay_status'=>2,'ship_status'=>1])->count();
         //待售后数量
         $billAfterSalesModel = new BillAftersales();
-        $afterSales_count = $billAfterSalesModel->count();
+        $afterSales_count = $billAfterSalesModel->getCount();
 
         //hook('testhook', $params);//php中钩子
 

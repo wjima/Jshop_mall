@@ -496,6 +496,15 @@ class BillAftersales extends Common
     }
 
 
+    /**
+     * @return int|string
+     */
+    public function getCount()
+    {
+        $where[] = ['status', 'eq', self::STATUS_WAITAUDIT];
+        $count = $this->where()->count();
+        return $count?$count:0;
+    }
 
 
     public function images()

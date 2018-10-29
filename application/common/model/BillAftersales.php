@@ -502,7 +502,7 @@ class BillAftersales extends Common
     public function getCount()
     {
         $where[] = ['status', 'eq', self::STATUS_WAITAUDIT];
-        $count = $this->where()->count();
+        $count = $this->where($where)->count();
         return $count?$count:0;
     }
 

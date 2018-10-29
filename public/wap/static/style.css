@@ -464,10 +464,16 @@
     width: 95%;
     margin: .02rem auto;
     overflow: hidden;
-    height: 1rem;
+    /*height: 1rem;*/
     line-height: 1rem;
 }
 .standard-content>div{
+    display: inline-block;
+    max-width: 89%;
+    margin-left: .1rem;
+    float: left;
+}
+.standard-content>div>div{
     display: inline-block;
     padding: 0 .3rem;
     border: .02rem solid #f3f3f3;
@@ -480,6 +486,8 @@
 .standard-content-header{
     border: none !important;
     padding: 0 !important;
+    display: inline-block;
+    float: left;
 }
 .red{
     background-color: #FF3B44;
@@ -1265,4 +1273,7 @@
     float: right;
     height: .4rem;
     color: #666;
+}
+.goodsnum .goodsnum-content .yd-spinner>span>i:after{
+    transform: translate(-50%,-50%) !important;
 }

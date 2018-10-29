@@ -1274,3 +1274,6 @@
     height: .4rem;
     color: #666;
 }
+.goodsnum .goodsnum-content .yd-spinner>span>i:after{
+    transform: translate(-50%,-50%) !important;
+}

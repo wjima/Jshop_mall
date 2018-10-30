@@ -230,7 +230,7 @@ class Cart extends Common
         if($area_id)
         {
             $shipModel = new Ship();
-            $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight']);
+            $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'],$result['data']['goods_amount']);
             $result['data']['amount'] += $result['data']['cost_freight'];
         }
 

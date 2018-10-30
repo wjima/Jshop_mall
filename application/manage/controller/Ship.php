@@ -76,6 +76,7 @@ class Ship extends Manage
                 'type'               => $type,
                 'def_area_fee'       => input('post.def_area_fee', '1'),
                 'sort'               => input('post.sort'),
+                'goodsmoney'         => input('post.goodsmoney'),
                 'area_fee'=>$area_fee,
             ];
             $shiModel = new ShipModel();
@@ -154,6 +155,7 @@ class Ship extends Manage
                 'type'               => $type,
                 'def_area_fee'       => input('post.def_area_fee', '1'),
                 'sort'               => input('post.sort'),
+                'goodsmoney'         => input('post.goodsmoney'),
                 'area_fee'           => $area_fee,
             ];
             $shiModel = new ShipModel();

@@ -1043,7 +1043,7 @@ class Order extends Common
         $order['ship_mobile'] = $ushopInfo['mobile'];
         $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
         $order['logistics_id'] = $shipInfo['id'];
-        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight']);
+        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
 
         $order['weight'] = $orderInfo['data']['weight'];;
         $order['order_pmt'] = isset($orderInfo['data']['order_pmt'])?$orderInfo['data']['order_pmt']:0;

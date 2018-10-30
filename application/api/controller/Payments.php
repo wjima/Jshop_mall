@@ -21,7 +21,7 @@ class Payments extends Api
     {
         $result = [
             'status' => true,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         //$paymentsSRModel = new PaymentsSellerRel();

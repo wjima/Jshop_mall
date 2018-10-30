@@ -19,7 +19,7 @@ class Index extends Api
         header('Access-Control-Allow-Method:POST,GET');//允许访问的方式
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         $api = config('api.');

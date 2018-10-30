@@ -446,7 +446,7 @@ class BillAftersales extends Common
     {
         $result = [
             'status' => true,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -474,7 +474,7 @@ class BillAftersales extends Common
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         $where['aftersales_id'] = $aftersales_id;

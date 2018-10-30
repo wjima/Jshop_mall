@@ -45,7 +45,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -66,7 +66,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -104,7 +104,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => '成功'
         ];
         $userModel = new UserModel();
@@ -125,7 +125,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(!input("?param.token")){
@@ -147,7 +147,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         $userModel = new UserModel();
@@ -203,7 +203,7 @@ class User extends Api
 
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(!input("?param.goods_id")){
@@ -219,7 +219,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(!input("?param.goods_ids")){
@@ -235,7 +235,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(input("?param.limit")){
@@ -259,7 +259,7 @@ class User extends Api
 
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(!input("?param.goods_id")){
@@ -276,7 +276,7 @@ class User extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(input("?param.limit")){

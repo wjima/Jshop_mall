@@ -208,13 +208,22 @@ class Ship extends Common
      */
     public function getShip($area_id = 0)
     {
-        $def = $this->where(['is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
+
+        $def = $this->where([
+            ['status', '=', self::STATUS_YES], ['area_fee', 'like', '%\\\"' . $area_id . '\\\"%'], ['type', '=', self::TYPE_PART],
+        ])->find();
+        //没有子地区取默认
+        if (!$def) {
+            $def = $this->where(['is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
+        }
+        //没有默认取启用状态
         if (!$def) {
             $def = $this->where(['status' => self::STATUS_YES])->find();
             if (!$def) {//没有配送方式，返回0
                 return false;
             }
         }
+
         return $def;
     }
 

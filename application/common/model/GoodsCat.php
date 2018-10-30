@@ -500,4 +500,17 @@ class GoodsCat extends Common
         }
         return false;
     }
+
+    //根据最后一级id 获取分类信息
+    public function getCatByLastId($id, $data = [])
+    {
+        $info   = $this->where(['id' => $id])->find();
+        $data[] = $info;
+        if ($info['parent_id']) {
+            return $this->getCatByLastId($info['parent_id'], $data);
+        } else {
+            return $data;
+        }
+
+    }
 }

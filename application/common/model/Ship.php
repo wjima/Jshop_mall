@@ -43,7 +43,7 @@ class Ship extends Common
      */
     private function getExp($firstunit, $continueunit, $firstunit_price, $continueunit_price)
     {
-        $exp = '{{w-0}-0.4}*{{{' . $firstunit . '-w}-0.4}+1}*' . $firstunit_price . '*1.00+ {{w-' . $firstunit . '}-0.6}*[(w-' . $firstunit . ')/' . $continueunit . ']*' . $continueunit_price . '*1.00';
+        $exp = "$firstunit_price + (ceil((w-$firstunit)/$continueunit) * $continueunit_price)";
         return $exp;
     }
 
@@ -135,6 +135,7 @@ class Ship extends Common
      * 获取配送费用
      * @param int $area_id 地区id
      * @param int $weight 重量,单位g
+     * @param int $totalmoney 商品总价
      * @return string
      * User: wjima
      * Email:1457529125@qq.com
@@ -143,11 +144,18 @@ class Ship extends Common
      *      $shiModel->getShipCost(1,1,1600);
      *      die();
      */
-    public function getShipCost($area_id = 0, $weight = 0)
+    public function getShipCost($area_id = 0, $weight = 0, $totalmoney = 0)
     {
         $postfee = '0.00';
-        //先判断是否包邮
-        $def = $this->where(['is_def' => self::IS_DEF_YES,'status' => self::STATUS_YES])->find();
+        //先判断是否子地区满足条件
+        $def = $this->where([
+            ['status', '=', self::STATUS_YES], ['area_fee', 'like', '%\\\"' . $area_id . '\\\"%'], ['type', '=', self::TYPE_PART],
+        ])->find();
+        //没有子地区取默认
+        if (!$def) {
+            $def = $this->where(['is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
+        }
+        //没有默认取启用状态
         if (!$def) {
             $def = $this->where(['status' => self::STATUS_YES])->find();
             if (!$def) {//没有配送方式，返回0
@@ -159,28 +167,29 @@ class Ship extends Common
         }
         if ($def['type'] == self::TYPE_PART) {
             $area_fee = json_decode($def['area_fee'], true);
+
             if ($area_fee) {
                 $isIn = false;
                 foreach ($area_fee as $key => $val) {
-                    $area = explode(',', $val['area']);
+                    $val['goodsmoney'] = $def['goodsmoney'];
+                    $area              = explode(',', $val['area']);
                     if (in_array($area_id, $area)) {
                         $isIn    = true;
-                        $total   = self::cal_fee($val['exp'], $weight, 0, $val['firstunit_area_price'], $val['continueunit_area_price']);
+                        $total   = self::calculate_fee($val, $weight, $totalmoney);
                         $postfee = getMoney($total);
                         break;
                     }
                 }
                 if (!$isIn) {
-                    $total   = self::cal_fee($def['exp'], $weight, 0, $def['firstunit_price'], $def['continueunit_price']);
+                    $total   = self::calculate_fee($val, $weight, $totalmoney);
                     $postfee = getMoney($total);
                 }
             } else {
-                $total   = self::cal_fee($def['exp'], $weight, 0, $def['firstunit_price'], $def['continueunit_price']);
+                $total   = self::calculate_fee($def, $weight, $totalmoney);
                 $postfee = getMoney($total);
             }
         } else {
-            //todo 地区 配送费以后再优化
-            $total   = self::cal_fee($def['exp'], $weight, 0, $def['firstunit_price'], $def['continueunit_price']);
+            $total   = self::calculate_fee($def, $weight, $totalmoney);
             $postfee = getMoney($total);
         }
 
@@ -199,109 +208,48 @@ class Ship extends Common
      */
     public function getShip($area_id = 0)
     {
-        $def = $this->where(['is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
+
+        $def = $this->where([
+            ['status', '=', self::STATUS_YES], ['area_fee', 'like', '%\\\"' . $area_id . '\\\"%'], ['type', '=', self::TYPE_PART],
+        ])->find();
+        //没有子地区取默认
+        if (!$def) {
+            $def = $this->where(['is_def' => self::IS_DEF_YES, 'status' => self::STATUS_YES])->find();
+        }
+        //没有默认取启用状态
         if (!$def) {
             $def = $this->where(['status' => self::STATUS_YES])->find();
             if (!$def) {//没有配送方式，返回0
                 return false;
             }
         }
+
         return $def;
     }
 
-    //配送公式验算function
-    static function cal_fee($exp, $weight, $totalmoney, $first_price, $continue_price, $defPrice = 0)
+    /**
+     * 计算运费
+     * @param $ship 配送方式内容
+     * @param $weight 订单总重
+     * @param int $totalmoney 商品总价
+     * @return int
+     */
+    static function calculate_fee($ship, $weight, $totalmoney = 0)
     {
-        if ($str = trim($exp)) {
-            $dprice         = 0;
-            $weight         = $weight + 0;
-            $totalmoney     = $totalmoney + 0;
-            $first_price    = $first_price + 0;
-            $continue_price = $continue_price + 0;
-            $str            = str_replace("[", "self::_getceil(", $str);
-            $str            = str_replace("]", ")", $str);
-            $str            = str_replace("{", "self::_getval(", $str);
-            $str            = str_replace("}", ")", $str);
 
-            $str = str_replace("w", $weight, $str);
-            $str = str_replace("W", $weight, $str);
-            $str = str_replace("fp", $first_price, $str);
-            $str = str_replace("cp", $continue_price, $str);
-            $str = str_replace("p", $totalmoney, $str);
-            $str = str_replace("P", $totalmoney, $str);
-            eval("\$dprice = $str;");
-            if ($dprice === 'failed') {
-                return $defPrice;
-            } else {
-                return $dprice;
-            }
-        } else {
-            return $defPrice;
-        }
-    }
-
-
-    static function mydate($f, $d = null)
-    {
-        global $_dateCache;
-        if (!$d) $d = time();
-        if (!isset($_dateCache[$d][$f])) {
-            $_dateCache[$d][$f] = date($f, $d);
-        }
-        return $_dateCache[$d][$f];
-    }
-
-    static function _getval($expval)
-    {
-        $expval = trim($expval);
-        if ($expval !== '') {
-            eval("\$expval = $expval;");
-            if ($expval > 0) {
-                return 1;
-            } else if ($expval == 0) {
-                return 1 / 2;
-            } else {
+        if ($weight > $ship['firstunit']) {
+            //满多少免运费
+            if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
                 return 0;
             }
+            $tmp_exp = trim(str_replace('w', $weight, $ship['exp']));
+            eval("\$shipmoney = $tmp_exp;");
+            return $shipmoney;
         } else {
-            return 0;
+            return $ship['firstunit_price'];
         }
     }
 
-    static function _getceil($expval)
-    {
-        if ($expval = trim($expval)) {
-            eval("\$expval = $expval;");
-            if ($expval > 0) {
-                return ceil($expval);
-            } else {
-                return 0;
-            }
-        } else {
-            return 0;
-        }
-    }
-
-    static function steprange($start, $end, $step)
-    {
-        if ($end - $start) {
-            if ($step < 2) $step = 2;
-            $s = ($end - $start) / $step;
-            $r = [floor($start) - 1];
-
-            for ($i = 1; $i < $step; $i++) {
-                $n     = $start + $i * $s;
-                $f     = pow(10, floor(log10($n - $r[$i - 1])));
-                $r[$i] = round($n / $f) * $f;
-                $q[$i] = [$r[$i - 1] + 1, $r[$i]];
-            }
-            $q[$i] = [$r[$step - 1] + 1, ceil($end)];
-            return $q;
-        } else {
-            if (!$end) $end = $start;
-            return [[$start, $end]];
-        }
-    }
 
     /**
      * 获取配送方式详情

@@ -276,7 +276,6 @@
         form.render();
         form.on('select(goods_cat_id)', function(data){
             var cat_id = data.value;
-            var first_select = $("#goods_cat_id");
 
             var getTpl = cat_tpl.innerHTML
                     ,view = document.getElementById('view');

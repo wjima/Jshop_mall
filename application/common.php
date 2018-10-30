@@ -816,3 +816,24 @@ function get_manage_info($manage_id,$field = 'username')
         return "";
     }
 }
+
+/**
+ * 数组倒排序，取新的键
+ * @param array $array
+ * @return array
+ */
+function _krsort($array = [])
+{
+    krsort($array);
+    if (is_array($array)) {
+        $i          = 0;
+        $temp_array = [];
+        foreach ($array as $val) {
+            $temp_array[$i] = $val;
+            $i++;
+        }
+        return $temp_array;
+    } else {
+        return $array;
+    }
+}

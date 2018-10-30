@@ -182,6 +182,7 @@ export default {
         width: 100%;
         z-index: 99999;
         padding: .1rem 0;
+        max-width: 750px;
     }
     .goodslist .itembox ul li{
         width: 33.3%;

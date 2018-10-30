@@ -99,7 +99,7 @@
                                 JsPost("{:url('GoodsType/add')}", data.field, function(res){
                                     if(res.status){
                                         layer.close(window_box);
-                                        layer.msg(e.msg, {time: 1300}, function(){
+                                        layer.msg(res.msg, {time: 1300}, function(){
                                             table.reload('typeTable');
                                         });
                                     }else{

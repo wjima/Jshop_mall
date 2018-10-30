@@ -1,16 +1,16 @@
-<table id="typeTable" lay-filter="typeTable"></table>
+<table id="listTypeTable" lay-filter="typeTable"></table>
 
 <script>
     layui.use(['form', 'laydate','table'], function(){
         var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
         table.render({
-            elem: '#typeTable',
+            elem: '#listTypeTable',
             height: '330',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
             url: "{:url('GoodsTypeSpec/index')}?_ajax=1",
-            id:'typeTable',
+            id:'listTypeTable',
             cols: [[
                 {type:'numbers'},
                 {field: 'name', width: 100, title: '名称'},
@@ -31,7 +31,7 @@
             ]]
         });
         form.on('submit(goods-search)', function(data){
-            layui.table.reload('typeTable', {
+            layui.table.reload('listTypeTable', {
                 where: data.field
                 ,page: {
                     curr: 1 //重新从第 1 页开始

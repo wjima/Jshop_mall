@@ -10,6 +10,7 @@
 namespace app\common\model;
 
 use think\facade\Cache;
+use think\facade\Log;
 
 /**
  * 插件模型
@@ -38,6 +39,7 @@ class Addons extends Common
             'msg'    => '获取失败',
             'status' => false,
         ];
+
         if (!defined('ADDON_PATH')) {
             $result['msg'] = '插件路径缺失';
             return $result;
@@ -57,11 +59,12 @@ class Addons extends Common
                 $addons[$addon['name']] = $addon;
             }
         }
+
         foreach ($dirs as $value) {
             if (!isset($addons[$value])) {
                 $class = get_addon_class($value);
                 if (!class_exists($class)) { // 实例化插件失败忽略执行
-                    \Think\Log::record('插件' . $value . '的入口文件不存在！');
+                    Log::record('插件' . $value . '的入口文件不存在！');
                     continue;
                 }
                 $obj            = new $class;

@@ -19,10 +19,6 @@ class Sms extends Common
             'name' => '用户登陆',
             'check' => true
         ],
-        'seller_reg' => [
-            'name' => '商户注册',
-            'check' => true
-        ],
         'veri' => [
             'name' => '短信校验',
             'check' => true
@@ -76,7 +72,7 @@ class Sms extends Common
 
 
 
-        $re = $this->send_sms($mobile,$str);
+        $re = $this->send_sms($mobile,$str,$code,$params);
         return $re;
     }
 
@@ -111,9 +107,6 @@ class Sms extends Common
             case 'login':
                 $msg = "您正在登陆账号，验证码是".$params['code']."，请勿告诉他人。";
                 break;
-            case 'seller_reg':
-                $msg = "您正在申请成为我们的商户，验证码是".$params['code']."，请勿告诉他人。";
-                break;
             case 'veri':
                 $msg = "您的验证码是".$params['code']."，请勿告诉他人。";
                 break;
@@ -138,18 +131,6 @@ class Sms extends Common
             case 'aftersales_add':
                 $msg = "你好，有新的售后订单了，请及时处理。";
                 break;
-            case 'wx_authorize_notice':
-                $msg = "恭喜你微信授权通过，请登录平台进行下一步操作吧。";
-                break;
-            case 'wxapp_tpl_examine_notice':
-                $msg = "恭喜你，你的微信小程序模板审核通过，请上线体验吧。";
-                break;
-            case 'platform_expire':
-                $msg = "尊敬的商户你好，您的店铺马上到期，请立即续费。";
-                break;
-            case 'modify_domain':
-                $msg = "尊敬的商户".$params['seller_name']."：您好，".$params['msg'];
-                break;
             case 'common':
                 $msg = $params['tpl'];
                 break;
@@ -157,15 +138,29 @@ class Sms extends Common
         }
         return $msg;
     }
-    private function send_sms($mobile,$content){
-        $sms_password = config('?jshop.sms_password')?config('jshop.sms_password'):getSetting('sms_password');      //为了演示效果，此密码从配置文件中取，如果正式使用，请删除此行，并在后台店铺设置里配置密码即可。
-        
-        $content = $content.'【'.getSetting('sms_prefix').'】';
-        //$content = iconv("utf-8","gb2312",$content);
-        $content = urlencode($content);      //内容
-        $str = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=".getSetting('sms_user_id')."&account=".getSetting('sms_account')."&password=".$sms_password."&mobile=".$mobile."&content=".$content."&sendTime=&extno=";
-        $re = file_get_contents($str);
-        return array('status'=>true,'msg'=>"发送成功！");
+
+    /***
+     * 发送短信
+     * @param $mobile
+     * @param $content
+     * @param $code
+     * @param $params
+     * @return array
+     */
+    private function send_sms($mobile,$content,$code,$params){
+
+        $re = hook('sendsms', ['params' => [
+            'mobile'  => $mobile,
+            'content' => $content,
+            'code'    => $code,
+            'params'  => $params,
+        ]]);
+
+        if ($re) {
+            return ['status' => true, 'msg' => '发送成功！'];
+        } else {
+            return ['status' => false, 'msg' => '发送失败！'];
+        }
     }
 
 

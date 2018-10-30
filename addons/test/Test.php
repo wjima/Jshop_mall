@@ -55,7 +55,7 @@ class Test extends Addons	// 需继承myxland\addons\Addons类
 
     public function config($params = [])
     {
-
+        return '无需配置';
     }
 
 }

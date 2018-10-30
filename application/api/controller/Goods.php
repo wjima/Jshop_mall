@@ -35,7 +35,7 @@ class Goods extends Api
         $return_data = [
             'status' => false,
             'msg'    => '有非法查询字段',
-            'data'   => ''
+            'data'   => []
         ];
 
         if($data == '' && $data != '*') {
@@ -76,7 +76,7 @@ class Goods extends Api
         $return_data = [
             'status' => false,
             'msg'    => '排序错误',
-            'data'   => ''
+            'data'   => []
         ];
 //        if(is_array($order)) {
 //            $return_data['msg'] = '排序字段不能为数组';
@@ -125,7 +125,7 @@ class Goods extends Api
         $return_data = [
             'status' => false,
             'msg'    => '查询失败',
-            'data'   => [ ]
+            'data'   => []
         ];
         $field       = input('field','*');
         $page        = input('page/d',1);

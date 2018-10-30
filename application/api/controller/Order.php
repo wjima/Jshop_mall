@@ -182,7 +182,7 @@ class Order extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         if(!input("?param.uship_id")){
@@ -318,7 +318,7 @@ class Order extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -353,7 +353,7 @@ class Order extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 

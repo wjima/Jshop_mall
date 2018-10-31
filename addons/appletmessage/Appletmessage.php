@@ -4,7 +4,6 @@ namespace addons\appletmessage;    // 注意命名空间规范
 
 use app\common\model\WeixinAuthor;
 use myxland\addons\Addons;
-use app\common\model\SellerAddons;
 use app\common\model\Addons as addonsModel;
 
 /**
@@ -66,13 +65,12 @@ class Appletmessage extends Addons
      */
     public function sendwxmessage($params)
     {
-        if (!$params['params']['seller_id'] || !$params['params']['user_id']) {
+        if (!$params['params']['user_id']) {
             return false;
         }
         $addonModel        = new addonsModel();
         $addon             = $addonModel->getAddonByName($this->info['name']);
-        $sellerAddonsModel = new SellerAddons();
-        $setting           = $sellerAddonsModel->getSetting($addon['id'], $params['params']['seller_id']);
+        $setting           = $addonModel->getSetting($this->info['name']);
         if(!$setting){
             return false;
         }

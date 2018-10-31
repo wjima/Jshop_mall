@@ -128,9 +128,6 @@ class Sms extends Common
             case 'refund_success':
                 $msg = "用户你好，你的退款已经处理，请确认。";
                 break;
-            case 'aftersales_add':
-                $msg = "你好，有新的售后订单了，请及时处理。";
-                break;
             case 'common':
                 $msg = $params['tpl'];
                 break;

@@ -712,12 +712,11 @@ function sendMessage($user_id, $code, $params)
  * @param $user_id
  * @return bool|array
  */
-function getUserWxInfo($seller_id,$user_id)
+function getUserWxInfo($user_id)
 {
     $wxModel = new \app\common\model\UserWx();
-    $filter[] = ['seller_id','eq',$seller_id];
     $filter[] = ['user_id','eq',$user_id];
-    $wxInfo = $wxModel->field('id,seller_id,user_id,openid,unionid,avatar,nickname')->where($filter)->find();
+    $wxInfo = $wxModel->field('id,user_id,openid,unionid,avatar,nickname')->where($filter)->find();
     if($wxInfo){
         return $wxInfo->toArray();
     }else{
@@ -837,3 +836,4 @@ function _krsort($array = [])
         return $array;
     }
 }
+

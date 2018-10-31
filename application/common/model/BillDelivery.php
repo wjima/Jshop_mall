@@ -148,7 +148,15 @@ class BillDelivery extends Common
             Db::commit();
 
             //发送发货成功信息
-            sendMessage($bull_delivery['user_id'], 'delivery_notice', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+            $shipModel          = new Ship();
+            $ship               = $shipModel->getInfo(['id' => $order['logistics_id']]);
+            $order['ship_id']   = $ship['name'];
+            $order['ship_addr'] = get_area($order['ship_area_id']) . $order['ship_address'];
+
+            $order['logistics_name'] = get_logi_info($logi_code);
+            $order['ship_no']        = $logi_no;
+            $eventData = $order->toArray();
+            sendMessage($bull_delivery['user_id'], 'delivery_notice',$eventData );
         }catch(\Exception $e){
             Db::rollback();
         }

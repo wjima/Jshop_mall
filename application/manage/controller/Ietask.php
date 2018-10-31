@@ -128,7 +128,6 @@ class Ietask extends Manage{
             ];
             $ietaskModle = new ietaskModel();
 
-            $data['seller_id'] = $this->sellerId;
             $data['name'] = $model . '-导入';
             $data['type'] = $ietaskModle::TYPE_INPORT;
             $data['params'] = json_encode($params);

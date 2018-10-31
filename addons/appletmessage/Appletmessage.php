@@ -76,12 +76,12 @@ class Appletmessage extends Addons
         }
         $template          = $setting[$params['params']['code']];
         //发送消息，取出会员open_id，然后发送
-        $wxUserinfo = getUserWxInfo($params['params']['seller_id'], $params['params']['user_id']);
+        $wxUserinfo = getUserWxInfo($params['params']['user_id']);
         if (!$wxUserinfo) {
             return false;
         }
         $authorModel = new WeixinAuthor();
-        $appinfo     = $authorModel->getAuthorInfo($params['params']['seller_id'], 'b2c');
+        $appinfo     = $authorModel->getAuthorInfo('b2c');
         if (!$appinfo) {
             return false;
         }

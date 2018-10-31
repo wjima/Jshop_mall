@@ -428,7 +428,7 @@ class Promotion extends Manage
         }
 
         $resultModel = new PromotionResult();
-        return $resultModel->toDel(input('param.id'),$info['seller_id']);
+        return $resultModel->toDel(input('param.id'));
     }
 
     //优惠券下载

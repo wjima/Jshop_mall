@@ -27,8 +27,6 @@ class BillAftersales extends Manage
         }
         $billAftersalesModel = new BillAfterSalesModel();
 
-
-
         if(Request::isPOST()){
             $items = [];
             if(input('?param.order_items_id') && input('?param.aftersaleeItems')){

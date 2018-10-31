@@ -195,8 +195,6 @@ class BillAftersales extends Common
             }
         }
 
-
-
         Db::startTrans();
         try {
             $data['status'] = $status;
@@ -261,6 +259,13 @@ class BillAftersales extends Common
             }
 
             Db::commit();
+            //发送售后审核消息
+            $eventData                      = $orderInfo->toArray();
+            $eventData['aftersales_status'] = ($status == self::STATUS_SUCCESS) ? '审核通过' : '审核拒绝';
+            $eventData['aftersales_id']     = $aftersales_id;
+            $eventData['mark']              = $mark;
+            sendMessage($info['user_id'], 'aftersales_pass', $eventData);
+
             $result['status'] = true;
         } catch (\Exception $e) {
             Db::rollback();
@@ -412,7 +417,7 @@ class BillAftersales extends Common
 
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = 'aftersales_id desc';
         return $result;
     }
     /**

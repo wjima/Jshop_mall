@@ -35,7 +35,6 @@ class Message extends ManageController
             return error_code(10003);
         }
         $id = input('param.id');
-        //$data['seller_id'] = $this->sellerId;
         $messageModel = new MessageModel();
         if($messageModel->where(['id'=>$id])->delete()){
             return [

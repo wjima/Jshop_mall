@@ -5,7 +5,6 @@ use think\Config;
 use think\Container;
 use think\Db;
 use think\facade\View;
-use app\common\model\Addons as addonsModel;
 
 
 /**
@@ -97,6 +96,7 @@ abstract class Addons
 
         if (is_file($this->config_file)) {
             $temp_arr = include $this->config_file;
+
             foreach ($temp_arr as $key => $value) {
                 if (isset($value['type']) && $value['type'] == 'group') {
                     foreach ($value['options'] as $gkey => $gvalue) {
@@ -110,9 +110,6 @@ abstract class Addons
             }
             unset($temp_arr);
         }
-        $addonModel     = new addonsModel();
-        $setting        = $addonModel->getSetting($name);
-        $config         = array_merge($config, (array)$setting);
         $_config[$name] = $config;
 
         return $config;

@@ -81,6 +81,11 @@
         <text class='price-details-left'>运费</text>
         <text class='price-details-right'>+¥{{costFreight}}</text>
       </view>
+      <view wx:if="{{point != 0}}">
+        <checkbox-group bindchange="checkboxChange">
+            <checkbox value="point_status" checked="{{point_status}}"/>使用积分（可用{{available_point}}积分，可抵扣{{pointRmb}}元，共有{{point}}积分。）
+        </checkbox-group>
+      </view>
     </view>
     <view class='price-details buyer'>
       <text class='price-details-left'>买家留言</text>

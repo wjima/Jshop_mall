@@ -555,4 +555,45 @@ class User extends Common
         ];
     }
 
+
+    /**
+     * 获取用户的积分
+     * @param $user_id
+     * @param int $order_money
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserPoint($user_id, $order_money = 0)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => 0
+        ];
+
+        $where[] = ['id', 'eq', $user_id];
+        $data = $this->field('point')->where($where)->find();
+        if($data !== false)
+        {
+            if($order_money != 0)
+            {
+                //计算可用积分
+                $settingModel = new Setting();
+                $orders_point_proportion = $settingModel->getValue('orders_point_proportion'); //订单积分使用比例
+                $max_point_deducted_money = $order_money*($orders_point_proportion/100); //最大积分抵扣的钱
+                $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
+                $needs_point = $max_point_deducted_money*$point_discounted_proportion;
+                $return['available_point'] = $needs_point>$data['point']?$data['point']:$needs_point;
+                $return['point_rmb'] = $max_point_deducted_money;
+            }
+
+            $return['msg'] = '获取成功';
+            $return['data'] = $data['point'];
+            $return['status'] = true;
+        }
+
+        return $return;
+    }
 }

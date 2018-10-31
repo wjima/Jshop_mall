@@ -128,6 +128,10 @@ return [
                 'code' => 'pointLog',
                 'is_login' => true
             ],
+            'getuserpoint' => [
+                'code' => 'getUserPoint',
+                'is_login' => true
+            ],
             'getstorename' => [
                 'code' => 'getStoreName',
                 'is_login' => false

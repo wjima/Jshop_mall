@@ -1045,6 +1045,10 @@ class Order extends Common
         $order['logistics_id'] = $shipInfo['id'];
         $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
 
+        //积分使用情况
+        $order['point'] = $orderInfo['data']['point'];
+        $order['point_money'] = $orderInfo['data']['point_money'];
+
         $order['weight'] = $orderInfo['data']['weight'];;
         $order['order_pmt'] = isset($orderInfo['data']['order_pmt'])?$orderInfo['data']['order_pmt']:0;
         $order['goods_pmt'] = isset($orderInfo['data']['goods_pmt'])?$orderInfo['data']['goods_pmt']:0;
@@ -1081,6 +1085,13 @@ class Order extends Common
                 {
                     return $coupon_res;
                 }
+            }
+
+            //积分核销
+            if($order['point'] > 0)
+            {
+                $userPointLog = new UserPointLog();
+                $userPointLog->setPoint($user_id, 0-$order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
             }
 
             //清除购物车信息

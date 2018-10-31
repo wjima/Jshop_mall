@@ -14,6 +14,7 @@ use app\common\model\GoodsCollection;
 use app\common\model\UserWx;
 use app\common\model\BillPayments;
 use org\Curl;
+use think\facade\Request;
 
 class User extends Api
 {
@@ -38,6 +39,7 @@ class User extends Api
 
         return $userModel->smsLogin($data, 2,$platform);
     }
+
     /**
      * 微信小程序创建用户，不登陆，只是保存登录态
      */
@@ -98,7 +100,6 @@ class User extends Api
 
     }
 
-
     //发送登陆注册短信，type为1注册，为2登陆
     public function sms()
     {
@@ -135,13 +136,13 @@ class User extends Api
         $userTokenModel = new UserToken();
         return $userTokenModel->delToken(input("param.token"));
     }
+
     public function reg()
     {
         $userModel = new UserModel();
         $data = input('post.');
         return $userModel->toAdd($data,2);
     }
-
 
     public function info()
     {
@@ -185,9 +186,6 @@ class User extends Api
         return $result;
     }
 
-
-
-
     public function editInfo()
     {
         $sex = input('param.sex','');
@@ -214,6 +212,7 @@ class User extends Api
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toAdd($this->userId, input("param.goods_id"));
     }
+
     //删除商品浏览足迹
     public function delGoodsBrowsing()
     {
@@ -230,6 +229,7 @@ class User extends Api
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toDel($this->userId,input("param.goods_ids"));
     }
+
     //取得商品浏览足迹
     public function goodsBrowsing()
     {
@@ -272,6 +272,7 @@ class User extends Api
         return $goodsCollectionModel->toDo($this->userId, input("param.goods_id"));
     }
     //取得商品收藏记录（关注）
+
     public function goodsCollectionList()
     {
         $result = [
@@ -338,8 +339,7 @@ class User extends Api
 
 
     /**
-     *
-     *  H5 添加收货地址
+     * H5 添加收货地址
      * @return array
      */
     public function vueSaveUserShip ()
@@ -370,8 +370,7 @@ class User extends Api
 
 
     /**
-     *
-     *  获取收货地址详情
+     * 获取收货地址详情
      * @return array
      */
     public function getShipDetail ()
@@ -398,7 +397,7 @@ class User extends Api
 
 
     /**
-     *  收货地址编辑
+     * 收货地址编辑
      * @return array
      */
     public function editShip ()
@@ -669,6 +668,24 @@ class User extends Api
         $res = $userPointLog->pointLogList($user_id);
         return $res;
     }
+
+
+    /**
+     * 获取用户积分
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserPoint()
+    {
+        $user_id = $this->userId;
+        $order_money = Request::param('order_money', 0);
+        $userModel = new UserModel();
+        return $userModel->getUserPoint($user_id, $order_money);
+    }
+
+
     /**
      * 获取店铺设置
      * @return array|mixed

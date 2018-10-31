@@ -11,7 +11,9 @@ Page({
       var data = {
         code: code
       };
+        console.log(data);
       app.api.login1(data, function (res) {
+          console.log(res);
         if(!res.status){
           wx.showToast({
             title: res.msg,

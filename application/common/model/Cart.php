@@ -175,17 +175,18 @@ class Cart extends Common
     }
 
     /**
-     * @param $sellerId
      * @param $userId
      * @param string $id
      * @param string $display
      * @param bool $area_id
+     * @param int $point
+     * @param string $coupon_code
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($userId, $id = '', $display = '', $area_id = false,$point = 0,$coupon_code = "")
+    public function info($userId, $id = '', $display = '', $area_id = false, $point = 0, $coupon_code = "")
     {
         $result = [
             'status' => false,
@@ -249,6 +250,34 @@ class Cart extends Common
             if(!$re['status']){
                 return $re;       //优惠券不符合使用规则，后期会把不符合的原因写出来
             }
+        }
+
+        if($point != 0)
+        {
+            //判断用户是否有这么多积分
+            $userModel = new User();
+            $oPoint = $userModel->getUserPoint($userId);
+            if($oPoint['data'] < $point)
+            {
+                $result['msg'] = '积分不足，无法使用积分';
+                return $result;
+            }
+
+            //判断积分值多少钱
+            $settingModel = new Setting();
+            $orders_point_proportion = $settingModel->getValue('orders_point_proportion'); //订单积分使用比例
+            $max_point_deducted_money = $result['data']['amount']*($orders_point_proportion/100); //最大积分抵扣的钱
+            $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
+            $point_deducted_money = (int)$point/(int)$point_discounted_proportion; //积分可以抵扣的钱
+            if($max_point_deducted_money < $point_deducted_money)
+            {
+                $result['msg'] = '积分抵扣超过订单总金额的'.$orders_point_proportion.'%，积分无法正常使用！';
+                return $result;
+            }
+
+            $result['data']['point'] = $point;
+            $result['data']['point_money'] = $point_deducted_money;
+            $result['data']['amount'] = $result['data']['amount']-$point_deducted_money;
         }
 
         $result['status'] = true;

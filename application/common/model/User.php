@@ -570,8 +570,21 @@ class User extends Common
         $return = [
             'status' => false,
             'msg' => '获取失败',
-            'data' => 0
+            'data' => 0,
+            'available_point' => 0,
+            'point_rmb' => 0,
+            'switch' => 1
         ];
+
+
+        $settingModel = new Setting();
+        $switch = $settingModel->getValue('point_switch');
+        if($switch == 2)
+        {
+            $return['status'] = true;
+            $return['switch'] = 2;
+            return $return;
+        }
 
         $where[] = ['id', 'eq', $user_id];
         $data = $this->field('point')->where($where)->find();

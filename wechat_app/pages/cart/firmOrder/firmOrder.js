@@ -18,6 +18,7 @@ Page({
     goodsAmount: 0.00,
     goodsPmt: 0.00,
     orderPmt: 0.00,
+    pointSwitch: 2,
     pointStatus: false,
     point: 0,
     pointRmb: 0,
@@ -351,6 +352,7 @@ Page({
       app.api.getUserPoint(data, function(res){
         if(res.status){
             page.setData({
+                pointSwitch: res.switch,
                 point: res.data,
                 available_point: res.available_point,
                 pointRmb: res.point_rmb

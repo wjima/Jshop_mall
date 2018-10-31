@@ -14,7 +14,6 @@
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
                 <form class="layui-form seller-alone-form" action="" method="post">
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['shop_name']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5">
@@ -36,15 +35,12 @@
                             </div>
                         <div class="layui-form-mid layui-word-aux"></div>
                     </div>
-
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
                         <div class="layui-input-block">
                             <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
                         </div>
                     </div>
-
                 </form>
             </div>
             <div class="layui-tab-item">
@@ -56,9 +52,6 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">商品低库存的报警数量，当商品库存低于此数量是会在后台提示</div>
                     </div>
-
-
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
                         <div class="layui-input-block">
@@ -141,6 +134,14 @@
             </div>
             <div class="layui-tab-item">
                 <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['point_switch']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-7">
+                            <input type="radio" lay-filter="point_switch" name="point_switch" value="1" title="开启" {eq name="$data['point_switch']['value']" value="1"}checked{/eq}>
+                            <input type="radio" lay-filter="point_switch" name="point_switch" value="2" title="不开启" {eq name="$data['point_switch']['value']" value="2"}checked{/eq}>
+                        </div>
+                    </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['point_discounted_proportion']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">

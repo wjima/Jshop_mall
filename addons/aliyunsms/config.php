@@ -97,13 +97,13 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号 :${order_id}，总价 :${order_amount}，配送方式 :${logistics_id}收货人手机 :${ship_mobile}，收货人地址 :${ship_address}，收货人姓名 :${ship_name}',
+                        'content' => '订单号 :${order_id}，总价 :${order_amount}，配送方式 :${ship_id}收货人手机 :${ship_mobile}，收货人地址 :${ship_addr}，收货人姓名 :${ship_name}',
                         'variable'=>[
                             'order_id'=>'order_id',  //模板变量，对应系统变量名称
                             'order_amount'=>'order_amount',
-                            'logistics_id'=>'logistics_name',
+                            'ship_id'=>'ship_id',
                             'ship_mobile'=>'ship_mobile',
-                            'ship_address'=>'ship_address',
+                            'ship_addr'=>'ship_addr',
                             'ship_name'=>'ship_name',
                         ]
                     ],
@@ -147,14 +147,14 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_address},收货人手机:${ship_mobile},备注:${memo}',
+                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_addr},收货人手机:${ship_mobile},备注:${memo}',
                         'variable'=>[
                             'order_id'=>'order_id',  //模板变量，对应系统变量名称
                             'ship_id'=>'ship_id',
                             'logistics_name'=>'logistics_name',
                             'ship_no'=>'ship_no',
                             'ship_name'=>'ship_name',
-                            'ship_address'=>'ship_address',
+                            'ship_addr'=>'ship_addr',
                             'ship_mobile'=>'ship_mobile',
                             'memo'=>'memo',
                         ]
@@ -175,14 +175,14 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_address},收货人手机:${ship_mobile},备注:${memo}',
+                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_addr},收货人手机:${ship_mobile},备注:${memo}',
                         'variable'=>[
                             'order_id'=>'order_id',  //模板变量，对应系统变量名称
                             'ship_id'=>'ship_id',
                             'logistics_name'=>'logistics_name',
                             'ship_no'=>'ship_no',
                             'ship_name'=>'ship_name',
-                            'ship_address'=>'ship_address',
+                            'ship_addr'=>'ship_addr',
                             'ship_mobile'=>'ship_mobile',
                             'memo'=>'memo',
                         ]
@@ -203,16 +203,12 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_address},收货人手机:${ship_mobile},备注:${memo}',
+                        'content' => '订单号:${order_id},售后单号:${aftersales_id},审核状态:${aftersales_status},审核备注${mark}',
                         'variable'=>[
                             'order_id'=>'order_id',  //模板变量，对应系统变量名称
-                            'ship_id'=>'ship_id',
-                            'logistics_name'=>'logistics_name',
-                            'ship_no'=>'ship_no',
-                            'ship_name'=>'ship_name',
-                            'ship_address'=>'ship_address',
-                            'ship_mobile'=>'ship_mobile',
-                            'memo'=>'memo',
+                            'aftersales_id'=>'aftersales_id',
+                            'status'=>'aftersales_status',
+                            'mark'=>'mark'
                         ]
                     ],
                     'content'  => [
@@ -231,11 +227,11 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号 :${order_id}，退款编号 :${aftersales_id},退款金额 :${refund}',
+                        'content' => '订单号 :${order_id}，退款编号 :${refund_id},退款金额 :${refund}',
                         'variable'=>[
-                            'order_id'=>'order_id',  //模板变量，对应系统变量名称
-                            'aftersales_id'=>'aftersales_id',
-                            'refund'=>'refund'
+                            'order_id'=>'source_id',  //模板变量，对应系统变量名称
+                            'refund_id'=>'refund_id',
+                            'refund'=>'money'
                         ]
                     ],
                     'content'  => [

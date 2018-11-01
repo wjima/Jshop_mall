@@ -78,7 +78,7 @@ class Aliyunsms extends Addons
         if (!empty($params["TemplateParam"]) && is_array($params["TemplateParam"])) {
             $params["TemplateParam"] = json_encode($params["TemplateParam"], JSON_UNESCAPED_UNICODE);
         }
-
+        Log::info('aliyunsms:'.json_encode($params));
         try {
             $content = $this->request(
                 $accessKeyId,
@@ -97,7 +97,6 @@ class Aliyunsms extends Addons
         } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
-
         return true;
     }
 

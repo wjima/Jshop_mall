@@ -35,7 +35,7 @@ class Sms extends Common
 
 
         //如果是登陆注册等的短信，增加校验
-        if($code == 'reg' || $code == 'login' || $code == 'seller_reg' || $code== 'veri'){
+        if($code == 'reg' || $code == 'login' || $code== 'veri'){
             $where[] = ['mobile', 'eq', $mobile];
             $where[] = ['code', 'eq', $code];
             $where[] = ['ctime', 'gt', time()-60*10];

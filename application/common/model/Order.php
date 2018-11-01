@@ -935,14 +935,17 @@ class Order extends Common
                 $return_data['status'] = true;
                 $return_data['msg'] = '订单支付成功';
 
-                //发送支付成功信息
-                sendMessage($order['seller_id'], $order['user_id'], 'order_payed', $order);
+                //发送支付成功信息,增加发送内容
+                $order['pay_time']  = date('Y-m-d H:i:s', $data['payment_time']);
+                $order['money']     = $order['order_amount'];
+                $order['user_name'] = get_user_info($order['user_id']);
+                sendMessage($order['user_id'], 'order_payed', $order);
             }
         }
 
         //订单记录
         $orderLog = new OrderLog();
-        $orderLog->addLog($order_id, $order['user_id'], $order['seller_id'], $orderLog::LOG_TYPE_PAY, $return_data['msg'], [$return_data, $data]);
+        $orderLog->addLog($order_id, $order['user_id'], $orderLog::LOG_TYPE_PAY, $return_data['msg'], [$return_data, $data]);
 
         return $return_data;
     }
@@ -1117,8 +1120,14 @@ class Order extends Common
             $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
 
             $result['status'] = true;
-            $result['data'] = $order;
+            $result['data']   = $order;
+            //添加订单其它信息，发送短信时使用
+            $shipModel          = new Ship();
+            $ship               = $shipModel->getInfo(['id' => $order['logistics_id']]);
+            $order['ship_id']   = $ship['name'];
+            $order['ship_addr'] = get_area($order['ship_area_id']) . $order['ship_address'];
             Db::commit();
+
             sendMessage($user_id, 'create_order', $order);
             return $result;
         } catch (\Exception $e) {

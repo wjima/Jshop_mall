@@ -85,19 +85,19 @@ class BillRefund extends Common
         if($status == self::STATUS_REFUND){
             //退款同意
             //如果前端传过来的退款方式和退款单上的退款方式一样的话，就说明是原路返回，试着调用支付方式的退款方法,如果不一样的话，就直接做退款单的退款状态为已退款就可以了
-            if($payment_code == $info['payment_code']){
-                return $this->paymentRefund($refund_id);
+            if($payment_code == $info['payment_code'] && $payment_code!='offline'){//修复线下退款bug
+                $result = $this->paymentRefund($refund_id);
             }else{
                 //只修改状态，不做实际退款，实际退款线下去退。
                 $data['status'] = self::STATUS_REFUND;
                 $this->where($where)->data($data)->update();
                 $result['status'] = true;
                 $result['msg'] = '退款单退款成功';
-                return $result;
             }
-
-
-
+            //发送退款消息
+            $eventData              = $info->toArray();
+            sendMessage($info['user_id'], 'refund_success', $eventData);
+            return $result;
         }elseif($status == self::STATUS_REFUSE){
             //退款拒绝
 

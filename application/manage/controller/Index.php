@@ -24,8 +24,6 @@ class Index extends Manage
         $billAfterSalesModel = new BillAftersales();
         $afterSales_count = $billAfterSalesModel->getCount();
 
-        //hook('testhook', $params);//php中钩子
-
         $this->assign('unpaid_count',$unpaid_count);
         $this->assign('unship_count',$unship_count);
         $this->assign('after_sales_count',$afterSales_count);
@@ -45,7 +43,8 @@ class Index extends Manage
         }else{
             $this->assign('is_author','false');
         }
-        hook('adminindex', $this);
+
+        hook('adminindex', $this);//后台首页钩子
 
         return $this->fetch();
     }

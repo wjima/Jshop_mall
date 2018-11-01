@@ -84,6 +84,9 @@ class Goods extends Manage
         $brandModel = new Brand();
         $brandList  = $brandModel->getAllBrand();
         $this->assign('brandList', $brandList);
+
+        hook('goodscommon', $this);//商品编辑、添加时增加钩子
+
     }
 
     /**
@@ -237,6 +240,10 @@ class Goods extends Manage
             }
         }
         $goodsModel->commit();
+
+        array_push($data,['goods_id'=>$goods_id]);
+        hook('addgoodsafter', $data);//添加商品后增加钩子
+
         $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;
@@ -431,7 +438,6 @@ class Goods extends Manage
             $goodsTypeParamsModel = new GoodsTypeParams();
             $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
             $this->assign('typeParams', $typeParams);
-            //print_r($typeParams);die();
             $html             = $this->fetch('getSpec');
             $result['status'] = true;
             $result['msg']    = '获取成功';
@@ -767,6 +773,7 @@ class Goods extends Manage
             }
         }
         $goodsModel->commit();
+        hook('editgoodsafter', $data);//编辑商品后增加钩子
         $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;

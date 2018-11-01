@@ -579,6 +579,7 @@ class Goods extends Common
         if (!$goods) {
             return $result;
         }
+
         $this->startTrans();
 
         $res = self::destroy($goods_id);
@@ -604,6 +605,9 @@ class Goods extends Common
         }
         delImage($goods['image_id']);
         $this->commit();
+
+        hook('deletegoodsafter', $goods);//删除商品后增加钩子
+
         $result['status'] = true;
         $result['msg'] = '删除成功';
         return $result;

@@ -16,6 +16,8 @@ class Promotion extends Common
 
     const TYPE_PROMOTION = 1;           //类型，促销
     const TYPE_COUPON = 2;              //类型，优惠券
+    const TYPE_GROUP = 3;              //类型，团购&秒杀
+    const TYPE_SKILL = 4;              //类型，团购&秒杀
 
     const AUTO_RECEIVE_YES = 1;     //自动领取
     const AUTO_RECEIVE_NO = 2;      //不自动领取

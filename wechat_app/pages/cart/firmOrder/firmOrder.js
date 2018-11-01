@@ -190,8 +190,9 @@ Page({
   },
 
   //立即支付生成订单
-  payNow: function () {
-    var page = this;
+  payNow: function (e) {
+    let page = this;
+    let formId = e.detail.formId;
     app.db.userToken(function (token) {
       if (!page.data.isAddress) {
         wx.showToast({
@@ -205,7 +206,8 @@ Page({
           cart_ids: page.data.cartIds,
           memo: page.data.buyerMessage,
           area_id: page.data.areaId,
-          coupon_code: page.data.usedCoupon
+          coupon_code: page.data.usedCoupon,
+          formId: formId
         }
         if(page.data.pointStatus){
             order_data['point'] = page.data.available_point

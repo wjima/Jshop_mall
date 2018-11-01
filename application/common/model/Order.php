@@ -1002,12 +1002,13 @@ class Order extends Common
      * @param $area_id
      * @param int $point
      * @param bool $coupon_code
+     * @param bool $formId
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false)
+    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false, $formId = false)
     {
         $result = [
             'status' => false,
@@ -1095,6 +1096,19 @@ class Order extends Common
             {
                 $userPointLog = new UserPointLog();
                 $userPointLog->setPoint($user_id, 0-$order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
+            }
+
+            //消息模板存储
+            if($formId)
+            {
+                $templateMessageModel = new TemplateMessage();
+                $message = [
+                    'type' => $templateMessageModel::TYPE_ORDER,
+                    'code' => $order['order_id'],
+                    'from_id' => $formId,
+                    'status' => $templateMessageModel::SEND_STATUS_NO
+                ];
+                $templateMessageModel->addSend($message);
             }
 
             //清除购物车信息

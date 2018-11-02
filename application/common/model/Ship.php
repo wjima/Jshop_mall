@@ -242,11 +242,16 @@ class Ship extends Common
             if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
                 return 0;
             }
+            $shipmoney = 0;
             $tmp_exp = trim(str_replace('w', $weight, $ship['exp']));
             eval("\$shipmoney = $tmp_exp;");
             return $shipmoney;
         } else {
-            return $ship['firstunit_price'];
+            if(isset($ship['firstunit_price'])){
+                return $ship['firstunit_price'];
+            }else{
+                return $ship['firstunit_area_price'];
+            }
         }
     }
 

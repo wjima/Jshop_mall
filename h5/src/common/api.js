@@ -72,7 +72,7 @@ const ApiUrl = () => {
     if (process.env.NODE_ENV === 'development') {
         // 开发环境
         apiUrl = 'https://b2c.jihainet.com/api.html'
-            // apiUrl = 'https://b2c.jihainet.com/api.html'
+            // apiUrl = 'http://www.b2c.com/index.php/api.html'
     } else if (process.env.NODE_ENV === 'production') {
         // 生产环境
         if (!window.apiUrl) common.errorToBack('缺少配置参数!')

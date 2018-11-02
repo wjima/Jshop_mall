@@ -198,7 +198,7 @@ return [
             ]
         ]
     ],
-    
+
     'advert' => [
         'code' => 'Advert',
         'method' => [

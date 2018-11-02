@@ -166,15 +166,15 @@ Page({
     }
     app.db.userToken(function (token) {
       app.api.orderEvaluate(data, function (res) {
-        console.log(res);
-        // wx.showToast({
-        //   title: res.msg,
-        //   success: function () {
-        //     wx.navigateBack({
-        //       delta: 1
-        //     });
-        //   }
-        // });
+        //console.log(res);
+        wx.showToast({
+          title: res.msg,
+          success: function () {
+            wx.navigateBack({
+              delta: 1
+            });
+          }
+        });
       });
     });
   }

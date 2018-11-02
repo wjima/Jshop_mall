@@ -14,6 +14,7 @@ class TemplateMessage extends Common
     const SEND_STATUS_YES = 2; //已发送
     const TYPE_ORDER = 'create_order'; //下单
     const TYPE_PAYMENT = 'order_payed'; //支付成功
+    const TYPE_AFTER_SALE = 'after_sale'; //售后
 
     /**
      * 添加发送记录

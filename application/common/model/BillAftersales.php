@@ -66,7 +66,7 @@ class BillAftersales extends Common
      * @param string $reason        售后理由
      * @return bool
      */
-    public function toAdd($user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0)
+    public function toAdd($user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0, $formId = false)
     {
         $result = [
             'status' => false,
@@ -133,6 +133,21 @@ class BillAftersales extends Common
                 $afterSalesImagesModel = new BillAftersalesImages();
                 $afterSalesImagesModel->saveAll($rel_arr);
             }
+
+            //微信消息模板
+            if($formId)
+            {
+                $templateMessageModel = new TemplateMessage();
+                $message = [
+                    'type' => $templateMessageModel::TYPE_AFTER_SALE,
+                    'code' => $order_id,
+                    'form_id' => $formId,
+                    'status' => $templateMessageModel::SEND_STATUS_NO
+                ];
+                $templateMessageModel->addSend($message);
+            }
+
+
             Db::commit();
 
         } catch (\Exception $e) {

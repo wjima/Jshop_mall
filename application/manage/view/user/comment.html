@@ -12,17 +12,17 @@
                 <input type="text" name="order_id" placeholder="请输入订单号" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">评价类型：</label>
-            <div class="layui-input-inline seller-inline-2">
-                <select name="evaluate" id="evaluate">
-                    <option value="all">-- 全部 --</option>
-                    <option value="1">好评</option>
-                    <option value="0">中评</option>
-                    <option value="-1">差评</option>
-                </select>
-            </div>
-        </div>
+        <!--<div class="layui-inline">-->
+            <!--<label class="layui-form-label">评价类型：</label>-->
+            <!--<div class="layui-input-inline seller-inline-2">-->
+                <!--<select name="evaluate" id="evaluate">-->
+                    <!--<option value="all">&#45;&#45; 全部 &#45;&#45;</option>-->
+                    <!--<option value="1">好评</option>-->
+                    <!--<option value="0">中评</option>-->
+                    <!--<option value="-1">差评</option>-->
+                <!--</select>-->
+            <!--</div>-->
+        <!--</div>-->
         <div class="layui-inline" style="margin-left: 17px;">
             <div class="layui-input-inline">
                 <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
@@ -62,14 +62,15 @@
                         return data.user_id;
                     }
                 }},
-                {field:'evaluate', width:150, sort:true, title:'评价类型', align:'center', templet: function (data) {
-                    if (data.score == 1) {
-                        return '好评';
-                    } else if (data.score == 0) {
-                        return '中评';
-                    } else if (data.score == -1) {
-                        return '差评';
-                    }
+                {field:'evaluate', width:150, sort:true, title:'评价星数', align:'center', templet: function (data) {
+                    // if (data.score == 1) {
+                    //     return '好评';
+                    // } else if (data.score == 0) {
+                    //     return '中评';
+                    // } else if (data.score == -1) {
+                    //     return '差评';
+                    // }
+                        return data.score+'星';
                 }},
                 {field:'goods_name', width:250, sort:true, title:'商品名称', align:'center', templet: function (data) {
                     return data.goods.name;

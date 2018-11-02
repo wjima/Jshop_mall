@@ -304,7 +304,7 @@ class Goods extends Common
             if(isset($list['image_url'])){
                 $album[] = $list['image_url'];
             }
-            rsort($album);
+            sort($album);
             $list['album']=$album;
 
             //获取当前登录是否收藏

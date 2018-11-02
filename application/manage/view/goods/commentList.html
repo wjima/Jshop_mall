@@ -28,8 +28,26 @@
             },
             cols: [[
                 {type:'numbers'},
-                {field:'nickname', width:210, title:'用户昵称', align:'center'},
-                {field:'evaluate', width:150, sort:true, title:'评价类型', align:'center'},
+                {field:'nickname', width:210, title:'用户', align:'center', templet: function(data) {
+                        if(data.user)
+                        {
+                            return data.user.nickname?data.user.nickname:data.user.mobile;
+                        }
+                        else
+                        {
+                            return data.user_id;
+                        }
+                    }},
+                {field:'evaluate', width:150, sort:true, title:'评价星数', align:'center', templet: function (data) {
+                        // if (data.score == 1) {
+                        //     return '好评';
+                        // } else if (data.score == 0) {
+                        //     return '中评';
+                        // } else if (data.score == -1) {
+                        //     return '差评';
+                        // }
+                        return data.score+'星';
+                    }},
                 {field:'content', width:150, sort:true, title:'评价内容', align:'center'},
                 {field:'order_id', width:300, title:'订单号', align:'center'},
                 {field:'ctime', width:230, sort:true, title:'评价时间', align:'center'},

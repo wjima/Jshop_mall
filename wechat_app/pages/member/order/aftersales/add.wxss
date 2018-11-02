@@ -208,10 +208,14 @@
   padding-top: 20rpx;
   padding-bottom: 80rpx;
   background-color: #f3f3f3;
+  text-align: center;
 }
 .weui-btn{
   width: 690rpx;
+  height: 80rpx;
+  line-height: 80rpx !important;
   margin: 0 auto;
+  color: #fff;
   background-color: #FF3B44 !important;
 }
 .delImageicon{

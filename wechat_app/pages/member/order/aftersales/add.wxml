@@ -69,7 +69,7 @@
 
   <view class='submit'>
     <!-- <button class="weui-btn" bindtap="submitBtn" type="warn">提交</button> -->
-    <button form-type="submit" type="default" size="mini" class='immediate-pay'>提交</button>
+    <button form-type="submit" type="warn" size="mini" class='immediate-pay weui-btn'>提交</button>
   </view>
 </form>
 </view>

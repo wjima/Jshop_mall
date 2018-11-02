@@ -208,7 +208,6 @@ class Goods extends Common
             ->order($order)
             ->page($page,$limit)
             ->select();
-        $result['sql'] = $this->getLastSql();
         $total = $this
             ->field($fields)
             ->where($where)
@@ -305,7 +304,7 @@ class Goods extends Common
             if(isset($list['image_url'])){
                 $album[] = $list['image_url'];
             }
-            rsort($album);
+            sort($album);
             $list['album']=$album;
 
             //获取当前登录是否收藏
@@ -580,6 +579,7 @@ class Goods extends Common
         if (!$goods) {
             return $result;
         }
+
         $this->startTrans();
 
         $res = self::destroy($goods_id);
@@ -605,6 +605,9 @@ class Goods extends Common
         }
         delImage($goods['image_id']);
         $this->commit();
+
+        hook('deletegoodsafter', $goods);//删除商品后增加钩子
+
         $result['status'] = true;
         $result['msg'] = '删除成功';
         return $result;

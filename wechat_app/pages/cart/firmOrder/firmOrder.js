@@ -18,6 +18,11 @@ Page({
     goodsAmount: 0.00,
     goodsPmt: 0.00,
     orderPmt: 0.00,
+    pointSwitch: 2,
+    pointStatus: false,
+    point: 0,
+    pointRmb: 0,
+    available_point: 0,
     orderPromotionList: [],
     totalAmount: 0.00,
     costFreight: 0.00,
@@ -40,6 +45,7 @@ Page({
     this.setData({
       cartIds: cart_id
     });
+    this.getUserPoint();
   },
 
   //获取默认收货地址
@@ -71,8 +77,11 @@ Page({
       var data = {
         ids: cart_id,
         area_id: page.data.areaId,
-        coupon_code: page.data.usedCoupon
+        coupon_code: page.data.usedCoupon,
       };
+      if(page.data.pointStatus){
+          data['point'] = page.data.available_point;
+      }
       app.api.cartList(data, function (res) {
         page.setData({
           cartIds: cart_id,
@@ -86,6 +95,9 @@ Page({
           costFreight: app.common.formatMoney(res.data.cost_freight*1, 2, '')
         });
         page.setSpes();
+        if(!page.data.pointStatus){
+            page.getUserPoint();
+        }
       });
     });
   },
@@ -178,8 +190,9 @@ Page({
   },
 
   //立即支付生成订单
-  payNow: function () {
-    var page = this;
+  payNow: function (e) {
+    let page = this;
+    let formId = e.detail.formId;
     app.db.userToken(function (token) {
       if (!page.data.isAddress) {
         wx.showToast({
@@ -193,7 +206,11 @@ Page({
           cart_ids: page.data.cartIds,
           memo: page.data.buyerMessage,
           area_id: page.data.areaId,
-          coupon_code: page.data.usedCoupon
+          coupon_code: page.data.usedCoupon,
+          formId: formId
+        }
+        if(page.data.pointStatus){
+            order_data['point'] = page.data.available_point
         }
         page.goPay(order_data);
       }
@@ -326,5 +343,36 @@ Page({
       showcoupon: false
     });
     page.getProductData();
+  },
+
+  //获取用户的可用积分
+  getUserPoint: function (e) {
+      let page = this;
+      let data = {
+          'order_money': page.data.totalAmount
+      }
+      app.api.getUserPoint(data, function(res){
+        if(res.status){
+            page.setData({
+                pointSwitch: res.switch,
+                point: res.data,
+                available_point: res.available_point,
+                pointRmb: res.point_rmb
+            });
+        }
+      });
+  },
+
+  //开启积分
+  checkboxChange: function (e) {
+      let page = this;
+      var status = false;
+      if (e.detail.value.length > 0) {
+          status = true;
+      }
+      page.setData({
+          pointStatus: status
+      });
+      page.getProductData();
   }
 });

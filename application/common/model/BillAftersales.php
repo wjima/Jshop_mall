@@ -66,7 +66,7 @@ class BillAftersales extends Common
      * @param string $reason        售后理由
      * @return bool
      */
-    public function toAdd($user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0)
+    public function toAdd($user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0, $formId = false)
     {
         $result = [
             'status' => false,
@@ -133,6 +133,21 @@ class BillAftersales extends Common
                 $afterSalesImagesModel = new BillAftersalesImages();
                 $afterSalesImagesModel->saveAll($rel_arr);
             }
+
+            //微信消息模板
+            if($formId)
+            {
+                $templateMessageModel = new TemplateMessage();
+                $message = [
+                    'type' => $templateMessageModel::TYPE_AFTER_SALE,
+                    'code' => $order_id,
+                    'form_id' => $formId,
+                    'status' => $templateMessageModel::SEND_STATUS_NO
+                ];
+                $templateMessageModel->addSend($message);
+            }
+
+
             Db::commit();
 
         } catch (\Exception $e) {
@@ -194,8 +209,6 @@ class BillAftersales extends Common
                 return $aftersalesItems;
             }
         }
-
-
 
         Db::startTrans();
         try {
@@ -261,6 +274,13 @@ class BillAftersales extends Common
             }
 
             Db::commit();
+            //发送售后审核消息
+            $eventData                      = $orderInfo->toArray();
+            $eventData['aftersales_status'] = ($status == self::STATUS_SUCCESS) ? '审核通过' : '审核拒绝';
+            $eventData['aftersales_id']     = $aftersales_id;
+            $eventData['mark']              = $mark;
+            sendMessage($info['user_id'], 'aftersales_pass', $eventData);
+
             $result['status'] = true;
         } catch (\Exception $e) {
             Db::rollback();
@@ -412,7 +432,7 @@ class BillAftersales extends Common
 
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = 'aftersales_id desc';
         return $result;
     }
     /**
@@ -446,7 +466,7 @@ class BillAftersales extends Common
     {
         $result = [
             'status' => true,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -474,7 +494,7 @@ class BillAftersales extends Common
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
         $where['aftersales_id'] = $aftersales_id;
@@ -496,6 +516,15 @@ class BillAftersales extends Common
     }
 
 
+    /**
+     * @return int|string
+     */
+    public function getCount()
+    {
+        $where[] = ['status', 'eq', self::STATUS_WAITAUDIT];
+        $count = $this->where($where)->count();
+        return $count?$count:0;
+    }
 
 
     public function images()

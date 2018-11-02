@@ -86,6 +86,10 @@ class Setting extends Common
             'name' => '单日最大奖励',
             'value' => 10
         ],
+        'point_switch' => [
+            'name' => '开启积分功能',
+            'value' => 1
+        ],
         'point_discounted_proportion' => [
             'name' => '订单积分折现比例',
             'value' => 100

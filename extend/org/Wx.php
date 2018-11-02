@@ -4,6 +4,7 @@
  */
 namespace org;
 use think\facade\Cache;
+use think\facade\Log;
 
 class Wx
 {
@@ -196,6 +197,32 @@ class Wx
         }
 
         return $return;
+    }
+
+    /**
+     * 发送模板消息
+     * @param $appid
+     * @param $secret
+     * @param $message
+     * @return bool
+     */
+    public function sendTemplateMessage($appid, $secret, $message)
+    {
+        $accessToken = $this->getAccessToken($appid, $secret);
+        $curl        = new Curl();
+        $url         = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $accessToken;
+
+        $data        = json_encode($message);
+        Log::info('模板消息发送：' . $data);
+
+        $res         = $curl->post($url, $data);
+        Log::info('模板消息返回：' . $res);
+        $res = json_decode($res, true);
+        if (isset($res['errcode']) && $res['errcode'] == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

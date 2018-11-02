@@ -10,12 +10,10 @@
             <li>商品设置</li>
             <li>订单管理</li>
             <li>积分设置</li>
-            <li>通道设置</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
                 <form class="layui-form seller-alone-form" action="" method="post">
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['shop_name']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5">
@@ -37,15 +35,12 @@
                             </div>
                         <div class="layui-form-mid layui-word-aux"></div>
                     </div>
-
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
                         <div class="layui-input-block">
                             <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
                         </div>
                     </div>
-
                 </form>
             </div>
             <div class="layui-tab-item">
@@ -57,9 +52,6 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">商品低库存的报警数量，当商品库存低于此数量是会在后台提示</div>
                     </div>
-
-
-
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
                         <div class="layui-input-block">
@@ -143,6 +135,14 @@
             <div class="layui-tab-item">
                 <form class="layui-form seller-alone-form" action="" method="post">
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['point_switch']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-7">
+                            <input type="radio" lay-filter="point_switch" name="point_switch" value="1" title="开启" {eq name="$data['point_switch']['value']" value="1"}checked{/eq}>
+                            <input type="radio" lay-filter="point_switch" name="point_switch" value="2" title="不开启" {eq name="$data['point_switch']['value']" value="2"}checked{/eq}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
                         <label class="layui-form-label">{$data['point_discounted_proportion']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="point_discounted_proportion" value="{$data['point_discounted_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
@@ -220,55 +220,6 @@
                             <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="layui-tab-item">
-                <form class="layui-form seller-alone-form" action="" method="post">
-                    <fieldset class="layui-elem-field layui-field-title">
-                        <legend>短信通道配置</legend>
-                    </fieldset>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{$data['sms_user_id']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-2">
-                            <input type="text" name="sms_user_id" value="{$data['sms_user_id']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">请填写短信通道的user_id</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{$data['sms_account']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-3">
-                            <input type="text" name="sms_account" value="{$data['sms_account']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">请填写短信通道的用户名</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{$data['sms_password']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-3">
-                            <input type="text" name="sms_password" value="{$data['sms_password']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">请填写短信通道密码</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{$data['sms_prefix']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-2">
-                            <input type="text" name="sms_prefix" value="{$data['sms_prefix']['value']}" lay-verify="title" autocomplete="off" placeholder="jshop" class="layui-input">
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">请填写短信前缀</div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label"></label>
-                        <div class="layui-form-mid layui-word-aux">如果需要购买短信，可以联系<a href="https://www.jihainet.com" target="_blank">https://www.jihainet.com</a>在线客服购买</div>
-                    </div>
-
-
-
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">&nbsp;</label>
-                        <div class="layui-input-block">
-                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
-                        </div>
-                    </div>
-
                 </form>
             </div>
         </div>

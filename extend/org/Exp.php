@@ -8,88 +8,79 @@
 // +----------------------------------------------------------------------
 
 //----------------------------------
-// 聚合数据-快递查询API调用示例代码
+// 快递100查询API调用代码
 //----------------------------------
 namespace org;
 
 class Exp{
-    private $appkey = false; //申请的快递查询APPKEY
+    private $key;      // 申请的快递查询KEY
 
-    private $queryUrl = 'http://v.juhe.cn/exp/index';
+    private $customer;  //  分配给贵司的的公司编号
 
-    private $comUrl = 'http://v.juhe.cn/exp/com';
+    private $url = 'http://poll.kuaidi100.com/poll/query.do';
 
-    public function __construct($appkey){
-        $this->appkey = $appkey;
+    public function __construct($key, $customer){
+        $this->key = $key;
+        $this->customer = $customer;
     }
+
 
     /**
-     * 返回支持的快递公司公司列表
-     * @return array
+     *
+     *  执行查询
      */
-    public function getComs(){
-        $params = 'key='.$this->appkey;
-        $content = $this->juhecurl($this->comUrl,$params);
-        return $this->_returnArray($content);
+    public function query ($com, $no)
+    {
+        return $this->postCurl($this->url, $this->assembleParam($com, $no));
     }
 
-    public function query($com,$no){
-        $params = array(
-            'key' => $this->appkey,
-            'com'  => $com,
-            'no' => $no
-        );
-        $content = $this->juhecurl($this->queryUrl,$params,1);
-        return $this->_returnArray($content);
-    }
+
 
     /**
-     * 将JSON内容转为数据，并返回
-     * @param string $content [内容]
-     * @return array
+     *  组装params
+     *
      */
-    public function _returnArray($content){
-        return json_decode($content,true);
+    private function assembleParam ($com, $no)
+    {
+        $data['customer'] = $this->customer;
+        $data['param'] = '{"com":"'.$com.'","num":"'.$no.'"}';
+        $data['sign'] = $this->toSign($data['param'], $this->key, $data['customer']);
+        $vo = '';
+
+        foreach ($data as $k => $v) {
+            $vo.= "$k=".urlencode($v)."&";		//默认UTF-8编码格式
+        }
+
+        $data = substr($vo, 0, -1);
+
+        return $data;
     }
 
+
     /**
-     * 请求接口返回内容
-     * @param  string $url [请求的URL地址]
-     * @param  string $params [请求的参数]
-     * @param  int $ipost [是否采用POST形式]
-     * @return  string
+     * 执行签名
+     *
      */
-    public function juhecurl($url,$params=false,$ispost=0){
-        $httpInfo = array();
+    private function toSign ($params, $key, $customer) {
+        return strtoupper(md5($params.$key.$customer));
+    }
+
+
+
+    /**
+     * curl post请求
+     *
+     */
+    public function postCurl($url, $params){
         $ch = curl_init();
-
-        curl_setopt( $ch, CURLOPT_HTTP_VERSION , CURL_HTTP_VERSION_1_1 );
-        curl_setopt( $ch, CURLOPT_USERAGENT , 'JuheData' );
-        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT , 60 );
-        curl_setopt( $ch, CURLOPT_TIMEOUT , 60);
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER , true );
-        if( $ispost )
-        {
-            curl_setopt( $ch , CURLOPT_POST , true );
-            curl_setopt( $ch , CURLOPT_POSTFIELDS , $params );
-            curl_setopt( $ch , CURLOPT_URL , $url );
-        }
-        else
-        {
-            if($params){
-                curl_setopt( $ch , CURLOPT_URL , $url.'?'.$params );
-            }else{
-                curl_setopt( $ch , CURLOPT_URL , $url);
-            }
-        }
-        $response = curl_exec( $ch );
-        if ($response === FALSE) {
-            //echo "cURL Error: " . curl_error($ch);
-            return false;
-        }
-        $httpCode = curl_getinfo( $ch , CURLINFO_HTTP_CODE );
-        $httpInfo = array_merge( $httpInfo , curl_getinfo( $ch ) );
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        $result = curl_exec($ch);
         curl_close( $ch );
-        return $response;
+        $data = str_replace("\"",'"', $result);
+        $data = json_decode($data, true);
+        return $data;
     }
 }

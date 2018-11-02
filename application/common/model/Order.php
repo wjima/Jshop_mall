@@ -935,14 +935,17 @@ class Order extends Common
                 $return_data['status'] = true;
                 $return_data['msg'] = '订单支付成功';
 
-                //发送支付成功信息
-                sendMessage($order['seller_id'], $order['user_id'], 'order_payed', $order);
+                //发送支付成功信息,增加发送内容
+                $order['pay_time']  = date('Y-m-d H:i:s', $data['payment_time']);
+                $order['money']     = $order['order_amount'];
+                $order['user_name'] = get_user_info($order['user_id']);
+                sendMessage($order['user_id'], 'order_payed', $order);
             }
         }
 
         //订单记录
         $orderLog = new OrderLog();
-        $orderLog->addLog($order_id, $order['user_id'], $order['seller_id'], $orderLog::LOG_TYPE_PAY, $return_data['msg'], [$return_data, $data]);
+        $orderLog->addLog($order_id, $order['user_id'], $orderLog::LOG_TYPE_PAY, $return_data['msg'], [$return_data, $data]);
 
         return $return_data;
     }
@@ -999,12 +1002,13 @@ class Order extends Common
      * @param $area_id
      * @param int $point
      * @param bool $coupon_code
+     * @param bool $formId
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false)
+    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false, $formId = false)
     {
         $result = [
             'status' => false,
@@ -1043,7 +1047,11 @@ class Order extends Common
         $order['ship_mobile'] = $ushopInfo['mobile'];
         $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
         $order['logistics_id'] = $shipInfo['id'];
-        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight']);
+        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
+
+        //积分使用情况
+        $order['point'] = $orderInfo['data']['point'];
+        $order['point_money'] = $orderInfo['data']['point_money'];
 
         $order['weight'] = $orderInfo['data']['weight'];;
         $order['order_pmt'] = isset($orderInfo['data']['order_pmt'])?$orderInfo['data']['order_pmt']:0;
@@ -1083,6 +1091,26 @@ class Order extends Common
                 }
             }
 
+            //积分核销
+            if($order['point'] > 0)
+            {
+                $userPointLog = new UserPointLog();
+                $userPointLog->setPoint($user_id, 0-$order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
+            }
+
+            //消息模板存储
+            if($formId)
+            {
+                $templateMessageModel = new TemplateMessage();
+                $message = [
+                    'type' => $templateMessageModel::TYPE_ORDER,
+                    'code' => $order['order_id'],
+                    'form_id' => $formId,
+                    'status' => $templateMessageModel::SEND_STATUS_NO
+                ];
+                $templateMessageModel->addSend($message);
+            }
+
             //清除购物车信息
             $cartModel = new Cart();
             $cartModel->del($user_id,$cart_ids);
@@ -1092,8 +1120,14 @@ class Order extends Common
             $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
 
             $result['status'] = true;
-            $result['data'] = $order;
+            $result['data']   = $order;
+            //添加订单其它信息，发送短信时使用
+            $shipModel          = new Ship();
+            $ship               = $shipModel->getInfo(['id' => $order['logistics_id']]);
+            $order['ship_id']   = $ship['name'];
+            $order['ship_addr'] = get_area($order['ship_area_id']) . $order['ship_address'];
             Db::commit();
+
             sendMessage($user_id, 'create_order', $order);
             return $result;
         } catch (\Exception $e) {

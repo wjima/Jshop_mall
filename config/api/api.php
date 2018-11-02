@@ -128,8 +128,12 @@ return [
                 'code' => 'pointLog',
                 'is_login' => true
             ],
-            'getstorename' => [
-                'code' => 'getStoreName',
+            'getuserpoint' => [
+                'code' => 'getUserPoint',
+                'is_login' => true
+            ],
+            'getsetting' => [
+                'code' => 'getSetting',
                 'is_login' => false
             ],
             'getsellersetting' => [
@@ -194,7 +198,7 @@ return [
             ]
         ]
     ],
-    
+
     'advert' => [
         'code' => 'Advert',
         'method' => [

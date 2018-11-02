@@ -27,8 +27,8 @@ export default {
         return {
             couponName: '未使用',
             radio: [
-                '../../static/image/kong.png', // 未选中
-                '../../static/image/xuanzhong.png' // 选中
+                'static/image/kong.png', // 未选中
+                'static/image/xuanzhong.png' // 选中
             ],
             showList: false
         }

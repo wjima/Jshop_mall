@@ -1,8 +1,6 @@
 var app = getApp();
 Page({
-  /**
-   * 页面的初始数据
-   */
+  //页面的初始数据
   data: {
     type_list: [
       { value: '1', name: '仅退款', checked: true, disabled: false },
@@ -22,11 +20,7 @@ Page({
     mode: 'aspectFit',
   },
   
-
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  //生命周期函数--监听页面加载
   onLoad: function (options) {
     var page = this;
     //options.order_id = '15203049601357';
@@ -68,55 +62,6 @@ Page({
     });
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
-  },
-
   //描述的事件
   bindReasonChange: function (e) {
     this.setData({
@@ -124,9 +69,9 @@ Page({
       reason:e.detail.value
     })
   },
+
   //退货商品选择
   checkboxChange: function(e) {
-    //console.log(e.detail.value);
     var nums = 0;
     this.data.item_ids = [];
     for (var i = 0; i < e.detail.value.length; i++) {
@@ -141,6 +86,8 @@ Page({
     });
   
   },
+
+  //更改事件
   bindRefundChange: function(e) {
     this.setData({
       refund: e.detail.value
@@ -149,6 +96,7 @@ Page({
 
     
   },
+
   //选择服务类型
   // radioChange: function (e) {
   //   console.log();
@@ -156,6 +104,7 @@ Page({
   //   //   aftersale_type: e.datail.value
   //   // });
   // },
+
   radioChange: function (e) {
     //如果选择退款，就把退款金额不能手输入，默认全部可退的金额
      var refund_input_noedit = true;
@@ -173,6 +122,7 @@ Page({
       refund_input_noedit:refund_input_noedit
     });
   },
+
   //上传图片
   upImage: function(e){
     var page = this;
@@ -186,6 +136,7 @@ Page({
       });
     }
   },
+
   //删除图片
   delImage: function (e) {
     this.data.images.splice(e.target.dataset.index, 1);
@@ -196,6 +147,7 @@ Page({
 
   //提交
   submitBtn:function(e){
+    let formId = e.detail.formId;
     var images = [];
     for(var i=0;i<this.data.images.length;i++){
       images = images.concat(this.data.images[i].image_id);
@@ -213,7 +165,6 @@ Page({
       } 
     }
 
-
     //组装数据，提交数据
     var data = {
       order_id:this.data.order_id,
@@ -221,7 +172,8 @@ Page({
       items:this.data.item_ids,
       images:images,
       refund: this.data.refund,
-      reason:this.data.reason
+      reason:this.data.reason,
+      formId: formId
     };
     app.api.addAftersales(data,function(res){
       if(res.status){

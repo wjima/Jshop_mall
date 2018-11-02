@@ -2,10 +2,11 @@
 
 namespace addons\appletmessage;    // 注意命名空间规范
 
+use app\common\model\TemplateMessage;
 use app\common\model\WeixinAuthor;
 use myxland\addons\Addons;
-use app\common\model\SellerAddons;
 use app\common\model\Addons as addonsModel;
+use org\Wx;
 
 /**
  * 微信小程序模板消息插件
@@ -66,36 +67,63 @@ class Appletmessage extends Addons
      */
     public function sendwxmessage($params)
     {
-        if (!$params['params']['seller_id'] || !$params['params']['user_id']) {
+        if (!$params['params']['user_id']) {
             return false;
         }
-        $addonModel        = new addonsModel();
-        $addon             = $addonModel->getAddonByName($this->info['name']);
-        $sellerAddonsModel = new SellerAddons();
-        $setting           = $sellerAddonsModel->getSetting($addon['id'], $params['params']['seller_id']);
-        if(!$setting){
+        $addonModel = new addonsModel();
+        $setting    = $addonModel->getSetting($this->info['name']);
+
+        if (!$setting) {
             return false;
         }
-        $template          = $setting[$params['params']['code']];
+
+        $templateMessageModel = new TemplateMessage();
+        $formInfo             = [];
+
+        if ($params['params']['code'] == 'create_order') {
+            $id = $params['params']['params']['order_id'];
+
+            $closeOrder                           = getSetting('order_cancel_time') * 24;
+            $params['params']['params']['notice'] = '您的订单将在' . floor($closeOrder) . '小时后取消，请及时付款哦';
+            $formInfo                             = $templateMessageModel->where(['type' => $params['params']['code'], 'code' => $id, 'status' => '1'])->find();
+
+        } else if ($params['params']['code'] == 'delivery_notice') {//发货
+            $id = $params['params']['params']['order_id'];
+
+            $formInfo = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
+
+        } else if ($params['params']['code'] == 'refund_success') {//退款成功
+            $id                                          = $params['params']['params']['source_id'];
+            $params['params']['params']['refund_time']   = getTime($params['params']['params']['utime']);
+            $params['params']['params']['refund_status'] = '退款成功';
+            $params['params']['params']['refund_reason'] = '退款已经原路返回，具体到账时间可能会有1-3天延迟';
+            $formInfo                                    = $templateMessageModel->where(['type' => 'after_sale', 'code' => $id, 'status' => '1'])->find();
+        }
+        $params['params']['params']['seller_name'] = getSetting('shop_name');//店铺名称
+
+        //查询不到时，不发送模板消息
+        if (!$formInfo) {
+            return false;
+        }
         //发送消息，取出会员open_id，然后发送
-        $wxUserinfo = getUserWxInfo($params['params']['seller_id'], $params['params']['user_id']);
+        $wxUserinfo = getUserWxInfo($params['params']['user_id']);
         if (!$wxUserinfo) {
             return false;
         }
-        $authorModel = new WeixinAuthor();
-        $appinfo     = $authorModel->getAuthorInfo($params['params']['seller_id'], 'b2c');
-        if (!$appinfo) {
-            return false;
-        }
-        $template_id = $template['template_id'];
-        unset($template['template_id']);
+        $template = $setting[$params['params']['code']];
+
+        $appid                  = getSetting('wx_appid');
+        $secret                 = getSetting('wx_app_secret');
         $message['data']        = $this->replaceWord($params['params']['params'], $template);
         $message['touser']      = $wxUserinfo['openid'];
-        $message['template_id'] = $template_id;
-        $message['url']         = '';
-        $message['form_id']     = md5(time());//formid
-        $wechat = &load_wechat('Message', $appinfo['appid']);
-        $wechat->sendTemplateMessage($message);
+        $message['template_id'] = $template['template_id'];
+        $message['page']        = 'pages/index/index';
+        $message['form_id']     = $formInfo['form_id'];
+        $wx                     = new Wx();
+        $res                    = $wx->sendTemplateMessage($appid, $secret, $message);
+        if ($res) {
+            $templateMessageModel->sendSuccess($formInfo['id']);
+        }
     }
 
     /**
@@ -110,6 +138,9 @@ class Appletmessage extends Addons
         foreach ($template as $key => $value) {
             $mkey           = str_replace("{{", "", $value);
             $mkey           = str_replace(".DATA}}", "", $mkey);
+
+            $data[$key] = is_string($data[$key])?$data[$key]:"$data[$key]";
+
             $msgData[$mkey] = [
                 'value' => $data[$key],
                 'color' => '#173177',
@@ -117,9 +148,5 @@ class Appletmessage extends Addons
         }
         return $msgData;
 
-    }
-
-    public function testhook($param){
-        #echo '第二个';
     }
 }

@@ -248,7 +248,7 @@
                     type: 1,
                     content: e,
                     area: ['700px', '450px'],
-                    title:'参数列表'
+                    title:'属性列表'
                 });
             });
         });
@@ -264,7 +264,7 @@
                     });
                     value = value.substr(0, value.length - 1);
                 }
-                $("input[name='type_id["+selectParamsId+"]']").val(data.id);
+                $("input[name='type_id["+selectTypeId+"]']").val(data.id);
                 $("input[name='type_name["+selectTypeId+"]']").val(data.name);
                 $("input[name='type_value["+selectTypeId+"]']").val(value);
                 $("select[name='type_sort["+selectTypeId+"]']").val(data.sort);

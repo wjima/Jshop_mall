@@ -22,9 +22,7 @@ class Index extends Manage
         $unship_count = $orderModel->where(['status'=>1,'pay_status'=>2,'ship_status'=>1])->count();
         //待售后数量
         $billAfterSalesModel = new BillAftersales();
-        $afterSales_count = $billAfterSalesModel->count();
-
-        //hook('testhook', $params);//php中钩子
+        $afterSales_count = $billAfterSalesModel->getCount();
 
         $this->assign('unpaid_count',$unpaid_count);
         $this->assign('unship_count',$unship_count);
@@ -45,7 +43,8 @@ class Index extends Manage
         }else{
             $this->assign('is_author','false');
         }
-        hook('adminindex', $this);
+
+        hook('adminindex', $this);//后台首页钩子
 
         return $this->fetch();
     }

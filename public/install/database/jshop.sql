@@ -1,10 +1,6 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
---
--- Database: `b2c`
---
-
 -- --------------------------------------------------------
 
 --
@@ -31,7 +27,8 @@ CREATE TABLE `jshop_addons` (
 INSERT INTO `jshop_addons` (`id`, `name`, `title`, `description`, `status`, `config`, `author`, `version`, `ctime`, `utime`) VALUES
   (2, 'hecong', '合从在线客服插件', '合从在线客服，申请地址https://aihecong.com/', 1, '{\"appid\":\"\",\"appkey\":\"\"}', 'mark', '0.1', 1538029352, 1538029352),
   (3, 'appletmessage', '微信小程序模板消息', '微信小程序模板消息', 1, '{\"display\":\"1\",\"template\":{\"create_order\":{\"title\":\"\\u4e0b\\u5355\\u6210\\u529f\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u5546\\u6237\\u540d\",\"code\":\"seller_name\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u4e0b\\u5355\\u65f6\\u95f4\",\"code\":\"ctime\"},{\"title\":\"\\u8ba2\\u5355\\u72b6\\u6001\",\"code\":\"status\"},{\"title\":\"\\u8ba2\\u5355\\u91d1\\u989d\",\"code\":\"order_amount\"}]},\"order_payed\":{\"title\":\"\\u652f\\u4ed8\\u6210\\u529f\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u5546\\u6237\\u540d\",\"code\":\"seller_name\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u4e0b\\u5355\\u65f6\\u95f4\",\"code\":\"ctime\"},{\"title\":\"\\u8ba2\\u5355\\u72b6\\u6001\",\"code\":\"status\"},{\"title\":\"\\u8ba2\\u5355\\u91d1\\u989d\",\"code\":\"order_amount\"}]},\"delivery_notice\":{\"title\":\"\\u8ba2\\u5355\\u53d1\\u8d27\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u4f1a\\u5458\\u540d\\u79f0\",\"code\":\"user_name\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u4e0b\\u5355\\u65f6\\u95f4\",\"code\":\"ctime\"},{\"title\":\"\\u7269\\u6d41\\u516c\\u53f8\",\"code\":\"logi_name\"},{\"title\":\"\\u7269\\u6d41\\u5355\\u53f7\",\"code\":\"logi_no\"},{\"title\":\"\\u6536\\u8d27\\u5730\\u5740\",\"code\":\"rec_address\"},{\"title\":\"\\u5907\\u6ce8\",\"code\":\"memo\"}]},\"refund_success\":{\"title\":\"\\u8ba2\\u5355\\u9000\\u6b3e\",\"data\":[{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\"},{\"title\":\"\\u8ba2\\u5355\\u7f16\\u53f7\",\"code\":\"order_id\"},{\"title\":\"\\u9000\\u6b3e\\u91d1\\u989d\",\"code\":\"refund_money\"},{\"title\":\"\\u9000\\u6b3e\\u65f6\\u95f4\",\"code\":\"refund_time\"},{\"title\":\"\\u9000\\u6b3e\\u539f\\u56e0\",\"code\":\"refund_reason\"},{\"title\":\"\\u9000\\u6b3e\\u72b6\\u6001\",\"code\":\"refund_status\"}]}}}', 'mark', '0.1', 1538029414, 1538029414),
-  (5, 'test', '插件测试', 'thinkph5插件测试', 1, '{\"display\":\"1\"}', 'byron sampson', '0.1', 1540104045, 1540104045);
+  (5, 'test', '插件测试', 'thinkph5插件测试', 1, '{\"display\":\"1\"}', 'byron sampson', '0.1', 1540104045, 1540104045),
+  (6, 'aliyunsms', '阿里云短信通道', '阿里云发送短信插件，请勿和其它短信通道一起使用', 1, '{\"accessKeyId\":\"\",\"accessKeySecret\":\"\",\"aliyunPrefix\":\"\",\"template\":{\"login\":{\"title\":\"\\u7528\\u6237\\u767b\\u5f55\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u9a8c\\u8bc1\\u7801:${code}\",\"variable\":{\"code\":\"code\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u60a8\\u6b63\\u5728\\u767b\\u9646\\u8d26\\u53f7\\uff0c\\u9a8c\\u8bc1\\u7801\\u662f${code}\\uff0c\\u8bf7\\u52ff\\u544a\\u8bc9\\u4ed6\\u4eba\\u3002\"}}},\"reg\":{\"title\":\"\\u7528\\u6237\\u6ce8\\u518c\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u9a8c\\u8bc1\\u7801:${code}\",\"variable\":{\"code\":\"code\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u60a8\\u6b63\\u5728\\u6ce8\\u518c\\u8d26\\u53f7\\uff0c\\u9a8c\\u8bc1\\u7801\\u662f${code}\\uff0c\\u8bf7\\u52ff\\u544a\\u8bc9\\u4ed6\\u4eba\\u3002\"}}},\"veri\":{\"title\":\"\\u7528\\u6237\\u9a8c\\u8bc1\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u9a8c\\u8bc1\\u7801:${code}\",\"variable\":{\"code\":\"code\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u60a8\\u7684\\u9a8c\\u8bc1\\u7801\\u662f${code}\\uff0c\\u8bf7\\u52ff\\u544a\\u8bc9\\u4ed6\\u4eba\\u3002\"}}},\"create_order\":{\"title\":\"\\u4e0b\\u5355\\u6210\\u529f\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u8ba2\\u5355\\u53f7 :${order_id}\\uff0c\\u603b\\u4ef7 :${order_amount}\\uff0c\\u914d\\u9001\\u65b9\\u5f0f :${ship_id}\\u6536\\u8d27\\u4eba\\u624b\\u673a :${ship_mobile}\\uff0c\\u6536\\u8d27\\u4eba\\u5730\\u5740 :${ship_addr}\\uff0c\\u6536\\u8d27\\u4eba\\u59d3\\u540d :${ship_name}\",\"variable\":{\"order_id\":\"order_id\",\"order_amount\":\"order_amount\",\"ship_id\":\"ship_id\",\"ship_mobile\":\"ship_mobile\",\"ship_addr\":\"ship_addr\",\"ship_name\":\"ship_name\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u606d\\u559c\\u60a8\\uff0c\\u8ba2\\u5355\\u521b\\u5efa\\u6210\\u529f,\\u795d\\u60a8\\u8d2d\\u7269\\u6109\\u5feb\\u3002\"}}},\"order_payed\":{\"title\":\"\\u652f\\u4ed8\\u6210\\u529f\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u8ba2\\u5355\\u53f7 :${order_id}>,\\u4ed8\\u6b3e\\u4eba :${user_name},\\u4ed8\\u6b3e\\u65f6\\u95f4 :${pay_time},\\u4ed8\\u6b3e\\u91d1\\u989d :${money}\",\"variable\":{\"order_id\":\"order_id\",\"user_name\":\"user_name\",\"pay_time\":\"pay_time\",\"money\":\"money\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u606d\\u559c\\u60a8\\uff0c\\u8ba2\\u5355\\u652f\\u4ed8\\u6210\\u529f,\\u795d\\u60a8\\u8d2d\\u7269\\u6109\\u5feb\\u3002\"}}},\"remind_order_pay\":{\"title\":\"\\u50ac\\u4ed8\\u63d0\\u9192\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u8ba2\\u5355\\u53f7:${order_id},\\u914d\\u9001\\u65b9\\u5f0f:${ship_id},\\u7269\\u6d41\\u516c\\u53f8:${logistics_name},\\u7269\\u6d41\\u5355\\u53f7:${ship_no},\\u6536\\u8d27\\u4eba\\u59d3\\u540d:${ship_name},\\u6536\\u8d27\\u4eba\\u5730\\u5740:${ship_addr},\\u6536\\u8d27\\u4eba\\u624b\\u673a:${ship_mobile},\\u5907\\u6ce8:${memo}\",\"variable\":{\"order_id\":\"order_id\",\"ship_id\":\"ship_id\",\"logistics_name\":\"logistics_name\",\"ship_no\":\"ship_no\",\"ship_name\":\"ship_name\",\"ship_addr\":\"ship_addr\",\"ship_mobile\":\"ship_mobile\",\"memo\":\"memo\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u606d\\u559c\\u60a8\\uff0c\\u8ba2\\u5355\\u521b\\u5efa\\u6210\\u529f,\\u795d\\u60a8\\u8d2d\\u7269\\u6109\\u5feb\\u3002\"}}},\"delivery_notice\":{\"title\":\"\\u8ba2\\u5355\\u53d1\\u8d27\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u8ba2\\u5355\\u53f7:${order_id},\\u914d\\u9001\\u65b9\\u5f0f:${ship_id},\\u7269\\u6d41\\u516c\\u53f8:${logistics_name},\\u7269\\u6d41\\u5355\\u53f7:${ship_no},\\u6536\\u8d27\\u4eba\\u59d3\\u540d:${ship_name},\\u6536\\u8d27\\u4eba\\u5730\\u5740:${ship_addr},\\u6536\\u8d27\\u4eba\\u624b\\u673a:${ship_mobile},\\u5907\\u6ce8:${memo}\",\"variable\":{\"order_id\":\"order_id\",\"ship_id\":\"ship_id\",\"logistics_name\":\"logistics_name\",\"ship_no\":\"ship_no\",\"ship_name\":\"ship_name\",\"ship_addr\":\"ship_addr\",\"ship_mobile\":\"ship_mobile\",\"memo\":\"memo\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u606d\\u559c\\u60a8\\uff0c\\u8ba2\\u5355\\u521b\\u5efa\\u6210\\u529f,\\u795d\\u60a8\\u8d2d\\u7269\\u6109\\u5feb\\u3002\"}}},\"aftersales_pass\":{\"title\":\"\\u552e\\u540e\\u5ba1\\u6838\\u901a\\u8fc7\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u8ba2\\u5355\\u53f7:${order_id},\\u552e\\u540e\\u5355\\u53f7:${aftersales_id},\\u5ba1\\u6838\\u72b6\\u6001:${aftersales_status},\\u5ba1\\u6838\\u5907\\u6ce8${mark}\",\"variable\":{\"order_id\":\"order_id\",\"aftersales_id\":\"aftersales_id\",\"status\":\"aftersales_status\",\"mark\":\"mark\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u606d\\u559c\\u60a8\\uff0c\\u8ba2\\u5355\\u521b\\u5efa\\u6210\\u529f,\\u795d\\u60a8\\u8d2d\\u7269\\u6109\\u5feb\\u3002\"}}},\"refund_success\":{\"title\":\"\\u9000\\u6b3e\\u6210\\u529f\",\"data\":{\"title\":{\"title\":\"\\u6a21\\u677fID\",\"code\":\"template_id\",\"value\":\"\"},\"template\":{\"title\":\"\\u6a21\\u677f\\u53d8\\u91cf\",\"content\":\"\\u8ba2\\u5355\\u53f7 :${order_id}\\uff0c\\u9000\\u6b3e\\u7f16\\u53f7 :${refund_id},\\u9000\\u6b3e\\u91d1\\u989d :${refund}\",\"variable\":{\"order_id\":\"source_id\",\"refund_id\":\"refund_id\",\"refund\":\"money\"}},\"content\":{\"title\":\"\\u6a21\\u677f\\u5185\\u5bb9\",\"value\":\"\\u606d\\u559c\\u60a8\\uff0c\\u8ba2\\u5355\\u521b\\u5efa\\u6210\\u529f,\\u795d\\u60a8\\u8d2d\\u7269\\u6109\\u5feb\\u3002\"}}}}}', 'mark', '0.1', 1541147133, 1541147133);
 
 -- --------------------------------------------------------
 
@@ -51,6 +48,7 @@ CREATE TABLE `jshop_advertisement` (
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '广告位置编码',
   `type` tinyint(3) UNSIGNED DEFAULT NULL COMMENT '类型  1url  2商品  3文章'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='广告表';
+
 -- --------------------------------------------------------
 
 --
@@ -108,6 +106,7 @@ INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `so
   (120000, 0, 1, '天津市', 0, 100),
   (120100, 120000, 2, '天津市', 0, 100),
   (120101, 120100, 3, '和平区', 0, 100),
+  (120102, 120100, 3, '河东区', 0, 100),
   (120103, 120100, 3, '河西区', 0, 100),
   (120104, 120100, 3, '南开区', 0, 100),
   (120105, 120100, 3, '河北区', 0, 100),
@@ -125,6 +124,7 @@ INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `so
   (130000, 0, 1, '河北省', 0, 100),
   (130100, 130000, 2, '石家庄市', 0, 100),
   (130101, 130100, 3, '市辖区', 0, 100),
+  (130102, 130100, 3, '长安区', 0, 100),
   (130104, 130100, 3, '桥西区', 0, 100),
   (130105, 130100, 3, '新华区', 0, 100),
   (130107, 130100, 3, '井陉矿区', 0, 100),
@@ -1545,10 +1545,10 @@ INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `so
   (361026, 361000, 3, '宜黄县', 0, 100),
   (361027, 361000, 3, '金溪县', 0, 100),
   (361028, 361000, 3, '资溪县', 0, 100),
-  (361029, 361000, 3, '东乡县', 0, 100),
-  (361030, 361000, 3, '广昌县', 0, 100),
-  (361100, 360000, 2, '上饶市', 0, 100);
+  (361029, 361000, 3, '东乡县', 0, 100);
 INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
+  (361030, 361000, 3, '广昌县', 0, 100),
+  (361100, 360000, 2, '上饶市', 0, 100),
   (361101, 361100, 3, '市辖区', 0, 100),
   (361102, 361100, 3, '信州区', 0, 100),
   (361103, 361100, 3, '广丰区', 0, 100),
@@ -3002,10 +3002,10 @@ INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `so
   (532324, 532300, 3, '南华县', 0, 100),
   (532325, 532300, 3, '姚安县', 0, 100),
   (532326, 532300, 3, '大姚县', 0, 100),
-  (532327, 532300, 3, '永仁县', 0, 100),
-  (532328, 532300, 3, '元谋县', 0, 100),
-  (532329, 532300, 3, '武定县', 0, 100);
+  (532327, 532300, 3, '永仁县', 0, 100);
 INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `sort`) VALUES
+  (532328, 532300, 3, '元谋县', 0, 100),
+  (532329, 532300, 3, '武定县', 0, 100),
   (532331, 532300, 3, '禄丰县', 0, 100),
   (532500, 530000, 2, '红河哈尼族彝族自治州', 0, 100),
   (532501, 532500, 3, '市辖区', 0, 100),
@@ -3594,10 +3594,11 @@ INSERT INTO `jshop_area` (`id`, `parent_id`, `depth`, `name`, `postal_code`, `so
   (659006, 659000, 3, '铁门关市', 0, 100),
   (710000, 0, 1, '台湾省', 0, 100),
   (810000, 0, 1, '香港特别行政区', 0, 100),
-  (820001, 110000, 1, '多对多', 0, 2),
-  (820002, 110101, 4, '1区', 0, 1),
-  (820003, 441581, 1, '东海镇', 0, 1),
-  (820004, 820001, 1, 'rrtrer', 0, 0);
+  (820000, 0, 1, '澳门特别行政区', 0, 100),
+  (0, 500200, 3, '静海县', 301600, 100),
+  (0, 330100, 3, '富阳市', 311400, 100),
+  (0, 410100, 3, '郑东新区', 0, 100),
+  (0, 440100, 3, '萝岗区', 510100, 100);
 
 -- --------------------------------------------------------
 
@@ -3767,6 +3768,7 @@ CREATE TABLE `jshop_bill_payments` (
   `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '支付状态 1=未支付 2=支付成功 3=其他',
   `payment_code` varchar(50) DEFAULT NULL COMMENT '支付类型编码 关联payments.code',
   `ip` varchar(50) DEFAULT NULL COMMENT '支付单生成IP',
+  `generate_params` varchar(500) DEFAULT NULL,
   `params` varchar(200) NOT NULL COMMENT '支付的时候需要的参数，存的是json格式的一维数组',
   `payed_msg` varchar(255) DEFAULT NULL COMMENT '支付回调后的状态描述',
   `trade_no` varchar(50) DEFAULT NULL COMMENT '第三方平台交易流水号',
@@ -4106,7 +4108,14 @@ CREATE TABLE `jshop_hooks` (
 INSERT INTO `jshop_hooks` (`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES
   (1, 'testhook', '测试钩子', 1, 'appletmessage,test', 1538029316, 1540173219),
   (2, 'sendwxmessage', '发送微信消息', 1, 'appletmessage', 1538029328, 1538029328),
-  (3, 'kefu', '在线客服', 1, 'hecong', 1538029339, 1538029339);
+  (3, 'kefu', '在线客服', 1, 'hecong', 1538029339, 1538029339),
+  (4, 'sendsms', '发送短信', 1, 'mms1086,aliyunsms', 1540891064, 1540891064),
+  (5, 'goodscommon', '商品编辑、添加时', 1, '', 1541072382, 1541072415),
+  (6, 'deletegoodsafter', '删除商品后', 1, '', 1541072393, 1541072393),
+  (7, 'editgoodsafter', '编辑商品后', 1, '', 1541072405, 1541072405),
+  (8, 'addgoodsafter', '添加商品后', 1, '', 1541072425, 1541072425),
+  (9, 'addgoodsview', '添加商品页面', 2, '', 1541072442, 1541072451),
+  (10, 'editgoodsview', '编辑商品页面', 2, '', 1541072464, 1541072464);
 
 -- --------------------------------------------------------
 
@@ -4202,6 +4211,1111 @@ CREATE TABLE `jshop_logistics` (
   `sort` tinyint(3) UNSIGNED DEFAULT '100' COMMENT '排序 越小越靠前'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='物流公司表';
 
+--
+-- Dumping data for table `jshop_logistics`
+--
+
+INSERT INTO `jshop_logistics` (`id`, `logi_name`, `logi_code`, `sort`) VALUES
+  (1, '海带宝', 'haidaibao', 100),
+  (2, '澳通华人物流', 'cllexpress', 100),
+  (3, '斑马物流', 'banma', 100),
+  (4, '信丰物流', 'xinfengwuliu', 100),
+  (5, '德国(Deutsche Post)', 'deutschepost', 100),
+  (6, '苏宁订单', 'suningorder', 100),
+  (7, '宜送物流', 'yiex', 100),
+  (8, 'AOL澳通速递', 'aolau', 100),
+  (9, 'TRAKPAK', 'trakpak', 100),
+  (10, 'GTS快递', 'gts', 100),
+  (11, '通达兴物流', 'tongdaxing', 100),
+  (12, '中国香港(HongKong Post)英文', 'hkposten', 100),
+  (13, '骏丰国际速递', 'junfengguoji', 100),
+  (14, '俄罗斯邮政(Russian Post)', 'pochta', 100),
+  (15, '云达通', 'ydglobe', 100),
+  (16, 'EU-EXPRESS', 'euexpress', 100),
+  (17, '广州海关', 'gzcustoms', 100),
+  (18, '杭州海关', 'hzcustoms', 100),
+  (19, '南京海关', 'njcustoms', 100),
+  (20, '北京海关', 'bjcustoms', 100),
+  (21, '美西快递', 'meixi', 100),
+  (22, '一站通快递', 'zgyzt', 100),
+  (23, '易联通达', 'el56', 100),
+  (24, '驿扬国际速运', 'iyoungspeed', 100),
+  (25, '途鲜物流', 'ibenben', 100),
+  (26, '豌豆物流', 'wandougongzhu', 100),
+  (27, '哥士传奇速递', 'gscq365', 100),
+  (28, '心怡物流', 'alog', 100),
+  (29, 'ME物流', 'macroexpressco', 100),
+  (30, '疯狂快递', 'crazyexpress', 100),
+  (31, '韩国邮政韩文', 'koreapostkr', 100),
+  (32, '全速物流', 'quansu', 100),
+  (33, '新杰物流', 'sunjex', 100),
+  (34, '鲁通快运', 'lutong', 100),
+  (35, '安的快递', 'gda', 100),
+  (36, '美国申通', 'stoexpress', 100),
+  (37, '法国小包（colissimo）', 'colissimo', 100),
+  (38, '泛捷国际速递', 'epanex', 100),
+  (39, '中远e环球', 'cosco', 100),
+  (40, '顺达快递', 'sundarexpress', 100),
+  (41, '捷记方舟', 'ajexpress', 100),
+  (42, '方舟速递', 'arkexpress', 100),
+  (43, '明大快递', 'adaexpress', 100),
+  (44, '长江国际速递', 'changjiang', 100),
+  (45, 'PCA Express', 'pcaexpress', 100),
+  (46, '洋包裹', 'yangbaoguo', 100),
+  (47, '优联吉运', 'uluckex', 100),
+  (48, '德豪驿', 'dehaoyi', 100),
+  (49, '堡昕德速递', 'bosind', 100),
+  (50, '阿根廷(Correo Argentina)', 'correoargentino', 100),
+  (51, '秘鲁(SERPOST)', 'peru', 100),
+  (52, '哈萨克斯坦(Kazpost)', 'kazpost', 100),
+  (53, '广通速递', 'gtongsudi', 100),
+  (54, '东瀚物流', 'donghanwl', 100),
+  (55, 'rpx', 'rpx', 100),
+  (56, '黑猫雅玛多', 'yamato', 100),
+  (57, '华通快运', 'htongexpress', 100),
+  (58, '吉尔吉斯斯坦(Kyrgyz Post)', 'kyrgyzpost', 100),
+  (59, '拉脱维亚(Latvijas Pasts)', 'latvia', 100),
+  (60, '黎巴嫩(Liban Post)', 'libanpost', 100),
+  (61, '立陶宛（Lietuvos pa?tas）', 'lithuania', 100),
+  (62, '马尔代夫(Maldives Post)', 'maldives', 100),
+  (63, '马耳他（Malta Post）', 'malta', 100),
+  (64, '马其顿(Macedonian Post)', 'macedonia', 100),
+  (65, '新西兰（New Zealand Post）', 'newzealand', 100),
+  (66, '摩尔多瓦(Posta Moldovei)', 'moldova', 100),
+  (67, '塞尔维亚(PE Post of Serbia)', 'serbia', 100),
+  (68, '塞浦路斯(Cyprus Post)', 'cypruspost', 100),
+  (69, '突尼斯EMS(Rapid-Poste)', 'tunisia', 100),
+  (70, '乌兹别克斯坦(Post of Uzbekistan)', 'uzbekistan', 100),
+  (71, '新喀里多尼亚[法国](New Caledonia)', 'caledonia', 100),
+  (72, '叙利亚(Syrian Post)', 'republic', 100),
+  (73, '亚美尼亚(Haypost-Armenian Postal)', 'haypost', 100),
+  (74, '也门(Yemen Post)', 'yemen', 100),
+  (75, '印度(India Post)', 'india', 100),
+  (76, '英国(大包,EMS)', 'england', 100),
+  (77, '约旦(Jordan Post)', 'jordan', 100),
+  (78, '越南小包(Vietnam Posts)', 'vietnam', 100),
+  (79, '黑山(Po?ta Crne Gore)', 'montenegro', 100),
+  (80, '哥斯达黎加(Correos de Costa Rica)', 'correos', 100),
+  (81, 'EFS Post（平安快递）', 'efs', 100),
+  (82, 'TNT Post', 'tntpostcn', 100),
+  (83, '立白宝凯物流', 'lbbk', 100),
+  (84, '匈牙利（Magyar Posta）', 'hungary', 100),
+  (85, '中国澳门(Macau Post)', 'macao', 100),
+  (86, '西安喜来快递', 'xilaikd', 100),
+  (87, '韩润', 'hanrun', 100),
+  (88, '格陵兰[丹麦]（TELE Greenland A/S）', 'greenland', 100),
+  (89, '菲律宾（Philippine Postal）', 'phlpost', 100),
+  (90, '厄瓜多尔(Correos del Ecuador)', 'ecuador', 100),
+  (91, '冰岛(Iceland Post)', 'iceland', 100),
+  (92, '波兰小包(Poczta Polska)', 'emonitoring', 100),
+  (93, '阿尔巴尼亚(Posta shqipatre)', 'albania', 100),
+  (94, '埃及（Egypt Post）', 'egypt', 100),
+  (95, '爱沙尼亚(Eesti Post)', 'omniva', 100),
+  (96, '云豹国际货运', 'leopard', 100),
+  (97, '中外运空运', 'sinoairinex', 100),
+  (98, '上海昊宏国际货物', 'hyk', 100),
+  (99, '城晓国际快递', 'ckeex', 100),
+  (100, '中铁快运', 'ztky', 100),
+  (101, '出口易', 'chukou1', 100),
+  (102, '跨畅（直邮易）', 'kuachangwuliu', 100),
+  (103, 'WTD海外通', 'wtdex', 100),
+  (104, 'CHS中环国际快递', 'chszhonghuanguoji', 100),
+  (105, '汉邦国际速递', 'handboy', 100),
+  (106, '银河物流', 'milkyway', 100),
+  (107, '荷兰速递(Nederland Post)', 'nederlandpost', 100),
+  (108, '澳州顺风快递', 'emms', 100),
+  (109, '环东物流', 'huandonglg', 100),
+  (110, '中邮速递', 'wondersyd', 100),
+  (111, '布谷鸟速递', 'cuckooexpess', 100),
+  (112, '万庚国际速递', 'vangenexpress', 100),
+  (113, 'FedRoad 联邦转运', 'fedroad', 100),
+  (114, 'Landmark Global', 'landmarkglobal', 100),
+  (115, '佳成快递', 'jiacheng', 100),
+  (116, '诺尔国际物流', 'nuoer', 100),
+  (117, '加运美速递', 'jym56', 100),
+  (118, '新时速物流', 'csxss', 100),
+  (119, '中宇天地', 'zytdscm', 100),
+  (120, '翔腾物流', 'xiangteng', 100),
+  (121, '恒瑞物流', 'hengrui56', 100),
+  (122, '中国翼', 'cnws', 100),
+  (123, '邦工快运', 'bgky100', 100),
+  (124, '上海无疆for买卖宝', 'shanghaiwujiangmmb', 100),
+  (125, '新加坡小包(Singapore Post)', 'singpost', 100),
+  (126, '中俄速通（淼信）', 'mxe56', 100),
+  (127, '海派通', 'hipito', 100),
+  (128, '源安达', 'yuananda', 100),
+  (129, '赛澳递for买卖宝', 'saiaodimmb', 100),
+  (130, 'ECMS Express', 'ecmsglobal', 100),
+  (131, '英脉物流', 'gml', 100),
+  (132, '佳家通货运', 'jiajiatong56', 100),
+  (133, '吉日优派', 'jrypex', 100),
+  (134, '西安胜峰', 'xaetc', 100),
+  (135, 'logen路坚', 'ilogen', 100),
+  (136, 'amazon-国际订单', 'amusorder', 100),
+  (137, 'CJ物流', 'doortodoor', 100),
+  (138, '转运四方', 'zhuanyunsifang', 100),
+  (139, '成都东骏物流', 'dongjun', 100),
+  (140, '日本郵便', 'japanpost', 100),
+  (141, '猴急送', 'hjs', 100),
+  (142, '全信通快递', 'quanxintong', 100),
+  (143, '信天捷快递', 'xintianjie', 100),
+  (144, '泰国138国际物流', 'sd138', 100),
+  (145, '荷兰包裹(PostNL International Parc', 'postnlpacle', 100),
+  (146, '乐天速递', 'ltexp', 100),
+  (147, '智通物流', 'ztong', 100),
+  (148, '全速通', 'quansutong', 100),
+  (149, '中技物流', 'zhongjiwuliu', 100),
+  (150, '九曳供应链', 'jiuyescm', 100),
+  (151, '当当', 'dangdang', 100),
+  (152, '美龙快递', 'mjexp', 100),
+  (153, '唯品会(vip)', 'vipshop', 100),
+  (154, '1号店', 'yhdshop', 100),
+  (155, '皇家物流', 'pfcexpress', 100),
+  (156, '百千诚物流', 'bqcwl', 100),
+  (157, '法国(La Poste)', 'csuivi', 100),
+  (158, 'DHL-全球件', 'dhlen', 100),
+  (159, '运通中港', 'yuntongkuaidi', 100),
+  (160, '苏宁物流', 'suning', 100),
+  (161, '荷兰Sky Post', 'skypost', 100),
+  (162, '瑞达国际速递', 'ruidaex', 100),
+  (163, '丰程物流', 'sccod', 100),
+  (164, '德中快递', 'decnlh', 100),
+  (165, '全时速运', 'runhengfeng', 100),
+  (166, '云邮跨境快递', 'hkems', 100),
+  (167, '亚风速递', 'yafengsudi', 100),
+  (168, '快淘快递', 'kuaitao', 100),
+  (169, '鑫通宝物流', 'xtb', 100),
+  (170, 'USPS', 'usps', 100),
+  (171, '加拿大邮政', 'canpostfr', 100),
+  (172, '汇通天下物流', 'httx56', 100),
+  (173, '台湾（中华邮政）', 'postserv', 100),
+  (174, '好又快物流', 'haoyoukuai', 100),
+  (175, '永旺达快递', 'yongwangda', 100),
+  (176, '木春货运', 'mchy', 100),
+  (177, '程光快递', 'flyway', 100),
+  (178, '百事亨通', 'bsht', 100),
+  (179, '万家通快递', 'timedg', 100),
+  (180, '全之鑫物流', 'qzx56', 100),
+  (181, '美快国际物流', 'meiquick', 100),
+  (182, 'ILYANG', 'ilyang', 100),
+  (183, '先锋快递', 'xianfeng', 100),
+  (184, '亿顺航', 'yishunhang', 100),
+  (185, '尚橙物流', 'shangcheng', 100),
+  (186, 'OnTrac', 'ontrac', 100),
+  (187, 'TNT-全球件', 'tnten', 100),
+  (188, '顺丰-美国件', 'shunfengen', 100),
+  (189, '共速达', 'gongsuda', 100),
+  (190, '源伟丰', 'yuanweifeng', 100),
+  (191, '祥龙运通物流', 'xianglongyuntong', 100),
+  (192, '偌亚奥国际快递', 'nuoyaao', 100),
+  (193, '陪行物流', 'peixingwuliu', 100),
+  (194, '天天快递', 'tiantian', 100),
+  (195, 'CCES/国通快递', 'cces', 100),
+  (196, '彪记快递', 'biaojikuaidi', 100),
+  (197, '安信达', 'anxindakuaixi', 100),
+  (198, '配思货运', 'peisihuoyunkuaidi', 100),
+  (199, '大田物流', 'datianwuliu', 100),
+  (200, '邮政快递包裹', 'youzhengguonei', 100),
+  (201, '文捷航空', 'wenjiesudi', 100),
+  (202, 'BHT', 'bht', 100),
+  (203, '北青小红帽', 'xiaohongmao', 100),
+  (204, 'GSM', 'gsm', 100),
+  (205, '汇强快递', 'huiqiangkuaidi', 100),
+  (206, '昊盛物流', 'haoshengwuliu', 100),
+  (207, '联邦快递-英文', 'lianbangkuaidien', 100),
+  (208, '伍圆速递', 'wuyuansudi', 100),
+  (209, '南京100', 'nanjing', 100),
+  (210, '全通快运', 'quantwl', 100),
+  (211, '宅急便', 'zhaijibian', 100),
+  (212, '加拿大(Canada Post)', 'canpost', 100),
+  (213, 'COE', 'coe', 100),
+  (214, '百通物流', 'buytong', 100),
+  (215, '友家速递', 'youjia', 100),
+  (216, '新元快递', 'xingyuankuaidi', 100),
+  (217, '中澳速递', 'cnausu', 100),
+  (218, '联合快递', 'gslhkd', 100),
+  (219, '河南次晨达', 'ccd', 100),
+  (220, '奔腾物流', 'benteng', 100),
+  (221, '今枫国际快运', 'mapleexpress', 100),
+  (222, '中运全速', 'topspeedex', 100),
+  (223, '中欧快运', 'otobv', 100),
+  (224, '宜家行', 'yjxlm', 100),
+  (225, '金马甲', 'jmjss', 100),
+  (226, '一号仓', 'onehcang', 100),
+  (227, '论道国际物流', 'lundao', 100),
+  (228, '顺通快递', 'stkd', 100),
+  (229, 'globaltracktrace', 'globaltracktrace', 100),
+  (230, '德方物流', 'ahdf', 100),
+  (231, '速递中国', 'sendtochina', 100),
+  (232, 'NLE', 'nle', 100),
+  (233, '亚欧专线', 'nlebv', 100),
+  (234, '信联通', 'sinatone', 100),
+  (235, '澳德物流', 'auod', 100),
+  (236, '微转运', 'wzhaunyun', 100),
+  (237, 'iExpress', 'iexpress', 100),
+  (238, '远成快运', 'ycgky', 100),
+  (239, '高考通知书', 'emsluqu', 100),
+  (240, '安鲜达', 'exfresh', 100),
+  (241, 'BCWELT', 'bcwelt', 100),
+  (242, '欧亚专线', 'euasia', 100),
+  (243, '乐递供应链', 'ledii', 100),
+  (244, '万通快递', 'gswtkd', 100),
+  (245, '特急送', 'lntjs', 100),
+  (246, '金大物流', 'jindawuliu', 100),
+  (247, '民航快递', 'minghangkuaidi', 100),
+  (248, '红马甲物流', 'sxhongmajia', 100),
+  (249, 'amazon-国内订单', 'amcnorder', 100),
+  (250, 'ABF', 'abf', 100),
+  (251, '小米', 'xiaomi', 100),
+  (252, '新元国际', 'xynyc', 100),
+  (253, '小C海淘', 'xiaocex', 100),
+  (254, '航空快递', 'airgtc', 100),
+  (255, '叮咚澳洲转运', 'dindon', 100),
+  (256, '环球通达', 'hqtd', 100),
+  (257, '新西兰中通', 'nzzto', 100),
+  (258, '良藤国际速递', 'lmfex', 100),
+  (259, '速品快递', 'supinexpress', 100),
+  (260, '海龟国际快递', 'turtle', 100),
+  (261, '韩国邮政', 'koreapostcn', 100),
+  (262, '韵丰物流', 'yunfeng56', 100),
+  (263, '易达通快递', 'qexpress', 100),
+  (264, '一运全成物流', 'yyqc56', 100),
+  (265, '泛远国际物流', 'farlogistis', 100),
+  (266, '达速物流', 'dasu', 100),
+  (267, '恒通快递', 'lqht', 100),
+  (268, '壹品速递', 'ypsd', 100),
+  (269, '鹰运国际速递', 'vipexpress', 100),
+  (270, '南方传媒物流', 'ndwl', 100),
+  (271, '速呈宅配', 'sucheng', 100),
+  (272, '云南滇驿物流', 'dianyi', 100),
+  (273, '四川星程快递', 'scxingcheng', 100),
+  (274, '运通中港快递', 'ytkd', 100),
+  (275, 'Gati-英文', 'gatien', 100),
+  (276, 'jcex', 'jcex', 100),
+  (277, '凯信达', 'kxda', 100),
+  (278, '安达信', 'advancing', 100),
+  (279, '亿翔', 'yxexpress', 100),
+  (280, '加运美', 'jiayunmeiwuliu', 100),
+  (281, '赛澳递', 'saiaodi', 100),
+  (282, '康力物流', 'kangliwuliu', 100),
+  (283, '鑫飞鸿', 'xinhongyukuaidi', 100),
+  (284, '全一快递', 'quanyikuaidi', 100),
+  (285, '华企快运', 'huaqikuaiyun', 100),
+  (286, '青岛安捷快递', 'anjiekuaidi', 100),
+  (287, '递四方', 'disifang', 100),
+  (288, '三态速递', 'santaisudi', 100),
+  (289, '成都立即送', 'lijisong', 100),
+  (290, '河北建华', 'hebeijianhua', 100),
+  (291, '风行天下', 'fengxingtianxia', 100),
+  (292, '一统飞鸿', 'yitongfeihong', 100),
+  (293, '海外环球', 'haiwaihuanqiu', 100),
+  (294, 'DHL-中国件', 'dhl', 100),
+  (295, '西安城联速递', 'xianchengliansudi', 100),
+  (296, '一柒国际物流', 'yiqiguojiwuliu', 100),
+  (297, '广东通路', 'guangdongtonglu', 100),
+  (298, '中国香港骏辉物流', 'chunfai', 100),
+  (299, '三三国际物流', 'zenzen', 100),
+  (300, '比利时国际(Bpost international)', 'bpostinter', 100),
+  (301, '海红for买卖宝', 'haihongmmb', 100),
+  (302, 'FedEx-英国件（FedEx UK)', 'fedexuk', 100),
+  (303, 'FedEx-英国件', 'fedexukcn', 100),
+  (304, '叮咚快递', 'dingdong', 100),
+  (305, 'MRW', 'mrw', 100),
+  (306, 'Chronopost Portugal', 'chronopostport', 100),
+  (307, '西班牙(Correos de Espa?a)', 'correosdees', 100),
+  (308, '丹麦(Post Denmark)', 'postdanmarken', 100),
+  (309, 'Purolator', 'purolator', 100),
+  (310, '法国大包、EMS-法文（Chronopost France）', 'chronopostfra', 100),
+  (311, 'Selektvracht', 'selektvracht', 100),
+  (312, '蓝弧快递', 'lanhukuaidi', 100),
+  (313, '比利时(Belgium Post)', 'belgiumpost', 100),
+  (314, '晟邦物流', 'nanjingshengbang', 100),
+  (315, 'UPS Mail Innovations', 'upsmailinno', 100),
+  (316, '挪威（Posten Norge）', 'postennorge', 100),
+  (317, '瑞士(Swiss Post)', 'swisspost', 100),
+  (318, '英国邮政小包', 'royalmailcn', 100),
+  (319, '英国小包（Royal Mail）', 'royalmail', 100),
+  (320, 'DHL Benelux', 'dhlbenelux', 100),
+  (321, 'DHL-荷兰（DHL Netherlands）', 'dhlnetherlands', 100),
+  (322, 'OPEK', 'opek', 100),
+  (323, 'Italy SDA', 'italysad', 100),
+  (324, 'Fastway Ireland', 'fastway', 100),
+  (325, 'DHL-波兰（DHL Poland）', 'dhlpoland', 100),
+  (326, 'DPD', 'dpd', 100),
+  (327, '速通物流', 'sutongwuliu', 100),
+  (328, '荷兰邮政-中文(PostNL international r', 'postnlcn', 100),
+  (329, '荷兰邮政(PostNL international regi', 'postnl', 100),
+  (330, '乌克兰EMS(EMS Ukraine)', 'emsukraine', 100),
+  (331, '乌克兰邮政包裹', 'ukrpostcn', 100),
+  (332, '英国大包、EMS（Parcel Force）', 'parcelforce', 100),
+  (333, 'YODEL', 'yodel', 100),
+  (334, 'UBI Australia', 'gotoubi', 100),
+  (335, '红马速递', 'nedahm', 100),
+  (336, '云南诚中物流', 'czwlyn', 100),
+  (337, '万博快递', 'wanboex', 100),
+  (338, '腾达速递', 'nntengda', 100),
+  (339, '郑州速捷', 'sujievip', 100),
+  (340, '中睿速递', 'zhongruisudi', 100),
+  (341, '中天万运', 'zhongtianwanyun', 100),
+  (342, '新蛋奥硕', 'neweggozzo', 100),
+  (343, '七天连锁', 'sevendays', 100),
+  (344, 'UPS-全球件', 'upsen', 100),
+  (345, '跨越速运', 'kuayue', 100),
+  (346, '全际通', 'quanjitong', 100),
+  (347, 'UPS', 'ups', 100),
+  (348, '一邦速递', 'yibangwuliu', 100),
+  (349, '上海快通', 'shanghaikuaitong', 100),
+  (350, '品速心达快递', 'pinsuxinda', 100),
+  (351, 'PostNord(Posten AB)', 'postenab', 100),
+  (352, '城际速递', 'chengjisudi', 100),
+  (353, '户通物流', 'hutongwuliu', 100),
+  (354, '飞康达', 'feikangda', 100),
+  (355, '星晨急便', 'xingchengjibian', 100),
+  (356, '全日通', 'quanritongkuaidi', 100),
+  (357, '凤凰快递', 'fenghuangkuaidi', 100),
+  (358, '广东邮政', 'guangdongyouzhengwuliu', 100),
+  (359, '长宇物流', 'changyuwuliu', 100),
+  (360, '万家物流', 'wanjiawuliu', 100),
+  (361, 'EMS-国际件-英文', 'emsinten', 100),
+  (362, '飞远配送', 'feiyuanvipshop', 100),
+  (363, '国美', 'gome', 100),
+  (364, '能达速递', 'ganzhongnengda', 100),
+  (365, '急先达', 'jixianda', 100),
+  (366, '凡宇快递', 'fanyukuaidi', 100),
+  (367, '希优特', 'xiyoutekuaidi', 100),
+  (368, '中通（带电话）', 'zhongtongphone', 100),
+  (369, '蓝镖快递', 'lanbiaokuaidi', 100),
+  (370, '佳吉快运', 'jiajiwuliu', 100),
+  (371, '宏品物流', 'hongpinwuliu', 100),
+  (372, 'GLS', 'gls', 100),
+  (373, '原飞航', 'yuanfeihangwuliu', 100),
+  (374, '海红网送', 'haihongwangsong', 100),
+  (375, 'TNT', 'tnt', 100),
+  (376, '元智捷诚', 'yuanzhijiecheng', 100),
+  (377, '国际包裹', 'youzhengguoji', 100),
+  (378, '城市100', 'city100', 100),
+  (379, 'DPEX', 'dpex', 100),
+  (380, '芝麻开门', 'zhimakaimen', 100),
+  (381, 'EMS-国际件', 'emsguoji', 100),
+  (382, '晋越快递', 'jinyuekuaidi', 100),
+  (383, '乐捷递', 'lejiedi', 100),
+  (384, '飞力士物流', 'flysman', 100),
+  (385, '百腾物流', 'baitengwuliu', 100),
+  (386, '品骏快递', 'pjbest', 100),
+  (387, '瓦努阿图(Vanuatu Post)', 'vanuatu', 100),
+  (388, '巴巴多斯(Barbados Post)', 'barbados', 100),
+  (389, '萨摩亚(Samoa Post)', 'samoa', 100),
+  (390, '斐济(Fiji Post)', 'fiji', 100),
+  (391, '英超物流', 'yingchao', 100),
+  (392, 'TNY物流', 'tny', 100),
+  (393, '美通', 'valueway', 100),
+  (394, '新速航', 'sunspeedy', 100),
+  (395, '速方(Sufast)', 'bphchina', 100),
+  (396, '华航快递', 'hzpl', 100),
+  (397, 'Gati-KWE', 'gatikwe', 100),
+  (398, 'Red Express', 'redexpress', 100),
+  (399, 'Toll Priority(Toll Online)', 'tollpriority', 100),
+  (400, 'Estafeta', 'estafeta', 100),
+  (401, '港快速递', 'gdkd', 100),
+  (402, '墨西哥（Correos de Mexico）', 'mexico', 100),
+  (403, '罗马尼亚（Posta Romanian）', 'romanian', 100),
+  (404, 'DPD Poland', 'dpdpoland', 100),
+  (405, '阿联酋(Emirates Post)', 'emirates', 100),
+  (406, '新顺丰（NSF）', 'nsf', 100),
+  (407, '巴基斯坦(Pakistan Post)', 'pakistan', 100),
+  (408, 'Asendia USA', 'asendiausa', 100),
+  (409, '法国大包、EMS-英文(Chronopost France)', 'chronopostfren', 100),
+  (410, '意大利(Poste Italiane)', 'italiane', 100),
+  (411, '世运快递', 'shiyunkuaidi', 100),
+  (412, '新干线快递', 'anlexpress', 100),
+  (413, '飞洋快递', 'shipgce', 100),
+  (414, '贝海国际速递', 'xlobo', 100),
+  (415, '黄马甲', 'huangmajia', 100),
+  (416, 'Toll', 'dpexen', 100),
+  (417, '如风达', 'rufengda', 100),
+  (418, 'EC-Firstclass', 'ecfirstclass', 100),
+  (419, 'DTDC India', 'dtdcindia', 100),
+  (420, 'Safexpress', 'safexpress', 100),
+  (421, '泰国（Thailand Thai Post）', 'thailand', 100),
+  (422, 'SkyNet Malaysia', 'skynetmalaysia', 100),
+  (423, 'TNT Australia', 'tntau', 100),
+  (424, '马来西亚小包（Malaysia Post(Registere', 'malaysiapost', 100),
+  (425, '马来西亚大包、EMS（Malaysia Post(parce', 'malaysiaems', 100),
+  (426, '沙特阿拉伯(Saudi Post)', 'saudipost', 100),
+  (427, '南非（South African Post Office）', 'southafrican', 100),
+  (428, 'Mexico Senda Express', 'mexicodenda', 100),
+  (429, 'MyHermes', 'myhermes', 100),
+  (430, 'DPD Germany', 'dpdgermany', 100),
+  (431, 'Nova Poshta', 'novaposhta', 100),
+  (432, 'Estes', 'estes', 100),
+  (433, 'TNT UK', 'tntuk', 100),
+  (434, 'Deltec Courier', 'deltec', 100),
+  (435, 'UPS Freight', 'upsfreight', 100),
+  (436, 'TNT Italy', 'tntitaly', 100),
+  (437, 'Mexico Multipack', 'multipack', 100),
+  (438, '葡萄牙（Portugal CTT）', 'portugalctt', 100),
+  (439, 'Interlink Express', 'interlink', 100),
+  (440, 'DPD UK', 'dpduk', 100),
+  (441, '乌克兰EMS-中文(EMS Ukraine)', 'emsukrainecn', 100),
+  (442, '乌克兰小包、大包(UkrPost)', 'ukrpost', 100),
+  (443, 'TCI XPS', 'tcixps', 100),
+  (444, '高铁速递', 'hre', 100),
+  (445, '新加坡EMS、大包(Singapore Speedpost)', 'speedpost', 100),
+  (446, 'LaserShip', 'lasership', 100),
+  (447, '英国邮政大包EMS', 'parcelforcecn', 100),
+  (448, '同舟行物流', 'chinatzx', 100),
+  (449, '秦邦快运', 'qbexpress', 100),
+  (450, 'skynet', 'skynet', 100),
+  (451, '忠信达', 'zhongxinda', 100),
+  (452, '门对门', 'menduimen', 100),
+  (453, '微特派', 'weitepai', 100),
+  (454, '海盟速递', 'haimengsudi', 100),
+  (455, '圣安物流', 'shenganwuliu', 100),
+  (456, '联邦快递', 'lianbangkuaidi', 100),
+  (457, '飞快达', 'feikuaida', 100),
+  (458, 'EMS', 'ems', 100),
+  (459, '天地华宇', 'tiandihuayu', 100),
+  (460, '煜嘉物流', 'yujiawuliu', 100),
+  (461, '郑州建华', 'zhengzhoujianhua', 100),
+  (462, '大洋物流', 'dayangwuliu', 100),
+  (463, '递达速运', 'didasuyun', 100),
+  (464, '易通达', 'yitongda', 100),
+  (465, '邮必佳', 'youbijia', 100),
+  (466, 'EMS-英文', 'emsen', 100),
+  (467, '闽盛快递', 'minshengkuaidi', 100),
+  (468, '佳惠尔', 'syjiahuier', 100),
+  (469, 'KCS', 'kcs', 100),
+  (470, 'ADP国际快递', 'adp', 100),
+  (471, '颿达国际快递', 'fardarww', 100),
+  (472, '颿达国际快递-英文', 'fandaguoji', 100),
+  (473, '林道国际快递', 'shlindao', 100),
+  (474, '中外运速递-中文', 'sinoex', 100),
+  (475, '中外运速递', 'zhongwaiyun', 100),
+  (476, '深圳德创物流', 'dechuangwuliu', 100),
+  (477, '林道国际快递-英文', 'ldxpres', 100),
+  (478, '中国香港(HongKong Post)', 'hkpost', 100),
+  (479, '邦送物流', 'bangsongwuliu', 100),
+  (480, '华赫物流', 'nmhuahe', 100),
+  (481, '顺捷丰达', 'shunjiefengda', 100),
+  (482, '天马迅达', 'tianma', 100),
+  (483, '恒宇运通', 'hyytes', 100),
+  (484, '考拉国际速递', 'kaolaexpress', 100),
+  (485, 'BlueDart', 'bluedart', 100),
+  (486, '日日顺快线', 'rrskx', 100),
+  (487, '运东西', 'yundx', 100),
+  (488, '黑狗物流', 'higo', 100),
+  (489, '鹏远国际速递', 'pengyuanexpress', 100),
+  (490, '安捷物流', 'anjie88', 100),
+  (491, '骏达快递', 'jdexpressusa', 100),
+  (492, 'C&C国际速递', 'cncexp', 100),
+  (493, '北京EMS', 'bjemstckj', 100),
+  (494, 'airpak expresss', 'airpak', 100),
+  (495, '荷兰邮政-中国件', 'postnlchina', 100),
+  (496, '大达物流', 'idada', 100),
+  (497, '益递物流', 'edlogistics', 100),
+  (498, '中外运', 'esinotrans', 100),
+  (499, '速派快递(FastGo)', 'fastgo', 100),
+  (500, '易客满', 'ecmscn', 100),
+  (501, '美国云达', 'yundaexus', 100),
+  (502, 'Toll', 'toll', 100),
+  (503, '深圳DPEX', 'szdpex', 100),
+  (504, '俄顺达', 'eshunda', 100),
+  (505, '广东速腾物流', 'suteng', 100),
+  (506, '新鹏快递', 'gdxp', 100),
+  (507, '平安达腾飞', 'pingandatengfei', 100),
+  (508, '穗佳物流', 'suijiawuliu', 100),
+  (509, '传喜物流', 'chuanxiwuliu', 100),
+  (510, '捷特快递', 'jietekuaidi', 100),
+  (511, '隆浪快递', 'longlangkuaidi', 100),
+  (512, '佳吉快递', 'jiajikuaidi', 100),
+  (513, '快达物流', 'kuaidawuliu', 100),
+  (514, '飞狐快递', 'feihukuaidi', 100),
+  (515, '潇湘晨报', 'xiaoxiangchenbao', 100),
+  (516, '巴伦支', 'balunzhi', 100),
+  (517, '安能物流', 'annengwuliu', 100),
+  (518, '申通快递', 'shentong', 100),
+  (519, '亿领速运', 'yilingsuyun', 100),
+  (520, '店通快递', 'diantongkuaidi', 100),
+  (521, 'OCA Argentina', 'ocaargen', 100),
+  (522, '尼日利亚(Nigerian Postal)', 'nigerianpost', 100),
+  (523, '智利(Correos Chile)', 'chile', 100),
+  (524, '以色列(Israel Post)', 'israelpost', 100),
+  (525, '京东物流', 'jd', 100),
+  (526, '奥地利(Austrian Post)', 'austria', 100),
+  (527, '乌克兰小包、大包(UkrPoshta)', 'ukraine', 100),
+  (528, '乌干达(Posta Uganda)', 'uganda', 100),
+  (529, '阿塞拜疆EMS(EMS AzerExpressPost)', 'azerbaijan', 100),
+  (530, '芬兰(Itella Posti Oy)', 'finland', 100),
+  (531, '斯洛伐克(Slovenská Posta)', 'slovak', 100),
+  (532, '阿鲁巴[荷兰]（Post Aruba）', 'aruba', 100),
+  (533, '爱尔兰(An Post)', 'ireland', 100),
+  (534, '印度尼西亚EMS(Pos Indonesia-EMS)', 'indonesia', 100),
+  (535, '易优包裹', 'eupackage', 100),
+  (536, '威时沛运货运', 'wtdchina', 100),
+  (537, '行必达', 'speeda', 100),
+  (538, '中通国际', 'zhongtongguoji', 100),
+  (539, '千顺快递', 'qskdyxgs', 100),
+  (540, '西邮寄', 'xipost', 100),
+  (541, '顺捷达', 'shunjieda', 100),
+  (542, 'CE易欧通国际速递', 'cloudexpress', 100),
+  (543, '和丰同城', 'hfwuxi', 100),
+  (544, '天联快运', 'tlky', 100),
+  (545, '优速物流', 'youshuwuliu', 100),
+  (546, '埃塞俄比亚(Ethiopian postal)', 'ethiopia', 100),
+  (547, '卢森堡(Luxembourg Post)', 'luxembourg', 100),
+  (548, '毛里求斯(Mauritius Post)', 'mauritius', 100),
+  (549, '文莱(Brunei Postal)', 'brunei', 100),
+  (550, 'Quantium', 'quantium', 100),
+  (551, '中铁物流', 'zhongtiewuliu', 100),
+  (552, '宇鑫物流', 'yuxinwuliu', 100),
+  (553, '巴林(Bahrain Post)', 'bahrain', 100),
+  (554, '纳米比亚(NamPost)', 'namibia', 100),
+  (555, '卢旺达(Rwanda i-posita)', 'rwanda', 100),
+  (556, '莱索托(Lesotho Post)', 'lesotho', 100),
+  (557, '肯尼亚(POSTA KENYA)', 'kenya', 100),
+  (558, '喀麦隆(CAMPOST)', 'cameroon', 100),
+  (559, '伯利兹(Belize Postal)', 'belize', 100),
+  (560, '巴拉圭(Correo Paraguayo)', 'paraguay', 100),
+  (561, '波黑(JP BH Posta)', 'bohei', 100),
+  (562, '玻利维亚', 'bolivia', 100),
+  (563, '柬埔寨(Cambodia Post)', 'cambodia', 100),
+  (564, '兰州伙伴物流', 'huoban', 100),
+  (565, '天纵物流', 'tianzong', 100),
+  (566, '坦桑尼亚(Tanzania Posts)', 'tanzania', 100),
+  (567, '阿曼(Oman Post)', 'oman', 100),
+  (568, '直布罗陀[英国]( Royal Gibraltar Post', 'gibraltar', 100),
+  (569, '展勤快递', 'byht', 100),
+  (570, '越南EMS(VNPost Express)', 'vnpost', 100),
+  (571, '安迅物流', 'anxl', 100),
+  (572, '达方物流', 'dfpost', 100),
+  (573, '十方通物流', 'sfift', 100),
+  (574, '飞鹰物流', 'hnfy', 100),
+  (575, 'UPS i-parcel', 'iparcel', 100),
+  (576, '鑫锐达', 'bjxsrd', 100),
+  (577, '孟加拉国(EMS)', 'bangladesh', 100),
+  (578, '快捷速递', 'kuaijiesudi', 100),
+  (579, '日本（Japan Post）', 'japanposten', 100),
+  (580, '众辉达物流', 'zhdwl', 100),
+  (581, '秦远物流', 'qinyuan', 100),
+  (582, '澳邮中国快运', 'auexpress', 100),
+  (583, '日益通速递', 'rytsd', 100),
+  (584, '航宇快递', 'hangyu', 100),
+  (585, '急顺通', 'pzhjst', 100),
+  (586, '优速通达', 'yousutongda', 100),
+  (587, '飞邦快递', 'fbkd', 100),
+  (588, '华达快运', 'huada', 100),
+  (589, 'FOX国际快递', 'fox', 100),
+  (590, '佳怡物流', 'jiayiwuliu', 100),
+  (591, '鹏程快递', 'pengcheng', 100),
+  (592, '冠庭国际物流', 'guanting', 100),
+  (593, '美国快递', 'meiguokuaidi', 100),
+  (594, '通和天下', 'tonghetianxia', 100),
+  (595, '音素快运', 'yinsu', 100),
+  (596, '创一快递', 'chuangyi', 100),
+  (597, '重庆星程快递', 'cqxingcheng', 100),
+  (598, '贵州星程快递', 'gzxingcheng', 100),
+  (599, '河南全速通', 'hnqst', 100),
+  (600, '快速递', 'ksudi', 100),
+  (601, '北极星快运', 'polarisexpress', 100),
+  (602, '6LS EXPRESS', 'lsexpress', 100),
+  (603, 'ANTS EXPRESS', 'qdants', 100),
+  (604, 'S2C', 's2c', 100),
+  (605, 'Hi淘易快递', 'hitaoe', 100),
+  (606, 'CNAIR', 'cnair', 100),
+  (607, '易欧洲国际物流', 'yiouzhou', 100),
+  (608, '阳光快递', 'shiningexpress', 100),
+  (609, '北京丰越供应链', 'beijingfengyue', 100),
+  (610, '华中快递', 'cpsair', 100),
+  (611, '青旅物流', 'zqlwl', 100),
+  (612, '易航物流', 'yihangmall', 100),
+  (613, '城铁速递', 'cex', 100),
+  (614, '千里速递', 'qianli', 100),
+  (615, '急递', 'jdpplus', 100),
+  (616, '佳捷翔物流', 'jjx888', 100),
+  (617, '洋口岸', 'ykouan', 100),
+  (618, '考拉速递', 'koalaexp', 100),
+  (619, '天越物流', 'surpassgo', 100),
+  (620, '邮政标准快递', 'youzhengbk', 100),
+  (621, '运通快运', 'ytky168', 100),
+  (622, '卢森堡航空', 'cargolux', 100),
+  (623, '优优速递', 'youyou', 100),
+  (624, '全川物流', 'quanchuan56', 100),
+  (625, 'SYNSHIP快递', 'synship', 100),
+  (626, '仓鼠快递', 'cangspeed', 100),
+  (627, '递五方云仓', 'di5pll', 100),
+  (628, '卓志速运', 'chinaicip', 100),
+  (629, '闪电兔', 'shandiantu', 100),
+  (630, '新宁物流', 'xinning', 100),
+  (631, '春风物流', 'spring56', 100),
+  (632, '首达速运', 'sdsy888', 100),
+  (633, '丽狮物流', 'lishi', 100),
+  (634, '雅澳物流', 'yourscm', 100),
+  (635, '直德邮', 'zdepost', 100),
+  (636, '日昱物流', 'riyuwuliu', 100),
+  (637, 'Gati-中文', 'gaticn', 100),
+  (638, '派尔快递', 'peex', 100),
+  (639, '汇文', 'huiwen', 100),
+  (640, '东红物流', 'donghong', 100),
+  (641, '增益速递', 'zengyisudi', 100),
+  (642, '好运来', 'hlyex', 100),
+  (643, '顺丰速运', 'shunfeng', 100),
+  (644, '城际快递', 'chengji', 100),
+  (645, '程光快递', 'chengguangkuaidi', 100),
+  (646, '天翼快递', 'tykd', 100),
+  (647, '京东订单', 'jdorder', 100),
+  (648, '蓝天快递', 'lantiankuaidi', 100),
+  (649, '永昌物流', 'yongchangwuliu', 100),
+  (650, '笨鸟海淘', 'birdex', 100),
+  (651, '一正达速运', 'yizhengdasuyun', 100),
+  (652, '德意思', 'dabei', 100),
+  (653, '佐川急便', 'sagawa', 100),
+  (654, '优配速运', 'sdyoupei', 100),
+  (655, '速必达', 'subida', 100),
+  (656, '景光物流', 'jgwl', 100),
+  (657, '御风速运', 'yufeng', 100),
+  (658, '至诚通达快递', 'zhichengtongda', 100),
+  (659, '特急便物流', 'sucmj', 100),
+  (660, '亚马逊中国', 'yamaxunwuliu', 100),
+  (661, '货运皇', 'kingfreight', 100),
+  (662, '锦程物流', 'jinchengwuliu', 100),
+  (663, '澳货通', 'auex', 100),
+  (664, '澳速物流', 'aosu', 100),
+  (665, '澳世速递', 'aus', 100),
+  (666, '环球速运', 'huanqiu', 100),
+  (667, '麦力快递', 'mailikuaidi', 100),
+  (668, '瑞丰速递', 'rfsd', 100),
+  (669, '美联快递', 'letseml', 100),
+  (670, 'CNPEX中邮快递', 'cnpex', 100),
+  (671, '鑫世锐达', 'xsrd', 100),
+  (672, '顺丰优选', 'sfbest', 100),
+  (673, '全峰快递', 'quanfengkuaidi', 100),
+  (674, '克罗地亚（Hrvatska Posta）', 'hrvatska', 100),
+  (675, '保加利亚（Bulgarian Posts）', 'bulgarian', 100),
+  (676, 'Portugal Seur', 'portugalseur', 100),
+  (677, 'International Seur', 'seur', 100),
+  (678, '久易快递', 'jiuyicn', 100),
+  (679, 'Direct Link', 'directlink', 100),
+  (680, '希腊EMS（ELTA Courier）', 'eltahell', 100),
+  (681, '捷克（?eská po?ta）', 'ceskaposta', 100),
+  (682, 'Siodemka', 'siodemka', 100),
+  (683, '爱尔兰(An Post)', 'anposten', 100),
+  (684, '渥途国际速运', 'wotu', 100),
+  (685, '一号线', 'lineone', 100),
+  (686, '四海快递', 'sihaiet', 100),
+  (687, '德坤物流', 'dekuncn', 100),
+  (688, '准实快运', 'zsky123', 100),
+  (689, '宏捷国际物流', 'hongjie', 100),
+  (690, '鸿讯物流', 'hongxun', 100),
+  (691, '卡邦配送', 'ahkbps', 100),
+  (692, '凡客配送（作废）', 'vancl', 100),
+  (693, '瑞士邮政', 'swisspostcn', 100),
+  (694, '辉联物流', 'huilian', 100),
+  (695, 'A2U速递', 'a2u', 100),
+  (696, 'UEQ快递', 'ueq', 100),
+  (697, '中加国际快递', 'scic', 100),
+  (698, '易达通', 'yidatong', 100),
+  (699, '宜送', 'yisong', 100),
+  (700, '全球快运', 'abcglobal', 100),
+  (701, '芒果速递', 'mangguo', 100),
+  (702, '金海淘', 'goldhaitao', 100),
+  (703, '极光转运', 'jiguang', 100),
+  (704, '富腾达国际货运', 'ftd', 100),
+  (705, 'DCS', 'dcs', 100),
+  (706, '捷网俄全通', 'ruexp', 100),
+  (707, '华通务达物流', 'htwd', 100),
+  (708, '申必达', 'speedoex', 100),
+  (709, '联运快递', 'lianyun', 100),
+  (710, '捷安达', 'jieanda', 100),
+  (711, 'SHL畅灵国际物流', 'shlexp', 100),
+  (712, 'EWE全球快递', 'ewe', 100),
+  (713, '顺邦国际物流', 'shunbang', 100),
+  (714, '成达国际速递', 'chengda', 100),
+  (715, '启辰国际速递', 'qichen', 100),
+  (716, '合众速递(UCS）', 'ucs', 100),
+  (717, '阿富汗(Afghan Post)', 'afghan', 100),
+  (718, '白俄罗斯(Belpochta)', 'belpost', 100),
+  (719, '冠捷物流', 'gjwl', 100),
+  (720, '钏博物流', 'cbo56', 100),
+  (721, '西翼物流', 'westwing', 100),
+  (722, '优邦速运', 'ubonex', 100),
+  (723, '首通快运', 'staky', 100),
+  (724, '马珂博逻', 'cnmcpl', 100),
+  (725, '小熊物流', 'littlebearbear', 100),
+  (726, '玥玛速运', 'yue777', 100),
+  (727, '上海航瑞货运', 'hangrui', 100),
+  (728, '星云速递', 'nebuex', 100),
+  (729, '环创物流', 'ghl', 100),
+  (730, '林安物流', 'lasy56', 100),
+  (731, '笨鸟国际', 'benniao', 100),
+  (732, '全速快递', 'fsexp', 100),
+  (733, '法翔速运', 'ftlexpress', 100),
+  (734, '易转运', 'ezhuanyuan', 100),
+  (735, 'Superb Grace', 'superb', 100),
+  (736, '蓝天国际快递', 'ltx', 100),
+  (737, '圣飞捷快递', 'sfjhd', 100),
+  (738, '淘韩国际快递', 'krtao', 100),
+  (739, '容智快运', 'gdrz58', 100),
+  (740, '锦程快递', 'hrex', 100),
+  (741, '顺时达物流', 'hnssd56', 100),
+  (742, '骏绅物流', 'jsexpress', 100),
+  (743, '德国雄鹰速递', 'adlerlogi', 100),
+  (744, '远为快递', 'ywexpress', 100),
+  (745, '嗖一下同城快递', 'sofast56', 100),
+  (746, '开心快递', 'happylink', 100),
+  (747, '五六快运', 'wuliuky', 100),
+  (748, '卓烨快递', 'hrbzykd', 100),
+  (749, 'ZTE中兴物流', 'zteexpress', 100),
+  (750, '尼尔快递', 'nell', 100),
+  (751, '高铁快运', 'gaotieex', 100),
+  (752, '万家康物流', 'wjkwl', 100),
+  (753, '国晶物流', 'xdshipping', 100),
+  (754, '德国云快递', 'yunexpress', 100),
+  (755, '宏递快运', 'hd', 100),
+  (756, '一起送', 'yiqisong', 100),
+  (757, '迈隆递运', 'mailongdy', 100),
+  (758, '新亚物流', 'nalexpress', 100),
+  (759, '艾瑞斯远', 'ariesfar', 100),
+  (760, '澳多多国际速递', 'adodoxm', 100),
+  (761, 'CNUP 中联邮', 'cnup', 100),
+  (762, 'UEX国际物流', 'uex', 100),
+  (763, 'Hermes', 'hermes', 100),
+  (764, 'PostElbe', 'postelbe', 100),
+  (765, '维普恩物流', 'vps', 100),
+  (766, '明辉物流', 'zsmhwl', 100),
+  (767, '联运通物流', 'szuem', 100),
+  (768, '龙象国际物流', 'edragon', 100),
+  (769, '永邦国际物流', 'yongbangwuliu', 100),
+  (770, '51跨境通', 'wykjt', 100),
+  (771, '速配欧翼', 'superoz', 100),
+  (772, '嘉里大荣物流', 'kerrytj', 100),
+  (773, '中国香港环球快运', 'huanqiuabc', 100),
+  (774, 'CL日中速运', 'clsp', 100),
+  (775, 'SQK国际速递', 'chinasqk', 100),
+  (776, '家家通快递', 'newsway', 100),
+  (777, '邮客全球速递', 'yyox', 100),
+  (778, '华瀚快递', 'hhair56', 100),
+  (779, '顺士达速运', 'shunshid', 100),
+  (780, '天翔东捷运', 'djy56', 100),
+  (781, '卓实快运', 'zhuoshikuaiyun', 100),
+  (782, '吉祥邮（澳洲）', 'jixiangyouau', 100),
+  (783, '蓝天快递', 'blueskyexpress', 100),
+  (784, '天天快物流', 'guoeryue', 100),
+  (785, '纵通速运', 'ynztsy', 100),
+  (786, '中通快运', 'zhongtongkuaiyun', 100),
+  (787, 'CNE', 'cnexps', 100),
+  (788, '希腊包裹（ELTA Hellenic Post）', 'elta', 100),
+  (789, '星速递', 'starex', 100),
+  (790, '土耳其', 'ptt', 100),
+  (791, '哥伦比亚(4-72 La Red Postal de Col', 'colombia', 100),
+  (792, '加州猫速递', 'jiazhoumao', 100),
+  (793, '捷邦物流', 'jieborne', 100),
+  (794, '邮政国内', 'yzguonei', 100),
+  (795, 'Canpar', 'canpar', 100),
+  (796, '海硕高铁速递', 'hsgtsd', 100),
+  (797, '日日通国际', 'rrthk', 100),
+  (798, '天翼物流', 'tywl99', 100),
+  (799, '啪啪供应链', 'papascm', 100),
+  (800, '万达美', 'wdm', 100),
+  (801, '安得物流', 'annto', 100),
+  (802, '广东诚通物流', 'gdct56', 100),
+  (803, '安达速递', 'adapost', 100),
+  (804, '易达国际速递', 'eta100', 100),
+  (805, '西游寄', 'xiyoug', 100),
+  (806, '光线速递', 'gxwl', 100),
+  (807, '易邮国际', 'euguoji', 100),
+  (808, '深圳邮政', 'szyouzheng', 100),
+  (809, '粤中国际货运代理（上海）有限公司', 'yuezhongsh', 100),
+  (810, '城通物流', 'chengtong', 100),
+  (811, 'GE2D跨境物流', 'ge2d', 100),
+  (812, '败欧洲', 'europe8', 100),
+  (813, '飛斯特', 'bester', 100),
+  (814, '蒙古国(Mongol Post)', 'mongolpost', 100),
+  (815, '乌拉圭（Correo Uruguayo）', 'correo', 100),
+  (816, '牙买加（Jamaica Post）', 'jamaicapost', 100),
+  (817, '格鲁吉亚(Georgian Pos）', 'georgianpost', 100),
+  (818, '美达快递', 'meidaexpress', 100),
+  (819, '驭丰速运', 'yfsuyun', 100),
+  (820, '无忧物流', 'aliexpress', 100),
+  (821, '邮鸽速运', 'ugoexpress', 100),
+  (822, '澳洲新干线快递', 'expressplus', 100),
+  (823, '标杆物流', 'bmlchina', 100),
+  (824, '长风物流', 'longvast', 100),
+  (825, '邮来速递', 'youlai', 100),
+  (826, '魔速达', 'mosuda', 100),
+  (827, '商桥物流', 'shangqiao56', 100),
+  (828, 'AUV国际快递', 'auvexpress', 100),
+  (829, 'Newgistics', 'newgistics', 100),
+  (830, 'FQ狂派速递', 'freakyquick', 100),
+  (831, '泽西岛', 'jerseypost', 100),
+  (832, '威盛快递', 'wherexpess', 100),
+  (833, '运通速运', 'yuntong', 100),
+  (834, '老挝(Lao Express)', 'lao', 100),
+  (835, '巴布亚新几内亚(PNG Post)', 'postpng', 100),
+  (836, 'EASY EXPRESS', 'easyexpress', 100),
+  (837, '壹米滴答', 'yimidida', 100),
+  (838, '飞云快递系统', 'fyex', 100),
+  (839, '跨跃国际', 'kyue', 100),
+  (840, 'EMS包裹', 'emsbg', 100),
+  (841, '珠峰速运', 'zf365', 100),
+  (842, '甘肃安的快递', 'gansuandi', 100),
+  (843, '一辉物流', 'yatfai', 100),
+  (844, 'e直运', 'edtexpress', 100),
+  (845, 'wish邮', 'shpostwish', 100),
+  (846, '顶世国际物流', 'topshey', 100),
+  (847, '龙枫国际快递', 'lfexpress', 100),
+  (848, '安能快递', 'ane66', 100),
+  (849, '圆通快运', 'yuantongkuaiyun', 100),
+  (850, '宝通快递', 'baotongkd', 100),
+  (851, '美国汉邦快递', 'aplus100', 100),
+  (852, '易普递', 'sixroad', 100),
+  (853, '速呈', 'sczpds', 100),
+  (854, '海淘物流', 'ht22', 100),
+  (855, '海米派物流', 'haimibuy', 100),
+  (856, '天翔快递', 'tianxiang', 100),
+  (857, '易境达国际物流', 'uscbexpress', 100),
+  (858, '大韩通运', 'cjkoreaexpress', 100),
+  (859, '澳世速递', 'ausexpress', 100),
+  (860, '未来明天快递', 'weilaimingtian', 100),
+  (861, '科捷物流', 'kejie', 100),
+  (862, '大道物流', 'dadaoex', 100),
+  (863, '全联速运', 'guexp', 100),
+  (864, '可可树美中速运', 'excocotree', 100),
+  (865, '邮邦国际', 'youban', 100),
+  (866, '西安运逸快递', 'yyexp', 100),
+  (867, 'Aplus物流', 'aplusex', 100),
+  (868, '锋鸟物流', 'beebird', 100),
+  (869, '青云物流', 'bjqywl', 100),
+  (870, '万邑通', 'winit', 100),
+  (871, '中翼国际物流', 'chnexp', 100),
+  (872, '亚洲顺物流', 'yzswuliu', 100),
+  (873, 'E跨通', 'ecallturn', 100),
+  (874, '递四方美国', 'disifangus', 100),
+  (875, '星空国际', 'wlwex', 100),
+  (876, '极地快递', 'polarexpress', 100),
+  (877, '到了港', 'camekong', 100),
+  (878, '斯里兰卡(Sri Lanka Post)', 'slpost', 100),
+  (879, '斯洛文尼亚(Slovenia Post)', 'slovenia', 100),
+  (880, '多米尼加（INPOSDOM – Instituto Post', 'inposdom', 100),
+  (881, '星运快递', 'staryvr', 100),
+  (882, '狮爱高铁物流', 'sycawl', 100),
+  (883, '爱拜物流', 'ibuy8', 100),
+  (884, '商海德物流', 'shd56', 100),
+  (885, '九宫物流', 'jiugong', 100),
+  (886, '缔惠盛合', 'twkd56', 100),
+  (887, '快服务', 'kfwnet', 100),
+  (888, 'dhl小包', 'dhlecommerce', 100),
+  (889, '宇佳物流', 'yujiawl', 100),
+  (890, '湘达物流', 'xiangdawuliu', 100),
+  (891, '远盾物流', 'yuandun', 100),
+  (892, '黑猫宅急便', 'tcat', 100),
+  (893, '韵达快运', 'yundakuaiyun', 100),
+  (894, '速派快递', 'fastgoexpress', 100),
+  (895, '中集冷云', 'cccc58', 100),
+  (896, '久久物流', 'jiujiuwl', 100),
+  (897, '德国八易转运', 'deguo8elog', 100),
+  (898, 'UTAO优到', 'utaoscm', 100),
+  (899, '乾坤物流', 'yatexpress', 100),
+  (900, '摩洛哥 ( Morocco Post )', 'morocco', 100),
+  (901, '尼泊尔（Nepal Postal Services）', 'nepalpost', 100),
+  (902, '伊朗（Iran Post）', 'iran', 100),
+  (903, '坦桑尼亚（Tanzania Posts Corporatio', 'posta', 100),
+  (904, '莫桑比克（Correios de Mo?ambique）', 'correios', 100),
+  (905, '聚中大', 'juzhongda', 100),
+  (906, '中邮电商', 'chinapostcb', 100),
+  (907, '鸿泰物流', 'hnht56', 100),
+  (908, '南非EMS', 'emssouthafrica', 100),
+  (909, '申通国际', 'stosolution', 100),
+  (910, '皮牙子快递', 'bazirim', 100),
+  (911, '联众国际', 'epspost', 100),
+  (912, '丰通快运', 'ftky365', 100),
+  (913, 'BorderGuru', 'borderguru', 100),
+  (914, '艾姆勒', 'imlb2c', 100),
+  (915, '中欧国际物流', 'eucnrail', 100),
+  (916, '递四方澳洲', 'disifangau', 100),
+  (917, '艺凡快递', 'yifankd', 100),
+  (918, '宏观国际快递', 'gvpexpress', 100),
+  (919, '博茨瓦纳', 'botspost', 100),
+  (920, '塞内加尔', 'laposte', 100),
+  (921, '卡塔尔（Qatar Post）', 'qpost', 100),
+  (922, '苏丹（Sudapost）', 'sudapost', 100),
+  (923, 'Sureline冠泰', 'sureline', 100),
+  (924, '海沧无忧', 'hivewms', 100),
+  (925, '安世通快递', 'astexpress', 100),
+  (926, '集先锋快递', 'jxfex', 100),
+  (927, '丰客物流', 'fecobv', 100),
+  (928, '同城快寄', 'shpost', 100),
+  (929, '海联快递', 'hltop', 100),
+  (930, '中联速递', 'auvanda', 100),
+  (931, '三象速递', 'sxexpress', 100),
+  (932, '神马快递', 'shenma', 100),
+  (933, '互联快运', 'hlkytj', 100),
+  (934, '温通物流', 'wto56kj', 100),
+  (935, '四海捷运', 'sihiexpress', 100),
+  (936, '苏通快运', 'zjstky', 100),
+  (937, '邦通国际', 'comexpress', 100),
+  (938, '劲通快递', 'jintongkd', 100),
+  (939, '凡仕特物流', 'wlfast', 100),
+  (940, '红背心', 'hongbeixin', 100),
+  (941, '居家通', 'homexpress', 100),
+  (942, '上大物流', 'shangda', 100),
+  (943, '中邮物流', 'zhongyouwuliu', 100),
+  (944, 'Fedex-国际件-中文', 'fedexcn', 100),
+  (945, '韩国（Korea Post）', 'koreapost', 100),
+  (946, '中通快递', 'zhongtong', 100),
+  (947, '京广速递', 'jinguangsudikuaijian', 100),
+  (948, 'FedEx-国际件', 'fedex', 100),
+  (949, '日日顺物流', 'rrs', 100),
+  (950, '微店', 'weidianorder', 100),
+  (951, '当当', 'dangdangorder', 100),
+  (952, '国送快运', 'guosong', 100),
+  (953, '考拉订单', 'kaolaorder', 100),
+  (954, 'AAE-中国件', 'aae', 100),
+  (955, '四川快优达速递', 'kuaiyouda', 100),
+  (956, '百福东方', 'baifudongfang', 100),
+  (957, 'TST速运通', 'tstexp', 100),
+  (958, 'YUN TRACK', 'yuntrack', 100),
+  (959, '招金精炼', 'zhaojin', 100),
+  (960, '全程快递', 'agopost', 100),
+  (961, 'CDEK', 'cdek', 100),
+  (962, '签收快递', 'signedexpress', 100),
+  (963, '佰麒快递', 'beckygo', 100),
+  (964, '增速跨境', 'zyzoom', 100),
+  (965, 'Aramex', 'aramex', 100),
+  (966, '越中国际物流', 'vctrans', 100),
+  (967, '德国优拜物流', 'ubuy', 100),
+  (968, '德尚国际速递', 'gslexpress', 100),
+  (969, '德国 EUC POST', 'eucpost', 100),
+  (970, '泰国中通ZTO', 'thaizto', 100),
+  (971, '泰国中通CTO', 'ctoexp', 100),
+  (972, '顺丰-繁体', 'shunfenghk', 100),
+  (973, '嘉诚速达', 'jcsuda', 100),
+  (974, 'AFL', 'afl', 100),
+  (975, '众派速递', 'zhpex', 100),
+  (976, '海星桥快递', 'haixingqiao', 100),
+  (977, '蘑菇街', 'mogujieorder', 100),
+  (978, '嘉里大通', 'jialidatong', 100),
+  (979, '万象物流', 'wanxiangwuliu', 100),
+  (980, '澳大利亚(Australia Post)', 'auspost', 100),
+  (981, '国通快递', 'guotongkuaidi', 100),
+  (982, '全晨快递', 'quanchenkuaidi', 100),
+  (983, '飞豹快递', 'feibaokuaidi', 100),
+  (984, '中速快递', 'zhongsukuaidi', 100),
+  (985, '优能物流', 'mantoo', 100),
+  (986, '国美', 'gomeorder', 100),
+  (987, '亚马逊中国订单', 'amazoncnorder', 100),
+  (988, '蜜芽订单', 'miaorder', 100),
+  (989, '顺丰订单', 'sfexpressorder', 100),
+  (990, '申通快运', 'stoe56', 100),
+  (991, 'City-Link', 'citylink', 100),
+  (992, '德邦快递', 'debangwuliu', 100),
+  (993, '银捷速递', 'yinjiesudi', 100),
+  (994, 'D速快递', 'dsukuaidi', 100),
+  (995, '民邦速递', 'minbangsudi', 100),
+  (996, '百世快运', 'baishiwuliu', 100),
+  (997, 'DHL-德国件（DHL Deutschland）', 'dhlde', 100),
+  (998, '能装能送', 'canhold', 100),
+  (999, '聚美优品', 'jumeiyoupinorder', 100),
+  (1000, '诚一物流', 'parcelchina', 100),
+  (1001, '网易严选', 'wangyiyxorder', 100),
+  (1002, '龙邦速递', 'longbanwuliu', 100),
+  (1003, '明亮物流', 'mingliangwuliu', 100),
+  (1004, '速尔快递', 'suer', 100),
+  (1005, '盛辉物流', 'shenghuiwuliu', 100),
+  (1006, '越丰物流', 'yuefengwuliu', 100),
+  (1007, '比利时（Bpost）', 'bpost', 100),
+  (1008, '韵达快递', 'yunda', 100),
+  (1009, '唯品会', 'vipshoporder', 100),
+  (1010, '美丽说', 'meilishuoorder', 100),
+  (1011, '顺丰优选', 'sfbestorder', 100),
+  (1012, '驼峰国际', 'humpline', 100),
+  (1013, '小米订单', 'xiaomiorder', 100),
+  (1014, '一智通', '1ziton', 100),
+  (1015, 'TransRush', 'transrush', 100),
+  (1016, '百世快递', 'huitongkuaidi', 100),
+  (1017, '联昊通', 'lianhaowuliu', 100),
+  (1018, '远成物流', 'yuanchengwuliu', 100),
+  (1019, 'FedEx-美国件', 'fedexus', 100),
+  (1020, 'OCS', 'ocs', 100),
+  (1021, '巴西(Brazil Post/Correios)', 'brazilposten', 100),
+  (1022, '孔夫子', 'kongfzorder', 100),
+  (1023, '一号店', 'yhdshoporder', 100),
+  (1024, '卷皮', 'juanpiorder', 100),
+  (1025, '淘宝订单', 'taobaoorder', 100),
+  (1026, '盛丰物流', 'shengfengwuliu', 100),
+  (1027, '瑞典（Sweden Post）', 'ruidianyouzheng', 100),
+  (1028, '圆通速递', 'yuantong', 100),
+  (1029, '宅急送', 'zhaijisong', 100),
+  (1030, '新邦物流', 'xinbangwuliu', 100),
+  (1031, '恒路物流', 'hengluwuliu', 100),
+  (1032, '华夏龙', 'huaxialongwuliu', 100),
+  (1033, '龙飞祥快递', 'longfx', 100),
+  (1034, '城市映急', 'city56', 100),
+  (1035, '顺心捷达', 'sxjdfreight', 100),
+  (1036, '圆通承诺达', 'ytchengnuoda', 100),
+  (1037, '宁夏万家通', 'wanjiatong', 100),
+  (1038, '通道', 'intercomv2', 100),
+  (1039, '曹操到', 'sfpost', 100),
+  (1040, 'USPSCN', 'uspscn', 100),
+  (1041, '五六快运', '56kuaiyun', 100),
+  (1042, '速通物流', 'sut56', 100),
+  (1043, '迅达速递', 'xdexpress', 100),
+  (1044, '澳行快递', 'desworks', 100),
+  (1045, '易邮速运', 'yiyou', 100),
+  (1046, 'JDIEX', 'jdiex', 100),
+  (1047, '泰捷达国际物流', 'ztjieda', 100),
+  (1048, '捎客物流', 'shaoke', 100),
+  (1049, '全球速递', 'pdstow', 100),
+  (1050, '安达易国际速递', 'adiexpress', 100),
+  (1051, '番薯国际货运', 'koali', 100),
+  (1052, '贝贝', 'beibeiorder', 100),
+  (1053, '德邦快递', 'debangkuaidi', 100),
+  (1054, '联合速运', 'unitedex', 100),
+  (1055, '龙邦物流', 'lbex', 100),
+  (1056, '东方航空物流', 'ealceair', 100),
+  (1057, 'GHT物流', 'ghtexpress', 100),
+  (1058, '香港伟豪国际物流', 'whgjkd', 100),
+  (1059, '澳洲迈速快递', 'maxeedexpress', 100),
+  (1060, 'TCXB国际物流', 'tcxbthai', 100),
+  (1061, '贝业物流', 'boyol', 100),
+  (1062, '如家国际快递', 'homecourier', 100),
+  (1063, '东方汇', 'est365', 100),
+  (1064, '八达通', 'bdatong', 100),
+  (1065, '波音速递', 'overseaex', 100),
+  (1066, '鑫远东速运', 'xyd666', 100),
+  (1067, '中环快递', 'zhonghuan', 100),
+  (1068, '沃埃家', 'wowvip', 100),
+  (1069, 'OBOR Express', 'oborexpress', 100),
+  (1070, '盛丰物流', 'sfwl', 100),
+  (1071, '转运中国', 'uszcn', 100),
+  (1072, '远航国际快运', 'yuanhhk', 100),
+  (1073, '鼎润物流', 'la911', 100),
+  (1074, '速达通', 'sdto', 100),
+  (1075, '苏豪快递', 'shipsoho', 100),
+  (1076, '三盛快递', 'sanshengco', 100),
+  (1077, '迅速快递', 'xunsuexpress', 100),
+  (1078, '众川国际', 'zhongchuan', 100),
+  (1079, '陆本速递 LUBEN EXPRESS', 'luben', 100),
+  (1080, '西濃運輸', 'seino', 100),
+  (1081, '加拿大联通快运', 'fastontime', 100),
+  (1082, '花瓣转运', 'flowerkd', 100),
+  (1083, '联通快递', 'ltparcel', 100),
+  (1084, '鸿远物流', 'hyeship', 100),
+  (1085, '合心速递', 'hexinexpress', 100),
+  (1086, 'Highsince', 'highsince', 100),
+  (1087, '蜜蜂速递', 'bee001', 100),
+  (1088, '天使物流云', 'tswlcloud', 100),
+  (1089, '王牌快递', 'shipbyace', 100),
+  (1090, '华美快递', 'hmus', 100),
+  (1091, '折800', 'zhe800order', 100),
+  (1092, '小红书', 'xiaohongshuorder', 100),
+  (1093, '铁中快运', 'tzky', 100),
+  (1094, '景顺物流', 'jingshun', 100),
+  (1095, '中环转运', 'zhonghuanus', 100),
+  (1096, 'YCG物流', 'ycgglobal', 100),
+  (1097, '驿递汇速递', 'yidihui', 100),
+  (1098, 'track-parcel', 'trackparcel', 100),
+  (1099, '金岸物流', 'jinan', 100);
+
 -- --------------------------------------------------------
 
 --
@@ -4219,6 +5333,13 @@ CREATE TABLE `jshop_manage` (
   `utime` bigint(12) UNSIGNED DEFAULT NULL,
   `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '1 = 正常 2 = 停用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理员表';
+
+--
+-- Dumping data for table `jshop_manage`
+--
+
+INSERT INTO `jshop_manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES
+  (13, 'admin', '1b64413cc6e679f504e0ce665a7995ff', '', NULL, NULL, 1541146634, 1541146634, 1);
 
 -- --------------------------------------------------------
 
@@ -4264,7 +5385,7 @@ CREATE TABLE `jshop_message` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) NOT NULL COMMENT '用户id',
   `code` varchar(60) NOT NULL COMMENT '消息编码',
-  `params` varchar(50) NOT NULL COMMENT '参数',
+  `params` varchar(5000) NOT NULL COMMENT '参数',
   `content` text NOT NULL COMMENT '内容',
   `ctime` bigint(12) UNSIGNED NOT NULL COMMENT '创建时间',
   `utime` bigint(12) UNSIGNED NOT NULL COMMENT '查看时间',
@@ -4553,6 +5674,15 @@ CREATE TABLE `jshop_operation_log` (
   `ctime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '操作时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='后台操作记录表';
 
+--
+-- Dumping data for table `jshop_operation_log`
+--
+
+INSERT INTO `jshop_operation_log` (`id`, `manage_id`, `controller`, `method`, `desc`, `content`, `ip`, `ctime`) VALUES
+  (1, 13, 'message', 'index', '消息管理', '{\"page\":\"1\",\"limit\":\"20\"}', '0.0.0.0', 1541147527),
+  (2, 13, 'sms', 'index', '短信管理', '{\"page\":\"1\",\"limit\":\"20\"}', '0.0.0.0', 1541147527),
+  (3, 13, 'billdelivery', 'index', '发货单列表', '{\"page\":\"1\",\"limit\":\"20\"}', '0.0.0.0', 1541147564);
+
 -- --------------------------------------------------------
 
 --
@@ -4568,7 +5698,7 @@ CREATE TABLE `jshop_order` (
   `ship_status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '发货状态 1=未发货 2=部分发货 3=已发货 4=部分退货 5=已退货',
   `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '订单状态 1=正常 2=完成 3=取消',
   `payment_code` varchar(20) DEFAULT NULL COMMENT '支付方式代码',
-  `payment_time` bigint(12) NOT NULL COMMENT '支付时间',
+  `payment_time` bigint(12) DEFAULT NULL COMMENT '支付时间',
   `logistics_id` varchar(20) DEFAULT NULL COMMENT '配送方式ID 关联ship.id',
   `logistics_name` varchar(50) DEFAULT NULL COMMENT '配送方式名称',
   `cost_freight` decimal(6,2) UNSIGNED DEFAULT '0.00' COMMENT '配送费用',
@@ -4585,6 +5715,8 @@ CREATE TABLE `jshop_order` (
   `tax_content` varchar(255) DEFAULT '商品详情' COMMENT '发票内容',
   `tax_code` varchar(50) DEFAULT NULL COMMENT '税号',
   `tax_title` varchar(50) DEFAULT NULL COMMENT '发票抬头',
+  `point` int(10) UNSIGNED DEFAULT NULL,
+  `point_money` decimal(10,2) DEFAULT NULL,
   `order_pmt` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '订单优惠金额',
   `goods_pmt` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '商品优惠金额',
   `coupon_pmt` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '优惠券优惠额度',
@@ -4661,16 +5793,14 @@ CREATE TABLE `jshop_payments` (
   `status` smallint(1) UNSIGNED NOT NULL DEFAULT '2' COMMENT '启用状态 1=启用 2=停用'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付方式表';
 
-
 --
--- Dumping data for table `jshop_hooks`
+-- Dumping data for table `jshop_payments`
 --
 
 INSERT INTO `jshop_payments` (`id`, `code`, `name`, `is_online`, `params`, `sort`, `memo`, `status`) VALUES
   (1, 'wechatpay', '微信支付', 1, '{\"appid\":\"\",\"mch_id\":\"\",\"key\":\"\",\"sslcert\":\"\",\"sslkey\":\"\"}', 100, '点击去微信支付', 2),
   (2, 'alipay', '支付宝支付', 1, '{\"appid\":\"\",\"rsa_private_key\":\"\",\"alipay_public_key\":\"\"}', 100, '点击去支付宝支付', 2),
   (3, 'offline', '线下支付', 2, '', 100, '联系客服进行线下付款', 1);
-
 
 -- --------------------------------------------------------
 
@@ -4704,10 +5834,11 @@ CREATE TABLE `jshop_promotion` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(40) NOT NULL COMMENT '促销名称',
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '启用状态，1开启，2关闭',
-  `type` smallint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '类型：1促销，2优惠券',
+  `type` smallint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '类型：1促销，2优惠券，3团购，4秒杀',
   `sort` smallint(5) UNSIGNED NOT NULL DEFAULT '100' COMMENT '排序',
   `exclusive` tinyint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '排他，1不排他，2排他',
   `auto_receive` smallint(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '当时优惠券的时候，自动是否自动领取，1自动领取，2不自动领取',
+  `params` text COMMENT '其它参数',
   `stime` bigint(12) UNSIGNED NOT NULL COMMENT '开始时间',
   `etime` bigint(12) UNSIGNED NOT NULL COMMENT '结束时间',
   `isdel` bigint(12) UNSIGNED DEFAULT NULL
@@ -4773,7 +5904,8 @@ CREATE TABLE `jshop_ship` (
   `sort` smallint(5) UNSIGNED DEFAULT '100' COMMENT '配送方式排序 越小越靠前',
   `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '状态 1=正常 2=停用',
   `free_postage` tinyint(1) UNSIGNED DEFAULT '2' COMMENT '是否包邮，1包邮，2不包邮',
-  `area_fee` text NOT NULL COMMENT '地区配送费用'
+  `area_fee` text COMMENT '地区配送费用',
+  `goodsmoney` decimal(20,2) DEFAULT '0.00' COMMENT '商品总额满多少免运费'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='配送方式表';
 
 -- --------------------------------------------------------
@@ -4786,7 +5918,7 @@ CREATE TABLE `jshop_sms` (
   `id` int(10) UNSIGNED NOT NULL,
   `mobile` varchar(15) NOT NULL COMMENT '手机号码',
   `code` varchar(60) NOT NULL,
-  `params` varchar(50) NOT NULL COMMENT '参数',
+  `params` varchar(5000) NOT NULL COMMENT '参数',
   `content` varchar(200) NOT NULL COMMENT '内容',
   `ctime` bigint(12) UNSIGNED NOT NULL COMMENT '创建时间',
   `ip` varchar(50) NOT NULL COMMENT 'ip',
@@ -4840,6 +5972,23 @@ CREATE TABLE `jshop_template` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `jshop_template_message`
+--
+
+CREATE TABLE `jshop_template_message` (
+  `id` int(10) UNSIGNED NOT NULL COMMENT '消息ID',
+  `type` varchar(32) DEFAULT NULL COMMENT '消息类型',
+  `code` varchar(32) DEFAULT NULL COMMENT '单号',
+  `form_id` varchar(64) DEFAULT NULL COMMENT '要发生给的用户',
+  `ctime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '创建时间',
+  `utime` bigint(12) UNSIGNED DEFAULT NULL COMMENT '更新时间',
+  `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '发送状态 1=未发送 2=已发送',
+  `isdel` bigint(12) UNSIGNED DEFAULT NULL COMMENT '删除标识'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `jshop_template_order`
 --
 
@@ -4867,7 +6016,7 @@ CREATE TABLE `jshop_user` (
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
   `nickname` varchar(50) DEFAULT NULL COMMENT '昵称',
   `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
-  `point` int(11) UNSIGNED NOT NULL COMMENT '积分',
+  `point` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '积分',
   `ctime` bigint(12) UNSIGNED DEFAULT NULL,
   `utime` bigint(12) UNSIGNED DEFAULT NULL,
   `status` tinyint(1) UNSIGNED DEFAULT '1' COMMENT '1 = 正常 2 = 停用',
@@ -5095,16 +6244,6 @@ CREATE TABLE `jshop_wsdetail` (
 --
 ALTER TABLE `jshop_addons`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `jshop_advertisement`
---
-ALTER TABLE `jshop_advertisement`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id` (`id`),
-  ADD KEY `seller_id` (`seller_id`),
-  ADD KEY `position_id` (`position_id`),
-  ADD KEY `sort` (`sort`);
 
 --
 -- Indexes for table `jshop_advert_position`
@@ -5500,6 +6639,12 @@ ALTER TABLE `jshop_template`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `jshop_template_message`
+--
+ALTER TABLE `jshop_template_message`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `jshop_template_order`
 --
 ALTER TABLE `jshop_template_order`
@@ -5585,27 +6730,22 @@ ALTER TABLE `jshop_wsdetail`
 -- AUTO_INCREMENT for table `jshop_addons`
 --
 ALTER TABLE `jshop_addons`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `jshop_advertisement`
---
-ALTER TABLE `jshop_advertisement`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键', AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `jshop_advert_position`
 --
 ALTER TABLE `jshop_advert_position`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_article`
 --
 ALTER TABLE `jshop_article`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_article_type`
 --
 ALTER TABLE `jshop_article_type`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_backstage_notice`
 --
@@ -5635,7 +6775,7 @@ ALTER TABLE `jshop_bill_reship_items`
 -- AUTO_INCREMENT for table `jshop_brand`
 --
 ALTER TABLE `jshop_brand`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '品牌ID', AUTO_INCREMENT=18;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '品牌ID';
 --
 -- AUTO_INCREMENT for table `jshop_cart`
 --
@@ -5645,57 +6785,57 @@ ALTER TABLE `jshop_cart`
 -- AUTO_INCREMENT for table `jshop_goods`
 --
 ALTER TABLE `jshop_goods`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品ID', AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '商品ID';
 --
 -- AUTO_INCREMENT for table `jshop_goods_browsing`
 --
 ALTER TABLE `jshop_goods_browsing`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=85;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
 --
 -- AUTO_INCREMENT for table `jshop_goods_cat`
 --
 ALTER TABLE `jshop_goods_cat`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_goods_collection`
 --
 ALTER TABLE `jshop_goods_collection`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
 --
 -- AUTO_INCREMENT for table `jshop_goods_comment`
 --
 ALTER TABLE `jshop_goods_comment`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_goods_params`
 --
 ALTER TABLE `jshop_goods_params`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_goods_type`
 --
 ALTER TABLE `jshop_goods_type`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_goods_type_spec`
 --
 ALTER TABLE `jshop_goods_type_spec`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_goods_type_spec_value`
 --
 ALTER TABLE `jshop_goods_type_spec_value`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_hooks`
 --
 ALTER TABLE `jshop_hooks`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `jshop_ietask`
 --
 ALTER TABLE `jshop_ietask`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_jobs`
 --
@@ -5715,7 +6855,7 @@ ALTER TABLE `jshop_login_log`
 -- AUTO_INCREMENT for table `jshop_logistics`
 --
 ALTER TABLE `jshop_logistics`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1100;
 --
 -- AUTO_INCREMENT for table `jshop_manage`
 --
@@ -5750,7 +6890,7 @@ ALTER TABLE `jshop_operation`
 -- AUTO_INCREMENT for table `jshop_operation_log`
 --
 ALTER TABLE `jshop_operation_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `jshop_order_items`
 --
@@ -5760,7 +6900,7 @@ ALTER TABLE `jshop_order_items`
 -- AUTO_INCREMENT for table `jshop_order_log`
 --
 ALTER TABLE `jshop_order_log`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=90;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID';
 --
 -- AUTO_INCREMENT for table `jshop_payments`
 --
@@ -5770,7 +6910,7 @@ ALTER TABLE `jshop_payments`
 -- AUTO_INCREMENT for table `jshop_products`
 --
 ALTER TABLE `jshop_products`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '货品ID', AUTO_INCREMENT=60;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '货品ID';
 --
 -- AUTO_INCREMENT for table `jshop_promotion`
 --
@@ -5807,6 +6947,11 @@ ALTER TABLE `jshop_store`
 ALTER TABLE `jshop_template`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
+-- AUTO_INCREMENT for table `jshop_template_message`
+--
+ALTER TABLE `jshop_template_message`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '消息ID';
+--
 -- AUTO_INCREMENT for table `jshop_template_order`
 --
 ALTER TABLE `jshop_template_order`
@@ -5825,7 +6970,7 @@ ALTER TABLE `jshop_user_bankcards`
 -- AUTO_INCREMENT for table `jshop_user_log`
 --
 ALTER TABLE `jshop_user_log`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id', AUTO_INCREMENT=45;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id';
 --
 -- AUTO_INCREMENT for table `jshop_user_point_log`
 --

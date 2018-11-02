@@ -12,7 +12,7 @@ class Test extends Addons	// 需继承myxland\addons\Addons类
     public $info = [
         'name' => 'test',	// 插件标识
         'title' => '插件测试',	// 插件名称
-        'description' => 'thinkph5插件测试',	// 插件简介
+        'description' => 'jshop插件测试',	// 插件简介
         'status' => 0,	// 状态
         'author' => 'byron sampson',
         'version' => '0.1'
@@ -55,7 +55,7 @@ class Test extends Addons	// 需继承myxland\addons\Addons类
 
     public function config($params = [])
     {
-
+        return '无需配置';
     }
 
 }

@@ -45,7 +45,7 @@ class UserPointLog extends Common
         $user_model = new User();
         $user_info = $user_model->where(['id'=>$user_id])->find();
 
-        $new_point = $user_info + $num;
+        $new_point = $user_info['point'] + $num;
         //积分余额判断
         if($new_point < 0)
         {

@@ -611,20 +611,13 @@ function & load_wechat($type = '',$appid = '') {
     if(!$appid){
         return false;
     }
-    $weixinAuthorModel = new \app\common\model\WeixinAuthor();
-    if($appInfo = $weixinAuthorModel->getAuthorInfoByAppId($appid)){
+
+    if($appid){
         static $wechat = array();
         $index = md5(strtolower($type));
         if (!isset($wechat[$index])) {
-            $thirdwx = config('thirdwx.');
             // 从数据库获取配置信息
-            error_log(var_export($thirdwx,true),3,__FILE__.'.log');
             $options = array(
-                'component_appid' => $thirdwx['appid'],
-                'component_appsecret' => $thirdwx['appsecret'],
-                'component_token' => $thirdwx['token'],
-                'component_encodingaeskey' => $thirdwx['encrypt_key'],
-                'component_verify_ticket'=>\think\facade\Cache::get('component_verify_ticket'),
                 'token'           => $thirdwx['token'], // 填写你设定的key
                 'appid'           => $appInfo['appid'], // 填写高级调用功能的app id, 请在微信开发模式后台查询
                 'appsecret'       => $appInfo['appsecret'], // 填写高级调用功能的密钥
@@ -712,12 +705,11 @@ function sendMessage($user_id, $code, $params)
  * @param $user_id
  * @return bool|array
  */
-function getUserWxInfo($seller_id,$user_id)
+function getUserWxInfo($user_id)
 {
     $wxModel = new \app\common\model\UserWx();
-    $filter[] = ['seller_id','eq',$seller_id];
     $filter[] = ['user_id','eq',$user_id];
-    $wxInfo = $wxModel->field('id,seller_id,user_id,openid,unionid,avatar,nickname')->where($filter)->find();
+    $wxInfo = $wxModel->field('id,user_id,openid,unionid,avatar,nickname')->where($filter)->find();
     if($wxInfo){
         return $wxInfo->toArray();
     }else{
@@ -814,5 +806,42 @@ function get_manage_info($manage_id,$field = 'username')
         }
     }else{
         return "";
+    }
+}
+
+/**
+ * 数组倒排序，取新的键
+ * @param array $array
+ * @return array
+ */
+function _krsort($array = [])
+{
+    krsort($array);
+    if (is_array($array)) {
+        $i          = 0;
+        $temp_array = [];
+        foreach ($array as $val) {
+            $temp_array[$i] = $val;
+            $i++;
+        }
+        return $temp_array;
+    } else {
+        return $array;
+    }
+}
+
+/**
+ * 判断钩子是否有插件
+ * @param string $hookname
+ * @return bool
+ */
+function checkAddons($hookname = '')
+{
+    $hooksModel = new \app\common\model\Hooks();
+    $addons     = $hooksModel->where(['name' => $hookname])->field('addons')->find();
+    if (isset($addons['addons']) && !empty($addons['addons'])) {
+        return true;
+    } else {
+        return false;
     }
 }

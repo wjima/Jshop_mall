@@ -89,7 +89,7 @@ class Hooks extends Manage
             'msg' => '删除失败',
             'data' => []
         ];
-        $hooksModel = new hookssModel();
+        $hooksModel = new hooksModel();
         if ($hooksModel::destroy(input('param.id/d'))) {
             $result['status'] = true;
             $result['msg'] = '删除成功';

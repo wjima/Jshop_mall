@@ -127,7 +127,7 @@ class BillDelivery extends Common
                     'order_items_id' => $k,
                     'nums' => $v
                 ];
-                
+
                 $product = $orderItem->field('product_id')->where('id', 'eq', $k)->find();
                 if(!$product)
                 {
@@ -148,7 +148,15 @@ class BillDelivery extends Common
             Db::commit();
 
             //发送发货成功信息
-            sendMessage($bull_delivery['user_id'], 'delivery_notice', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+            $shipModel          = new Ship();
+            $ship               = $shipModel->getInfo(['id' => $order['logistics_id']]);
+            $order['ship_id']   = $ship['name'];
+            $order['ship_addr'] = get_area($order['ship_area_id']) . $order['ship_address'];
+
+            $order['logistics_name'] = get_logi_info($logi_code);
+            $order['ship_no']        = $logi_no;
+            $eventData = $order->toArray();
+            sendMessage($bull_delivery['user_id'], 'delivery_notice',$eventData );
         }catch(\Exception $e){
             Db::rollback();
         }
@@ -186,36 +194,30 @@ class BillDelivery extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getLogisticsInformation($order_id)
+    public function getLogisticsInformation($com, $code)
     {
         $result = [
             'status' => false,
             'msg' => '获取失败',
             'data' => []
         ];
-
-        // 根据订单号获取发货单详情
         $deliveryInfo = $this->where('order_id', $order_id)->find();
-        // 查询快递信息接口需要快递公司编码 和 物流单号 缺一不可
         if ($deliveryInfo) {
             // 获取发货单物流公司编码和单号
-            if ( !$deliveryInfo[ 'logi_code' ] && !$deliveryInfo[ 'logi_no' ] ) return error_code(10051);
-            // 获取物流信息
-            $logistics = $this->logistics_query($deliveryInfo['logi_code'], $deliveryInfo['logi_no']);
-            // 根据接口返回错误码判断 0表示正常查询成功 其他表示查询不到物流信息或发生了其他错误
-            if ($logistics['error_code'] !== 0) {
-                $result['msg'] = $logistics['reason'];
-                return $result;
+            if ( !$deliveryInfo[ 'logi_code' ] && !$deliveryInfo[ 'logi_no' ] ) {
+                return error_code(10051);
             }
-            $result['status'] = true;
-            $result['msg'] = '获取成功';
-            $result['data'] = [
-                'list' => array_reverse($logistics['result']['list']),
-                'company' => $logistics['result']['company'],
-                'no' => $logistics['result']['no']
-            ];
-        }
 
+            $logistics = $this->logistics_query($com, $code);
+            if ($logistics['status'] == '200' && $logistics['message'] == 'ok')
+            {
+                $result['msg'] = '获取成功';
+                $result['data'] = [
+                    'list' => $logistics['data'],
+                    'state' => config('params.order')['logistics_state'][$logistics['state']]
+                ];
+            }
+        }
         return $result;
     }
 
@@ -226,10 +228,12 @@ class BillDelivery extends Common
      * @param $code     物流单号
      * @return mixed
      */
-    private function logistics_query( $no, $code )
+    private function logistics_query( $com, $code )
     {
-        $exp = new Exp(config('jshop.api_express_key'));
-        $res = $exp->query($no,$code);
+        $apiKey = config('jshop.api_express')['key'];
+        $customer = config('jshop.api_express')['customer'];
+        $exp = new Exp($apiKey, $customer);
+        $res = $exp->query($com, $code);
         return $res;
     }
 

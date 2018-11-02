@@ -304,7 +304,7 @@ class Jshop extends TagLib
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("index/tagSelectBrands",array("type"=>"show","seller_id"=>'.$tag['seller_id'].'));  ?>",
+                            url:"<?php echo url("index/tagSelectBrands",array("type"=>"show"));  ?>",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -363,11 +363,6 @@ class Jshop extends TagLib
         }else{
             $tag['value'] = "";
         }
-        if(isset($tag['seller_id'])){
-            $tag['seller_id'] = $this->autoBuildVar($tag['seller_id']);
-        }else{
-            $tag['seller_id'] = "";
-        }
 
         if(isset($tag['num'])){
             $tag['num'] = $this->autoBuildVar($tag['num']);
@@ -404,7 +399,7 @@ class Jshop extends TagLib
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("index/tagSelectGoods",array("type"=>"show","seller_id"=>'.$tag['seller_id'].'));  ?>",
+                            url:"<?php echo url("index/tagSelectGoods",array("type"=>"show"));  ?>",
                             data:"",
                             success:function(e){
                                 layui.layer.open({

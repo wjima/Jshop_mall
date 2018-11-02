@@ -28,7 +28,8 @@ class offline implements Payment
         ];
         return $result;
     }
-    public function refund(){
+
+    public function refund($refundInfo,$paymentInfo){
         return true;
     }
 }

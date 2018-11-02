@@ -4,7 +4,9 @@
             <div class="standard-content-header">
                <p>{{ index }}</p>
             </div>
-            <div :class="sku | setDefaultActive" v-for="(sku, key) in item" :key="key" @click="change(index, key)">{{ sku.name }}</div>
+            <div>
+                <div :class="sku | setDefaultActive" v-for="(sku, key) in item" :key="key" @click="change(index, key)">{{ sku.name }}</div>
+            </div>
         </div>
     </div>
 </template>

@@ -106,6 +106,9 @@ swiper{
 .salespromotion-service-name{
   color: #A5A5A5;
   margin-right: 26rpx;
+  
+}
+.color .salespromotion-service-name{
   float: left;
 }
 .sales-promotion{
@@ -135,7 +138,7 @@ swiper{
   width: 32rpx;
   height: 32rpx; 
   position: relative;
-   top: 6rpx; 
+  top: 6rpx; 
   margin-right: 8rpx; 
 }
 .salespromotion-service-body,.salespromotion-service-body view{
@@ -173,7 +176,7 @@ swiper{
   border-bottom: 14rpx solid #f3f3f3;
 }
 .color,.specifications,.number{
-  padding: 22rpx 25rpx;
+  padding: 22rpx 25rpx 10rpx;
   border-bottom: 2rpx solid #f3f3f3;
   overflow: hidden;
 } 
@@ -192,7 +195,7 @@ swiper{
   color: #666;
   line-height: 56rpx;
   margin-right: 22rpx;
-  margin-bottom: 4rpx;
+  margin-bottom: 12rpx;
 }
 .pitch-on{
   border: 2rpx solid #FF3B44;

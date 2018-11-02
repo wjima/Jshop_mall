@@ -93,10 +93,12 @@ abstract class Addons
         $map['name']   = $name;
         $map['status'] = 1;
         $config        = [];
+
         if (is_file($this->config_file)) {
             $temp_arr = include $this->config_file;
+
             foreach ($temp_arr as $key => $value) {
-                if ($value['type'] == 'group') {
+                if (isset($value['type']) && $value['type'] == 'group') {
                     foreach ($value['options'] as $gkey => $gvalue) {
                         foreach ($gvalue['options'] as $ikey => $ivalue) {
                             $config[$ikey] = $ivalue['value'];

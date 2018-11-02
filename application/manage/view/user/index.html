@@ -83,7 +83,13 @@
                     }
                 },
                 {field:'nickname',title:'昵称'},
-                {field:'status',title:'状态'}
+                {field:'point', sort:true, title:'积分'},
+                {field:'status',title:'状态'},
+                {field:'option',title:'操作', width:200, templet: function (d) {
+                        var html = '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';
+                        html += '<span class="layui-btn layui-btn-xs pointLog" data-id="'+d.id+'">积分详情</span>';
+                        return html;
+                }, align:'center', fixed:'right'}
             ]]
         });
         layui.form.on('submit(*)', function(data){
@@ -94,6 +100,74 @@
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //积分编辑
+        $(document).on('click', '.pointEdit', function () {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "{:url('manage/user/editPoint')}",
+                type: 'get',
+                data: {
+                    'user_id': id,
+                    'flag': 'false'
+                },
+                success: function (e) {
+                    layer.open({
+                        type: 1,
+                        title: '修改用户积分',
+                        area: ['450px', '300px'], //宽高
+                        content: e
+                    });
+                }
+            });
+        });
+        //保存积分
+        $(document).on('click', '.edit-point-save', function(){
+            var user_id = $("#user_id").val();
+            var point = $("#point").val();
+            var memo = $("#memo").val();
+            $.ajax({
+                url: "{:url('manage/user/editPoint')}",
+                type: 'post',
+                data: {
+                    'user_id': user_id,
+                    'flag': 'true',
+                    'point': point,
+                    'memo': memo
+                },
+                success: function (e) {
+                    if(e.status){
+                        layer.msg(e.msg, {time: 1500}, function(){
+                            layer.closeAll();
+                            layui.table.reload('userTable');
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
+                }
+            });
+        });
+
+        //积分记录
+        $(document).on('click', '.pointLog', function () {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "{:url('manage/user/pointLog')}",
+                type: 'get',
+                data: {
+                    'user_id': id,
+                    'flag': 'false'
+                },
+                success: function (e) {
+                    layer.open({
+                        type: 1,
+                        title: '用户积分记录',
+                        area: ['800px', '535px'], //宽高
+                        content: e
+                    });
+                }
+            });
         });
     });
 </script>

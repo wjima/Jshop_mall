@@ -116,6 +116,38 @@
 .price-calculation>view{
   overflow: hidden;
 }
+.integral{
+    margin-top: 6rpx;
+    font-size: 24rpx;
+    color: #666;
+    overflow: hidden;
+}
+.integral checkbox{
+    float: right;
+}
+.integral checkbox .wx-checkbox-input{   
+    border-radius: 10rpx;
+    height: 26rpx;
+    width: 26rpx;
+    margin-top: -4rpx;
+    border: 1rpx solid #888;
+}
+.integral checkbox .wx-checkbox-input.wx-checkbox-input-checked {
+    border: 1rpx solid #FF525C;
+  background: #FF525C;
+}
+/*checkbox选中后图标样式  */
+.integral checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
+  width: 28rpx;
+  height: 28rpx;
+  line-height: 28rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #fff;
+  background: transparent;
+  transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1);
+}
 .price-calculation>view>.price-details-right{
   color: #FF3B44;
 }
@@ -155,13 +187,15 @@
 .immediate-pay{
   width: 212rpx;
   height: 100rpx;
-  color: #fff;
-  background-color: #FF3B44;
+  line-height: 100rpx !important;
+  color: #fff !important;
+  background-color: #FF3B44 !important;
   float: right;
   display: inline-block;
   text-align: center;
   font-size: 28rpx;
   margin-left: 20rpx;
+  border-radius: 0;
 }
 .gps-ico{
   width:40rpx;

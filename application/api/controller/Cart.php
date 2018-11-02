@@ -19,7 +19,7 @@ class Cart extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 

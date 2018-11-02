@@ -177,14 +177,10 @@ class Order extends Api
 
     /**
      * 创建订单
+     * @return array|mixed
      */
     public function create()
     {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
         if(!input("?param.uship_id")){
             return error_code(13001);
         }else{
@@ -195,7 +191,8 @@ class Order extends Api
         $area_id = input('param.area_id', false);
         $point = input('point', 0);
         $coupon_code = input('coupon_code', '');
-        return model('common/Order')->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code);
+        $formId = input('formId', false);
+        return model('common/Order')->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId);
     }
 
     /**
@@ -318,7 +315,7 @@ class Order extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -353,7 +350,7 @@ class Order extends Api
     {
         $result = [
             'status' => false,
-            'data' => '',
+            'data' => [],
             'msg' => ''
         ];
 
@@ -403,9 +400,11 @@ class Order extends Api
 
         $refund = input('param.refund/f',0);        //退款金额，如果type是退款，这个值无所谓，
 
+        //formId
+        $formId = \think\facade\Request::param('formId');
 
         $billAftersalesModel = new BillAftersales();
-        return  $billAftersalesModel->toAdd($this->userId,input('param.order_id'),input('param.type'),$items,$images,input('param.reason',''),$refund);
+        return  $billAftersalesModel->toAdd($this->userId,input('param.order_id'),input('param.type'),$items,$images,input('param.reason',''),$refund, $formId);
     }
 
     /**

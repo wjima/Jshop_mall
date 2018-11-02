@@ -72,8 +72,9 @@ class User extends Manage
         else
         {
             $this->assign('user_id', $user_id);
-            $User = new User();
-            $user_info = $User->where(['id'=>$user_id])->find();
+            $User = new UserModel();
+            $where[] = ['id', 'eq', $user_id];
+            $user_info = $User->where($where)->find();
             $this->assign('point', $user_info['point']);
             return $this->fetch('editPoint');
         }

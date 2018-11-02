@@ -303,7 +303,7 @@ class GoodsComment extends Common
                 }
 
                 $score = 5;
-                if($v['score'] >= 1 &&   $v[score <= 5]){
+                if($v['score'] >= 1 &&   $v['score'] <= 5){
                     $score = $v['score'];
                 }
                 $images = '';

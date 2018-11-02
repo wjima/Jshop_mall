@@ -76,18 +76,18 @@ return [
                     ],
                     [
                         'title'=>'订单编号',
-                        'code'=>'order_id',
+                        'code'=>'source_id',
                     ],
                     [
                         'title'=>'退款金额',
-                        'code'=>'refund_money',
+                        'code'=>'money',
                     ],
                     [
                         'title'=>'退款时间',
                         'code'=>'refund_time',
                     ],
                     [
-                        'title'=>'退款原因',
+                        'title'=>'退款说明',
                         'code'=>'refund_reason',
                     ],
                     [

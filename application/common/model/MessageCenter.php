@@ -111,16 +111,14 @@ class MessageCenter extends Common
             $messageModel = new Message();
             $messageModel->send($user_id,$code,$params);
         }
-        //if($info['wx_tpl_message'] == self::SEND_TRUE){
+        if($info['wx_tpl_message'] == self::SEND_TRUE){
             //微信模板消息【小程序，公众号都走这里】
             hook('sendwxmessage', ['params' => [
                 'user_id'   => $user_id,
                 'code'      => $code,
                 'params'    => $params,
             ]]);
-        //}
-
-
+        }
 
         return [
             'status' => true,

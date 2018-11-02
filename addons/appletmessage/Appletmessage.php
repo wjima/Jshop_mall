@@ -76,37 +76,47 @@ class Appletmessage extends Addons
         if (!$setting) {
             return false;
         }
-        $template = $setting[$params['params']['code']];
 
+        $templateMessageModel = new TemplateMessage();
+        $formInfo             = [];
+        $id                   = $params['params']['params']['order_id'];
+
+        if ($params['params']['code'] == 'create_order') {
+            $closeOrder                           = getSetting('order_cancel_time') * 24;
+            $params['params']['params']['notice'] = '您的订单将在' . floor($closeOrder) . '小时后取消，请及时付款哦';
+            $formInfo                             = $templateMessageModel->where(['type' => $params['params']['code'], 'code' => $id, 'status' => '1'])->find();
+
+        } else if ($params['params']['code'] == 'delivery_notice') {//发货
+
+            $formInfo = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
+
+        } else if ($params['params']['code'] == 'refund_success') {//退款成功
+
+            $params['params']['params']['refund_time']   = getTime($params['params']['params']['utime']);
+            $params['params']['params']['refund_reason'] = '退款已经原路返回，具体到账时间可能会有1-3天延迟';
+            $formInfo                                    = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
+        }
+        $params['params']['params']['seller_name'] = getSetting('shop_name');//店铺名称
+
+        if (!$formInfo) {
+            return false;
+        }
         //发送消息，取出会员open_id，然后发送
         $wxUserinfo = getUserWxInfo($params['params']['user_id']);
         if (!$wxUserinfo) {
             return false;
         }
-        $templateMessageModel = new TemplateMessage();
+        $template = $setting[$params['params']['code']];
 
-        if ($params['params']['code'] == 'create_order') {
-            $id                                   = $params['params']['params']['order_id'];
-            $closeOrder                           = getSetting('order_cancel_time') * 24;
-            $params['params']['params']['notice'] = '您的订单将在' . $closeOrder . '小时后取消，请及时付款哦';
-            $formInfo                             = $templateMessageModel->where(['type' => $params['params']['code'], 'code' => $id, 'status' => '1'])->find();
-
-        }
-        if ($params['params']['code'] == 'delivery_notice') {
-            $formInfo = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
-        }
-        $appid       = getSetting('wx_appid');
-        $secret      = getSetting('wx_app_secret');
-        $template_id = $template['template_id'];
-        unset($template['template_id']);
-        $params['params']['params']['seller_name'] = getSetting('shop_name');
-        $message['data']                           = $this->replaceWord($params['params']['params'], $template);
-        $message['touser']                         = $wxUserinfo['openid'];
-        $message['template_id']                    = $template_id;
-        $message['page']                           = 'pages/index/index';
-        $message['form_id']                        = $formInfo['form_id'];//formid
-        $wx                                        = new Wx();
-        $res                                       = $wx->sendTemplateMessage($appid, $secret, $message);
+        $appid                  = getSetting('wx_appid');
+        $secret                 = getSetting('wx_app_secret');
+        $message['data']        = $this->replaceWord($params['params']['params'], $template);
+        $message['touser']      = $wxUserinfo['openid'];
+        $message['template_id'] = $template['template_id'];
+        $message['page']        = 'pages/index/index';
+        $message['form_id']     = $formInfo['form_id'];
+        $wx                     = new Wx();
+        $res                    = $wx->sendTemplateMessage($appid, $secret, $message);
         if ($res) {
             $templateMessageModel->sendSuccess($formInfo['id']);
         }
@@ -134,9 +144,5 @@ class Appletmessage extends Addons
         }
         return $msgData;
 
-    }
-
-    public function testhook($param){
-        #echo '第二个';
     }
 }

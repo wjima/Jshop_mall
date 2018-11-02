@@ -15,37 +15,6 @@ class Index extends Manage
 {
     public function index()
     {
-
-        $params = array (
-      'order_id' => '15411317984321',
-      'goods_amount' => 450.0,
-      'order_amount' => 190.0,
-      'cost_freight' => '10.00',
-      'user_id' => 29,
-      'ship_area_id' => 410102,
-      'ship_address' => '荣成大厦',
-      'ship_name' => '豆芽',
-      'ship_mobile' => '18530801653',
-      'logistics_id' => 10001,
-      'point' => 0,
-      'point_money' => 0,
-      'weight' => 400.0,
-      'order_pmt' => 0,
-      'goods_pmt' => 270.0,
-      'coupon_pmt' => 0,
-      'coupon' => '[]',
-      'memo' => '',
-      'ip' => '0.0.0.0',
-      'ship_id' => '顺丰',
-      'ship_addr' => '河南省 郑州市 中原区 荣成大厦',
-    );
-        hook('sendwxmessage', ['params' => [
-            'user_id'   => 29,
-            'code'      => 'create_order',
-            'params'    => $params,
-        ]]);
-
-        die();
         $orderModel = new Order();
         //未发货数量
         $unpaid_count = $orderModel->where(['status'=>1,'pay_status'=>1,'ship_status'=>1])->count();

@@ -1,4 +1,5 @@
 <view class='cart-content'>
+<form bindsubmit="submitBtn" report-submit='true'>
   <checkbox-group class='content-top' bindchange="checkboxChange">
     <view class="list-body touch-item"  wx:for="{{items}}" wx:key='index'> 
       <!-- 商品信息 -->
@@ -23,8 +24,6 @@
     </view> 
     
   </checkbox-group>
-
-  
 
   <view class='refund-service'>
     <!-- <view class="weui-cells weui-cells_after-title"> -->
@@ -69,8 +68,8 @@
   </view> 
 
   <view class='submit'>
-    <button class="weui-btn" bindtap="submitBtn" type="warn">提交</button>
+    <!-- <button class="weui-btn" bindtap="submitBtn" type="warn">提交</button> -->
+    <button form-type="submit" type="default" size="mini" class='immediate-pay'>提交</button>
   </view>
-
+</form>
 </view>
-

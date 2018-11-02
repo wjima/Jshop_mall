@@ -295,7 +295,7 @@ class BillPayments extends Common
                             $message = [
                                 'type' => $templateMessageModel::TYPE_PAYMENT,
                                 'code' => $payment_id,
-                                'from_id' => $prepay_id,
+                                'form_id' => $prepay_id,
                                 'status' => $templateMessageModel::SEND_STATUS_NO
                             ];
                             $templateMessageModel->addSend($message);

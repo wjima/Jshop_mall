@@ -79,25 +79,29 @@ class Appletmessage extends Addons
 
         $templateMessageModel = new TemplateMessage();
         $formInfo             = [];
-        $id                   = $params['params']['params']['order_id'];
 
         if ($params['params']['code'] == 'create_order') {
+            $id = $params['params']['params']['order_id'];
+
             $closeOrder                           = getSetting('order_cancel_time') * 24;
             $params['params']['params']['notice'] = '您的订单将在' . floor($closeOrder) . '小时后取消，请及时付款哦';
             $formInfo                             = $templateMessageModel->where(['type' => $params['params']['code'], 'code' => $id, 'status' => '1'])->find();
 
         } else if ($params['params']['code'] == 'delivery_notice') {//发货
+            $id = $params['params']['params']['order_id'];
 
             $formInfo = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
 
         } else if ($params['params']['code'] == 'refund_success') {//退款成功
-
+            $id                                          = $params['params']['params']['source_id'];
             $params['params']['params']['refund_time']   = getTime($params['params']['params']['utime']);
+            $params['params']['params']['refund_status'] = '退款成功';
             $params['params']['params']['refund_reason'] = '退款已经原路返回，具体到账时间可能会有1-3天延迟';
             $formInfo                                    = $templateMessageModel->where(['type' => 'after_sale', 'code' => $id, 'status' => '1'])->find();
         }
         $params['params']['params']['seller_name'] = getSetting('shop_name');//店铺名称
 
+        //查询不到时，不发送模板消息
         if (!$formInfo) {
             return false;
         }

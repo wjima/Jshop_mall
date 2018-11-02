@@ -147,7 +147,7 @@
                 {field: 'ship_status', title: '发货状态', width:90, align: 'center'},
                 {field: 'order_amount', title: '订单总额', width:100, align: 'center', templet:function(data){return '￥'+data.order_amount}},
                 {field: 'source', title: '订单来源', width:130, align: 'center'},
-                {field: 'operating', title: '操作', width:300, align: 'center', fixed: 'right'}
+                {field: 'operating', title: '操作', width:200, align: 'center', fixed: 'right'}
             ]]
         });
 
@@ -308,7 +308,7 @@
                            window_box = layer.open({
                                type: 1,
                                title: '支付订单',
-                               area: ['530px', '620px'], //宽高
+                               area: ['530px', '520px'], //宽高
                                content: e.data.tpl
                            });
                        }else{
@@ -364,7 +364,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '订单发货',
-                        area: ['800px', '700px'], //宽高
+                        area: ['800px', '500px'], //宽高
                         content: e
                     });
                 }

@@ -291,10 +291,13 @@ class BillPayments extends Common
                         $prepay_id = str_replace("prepay_id=","", $generate_params['package']);
                         if($prepay_id)
                         {
+                            //获取orderid
+                            $billPaymentID = $billPaymentsRelModel->where(array('payment_id'=>$payment_id))->find();
+
                             $templateMessageModel = new TemplateMessage();
                             $message = [
                                 'type' => $templateMessageModel::TYPE_PAYMENT,
-                                'code' => $payment_id,
+                                'code' => $billPaymentID['source_id'],
                                 'form_id' => $prepay_id,
                                 'status' => $templateMessageModel::SEND_STATUS_NO
                             ];

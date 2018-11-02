@@ -6,7 +6,7 @@
                 <i class="search-icon" ></i>
                 <input v-model="search" type="text" placeholder="搜索商品" @keyup.enter="submitHandler"/>
             </div>
-            <button class="searchimg" @click="submitHandler"><img src="../../static/image/search.png"/></button>
+            <button class="searchimg" @click="submitHandler"><img src="../../../static/image/search.png"/></button>
         </div>
         <div class="searchpage-body">
             <div class="" v-for="(item, index) in history" :key="index" @click="buttonSearch(item)">

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import ordertab from '../components/OrderTab.vue'
+import ordertab from '../../components/OrderTab.vue'
 export default {
     data () {
         return {

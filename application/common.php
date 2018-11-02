@@ -611,20 +611,13 @@ function & load_wechat($type = '',$appid = '') {
     if(!$appid){
         return false;
     }
-    $weixinAuthorModel = new \app\common\model\WeixinAuthor();
-    if($appInfo = $weixinAuthorModel->getAuthorInfoByAppId($appid)){
+
+    if($appid){
         static $wechat = array();
         $index = md5(strtolower($type));
         if (!isset($wechat[$index])) {
-            $thirdwx = config('thirdwx.');
             // 从数据库获取配置信息
-            error_log(var_export($thirdwx,true),3,__FILE__.'.log');
             $options = array(
-                'component_appid' => $thirdwx['appid'],
-                'component_appsecret' => $thirdwx['appsecret'],
-                'component_token' => $thirdwx['token'],
-                'component_encodingaeskey' => $thirdwx['encrypt_key'],
-                'component_verify_ticket'=>\think\facade\Cache::get('component_verify_ticket'),
                 'token'           => $thirdwx['token'], // 填写你设定的key
                 'appid'           => $appInfo['appid'], // 填写高级调用功能的app id, 请在微信开发模式后台查询
                 'appsecret'       => $appInfo['appsecret'], // 填写高级调用功能的密钥

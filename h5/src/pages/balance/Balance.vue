@@ -11,15 +11,15 @@
                     <span slot="left">充值</span>
                 </yd-cell-item>-->
                 <yd-cell-item href="/withdrawcash" type="link">
-                    <img slot="icon" src="../../static/image/tixian.png">
+                    <img slot="icon" src="../../../static/image/tixian.png">
                     <span slot="left">提现</span>
                 </yd-cell-item>
                 <yd-cell-item href="/balancelist" type="link">
-                    <img slot="icon" src="../../static/image/mingxi.png">
+                    <img slot="icon" src="../../../static/image/mingxi.png">
                     <span slot="left">余额明细</span>
                 </yd-cell-item>
                 <yd-cell-item href="/cashlist" type="link">
-                    <img slot="icon" src="../../static/image/jilu.png">
+                    <img slot="icon" src="../../../static/image/jilu.png">
                     <span slot="left">提现记录</span>
                 </yd-cell-item>
             </yd-cell-group>

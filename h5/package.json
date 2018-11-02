@@ -81,6 +81,7 @@
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-jest": "^1.0.2",
+    "vue-lazyload": "^1.2.6",
     "vue-loader": "^13.3.0",
     "vue-qriously": "^1.1.1",
     "vue-style-loader": "^3.0.1",

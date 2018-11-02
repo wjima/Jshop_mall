@@ -14,14 +14,14 @@ return [
         'title'=>'模板配置',
         'value'=>[
             'create_order'=>[
-                'title'=>'下单成功',
+                'title'=>'催付提醒',
                 'data'=>[
                     [
                         'title'=>'模板ID',
                         'code'=>'template_id',
                     ],
                     [
-                        'title'=>'商户名',
+                        'title'=>'商家名称',
                         'code'=>'seller_name',
                     ],
                     [
@@ -29,47 +29,13 @@ return [
                         'code'=>'order_id',
                     ],
                     [
-                        'title'=>'下单时间',
-                        'code'=>'ctime',
-                    ],
-                    [
-                        'title'=>'订单状态',
-                        'code'=>'status',
-                    ],
-                    [
                         'title'=>'订单金额',
                         'code'=>'order_amount',
                     ],
-                ],
-            ],
-            'order_payed'=>[
-                'title'=>'支付成功',
-                'data'=>[
                     [
-                        'title'=>'模板ID',
-                        'code'=>'template_id',
-                    ],
-                    [
-                        'title'=>'商户名',
-                        'code'=>'seller_name',
-                    ],
-                    [
-                        'title'=>'订单编号',
-                        'code'=>'order_id',
-                    ],
-                    [
-                        'title'=>'下单时间',
-                        'code'=>'ctime',
-                    ],
-                    [
-                        'title'=>'订单状态',
-                        'code'=>'status',
-                    ],
-
-                    [
-                        'title'=>'订单金额',
-                        'code'=>'order_amount',
-                    ],
+                        'title'=>'温馨提示',
+                        'code'=>'notice',
+                    ]
                 ],
             ],
             'delivery_notice'=>[
@@ -80,32 +46,24 @@ return [
                         'code'=>'template_id',
                     ],
                     [
-                        'title'=>'会员名称',
-                        'code'=>'user_name',
-                    ],
-                    [
-                        'title'=>'订单编号',
+                        'title'=>'订单号',
                         'code'=>'order_id',
                     ],
                     [
-                        'title'=>'下单时间',
-                        'code'=>'ctime',
-                    ],
-                    [
                         'title'=>'物流公司',
-                        'code'=>'logi_name',
+                        'code'=>'logistics_name',
                     ],
                     [
                         'title'=>'物流单号',
-                        'code'=>'logi_no',
+                        'code'=>'ship_no',
                     ],
                     [
                         'title'=>'收货地址',
-                        'code'=>'rec_address',
+                        'code'=>'ship_addr',
                     ],
                     [
-                        'title'=>'备注',
-                        'code'=>'memo',
+                        'title'=>'收货人',
+                        'code'=>'ship_name',
                     ],
                 ],
             ],

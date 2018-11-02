@@ -1,0 +1,394 @@
+<form class="layui-form seller-alone-form" action="" style="min-height:600px;">
+    <input type="hidden" id="id" name="id" value="{$info.id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input name="name" lay-verify="title" autocomplete="off" value="{$info.name}" placeholder="请输入标题" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">优惠券名称会显示到前台，请合理输入此名称</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">启用状态：</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" {if $info.status == 1}checked{/if}  value="1" lay-text="启用|禁用">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权重：</label>
+        <div class="layui-input-inline seller-inline-1">
+            {php}
+            if($info){
+            $sort = $info['sort'];
+            }else{
+            $sort = 100;
+            }
+            {/php}
+            <input type="text" name="sort" required  lay-verify="required" value="{$sort}" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">数字越小，权重越大</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型：</label>
+        <div class="layui-input-inline seller-inline-7">
+            <input type="radio" lay-filter="type_switch" name="type" value="3" title="团购" {if condition="$info.type eq 3" }checked {/if}>
+            <input type="radio" lay-filter="type_switch" name="type" value="4" title="秒杀" {if condition="$info.type eq 4" }checked {/if}>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">每人限购：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" class="layui-input" name="params[limit]" value='{$info.params.limit}'>
+        </div>
+        <div class="layui-form-mid layui-word-aux">0为不限购</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">初始销量：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" class="layui-input" name="params[salesnum]" value='{$info.params.salesnum}'>
+        </div>
+        <div class="layui-form-mid layui-word-aux">不填为随机</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input  type="text" name="date" value="{:getTime($info['stime'])} 到 {:getTime($info['etime'])}" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            优惠券条件：
+        </label>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="conditionAdd" >添加条件</button>
+            <table id="condition" lay-filter="condition"></table>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            优惠券结果：
+        </label>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="resultAdd" >添加结果</button>
+            <table id="result" lay-filter="result"></table>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="promotion">提交</button>
+            <a href="{:url('Promotion/index')}" class="layui-btn layui-btn-primary">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['form', 'table', 'laydate'], function(){
+        var form = layui.form
+                ,layer = layui.layer
+                ,laydate = layui.laydate;
+        //时间插件
+        laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime'
+        });
+
+        //提交
+        form.on('submit(promotion)', function(data){
+            $.ajax({
+                url:"{:url('promotion/groupEdit')}",
+                type:'post',
+                data:data.field,
+                success:function(res){
+                    if(res.status == true){
+                        layer.msg('保存成功', {
+                            time: 2000
+                        }, function(){
+                            window.location.href="{:url('group')}";
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            },"json");
+            return false;
+        });
+
+        //促销条件表格渲染
+        var conditionTables = layui.table.render({
+            elem: '#condition'
+            ,size: 'sm'
+            ,url: "{:url('promotion/conditionList',['id'=>$info.id])}?_ajax=1"
+            ,cols: [[ //标题栏
+                {field: 'code',width:140, title: '条件代码'},
+                {field: 'name',width:140, title: '条件名称'}
+                ,{field: 'params', title: '参数'}
+                ,{field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-edit" data-promotion_id="' + data.promotion_id + '" data-id="' + data.id + '">编辑</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-del" data-promotion_id="' + data.promotion_id + '" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }}
+            ]]
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+
+        //添加促销条件
+        form.on('submit(conditionAdd)', function(data){
+            conditionAdd(function(condition_code){
+                conditionEdit('',{$info.id},condition_code,function(){
+                    layer.msg('添加成功');
+                    //table刷新即可
+                    conditionTables.reload();
+                });
+            });
+
+            return false;
+        });
+        //促销条件编辑
+        $(document).on('click','.option-edit',function(){
+            conditionEdit($(this).attr('data-id'),$(this).attr('data-promotion_id'),'',function(){
+                layer.msg('条件修改成功');
+                conditionTables.reload();
+            });
+        });
+        //促销条件删除
+        $(document).on('click','.option-del',function(){
+            $.ajax({
+                type:'post',
+                url: "{:url('promotion/conditionDel')}",
+                data: 'promotion_id=' + $(this).attr('data-promotion_id') +  '&id='+$(this).attr('data-id'),
+                success:function(res){
+                    if(res.status){
+                        layer.msg('删除成功');
+                        conditionTables.reload();
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+        });
+
+        //促销结果表格渲染
+        var resultTables = layui.table.render({
+            elem: '#result'
+            ,size: 'sm'
+            ,url: "{:url('promotion/resultList',['id'=>$info.id])}?_ajax=1"
+            ,cols: [[ //标题栏
+                {field: 'code',width:140, title: '结果代码'},
+                {field: 'name',width:140, title: '结果名称'}
+                ,{field: 'params', title: '参数'}
+                ,{field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-result-edit" data-promotion_id="' + data.promotion_id + '" data-id="' + data.id + '">编辑</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-result-del" data-promotion_id="' + data.promotion_id + '" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }}
+            ]]
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+
+        //添加促销结果
+        form.on('submit(resultAdd)', function(data){
+            resultAdd(function(result_code) {
+                resultEdit('', {$info.id}, result_code, function () {
+                    layer.msg('添加成功');
+                    //table刷新即可
+                    resultTables.reload();
+                });
+            });
+            return false;
+        });
+
+        //促销结果编辑
+        $(document).on('click','.option-result-edit',function(){
+            resultEdit($(this).attr('data-id'),$(this).attr('data-promotion_id'),'',function(){
+                layer.msg('结果修改成功');
+                resultTables.reload();
+            });
+        });
+        //促销结果删除
+        $(document).on('click','.option-result-del',function(){
+            $.ajax({
+                type:'post',
+                url: "{:url('promotion/resultDel')}",
+                data: 'promotion_id=' + $(this).attr('data-promotion_id') +  '&id='+$(this).attr('data-id'),
+                success:function(res){
+                    if(res.status){
+                        layer.msg('删除成功');
+                        resultTables.reload();
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+        });
+
+    });
+
+    //选择促销条件
+    function conditionAdd(callback){
+        $.ajax({
+            type:'get',
+            url: "{:url('promotion/conditionAdd')}",
+            data:'',
+            success:function(e){
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,//
+                        area: ['400px', '500px'],
+                        title:'选择促销条件',
+                        btn: ['下一步','取消'],
+                        yes: function(index, layero){
+                            if($('#condition_code').val() == ''){
+                                layer.msg('请选择促销条件');
+                                return false;
+                            }
+                            layer.close(index);
+                            callback($('#condition_code').val());
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            }
+        });
+    }
+    /**
+     * 促销条件的显示和编辑
+     * @param id                //促销条件id，当设置此参数的时候，说明是编辑此条件
+     * @param promotion_id      //促销id，当是新增的时候，需要这样穿
+     * @param condition_code    //促销条件类型，当时新增促销条件的时候，需要传
+     * @param callback        //回调
+     */
+    function conditionEdit(id,promotion_id,condition_code,callback){
+        var str = '';
+        if(id == ''){
+            str += 'promotion_id='+promotion_id+'&condition_code='+ condition_code;
+        }else{
+            str += 'promotion_id='+promotion_id+'&id='+id;
+        }
+        $.ajax({
+            type:'get',
+            url: "{:url('promotion/conditionEdit')}",
+            data:str,
+            success:function(e){
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        content: e.data,//
+                        area: ['600px', '400px'],
+                        title:'设置促销条件',
+                        btn: ['完成','取消'],
+                        yes: function(index, layero){
+                            $.ajax({
+                                type:'post',
+                                url: "{:url('promotion/conditionEdit')}",
+                                data: $('#conditionEdit').serialize(),
+                                success:function(res){
+                                    if(res.status){
+                                        layer.close(index);
+                                        callback();
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            }
+        });
+    }
+    //////////////////////华丽丽的分割线/////////////////////////////////////////////////
+    //选择促销结果
+    function resultAdd(callback){
+        $.ajax({
+            type:'get',
+            url: "{:url('promotion/resultAdd')}",
+            data:'',
+            success:function(e){
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,//
+                        area: ['400px', '500px'],
+                        title:'选择促销结果',
+                        btn: ['下一步','取消'],
+                        yes: function(index, layero){
+                            if($('#result_code').val() == ''){
+                                layer.msg('请选择促销结果');
+                                return false;
+                            }
+                            layer.close(index);
+                            callback($('#result_code').val());
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            }
+        });
+    }
+    /**
+     * 促销结果的显示和编辑
+     * @param id                //促销结果id，当设置此参数的时候，说明是编辑此结果
+     * @param promotion_id      //促销id，当是新增的时候，需要这样穿
+     * @param result_code    //促销结果类型，当时新增促销结果的时候，需要传
+     * @param callback        //回调
+     */
+    function resultEdit(id,promotion_id,result_code,callback){
+        var str = '';
+        if(id == ''){
+            str += 'promotion_id='+promotion_id+'&result_code='+ result_code;
+        }else{
+            str += 'promotion_id='+promotion_id+'&id='+id;
+        }
+        $.ajax({
+            type:'get',
+            url: "{:url('promotion/resultEdit')}",
+            data:str,
+            success:function(e){
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        content: e.data,//
+                        area: ['600px', '400px'],
+                        title:'设置促销结果',
+                        btn: ['完成','取消'],
+                        yes: function(index, layero){
+                            $.ajax({
+                                type:'post',
+                                url: "{:url('promotion/resultEdit')}",
+                                data: $('#resultEdit').serialize(),
+                                success:function(res){
+                                    if(res.status){
+                                        layer.close(index);
+                                        callback();
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            }
+        });
+    }
+
+
+</script>

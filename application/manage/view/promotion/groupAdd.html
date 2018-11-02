@@ -1,0 +1,92 @@
+<form class="layui-form seller-alone-form" action="" style="min-height:600px;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input name="name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">团购名称会显示到前台，请合理输入此名称</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">启用状态：</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" checked  value="1" lay-text="启用|禁用">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权重：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" name="sort" required  lay-verify="required" value="100" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">数字越小，权重越大</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型：</label>
+        <div class="layui-input-inline seller-inline-7">
+            <input type="radio" lay-filter="type_switch" name="type" value="3" title="团购" checked>
+            <input type="radio" lay-filter="type_switch" name="type" value="4" title="秒杀" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">每人限购：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" class="layui-input" name="params[limit]" value='0'>
+        </div>
+        <div class="layui-form-mid layui-word-aux">0为不限购</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">初始销量：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" class="layui-input" name="params[salesnum]" value=''>
+        </div>
+        <div class="layui-form-mid layui-word-aux">不填为随机</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input  type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="promotion">下一步</button>
+            <a class="layui-btn layui-btn-primary" href="javascript:history.back(-1);">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+                ,layer = layui.layer
+                ,laydate = layui.laydate;
+        //时间插件
+        laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime'
+        });
+
+
+        //提交
+        form.on('submit(promotion)', function(data){
+            $.ajax({
+                url:"{:url('promotion/groupAdd')}",
+                type:'post',
+                data:data.field,
+                success:function(res){
+                    if(res.status == true){
+                        layer.msg('添加成功');
+                        window.location.href=res.data;
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            },"json");
+            return false;
+        });
+
+
+    });
+</script>

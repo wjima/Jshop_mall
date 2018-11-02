@@ -837,3 +837,18 @@ function _krsort($array = [])
     }
 }
 
+/**
+ * 判断钩子是否有插件
+ * @param string $hookname
+ * @return bool
+ */
+function checkAddons($hookname = '')
+{
+    $hooksModel = new \app\common\model\Hooks();
+    $addons     = $hooksModel->where(['name' => $hookname])->field('addons')->find();
+    if (isset($addons['addons']) && !empty($addons['addons'])) {
+        return true;
+    } else {
+        return false;
+    }
+}

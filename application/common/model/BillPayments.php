@@ -153,7 +153,17 @@ class BillPayments extends Common
 
         //去支付
         $payment = \org\Payment::create($payment_code,$conf);       //'wechatpay'
-        return $payment->pay($result['data']);
+        $result1 = $payment->pay($result['data']);
+
+        //更新
+        if($result1['status'])
+        {
+            $wh[] = ['payment_id', 'eq', $result['data']['payment_id']];
+            $da['generate_params'] = json_encode($result1['data']);
+            $this->save($da, $wh);
+        }
+
+        return $result1;
 
     }
 
@@ -270,6 +280,27 @@ class BillPayments extends Common
                     }
                 }elseif(false){
                     //::todo 其他业务逻辑
+                }
+
+                //存储微信消息模板 todo::不清楚 $billPaymentInfo['generate_params'] 里面存的什么数据格式
+                if(isset($billPaymentInfo['generate_params']))
+                {
+                    $generate_params = json_decode($billPaymentInfo['generate_params'], true);
+                    if($generate_params['package'])
+                    {
+                        $prepay_id = str_replace("prepay_id=","", $generate_params['package']);
+                        if($prepay_id)
+                        {
+                            $templateMessageModel = new TemplateMessage();
+                            $message = [
+                                'type' => $templateMessageModel::TYPE_PAYMENT,
+                                'code' => $payment_id,
+                                'from_id' => $prepay_id,
+                                'status' => $templateMessageModel::SEND_STATUS_NO
+                            ];
+                            $templateMessageModel->addSend($message);
+                        }
+                    }
                 }
             }
             Db::commit();

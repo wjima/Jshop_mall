@@ -18,7 +18,7 @@ swiper-item{
   border-bottom: 16rpx solid #f3f3f3; 
 }
 .news-coupons .news-coupons-mid{
-  width: 700rpx;
+  width: 690rpx;
   margin: 10rpx auto;
 }
 .news-coupons .news{
@@ -47,13 +47,18 @@ swiper-item{
   overflow: hidden;
 }
 .news-coupons .coupons view{
-  width: 33.2%;
+  width: 220rpx;
   height: 120rpx;
   line-height: 120rpx;
   float: left;
   text-align: center;
   margin-top: 16rpx;
   font-size: 24rpx;
+  margin-right: 14rpx;
+  box-sizing: border-box;
+}
+.news-coupons .coupons view:nth-child(3n){
+  margin-right: 0;
 }
 .coupons>view:first-child{
   color: rgb(249, 164, 203);

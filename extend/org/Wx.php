@@ -211,7 +211,10 @@ class Wx
         $accessToken = $this->getAccessToken($appid, $secret);
         $curl        = new Curl();
         $url         = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $accessToken;
+
         $data        = json_encode($message);
+        Log::info('模板消息发送：' . $data);
+
         $res         = $curl->post($url, $data);
         Log::info('模板消息返回：' . $res);
         $res = json_decode($res, true);

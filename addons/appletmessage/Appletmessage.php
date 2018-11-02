@@ -88,7 +88,7 @@ class Appletmessage extends Addons
         if ($params['params']['code'] == 'create_order') {
             $id                                   = $params['params']['params']['order_id'];
             $closeOrder                           = getSetting('order_cancel_time') * 24;
-            $params['params']['params']['notice'] = '您的订单将在' . $closeOrder . '小时候取消，请及时付款哦';
+            $params['params']['params']['notice'] = '您的订单将在' . $closeOrder . '小时后取消，请及时付款哦';
             $formInfo                             = $templateMessageModel->where(['type' => $params['params']['code'], 'code' => $id, 'status' => '1'])->find();
 
         }
@@ -103,7 +103,7 @@ class Appletmessage extends Addons
         $message['data']                           = $this->replaceWord($params['params']['params'], $template);
         $message['touser']                         = $wxUserinfo['openid'];
         $message['template_id']                    = $template_id;
-        $message['page']                           = 'index/index';
+        $message['page']                           = 'pages/index/index';
         $message['form_id']                        = $formInfo['form_id'];//formid
         $wx                                        = new Wx();
         $res                                       = $wx->sendTemplateMessage($appid, $secret, $message);

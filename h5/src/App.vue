@@ -20,7 +20,34 @@ import tabbar from './components/TabBar.vue'
 export default {
     components: {
         navbar, tabbar
-    }
+    },
+    methods: {
+        getShopName () {
+            var shop_name = ''
+            this.$api.getSetting({key: 'shop_name'}, res => {
+                if (res.data !== '') {
+                    this.GLOBAL.setStorage('shop_name', res.data)
+                }
+                shop_name = res.data
+            })
+            console.log(shop_name)
+            return shop_name
+        }
+    },
+    watch: {
+        '$route' :{
+            handler () {
+                if (this.$route.path === '/index') {
+                    document.title = this.GLOBAL.getStorage('shop_name')
+                    ? this.GLOBAL.getStorage('shop_name')
+                    : this.getShopName()
+                }
+            }
+        }
+    },
+    beforeDestroy() {
+        this.GLOBAL.removeStorage('shop_name')
+    },
 }
 </script>
 

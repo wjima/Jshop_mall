@@ -42,9 +42,6 @@ export default {
                 }
             })
         }
-    },
-    watch: {
-
     }
 }
 </script>

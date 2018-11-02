@@ -104,7 +104,7 @@ class Appletmessage extends Addons
         $message['touser']                         = $wxUserinfo['openid'];
         $message['template_id']                    = $template_id;
         $message['page']                           = 'index/index';
-        $message['form_id']                        = $formInfo['from_id'];//formid
+        $message['form_id']                        = $formInfo['form_id'];//formid
         $wx                                        = new Wx();
         $res                                       = $wx->sendTemplateMessage($appid, $secret, $message);
         if ($res) {

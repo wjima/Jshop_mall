@@ -1,7 +1,7 @@
 <template>
     <div class="login">
         <div class="login-img">
-            <img src="../../static/image/group14.png"/>
+            <img src="../../../static/image/group14.png"/>
         </div>
         <!--<yd-cell-group>-->
         <yd-tab v-model="tab" :prevent-default="false" :item-click="itemClick">

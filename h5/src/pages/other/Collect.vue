@@ -17,7 +17,7 @@
                                     <span class="time">{{ item.ctime }}</span>
                                 </div>
                             </div>
-                            <img class="right-img" slot="other" src="../../static/image/right.png"/>
+                            <img class="right-img" slot="other" src="../../../static/image/right.png"/>
                         </div>
                     </div>
                     <div class="delete" @click="deleteItem" :data-index="index">取消收藏</div>

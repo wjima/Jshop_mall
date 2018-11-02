@@ -10,7 +10,7 @@
             :delivery="order.delivery"
         ></deliveryinformation>
         <div class="orderadd">
-            <img class="orderadd-gps" src="../../static/image/gps.png"/>
+            <img class="orderadd-gps" src="../../../static/image/gps.png"/>
             <div class="orderadd-content">
                 <div class="orderadd-top">
                     <span>收货人：{{ order.ship_name }}</span>
@@ -75,10 +75,10 @@
 </template>
 
 <script>
-import orderdetailheader from '../components/OrderDetailHeader.vue'
-import deliveryinformation from '../components/DeliveryInformation.vue'
-import ordercell from '../components/OrderCell.vue'
-import orderdetailfooter from '../components/OrderDetailFooter.vue'
+import orderdetailheader from '../../components/OrderDetailHeader.vue'
+import deliveryinformation from '../../components/DeliveryInformation.vue'
+import ordercell from '../../components/OrderCell.vue'
+import orderdetailfooter from '../../components/OrderDetailFooter.vue'
 
 export default {
     components: {

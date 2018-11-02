@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import orderadd from '../components/OrderAdd.vue'
-import orderlist from '../components/OrderList.vue'
-import ordercoupon from '../components/OrderCoupon.vue'
-import ordercell from '../components/OrderCell.vue'
-import orderinput from '../components/OrderInput.vue'
-import orderfooter from '../components/OrderFooter.vue'
+import orderadd from '../../components/OrderAdd.vue'
+import orderlist from '../../components/OrderList.vue'
+import ordercoupon from '../../components/OrderCoupon.vue'
+import ordercell from '../../components/OrderCell.vue'
+import orderinput from '../../components/OrderInput.vue'
+import orderfooter from '../../components/OrderFooter.vue'
 
 export default {
     components: {

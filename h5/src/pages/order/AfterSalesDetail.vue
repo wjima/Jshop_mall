@@ -182,7 +182,7 @@ export default {
     .orderdetailheader{
         width: 100%;
         height: 2.3rem;
-        background: url(../../static/image/backimg.png) no-repeat;
+        background: url(../../../static/image/backimg.png) no-repeat;
         background-size: 100% 100%;
     }
     .orderdetailheader>div{

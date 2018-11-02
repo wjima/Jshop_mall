@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import afterservicelist from '../components/AfterServiceList.vue'
-import afterservicecell from '../components/AfterServiceCell.vue'
-import afterserviceimg from '../components/AfterServiceImg.vue'
-import afterservicetext from '../components/AfterServiceText.vue'
+import afterservicelist from '../../components/AfterServiceList.vue'
+import afterservicecell from '../../components/AfterServiceCell.vue'
+import afterserviceimg from '../../components/AfterServiceImg.vue'
+import afterservicetext from '../../components/AfterServiceText.vue'
 
 export default {
     components: {

@@ -14,7 +14,7 @@
                     </div>
                     <div class="orderadd-bottom">
                         <p>收货地址：{{ item.area_name }}{{ item.address }}</p>
-                        <img class="orderadd-right right-img" src="../../static/image/right.png"/>
+                        <img class="orderadd-right right-img" src="../../../static/image/right.png"/>
                     </div>
                 </div>
             </div>

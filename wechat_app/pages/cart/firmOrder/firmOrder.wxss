@@ -155,13 +155,15 @@
 .immediate-pay{
   width: 212rpx;
   height: 100rpx;
-  color: #fff;
-  background-color: #FF3B44;
+  line-height: 100rpx !important;
+  color: #fff !important;
+  background-color: #FF3B44 !important;
   float: right;
   display: inline-block;
   text-align: center;
   font-size: 28rpx;
   margin-left: 20rpx;
+  border-radius: 0;
 }
 .gps-ico{
   width:40rpx;

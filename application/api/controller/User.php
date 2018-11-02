@@ -690,24 +690,25 @@ class User extends Api
      * 获取店铺设置
      * @return array|mixed
      */
-    function getSetting()
+    public function getSetting()
     {
         $result = [
             'status' => true,
             'msg' => '',
             'data' => ''
         ];
-        if(!input('?param.key')){
-            return error_code(10003);
-        }
-        $result['data'] = '';
 
-        switch (input('param.key'))
+        $key = input('param.key/s');
+        if(!$key) return error_code(10003);
+        $result['data'] = getSetting($key);
+
+        switch ($key)
         {
             case 'shop_logo':
                 $result['data'] = _sImage($result['data']);
                 break;
-
+            default:
+                break;
         }
         return $result;
     }

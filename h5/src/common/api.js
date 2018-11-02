@@ -475,9 +475,9 @@ function userCoupon(data, callback) {
     post('coupon.usercoupon', data, callback)
 }
 
-// 获取店铺名称
-function getStoreName(data, callback) {
-    post('user.getstorename', data, callback)
+// 获取店铺设置
+function getSetting(data, callback) {
+    post('user.getsetting', data, callback)
 }
 
 // 获取商户配置信息
@@ -618,7 +618,7 @@ export default {
     getCoupon: getCoupon,
     userCoupon: userCoupon,
     uploadFile: uploadFile,
-    getStoreName: getStoreName,
+    getSetting: getSetting,
     getSellerSetting: getSellerSetting,
     getBankCardList: getBankCardList,
     getDefaultBankCard: getDefaultBankCard,

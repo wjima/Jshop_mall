@@ -132,8 +132,8 @@ return [
                 'code' => 'getUserPoint',
                 'is_login' => true
             ],
-            'getstorename' => [
-                'code' => 'getStoreName',
+            'getsetting' => [
+                'code' => 'getSetting',
                 'is_login' => false
             ],
             'getsellersetting' => [

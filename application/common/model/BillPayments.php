@@ -283,20 +283,23 @@ class BillPayments extends Common
                 }
 
                 //存储微信消息模板 todo::不清楚 $billPaymentInfo['generate_params'] 里面存的什么数据格式
-                $generate_params = json_decode($billPaymentInfo['generate_params'], true);
-                if($generate_params['package'])
+                if(isset($billPaymentInfo['generate_params']))
                 {
-                    $prepay_id = str_replace("prepay_id=","", $generate_params['package']);
-                    if($prepay_id)
+                    $generate_params = json_decode($billPaymentInfo['generate_params'], true);
+                    if($generate_params['package'])
                     {
-                        $templateMessageModel = new TemplateMessage();
-                        $message = [
-                            'type' => $templateMessageModel::TYPE_PAYMENT,
-                            'code' => $payment_id,
-                            'from_id' => $prepay_id,
-                            'status' => $templateMessageModel::SEND_STATUS_NO
-                        ];
-                        $templateMessageModel->addSend($message);
+                        $prepay_id = str_replace("prepay_id=","", $generate_params['package']);
+                        if($prepay_id)
+                        {
+                            $templateMessageModel = new TemplateMessage();
+                            $message = [
+                                'type' => $templateMessageModel::TYPE_PAYMENT,
+                                'code' => $payment_id,
+                                'from_id' => $prepay_id,
+                                'status' => $templateMessageModel::SEND_STATUS_NO
+                            ];
+                            $templateMessageModel->addSend($message);
+                        }
                     }
                 }
             }

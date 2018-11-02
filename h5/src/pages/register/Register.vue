@@ -1,7 +1,7 @@
 <template>
     <div class="reg">
         <div class="reg-img">
-            <img src="../../static/image/group14.png"/>
+            <img src="../../../static/image/group14.png"/>
         </div>
         <yd-cell-group>
             <yd-cell-item>

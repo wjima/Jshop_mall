@@ -2,15 +2,15 @@
     <div class="">
         <yd-cell-group>
             <yd-cell-item href="/mybankcardlist" type="link">
-                <img slot="icon" src="../../static/image/bankcard.png">
+                <img slot="icon" src="../../../static/image/bankcard.png">
                 <span slot="left">我的银行卡</span>
             </yd-cell-item>
             <yd-cell-item href="/recommendlist" type="link">
-                <img slot="icon" src="../../static/image/coupon.png">
+                <img slot="icon" src="../../../static/image/coupon.png">
                 <span slot="left">推荐记录</span>
             </yd-cell-item>
             <yd-cell-item href="/datasetting" type="link">
-                <img slot="icon" src="../../static/image/set.png">
+                <img slot="icon" src="../../../static/image/set.png">
                 <span slot="left">资料设置</span>
             </yd-cell-item>
         </yd-cell-group>

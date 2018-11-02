@@ -2,7 +2,7 @@
     <div class="slider" ref="slider">
         <yd-slider ref="slidercontent" class="slidercontent" :autoplay="autoPlay" >
             <yd-slider-item v-for="(item, key) in sliderList" :key="key">
-                <img :src="item.img" @click="showDetail(item.type,item.val)">
+                <img v-lazy="item.img" @click="showDetail(item.type,item.val)">
             </yd-slider-item>
         </yd-slider>
         <div class="slider-back">

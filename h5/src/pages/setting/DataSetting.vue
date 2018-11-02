@@ -5,17 +5,17 @@
                 <div class="datasetting-content">
                     <yd-cell-group>
                         <yd-cell-item>
-                            <img slot="icon" src="../../static/image/man.png">
+                            <img slot="icon" src="../../../static/image/man.png">
                             <span slot="left">昵称</span>
                             <input slot="right" type="text" v-model="name" placeholder="请输入昵称">
                         </yd-cell-item>
                         <yd-cell-item>
-                            <img slot="icon" src="../../static/image/calendar.png">
+                            <img slot="icon" src="../../../static/image/calendar.png">
                             <span slot="left">生日</span>
                             <yd-datetime type="date" start-date="1970" :end-date="date" v-model="birthday" slot="right"></yd-datetime>
                         </yd-cell-item>
                         <yd-cell-item>
-                            <img slot="icon" src="../../static/image/calendar.png">
+                            <img slot="icon" src="../../../static/image/calendar.png">
                             <span slot="left">性别</span>
                             <input slot="right" type="text" @click="show = true" readonly v-model="sexName">
                             <input type="hidden" v-model="sexVal">

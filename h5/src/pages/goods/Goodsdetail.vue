@@ -67,12 +67,12 @@
 </template>
 
 <script>
-import slider from '../components/Slider.vue'
-import goodstitle from '../components/GoodsTitle.vue'
-import goodsservice from '../components/GoodsService.vue'
-import goodsstandard from '../components/GoodsStandard.vue'
-import goodsnum from '../components/GoodsNum.vue'
-import goodsdetailfooter from '../components/GoodsDetailFooter.vue'
+import slider from '../../components/Slider.vue'
+import goodstitle from '../../components/GoodsTitle.vue'
+import goodsservice from '../../components/GoodsService.vue'
+import goodsstandard from '../../components/GoodsStandard.vue'
+import goodsnum from '../../components/GoodsNum.vue'
+import goodsdetailfooter from '../../components/GoodsDetailFooter.vue'
 export default {
     data () {
         return {

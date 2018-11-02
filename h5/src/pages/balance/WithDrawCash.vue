@@ -6,7 +6,7 @@
                 <span>{{ card.bank_name }}</span>
                 <p>{{ card.card_number }} {{ card.card_type }}</p>
             </div>
-            <img src="../../static/image/right.png" class="right-img"/>
+            <img src="../../../static/image/right.png" class="right-img"/>
         </div>
         <div class="withdrawcash-top" v-else>
             <div style="text-align: center">

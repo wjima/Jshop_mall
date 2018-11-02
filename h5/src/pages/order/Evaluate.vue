@@ -33,14 +33,14 @@
                 <div class="evaluatebody-img">
                     <div class="uploadimg">
                         <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update(item.goods_id,$event)"/>
-                        <img slot="icon" src="../../static/image/addimg.png" v-show="isupload[item.goods_id]">
+                        <img slot="icon" src="../../../static/image/addimg.png" v-show="isupload[item.goods_id]">
                     </div>
                 </div>
             </div>
         </div>
         <div class="evaluatefooter">
             <yd-cell-item>
-                <img slot="icon" src="../../static/image/shop.png">
+                <img slot="icon" src="../../../static/image/shop.png">
                 <span slot="left">店铺评分</span>
             </yd-cell-item>
             <yd-cell-item>

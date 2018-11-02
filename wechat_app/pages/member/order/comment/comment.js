@@ -154,7 +154,7 @@ Page({
   submit: function () {
     var page = this;
     var data = {
-      order_id: 'asdf',//page.data.orderId,
+      order_id: page.data.orderId,
       items: {},
     };
     for (var key in page.data.images) {

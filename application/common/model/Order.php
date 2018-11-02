@@ -1105,7 +1105,7 @@ class Order extends Common
                 $message = [
                     'type' => $templateMessageModel::TYPE_ORDER,
                     'code' => $order['order_id'],
-                    'from_id' => $formId,
+                    'form_id' => $formId,
                     'status' => $templateMessageModel::SEND_STATUS_NO
                 ];
                 $templateMessageModel->addSend($message);

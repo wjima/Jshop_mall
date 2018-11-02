@@ -122,6 +122,7 @@ class Appletmessage extends Addons
     {
         $msgData = [];
         foreach ($template as $key => $value) {
+            $value = is_numeric($value)?"$value":$value;
             $mkey           = str_replace("{{", "", $value);
             $mkey           = str_replace(".DATA}}", "", $mkey);
             $msgData[$mkey] = [

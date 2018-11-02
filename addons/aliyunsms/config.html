@@ -43,18 +43,18 @@
     </div>
 
 
-    <div style="padding: 30px;" class="layui-form layui-form-pane">
-        <div class="layui-tab layui-tab-brief">
+    <div style="padding: 30px;" class="layui-form layui-form-pane" >
+        <div class="layui-tab layui-tab-brief" overflow>
             <ul class="layui-tab-title">
                 {volist name="config.template" id="vo" key=key}
-                <li {if condition='$key eq "reg" ' }class="layui-this " {/if} >{$vo.title}</li>
+                <li {if condition='$key eq "login" ' }class="layui-this " {/if} >{$vo.title}</li>
                 {/volist}
             </ul>
             <div class="layui-tab-content">
                 {volist name="config.template" id="vo" }
                 {assign name="template_key" value="$key" /}
 
-                <div {if condition='$template_key eq "reg" ' }class=" layui-tab-item layui-show " {else/} class=" layui-tab-item " {/if}>
+                <div {if condition='$template_key eq "login" ' }class=" layui-tab-item layui-show " {else/} class=" layui-tab-item " {/if}>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$vo.data.title.title}：</label>
@@ -85,6 +85,7 @@
             //监听提交
             var $ = layui.jquery
                 , element = layui.element;
+            element.render();
         });
     </script>
 </form>

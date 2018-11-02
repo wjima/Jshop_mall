@@ -94,7 +94,7 @@ class Appletmessage extends Addons
 
             $params['params']['params']['refund_time']   = getTime($params['params']['params']['utime']);
             $params['params']['params']['refund_reason'] = '退款已经原路返回，具体到账时间可能会有1-3天延迟';
-            $formInfo                                    = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
+            $formInfo                                    = $templateMessageModel->where(['type' => 'after_sale', 'code' => $id, 'status' => '1'])->find();
         }
         $params['params']['params']['seller_name'] = getSetting('shop_name');//店铺名称
 

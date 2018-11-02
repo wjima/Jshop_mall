@@ -361,10 +361,9 @@ class Goods extends Api
     public function getGoodsComment()
     {
         $goods_id = input('goods_id');
-        $page = input('page', 1);
-        $limit = input('limit', 10);
-        if(empty($goods_id))
-        {
+        $page     = input('page', 1);
+        $limit    = input('limit', 10);
+        if (empty($goods_id)) {
             return error_code(13403);
         }
         $res = model('common/GoodsComment')->getList($goods_id, $page, $limit, 1);

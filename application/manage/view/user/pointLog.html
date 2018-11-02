@@ -6,19 +6,21 @@
             elem: '#pointLog',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
+            limit:'10',
             url: "{:url('User/pointLog')}?_ajax=1&user_id={$user_id}&seller_id={$seller_id}&flag=true",
             id:'pointLog',
+            height: '471',
             response: {
                 statusName: 'status',
                 statusCode: 1
             },
             cols: [[
                 {type:'numbers'},
-                {field:'type', title:'类型'},
-                {field:'num', title:'数量'},
-                {field:'balance', title:'余额'},
-                {field:'ctime', title:'时间'}
+                {field:'type', width:95, title:'类型'},
+                {field:'num', width:110, title:'数量'},
+                {field:'balance', width:150, title:'余额'},
+                {field:'remarks', title: '备注'},
+                {field:'ctime', width:165, title:'时间'}
             ]]
         });
     });

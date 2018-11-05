@@ -179,11 +179,14 @@ class wechatpay implements Payment
         $response = $this->postXmlCurl($xml, $url, true, 6);
         if($response == ""){
             //出错了
+            $result['msg'] = '未知错误';
+            return $result;
         }
         $re = $this->fromXml($response);
 
         if(!isset($re['return_code'])){
-            return "";
+            $result['msg'] = '未知错误2';
+            return $result;
         }
         if($re['return_code'] == 'SUCCESS'){
             if($re['result_code'] == 'SUCCESS'){

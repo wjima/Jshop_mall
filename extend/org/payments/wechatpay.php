@@ -182,10 +182,8 @@ class wechatpay implements Payment
             $result['msg'] = '未知错误';
             return $result;
         }
-        dump($response);
 
         $re = $this->fromXml($response);
-        dump($re);
         if(!isset($re['return_code'])){
             $result['msg'] = '未知错误2';
             return $result;
@@ -320,7 +318,7 @@ class wechatpay implements Payment
                 !file_exists($cert_dir."apiclient_cert.pem") ||
                 !file_exists($cert_dir."apiclient_key.pem")
             ){
-                return "1";
+                return "";
             }
             //设置证书
             //使用证书：cert 与 key 分别属于两个.pem文件
@@ -341,7 +339,7 @@ class wechatpay implements Payment
         } else {
             $error = curl_errno($ch);
             curl_close($ch);
-            return $error;
+            return "";
         }
     }
     /**

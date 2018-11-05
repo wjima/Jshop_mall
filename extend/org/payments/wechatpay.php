@@ -341,7 +341,7 @@ class wechatpay implements Payment
         } else {
             $error = curl_errno($ch);
             curl_close($ch);
-            return "2";
+            return $error;
         }
     }
     /**

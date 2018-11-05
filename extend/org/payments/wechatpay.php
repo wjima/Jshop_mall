@@ -148,16 +148,14 @@ class wechatpay implements Payment
             'data' => [],
             'msg' => ''
         ];
-        if(isset($this->config['sslcert']) && $this->config['sslcert'] != ''){
 
-        }else{
-            $result['msg'] = "微信支付cert证书没有上传，不能在线退款";
-            return $result;
-        }
-        if(isset($this->config['sslkey']) && $this->config['sslkey'] != ''){
 
-        }else{
-            $result['msg'] = "微信支付key证书没有上传，不能在线退款";
+        $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
+        if(
+            !file_exists($cert_dir."apiclient_cert.pem") ||
+            !file_exists($cert_dir."apiclient_key.pem")
+        ){
+            $result['msg'] = "微信支付证书没有上传，不能在线退款";
             return $result;
         }
 
@@ -312,12 +310,10 @@ class wechatpay implements Payment
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
         if($useCert == true){
-            $cert_dir = ROOT_PATH.DS."public".DS."static".DS."files".DS."cert".DS;
+            $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
             if(
-                $this->config['sslcert'] == "" ||
-                !file_exists($cert_dir.$this->config['sslcert']) ||
-                $this->config['sslkey'] == "" ||
-                !file_exists($cert_dir.$this->config['sslkey'])
+                !file_exists($cert_dir."apiclient_cert.pem") ||
+                !file_exists($cert_dir."apiclient_key.pem")
             ){
                 return "";
             }

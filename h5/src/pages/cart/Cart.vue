@@ -7,7 +7,7 @@
                         <div class="check-box">
                             <input type="checkbox" class="input_check" name="box" :id="item.id" :value="item.id" v-model="checked"><label :for="item.id"></label>
                         </div>
-                        <img :src="item.products.image_path" class="goodsimg" @click="showDetail(item.products.goods_id)">
+                        <img v-lazy="item.products.image_path" class="goodsimg" @click="showDetail(item.products.goods_id)">
                         <div class="list-body">
                             <h3 class="goodsname" @click="showDetail(item.products.goods_id)">{{ item.products.name }}</h3>
                             <p class="standard" @click="showDetail(item.products.goods_id)">{{ item.products.spes_desc }}</p>

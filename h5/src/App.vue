@@ -30,7 +30,6 @@ export default {
                 }
                 shop_name = res.data
             })
-            console.log(shop_name)
             return shop_name
         }
     },
@@ -47,7 +46,7 @@ export default {
     },
     beforeDestroy() {
         this.GLOBAL.removeStorage('shop_name')
-    },
+    }
 }
 </script>
 

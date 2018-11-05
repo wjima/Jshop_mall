@@ -22,8 +22,7 @@ Vue.use(VueRouter)
 Vue.use(YDUI)
 Vue.use(VueLazyload, {
     preLoad: 1.3,
-    error: '../static/default.png',
-    loading: '../static/default.png',
+    loading: './static/image/loading.gif',
     attempt: 1
 })
 Vue.config.productionTip = false

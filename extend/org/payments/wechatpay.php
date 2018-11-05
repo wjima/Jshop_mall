@@ -183,9 +183,9 @@ class wechatpay implements Payment
             return $result;
         }
         dump($response);
-        die('aa');
-        $re = $this->fromXml($response);
 
+        $re = $this->fromXml($response);
+        dump($re);
         if(!isset($re['return_code'])){
             $result['msg'] = '未知错误2';
             return $result;
@@ -325,9 +325,9 @@ class wechatpay implements Payment
             //设置证书
             //使用证书：cert 与 key 分别属于两个.pem文件
             curl_setopt($ch,CURLOPT_SSLCERTTYPE,'PEM');
-            curl_setopt($ch,CURLOPT_SSLCERT, $cert_dir.$this->config['sslcert']);
+            curl_setopt($ch,CURLOPT_SSLCERT, $cert_dir."apiclient_cert.pem");
             curl_setopt($ch,CURLOPT_SSLKEYTYPE,'PEM');
-            curl_setopt($ch,CURLOPT_SSLKEY, $cert_dir.$this->config['sslkey']);
+            curl_setopt($ch,CURLOPT_SSLKEY, $cert_dir."apiclient_key.pem");
         }
         //post提交方式
         curl_setopt($ch, CURLOPT_POST, TRUE);

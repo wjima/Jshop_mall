@@ -87,6 +87,8 @@ class BillRefund extends Common
             //如果前端传过来的退款方式和退款单上的退款方式一样的话，就说明是原路返回，试着调用支付方式的退款方法,如果不一样的话，就直接做退款单的退款状态为已退款就可以了
             if($payment_code == $info['payment_code'] && $payment_code!='offline'){//修复线下退款bug
                 $result = $this->paymentRefund($refund_id);
+                dump($result);
+                die();
             }else{
                 //只修改状态，不做实际退款，实际退款线下去退。
                 $data['status'] = self::STATUS_REFUND;

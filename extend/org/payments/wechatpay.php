@@ -155,6 +155,7 @@ class wechatpay implements Payment
             !file_exists($cert_dir."apiclient_cert.pem") ||
             !file_exists($cert_dir."apiclient_key.pem")
         ){
+            $result['status'] = true;                       //没有证书的时候，相当于客户没有配置证书，那么原路返回线上就直接做已退款操作就可以了，不实际去退了，具体的金额在支付后台做退款
             $result['msg'] = "微信支付证书没有上传，不能在线退款";
             return $result;
         }

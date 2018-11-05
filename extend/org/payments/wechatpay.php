@@ -318,7 +318,7 @@ class wechatpay implements Payment
                 !file_exists($cert_dir."apiclient_cert.pem") ||
                 !file_exists($cert_dir."apiclient_key.pem")
             ){
-                return "";
+                return "1";
             }
             //设置证书
             //使用证书：cert 与 key 分别属于两个.pem文件
@@ -339,7 +339,7 @@ class wechatpay implements Payment
         } else {
             $error = curl_errno($ch);
             curl_close($ch);
-            return "";
+            return "2";
         }
     }
     /**

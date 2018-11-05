@@ -1,5 +1,5 @@
 <style>
-    .layui-form-item label{
+    .layui-form-item label {
         width: 120px;
     }
 </style>
@@ -32,7 +32,7 @@
                         <label class="layui-form-label">{$data['shop_logo']['name']}：</label>
                         <div class="layui-input-inline seller-inline-6">
                             {Jshop:image id='shop_logo' value="$data['shop_logo']['value']" name="shop_logo"/}
-                            </div>
+                        </div>
                         <div class="layui-form-mid layui-word-aux"></div>
                     </div>
                     <div class="layui-form-item">
@@ -137,8 +137,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['point_switch']['name']}：</label>
                         <div class="layui-input-inline seller-inline-7">
-                            <input type="radio" lay-filter="point_switch" name="point_switch" value="1" title="开启" {eq name="$data['point_switch']['value']" value="1"}checked{/eq}>
-                            <input type="radio" lay-filter="point_switch" name="point_switch" value="2" title="不开启" {eq name="$data['point_switch']['value']" value="2"}checked{/eq}>
+                            <input type="radio" lay-filter="point_switch" name="point_switch" value="1" title="开启" {eq name="$data['point_switch']['value']" value="1" }checked{/eq}>
+                            <input type="radio" lay-filter="point_switch" name="point_switch" value="2" title="不开启" {eq name="$data['point_switch']['value']" value="2" }checked{/eq}>
                         </div>
                     </div>
 
@@ -167,8 +167,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['sign_point_type']['name']}：</label>
                         <div class="layui-input-inline seller-inline-7">
-                            <input type="radio" lay-filter="sign_point_type" name="sign_point_type" value="1" title="固定奖励" {eq name="$data['sign_point_type']['value']" value="1"}checked{/eq}>
-                            <input type="radio" lay-filter="sign_point_type" name="sign_point_type" value="2" title="随机奖励" {eq name="$data['sign_point_type']['value']" value="2"}checked{/eq}>
+                            <input type="radio" lay-filter="sign_point_type" name="sign_point_type" value="1" title="固定奖励" {eq name="$data['sign_point_type']['value']" value="1" }checked{/eq}>
+                            <input type="radio" lay-filter="sign_point_type" name="sign_point_type" value="2" title="随机奖励" {eq name="$data['sign_point_type']['value']" value="2" }checked{/eq}>
                         </div>
                         <input type="hidden" id="sign_point_type" value="{$data['sign_point_type']['value']}">
                     </div>
@@ -227,13 +227,15 @@
 </div>
 
 <script>
-    layui.use('form', function(){
+    layui.use('form', function() {
         var form = layui.form;
         //保存商品
-        form.on('submit(save)', function(data){
+        form.on('submit(save)', function(data) {
             formData = data.field;
-            if(!formData){
-                layer.msg('请先完善数据', {time: 1300});      //layer.msg(JSON.stringify(data.field));
+            if (!formData) {
+                layer.msg('请先完善数据', {
+                    time: 1300
+                }); //layer.msg(JSON.stringify(data.field));
                 return false;
             }
             $.ajax({
@@ -241,11 +243,13 @@
                 type: 'post',
                 data: formData,
                 dataType: 'json',
-                success: function(e){
-                    if(e.status === true){
+                success: function(e) {
+                    if (e.status === true) {
                         layer.msg('保存成功');
-                    }else{
-                        layer.msg(e.msg, {time: 1300});
+                    } else {
+                        layer.msg(e.msg, {
+                            time: 1300
+                        });
                     }
                 }
             });
@@ -254,18 +258,18 @@
 
         //积分奖励类型切换
         var type = $("#sign_point_type").val();
-        if(type == 1){
+        if (type == 1) {
             $(".sign-random").hide();
             $(".sign-fixed").show();
-        }else{
+        } else {
             $(".sign-random").show();
             $(".sign-fixed").hide();
         }
-        form.on('radio(sign_point_type)', function(data){
-            if(data.value == 1){
+        form.on('radio(sign_point_type)', function(data) {
+            if (data.value == 1) {
                 $(".sign-random").hide();
                 $(".sign-fixed").show();
-            }else{
+            } else {
                 $(".sign-random").show();
                 $(".sign-fixed").hide();
             }

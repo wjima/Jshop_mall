@@ -4,7 +4,7 @@
             <ul slot="list">
                 <li class="list-item" data-type="0" v-for="(item, index) in list" :key="index" v-if="item.goods">
                     <div class="list-box" style="padding: .15rem;" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="showDetail(item.goods_id)">
-                        <img class="goodsimg" slot="img" :src="item.goods.image_url">
+                        <img class="goodsimg" slot="img" v-lazy="item.goods.image_url">
                         <div class="list-body">
                             <h3 class="goodsname" slot="title">{{ item.goods_name }}</h3>
                             <div class="btn-numbox">

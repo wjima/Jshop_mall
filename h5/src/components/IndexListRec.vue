@@ -8,6 +8,7 @@
         <yd-list theme="2" slot="list">
             <yd-list-item v-for="(item, key) in recGoods" :key="key" type="link" :href="{path:'goodsdetail',query:{goods_id:item.id}}">
                 <img slot="img" v-lazy="item.image_url">
+                <!--<img slot="img" src="../../static/image/loading.gif" class="loading-img"/>-->
                 <span slot="title">{{item.name}}</span>
                 <yd-list-other slot="other">
                     <div>

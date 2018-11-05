@@ -3,6 +3,7 @@
         <yd-slider ref="slidercontent" class="slidercontent" :autoplay="autoPlay">
             <yd-slider-item v-for="(item, key) in imgList" :key="key">
                 <img :src="item">
+                <!--<img src="../../static/image/loading.gif" class="loading-img"/>-->
             </yd-slider-item>
         </yd-slider>
         <div class="slider-back">

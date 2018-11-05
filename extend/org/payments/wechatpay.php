@@ -278,6 +278,7 @@ class wechatpay implements Payment
         if(!$xml){
             return "";
         }
+        dump($xml);
         //将XML转为array
         //禁止引用外部xml实体
         libxml_disable_entity_loader(true);

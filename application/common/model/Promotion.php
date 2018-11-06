@@ -126,7 +126,6 @@ class Promotion extends Common
         $re['msg'] = '';
         $re['count'] = $list->total();
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
 
         return $re;
     }
@@ -218,6 +217,95 @@ class Promotion extends Common
         $where[] = ['auto_receive','eq',self::AUTO_RECEIVE_YES];    //自动领取状态
         $where[] = ['id','eq',$promotion_id];
         return $this->field('id,name,status,exclusive,stime,etime')->where($where)->find();
+    }
+
+    /**
+     * 获取团购秒杀商品列表
+     * @param array $params
+     * @return array
+     */
+    public function getGroupList($params = [])
+    {
+
+        $where['type']   = isset($params['type']) ? $params['type'] : self::TYPE_GROUP;
+        $where['status'] = self::STATUS_OPEN;
+        $list            = $this->field('*')->where($where)->order('sort asc')->select();
+        $activeGoods     = [];//活动商品列表
+        $conditionModel  = new PromotionCondition();
+        $goodsModel      = new Goods();
+        if (!$list->isEmpty()) {
+            foreach ((array)$list->toArray() as $key => $value) {
+                $extendParams           = json_decode($value['params'], true);
+                $filter['promotion_id'] = $value['id'];
+                $conditionList          = $conditionModel->field('*')->where($filter)->select();
+                if (!$conditionList->isEmpty()) {
+                    foreach ($conditionList->toArray() as $ckey => $cval) {
+                        $params       = json_decode($cval['params'], true);
+                        $goodsWhere[] = ['id', 'in', explode(',', $params['goods_id'])];
+                        $res          = $goodsModel->getList('*', $goodsWhere, 'id desc', 1, 10000);
+                        if ($res['status']) {
+                            foreach ($res['data'] as $gk => $gv) {
+                                $activeGoods[$gv['id']]             = $gv;
+                                $activeGoods[$gv['id']]['group_id'] = $value['id'];
+                                $activeGoods[$gv['id']]['status']   = $value['status'];
+                                $activeGoods[$gv['id']]['time']     = time();
+                                $activeGoods[$gv['id']]['stime']    = $value['stime'];
+                                $activeGoods[$gv['id']]['etime']    = $value['etime'];
+                                $activeGoods[$gv['id']]['limit']    = $extendParams['limit'];
+                                $activeGoods[$gv['id']]['salesnum'] = $extendParams['salesnum'];
+                                $activeGoods[$gv['id']]['nums']     = $params['nums'];
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+        return $activeGoods;
+    }
+
+    /**
+     * 获取团购&秒杀商品详情
+     * @param int $group_id 活动id
+     * @param int $goods_id 商品id
+     * @param string $token 登录信息
+     * @return array
+     */
+    public function getGroupDetial($group_id = 0,$goods_id = 0,$token = ''){
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '关键参数丢失'
+
+        ];
+        if(!$group_id||!$goods_id){
+            return $result;
+        }
+        $where = [];
+        $where['id'] = $group_id;
+        $where['status'] = self::STATUS_OPEN;
+        $promotion = $this->where($where)->find();
+        if(!$promotion){
+            $result['msg'] = '无此活动';
+            return $result;
+        }
+
+        $goodsModel = new Goods();
+        $goods = $goodsModel->getGoodsDetial($goods_id,'*',$token);
+        if(!$goods['status']){
+           return $goods;
+        }
+        $extendParams = json_decode($promotion['params'],true);
+        $goods['data']['group_id'] = $promotion['id'];
+        $goods['data']['status']   = $promotion['status'];
+        $goods['data']['time']     = time();
+        $goods['data']['stime']    = $promotion['stime'];
+        $goods['data']['etime']    = $promotion['etime'];
+        $goods['data']['limit']    = $extendParams['limit'];
+        $goods['data']['salesnum'] = $extendParams['salesnum'];
+
+        return $goods;
     }
 
 }

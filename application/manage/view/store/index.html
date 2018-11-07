@@ -36,7 +36,7 @@
                 {field: 'address', title:  '详细地址'},
                 {field: 'ctime', sort: true, width:200, title: '创建时间',align:'center'},
                 {field: 'utime', sort: true, width:200, title: '更新时间',align:'center'},
-                {title:'操作',align:'center',toolbar:'#storeBar',fixed:'right',width: 150}
+                {title:'操作',align:'center',toolbar:'#storeBar',fixed:'right',width: 190}
             ]] //设置表头
         });
 
@@ -61,12 +61,15 @@
                 });
             } else if(layEvent === 'edit'){
                 window.location.href = "{:url('Store/edit')}?id="+data.id;
+            } else if(layEvent === 'clerk'){
+                window.location.href = "{:url('Store/clerkList')}?id="+data.id;
             }
         });
     });
 </script>
 
 <script type="text/html" id="storeBar">
+    <a class="layui-btn layui-btn-xs" lay-event="clerk">店员列表</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>

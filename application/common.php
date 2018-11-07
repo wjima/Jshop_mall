@@ -207,6 +207,9 @@ function getRealUrl($url='')
     if(stripos($url,'http')!==false||stripos($url,'https')!==false) {
         return $url;
     }else{
+        if(config('jshop.image_storage.domain')){
+            return config('jshop.image_storage.domain').$url;
+        }
         return request()->domain().$url;
     }
 }

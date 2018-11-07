@@ -461,5 +461,19 @@ return [
                 'is_login' => false
             ],
         ]
+    ],
+    //团购&秒杀
+    'group' => [
+        'code' => 'Group',
+        'method'    =>  [
+            'getlist' => [
+                'code' => 'getList',
+                'is_login' => false
+            ],
+            'getgoodsdetial'=>[
+                'code'=>'getGoodsDetial',
+                'is_login'=>false
+            ]
+        ]
     ]
 ];

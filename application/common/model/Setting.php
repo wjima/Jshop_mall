@@ -168,6 +168,43 @@ class Setting extends Common
             'name' => '短信前缀',
             'value' => 'Jshop'
         ],
+        //公众号设置
+        'wx_official_name'=>[
+            'name'=>'公众号名称',
+            'value' => '',
+        ],
+        'wx_official_id'=>[
+            'name'=>'微信号',
+            'value' => '',
+        ],
+        'wx_official_appid'=>[
+            'name'=>'AppId',
+            'value' => '',
+        ],
+        'wx_official_app_secret'=>[
+            'name'=>'AppSecret',
+            'value' => '',
+        ],
+        'wx_official_source_id'=>[
+            'name'=>'公众号原始ID',
+            'value' => '',
+        ],
+        'wx_official_token'=>[
+            'name'=>'微信验证TOKEN',
+            'value' => '',
+        ],
+        'wx_official_encode'=>[
+            'name'=>'消息加解密方式',
+            'value'=>'plaintext'
+        ],
+        'wx_official_encodeaeskey'=>[
+            'name'=>'EncodingAESKey',
+            'value'=>''
+        ],
+        'wx_official_type'=>[
+            'name'=>'公众号类型',
+            'value'=>'service'
+        ],
     ];
 
 

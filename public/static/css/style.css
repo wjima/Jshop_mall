@@ -295,3 +295,86 @@
     color:#009688;
     cursor:pointer;
 }
+
+
+/*微信公众号页面*/
+.wechat-content{
+    background-color: #fff;
+    margin-top: 10px;
+    min-width: 1000px;
+    border: 1px solid #e6e6e6;
+}
+.wechat-body{
+    padding: 10px 10px;
+    border-bottom: 1px solid #e6e6e6;
+    overflow: hidden;
+}
+.wechat-body-l{
+    display: inline-block;
+    float: left;
+}
+.we-body-c{
+    width: 340px;
+    height: 600px;
+    background: url(../images/wechat-bg.png) no-repeat;
+    background-size: 100% 100%;
+    position: relative;
+}
+.we-body-bot{
+    width: 100%;
+    padding-left: 41px;
+    box-sizing: border-box;
+    height: 44px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.we-body-ul{
+    display: flex;
+}
+.we-body-ul>li{
+    float: left;
+}
+.we-body-ul li{
+    box-sizing: border-box;
+    position: relative;
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    height: 44px;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    list-style: none;
+    border: 1px solid transparent;
+    border-right: 1px solid #e7e7eb;
+}
+.li-menu{
+    position: absolute;
+    border-radius: 3px;
+    border: 1px solid #d0d0d0;
+    display: block;
+    bottom: 60px;
+    width: 95%;
+    background-color: #fafafa;
+}
+.li-menu li{
+    border-bottom: 1px solid #d0d0d0;
+}
+.wechat-body-r{
+    display: inline-block;
+    margin-left: 20px;
+    border: 1px solid #e6e6e6;
+    width: 550px;
+    height: 600px;
+    box-sizing: border-box;
+    float: left;
+}
+
+
+.wechat-btn{
+    padding-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}

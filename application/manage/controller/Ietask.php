@@ -37,41 +37,47 @@ class Ietask extends Manage{
      * 添加导出任务
      * @return array
      */
-    public function export(){
-        $result = [
+    public function export()
+    {
+        $result   = [
             'status' => false,
-            'data' => [],
-            'msg' => '参数丢失'
+            'data'   => [],
+            'msg'    => '参数丢失',
         ];
         $taskname = input('taskname/s', '');
-        $ids = input('ids/s', '');
-        $filter = input('filter/s', '');
-        $job = input('model/s', '');
+        $filter   = input('filter/s', '');
+        $job      = input('model/s', '');
         if (!$taskname) {
             $taskname = md5(time());
         }
-        if(!$job){
+        if (!$job) {
             return $result;
         }
         $where = [];
-        if ($ids) {
-            $where['id'] = explode(',', $ids);
-        }
-        if ($filter) {
-            $filter = convertUrlQuery($filter);
-        }
-        $where = array_merge((array)$where, (array)$filter);
-        $ietaskModle = new ietaskModel();
 
-        $data['name'] = $taskname;
-        $data['type'] = $ietaskModle::TYPE_EXPORT;
+        if ($filter) {
+            $where = convertUrlQuery($filter);
+        }
+        //增加条件验证
+        if (method_exists("app\\common\\model\\$job", export_validate)) {
+            $model       = "app\\common\\model\\$job";
+            $obj         = new $model();
+            $validateRes = $obj->exportValidate($where); //验证过滤条件
+            if (!$validateRes['status']) {
+                return $validateRes;
+            }
+        }
+
+        $ietaskModle    = new ietaskModel();
+        $data['name']   = $taskname;
+        $data['type']   = $ietaskModle::TYPE_EXPORT;
         $data['status'] = $ietaskModle::WAIT_STATUS;
         $data['params'] = json_encode($where);
 
-        $res = $ietaskModle->addExportTask($data,$job);
+        $res = $ietaskModle->addExportTask($data, $job);
         if ($res !== false) {
             $result['status'] = true;
-            $result['msg'] = '导出任务加入成功，请到任务列表中下载文件';
+            $result['msg']    = '导出任务加入成功，请到任务列表中下载文件';
         }
 
         return $result;

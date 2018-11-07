@@ -23,4 +23,29 @@ return [
     'product'=>'Jshop-b2c标准版',//产品名称
     'version'=>'v1.0.1',//版本号
     'sms_password' => '456550wht',          //短信密码，会覆盖项目配置里的此参数，为了保密密码
+    /*
+     * 图片存储引擎配置
+     * 本地存储
+
+     'image_storage'=>[
+        'type'=>'Local'
+     ],
+      阿里云存储
+    'image_storage'=>[
+        'type'=>'Aliyun',
+        'accessKeyId'=>'',//阿里云accesskeyid，用户AccessKey控制台地址：https://usercenter.console.aliyun.com/#/manage/ak
+        'accessKeySecret'=>'',//访问密钥
+        'endpoint'=>'',//存储节点
+        'bucket'=>'',//空间名称
+        'domain'=>'',//所绑定域名
+     ],
+    */
+    'image_storage'=>[
+        'type'=>'Aliyun',
+        'accessKeyId'=>'vKWtnN47TC2U0KPv',
+        'accessKeySecret'=>'3j7fZGzbCrnN7Qo0f2fqnn4np6kg3v',
+        'endpoint'=>'oss-cn-beijing.aliyuncs.com',
+        'bucket'=>'jshop-jihainet',
+        'domain'=>'http://image.jihainet.com',//所绑定域名
+    ],
 ];

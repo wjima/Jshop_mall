@@ -919,4 +919,18 @@ class Goods extends Common
         return $weight['weight']?$weight['weight']:0;
     }
 
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        return $result;
+    }
 }

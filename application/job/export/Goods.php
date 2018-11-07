@@ -27,6 +27,10 @@ class Goods
         }
 
         $filter = json_decode($params['params'], true);
+        if(isset($filter['ids'])){
+            $filter['id'] = explode(',', $filter['ids']);
+            unset($filter['ids']);
+        }
         $goodsData = $goodsModel->getCsvData($filter);
         if ($goodsData['status']) {
             $body = $goodsData['data'];

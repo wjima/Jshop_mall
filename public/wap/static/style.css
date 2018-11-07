@@ -102,6 +102,39 @@
 .indexlistheader{
     padding: .2rem 0;
 }
+.indexlistrec .yd-list-theme2 .yd-list-item .yd-list-img,.indexlisthot .yd-list-theme2 .yd-list-item .yd-list-img,.yd-slider-item{
+    position: relative;
+}
+.yd-slider-item{
+    min-height: 4rem;
+}
+.indexlistrec .yd-list-theme2 .yd-list-item .yd-list-img img,.indexlisthot .yd-list-theme2 .yd-list-item .yd-list-img img{
+    position: absolute;
+    max-height: 100%;
+    max-width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin-top: 0;
+}
+.loading-img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+    width: 50px !important;
+    height: 50px !important;
+    background-color: #F9F9F9 !important;
+}
+.scrolltab-li .loading-img{
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+    background-color: #fff !important;
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none !important;
+}
 .indexlistrec .yd-list-theme2 .yd-list-item:nth-child(odd){
     padding: 0;
 }

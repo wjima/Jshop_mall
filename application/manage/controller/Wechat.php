@@ -90,4 +90,21 @@ class Wechat extends Manage
         return $this->fetch('template');
     }
 
+    /**
+     * 公众号配置
+     * @return mixed
+     */
+    public function official(){
+        $host = \request()->host();
+        $this->assign('weixin_host',$host);
+        $settingModel = new Setting();
+        $data = $settingModel->getAll();
+        $this->assign('data', $data);
+        return $this->fetch('official');
+    }
+
+    public function officialMenu(){
+        return $this->fetch('official_menu');
+    }
+
 }

@@ -4,6 +4,8 @@
  */
 namespace addons\trustlogin\lib;
 
+use think\facade\Log;
+
 class weixin{
 
     private  $oauth = '';
@@ -30,7 +32,7 @@ class weixin{
      * @param string $state
      * @return bool
      */
-    public function checkState($state = ''){
+    private function checkState($state = ''){
         if($state != session('state')){
             return false;
         }
@@ -40,17 +42,37 @@ class weixin{
     /**
      * 获取用户信息
      */
-    public function getUserInfo($code = ''){
-        $params['code'] = $code;
-        $accessToken = $this->oauth->getOauthAccessToken($params);
-
-        if(!$accessToken){
+    public function getUserInfo($params)
+    {
+        echo 'sss';
+        if (!$this->checkState($params['state'])) {
             return false;
         }
-        $userInfo=$this->oauth->getOauthUserInfo($access_token, $openid);
+        $accessToken = $this->oauth->getOauthAccessToken($params);
+        if (!$accessToken) {
+            return false;
+        }
+        $userInfo = $this->oauth->getOauthUserInfo($accessToken['access_token'], $accessToken['openid']);
+        Log::info("用户信息：" . json_encode($userInfo));
+        error_log(var_export(json_encode($userInfo), true), 3, __FILE__ . '.log');
         return $userInfo;
     }
 
+
+    public function getUserData($params = [])
+    {
+        $userData['openid'] = $params['openid'];
+        $userData['unionId'] = $params['unionid'];
+        $userData['privilege'] = $params['privilege'];
+        $userData['avatar'] = $params['headimgurl'];
+        $userData['country'] = $params['country'];
+        $userData['province'] = $params['province'];
+        $userData['city'] = $params['city'];
+        $userData['gender'] = $params['sex'];
+        $userData['nickName'] = $params['nickname'];
+        $userData['username'] = $params['nickname'];
+        return $userData;
+    }
 
 
 

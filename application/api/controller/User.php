@@ -946,7 +946,7 @@ class User extends Api
             'msg' => '获取成功',
             'data' => []
         ];
-        $params['url'] = input('param.url', '123');
+        $params['url'] = 'http://wjima.ngrok.jihainet.com/api.html?method=user.trustcallback&type=weixin';//input('param.url', '123');
         if(!$params['url']){
             $data['status'] = false;
             $data['msg'] = '获取失败';
@@ -955,6 +955,8 @@ class User extends Api
         if(checkAddons('trustlogin')){
             $data['data'] = Hook('trustlogin',$params);
         }
+        header("Location:".$data['data']['0']['weixin']['url']);exit;
+        print_r($data);die();
         return $data;
     }
 
@@ -962,12 +964,41 @@ class User extends Api
      * 根据code 获取用户信息
      */
     public function trustCallBack(){
-        $params = input('params.');
-        $data = Hook('trustcallback',$params);
-        //判断用户是否绑定
+        $returnData = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+        $params['code'] = input('code');
+        $params['type'] = input('type');
+        $params['state'] = input('state');
 
-        //跳转绑定页面
-        return $data;
+        /*if(checkAddons('trustcallback')){
+            $data = Hook('trustcallback',$params);
+        }*/
+
+        $user = '{"openid":"oPNrS1QqQQFxbkWOxYZpYuLzSucI","nickname":"mark","sex":1,"language":"zh_CN","city":"Zhengzhou","province":"Henan","country":"CN","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/PiajxSqBRaEJK5lAq1DT1VPVD0YN5sh6IDhrNDiaSnaucdliavTTlk5MVHdnib6DEc2iaCQZibw6vATdrGRibibHbDOFibQ\/132","privilege":[],"unionid":"og_yL0S814J4emWqv4jbXPTVF3Xs"}';
+        $user = json_decode($user,true);
+        $userWxModel = new UserWx();
+        if(isset($user['unionid'])&&$user['unionid']){//有这个unionid的时候，用这个判断
+            $where['unionid'] = $user['unionid'];
+        } elseif (isset($user['openid'])&&$user['openid']){ //有这个openid的时候，先用unionid，再用这个判断
+            $where['openid'] = $user['openid'];
+        }
+        $wxInfo = $userWxModel->where($where)->find();
+        $user['avatar'] = $user['headimgurl'];
+        $user['nickName'] = $user['nickname'];
+        $user['gender'] = $user['sex'];
+        $user['unionId'] = $user['unionid'];
+        if($wxInfo){//存在第三方账号，检查是否存在会员，存在的话，直接登录，不存在则绑定手机号
+            echo 'sdf';
+        }else{ //不存在第三方账号,先插入第三方账号，然后跳转绑定手机号页面
+            $data['data'] = $user;
+            $info = $userWxModel->toAddWx($data);
+            $info['data']['isnew'] = true;
+            return $info;
+        }
+        return $returnData;
     }
 
     /**

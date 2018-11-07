@@ -609,4 +609,64 @@ class User extends Common
 
         return $return;
     }
+
+
+    /**
+     * 获取用户昵称
+     * @param $user_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserNickname($user_id)
+    {
+        $where[] = ['id', 'eq', $user_id];
+        $result = $this->field('nickname, mobile')
+            ->where($where)
+            ->find();
+        if($result)
+        {
+            $nickname = $result['nickname']?$result['nickname']:format_mobile($result['mobile']);
+        }
+        else
+        {
+            $nickname = '';
+        }
+
+        return $nickname;
+    }
+
+
+    /**
+     * 获取用户手机号
+     * @param $user_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserMobile($user_id)
+    {
+        $where[] = ['id', 'eq', $user_id];
+        $result = $this->field('mobile')->where($where)->find();
+        return $result['mobile']?$result['mobile']:'';
+    }
+
+
+    /**
+     * 通过手机号获取用户ID
+     * @param $mobile
+     * @return bool|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserIdByMobile($mobile)
+    {
+        $where[] = ['mobile', 'eq', $mobile];
+        $where[] = ['status', 'eq', self::STATUS_NORMAL];
+        $result = $this->field('id')->where($where)->find();
+        return $result['id']?$result['id']:false;
+    }
 }

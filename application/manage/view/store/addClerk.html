@@ -1,0 +1,47 @@
+<div class="layui-form seller-alone-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>所属门店：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <select name="store_id" id="store_id" lay-verify="required">
+                <option value="">--- 请选择 ---</option>
+                {foreach $storeList as $v}
+                <option value="{$v.id}" {if $v.id == $store_id}selected{/if}>{$v.store_name}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>用户手机号：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="mobile" id="mobile" lay-verify="required" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="button" class="layui-btn" lay-submit lay-filter="add-clerk">保存</button>
+            <button type="button" onclick="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['form','layer'], function(){
+        var $ = layui.$,form = layui.form,layer = layui.layer;
+        form.render();
+        //各种基于事件的操作，下面会有进一步介绍
+
+        form.on('submit(add-clerk)', function(data){
+            JsPost("{:url('manage/store/addClerk')}",data.field,function(res){
+                if(res.status){
+                    layer.msg(res.msg, {time:1300},function(){
+                        window.location.href = "{:url('manage/store/clerkList')}?id={$store_id}";
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+        });
+    });
+</script>

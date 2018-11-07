@@ -197,4 +197,48 @@ class Store extends Common
 
     }
 
+
+    /**
+     * 获取店铺名称
+     * @param $store_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getStoreName($store_id)
+    {
+        $where[] = ['id', 'eq', $store_id];
+        $result = $this->field('store_name')->where($where)->find();
+        return $result['store_name']?$result['store_name']:'';
+    }
+
+
+    /**
+     * 判断店铺是否存在
+     * @param $store_id
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function storeExist($store_id)
+    {
+        $where[] = ['id', 'eq', $store_id];
+        $result = $this->where($where)->find();
+        return $result?true:false;
+    }
+
+
+    /**
+     * 获取全部店铺
+     * @return array|\PDOStatement|string|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getAllList()
+    {
+        return $this->field('id,store_name')->select();
+    }
 }

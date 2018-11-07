@@ -23,7 +23,7 @@ class Message extends Wechat
         error_log(var_export($appid, true), 3, __FILE__ . '.log');
 
         if ($appid) {
-            $wechat = &load_wechat('Receive', $appid);
+            $wechat = &load_wechat('Receive');
             if ($wechat->valid() === FALSE) {
                 error_log(var_export($appid), 3, __FILE__ . '.log');
                 // 接口验证错误，记录错误日志
@@ -64,14 +64,14 @@ class Message extends Wechat
 
     function _keys($keys, $appid)
     {
-        $wechat = &load_wechat('Receive', $appid);
+        $wechat = &load_wechat('Receive');
         // 这里直接原样回复给微信(当然你需要根据业务需求来定制的
         return $wechat->text($keys)->reply();
     }
 
     function _event($event, $appid)
     {
-        $wechat = &load_wechat('Receive', $appid);
+        $wechat = &load_wechat('Receive');
         switch ($event) {
             // 粉丝关注事件
             case 'subscribe':
@@ -95,7 +95,7 @@ class Message extends Wechat
 
     function _image($appid)
     {
-        $wechat = &load_wechat('Receive', $appid);
+        $wechat = &load_wechat('Receive');
         // $wechat 中有获取图片的方法
         return $wechat->text('您发送了一张图片过来')->reply();
     }

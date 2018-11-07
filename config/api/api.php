@@ -195,6 +195,18 @@ return [
             'cashlist' => [
                 'code' => 'cashList',
                 'is_login' => true
+            ],
+            'gettrustlogin' => [ //获取信任登录接口
+                'code' => 'getTrustLogin',
+                'is_login' => false
+            ],
+            'trustcallback' => [ //获取用户信息接口
+                'code' => 'trustCallBack',
+                'is_login' => false
+            ],
+            'trustbind' =>[  //账号绑定接口
+                'code' => 'trustBind',
+                'is_login' => false
             ]
         ]
     ],

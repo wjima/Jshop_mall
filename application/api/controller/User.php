@@ -15,6 +15,7 @@ use app\common\model\UserWx;
 use app\common\model\BillPayments;
 use org\Curl;
 use think\facade\Request;
+use think\Hook;
 
 class User extends Api
 {
@@ -935,4 +936,46 @@ class User extends Api
         $userToCashModel = new UserTocash();
         return $userToCashModel->userToCashList($this->userId, $page, $limit, $type);
     }
+
+    /**
+     * 获取信任登录内容，标题，图标，名称，跳转地址
+     */
+    public function getTrustLogin(){
+        $data = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+        $params['url'] = input('param.url', '123');
+        if(!$params['url']){
+            $data['status'] = false;
+            $data['msg'] = '获取失败';
+            return $data;
+        }
+        if(checkAddons('trustlogin')){
+            $data['data'] = Hook('trustlogin',$params);
+        }
+        return $data;
+    }
+
+    /**
+     * 根据code 获取用户信息
+     */
+    public function trustCallBack(){
+        $params = input('params.');
+        $data = Hook('trustcallback',$params);
+        //判断用户是否绑定
+
+        //跳转绑定页面
+        return $data;
+    }
+
+    /**
+     * 用户手机号绑定,然后调用登录，返回登录信息
+     */
+    public function trustBind(){
+        $params = input('params.');
+
+    }
+
 }

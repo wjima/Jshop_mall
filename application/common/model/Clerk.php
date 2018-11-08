@@ -2,6 +2,10 @@
 namespace app\common\model;
 use think\model\concern\SoftDelete;
 
+/**
+ * Class Clerk
+ * @package app\common\model
+ */
 class Clerk extends Common
 {
     protected $autoWriteTimestamp = true;
@@ -167,5 +171,55 @@ class Clerk extends Common
             $return['msg'] = '删除成功';
         }
         return $return;
+    }
+
+
+    /**
+     * 判断是不是店员
+     * @param $user_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function isClerk($user_id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '不是店员',
+            'data' => []
+        ];
+
+        $where[] = ['user_id', 'eq', $user_id];
+        $return['data'] = $this->where($where)->find();
+        if($return['data'])
+        {
+            $return['status'] = true;
+            $return['msg'] = '是店员';
+        }
+        return $return;
+    }
+
+
+    /**
+     * 获取店员所属店铺ID
+     * @param $user_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getClerkStoreIds($user_id)
+    {
+        $where[] = ['user_id', 'eq', $user_id];
+        $ids = $this->field('store_id')
+            ->where($where)
+            ->select();
+        $newData = [];
+        foreach($ids as $k => $v)
+        {
+            $newData[] = $v['store_id'];
+        }
+        return $newData;
     }
 }

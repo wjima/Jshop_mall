@@ -176,4 +176,65 @@ class BillLading extends Common
     {
         return $this->hasOne('Store', 'id', 'store_id');
     }
+
+
+    /**
+     * 获取店铺提货单列表
+     * @param $user_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getStoreLadingList($user_id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => []
+        ];
+
+        $clerkModel = new Clerk();
+        $store_ids = $clerkModel->getClerkStoreIds($user_id);
+
+        $where[] = ['store_id', 'in', $store_ids];
+        $return['data'] = $this->where($where)->select();
+
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 提货操作
+     * @param $id
+     * @param $user_id
+     * @return array
+     */
+    public function ladingOperating($id, $user_id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '操作失败',
+            'data' => ''
+        ];
+
+        $data['clerk_id'] = $user_id;
+        $data['ptime'] = time();
+        $data['status'] = self::STATUS_YES;
+        $where[] = ['id', 'eq', $id];
+        $return['data'] = $this->save($data, $where);
+
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '操作成功';
+        }
+        return $return;
+    }
 }

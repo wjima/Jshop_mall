@@ -17,7 +17,7 @@ class UserWx extends Common
             'msg' => ''
         );
         //根据code取openid和session_key
-        $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
+        $wx = new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
 
         $result = $wx->code_to_sessionkey(getSetting('wx_appid'),getSetting('wx_app_secret'),$code);
 
@@ -150,35 +150,28 @@ class UserWx extends Common
             'data' => '',
             'msg' => ''
         ];
-
         Db::startTrans();
         try {
-            if (isset($params['data']['unionId'])) {
-                $data['unionid'] = $params['data']['unionId'];
+            if (isset($params['unionId'])) {
+                $data['unionid'] = $params['unionId'];
             }
-            $data['avatar'] = $params['data']['avatar'];
-            $data['openid'] = $params['data']['openid'];
-            $data['nickname'] = $params['data']['nickName'];
-            $data['gender'] = $params['data']['gender'];
-            $data['language'] = $params['data']['language'];
-            $data['city'] = $params['data']['city'];
-            $data['province'] = $params['data']['province'];
-            $data['country'] = $params['data']['country'];
+            $data['avatar'] = $params['avatar'];
+            $data['openid'] = $params['openid'];
+            $data['nickname'] = $params['nickName'];
+            $data['gender'] = $params['gender'];
+            $data['language'] = $params['language'];
+            $data['city'] = $params['city'];
+            $data['province'] = $params['province'];
+            $data['country'] = $params['country'];
             $this->save($data);
+            $result['status'] = true;
             $result['data']['id'] = $this->getLastInsID();
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
-            return [
-                'status' => false,
-                'data' => '',
-                'msg' => $e->getMessage(),
-            ];
+            $result['msg'] = $e->getMessage();
+            return $result;
         }
-        return [
-            'status' => true,
-            'data' => '',
-            'msg' => '',
-        ];
+        return $result;
     }
 }

@@ -53,20 +53,26 @@ class Trustlogin extends Addons
         return $trustData;
     }
     //获取用户信息
-    public function trustcallback($params = []){
+    public function trustcallback($params = [])
+    {
         $data = [
             'status' => false,
             'msg' => '获取失败',
             'data' => []
         ];
-        if(!isset($params['type'])&&!$params['type']){
+        if (!isset($params['type']) && !$params['type']) {
             return $data;
         }
-        $class = "\\addons\\trustlogin\\lib\\".$params['type'];
+        $class = "\\addons\\trustlogin\\lib\\" . $params['type'];
         $lib = new $class();
-        $data = $lib->getUserInfo($params);
-        print_r($data);die();
-
+        $res = $lib->getUserInfo($params);
+        if (!$res) {
+            return $data;
+        }
+        $data['status'] = true;
+        $data['msg'] = '获取成功';
+        $data['data'] = $res;
+        return $data;
     }
 
     public function config($params = [])

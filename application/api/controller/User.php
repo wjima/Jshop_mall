@@ -15,7 +15,7 @@ use app\common\model\UserWx;
 use app\common\model\BillPayments;
 use org\Curl;
 use think\facade\Request;
-use think\Hook;
+use think\Container;
 
 class User extends Api
 {
@@ -946,8 +946,8 @@ class User extends Api
             'msg' => '获取成功',
             'data' => []
         ];
-        $params['url'] = input('param.url/s', '');
-        $params['url'] = 'http://wjima.ngrok.jihainet.com/'.input('param.url/s', '');
+        $jshopHost = Container::get('request')->domain();
+        $params['url'] = $jshopHost.'/wap/index.html#/'.input('param.url/s', '');
         if(!$params['url']){
             $data['status'] = false;
             $data['msg'] = '获取失败';
@@ -964,48 +964,90 @@ class User extends Api
      */
     public function trustCallBack(){
         $returnData = [
-            'status' => true,
-            'msg' => '获取成功',
+            'status' => false,
+            'msg' => '获取失败',
             'data' => []
         ];
         $params['code'] = input('code');
         $params['type'] = input('type');
         $params['state'] = input('state');
+        if (!$params['code'] || !$params['type'] ||! $params['state']) {
+            $returnData['msg'] = '关键参数丢失';
+            return $returnData;
+        }
+        $data = [];
+        //此处钩子只能取第一个插件的返回值
+        if (checkAddons('trustcallback')) {
+            $data = Hook('trustcallback', $params);
+        }
+        if (isset($data[0]['status']) && !$data[0]['status']) {
+            return $returnData;
+        }
 
-        /*if(checkAddons('trustcallback')){
-            $data = Hook('trustcallback',$params);
-        }*/
+        $user = $data[0]['data'];
 
-        $user = '{"openid":"oPNrS1QqQQFxbkWOxYZpYuLzSucI","nickname":"mark","sex":1,"language":"zh_CN","city":"Zhengzhou","province":"Henan","country":"CN","headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/PiajxSqBRaEJK5lAq1DT1VPVD0YN5sh6IDhrNDiaSnaucdliavTTlk5MVHdnib6DEc2iaCQZibw6vATdrGRibibHbDOFibQ\/132","privilege":[],"unionid":"og_yL0S814J4emWqv4jbXPTVF3Xs"}';
-        $user = json_decode($user,true);
         $userWxModel = new UserWx();
-        if(isset($user['unionid'])&&$user['unionid']){//有这个unionid的时候，用这个判断
-            $where['unionid'] = $user['unionid'];
-        } elseif (isset($user['openid'])&&$user['openid']){ //有这个openid的时候，先用unionid，再用这个判断
+        if (isset($user['unionId']) && $user['unionId']) {//有这个unionid的时候，用这个判断
+            $where['unionid'] = $user['unionId'];
+        } elseif (isset($user['openid']) && $user['openid']) { //有这个openid的时候，先用unionid，再用这个判断
             $where['openid'] = $user['openid'];
         }
         $wxInfo = $userWxModel->where($where)->find();
-        $user['avatar'] = $user['headimgurl'];
-        $user['nickName'] = $user['nickname'];
-        $user['gender'] = $user['sex'];
-        $user['unionId'] = $user['unionid'];
-        if($wxInfo){//存在第三方账号，检查是否存在会员，存在的话，直接登录，不存在则绑定手机号
-            echo 'sdf';
-        }else{ //不存在第三方账号,先插入第三方账号，然后跳转绑定手机号页面
-            $data['data'] = $user;
-            $info = $userWxModel->toAddWx($data);
-            $info['data']['isnew'] = true;
-            return $info;
+        if ($wxInfo) {//存在第三方账号，检查是否存在会员，存在的话，直接登录，不存在则绑定手机号
+            if (isset($wxInfo['user_id']) && !$wxInfo['user_id']) {
+                $returnData['msg'] = '请绑定手机号';
+                $returnData['status'] = true;
+                $returnData['data'] = [
+                    'is_new' => true,
+                    'id' => $wxInfo['id'],
+                ];
+                return $returnData;
+            } else {
+                //直接登录
+                $userModel = new UserModel();
+                return $userModel->toLoginById($wxInfo['id']);
+            }
+        } else { //不存在第三方账号,先插入第三方账号，然后跳转绑定手机号页面
+            $res = $userWxModel->toAddWx($user);
+            if (!$res['status']) {
+                $returnData['msg'] = $res['msg'];
+                return $returnData;
+            }
+            $returnData['msg'] = '保存成功，请绑定手机号';
+            $returnData['status'] = true;
+            $returnData['data'] = [
+                'is_new' => true,
+                'id' => $res['data']['id'],
+            ];
+            return $returnData;
         }
         return $returnData;
     }
 
     /**
      * 用户手机号绑定,然后调用登录，返回登录信息
+     * @return array
      */
     public function trustBind(){
-        $params = input('params.');
-
+        $returnData = [
+            'status' => false,
+            'msg' => '绑定失败',
+            'data' => []
+        ];
+        $data = input('param.');
+        if(!isset($data['id'])||$data['id']==''){
+            return $returnData;
+        }
+        $data['authorId'] = $data['id'];
+        unset($data['id']);
+        $userModel = new UserModel();
+        $userWxModel = new UserWx();
+        $wxInfo = $userWxModel->where(['id'=>$data['authorId']])->find();
+        if(isset($wxInfo['user_id'])&&$wxInfo['user_id']!=''){
+            $returnData['msg'] = '请勿重复绑定';
+            return $returnData;
+        }
+        return $userModel->toAdd($data,2);
     }
 
 }

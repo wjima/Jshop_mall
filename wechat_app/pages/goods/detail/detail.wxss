@@ -186,14 +186,15 @@ swiper{
   float: left;
 }
 .color .salespromotion-service-b>view,.specifications .salespromotion-service-b>view{
-  width: 140rpx;
-  height: 56rpx;
+  /* width: 140rpx; */
+  /* height: 56rpx; */
+  padding: 2rpx 20rpx;
   display: inline-block;
   text-align: center;
   border: 2rpx solid #e0e0e0;
   border-radius: 8rpx;
   color: #666;
-  line-height: 56rpx;
+  /* line-height: 56rpx; */
   margin-right: 22rpx;
   margin-bottom: 12rpx;
 }

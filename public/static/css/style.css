@@ -371,7 +371,12 @@
     box-sizing: border-box;
     float: left;
 }
-
+.we-body-r-head{
+    background-color: #d0d0d0;
+    padding: 5px;
+    box-sizing: border-box;
+    width: 100%;
+}
 
 .wechat-btn{
     padding-top: 10px;

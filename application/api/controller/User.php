@@ -946,7 +946,8 @@ class User extends Api
             'msg' => '获取成功',
             'data' => []
         ];
-        $params['url'] = 'http://wjima.ngrok.jihainet.com/api.html?method=user.trustcallback&type=weixin';//input('param.url', '123');
+        $params['url'] = input('param.url/s', '');
+        $params['url'] = 'http://wjima.ngrok.jihainet.com/'.input('param.url/s', '');
         if(!$params['url']){
             $data['status'] = false;
             $data['msg'] = '获取失败';
@@ -955,8 +956,6 @@ class User extends Api
         if(checkAddons('trustlogin')){
             $data['data'] = Hook('trustlogin',$params);
         }
-        header("Location:".$data['data']['0']['weixin']['url']);exit;
-        print_r($data);die();
         return $data;
     }
 

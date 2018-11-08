@@ -5,6 +5,7 @@
     "pages/goods/classify/classify",
     "pages/goods/itemList/itemList",
     "pages/goods/detail/detail",
+    "pages/goods/group/detail",
     "pages/goods/search/search",
     "pages/cart/cartNothing/cart",
     "pages/member/info/info",

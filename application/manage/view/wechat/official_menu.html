@@ -1,1 +1,49 @@
-这是公众号菜单
+<div class="wechat-content">
+    <div class="wechat-body">
+    	<div class="wechat-body-l">
+            <div class="we-body-c">
+            	<div class="we-body-bot">
+            		<ul class="we-body-ul">
+            			<li class="we-body-li">+</li>
+            		</ul>
+            	</div>
+            </div>
+        </div>
+        <div class="wechat-body-r">
+            <h3 class="we-body-r-head">菜单名称<a href="">删除</a></h3>
+            <div class="we-body-r-c">
+            	<p>已添加子菜单，仅可设置菜单名称。</p>
+            </div>
+        </div>
+    </div>
+    <div class="wechat-btn">
+        <button type="button" class="layui-btn" >保存发布</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var uls = $(".we-body-ul");
+        var lis = $(".we-body-li");
+        lis.click(function(){
+            var len = uls.children().length;            
+            if (len < 4) {
+                var id = lis.length ++ ;
+                $(this).before("<li id='li"+id+"'><span>aa</span><div class='li-menu'><ul><li class='we-body-list'>+</li></ul></div></li>");
+            }
+            if (len == 3){
+                $(this).remove();
+            }
+        })
+        $(document).on('click' ,".we-body-list" ,function(){
+            var len = $(this).parent().children().length;            
+            if (len < 6) {
+                var id = $(this).length ++ ;
+                $(this).parent().prepend("<li id=\'li"+id+"\'>aa</li>");
+            }
+            if (len == 5){
+                $(this).remove();
+            }
+        })
+    })
+
+</script>

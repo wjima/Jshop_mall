@@ -99,14 +99,11 @@ swiper-item{
 .button-list .button-list-mid .nav text{
   display: block;
 }
-.seller-recommends{
+.seller-recommends, .hot-recommends, .group-recommends{
   text-align: center;
   background-color: #f9f9f9;
 }
-.hot-recommends{
-  text-align: center;
-  background-color: #f9f9f9;
-}
+
 .seller-recommends-mid,.hot-recommends-mid{
   width: 700rpx;
   margin: 0 auto;
@@ -122,7 +119,7 @@ swiper-item{
   margin: 0 0 20rpx;
   padding-top: 20rpx;
 }
-.seller-recommends-body{
+.seller-recommends-body, .hot-recommends-body, .group-recommends-body{
   overflow: hidden;
 }
 .seller-recommends-body .seller-body-mid{
@@ -162,6 +159,29 @@ swiper-item{
   color: #FF3A59;
   font-size: 32rpx;
   width: 220rpx;
+  overflow: hidden;
+}
+.price-time{
+  font-size: 24rpx;
+  margin-bottom: 6rpx;
+  color: #888;
+}
+.price-time>text{
+  display: inline-block;
+  padding: 0 6rpx;
+  border-radius: 6rpx;
+  background-color: rgb(255, 194, 203);
+  color: #FF3A59;
+  font-size: 22rpx;
+}
+.price-btn{
+  background-color: #FF3A59;
+  color: #fff;
+  font-size: 24rpx;
+  display: inline-block;
+  float: right;
+  padding: 4rpx 10rpx;
+  border-radius: 10rpx;
 }
 .hot-recommends-body .price-cart{
   width: 340rpx;
@@ -180,9 +200,6 @@ hot-recommends .name{
   width: 44rpx;
   height: 44rpx;
   float: right;
-}
-.hot-recommends-body{
-  overflow: hidden;
 }
 .hot-recommends-body image.icon{
   width: 56rpx;
@@ -207,6 +224,10 @@ hot-recommends .name{
 .hot-recommends .recommends-body-bottom{
   width: 366rpx;
   height: 160rpx;
+}
+.group-recommends .recommends-body-bottom{
+  width: 366rpx;
+  height: 200rpx;
 }
 .name{
   overflow:hidden;

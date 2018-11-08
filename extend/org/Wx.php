@@ -200,7 +200,7 @@ class Wx
     }
 
     /**
-     * 发送模板消息
+     * 小程序发送模板消息
      * @param $appid
      * @param $secret
      * @param $message

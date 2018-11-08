@@ -142,5 +142,43 @@ class UserWx extends Common
     }
 
 
+    //根据微信的信息，创建用户,但是没有登陆，没有手机号码，等他手机号码传过来后再登陆
+    public function toAddWx($params)
+    {
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
 
+        Db::startTrans();
+        try {
+            if (isset($params['data']['unionId'])) {
+                $data['unionid'] = $params['data']['unionId'];
+            }
+            $data['avatar'] = $params['data']['avatar'];
+            $data['openid'] = $params['data']['openid'];
+            $data['nickname'] = $params['data']['nickName'];
+            $data['gender'] = $params['data']['gender'];
+            $data['language'] = $params['data']['language'];
+            $data['city'] = $params['data']['city'];
+            $data['province'] = $params['data']['province'];
+            $data['country'] = $params['data']['country'];
+            $this->save($data);
+            $result['data']['id'] = $this->getLastInsID();
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
+            return [
+                'status' => false,
+                'data' => '',
+                'msg' => $e->getMessage(),
+            ];
+        }
+        return [
+            'status' => true,
+            'data' => '',
+            'msg' => '',
+        ];
+    }
 }

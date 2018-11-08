@@ -372,10 +372,21 @@
     float: left;
 }
 .we-body-r-head{
-    background-color: #d0d0d0;
-    padding: 5px;
+    background-color: #e6e6e6;
+    padding: 8px;
     box-sizing: border-box;
     width: 100%;
+    text-align: center;
+    overflow: hidden;
+    font-size: ;
+}
+.we-body-r-head a{
+    float: right;
+    font-size: 14px;
+    color: #009688;
+}
+.we-body-r-c{
+    padding: 5px;
 }
 
 .wechat-btn{

@@ -440,6 +440,7 @@ return [
             ]
         ]
     ],
+
     //支付单
     'payments' => [
         'code' => 'Payments',
@@ -454,6 +455,7 @@ return [
             ],
         ]
     ],
+
     'images' => [
         'code' => 'Images',
         'method' => [
@@ -468,12 +470,33 @@ return [
     'store' => [
         'code' => 'Store',
         'method'    =>  [
-            'getstore' => [
-                'code' => 'getStore',
+            'getdefaultstore' => [
+                'code' => 'getDefaultStore',
                 'is_login' => false
             ],
+            'getstorelist' => [
+                'code' => 'getStoreList',
+                'is_login' => false
+            ],
+            'isclerk' => [
+                'code' => 'isClerk',
+                'is_login' => true
+            ],
+            'storeladinglist' => [
+                'code' => 'storeLadingList',
+                'is_login' => true
+            ],
+            'ladinginfo' => [
+                'code' => 'ladingInfo',
+                'is_login' => false
+            ],
+            'lading' => [
+                'code' => 'lading',
+                'is_login' => true
+            ]
         ]
     ],
+
     //团购&秒杀
     'group' => [
         'code' => 'Group',

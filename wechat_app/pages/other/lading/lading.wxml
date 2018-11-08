@@ -1,0 +1,3 @@
+<text wx:for="{{ladingList}}" wx:item="item" wx:key="index">
+    <text>提货单号：{{item.id}}</text>
+</text>

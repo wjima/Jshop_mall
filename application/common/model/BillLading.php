@@ -202,6 +202,13 @@ class BillLading extends Common
 
         if($return['data'] !== false)
         {
+            $storeModel = new Store();
+            foreach($return['data'] as &$v)
+            {
+                $v['store_name'] = $storeModel->getStoreName($v['store_id']);
+                $v['status_name'] = config('params.bill_lading.status')[$v['status']];
+                $v['ctime'] = getTime($v['ctime']);
+            }
             $return['status'] = true;
             $return['msg'] = '获取成功';
         }

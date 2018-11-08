@@ -576,7 +576,6 @@ class User extends Common
             'switch' => 1
         ];
 
-
         $settingModel = new Setting();
         $switch = $settingModel->getValue('point_switch');
         if($switch == 2)

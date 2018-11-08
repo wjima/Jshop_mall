@@ -36,6 +36,16 @@
             </div>
         </div>
         <div class="layui-inline">
+            <label class="layui-form-label">提货状态：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <select name="status" id="status" autocomplete="off">
+                    <option value="">-- 全部 --</option>
+                    <option value="1">未提货</option>
+                    <option value="2">已提货</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
             <div class="layui-input-inline">
                 <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
             </div>
@@ -72,7 +82,7 @@
                 {field: 'mobile', title: '提货电话', align: 'center', width: 150},
                 {field: 'status_name', title: '提货状态', align: 'center', width: 100, sort: true},
                 {field: 'ctime', title: '下单时间', align: 'center', width: 200, sort: true},
-                {field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar', fixed: 'right', width: 200}
+                {field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar', fixed: 'right', width: 150}
             ]]
         });
 
@@ -92,14 +102,28 @@
 
             if(layEvent === 'info'){
                 //获取详情
-                window.location.href = "{:url('Store/edit')}?id="+data.id;
+                $.ajax({
+                    url: "{:url('manage/billLading/info')}",
+                    type: 'post',
+                    data: {
+                        'id': data.id
+                    },
+                    success: function (e) {
+                        layer.open({
+                            type: 1,
+                            title: '详情',
+                            area: ['510px', '210px'], //宽高
+                            content: e
+                        });
+                    }
+                });
             }else if(layEvent === 'pick'){
                 //提货操作
                 window.location.href = "{:url('Store/edit')}?id="+data.id;
             }else if(layEvent === 'del'){
                 //删除
                 layer.confirm('真的删除么', {icon: 3}, function(index){
-                    JsGet("{:url('manage/billLading/del')}?id="+data.id, function(res){
+                    JsGet("{:url('manage/billLading/delLading')}?id="+data.id, function(res){
                         if(res.status){
                             obj.del();
                             layer.close(index);
@@ -114,6 +138,6 @@
 
 <script type="text/html" id="ladingBar">
     <a class="layui-btn layui-btn-xs" lay-event="info">详情</a>
-    <a class="layui-btn layui-btn-xs" lay-event="pick">提货</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="pick">提货</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>

@@ -1,5 +1,6 @@
 <?php
 namespace app\common\model;
+use think\model\concern\SoftDelete;
 
 /**
  * 提货单
@@ -8,6 +9,26 @@ namespace app\common\model;
  */
 class BillLading extends Common
 {
+    protected $autoWriteTimestamp = true;
+    protected $createTime = 'ctime';
+    protected $updateTime = 'utime';
+
+    use SoftDelete;
+    protected $deleteTime = 'isdel';
+
+    const STATUS_NO = 1; //没有提货
+    const STATUS_YES = 2; //已经提货
+
+    /**
+     * 获取列表
+     * @param $post
+     * @param int $page
+     * @param int $limit
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getList($post, $page = 1, $limit = 20)
     {
         $return = [
@@ -38,6 +59,10 @@ class BillLading extends Common
         {
             $where[] = ['mobile', 'like', '%'.$post['mobile'].'%'];
         }
+        if($post['status'])
+        {
+            $where[] = ['status', 'eq', $post['status']];
+        }
 
         $return['data'] = $this->where($where)
             ->page($page, $limit)
@@ -60,5 +85,95 @@ class BillLading extends Common
         }
 
         return $return;
+    }
+
+
+    /**
+     * 获取详情
+     * @param $id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getInfo($id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => []
+        ];
+        $where[] = ['id', 'eq', $id];
+        $return['data'] = $this->with('orderInfo,storeInfo')
+            ->where($where)
+            ->find();
+        if($return['data'] !== false)
+        {
+            $return['data']['status_name'] = config('params.bill_lading.status')[$return['data']['status']];
+            $return['data']['ptime'] = $return['data']['ptime']?getTime($return['data']['ptime']):'';
+            if($return['data']['clerk_id'])
+            {
+                $userModel = new User();
+                $userInfo = $userModel->get($return['data']['clerk_id']);
+                $return['data']['clerk'] = $userInfo['nickname']?$userInfo['nickname'].'('.$userInfo['mobile'].')':format_mobile($userInfo['mobile']).'('.$userInfo['mobile'].')';
+            }
+            else
+            {
+                $return['data']['clerk'] = '';
+            }
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 删除
+     * @param $id
+     * @return array
+     * @throws \think\exception\DbException
+     */
+    public function del($id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '删除失败',
+            'data' => ''
+        ];
+        $result = $this->get($id);
+        if($result['status'] == self::STATUS_NO)
+        {
+            $return['msg'] = '未提货的提货单不能删除';
+            return $return;
+        }
+        $return['data'] = $this->destroy($id);
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '删除成功';
+        }
+        return $return;
+    }
+
+
+    /**
+     * 订单信息
+     * @return \think\model\relation\HasOne
+     */
+    public function orderInfo()
+    {
+        return $this->hasOne('Order', 'order_id', 'order_id');
+    }
+
+
+    /**
+     * 门店信息
+     * @return \think\model\relation\HasOne
+     */
+    public function storeInfo()
+    {
+        return $this->hasOne('Store', 'id', 'store_id');
     }
 }

@@ -73,6 +73,7 @@ const ApiUrl = () => {
         // 开发环境
         // apiUrl = 'http://www.b2c.com/index.php/api.html'
         apiUrl = 'https://b2c.jihainet.com/api.html'
+        // apiUrl = 'http://wjima.ngrok.jihainet.com/api.html'
     } else if (process.env.NODE_ENV === 'production') {
         // 生产环境
         if (!window.apiUrl) common.errorToBack('缺少配置参数!')
@@ -555,6 +556,23 @@ function cashList(data, callback) {
     post('user.cashlist', data, callback)
 }
 
+
+// 获取授权登录方式
+function getTrustLogin(data, callback) {
+    post('user.gettrustlogin', data, callback)
+}
+
+// 绑定授权登录
+function trustBind (data, callback) {
+    post('user.trustbind', data, callback)
+}
+
+
+// 获取用户信息
+function trustLogin (data, callback) {
+    post('user.trustcallback', data, callback)
+}
+
 export default {
     reg: reg,
     login: login,
@@ -635,5 +653,8 @@ export default {
     userToCash: userToCash,
     cashList: cashList,
     articleList: articleList,
-    post: post
+    post: post,
+    getTrustLogin: getTrustLogin,
+    trustBind: trustBind,
+    trustLogin: trustLogin
 }

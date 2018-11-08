@@ -11,6 +11,27 @@ const routers = [{
         redirect: '/index'
     },
     {
+        path: '/authbind',
+        component: resolve => require(['../pages/AuthBind'], resolve),
+        name: 'AuthBind',
+        meta: {
+            navShow: false,
+            tabShow: true,
+            title: '用户绑定',
+            keepAlive: true
+        }
+    },
+    {
+        path: '/author',
+        component: resolve => require(['../pages/author'], resolve),
+        name: 'author',
+        meta: {
+            navShow: false,
+            tabShow: true,
+            keepAlive: true
+        }
+    },
+    {
         path: '/index',
         component: resolve => require(['../pages/Index'], resolve),
         name: 'Index',

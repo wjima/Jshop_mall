@@ -49,6 +49,13 @@
         <div class="layui-form-mid layui-word-aux">不填为随机</div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">团购总量：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="text" class="layui-input" name="params[totalnum]" value='{$info.params.totalnum}'>
+        </div>
+        <div class="layui-form-mid layui-word-aux">不填为以商品库存为总量</div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">起止时间：</label>
         <div class="layui-input-inline seller-inline-6">
             <input  type="text" name="date" value="{:getTime($info['stime'])} 到 {:getTime($info['etime'])}" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">

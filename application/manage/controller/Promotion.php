@@ -516,7 +516,8 @@ class Promotion extends Manage
         $promotion = $conditionModel->where(['promotion_id'=>$id])->find();
         $goods['goods_id'] = '';
         if($promotion){
-            $goods = json_decode($promotion['params'],true);
+            $params = json_decode($promotion['params'],true);
+            $goods['goods_id'] = $params['goods_id'];
         }
         $this->assign('goods', $goods);
 
@@ -551,7 +552,7 @@ class Promotion extends Manage
             $conditionData = [
                 'promotion_id' => $id,
                 'code'         => 'GOODS_IDS',
-                'params'       => ['goods_id' => $goods_id, 'nums' => '1'],
+                'params'       => ['goods_id'=>$goods_id,'nums'=>'1'],
             ];
             $conditionRes  = $conditionModel->addData($conditionData);
             if (!$conditionRes['status']) {

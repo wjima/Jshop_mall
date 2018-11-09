@@ -228,17 +228,15 @@ class Goods extends Common
     }
 
 
-    /***
+    /**
      * 获取商品详情
-     * @param        $gid
+     * @param $gid
      * @param string $fields
-     * @param string $token 会员token
+     * @param string $token
+     * @param string $promotion_type 促销类型
      * @return array
-     * User: wjima
-     * Email:1457529125@qq.com
-     * Date: 2018-02-03 8:17
      */
-    public function getGoodsDetial($gid,$fields = '*',$token = '')
+    public function getGoodsDetial($gid,$fields = '*',$token = '',$promotion_type = '')
     {
 
         $result = [
@@ -283,7 +281,7 @@ class Goods extends Common
             if(!$default_product){
                 return error_code(10000);
             }
-            $product_info = $productsModel->getProductInfo($default_product['id']);
+            $product_info = $productsModel->getProductInfo($default_product['id'],true,$promotion_type);
             if(!$product_info['status']){
                 return $product_info;
             }

@@ -778,6 +778,18 @@ function getDefaultStore(callback){
         callback(res);
     });
 }
+//是否开启门店自提
+function getStoreSwitch(callback){
+    api('store.getstoreswitch', {}, function (res) {
+        callback(res);
+    });
+}
+//获取店铺列表
+function getStoreList(data, callback){
+    api('store.getstorelist', data, function (res){
+        callback(res);
+    });
+}
 
 module.exports = {
   login1: login1,
@@ -861,5 +873,7 @@ module.exports = {
   ladingList: ladingList,
   getGroup: getGroup,
   groupInfo: groupInfo,
-  getDefaultStore: getDefaultStore
+  getDefaultStore: getDefaultStore,
+  getStoreSwitch: getStoreSwitch,
+  getStoreList: getStoreList
 }

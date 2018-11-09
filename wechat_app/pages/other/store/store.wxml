@@ -1,6 +1,6 @@
 <view class='store-c'>
   <view class="header-input">
-    <input class="search-input" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+    <input class="search-input" placeholder="搜索门店名" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
       <icon size='15' type='search'></icon> 
     </input>
     <view class='sousuo' bindtap='search'>
@@ -9,14 +9,14 @@
   </view>
   <view class='store-body'>
     <view class='store-list'>
-      <view class='store-item'>
-        <view class='store-item-l'>
+      <view wx:for="{{storeList}}" wx:key="index" class='store-item'>
+        <view class='store-item-l' bindtap='storeSelect' data-id="{{item.id}}" data-name="{{item.store_name}}" data-mobile="{{item.mobile}}" data-address="{{item.all_address}}">
           <image src='../../image/shopblack.png'></image>
         </view>
-        <view class='store-item-m'>
-          <text class='store-name'>肯德基（西元广场店）</text>
-          <text class='store-tel'>电话：17630023045</text>
-          <text class='store-add'>地址：河南省郑州市中原区秦岭路与建设路交叉口西元广场西入口一楼</text>
+        <view class='store-item-m' bindtap='storeSelect' data-id="{{item.id}}" data-name="{{item.store_name}}" data-mobile="{{item.mobile}}" data-address="{{item.all_address}}">
+          <text class='store-name'>{{item.store_name}}</text>
+          <text class='store-tel'>电话：{{item.mobile}}</text>
+          <text class='store-add'>地址：{{item.all_address}}</text>
         </view>
         <view class='store-item-r'>
           <view class='store-item-r-c'>

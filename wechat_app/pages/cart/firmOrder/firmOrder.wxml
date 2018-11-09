@@ -1,6 +1,6 @@
 <view class='firmorder-content'>
   <form bindsubmit="payNow" report-submit='true'>
-    <view class="nav bc_white">
+    <view wx:if="{{storeSwitch == 1}}" class="nav bc_white">
       <view class="{{express?'red':'default'}}" bindtap="express">快递配送</view>
       <view class="{{lifting?'red':'default'}}" bindtap="lifting">上门自提</view>
     </view>
@@ -35,7 +35,7 @@
       </view>
     </view>
     <!-- 自提 -->
-    <view  class="{{lifting?'show':'hidden'}}">
+    <view class="{{lifting?'show':'hidden'}}">
       <view class='userinfo' bindtap='gostore' wx-if="{{isAddress}}">
         <image class='gps-img' src='../../image/shopblack.png'></image>
         <view class='userinfo-body'>
@@ -64,10 +64,10 @@
       </view>
       <view class='user-name-phone'>
         <view class='user-name'>
-          <text>姓名</text><input placeholder='请输入姓名' placeholder-class='user-n-p-input'></input>
+          <text>姓名</text><input placeholder='请输入提货人姓名' bindinput="ladingName" value="{{lading_name}}" placeholder-class='user-n-p-input'></input>
         </view>
         <view class='user-phone'>
-          <text>电话</text><input placeholder='请输入电话' placeholder-class='user-n-p-input'></input>
+          <text>电话</text><input placeholder='请输入提货人电话' bindinput="ladingMobile" value="{{lading_mobile}}" placeholder-class='user-n-p-input'></input>
         </view>
       </view>
     </view>  
@@ -147,13 +147,31 @@
 
 <view class="modal-box" bindtap="couponbtn" data-statu="close" wx:if="{{showcoupon}}" catchtouchmove="move"></view>
 <view class="modal-body" animation="{{animationData}}" data-statu="close" wx:if="{{showcoupon}}" catchtouchmove="move">
-  <view class='modal-content'>
-    <radio-group class="radio-group" bindchange="radioChange">
-      <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon' bindchange="radioChange">
-        <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text>
-        <radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
-      </label>
-    </radio-group>
+  <view class="nav bc_white">
+    <view class="{{choose?'red':'default'}}" bindtap="choose">选择优惠券</view>
+    <view class="{{entry?'red':'default'}}" bindtap="entry">输入券码</view>
+  </view>
+  <view class="{{choose?'show':'hidden'}}">
+    <view class='modal-content'>
+      <radio-group class="radio-group" bindchange="radioChange">
+        <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon' bindchange="radioChange">
+          <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text>
+          <radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
+        </label>
+      </radio-group>
+    </view>
+  </view>
+  <view class="{{entry?'show':'hidden'}}">
+    <view class='modal-content'>
+      <view class='entry-c'>
+        <input placeholder='请输入优惠券码' placeholder-class='entry-input'></input><button>确认</button>
+        <view class='entry-list'>
+          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
+          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
+          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
+        </view>
+      </view>
+    </view>
   </view>
   <view class="close" bindtap="couponbtn" data-statu="close" >关闭</view>
 </view>

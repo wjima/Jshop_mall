@@ -22,6 +22,10 @@ class Setting extends Common
             'name' => '店铺联系方式',
             'value' => ''
         ],
+        'store_switch' => [
+            'name' => '开启门店自提',
+            'value' => '2'
+        ],
         'order_cancel_time' => [
             'name' => '订单取消时间',
             'value' => '1'
@@ -245,9 +249,10 @@ class Setting extends Common
             }else{
                 return "";
             }
-
         }
     }
+
+
     //参数校验
     public function check($skey, $value)
     {
@@ -285,6 +290,7 @@ class Setting extends Common
         $result['status'] = true;
         return $result;
     }
+
 
     //取得全部参数
     public function getAll()

@@ -102,6 +102,9 @@ function get_sn($type){
         case 8:         //发货单编号
             $str = $type.substr(msectime().rand(0,9),1);
             break;
+        case 9:         //提货单号
+            $str = 'T'.$type.substr(msectime().rand(0,5), 1);
+            break;
         default:
             $str = substr(msectime().rand(0,9),1);
     }

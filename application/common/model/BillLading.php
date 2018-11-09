@@ -19,6 +19,41 @@ class BillLading extends Common
     const STATUS_NO = 1; //没有提货
     const STATUS_YES = 2; //已经提货
 
+
+    /**
+     * 添加提货单
+     * @param $order_id
+     * @param $store_id
+     * @param $name
+     * @param $mobile
+     * @return array
+     */
+    public function addData($order_id, $store_id, $name, $mobile)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '添加失败',
+            'data' => ''
+        ];
+
+        $data['id'] = get_sn(9);
+        $data['order_id'] = $order_id;
+        $data['store_id'] = $store_id;
+        $data['name'] = $name;
+        $data['mobile'] = $mobile;
+        $data['status'] = self::STATUS_NO;
+
+        $return['data'] = $this->save($data);
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '添加成功';
+        }
+
+        return $return;
+    }
+
+
     /**
      * 获取列表
      * @param $post

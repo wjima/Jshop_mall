@@ -37,12 +37,13 @@
         "pages/member/remainingSum/withdrawCash/bankcardlist",
         "pages/member/remainingSum/withdrawCash/addBank",
         "pages/member/remainingSum/withdrawCash/fineBalance",
-        "pages/other/storeList/storeList",
         "pages/member/ship/ship",
         "pages/member/recommendList/recommendList",
         "pages/member/myBankCardlist/myBankCardlist",
         "pages/member/address/editAddress",
-        "pages/other/lading/lading"
+        "pages/other/lading/lading",
+        "pages/other/lading/write",
+        "pages/other/store/store"
     ],
     "window": {
         "backgroundTextStyle": "light",

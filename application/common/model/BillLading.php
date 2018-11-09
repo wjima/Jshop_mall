@@ -198,13 +198,18 @@ class BillLading extends Common
         $store_ids = $clerkModel->getClerkStoreIds($user_id);
 
         $where[] = ['store_id', 'in', $store_ids];
-        $return['data'] = $this->where($where)->select();
+        $return['data'] = $this->with('orderInfo')
+            ->where($where)
+            ->select();
 
         if($return['data'] !== false)
         {
             $storeModel = new Store();
+            $orderItemsModel = new OrderItems();
             foreach($return['data'] as &$v)
             {
+                $wheres[] = ['order_id', 'eq', $v['order_id']];
+                $v['order_items'] = $orderItemsModel->where($wheres)->select();
                 $v['store_name'] = $storeModel->getStoreName($v['store_id']);
                 $v['status_name'] = config('params.bill_lading.status')[$v['status']];
                 $v['ctime'] = getTime($v['ctime']);

@@ -42,6 +42,13 @@
                 </div>
             </yd-tab-panel>
             <yd-button size="large" type="danger" @click.native="login">登录</yd-button>
+            <div v-if="authList.length">
+                <div v-for="(item, index) in authList" :key="index">
+                    <div v-for="(child, key) in item" :key="key">
+                        <img :src="child.ico" alt="" @click="toAuth(child.url)">
+                    </div>
+                </div>
+            </div>
         </yd-tab>
         <!--</yd-cell-group>-->
         没有账号?<span style="color: #10aeff;" @click="toRegister">&nbsp;立即注册</span>
@@ -49,6 +56,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     data () {
         return {
@@ -60,7 +68,8 @@ export default {
             isShowCaptcha: false, // 是否需要登录验证码
             captcha: '', // 用户输入的验证码
             localCaptcha: this.GLOBAL.getCaptcha(), // 验证码图片
-            countDown: false // 发送验证码倒计时 发送成功后修改为true倒计时启动
+            countDown: false, // 发送验证码倒计时 发送成功后修改为true倒计时启动
+            authList: []
         }
     },
     created () {
@@ -85,6 +94,7 @@ export default {
                 this.pid = this.GLOBAL.getStorage('pid')
             }
         }
+        this.getAuth()
     },
     computed: {
         // 验证手机号
@@ -188,6 +198,17 @@ export default {
         // 刷新验证码
         reloadCaptcha () {
             this.localCaptcha = this.GLOBAL.getCaptcha()
+        },
+        // 获取授权登录方式列表
+        getAuth () {
+            this.$api.getTrustLogin({url: '/#/author'}, res => {
+                if (res.status) {
+                    this.authList = res.data
+                }
+            })
+        },
+        toAuth (url) {
+            window.location.href = url
         }
     }
 }

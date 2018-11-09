@@ -3,6 +3,7 @@ namespace app\common\model;
 
 use think\model\concern\SoftDelete;
 use think\Validate;
+use think\Db;
 
 class User extends Common
 {
@@ -60,11 +61,11 @@ class User extends Common
         }
 
         //校验短信验证码
-        $smsModel = new Sms();
+        /*$smsModel = new Sms();
         if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
             $result['msg'] = '短信验证码错误';
             return $result;
-        }
+        }*/
         $data['ctime'] = time();
         $data['password'] = $this->enPassword($data['password'], $data['ctime']);
 
@@ -84,11 +85,21 @@ class User extends Common
                 error_code(10014);
             }
         }
+        Db::startTrans();//增加事物
+        try {
+            //插入数据库
+            $this->data($data)->allowField(true)->save();
 
-
-        //插入数据库
-        $this->data($data)->allowField(true)->save();
-
+            if ($data['authorId']) {//有授权过来，说明是第三方登录过来，需要更新user_wx表，此处直接更新老用户手机号，存在风险 TODO
+                $userWxModel = new UserWx();
+                $userWxModel->update(['user_id' => $this->id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
+            }
+            Db::commit();
+        }catch (\Exception $e) {
+                Db::rollback();
+                $result['msg'] = $e->getMessage();
+                return $result;
+        }
         return $this->setSession($this ,$loginType);
     }
 
@@ -576,7 +587,6 @@ class User extends Common
             'switch' => 1
         ];
 
-
         $settingModel = new Setting();
         $switch = $settingModel->getValue('point_switch');
         if($switch == 2)
@@ -608,5 +618,98 @@ class User extends Common
         }
 
         return $return;
+    }
+
+
+    /**
+     * 获取用户昵称
+     * @param $user_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserNickname($user_id)
+    {
+        $where[] = ['id', 'eq', $user_id];
+        $result = $this->field('nickname, mobile')
+            ->where($where)
+            ->find();
+        if($result)
+        {
+            $nickname = $result['nickname']?$result['nickname']:format_mobile($result['mobile']);
+        }
+        else
+        {
+            $nickname = '';
+        }
+
+        return $nickname;
+    }
+
+
+    /**
+     * 获取用户手机号
+     * @param $user_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserMobile($user_id)
+    {
+        $where[] = ['id', 'eq', $user_id];
+        $result = $this->field('mobile')->where($where)->find();
+        return $result['mobile']?$result['mobile']:'';
+    }
+
+
+    /**
+     * 通过手机号获取用户ID
+     * @param $mobile
+     * @return bool|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getUserIdByMobile($mobile)
+    {
+        $where[] = ['mobile', 'eq', $mobile];
+        $where[] = ['status', 'eq', self::STATUS_NORMAL];
+        $result = $this->field('id')->where($where)->find();
+        return $result['id']?$result['id']:false;
+    }
+
+
+    /**
+     * 根据用户ID直接登录 主要用户第三方登录
+     * @param array $data 用户登陆信息
+     * @param int   $loginType 1就是默认的，存session，2就是返回user_token
+     * @param int   $platform 平台id，主要和session有关系 1就是默认的平台，，2就是微信小程序平台，当需要放回user_token的时候，会用到此字段
+     *
+     */
+    public function toLoginById($id, $loginType=2,$platform=1)
+    {
+        $result = array(
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        );
+        if(!$id) {
+            $result['msg'] = '关键数据丢失';
+            return $result;
+        }
+        $userInfo = $this->where(array('id'=>$id))->find();
+        if(!$userInfo){
+            $result['msg'] = '没有找到此账号';
+            return $result;
+        }
+        //判断账号状态
+        if($userInfo->status != self::STATUS_NORMAL) {
+            $result['msg'] = '此账号已停用';
+            return $result;
+        }
+        $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
+        return $result;
     }
 }

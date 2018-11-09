@@ -2,11 +2,42 @@
   padding-bottom:100rpx;
 }
 .userinfo{
-  padding: 20rpx 30rpx 40rpx;
+  padding: 30rpx;
   overflow: hidden; 
   border-bottom: 16rpx solid #f3f3f3;
   display: flex;
   position: relative;
+}
+.user-name-phone{
+  border-bottom: 16rpx solid #f3f3f3;
+  font-size:28rpx;
+}
+.user-name-phone>view{
+  height:80rpx;
+  line-height:80rpx;
+  padding: 0rpx 30rpx;
+  overflow: hidden;
+}
+.user-name-phone>view>text{
+  display: inline-block;
+  width: 100rpx;
+  height:80rpx;
+  line-height:80rpx;
+  float: left;
+  color:#666;
+}
+.user-name-phone>view>input{
+  display: inline-block;
+  width: 500rpx;
+  height:80rpx;
+  line-height:80rpx;
+}
+.user-n-p-input{
+  color: #999;
+  font-size: 26rpx;
+}
+.user-name{  
+  border-bottom: 2rpx solid #f3f3f3;
 }
 .gps-img{
   width: 44rpx;
@@ -289,3 +320,27 @@
   color: #fff;
   font-size: 28rpx;
 }
+.nav{
+  width:100%;
+  height:70rpx;
+  line-height: 70rpx;
+  display:flex;
+  flex-direction:row;
+  border-top: 2rpx solid #e8e8e8;
+}
+.default{
+  text-align:center;
+  flex:1;
+  color:#666;
+  font-size:32rpx;
+  border-bottom: 2rpx solid #e8e8e8;
+}
+.red{
+  text-align:center;
+  color:#FF3B44 ;
+  flex:1;
+  font-size:32rpx;
+  border-bottom: 2rpx solid #FF3B44;
+}
+.show{display:block;font-size: 30rpx;color: #999;width: 750rpx;}
+.hidden{display:none;text-align:center;line-height:200px;}

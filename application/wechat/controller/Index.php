@@ -21,7 +21,6 @@ class Index extends Wechat
 
         $input = file_get_contents('php://input');
         $file  = ROOT_PATH . 'runtime/' . basename(__FILE__) . '.log';
-        //error_log(var_export($input,true),3,$file);
         // $input = file_get_contents('/Applications/MAMP/htdocs/www.jshop.com/application/wechat/controller/test.xml');
         $wx = new ThirdWx();
         if (!$input) {

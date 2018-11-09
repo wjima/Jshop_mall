@@ -9,6 +9,7 @@ Page({
     avatar: '../../image/default_avatar.png',
     bindMobile: false,
     statusData: [], //状态数据
+    isClerk: false, //是不是店员
   },
 
   //加载执行
@@ -32,11 +33,16 @@ Page({
       app.api.getOrderStatusNum('1,2,3,4', function (res) {
         page.setData({
           statusData: res.data
-        })
+        });
+      });
+
+      app.api.isClerk(function(res){
+          page.setData({
+              isClerk: res.status
+          });
       });
     });
   },
-
 
   //查看全部订单
   orderAll: function () {
@@ -175,6 +181,20 @@ Page({
     setting: function () {
         wx.navigateTo({
             url: '../userSetting/userSetting'
+        });
+    },
+
+    //提货单列表
+    ladingList: function () {
+        wx.navigateTo({
+            url: '../../other/lading/lading'
+        });
+    },
+
+    //提货单核销
+    ladingWrite: function () {
+        wx.navigateTo({
+            url: '../../other/lading/write'
         });
     }
 });

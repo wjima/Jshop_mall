@@ -16,6 +16,8 @@ Page({
     recommend: [], //店家推荐数据
     hotGoods: [], //热卖推荐商品数据
     scrollTop: [],
+    group:[],//团购数据
+    seckill:[],//秒杀数据
     hotPage: 1,
     hotLimit: 8,
     ajaxStatus: true,
@@ -40,6 +42,9 @@ Page({
     this.recommend(); //获取店家推荐数据
     this.hotGoods(); //获取热卖推荐数据
     this.getMyShareCode(); //获取我的推荐码
+    this.groupList(); //获取精品团购数据
+    this.seckillList(); //获取限时秒杀数据
+
   },
 
   //获取我的推荐码
@@ -164,6 +169,7 @@ Page({
       if(res.status){
         let hotPage = page.data.hotPage+1;
         let hotGoods = page.data.hotGoods.concat(res.data.list);
+
         let loadingComplete = false;
         if (res.data.list.length < page.data.hotLimit) {
           loadingComplete = true;
@@ -175,6 +181,66 @@ Page({
           ajaxStatus: true
         });
       }
+    });
+  },
+
+  //获取团购数据
+  groupList: function (flag = false) {
+    var page = this;
+    page.setData({
+      ajaxStatus: false
+    });
+    if (flag) {
+      page.setData({
+        group: []
+      });
+    }
+    var data = {
+      type: 3
+    };
+
+    app.api.getGroup(data, function (res) {
+      if (res.status) {
+        let group = page.data.group.concat(res.data);
+        page.setData({
+          group: group,
+          ajaxStatus: true
+        });
+      }
+      app.common.groupCountDown(page);
+    });
+  },
+  //获取秒杀数据
+  seckillList: function (flag = false) {
+    var page = this;
+    page.setData({
+      ajaxStatus: false
+    });
+    if (flag) {
+      page.setData({
+        seckill: []
+      });
+    }
+    var data = {
+      type: 4
+    };
+
+    app.api.getGroup(data, function (res) {
+      if (res.status) {
+        let seckill = page.data.seckill.concat(res.data);
+        page.setData({
+          seckill: seckill,
+          ajaxStatus: true
+        });
+      }
+      app.common.seckillCountDown(page);
+    });
+  },
+  
+  //跳转到团购/秒杀详情页面
+  GroupDetail: function (e) {
+    wx.navigateTo({
+      url: '../goods/group/detail?id=' + e.currentTarget.dataset.id + '&groupid=' + e.currentTarget.dataset.groupid
     });
   },
 
@@ -303,6 +369,8 @@ Page({
     this.recommend(); //获取店家推荐数据
     this.hotGoods(true); //获取热卖推荐数据
     wx.stopPullDownRefresh();
+    this.groupList(); //获取精品团购数据
+    this.seckillList(); //获取限时秒杀数据
   },
   
     //转发分享

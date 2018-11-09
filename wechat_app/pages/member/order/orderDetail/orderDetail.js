@@ -91,7 +91,7 @@ Page({
           success: function (res) {
             if (res.confirm) {
               wx.navigateTo({
-                url: '../comment/comment?order_id=' + page.data.orderId,
+                  url: '../comment/comment?order_id=' + e.target.dataset.id,
               });
             } else if (res.cancel) {
               page.getOrderData(page.data.orderId);

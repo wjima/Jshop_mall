@@ -17,7 +17,7 @@ class UserWx extends Common
             'msg' => ''
         );
         //根据code取openid和session_key
-        $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
+        $wx = new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
 
         $result = $wx->code_to_sessionkey(getSetting('wx_appid'),getSetting('wx_app_secret'),$code);
 
@@ -142,5 +142,36 @@ class UserWx extends Common
     }
 
 
-
+    //根据微信的信息，创建用户,但是没有登陆，没有手机号码，等他手机号码传过来后再登陆
+    public function toAddWx($params)
+    {
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
+        Db::startTrans();
+        try {
+            if (isset($params['unionId'])) {
+                $data['unionid'] = $params['unionId'];
+            }
+            $data['avatar'] = $params['avatar'];
+            $data['openid'] = $params['openid'];
+            $data['nickname'] = $params['nickName'];
+            $data['gender'] = $params['gender'];
+            $data['language'] = $params['language'];
+            $data['city'] = $params['city'];
+            $data['province'] = $params['province'];
+            $data['country'] = $params['country'];
+            $this->save($data);
+            $result['status'] = true;
+            $result['data']['id'] = $this->getLastInsID();
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollback();
+            $result['msg'] = $e->getMessage();
+            return $result;
+        }
+        return $result;
+    }
 }

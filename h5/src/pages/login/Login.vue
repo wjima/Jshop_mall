@@ -44,8 +44,8 @@
             <yd-button size="large" type="danger" @click.native="login">登录</yd-button>
             <div v-if="authList.length">
                 <div v-for="(item, index) in authList" :key="index">
-                    <div v-for="(child, key) in item" :key="key">
-                        <img :src="child.ico" alt="" @click="toAuth(child.url)">
+                    <div class="wechat-login" v-for="(child, key) in item" :key="key">
+                        <img src="https://b2c.jihainet.com/static/images/wechat_login.png" alt="" @click="toAuth(child.url)">
                     </div>
                 </div>
             </div>
@@ -235,5 +235,14 @@ export default {
        height: .8rem;
        width: 90%;
        margin: .5rem auto;
+    }
+    .wechat-login{
+        width: 1rem;
+        height: 1rem;
+        margin: 0 auto .5rem;
+    }
+    .wechat-login img{
+        width: 100%;
+        height: 100%;
     }
 </style>

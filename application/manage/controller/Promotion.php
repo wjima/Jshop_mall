@@ -364,6 +364,11 @@ class Promotion extends Manage
     {
         $this->view->engine->layout(false);
         $resultModel = new PromotionResult();
+        $type = input('type','promotion');
+        if($type && $type == 'group'){//团购时不要订单促销
+            unset($resultModel->code['ORDER_REDUCE']);
+            unset($resultModel->code['ORDER_DISCOUNT']);
+        }
         $this->assign('code',$resultModel->code);
         return [
             'status' => true,
@@ -388,8 +393,16 @@ class Promotion extends Manage
             return error_code(10002);
         }
 
+
         $resultModel = new PromotionResult();
 
+        //团购和秒杀时，限制一个促销结果
+        if($info['type'] == $promotionModel::TYPE_GROUP ||$info['type'] == $promotionModel::TYPE_SKILL){
+            $result = $resultModel->where(['promotion_id'=>$pwhere['id']])->count();
+            if($result>1){
+                return error_code(15016);
+            }
+        }
 
         if(Request::isPOST()){$data = input('param.');
             return $resultModel->addData($data);
@@ -469,7 +482,12 @@ class Promotion extends Manage
             $data['status'] = input('param.status/d', 1);
             $data['sort']   = input('param.sort/d', 100);
             $data['type']   = input('param.type/d', 3);
-            $data['params'] = json_encode(input('param.params/a', []));
+            $data['exclusive'] = input('param.exclusive/d', 2);
+            $params = input('param.params/a', []);
+            if(isset($params['salesnum'])&&!$params['salesnum']){
+                $params['salesnum'] = rand(1,10);
+            }
+            $data['params'] = json_encode($params);
             $id             = $promotionModel->insertGetId($data);
             return [
                 'status' => true,
@@ -484,44 +502,94 @@ class Promotion extends Manage
     public function groupEdit()
     {
         $promotionModel = new PromotionModel();
-        $where[] = ['id','=',input('param.id/d','0')];
+        $id             = input('param.id/d', '0');
+        $where[]        = ['id', '=', $id];
 
-        $where[] = ['type','in',[$promotionModel::TYPE_GROUP,$promotionModel::TYPE_SKILL]];
-        $info = $promotionModel->where($where)->find();
+        $where[] = ['type', 'in', [$promotionModel::TYPE_GROUP, $promotionModel::TYPE_SKILL]];
+        $info    = $promotionModel->where($where)->find();
 
-        if(!$info){
+        if (!$info) {
             $this->error('没有找到此促销记录');
         }
+        //取促销信息
+        $conditionModel = new PromotionCondition();
+        $promotion = $conditionModel->where(['promotion_id'=>$id])->find();
+        $goods['goods_id'] = '';
+        if($promotion){
+            $params = json_decode($promotion['params'],true);
+            $goods['goods_id'] = $params['goods_id'];
+        }
+        $this->assign('goods', $goods);
 
-        if(Request::isPost()){
-            if(!input('?param.name')){
+        if (Request::isPost()) {
+            if (!input('?param.name')) {
                 return error_code(15001);
             }
-            if(!input('?param.date') || !input('param.date')){
+            if (!input('?param.date') || !input('param.date')) {
                 return error_code(15002);
-            }else{
-                $theDate = explode(' 到 ',input('param.date'));
-                if(count($theDate) != 2){
+            } else {
+                $theDate = explode(' 到 ', input('param.date'));
+                if (count($theDate) != 2) {
                     return error_code(15002);
                 }
             }
-            $data['name'] = input('param.name');
-            $data['stime'] = strtotime($theDate[0]);
-            $data['etime'] = strtotime($theDate[1]);
-            $data['status'] = input('param.status/d',2);
-            $data['sort'] = input('param.sort/d',100);
-            $data['exclusive'] = input('param.exclusive/d',1);
-            $promotionModel = new PromotionModel();
+            $data['name']      = input('param.name');
+            $data['stime']     = strtotime($theDate[0]);
+            $data['etime']     = strtotime($theDate[1]);
+            $data['status']    = input('param.status/d', 2);
+            $data['sort']      = input('param.sort/d', 100);
+            $data['exclusive'] = input('param.exclusive/d', 2);
+            $params = input('param.params/a', []);
+            if(isset($params['salesnum'])&&!$params['salesnum']){
+                $params['salesnum'] = rand(1,10);
+            }
+            $data['params'] = json_encode($params);
+            $promotionModel    = new PromotionModel();
+            //保存或更新促销条件商品
+
+            $conditionModel->where(['promotion_id' => $id])->delete();
+            $goods_id      = input('post.goods_id');
+            $conditionData = [
+                'promotion_id' => $id,
+                'code'         => 'GOODS_IDS',
+                'params'       => ['goods_id'=>$goods_id,'nums'=>'1'],
+            ];
+            $conditionRes  = $conditionModel->addData($conditionData);
+            if (!$conditionRes['status']) {
+                return $conditionRes;
+            }
             $id = $promotionModel->where($where)->update($data);
             return [
                 'status' => true,
-                'data' => url('promotion/edit',['id'=>$id]),
-                'msg' => ''
+                'data'   => url('promotion/edit', ['id' => $id]),
+                'msg'    => '',
             ];
         }
-        $info['params'] = json_decode($info['params'],true);
-        $this->assign('info',$info);
+        $info['params'] = json_decode($info['params'], true);
+        $this->assign('info', $info);
 
         return $this->fetch('groupEdit');
+    }
+
+    /**
+     * 先删除促销信息，促销条件和结果可能跟订单有关，暂时不删除
+     * @return array|mixed
+     */
+    public function groupdel(){
+        $promotionModel = new PromotionModel();
+        $where['id'] = input('param.id');
+        $info = $promotionModel->where($where)->find();
+        if(!$info){
+            return error_code(10002);
+        }
+        if($promotionModel::destroy($info['id'])){
+            return [
+                'status' => true,
+                'data' => '',
+                'msg' => ''
+            ];
+        }else{
+            return error_code(10007);
+        }
     }
 }

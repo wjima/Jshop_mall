@@ -10,7 +10,7 @@ class weixin{
 
     private  $oauth = '';
     public  $name = '微信登录';
-    public  $icon = 'http://img1.imgtn.bdimg.com/it/u=2454568623,2405472062&fm=11&gp=0.jpg';//图标地址
+    public  $icon = 'https://b2c.jihainet.com/static/images/wechat_login.png';//图标地址
     public function __construct()
     {
         $this->oauth = load_wechat('Oauth');

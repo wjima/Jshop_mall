@@ -56,7 +56,7 @@ class Products extends Common
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
      */
-    public function getProductInfo($id,$isPromotion = true)
+    public function getProductInfo($id,$isPromotion = true,$promotion_type = '')
     {
         $result  = [
             'status' => false,
@@ -170,7 +170,7 @@ class Products extends Common
                 ]
             ];
             $promotionModel = new Promotion();
-            $cart = $promotionModel->toPromotion($miniCart);
+            $cart = $promotionModel->toPromotion($miniCart,$promotion_type);
             //把促销信息和新的价格等，覆盖到这里
             if($cart['list'][0]['products']['promotion_list']){
                 $newProduct = $cart['list'][0]['products'];

@@ -1,0 +1,1 @@
+jshop_coupon` DROP `seller_id`;

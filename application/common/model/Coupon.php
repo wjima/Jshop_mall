@@ -14,6 +14,7 @@ use app\common\model\Promotion;
 class Coupon extends Common
 {
     protected $autoWriteTimestamp = true;
+    protected $createTime = 'ctime';
     protected $updateTime = 'utime';
 
     const USED_NO = 1;      //未使用
@@ -320,5 +321,54 @@ class Coupon extends Common
             ];
         }
         return $return_data;
+    }
+
+    /**
+     * 批量生成优惠券
+     * @param $promotion_id
+     * @param $nums     数量
+     * @return array
+     * @throws \Exception
+     */
+    public function createCoupon($promotion_id,$nums){
+        $result = [
+            'status' => false,
+            'msg' => '',
+            'data' => []
+        ];
+        //判断promotin_id是否是合法的
+        //::todo
+
+
+        if($nums > 5000){
+            $result['msg'] = '一次最多可以生生5000张';
+            return $result;
+        }
+
+        $data = [];
+        for($i = 0 ;$i<$nums;$i++){
+            $data[] = [
+                'coupon_code' => $this->getCouponNumber($promotion_id),
+                'promotion_id' => $promotion_id
+            ];
+        }
+        $re = $this->saveAll($data);
+
+        if(!$re->isEmpty()){
+            $result['status'] = true;
+            $result['data'] = $re->hidden(['promotion_id','is_used','user_id','used_id','ctime','utime'])->toArray();//array_column($re->toArray(),'coupon_code');
+        }else{
+            $result['msg'] = '一张都没生成';
+        }
+        return $result;
+    }
+
+    /**
+     * 获取优惠券的券码
+     * @param $id       优惠券id
+     * @return string
+     */
+    private function getCouponNumber($id){
+        return strtoupper(substr_replace(dechex($id),substr(md5(uniqid(rand(), true)),4,16),2,0));
     }
 }

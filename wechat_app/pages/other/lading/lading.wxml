@@ -41,7 +41,8 @@
           </view>
           <view class='bottom'>
             <view>
-              <view class='bottom-right' bindtap='ladingWrite' data-id="{{item.id}}">提货单核销</view>
+              <view wx:if="{{item.status == 1 && item.order_info.pay_status == 2 && item.order_info.ship_status == 3}}" class='bottom-right' bindtap='ladingWrite' data-id="{{item.id}}">提货单核销</view>
+              <view wx:if="{{item.status == 2}}" class='bottom-right' bindtap='ladingDel' data-id="{{item.id}}">删除</view>
             </view>
           </view>
         </view>

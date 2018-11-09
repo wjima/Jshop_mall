@@ -1,7 +1,7 @@
 var config = require('config.js');
 var common = require('common.js');
 //需要token才能访问的数组
-var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode', 'user.getusership', 'user.vuesaveusership', 'user.removeship', 'user.setdefship', 'user.getshipdetail', 'user.editship', 'user.getuserpoint', 'store.isclerk', 'store.storeladinglist', 'store.getdefaultstore'];
+var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode', 'user.getusership', 'user.vuesaveusership', 'user.removeship', 'user.setdefship', 'user.getshipdetail', 'user.editship', 'user.getuserpoint', 'store.isclerk', 'store.storeladinglist', 'store.getdefaultstore', 'store.ladingdel', 'store.ladinginfo', 'store.lading'];
 
 //接口统一封装
 function api(method,data,callback,show = true){
@@ -790,6 +790,24 @@ function getStoreList(data, callback){
         callback(res);
     });
 }
+//删除提货单
+function ladingDel (data, callback) {
+    api('store.ladingdel', data, function (res){
+        callback(res);
+    });
+}
+//获取提货单详情
+function ladingInfo (data, callback) {
+    api('store.ladinginfo', data, function(res){
+        callback(res);
+    });
+}
+//提货单核销
+function lading(data, callback) {
+    api('store.lading', data, function (res){
+        callback(res);
+    });
+}
 
 module.exports = {
   login1: login1,
@@ -875,5 +893,8 @@ module.exports = {
   groupInfo: groupInfo,
   getDefaultStore: getDefaultStore,
   getStoreSwitch: getStoreSwitch,
-  getStoreList: getStoreList
+  getStoreList: getStoreList,
+  ladingDel: ladingDel,
+  ladingInfo: ladingInfo,
+  lading: lading
 }

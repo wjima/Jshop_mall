@@ -98,7 +98,7 @@ class Store extends Api
     {
         $key = Request::param('key');
         $model = new BillLading();
-        return $model->getInfo($key);
+        return $model->getInfo($key, $this->userId);
     }
 
 
@@ -111,5 +111,20 @@ class Store extends Api
         $lading_id = Request::param('lading_id');
         $model = new BillLading();
         return $model->ladingOperating($lading_id, $this->userId);
+    }
+
+
+    /**
+     * 提货单删除
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function ladingDel()
+    {
+        $lading_id = Request::param('lading_id');
+        $model = new BillLading();
+        return $model->del($lading_id, $this->userId);
     }
 }

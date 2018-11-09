@@ -29,20 +29,23 @@
     <!-- 商品价格和销量 -->
     <view class='price-salesvolume'>
       <view class='commodity-price'>
-        <text class='current-price'>￥6666.66{{goodsInfo.product.price}}</text>
-        <text class='cost-price'>￥555{{goodsInfo.product.mktprice}}</text>
+        <text class='current-price'>￥{{goodsInfo.product.price}}</text>
+        <text class='cost-price'>￥{{goodsInfo.product.mktprice}}</text>
       </view>
       <view class='commodity-salesvolume'>
-        <text>已售22{{goodsInfo.buy_count}}件/剩余88件</text>
-        <text>累计销售22{{goodsInfo.buy_count}}件</text>
+        <text>已售{{goodsInfo.buy_count}}件/剩余{{goodsInfo.last_count}}件</text>
+        <text>累计销售{{goodsInfo.total_count}}件</text>
       </view>
       <image class='commodity-time-img' src='../../image/sanjiao.png'></image>
-      <view class='commodity-time'>
-        <text>距离开始仅剩</text>
-        <view class='commodity-day'><text>00</text> 天 <text>05</text> : <text>26</text> : <text>30</text></view>
+      
+      <view class='commodity-time' wx:if="{{goodsInfo.lasttime!='已经结束'}}">
+        <text>距结束仅剩</text>
+        <view class='commodity-day'><text>{{goodsInfo.lasttime.day}}</text> 天 <text>{{goodsInfo.lasttime.hour}}</text> : <text>{{goodsInfo.lasttime.minute}}</text> : <text>{{goodsInfo.lasttime.second}}</text></view>
+      </view>
+      <view class='commodity-time' wx:if="{{goodsInfo.lasttime=='已经结束'}}">
+        已结束
       </view>
     </view>
-
     <!-- 促销服务 -->
     <view class='salespromotion-service'>
       <!-- 标签 -->
@@ -179,7 +182,8 @@
   </view>
   <view class='detail-footer-right' wx:if="{{status}}">
     <!-- <view bindtap='goodsAddCart' class='addtocart'>加入购物车</view> -->
-    <view bindtap='buyNow' class='buynow'>立即购买</view>
+    <view bindtap='buyNow' class='buynow'  wx:if="{{goodsInfo.group_type =='3'}}">立即团购</view>
+    <view bindtap='buyNow' class='buynow'  wx:if="{{goodsInfo.group_type =='4'}}">立即秒杀</view>
   </view>
   <view class='detail-footer-right' wx:if="{{!status}}">
     <view class='stockno'>该商品已售罄</view>

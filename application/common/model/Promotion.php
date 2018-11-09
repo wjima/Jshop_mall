@@ -234,6 +234,7 @@ class Promotion extends Common
         $conditionModel  = new PromotionCondition();
         $goodsModel      = new Goods();
         if (!$list->isEmpty()) {
+            $i = 0;
             foreach ((array)$list->toArray() as $key => $value) {
                 $extendParams           = json_decode($value['params'], true);
                 $filter['promotion_id'] = $value['id'];
@@ -245,15 +246,16 @@ class Promotion extends Common
                         $res          = $goodsModel->getList('*', $goodsWhere, 'id desc', 1, 10000);
                         if ($res['status']) {
                             foreach ($res['data'] as $gk => $gv) {
-                                $activeGoods[$gv['id']]             = $gv;
-                                $activeGoods[$gv['id']]['group_id'] = $value['id'];
-                                $activeGoods[$gv['id']]['status']   = $value['status'];
-                                $activeGoods[$gv['id']]['time']     = time();
-                                $activeGoods[$gv['id']]['stime']    = $value['stime'];
-                                $activeGoods[$gv['id']]['etime']    = $value['etime'];
-                                $activeGoods[$gv['id']]['limit']    = $extendParams['limit'];
-                                $activeGoods[$gv['id']]['salesnum'] = $extendParams['salesnum'];
-                                $activeGoods[$gv['id']]['nums']     = $params['nums'];
+                                $activeGoods[$i]             = $gv;
+                                $activeGoods[$i]['group_id'] = $value['id'];
+                                $activeGoods[$i]['status']   = $value['status'];
+                                $activeGoods[$i]['time']     = time();
+                                $activeGoods[$i]['stime']    = $value['stime'];
+                                $activeGoods[$i]['etime']    = $value['etime'];
+                                $activeGoods[$i]['limit']    = $extendParams['limit'];
+                                $activeGoods[$i]['salesnum'] = $extendParams['salesnum'];
+                                $activeGoods[$i]['nums']     = $params['nums'];
+                                $i++;
                             }
                         }
 
@@ -272,38 +274,40 @@ class Promotion extends Common
      * @param string $token 登录信息
      * @return array
      */
-    public function getGroupDetial($group_id = 0,$goods_id = 0,$token = ''){
+    public function getGroupDetial($group_id = 0, $goods_id = 0, $token = '')
+    {
         $result = [
             'status' => false,
-            'data' => [],
-            'msg' => '关键参数丢失'
+            'data'   => [],
+            'msg'    => '关键参数丢失',
 
         ];
-        if(!$group_id||!$goods_id){
+        if (!$group_id || !$goods_id) {
             return $result;
         }
-        $where = [];
-        $where['id'] = $group_id;
+        $where           = [];
+        $where['id']     = $group_id;
         $where['status'] = self::STATUS_OPEN;
-        $promotion = $this->where($where)->find();
-        if(!$promotion){
+        $promotion       = $this->where($where)->find();
+        if (!$promotion) {
             $result['msg'] = '无此活动';
             return $result;
         }
 
         $goodsModel = new Goods();
-        $goods = $goodsModel->getGoodsDetial($goods_id,'*',$token);
-        if(!$goods['status']){
-           return $goods;
+        $goods      = $goodsModel->getGoodsDetial($goods_id, '*', $token);
+        if (!$goods['status']) {
+            return $goods;
         }
-        $extendParams = json_decode($promotion['params'],true);
-        $goods['data']['group_id'] = $promotion['id'];
-        $goods['data']['status']   = $promotion['status'];
-        $goods['data']['time']     = time();
-        $goods['data']['stime']    = $promotion['stime'];
-        $goods['data']['etime']    = $promotion['etime'];
-        $goods['data']['limit']    = $extendParams['limit'];
-        $goods['data']['salesnum'] = $extendParams['salesnum'];
+        $extendParams                = json_decode($promotion['params'], true);
+        $goods['data']['group_id']   = $promotion['id'];
+        $goods['data']['group_type'] = $promotion['type'];
+        $goods['data']['status']     = $promotion['status'];
+        $goods['data']['time']       = time();
+        $goods['data']['stime']      = $promotion['stime'];
+        $goods['data']['etime']      = $promotion['etime'];
+        $goods['data']['limit']      = $extendParams['limit'];
+        $goods['data']['salesnum']   = $extendParams['salesnum'];
 
         return $goods;
     }

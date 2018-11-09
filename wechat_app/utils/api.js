@@ -760,7 +760,18 @@ function ladingList(callback) {
         callback(res);
     });
 }
-
+//团购数据列表
+function getGroup(data,callback) {
+  api('group.getlist', data, function (res) {
+      callback(res);
+  });
+}
+//团购秒杀详情获取接口
+function groupInfo(data, callback) {
+  api('group.getgoodsdetial', data, function (res) {
+    callback(res);
+  });
+}
 module.exports = {
   login1: login1,
   login2: login2,
@@ -840,5 +851,7 @@ module.exports = {
   editship: editship,
   getUserPoint: getUserPoint,
   isClerk: isClerk,
-  ladingList: ladingList
+  ladingList: ladingList,
+  getGroup: getGroup,
+  groupInfo: groupInfo
 }

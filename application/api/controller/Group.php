@@ -27,7 +27,6 @@ class Group extends Api
         $type      = input('type',$promotion::TYPE_GROUP);//默认团购
         $stime     = input('stime','0');//开始时间
         $etime     = input('etime','0');//结束时间
-
         $params['type'] = $type;
         if($stime){
             $params['stime'] = $stime;
@@ -41,6 +40,7 @@ class Group extends Api
             $return_data['data'] = $list;
             $return_data['msg'] = '查询成功';
         }
+
         return $return_data;
     }
 

@@ -95,7 +95,93 @@ function throttle(fn, context, delay) {
     fn.call(context);
   }, delay);
 }
+//团购/秒杀列表倒计时
+function groupCountDown(that) {
+  var group = that.data.group;
+    var nowTime = new Date().getTime();
+    for (var i = 0; i < group.length; i++){
+      var endTime = group[i].etime * 1000 || [];
+      var total_micro_second = endTime - nowTime || [];
+      if (total_micro_second <= 0) {
+        group[i].lasttime = '已经结束';
+      }else{
+        group[i].lasttime = dateformat(total_micro_second)
+      }
+    }
+    // 渲染倒计时时钟
+    that.setData({
+      group: group
+    });
+    setTimeout(function () {
+      total_micro_second -= 1000;
+      groupCountDown(that);
+    }, 1000)
+  }
 
+//秒杀列表倒计时
+function seckillCountDown(that) {
+  var seckill = that.data.seckill;
+  var nowTime = new Date().getTime();
+  for (var i = 0; i < seckill.length; i++) {
+    var endTime = seckill[i].etime * 1000 || [];
+    var total_micro_second = endTime - nowTime || [];
+    if (total_micro_second <= 0) {
+      seckill[i].lasttime = '已经结束';
+    } else {
+      seckill[i].lasttime = dateformat(total_micro_second)
+    }
+  }
+  // 渲染倒计时时钟
+  that.setData({
+    seckill: seckill
+  });
+  setTimeout(function () {
+    total_micro_second -= 1000;
+    seckillCountDown(that);
+  }, 1000)
+}
+
+//团购/秒杀详情倒计时
+function groupDetailCountDown(that) {
+  var goodsInfo = that.data.goodsInfo;
+  var nowTime = new Date().getTime();
+  var endTime = goodsInfo.etime * 1000 || [];
+    var total_micro_second = endTime - nowTime || [];
+    if (total_micro_second <= 0) {
+      goodsInfo.lasttime = '已经结束';
+    } else {
+      goodsInfo.lasttime = dateformat(total_micro_second)
+    }
+  
+  // 渲染倒计时时钟
+  that.setData({
+    goodsInfo: goodsInfo
+  });
+  setTimeout(function () {
+    total_micro_second -= 1000;
+    groupDetailCountDown(that);
+  }, 1000)
+}
+ // 时间格式化输出，如11:03 25:19 每1s都会调用一次
+ function dateformat(micro_second) {
+    var time = {};
+    // 总秒数
+    var second = Math.floor(micro_second / 1000);
+    // 天数
+    time.day = PrefixInteger(Math.floor(second / 3600 / 24),2);
+    // 小时
+    time.hour = PrefixInteger(Math.floor(second / 3600 % 24),2);
+    // 分钟
+    time.minute = PrefixInteger(Math.floor(second / 60 % 60),2);
+    // 秒
+    time.second = PrefixInteger(Math.floor(second % 60),2);
+    return time;
+ }
+
+//不足位数前面补0
+function PrefixInteger(num, length) {
+  return (Array(length).join('0') + num).slice(-length); 
+}
 module.exports = {
   deepCopy:deepCopy,
   jumpToLogin: jumpToLogin,
@@ -103,5 +189,8 @@ module.exports = {
   formatMoney: formatMoney,
   errorToBack: errorToBack,
   successToShow: successToShow,
-  throttle: throttle
+  throttle: throttle,
+  groupCountDown: groupCountDown,
+  groupDetailCountDown: groupDetailCountDown,
+  seckillCountDown: seckillCountDown
 }

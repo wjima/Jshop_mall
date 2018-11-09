@@ -207,7 +207,7 @@
   margin: auto;
 }
 .footer-right{
-  width: 350rpx;
+  width: 400rpx;
   line-height: 100rpx;
   display: inline-block;
   text-align: right;

@@ -170,3 +170,14 @@
   border-radius: 24rpx;
   color: #666;
 }
+.sousuo{
+  display: inline-block;  
+  height:60rpx;
+  position:absolute;
+  top:18rpx;
+  right:20rpx;
+
+}
+.sousuo button{
+  font-size: 24rpx;
+}

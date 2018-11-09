@@ -31,6 +31,10 @@ Page({
     usedCoupon: '', //使用的优惠券号
     usedCouponName: '未使用', //使用的优惠券名
     couponPmt: 0.00, //优惠券优惠金额
+    express: true,
+    lifting: false,
+    selected: true,
+    selected1: false,
   },
 
   //页面加载
@@ -179,6 +183,13 @@ Page({
           }
         }
       });
+    });
+  },
+
+  // 选择门店
+  gostore: function () {
+    wx.redirectTo({
+      url: '../../other/store/store'
     });
   },
 
@@ -374,5 +385,18 @@ Page({
           pointStatus: status
       });
       page.getProductData();
+  },
+  // 配送方式切换
+  express: function (e) {
+    this.setData({
+      lifting: false,
+      express: true
+    });
+  },
+  lifting: function (e) {
+    this.setData({
+      express: false,
+      lifting: true
+    });
   }
 });

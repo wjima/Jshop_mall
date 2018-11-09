@@ -1,0 +1,13 @@
+.write{
+  padding-top: 50rpx;
+}
+.sousuo{
+  display: inline-block;  
+  height:60rpx;
+  position:absolute;
+  top:18rpx;
+  right:20rpx;
+}
+.sousuo button{
+  font-size: 24rpx;
+}

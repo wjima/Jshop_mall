@@ -1,1 +1,10 @@
-<text>提货单核销</text>
+<view class='write'>
+  <view class="header-input">
+    <input class="search-input" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+      <icon size='15' type='search'></icon> 
+    </input>
+    <view class='sousuo' bindtap='search'>
+        <button>搜索</button>
+    </view>
+  </view>
+</view>

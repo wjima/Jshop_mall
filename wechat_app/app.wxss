@@ -20,7 +20,7 @@
   z-index: 1000;
 }
 .search-input{
-  width: 532rpx;
+  width: 506rpx;
   height: 60rpx;
   border-radius: 100rpx;
   font-size: 24rpx;

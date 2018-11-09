@@ -64,7 +64,7 @@
                 {field: 'operating', title: '操作', width:200, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/couponEdit')}?id=' + data.id + '">编辑</a>';
-                    //html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-upload" data-id="' + data.id + '" >下载</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-upload" data-id="' + data.id + '" >下载</a>';
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';
                     return html;
                 }}
@@ -102,32 +102,53 @@
         });
         //优惠券下载
         $(document).on('click','.option-upload',function(){
+            var tpl = '<form class="layui-form export-form"  action="" >'+
+                    '<div class="layui-form-item">'+
+                    '<div class="layui-margin-10">'+
+                    '<blockquote class="layui-elem-quote layui-text">'+
+                    '请输入导出数量，最多可以导出5000张'+
+                    '</blockquote>'+
+                    '</div>'+
+                    '<div class="layui-inline">'+
+                    '<label class="layui-form-label">导出数量：</label>'+
+                    '<input type="text" name="nums" id="nums" lay-verify="title" style="width:100px;" placeholder="请输入数量" autocomplete="off" class="layui-input">'+
+                    '</div>'+
+                    '<div class="layui-inline">'+
+                    '<label class="layui-form-label">任务名称：</label>'+
+                    '<input type="text" name="taskname" id="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">'+
+                    '</div>'+
+                    '</div>'+
+                    '</form>';
             var id = $(this).attr('data-id');
-            $.ajax({
-                type:'get',
-                url: "{:url('promotion/couponUpload')}",
-                data:'',
-                success:function(e){
-                    if(e.status){
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,//
-                            area: ['400px', '500px'],
-                            title:'下载优惠券',
-                            btn: ['确定','取消'],
-                            yes: function(index, layero){
-                                if($('#condition_code').val() == ''){
-                                    layer.msg('请选择促销条件');
-                                    return false;
-                                }
-                                layer.close(index);
-                                callback($('#condition_code').val());
-//
+            layer.open({
+                type: 1,
+                title:'优惠券导出',
+                area: ['400px', '300px'], //宽高
+                btn:['确定','取消'],
+                content: tpl,
+                yes:function () {
+                    var nums = $('#nums').val();
+                    var taskname = $('#taskname').val();
+                    var filter = {
+                        nums:nums,
+                        id:id
+                    };
+                    var data = {
+                        'filter': JSON.stringify(filter),
+                        'taskname': taskname,
+                        'model': "Coupon"
+                    };
+                    JsPost("{:url('Ietask/export')}",data,function(res){
+                                layer.msg(res.msg, {time:1500}, function(){
+                                    if(res.status){
+                                        layer.closeAll();
+                                        //layer.close(index);
+                                    }
+                                });
                             }
-                        });
-                    }else{
-                        layer.msg(e.msg);
-                    }
+                    );
+                },btn2:function () {
+                    layer.closeAll();
                 }
             });
         });

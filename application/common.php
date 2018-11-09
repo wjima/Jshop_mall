@@ -843,3 +843,33 @@ function checkAddons($hookname = '')
         return false;
     }
 }
+
+/**
+ * 判断商品是否参加团购
+ * @param int $gid
+ * @return array
+ */
+function isInGroup($gid = 0, &$promotion_id = 0)
+{
+    if (!$gid) {
+        return false;
+    }
+
+    $promotion = new app\common\model\Promotion();
+
+    $where[]   = ['p.status', 'eq', $promotion::STATUS_OPEN];
+    $where[]   = ['p.stime', 'lt', time()];
+    $where[]   = ['p.etime', 'gt', time()];
+    $where[]   = ['pc.params', 'like', '%"' . $gid . '"%'];
+    $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
+    $condition = $promotion->field('p.id as id')
+        ->alias('p')
+        ->join('promotion_condition pc', 'pc.id = p.id')
+        ->where($where)
+        ->find();
+    if ($condition) {
+        $promotion_id = $condition['id'];
+        return true;
+    }
+    return false;
+}

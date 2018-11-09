@@ -56,16 +56,15 @@ class Group extends Api
             'data'   => [],
         ];
         $goods_id    = input('id/d', 0);
-        $group_id    = input('group_id/d', 0);
         $token       = input('token', '');//token值 会员登录后传
 
-        if (!$goods_id || !$group_id) {
+        if (!$goods_id) {
             $return_data['msg']    = '关键参数缺失';
             $return_data['status'] = false;
             return $return_data;
         }
         $promotion   = new Promotion();
-        $returnGoods = $promotion->getGroupDetial($group_id, $goods_id, $token);
+        $returnGoods = $promotion->getGroupDetial($goods_id, $token);
         if ($returnGoods['status']) {
             $return_data ['msg']  = '查询成功';
             $return_data ['data'] = $returnGoods['data'];

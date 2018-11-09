@@ -100,14 +100,20 @@ function groupCountDown(that) {
   var group = that.data.group;
     var nowTime = new Date().getTime();
     for (var i = 0; i < group.length; i++){
-      var endTime = group[i].etime * 1000 || [];
-      var total_micro_second = endTime - nowTime || [];
-      if (total_micro_second <= 0) {
-        group[i].lasttime = '已经结束';
+      var startTime = group[i].stime * 1000 || [];
+      if (startTime - nowTime>0){
+        group[i].lasttime = '即将开始';
       }else{
-        group[i].lasttime = dateformat(total_micro_second)
+        var endTime = group[i].etime * 1000 || [];
+        var total_micro_second = endTime - nowTime || [];
+        if (total_micro_second <= 0) {
+          group[i].lasttime = '已经结束';
+        } else {
+          group[i].lasttime = dateformat(total_micro_second)
+        }
       }
     }
+    
     // 渲染倒计时时钟
     that.setData({
       group: group

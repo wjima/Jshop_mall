@@ -227,7 +227,7 @@ hot-recommends .name{
 }
 .group-recommends .recommends-body-bottom{
   width: 366rpx;
-  height: 200rpx;
+  height: 160rpx;
 }
 .name{
   overflow:hidden;

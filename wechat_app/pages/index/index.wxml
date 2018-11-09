@@ -81,10 +81,12 @@
             <view class='recommends-body-bottom'>
               <text class='name'>{{item.name}}</text>
               <view class='price-cart'>
-                <view class='price-time' wx:if="{{item.lasttime!='已经结束'}}">剩 :
+                <view class='price-time' wx:if="{{item.lasttime!='已经结束'||item.lasttime!='即将开始'}}">剩 :
                   <text>{{item.lasttime.day}}</text> 天 <text>{{item.lasttime.hour}}</text> : <text>{{item.lasttime.minute}}</text> :<text>{{item.lasttime.second}}</text>
                  </view>
                  <view class='price-time' wx:if="{{item.lasttime=='已经结束'}}">已结束</view>
+                 <view class='price-time' wx:if="{{item.lasttime=='即将开始'}}">即将开始</view>
+
 
                 <text class='price'>￥{{item.price}}</text>
                 <!-- <image class='icon' src='../image/cart.png'></image> -->

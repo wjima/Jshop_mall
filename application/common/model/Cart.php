@@ -50,7 +50,6 @@ class Cart extends Common
             return $productInfo;
 
         }
-
         $canBuyNum = $productInfo['data']['stock'];
 
         $where[] = array('product_id', 'eq', $product_id);
@@ -208,7 +207,6 @@ class Cart extends Common
             'msg' => ""
         ];
         $cartList = $this->getList($userId, $id, $display);
-
         if(!$cartList['status']){
             $result['msg'] = $cartList['msg'];
             return $result;

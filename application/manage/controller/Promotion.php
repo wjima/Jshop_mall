@@ -475,6 +475,7 @@ class Promotion extends Manage
                     return error_code(15002);
                 }
             }
+
             $promotionModel = new PromotionModel();
             $data['name']   = input('param.name');
             $data['stime']  = strtotime($theDate[0]);
@@ -487,6 +488,11 @@ class Promotion extends Manage
             if(isset($params['salesnum'])&&!$params['salesnum']){
                 $params['salesnum'] = rand(1,10);
             }
+            //判断是否已经加入团购
+            if(isInGroup($params['goods_id'])){
+                return error_code(15017);
+            }
+
             $data['params'] = json_encode($params);
             $id             = $promotionModel->insertGetId($data);
             return [
@@ -531,6 +537,11 @@ class Promotion extends Manage
                 $theDate = explode(' 到 ', input('param.date'));
                 if (count($theDate) != 2) {
                     return error_code(15002);
+                }
+            }
+            if(isInGroup($params['goods_id'],$promotion_id)){
+                if($promotion_id != $id){
+                    return error_code(15017);
                 }
             }
             $data['name']      = input('param.name');

@@ -431,7 +431,7 @@ Page({
       var data = {
         product_id: page.data.productId,
         nums: page.data.nums,
-        type: 2
+        type: 2,
       }
       app.api.goodsAddCart(data, function (res) {
         wx.navigateTo({

@@ -25,18 +25,14 @@ class Promotion extends Common
 
 
     //购物车的数据传过来，然后去算促销
-    public function toPromotion($cart,$promotion_type = ''){
+    public function toPromotion($cart){
         //return $cart;       //暂时先返回去，不做促销，做好了之后再放开。
         //按照权重取所有已生效的促销列表
         $where[] = ['status','eq',self::STATUS_OPEN];
         $where[] = ['stime','lt',time()];
         $where[] = ['etime','gt',time()];
+        $where[] = ['type','eq',self::TYPE_PROMOTION];
 
-        if($promotion_type){
-            $where[] = ['type','eq',$promotion_type];
-        }else{
-            $where[] = ['type','eq',self::TYPE_PROMOTION];
-        }
         $list = $this->where($where)->order('sort','asc')->select();
         foreach($list as $v){
             $this->setPromotion($v,$cart);
@@ -45,6 +41,24 @@ class Promotion extends Common
                 break;
             }
         }
+
+        //团购
+        unset($where);
+        $where[] = ['status','eq',self::STATUS_OPEN];
+        $where[] = ['stime','lt',time()];
+        $where[] = ['etime','gt',time()];
+        $where[] = ['type','in',[self::TYPE_GROUP,self::TYPE_SKILL]];
+
+        $list = $this->where($where)->order('sort','asc')->select();
+        foreach($list as $v){
+            $this->setPromotion($v,$cart);
+            //如果排他，就跳出循环，不执行下面的促销了
+            if($v['exclusive'] == self::EXCLUSIVE_YES){
+                break;
+            }
+        }
+
+
         return $cart;
     }
 
@@ -80,6 +94,7 @@ class Promotion extends Common
     }
 
 
+
     //根据促销信息，去计算购物车的促销情况
     private function setPromotion ($promotionInfo,&$cart){
         $conditionModel = new PromotionCondition();
@@ -87,6 +102,7 @@ class Promotion extends Common
         $conditionList = $conditionModel->field('*')->where($where)->select();
         //循环取出所有的促销条件，有一条不满足，就不行，就返回false
         $key = true;
+
         foreach($conditionList as $v){
             $re = $conditionModel->check($v,$cart,$promotionInfo);
             if($key){
@@ -95,10 +111,12 @@ class Promotion extends Common
                 }
             }
         }
+
         if($key){
             //走到这一步就说明所有的促销条件都符合，那么就去计算结果
             $resultModel = new PromotionResult();
             $resultList = $resultModel->where($where)->select();
+
             foreach($resultList as $v){
                 $resultModel->toResult($v,$cart,$promotionInfo);
             }
@@ -231,12 +249,17 @@ class Promotion extends Common
      */
     public function getGroupList($params = [])
     {
-        $where['type']   = isset($params['type']) ? $params['type'] : self::TYPE_GROUP;
-        $where['status'] = self::STATUS_OPEN;
+        $type = isset($params['type']) ? $params['type'] : self::TYPE_GROUP;
+        $where[] = ['type','=',$type];
+        $where[] = ['status','=',self::STATUS_OPEN];
+        $where[] = ['stime','lt',time()];
+        $where[] = ['etime','gt',time()];
         $list            = $this->field('*')->where($where)->order('sort asc')->select();
         $activeGoods     = [];//活动商品列表
         $conditionModel  = new PromotionCondition();
         $goodsModel      = new Goods();
+        $orderItem = new OrderItems();
+
         if (!$list->isEmpty()) {
             $i = 0;
             foreach ((array)$list->toArray() as $key => $value) {
@@ -245,25 +268,22 @@ class Promotion extends Common
                 $condition         = $conditionModel->field('*')->where($filter)->find();
                 if ($condition) {
                     $params       = json_decode($condition['params'], true);
-                    $res          = $goodsModel->getGoodsDetial($params['goods_id'],'*','',$where['type']);
+                    $res          = $goodsModel->getGoodsDetial($params['goods_id'],'*','');
                     if ($res['status']) {
-                        $activeGoods[$i]             = $res;
+
+                        $activeGoods[$i]             = $res['data'];
                         $activeGoods[$i]['group_id'] = $value['id'];
                         $activeGoods[$i]['status']   = $value['status'];
                         $activeGoods[$i]['time']     = time();
                         $activeGoods[$i]['stime']    = $value['stime'];
                         $activeGoods[$i]['etime']    = $value['etime'];
-                        $activeGoods[$i]['limit']    = $extendParams['limit'];
-                        $activeGoods[$i]['salesnum'] = $extendParams['salesnum'];
-                        $activeGoods[$i]['totalnum'] = $extendParams['totalnum'];//总量
-                        $activeGoods[$i]['salestotalnum'] = $res['buy_count'];//总量
-                        $activeGoods[$i]['nums']     = $params['nums'];
                         $i++;
                     }
                 }
 
             }
         }
+
         return $activeGoods;
     }
 
@@ -274,18 +294,23 @@ class Promotion extends Common
      * @param string $token 登录信息
      * @return array
      */
-    public function getGroupDetial($group_id = 0, $goods_id = 0, $token = '')
+    public function getGroupDetial($goods_id = 0, $token = '')
     {
         $result = [
             'status' => false,
             'data'   => [],
             'msg'    => '关键参数丢失',
         ];
-        if (!$group_id || !$goods_id) {
+        if (!$goods_id) {
             return $result;
         }
-        $where           = [];
+        $where       = [];
+        if(!isInGroup($goods_id,$group_id))
+        {
+            return $result;
+        }
         $where['id']     = $group_id;
+
         $where['status'] = self::STATUS_OPEN;
         $promotion       = $this->where($where)->find();
         if (!$promotion) {
@@ -304,11 +329,6 @@ class Promotion extends Common
         $goods['data']['time']       = time();
         $goods['data']['stime']      = $promotion['stime'];
         $goods['data']['etime']      = $promotion['etime'];
-        $goods['data']['limit']      = $extendParams['limit'];
-        $goods['data']['salesnum']   = $extendParams['salesnum'];
-        $goods['data']['totalnum'] = $extendParams['totalnum'];//总量
-        $goods['data']['salestotalnum'] = $goods['goods']['buy_count'];//总销量
-        $goods['data']['nums']     = $extendParams['nums'];
         return $goods;
     }
 

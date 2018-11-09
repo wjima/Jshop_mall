@@ -33,8 +33,8 @@
         <text class='cost-price'>￥{{goodsInfo.product.mktprice}}</text>
       </view>
       <view class='commodity-salesvolume'>
-        <text>已售{{goodsInfo.buy_count}}件/剩余{{goodsInfo.last_count}}件</text>
-        <text>累计销售{{goodsInfo.total_count}}件</text>
+        <text>已售{{goodsInfo.buy_count}}件/剩余{{goodsInfo.product.stock}}件</text>
+        <text>累计销售{{goodsInfo.buy_count}}件</text>
       </view>
       <image class='commodity-time-img' src='../../image/sanjiao.png'></image>
       

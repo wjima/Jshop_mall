@@ -233,10 +233,9 @@ class Goods extends Common
      * @param $gid
      * @param string $fields
      * @param string $token
-     * @param string $promotion_type 促销类型
      * @return array
      */
-    public function getGoodsDetial($gid,$fields = '*',$token = '',$promotion_type = '')
+    public function getGoodsDetial($gid,$fields = '*',$token = '')
     {
 
         $result = [
@@ -281,14 +280,14 @@ class Goods extends Common
             if(!$default_product){
                 return error_code(10000);
             }
-            $product_info = $productsModel->getProductInfo($default_product['id'],true,$promotion_type);
+            $product_info = $productsModel->getProductInfo($default_product['id'],true);
             if(!$product_info['status']){
                 return $product_info;
             }
             $list['product'] = $product_info['data'];
-
+            $list['price'] = $list['product']['price'];
             if($list['spes_desc']) {
-                $list['spes_desc'] = unserialize($list['spes_desc']);;
+                $list['spes_desc'] = unserialize($list['spes_desc']);
             }
             //取出图片集
             $imagesModel = new GoodsImages();
@@ -304,6 +303,11 @@ class Goods extends Common
             }
             sort($album);
             $list['album']=$album;
+
+            //取出销量
+            $orderItem = new OrderItems();
+            $count = $orderItem->where(['goods_id'=>$gid])->count();
+            $list['buy_count'] = $count;
 
             //获取当前登录是否收藏
             $list['isfav']=$this->getFav($list['id'],$token);

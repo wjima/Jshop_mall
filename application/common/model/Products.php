@@ -56,7 +56,7 @@ class Products extends Common
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
      */
-    public function getProductInfo($id,$isPromotion = true,$promotion_type = '')
+    public function getProductInfo($id,$isPromotion = true)
     {
         $result  = [
             'status' => false,
@@ -69,7 +69,7 @@ class Products extends Common
         }
         $goodsModel = new Goods();
 
-        $goods                 = $goodsModel->where(['id'=>$product['goods_id']])->field('name,image_id,bn,marketable,spes_desc')->find();//后期调整
+        $goods      = $goodsModel->where(['id'=>$product['goods_id']])->field('name,image_id,bn,marketable,spes_desc')->find();//后期调整
         //判断如果没有商品，就返回false
         if(!($goods)){
             return $result;
@@ -170,7 +170,8 @@ class Products extends Common
                 ]
             ];
             $promotionModel = new Promotion();
-            $cart = $promotionModel->toPromotion($miniCart,$promotion_type);
+            $cart = $promotionModel->toPromotion($miniCart);
+
             //把促销信息和新的价格等，覆盖到这里
             if($cart['list'][0]['products']['promotion_list']){
                 $newProduct = $cart['list'][0]['products'];
@@ -183,9 +184,9 @@ class Products extends Common
                 $product['amount'] = $newProduct['amount'];                             //商品总价格
                 $product['promotion_list'] = $promotionList;             //促销列表
                 $product['promotion_amount'] = $newProduct['promotion_amount'];         //如果商品促销应用了，那么促销的金额
+
             }
         }
-
         $result = [
             'status' => true,
             'msg'    => '获取成功',

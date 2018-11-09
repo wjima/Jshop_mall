@@ -40,10 +40,29 @@ class PromotionCondition extends Common
                 $key = false;
                 foreach($cart['list'] as $k => $v){
                     $type = $this->$method($params,$v['products']['goods_id'],$v['nums']);
+
                     if($type > 0){
                         switch ($promotionInfo['type']){
                             case $promotionInfo::TYPE_PROMOTION:
                                 //设置商品促销列表
+                                if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
+                                    $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
+                                        'name' => $promotionInfo['name'],
+                                        'type' => $type
+                                    ];
+                                }
+                                break;
+                            case $promotionInfo::TYPE_GROUP:
+                                //团购
+                                if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
+                                    $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
+                                        'name' => $promotionInfo['name'],
+                                        'type' => $type
+                                    ];
+                                }
+                                break;
+                            case $promotionInfo::TYPE_SKILL:
+                                //秒杀
                                 if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
                                     $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
                                         'name' => $promotionInfo['name'],

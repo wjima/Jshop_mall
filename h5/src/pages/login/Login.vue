@@ -201,7 +201,7 @@ export default {
         },
         // 获取授权登录方式列表
         getAuth () {
-            this.$api.getTrustLogin({url: '/#/author'}, res => {
+            this.$api.getTrustLogin({url: 'author'}, res => {
                 if (res.status) {
                     this.authList = res.data
                 }

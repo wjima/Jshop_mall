@@ -75,7 +75,4 @@ class Group extends Api
         }
         return $return_data;
     }
-
-
-
 }

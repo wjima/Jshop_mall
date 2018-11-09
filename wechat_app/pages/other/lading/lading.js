@@ -5,15 +5,6 @@ Page({
     //页面参数
     data: {
         ladingList: [],
-        page: 1, //当前页
-        limit: 10, //每页显示几条
-        ajaxStatus: true,
-        loading: false,
-        loadingComplete: false,
-        status: '',
-        toView: "",
-        etype: "",
-        nodata: false
     },
 
     //页面加载
@@ -23,6 +14,15 @@ Page({
             page.setData({
                 ladingList: res.data
             });
+        });
+    },
+
+    //提货单核销
+    ladingWrite: function (e) {
+        let page = this;
+        let id = e.currentTarget.dataset.id;
+        wx.navigateTo({
+            url: './write?id='+id,
         });
     }
 })

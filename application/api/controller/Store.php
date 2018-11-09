@@ -3,6 +3,7 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\BillLading;
 use app\common\model\Clerk;
+use app\common\model\Setting;
 use app\common\model\Store as Model;
 use think\facade\Request;
 
@@ -12,6 +13,23 @@ use think\facade\Request;
  */
 class Store extends Api
 {
+    /**
+     * 判断是否开启门店自提
+     * @return array
+     */
+    public function getStoreSwitch()
+    {
+        $return = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => 2
+        ];
+        $settingModel = new Setting();
+        $return['data'] = $settingModel->getValue('store_switch');
+        return $return;
+    }
+
+
     /**
      * 获取默认店铺
      * @return array
@@ -36,7 +54,8 @@ class Store extends Api
     public function getStoreList()
     {
         $model = new Model();
-        return $model->getAllStoreList();
+        $key = Request::param('key', '');
+        return $model->getAllStoreList($key);
     }
 
 
@@ -77,9 +96,9 @@ class Store extends Api
      */
     public function ladingInfo()
     {
-        $lading_id = Request::param('lading_id');
+        $key = Request::param('key');
         $model = new BillLading();
-        return $model->getInfo($lading_id);
+        return $model->getInfo($key);
     }
 
 

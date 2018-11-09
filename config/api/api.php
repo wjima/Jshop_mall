@@ -493,6 +493,10 @@ return [
             'lading' => [
                 'code' => 'lading',
                 'is_login' => true
+            ],
+            'getstoreswitch' => [
+                'code' => 'getStoreSwitch',
+                'is_login' => false
             ]
         ]
     ],

@@ -35,6 +35,15 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux"></div>
                     </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['store_switch']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-7">
+                            <input type="radio" lay-filter="store_switch" name="store_switch" value="1" title="开启" {eq name="$data['store_switch']['value']" value="1" }checked{/eq}>
+                            <input type="radio" lay-filter="store_switch" name="store_switch" value="2" title="不开启" {eq name="$data['store_switch']['value']" value="2" }checked{/eq}>
+                        </div>
+                    </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
                         <div class="layui-input-block">

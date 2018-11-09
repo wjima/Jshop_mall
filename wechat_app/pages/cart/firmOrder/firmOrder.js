@@ -35,6 +35,16 @@ Page({
     lifting: false,
     choose: true,
     entry: false,
+    selected: true,
+    selected1: false,
+    storeSwitch: 2, //没有开启门店自提2
+    receipt_type: 1, //收货方式1快递配送 2上门自提
+    store_id: 0, //门店ID
+    lading_name: '', //自提姓名
+    lading_mobile: '', //自提电话
+    store_name: '暂无门店', //门店名称
+    store_mobile: '', //门店电话
+    store_address: '暂无自提门店', //门店地址
   },
 
   //页面加载
@@ -44,13 +54,25 @@ Page({
       //todo:数据异常处理
       return false;
     }
+    this.getStoreSwitch();
     this.getDefaultShip();
+    this.getDefaultStore();
     this.getUserCoupon();
     this.setData({
       cartIds: cart_id
     });
     this.getUserPoint();
   },
+
+    //是否开启门店自提
+    getStoreSwitch: function () {
+        let page = this;
+        app.api.getStoreSwitch(function(res){
+            page.setData({
+                storeSwitch: res.data
+            });
+        });
+    },
 
   //获取默认收货地址
   getDefaultShip: function () {
@@ -73,6 +95,23 @@ Page({
     });
   },
 
+    //获取默认门店
+    getDefaultStore: function () {
+        var page = this;
+        app.db.userToken(function (token) {
+            app.api.getDefaultStore(function (e) {
+                if(e.status){
+                    page.setData({
+                        store_id: e.data.id,
+                        store_name: e.data.store_name,
+                        store_mobile: e.data.mobile,
+                        store_address: e.data.all_address
+                    });
+                }
+            });
+        });
+    },
+
   //获取货品信息
   getProductData: function () {
     var page = this;
@@ -82,6 +121,7 @@ Page({
         ids: cart_id,
         area_id: page.data.areaId,
         coupon_code: page.data.usedCoupon,
+        receipt_type: page.data.receipt_type
       };
       if(page.data.pointStatus){
           data['point'] = page.data.available_point;
@@ -188,7 +228,7 @@ Page({
 
   // 选择门店
   gostore: function () {
-    wx.redirectTo({
+    wx.navigateTo({
       url: '../../other/store/store'
     });
   },
@@ -386,19 +426,7 @@ Page({
       });
       page.getProductData();
   },
-  // 配送方式切换
-  express: function (e) {
-    this.setData({
-      lifting: false,
-      express: true
-    });
-  },
-  lifting: function (e) {
-    this.setData({
-      express: false,
-      lifting: true
-    });
-  },
+
   // 优惠券使用方式
   choose: function (e) {
     this.setData({
@@ -411,5 +439,31 @@ Page({
       choose: false,
       entry: true
     });
-  }
+  },
+
+    // 配送方式切换
+    express: function (e) {
+        let outType = this.data.receipt_type;
+        this.setData({
+            lifting: false,
+            express: true,
+            receipt_type: 1
+        });
+        if (outType != 1) {
+            this.getProductData();
+        }
+    },
+
+    //上门自提
+    lifting: function (e) {
+        let outType = this.data.receipt_type;
+        this.setData({
+            express: false,
+            lifting: true,
+            receipt_type: 2
+        });
+        if (outType != 2) {
+            this.getProductData();
+        }
+    }
 });

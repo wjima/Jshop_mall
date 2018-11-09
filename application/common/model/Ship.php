@@ -244,7 +244,7 @@ class Ship extends Common
             }
             $shipmoney = 0;
             $tmp_exp = trim(str_replace('w', $weight, $ship['exp']));
-            eval("$shipmoney = $tmp_exp;");
+            eval("\$shipmoney = $tmp_exp;");
             return $shipmoney;
         } else {
             if(isset($ship['firstunit_price'])){

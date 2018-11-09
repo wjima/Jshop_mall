@@ -23,11 +23,11 @@ const routers = [{
     },
     {
         path: '/author',
-        component: resolve => require(['../pages/author'], resolve),
+        component: resolve => require(['../pages/Author'], resolve),
         name: 'author',
         meta: {
             navShow: false,
-            tabShow: true,
+            tabShow: false,
             keepAlive: true
         }
     },

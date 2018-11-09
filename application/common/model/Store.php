@@ -245,6 +245,7 @@ class Store extends Common
         $return['data'] = $this->order('ctime desc')->find();
         if($return['data'])
         {
+            $return['data']['all_address'] = get_area($return['data']['area_id']).$return['data']['address'];
             $return['status'] = true;
             $return['msg'] = '获取成功';
         }
@@ -254,21 +255,33 @@ class Store extends Common
 
     /**
      * 获取全部店铺列表
+     * @param string $key
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getAllStoreList()
+    public function getAllStoreList($key = '')
     {
         $return = [
             'status' => false,
             'msg' => '获取失败',
             'data' => []
         ];
-        $return['data'] = $this->select();
+
+        $where = [];
+        if($key)
+        {
+            $where[] = ['store_name', 'like', '%'.$key.'%'];
+        }
+
+        $return['data'] = $this->where($where)->select();
         if($return['data'])
         {
+            foreach($return['data'] as &$v)
+            {
+                $v['all_address'] = get_area($v['area_id']).$v['address'];
+            }
             $return['status'] = true;
             $return['msg'] = '获取成功';
         }

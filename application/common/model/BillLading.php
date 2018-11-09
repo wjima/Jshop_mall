@@ -90,20 +90,20 @@ class BillLading extends Common
 
     /**
      * 获取详情
-     * @param $id
+     * @param $key
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getInfo($id)
+    public function getInfo($key)
     {
         $return = [
             'status' => false,
             'msg' => '获取失败',
             'data' => []
         ];
-        $where[] = ['id', 'eq', $id];
+        $where[] = ['id|order_id|mobile', 'eq', $key];
         $return['data'] = $this->with('orderInfo,storeInfo')
             ->where($where)
             ->find();

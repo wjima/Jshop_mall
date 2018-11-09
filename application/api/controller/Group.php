@@ -6,7 +6,7 @@ use app\common\controller\Api;
 use Request;
 use app\common\model\Goods as GoodsModel;
 use app\common\model\Products;
-use app\common\model\promotion;
+use app\common\model\Promotion;
 
 /***
  * 团购秒杀活动接口
@@ -23,7 +23,7 @@ class Group extends Api
             'msg'    => '查询失败',
             'data'   => []
         ];
-        $promotion = new promotion();
+        $promotion = new Promotion();
         $type      = input('type',$promotion::TYPE_GROUP);//默认团购
         $stime     = input('stime','0');//开始时间
         $etime     = input('etime','0');//结束时间
@@ -64,7 +64,7 @@ class Group extends Api
             $return_data['status'] = false;
             return $return_data;
         }
-        $promotion   = new promotion();
+        $promotion   = new Promotion();
         $returnGoods = $promotion->getGroupDetial($group_id, $goods_id, $token);
         if ($returnGoods['status']) {
             $return_data ['msg']  = '查询成功';

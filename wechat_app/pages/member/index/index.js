@@ -14,7 +14,7 @@ Page({
 
   //加载执行
   onShow: function (options) {
-    var page = th
+    var page = this;
     app.db.userToken(function (token) {
       app.api.userInfo(function (res) {
         if (res.status) {

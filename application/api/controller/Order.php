@@ -77,12 +77,14 @@ class Order extends Api
     /**
      * 获取订单详情
      * @return array
+     * @throws \think\exception\DbException
      */
     public function details()
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $result = model('common/Order')->getOrderInfoByOrderID($order_id, $user_id);
+        $model = new orderModel();
+        $result = $model->getOrderInfoByOrderID($order_id, $user_id);
         if($result)
         {
             $return_data = array(

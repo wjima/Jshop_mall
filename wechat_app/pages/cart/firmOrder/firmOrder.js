@@ -33,6 +33,8 @@ Page({
     couponPmt: 0.00, //优惠券优惠金额
     express: true,
     lifting: false,
+    choose: true,
+    entry: false,
     selected: true,
     selected1: false,
     storeSwitch: 2, //没有开启门店自提2
@@ -460,6 +462,20 @@ Page({
           pointStatus: status
       });
       page.getProductData();
+  },
+
+  // 优惠券使用方式
+  choose: function (e) {
+    this.setData({
+      entry: false,
+      choose: true
+    });
+  },
+  entry: function (e) {
+    this.setData({
+      choose: false,
+      entry: true
+    });
   },
 
     // 配送方式切换

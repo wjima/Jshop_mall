@@ -1,0 +1,143 @@
+<form class="layui-form seller-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">提货单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="id" id="id" placeholder="提货单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="order_id" id="order_id" placeholder="订单号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">提货门店：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <select name="store_id" id="store_id" autocomplete="off">
+                    <option value="">-- 全部 --</option>
+                    {foreach $store as $v}
+                    <option value="{$v.id}">{$v.store_name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">提货人名：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="name" id="name" placeholder="提货人姓名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">提货电话：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="tel" name="mobile" id="mobile" placeholder="提货人电话" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">提货状态：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <select name="status" id="status" autocomplete="off">
+                    <option value="">-- 全部 --</option>
+                    <option value="1">未提货</option>
+                    <option value="2">已提货</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table class="layui-table" id="ladingTable" lay-filter="ladingTable"></table>
+</div>
+
+<script>
+    layui.use(['table', 'form', 'layer'], function(){
+        var table = layui.table, form = layui.form, layer = layui.layer;
+
+        table.render({
+            elem: '#ladingTable',
+            height: 'full-330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit: '20',
+            id: 'ladingTable',
+            url: "{:url('manage/BillLading/index')}",
+            response: {
+                statusName: 'status',
+                statusCode: 1
+            },
+            cols: [[ //标题栏
+                {type: 'numbers'},
+                {field: 'id', title: '提货单号', align: 'center', width: 150},
+                {field: 'order_id', title: '订单号', align: 'center', width: 150},
+                {field: 'store_name',title: '提货门店', align: 'center', width: 150, sort: true},
+                {field: 'name', title: '提货人名', align: 'center', width: 150},
+                {field: 'mobile', title: '提货电话', align: 'center', width: 150},
+                {field: 'status_name', title: '提货状态', align: 'center', width: 100, sort: true},
+                {field: 'ctime', title: '下单时间', align: 'center', width: 200, sort: true},
+                {field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar', fixed: 'right', width: 150}
+            ]]
+        });
+
+        //筛选条件
+        form.on('submit(*)', function(data){
+            table.reload('ladingTable', {
+                where: data.field,
+                page: {curr: 1}
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //监听工具条
+        table.on('tool(ladingTable)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if(layEvent === 'info'){
+                //获取详情
+                $.ajax({
+                    url: "{:url('manage/billLading/info')}",
+                    type: 'post',
+                    data: {
+                        'id': data.id
+                    },
+                    success: function (e) {
+                        layer.open({
+                            type: 1,
+                            title: '详情',
+                            area: ['510px', '210px'], //宽高
+                            content: e
+                        });
+                    }
+                });
+            }else if(layEvent === 'pick'){
+                //提货操作
+                window.location.href = "{:url('Store/edit')}?id="+data.id;
+            }else if(layEvent === 'del'){
+                //删除
+                layer.confirm('真的删除么', {icon: 3}, function(index){
+                    JsGet("{:url('manage/billLading/delLading')}?id="+data.id, function(res){
+                        if(res.status){
+                            obj.del();
+                            layer.close(index);
+                        }
+                        layer.msg(res.msg);
+                    });
+                });
+            }
+        });
+    });
+</script>
+
+<script type="text/html" id="ladingBar">
+    <a class="layui-btn layui-btn-xs" lay-event="info">详情</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="pick">提货</a>-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>

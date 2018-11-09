@@ -1,0 +1,116 @@
+<form class="layui-form seller-alone-form" method="post" action="{:url('Wechat/doEdit')}">
+    <div class="warning-msg">
+        <div class="warning-msg-content">
+            <p>请先登录公众平台<a target="_blank" href="https://mp.weixin.qq.com">mp.weixin.qq.com</a>配置url，再根据页面要求填写信息并保存
+                <a href="https://www.kancloud.cn/jihainet/jshop_operate/" target="_blank" >[帮助手册]</a></p>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">接口地址：</label>
+        <div class="layui-form-mid ">http://{$weixin_host}/wechat</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>公众号名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" required lay-verify="required" name="wx_official_name" value="{$data.wx_official_name.value}" class="layui-input" placeholder="请输入公众号名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>微信号：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" required lay-verify="required" name="wx_official_id" value="{$data.wx_official_id.value}" class="layui-input" placeholder="请输入公众号名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>AppId：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_official_appid" required lay-verify="required" value="{$data.wx_official_appid.value}" autocomplete="off" placeholder="请输入公众号AppId" class="layui-input">
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>AppSecret：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_official_app_secret" required lay-verify="required" value="{$data.wx_official_app_secret.value}" autocomplete="off" placeholder="请输入公众号AppSecret" class="layui-input">
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>公众号原始ID：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_official_source_id" required lay-verify="required" value="{$data.wx_official_source_id.value}" autocomplete="off" placeholder="请输入公众号原始ID" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>微信验证TOKEN：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_official_token" required lay-verify="required" value="{$data.wx_official_token.value}" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>消息加解密方式：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="wx_official_encode" value="plaintext" title="明文模式" {if condition="$data.wx_official_encode.value eq 'plaintext'"} checked="true" {/if}>
+            <input type="radio" name="wx_official_encode" value="compatible" title="兼容模式" {if condition="$data.wx_official_encode.value eq 'compatible'"} checked="" {/if}>
+            <input type="radio" name="wx_official_encode" value="security" title="安全模式" {if condition="$data.wx_official_encode.value eq 'security'"} checked="" {/if}>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>EncodingAESKey：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="wx_official_encodeaeskey" required lay-verify="required" value="{$data.wx_official_encodeaeskey.value}" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>公众号类型：</label>
+        <div class="layui-input-inline seller-inline-5">
+
+            <input type="radio" name="wx_official_type" value="service" title="服务号" {if condition="$data.wx_official_type.value eq 'service'"} checked="" {/if}>
+            <input type="radio" name="wx_official_type" value="subscribe" title="订阅号" {if condition="$data.wx_official_type.value eq 'subscribe'"} checked="" {/if}>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">公众号二维码：</label>
+        <div class="layui-input-inline seller-inline-5">
+            {Jshop:image id='official_head_img' name="wx_official_head_img" value="$data['wx_official_head_img']['value']"/}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn " lay-submit="" lay-filter="save">保存</button>
+            <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary" lay-submit="" lay-filter="cancleAuthor">返回</a>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form','laytpl','upload'], function() {
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.render();
+        form.on('submit(save)', function(data){
+            formData = data.field;
+            if(!formData){
+                layer.msg('请先完善数据', {time: 1300});
+                return false;
+            }
+            JsPost('{:url("Wechat/doEdit")}',formData,function (e) {
+                if(e.status === true){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        window.location.reload();
+                    });
+                }else{
+                    layer.msg(e.msg, {time: 1300});
+                }
+            });
+            return false;
+        });
+    });
+</script>
+<style>
+    .seller-inline-2{
+        width: 140px !important;
+    }
+</style>

@@ -59,6 +59,18 @@ class PromotionResult extends Common
                                     //设置总的价格
                                     $cart['amount'] -= $promotionModel;
                                     break;
+                                case $promotionInfo::TYPE_GROUP:
+                                    //团购
+                                    $cart['goods_pmt'] += $promotionModel;
+                                    //设置总的价格
+                                    $cart['amount'] -= $promotionModel;
+                                    break;
+                                case $promotionInfo::TYPE_SKILL:
+                                    //秒杀
+                                    $cart['goods_pmt'] += $promotionModel;
+                                    //设置总的价格
+                                    $cart['amount'] -= $promotionModel;
+                                    break;
                             }
 
                         }
@@ -146,6 +158,7 @@ class PromotionResult extends Common
             $params['money'] = $v['products']['price'];
         }
         $v['products']['price'] -= $params['money'];
+
         //此次商品促销一共优惠了多少钱
         $promotionMoney = $v['nums'] * $params['money'];
         //设置商品优惠总金额
@@ -155,7 +168,6 @@ class PromotionResult extends Common
         $v['products']['promotion_amount'] += $promotionMoney;
         //设置商品的实际销售金额（单品）
         $v['products']['amount'] -= $promotionMoney;
-
 
         return $promotionMoney;
     }

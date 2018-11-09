@@ -35,20 +35,6 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">每人限购：</label>
-        <div class="layui-input-inline seller-inline-1">
-            <input type="text" class="layui-input" name="params[limit]" value='{$info.params.limit}'>
-        </div>
-        <div class="layui-form-mid layui-word-aux">0为不限购</div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">初始销量：</label>
-        <div class="layui-input-inline seller-inline-1">
-            <input type="text" class="layui-input" name="params[salesnum]" value='{$info.params.salesnum}'>
-        </div>
-        <div class="layui-form-mid layui-word-aux">不填为随机</div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">起止时间：</label>
         <div class="layui-input-inline seller-inline-6">
             <input  type="text" name="date" value="{:getTime($info['stime'])} 到 {:getTime($info['etime'])}" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
@@ -56,19 +42,18 @@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">
-            优惠券条件：
+            选择商品：
         </label>
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="conditionAdd" >添加条件</button>
-            <table id="condition" lay-filter="condition"></table>
+            {Jshop:sellergoods value="$goods.goods_id" num="1" name="goods_id" type="checkbox"/}
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">
-            优惠券结果：
+            选择促销：
         </label>
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="resultAdd" >添加结果</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-submit lay-filter="resultAdd" ><i class="iconfont icon-choose1"></i>选择促销类型</button>
             <table id="result" lay-filter="result"></table>
         </div>
     </div>
@@ -112,29 +97,6 @@
                 }
             },"json");
             return false;
-        });
-
-        //促销条件表格渲染
-        var conditionTables = layui.table.render({
-            elem: '#condition'
-            ,size: 'sm'
-            ,url: "{:url('promotion/conditionList',['id'=>$info.id])}?_ajax=1"
-            ,cols: [[ //标题栏
-                {field: 'code',width:140, title: '条件代码'},
-                {field: 'name',width:140, title: '条件名称'}
-                ,{field: 'params', title: '参数'}
-                ,{field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
-                    var html = '';
-                    html += '<a  class="layui-btn layui-btn-xs option-edit" data-promotion_id="' + data.promotion_id + '" data-id="' + data.id + '">编辑</a>';
-                    html += '<a  class="layui-btn layui-btn-xs option-del" data-promotion_id="' + data.promotion_id + '" data-id="' + data.id + '">删除</a>';
-                    return html;
-                }}
-            ]]
-            //,skin: 'line' //表格风格
-            ,even: true
-            //,page: true //是否显示分页
-            //,limits: [5, 7, 10]
-            //,limit: 5 //每页默认显示的数量
         });
 
         //添加促销条件
@@ -239,7 +201,7 @@
         $.ajax({
             type:'get',
             url: "{:url('promotion/conditionAdd')}",
-            data:'',
+            data:'type=group',
             success:function(e){
                 if(e.status){
                     window.box = layer.open({
@@ -317,13 +279,13 @@
         $.ajax({
             type:'get',
             url: "{:url('promotion/resultAdd')}",
-            data:'',
+            data:'type=group',
             success:function(e){
                 if(e.status){
                     window.box = layer.open({
                         type: 1,
                         content: e.data,//
-                        area: ['400px', '500px'],
+                        area: ['400px', '400px'],
                         title:'选择促销结果',
                         btn: ['下一步','取消'],
                         yes: function(index, layero){

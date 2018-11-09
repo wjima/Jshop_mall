@@ -64,6 +64,74 @@
       </view>
     </view>
 
+    <!-- 限时秒杀 -->
+
+    <view class='group-recommends' wx:if="{{seckill.length >0}}">
+      <view class='recommends-header'>
+        <image class='recommends-img' src='../image/seller.png'></image><text>限时秒杀</text>
+      </view>
+      <view class='hot-recommends-body'>
+        <!-- 循环商品 -->
+        <view class='hot-body-mid' wx:for="{{seckill}}" wx:key="{{index}}">
+          <!-- 绑定商品 -->
+          <view bindtap="GroupDetail" data-id="{{item.id}}" data-groupid="{{item.group_id}}">
+            <!-- 商品图片 -->
+            <image class='pic' src='{{item.image_url}}'></image>
+            <!-- 商品名称和价格 -->
+            <view class='recommends-body-bottom'>
+              <text class='name'>{{item.name}}</text>
+              <view class='price-cart'>
+                <view class='price-time' wx:if="{{item.lasttime!='已经结束'||item.lasttime!='即将开始'}}">剩 :
+                  <text>{{item.lasttime.day}}</text> 天 <text>{{item.lasttime.hour}}</text> : <text>{{item.lasttime.minute}}</text> :<text>{{item.lasttime.second}}</text>
+                 </view>
+                 <view class='price-time' wx:if="{{item.lasttime=='已经结束'}}">已结束</view>
+                 <view class='price-time' wx:if="{{item.lasttime=='即将开始'}}">即将开始</view>
+
+
+                <text class='price'>￥{{item.price}}</text>
+                <!-- <image class='icon' src='../image/cart.png'></image> -->
+                <view class='price-btn'>立即秒杀</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+
+      <!--精品团购-->
+    <view class='group-recommends' wx:if="{{group.length >0}}">
+      <view class='recommends-header'>
+        <image class='recommends-img' src='../image/seller.png'></image><text>精品团购</text>
+      </view>
+      <view class='hot-recommends-body'>
+        <!-- 循环商品 -->
+        <view class='hot-body-mid' wx:for="{{group}}" wx:key="{{index}}">
+          <!-- 绑定商品 -->
+          <view bindtap="GroupDetail" data-id="{{item.id}}" data-groupid="{{item.group_id}}">
+            <!-- 商品图片 -->
+            <image class='pic' src='{{item.image_url}}'></image>
+            <!-- 商品名称和价格 -->
+            <view class='recommends-body-bottom'>
+              <text class='name'>{{item.name}}</text>
+              <view class='price-cart'>
+                <view class='price-time' wx:if="{{item.lasttime!='已经结束'}}">剩 :
+                  <text>{{item.lasttime.day}}</text> 天 <text>{{item.lasttime.hour}}</text> : <text>{{item.lasttime.minute}}</text> :<text>{{item.lasttime.second}}</text>
+                 </view>
+                 <view class='price-time' wx:if="{{item.lasttime=='已经结束'}}">已结束</view>
+
+                <text class='price'>￥{{item.price}}</text>
+                <!-- <image class='icon' src='../image/cart.png'></image> -->
+                <view class='price-btn'>立即团购</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      
+    </view>
+
     <!-- 店家推荐 -->
     <view class='seller-recommends'>
       <!-- <view class='seller-recommends-mid'> -->

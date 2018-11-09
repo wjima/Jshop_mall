@@ -5,7 +5,9 @@
                 <div class="scrolltabbody">
                     <ul class="scrolltab-ul" v-if="item.child">
                        <li class="scrolltab-li" v-for="(childItem, key) in item.child" :key="key" @click="showList(childItem.id)">
-                           <img :src="childItem.image_url"><p>{{ childItem.name }}</p>
+                           <!--<img src="../../static/image/loading.gif" class="loading-img"/>-->
+                           <img v-lazy="childItem.image_url">
+                           <p>{{ childItem.name }}</p>
                        </li>
                     </ul>
                 </div>

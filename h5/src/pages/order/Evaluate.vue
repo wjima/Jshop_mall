@@ -4,57 +4,28 @@
             <div class="evaluateheader">
                 <div class="evaluateheader-top">
                     <img class="goods-img" :src="item.image_url"/>
-                    <div class="evaluateheader-img">
-                        <div class="good" @click="clickEvaluate(item.goods_id,$event)" data-type="praise">
-                            <img :src="evaluate[item.goods_id].praise ? './static/image/redflower.png' : './static/image/whiteflower.png'" data-type="praise"/>
-                            <p data-type="praise">好评</p>
-                        </div>
-                        <div class="average" @click="clickEvaluate(item.goods_id,$event)" data-type="secondary">
-                            <img :src="evaluate[item.goods_id].secondary ? './static/image/redflower.png' : './static/image/whiteflower.png'" data-type="secondary"/>
-                            <p data-type="secondary">中评</p>
-                        </div>
-                        <div class="bad" @click="clickEvaluate(item.goods_id,$event)" data-type="difference">
-                            <img :src="evaluate[item.goods_id].difference ? './static/image/redflower.png' : './static/image/whiteflower.png'" data-type="difference"/>
-                            <p data-type="difference">差评</p>
-                        </div>
-                    </div>
+                    <yd-cell-item>
+                        <yd-rate slot="right" v-model="score[item.id]" size="20px"></yd-rate>
+                    </yd-cell-item>
                 </div>
             </div>
             <div class="evaluatebody">
                 <yd-cell-item>
-                    <yd-textarea slot="right" v-model="textarea[item.goods_id]" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" maxlength="200"></yd-textarea>
+                    <yd-textarea slot="right" v-model="textarea[item.id]" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" maxlength="200"></yd-textarea>
                 </yd-cell-item>
-                <div class="uploadimg-list"  v-if="images[item.goods_id].length">
-                    <div v-for="(img, index) in images[item.goods_id]" :key="index">
-                        <yd-badge @click.native="remove(item.goods_id, index)">X</yd-badge>
+                <div class="uploadimg-list"  v-if="images[item.id].length">
+                    <div v-for="(img, index) in images[item.id]" :key="index">
+                        <yd-badge @click.native="remove(item.id, index)">X</yd-badge>
                         <img class="thumbnail-list" :src="img.url">
                     </div>
                 </div>
                 <div class="evaluatebody-img">
                     <div class="uploadimg">
-                        <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update(item.goods_id,$event)"/>
-                        <img slot="icon" src="../../../static/image/addimg.png" v-show="isupload[item.goods_id]">
+                        <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update(item.id,$event)"/>
+                        <img slot="icon" src="../../../static/image/addimg.png" v-show="isupload[item.id]">
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="evaluatefooter">
-            <yd-cell-item>
-                <img slot="icon" src="../../../static/image/shop.png">
-                <span slot="left">店铺评分</span>
-            </yd-cell-item>
-            <yd-cell-item>
-                <span slot="left">描述相符</span>
-                <yd-rate slot="right" v-model="star_one" size="20px"></yd-rate>
-            </yd-cell-item>
-            <yd-cell-item>
-                <span slot="left">描述相符</span>
-                <yd-rate slot="right" v-model="star_two" size="20px"></yd-rate>
-            </yd-cell-item>
-            <yd-cell-item>
-                <span slot="left">描述相符</span>
-                <yd-rate slot="right" v-model="star_three" size="20px"></yd-rate>
-            </yd-cell-item>
         </div>
         <yd-button-group>
             <yd-button size="large" bgcolor="#ff3b44" color="#fff" @click.native="sendEvaluate">提交评价</yd-button>
@@ -68,14 +39,10 @@ export default {
         return {
             order_id: this.$route.query.order_id || 0,
             images: [],
-            evaluate: [], // 商品评价
+            score: [], // 商品评价
             goodsList: [], // 商品列表
             textarea: [], // 商品评价信息
-            products: [], // 货品号
-            isupload: [], // 启/禁用 图片上传按钮
-            star_one: 5,
-            star_two: 5,
-            star_three: 5
+            isupload: [] // 启/禁用 图片上传按钮
         }
     },
     created () {
@@ -103,42 +70,24 @@ export default {
             this.goodsList = res.data.items
             let images = []
             let textarea = []
-            let evaluate = []
-            let product = []
+            let score = []
             let upload = []
             for (let i in this.goodsList) {
-                let key = this.goodsList[i].goods_id
+                let key = this.goodsList[i].id
                 images[key] = []
+                score[key] = 5
                 textarea[key] = ''
-                evaluate[key] = {praise: true, secondary: false, difference: false} // 默认选中
-                product[key] = this.goodsList[i].id
                 upload[key] = true
             }
             this.images = images
             this.textarea = textarea
-            this.evaluate = evaluate
-            this.products = product
+            this.score = score
             this.isupload = upload
         })
     },
     methods: {
-        // 改变选中的评价
-        clickEvaluate (goodsId, event) {
-            let type = event.target.dataset.type
-            let praise = false
-            let secondary = false
-            let difference = false
-            if (type === 'praise') {
-                praise = true
-            } else if (type === 'secondary') {
-                secondary = true
-            } else if (type === 'difference') {
-                difference = true
-            }
-            this.$set(this.evaluate, goodsId, {praise: praise, secondary: secondary, difference: difference})
-        },
         // 上传对应商品的图片
-        update (goodsId, e) {
+        update (key, e) {
             let file = e.target.files[0]
             let param = new FormData()
             param.append('upfile', file, file.name)
@@ -148,34 +97,27 @@ export default {
                         url: res.data.url,
                         id: res.data.image_id
                     }
-                    this.images[goodsId].push(img)
+                    this.images[key].push(img)
                 }
             })
         },
         // 删除对应的商品评论图片
-        remove (goodsId, index) {
-            this.images[goodsId].splice(index, 1)
+        remove (key, index) {
+            this.images[key].splice(index, 1)
         },
         // 提交评价
         sendEvaluate () {
             let data = {
                 order_id: this.order_id,
-                seller: {
-                    starOne: this.star_one,
-                    starTwo: this.star_two,
-                    starThree: this.star_three
-                }
+                items: {}
             }
-            let arr = []
             for (let k in this.images) {
-                arr[k] = {
+                data.items[k] = {
                     images: this.images[k],
-                    evaluate: this.evaluate[k],
-                    textarea: this.textarea[k],
-                    product: this.products[k]
+                    score: this.score[k],
+                    textarea: this.textarea[k]
                 }
             }
-            data.goods = arr
             this.$api.orderEvaluate(data, res => {
                 if (res.status) {
                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})
@@ -190,7 +132,7 @@ export default {
         // 监听图片数量  是否超出限制
         images () {
             for (let k in this.images) {
-                if (this.images[k].length > 4) {
+                if (this.images[k].length >= 4) {
                     this.isupload[k] = false
                 } else {
                     this.isupload[k] = true

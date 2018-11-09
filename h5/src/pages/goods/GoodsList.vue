@@ -14,7 +14,7 @@
         <yd-infinitescroll :callback="loadMore" :distance="2" :scroll-top="false" ref="infinitescrollDemo" class="itemgoodslist">
             <yd-list theme="4" slot="list">
                 <yd-list-item v-for='(item, key) in list' :key='key' type="link" :href="{path:'goodsdetail',query:{goods_id:item.id}}">
-                    <img slot='img' :src='item.image_url'>
+                    <img slot='img' v-lazy='item.image_url'>
                     <span slot='title'>{{item.name}}</span>
                     <yd-list-other slot='other'>
                         <div>

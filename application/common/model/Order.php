@@ -499,6 +499,20 @@ class Order extends Common
         $order_info->items; //订单详情
         $order_info->user; //用户信息
         $order_info->delivery; //发货信息
+
+        //获取提货门店
+        $billLadingModel = new BillLading();
+        $bwhere[] = ['order_id', 'eq', $id];
+        $billLadingInfo = $billLadingModel->where($bwhere)->find();
+        $order_info['store'] = false;
+        if($billLadingInfo)
+        {
+            $storeModel = new Store();
+            $storeInfo = $storeModel->get($billLadingInfo['store_id']);
+            $storeInfo['all_address'] = get_area($storeInfo['area_id']).$storeInfo['address'];
+            $order_info['store'] = $storeInfo;
+        }
+
         foreach($order_info['delivery'] as &$v)
         {
             $v['logi_name'] = get_logi_info($v['logi_code'], 'logi_name');
@@ -517,6 +531,11 @@ class Order extends Common
         }
         $order_info['text_status'] = $this->getStatus($order_info['status'], $order_info['pay_status'], $order_info['ship_status'], $order_info['confirm'], $order_info['is_comment']);
         $order_info['ship_area_name'] = get_area($order_info['ship_area_id']);
+
+        //如果有优惠券，数据处理
+        if($order_info['coupon']){
+            $order_info['coupon'] = json_decode($order_info['coupon'],true);
+        }
 
         //获取该状态截止时间
         switch($order_info['text_status'])
@@ -1003,24 +1022,44 @@ class Order extends Common
      * @param int $point
      * @param bool $coupon_code
      * @param bool $formId
+     * @param int $receipt_type
+     * @param bool $store_id
+     * @param bool $lading_name
+     * @param bool $lading_mobile
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false, $formId = false)
+    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0,$coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false)
     {
         $result = [
             'status' => false,
             'data' => array(),
             'msg' => ''
         ];
-        $ushopModel = new UserShip();
-        $ushopInfo = $ushopModel->getShipById($uship_id,$user_id);
-        if(!$ushopInfo){
-            return error_code(11050);
+        if($receipt_type == 1)
+        {
+            //快递邮寄
+            $ushopModel = new UserShip();
+            $ushopInfo = $ushopModel->getShipById($uship_id,$user_id);
+            if(!$ushopInfo)
+            {
+                return error_code(11050);
+            }
         }
-        $orderInfo = $this->formatOrderItems($user_id,$cart_ids,$area_id,$point,$coupon_code);
+        else
+        {
+            //门店自提
+            $storeModel = new Store();
+            $storeInfo = $storeModel->get($store_id);
+            if(!$storeInfo)
+            {
+                return error_code(11055);
+            }
+        }
+
+        $orderInfo = $this->formatOrderItems($user_id,$cart_ids,$area_id,$point,$coupon_code,$receipt_type);
 
         if(!$orderInfo['status']){
             return $orderInfo;
@@ -1041,13 +1080,27 @@ class Order extends Common
         $order['user_id'] = $user_id;
 
         //收货地址信息
-        $order['ship_area_id'] = $ushopInfo['area_id'];
-        $order['ship_address'] = $ushopInfo['address'];
-        $order['ship_name'] = $ushopInfo['name'];
-        $order['ship_mobile'] = $ushopInfo['mobile'];
-        $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
-        $order['logistics_id'] = $shipInfo['id'];
-        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
+        if($receipt_type == 1)
+        {
+            //快递邮寄
+            $order['ship_area_id'] = $ushopInfo['area_id'];
+            $order['ship_address'] = $ushopInfo['address'];
+            $order['ship_name'] = $ushopInfo['name'];
+            $order['ship_mobile'] = $ushopInfo['mobile'];
+            $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
+            $order['logistics_id'] = $shipInfo['id'];
+            $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
+        }
+        else
+        {
+            //门店自提
+            $order['ship_area_id'] = $storeInfo['area_id'];
+            $order['ship_address'] = $storeInfo['address'];
+            $order['ship_name'] = $storeInfo['store_name'];
+            $order['ship_mobile'] = $storeInfo['mobile'];
+            $order['logistics_id'] = 0;
+            $order['cost_freight'] = 0;
+        }
 
         //积分使用情况
         $order['point'] = $orderInfo['data']['point'];
@@ -1079,6 +1132,13 @@ class Order extends Common
             }
             $orderItemsModel = new OrderItems();
             $orderItemsModel->saveAll($orderInfo['data']['items']);
+
+            //自提订单记录
+            if($receipt_type == 2)
+            {
+                $ladingModel = new BillLading();
+                $ladingModel->addData($order['order_id'], $store_id, $lading_name, $lading_mobile);
+            }
 
             //优惠券核销
             if($coupon_code)
@@ -1144,15 +1204,16 @@ class Order extends Common
      * @param $area_id
      * @param $point
      * @param $coupon_code
+     * @param int $receipt_type
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function formatOrderItems($user_id,$cart_ids,$area_id,$point, $coupon_code)
+    public function formatOrderItems($user_id,$cart_ids,$area_id,$point, $coupon_code, $receipt_type = 1)
     {
         $cartModel = new Cart();
-        $cartList = $cartModel->info($user_id,$cart_ids,'',$area_id, $point, $coupon_code);
+        $cartList = $cartModel->info($user_id,$cart_ids,'',$area_id, $point, $coupon_code, $receipt_type);
         if(!$cartList['status']){
             return $cartList;
         }

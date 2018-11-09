@@ -32,6 +32,7 @@ class Promotion extends Common
         $where[] = ['stime','lt',time()];
         $where[] = ['etime','gt',time()];
         $where[] = ['type','eq',self::TYPE_PROMOTION];
+
         $list = $this->where($where)->order('sort','asc')->select();
         foreach($list as $v){
             $this->setPromotion($v,$cart);
@@ -40,6 +41,24 @@ class Promotion extends Common
                 break;
             }
         }
+
+        //团购
+        unset($where);
+        $where[] = ['status','eq',self::STATUS_OPEN];
+        $where[] = ['stime','lt',time()];
+        $where[] = ['etime','gt',time()];
+        $where[] = ['type','in',[self::TYPE_GROUP,self::TYPE_SKILL]];
+
+        $list = $this->where($where)->order('sort','asc')->select();
+        foreach($list as $v){
+            $this->setPromotion($v,$cart);
+            //如果排他，就跳出循环，不执行下面的促销了
+            if($v['exclusive'] == self::EXCLUSIVE_YES){
+                break;
+            }
+        }
+
+
         return $cart;
     }
 
@@ -75,6 +94,7 @@ class Promotion extends Common
     }
 
 
+
     //根据促销信息，去计算购物车的促销情况
     private function setPromotion ($promotionInfo,&$cart){
         $conditionModel = new PromotionCondition();
@@ -82,6 +102,7 @@ class Promotion extends Common
         $conditionList = $conditionModel->field('*')->where($where)->select();
         //循环取出所有的促销条件，有一条不满足，就不行，就返回false
         $key = true;
+
         foreach($conditionList as $v){
             $re = $conditionModel->check($v,$cart,$promotionInfo);
             if($key){
@@ -90,10 +111,12 @@ class Promotion extends Common
                 }
             }
         }
+
         if($key){
             //走到这一步就说明所有的促销条件都符合，那么就去计算结果
             $resultModel = new PromotionResult();
             $resultList = $resultModel->where($where)->select();
+
             foreach($resultList as $v){
                 $resultModel->toResult($v,$cart,$promotionInfo);
             }
@@ -126,7 +149,6 @@ class Promotion extends Common
         $re['msg'] = '';
         $re['count'] = $list->total();
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
 
         return $re;
     }
@@ -218,6 +240,96 @@ class Promotion extends Common
         $where[] = ['auto_receive','eq',self::AUTO_RECEIVE_YES];    //自动领取状态
         $where[] = ['id','eq',$promotion_id];
         return $this->field('id,name,status,exclusive,stime,etime')->where($where)->find();
+    }
+
+    /**
+     * 获取团购秒杀商品列表
+     * @param array $params
+     * @return array
+     */
+    public function getGroupList($params = [])
+    {
+        $type = isset($params['type']) ? $params['type'] : self::TYPE_GROUP;
+        $where[] = ['type','=',$type];
+        $where[] = ['status','=',self::STATUS_OPEN];
+        $where[] = ['stime','lt',time()];
+        $where[] = ['etime','gt',time()];
+        $list            = $this->field('*')->where($where)->order('sort asc')->select();
+        $activeGoods     = [];//活动商品列表
+        $conditionModel  = new PromotionCondition();
+        $goodsModel      = new Goods();
+        $orderItem = new OrderItems();
+
+        if (!$list->isEmpty()) {
+            $i = 0;
+            foreach ((array)$list->toArray() as $key => $value) {
+                $extendParams           = json_decode($value['params'], true);
+                $filter['promotion_id'] = $value['id'];
+                $condition         = $conditionModel->field('*')->where($filter)->find();
+                if ($condition) {
+                    $params       = json_decode($condition['params'], true);
+                    $res          = $goodsModel->getGoodsDetial($params['goods_id'],'*','');
+                    if ($res['status']) {
+
+                        $activeGoods[$i]             = $res['data'];
+                        $activeGoods[$i]['group_id'] = $value['id'];
+                        $activeGoods[$i]['status']   = $value['status'];
+                        $activeGoods[$i]['time']     = time();
+                        $activeGoods[$i]['stime']    = $value['stime'];
+                        $activeGoods[$i]['etime']    = $value['etime'];
+                        $i++;
+                    }
+                }
+
+            }
+        }
+
+        return $activeGoods;
+    }
+
+    /**
+     * 获取团购&秒杀商品详情
+     * @param int $group_id 活动id
+     * @param int $goods_id 商品id
+     * @param string $token 登录信息
+     * @return array
+     */
+    public function getGroupDetial($goods_id = 0, $token = '')
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '关键参数丢失',
+        ];
+        if (!$goods_id) {
+            return $result;
+        }
+        $where       = [];
+        if(!isInGroup($goods_id,$group_id))
+        {
+            return $result;
+        }
+        $where['id']     = $group_id;
+
+        $where['status'] = self::STATUS_OPEN;
+        $promotion       = $this->where($where)->find();
+        if (!$promotion) {
+            $result['msg'] = '无此活动';
+            return $result;
+        }
+        $goodsModel = new Goods();
+        $goods      = $goodsModel->getGoodsDetial($goods_id, '*', $token);
+        if (!$goods['status']) {
+            return $goods;
+        }
+        $extendParams                = json_decode($promotion['params'], true);
+        $goods['data']['group_id']   = $promotion['id'];
+        $goods['data']['group_type'] = $promotion['type'];
+        $goods['data']['status']     = $promotion['status'];
+        $goods['data']['time']       = time();
+        $goods['data']['stime']      = $promotion['stime'];
+        $goods['data']['etime']      = $promotion['etime'];
+        return $goods;
     }
 
 }

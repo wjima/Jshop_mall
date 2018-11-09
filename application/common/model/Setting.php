@@ -22,6 +22,10 @@ class Setting extends Common
             'name' => '店铺联系方式',
             'value' => ''
         ],
+        'store_switch' => [
+            'name' => '开启门店自提',
+            'value' => '2'
+        ],
         'order_cancel_time' => [
             'name' => '订单取消时间',
             'value' => '1'
@@ -168,6 +172,43 @@ class Setting extends Common
             'name' => '短信前缀',
             'value' => 'Jshop'
         ],
+        //公众号设置
+        'wx_official_name'=>[
+            'name'=>'公众号名称',
+            'value' => '',
+        ],
+        'wx_official_id'=>[
+            'name'=>'微信号',
+            'value' => '',
+        ],
+        'wx_official_appid'=>[
+            'name'=>'AppId',
+            'value' => '',
+        ],
+        'wx_official_app_secret'=>[
+            'name'=>'AppSecret',
+            'value' => '',
+        ],
+        'wx_official_source_id'=>[
+            'name'=>'公众号原始ID',
+            'value' => '',
+        ],
+        'wx_official_token'=>[
+            'name'=>'微信验证TOKEN',
+            'value' => '',
+        ],
+        'wx_official_encode'=>[
+            'name'=>'消息加解密方式',
+            'value'=>'plaintext'
+        ],
+        'wx_official_encodeaeskey'=>[
+            'name'=>'EncodingAESKey',
+            'value'=>''
+        ],
+        'wx_official_type'=>[
+            'name'=>'公众号类型',
+            'value'=>'service'
+        ],
     ];
 
 
@@ -208,9 +249,10 @@ class Setting extends Common
             }else{
                 return "";
             }
-
         }
     }
+
+
     //参数校验
     public function check($skey, $value)
     {
@@ -248,6 +290,7 @@ class Setting extends Common
         $result['status'] = true;
         return $result;
     }
+
 
     //取得全部参数
     public function getAll()

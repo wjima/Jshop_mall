@@ -17,7 +17,7 @@
                         </div>
                         <yd-list theme="4" @click.native="showDetail(item.order_id)">
                             <yd-list-item v-for="(goods, key) in item.items" :key="key">
-                                <img slot="img" :src="goods.image_url">
+                                <img slot="img" v-lazy="goods.image_url">
                                 <h3 class="goodsname" slot="title">{{ goods.name }}</h3>
                                 <p class="goods" slot="title">{{ goods.addon }}</p>
                                 <yd-list-other slot="other">

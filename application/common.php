@@ -102,6 +102,9 @@ function get_sn($type){
         case 8:         //发货单编号
             $str = $type.substr(msectime().rand(0,9),1);
             break;
+        case 9:         //提货单号
+            $str = 'T'.$type.substr(msectime().rand(0,5), 1);
+            break;
         default:
             $str = substr(msectime().rand(0,9),1);
     }
@@ -207,6 +210,9 @@ function getRealUrl($url='')
     if(stripos($url,'http')!==false||stripos($url,'https')!==false) {
         return $url;
     }else{
+        if(config('jshop.image_storage.domain')){
+            return config('jshop.image_storage.domain').$url;
+        }
         return request()->domain().$url;
     }
 }
@@ -607,36 +613,28 @@ function isIntranet($url = '')
  * @param type $type 接口名称 ( Card|Custom|Device|Extend|Media|Oauth|Pay|Receive|Script|User )
  * @return \Wehcat\WechatReceive 返回接口对接
  */
-function & load_wechat($type = '',$appid = '') {
-    if(!$appid){
-        return false;
-    }
+function & load_wechat($type = '') {
 
-    if($appid){
-        static $wechat = array();
-        $index = md5(strtolower($type));
-        if (!isset($wechat[$index])) {
-            // 从数据库获取配置信息
-            $options = array(
-                'token'           => $thirdwx['token'], // 填写你设定的key
-                'appid'           => $appInfo['appid'], // 填写高级调用功能的app id, 请在微信开发模式后台查询
-                'appsecret'       => $appInfo['appsecret'], // 填写高级调用功能的密钥
-                'encodingaeskey'  => $thirdwx['encrypt_key'], // 填写加密用的EncodingAESKey（可选，接口传输选择加密时必需）
-                'access_token'    => isset($appInfo['authorizer_access_token'])?$appInfo['authorizer_access_token']:'', // 第三方授权
-                'mch_id'          => isset($appInfo['mch_id'])?$appInfo['mch_id']:'', // 微信支付，商户ID（可选）
-                'partnerkey'      => isset($appInfo['partnerkey'])?$appInfo['partnerkey']:'', // 微信支付，密钥（可选）
-                'ssl_cer'         => isset($appInfo['ssl_cer'])?$appInfo['ssl_cer']:'', // 微信支付，双向证书（可选，操作退款或打款时必需）
-                'ssl_key'         => isset($appInfo['ssl_key'])?$appInfo['ssl_key']:'', // 微信支付，双向证书（可选，操作退款或打款时必需）
-                'cachepath'       => isset($appInfo['cachepath'])?$appInfo['cachepath']:'', // 设置SDK缓存目录（可选，默认位置在Wechat/Cache下，请保证写权限）
-            );
-            \Wechat\Loader::config($options);
-            $wechat[$index] = \Wechat\Loader::get($type);
-        }
-        return $wechat[$index];
+    static $wechat = array();
+    $index = md5(strtolower($type));
+    if (!isset($wechat[$index])) {
+        // 从数据库获取配置信息
+        $options = array(
+            'token'           => getSetting('wx_official_token'), // 填写你设定的key
+            'appid'           => getSetting('wx_official_appid'), // 填写高级调用功能的app id, 请在微信开发模式后台查询
+            'appsecret'       => getSetting('wx_official_app_secret'), // 填写高级调用功能的密钥
+            'encodingaeskey'  => '', // 填写加密用的EncodingAESKey（可选，接口传输选择加密时必需）
+            'mch_id'          => '', // 微信支付，商户ID（可选）
+            'partnerkey'      => '', // 微信支付，密钥（可选）
+            'ssl_cer'         => '', // 微信支付，双向证书（可选，操作退款或打款时必需）
+            'ssl_key'         => '', // 微信支付，双向证书（可选，操作退款或打款时必需）
+            'cachepath'       => '', // 设置SDK缓存目录（可选，默认位置在Wechat/Cache下，请保证写权限）
+        );
+        \Wechat\Loader::config($options);
+        $wechat[$index] = \Wechat\Loader::get($type);
     }
-    else{
-        return false;
-    }
+    return $wechat[$index];
+
 }
 
 /**
@@ -844,4 +842,34 @@ function checkAddons($hookname = '')
     } else {
         return false;
     }
+}
+
+/**
+ * 判断商品是否参加团购
+ * @param int $gid
+ * @return array
+ */
+function isInGroup($gid = 0, &$promotion_id = 0)
+{
+    if (!$gid) {
+        return false;
+    }
+
+    $promotion = new app\common\model\Promotion();
+
+    $where[]   = ['p.status', 'eq', $promotion::STATUS_OPEN];
+    $where[]   = ['p.stime', 'lt', time()];
+    $where[]   = ['p.etime', 'gt', time()];
+    $where[]   = ['pc.params', 'like', '%"' . $gid . '"%'];
+    $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
+    $condition = $promotion->field('p.id as id')
+        ->alias('p')
+        ->join('promotion_condition pc', 'pc.id = p.id')
+        ->where($where)
+        ->find();
+    if ($condition) {
+        $promotion_id = $condition['id'];
+        return true;
+    }
+    return false;
 }

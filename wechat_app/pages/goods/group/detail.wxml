@@ -1,0 +1,191 @@
+<!--商品详情页-->
+
+<!-- 商品图片轮播图 -->
+<swiper indicator-dots="{{indicatorDots}}"
+  autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
+  <block wx:for="{{goodsImg}}" wx:key="{{index}}">
+    <swiper-item>
+      <image src="{{item}}" class="slide-image" />
+    </swiper-item>
+  </block>  
+</swiper>
+
+<!-- 商品信息 -->
+<view class='detail-content'>
+  <!-- 商品参数信息 -->
+  <view class='commodity-information'>
+    <!-- 商品名称描述和分享 -->
+    <view class='commodity-title'>
+      <view class='commodity-header'>
+        <text class='commodity-name'>{{goodsInfo.name}}</text>
+        <text class='commodity-introduce'>{{goodsInfo.brief}}</text>
+      </view>
+      <button class='commodity-share' open-type='share' data-id="{{goodsInfo.id}}">
+        <image src='../../image/share.png'></image>
+        <text>分享</text>
+      </button>
+    </view>
+
+    <!-- 商品价格和销量 -->
+    <view class='price-salesvolume'>
+      <view class='commodity-price'>
+        <text class='current-price'>￥{{goodsInfo.product.price}}</text>
+        <text class='cost-price'>￥{{goodsInfo.product.mktprice}}</text>
+      </view>
+      <view class='commodity-salesvolume'>
+        <text>已售{{goodsInfo.buy_count}}件/剩余{{goodsInfo.product.stock}}件</text>
+        <text>累计销售{{goodsInfo.buy_count}}件</text>
+      </view>
+      <image class='commodity-time-img' src='../../image/sanjiao.png'></image>
+      
+      <view class='commodity-time' wx:if="{{goodsInfo.lasttime!='已经结束'}}">
+        <text>距结束仅剩</text>
+        <view class='commodity-day'><text>{{goodsInfo.lasttime.day}}</text> 天 <text>{{goodsInfo.lasttime.hour}}</text> : <text>{{goodsInfo.lasttime.minute}}</text> : <text>{{goodsInfo.lasttime.second}}</text></view>
+      </view>
+      <view class='commodity-time' wx:if="{{goodsInfo.lasttime=='已经结束'}}">
+        已结束
+      </view>
+    </view>
+    <!-- 促销服务 -->
+    <view class='salespromotion-service'>
+      <!-- 标签 -->
+      <view class='sales-promotion hot' wx:if="{{goodsInfo.label_ids !== 0}}">
+        <text wx:for="{{goodsInfo.label_ids}}" wx:key="ind" wx:for-item="items" class="lable_{{items.style}}">{{items.name}}</text>
+      </view>
+      <!-- 促销信息 -->
+      <!-- <view class='sales-promotion' wx:if="{{goodsInfo.product.promotion_list.length !== 0}}">
+        <text class='salespromotion-service-name'>促销</text>
+        <text wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items" class='salespromotion-service-body' wx:if="{{items.type == 2}}">{{items.name}}</text>
+        
+      </view> -->
+      <!-- 服务信息 -->
+      <view class='service'>
+        <text class='salespromotion-service-name'>服务</text>
+        <view class='salespromotion-service-body'>
+           <view><image src='../../image/group5.png'></image><text>官方商城</text></view> 
+          <view><image src='../../image/group5.png'></image><text>店铺认证</text></view>
+          <view><image src='../../image/group5.png'></image><text>担保交易</text></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 规格和库存 -->
+    <view class='color-number'>
+      <!-- 规格 -->
+      <view class='color' wx:for="{{goodsSpesDesc}}" wx:key="{{index}}">
+        <text class='salespromotion-service-name'>{{index}}</text>
+        <view class='salespromotion-service-b'>
+          <block wx:for="{{item}}" wx:for-item="i" wx:key="{{index-1}}">
+            <view wx:if="{{i.is_default}}" class='pitch-on'>{{i.name}}</view>
+            <view wx:elif="{{i.product_id != 0}}" class='{{i.is_default ? "pitch-on" : ""}} ' data-key="{{i.product_id}}" data-id="{{i.name}}" bindtap="selectSku">{{i.name}}</view>
+            <view wx:elif="{{i.product_id == 0}}" class='nothing'>{{i.name}}</view>
+          </block>
+        </view>
+      </view>
+      <!-- 库存 -->
+      <view class='number'>
+        <text class='salespromotion-service-name'>数量</text>
+        <view class="stepper" hidden='{{typelook}}'>  
+          <text class="{{minStatus}}" bindtap="bindMinus">-</text>  
+          <input type="number" bindchange="bindManual" value="{{nums}}"/>  
+          <text class="{{maxStatus}}" bindtap="bindPlus">+</text>  
+        </view>
+        <text>库存 </text><text> {{goodsInfo.product.stock}}</text>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 商品切换选项卡 -->
+  <view>
+    <view class="nav bc_white">
+      <view class="{{selected?'red':'default'}}" bindtap="selected">图文详情</view>
+      <view class="{{selected1?'red':'default'}}" bindtap="selected1">产品参数</view>
+      <view class="{{selected2?'red':'default'}}" bindtap="selected2">买家评论<text class="comment-num">({{commentCount}})</text></view>
+    </view>
+    <view class="{{selected?'show':'hidden'}}">
+      <import src="../../../component/wxParse/wxParse.wxml"/>
+      <template is="wxParse" data="{{wxParseData:detial.nodes}}" />
+    </view>
+    <view class="{{selected1?'show':'hidden'}}">
+      <view class='parameter'>
+        <view class='parameter-list' wx:for="{{goodsAllParameter}}" wx:key="{{index}}">
+          <view class='parameter-left'>{{item.name}}</view>
+          <view class='parameter-right'>{{item.value}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="{{selected2?'show':'hidden'}}">
+      <view class='comment'>
+        <view class='comment-header'><text>买家评论</text><text>（{{commentCount}}）</text></view>
+        <view wx:for="{{commentList}}" wx:key="{{index}}">
+          <view class='comment-body'>
+            <view class='username'>              
+              <image src='{{item.user.avatar}}'></image>              
+              <text wx:if="{{item.user.nickname}}">{{item.user.nickname}}</text><text wx:else>{{item.user.mobile}}</text>
+              <view class='star' wx:if="{{item.score == 1}}">
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+              </view>
+              <view class='star' wx:elif="{{item.score == 0}}">
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+              </view>
+              <view class='star' wx:else>
+                <image src='../../image/redstar.png'></image>
+              </view>
+            </view>
+            <view class='comment-mid'>
+              <view class='comment-time'>
+                {{item.ctime}}
+              </view>
+              <view wx:if="{{item.addon}}">{{item.addon}}</view>
+            </view>
+            <view class='comment-detail'>
+              {{item.content}}
+            </view>
+            <view class='comment-img'>
+                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/pages/image/default_avatar.png'}}" wx:key="indexs" wx:for-item="vo"  mode="{{mode}}" src='{{vo}}'></image>
+            </view>
+          </view>
+        </view>
+        <view class="commentLoading commentBtn" bindtap='commentLoading' wx:if="{{commentLoading}}">点击加载更多</view>
+        <view class="commentLoading" wx:if="{{commentLoadingComplete}}">没有更多数据</view>
+        <view class="commentLoading" wx:if="{{commentNodata}}">没有数据</view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 统一底部 -->
+<view class='detail-footer'>
+  <view class='detail-footer-left'>
+    <button class="contact" hover-class="none" open-type="contact" bindcontact="customerService">
+      <image src='../../image/customservice.png'></image>
+      <text>客服</text> 
+    </button>
+    <view bindtap='goodsCollection'>
+      <view wx:if="{{isfav}}">
+        <image src='../../image/redstar.png'></image>
+        <text>取消收藏</text>
+      </view>
+      <view wx:else>
+        <image src='../../image/star.png'></image>
+        <text>收藏</text>
+      </view>
+    </view>
+    <view bindtap='goCartPage'>
+      <image src='../../image/cart4.png'></image>
+      <text>购物车</text>
+    </view>
+  </view>
+  <view class='detail-footer-right' wx:if="{{status}}">
+    <!-- <view bindtap='goodsAddCart' class='addtocart'>加入购物车</view> -->
+    <view bindtap='buyNow' class='buynow'  wx:if="{{goodsInfo.group_type =='3'}}">立即团购</view>
+    <view bindtap='buyNow' class='buynow'  wx:if="{{goodsInfo.group_type =='4'}}">立即秒杀</view>
+  </view>
+  <view class='detail-footer-right' wx:if="{{!status}}">
+    <view class='stockno'>该商品已售罄</view>
+  </view>
+</view>

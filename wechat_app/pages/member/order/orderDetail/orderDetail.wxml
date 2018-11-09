@@ -66,7 +66,7 @@
     <image class='right' src='../../../image/right.png'></image>
   </view>
   <!-- 收货地址 -->
-  <view class='address'>
+  <view class='address' wx:if="{{!order.store}}">
     <image class='gps' src='../../../image/gps.png'></image>
     <view class='information-content'>
       <view>
@@ -76,6 +76,18 @@
       <text class='add'>收货地址：{{order.ship_area_name}}-{{order.ship_address}}</text>
     </view>
   </view>
+  <!-- 自提门店 -->
+  <view class='address' wx:if="{{order.store}}">
+    <image class='gps' src='../../../image/shopblack.png'></image>
+    <view class='information-content'>
+      <view>
+        <text class='username'>提货门店：{{order.store.store_name}}</text>
+        <text class='phone'>{{order.store.mobile}}</text>
+      </view>
+      <text class='add'>地址：{{order.store.all_address}}</text>
+    </view>
+  </view>
+
   <!-- 商品信息 -->
   <view class='goods'>
     <view class='goods-lists' wx:for="{{order.items}}" wx:key="index" bindtap='showGoods' data-goods_id="{{item.goods_id}}">

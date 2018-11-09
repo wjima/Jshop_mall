@@ -76,7 +76,13 @@ class Images extends Manage
                 'autoSub'  => false,
             );
 
-            $upload =   new \org\Upload($config,'Local');
+            $image_storage = config('jshop.image_storage');
+            if (!$image_storage) {
+                $image_storage = [
+                    'type' => 'Local',
+                ];
+            }
+            $upload = new \org\Upload($config,$image_storage['type'],$image_storage);
 
             $info = $upload->upload();
 
@@ -85,7 +91,7 @@ class Images extends Manage
                 $url           = getRealUrl($savepath . $first['savename']);
                 $preview_url   = $url;
                 $iData['id']   = md5(get_hash($first['name']));
-                $iData['type'] = 'local';
+                $iData['type'] = $image_storage['type'];
                 $iData['name'] = $first['name'];
                 $iData['url']  = $url;
                 $iData['ctime']  = time();
@@ -100,7 +106,7 @@ class Images extends Manage
                             'name' => $first['savename'],
                             'url' => $url,
                             'size' => $first['size'],
-                            'type' => $first['type'],
+                            'type' => $type,
                             'state' => 'SUCCESS',
                             'image_id' => $iData['id'],
                         ];

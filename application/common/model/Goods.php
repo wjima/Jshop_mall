@@ -228,15 +228,12 @@ class Goods extends Common
     }
 
 
-    /***
+    /**
      * 获取商品详情
-     * @param        $gid
+     * @param $gid
      * @param string $fields
-     * @param string $token 会员token
+     * @param string $token
      * @return array
-     * User: wjima
-     * Email:1457529125@qq.com
-     * Date: 2018-02-03 8:17
      */
     public function getGoodsDetial($gid,$fields = '*',$token = '')
     {
@@ -283,14 +280,14 @@ class Goods extends Common
             if(!$default_product){
                 return error_code(10000);
             }
-            $product_info = $productsModel->getProductInfo($default_product['id']);
+            $product_info = $productsModel->getProductInfo($default_product['id'],true);
             if(!$product_info['status']){
                 return $product_info;
             }
             $list['product'] = $product_info['data'];
-
+            $list['price'] = $list['product']['price'];
             if($list['spes_desc']) {
-                $list['spes_desc'] = unserialize($list['spes_desc']);;
+                $list['spes_desc'] = unserialize($list['spes_desc']);
             }
             //取出图片集
             $imagesModel = new GoodsImages();
@@ -306,6 +303,11 @@ class Goods extends Common
             }
             sort($album);
             $list['album']=$album;
+
+            //取出销量
+            $orderItem = new OrderItems();
+            $count = $orderItem->where(['goods_id'=>$gid])->count();
+            $list['buy_count'] = $count;
 
             //获取当前登录是否收藏
             $list['isfav']=$this->getFav($list['id'],$token);
@@ -919,4 +921,18 @@ class Goods extends Common
         return $weight['weight']?$weight['weight']:0;
     }
 
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        return $result;
+    }
 }

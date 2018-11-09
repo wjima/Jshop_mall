@@ -29,6 +29,7 @@ return [
             '2' => '充值'
         ]
     ],
+
     'bill_aftersales' => [
         'status' => [
             '1' => '未审核',
@@ -40,6 +41,7 @@ return [
             '2' => '退款退货'
         ]
     ],
+
     'bill_refund' => [
         'status' => [
             '1' => '未退款',
@@ -51,6 +53,7 @@ return [
             '2' => '充值单'
         ]
     ],
+
     'bill_reship' => [
         'status' => [
             '1' => '待退货',
@@ -154,12 +157,14 @@ return [
             '2' => '线下支付',
         ]
     ],
+
     //支付方式
     'payment_type' => [
         'wechatpay' => '微信支付',
         'alipay' => '支付宝支付',
         'offline' => '线下支付'
     ],
+
     //文章是否发布
     'article' => [
         'is_pub' => [
@@ -167,6 +172,7 @@ return [
             '2' => '未发布'
         ]
     ],
+
     //广告位
     'advertisement' => [
         'position' => [
@@ -174,6 +180,7 @@ return [
             '2' => '禁用'
         ],
     ],
+
     //广告类型
     'advertType' => [
         'type' => [
@@ -183,6 +190,7 @@ return [
             '4' => '文章分类'
         ],
     ],
+
     //配送方式重量
     'ship_unit' => [
         '500'   => '500克',
@@ -194,6 +202,7 @@ return [
         '20000' => '20公斤',
         '50000' => '50公斤',
     ],
+
     //促销表
     'promotion' => [
         'exclusive' => [
@@ -212,6 +221,7 @@ return [
         '0' => '中评',
         '-1' => '差评'
     ],
+
     'message' => [
         'status' => [
             '1' => '未读',
@@ -219,6 +229,7 @@ return [
         ]
 
     ],
+
     'sms' => [
         'status' => [
             '1' => '未使用',
@@ -226,6 +237,7 @@ return [
         ]
 
     ],
+
     'balance' => [
         'type' => [
             '1' => '消费',
@@ -236,6 +248,7 @@ return [
             '6' => '提现',
         ],
     ],
+
     'operation' => [
         'type' => [
             'a' => '方法',
@@ -248,6 +261,7 @@ return [
             '3' => '附属权限'
         ]
     ],
+
     'user_point_log' => [
       'type' => [
           '1' => '签到',
@@ -257,12 +271,14 @@ return [
 
       ]
     ],
+
     'manage' => [
         'status' => [
             '1' => '正常',
             '2' => '停用',
         ]
     ],
+
     'bank_card' => [
         'type' => [
             '1' => '储蓄卡',
@@ -270,11 +286,20 @@ return [
         ],
         'bank_logo_url' => 'https://apimg.alipay.com/combo.png?d=cashier&t='
     ],
+
     'user_tocash' => [
         'type' => [
             '1' => '待审核',
             '2' => '提现成功',
             '3' => '提现失败'
+        ]
+    ],
+
+    //提货单
+    'bill_lading' => [
+        'status' => [
+            '1' => '未提货',
+            '2' => '已提货'
         ]
     ]
 ];

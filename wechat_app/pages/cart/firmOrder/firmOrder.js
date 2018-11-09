@@ -6,7 +6,7 @@ Page({
   data: {
     cartIds: '', //购物车ID
     productData: [], //货品信息
-    isAddress: false, //是否选择售后信息
+    isAddress: false, //是否选择收货信息
     areaId: 0, //地区ID
     area: '', //地区信息
     address: '', //地址信息
@@ -31,6 +31,20 @@ Page({
     usedCoupon: '', //使用的优惠券号
     usedCouponName: '未使用', //使用的优惠券名
     couponPmt: 0.00, //优惠券优惠金额
+    express: true,
+    lifting: false,
+    choose: true,
+    entry: false,
+    selected: true,
+    selected1: false,
+    storeSwitch: 2, //没有开启门店自提2
+    receipt_type: 1, //收货方式1快递配送 2上门自提
+    store_id: 0, //门店ID
+    lading_name: '', //自提姓名
+    lading_mobile: '', //自提电话
+    store_name: '暂无门店', //门店名称
+    store_mobile: '', //门店电话
+    store_address: '暂无自提门店', //门店地址
   },
 
   //页面加载
@@ -40,13 +54,25 @@ Page({
       //todo:数据异常处理
       return false;
     }
+    this.getStoreSwitch();
     this.getDefaultShip();
+    this.getDefaultStore();
     this.getUserCoupon();
     this.setData({
       cartIds: cart_id
     });
     this.getUserPoint();
   },
+
+    //是否开启门店自提
+    getStoreSwitch: function () {
+        let page = this;
+        app.api.getStoreSwitch(function(res){
+            page.setData({
+                storeSwitch: res.data
+            });
+        });
+    },
 
   //获取默认收货地址
   getDefaultShip: function () {
@@ -69,6 +95,23 @@ Page({
     });
   },
 
+    //获取默认门店
+    getDefaultStore: function () {
+        var page = this;
+        app.db.userToken(function (token) {
+            app.api.getDefaultStore(function (e) {
+                if(e.status){
+                    page.setData({
+                        store_id: e.data.id,
+                        store_name: e.data.store_name,
+                        store_mobile: e.data.mobile,
+                        store_address: e.data.all_address
+                    });
+                }
+            });
+        });
+    },
+
   //获取货品信息
   getProductData: function () {
     var page = this;
@@ -78,6 +121,7 @@ Page({
         ids: cart_id,
         area_id: page.data.areaId,
         coupon_code: page.data.usedCoupon,
+        receipt_type: page.data.receipt_type
       };
       if(page.data.pointStatus){
           data['point'] = page.data.available_point;
@@ -182,6 +226,13 @@ Page({
     });
   },
 
+  // 选择门店
+  gostore: function () {
+    wx.navigateTo({
+      url: '../../other/store/store'
+    });
+  },
+
   //留言信息
   buyerMessage: function (e) {
     this.setData({
@@ -194,26 +245,63 @@ Page({
     let page = this;
     let formId = e.detail.formId;
     app.db.userToken(function (token) {
-      if (!page.data.isAddress) {
-        wx.showToast({
-          icon: 'none',
-          title: '请选择收货地址信息'
-        });
-        return false;
-      } else {
-        var order_data = {
-          uship_id: page.data.userShipId,
-          cart_ids: page.data.cartIds,
-          memo: page.data.buyerMessage,
-          area_id: page.data.areaId,
-          coupon_code: page.data.usedCoupon,
-          formId: formId
+        //验证是否填写完成
+        let flag = true;
+        if(page.data.receipt_type == 1){
+            if (!page.data.isAddress) {
+                wx.showToast({
+                    icon: 'none',
+                    title: '请选择收货地址信息'
+                });
+                flag = false;
+                return false;
+            }
+        }else{
+            if (!page.data.store_id){
+                wx.showToast({
+                    icon: 'none',
+                    title: '请选择自提门店'
+                });
+                flag = false;
+                return false;
+            }
+            if (!page.data.lading_name){
+                wx.showToast({
+                    icon: 'none',
+                    title: '请输入提货人姓名'
+                });
+                flag = false;
+                return false;
+            }
+            if (!page.data.lading_mobile) {
+                wx.showToast({
+                    icon: 'none',
+                    title: '请输入提货人电话'
+                });
+                flag = false;
+                return false;
+            }
         }
-        if(page.data.pointStatus){
-            order_data['point'] = page.data.available_point
+
+        //组装数据
+        if (flag) {
+            var order_data = {
+                uship_id: page.data.userShipId,
+                cart_ids: page.data.cartIds,
+                memo: page.data.buyerMessage,
+                area_id: page.data.areaId,
+                coupon_code: page.data.usedCoupon,
+                formId: formId,
+                receipt_type: page.data.receipt_type,
+                store_id: page.data.store_id,
+                lading_name: page.data.lading_name,
+                lading_mobile: page.data.lading_mobile
+            }
+            if (page.data.pointStatus) {
+                order_data['point'] = page.data.available_point
+            }
+            page.goPay(order_data);
         }
-        page.goPay(order_data);
-      }
     });
   },
 
@@ -374,5 +462,61 @@ Page({
           pointStatus: status
       });
       page.getProductData();
-  }
+  },
+
+  // 优惠券使用方式
+  choose: function (e) {
+    this.setData({
+      entry: false,
+      choose: true
+    });
+  },
+  entry: function (e) {
+    this.setData({
+      choose: false,
+      entry: true
+    });
+  },
+
+    // 配送方式切换
+    express: function (e) {
+        let outType = this.data.receipt_type;
+        this.setData({
+            lifting: false,
+            express: true,
+            receipt_type: 1
+        });
+        if (outType != 1) {
+            this.getProductData();
+        }
+    },
+
+    //上门自提
+    lifting: function (e) {
+        let outType = this.data.receipt_type;
+        this.setData({
+            express: false,
+            lifting: true,
+            receipt_type: 2
+        });
+        if (outType != 2) {
+            this.getProductData();
+        }
+    },
+
+    //提货人姓名
+    ladingName: function (e) {
+        let name = e.detail.value;
+        this.setData({
+            lading_name: name
+        });
+    },
+
+    //提货人电话
+    ladingMobile: function (e) {
+        let mobile = e.detail.value;
+        this.setData({
+            lading_mobile: mobile
+        });
+    }
 });

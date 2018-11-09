@@ -121,12 +121,12 @@
  </view>   -->
 
 <!-- 功能模块第四部分 -->
- <view class='content-four content-body'> 
+ <view class='content-three content-body'> 
   <!-- 收货地址管理 -->
    <view class='content-view' bindtap='addressList'>
     <image class='member-icon' src='../../image/set.png'></image>
     <text class='member-text'>收货地址管理</text>
-  </view> 
+  </view>
   <!--
   <view class='content-view' bindtap='setUserInfo'>
     <image class='member-icon' src='../../image/set.png'></image>
@@ -134,3 +134,14 @@
   </view>
    -->
  </view>
+
+ <view class='content-four content-body' wx:if="{{isClerk}}"> 
+    <view class='content-view' bindtap='ladingList'>
+        <image class='member-icon' src='../../image/set.png'></image>
+        <text class='member-text'>提货单列表</text>
+    </view>
+    <view class='content-view' bindtap='ladingWrite'>
+        <image class='member-icon' src='../../image/set.png'></image>
+        <text class='member-text'>提货单核销</text>
+    </view>
+</view>

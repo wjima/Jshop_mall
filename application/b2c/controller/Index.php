@@ -18,6 +18,14 @@ class Index extends Base
         $this->redirect('/wap/index','302');
     }
     public function t(){
-        dump(config('?jshop.sms_password')?config('jshop.sms_password'):getSetting('sms_password'));
+        $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
+        if(
+            !file_exists($cert_dir."apiclient_cert.pem") ||
+            !file_exists($cert_dir."apiclient_key.pem")
+        ){
+            echo 'dddd';
+        }else{
+            echo 'yes';
+        }
     }
 }

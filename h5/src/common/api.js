@@ -71,8 +71,9 @@ const ApiUrl = () => {
     let apiUrl
     if (process.env.NODE_ENV === 'development') {
         // 开发环境
+        // apiUrl = 'http://www.b2c.com/index.php/api.html'
         apiUrl = 'https://b2c.jihainet.com/api.html'
-            // apiUrl = 'http://www.b2c.com/index.php/api.html'
+        // apiUrl = 'http://wjima.ngrok.jihainet.com/api.html'
     } else if (process.env.NODE_ENV === 'production') {
         // 生产环境
         if (!window.apiUrl) common.errorToBack('缺少配置参数!')
@@ -108,18 +109,18 @@ function uploadFile(type, param, callback) {
 function sendPost(url, data, config = {}, callback) {
     _this.$dialog.loading.open(Object.keys(config).length ? '上传中...' : '加载中...')
     axios.post(url, data, config).then(response => {
-        callback(response.data)
         _this.$dialog.loading.close()
         if (!response.data.status) {
             // 输出错误显示
             common.errorToBack(response.data.msg)
-            if (response.data.data === 14007 || response.data.data === 14006) {
+            if (response.data.data == 14007 || response.data.data == 14006) {
                 // 用户未登录或者token过期 清空本地user_token
                 common.removeStorage('user_token')
                     // 跳转至登录
                 common.jumpToLogin()
             }
         }
+        callback(response.data)
     }).catch(err => {
         if (err && err.response) {
             switch (err.response.status) {
@@ -555,6 +556,23 @@ function cashList(data, callback) {
     post('user.cashlist', data, callback)
 }
 
+
+// 获取授权登录方式
+function getTrustLogin(data, callback) {
+    post('user.gettrustlogin', data, callback)
+}
+
+// 绑定授权登录
+function trustBind (data, callback) {
+    post('user.trustbind', data, callback)
+}
+
+
+// 获取用户信息
+function trustLogin (data, callback) {
+    post('user.trustcallback', data, callback)
+}
+
 export default {
     reg: reg,
     login: login,
@@ -635,5 +653,8 @@ export default {
     userToCash: userToCash,
     cashList: cashList,
     articleList: articleList,
-    post: post
+    post: post,
+    getTrustLogin: getTrustLogin,
+    trustBind: trustBind,
+    trustLogin: trustLogin
 }

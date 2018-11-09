@@ -1,0 +1,51 @@
+<view class="body">
+    <!-- 提货单 -->
+    <view class='orderlist'>
+      <view wx:for="{{ladingList}}" wx:key="{{index}}">
+        <view class='listdetails'>
+          <!-- 状态名称 -->
+          <view class='top'>
+            <text class='number'>提货单号：{{item.id}}</text>
+            <text>{{item.status_name}}</text>
+          </view>
+          <view class='top'>
+            <text class='number'>订单号：{{item.order_id}}</text>
+            <text wx:if="{{item.order_info.status == 1 && item.order_info.pay_status == 1}}">待付款</text>
+            <text wx:elif="{{item.order_info.status == 1 && item.order_info.pay_status == 2 && item.order_info.ship_status == 1}}">待发货</text>
+            <text wx:elif="{{item.order_info.status == 1 && item.order_info.pay_status == 2 && item.order_info.ship_status == 3 && item.order_info.confirm == 1}}">待收货</text>
+            <text wx:elif="{{item.order_info.status == 1 && item.order_info.pay_status == 2 && item.order_info.ship_status == 3 && item.order_info.confirm == 2 && item.order_info.is_comment == 1}}">待评价</text>
+            <text wx:elif="{{item.order_info.status == 1 && item.order_info.pay_status == 2 && item.order_info.ship_status == 3 && item.order_info.confirm == 2 && item.order_info.is_comment == 2}}">已评价</text>
+            <text wx:elif="{{item.order_info.status == 2}}">已完成</text>
+            <text wx:elif="{{item.order_info.status == 3}}">已取消</text>
+            <text wx:else>未知状态</text>
+          </view>
+          <!-- 订单信息 -->
+          <view class='mid' bindtap='ladingWrite' data-id="{{item.id}}">
+            <!-- 子订单货品 -->
+            <view class='mid-top' wx:for="{{item.order_items}}" wx:for-item="v" wx:key='k'>
+              <image class='goods-img' src='{{v.image_url}}'></image>
+              <view class='mid-top-right'> 
+                <view class='name'>{{v.name}}</view>
+                <view class='style-num'>
+                  <text class='style' wx:if="{{v.addon}}">{{v.addon}}</text>                  
+                </view>
+                <view class='market-price'> 
+                  <view class='price'>
+                    <text class='cost-price'>¥{{v.price}}</text>
+                    <text class='price-gray'>¥{{v.mktprice}}</text>
+                    <text class='num'>x{{v.nums}}</text>
+                  </view>                   
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class='bottom'>
+            <view>
+              <view wx:if="{{item.status == 1 && item.order_info.pay_status == 2 && item.order_info.ship_status == 3}}" class='bottom-right' bindtap='ladingWrite' data-id="{{item.id}}">提货单核销</view>
+              <view wx:if="{{item.status == 2}}" class='bottom-right' bindtap='ladingDel' data-id="{{item.id}}">删除</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>

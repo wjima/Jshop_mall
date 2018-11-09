@@ -1,0 +1,89 @@
+.write{
+  /* padding-top: 50rpx; */
+}
+.write-banner{
+  width: 750rpx;
+  height: 320rpx;
+}
+.header-input {
+  position: relative;
+}
+.sousuo{
+  display: inline-block;  
+  height:60rpx;
+  position:absolute;
+  top:18rpx;
+  right:20rpx;
+}
+.sousuo button{
+  font-size: 24rpx;
+}
+.write-body{
+  
+}
+.write-content{
+  margin-bottom: 80rpx;
+}
+.write-list{
+
+}
+.write-item{
+  border-bottom: 2rpx solid #e6e6e6;
+  padding: 20rpx 30rpx;
+  overflow: hidden;
+}
+.write-item-left{
+  width: 200rpx;
+  height: 200rpx;
+  display: inline-block;
+  float: left;
+}
+.write-item-left image{
+  width: 100%;
+  height: 100%;
+}
+.write-item-right{
+  display: inline-block;
+  width: 460rpx;
+  margin-left: 30rpx;
+  float: left;
+}
+.write-item-right>text{
+  display: block;
+  color: #666;
+  width: 100%;
+  line-height: 1.6;
+}
+.goods-name{
+  font-size: 28rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.goods-num{
+  font-size: 24rpx;
+}
+
+.write-button{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 80rpx;
+}
+.write-button button{
+  height: 100%;
+  width: 100%;
+  line-height: 80rpx;
+  text-align: center;
+  background-color: #ff3b44;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 0;
+}
+.write-button .prohibit{
+  background-color: #ff9095;
+}
+.write-button button::after{
+  border: none;  
+}

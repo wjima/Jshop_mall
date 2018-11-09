@@ -50,7 +50,6 @@ class Cart extends Common
             return $productInfo;
 
         }
-
         $canBuyNum = $productInfo['data']['stock'];
 
         $where[] = array('product_id', 'eq', $product_id);
@@ -181,12 +180,13 @@ class Cart extends Common
      * @param bool $area_id
      * @param int $point
      * @param string $coupon_code
+     * @param int $receipt_type
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($userId, $id = '', $display = '', $area_id = false, $point = 0, $coupon_code = "")
+    public function info($userId, $id = '', $display = '', $area_id = false, $point = 0, $coupon_code = "", $receipt_type = 1)
     {
         $result = [
             'status' => false,
@@ -203,12 +203,10 @@ class Cart extends Common
                 'coupon' => [],
                 'point' => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money' => 0              //在结尾一定要算积分可以抵扣多少金额
-
             ],
             'msg' => ""
         ];
         $cartList = $this->getList($userId, $id, $display);
-
         if(!$cartList['status']){
             $result['msg'] = $cartList['msg'];
             return $result;
@@ -228,11 +226,16 @@ class Cart extends Common
                 $result['data']['weight'] += $v['weight']*$v['nums'];
             }
         }
-        if($area_id)
+
+        //运费判断
+        if($receipt_type == 1)
         {
-            $shipModel = new Ship();
-            $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'],$result['data']['goods_amount']);
-            $result['data']['amount'] += $result['data']['cost_freight'];
+            if($area_id)
+            {
+                $shipModel = new Ship();
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'],$result['data']['goods_amount']);
+                $result['data']['amount'] += $result['data']['cost_freight'];
+            }
         }
 
         //接下来算订单促销金额

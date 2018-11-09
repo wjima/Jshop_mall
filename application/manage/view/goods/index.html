@@ -232,18 +232,21 @@
                         var checkStatus = layui.table.checkStatus('goodsTable');
                         var checkData = checkStatus.data;
                         var length = checkStatus.data.length;
+                        var selectIds = '';
                         if(length){
                             var ids = [];
                             $.each(checkData,function (i,obj) {
                                 ids.push(obj.id);
                             });
-                            var selectIds =ids.toString();
-                            $(".export-form").append("<input type='hidden' name='ids' value='"+selectIds+"'>");
+                            //selectIds =ids.toString();
+                            //$(".export-form").append("<input type='hidden' name='ids' value='"+selectIds+"'>");
                         }
                         var filter=$(".seller-form").serialize();
-                        $(".export-form").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                        filter+='&ids='+ids;
 
+                        $(".export-form").append("<input type='hidden' name='filter' value='"+filter+"'>");
                         var data = $(".export-form").serializeArray();
+
                         data.push({'name':'model','value':'Goods'});
                         JsPost("{:url('Ietask/export')}",data,function(res){
                             layer.msg(res.msg, {time:1500}, function(){

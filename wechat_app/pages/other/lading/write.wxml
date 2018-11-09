@@ -1,0 +1,29 @@
+<view class='write'>
+  <image class='write-banner' src='../../image/write-banner.png'></image>
+  <view class="header-input">
+    <input class="search-input" placeholder="请输入完整提货单号、订单号、提货手机号" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+      <icon size='15' type='search'></icon> 
+    </input>
+    <view class='sousuo' bindtap='search'>
+        <button>查询</button>
+    </view>
+  </view>
+  <view class='write-body'>
+    <view class='write-content'>
+      <view class='write-list'>
+        <view class='write-item' wx:for="{{goodsList}}" wx:key="index">
+          <view class='write-item-left'><image mode='aspectFit' src='{{item.image_url}}'></image></view>
+          <view class='write-item-right'>
+            <text class='goods-name'>{{item.name}}</text>
+            <text class='goods-num' wx:if="{{item.addon}}">规格：{{item.addon}}</text>
+            <text class='goods-num'>数量：{{item.nums}}</text>
+            <text class='goods-num'>SN码：{{item.sn}} BN码：{{item.bn}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class='write-button'>
+      <button class='{{isgo?"":"prohibit"}}' bindtap='write'>{{isgotext}}</button>
+    </view>
+  </view>
+</view>

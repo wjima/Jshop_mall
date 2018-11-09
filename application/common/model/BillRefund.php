@@ -94,9 +94,11 @@ class BillRefund extends Common
                 $result['status'] = true;
                 $result['msg'] = '退款单退款成功';
             }
-            //发送退款消息
-            $eventData              = $info->toArray();
-            sendMessage($info['user_id'], 'refund_success', $eventData);
+            if($result['status']){
+                //发送退款消息
+                $eventData              = $info->toArray();
+                sendMessage($info['user_id'], 'refund_success', $eventData);
+            }
             return $result;
         }elseif($status == self::STATUS_REFUSE){
             //退款拒绝

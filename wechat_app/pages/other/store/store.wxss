@@ -1,0 +1,67 @@
+.sousuo{
+  display: inline-block;  
+  height:60rpx;
+  position:absolute;
+  top:18rpx;
+  right:20rpx;
+}
+.sousuo button{
+  font-size: 24rpx;
+}
+.store-body{
+  padding-top: 100rpx;
+}
+.store-list{
+  padding: 0 30rpx;
+}
+.store-item{
+  overflow: hidden;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #e6e6e6;
+  position: relative;
+}
+.store-item-l image{
+  width: 40rpx;
+  height: 40rpx;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+.store-item-m{
+  width: 550rpx;
+  float: left;
+  margin-left: 70rpx;
+}
+.store-name{
+  font-size: 30rpx;
+  display: block;
+  width: 100%;
+  line-height: 1.4;
+}
+.store-tel{
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  width: 100%;
+  line-height: 1.5;
+}
+.store-add{
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  width: 100%;
+  line-height: 1.4;
+}
+.store-item-r-c{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+.store-item-r-c image{
+  width: 30rpx;
+  height: 30rpx;
+  display: block;
+  margin: 10rpx;
+}

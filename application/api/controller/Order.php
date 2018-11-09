@@ -6,7 +6,7 @@ use app\common\model\BillPayments;
 use app\common\model\BillDelivery;
 use app\common\model\BillReship;
 use app\common\model\Order as orderModel;
-use Request;
+use think\facade\Request;
 
 /**
  * 订单模块
@@ -77,12 +77,14 @@ class Order extends Api
     /**
      * 获取订单详情
      * @return array
+     * @throws \think\exception\DbException
      */
     public function details()
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $result = model('common/Order')->getOrderInfoByOrderID($order_id, $user_id);
+        $model = new orderModel();
+        $result = $model->getOrderInfoByOrderID($order_id, $user_id);
         if($result)
         {
             $return_data = array(
@@ -175,24 +177,43 @@ class Order extends Api
         return $return_data;
     }
 
+
     /**
      * 创建订单
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function create()
     {
-        if(!input("?param.uship_id")){
-            return error_code(13001);
-        }else{
-            $uship_id = input('param.uship_id');
+        $receipt_type = Request::param('receipt_type', 1);
+        $store_id = Request::param('store_id', false);
+        $lading_name = Request::param('lading_name', false);
+        $lading_mobile = Request::param('lading_mobile', false);
+        $uship_id = Request::param('uship_id', false);
+        if($receipt_type == 1)
+        {
+            if(!$uship_id)
+            {
+                return error_code(13001);
+            }
         }
-        $memo = input('param.memo',"");
-        $cart_ids = input('param.cart_ids',"");
-        $area_id = input('param.area_id', false);
-        $point = input('point', 0);
-        $coupon_code = input('coupon_code', '');
-        $formId = input('formId', false);
-        return model('common/Order')->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId);
+        else
+        {
+            if(!$store_id || !$lading_name || !$lading_mobile)
+            {
+                return error_code(13001);
+            }
+        }
+        $memo = Request::param('memo', '');
+        $cart_ids = Request::param('cart_ids', '');
+        $area_id = Request::param('area_id', false);
+        $point = Request::param('point', 0);
+        $coupon_code = Request::param('coupon_code', '');
+        $formId = Request::param('formId', false);
+        $model = new orderModel();
+        return $model->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId, $receipt_type, $store_id, $lading_name, $lading_mobile);
     }
 
     /**

@@ -148,16 +148,15 @@ class wechatpay implements Payment
             'data' => [],
             'msg' => ''
         ];
-        if(isset($this->config['sslcert']) && $this->config['sslcert'] != ''){
 
-        }else{
-            $result['msg'] = "微信支付cert证书没有上传，不能在线退款";
-            return $result;
-        }
-        if(isset($this->config['sslkey']) && $this->config['sslkey'] != ''){
 
-        }else{
-            $result['msg'] = "微信支付key证书没有上传，不能在线退款";
+        $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
+        if(
+            !file_exists($cert_dir."apiclient_cert.pem") ||
+            !file_exists($cert_dir."apiclient_key.pem")
+        ){
+            $result['status'] = true;                       //没有证书的时候，相当于客户没有配置证书，那么原路返回线上就直接做已退款操作就可以了，不实际去退了，具体的金额在支付后台做退款
+            $result['msg'] = "微信支付证书没有上传，不能在线退款";
             return $result;
         }
 
@@ -181,11 +180,14 @@ class wechatpay implements Payment
         $response = $this->postXmlCurl($xml, $url, true, 6);
         if($response == ""){
             //出错了
+            $result['msg'] = '未知错误';
+            return $result;
         }
-        $re = $this->fromXml($response);
 
+        $re = $this->fromXml($response);
         if(!isset($re['return_code'])){
-            return "";
+            $result['msg'] = '未知错误2';
+            return $result;
         }
         if($re['return_code'] == 'SUCCESS'){
             if($re['result_code'] == 'SUCCESS'){
@@ -312,21 +314,19 @@ class wechatpay implements Payment
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
         if($useCert == true){
-            $cert_dir = ROOT_PATH.DS."public".DS."static".DS."files".DS."cert".DS;
+            $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
             if(
-                $this->config['sslcert'] == "" ||
-                !file_exists($cert_dir.$this->config['sslcert']) ||
-                $this->config['sslkey'] == "" ||
-                !file_exists($cert_dir.$this->config['sslkey'])
+                !file_exists($cert_dir."apiclient_cert.pem") ||
+                !file_exists($cert_dir."apiclient_key.pem")
             ){
                 return "";
             }
             //设置证书
             //使用证书：cert 与 key 分别属于两个.pem文件
             curl_setopt($ch,CURLOPT_SSLCERTTYPE,'PEM');
-            curl_setopt($ch,CURLOPT_SSLCERT, $cert_dir.$this->config['sslcert']);
+            curl_setopt($ch,CURLOPT_SSLCERT, $cert_dir."apiclient_cert.pem");
             curl_setopt($ch,CURLOPT_SSLKEYTYPE,'PEM');
-            curl_setopt($ch,CURLOPT_SSLKEY, $cert_dir.$this->config['sslkey']);
+            curl_setopt($ch,CURLOPT_SSLKEY, $cert_dir."apiclient_key.pem");
         }
         //post提交方式
         curl_setopt($ch, CURLOPT_POST, TRUE);

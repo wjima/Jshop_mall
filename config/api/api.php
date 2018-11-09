@@ -195,6 +195,18 @@ return [
             'cashlist' => [
                 'code' => 'cashList',
                 'is_login' => true
+            ],
+            'gettrustlogin' => [ //获取信任登录接口
+                'code' => 'getTrustLogin',
+                'is_login' => false
+            ],
+            'trustcallback' => [ //获取用户信息接口
+                'code' => 'trustCallBack',
+                'is_login' => false
+            ],
+            'trustbind' =>[  //账号绑定接口
+                'code' => 'trustBind',
+                'is_login' => false
             ]
         ]
     ],
@@ -428,6 +440,7 @@ return [
             ]
         ]
     ],
+
     //支付单
     'payments' => [
         'code' => 'Payments',
@@ -442,6 +455,7 @@ return [
             ],
         ]
     ],
+
     'images' => [
         'code' => 'Images',
         'method' => [
@@ -456,10 +470,53 @@ return [
     'store' => [
         'code' => 'Store',
         'method'    =>  [
-            'getstore' => [
-                'code' => 'getStore',
+            'getdefaultstore' => [
+                'code' => 'getDefaultStore',
                 'is_login' => false
             ],
+            'getstorelist' => [
+                'code' => 'getStoreList',
+                'is_login' => false
+            ],
+            'isclerk' => [
+                'code' => 'isClerk',
+                'is_login' => true
+            ],
+            'storeladinglist' => [
+                'code' => 'storeLadingList',
+                'is_login' => true
+            ],
+            'ladinginfo' => [
+                'code' => 'ladingInfo',
+                'is_login' => true
+            ],
+            'lading' => [
+                'code' => 'lading',
+                'is_login' => true
+            ],
+            'getstoreswitch' => [
+                'code' => 'getStoreSwitch',
+                'is_login' => false
+            ],
+            'ladingdel' => [
+                'code' => 'ladingDel',
+                'is_login' => true
+            ]
+        ]
+    ],
+
+    //团购&秒杀
+    'group' => [
+        'code' => 'Group',
+        'method'    =>  [
+            'getlist' => [
+                'code' => 'getList',
+                'is_login' => false
+            ],
+            'getgoodsdetial'=>[
+                'code'=>'getGoodsDetial',
+                'is_login'=>false
+            ]
         ]
     ]
 ];

@@ -1,1 +1,1 @@
-jshop_coupon` DROP `seller_id`;
+ALTER TABLE `jshop_coupon` DROP `seller_id`;

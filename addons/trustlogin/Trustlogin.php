@@ -45,7 +45,7 @@ class Trustlogin extends Addons
                 $class = "\\addons\\trustlogin\\lib\\$key";
                 $lib = new $class();
                 $trustData[$key] = [
-                    'url'=>$lib->getOauthUrl($params['url']),
+                    'url'=>$lib->getOauthUrl($params['url'].'?type='.$key),
                     'ico'=>$lib->icon,
                 ];
             }

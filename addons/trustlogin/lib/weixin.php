@@ -44,9 +44,10 @@ class weixin{
      */
     public function getUserInfo($params)
     {
-        if (!$this->checkState($params['state'])) {
+        //TODO 临时注释掉,没有获取到
+        /*if (!$this->checkState($params['state'])) {
             return false;
-        }
+        }*/
         $accessToken = $this->oauth->getOauthAccessToken($params);
         if (!$accessToken) {
             return false;
@@ -57,7 +58,6 @@ class weixin{
         if(!$userInfo) {
             return false;
         }
-        error_log(var_export(json_encode($userInfo), true), 3, __FILE__ . '.log');
         return $this->getUserData($userInfo);
     }
 

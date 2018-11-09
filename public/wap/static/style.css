@@ -110,22 +110,26 @@
 }
 .indexlistrec .yd-list-theme2 .yd-list-item .yd-list-img img,.indexlisthot .yd-list-theme2 .yd-list-item .yd-list-img img{
     position: absolute;
-    max-height: 100%;
-    max-width: 100%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 1rem;
+    height: 1rem;
+    background-color: #F9F9F9 !important;
     margin-top: 0;
 }
-.loading-img{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) !important;
-    width: 50px !important;
-    height: 50px !important;
-    background-color: #F9F9F9 !important;
+.indexlistrec .yd-list-theme2 .yd-list-item .yd-list-img .goods-imgs,.indexlisthot .yd-list-theme2 .yd-list-item .yd-list-img .goods-imgs{
+    /*position: absolute;*/
+    width: auto !important;
+    height: auto !important;
+    max-height: 100%;
+    max-width: 100%;
+    /*top: 50%;*/
+    /*left: 50%;*/
+    /*transform: translate(-50%, -50%);*/
+    
 }
+
 .scrolltab-li .loading-img{
     width: 1.2rem !important;
     height: 1.2rem !important;

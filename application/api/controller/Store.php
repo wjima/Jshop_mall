@@ -77,9 +77,9 @@ class Store extends Api
      */
     public function ladingInfo()
     {
-        $lading_id = Request::param('lading_id');
+        $key = Request::param('key');
         $model = new BillLading();
-        return $model->getInfo($lading_id);
+        return $model->getInfo($key);
     }
 
 

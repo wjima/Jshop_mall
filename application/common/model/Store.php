@@ -245,6 +245,7 @@ class Store extends Common
         $return['data'] = $this->order('ctime desc')->find();
         if($return['data'])
         {
+            $return['data']['all_address'] = get_area($return['data']['area_id']).$return['data']['address'];
             $return['status'] = true;
             $return['msg'] = '获取成功';
         }

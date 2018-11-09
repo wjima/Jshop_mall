@@ -1,8 +1,8 @@
 module.exports = {
   app_id: '',
   session_key: '',
-  api_url: 'http://www.b2c.com/',
-  cdn_url: 'http://www.b2c.com/',
+  api_url: 'http://b2c.com/',
+  cdn_url: 'http://b2c.com/',
   default_image: '',
   app_title: 'Jshop云商',
   app_description: 'Jshop云商',

@@ -1026,6 +1026,7 @@ class Order extends Common
         ];
         if($receipt_type == 1)
         {
+            //快递邮寄
             $ushopModel = new UserShip();
             $ushopInfo = $ushopModel->getShipById($uship_id,$user_id);
             if(!$ushopInfo)
@@ -1033,8 +1034,18 @@ class Order extends Common
                 return error_code(11050);
             }
         }
+        else
+        {
+            //门店自提
+            $storeModel = new Store();
+            $storeInfo = $storeModel->get($store_id);
+            if(!$storeInfo)
+            {
+                return error_code(11055);
+            }
+        }
 
-        $orderInfo = $this->formatOrderItems($user_id,$cart_ids,$area_id,$point,$coupon_code);
+        $orderInfo = $this->formatOrderItems($user_id,$cart_ids,$area_id,$point,$coupon_code,$receipt_type);
 
         if(!$orderInfo['status']){
             return $orderInfo;
@@ -1055,13 +1066,27 @@ class Order extends Common
         $order['user_id'] = $user_id;
 
         //收货地址信息
-        $order['ship_area_id'] = $ushopInfo['area_id'];
-        $order['ship_address'] = $ushopInfo['address'];
-        $order['ship_name'] = $ushopInfo['name'];
-        $order['ship_mobile'] = $ushopInfo['mobile'];
-        $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
-        $order['logistics_id'] = $shipInfo['id'];
-        $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
+        if($receipt_type == 1)
+        {
+            //快递邮寄
+            $order['ship_area_id'] = $ushopInfo['area_id'];
+            $order['ship_address'] = $ushopInfo['address'];
+            $order['ship_name'] = $ushopInfo['name'];
+            $order['ship_mobile'] = $ushopInfo['mobile'];
+            $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
+            $order['logistics_id'] = $shipInfo['id'];
+            $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
+        }
+        else
+        {
+            //门店自提
+            $order['ship_area_id'] = $storeInfo['area_id'];
+            $order['ship_address'] = $storeInfo['address'];
+            $order['ship_name'] = $storeInfo['store_name'];
+            $order['ship_mobile'] = $storeInfo['mobile'];
+            $order['logistics_id'] = 0;
+            $order['cost_freight'] = 0;
+        }
 
         //积分使用情况
         $order['point'] = $orderInfo['data']['point'];
@@ -1093,6 +1118,13 @@ class Order extends Common
             }
             $orderItemsModel = new OrderItems();
             $orderItemsModel->saveAll($orderInfo['data']['items']);
+
+            //自提订单记录
+            if($receipt_type == 2)
+            {
+                $ladingModel = new BillLading();
+                $ladingModel->addData($order['order_id'], $store_id, $lading_name, $lading_mobile);
+            }
 
             //优惠券核销
             if($coupon_code)
@@ -1158,15 +1190,16 @@ class Order extends Common
      * @param $area_id
      * @param $point
      * @param $coupon_code
+     * @param int $receipt_type
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function formatOrderItems($user_id,$cart_ids,$area_id,$point, $coupon_code)
+    public function formatOrderItems($user_id,$cart_ids,$area_id,$point, $coupon_code, $receipt_type = 1)
     {
         $cartModel = new Cart();
-        $cartList = $cartModel->info($user_id,$cart_ids,'',$area_id, $point, $coupon_code);
+        $cartList = $cartModel->info($user_id,$cart_ids,'',$area_id, $point, $coupon_code, $receipt_type);
         if(!$cartList['status']){
             return $cartList;
         }

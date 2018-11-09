@@ -6,7 +6,7 @@ Page({
   data: {
     cartIds: '', //购物车ID
     productData: [], //货品信息
-    isAddress: false, //是否选择售后信息
+    isAddress: false, //是否选择收货信息
     areaId: 0, //地区ID
     area: '', //地区信息
     address: '', //地址信息
@@ -33,6 +33,8 @@ Page({
     couponPmt: 0.00, //优惠券优惠金额
     express: true,
     lifting: false,
+    choose: true,
+    entry: false,
     selected: true,
     selected1: false,
     storeSwitch: 2, //没有开启门店自提2
@@ -243,26 +245,63 @@ Page({
     let page = this;
     let formId = e.detail.formId;
     app.db.userToken(function (token) {
-      if (!page.data.isAddress) {
-        wx.showToast({
-          icon: 'none',
-          title: '请选择收货地址信息'
-        });
-        return false;
-      } else {
-        var order_data = {
-          uship_id: page.data.userShipId,
-          cart_ids: page.data.cartIds,
-          memo: page.data.buyerMessage,
-          area_id: page.data.areaId,
-          coupon_code: page.data.usedCoupon,
-          formId: formId
+        //验证是否填写完成
+        let flag = true;
+        if(page.data.receipt_type == 1){
+            if (!page.data.isAddress) {
+                wx.showToast({
+                    icon: 'none',
+                    title: '请选择收货地址信息'
+                });
+                flag = false;
+                return false;
+            }
+        }else{
+            if (!page.data.store_id){
+                wx.showToast({
+                    icon: 'none',
+                    title: '请选择自提门店'
+                });
+                flag = false;
+                return false;
+            }
+            if (!page.data.lading_name){
+                wx.showToast({
+                    icon: 'none',
+                    title: '请输入提货人姓名'
+                });
+                flag = false;
+                return false;
+            }
+            if (!page.data.lading_mobile) {
+                wx.showToast({
+                    icon: 'none',
+                    title: '请输入提货人电话'
+                });
+                flag = false;
+                return false;
+            }
         }
-        if(page.data.pointStatus){
-            order_data['point'] = page.data.available_point
+
+        //组装数据
+        if (flag) {
+            var order_data = {
+                uship_id: page.data.userShipId,
+                cart_ids: page.data.cartIds,
+                memo: page.data.buyerMessage,
+                area_id: page.data.areaId,
+                coupon_code: page.data.usedCoupon,
+                formId: formId,
+                receipt_type: page.data.receipt_type,
+                store_id: page.data.store_id,
+                lading_name: page.data.lading_name,
+                lading_mobile: page.data.lading_mobile
+            }
+            if (page.data.pointStatus) {
+                order_data['point'] = page.data.available_point
+            }
+            page.goPay(order_data);
         }
-        page.goPay(order_data);
-      }
     });
   },
 
@@ -425,6 +464,20 @@ Page({
       page.getProductData();
   },
 
+  // 优惠券使用方式
+  choose: function (e) {
+    this.setData({
+      entry: false,
+      choose: true
+    });
+  },
+  entry: function (e) {
+    this.setData({
+      choose: false,
+      entry: true
+    });
+  },
+
     // 配送方式切换
     express: function (e) {
         let outType = this.data.receipt_type;
@@ -449,5 +502,21 @@ Page({
         if (outType != 2) {
             this.getProductData();
         }
+    },
+
+    //提货人姓名
+    ladingName: function (e) {
+        let name = e.detail.value;
+        this.setData({
+            lading_name: name
+        });
+    },
+
+    //提货人电话
+    ladingMobile: function (e) {
+        let mobile = e.detail.value;
+        this.setData({
+            lading_mobile: mobile
+        });
     }
 });

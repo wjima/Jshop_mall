@@ -36,7 +36,7 @@
     </view>
     <!-- 自提 -->
     <view  class="{{lifting?'show':'hidden'}}">
-      <view class='userinfo' bindtap='selectAddress' wx-if="{{isAddress}}">
+      <view class='userinfo' bindtap='gostore' wx-if="{{isAddress}}">
         <image class='gps-img' src='../../image/shopblack.png'></image>
         <view class='userinfo-body'>
           <!-- 收货人信息 -->

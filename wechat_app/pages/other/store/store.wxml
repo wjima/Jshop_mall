@@ -1,1 +1,30 @@
-<text>门店列表</text>
+<view class='store-c'>
+  <view class="header-input">
+    <input class="search-input" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+      <icon size='15' type='search'></icon> 
+    </input>
+    <view class='sousuo' bindtap='search'>
+        <button>搜索</button>
+    </view>
+  </view>
+  <view class='store-body'>
+    <view class='store-list'>
+      <view class='store-item'>
+        <view class='store-item-l'>
+          <image src='../../image/shopblack.png'></image>
+        </view>
+        <view class='store-item-m'>
+          <text class='store-name'>肯德基（西元广场店）</text>
+          <text class='store-tel'>电话：17630023045</text>
+          <text class='store-add'>地址：河南省郑州市中原区秦岭路与建设路交叉口西元广场西入口一楼</text>
+        </view>
+        <view class='store-item-r'>
+          <view class='store-item-r-c'>
+            <image src='../../image/gps.png'></image>
+            <image src='../../image/gps.png'></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

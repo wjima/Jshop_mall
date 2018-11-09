@@ -186,6 +186,13 @@ Page({
     });
   },
 
+  // 选择门店
+  gostore: function () {
+    wx.redirectTo({
+      url: '../../other/store/store'
+    });
+  },
+
   //留言信息
   buyerMessage: function (e) {
     this.setData({

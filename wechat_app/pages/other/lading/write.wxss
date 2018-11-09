@@ -7,7 +7,6 @@
   position:absolute;
   top:18rpx;
   right:20rpx;
-
 }
 .sousuo button{
   font-size: 24rpx;

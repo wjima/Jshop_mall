@@ -74,7 +74,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">首重重量：</label>
                 <div class="layui-input-inline">
-                    <select name="firstunit" id="firstunit" lay-filter="firstunit" key="key">
+                    <select name="firstunit" id="firstunit" lay-filter="firstunit" key="key" required lay-verify="required">
                         <option value="">请选择</option>
                         {volist name="params.ship_unit" id="vo" }
                         <option value="{$key}" {if condition="$key eq $data.firstunit"} selected {/if}>{$vo}</option>
@@ -85,7 +85,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">续重重量：</label>
                 <div class="layui-input-inline">
-                    <select name="continueunit" id="continueunit" lay-filter="continueunit" key="key">
+                    <select name="continueunit" id="continueunit" lay-filter="continueunit" key="key"  required lay-verify="required">
                         <option value="">请选择</option>
                         {volist name="params.ship_unit" id="vo" }
                         <option value="{$key}" {if condition="$key eq $data.continueunit"} selected {/if}>{$vo}</option>

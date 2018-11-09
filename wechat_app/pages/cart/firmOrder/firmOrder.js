@@ -35,6 +35,7 @@ Page({
     lifting: false,
     selected: true,
     selected1: false,
+    storeSwitch: 2, //没有开启门店自提2
     receipt_type: 1, //收货方式1快递配送 2上门自提
     store_id: 0, //门店ID
     lading_name: '', //自提姓名
@@ -51,6 +52,7 @@ Page({
       //todo:数据异常处理
       return false;
     }
+    this.getStoreSwitch();
     this.getDefaultShip();
     this.getDefaultStore();
     this.getUserCoupon();
@@ -59,6 +61,16 @@ Page({
     });
     this.getUserPoint();
   },
+
+    //是否开启门店自提
+    getStoreSwitch: function () {
+        let page = this;
+        app.api.getStoreSwitch(function(res){
+            page.setData({
+                storeSwitch: res.data
+            });
+        });
+    },
 
   //获取默认收货地址
   getDefaultShip: function () {

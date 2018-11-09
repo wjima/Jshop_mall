@@ -1,6 +1,6 @@
 <view class='firmorder-content'>
   <form bindsubmit="payNow" report-submit='true'>
-    <view class="nav bc_white">
+    <view wx:if="{{storeSwitch == 1}}" class="nav bc_white">
       <view class="{{express?'red':'default'}}" bindtap="express">快递配送</view>
       <view class="{{lifting?'red':'default'}}" bindtap="lifting">上门自提</view>
     </view>
@@ -35,7 +35,7 @@
       </view>
     </view>
     <!-- 自提 -->
-    <view  class="{{lifting?'show':'hidden'}}">
+    <view class="{{lifting?'show':'hidden'}}">
       <view class='userinfo' bindtap='gostore' wx-if="{{isAddress}}">
         <image class='gps-img' src='../../image/shopblack.png'></image>
         <view class='userinfo-body'>

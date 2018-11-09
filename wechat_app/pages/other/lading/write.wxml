@@ -1,10 +1,48 @@
 <view class='write'>
+  <image class='write-banner' src='../../image/write-banner.png'></image>
   <view class="header-input">
-    <input class="search-input" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+    <input class="search-input" placeholder="请输入订单号/提货单号/手机号/提货人姓名" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
       <icon size='15' type='search'></icon> 
     </input>
     <view class='sousuo' bindtap='search'>
-        <button>搜索</button>
+        <button>查询</button>
+    </view>
+  </view>
+  <view class='write-body'>
+    <view class='write-content'>
+      <view class='write-list'>
+        <view class='write-item'>
+          <view class='write-item-left'><image mode='aspectFit' src='../../image/write-banner.png'></image></view>
+          <view class='write-item-right'>
+            <text class='goods-name'>这是商品的名称如果太长了就要换行，最多显示两行</text>
+            <text class='goods-num'>这里是商品的数量</text>
+          </view>
+        </view>
+        <view class='write-item'>
+          <view class='write-item-left'><image mode='aspectFit' src='../../image/redflower.png'></image></view>
+          <view class='write-item-right'>
+            <text class='goods-name'>这是商品的名称如果太长了就要换行，最多显示两行</text>
+            <text class='goods-num'>这里是商品的数量</text>
+          </view>
+        </view>
+        <view class='write-item'>
+          <view class='write-item-left'><image mode='aspectFit' src='../../image/write-banner.png'></image></view>
+          <view class='write-item-right'>
+            <text class='goods-name'>这是商品的名称如果太长了就要换行，最多显示两行</text>
+            <text class='goods-num'>这里是商品的数量</text>
+          </view>
+        </view>
+        <view class='write-item'>
+          <view class='write-item-left'><image mode='aspectFit' src='../../image/redflower.png'></image></view>
+          <view class='write-item-right'>
+            <text class='goods-name'>这是商品的名称如果太长了就要换行，最多显示两行</text>
+            <text class='goods-num'>这里是商品的数量</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class='write-button'>
+      <button class='prohibit'>确认核销</button>
     </view>
   </view>
 </view>

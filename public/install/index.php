@@ -33,11 +33,10 @@ $db_config = array(
 //错误提示信息
 $errorTitle = '出错了';
 $errorMsg   = '';
-
 //检测是否已安装
-if (file_exists('./install.lock')) {
+if (file_exists('./install.lock')||file_exists(dirname(dirname(dirname(__FILE__))).'/config/install.lock')) {
     $errorTitle = '系统已安装';
-    $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock 文件';
+    $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或config/install.lock 文件';
     die(require $config['errorPage'] . '.html');
 }
 

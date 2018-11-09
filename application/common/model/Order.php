@@ -518,6 +518,11 @@ class Order extends Common
         $order_info['text_status'] = $this->getStatus($order_info['status'], $order_info['pay_status'], $order_info['ship_status'], $order_info['confirm'], $order_info['is_comment']);
         $order_info['ship_area_name'] = get_area($order_info['ship_area_id']);
 
+        //如果有优惠券，数据处理
+        if($order_info['coupon']){
+            $order_info['coupon'] = json_decode($order_info['coupon'],true);
+        }
+
         //获取该状态截止时间
         switch($order_info['text_status'])
         {

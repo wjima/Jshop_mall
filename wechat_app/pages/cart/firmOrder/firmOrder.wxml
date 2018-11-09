@@ -35,7 +35,7 @@
       </view>
     </view>
     <!-- 自提 -->
-    <view  class="{{lifting?'show':'hidden'}}">
+    <view class="{{lifting?'show':'hidden'}}">
       <view class='userinfo' bindtap='gostore' wx-if="{{isAddress}}">
         <image class='gps-img' src='../../image/shopblack.png'></image>
         <view class='userinfo-body'>
@@ -148,13 +148,31 @@
 
 <view class="modal-box" bindtap="couponbtn" data-statu="close" wx:if="{{showcoupon}}" catchtouchmove="move"></view>
 <view class="modal-body" animation="{{animationData}}" data-statu="close" wx:if="{{showcoupon}}" catchtouchmove="move">
-  <view class='modal-content'>
-    <radio-group class="radio-group" bindchange="radioChange">
-      <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon' bindchange="radioChange">
-        <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text>
-        <radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
-      </label>
-    </radio-group>
+  <view class="nav bc_white">
+    <view class="{{choose?'red':'default'}}" bindtap="choose">选择优惠券</view>
+    <view class="{{entry?'red':'default'}}" bindtap="entry">输入券码</view>
+  </view>
+  <view class="{{choose?'show':'hidden'}}">
+    <view class='modal-content'>
+      <radio-group class="radio-group" bindchange="radioChange">
+        <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon' bindchange="radioChange">
+          <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text>
+          <radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
+        </label>
+      </radio-group>
+    </view>
+  </view>
+  <view class="{{entry?'show':'hidden'}}">
+    <view class='modal-content'>
+      <view class='entry-c'>
+        <input placeholder='请输入优惠券码' placeholder-class='entry-input'></input><button>确认</button>
+        <view class='entry-list'>
+          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
+          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
+          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
+        </view>
+      </view>
+    </view>
   </view>
   <view class="close" bindtap="couponbtn" data-statu="close" >关闭</view>
 </view>

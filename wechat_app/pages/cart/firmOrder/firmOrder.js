@@ -33,8 +33,8 @@ Page({
     couponPmt: 0.00, //优惠券优惠金额
     express: true,
     lifting: false,
-    selected: true,
-    selected1: false,
+    choose: true,
+    entry: false,
   },
 
   //页面加载
@@ -397,6 +397,19 @@ Page({
     this.setData({
       express: false,
       lifting: true
+    });
+  },
+  // 优惠券使用方式
+  choose: function (e) {
+    this.setData({
+      entry: false,
+      choose: true
+    });
+  },
+  entry: function (e) {
+    this.setData({
+      choose: false,
+      entry: true
     });
   }
 });

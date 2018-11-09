@@ -126,12 +126,13 @@ class BillLading extends Common
     /**
      * 获取详情
      * @param $key
+     * @param bool $user_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getInfo($key)
+    public function getInfo($key, $user_id = false)
     {
         $return = [
             'status' => false,
@@ -142,6 +143,18 @@ class BillLading extends Common
         $return['data'] = $this->with('orderInfo,storeInfo')
             ->where($where)
             ->find();
+        if($user_id)
+        {
+            $clerkModel = new Clerk();
+            $store_ids = $clerkModel->getClerkStoreIds($user_id);
+            if(!in_array($return['data']['store_id'], $store_ids))
+            {
+                $return['data'] = [];
+                $return['msg'] = '你无权查看该提货单';
+                return $return;
+            }
+        }
+
         if($return['data'] !== false)
         {
             $return['data']['status_name'] = config('params.bill_lading.status')[$return['data']['status']];
@@ -156,6 +169,12 @@ class BillLading extends Common
             {
                 $return['data']['clerk'] = '';
             }
+
+            //获取订单商品详情
+            $orderItemsModel = new OrderItems();
+            $wheres[] = ['order_id', 'eq', $return['data']['order_id']];
+            $return['data']['goods'] = $orderItemsModel->where($wheres)->select();
+
             $return['status'] = true;
             $return['msg'] = '获取成功';
         }
@@ -167,10 +186,13 @@ class BillLading extends Common
     /**
      * 删除
      * @param $id
+     * @param $user_id
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function del($id)
+    public function del($id, $user_id = false)
     {
         $return = [
             'status' => false,
@@ -183,6 +205,18 @@ class BillLading extends Common
             $return['msg'] = '未提货的提货单不能删除';
             return $return;
         }
+
+        if($user_id)
+        {
+            $clerkModel = new Clerk();
+            $store_ids = $clerkModel->getClerkStoreIds($user_id);
+            if(!in_array($result['store_id'], $store_ids))
+            {
+                $return['msg'] = '你无权删除该提货单';
+                return $return;
+            }
+        }
+
         $return['data'] = $this->destroy($id);
         if($return['data'] !== false)
         {
@@ -243,6 +277,7 @@ class BillLading extends Common
             $orderItemsModel = new OrderItems();
             foreach($return['data'] as &$v)
             {
+                unset($wheres);
                 $wheres[] = ['order_id', 'eq', $v['order_id']];
                 $v['order_items'] = $orderItemsModel->where($wheres)->select();
                 $v['store_name'] = $storeModel->getStoreName($v['store_id']);

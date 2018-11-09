@@ -133,8 +133,15 @@
     <text class='member-text'>安全中心</text>
   </view>
    -->
-   <view class='content-view' bindtap='ladingList' wx:if="{{isClerk}}">
-        <image class='member-icon' src='../../image/set.png'></image>
-        <text class='member-text'>提货单管理</text>
-    </view>
  </view>
+
+ <view class='content-four content-body' wx:if="{{isClerk}}"> 
+    <view class='content-view' bindtap='ladingList'>
+        <image class='member-icon' src='../../image/set.png'></image>
+        <text class='member-text'>提货单列表</text>
+    </view>
+    <view class='content-view' bindtap='ladingWrite'>
+        <image class='member-icon' src='../../image/set.png'></image>
+        <text class='member-text'>提货单核销</text>
+    </view>
+</view>

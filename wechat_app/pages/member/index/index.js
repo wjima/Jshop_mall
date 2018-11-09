@@ -14,7 +14,7 @@ Page({
 
   //加载执行
   onShow: function (options) {
-    var page = this;
+    var page = th
     app.db.userToken(function (token) {
       app.api.userInfo(function (res) {
         if (res.status) {
@@ -33,7 +33,7 @@ Page({
       app.api.getOrderStatusNum('1,2,3,4', function (res) {
         page.setData({
           statusData: res.data
-        })
+        });
       });
 
       app.api.isClerk(function(res){
@@ -184,10 +184,17 @@ Page({
         });
     },
 
-    //提货单管理
+    //提货单列表
     ladingList: function () {
         wx.navigateTo({
             url: '../../other/lading/lading'
+        });
+    },
+
+    //提货单核销
+    ladingWrite: function () {
+        wx.navigateTo({
+            url: '../../other/lading/write'
         });
     }
 });

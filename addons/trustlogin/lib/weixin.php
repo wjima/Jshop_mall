@@ -44,7 +44,6 @@ class weixin{
      */
     public function getUserInfo($params)
     {
-        echo 'sss';
         if (!$this->checkState($params['state'])) {
             return false;
         }
@@ -54,11 +53,19 @@ class weixin{
         }
         $userInfo = $this->oauth->getOauthUserInfo($accessToken['access_token'], $accessToken['openid']);
         Log::info("用户信息：" . json_encode($userInfo));
+        $user = [];
+        if(!$userInfo) {
+            return false;
+        }
         error_log(var_export(json_encode($userInfo), true), 3, __FILE__ . '.log');
-        return $userInfo;
+        return $this->getUserData($userInfo);
     }
 
-
+    /**
+     * 字段转换
+     * @param array $params
+     * @return mixed
+     */
     public function getUserData($params = [])
     {
         $userData['openid'] = $params['openid'];
@@ -66,6 +73,7 @@ class weixin{
         $userData['privilege'] = $params['privilege'];
         $userData['avatar'] = $params['headimgurl'];
         $userData['country'] = $params['country'];
+        $userData['language'] = $params['language'];
         $userData['province'] = $params['province'];
         $userData['city'] = $params['city'];
         $userData['gender'] = $params['sex'];

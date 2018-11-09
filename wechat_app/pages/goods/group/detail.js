@@ -8,6 +8,7 @@ Page({
   data: {
     goodsId: '', //商品ID
     productId: '', //货品ID
+    groupId: '', //货品ID
     nums: 1, //购买数量
     goodsImg: [], //商品图片
     indicatorDots: true, //商品轮播图底部圆点
@@ -119,16 +120,14 @@ Page({
   //页面加载处理
   onLoad: function (options) {
     //判断访问页面时候带的商品ID
-    if (options.id) {
+    console.log(options);
+    if (options.id && options.groupid) {
       //设置全局商品ID
       this.setData({
-        goodsId: options.id
+        goodsId: options.id,
+        groupId: options.groupid
       });
     }
-    // //店铺
-    // if (options.scene) {
-    //   app.config.site_token = e.scene;
-    // }
     //被邀请码
     if (options.invite) {
         wx.setStorage({
@@ -182,10 +181,11 @@ Page({
     var token = app.db.get('userToken');
     var data = {
       id: this.data.goodsId,
+      group_id: this.data.groupId,
       token: token
     }
     var page = this;
-    app.api.goodsInfo(data, function (res) {
+    app.api.groupInfo(data, function (res) {
       if (res.status) {
         if (res.data.length < 1){
           wx.showModal({
@@ -214,6 +214,7 @@ Page({
           if (res.data.isfav == 'false') {
             isfav = false;
           }
+          console.log(res.data);
           var spes_desc = page.getSpes(res.data.product);
           page.setData({
             goodsImg: res.data.album,
@@ -226,6 +227,9 @@ Page({
           WxParse.wxParse('detial', 'html', res.data.intro, page, 5); //解析商品图文详情
           page.goodsAllParameter(); //获取产品参数
           page.setNumsData(res.data);
+          //刷新时间
+          app.common.groupDetailCountDown(page);
+
         }
       }
     });

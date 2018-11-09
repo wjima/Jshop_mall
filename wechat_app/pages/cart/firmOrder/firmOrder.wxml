@@ -64,10 +64,10 @@
       </view>
       <view class='user-name-phone'>
         <view class='user-name'>
-          <text>姓名</text><input placeholder='请输入姓名' placeholder-class='user-n-p-input'></input>
+          <text>姓名</text><input placeholder='请输入提货人姓名' bindinput="ladingName" value="{{lading_name}}" placeholder-class='user-n-p-input'></input>
         </view>
         <view class='user-phone'>
-          <text>电话</text><input placeholder='请输入电话' placeholder-class='user-n-p-input'></input>
+          <text>电话</text><input placeholder='请输入提货人电话' bindinput="ladingMobile" value="{{lading_mobile}}" placeholder-class='user-n-p-input'></input>
         </view>
       </view>
     </view>  

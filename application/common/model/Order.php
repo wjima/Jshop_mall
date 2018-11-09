@@ -1008,23 +1008,32 @@ class Order extends Common
      * @param int $point
      * @param bool $coupon_code
      * @param bool $formId
+     * @param int $receipt_type
+     * @param bool $store_id
+     * @param bool $lading_name
+     * @param bool $lading_mobile
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($user_id,$cart_ids,$uship_id,$memo,$area_id,$point=0,$coupon_code=false, $formId = false)
+    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0,$coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false)
     {
         $result = [
             'status' => false,
             'data' => array(),
             'msg' => ''
         ];
-        $ushopModel = new UserShip();
-        $ushopInfo = $ushopModel->getShipById($uship_id,$user_id);
-        if(!$ushopInfo){
-            return error_code(11050);
+        if($receipt_type == 1)
+        {
+            $ushopModel = new UserShip();
+            $ushopInfo = $ushopModel->getShipById($uship_id,$user_id);
+            if(!$ushopInfo)
+            {
+                return error_code(11050);
+            }
         }
+
         $orderInfo = $this->formatOrderItems($user_id,$cart_ids,$area_id,$point,$coupon_code);
 
         if(!$orderInfo['status']){

@@ -608,7 +608,7 @@ class User extends Common
                 $max_point_deducted_money = $order_money*($orders_point_proportion/100); //最大积分抵扣的钱
                 $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
                 $needs_point = $max_point_deducted_money*$point_discounted_proportion;
-                $return['available_point'] = $needs_point>$data['point']?$data['point']:$needs_point;
+                $return['available_point'] = floor($needs_point>$data['point']?$data['point']:$needs_point);
                 $return['point_rmb'] = $max_point_deducted_money;
             }
 

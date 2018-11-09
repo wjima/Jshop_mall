@@ -1,7 +1,8 @@
 <?php
 namespace app\api\controller;
 use app\common\controller\Api;
-use Request;
+use think\facade\Request;
+use app\common\model\Cart as Model;
 
 /**
  * 购物车
@@ -76,11 +77,22 @@ class Cart extends Api
 
     /**
      * 获取购物车列表
-     * @return mixed
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getList()
     {
-        return (model('common/Cart')->info($this->userId, input('ids',""), input('display', ''), input('area_id', false), input('point', 0), input('coupon_code', '')));
+        $model = new Model();
+        $ids = Request::param('ids', '');
+        $display = Request::param('display', '');
+        $area_id = Request::param('area_id', false);
+        $point = Request::param('point', 0);
+        $coupon_code = Request::param('coupon_code', '');
+        $receipt_type = Request::param('receipt_type', 1);
+        $result = $model->info($this->userId, $ids, $display, $area_id, $point, $coupon_code, $receipt_type);
+        return $result;
     }
 
 

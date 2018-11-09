@@ -946,13 +946,19 @@ class User extends Api
             'msg' => '获取成功',
             'data' => []
         ];
+
         $jshopHost = Container::get('request')->domain();
-        $params['url'] = $jshopHost.'/wap/index.html#/'.input('param.url/s', '');
+        $jshopHost = 'http://wjima.ngrok.jihainet.com';
+        $params['url'] = $jshopHost.'/wap/index.html?type=weixin#/'.input('param.url/s', '');
+        #http://wjima.ngrok.jihainet.com/wap/index.html#/author
+        #http://wjima.ngrok.jihainet.com/wap/index.html/#/author
+        #$params['url'] = str_replace("/#/","#/",$params['url']);
         if(!$params['url']){
             $data['status'] = false;
             $data['msg'] = '获取失败';
             return $data;
         }
+
         if(checkAddons('trustlogin')){
             $data['data'] = Hook('trustlogin',$params);
         }
@@ -980,6 +986,7 @@ class User extends Api
         if (checkAddons('trustcallback')) {
             $data = Hook('trustcallback', $params);
         }
+
         if (isset($data[0]['status']) && !$data[0]['status']) {
             return $returnData;
         }
@@ -1035,11 +1042,11 @@ class User extends Api
             'data' => []
         ];
         $data = input('param.');
-        if(!isset($data['id'])||$data['id']==''){
+        if(!isset($data['params']['id'])||$data['params']['id']==''){
             return $returnData;
         }
-        $data['authorId'] = $data['id'];
-        unset($data['id']);
+        $data['authorId'] = $data['params']['id'];
+        unset($data['params']);
         $userModel = new UserModel();
         $userWxModel = new UserWx();
         $wxInfo = $userWxModel->where(['id'=>$data['authorId']])->find();
@@ -1047,6 +1054,7 @@ class User extends Api
             $returnData['msg'] = '请勿重复绑定';
             return $returnData;
         }
+
         return $userModel->toAdd($data,2);
     }
 

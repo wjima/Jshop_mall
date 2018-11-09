@@ -80,7 +80,7 @@ export default {
                 this.$dialog.loading.open('发送中...')
                 setTimeout(() => {
                     this.$dialog.loading.close()
-                    this.$api.sms({mobile: this.mobile, code: 'reg'}, res => {
+                    this.$api.sms({mobile: this.mobile, code: 'reg', type: 'bind'}, res => {
                         if (res.status) {
                             this.countDown = true
                             this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1300})

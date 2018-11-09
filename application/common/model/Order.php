@@ -499,6 +499,20 @@ class Order extends Common
         $order_info->items; //订单详情
         $order_info->user; //用户信息
         $order_info->delivery; //发货信息
+
+        //获取提货门店
+        $billLadingModel = new BillLading();
+        $bwhere[] = ['order_id', 'eq', $id];
+        $billLadingInfo = $billLadingModel->where($bwhere)->find();
+        $order_info['store'] = false;
+        if($billLadingInfo)
+        {
+            $storeModel = new Store();
+            $storeInfo = $storeModel->get($billLadingInfo['store_id']);
+            $storeInfo['all_address'] = get_area($storeInfo['area_id']).$storeInfo['address'];
+            $order_info['store'] = $storeInfo;
+        }
+
         foreach($order_info['delivery'] as &$v)
         {
             $v['logi_name'] = get_logi_info($v['logi_code'], 'logi_name');

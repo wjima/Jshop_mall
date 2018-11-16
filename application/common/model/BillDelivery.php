@@ -194,7 +194,7 @@ class BillDelivery extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getLogisticsInformation($com, $code)
+    public function getLogisticsInformation($order_id)
     {
         $result = [
             'status' => false,
@@ -208,14 +208,17 @@ class BillDelivery extends Common
                 return error_code(10051);
             }
 
-            $logistics = $this->logistics_query($com, $code);
-            if ($logistics['status'] == '200' && $logistics['message'] == 'ok')
+            $logistics = $this->logistics_query($deliveryInfo['logi_code'], $deliveryInfo['logi_no']);
+            if ($logistics['status'] === '200')
             {
+                $result['status'] = true;
                 $result['msg'] = '获取成功';
                 $result['data'] = [
                     'list' => $logistics['data'],
                     'state' => config('params.order')['logistics_state'][$logistics['state']]
                 ];
+            } else {
+                $result['msg'] = $logistics['message'];
             }
         }
         return $result;
@@ -230,10 +233,8 @@ class BillDelivery extends Common
      */
     private function logistics_query( $com, $code )
     {
-        $apiKey = config('jshop.api_express')['key'];
-        $customer = config('jshop.api_express')['customer'];
-        $exp = new Exp($apiKey, $customer);
-        $res = $exp->query($com, $code);
+        $exp = new Exp();
+        $res = $exp->postCurl($exp->assembleParam($com, $code));
         return $res;
     }
 

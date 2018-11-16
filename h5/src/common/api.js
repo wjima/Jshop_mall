@@ -63,7 +63,8 @@ let methodToken = [
     'order.sendreship',
     'order.iscomment',
     'order.logistics',
-    'payments.getinfo'
+    'payments.getinfo',
+    'user.getuserpoint'
 ]
 
 // api接口地址
@@ -83,7 +84,7 @@ const ApiUrl = () => {
 }
 
 // 接口token验证
-function post(method, data, callback) {
+const post = (method, data, callback) => {
     // 如果是需要登陆的，增加token
     if (methodToken.indexOf(method) >= 0) {
         data.token = common.getStorage('user_token')
@@ -93,7 +94,7 @@ function post(method, data, callback) {
 }
 
 // 图片上传
-function uploadFile(type, param, callback) {
+const uploadFile = (type, param, callback) => {
     if (type === 'image') {
         param.append('method', 'images.upload')
     } else if (type === 'video') {
@@ -106,14 +107,14 @@ function uploadFile(type, param, callback) {
 }
 
 // axios 发送请求统一处理
-function sendPost(url, data, config = {}, callback) {
-    _this.$dialog.loading.open(Object.keys(config).length ? '上传中...' : '加载中...')
+const sendPost = (url, data, config = {}, callback) => {
+    // _this.$dialog.loading.open(Object.keys(config).length ? '上传中...' : '加载中...')
     axios.post(url, data, config).then(response => {
-        _this.$dialog.loading.close()
+        // _this.$dialog.loading.close()
         if (!response.data.status) {
             // 输出错误显示
             common.errorToBack(response.data.msg)
-            if (response.data.data == 14007 || response.data.data == 14006) {
+            if (response.data.data === 14007 || response.data.data === 14006) {
                 // 用户未登录或者token过期 清空本地user_token
                 common.removeStorage('user_token')
                     // 跳转至登录
@@ -573,6 +574,21 @@ function trustLogin (data, callback) {
     post('user.trustcallback', data, callback)
 }
 
+// 判断用户下单可以使用多少积分
+const usablePoint = (data, callback) => post('user.getuserpoint', data, callback)
+
+// 门店列表
+const storeList = (data, callback) => post('store.getstorelist', data, callback)
+
+// 判断是否开启门店自提
+const switchStore = (data, callback) => post('store.getstoreswitch', data, callback)
+
+// 获取默认的门店
+const defaultStore = (data, callback) => post('store.getdefaultstore', data, callback)
+
+// 判断是否开启积分
+const isPoint = (data, callback) => post('user.ispoint', data, callback)
+
 export default {
     reg: reg,
     login: login,
@@ -656,5 +672,8 @@ export default {
     post: post,
     getTrustLogin: getTrustLogin,
     trustBind: trustBind,
-    trustLogin: trustLogin
+    trustLogin: trustLogin,
+    isPoint: isPoint,
+    usablePoint: usablePoint,
+    switchStore: switchStore
 }

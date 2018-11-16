@@ -54,12 +54,23 @@
           </view>
         </view>
       </view>
-      <!-- 没有用户收货地址的时候 -->
-      <view class='userinfo' bindtap='selectAddress' wx-if="{{!isAddress}}">
+      <!-- 没有收货门店的时候 -->
+      <view class='userinfo' bindtap='gostore' wx-if="{{!isAddress}}">
+        <image class='gps-img' src='../../image/shopblack.png'></image>
         <view class='userinfo-body noaddress'>
-          <image class="gps-ico" src='../../image/gps.png'></image>
-          <text>请选择收货地址信息</text>
-          <image class="right-ico" src='../../image/right.png'></image>
+          <!-- 收货人信息 -->
+          <view class='userinfo-body-top'>
+            <text class='consignee'>{{store_name}}</text>
+            <text class='phone-num'>{{store_mobile}}</text>
+          </view>
+          <!-- 收货地址信息 -->
+          <view class='userinfo-body-bottom'>
+            <view class='address'>
+              <text>门店地址：</text>
+              <text>{{store_address}}</text>
+            </view>
+            <image src='../../image/right.png'></image>
+          </view>
         </view>
       </view>
       <view class='user-name-phone'>
@@ -93,7 +104,7 @@
       </view>
     </view>
     <view class='price-list'>
-      <view class='price-details' bindtap="couponbtn" data-statu="open" wx:if="{{couponitems.length > 0}}">
+      <view class='price-details' bindtap="couponbtn" data-statu="open">
         <text class='price-details-left'>优惠券</text>
         <text class='price-details-right'>{{usedCouponName}}</text>
       </view> 
@@ -164,12 +175,12 @@
   <view class="{{entry?'show':'hidden'}}">
     <view class='modal-content'>
       <view class='entry-c'>
-        <input placeholder='请输入优惠券码' placeholder-class='entry-input'></input><button>确认</button>
-        <view class='entry-list'>
+        <input placeholder='请输入优惠券码' bindinput='couponKey' placeholder-class='entry-input'></input><button bindtap='couponKeyBtn'>确认</button>
+        <!-- <view class='entry-list'>
           <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
           <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
           <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
-        </view>
+        </view> -->
       </view>
     </view>
   </view>

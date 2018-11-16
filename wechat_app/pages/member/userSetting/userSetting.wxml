@@ -1,14 +1,10 @@
 <view class='content-one content-body'>
-    <!-- 我的银行卡 -->
-    <view class='content-view' bindtap='mybackcardlist'>
-        <image class='member-icon' src='../../image/bankcard.png'></image>
-        <text class='member-text'>我的银行卡</text>
-    </view>
+    
     <!-- 推荐记录 -->
-    <view class='content-view' bindtap='recommendlist'>
+    <!-- <view class='content-view' bindtap='recommendlist'>
         <image class='member-icon' src='../../image/heart.png'></image>
         <text class='member-text'>推荐记录</text>
-    </view>
+    </view> -->
     <!-- 会员资料设置 -->
     <view class='content-view' bindtap='setUserInfo'>
         <image class='member-icon' src='../../image/set.png'></image>

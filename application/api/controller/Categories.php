@@ -26,7 +26,7 @@ class Categories extends Api
             'msg' => '',
             'data' => array(),
         );
-
+        $return['cate_style'] = getSetting('cate_style'); //新增分类样式
         if($data)
         {
             $return['status'] = true;

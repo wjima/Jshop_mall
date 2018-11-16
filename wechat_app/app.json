@@ -41,9 +41,11 @@
         "pages/member/recommendList/recommendList",
         "pages/member/myBankCardlist/myBankCardlist",
         "pages/member/address/editAddress",
+        "pages/member/invite/invite",
         "pages/other/lading/lading",
         "pages/other/lading/write",
-        "pages/other/store/store"
+        "pages/other/store/store",
+        "pages/other/generatePoster/generatePoster"
     ],
     "window": {
         "backgroundTextStyle": "light",

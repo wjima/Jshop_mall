@@ -16,7 +16,7 @@
         <view class='store-item-m' bindtap='storeSelect' data-id="{{item.id}}" data-name="{{item.store_name}}" data-mobile="{{item.mobile}}" data-address="{{item.all_address}}">
           <text class='store-name'>{{item.store_name}}</text>
           <text class='store-tel'>电话：{{item.mobile}}</text>
-          <text class='store-add'>地址：{{item.all_address}}{{item.all_address}}</text>
+          <text class='store-add'>地址：{{item.all_address}}</text>
         </view>
         <view class='store-item-r'>
           <view class='store-item-r-c'>

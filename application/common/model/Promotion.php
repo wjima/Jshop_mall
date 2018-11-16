@@ -157,7 +157,12 @@ class Promotion extends Common
     {
 
         $where = [];
-        $where[] = ['type', 'eq', $post['type']];
+        if(is_array($post['type'])){
+            $where[] = ['type', 'in', $post['type']];
+
+        }else{
+            $where[] = ['type', 'eq', $post['type']];
+        }
 
         if(isset($post['name']) && $post['name'] != ""){
             $where[] = ['name', 'like', '%'.$post['name'].'%'];

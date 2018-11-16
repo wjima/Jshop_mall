@@ -26,6 +26,10 @@ class Setting extends Common
             'name' => '开启门店自提',
             'value' => '2'
         ],
+        'cate_style' => [
+            'name' => '分类样式',
+            'value' => '3'
+        ],
         'order_cancel_time' => [
             'name' => '订单取消时间',
             'value' => '1'
@@ -131,17 +135,18 @@ class Setting extends Common
             'name'=>'小程序名称',
             'value' => 'JSHOP',
         ],
-        'wx_appid'=>[
+        //小程序设置
+        'wx_appid'=>[           //小程序id
             'name'=>'AppId',
-            'value' => '000000',
+            'value' => '',
         ],
         'wx_app_secret'=>[
             'name'=>'AppSecret',
-            'value' => '000000',
+            'value' => '',
         ],
         'wx_user_name'=>[
             'name'=>'原始Id',
-            'value' => '000000',
+            'value' => '',
         ],
         'wx_principal_name'=>[
             'name'=>'主体信息',

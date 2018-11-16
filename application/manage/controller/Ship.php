@@ -222,6 +222,7 @@ class Ship extends Manage
         $areaList=$area->getTreeArea($checked);
         $this->assign('arealist',json_encode($areaList));
         $this->view->engine->layout(false);
+
         $result['data']=$this->fetch('chooseArea');
         return $result;
     }

@@ -1,10 +1,14 @@
 /**index.wxss**/
+page{
+  background-color:#f3f3f3;
+}
 .search-input{
   background-color: #fff;
   position:relative;
 }
 swiper{
   height: 376rpx;
+  background-color: #fff;
 }
 swiper-item{
   width: 750rpx;
@@ -14,17 +18,16 @@ swiper-item{
   width: 100%;
   height: 100%; 
 }
-.news-coupons{
-  border-bottom: 16rpx solid #f3f3f3; 
-}
-.news-coupons .news-coupons-mid{
+.news-coupons-mid{
+  margin: 16rpx 0;
   width: 690rpx;
-  margin: 10rpx auto;
+  padding: 0 30rpx 16rpx;
+  background-color: #fff;
 }
-.news-coupons .news{
+.news{
   font-size: 26rpx;
   color: #888;
-  margin: 16rpx 0 0;
+  padding-top: 16rpx;
 }
 .news image{
   width: 28rpx;
@@ -43,10 +46,10 @@ swiper-item{
   white-space: nowrap;
   letter-spacing: 2px;
 }
-.news-coupons .coupons{
+.coupons{
   overflow: hidden;
 }
-.news-coupons .coupons view{
+.coupons view{
   width: 220rpx;
   height: 120rpx;
   line-height: 120rpx;
@@ -57,30 +60,33 @@ swiper-item{
   margin-right: 14rpx;
   box-sizing: border-box;
 }
-.news-coupons .coupons view:nth-child(3n){
+.coupons view:nth-child(3n){
   margin-right: 0;
 }
-.coupons>view:first-child{
+.coupons>view:nth-child(n){
   color: rgb(249, 164, 203);
   background-color: rgb(255, 245, 244);
   border-left: 2rpx dashed rgb(249, 164, 203);
 }
-.coupons>view:nth-child(2){
+.coupons>view:nth-child(2n){
   color: rgb(253, 179, 58);
   background-color: rgb(253, 244, 237);
   border-left: 2rpx dashed rgb(253, 179, 58);
 }
-.coupons>view:last-child{
+.coupons>view:nth-child(3n){
   color: rgb(244, 144, 155);
   background-color: rgb(255, 241, 241);
   border-left: 2rpx dashed rgb(244, 144, 155);
 }
 .button-list{
-  border-bottom: 2rpx solid #f3f3f3;
+  /* border-bottom: 2rpx solid #f3f3f3; */
+  background-color: #fff;
+  margin: 16rpx 0;
+  padding: 32rpx 45rpx;
 }
 .button-list .button-list-mid{
   width: 660rpx;
-  margin: 40rpx auto 8rpx;
+  margin: 0 auto;
   overflow: hidden;
 }
 .button-list .button-list-mid .nav{
@@ -89,7 +95,7 @@ swiper-item{
   text-align: center;
   font-size: 24rpx;
   color: #666;
-  margin-bottom: 32rpx;
+  /* margin-bottom: 32rpx; */
 }
 .button-list .button-list-mid .nav image{
   width: 94rpx;
@@ -101,7 +107,7 @@ swiper-item{
 }
 .seller-recommends, .hot-recommends, .group-recommends{
   text-align: center;
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
 }
 
 .seller-recommends-mid,.hot-recommends-mid{
@@ -128,7 +134,7 @@ swiper-item{
    text-align: center; 
   font-size: 24rpx;
   color: #666;
-  margin-top: 12rpx; 
+  margin-bottom: 12rpx; 
   margin-right: 12rpx;
   box-sizing: border-box;
 }
@@ -153,13 +159,12 @@ swiper-item{
   background-color: #fff
 }
 .price-cart{
-  position: absolute;
-  bottom: 6rpx;
   text-align: left;
   color: #FF3A59;
   font-size: 32rpx;
   width: 220rpx;
   overflow: hidden;
+  margin-top: 10rpx;
 }
 .price-time{
   font-size: 24rpx;
@@ -227,7 +232,7 @@ hot-recommends .name{
 }
 .group-recommends .recommends-body-bottom{
   width: 366rpx;
-  height: 160rpx;
+  /* height: 190rpx; */
 }
 .name{
   overflow:hidden;

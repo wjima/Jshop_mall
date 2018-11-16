@@ -5,20 +5,27 @@
   </view>
   <view class='withdrawcash-bottom'>
     <view class='content-view' bindtap='balance'>
-      <image class='member-icon' src='../../../image/tixian.png'></image>
+      <image class='member-icon' src='../../../image/ic-money.png'></image>
       <text class='member-text'>提现</text>
     </view>
   </view>
   <view class='withdrawcash-bottom'>
     <view class='content-view' bindtap='balancelist'>
-      <image class='member-icon' src='../../../image/mingxi.png'></image>
+      <image class='member-icon' src='../../../image/ic-money-detail.png'></image>
       <text class='member-text'>余额明细</text>
     </view>
   </view>
   <view class='withdrawcash-bottom'>
     <view class='content-view' bindtap='cashlist'>
-      <image class='member-icon' src='../../../image/jilu.png'></image>
+      <image class='member-icon' src='../../../image/ic-money-record.png'></image>
       <text class='member-text'>提现记录</text>
+    </view>
+  </view>
+  <!-- 我的银行卡 -->
+  <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='mybackcardlist'>
+        <image class='member-icon' src='../../../image/bankcard.png'></image>
+        <text class='member-text'>我的银行卡</text>
     </view>
   </view>
 </view>

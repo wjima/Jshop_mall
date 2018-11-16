@@ -337,8 +337,14 @@ class Area extends Common
             $list = $this->where([])->select()->toArray();
             Cache::set('area_tree', json_encode($list));
         }
-        $tree = $this->resolve2($list, 0, $checked);
-        return $tree;
+        //地区结构增加缓存 避免打不开情况
+        $list_tree = Cache::get('list_tree');
+        $list_tree = json_decode($list_tree,true);
+        if(!$list_tree){
+            $list_tree = $this->resolve2($list, 0, $checked);
+            Cache::set('area_tree', json_encode($list_tree));
+        }
+        return $list_tree;
     }
 
     private function resolve2($list, $pid = 0, $checked = [])
@@ -358,8 +364,10 @@ class Area extends Common
                 $children    = $this->resolve2($list, $row['id'], $checked);
                 $children && $manages[$i]['children'] = $children;
                 $i++;
+
             }
         }
+
         return $manages;
     }
 

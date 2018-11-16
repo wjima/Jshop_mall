@@ -110,16 +110,24 @@
   <!-- 支付信息 -->
   <view class='pay-information'>
     <view class="weui-cell">
+      <view class="weui-cell__bd">商品总价</view>
+      <view class="weui-cell__ft">+￥{{order.goods_amount}}</view>
+    </view>
+    <view class="weui-cell" wx:if="{{order.cost_freight != '0.00'}}">
       <view class="weui-cell__bd">快递运费</view>
-      <view class="weui-cell__ft">￥{{order.cost_freight}}</view>
+      <view class="weui-cell__ft">+￥{{order.cost_freight}}</view>
     </view>
-    <view class="weui-cell">
+    <view class="weui-cell" wx:if="{{order.goods_pmt != '0.00'}}">
       <view class="weui-cell__bd">商品优惠</view>
-      <view class="weui-cell__ft">￥{{order.goods_pmt}}</view>
+      <view class="weui-cell__ft">-￥{{order.goods_pmt}}</view>
     </view>
-    <view class="weui-cell">
+    <view class="weui-cell" wx:if="{{order.order_pmt != '0.00'}}">
       <view class="weui-cell__bd">订单优惠</view>
-      <view class="weui-cell__ft">￥{{order.order_pmt}}</view>
+      <view class="weui-cell__ft">-￥{{order.order_pmt}}</view>
+    </view>
+    <view class="weui-cell" wx:if="{{order.coupon_pmt != '0.00'}}">
+      <view class="weui-cell__bd">优惠券优惠</view>
+      <view class="weui-cell__ft">-￥{{order.coupon_pmt}}</view>
     </view>
     <view class="weui-cell">
       <view class="weui-cell__bd">合计价格</view>

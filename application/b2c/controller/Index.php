@@ -17,15 +17,4 @@ class Index extends Base
     {
         $this->redirect('/wap/index','302');
     }
-    public function t(){
-        $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
-        if(
-            !file_exists($cert_dir."apiclient_cert.pem") ||
-            !file_exists($cert_dir."apiclient_key.pem")
-        ){
-            echo 'dddd';
-        }else{
-            echo 'yes';
-        }
-    }
 }

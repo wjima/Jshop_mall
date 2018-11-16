@@ -7,7 +7,8 @@ Page({
     top_class: [],
     class_list: [],
     on_class: 0,
-    content_height: 0
+    content_height: 0,
+    cate_style: 3 //新增分类样式
   },
 
   //加载执行
@@ -17,9 +18,13 @@ Page({
       if (res.status) {
         page.setData({
           top_class: res.data,
+          cate_style: res.cate_style, //新增分类样式
           on_class: res.data[0].id
         });
-        page.getClassList(res.data[0].id);
+        
+        if (res.cate_style == 3){
+          page.getClassList(res.data[0].id);
+        }
       }
     });  
 

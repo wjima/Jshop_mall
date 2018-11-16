@@ -36,7 +36,7 @@ class Trustlogin extends Addons
         return true;
     }
     //信任登录
-    public function trustlogin($params){
+    public function trustlogin($params = []){
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
         $trustData = [];
@@ -45,7 +45,7 @@ class Trustlogin extends Addons
                 $class = "\\addons\\trustlogin\\lib\\$key";
                 $lib = new $class();
                 $trustData[$key] = [
-                    'url'=>$lib->getOauthUrl($params['url'].'?type='.$key),
+                    'url'=>$lib->getOauthUrl($params['url'].'?type='.$key,$params['uuid']),
                     'ico'=>$lib->icon,
                 ];
             }
@@ -79,7 +79,7 @@ class Trustlogin extends Addons
     {
         $config = $this->getConfig();
         $this->assign('config', $config);
-        $this->assign('config_prarms', $params);
+        $this->assign('config_params', $params);
         return $this->fetch('config');
     }
 

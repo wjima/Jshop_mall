@@ -59,6 +59,7 @@
 }
 .userinfo-body-top{
   margin-bottom: 10rpx;
+  overflow: hidden;
 }
 .consignee,.consignee-name{
   font-size: 28rpx;

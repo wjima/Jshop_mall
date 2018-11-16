@@ -31,6 +31,30 @@ class Logistics extends Common
         return $result;
     }
 
+    public function getInfo($id = 0){
+        return $this->where(['id'=>$id])->find();
+    }
+
+    /**
+     * 保存物流公司
+     * @param array $data
+     * @return array
+     */
+    public function saveData($data = []){
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        if($data['id']){
+            $res = $this->save($data,['id'=>$data['id']]);
+            if($res){
+                $result['status'] = true;
+                $result['msg'] = '保存成功';
+            }
+        }
+        return $result;
+    }
     /**
      * 获取全部物流公司
      * @return array|\PDOStatement|string|\think\Collection

@@ -1,7 +1,7 @@
 <div class="layui-form-item">
     <label class="layui-form-label">appid：</label>
-    <div class="layui-input-inline seller-inline-6">
-        <input type="text" name="params[appid]" value="{$paymentInfo.params.appid}" required lay-verify="required" placeholder="请输入appid" autocomplete="off" class="layui-input">
+    <div class="layui-input-block">
+        appid的取值是取的在后台》微信管理》小程序配置里和后台》微信管理》公众号配置里的appid，当是微信公众号内支付的话，使用的就是微信公众号的appid，当是小程序支付的话，使用的是小程序的appid，当只有h5端微信支付的时候，不开启微信公众号和微信小程序的时候，这两个appid随便写一个，就可以了。
     </div>
 </div>
 <div class="layui-form-item">

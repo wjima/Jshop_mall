@@ -77,12 +77,10 @@
                     return html;
                 }},
                 {field:'user_mobile',width:140,title:'用户'},
-                {field:'seller_name',width:200,title:'商户'},
                 {field:'code',width:150,title:'类型'},
                 {field:'content', title:'内容'},
                 {field:'ctime', width:180, title:'时间', align:'center'},
-
-                {field:'operating', title:'操作', width:80, align:'center',templet:function(data){
+                {field:'operating', title:'操作', width:90, align:'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-del" data-id="' + data.id + '">删除</a>';
                     return html;

@@ -82,7 +82,7 @@
                 {field: 'mobile', title: '提货电话', align: 'center', width: 150},
                 {field: 'status_name', title: '提货状态', align: 'center', width: 100, sort: true},
                 {field: 'ctime', title: '下单时间', align: 'center', width: 200, sort: true},
-                {field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar', fixed: 'right', width: 150}
+                {field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar', fixed: 'right', width: 170}
             ]]
         });
 
@@ -104,7 +104,7 @@
                 //获取详情
                 $.ajax({
                     url: "{:url('manage/billLading/info')}",
-                    type: 'post',
+                    type: 'get',
                     data: {
                         'id': data.id
                     },
@@ -112,14 +112,36 @@
                         layer.open({
                             type: 1,
                             title: '详情',
-                            area: ['510px', '210px'], //宽高
+                            area: ['650px', '310px'], //宽高
                             content: e
                         });
                     }
                 });
-            }else if(layEvent === 'pick'){
-                //提货操作
-                window.location.href = "{:url('Store/edit')}?id="+data.id;
+            }else if(layEvent === 'write'){
+                //核销提货单
+                if(data.status === 2){
+                    layer.msg('该提货单已经核销，无需重复核销');
+                }else{
+                    layer.confirm('确认核销该提货单吗？', {
+                        btn: ['确认', '取消'] //按钮
+                    }, function(){
+                        $.ajax({
+                            url: "{:url('manage/BillLading/write')}",
+                            data: {
+                                'id': data.id
+                            },
+                            type: 'post',
+                            dataType: 'json',
+                            success: function(e){
+                                layer.msg(e.msg, {time: 1500}, function(){
+                                    table.reload('ladingTable');
+                                });
+                            }
+                        });
+                    }, function(){
+
+                    });
+                }
             }else if(layEvent === 'del'){
                 //删除
                 layer.confirm('真的删除么', {icon: 3}, function(index){
@@ -133,11 +155,33 @@
                 });
             }
         });
+
+        //修改保存
+        $(document).on('click', '.editBtn', function(){
+            var data = $('#edit-form').serialize();
+            $.ajax({
+                url: '{:url("manage/BillLading/info")}',
+                data: data,
+                type: 'post',
+                dataType: 'json',
+                success: function (e) {
+                    if(e.status){
+                        layer.msg(e.msg, {time:1500}, function(){
+                            layer.closeAll();
+                            table.reload('ladingTable');
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
+                }
+            });
+            return false;
+        });
     });
 </script>
 
 <script type="text/html" id="ladingBar">
     <a class="layui-btn layui-btn-xs" lay-event="info">详情</a>
-    <!--<a class="layui-btn layui-btn-xs" lay-event="pick">提货</a>-->
+    <a class="layui-btn layui-btn-xs" lay-event="write">核销</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>

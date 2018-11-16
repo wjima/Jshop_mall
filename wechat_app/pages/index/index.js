@@ -103,9 +103,9 @@ Page({
     //异步获取公告数据，因为公告要求有实时性，所以不缓存
     app.api.noticeList(function (res) {
       if(res.status){
-        if (res.data.list){
+        if (res.data){
           page.setData({
-            notice: res.data.list
+            notice: res.data
           });
         }
       }

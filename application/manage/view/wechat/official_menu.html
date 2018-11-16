@@ -1,49 +1,181 @@
+<style>
+    .we-body-ul .active{
+        border: 1px solid #20a53a;
+    }
+</style>
 <div class="wechat-content">
     <div class="wechat-body">
     	<div class="wechat-body-l">
             <div class="we-body-c">
             	<div class="we-body-bot">
             		<ul class="we-body-ul">
-            			<li class="we-body-li">+</li>
+                        {empty name="$menu"}
+                            <li class="we-body-li addfirst">+</li>
+                        {else/}
+                        {volist name="weixin_menu" id="item"}
+                        <li id="li-first-{$item.menu_id}" data-id="{$item.menu_id}" data-pid="{$item.pid}"><span>{$item.name}</span>
+                            <div class="li-menu">
+                                <ul>
+                                    {empty name="$item.child"}
+                                        <li class="we-body-list addchild">+</li>
+                                    {else /}
+                                    {volist name="item.child" id="child" key="k"}
+                                        <li class="we-body-list" id="item-li-{$child.menu_id}-{$child.pid}" data-id="{$child.menu_id}" data-pid="{$child.pid}">{$child.name}</li>
+                                    {/volist}
+                                    {if count($item.child)<5 }
+                                        <li class="we-body-list addchild">+</li>
+                                    {/if}
+                                    {/empty}
+                                </ul>
+                            </div>
+                        </li>
+                        {/volist}
+                        {if count($weixin_menu)<3 }
+                        <li class="we-body-li addfirst">+</li>
+                        {/if}
+                        {/empty}
             		</ul>
             	</div>
             </div>
         </div>
-        <div class="wechat-body-r">
-            <h3 class="we-body-r-head">菜单名称<a href="">删除</a></h3>
-            <div class="we-body-r-c">
-            	<p>已添加子菜单，仅可设置菜单名称。</p>
+        <div class="wechat-body-r" style="display: none">
+            <div >
+                <h3 class="we-body-r-head">菜单名称<a href="javascript:void(0);" onclick="delete_menu_node()" data-id="0" data-pid="0" id="edit-menu">删除</a></h3>
+                <div class="we-body-r-c" id="edit-menu-content">
+
+                </div>
             </div>
         </div>
     </div>
     <div class="wechat-btn">
-        <button type="button" class="layui-btn" >保存发布</button>
+        <button type="button" class="layui-btn" id="update-menu">发布菜单</button>
     </div>
 </div>
 <script type="text/javascript">
-    $(function(){
-        var uls = $(".we-body-ul");
-        var lis = $(".we-body-li");
-        lis.click(function(){
-            var len = uls.children().length;            
-            if (len < 4) {
-                var id = lis.length ++ ;
-                $(this).before("<li id='li"+id+"'><span>aa</span><div class='li-menu'><ul><li class='we-body-list'>+</li></ul></div></li>");
-            }
-            if (len == 3){
-                $(this).remove();
-            }
-        })
-        $(document).on('click' ,".we-body-list" ,function(){
-            var len = $(this).parent().children().length;            
-            if (len < 6) {
-                var id = $(this).length ++ ;
-                $(this).parent().prepend("<li id=\'li"+id+"\'>aa</li>");
-            }
-            if (len == 5){
-                $(this).remove();
-            }
-        })
-    })
+    var form = '';
+    layui.use(['form', 'laytpl'], function () {
+        form = layui.form;
 
+        form.on('select(menu-type)', function (data) {
+            $("#edit-menu-content").find(".action-type").hide();
+            $("." + data.value).show();
+        })
+        //保存菜单
+        form.on('submit(save-menu)', function (data) {
+            var formData = data.field;
+            JsPost("{:url('Wechat/doEditMenu')}", formData, function (res) {
+                if (res.status) {
+                    if (formData.pid == "0") {
+                        $("#li-first-" + formData.menu_id).children('span').text(formData.name);
+                    } else {
+                        $("#li-first-" + formData.pid).find('#item-li-' + formData.menu_id + '-' + formData.pid).text(formData.name);
+                    }
+                }
+            });
+            return false;
+        });
+    });
+    //删除菜单
+    function delete_menu_node() {
+        var id = $("#edit-menu").attr('data-id');
+        var pid = $("#edit-menu").attr('data-pid');
+        JsPost("{:url('Wechat/deleteMenu')}", {id: id, pid: pid}, function (res) {
+            if (res.status) {
+                $(".wechat-body-r").hide();
+                if (pid != 0) {
+                    var pul = $("#item-li-" + id + '-' + pid).parent();
+                    $("#item-li-" + id + '-' + pid).remove();
+                    if (pul.find('.addchild').length <= 0 && pul.length < 5) {
+                        pul.append('<li class="we-body-list addchild">+</li>');
+                    }
+                } else {
+                    $("#li-first-" + id).remove();
+                    var len = $(".we-body-ul").children('li').length;
+                    if (len < 3 && $(".we-body-ul").find('addfirst').length <= 0) {
+                        $(".we-body-ul").append('<li class="we-body-li addfirst">+</li>');
+                    }
+                }
+            } else {
+                layer.msg(res.msg);
+            }
+        });
+    }
+
+    //添加或选中菜单
+    $(".we-body-c").on('click', 'li', function () {
+        $(".wechat-body-r").show();
+        $(".we-body-c").find('li').removeClass('active');
+
+        if ($(this).hasClass('addchild')) {
+            var len = $(this).parent().children().length;
+            var lastId = $(this).parent().children().first().attr('data-id');
+            if (len < 6) {
+                if (typeof lastId == 'undefined') {
+                    lastId = 0;
+                }
+                var id = parseInt(lastId) + 1;
+                var pid = $(this).parent().parent().parent().attr('data-id');
+                $("#edit-menu").attr("data-id", id);
+                $("#edit-menu").attr("data-pid", pid);
+
+                JsPost("{:url('Wechat/editMenu')}", {id: id, pid: pid}, function (res) {
+                    $("#edit-menu-content").html(res);
+                    form.render();
+                });
+                $(this).parent().prepend("<li class='we-body-list active ' id='item-li-" + id + "-" + pid + "' data-id='" + id + "' data-pid='" + pid + "' >二级菜单</li>");
+
+            }
+            if (len == 5) {
+                $(this).remove();
+            }
+            return false;
+        } else if ($(this).hasClass('addfirst')) {
+            var uls = $(".we-body-ul");
+            var lis = $(".we-body-ul>li");
+            var lastId = uls.children().eq(-2).attr('data-id');
+            var len = uls.children().length;
+            if (len < 4) {
+                if (typeof lastId == 'undefined') {
+                    lastId = 1;
+                }
+                var id = parseInt(lastId) + 1;
+                $("#edit-menu").attr("data-id", id);
+                $("#edit-menu").attr("data-pid", 0);
+                JsPost("{:url('Wechat/editMenu')}", {id: id, pid: 0}, function (res) {
+                    $("#edit-menu-content").html(res);
+                    form.render();
+                });
+                $(this).before("<li id='li-first-" + id + "' class='active' data-id='" + id + "' data-pid='0'><span>一级菜单</span><div class='li-menu'><ul><li class='we-body-list addchild'>+</li></ul></div></li>");
+            }
+            if (len == 3) {
+                $(this).remove();
+            }
+        } else {
+            var id = $(this).attr('data-id');
+            var pid = $(this).attr('data-pid');
+
+            $("#edit-menu").attr("data-id", id);
+            $("#edit-menu").attr("data-pid", pid);
+
+            $(this).addClass('active');
+            if (typeof id != "undefined") {
+                JsPost("{:url('Wechat/editMenu')}", {id: id, pid: pid}, function (res) {
+                    $("#edit-menu-content").html(res);
+                    form.render();
+                });
+            }
+            return false;
+        }
+    });
+
+    //更新菜单
+    $("#update-menu").click(function () {
+        JsGet("{:url('Wechat/updateMenu')}", function (res) {
+            if(res.status){
+                layer.msg(res.msg);
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+    })
 </script>

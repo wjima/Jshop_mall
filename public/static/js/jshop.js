@@ -102,7 +102,7 @@ function JsAjax(url,type,dataType,data, success, error,cache, alone, async) {
                     }else{
                         location.reload(true);
                     }
-                },1500);
+                },600000);
             }else{
                 //服务器处理失败
                 layer.msg("服务器开小差了，请稍后再试");

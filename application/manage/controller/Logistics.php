@@ -77,11 +77,27 @@ class Logistics extends Manage
         return $this->fetch('edit');
     }
 
-
+    /**
+     * 删除物流公司
+     * @return array
+     */
     public function del()
     {
+        $return_data = [
+            'status' => false,
+            'msg'    => '删除失败',
+            'data'   => ''
+        ];
         $logModel = new LogisticsModel();
-        return $logModel->del(input('post.id/d'));
+        $id = input('post.id/d',0);
+        if(!$id){
+            return $return_data;
+        }
+        if($logModel->where(['id'=>$id])->delete()){
+            $return_data['msg'] = '删除成功';
+            $return_data['status'] = true;
+        }
+        return $return_data;
     }
 
 

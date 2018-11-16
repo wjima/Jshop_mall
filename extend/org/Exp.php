@@ -19,28 +19,17 @@ class Exp{
 
     private $url = 'http://poll.kuaidi100.com/poll/query.do';
 
-    public function __construct($key, $customer){
-        $this->key = $key;
-        $this->customer = $customer;
+    public function __construct(){
+        $this->key = config('jshop.api_express.key');
+        $this->customer = config('jshop.api_express.customer');
     }
-
-
-    /**
-     *
-     *  执行查询
-     */
-    public function query ($com, $no)
-    {
-        return $this->postCurl($this->url, $this->assembleParam($com, $no));
-    }
-
 
 
     /**
      *  组装params
      *
      */
-    private function assembleParam ($com, $no)
+    public function assembleParam ($com, $no)
     {
         $data['customer'] = $this->customer;
         $data['param'] = '{"com":"'.$com.'","num":"'.$no.'"}';
@@ -71,16 +60,17 @@ class Exp{
      * curl post请求
      *
      */
-    public function postCurl($url, $params){
+    public function postCurl($params){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $this->url);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         $result = curl_exec($ch);
         curl_close( $ch );
-        $data = str_replace("\"",'"', $result);
-        $data = json_decode($data, true);
+        $data = str_replace("\"",'"',$result );
+        $data = json_decode($data,true);
         return $data;
     }
 }

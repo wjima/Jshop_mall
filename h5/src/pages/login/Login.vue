@@ -56,7 +56,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     data () {
         return {
@@ -201,7 +200,10 @@ export default {
         },
         // 获取授权登录方式列表
         getAuth () {
-            this.$api.getTrustLogin({url: 'author'}, res => {
+            this.$api.getTrustLogin({
+                url: window.location.protocol + '//' + window.location.host,
+                uuid: this.genNonDuplicateID()
+            }, res => {
                 if (res.status) {
                     this.authList = res.data
                 }
@@ -209,6 +211,12 @@ export default {
         },
         toAuth (url) {
             window.location.href = url
+        },
+        // 生成一个用不重复的ID
+        genNonDuplicateID () {
+            let uid = Math.random().toString(36).substr(3)
+            this.GLOBAL.setStorage('uuid', uid)
+            return uid
         }
     }
 }

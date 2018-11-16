@@ -45,6 +45,7 @@ Page({
     store_name: '暂无门店', //门店名称
     store_mobile: '', //门店电话
     store_address: '暂无自提门店', //门店地址
+    couponKey: '', //输入的优惠券号
   },
 
   //页面加载
@@ -61,7 +62,7 @@ Page({
     this.setData({
       cartIds: cart_id
     });
-    this.getUserPoint();
+    //this.getUserPoint();
   },
 
     //是否开启门店自提
@@ -170,63 +171,66 @@ Page({
 
   //选择地址
   selectAddress: function () {
-    var page = this;
-    app.db.userToken(function (token) {
-      wx.chooseAddress({
-        success: function (res) {
-          if (res.errMsg == "chooseAddress:ok") {
-            //获取成功
-            //存储这个收获地区信息到数据库
-            var data = {
-              province_name: res.provinceName,
-              city_name: res.cityName,
-              county_name: res.countyName,
-              postal_code: res.postalCode
-            };
-            var areaId = 0;
-            app.api.getAreaId(data, function (res1) {
-              if(res1.status) {
-                areaId = res1.data;
-                page.setData({
-                  areaId: areaId
-                });
-                //存储用户收货信息
-                var userShipId = 0;
-                var userShipData = {
-                  area_id: areaId,
-                  user_name: res.userName,
-                  detail_info: res.detailInfo,
-                  tel_number: res.telNumber,
-                  is_def: 1
-                }
-                app.api.saveUserShip(userShipData, function (res2) {
-                  if (res2.status) {
-                    userShipId = res2.data
-                    page.setData({
-                      isAddress: true,
-                      area: res.provinceName + res.cityName + res.countyName,
-                      address: res.detailInfo,
-                      name: res.userName,
-                      mobile: res.telNumber,
-                      userShipId: userShipId
-                    });
-                  }
-                });
-              }
-              page.getProductData();
-            });
-          } else {
-            //todo:获取失败处理
-            page.setData({
-              isAddress: false
-            });
-          }
-        }
-      });
+    let page = this;
+    wx.navigateTo({
+      url: '../../member/addressList/addressList?select=true',
     });
+    // app.db.userToken(function (token) {
+    //   wx.chooseAddress({
+    //     success: function (res) {
+    //       if (res.errMsg == "chooseAddress:ok") {
+    //         //获取成功
+    //         //存储这个收获地区信息到数据库
+    //         var data = {
+    //           province_name: res.provinceName,
+    //           city_name: res.cityName,
+    //           county_name: res.countyName,
+    //           postal_code: res.postalCode
+    //         };
+    //         var areaId = 0;
+    //         app.api.getAreaId(data, function (res1) {
+    //           if(res1.status) {
+    //             areaId = res1.data;
+    //             page.setData({
+    //               areaId: areaId
+    //             });
+    //             //存储用户收货信息
+    //             var userShipId = 0;
+    //             var userShipData = {
+    //               area_id: areaId,
+    //               user_name: res.userName,
+    //               detail_info: res.detailInfo,
+    //               tel_number: res.telNumber,
+    //               is_def: 1
+    //             }
+    //             app.api.saveUserShip(userShipData, function (res2) {
+    //               if (res2.status) {
+    //                 userShipId = res2.data
+    //                 page.setData({
+    //                   isAddress: true,
+    //                   area: res.provinceName + res.cityName + res.countyName,
+    //                   address: res.detailInfo,
+    //                   name: res.userName,
+    //                   mobile: res.telNumber,
+    //                   userShipId: userShipId
+    //                 });
+    //               }
+    //             });
+    //           }
+    //           page.getProductData();
+    //         });
+    //       } else {
+    //         //todo:获取失败处理
+    //         page.setData({
+    //           isAddress: false
+    //         });
+    //       }
+    //     }
+    //   });
+    // });
   },
 
-  // 选择门店
+  //选择门店
   gostore: function () {
     wx.navigateTo({
       url: '../../other/store/store'
@@ -375,12 +379,14 @@ Page({
     });
   },
 
+  //优惠券选择
   couponbtn: function (e) {
     var currentStatu = e.currentTarget.dataset.statu;
     this.anim(currentStatu);
   },
 
-  anim: function (currentStatu) {    
+  //优惠券点击
+  anim: function (currentStatu) {
     var animation = wx.createAnimation({
       duration: 100,
       timingFunction: "linear",
@@ -395,22 +401,17 @@ Page({
       animation.opacity(1).translateY(0).step();
       this.setData({
         animationData: animation
-      }) 
-
+      });
       if (currentStatu == "close") {
-        this.setData(
-          {
+        this.setData({
             showcoupon: false
-          }
-        );
-      }  
+          });
+      }
     }.bind(this), 100)
     if (currentStatu == "open") {
-      this.setData(
-        {
+      this.setData({
           showcoupon: true
-        }
-      );
+        });
     }  
   },
 
@@ -464,13 +465,15 @@ Page({
       page.getProductData();
   },
 
-  // 优惠券使用方式
+  //优惠券使用方式
   choose: function (e) {
     this.setData({
       entry: false,
       choose: true
     });
   },
+
+  //优惠券选择
   entry: function (e) {
     this.setData({
       choose: false,
@@ -478,7 +481,7 @@ Page({
     });
   },
 
-    // 配送方式切换
+    //配送方式切换
     express: function (e) {
         let outType = this.data.receipt_type;
         this.setData({
@@ -517,6 +520,60 @@ Page({
         let mobile = e.detail.value;
         this.setData({
             lading_mobile: mobile
+        });
+    },
+
+    //输入优惠券码
+    couponKey: function (e) {
+        let key = e.detail.value;
+        this.setData({
+            couponKey: key
+        });
+    },
+    
+    //输入优惠券确认
+    couponKeyBtn: function () {
+        let page = this;
+        let key = page.data.couponKey;
+        let data = {
+            'key': key
+        }
+        app.api.getCouponKey(data, function(res){
+            if(!res.status){
+                wx.showToast({
+                    title: res.msg,
+                    icon: 'none',
+                    duration: 2000
+                })
+            }else{
+                var datas = {
+                    display: 'no_used'
+                }
+                app.api.myCouponList(datas, function (ress) {
+                    if (ress.status) {
+                        let coupon = [];
+                        for (let k in ress.data) {
+                            coupon.push({ name: ress.data[k].coupon_code, value: ress.data[k].name });
+                        }
+                        page.setData({
+                            couponitems: coupon
+                        });
+                        for (let k in page.data.couponitems) {
+                            if (page.data.couponitems[k].name == res.data.coupon_code) {
+                                page.data.couponitems[k].checked = 'true';
+                            }
+                        }
+                        page.setData({
+                            usedCoupon: res.data.coupon_code,
+                            usedCouponName: res.data.coupon_name,
+                            couponitems: page.data.couponitems,
+                            showcoupon: false
+                        });
+                        page.getProductData();
+                    }
+                });
+                
+            }
         });
     }
 });

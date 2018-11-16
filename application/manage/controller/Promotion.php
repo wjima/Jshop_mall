@@ -453,7 +453,7 @@ class Promotion extends Manage
         if(Request::isAjax()) {
             $promotionModel = new PromotionModel();
             $request = input('param.');
-            $request['type'] = $promotionModel::TYPE_GROUP;
+            $request['type'] = [$promotionModel::TYPE_GROUP,$promotionModel::TYPE_SKILL];
 
             return $promotionModel->tableData($request);
         }

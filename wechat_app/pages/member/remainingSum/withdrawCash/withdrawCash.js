@@ -54,5 +54,12 @@ Page({
         wx.navigateTo({
         url: '../withdrawCash/cashList'
         });
-    }
+    },
+
+    // 我的银行卡
+    mybackcardlist: function () {
+      wx.navigateTo({
+        url: '../../myBankCardlist/myBankCardlist'
+      });
+    },
 })

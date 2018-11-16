@@ -4,6 +4,7 @@
  */
 namespace addons\trustlogin\lib;
 
+use think\facade\Cache;
 use think\facade\Log;
 
 class weixin{
@@ -21,9 +22,9 @@ class weixin{
      * @param $redirect_uri
      * @return string
      */
-    public function getOauthUrl($redirect_uri){
+    public function getOauthUrl($redirect_uri,$uuid = ''){
         $state = rand(10000,99999);
-        session('state',$state);
+        Cache::set("user_".$uuid,$state);//用户id和session对应
         return  $this->oauth->getOauthRedirect($redirect_uri,$state);
     }
 
@@ -32,8 +33,8 @@ class weixin{
      * @param string $state
      * @return bool
      */
-    private function checkState($state = ''){
-        if($state != session('state')){
+    private function checkState($state = '',$uuid = ''){
+        if($state != Cache::get('user_'.$uuid)){
             return false;
         }
         return true;
@@ -44,10 +45,9 @@ class weixin{
      */
     public function getUserInfo($params)
     {
-        //TODO 临时注释掉,没有获取到
-        /*if (!$this->checkState($params['state'])) {
+        if (!$this->checkState($params['state'],$params['uuid'])) {
             return false;
-        }*/
+        }
         $accessToken = $this->oauth->getOauthAccessToken($params);
         if (!$accessToken) {
             return false;

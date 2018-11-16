@@ -25,6 +25,11 @@
                 <span slot="left">订单价格</span>
                 <span slot="right" class="demo-list-price">￥{{ this.GLOBAL.formatMoney(amount, 2, '') }}</span>
             </yd-cell-item>
+            <yd-cell-item v-if="open_point && usable_point"  type="checkbox">
+                <span slot="left">积分抵扣</span>
+                <span slot="right">该笔订单可用{{ usable_point }}积分 抵扣￥{{ this.GLOBAL.formatMoney(point_money, 2, '') }}</span>
+                <input slot="right" type="checkbox" v-model="checked"/>
+            </yd-cell-item>
         </yd-cell-group>
     </div>
 </template>
@@ -52,13 +57,53 @@ export default {
             type: [Number, String],
             require: true
         },
+        // 订单优惠
         order_pmt: {
             type: [Number, String],
             require: true
         },
+        // 优惠券优惠金额
         coupon_pmt: {
             type: [Number, String],
             require: false
+        },
+        // 是否开启积分抵扣
+        open_point: {
+            type: Boolean,
+            default: () => {
+                return false
+            }
+        },
+        // 总积分
+        point_sum: {
+            type: Number,
+            default: () => {
+                return 0
+            }
+        },
+        // 可抵扣的积分
+        usable_point: {
+            type: Number,
+            default: () => {
+                return 0
+            }
+        },
+        // 积分抵扣的金额
+        point_money: {
+            type: Number,
+            default: () => {
+                return 0
+            }
+        }
+    },
+    data () {
+        return {
+            checked: false
+        }
+    },
+    watch: {
+        checked () {
+            this.$emit('isUsePoint', this.checked)
         }
     }
 }

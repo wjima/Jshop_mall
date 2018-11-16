@@ -11,17 +11,16 @@ return [
     'image_max' => 5,
     //商品导入模板
     'goods_import_templete' => ROOT_PATH . 'public' . DS . 'static' . DS . 'templete' .DS. 'goods-csv-import.csv',
-    //快递100查询配置参数
+    //快递查询配置参数
     'api_express' => [
-        'key' => 'PZsxSLTC6138',
-        'customer' => 'C382086795957C07975A90B415FED276'
+        'key' => '00000',
+        'customer' => '00000'
     ],
-
     'login_fail_num' => 3,              //登陆失败次数，如果每天登陆失败次数超过次数字，就会显示图片验证码
     'tocash_money_low' => '100' ,       //最低提现金额
     'authorization_url'=>'https://jshop.jihainet.com', //授权查询地址
     'product'=>'Jshop-b2c标准版',//产品名称
-    'version'=>'v1.0.3',//版本号
+    'version'=>'v1.0.4',//版本号
     /*
      * 图片存储引擎配置
      * 本地存储
@@ -42,5 +41,4 @@ return [
     'image_storage'=>[
         'type'=>'Local'
     ],
-
 ];

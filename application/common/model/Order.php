@@ -959,6 +959,9 @@ class Order extends Common
                 $order['money']     = $order['order_amount'];
                 $order['user_name'] = get_user_info($order['user_id']);
                 sendMessage($order['user_id'], 'order_payed', $order);
+
+                //订单支付完成后的钩子
+                Hook('orderpayed',$order_id);
             }
         }
 

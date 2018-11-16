@@ -167,11 +167,7 @@ class User extends Common
             return $result;
         }
 
-        //判断账号状态
-        if($userInfo->status != self::STATUS_NORMAL) {
-            $result['msg'] = '此账号已停用';
-            return $result;
-        }
+
         //判断是否是用户名登陆
         $userInfo = $this->where(array('username|mobile'=>$data['mobile'],'password'=>$this->enPassword($data['password'], $userInfo->ctime)))->find();
         if($userInfo){
@@ -233,12 +229,6 @@ class User extends Common
             }
             $user_id = $re['data'];
             $userInfo = $this->where(array('id'=>$user_id))->find();
-        }else{
-            //判断账号状态
-            if($userInfo->status != self::STATUS_NORMAL) {
-                $result['msg'] = '此账号已停用';
-                return $result;
-            }
         }
 
         $result = $this->setSession($userInfo ,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
@@ -305,6 +295,13 @@ class User extends Common
             'data' => '',
             'msg' => ''
         ];
+        //判断账号状态
+        if($userInfo->status != self::STATUS_NORMAL) {
+            $result['msg'] = '此账号已停用';
+            return $result;
+        }
+
+
         switch ($loginType)
         {
             case 1:
@@ -322,7 +319,6 @@ class User extends Common
             //$userLogModel = new UserLog();        //添加登录日志
             //$userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
         }
-
         return $result;
 
     }
@@ -402,11 +398,14 @@ class User extends Common
         $result['order'] = [];
         return $result;
     }
+
     /**
      * 根据查询结果，格式化数据
-     * @author sin
-     * @param $list  array格式的collection
+     * @param $list
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function tableFormat($list)
     {
@@ -416,6 +415,9 @@ class User extends Common
             }
             if($v['status']) {
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
+            }
+            if($v['pid']){
+                $list[$k]['pid_name'] = $this->getUserNickname($v['pid']);
             }
         }
         return $list;
@@ -609,7 +611,7 @@ class User extends Common
                 $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
                 $needs_point = $max_point_deducted_money*$point_discounted_proportion;
                 $return['available_point'] = floor($needs_point>$data['point']?$data['point']:$needs_point);
-                $return['point_rmb'] = $max_point_deducted_money;
+                $return['point_rmb'] = $return['available_point']/$point_discounted_proportion;
             }
 
             $return['msg'] = '获取成功';
@@ -682,34 +684,158 @@ class User extends Common
 
 
     /**
-     * 根据用户ID直接登录 主要用户第三方登录
-     * @param array $data 用户登陆信息
-     * @param int   $loginType 1就是默认的，存session，2就是返回user_token
-     * @param int   $platform 平台id，主要和session有关系 1就是默认的平台，，2就是微信小程序平台，当需要放回user_token的时候，会用到此字段
+     * 绑定上级
+     * @param $user_id
+     * @param $superior_id
+     * @return array
+     * @throws \think\exception\DbException
+     */
+    public function setMyInvite($user_id, $superior_id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '填写邀请码失败',
+            'data' => ''
+        ];
+        $userInfo = $this->get($user_id);
+        if($userInfo['pid'] && $userInfo['pid'] != 0)
+        {
+            $return['msg'] = '已有上级邀请，不能绑定其他的邀请';
+            return $return;
+        }
+
+        $superior = $this->get($superior_id);
+        if(!$superior)
+        {
+            $return['msg'] = '不存在这个邀请码';
+            return $return;
+        }
+
+        $flag = $this->isInvited($user_id, $superior_id);
+        if(!$flag)
+        {
+            $return['msg'] = '不允许填写下级的邀请码';
+            return $return;
+        }
+
+        $data['pid'] = $superior_id;
+        $where[] = ['id', 'eq', $user_id];
+        $return['data'] = $this->save($data, $where);
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '填写邀请码成功';
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 是否是可以关联的
+     * @param $user_id
+     * @param $superior_id
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function isInvited($user_id, $superior_id)
+    {
+        $result = true;
+        $return = true;
+        while ($result) {
+            unset($where);
+            $where[] = ['id', 'eq', $superior_id];
+            $superior = $this->field('pid')->where($where)->find();
+            if($superior['pid'] == $user_id)
+            {
+                //不能
+                $result = false;
+                $return = false;
+            }else if($superior['pid'] == 0){
+                //能
+                $result = false;
+                $return = true;
+            }
+            $superior_id = $superior['pid'];
+        }
+        return $return;
+    }
+
+
+    /**
+     * 获取用户分享码
+     * @param $user_id
+     * @return float|int|string
+     */
+    public function getShareCodeByUserId($user_id)
+    {
+        $code = ($user_id+1234)*3;
+        return $code;
+    }
+
+
+    /**
+     * 获取用户ID
+     * @param $code
+     * @return float|int
+     */
+    public function getUserIdByShareCode($code)
+    {
+        $user_id = ($code/3)-1234;
+        return $user_id;
+    }
+
+
+
+    /**
+     * 绑定用户
+     * @param array $data 新建用户的数据数组
+     * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
      *
      */
-    public function toLoginById($id, $loginType=2,$platform=1)
+    public function toBindAdd($data, $loginType=1)
     {
+        //判断手机号是否存在
+        $user_id = $this->getUserIdByMobile($data['mobile']);
+        if(!$user_id){
+           return $this->toAdd($data, $loginType);
+        }
         $result = array(
             'status' => false,
             'data' => '',
             'msg' => ''
         );
-        if(!$id) {
-            $result['msg'] = '关键数据丢失';
+
+        //校验数据
+        $validate = new Validate($this->rule, $this->msg);
+        if(!$validate->check($data)){
+            $result['msg'] = $validate->getError();
             return $result;
         }
-        $userInfo = $this->where(array('id'=>$id))->find();
-        if(!$userInfo){
-            $result['msg'] = '没有找到此账号';
+
+        //校验短信验证码
+        $smsModel = new Sms();
+        if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
+            $result['msg'] = '短信验证码错误';
             return $result;
         }
-        //判断账号状态
-        if($userInfo->status != self::STATUS_NORMAL) {
-            $result['msg'] = '此账号已停用';
+
+        Db::startTrans();//增加事物
+        try {
+            //更新数据
+            $userWxModel = new UserWx();
+            $userWxModel->update(['user_id' =>$user_id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
+            Db::commit();
+        }catch (\Exception $e) {
+            Db::rollback();
+            $result['msg'] = $e->getMessage();
             return $result;
         }
-        $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
-        return $result;
+        $where[] = ['id', 'eq', $user_id];
+        $result = $this->where($where)->find();
+        return $this->setSession($result ,$loginType);
     }
+
 }

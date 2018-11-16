@@ -3,6 +3,7 @@ namespace app\Manage\controller;
 use app\common\model\BillLading as Model;
 use app\common\model\Store;
 use think\facade\Request;
+use app\common\controller\Manage;
 
 /**
  * 提货单
@@ -52,10 +53,23 @@ class BillLading extends Manage
     public function info()
     {
         $this->view->engine->layout(false);
-        $model = new Model();
         $id = Request::param('id');
+
+        if(Request::isPost())
+        {
+            $store_id = Request::param('store_id');
+            $name = Request::param('name');
+            $mobile = Request::param('mobile');
+            $model = new Model();
+            return $model->edit($id, $store_id, $name, $mobile);
+        }
+
+        $model = new Model();
         $result = $model->getInfo($id);
         $this->assign('info', $result['data']);
+        $storeModel = new Store();
+        $store = $storeModel->getAllList();
+        $this->assign('store', $store);
         return $this->fetch();
     }
 
@@ -70,5 +84,17 @@ class BillLading extends Manage
         $id = Request::param('id');
         $model = new Model();
         return $model->del($id);
+    }
+
+
+    /**
+     * 提货单核销
+     * @return array
+     */
+    public function write()
+    {
+        $id = Request::param('id');
+        $model = new Model();
+        return $model->ladingOperating($id, 0);
     }
 }

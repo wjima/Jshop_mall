@@ -74,6 +74,7 @@ export default {
     data () {
         return {
             intTab: parseInt(this.tab),
+            page: 1,
             pageSize: 5,
             items: [
                 {

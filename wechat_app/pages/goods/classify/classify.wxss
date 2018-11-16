@@ -60,3 +60,50 @@
   width: 120rpx;
   height: 120rpx;
 }
+
+.classify-big{
+  padding-top: 120rpx;
+  width: 100%;
+}
+.classify-big-list{
+  width: 100%;
+}
+.classify-big-list image{
+  width: 100%;
+  box-sizing: border-box;
+  height: 300rpx;
+  padding: 6rpx 30rpx;
+}
+
+.classify-small{
+  padding-top: 120rpx;
+  width: 100%;
+}
+.classify-small-list{
+  width: 100%;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+}
+.classify-small-item{
+  width: 210rpx;
+  /* height: 250rpx; */
+  /* padding: 16rpx; */
+  text-align: center;
+  display: inline-block;
+  box-sizing: border-box;
+  margin-right: 30rpx;
+  margin-bottom: 30rpx;
+}
+.classify-small-item:nth-child(3n){
+  margin-right: 0;
+}
+.classify-small-item image{
+  width: 210rpx;
+  height: 210rpx;
+}
+.classify-small-item text{
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  line-height: 1;
+}

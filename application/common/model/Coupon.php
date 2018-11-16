@@ -6,9 +6,7 @@
 // +----------------------------------------------------------------------
 // | Author: tianyu <tianyu@jihainet.com>
 // +----------------------------------------------------------------------
-
 namespace app\common\model;
-
 use app\common\model\Promotion;
 
 class Coupon extends Common
@@ -370,5 +368,55 @@ class Coupon extends Common
      */
     private function getCouponNumber($id){
         return strtoupper(substr_replace(dechex($id),substr(md5(uniqid(rand(), true)),4,16),2,0));
+    }
+
+    /**
+     * 通过优惠券号领取优惠券
+     * @param $user_id
+     * @param $coupon_code
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function receiveCoupon($user_id, $coupon_code)
+    {
+        $return = [
+            'status' => false,
+            'data' => '',
+            'msg' => '领取失败',
+        ];
+
+        $where[] = ['coupon_code', 'eq', $coupon_code];
+        $flag = $this->where($where)->find();
+
+        if($flag['used_id'])
+        {
+            $return['msg'] = '该优惠券已被使用';
+            return $return;
+        }
+        if($flag['user_id'])
+        {
+            $return['msg'] = '该优惠券已被其他人领取';
+            return $return;
+        }
+
+        $data['user_id'] = $user_id;
+        $result = $this->save($data, $where);
+
+        if($result !== false)
+        {
+            $return['data'] = $this->where($where)->find();
+            if($return['data']['promotion_id'])
+            {
+                $promotionModel = new \app\common\model\Promotion();
+                $w[] = ['id', 'eq', $return['data']['promotion_id']];
+                $promotion = $promotionModel->field('name')->where($w)->find();
+                $return['data']['coupon_name'] = $promotion['name'];
+            }
+            $return['status'] = true;
+            $return['msg'] = '领取成功';
+        }
+        return $return;
     }
 }

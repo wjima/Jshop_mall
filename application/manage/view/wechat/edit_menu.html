@@ -1,0 +1,75 @@
+<form class="layui-form seller-alone-form" method="post" action="{:url('Wechat/doEditMenu')}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>菜单名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" required lay-verify="required" name="name" value="{$menu.name}" class="layui-input" placeholder="字数不超过13个汉字或40个字母" class="layui-input">
+            <input type="hidden" name="menu_id" value="{$id}">
+            <input type="hidden" name="pid" value="{$pid}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>动作类型：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <select name="type" lay-filter="menu-type">
+                <option value="click" {if condition="$menu.type eq 'click' "}selected = "" {/if} >关键字</option>
+                <option value="view" {if condition="$menu.type eq 'view' "}selected = "" {/if} >跳转网页</option>
+                <option value="miniprogram" {if condition="$menu.type eq 'miniprogram' "}selected = "" {/if} >跳转小程序</option>
+            </select>
+        </div>
+    </div>
+    <div class="action-type click" {if condition="$menu.type neq 'click' && $menu.type neq '' " }style="display: none"{/if} >
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2">关键字：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text"  name="params[keyword]" value="{$menu.params.keyword}" class="layui-input" placeholder="Jshop商城欢迎您" class="layui-input">
+        </div>
+    </div>
+    </div>
+    <div class="action-type view" {if condition="$menu.type neq 'view' "}style="display: none"{/if}>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">跳转地址：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text"  name="params[url]" value="" class="layui-input" placeholder="https://b2c.jihainet.com" class="layui-input">
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote layui-text">
+            首页地址：{$site_url}/wap/index.html#/index<br/>
+            会员中心地址：{$site_url}/wap/index.html#/user<br/>
+            我的订单地址：{$site_url}/wap/index.html#/allorder<br/>
+        </blockquote>
+    </div>
+
+    <div class="action-type miniprogram" {if condition="$menu.type neq 'miniprogram' "}style="display: none"{/if} >
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">appid：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text"  name="params[appid]" value="{$wx_appid}" class="layui-input" placeholder="仅认证公众号可配置" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">备用url：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text"  name="params[program_url]" value="" class="layui-input" placeholder="仅认证公众号可配置" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">小程序路径：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text"  name="params[page]" value="" class="layui-input" placeholder="pages/index/index" class="layui-input">
+            </div>
+        </div>
+        <blockquote class="layui-elem-quote layui-text">
+            首页地址：pages/index/index<br/>
+            会员中心地址：pages/member/index/index<br/>
+            我的订单地址：pages/member/order/orderList/orderList<br/>
+        </blockquote>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="save-menu">保存</button>
+        </div>
+    </div>
+
+</form>

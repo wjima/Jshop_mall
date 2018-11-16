@@ -5,21 +5,7 @@ Page({
     //页面数据
     data: {
 
-    },
-
-    // 我的银行卡
-    mybackcardlist: function () {
-        wx.navigateTo({
-            url: '../myBankCardlist/myBankCardlist'
-        });
-    },
-
-    //推荐列表
-    recommendlist: function () {
-        wx.navigateTo({
-            url: '../recommendList/recommendList'
-        });
-    },
+    },   
 
     //设置用户信息
     setUserInfo: function () {

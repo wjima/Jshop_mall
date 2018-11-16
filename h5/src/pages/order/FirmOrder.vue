@@ -1,8 +1,17 @@
 <template>
     <div class="firmorder">
-        <orderadd :userShip="userShip" @clickHandler="clickHandler"></orderadd>
-        <orderlist :products="products"></orderlist>
-        <ordercoupon :coupon="couponList" @couponChecked="couponChecked"></ordercoupon>
+        <orderadd
+            :openStore="openStore"
+            :userShip="userShip"
+            @clickHandler="clickHandler"
+        ></orderadd>
+        <orderlist
+            :products="products"
+        ></orderlist>
+        <ordercoupon
+            :coupon="couponList"
+            @couponChecked="couponChecked"
+        ></ordercoupon>
         <ordercell
             :goods_amount="goods_amount"
             :amount="amount"
@@ -10,9 +19,19 @@
             :goods_pmt="goods_pmt"
             :order_pmt="order_pmt"
             :coupon_pmt="coupon_pmt"
+            :open_point="point_open"
+            :point_sum="point_sum"
+            :usable_point="usable_point"
+            :point_money="point_money"
+            @isUsePoint="isUsePoint"
         ></ordercell>
-        <orderinput @msg="sendMsg"></orderinput>
-        <orderfooter :amount="amount" @payment="payment"></orderfooter>
+        <orderinput
+            @msg="sendMsg"
+        ></orderinput>
+        <orderfooter
+            :amount="amount"
+            @payment="payment"
+        ></orderfooter>
     </div>
 </template>
 
@@ -31,7 +50,7 @@ export default {
     data () {
         return {
             cartIds: this.$route.query.cartIds ? this.$route.query.cartIds : '', // 传递过来的购物车id
-            area_id: '', // 地区id
+            openStore: false,
             products: [], // 货品信息
             goods_amount: '', // 商品总金额
             amount: '', // 总金额
@@ -42,23 +61,45 @@ export default {
             msg: '', // 卖家留言内容
             userShip: [], // 用户的默认收货地址
             couponList: [], // 用户的优惠券列表
-            selectCoupon: '' // 选中的优惠券
+            selectCoupon: '', // 选中的优惠券
+            point_open: false, // 判断后台是否开启积分抵扣
+            point_sum: 0, // 用户总积分
+            usable_point: 0, // 可抵扣积分
+            point_money: 0, // 积分抵扣的金额
+            use_point: false // 是否使用积分
         }
     },
     mounted () {
+        this.isOpenStore() // 判断是否开启门店
         this.userDefaultShip() // 获取默认收货地址
-        this.getCartList(this.userShip.area_id) // 根据地区id重新请求数据 (运费 价格)
         this.getUserCoupon() // 获取用户可用的优惠券列表
-    },
-    watch: {
-        // 监听收货地址改变
-        userShip () {
-            this.getCartList(this.userShip.area_id)
-        }
+        this.orderUsablePoint()
     },
     methods: {
+        // 判断是否开启门店
+        isOpenStore () {
+            this.$api.switchStore({}, res => {
+                if (res.status) {
+                    res.data === '1' ? this.openStore = true : this.openStore = false
+                }
+            })
+        },
+        // 获取用户的默认收货地址
+        userDefaultShip () {
+            this.$api.userDefaultShip({}, res => {
+                this.userShip = res.data
+                this.getCartList(this.userShip.area_id)
+            })
+        },
+        // 获取用户可用的优惠券列表
+        getUserCoupon () {
+            this.$api.userCoupon({}, res => {
+                this.couponList = res.data
+                this.couponList.forEach((item) => this.$set(item, 'checked', false))
+            })
+        },
         // 获取商品信息
-        getCartList (areaId = '', couponCode = '') {
+        getCartList (areaId = 0, couponCode = 0, usePoint = false) {
             if (!this.cartIds) {
                 this.$dialog.alert({
                     mes: '请选择要购买的商品',
@@ -71,6 +112,7 @@ export default {
             let data = {ids: this.cartIds}
             if (areaId) data['area_id'] = areaId // 使用的收货地址id
             if (couponCode) data['coupon_code'] = couponCode // 使用的优惠券code
+            if (usePoint) data['point'] = this.usable_point
             this.$api.cartList(data, res => {
                 if (res.status) {
                     let list = res.data.list
@@ -82,22 +124,23 @@ export default {
                     this.goods_pmt = resData.goods_pmt
                     this.order_pmt = resData.order_pmt
                     this.coupon_pmt = resData.coupon_pmt
-                } else {
-                    this.getCartList(this.userShip.area_id, '')
+                    if (!this.use_point) {
+                        this.orderUsablePoint(this.amount)
+                    }
                 }
             })
         },
-        // 获取用户的默认收货地址
-        userDefaultShip () {
-            this.$api.userDefaultShip({}, res => {
-                this.userShip = res.data
-            })
-        },
-        // 获取用户可用的优惠券列表
-        getUserCoupon () {
-            this.$api.userCoupon({}, res => {
-                this.couponList = res.data
-                this.couponList.forEach((item) => this.$set(item, 'checked', false))
+        // 判断是否开启积分和 可兑换的积分金额
+        orderUsablePoint (money) {
+            this.$api.usablePoint({order_money: money},  res => {
+                if (res.status) {
+                    if (res.switch === 1) {
+                        this.point_open = true
+                    }
+                    this.point_sum = res.data
+                    this.usable_point = res.available_point
+                    this.point_money = res.point_rmb
+                }
             })
         },
         // 用户选中/取消的优惠券 选中取消状态
@@ -123,10 +166,16 @@ export default {
         // 用户的选中的收货地址
         clickHandler (index) {
             this.userShip = index
+            this.getCartList(this.userShip.area_id, this.selectCoupon, this.use_point)
         },
         // 卖家留言
         sendMsg (msg) {
             this.msg = msg
+        },
+        // 用户点击使用积分
+        isUsePoint (checked) {
+            this.use_point = checked
+            this.getCartList(this.userShip.area_id, 0, this.use_point)
         },
         // 去支付  生成支付单
         // 获取收货地址id
@@ -147,7 +196,6 @@ export default {
                 this.$router.replace({path: '/cashierdesk', query: {order_id: res.data.order_id}})
             })
         }
-
     }
 }
 </script>

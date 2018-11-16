@@ -24,7 +24,8 @@ export default {
         return {
             order_id: this.$route.query.order_id,
             order_amount: '', // 订单总价
-            payments: [] // 商户可支付的方式列表
+            payments: [], // 商户可支付的方式列表
+            weiXinPayStatus: false
         }
     },
     created () {
@@ -49,8 +50,10 @@ export default {
         // 根据code 区分支付方式
         pay (code) {
             if (code === 'wechatpay') {
+                let isWeiXin = this.isWeiXinBrowser()
+                // 微信支付
                 let params = {
-                    trade_type: 'MWEB',
+                    trade_type: isWeiXin ? 'JSAPI_OFFICIAL' : 'MWEB',
                     wap_url: window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
                     wap_name: 'mysite'
                 }
@@ -60,13 +63,45 @@ export default {
                     payment_type: 1,
                     params: params
                 }
-                this.$api.pay(data, res => {
-                    if (res.status) {
-                        window.location.href = res.data.mweb_url
-                    } else {
-                        this.$dialog.alert({mes: res.msg})
-                    }
-                })
+
+                if (isWeiXin) {
+                    // 微信jsapi支付
+                    this.$api.pay(data, res => {
+                        if (res.status) {
+                            const data = res.data
+                            console.log(data)
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest', {
+                                    "appId": data.appid,     //公众号名称，由商户传入
+                                    "timeStamp": data.timeStamp,         //时间戳，自1970年以来的秒数
+                                    "nonceStr": data.nonceStr, //随机串
+                                    "package": data.package,
+                                    "signType": data.signType,         //微信签名方式：
+                                    "paySign": data.paySign //微信签名
+                                },
+                                function(res){
+                                    if(res.err_msg == "get_brand_wcpay_request:ok" ){
+                                        alert('支付成功')
+                                        this.weiXinPayStatus = true
+                                        // 使用以上方式判断前端返回,微信团队郑重提示：
+                                        //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                                        this.$router.replace({path: '/orderdetail', query: {order_id: this.order_id}})
+                                    } else {
+                                        alert('支付失败')
+                                    }
+                                });
+                        }
+                    })
+                } else {
+                    // h5支付
+                    this.$api.pay(data, res => {
+                        if (res.status) {
+                            window.location.href = res.data.mweb_url
+                        } else {
+                            this.$dialog.alert({mes: res.msg})
+                        }
+                    })
+                }
             } else if (code === 'alipay') {
                 let params = {
                     trade_type: 'MWEB',
@@ -128,7 +163,17 @@ export default {
             tempForm.dispatchEvent(new Event('submit'))
             tempForm.submit()
             document.body.removeChild(tempForm)
+        },
+        // 判断是否是微信浏览器发起不同的微信支付请求
+        isWeiXinBrowser () {
+            //window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
+            let ua = window.navigator.userAgent.toLowerCase();
+            //通过正则表达式匹配ua中是否含有MicroMessenger字符串
+            return ua.match(/MicroMessenger/i) == 'micromessenger' ? true : false
         }
+    },
+    watch: {
+
     }
 }
 </script>

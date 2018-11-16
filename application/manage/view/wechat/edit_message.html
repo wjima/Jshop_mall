@@ -1,0 +1,64 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i> 消息名称：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="name" value="{$data.name}" required lay-verify="required" placeholder="请输入消息名称" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">关注回复：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="checkbox" value="1" {if condition="$data.is_attention eq '1' "}checked = "" {/if} name="is_attention" lay-skin="switch" lay-filter="switchTest" title="开关"><div class="layui-unselect layui-form-switch layui-form-onswitch" lay-skin="_switch"><em></em><i></i></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">默认回复：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="checkbox" value="1" name="is_default" {if condition="$data.is_default eq '1' "}checked = "" {/if} lay-skin="switch" lay-filter="switchTest" title="开关"><div class="layui-unselect layui-form-switch layui-form-onswitch" lay-skin="_switch"><em></em><i></i></div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i> 消息类型：</label>
+        <div class="layui-input-inline seller-inline-4">
+            <select name="type" lay-filter="message-type">
+                <option value="1" {if condition="$data.type eq '1' "}selected = "" {/if} >文字消息</option>
+                <option value="2" {if condition="$data.type eq '2' "}selected = "" {/if} >图片消息</option>
+                <option value="3" {if condition="$data.type eq '3' "}selected = "" {/if} >图文消息</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="message-type keyword" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">消息内容：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <textarea class="layui-textarea" name="params[content]">{$data.params.content}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="message-type image"  style="display: none;">
+        <div class="layui-form-item layui-upload">
+            <label class="layui-form-label">消息图片：</label>
+            <div class="layui-input-inline seller-inline-4">
+                {Jshop:image id='image' name="params[image]" value={$data.params.image} /}
+            </div>
+        </div>
+    </div>
+    <div class="message-type image-text" style="display: none;">
+
+    </div>
+
+    <button class="layui-btn layui-btn-fluid save-message" lay-submit lay-filter="add-message">保存</button>
+
+</div>
+
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+
+    });
+</script>

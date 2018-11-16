@@ -12,7 +12,6 @@ class User extends Manage
 {
     public function index()
     {
-
         if(Request::isAjax()){
             $userModel = new UserModel();
             return $userModel->tableData(input('param.'));
@@ -166,6 +165,13 @@ class User extends Manage
     }
 
 
+    /**
+     * 修改邀请人
+     */
+    public function editInvite()
+    {
+
+    }
 
 
 }

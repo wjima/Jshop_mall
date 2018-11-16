@@ -36,8 +36,7 @@ export default {
             mobile: '',
             pwd: '',
             code: '', // 验证码
-            countDown: false, // 发送验证码倒计时 发送成功后修改为true倒计时启动
-            params: this.$route.query.code
+            countDown: false // 发送验证码倒计时 发送成功后修改为true倒计时启动
         }
     },
     created () {
@@ -98,17 +97,17 @@ export default {
                 this.$dialog.toast({mes: '请输入登录密码', timeout: 1300})
             } else {
                 let data = {mobile: this.mobile, code: this.code, password: this.pwd}
-                // 如果pid为真 往data对象赋值
                 if (this.pid) data.pid = this.pid
-                data['params'] = this.params
+                data['uuid'] = this.GLOBAL.getStorage('uuid')
                 this.$api.trustBind(data, res => {
                     if (res.status) {
                         this.GLOBAL.setStorage('user_token', res.data)
                         this.$dialog.toast({
-                            mes: '注册成功!',
+                            mes: '绑定成功!',
                             timeout: 1000,
                             icon: 'success',
                             callback: () => {
+                                this.GLOBAL.removeStorage('uuid')
                                 this.$router.replace('/index')
                             }
                         })

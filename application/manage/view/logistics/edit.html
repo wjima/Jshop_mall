@@ -1,14 +1,16 @@
 <div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
     <input type="hidden" name="id" value="{$data.id}">
     <div class="layui-form-item">
-        <label class="layui-form-label">品牌名称：</label>
+        <label class="layui-form-label">公司名称：</label>
         <div class="layui-input-inline">
-            <input type="text" name="name" required lay-verify="required" placeholder="请输入品牌名称" autocomplete="off" class="layui-input" value="{$data.name}">
+            <input type="text" name="logi_name" required lay-verify="required" placeholder="请输入品牌名称" autocomplete="off" class="layui-input" value="{$data.logi_name}">
         </div>
     </div>
     <div class="layui-form-item layui-upload">
-        <label class="layui-form-label">品牌LOGO：</label>
-        {Jshop:image id='logo' name="logo" value="$data['logo']"/}
+        <label class="layui-form-label">公司编码：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="logi_code" required lay-verify="required" value="{$data.logi_code}" placeholder="请输入物流公司编码" autocomplete="off" class="layui-input">
+        </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">排序：</label>
@@ -17,7 +19,7 @@
         </div>
     </div>
 
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="brand-edit">立即提交</button>
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="logistics-edit">立即提交</button>
     <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
 </div>
 <script>

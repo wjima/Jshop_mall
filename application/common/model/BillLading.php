@@ -167,7 +167,7 @@ class BillLading extends Common
             }
             else
             {
-                $return['data']['clerk'] = '';
+                $return['data']['clerk'] = '后台管理员';
             }
 
             //获取订单商品详情
@@ -177,6 +177,38 @@ class BillLading extends Common
 
             $return['status'] = true;
             $return['msg'] = '获取成功';
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 编辑
+     * @param $id
+     * @param $store_id
+     * @param $name
+     * @param $mobile
+     * @return array
+     */
+    public function edit($id, $store_id, $name, $mobile)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '编辑失败',
+            'data' => ''
+        ];
+
+        $data['store_id'] = $store_id;
+        $data['name'] = $name;
+        $data['mobile'] = $mobile;
+        $where[] = ['id', 'eq', $id];
+        $return['data'] = $this->save($data, $where);
+
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '编辑成功';
         }
 
         return $return;

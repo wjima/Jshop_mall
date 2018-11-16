@@ -86,7 +86,6 @@
 
 
         form.on('submit(logistics-edit)',function(data){
-            console.log(data);
             $.ajax({
                 url:"{:url('logistics/edit')}",
                 type:"post",
@@ -136,7 +135,7 @@
                         window.box = layer.open({
                             type:1,
                             content:e,
-                            area:['400px','500px'],
+                            area:['400px','300px'],
                             title:'修改物流公司',
                             maxmin:true
                         })

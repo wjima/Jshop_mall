@@ -70,9 +70,9 @@
             cols: [[
                 {type:'numbers'},
 //                {field:'username', width:100,title:'账号'},
-                {field:'mobile', width:160,title:'手机号码'},
-                {field:'sex', width:80,minWidth: 50,title:'性别'},
-                {field:'birthday',width:200,title:'生日'},
+                {field:'mobile', width:150, title:'手机号码'},
+                {field:'sex', width:80, title:'性别'},
+                {field:'birthday',width:150, title:'生日'},
                 {field:'avatar',title:'头像',
                     templet: function(d){
                         if (d.avatar) {
@@ -80,12 +80,14 @@
                         }else{
                             return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
                         }
-                    }
+                    }, width: 80
                 },
-                {field:'nickname',title:'昵称'},
-                {field:'point', sort:true, title:'积分'},
-                {field:'status',title:'状态'},
-                {field:'option',title:'操作', width:200, templet: function (d) {
+                {field:'nickname',title:'昵称', width:150},
+                {field:'point', sort:true, title:'积分', width: 120},
+                {field:'status',title:'状态', width:150},
+                {field:'pid_name', title: '邀请人', width:150},
+                {field:'option',title:'操作', width:250, templet: function (d) {
+                        // var html = '<span class="layui-btn layui-btn-xs inviteEdit">邀请人修改</span>';
                         var html = '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';
                         html += '<span class="layui-btn layui-btn-xs pointLog" data-id="'+d.id+'">积分详情</span>';
                         return html;
@@ -168,6 +170,11 @@
                     });
                 }
             });
+        });
+
+        //邀请人修改
+        $(document).on('click', '.inviteEdit', function () {
+
         });
     });
 </script>

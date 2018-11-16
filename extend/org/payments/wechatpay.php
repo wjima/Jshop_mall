@@ -2,6 +2,8 @@
 
 namespace org\payments;
 
+use app\common\model\UserWx;
+
 class wechatpay implements Payment
 {
     private $config = [];
@@ -18,7 +20,10 @@ class wechatpay implements Payment
         ];
         $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
-        $data['appid'] = $this->config['appid'];
+
+
+
+
         $data['mch_id'] = $this->config['mch_id'];//商户号
         $data['nonce_str'] = self::getNonceStr();//$this->config['nonce_str'];//32位随机数
         $data['body'] = "商品详情";
@@ -29,24 +34,43 @@ class wechatpay implements Payment
 
         if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
             $params = json_decode($paymentInfo['params'],true);
+            if(!isset($params['trade_type'])){
+                $params['trade_type'] = "JSAPI";
+            }
 
-        }
-        if(!isset($params['trade_type'])){
-            $params['trade_type'] = 'JSAPI';
+            $trade_type_re = $this->getTradeType($params);
+            if(!$trade_type_re['status']){
+                return $trade_type_re;
+            }
+            $trade_type = $trade_type_re['data'];
+
+        }else{
+            $result['msg'] = '支付参数不能为空';
+            return $result;
         }
 
-        $data['trade_type'] = $params['trade_type'];                       //交易类型JSAPI微信小程序，MWEB是H5支付
+        //取appid
+        $appid_re = $this->getAppid($params['trade_type']);
+
+        if(!$appid_re['status']){
+            return $appid_re;
+        }
+        $data['appid'] = $appid_re['data'];
+
+
+
+        $data['trade_type'] = $trade_type;                       //交易类型JSAPI微信小程序或微信公众号，MWEB是H5支付
 
         //当时JSAPI的时候，也就是小程序的时候，openid必传
-        if($params['trade_type'] == 'JSAPI'){
-            //取openid
-            $userWxInfo = model('common/UserWx')->where(['user_id'=>$paymentInfo['user_id']])->find();
-            if(!$userWxInfo){
-                return error_code(11002);
+        if($trade_type == 'JSAPI'){
+            //取open_id
+            $openid_re = $this->getOpenId($paymentInfo['user_id'],$params['trade_type']);
+            if(!$openid_re['status']){
+                return $openid_re;
             }
-            $data['openid'] = $userWxInfo['openid'];
+            $data['openid'] = $openid_re['data'];
         }
-        if($params['trade_type'] == 'MWEB'){
+        if($trade_type == 'MWEB'){
             $data['scene_info'] = [
                 'h5_info' => [
                     'type' => 'Wap',
@@ -63,6 +87,7 @@ class wechatpay implements Payment
 
         $response = $this->postXmlCurl($xml, $url, false, 6);
         $re = $this->fromXml($response);
+
         if(!isset($re['return_code'])){
             $result['msg'] = "出错了";
             return $result;
@@ -73,6 +98,7 @@ class wechatpay implements Payment
                 $data = $this->wxapppay($re);
                 //支付单传到前台
                 $data['payment_id'] = $paymentInfo['payment_id'];
+                $data['appid'] = $data['appid'];
                 $result['data'] = $data;
             }else{
                 $result['data'] = $re['err_code'];
@@ -96,6 +122,7 @@ class wechatpay implements Payment
                 $app_data['nonceStr'] = $data['nonce_str'];
                 $app_data['package'] = 'prepay_id='.$data['prepay_id'];
                 $app_data['signType'] = 'MD5';
+                $app_data['appid'] = $data['appid'];
                 $app_data['paySign'] = md5(
                     'appId='.$data['appid'].
                     '&nonceStr='.$app_data['nonceStr'].
@@ -163,7 +190,19 @@ class wechatpay implements Payment
 
         $url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
-        $data['appid'] = $this->config['appid'];
+        $params = json_decode($paymentInfo['params'],true);
+        if(!isset($params['trade_type'])){
+            $params['trade_type'] = "JSAPI";
+        }
+        //取appid
+        $appid_re = $this->getAppid($params['trade_type']);
+        if(!$appid_re['status']){
+            return $appid_re;
+        }
+
+
+
+        $data['appid'] = $appid_re['data'];
         $data['mch_id'] = $this->config['mch_id'];//商户号
         $data['nonce_str'] = self::getNonceStr();
         $data['out_trade_no'] = $paymentInfo['payment_id'];      //平台支付单号
@@ -201,12 +240,102 @@ class wechatpay implements Payment
         return $result;
     }
 
+
+    private function getTradeType($params){
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
+        //判断是否是指定的三种类型
+        if($params['trade_type'] != 'JSAPI' && $params['trade_type'] != 'MWEB' && $params['trade_type'] != 'JSAPI_OFFICIAL'){
+            $result['msg'] = '参数错误，trade_type为非法值';
+            return $result;
+        }
+        $trade_type = $params['trade_type'];
+        if($trade_type == 'JSAPI_OFFICIAL'){          //微信公众号和小程序交易类型都是JSAPI，但是在前端的时候，我们区分开，为了取不同的appid
+            $trade_type = "JSAPI";
+        }
+        $result['data'] = $trade_type;
+        $result['status'] = true;
+        return $result;
+    }
+
+    /**
+     * 根据用户id和场景值来取对应的appid和openid
+     * @param $user_id  用户id
+     * @param $type     场景值，JSAPI代表小程序支付，JSAPI_OFFICIAL代表公众号支付，MWEB为h5支付
+     * @return array
+     */
+    private function getAppid($type){
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
+        $appid = "";
+        if($type == 'JSAPI'){
+            $appid = getSetting('wx_appid');
+        }elseif($type == 'JSAPI_OFFICIAL'){
+            $appid = getSetting('wx_official_appid');
+        }elseif($type == 'MWEB'){
+            $appid = getSetting('wx_appid');
+            if($appid == ""){
+                $appid = getSetting('wx_official_appid');
+            }
+        }else{
+            $result['msg'] = '未知的微信支付类型';
+            return $result;
+        }
+        //判断是否取得了appid
+        if($appid == ''){
+            $result['msg'] = '没有取得appid';
+            return $result;
+        }
+        $result['data'] = $appid;
+        $result['status'] = true;
+        return $result;
+    }
+
+    /**
+     * 获取openid
+     * @param $user_id      用户id
+     * @param $type         场景值，JSAPI代表小程序支付，JSAPI_OFFICIAL代表公众号支付
+     * @return array
+     */
+    private function getOpenId($user_id,$type){
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
+        $userWxModel = new UserWx();
+        if($type == 'JSAPI'){
+            $type = $userWxModel::TYPE_MINIPROGRAM;
+        }elseif($type == 'JSAPI_OFFICIAL'){
+            $type = $userWxModel::TYPE_OFFICIAL;
+        }else{
+            $result['msg'] = '不需要获取openid';
+            return $result;
+        }
+
+
+        $userWxInfo = $userWxModel->where(['type'=>$type,'user_id'=>$user_id])->find();
+        if(!$userWxInfo){
+            $result['msg'] = "请用户先进行微信登陆或绑定";
+            return $result;
+        }
+        $result['data'] = $userWxInfo['openid'];
+        $result['status'] = true;
+        return $result;
+    }
+
     /**
      * 将xml转为array
      * @param string $xml
      * @throws WxPayException
      */
-    public function xmlToArray($xml)
+    private function xmlToArray($xml)
     {
         if(!$xml){
             return [];
@@ -217,7 +346,7 @@ class wechatpay implements Payment
         return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
     }
 
-    public function makeSign($values)
+    private function makeSign($values)
     {
         //签名步骤一：按字典序排序参数
         ksort($values);
@@ -306,7 +435,7 @@ class wechatpay implements Payment
 //            curl_setopt($ch,CURLOPT_PROXYPORT, WxPayConfig::CURL_PROXY_PORT);
 //        }
         curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,TRUE);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,FALSE);
         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);//严格校验
         //设置header
         curl_setopt($ch, CURLOPT_HEADER, FALSE);

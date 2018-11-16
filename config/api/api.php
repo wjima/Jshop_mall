@@ -204,9 +204,21 @@ return [
                 'code' => 'trustCallBack',
                 'is_login' => false
             ],
-            'trustbind' =>[  //账号绑定接口
+            'trustbind' => [  //账号绑定接口
                 'code' => 'trustBind',
                 'is_login' => false
+            ],
+            'ispoint' => [
+                'code' => 'isPoint',
+                'is_login' => false
+            ],
+            'myinvite' => [
+                'code' => 'myInvite',
+                'is_login' => true
+            ],
+            'activationinvite' => [
+                'code' => 'activationInvite',
+                'is_login' => true
             ]
         ]
     ],
@@ -272,6 +284,10 @@ return [
                 'code' => 'userCoupon',
                 'is_login' => true
             ],
+            'getcouponkey' => [
+                'code' => 'getCouponKey',
+                'is_login' => true
+            ]
         ]
     ],
 

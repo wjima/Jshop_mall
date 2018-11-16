@@ -16,7 +16,7 @@
         <div class="orderadd" v-else>
             <yd-button size="large" type="danger" @click.native="showHandler">选择收货地址</yd-button>
         </div>
-        <yd-popup v-model="window" position="bottom" width="20%" height="60%">
+        <yd-popup v-model="openWindow" position="bottom" width="20%" height="60%">
             <div class="orderadd-content">
                 <div v-if="list.length">
                     <div style="margin-top: 20px; text-align: left;" v-for="(item, index) in list" :key="index" @click="closeHandler(index)">
@@ -41,11 +41,23 @@
 export default {
     data () {
         return {
-            window: false,
-            list: []
+            openWindow: false,
+            list: [],
+            tabs: [
+                {title: '快递配送'},
+                {title: '门店自提'}
+            ]
         }
     },
     props: {
+        // 门店开启状态
+        openStore: {
+            type: Boolean,
+            default () {
+                return false
+            }
+        },
+        // 用户选中||默认收货地址
         userShip: {
             type: [Array, Object],
             default () {
@@ -55,13 +67,13 @@ export default {
     },
     methods: {
         showHandler () {
-            this.window = true
+            this.openWindow = true
             this.$api.userShip({}, res => {
                 this.list = res.data
             })
         },
         closeHandler (index) {
-            this.window = false
+            this.openWindow = false
             this.$emit('clickHandler', this.list[index])
         },
         newShipAdd () {

@@ -190,13 +190,24 @@ class Clerk extends Common
             'data' => []
         ];
 
-        $where[] = ['user_id', 'eq', $user_id];
-        $return['data'] = $this->where($where)->find();
-        if($return['data'])
+        $settingModel = new Setting();
+        $switch = $settingModel->getValue('store_switch');
+        if($switch == 1)
         {
-            $return['status'] = true;
-            $return['msg'] = '是店员';
+            $where[] = ['user_id', 'eq', $user_id];
+            $return['data'] = $this->where($where)->find();
+            if($return['data'])
+            {
+                $return['status'] = true;
+                $return['msg'] = '是店员';
+            }
         }
+        else
+        {
+            $return['status'] = false;
+            $return['msg'] = '未开启到店自提';
+        }
+
         return $return;
     }
 

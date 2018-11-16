@@ -14,6 +14,7 @@
             return {
                 code: '',
                 type: this.$route.query.type,
+                uuid: '',
                 state: ''
             }
         },
@@ -21,9 +22,7 @@
             // 获取url上的参数
             this.code = this.getUrlParam('code')
             this.state = this.getUrlParam('state')
-            console.log(this.state)
-            console.log(this.code)
-            console.log(this.type)
+            this.uuid = this.GLOBAL.getStorage('uuid')
             this.userTrustLogin()
         },
         methods: {
@@ -54,12 +53,14 @@
                 this.$api.trustLogin({
                     code: this.code,
                     type: this.type,
-                    state: this.state
+                    state: this.state,
+                    uuid: this.uuid
                 }, res => {
                     if (res.status) {
                         if (res.data.is_new) {
-                            this.$router.push({path: '/authbind', query: {code: res.data}})
+                            this.$router.replace({path: '/authbind'})
                         } else if (res.data) {
+                            this.GLOBAL.setStorage('user_token', res.data)
                             this.$router.replace({path: '/user'})
                         }
                     }

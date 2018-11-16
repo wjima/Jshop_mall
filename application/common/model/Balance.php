@@ -15,11 +15,10 @@ class Balance extends Common
     protected $createTime = 'ctime';
 
     const TYPE_PAY = 1;                 //用户消费，对应支付单表
-    const TYPE_LIQUIDATION = 2;         //清算，对应支付单表     共享商户收款后以这个状态增加到账户余额上去
-    const TYPE_REFUND = 3;              //用户用余额支付的话，退款类型，对应1
-    const TYPE_LREFUND = 4;             //商户的退款，钱要从余额里扣掉,余额不足，退款失败，对应2
-    const TYPE_RECHARGE = 5;            //充值
-    const TYPE_TOCASH = 6;              //提现
+    const TYPE_REFUND = 2;              //用户退款，用余额支付的话，退款类型对应1
+    const TYPE_RECHARGE = 3;            //充值
+    const TYPE_TOCASH = 4;              //提现
+    const TYPE_DISTRIBUTION = 5;        //三级分销佣金
 
     //充值
     public function recharge()
@@ -60,6 +59,7 @@ class Balance extends Common
         $memo = $re[ 'data' ];
 
         (float)$money = $money;
+        $money = abs($money);
         //如果是减余额的操作，还是加余额操作
         if (
             $type == self::TYPE_PAY ||
@@ -72,26 +72,20 @@ class Balance extends Common
         if ( ( $balance ) < 0 ) {
             return error_code(11007);
         }
-        Db::startTrans();
-        try {
-            $data[ 'user_id' ] = $user_id;
-            $data[ 'type' ] = $type;
-            $data[ 'money' ] = $money;
-            $data[ 'balance' ] = $balance;
-            $data[ 'source_id' ] = $source_id;
-            $data[ 'memo' ] = $memo;
-            $data[ 'ctime' ] = time();
-            $this->save($data);
-            //上面保存好主体表，下面保存明细表
-            $userInfo->balance = $balance;
-            $userInfo->save();
 
-            Db::commit();
-        } catch ( \Exception $e ) {
-            Db::rollback();
-            $result[ 'msg' ] = $e->getMessage();
-            return $result;
-        }
+        $data[ 'user_id' ] = $user_id;
+        $data[ 'type' ] = $type;
+        $data[ 'money' ] = $money;
+        $data[ 'balance' ] = $balance;
+        $data[ 'source_id' ] = $source_id;
+        $data[ 'memo' ] = $memo;
+        $data[ 'ctime' ] = time();
+        $blanceModel = new Balance();
+        $blanceModel->save($data);      //为啥要now在save，是因为存在多个余额更新的时候，只会更新一条
+        //上面保存好主体表，下面保存明细表
+        $userInfo->balance = $balance;
+        $userInfo->save();
+
         $result[ 'status' ] = true;
         return $result;
     }
@@ -117,20 +111,17 @@ class Balance extends Common
             case self::TYPE_PAY:
                 $result[ 'data' ] = '消费了' . $money . '元';
                 break;
-            case self::TYPE_LIQUIDATION:
-                $result[ 'data' ] = '平台清算了' . $money . '元，支付单号：' . $source_id;
-                break;
             case self::TYPE_REFUND:
                 $result[ 'data' ] = '收到了退款' . $money . '元';
-                break;
-            case self::TYPE_LREFUND:
-                $result[ 'data' ] = '平台订单退款' . $money . '元，退款单号：' . $source_id;
                 break;
             case self::TYPE_RECHARGE:
                 $result[ 'data' ] = '充值了' . $money . '元';
                 break;
             case self::TYPE_TOCASH:
                 $result[ 'data' ] = '提现了' . $money . '元';
+                break;
+            case self::TYPE_DISTRIBUTION:
+                $result[ 'data' ] = '佣金' . $money . '元';
                 break;
             default:
                 return error_code(10000);

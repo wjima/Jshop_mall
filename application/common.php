@@ -864,9 +864,10 @@ function isInGroup($gid = 0, &$promotion_id = 0)
     $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
     $condition = $promotion->field('p.id as id')
         ->alias('p')
-        ->join('promotion_condition pc', 'pc.id = p.id')
+        ->join('promotion_condition pc', 'pc.promotion_id = p.id')
         ->where($where)
         ->find();
+
     if ($condition) {
         $promotion_id = $condition['id'];
         return true;

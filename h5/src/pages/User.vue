@@ -3,6 +3,8 @@
         <userheader
             :avatar="user.avatar"
             :name="user.nickname"
+            :point="user.point"
+            :isOpenIntegral="isOpenIntegral"
             @upload="uploadAvatar"
         ></userheader>
         <yd-cell-group>
@@ -34,6 +36,10 @@
             </yd-grids-group>
         </yd-cell-group>
         <yd-cell-group>
+            <yd-cell-item v-if="isOpenIntegral" type="div" @click.native="signIn">
+                <img slot="icon" src="../../static/image/coupon.png">
+                <span slot="left">签到</span>
+            </yd-cell-item>
             <yd-cell-item href="/coupon" type="link">
                 <img slot="icon" src="../../static/image/coupon.png">
                 <span slot="left">我的优惠券</span>
@@ -76,7 +82,8 @@ export default {
     data () {
         return {
             user: [],
-            orderNum: []
+            orderNum: [],
+            isOpenIntegral: false // 用户是否开启积分
         }
     },
     components: {
@@ -97,6 +104,12 @@ export default {
             this.$api.getOrderStatusSum({}, res => {
                 this.orderNum = res.data
             })
+            // 判断是否开启积分
+            this.$api.isPoint({}, res => {
+                if (res.status) {
+                     res.data === '1' ? this.isOpenIntegral = true : this.isOpenIntegral = false
+                }
+            })
         },
         // 用户头像上传
         uploadAvatar (e) {
@@ -107,17 +120,29 @@ export default {
                 if (res.status) {
                     let avatar = res.data.url // 上传成功的图片地址
                     // 执行头像修改
-                    console.log(this)
                     this.$api.changeAvatar({
                         avatar: avatar
                     }, res => {
-                        console.log(res)
                         if (res.status) {
                             this.user.avatar = res.data.avatar
                             this.$dialog.toast({
                                 mes: res.msg,
                                 timeout: 1300
                             })
+                        }
+                    })
+                }
+            })
+        },
+        // 用户签到
+        signIn () {
+            this.$api.sign({}, res => {
+                if (res.status) {
+                    this.$dialog.toast({
+                        mes: res.msg,
+                        timeout: 1300,
+                        callback: () => {
+                            this.getUserInfo()
                         }
                     })
                 }

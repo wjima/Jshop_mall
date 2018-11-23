@@ -42,4 +42,15 @@ class BillReship extends Manage
             'msg' => ''
         ];
     }
+
+    //退货 ，待确认
+    public function confirmReship()
+    {
+        $this->view->engine->layout(false);
+        if(!input('?param.reship_id')){
+            return error_code(13220);
+        }
+        $billReshipModel = new BillReshipModel();
+        return $billReshipModel->confirmReship(input('param.reship_id'));
+    }
 }

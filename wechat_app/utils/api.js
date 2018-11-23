@@ -37,7 +37,6 @@ function post(data,callback,show){
       if(show){
         wx.hideLoading();
       }
-      //console.log(res);
       //这里做判断，如果不报错就返回，如果报错，就做错误处理
       if (res.data.status) {
         callback(res.data);
@@ -690,13 +689,11 @@ function recommendList(data, callback) {
 function sharecode(callback) {
   var userToken = wx.getStorageSync('userToken');
   if (userToken) {
-    var data = {};
-    data.token = userToken;
+    var data = {
+        token: userToken
+    };
     api('user.sharecode', data, function (res) {
-      //如果不是身份过期的话，就执行
-      if((res.status == false && data == 14007)){
         callback(res);
-      }
     }); 
   }
 }
@@ -832,6 +829,12 @@ function setMyInvite(data, callback){
         callback(res);
     });
 }
+//获取带参数的小程序二维码
+function getQRCode(data, callback){
+    api('store.getinviteqrcode', data, function(res){
+        callback(res);
+    });
+}
 
 module.exports = {
   login1: login1,
@@ -924,5 +927,6 @@ module.exports = {
   isPoint: isPoint,
   getCouponKey: getCouponKey,
   myInvite: myInvite,
-  setMyInvite: setMyInvite
+  setMyInvite: setMyInvite,
+  getQRCode: getQRCode
 }

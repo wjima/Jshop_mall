@@ -67,28 +67,19 @@ class ManageRoleOperationRel extends Common
     }
 
     /**
-     * 判断用户是否有当前店铺和当前的操作有权限
-     * @param $seller_id
-     * @param $user_id
+     * 判断管理员是否有当前的操作权限
+     * @param $manage_id
      * @param $p_id     在operation表中的模块的id
      * @param $cont_name
      * @param $act_name
      */
-    public function checkPerm($seller_id,$user_id,$p_id,$cont_name,$act_name)
+    public function checkPerm($manage_id,$p_id,$cont_name,$act_name)
     {
         $result = [
             'status'=> false,
             'data' => '',
             'msg' => ''
         ];
-
-        //如果判断用户是否是此店铺的管理员或者超级管理员
-        $sellerManageModel = new SellerManage();
-        $sellerList = $sellerManageModel->getSellerManage($user_id,$seller_id);
-
-        if(!isset($sellerList[$seller_id])){
-            return error_code(11086);
-        }
 
         $operationModel = new Operation();
 
@@ -97,27 +88,29 @@ class ManageRoleOperationRel extends Common
             $result['status'] = true;
             return $result;
         }
+        $manageModel = new Manage();
 
         //如果是超级管理员，直接返回
-        if($sellerList[$seller_id] == $sellerManageModel::TYPE_SUPER){
-            //判断当前控制器和方法是否在operation总保存，养成一个好习惯
+        if($manage_id == $manageModel::TYPE_SUPER_ID){
+            //判断当前控制器和方法是否在operation总保存，养成一个好习惯,说白了，就是假如operation表配置的不对，超级管理员也能使用
 //            $reinfo = $operationModel->getOperationInfo($cont_name,$act_name,$p_id);
 //            if(!$reinfo['status']){
 //                return $reinfo;
 //            }
 
-
             $result['status'] = true;
             return $result;
         }
+        //取当前管理员所对应的角色
 
-        //到这里就说明用户是店铺的普通管理员，那么就取所有的角色所对应的权限
+        //到这里就说明是普通的管理员，那么就取所有的角色所对应的权限
         $list = $this
             ->distinct(true)
             ->field('o.*')
-            ->alias('sror')
-            ->join(config('database.prefix').'operation o', 'o.id = sror.operation_id')
-            ->where('sror.seller_role_id','IN',$sellerList[$seller_id])
+            ->alias('mror')
+            ->join(config('database.prefix').'operation o', 'o.id = mror.operation_id')
+            ->join(config('database.prefix').'manage_role_rel mrr', 'mror.manage_role_id = mrr.role_id')
+            ->where('mrr.manage_id','EQ',$manage_id)
             ->select();
         if($list->isEmpty()){
             return error_code(10010);       //可怜的，一个权限都没有
@@ -147,12 +140,15 @@ class ManageRoleOperationRel extends Common
                 return error_code(11090);
             }
         }
+
         //万事具备，只欠东风了
-        if(!isset($newList[$actOperation['id']])){
+        if(isset($newList[$actOperation['id']])){
+            $result['status'] = true;
+            return $result;
+        }else{
             return error_code(10010);
         }
-        $result['status'] = true;
-        return $result;
+
     }
 
 

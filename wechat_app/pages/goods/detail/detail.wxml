@@ -20,7 +20,7 @@
         <text class='commodity-name'>{{goodsInfo.name}}</text>
         <text class='commodity-introduce'>{{goodsInfo.brief}}</text>
       </view>
-      <button class='commodity-share' open-type='share' data-id="{{goodsInfo.id}}">
+      <button class='commodity-share' bindtap='share'>
         <image src='../../image/share.png'></image>
         <text>分享</text>
       </button>
@@ -176,4 +176,23 @@
   <view class='detail-footer-right' wx:if="{{!status}}">
     <view class='stockno'>该商品已售罄</view>
   </view>
+</view>
+
+<view class='map-pop' catchtouchmove="move" wx:if="{{pop}}">
+    <view class='mask-c'>
+        <image src="{{shareImage}}" class="share-image"></image>
+        <canvasdrawer painting="{{painting}}" class="canvasdrawer" bind:getImage="eventGetImage"/>
+        <button class='save' bindtap='eventSave'>保存到本地</button>
+        <button class='clone' bindtap='clone'>关闭</button>
+    </view>
+</view>
+
+<view class='map-pop-share' wx:if="{{share}}">
+    <view class='mask-share-c'>
+        <view class='mask-share-c-t'>
+            <button class='mask-share-wechat' open-type="share"><image src="../../image/ic-wechat-1.png"></image><text>分享给朋友</text></button>
+            <view class='mask-share-generate' bindtap='sharePop'><image src="../../image/ic-img-1.png"></image><text>生成海报</text></view>
+        </view>
+        <view class='mask-share-c-b' bindtap='shareclose'>关闭</view>
+    </view>
 </view>

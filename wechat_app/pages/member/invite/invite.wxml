@@ -25,7 +25,7 @@
     </view>
     <view class='invite-btn'>
       <button class='share' open-type="share"><image src='../../image/ic-wechat.png'></image></button>
-      <!-- <image src='../../image/ic-img.png' bindtap='generatePoster'></image> -->
+      <image src='../../image/ic-img.png' bindtap='generatePoster'></image>
     </view>
   </view>
 </view>
@@ -34,7 +34,7 @@
     <view class='mask-c'>
         <image src="{{shareImage}}" class="share-image"></image>
         <canvasdrawer painting="{{painting}}" class="canvasdrawer" bind:getImage="eventGetImage"/>
-        <button class='save' bindtap='save'>保存到本地</button>
+        <button class='save' bindtap='eventSave'>保存到本地</button>
         <button class='clone' bindtap='clone'>关闭</button>
     </view>
 </view>

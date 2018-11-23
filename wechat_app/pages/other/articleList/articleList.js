@@ -44,7 +44,6 @@ Page({
       for (var j = 0; j < res.data.list.length; j++) {
         res.data.list[j].utime = app.common.timeToDate(res.data.list[j].utime)
       }
-      console.log(res.data.list);
       page.setData({
         list:res.data.list
       });
@@ -88,7 +87,6 @@ Page({
   
   },
   detail: function (e) {
-    console.log(e);
     wx.navigateTo({
       url: '../article/article?id=' + e.target.dataset.id
     });

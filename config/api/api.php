@@ -517,6 +517,10 @@ return [
             'ladingdel' => [
                 'code' => 'ladingDel',
                 'is_login' => true
+            ],
+            'getinviteqrcode' => [
+                'code' => 'getInviteQRCode',
+                'is_login' => false
             ]
         ]
     ],

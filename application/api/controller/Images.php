@@ -58,7 +58,7 @@ class Images extends Api
             $preview_url = $url;
             $iData['id'] = md5(get_hash($first['name']));
             $iData['type'] = 'local';
-            $iData['name'] = $first['name'];
+            $iData['name'] = strlen($first['name'])>50?substr($first['name'], 0, 50):$first['name'];
             $iData['url'] = $url;
             $iData['ctime'] = time();
             $iData['path'] = ROOT_PATH .DIRECTORY_SEPARATOR.'public'.$savepath . $first['savename'];

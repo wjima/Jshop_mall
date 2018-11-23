@@ -51,7 +51,6 @@ Page({
             refund_show: res.data.payed - res.data.refunded,
             type_list:type_list,
           });
-          //console.log(page.data);
         }else{
           app.common.errorToBack('订单不可以进行售后');
         }
@@ -99,7 +98,6 @@ Page({
 
   //选择服务类型
   // radioChange: function (e) {
-  //   console.log();
   //   // this.setData({
   //   //   aftersale_type: e.datail.value
   //   // });
@@ -132,7 +130,6 @@ Page({
         page.setData({
           images: page.data.images.concat(res.data)
         });
-        //console.log(page.data.images);
       });
     }
   },

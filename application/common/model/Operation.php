@@ -4,7 +4,6 @@ namespace app\common\model;
 class Operation extends Common
 {
     const MENU_START = 1;       //起始节点
-    const MENU_SELLER = 5;      //商户平台起始菜单id
     const MENU_MANAGE = 2;      //管理平台起始菜单id
 
     const PERM_TYPE_SUB = 1;    //主体权限
@@ -14,23 +13,23 @@ class Operation extends Common
 
     //不需要权限判断的控制器和方法,前台传过来的都是小写，这里就不采用驼峰法写了。
     private $noPerm = [
-        self::MENU_SELLER => [
+        self::MENU_MANAGE => [
             'Index'=> ['index','tagselectbrands','tagselectgoods'],
             'Order' => ['statistics'],
             'Images' => ['uploadimage','listimage','manage','cropper'],
-            'User' => ['information','edituserinfo','editpwd','userloglist','statistics'],
+            'User' => ['userloglist','statistics'],
             'MessageCenter' => ['message','messageview','messagedel'],
-            'Paymnets' => ['uploadcert'],
             'Promotion' => ['conditionlist','conditionadd','conditionedit','conditiondel','resultlist','resultadd','resultedit','resultdel'],
             'Worksheet'=>['worklist','sheetlist','sheetlist1','sheetlist2','sheetlist3','add','addwork','wsdetail','adddetail','updata','del','inquiries'],
+            'Manage' => ['information','editpwd','getversion'],
+            'OperationLog' => ['getlastlog'],
         ],
-        self::MENU_MANAGE => []
     ];
 
 
 
     /**
-     * 返回导航信息
+     * 返回导航信息..
      * @param $moduleName
      * @param $controllerName
      * @param $actionName
@@ -68,7 +67,7 @@ class Operation extends Common
             return $this->getNoteUrl($actionInfo['id']);
         }
     }
-    //递归取得节点以及父菜单节点的信息，用于在前台展示导航用
+    //递归取得节点以及父菜单节点的信息，用于在前台展示导航用..
     private function  getNoteUrl($id,$recursion = true)
     {
         $info = $this->where(['id'=>$id])->find();
@@ -118,7 +117,7 @@ class Operation extends Common
     }
 
     /**
-     * 返回管理端的菜单信息
+     * 返回管理端的菜单信息..
      * @param $parent_menu_id
      * @return array
      */
@@ -163,7 +162,7 @@ class Operation extends Common
     }
 
     /**
-     * 根据实际的控制器名称和方法名称，去算出在菜单上对应的控制器id和方法id
+     * 根据实际的控制器名称和方法名称，去算出在菜单上对应的控制器id和方法id..
      * @param $parent_menu_id
      * @param $controllerName
      * @param $actionName
@@ -207,7 +206,7 @@ class Operation extends Common
 
 
     /**
-     * 根据传过来的数组，构建以p_id为父节点的树
+     * 根据传过来的数组，构建以p_id为父节点的树..
      * @param $list
      * @param $p_id
      * 'parent_menu_id'
@@ -256,14 +255,14 @@ class Operation extends Common
 
 
     /**
-     * 获取操作名称
+     * 获取操作名称..
      * @param string $ctl           控制器编码
      * @param string $act           方法编码
      * @param int $model_id         模块的id，因为可能有不同的模块里的控制器和方法一样的情况
      * @return array
      */
 
-    public function getOperationInfo($ctl = 'index', $act = 'index',$model_id = self::MENU_SELLER)
+    public function getOperationInfo($ctl = 'index', $act = 'index',$model_id = self::MENU_MANAGE)
     {
         $result        = [
             'msg'    => '',
@@ -271,14 +270,14 @@ class Operation extends Common
             'status' => false,
         ];
         $where['type'] = 'c';
-        $where['code'] = strtolower($ctl);
+        $where['code'] = $ctl;      //strtolower($ctl);
         $where['parent_id'] = $model_id;
         $ctlInfo       = $this->where($where)->find();
         if (!$ctlInfo) {
             return error_code(11088);
         }
         $where['type']      = 'a';
-        $where['code']      = strtolower($act);
+        $where['code']      = $act;     //strtolower($act);
         $where['parent_id'] = $ctlInfo['id'];
         $actInfo            = $this->where($where)->find();
         if (!$actInfo) {
@@ -326,7 +325,7 @@ class Operation extends Common
     public function checkNeedPerm($p_id,$cont_name,$act_name)
     {
         if(isset($this->noPerm[$p_id][$cont_name])){
-            if(in_array(strtolower($act_name),$this->noPerm[$p_id][$cont_name])){
+            if(in_array($act_name,$this->noPerm[$p_id][$cont_name])){
                 return true;
             }
         }
@@ -444,6 +443,10 @@ class Operation extends Common
         if(!isset($data['id']) || !isset($data['parent_id']) || !isset($data['name']) || !isset($data['code']) || !isset($data['type']) || !isset($data['perm_type'])){
             return error_code(11092);
         }
+        //如果是方法，code换成小写
+        if($data['type'] == 'a'){
+            $data['code'] = strtolower($data['code']);
+        }
 
         //校验父节点和当前类型
         if($data['parent_id'] != self::MENU_START){
@@ -463,6 +466,7 @@ class Operation extends Common
                     return error_code(11094);
                 }
             }
+
         }else{
             if($data['type'] != 'm'){
                 return error_code(11095);
@@ -481,9 +485,13 @@ class Operation extends Common
 
         //判断父菜单节点是否存在
         if($data['parent_menu_id'] != self::MENU_START){
-            $parentInfo = $this->where('id','eq',$data['parent_menu_id'])->find();
-            if(!$parentInfo){
+            $menuParentInfo = $this->where('id','eq',$data['parent_menu_id'])->find();
+            if(!$menuParentInfo){
                 return error_code(10000);
+            }
+            //如果是控制器，父菜单节点必须和父节点保持一致，
+            if($data['type'] == 'c' && ($data['parent_id'] != $data['parent_menu_id'])){
+                return error_code(11099);
             }
         }
 

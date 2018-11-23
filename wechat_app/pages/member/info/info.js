@@ -27,7 +27,6 @@ Page({
     var page = this;
     app.api.userInfo(function (res) {
       if (res.status) {
-        //console.log(res);
         var the_sex = 0;
         if(res.data.sex == 3){
           the_sex = 0;
@@ -50,7 +49,6 @@ Page({
   },
   //提交按钮
   showTopTips: function () {
-    //console.log(this.data.nickname);
     if(this.data.nickname == ''){
       wx.showToast({
         title: '请输入昵称',

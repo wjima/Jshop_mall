@@ -44,7 +44,6 @@ Page({
         stars[key] = [true, true, true, true, false];
         textarea[key] = '';
       }
-      console.log(stars);
       page.setData({
         images: images,
         goodsList: res.data.items,
@@ -106,8 +105,6 @@ Page({
     var scores = this.data.scores;
     stars[goods_id] = newData;
     scores[goods_id] = i+1;
-    console.log(stars);
-    console.log(scores);
     page.setData({
       stars: stars,
       scores:scores
@@ -166,7 +163,6 @@ Page({
     }
     app.db.userToken(function (token) {
       app.api.orderEvaluate(data, function (res) {
-        //console.log(res);
         wx.showToast({
           title: res.msg,
           success: function () {

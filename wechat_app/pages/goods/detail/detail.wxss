@@ -488,3 +488,92 @@ swiper{
 .wxParse-table{
   width: 750rpx;
 }
+.map-pop{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .6);
+  overflow: hidden;
+  padding: 20rpx 30rpx;
+  box-sizing: border-box;
+  z-index: 1025;
+}
+.share-image {
+  width: 560rpx;
+  height: 900rpx;
+  margin: 20rpx 66rpx;
+}
+.save{
+    width:560rpx;
+    height:70rpx;
+    line-height:70rpx;
+    font-size:30rpx;
+    margin-bottom:30rpx;
+}
+.clone{
+    width:560rpx;
+    height:70rpx;
+    line-height:70rpx;
+    font-size:30rpx;
+}
+.map-pop-share{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .6);
+    overflow: hidden;
+    box-sizing: border-box;
+    z-index: 1025;
+}
+.mask-share-c{
+    background-color: #fff;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+.mask-share-c-t{
+    overflow: hidden;
+}
+.mask-share-generate{
+    width: 375rpx;
+    height: 200rpx;
+    padding: 30rpx;
+    box-sizing: border-box;
+    text-align: center;
+    display: inline-block;
+    float: right;
+}
+.mask-share-wechat{
+    float: left;
+    width: 375rpx;
+    height: 200rpx;
+    padding: 30rpx;
+    box-sizing: border-box;
+    text-align: center;
+    display: inline-block;
+    background-color: #fff;
+    line-height: 1.5;
+}
+.mask-share-c-t>button::after{
+    border: none;
+}
+.mask-share-c-t image{
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+}
+.mask-share-c-t text{
+    display: block;
+    font-size: 24rpx;
+    color: #555;
+}
+.mask-share-c-b{
+    text-align: center;
+    height: 80rpx;
+    line-height: 80rpx;
+    font-size: 28rpx;
+    color: #666;
+    border-top: 2rpx solid #eee; 
+}

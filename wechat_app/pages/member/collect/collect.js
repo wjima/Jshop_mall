@@ -76,8 +76,9 @@ Page({
 
   //前往商品
   goods: function (e) {
+    let ins = encodeURIComponent('id=' + e.currentTarget.dataset.id);
     wx.navigateTo({
-      url: '../../goods/detail/detail?id=' + e.currentTarget.dataset.id
+        url: '../../goods/detail/detail?scene=' + ins
     });
   },
 

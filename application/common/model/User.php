@@ -697,6 +697,12 @@ class User extends Common
             'msg' => '填写邀请码失败',
             'data' => ''
         ];
+        if($user_id == $superior_id)
+        {
+            $return['msg'] = '自己不能邀请自己';
+            return $return;
+        }
+
         $userInfo = $this->get($user_id);
         if($userInfo['pid'] && $userInfo['pid'] != 0)
         {
@@ -788,12 +794,14 @@ class User extends Common
     }
 
 
-
     /**
      * 绑定用户
      * @param array $data 新建用户的数据数组
      * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
-     *
+     * @return array|null|\PDOStatement|string|\think\Model
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function toBindAdd($data, $loginType=1)
     {
@@ -836,6 +844,56 @@ class User extends Common
         $where[] = ['id', 'eq', $user_id];
         $result = $this->where($where)->find();
         return $this->setSession($result ,$loginType);
+    }
+
+
+    /**
+     * 修改邀请人
+     * @param $id
+     * @param $mobile
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function editInvite($id, $mobile)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '操作失败',
+            'data' => ''
+        ];
+
+        $where[] = ['mobile', 'eq', $mobile];
+        $inviteInfo = $this->where($where)->find();
+        if(!$inviteInfo)
+        {
+            $return['msg'] = '没有这个手机号注册的用户';
+            return $return;
+        }
+        if($id == $inviteInfo['id'])
+        {
+            $return['msg'] = '自己不能邀请自己';
+            return $return;
+        }
+
+        $isInvited = $this->isInvited($id, $inviteInfo['id']);
+        if(!$isInvited)
+        {
+            $return['msg'] = '不能关联这个邀请人，因为他是你的下级或者下下级';
+            return $return;
+        }
+
+        $data['pid'] = $inviteInfo['id'];
+        $wheres[] = ['id', 'eq', $id];
+        $return['data'] = $this->save($data, $wheres);
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '操作成功';
+        }
+
+        return $return;
     }
 
 }

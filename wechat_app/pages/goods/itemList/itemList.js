@@ -179,7 +179,6 @@ Page({
 
   //页面上拉触底事件的处理函数
   // onReachBottom: function () {
-  //   // console.log('加载更多');
   //   // setTimeout(() => {
   //   //   this.setData({
   //   //     isHideLoadMore: true,
@@ -190,8 +189,9 @@ Page({
 
   //跳转到商品详情页面
   goodsDetail: function (e) {
+    let ins = encodeURIComponent('id=' + e.currentTarget.dataset.id);
     wx.navigateTo({
-      url: '../detail/detail?id=' + e.currentTarget.dataset.id
+        url: '../detail/detail?scene=' + ins
     });
   },
 

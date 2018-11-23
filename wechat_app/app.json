@@ -45,7 +45,7 @@
         "pages/other/lading/lading",
         "pages/other/lading/write",
         "pages/other/store/store",
-        "pages/other/generatePoster/generatePoster"
+        "component/canvasdrawer/canvasdrawer"
     ],
     "window": {
         "backgroundTextStyle": "light",

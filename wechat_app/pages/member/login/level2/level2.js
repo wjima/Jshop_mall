@@ -32,7 +32,6 @@ Page({
     is_show: true
   },
   clickVerify: function () {
-    //console.log(this.data.mobile);
     var that = this;
     if (this.data.mobile == '') {
       wx.showToast({
@@ -43,7 +42,6 @@ Page({
       return false;
     }
     app.api.sms(this.data.mobile,'login', function (res) {
-      //console.log(res);
       if (res.status) {
         // 将获取验证码按钮隐藏60s，60s后再次显示
         that.setData({

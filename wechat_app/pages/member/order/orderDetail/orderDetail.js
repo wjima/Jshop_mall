@@ -135,9 +135,10 @@ Page({
 
   //前往商品
   showGoods: function (e) {
-    var goods_id = e.currentTarget.dataset.goods_id;
+    let goods_id = e.currentTarget.dataset.goods_id;
+    let ins = encodeURIComponent('id=' + goods_id);
     wx.navigateTo({
-      url: '../../../goods/detail/detail?id=' + goods_id
+        url: '../../../goods/detail/detail?scene=' + ins
     });
   }
 });

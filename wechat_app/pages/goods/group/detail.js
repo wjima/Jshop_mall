@@ -120,7 +120,6 @@ Page({
   //页面加载处理
   onLoad: function (options) {
     //判断访问页面时候带的商品ID
-    console.log(options);
     if (options.id && options.groupid) {
       //设置全局商品ID
       this.setData({
@@ -214,7 +213,6 @@ Page({
           if (res.data.isfav == 'false') {
             isfav = false;
           }
-          console.log(res.data);
           var spes_desc = page.getSpes(res.data.product);
           page.setData({
             goodsImg: res.data.album,
@@ -312,14 +310,16 @@ Page({
     if (userToken) {
         let myInviteCode = wx.getStorageSync('myInviteCode');
         if (myInviteCode) {
-            let path = '/pages/goods/detail/detail?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode;
+            let ins = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
+            let path = '/pages/goods/detail/detail?scene=' + ins;
             return {
                 title: page.data.goodsInfo.name,
                 imageUrl: page.data.goodsImg[0],
                 path: path
             }
         } else {
-            let path = '/pages/goods/detail/detail?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.goodsInfo.id;
+            let ins = encodeURIComponent('id=' + page.data.goodsInfo.id);
+            let path = '/pages/goods/detail/detail?scene=' + ins;
             return {
                 title: page.data.goodsInfo.name,
                 imageUrl: page.data.goodsImg[0],
@@ -327,7 +327,8 @@ Page({
             }
         }
     } else {
-        let path = '/pages/goods/detail/detail?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.goodsInfo.id;
+        let ins = encodeURIComponent('id=' + page.data.goodsInfo.id);
+        let path = '/pages/goods/detail/detail?scene=' + ins;
         return {
             title: page.data.goodsInfo.name,
             imageUrl: page.data.goodsImg[0],
@@ -443,7 +444,6 @@ Page({
   
   //规格选择
   selectSku: function (obj) {
-    console.log(obj);
     var id = obj.target.dataset.key;
     if(id == "" || id == "0"){
       app.common.errorToBack("出错了",0);

@@ -44,6 +44,9 @@ class UserTocash extends Common
         $data['account_bank'] = $bankcardsInfo['account_bank'] ;
         $data['account_name'] = $bankcardsInfo['account_name'] ;
         $data['card_number'] = $bankcardsInfo['card_number'];
+        $data['bank_name'] = $bankcardsInfo['bank_name'];
+        $data['bank_area_id'] = $bankcardsInfo['bank_area_id'];
+        $data['bank_code'] = $bankcardsInfo['bank_code'];
         $re = $this->save($data);
         if($re){
             $balanceModel = new Balance();
@@ -68,9 +71,37 @@ class UserTocash extends Common
             return $result;
         }
         if(isset(config('params.user_tocash.type')[$type])){
-            $this->save(['type'=>$type],$where);
+            $res = $this->save(['type'=>$type],$where);
             $result['status'] = true;
             $result['data'] = $type;
+            if($res !== false)
+            {
+                //失败给用户退钱到余额
+                if($type == self::TYPE_FAIL)
+                {
+                    $tocash = $this->get($id);
+                    $userModel = new User();
+                    $userWhere[] = ['id', 'eq', $tocash['user_id']];
+                    $userData['balance'] = ['inc', 'balance', $tocash['money']];
+                    $r = $userModel->save($userData, $userWhere);
+                    if($r !== false)
+                    {
+                        //添加记录
+                        $newUserInfo = $userModel->get($tocash['user_id']);
+                        $balanceModel = new Balance();
+                        $balanceData = [
+                            'user_id' => $tocash['user_id'],
+                            'type' => $balanceModel::TYPE_TOCASH,
+                            'money' => $tocash['money'],
+                            'balance' => $newUserInfo['balance'],
+                            'source_id' => $id,
+                            'memo' => '提现驳回退款'.$tocash['money'].'元',
+                            'ctime' => time()
+                        ];
+                        $balanceModel->save($balanceData);
+                    }
+                }
+            }
             return $result;
         }else{
             return error_code(10000);
@@ -152,9 +183,9 @@ class UserTocash extends Common
             if ( $v[ 'type' ] ) {
                 $list[ $k ][ 'type' ] = config('params.user_tocash')[ 'type' ][ $v[ 'type' ] ];
             }
-            if($v['card_number']){
-                $list[$k]['card_number'] = bankCardNoFormat($v['card_number']);
-            }
+//            if($v['card_number']){
+//                $list[$k]['card_number'] = bankCardNoFormat($v['card_number']);
+//            }
         }
         return $list;
     }

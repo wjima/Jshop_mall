@@ -87,13 +87,14 @@
                 {field:'status',title:'状态', width:150},
                 {field:'pid_name', title: '邀请人', width:150},
                 {field:'option',title:'操作', width:250, templet: function (d) {
-                        // var html = '<span class="layui-btn layui-btn-xs inviteEdit">邀请人修改</span>';
-                        var html = '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';
-                        html += '<span class="layui-btn layui-btn-xs pointLog" data-id="'+d.id+'">积分详情</span>';
-                        return html;
+                    var html = '<span class="layui-btn layui-btn-xs inviteEdit" data-id="'+d.id+'">邀请人修改</span>';
+                    html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';
+                    html += '<span class="layui-btn layui-btn-xs pointLog" data-id="'+d.id+'">积分详情</span>';
+                    return html;
                 }, align:'center', fixed:'right'}
             ]]
         });
+        //搜索
         layui.form.on('submit(*)', function(data){
             layui.table.reload('userTable', {
                 where: data.field
@@ -103,7 +104,6 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
-
         //积分编辑
         $(document).on('click', '.pointEdit', function () {
             var id = $(this).attr('data-id');
@@ -150,7 +150,6 @@
                 }
             });
         });
-
         //积分记录
         $(document).on('click', '.pointLog', function () {
             var id = $(this).attr('data-id');
@@ -171,9 +170,30 @@
                 }
             });
         });
-
         //邀请人修改
         $(document).on('click', '.inviteEdit', function () {
+            var id = $(this).attr('data-id');
+            layer.prompt({title: '请输入邀请人手机号', formType: 3}, function(mobile, index){
+                $.ajax({
+                    url: "{:url('manage/User/editInvite')}",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'id': id,
+                        'mobile': mobile
+                    },
+                    success: function (e) {
+                        if(e.status){
+                            layer.close(index);
+                            layer.msg(e.msg, {time: 1500}, function(){
+                                layui.table.reload('userTable');
+                            });
+                        }else{
+                            layer.msg(e.msg);
+                        }
+                    }
+                });
+            });
 
         });
     });

@@ -6,6 +6,7 @@ Page({
   //页面使用的数据
   data: {
     appTitle: '', //小程序标题
+    imageUrl: '/static/images/share.png', //分享封面图
     indicatorDots: true, //商品轮播图底部圆点
     autoplay: true, //商品轮播图自动播放
     interval: 3000, //商品轮播图切换间隔
@@ -21,21 +22,25 @@ Page({
     hotPage: 1,
     hotLimit: 8,
     ajaxStatus: true,
-    loadingComplete: false,
-    store_type: 2, //独立店铺
+    loadingComplete: false
   },
 
   //页面加载处理
   onLoad: function (e) {
-    if (e.scene) {
-        app.config.site_token = e.scene;
+    //记录被邀请
+    let scene = decodeURIComponent(e.scene);
+    let arr1 = scene.split('&');
+    let invite = '';
+    for (var i = 0; i < arr1.length; i++) {
+        let key = arr1[i].split("=")[0];
+        if (key == 'invite'){
+            invite = arr1[i].split("=")[1];
+        }
     }
-    if (e.invite) {
-        wx.setStorage({
-            key: "beInvited",
-            data: e.invite
-        });
+    if (invite != '') {
+        wx.setStorageSync("beInvited", invite);
     }
+
     this.slideImg(); //获取幻灯片广告数据
     this.notice(); //获取公告数据
     this.coupon(); //获取优惠券数据
@@ -44,20 +49,15 @@ Page({
     this.getMyShareCode(); //获取我的推荐码
     this.groupList(); //获取精品团购数据
     this.seckillList(); //获取限时秒杀数据
-
   },
 
   //获取我的推荐码
   getMyShareCode: function () {
     app.api.sharecode(function (e) {
-          let inviteCode = 0;
-          if (e.status) {
-              //获取邀请码成功
-              wx.setStorage({
-                  key: "myInviteCode",
-                  data: e.data
-              });
-          }
+        if (e.status) {
+            //获取邀请码成功
+            wx.setStorageSync("myInviteCode", e.data);
+        }
     });
   },
 
@@ -69,10 +69,7 @@ Page({
           app.api.sharecode(function (e) {
               if (e.status) {
                   //获取邀请码成功
-                  wx.setStorage({
-                      key: "myInviteCode",
-                      data: e.data
-                  });
+                  wx.setStorageSync("myInviteCode", e.data);
               }
           });
       }
@@ -244,12 +241,13 @@ Page({
     });
   },
 
-  //跳转到商品详情页面
-  goodsDetail: function (e) {
-    wx.navigateTo({
-      url: '../goods/detail/detail?id=' + e.currentTarget.dataset.id
-    });
-  },
+    //跳转到商品详情页面
+    goodsDetail: function (e) {
+        let ins = encodeURIComponent('id=' + e.currentTarget.dataset.id);
+        wx.navigateTo({
+            url: '../goods/detail/detail?scene=' + ins
+        });
+    },
   
   //广告跳转
   slideDetail: function (e) {
@@ -259,10 +257,11 @@ Page({
       //URL
 
     } else if (types == 2) {
-      //商品
-      wx.navigateTo({
-        url: '../goods/detail/detail?id=' + val,
-      });
+        //商品
+        let ins = encodeURIComponent('id=' + val);
+        wx.navigateTo({
+            url: '../goods/detail/detail?scene=' + ins,
+        });
     } else if (types == 3) {
       //文章
         wx.navigateTo({
@@ -381,24 +380,28 @@ Page({
             let myInviteCode = wx.getStorageSync('myInviteCode');
             if (myInviteCode) {
                 //缓存里面有邀请码
-                let path = '/pages/index/index?scene=' + wx.getStorageSync('site_token') + '&invite=' + myInviteCode;
+                let ins = encodeURIComponent('invite='+myInviteCode);
+                let path = '/pages/index/index?scene='+ins;
                 return {
                     title: page.data.appTitle,
-                    path: path
+                    path: path,
+                    imageUrl: page.data.imageUrl
                 }
             } else {
-                let path = '/pages/index/index?scene=' + wx.getStorageSync('site_token');
+                let path = '/pages/index/index';
                 return {
                     title: page.data.appTitle,
-                    path: path
+                    path: path,
+                    imageUrl: page.data.imageUrl
                 }
             }
         } else {
             //用户没有登录
-            let path = '/pages/index/index?scene=' + wx.getStorageSync('site_token');
+            let path = '/pages/index/index';
             return {
                 title: page.data.appTitle,
-                path: path
+                path: path,
+                imageUrl: page.data.imageUrl
             }
         }
     },

@@ -12,25 +12,13 @@ Page({
         pop: false,
         painting: {},
         shareImage: '',
-        appTitle: ''
+        qrcode: ''
     },
 
 
     //页面加载
     onLoad: function (options) {
         this.getInviteData();
-        app.api.sharecode(function (e) {
-            if (e.status) {
-                //获取邀请码成功
-                wx.setStorage({
-                    key: "myInviteCode",
-                    data: e.data
-                });
-            }
-        });
-        this.setData({
-            appTitle : app.config.app_title
-        });
     },
 
 
@@ -44,6 +32,26 @@ Page({
                 number: res.data.number,
                 is_superior: res.data.is_superior
             });
+            page.getQRCode();
+        });
+    },
+
+
+    //获取邀请二维码
+    getQRCode: function () {
+        let page = this;
+        let data = {
+            'type': 'index',
+            'invite': page.data.code,
+            'goods': 0
+        }
+        app.api.getQRCode(data, function (e) {
+            if (e.status) {
+                let url = app.config.api_url + e.data;
+                page.setData({
+                    qrcode: url
+                });
+            }
         });
     },
 
@@ -88,22 +96,14 @@ Page({
     //分享到微信群
     onShareAppMessage: function () {
         let page = this;
-        let myInviteCode = wx.getStorageSync('myInviteCode');
-        if (myInviteCode) {
-            //缓存里面有邀请码
-            let path = '/pages/index/index?invite=' + myInviteCode;
-            return {
-                title: page.data.appTitle,
-                path: path,
-                imageUrl: '/pages/image/write-banner.png'
-            }
-        } else {
-            let path = '/pages/index/index';
-            return {
-                title: page.data.appTitle,
-                path: path,
-                imageUrl: '/pages/image/write-banner.png'
-            }
+        let ins = encodeURIComponent('invite=' + page.data.code);
+        let path = '/pages/index/index?scene=' + ins;
+        let shareImg = '/static/images/share.png';
+        let appTitle = '您的好友发现了一家好店，邀您查看！';
+        return {
+            title: appTitle,
+            path: path,
+            imageUrl: shareImg
         }
     },
 
@@ -113,23 +113,29 @@ Page({
         this.setData({
             pop: true
         });
-        wx.showLoading({
-            title: '生成中',
-            // mask: true
-        });
-        this.eventDraw();
+        if (this.data.shareImage == '') {
+            wx.showLoading({
+                title: '生成中'
+            });
+            this.eventDraw();
+        }
     },
 
 
     //生成海报
     eventDraw: function () {
+        //todo::头像和用户昵称需要授权获取
+        let page = this;    
         let avatar = '/static/images/default.png';
-        let nickname = '你的名字';
+        let nickname = '猜猜我是谁';
+        let storename = app.config.app_title;
+        let invite = page.data.code;
+        let qrcode = page.data.qrcode;
         
         this.setData({
             painting: {
-                width: 280,
-                height: 430,
+                width: 560,
+                height: 860,
                 clear: true,
                 views: [
                     {
@@ -137,106 +143,90 @@ Page({
                         url: '/static/images/bg.png',
                         top: 0,
                         left: 0,
-                        width: 280,
-                        height: 430
-                    },{
+                        width: 560,
+                        height: 860
+                    },
+                    {
                         type: 'image',
                         url: avatar,
-                        top: 27.5,
-                        left: 29,
-                        width: 55,
-                        height: 55
+                        top: 38,
+                        left: 46,
+                        width: 100,
+                        height: 100
                     },
-                    // {
-                    //     type: 'image',
-                    //     url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531401349117.jpeg',
-                    //     top: 27.5,
-                    //     left: 29,
-                    //     width: 55,
-                    //     height: 55
-                    // },
                     {
                         type: 'text',
                         content: '您的好友【' + nickname + '】',
-                        fontSize: 16,
-                        color: '#402D16',
+                        fontSize: 28,
+                        color: '#ffffff',
                         textAlign: 'left',
-                        top: 33,
-                        left: 96,
+                        top: 50,
+                        left: 170,
                         bolder: true
                     },
                     {
                         type: 'text',
                         content: '发现了一家好店，邀您查看',
-                        fontSize: 15,
-                        color: '#563D20',
+                        fontSize: 24,
+                        color: '#fecccc',
                         textAlign: 'left',
-                        top: 59.5,
-                        left: 96
+                        top: 90,
+                        left: 170
                     },
                     {
                         type: 'image',
-                        url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531385366950.jpeg',
-                        top: 136,
-                        left: 42.5,
+                        url: qrcode,
+                        top: 220,
+                        left: 135,
                         width: 290,
-                        height: 186
-                    },
-                    {
-                        type: 'image',
-                        url: 'https://hybrid.xiaoying.tv/miniprogram/viva-ad/1/1531385433625.jpeg',
-                        top: 443,
-                        left: 85,
-                        width: 68,
-                        height: 68
+                        height: 290
                     },
                     {
                         type: 'text',
-                        content: '正品MAC魅可口红礼盒生日唇膏小辣椒Chili西柚情人',
-                        fontSize: 16,
-                        lineHeight: 21,
+                        content: storename,
+                        fontSize: 28,
+                        lineHeight: 28,
                         color: '#383549',
-                        textAlign: 'left',
-                        top: 336,
-                        left: 44,
-                        width: 287,
-                        MaxLineNumber: 2,
-                        breakWord: true,
+                        textAlign: 'center',
+                        top: 530,
+                        left: 280,
                         bolder: true
                     },
                     {
                         type: 'text',
-                        content: '￥0.00',
-                        fontSize: 19,
-                        color: '#E62004',
-                        textAlign: 'left',
-                        top: 387,
-                        left: 44.5,
+                        content: '长按图片识别图中二维码进入' + storename + '小程序一起寻好物',
+                        fontSize: 22,
+                        lineHeight: 30,
+                        color: '#727272',
+                        textAlign: 'center',
+                        top: 580,
+                        left: 280,
+                        width: 360,
+                        MaxLineNumber: 2,
+                        breakWord: true,
+                    },
+                    {
+                        type: 'text',
+                        content: invite,
+                        fontSize: 30,
+                        lineHeight: 30,
+                        color: '#d13106',
+                        textAlign: 'center',
+                        top: 700,
+                        left: 280,
                         bolder: true
                     },
                     {
                         type: 'text',
-                        content: '原价:￥138.00',
-                        fontSize: 13,
-                        color: '#7E7E8B',
-                        textAlign: 'left',
-                        top: 391,
-                        left: 110,
-                        textDecoration: 'line-through'
+                        content: '我的专属邀请码',
+                        fontSize: 24,
+                        lineHeight: 24,
+                        color: '#727272',
+                        textAlign: 'center',
+                        top: 750,
+                        left: 280,
+                        bolder: true
                     },
-                    {
-                        type: 'text',
-                        content: '长按识别图中二维码帮我砍个价呗~',
-                        fontSize: 14,
-                        color: '#383549',
-                        textAlign: 'left',
-                        top: 460,
-                        left: 165.5,
-                        lineHeight: 20,
-                        MaxLineNumber: 2,
-                        breakWord: true,
-                        width: 125
-                    }
                 ]
             }
         })
@@ -245,7 +235,6 @@ Page({
 
     //获取图片
     eventGetImage: function (event) {
-        console.log(event)
         wx.hideLoading()
         const { tempFilePath, errMsg } = event.detail
         if (errMsg === 'canvasdrawer:ok') {
@@ -253,6 +242,21 @@ Page({
                 shareImage: tempFilePath
             })
         }
+    },
+
+
+    //保存图片
+    eventSave: function () {
+        wx.saveImageToPhotosAlbum({
+            filePath: this.data.shareImage,
+            success(res) {
+                wx.showToast({
+                    title: '保存图片成功',
+                    icon: 'success',
+                    duration: 2000
+                })
+            }
+        })
     },
 
 

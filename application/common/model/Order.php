@@ -890,11 +890,13 @@ class Order extends Common
      * 发货改状态
      * @param $order_id
      * @return false|int
+     * @throws \think\exception\DbException
      */
     public function ship($order_id)
     {
+        //查询发货数量和是否全部发货
         $ship_status = model('common/OrderItems')->isAllShip($order_id);
-
+        //判断发货状态
         if($ship_status == 'all')
         {
             $order_data['ship_status'] = self::SHIP_STATUS_YES;
@@ -903,8 +905,20 @@ class Order extends Common
         {
             $order_data['ship_status'] = self::SHIP_STATUS_PARTIAL_YES;
         }
+        //发货
         $where[] = ['order_id', 'eq', $order_id];
-        return $this->save($order_data, $where);
+        $result = $this->save($order_data, $where);
+        if($result)
+        {
+            //判断生成门店自提单
+            $order_info = $this->get($order_id);
+            if($order_info['store_id'] != 0)
+            {
+                $ladingModel = new BillLading();
+                $ladingModel->addData($order_id, $order_info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
+            }
+        }
+        return $result;
     }
 
     /**
@@ -1093,14 +1107,16 @@ class Order extends Common
             $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
             $order['logistics_id'] = $shipInfo['id'];
             $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
+            $order['store_id'] = 0;
         }
         else
         {
             //门店自提
             $order['ship_area_id'] = $storeInfo['area_id'];
             $order['ship_address'] = $storeInfo['address'];
-            $order['ship_name'] = $storeInfo['store_name'];
-            $order['ship_mobile'] = $storeInfo['mobile'];
+            $order['ship_name'] = $lading_name;
+            $order['ship_mobile'] = $lading_mobile;
+            $order['store_id'] = $store_id;
             $order['logistics_id'] = 0;
             $order['cost_freight'] = 0;
         }
@@ -1135,13 +1151,6 @@ class Order extends Common
             }
             $orderItemsModel = new OrderItems();
             $orderItemsModel->saveAll($orderInfo['data']['items']);
-
-            //自提订单记录
-            if($receipt_type == 2)
-            {
-                $ladingModel = new BillLading();
-                $ladingModel->addData($order['order_id'], $store_id, $lading_name, $lading_mobile);
-            }
 
             //优惠券核销
             if($coupon_code)

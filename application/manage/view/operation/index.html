@@ -76,9 +76,6 @@
                                 //userTables.reload();
                                 layui.table.reload('operationTable', {
                                     where: {parent_id:pid}
-                                    ,page: {
-                                        curr: 1 //重新从第 1 页开始
-                                    }
                                 });
                             }else{
                                 layer.msg(re.msg);
@@ -94,9 +91,6 @@
             var id = $(this).attr('data-id');
             layui.table.reload('operationTable', {
                 where: {parent_id:id}
-                ,page: {
-                    curr: 1 //重新从第 1 页开始
-                }
             });
         });
 
@@ -112,9 +106,6 @@
                         layer.msg('删除成功');
                         layui.table.reload('operationTable', {
                             where: {parent_id:pid}
-                            ,page: {
-                                curr: 1 //重新从第 1 页开始
-                            }
                         });
                     }else{
                         layer.msg(res.msg);
@@ -146,9 +137,6 @@
                                 //userTables.reload();
                                 layui.table.reload('operationTable', {
                                     where: {parent_id:pid}
-                                    ,page: {
-                                        curr: 1 //重新从第 1 页开始
-                                    }
                                 });
                             }else{
                                 layer.msg(re.msg);

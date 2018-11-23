@@ -66,8 +66,8 @@ Page({
     // 提交提现信息
     confirmWithdraw: function () {
         let id = this.data.cardId;
-        let money = this.data.money;
-        let maxMoney = this.data.maxMoney;
+        let money = parseFloat(this.data.money);
+        let maxMoney = parseFloat(this.data.maxMoney);
         let page = this;
 
         if (id <= 0) {
@@ -100,7 +100,6 @@ Page({
 
         app.db.userToken(function (token) {
             app.api.userCash(data, function (res) {
-                //console.log(res);
                 if (res.status) {
                     wx.showModal({
                         title: '成功',

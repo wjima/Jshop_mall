@@ -173,7 +173,7 @@ class Manage extends ManageController
     {
         $return  = [
             'msg'    => '授权查询失败',
-            'data'   => '',
+            'data'   => [],
             'status' => false,
         ];
         $product = config('jshop.product');

@@ -390,12 +390,13 @@ Page({
     }
   },
 
-  //查看商品详情
-  goodsDetail: function (e) {
-    wx.navigateTo({
-      url: '../../goods/detail/detail?id=' + e.currentTarget.dataset.id
-    });
-  },
+    //查看商品详情
+    goodsDetail: function (e) {
+        let ins = encodeURIComponent('id=' + e.currentTarget.dataset.id);
+        wx.navigateTo({
+            url: '../../goods/detail/detail?scene=' + ins
+        });
+    },
 
   //手指触摸动作开始 记录起点X坐标
   touchstart: function (e) {

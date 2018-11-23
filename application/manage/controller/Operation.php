@@ -15,10 +15,10 @@ class Operation extends Manage
             $operationModel = new OperationModel();
             $data = input('param.');
             if(isset($data['parent_id']) && $data['parent_id'] != ""){
+                //此处不需要做任何操作
             }else{
-                $data['parent_id'] = $operationModel::MENU_START;
+                $data['parent_id'] = $operationModel::MENU_MANAGE;
             }
-
             return $operationModel->tableData($data);
         }else{
             return $this->fetch('index');

@@ -9,6 +9,7 @@
 
 namespace app\common\controller;
 
+use app\common\model\ManageRoleOperationRel;
 use app\common\model\SellerManage;
 use app\common\model\SellerRoleOperationRel;
 use think\Container;
@@ -31,24 +32,25 @@ class Manage extends Base
         $act_name = request()->action();
 
         $operationModel = new Operation();
-//        //判断当前是否有权限操作
-//        $srorModel = new SellerRoleOperationRel();
-//        $permRe = $srorModel->checkPerm($this->sellerId,$this->userId,$operationModel::MENU_SELLER,$cont_name,$act_name);
-//        if(!$permRe['status']){
-//            if(Request::isAjax()){
-//                $err = [
-//                    'status' => false,
-//                    'data' => '',
-//                    'msg' => $permRe['msg']
-//                ];
-//                echo json_encode($err);
-//                die();
-//                //return $permRe;
-//            }else{
-//                $this->error($permRe['msg']);
-//            }
-//
-//        }
+
+        //判断当前是否有权限操作
+        $mrorModel = new ManageRoleOperationRel();
+        $permRe = $mrorModel->checkPerm(session('manage.id'),$operationModel::MENU_MANAGE,$cont_name,$act_name);
+        if(!$permRe['status']){
+            if(Request::isAjax()){
+                $err = [
+                    'status' => false,
+                    'data' => '',
+                    'msg' => $permRe['msg']
+                ];
+                echo json_encode($err);
+                die();
+                //return $permRe;
+            }else{
+                $this->error($permRe['msg']);
+            }
+
+        }
         //取菜单导航信息
         $this->assign('nav', $operationModel->nav($operationModel::MENU_MANAGE,$cont_name ,$act_name ));
 

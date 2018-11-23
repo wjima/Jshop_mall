@@ -42,18 +42,18 @@
             id:'balanceTable',
             cols: [[
                 {type:'numbers'},
-                {field: 'mobile',width:140, title: '用户', align: 'center',templet:function(data){
+                {field: 'mobile',width:120, title: '用户', align: 'center',templet:function(data){
                     var html = '';
                     html += data.mobile;
                     return html;
                 }},
-                {field:'money', width:160,title:'金额'},
-                {field:'account_bank', title:'开户行'},
-                {field:'account_name', title:'账户名'},
-                {field:'card_number',width:160, title:'卡号'},
+                {field:'money', width:100,title:'金额'},
+                {field:'account_bank', width: 200, title:'开户行'},
+                {field:'account_name', width: 200, title:'账户名'},
+                {field:'card_number',width: 180, title:'卡号'},
                 {field:'type',title:'类型'},
-                {field:'ctime',width:200,title:'创建时间'},
-                {field:'ctime',width:200,title:'更新时间'},
+                {field:'ctime',width:160,title:'创建时间'},
+                {field:'ctime',width:160,title:'更新时间'},
                 {field: 'operating', title: '操作', width:180, align: 'center',templet:function(data){
                     var html = '';
                     if(data.type == "待审核"){

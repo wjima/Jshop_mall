@@ -65,7 +65,6 @@ Page({
               }
             },
             'fail': function (e) {
-              //console.log('支付失败');
               wx.showToast({
                 icon: 'none',
                 title: '支付失败请重新支付'

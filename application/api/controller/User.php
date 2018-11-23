@@ -808,7 +808,7 @@ class User extends Api
             'bank_area_id' => input('param.areaId/d'), //开户行地区
             'account_bank' => input('param.accountBank'), //开户行名称
             'account_name' => input('param.accountName'), //持卡人
-            'card_number' => input('param.cardNumber/d'), //银行卡号
+            'card_number' => input('param.cardNumber'), //银行卡号
             'card_type' => input('param.cardType/d'), //银行卡类型
             'is_default' => input('param.isDefault', 2) //是否默认
         ];
@@ -872,7 +872,7 @@ class User extends Api
      */
     public function getBankCardOrganization()
     {
-        $card_code = input('param.card_code/d');
+        $card_code = input('param.card_code');
         if (!$card_code) return error_code(11017);
         $bankCardsModel = new UserBankcards();
         return $bankCardsModel->bankCardsOrganization($card_code);

@@ -13,7 +13,6 @@ function get(key) {
   try {
     return wx.getStorageSync(key);
   } catch (e) {
-    //console.log('出错了');
     return false;
   }
 }

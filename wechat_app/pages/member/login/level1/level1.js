@@ -11,9 +11,7 @@ Page({
       var data = {
         code: code
       };
-        console.log(data);
       app.api.login1(data, function (res) {
-          console.log(res);
         if(!res.status){
           wx.showToast({
             title: res.msg,
@@ -93,14 +91,9 @@ Page({
   },
   //提交按钮
   // mobileLogin: function () {
-    
-  //   console.log(this.data);
   // },
   getPhoneNumber: function (e) {
     var page = this;
-    // console.log(e.detail.errMsg)
-    // console.log(e.detail.iv)
-    // console.log(e.detail.encryptedData)
     if (e.detail.errMsg == 'getPhoneNumber:fail user deny') {
       wx.showModal({
         title: '提示',
@@ -114,7 +107,6 @@ Page({
         iv: e.detail.iv,
         edata: e.detail.encryptedData
       };
-      //console.log(data);
       page.toLogin(data);
       //注意，这里不检查登陆态了，默认一直有效，这是个隐含的问题,因为wx.checkSession永远都是fail，不知道为啥，以后再来处理吧。
       // wx.checkSession({
@@ -124,13 +116,11 @@ Page({
       //       iv: e.detail.iv,
       //       edata: e.detail.encryptedData
       //     };
-      //     console.log(data);
       //     page.toLogin(data);
       //   },
       //   fail: function () {
       //     // session_key 已经失效，需要重新执行登录流程
       //     //wx.login() //重新登录
-      //     console.log('需要重新登录');
       //   }
       // })
     }

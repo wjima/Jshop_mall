@@ -28,8 +28,6 @@ Page({
     mode: 'aspectFit',
   },
   bindDeliverChange: function (e) {
-    //console.log('picker deliver 发生选择改变，携带值为', e.detail.value);
-
     this.setData({
       deliverIndex: e.detail.value
     })
@@ -41,7 +39,6 @@ Page({
     var aftersales_id = options.aftersales_id;
     var page = this;
     app.api.aftersalesInfo(aftersales_id,function(res){
-      //console.log(res);
       if(res.status){
         var info = res.data.info;
         if (info.type == 1){
@@ -188,7 +185,6 @@ Page({
       logi_code:this.data.logi_code,
       reship_id: this.data.reship_id,
     };
-    //console.log(data);
     app.api.sendReship(data, function (res) {
       if (res.status) {
         app.common.successToShow('提交成功',function(){

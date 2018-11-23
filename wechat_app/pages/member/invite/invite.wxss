@@ -132,7 +132,7 @@
 .share-image {
   width: 560rpx;
   height: 860rpx;
-  margin: 20rpx 62rpx;
+  margin: 20rpx 66rpx;
 }
 .save{
     width:560rpx;

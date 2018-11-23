@@ -52,32 +52,6 @@ class Payments extends Manage
         $result['status'] = true;
         return $result;
     }
-    //上传证书
-    public function uploadCert()
-    {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
-        //上传路径为 /public/static/files/cert/商户code/
-        $url = "./static/files/cert/";
-
-        // 获取表单上传文件 例如上传了001.jpg
-        $file = request()->file('file');
-
-        // 移动到框架应用根目录/uploads/ 目录下
-        $info = $file->validate(['size'=>15678,'ext'=>'pem'])->rule('uniqid')->move($url);
-        if($info){
-            $result['data'] = $info->getSaveName();
-            $result['status'] = true;
-        }else{
-            $result['msg'] = $file->getError();
-        }
-        return $result;
-
-    }
-
 
     public function changeStatus()
     {

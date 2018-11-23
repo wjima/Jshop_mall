@@ -33,6 +33,12 @@ Page({
     commentLoadingComplete: false, //加载全部
     commentNodata: false,
     mode: 'aspectFit',
+    code: 0, //邀请码
+    qrcode: '', //邀请二维码
+    pop: false, //海报界面
+    shareImage: '', //海报图片
+    painting: {}, //海报生成参数
+    share: false,
   },
 
   //商品减一
@@ -116,41 +122,55 @@ Page({
     });
   },
 
-  //页面加载处理
-  onLoad: function (options) {
-    //判断访问页面时候带的商品ID
-    if (options.id) {
-      //设置全局商品ID
-      this.setData({
-        goodsId: options.id
-      });
-    }
-    // //店铺
-    // if (options.scene) {
-    //   app.config.site_token = e.scene;
-    // }
-    //被邀请码
-    if (options.invite) {
-        wx.setStorage({
-            key: "beInvited",
-            data: e.invite
-        });
-    }
-    this.getMyShareCode(); //获取我的推荐码
-  },
+    //页面加载处理
+    onLoad: function (e) {
+        //获取传入的数据
+        let scene = decodeURIComponent(e.scene);
+        let arr1 = scene.split('&');
+        let invite = '';
+        let id = '';
+        for (var i = 0; i < arr1.length; i++) {
+            let key = arr1[i].split("=")[0];
+            if (key == 'invite') {
+                invite = arr1[i].split("=")[1];
+            }
+            if (key == 'id') {
+                id = arr1[i].split("=")[1];
+            }
+        }
+
+        //记录被邀请
+        if (invite != '') {
+            wx.setStorageSync("beInvited", invite);
+        }
+
+        //获取商品ID
+        if (id != '') {
+            this.setData({
+                goodsId: id
+            });
+        }
+        this.getMyShareCode(); //获取我的推荐码
+    },
 
     //获取我的推荐码
     getMyShareCode: function () {
-      app.api.sharecode(function (e) {
-          let inviteCode = 0;
-          if (e.status) {
-              //获取邀请码成功
-              wx.setStorage({
-                  key: "myInviteCode",
-                  data: e.data
-              });
-          }
-      });
+        let page = this;
+        let userToken = wx.getStorageSync('userToken');
+        if (userToken) {
+            app.api.sharecode(function (e) {
+                if (e.status) {
+                    //获取邀请码成功
+                    wx.setStorageSync("myInviteCode", e.data);
+                    page.setData({
+                        code: e.data
+                    });
+                }
+                page.getQRCode();
+            });
+        }else{
+            page.getQRCode();
+        }
     },
 
     //刷新页面
@@ -308,14 +328,16 @@ Page({
     if (userToken) {
         let myInviteCode = wx.getStorageSync('myInviteCode');
         if (myInviteCode) {
-            let path = '/pages/goods/detail/detail?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode;
+            let ins = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
+            let path = '/pages/goods/detail/detail?scene=id=' + ins;
             return {
                 title: page.data.goodsInfo.name,
                 imageUrl: page.data.goodsImg[0],
                 path: path
             }
         } else {
-            let path = '/pages/goods/detail/detail?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.goodsInfo.id;
+            let ins = encodeURIComponent('id=' + page.data.goodsInfo.id);
+            let path = '/pages/goods/detail/detail?scene=' + ins;
             return {
                 title: page.data.goodsInfo.name,
                 imageUrl: page.data.goodsImg[0],
@@ -323,7 +345,8 @@ Page({
             }
         }
     } else {
-        let path = '/pages/goods/detail/detail?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.goodsInfo.id;
+        let ins = encodeURIComponent('id=' + page.data.goodsInfo.id);
+        let path = '/pages/goods/detail/detail?scene=' + ins;
         return {
             title: page.data.goodsInfo.name,
             imageUrl: page.data.goodsImg[0],
@@ -331,6 +354,202 @@ Page({
         }
     }
   },
+
+    //分享
+    share: function () {
+        this.setData({
+            share: true
+        });
+    },
+
+    //关闭分享
+    shareclose:function(){
+        this.setData({
+            share: false
+        });
+    },
+
+    //生成海报
+    sharePop: function () {
+        this.setData({
+            share: false,
+            pop: true
+        });
+        if (this.data.shareImage == '') {
+            wx.showLoading({
+                title: '生成中'
+            });
+            this.eventDraw();
+        }
+    },
+
+    //获取邀请二维码
+    getQRCode: function () {
+        let page = this;
+        let data = {
+            'type': 'goods',
+            'invite': page.data.code,
+            'goods': page.data.goodsId
+        }
+        app.api.getQRCode(data, function (e) {
+            if (e.status) {
+                let url = app.config.api_url + e.data;
+                page.setData({
+                    qrcode: url
+                });
+            }
+        });
+    },
+
+    //生成海报
+    eventDraw: function () {
+        //todo::头像和用户昵称需要授权获取
+        let page = this;
+        let avatar = '/static/images/default.png';
+        let nickname = '猜猜我是谁';
+        let qrcode = page.data.qrcode;
+
+        this.setData({
+            painting: {
+                width: 560,
+                height: 900,
+                clear: true,
+                views: [
+                    {
+                        type: 'image',
+                        url: '/static/images/goods.png',
+                        top: 0,
+                        left: 0,
+                        width: 560,
+                        height: 900
+                    },
+                    {
+                        type: 'image',
+                        url: avatar,
+                        top: 50,
+                        left: 55,
+                        width: 80,
+                        height: 80
+                    },
+                    {
+                        type: 'text',
+                        content: '【' + nickname + '】',
+                        fontSize: 24,
+                        color: '#222222',
+                        textAlign: 'left',
+                        top: 60,
+                        left: 140
+                    },
+                    {
+                        type: 'text',
+                        content: '分享给你一个商品',
+                        fontSize: 24,
+                        color: '#222222',
+                        textAlign: 'left',
+                        top: 95,
+                        left: 150
+                    },
+                    {
+                        type: 'image',
+                        url: page.data.goodsImg[0],
+                        top: 160,
+                        left: 60,
+                        width: 440,
+                        height: 400
+                    },
+                    {
+                        type: 'text',
+                        content: '￥'+page.data.goodsInfo.product.price,
+                        fontSize: 30,
+                        lineHeight: 30,
+                        color: '#ea1919',
+                        textAlign: 'left',
+                        top: 570,
+                        left: 60,
+                        bolder: true
+                    },
+                    {
+                        type: 'text',
+                        content: page.data.goodsInfo.name,
+                        fontSize: 26,
+                        lineHeight: 30,
+                        color: '#222222',
+                        textAlign: 'left',
+                        top: 610,
+                        left: 60,
+                        bolder: true,
+                        MaxLineNumber: 2,
+                        width: 420,
+                        breakWord: true,
+                    },
+                    {
+                        type: 'text',
+                        content: page.data.goodsInfo.brief,
+                        fontSize: 24,
+                        lineHeight: 28,
+                        color: '#333333',
+                        textAlign: 'left',
+                        top: 680,
+                        left: 60,
+                        MaxLineNumber: 2,
+                        width: 420,
+                        breakWord: true,
+                    },
+                    {
+                        type: 'image',
+                        url: qrcode,
+                        top: 785,
+                        left: 120,
+                        width: 100,
+                        height: 100
+                    },
+                    {
+                        type: 'text',
+                        content: '长按识别小程序访问',
+                        fontSize: 22,
+                        color: '#333333',
+                        textAlign: 'left',
+                        top: 820,
+                        left: 235
+                    }
+                ]
+            }
+        })
+    },
+
+    //获取图片
+    eventGetImage: function (event) {
+        wx.hideLoading()
+        const { tempFilePath, errMsg } = event.detail
+        if (errMsg === 'canvasdrawer:ok') {
+            this.setData({
+                shareImage: tempFilePath
+            })
+        }
+    },
+
+    //保存图片
+    eventSave: function () {
+        wx.saveImageToPhotosAlbum({
+            filePath: this.data.shareImage,
+            success(res) {
+                wx.showToast({
+                    title: '保存图片成功',
+                    icon: 'success',
+                    duration: 2000
+                })
+            }
+        })
+    },
+
+    //关闭海报层
+    clone: function () {
+        this.setData({
+            pop: false
+        });
+    },
+
+    move: function () { },
 
   //添加商品浏览记录
   goodsHistory: function () {
@@ -439,7 +658,6 @@ Page({
   
   //规格选择
   selectSku: function (obj) {
-    console.log(obj);
     var id = obj.target.dataset.key;
     if(id == "" || id == "0"){
       app.common.errorToBack("出错了",0);

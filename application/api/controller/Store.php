@@ -5,6 +5,7 @@ use app\common\model\BillLading;
 use app\common\model\Clerk;
 use app\common\model\Setting;
 use app\common\model\Store as Model;
+use org\Wx;
 use think\facade\Request;
 
 /**
@@ -126,5 +127,26 @@ class Store extends Api
         $lading_id = Request::param('lading_id');
         $model = new BillLading();
         return $model->del($lading_id, $this->userId);
+    }
+
+
+    /**
+     * 获取邀请小程序码
+     */
+    public function getInviteQRCode()
+    {
+        $invite = Request::param('invite', 0);
+        $type = Request::param('type', 'index');
+        $goods = Request::param('goods', 0);
+        $page = 'pages/index/index';
+        if($type == 'goods')
+        {
+            $page = 'pages/goods/detail/detail';
+        }
+
+        $wx = new Wx();
+        $accessToken = $wx->getAccessToken();
+        $style['width'] = 300;
+        return $wx->getParameterQRCode($accessToken, $page, $invite, $goods, $style);
     }
 }

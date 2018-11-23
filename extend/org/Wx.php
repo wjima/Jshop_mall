@@ -147,11 +147,13 @@ class Wx
     /**
      * 二维码生成
      * @param $access_token
-     * @param string $store
      * @param string $page
+     * @param string $invite
+     * @param string $goods
+     * @param array $style
      * @return array
      */
-    public function getParameterQRCode($access_token, $store = '', $page = 'pages/index/index', $style)
+    public function getParameterQRCode($access_token, $page = 'pages/index/index', $invite = '', $goods = '', $style = [])
     {
         $return = [
             'status' => false,
@@ -159,7 +161,9 @@ class Wx
             'data' => ''
         ];
 
-        $filename = "qrcode/".$store."-".$style['width']."-".$style['auto_color']."-".$style['line_color_r']."-".$style['line_color_g']."-".$style['line_color_b']."-".$style['is_hyaline'].".jpg";
+        $styles = implode("-", $style);
+        $filename = "qrcode/".md5($page.$invite.$goods.$styles).".jpg";
+
         if(file_exists($filename))
         {
             //有这个二维码了
@@ -172,14 +176,27 @@ class Wx
             //没有去官方请求生成
             $curl = new Curl();
             $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$access_token;
+            $scene = 'invite='.$invite.'&id='.$goods;
             $data = [
-                'scene' => $store,
-                'page' => $page,
-                'width' => $style['width'],
-                'auto_color' => $style['auto_color'],
-                'line_color' => ['r'=>$style['line_color_r'],'g'=>$style['line_color_g'],'b'=>$style['line_color_b']],
-                'is_hyaline' => $style['is_hyaline']
+                'scene' => $scene,
+                'page' => $page
             ];
+            if(isset($style['width']))
+            {
+                $data['width'] = $style['width'];
+            }
+            if(isset($style['auto_color']))
+            {
+                $data['auto_color'] = $style['auto_color'];
+            }
+            if(isset($style['line_color_r']) && isset($style['line_color_g']) && isset($style['line_color_b']))
+            {
+                $data['line_color'] = ['r'=>$style['line_color_r'],'g'=>$style['line_color_g'],'b'=>$style['line_color_b']];
+            }
+            if(isset($style['is_hyaline']))
+            {
+                $data['is_hyaline'] = $style['is_hyaline'];
+            }
 
             $data = json_encode($data);
             $res = $curl->post($url, $data);

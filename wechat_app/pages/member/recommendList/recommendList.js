@@ -27,7 +27,6 @@ Page({
         data['limit'] = page.data.limit;
         app.db.userToken(function (token) {
             app.api.recommendList(data, function (res) {
-                //console.log(res);
                 if (res.status) {
                     let loadingComplete = false;
                     let loading = true;

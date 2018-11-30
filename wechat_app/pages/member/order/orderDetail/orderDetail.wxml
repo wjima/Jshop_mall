@@ -51,9 +51,9 @@
       <text>正在为你忙碌打包中</text>
       <text class='information-time'>2018-02-06  04:24:25</text>
     </view>
-    <view class='information-content' wx:elif="{{order.text_status == 'pending_receipt'}}">
-      <text>已为你发货，请注意查收</text>
-      <text class='information-time'>{{order.delivery[0].ctime}}</text>
+    <view class='information-content' wx:elif="{{order.text_status == 'pending_receipt'}}" bindtap="logistics" data-code="{{order.delivery[0].logi_code}}" data-no="{{order.delivery[0].logi_no}}">
+      <text>{{order.express_delivery.context}}</text>
+      <text class='information-time'>{{order.express_delivery.time}}</text>
     </view>
     <view class='information-content' wx:elif="{{order.text_status == 'cancel'}}">
       <text>订单已取消</text>
@@ -66,7 +66,7 @@
     <image class='right' src='../../../image/right.png'></image>
   </view>
   <!-- 收货地址 -->
-  <view class='address' wx:if="{{!order.store}}">
+  <view class='address' wx:if="{{order.store_id == 0}}">
     <image class='gps' src='../../../image/gps.png'></image>
     <view class='information-content'>
       <view>
@@ -77,7 +77,7 @@
     </view>
   </view>
   <!-- 自提门店 -->
-  <view class='address' wx:if="{{order.store}}">
+  <view class='address' wx:if="{{order.store_id != 0}}">
     <image class='gps' src='../../../image/shopblack.png'></image>
     <view class='information-content'>
       <view>
@@ -129,6 +129,10 @@
       <view class="weui-cell__bd">优惠券优惠</view>
       <view class="weui-cell__ft">-￥{{order.coupon_pmt}}</view>
     </view>
+    <view class="weui-cell" wx:if="{{order.point_money != '0.00'}}">
+      <view class="weui-cell__bd">积分抵扣</view>
+      <view class="weui-cell__ft">-￥{{order.point_money}}</view>
+    </view>
     <view class="weui-cell">
       <view class="weui-cell__bd">合计价格</view>
       <view class="weui-cell__ft price">￥{{order.order_amount}}</view>
@@ -172,7 +176,7 @@
     <!-- 待收货 -->
     <view wx:elif="{{order.text_status == 'pending_receipt'}}">
       <view bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
-      <view bindtap='logistics' data-id="{{order.order_id}}">查看物流</view>
+      <view bindtap='logistics' data-id="{{order.order_id}}" bindtap="logistics" data-code="{{order.delivery[0].logi_code}}" data-no="{{order.delivery[0].logi_no}}">查看物流</view>
       <view class='footer-right-red' bindtap='sign' data-id="{{order.order_id}}">确认收货</view>
     </view>
     <!-- 待评价 -->

@@ -206,6 +206,7 @@ class Order extends Api
                 return error_code(13001);
             }
         }
+        $source = input('param.source','2');        //来源平台
         $memo = Request::param('memo', '');
         $cart_ids = Request::param('cart_ids', '');
         $area_id = Request::param('area_id', false);
@@ -213,7 +214,7 @@ class Order extends Api
         $coupon_code = Request::param('coupon_code', '');
         $formId = Request::param('formId', false);
         $model = new orderModel();
-        return $model->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId, $receipt_type, $store_id, $lading_name, $lading_mobile);
+        return $model->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId, $receipt_type, $store_id, $lading_name, $lading_mobile,$source);
     }
 
     /**
@@ -464,6 +465,8 @@ class Order extends Api
     }
 
     /**
+     *
+     * 后台
      * 获取订单的物流信息
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
@@ -477,6 +480,26 @@ class Order extends Api
         }
         $billDeliveryModel = new BillDelivery();
         return $billDeliveryModel->getLogisticsInformation(input('param.order_id'));
+    }
+
+
+    /**
+     *  前台
+     *  物流查询接口
+     * @return array|mixed
+     */
+    public function logisticsByApi ()
+    {
+        $logistic_code = input('param.code');
+        $logistic_no = input('param.no');
+
+        if (!$logistic_code || !$logistic_no)
+        {
+            return error_code(13225);
+        }
+
+        $billDeliveryModel = new BillDelivery();
+        return $billDeliveryModel->getLogistic($logistic_code, $logistic_no);
     }
 
 

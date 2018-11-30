@@ -46,6 +46,12 @@
             </div>
         </div>
         <div class="layui-inline">
+            <label class="layui-form-label">推荐人：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="pmobile" lay-verify="title" placeholder="推荐人手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
 	        <div class="layui-input-block">
 	            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
 	        </div>
@@ -61,7 +67,7 @@
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         layui.table.render({
             elem: '#userTable',
-            height: 'full-330',
+            height: 'full-260',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -83,9 +89,11 @@
                     }, width: 80
                 },
                 {field:'nickname',title:'昵称', width:150},
+                {field:'balance',title:'余额',width:100},
                 {field:'point', sort:true, title:'积分', width: 120},
                 {field:'status',title:'状态', width:150},
                 {field:'pid_name', title: '邀请人', width:150},
+                {field:'ctime', title:'创建时间',width:170},
                 {field:'option',title:'操作', width:250, templet: function (d) {
                     var html = '<span class="layui-btn layui-btn-xs inviteEdit" data-id="'+d.id+'">邀请人修改</span>';
                     html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';

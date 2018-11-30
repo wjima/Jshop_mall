@@ -12,11 +12,17 @@
   float:left;
 }
 .top-right{
-  widows: 600rpx;
+  width: 600rpx;
   float: left;
+  margin-left:2rpx;
   text-align:left;
-  padding-top: 10rpx;
   font-size:30rpx;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  white-space:normal;
 }
 .comment-img{
   display: inline-block;

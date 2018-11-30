@@ -4,7 +4,7 @@
     }
     .classifyimg{
         margin-bottom: 20px;
-        width: 800px !important;
+        width: 600px !important;
     }
     .classifyimg-item{
         display: inline-block;
@@ -19,6 +19,9 @@
         display: block;
         margin-bottom: 10px;
     }
+    .image_storage_type .item{
+        display: none;
+    }
 </style>
 <div class="layui-card" style="padding:10px;">
     <div class="layui-tab">
@@ -27,6 +30,7 @@
             <li>商品设置</li>
             <li>订单管理</li>
             <li>积分设置</li>
+            <li>其他设置</li>
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
@@ -78,7 +82,22 @@
                             	<input type="radio" lay-filter="cate_style" name="cate_style" value="3" title="二级小图" {eq name="$data['cate_style']['value']" value="3" }checked{/eq}>
                                 <img src="__STATIC__images/two-small.png" onclick="viewImage('__STATIC__images/two-small.png')">
                             </div>
+
+                            <div class="layui-form-mid layui-word-aux list-tag">
+                                1、一级大图分类图标尺寸建议：350px*150px<br/>
+                                2、一级小图分类图标尺寸建议：105px*105px<br/>
+                                3、二级分类图标尺寸建议：60px*60px<br/>
+                            </div>
+
                         </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['tocash_money_low']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="tocash_money_low" value="{$data['tocash_money_low']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">最低提现标准，默认0不限制</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -268,6 +287,97 @@
                     </div>
                 </form>
             </div>
+
+            <div class="layui-tab-item">
+                <form class="layui-form seller-alone-form" action="" method="post">
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>腾讯地图</legend></fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['qq_map_key']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="qq_map_key" value="{$data['qq_map_key']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">腾讯地图key，申请地址：https://lbs.qq.com/</div>
+                    </div>
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>快递100</legend></fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['kuaidi100_customer']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="kuaidi100_customer" value="{$data['kuaidi100_customer']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">快递100公司编码，申请地址：https://www.kuaidi100.com</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['kuaidi100_key']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="kuaidi100_key" value="{$data['kuaidi100_key']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">快递100授权key，申请地址：https://www.kuaidi100.com</div>
+                    </div>
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>图片存储</legend></fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['image_storage_type']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <select name="image_storage_type" lay-filter="image_storage_type">
+                                <option value="Local" {if condition="$data['image_storage_type']['value'] eq 'Local' "} selected {/if} >本地</option>
+                                <option value="Aliyun" {if condition="$data['image_storage_type']['value'] eq 'Aliyun' "} selected {/if} >阿里云OSS</option>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">图片保存方式</div>
+                    </div>
+                    <div class="image_storage_type ">
+                        <div class="item Aliyun" {if condition="$data['image_storage_type']['value'] eq 'Aliyun' "} style="display: block" {/if}>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">AccessKeyId：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[accessKeyId]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['accessKeyId']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">阿里云AccessKeyId，申请地址：阿里云用户AccessKey控制台地址：https://usercenter.console.aliyun.com/#/manage/ak</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">AccessKeySecret：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[accessKeySecret]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['accessKeySecret']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">阿里云accessKeySecret，申请地址：https://www.kuaidi100.com</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">存储节点：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[endpoint]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['endpoint']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">阿里云OSS的 endpoint</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">空间名称：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[bucket]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['bucket']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">阿里云OSS的 bucket</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">绑定域名：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[domain]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['domain']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">阿里云OSS绑定的域名，例如：https://image.jihainet.com</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -320,5 +430,11 @@
                 $(".sign-fixed").hide();
             }
         });
+        //存储引擎切换
+        form.on('select(image_storage_type)', function(data) {
+            $(".image_storage_type .item").hide(10);
+            $("."+data.value).show(10);
+        });
+
     });
 </script>

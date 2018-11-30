@@ -1,0 +1,10 @@
+<view class='logistics'>
+    <view class='status' wx:if="{{flag}}">当前状态：{{status}}</view>
+    <view class='list' wx:for="{{data}}" wx:key="index">
+        <view class='item-circle'></view>
+        <view class='item-line'>
+            <view class='item-context'>{{item.context}}</view>
+            <view class='item-time'>{{item.time}}</view>
+        </view>
+    </view>
+</view>

@@ -1,19 +1,15 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
+
         <div class="layui-inline">
-            <label class="layui-form-label" style="width:120px;">优惠券名称：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <select name="promotion_id">
-                    <option value=""></option>
-                    {volist name='list.data' id='vo'}
-                        <option value="{$vo.id}">{$vo.name}</option>
-                    {/volist}
-                </select>
+            <label class="layui-form-label">优惠券码：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" name="code" value="" placeholder="请输入优惠券号码" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-inline">
-            <label class="layui-form-label" style="width:120px;">状态：</label>
+            <label class="layui-form-label">状态：</label>
             <div class="layui-input-inline seller-inline-2">
                 <select name="is_used">
                     <option value=""></option>
@@ -44,16 +40,16 @@
         table.render({
             elem: '#coupon',
             height: 'full-220',
-            url: '{:url("Coupon/index")}', //数据接口
+            url: '{:url("Coupon/index")}?promotion_id={$promotion_id}', //数据接口
             page: true, //开启分页
             cols: [[ //表头
                 {type:'numbers'},
                 {field: 'name', title: '优惠券名称',align:'center'},
                 {field: 'coupon_code', title: '优惠券号码',align:'center'},
-                {field: 'nickname', title: '所有者',align:'center'},
+                {field: 'nickname', title: '领取者',align:'center'},
                 {field: 'is_used', title: '是否使用',align:'center'},
                 {field: 'used_name', title: '使用者',align:'center'},
-                {field: 'utime', title: '时间',align:'center'},
+                {field: 'ctime', title: '生成时间',align:'center'},
                 {fixed: 'right', title: '操作',width:150, align:'center', toolbar: '#couponBar'} //这里的toolbar值是模板元素的选择器
             ]]
         })

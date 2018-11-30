@@ -22,11 +22,12 @@ class Coupon extends Manage
         {
             return $couponModel->tableData(input('param.'));
         }
-        //获取优惠券列表
-        $promotionModel = new Promotion();
-        $where['type'] = $promotionModel::TYPE_COUPON;
-        $list = $promotionModel->tableData($where);
-        return $this->fetch('',['list'=>$list]);
+        if (!input('param.id')) {
+            return $this->error('没有选择任何优惠券');
+        } else {
+            $this->assign('promotion_id', input('param.id'));
+            return $this->fetch('');
+        }
     }
 
 

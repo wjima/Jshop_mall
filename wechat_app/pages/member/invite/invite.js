@@ -12,13 +12,29 @@ Page({
         pop: false,
         painting: {},
         shareImage: '',
-        qrcode: ''
+        qrcode: '',
+        qrcodeErrorMsg: '小程序二维码生成失败，无法生成海报，请稍候尝试',
+        nickname: '',
+        avatar: ''
     },
 
 
     //页面加载
     onLoad: function (options) {
         this.getInviteData();
+        this.getUserInfo();
+    },
+
+
+    //获取用户信息
+    getUserInfo: function () {
+        let page = this;
+        app.api.userInfo(function (res) {
+            page.setData({
+                nickname: res.data.nickname,
+                avatar: res.data.avatar
+            });
+        });
     },
 
 
@@ -46,10 +62,15 @@ Page({
             'goods': 0
         }
         app.api.getQRCode(data, function (e) {
+            console.log(e);
             if (e.status) {
                 let url = app.config.api_url + e.data;
                 page.setData({
                     qrcode: url
+                });
+            } else {
+                page.setData({
+                    qrcodeErrorMsg: e.msg
                 });
             }
         });
@@ -124,112 +145,122 @@ Page({
 
     //生成海报
     eventDraw: function () {
-        //todo::头像和用户昵称需要授权获取
         let page = this;    
-        let avatar = '/static/images/default.png';
-        let nickname = '猜猜我是谁';
+        let avatar = page.data.avatar;
+        let nickname = page.data.nickname;
         let storename = app.config.app_title;
         let invite = page.data.code;
-        let qrcode = page.data.qrcode;
-        
-        this.setData({
-            painting: {
-                width: 560,
-                height: 860,
-                clear: true,
-                views: [
-                    {
-                        type: 'image',
-                        url: '/static/images/bg.png',
-                        top: 0,
-                        left: 0,
-                        width: 560,
-                        height: 860
-                    },
-                    {
-                        type: 'image',
-                        url: avatar,
-                        top: 38,
-                        left: 46,
-                        width: 100,
-                        height: 100
-                    },
-                    {
-                        type: 'text',
-                        content: '您的好友【' + nickname + '】',
-                        fontSize: 28,
-                        color: '#ffffff',
-                        textAlign: 'left',
-                        top: 50,
-                        left: 170,
-                        bolder: true
-                    },
-                    {
-                        type: 'text',
-                        content: '发现了一家好店，邀您查看',
-                        fontSize: 24,
-                        color: '#fecccc',
-                        textAlign: 'left',
-                        top: 90,
-                        left: 170
-                    },
-                    {
-                        type: 'image',
-                        url: qrcode,
-                        top: 220,
-                        left: 135,
-                        width: 290,
-                        height: 290
-                    },
-                    {
-                        type: 'text',
-                        content: storename,
-                        fontSize: 28,
-                        lineHeight: 28,
-                        color: '#383549',
-                        textAlign: 'center',
-                        top: 530,
-                        left: 280,
-                        bolder: true
-                    },
-                    {
-                        type: 'text',
-                        content: '长按图片识别图中二维码进入' + storename + '小程序一起寻好物',
-                        fontSize: 22,
-                        lineHeight: 30,
-                        color: '#727272',
-                        textAlign: 'center',
-                        top: 580,
-                        left: 280,
-                        width: 360,
-                        MaxLineNumber: 2,
-                        breakWord: true,
-                    },
-                    {
-                        type: 'text',
-                        content: invite,
-                        fontSize: 30,
-                        lineHeight: 30,
-                        color: '#d13106',
-                        textAlign: 'center',
-                        top: 700,
-                        left: 280,
-                        bolder: true
-                    },
-                    {
-                        type: 'text',
-                        content: '我的专属邀请码',
-                        fontSize: 24,
-                        lineHeight: 24,
-                        color: '#727272',
-                        textAlign: 'center',
-                        top: 750,
-                        left: 280,
-                        bolder: true
-                    },
-                ]
-            }
-        })
+        console.log(page.data.avatar);
+        console.log(page.data.qrcode);
+        if (page.data.qrcode == '') {
+            wx.showToast({
+                title: page.data.qrcodeErrorMsg,
+                icon: 'none',
+                duration: 2000
+            });
+            page.clone();
+            return false;
+        } else {
+            let qrcode = page.data.qrcode;
+            this.setData({
+                painting: {
+                    width: 560,
+                    height: 860,
+                    clear: true,
+                    views: [
+                        {
+                            type: 'image',
+                            url: '/static/images/bg.png',
+                            top: 0,
+                            left: 0,
+                            width: 560,
+                            height: 860
+                        },
+                        {
+                            type: 'image',
+                            url: avatar,
+                            top: 38,
+                            left: 46,
+                            width: 100,
+                            height: 100
+                        },
+                        {
+                            type: 'text',
+                            content: '您的好友【' + nickname + '】',
+                            fontSize: 28,
+                            color: '#ffffff',
+                            textAlign: 'left',
+                            top: 50,
+                            left: 170,
+                            bolder: true
+                        },
+                        {
+                            type: 'text',
+                            content: '发现了一家好店，邀您查看',
+                            fontSize: 24,
+                            color: '#fecccc',
+                            textAlign: 'left',
+                            top: 90,
+                            left: 170
+                        },
+                        {
+                            type: 'image',
+                            url: qrcode,
+                            top: 220,
+                            left: 135,
+                            width: 290,
+                            height: 290
+                        },
+                        {
+                            type: 'text',
+                            content: storename,
+                            fontSize: 28,
+                            lineHeight: 28,
+                            color: '#383549',
+                            textAlign: 'center',
+                            top: 530,
+                            left: 280,
+                            bolder: true
+                        },
+                        {
+                            type: 'text',
+                            content: '长按图片识别图中二维码进入' + storename + '小程序一起寻好物',
+                            fontSize: 22,
+                            lineHeight: 30,
+                            color: '#727272',
+                            textAlign: 'center',
+                            top: 580,
+                            left: 280,
+                            width: 360,
+                            MaxLineNumber: 2,
+                            breakWord: true,
+                        },
+                        {
+                            type: 'text',
+                            content: invite,
+                            fontSize: 30,
+                            lineHeight: 30,
+                            color: '#d13106',
+                            textAlign: 'center',
+                            top: 700,
+                            left: 280,
+                            bolder: true
+                        },
+                        {
+                            type: 'text',
+                            content: '我的专属邀请码',
+                            fontSize: 24,
+                            lineHeight: 24,
+                            color: '#727272',
+                            textAlign: 'center',
+                            top: 750,
+                            left: 280,
+                            bolder: true
+                        },
+                    ]
+                }
+            });
+        }
     },
 
 

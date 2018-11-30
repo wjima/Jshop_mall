@@ -287,7 +287,10 @@
     margin-right: 7px;
     cursor: pointer;
 }
-
+.list-tag{
+    float: right;
+    margin-right: 0;
+}
 /**
 超级链接定义样式
 */

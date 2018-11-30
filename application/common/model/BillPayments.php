@@ -114,7 +114,7 @@ class BillPayments extends Common
                 $list[$k]['user_id'] = get_user_info($v['user_id']);
             }
             if($v['payment_code']) {
-                $list[$k]['payment_code'] = config('params.payments')[$v['payment_code']];
+                $list[$k]['payment_code'] = config('params.payment_type')[$v['payment_code']];
             }
             if($v['utime']) {
                 $list[$k]['utime'] = getTime($v['utime']);

@@ -82,8 +82,11 @@ class Images extends Manage
                     'type' => 'Local',
                 ];
             }
+            //增加后台设置，如果设置则用后台设置的
+            if (getSetting('image_storage_params')) {
+                $image_storage = array_merge(['type' => getSetting('image_storage_type')], getSetting('image_storage_params'));
+            }
             $upload = new \org\Upload($config,$image_storage['type'],$image_storage);
-
             $info = $upload->upload();
 
             if($info) {
@@ -233,6 +236,9 @@ class Images extends Manage
             'msg' => "裁剪失败"
         ];
 
+        if(!Request::isPost()) {
+            return $response;
+        }
         $imgUrl = $_POST['imgUrl'];
         $imgInitW = $_POST['imgInitW'];
         $imgInitH = $_POST['imgInitH'];

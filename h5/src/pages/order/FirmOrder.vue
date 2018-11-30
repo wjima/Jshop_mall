@@ -1,18 +1,56 @@
 <template>
     <div class="firmorder">
+        <openstore
+            v-if="openStore"
+            :storeTab="storeTab"
+            :store="storeInfo"
+            :ship="shipInfo"
+            @storeTab="selectStoreTab"
+            @name="tackName"
+            @mobile="tackMobile"
+            @shipHandler="shipHandler"
+            @storeHandler="storeHandler"
+        ></openstore>
         <orderadd
-            :openStore="openStore"
-            :userShip="userShip"
-            @clickHandler="clickHandler"
+            v-else
+            :ship="shipInfo"
+            @shipHandler="shipHandler"
         ></orderadd>
         <orderlist
             :products="products"
         ></orderlist>
-        <ordercoupon
-            :coupon="couponList"
-            @couponChecked="couponChecked"
-        ></ordercoupon>
+        <div class="ordercoupon">
+            <yd-cell-item @click.native="showCouponHandler">
+                <span slot="left">优惠券</span>
+                <span slot="right" class="demo-list-price">{{ usedCouponName }}</span>
+            </yd-cell-item>
+            <yd-popup v-model="couponShow" position="bottom" height="40%" class="ordercoupon-content">
+                <yd-tab v-model="couponPopTab" :prevent-default="false" :item-click="couponPopClickHandler">
+                    <yd-tab-panel label="已领取优惠券">
+                        <yd-cell-group>
+                            <div v-if="userCoupon.length">
+                                <yd-cell-item @click.native="couponChecked(index, item.checked)" v-for="(item, index) in userCoupon" :key="index">
+                                    <span slot="left">{{ item.name }}</span>
+                                    <span slot="right" class="demo-list-price"><img :src="couponCheck[0]" v-show="!item.checked"/><img :src="couponCheck[1]" v-show="item.checked"/></span>
+                                </yd-cell-item>
+                            </div>
+                            <div v-else>
+                                没有优惠券 快去领取一个吧
+                            </div>
+                        </yd-cell-group>
+                    </yd-tab-panel>
+                    <yd-tab-panel label="输入优惠券号码">
+                        <div class="coupon-input">
+                            <input type="text" v-model="entryCouponCode" placeholder="请输入优惠券号码">
+                            <button type="button" @click.passive="receiveCoupon">确定</button>
+                        </div>
+                    </yd-tab-panel>
+                </yd-tab>
+                <yd-button type="warning" style="margin: 30px;" @click.native="couponShow=false">关闭</yd-button>
+            </yd-popup>
+        </div>
         <ordercell
+            ref="mychild"
             :goods_amount="goods_amount"
             :amount="amount"
             :cost_freight="cost_freight"
@@ -20,6 +58,7 @@
             :order_pmt="order_pmt"
             :coupon_pmt="coupon_pmt"
             :open_point="point_open"
+            :use_point="use_point"
             :point_sum="point_sum"
             :usable_point="usable_point"
             :point_money="point_money"
@@ -36,21 +75,21 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import orderadd from '../../components/OrderAdd.vue'
 import orderlist from '../../components/OrderList.vue'
-import ordercoupon from '../../components/OrderCoupon.vue'
 import ordercell from '../../components/OrderCell.vue'
 import orderinput from '../../components/OrderInput.vue'
 import orderfooter from '../../components/OrderFooter.vue'
+import openstore from '../../components/OpenStore'
 
 export default {
     components: {
-        orderadd, orderlist, ordercoupon, ordercell, orderinput, orderfooter
+        orderadd, orderlist, ordercell, orderinput, orderfooter, openstore
     },
     data () {
         return {
             cartIds: this.$route.query.cartIds ? this.$route.query.cartIds : '', // 传递过来的购物车id
-            openStore: false,
             products: [], // 货品信息
             goods_amount: '', // 商品总金额
             amount: '', // 总金额
@@ -59,20 +98,40 @@ export default {
             cost_freight: '', // 运费
             coupon_pmt: '', // 使用优惠券优惠金额
             msg: '', // 卖家留言内容
-            userShip: [], // 用户的默认收货地址
-            couponList: [], // 用户的优惠券列表
-            selectCoupon: '', // 选中的优惠券
+            couponShow: false, // 显示优惠券弹窗
+            usedCouponName: '未使用', // 优惠券名称
+            usedCouponCode: '', // 使用的优惠券
+            entryCouponCode: '', // 手动输入的优惠券码
+            couponPopTab: 0, // 优惠券弹窗tab
+            userCoupon: [], // 已领取优惠券列表
+            couponCheck: [
+                'static/image/kong.png', // 未选中
+                'static/image/xuanzhong.png' // 选中
+            ],
+            params: {
+                ids: '', // 传递过来的购物车id
+                area_id: 0, // 收货地址id
+                coupon_code: '', // 优惠券码
+                point: 0 // 抵扣积分额
+            },
+            storeTab: 0,
+            shipInfo: '', // 收货地址id
+            storeInfo: '', // 门店id
+            openStore: false, // 是否开启门店自提
+            ladingName: '', // 提货人姓名
+            ladingMobile: '', // 提货人联系方式
             point_open: false, // 判断后台是否开启积分抵扣
             point_sum: 0, // 用户总积分
             usable_point: 0, // 可抵扣积分
             point_money: 0, // 积分抵扣的金额
-            use_point: false // 是否使用积分
+            use_point: false, // 是否使用积分
+            receiptType: 1
         }
     },
     mounted () {
+        this.params.ids = this.cartIds
         this.isOpenStore() // 判断是否开启门店
         this.userDefaultShip() // 获取默认收货地址
-        this.getUserCoupon() // 获取用户可用的优惠券列表
         this.orderUsablePoint()
     },
     methods: {
@@ -80,26 +139,40 @@ export default {
         isOpenStore () {
             this.$api.switchStore({}, res => {
                 if (res.status) {
-                    res.data === '1' ? this.openStore = true : this.openStore = false
+                    res.data === 1 ? this.openStore = true : this.openStore = false
+                }
+                if (this.openStore) {
+                    // 请求获取默认门店
+                    this.$api.defaultStore({}, res => {
+                        if (res.status) {
+                            this.storeInfo = res.data
+                        }
+                    })
                 }
             })
+        },
+        // 门店tab切换
+        selectStoreTab (tab) {
+            this.storeTab = tab
+            if (this.storeTab === 1) {
+                this.params.area_id = this.storeInfo.area_id
+            } else {
+                this.params.area_id = this.shipInfo.area_id
+            }
         },
         // 获取用户的默认收货地址
         userDefaultShip () {
             this.$api.userDefaultShip({}, res => {
-                this.userShip = res.data
-                this.getCartList(this.userShip.area_id)
-            })
-        },
-        // 获取用户可用的优惠券列表
-        getUserCoupon () {
-            this.$api.userCoupon({}, res => {
-                this.couponList = res.data
-                this.couponList.forEach((item) => this.$set(item, 'checked', false))
+                if (res.status) {
+                    if (res.data) {
+                        this.shipInfo = res.data
+                        this.params.area_id = res.data.area_id
+                    }
+                }
             })
         },
         // 获取商品信息
-        getCartList (areaId = 0, couponCode = 0, usePoint = false) {
+        getCartList () {
             if (!this.cartIds) {
                 this.$dialog.alert({
                     mes: '请选择要购买的商品',
@@ -109,11 +182,7 @@ export default {
                 })
                 return false
             }
-            let data = {ids: this.cartIds}
-            if (areaId) data['area_id'] = areaId // 使用的收货地址id
-            if (couponCode) data['coupon_code'] = couponCode // 使用的优惠券code
-            if (usePoint) data['point'] = this.usable_point
-            this.$api.cartList(data, res => {
+            this.$api.cartList(this.params, res => {
                 if (res.status) {
                     let list = res.data.list
                     let resData = res.data
@@ -126,6 +195,19 @@ export default {
                     this.coupon_pmt = resData.coupon_pmt
                     if (!this.use_point) {
                         this.orderUsablePoint(this.amount)
+                    }
+                    if (resData.coupon) {
+                        for (let i in resData.coupon) {
+                            this.usedCouponName = resData.coupon[i]
+                            this.usedCouponCode = i
+                        }
+                        this.couponShow = false
+                    }
+                } else {
+                    if (res.data === 15009) {
+                        setTimeout(() => {
+                            this.entryCouponCode = ''
+                        }, 1500)
                     }
                 }
             })
@@ -143,62 +225,199 @@ export default {
                 }
             })
         },
-        // 用户选中/取消的优惠券 选中取消状态
-        // 选中false更改状态为true
-        // 取消反之
-        couponChecked (index = []) {
-            if (!index[1]) {
-                // 取消选中其他的的优惠券
-                this.couponList.forEach((item) => {
-                    if (item.checked) item.checked = false
-                })
-                // 设置选中的优惠券
-                this.selectCoupon = this.couponList[index[0]]
-                this.$set(this.couponList[index[0]], 'checked', true)
-                // 重新请求数据
-                this.getCartList(this.userShip.area_id, this.selectCoupon.coupon_code)
-            } else {
-                this.selectCoupon = ''
-                this.$set(this.couponList[index[0]], 'checked', false)
-                this.getCartList(this.userShip.area_id, '')
-            }
-        },
         // 用户的选中的收货地址
-        clickHandler (index) {
-            this.userShip = index
-            this.getCartList(this.userShip.area_id, this.selectCoupon, this.use_point)
+        shipHandler (val) {
+            this.shipInfo = val
+            this.params.area_id = val.area_id
+        },
+        storeHandler (val) {
+            this.storeInfo = val
+            this.params.area_id = val.area_id
         },
         // 卖家留言
         sendMsg (msg) {
             this.msg = msg
         },
-        // 用户点击使用积分
-        isUsePoint (checked) {
-            this.use_point = checked
-            this.getCartList(this.userShip.area_id, 0, this.use_point)
-        },
         // 去支付  生成支付单
         // 获取收货地址id
         // 商品信息  总价格
         payment () {
-            if (!this.userShip) {
-                this.$dialog.alert({mes: '请选择收货地址'})
-                return false
-            }
+            // if (!this.userShip) {
+            //     this.$dialog.alert({mes: '请选择收货地址'})
+            //     return false
+            // }
             let data = {
-                uship_id: this.userShip.id,
-                cart_ids: this.cartIds,
+                cart_ids : this.cartIds,
                 memo: this.msg,
-                area_id: this.userShip.area_id
+                coupon_code: this.selectCoupon ? this.selectCoupon.coupon_code : '',
+                point: this.use_point ? this.usable_point : ''
             }
-            if (this.selectCoupon) data['coupon_code'] = this.selectCoupon.coupon_code
+            if (this.storeTab === 0) {
+                // 快递配送
+                data['uship_id'] = this.$store.state.shipInfo.id
+                data['area_id'] = this.$store.state.shipInfo.area_id
+                data['receipt_type'] = 1
+            }  else {
+                // 门店自提
+                data['receipt_type'] = 2
+                data['store_id'] = this.$store.state.storeInfo.id
+                data['area_id'] = this.$store.state.storeInfo.area_id
+                data['lading_name'] = this.ladingName
+                data['lading_mobile'] = this.ladingMobile
+            }
             this.$api.createOrder(data, res => {
                 this.$router.replace({path: '/cashierdesk', query: {order_id: res.data.order_id}})
             })
+        },
+        // 门店自提 联系人,联系方式
+        tackName (name) {
+            this.ladingName = name
+        },
+        tackMobile (mobile) {
+            this.ladingMobile = mobile
+        },
+        // 根据类型判断是 快递配送还是 门店自提 根据地区id 重新请求订单数据
+        receipt (key) {
+            this.receiptType = key
+            if (this.receiptType === 1) {
+                this.params.area_id = this.userShip.area_id
+            }  else {
+                this.params.area_id = ''
+            }
+            console.log(this.receiptType)
+        },
+        showCouponHandler () {
+            this.couponShow = true
+            if (this.couponPopTab === 0) {
+                this.getCouponList()
+            }
+        },
+        // 获取优惠券列表
+        getCouponList () {
+            this.$api.userCoupon({}, res => {
+                if (res.status) {
+                    this.userCoupon = res.data
+                    this.userCoupon.forEach(item => {
+                        if (this.usedCouponCode) {
+                            if (this.usedCouponCode === item.coupon_code) {
+                                this.$set(item, 'checked', true)
+                            } else {
+                                this.$set(item, 'checked', false)
+                            }
+                        } else {
+                            this.$set(item, 'checked', false)
+                        }
+                    })
+                }
+            })
+        },
+        // 优惠券弹窗切换
+        couponPopClickHandler (key) {
+            this.couponPopTab = key
+        },
+        // 输入优惠券码
+        receiveCoupon () {
+            if (!this.entryCouponCode) {
+                this.$dialog.toast({
+                    mes: '请输入优惠券码',
+                    timeout: 1300
+                })
+            } else {
+                this.params.coupon_code = this.entryCouponCode
+            }
+        },
+        // 优惠券选中/取消
+        couponChecked (key, checked) {
+            if (checked === false) {
+                // 取消选中其他的的优惠券
+                this.userCoupon.forEach((item) => {
+                    if (item.checked) item.checked = false
+                })
+                // 设置选中的优惠券
+                this.usedCouponCode = this.userCoupon[key].coupon_code
+                this.usedCouponName = this.userCoupon[key].name
+                this.userCoupon[key].checked = true
+                this.use_point = false
+                this.$refs.mychild.checked = status
+                this.params.point = 0
+                // 重新请求数据
+                this.params.coupon_code = this.usedCouponCode
+            } else {
+                this.usedCouponCode = ''
+                this.userCoupon[key].checked = false
+                this.usedCouponName = '未使用'
+                this.params.coupon_code = ''
+            }
+        },
+        isUsePoint (status) {
+            this.use_point = status
+        }
+    },
+    watch: {
+        // 监听数据状态(切换收货地址, 是否使用优惠券, 是否使用积分) 重新请求订单数据
+        params: {
+            handler () {
+                this.getCartList()
+            },
+            deep: true
+        },
+        // 监听是否使用积分
+        use_point () {
+            if (this.use_point) {
+                this.params.point = this.usable_point
+            } else {
+                this.params.point = 0
+            }
+        },
+        storeTab () {
+            console.log(this.storeTab)
+            console.log(this.shipInfo)
+            console.log(this.storeInfo)
         }
     }
 }
 </script>
 
 <style>
+    .ordercoupon{
+        background-color: #fff;
+    }
+    .ordercoupon-content .yd-btn{
+        width: 100%;
+        background-color: #FF3B44;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        margin: 0 !important;
+        color: #fff;
+        border-radius: 0;
+        height: .7rem;
+    }
+    .ordercoupon-content .yd-cell .demo-list-price img{
+        width: .35rem;
+        height: .35rem;
+    }
+    .coupon-input{
+        padding: .24rem;
+        box-sizing: border-box;
+        height: 1rem;
+        overflow: hidden;
+    }
+    .coupon-input input{
+        height: 100%;
+        padding: 0 .2rem;
+        border: 1px solid #eee;
+        float: left;
+        width: 75%;
+    }
+    .coupon-input button{
+        height: 100%;
+        /*width: 1rem;*/
+        border: 1px solid #FF3B44;
+        background-color: #ff3b44;
+        float: left;
+        width: 20%;
+        margin-left: 4%;
+        color: #fff;
+    }
 </style>

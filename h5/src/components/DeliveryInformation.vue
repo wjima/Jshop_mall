@@ -12,12 +12,23 @@
             </div>
         </div>
         <div class="deliveryinformation-content" v-else-if="status === 'pending_receipt'">
-            <div class="deliveryinformation-top">
-                <span>已为你发货，请注意查收</span>
-            </div>
-            <div class="deliveryinformation-bottom">
-                <p>{{ this.GLOBAL.timeToDate(delivery[0].ctime) }}</p>
-                <img class="orderadd-right right-img" src="../../static/image/right.png"/>
+            <div v-if="Object.keys(express).length">
+                <div class="deliveryinformation-top">
+                    <span>{{ express.context }}</span>
+                </div>
+                <div class="deliveryinformation-bottom">
+                    <p>{{ express.time }}</p>
+                    <img class="orderadd-right right-img" src="../../static/image/right.png" @click="logistics"/>
+                </div>
+                </div>
+            <div v-else>
+                <div class="deliveryinformation-top">
+                    <span>已为你发货，请注意查收</span>
+                </div>
+                <div class="deliveryinformation-bottom">
+                    <p>{{ this.GLOBAL.timeToDate(delivery[0].ctime) }}</p>
+                    <img class="orderadd-right right-img" src="../../static/image/right.png"/>
+                </div>
             </div>
         </div>
         <div class="deliveryinformation-content" v-else-if="status === 'cancel'">
@@ -43,12 +54,24 @@ export default {
                 return []
             }
         },
-        // 快递信息
+        // 发货快递单号信息
         delivery: {
             type: [Array, Object],
             default () {
                 return []
             }
+        },
+        // 物流信息
+        express: {
+            type: Object,
+            default () {
+                return {}
+            }
+        }
+    },
+    methods: {
+        logistics () {
+            this.$emit('logistics')
         }
     }
 }

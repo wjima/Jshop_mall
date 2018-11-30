@@ -56,10 +56,10 @@
                 {field:'username', width:130, title:'用户名', align:'center'},
                 {field:'logi_name', width:120, title:'快递公司', align:'center'},
                 {field:'logi_no', width:150, title:'快递单号', align:'center'},
-                {field:'ship_address', width:260, title:'收货地址', align:'center'},
-                {field:'ship_mobile', width:130, title:'收货电话', align:'center'},
-                {field:'ctime', width:170, title:'创建时间', align:'center'},
-                {field:'operating', title:'操作', width:100, align:'center', fixed:'right',templet:function(data){
+                {field:'ship_address',  title:'收货地址', align:'center'},
+                {field:'ship_mobile', title:'收货电话', align:'center'},
+                {field:'ctime', title:'创建时间', align:'center'},
+                {field:'operating', title:'操作', align:'center', fixed:'right',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-delivery" data-id="' + data.delivery_id + '">明细</a>';
                     return html;

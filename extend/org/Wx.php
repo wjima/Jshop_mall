@@ -137,7 +137,7 @@ class Wx
             $val = $res['access_token'];
 
             //存储缓存获取的access_token todo::改成mysql数据库存储
-            Cache::set($key, $val, 7200);
+            Cache::set($key, $val, 3600);
         }
         //返回access_token
         return $val;
@@ -151,9 +151,10 @@ class Wx
      * @param string $invite
      * @param string $goods
      * @param array $style
+     * @param string $wx_appid
      * @return array
      */
-    public function getParameterQRCode($access_token, $page = 'pages/index/index', $invite = '', $goods = '', $style = [])
+    public function getParameterQRCode($access_token, $page = 'pages/index/index', $invite = '', $goods = '', $style = [], $wx_appid = '')
     {
         $return = [
             'status' => false,
@@ -162,7 +163,7 @@ class Wx
         ];
 
         $styles = implode("-", $style);
-        $filename = "qrcode/".md5($page.$invite.$goods.$styles).".jpg";
+        $filename = "qrcode/".md5($page.$invite.$goods.$wx_appid.$styles).".jpg";
 
         if(file_exists($filename))
         {
@@ -197,9 +198,24 @@ class Wx
             {
                 $data['is_hyaline'] = $style['is_hyaline'];
             }
-
             $data = json_encode($data);
             $res = $curl->post($url, $data);
+            $flag = json_decode($res, true);
+            if($flag && $flag['errcode'] == 41030)
+            {
+                $return['msg'] = '后台小程序配置的APPID和APPSECRET对应的小程序未发布上线，无法生成海报';
+                return $return;
+            }
+            elseif($flag && $flag['errcode'] == 40001)
+            {
+                $return['msg'] = '微信小程序access_token已过期，无法为你生成海报';
+                return $return;
+            }
+            elseif($flag && isset($flag['errcode']))
+            {
+                $return['msg'] = $flag['errcode'].':'.$flag['errmsg'];
+                return $return;
+            }
 
             $file = fopen($filename, "w");//打开文件准备写入
             fwrite($file, $res);//写入

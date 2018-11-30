@@ -3,6 +3,7 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\BillPayments as BillPaymentsModel;
+use app\common\model\Order;
 use app\common\model\Payments;
 use Request;
 
@@ -17,6 +18,7 @@ class BillPayments extends Manage
         }
         return $this->fetch('index');
     }
+    //后台管理员进行支付操作。
     public function pay()
     {
         $result = [
@@ -43,7 +45,7 @@ class BillPayments extends Manage
 
         //取支付方式
         $paymentModel = new Payments();
-        $result['data']['payments'] = $paymentModel->getList(0);
+        $result['data']['payments'] = $paymentModel->getList($paymentModel::PAYMENT_STATUS_YES);
 
         //取之前传入的值
         $this->assign('order_id', input('order_id'));
@@ -57,6 +59,7 @@ class BillPayments extends Manage
     }
     public function toPay()
     {
+
         //卖家端直接支付的话，先生成支付单，然后去做付款操作
         $result = [
             'status' => true,
@@ -64,7 +67,7 @@ class BillPayments extends Manage
             'msg' => ''
         ];
         if(!input('?param.order_id')){
-            $result['msg'] = "请输入订单编号";
+            $result['msg'] = "请输入编号";
             return $result;
         }
 
@@ -72,12 +75,29 @@ class BillPayments extends Manage
             $result['msg'] = "订单类型不能为空";
             return $result;
         }
+        $BillPaymentsModel = new BillPaymentsModel();
+
+        //查支付人id
+        $user_id = 0;
+        switch (input('param.type'))
+        {
+            case $BillPaymentsModel::TYPE_ORDER:
+                $orderModel = new Order();
+                $orderInfo = $orderModel->where('order_id','in',input('param.order_id'))->find();
+                if(!$orderInfo){
+                    return error_code(10000);
+                }
+                $user_id = $orderInfo['user_id'];
+                break;
+        }
+
+
 
         //::todo 校验支付方式是否存在
 
         //生成支付单
-        $BillPaymentsModel = new BillPaymentsModel();
-        $result = $BillPaymentsModel->toAdd(input('param.order_id'), input('param.payment_code'), '', input('param.type'));
+
+        $result = $BillPaymentsModel->toAdd(input('param.order_id'), input('param.payment_code'), $user_id, input('param.type'));
         if(!$result['status']){
             return $result;
         }

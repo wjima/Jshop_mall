@@ -8,10 +8,21 @@
         <deliveryinformation
             :status="order.text_status"
             :delivery="order.delivery"
+            :express="express"
+            @logistics="logistics"
         ></deliveryinformation>
         <div class="orderadd">
             <img class="orderadd-gps" src="../../../static/image/gps.png"/>
-            <div class="orderadd-content">
+            <div class="orderadd-content" v-if="order.store">
+                <div class="orderadd-top">
+                    <span>提货人：{{ order.ship_name }}</span>
+                    <p>{{ order.ship_mobile }}</p>
+                </div>
+                <div class="orderadd-bottom">
+                    <p>门店地址：{{ order.ship_area_name }} {{ order.ship_address }}</p>
+                </div>
+            </div>
+            <div class="orderadd-content" v-else>
                 <div class="orderadd-top">
                     <span>收货人：{{ order.ship_name }}</span>
                     <p>{{ order.ship_mobile }}</p>
@@ -50,6 +61,7 @@
             :goods_pmt="order.goods_pmt"
             :order_pmt="order.order_pmt"
             :coupon_pmt="order.coupon_pmt"
+            :point_pmt="order.point_money"
         ></ordercell>
         <orderdetailfooter
             :status="order.text_status"
@@ -62,11 +74,11 @@
         ></orderdetailfooter>
         <yd-popup v-model="showLogistics" position="center" width="80%" height="80%">
             <div class="express-info">
-                <div class="express-num">{{ logisticsInfo.company }}：{{ logisticsInfo.no }}</div>
+                <div class="express-num"></div>
                 <yd-timeline>
-                    <yd-timeline-item v-for="(item, index) in logisticsInfo.list" :key="index">
-                        <p>{{ item.remark }}</p>
-                        <p style="margin-top: 10px;">{{ item.datetime }}</p>
+                    <yd-timeline-item v-for="(item, index) in logisticsInfo.data" :key="index">
+                        <p>{{ item.context }}</p>
+                        <p style="margin-top: 10px;">{{ item.time }}</p>
                     </yd-timeline-item>
                 </yd-timeline>
             </div>
@@ -88,6 +100,7 @@ export default {
         return {
             order_id: this.$route.query.order_id, // 传过来的order_id
             order: [], // 订单详情
+            express: {}, // 订单详情物流信息显示最后一条信息
             showLogistics: false, // 是否显示物流信息窗口
             logisticsInfo: [] // 物流信息
         }
@@ -115,6 +128,9 @@ export default {
             this.$api.orderDetail({order_id: this.order_id}, res => {
                 if (res.status) {
                     this.order = res.data
+                    if (this.order.hasOwnProperty('express_delivery')) {
+                        this.express = this.order.express_delivery
+                    }
                 } else {
                     this.$dialog.alert({
                         mes: '未查询到该订单信息',
@@ -194,10 +210,11 @@ export default {
         },
         // 查看物流信息详情
         logistics () {
-            this.$api.logistics({order_id: this.order_id}, res => {
+            this.$api.logistics({code: this.order.delivery[0].logi_code, no: this.order.delivery[0].logi_no}, res => {
                 if (res.status) {
                     this.showLogistics = true
-                    this.logisticsInfo = res.data
+                    this.logisticsInfo = res.data.info
+                    console.log(this.logisticsInfo)
                 }
             })
         }

@@ -35,10 +35,13 @@ Page({
     mode: 'aspectFit',
     code: 0, //邀请码
     qrcode: '', //邀请二维码
+    qrcodeErrorMsg: '小程序二维码生成失败，无法生成海报，请稍候尝试', //邀请二维码生成失败提示
     pop: false, //海报界面
     shareImage: '', //海报图片
     painting: {}, //海报生成参数
     share: false,
+    nickname: '',
+    avatar: ''
   },
 
   //商品减一
@@ -141,7 +144,7 @@ Page({
 
         //记录被邀请
         if (invite != '') {
-            wx.setStorageSync("beInvited", invite);
+            wx.setStorageSync("invitecode", invite);
         }
 
         //获取商品ID
@@ -151,6 +154,7 @@ Page({
             });
         }
         this.getMyShareCode(); //获取我的推荐码
+        this.getUserInfo(); //获取个人信息
     },
 
     //获取我的推荐码
@@ -170,6 +174,20 @@ Page({
             });
         }else{
             page.getQRCode();
+        }
+    },
+
+    //获取用户信息
+    getUserInfo: function () {
+        let page = this;
+        let userToken = wx.getStorageSync('userToken');
+        if (userToken) {
+            app.api.userInfo(function (res) {
+                page.setData({
+                    nickname: res.data.nickname,
+                    avatar: res.data.avatar
+                });
+            });
         }
     },
 
@@ -397,6 +415,10 @@ Page({
                 page.setData({
                     qrcode: url
                 });
+            } else {
+                page.setData({
+                    qrcodeErrorMsg: e.msg
+                });
             }
         });
     },
@@ -405,116 +427,128 @@ Page({
     eventDraw: function () {
         //todo::头像和用户昵称需要授权获取
         let page = this;
-        let avatar = '/static/images/default.png';
-        let nickname = '猜猜我是谁';
-        let qrcode = page.data.qrcode;
-
-        this.setData({
-            painting: {
-                width: 560,
-                height: 900,
-                clear: true,
-                views: [
-                    {
-                        type: 'image',
-                        url: '/static/images/goods.png',
-                        top: 0,
-                        left: 0,
-                        width: 560,
-                        height: 900
-                    },
-                    {
-                        type: 'image',
-                        url: avatar,
-                        top: 50,
-                        left: 55,
-                        width: 80,
-                        height: 80
-                    },
-                    {
-                        type: 'text',
-                        content: '【' + nickname + '】',
-                        fontSize: 24,
-                        color: '#222222',
-                        textAlign: 'left',
-                        top: 60,
-                        left: 140
-                    },
-                    {
-                        type: 'text',
-                        content: '分享给你一个商品',
-                        fontSize: 24,
-                        color: '#222222',
-                        textAlign: 'left',
-                        top: 95,
-                        left: 150
-                    },
-                    {
-                        type: 'image',
-                        url: page.data.goodsImg[0],
-                        top: 160,
-                        left: 60,
-                        width: 440,
-                        height: 400
-                    },
-                    {
-                        type: 'text',
-                        content: '￥'+page.data.goodsInfo.product.price,
-                        fontSize: 30,
-                        lineHeight: 30,
-                        color: '#ea1919',
-                        textAlign: 'left',
-                        top: 570,
-                        left: 60,
-                        bolder: true
-                    },
-                    {
-                        type: 'text',
-                        content: page.data.goodsInfo.name,
-                        fontSize: 26,
-                        lineHeight: 30,
-                        color: '#222222',
-                        textAlign: 'left',
-                        top: 610,
-                        left: 60,
-                        bolder: true,
-                        MaxLineNumber: 2,
-                        width: 420,
-                        breakWord: true,
-                    },
-                    {
-                        type: 'text',
-                        content: page.data.goodsInfo.brief,
-                        fontSize: 24,
-                        lineHeight: 28,
-                        color: '#333333',
-                        textAlign: 'left',
-                        top: 680,
-                        left: 60,
-                        MaxLineNumber: 2,
-                        width: 420,
-                        breakWord: true,
-                    },
-                    {
-                        type: 'image',
-                        url: qrcode,
-                        top: 785,
-                        left: 120,
-                        width: 100,
-                        height: 100
-                    },
-                    {
-                        type: 'text',
-                        content: '长按识别小程序访问',
-                        fontSize: 22,
-                        color: '#333333',
-                        textAlign: 'left',
-                        top: 820,
-                        left: 235
-                    }
-                ]
-            }
-        })
+        let avatar = page.data.avatar;
+        let nickname = page.data.nickname;
+        if (avatar == ''){
+            avatar = '/static/images/default.png';
+        }
+        if (page.data.qrcode == '') {
+            wx.showToast({
+                title: page.data.qrcodeErrorMsg,
+                icon: 'none',
+                duration: 2000
+            });
+            page.clone();
+            return false;
+        }else{
+            let qrcode = page.data.qrcode;
+            this.setData({
+                painting: {
+                    width: 560,
+                    height: 900,
+                    clear: true,
+                    views: [
+                        {
+                            type: 'image',
+                            url: '/static/images/goods.png',
+                            top: 0,
+                            left: 0,
+                            width: 560,
+                            height: 900
+                        },
+                        {
+                            type: 'image',
+                            url: avatar,
+                            top: 50,
+                            left: 55,
+                            width: 80,
+                            height: 80
+                        },
+                        {
+                            type: 'text',
+                            content: '【' + nickname + '】',
+                            fontSize: 24,
+                            color: '#222222',
+                            textAlign: 'left',
+                            top: 60,
+                            left: 140
+                        },
+                        {
+                            type: 'text',
+                            content: '分享给你一个商品',
+                            fontSize: 24,
+                            color: '#222222',
+                            textAlign: 'left',
+                            top: 95,
+                            left: 150
+                        },
+                        {
+                            type: 'image',
+                            url: page.data.goodsImg[0],
+                            top: 160,
+                            left: 60,
+                            width: 440,
+                            height: 400
+                        },
+                        {
+                            type: 'text',
+                            content: '￥' + page.data.goodsInfo.product.price,
+                            fontSize: 30,
+                            lineHeight: 30,
+                            color: '#ea1919',
+                            textAlign: 'left',
+                            top: 570,
+                            left: 60,
+                            bolder: true
+                        },
+                        {
+                            type: 'text',
+                            content: page.data.goodsInfo.name,
+                            fontSize: 26,
+                            lineHeight: 30,
+                            color: '#222222',
+                            textAlign: 'left',
+                            top: 610,
+                            left: 60,
+                            bolder: true,
+                            MaxLineNumber: 2,
+                            width: 420,
+                            breakWord: true,
+                        },
+                        {
+                            type: 'text',
+                            content: page.data.goodsInfo.brief,
+                            fontSize: 24,
+                            lineHeight: 28,
+                            color: '#333333',
+                            textAlign: 'left',
+                            top: 680,
+                            left: 60,
+                            MaxLineNumber: 2,
+                            width: 420,
+                            breakWord: true,
+                        },
+                        {
+                            type: 'image',
+                            url: qrcode,
+                            top: 785,
+                            left: 120,
+                            width: 100,
+                            height: 100
+                        },
+                        {
+                            type: 'text',
+                            content: '长按识别小程序访问',
+                            fontSize: 22,
+                            color: '#333333',
+                            textAlign: 'left',
+                            top: 820,
+                            left: 235
+                        }
+                    ]
+                }
+            });
+        }
     },
 
     //获取图片

@@ -149,7 +149,7 @@ function login1(data,callback) {
 }
 function login2(data, callback) {
     //加入邀请码
-    let pid = wx.getStorageSync('beInvited');
+    let pid = wx.getStorageSync('invitecode');
     if (pid) {
         data['pid'] = pid;
     }
@@ -365,6 +365,7 @@ function saveUserShip(data, callback) {
 }
 //创建订单
 function createOrder(data, callback) {
+  data.source = 3;
   api('order.create', data, function (res) {
     callback(res);
   });
@@ -835,6 +836,12 @@ function getQRCode(data, callback){
         callback(res);
     });
 }
+//获取物流详情
+function getLogisticsData(data, callback){
+    api('order.logisticbyapi', data, function(res){
+        callback(res);
+    });
+}
 
 module.exports = {
   login1: login1,
@@ -849,7 +856,6 @@ module.exports = {
   goodsList: goodsList,
   cartList: cartList,
   goodsInfo: goodsInfo,
-  productInfo: productInfo,
   productInfo: productInfo,
   goodsParameter: goodsParameter,
   goodsHistory: goodsHistory,
@@ -928,5 +934,6 @@ module.exports = {
   getCouponKey: getCouponKey,
   myInvite: myInvite,
   setMyInvite: setMyInvite,
-  getQRCode: getQRCode
+  getQRCode: getQRCode,
+  getLogisticsData: getLogisticsData
 }

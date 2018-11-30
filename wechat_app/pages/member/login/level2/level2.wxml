@@ -17,7 +17,4 @@
     </view>    
   </view>
   <button class="weui-btn" bindtap="showTopTips" type="primary">登录</button>
-  <view class='bot' bindtap="showWxLogin">
-    <text>微信用户一键登录</text>
-  </view>
 </view>

@@ -130,7 +130,7 @@ Page({
     //被邀请码
     if (options.invite) {
         wx.setStorage({
-            key: "beInvited",
+            key: "invitecode",
             data: e.invite
         });
     }

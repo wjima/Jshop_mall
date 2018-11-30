@@ -33,7 +33,7 @@
 export default {
     data () {
         return {
-            pid: '', // 邀请码
+            invitecode: '', // 邀请码
             mobile: '',
             pwd: '',
             code: '', // 验证码
@@ -50,11 +50,11 @@ export default {
                 }
             })
         }
-        if (this.$route.query.pid) {
-            this.GLOBAL.setStorage('pid', this.$route.query.pid)
-            this.GLOBAL.setStorage('time', new Date().getTime() + 60 * 60 * 24)
+        if (this.$route.query.invitecode) {
+            this.GLOBAL.setStorage('invitecode', this.$route.query.invitecode)
+            // this.GLOBAL.setStorage('time', new Date().getTime() + 60 * 60 * 24)
         }
-        this.pid = this.GLOBAL.getStorage('pid') || 0
+        this.invitecode = this.GLOBAL.getStorage('invitecode') || ''
     },
     computed: {
         checkMobile () {
@@ -98,9 +98,8 @@ export default {
                 this.$dialog.toast({mes: '请输入登录密码', timeout: 1300})
             } else {
                 let data = {mobile: this.mobile, code: this.code, password: this.pwd}
-                // 如果pid为真 往data对象赋值
-                if (this.pid) data.pid = this.pid
-                this.$api.reg(data, res => {
+                if (this.invitecode) data.invitecode = this.invitecode
+                this.$api.smsLogin(data, res => {
                     if (res.status) {
                         this.GLOBAL.setStorage('user_token', res.data)
                         this.$dialog.toast({

@@ -698,7 +698,7 @@ function sendMessage($user_id, $code, $params)
 
 
 /**
- * 根据商户id和用户id获取openid
+ * 根据商户id和用户id获取openid (废弃方法)
  * @param $seller_id
  * @param $user_id
  * @return bool|array
@@ -788,7 +788,7 @@ function getProductSpesDesc($str_spes_desc){
     return $re;
 }
 
-//返回用户信息
+//返回管理员信息
 function get_manage_info($manage_id,$field = 'username')
 {
     $user = app\common\model\Manage::get($manage_id);
@@ -873,4 +873,13 @@ function isInGroup($gid = 0, &$promotion_id = 0)
         return true;
     }
     return false;
+}
+
+/***
+ * 判断是否json
+ * @param $str
+ * @return bool
+ */
+function isjson($str){
+    return is_null(json_decode($str))?false:true;
 }

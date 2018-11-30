@@ -38,7 +38,7 @@ Page({
         }
     }
     if (invite != '') {
-        wx.setStorageSync("beInvited", invite);
+        wx.setStorageSync("invitecode", invite);
     }
 
     this.slideImg(); //获取幻灯片广告数据
@@ -181,7 +181,7 @@ Page({
     });
   },
 
-  //获取团购数据
+  //获取团购数据 此处不分页
   groupList: function (flag = false) {
     var page = this;
     page.setData({
@@ -198,7 +198,7 @@ Page({
 
     app.api.getGroup(data, function (res) {
       if (res.status) {
-        let group = page.data.group.concat(res.data);
+        let group = res.data;
         page.setData({
           group: group,
           ajaxStatus: true

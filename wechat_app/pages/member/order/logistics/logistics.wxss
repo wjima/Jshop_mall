@@ -1,0 +1,30 @@
+.logistics{
+    padding: 30rpx;
+}
+.status{
+    font-size: 28rpx;
+    color: #555;
+    text-align: center;
+}
+.item-circle{
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    border: 2rpx solid #000;
+}
+.item-line{
+    margin-left: 8rpx;
+    padding: 20rpx 0 20rpx 30rpx;
+    border-left: 2rpx solid #000;
+}
+.item-context{
+    font-size: 26rpx;
+    color: #333;
+}
+.item-time{
+    font-size: 24rpx;
+    color: #666;
+}
+.list:nth-child(2) .item-context,.list:nth-child(2) .item-time{
+    color: red !important;
+}

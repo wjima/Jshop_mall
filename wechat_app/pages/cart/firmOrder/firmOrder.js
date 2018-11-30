@@ -28,7 +28,8 @@ Page({
     costFreight: 0.00,
     showcoupon: false,
     couponitems: [], //用户优惠券列表
-    usedCoupon: '', //使用的优惠券号
+    usedCoupon: '', //即将使用的优惠券号
+    usedCouponOk: '', //已经使用的优惠券号
     usedCouponName: '未使用', //使用的优惠券名
     couponPmt: 0.00, //优惠券优惠金额
     express: true,
@@ -46,6 +47,8 @@ Page({
     store_mobile: '', //门店电话
     store_address: '暂无自提门店', //门店地址
     couponKey: '', //输入的优惠券号
+    couponKey2: '', //存储的
+    noCoupon: true, //没有使用优惠券
   },
 
   //页面加载
@@ -62,7 +65,6 @@ Page({
     this.setData({
       cartIds: cart_id
     });
-    //this.getUserPoint();
   },
 
     //是否开启门店自提
@@ -128,21 +130,57 @@ Page({
           data['point'] = page.data.available_point;
       }
       app.api.cartList(data, function (res) {
-        page.setData({
-          cartIds: cart_id,
-          productData: res.data.list,
-          goodsAmount: app.common.formatMoney(res.data.goods_amount, 2, ''),
-          goodsPmt: app.common.formatMoney(res.data.goods_pmt, 2, ''),
-          orderPmt: app.common.formatMoney(res.data.order_pmt, 2, ''),
-          couponPmt: app.common.formatMoney(res.data.coupon_pmt, 2, ''),
-          orderPromotionList: res.data.promotion_list,
-          totalAmount: app.common.formatMoney(res.data.amount, 2, ''),
-          costFreight: app.common.formatMoney(res.data.cost_freight*1, 2, '')
-        });
-        page.setSpes();
-        if(!page.data.pointStatus){
-            page.getUserPoint();
-        }
+          if(res.status){
+              let couponName = '未使用';
+              let noCoupon = true;
+              if (res.data.coupon && res.data.coupon.length !== 0) {
+                  couponName = '';
+                  for (var key in res.data.coupon) {
+                      couponName += res.data.coupon[key]+',';
+                  }
+                  couponName = couponName.substr(0, couponName.length - 1);
+                  noCoupon = false;
+              }
+              page.setData({
+                  cartIds: cart_id,
+                  productData: res.data.list,
+                  goodsAmount: app.common.formatMoney(res.data.goods_amount, 2, ''),
+                  goodsPmt: app.common.formatMoney(res.data.goods_pmt, 2, ''),
+                  orderPmt: app.common.formatMoney(res.data.order_pmt, 2, ''),
+                  couponPmt: app.common.formatMoney(res.data.coupon_pmt, 2, ''),
+                  orderPromotionList: res.data.promotion_list,
+                  totalAmount: app.common.formatMoney(res.data.amount, 2, ''),
+                  costFreight: app.common.formatMoney(res.data.cost_freight * 1, 2, ''),
+                  usedCouponOk: res.data.coupon,
+                  usedCouponName: couponName,
+                  noCoupon: noCoupon
+              });
+              page.setSpes();
+              if (!page.data.pointStatus) {
+                  page.getUserPoint();
+              }
+          }else{
+            wx.showToast({
+                title: res.msg,
+                icon: 'none',
+                duration: 2000
+            });
+
+              let k2 = page.data.couponKey2;
+              if (page.data.couponKey != ''){
+                  k2 = page.data.couponKey2.substr(0, page.data.couponKey2.length*1-page.data.couponKey.length*1-1);
+              }
+
+                if (res.data == 15009 || res.data == 15013 || res.data == 15015){
+                    //优惠券号码不存在
+                    //优惠券已经使用过了
+                    //同一类优惠券，只能使用一张
+                    page.setData({
+                        couponKey: '',
+                        couponKey2: k2
+                    });
+                }
+          }
       });
     });
   },
@@ -175,59 +213,6 @@ Page({
     wx.navigateTo({
       url: '../../member/addressList/addressList?select=true',
     });
-    // app.db.userToken(function (token) {
-    //   wx.chooseAddress({
-    //     success: function (res) {
-    //       if (res.errMsg == "chooseAddress:ok") {
-    //         //获取成功
-    //         //存储这个收获地区信息到数据库
-    //         var data = {
-    //           province_name: res.provinceName,
-    //           city_name: res.cityName,
-    //           county_name: res.countyName,
-    //           postal_code: res.postalCode
-    //         };
-    //         var areaId = 0;
-    //         app.api.getAreaId(data, function (res1) {
-    //           if(res1.status) {
-    //             areaId = res1.data;
-    //             page.setData({
-    //               areaId: areaId
-    //             });
-    //             //存储用户收货信息
-    //             var userShipId = 0;
-    //             var userShipData = {
-    //               area_id: areaId,
-    //               user_name: res.userName,
-    //               detail_info: res.detailInfo,
-    //               tel_number: res.telNumber,
-    //               is_def: 1
-    //             }
-    //             app.api.saveUserShip(userShipData, function (res2) {
-    //               if (res2.status) {
-    //                 userShipId = res2.data
-    //                 page.setData({
-    //                   isAddress: true,
-    //                   area: res.provinceName + res.cityName + res.countyName,
-    //                   address: res.detailInfo,
-    //                   name: res.userName,
-    //                   mobile: res.telNumber,
-    //                   userShipId: userShipId
-    //                 });
-    //               }
-    //             });
-    //           }
-    //           page.getProductData();
-    //         });
-    //       } else {
-    //         //todo:获取失败处理
-    //         page.setData({
-    //           isAddress: false
-    //         });
-    //       }
-    //     }
-    //   });
-    // });
   },
 
   //选择门店
@@ -289,12 +274,17 @@ Page({
 
         //组装数据
         if (flag) {
+            let coupon = '';
+            for (var key in page.data.usedCouponOk){
+                coupon += key+',';
+            }
+            coupon = coupon.substr(0, coupon.length - 1);
             var order_data = {
                 uship_id: page.data.userShipId,
                 cart_ids: page.data.cartIds,
                 memo: page.data.buyerMessage,
                 area_id: page.data.areaId,
-                coupon_code: page.data.usedCoupon,
+                coupon_code: coupon,
                 formId: formId,
                 receipt_type: page.data.receipt_type,
                 store_id: page.data.store_id,
@@ -420,19 +410,54 @@ Page({
   //优惠券被选中
   clickCoupon: function (e) {
     let page = this;
+    //只能选择一个优惠券
     for (let k in page.data.couponitems) {
       if (page.data.couponitems[k].name == e.target.dataset.id) {
         page.data.couponitems[k].checked = 'true';
+      }else{
+          delete page.data.couponitems[k].checked;
       }
     }
-    this.setData({
-      usedCoupon: e.target.dataset.id,
-      usedCouponName: e.target.dataset.name,
-      couponitems: page.data.couponitems,
-      showcoupon: false
-    });
-    page.getProductData();
+    //获取现在的优惠券ID
+      let c1 = '';
+      for (let key in page.data.couponitems) {
+          if (page.data.couponitems[key].checked == 'true') {
+              c1 += ',' + page.data.couponitems[key].name
+          }
+      }
+      //获取输入的优惠券
+      let c2 = page.data.couponKey;
+      let s = c1 + "," + c2;
+      s = s.replace(/^,+/, "").trim();
+      s = s.replace(/,+$/, "").trim();
+
+          page.setData({
+              usedCoupon: s,
+              showcoupon: false,
+              pointStatus: false,
+              couponitems: page.data.couponitems,
+              //noCoupon: false,
+          });
+          page.getProductData();
   },
+
+    //选择不使用优惠券
+    clickNoCoupon: function(e){
+        let page = this;
+        for (let k in page.data.couponitems) {
+            delete page.data.couponitems[k].checked;
+        }
+        this.setData({
+            usedCoupon: '',
+            usedCouponName: '未使用',
+            couponitems: page.data.couponitems,
+            showcoupon: false,
+            pointStatus: false,
+            noCoupon: true,
+            couponKey: ''
+        });
+        page.getProductData();
+    },
 
   //获取用户的可用积分
   getUserPoint: function (e) {
@@ -487,7 +512,8 @@ Page({
         this.setData({
             lifting: false,
             express: true,
-            receipt_type: 1
+            receipt_type: 1,
+            pointStatus: false
         });
         if (outType != 1) {
             this.getProductData();
@@ -500,7 +526,8 @@ Page({
         this.setData({
             express: false,
             lifting: true,
-            receipt_type: 2
+            receipt_type: 2,
+            pointStatus: false
         });
         if (outType != 2) {
             this.getProductData();
@@ -532,48 +559,33 @@ Page({
     },
     
     //输入优惠券确认
-    couponKeyBtn: function () {
+    couponKeyBtn: function(res){
         let page = this;
-        let key = page.data.couponKey;
-        let data = {
-            'key': key
-        }
-        app.api.getCouponKey(data, function(res){
-            if(!res.status){
-                wx.showToast({
-                    title: res.msg,
-                    icon: 'none',
-                    duration: 2000
-                })
-            }else{
-                var datas = {
-                    display: 'no_used'
-                }
-                app.api.myCouponList(datas, function (ress) {
-                    if (ress.status) {
-                        let coupon = [];
-                        for (let k in ress.data) {
-                            coupon.push({ name: ress.data[k].coupon_code, value: ress.data[k].name });
-                        }
-                        page.setData({
-                            couponitems: coupon
-                        });
-                        for (let k in page.data.couponitems) {
-                            if (page.data.couponitems[k].name == res.data.coupon_code) {
-                                page.data.couponitems[k].checked = 'true';
-                            }
-                        }
-                        page.setData({
-                            usedCoupon: res.data.coupon_code,
-                            usedCouponName: res.data.coupon_name,
-                            couponitems: page.data.couponitems,
-                            showcoupon: false
-                        });
-                        page.getProductData();
-                    }
-                });
-                
+        let c1 = '';
+        for (let key in page.data.couponitems) {
+            if (page.data.couponitems[key].checked == 'true'){
+                c1 += ',' + page.data.couponitems[key].name
             }
-        });
+        }
+        let c2 = page.data.couponKey;
+        if (c2 == ''){
+            //不使用优惠券
+            page.setData({
+                pointStatus: false,
+                showcoupon: false,
+            });
+        }else{
+            let d = page.data.couponKey2 + ',' + c2
+            d = d.replace(/^,+/, "").trim();
+            let s = c1 + "," + d;
+            s = s.replace(/^,+/, "").trim();
+            page.setData({
+                usedCoupon: s,
+                couponKey2: d,
+                showcoupon: false,
+                pointStatus: false
+            });
+            page.getProductData();
+        }
     }
 });

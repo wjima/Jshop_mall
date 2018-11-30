@@ -22,8 +22,8 @@ class UserTocash extends Common
             'data' => ''
         ];
         //最低提现金额
-        if($money < config('jshop.tocash_money_low')){
-            $result['msg'] = "提现最低不能少于".config('jshop.tocash_money_low')."元";
+        if($money < getSetting('tocash_money_low')){
+            $result['msg'] = "提现最低不能少于".getSetting('tocash_money_low')."元";
             return $result;
         }
         $userModel = new User();

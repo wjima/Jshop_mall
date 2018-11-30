@@ -41,9 +41,10 @@ Page({
         var key = res.data.items[i].id
         images[key] = [];
         scores[key] = 5;   //默认五星好评
-        stars[key] = [true, true, true, true, false];
+        stars[key] = [true, true, true, true, true];
         textarea[key] = '';
       }
+      console.log(res.data.items);
       page.setData({
         images: images,
         goodsList: res.data.items,

@@ -349,6 +349,7 @@
 }
 .cartlist .goodsimg, .afterservice .goodsimg, .collect .goodsimg, .history .goodsimg{
     width: 1.8rem;
+    height: 1.8rem;
 }
 .cartlist .yd-flexbox-item, .afterservicelist .yd-flexbox-item{
     text-align: left;

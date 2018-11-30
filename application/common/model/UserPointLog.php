@@ -325,7 +325,6 @@ class UserPointLog extends Common
                 foreach($return['data'] as &$v)
                 {
                     $v['type'] = config('params.user_point_log')['type'][$v['type']];
-                    $v['balance'] = $v['balance']+$v['num'];
                     $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
                 }
             }

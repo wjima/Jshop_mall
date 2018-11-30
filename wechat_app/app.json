@@ -45,7 +45,8 @@
         "pages/other/lading/lading",
         "pages/other/lading/write",
         "pages/other/store/store",
-        "component/canvasdrawer/canvasdrawer"
+        "component/canvasdrawer/canvasdrawer",
+        "pages/member/order/logistics/logistics"
     ],
     "window": {
         "backgroundTextStyle": "light",

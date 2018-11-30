@@ -55,19 +55,19 @@
             id:'promotion',
             cols: [[
                 {type:'numbers'},
-                {field:'name',title:'团购(秒杀)名称',width:140},
-                {field:'sort', width:100, sort: true,title:'权重'},
-                {field:'type', width:140, sort: true,title:'类型',templet:function (data) {
+                {field:'name',title:'团购(秒杀)名称'},
+                {field:'sort', sort: true,title:'权重'},
+                {field:'type', sort: true,title:'类型',templet:function (data) {
                     if(data.type=='3'){
                         return '团购';
                     }else{
                         return '秒杀';
                     }
                 }},
-                {field:'status', width:100,title:'启用状态'},
-                {field:'stime',width:170,title:'开始时间'},
-                {field:'etime',width:170,title:'结束时间'},
-                {field: 'operating', title: '操作', width:200, align: 'center',templet:function(data){
+                {field:'status',title:'启用状态'},
+                {field:'stime',title:'开始时间'},
+                {field:'etime',title:'结束时间'},
+                {field: 'operating', title: '操作', align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/groupEdit')}?id=' + data.id + '">编辑</a>';
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';

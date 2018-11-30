@@ -29,13 +29,20 @@ class UserWx extends Common
         if(!$result['status']){
             return $result;
         }
-        $where['openid'] = $result['data']['openid'];
+        if(isset($result['data']['unionid']) && $result['data']['unionid']){
+            $where['unionid'] = $result['data']['unionid'];
+        }else{
+            $where['openid'] = $result['data']['openid'];
+        }
         $where['type'] = self::TYPE_MINIPROGRAM;
         $info = $this->where($where)->find();
         if($info){
             //更新session_key
             $this->save(['session_key'=>$result['data']['session_key']],$where);
         }else{
+            if(isset($result['data']['unionid']) && $result['data']['unionid']){
+                $data['unionid'] = $result['data']['unionid'];
+            }
             $data['type'] = self::TYPE_MINIPROGRAM;     //小程序类型
             $data['openid'] = $result['data']['openid'];
             $data['session_key'] = $result['data']['session_key'];
@@ -46,99 +53,41 @@ class UserWx extends Common
         return $result;
     }
 
-    //根据微信的信息，创建用户,但是没有登陆，没有手机号码，等他手机号码传过来后再登陆,此方法是调用微信小程序账号登陆的时候调用的方法，暂时没用，现在小程序是直接获取手机号码来登陆
-//    public function toCreate($openid,$edata,$iv){
-//        $result = [
-//            'status' => false,
-//            'data' => '',
-//            'msg' => ''
-//        ];
-//        $info = $this->where(['openid'=>$openid])->find();
-//        if(!$info){
-//            return error_code(11002);
-//        }
-//        //解密数据信息
-//        $wx =   new \org\Wx();
-//        $result = $wx->decrypt($edata,$iv,$info['session_key']);
-//        if(!$result['status']){
-//            return $result;
-//        }
-//        Db::startTrans();
-//        try {
-//            if(isset($result['data']['unionId'])){
-//                $data['unionid'] = $result['data']['unionId'];
-//            }
-//            $data['avatar'] = $result['data']['avatarUrl'];
-//            $data['nickname'] = $result['data']['nickName'];
-//            $data['gender'] = $result['data']['gender'];
-//            $data['language'] = $result['data']['language'];
-//            $data['city'] = $result['data']['city'];
-//            $data['province'] = $result['data']['province'];
-//            $data['country'] = $result['data']['country'];
-//            $this->save($data,['id'=>$info['id']]);
-//            Db::commit();
-//        } catch (\Exception $e) {
-//            Db::rollback();
-//            return [
-//                'status' => false,
-//                'data' => '',
-//                'msg' => $e->getMessage(),
-//            ];
-//        }
-//        return [
-//            'status' => true,
-//            'data' => '',
-//            'msg' => '',
-//        ];
-//    }
-    //微信小程序登陆第二步，根据微信端传过来的值解析用户数据，，绑定手机号码
-    public function bindMobile($openid,$edata,$iv,$pid){
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
-
+    //微信小程序登陆第二步，根据微信端传过来的值解析用户数据,更新user_wx表
+    public function updateWxInfo($openid,$edata,$iv,$pid){
         $info = $this->where(['openid'=>$openid])->find();
         if(!$info){
             return error_code(11002);
         }
         //解密数据信息
-        $wx =   new \org\Wx();      //这里以后要根据seller_id的信息传入对应的微信小程序的参数
+        $wx =   new \org\Wx();
         $result = $wx->decrypt($edata,$iv,$info['session_key']);
         if(!$result['status']){
             return $result;
         }
-        Db::startTrans();
-        try {
-            //根据手机号码去绑定或者创建用户
-            $userModel = new User();
-            $userInfo = $userModel->where(['mobile'=>$result['data']['purePhoneNumber']])->find();
-            if($userInfo){
-                $data['user_id'] = $userInfo['id'];
-            }else{
-                //创建用户
-                $userData['mobile'] = $result['data']['purePhoneNumber'];
-                $userData['pid'] = $pid;
-                $re = $userModel->thirdAdd($userData);
-                if(!$re['status']){
-                    return $re;
-                }
-                $data['user_id'] = $re['data'];
-            }
-            //把手机号码和国家区号存到微信用户表里
-            $data['country_code'] = $result['data']['countryCode'];
-            $data['mobile'] = $result['data']['purePhoneNumber'];
-            $this->save($data,['id'=>$info['id']]);
-            Db::commit();
-            $result['status'] = true;
-            $result['data']['user_id'] = $data['user_id'];
-            return $result;
-        } catch (\Exception $e) {
-            Db::rollback();
-            $result['msg'] = $e->getMessage();
-            return $result;
+        //加密信息里有openid或unionid，前台传过来的值查出来的数据里也有，需要判断是否一致，否则可能会有漏洞
+        if($info['openid'] != $result['data']['openId'] && $info['unionid'] != $result['data']['unionId']){
+            return error_code(10000);
+
         }
+        //更新微信信息
+        $data['avatar'] = $result['data']['avatarUrl'];
+        $data['nickname'] = $result['data']['nickName'];
+        $data['gender'] = $result['data']['gender'];
+        $data['language'] = $result['data']['language'];
+        $data['city'] = $result['data']['city'];
+        $data['province'] = $result['data']['province'];
+        $data['country'] = $result['data']['country'];
+        $this->save($data,['id'=>$info['id']]);
+        //判断当前记录是否有user_id ,如果有，就是老用户，否则就是新用户
+        return [
+            'status' => true,
+            'data' => [
+                'id' => $info['id'],
+                'user_id' => $info['user_id']
+            ],
+            'msg' => ''
+        ];
     }
 
 

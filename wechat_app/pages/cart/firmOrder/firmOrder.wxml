@@ -113,6 +113,14 @@
         <text class='price-details-right'><text wx:for="{{cartData.promotion_list}}" wx:for-item="vv" wx:key="ind" class="{{vv.type==2?'promotion_on':'promotion_off'}}">{{vv.name}}</text></text>
       </view>
       <view class='price-calculation'>
+        <view class='integral' wx:if="{{pointSwitch == 1 && available_point > 0}}">
+          <checkbox-group bindchange="checkboxChange">
+            <checkbox class='integral-checkbox' value="pointStatus" checked="{{pointStatus}}"/>使用积分
+          </checkbox-group>
+        </view>
+        <view class='integral-details'>可用{{available_point}}积分，可抵扣{{pointRmb}}元，共有{{point}}积分。</view>
+      </view>
+      <view class='price-calculation'>
         <view>
           <text class='price-details-left'>商品小计</text>
           <text class='price-details-right'>¥{{goodsAmount}}</text>
@@ -132,13 +140,9 @@
         <view wx:if="{{costFreight !== '0.00'}}">
           <text class='price-details-left'>运费</text>
           <text class='price-details-right'>+¥{{costFreight}}</text>
-        </view>
-        <view class='integral' wx:if="{{pointSwitch == 1 && available_point > 0}}">
-          <checkbox-group bindchange="checkboxChange">
-            <checkbox class='integral-checkbox' value="point_status" checked="{{point_status}}"/>使用积分（可用{{available_point}}积分，可抵扣{{pointRmb}}元，共有{{point}}积分。）
-          </checkbox-group>
-        </view>
+        </view>        
       </view>
+      
       <view class='price-details buyer'>
         <text class='price-details-left'>买家留言</text>
         <input placeholder-class='buyer-input' type='text' bindchange="buyerMessage" placeholder='50字以内（选填）'></input>
@@ -164,10 +168,14 @@
   </view>
   <view class="{{choose?'show':'hidden'}}">
     <view class='modal-content'>
-      <radio-group class="radio-group" bindchange="radioChange">
-        <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon' bindchange="radioChange">
+      <radio-group class="radio-group">
+        <label class="radio" wx:for="{{couponitems}}" data-statu="close" wx:if="{{showcoupon}}" wx:key="key" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>
           <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text>
           <radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
+        </label>
+        <label class="radio" data-statu="close" data-id="0" data-name="未使用" bindtap='clickNoCoupon'>
+          <text data-id="0" data-name="未使用" bindtap='clickNoCoupon'>不使用</text>
+          <radio value="未使用" color="#ff3b44" checked="{{noCoupon}}" data-id="0" data-name="未使用" bindtap='clickNoCoupon'/>
         </label>
       </radio-group>
     </view>
@@ -176,11 +184,6 @@
     <view class='modal-content'>
       <view class='entry-c'>
         <input placeholder='请输入优惠券码' bindinput='couponKey' placeholder-class='entry-input'></input><button bindtap='couponKeyBtn'>确认</button>
-        <!-- <view class='entry-list'>
-          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
-          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
-          <view class='entry-item'><text>123454941</text><text class='del'>×</text></view>
-        </view> -->
       </view>
     </view>
   </view>

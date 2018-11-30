@@ -145,8 +145,21 @@ class Store extends Api
         }
 
         $wx = new Wx();
-        $accessToken = $wx->getAccessToken();
-        $style['width'] = 300;
-        return $wx->getParameterQRCode($accessToken, $page, $invite, $goods, $style);
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $accessToken = $wx->getAccessToken($wx_appid, $wx_app_secret);
+        if($accessToken)
+        {
+            $style['width'] = 300;
+            return $wx->getParameterQRCode($accessToken, $page, $invite, $goods, $style, $wx_appid);
+        }
+        else
+        {
+            return $return = [
+                'status' => false,
+                'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
+                'data' => ''
+            ];
+        }
     }
 }

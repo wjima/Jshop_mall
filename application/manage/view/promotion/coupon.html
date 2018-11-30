@@ -27,7 +27,6 @@
             <a href="{:url('Promotion/couponAdd')}" class="layui-btn layui-btn-sm option-add">
                 <i class="layui-icon">&#xe608;</i> 添加
             </a>
-            <a href="{:url('Coupon/index')}" class="layui-btn layui-btn-sm option-add">领取记录</a>
         </div>
     </div>
 </form>
@@ -61,8 +60,9 @@
                 {field:'status', width:100,title:'启用状态'},
                 {field:'stime',width:170,title:'开始时间'},
                 {field:'etime',width:170,title:'结束时间'},
-                {field: 'operating', title: '操作', width:200, align: 'center',templet:function(data){
+                {field: 'operating', title: '操作', width:220, align: 'center',templet:function(data){
                     var html = '';
+                    html += '<a href="{:url(\'Coupon/index\')}?id=' + data.id +'" class="layui-btn layui-btn-xs layui-btn-primary">券码列表</a>'
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/couponEdit')}?id=' + data.id + '">编辑</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-upload" data-id="' + data.id + '" >下载</a>';
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';

@@ -26,10 +26,13 @@ export default {
             })
         },
         // 拼接推荐url 路由
+        // QCodeUrl (code) {
+        //     let protocol = window.location.protocol
+        //     let host = window.location.host
+        //     this.QCode = protocol + '//' + host + '/#/register?pid=' + code
+        // },
         QCodeUrl (code) {
-            let protocol = window.location.protocol
-            let host = window.location.host
-            this.QCode = protocol + '//' + host + '/#/register?pid=' + code
+            this.QCode = this.GLOBAL.locationHost() + '/#register?invitecode=' + code
         }
     }
 }

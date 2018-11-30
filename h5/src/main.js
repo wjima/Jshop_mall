@@ -14,6 +14,7 @@ import 'vue-social-share/dist/client.css'
 import Mui from 'vue-awesome-mui'
 import VueQriously from 'vue-qriously'
 import VueLazyload from 'vue-lazyload'
+import store from './store'
 
 Vue.use(VueQriously)
 Vue.use(Mui)
@@ -29,6 +30,7 @@ Vue.config.productionTip = false
 Vue.prototype.$api = Api
 Vue.prototype.GLOBAL = Common
 
+
 const router = new VueRouter({
     mode: 'hash',
     routes: routers,
@@ -43,6 +45,7 @@ const router = new VueRouter({
 const that = new Vue({
     el: '#app',
     router,
+    store,
     components: { App },
     template: '<App/>'
 })

@@ -60,7 +60,7 @@ export default {
     data () {
         return {
             tab: parseInt(this.GLOBAL.getStorage('loginType')) || 0,
-            pid: '', // 邀请码
+            invitecode: this.GLOBAL.getStorage('invitecode') || '', // 邀请码
             mobile: null,
             password: null,
             code: null, // 短信验证码
@@ -80,18 +80,6 @@ export default {
                     this.$router.go(-1)
                 }
             })
-        }
-        // 如果localStorage的pid存在
-        if (this.GLOBAL.getStorage('pid')) {
-            // 判断pid的最大时间是否超过24小时
-            // 如果超过24小时  移除pid
-            // 否则 赋值this.pid
-            if (parseInt(this.GLOBAL.getStorage('time')) < new Date().getTime()) {
-                this.GLOBAL.removeStorage('pid')
-                this.GLOBAL.removeStorage('time')
-            } else {
-                this.pid = this.GLOBAL.getStorage('pid')
-            }
         }
         this.getAuth()
     },
@@ -165,15 +153,9 @@ export default {
                     if (!this.code) {
                         this.$dialog.toast({mes: '请输入短信验证码!', timeout: 1000})
                     } else {
-                        let data = {mobile: this.mobile, code: this.code}
-                        if (this.pid) {
-                            data['pid'] = this.pid
-                        }
+                        let data = {mobile: this.mobile, code: this.code, invitecode: this.invitecode}
                         this.$api.smsLogin(data, res => {
                             if (res.status) {
-                                // 邀请码登录成功后删除  防止重复推荐
-                                this.GLOBAL.removeStorage('pid')
-                                this.GLOBAL.removeStorage('time')
                                 this.GLOBAL.setStorage('user_token', res.data)
                                 this.redirectHandler()
                             }

@@ -30,6 +30,10 @@ class Setting extends Common
             'name' => '分类样式',
             'value' => '3'
         ],
+        'tocash_money_low'=>[
+            'name'=>'最低提现金额',
+            'value'=>'0'
+        ],
         'order_cancel_time' => [
             'name' => '订单取消时间',
             'value' => '1'
@@ -214,19 +218,44 @@ class Setting extends Common
             'name'=>'公众号类型',
             'value'=>'service'
         ],
+        //其他设置
+        'qq_map_key'=>[
+            'name'=>'腾讯地图key',
+            'value'=>''
+        ],
+        'kuaidi100_customer'=>[
+            'name'=>'公司编号',
+            'value'=>''
+        ],
+        'kuaidi100_key'=>[
+            'name'=>'授权key',
+            'value'=>''
+        ],
+        'image_storage_type'=>[
+            'name'=>'图片存储引擎',
+            'value'=>'Local'
+        ],
+        'image_storage_params'=>[
+            'name'=>'图片存储配置参数',
+            'value'=>''
+        ],
     ];
 
 
     //设置参数
     public function setValue($skey, $value)
     {
+
         $result = $this->check($skey, $value);
         if(!$result['status']){
             return $result;
         }
-
+        if(is_array($value)){
+            $value = json_encode($value);
+        }
         $info = $this->where(array('skey'=>$skey))->find();
         if($info){
+
             $info->value = $value;
             $info->save();
         }else{
@@ -247,6 +276,9 @@ class Setting extends Common
     {
         $info = $this->where(array('skey' => $skey))->find();
         if($info){
+            if(isjson( $info['value'])){
+                $info['value'] = json_decode($info['value'],true);
+            }
             return $info['value'];
         }else{
             if(isset($this->skeys[$skey]['value'])){
@@ -304,6 +336,9 @@ class Setting extends Common
         foreach($this->skeys as $k => $v){
             foreach($list as $info){
                 if($info['skey'] == $k){
+                    if(isjson( $info['value'])){
+                        $info['value'] = json_decode($info['value'],true);
+                    }
                     $this->skeys[$k]['value'] = $info['value'];
                     break;
                 }

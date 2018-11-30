@@ -94,6 +94,8 @@ class Store extends Manage
         {
             $this->assign('coordinate',$coordinate);
         }
+        $qq_map_key = getSetting('qq_map_key');
+        $this->assign('qq_map_key',$qq_map_key);
         return $this->fetch('map');
     }
 

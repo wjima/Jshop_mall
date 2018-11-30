@@ -32,7 +32,7 @@
 export default {
     data () {
         return {
-            pid: '', // 邀请码
+            invitecode: this.GLOBAL.getStorage('invitecode') || '', // 邀请码
             mobile: '',
             pwd: '',
             code: '', // 验证码
@@ -49,11 +49,6 @@ export default {
                 }
             })
         }
-        if (this.$route.query.pid) {
-            this.GLOBAL.setStorage('pid', this.$route.query.pid)
-            this.GLOBAL.setStorage('time', new Date().getTime() + 60 * 60 * 24)
-        }
-        this.pid = this.GLOBAL.getStorage('pid') || 0
     },
     computed: {
         checkMobile () {
@@ -97,7 +92,7 @@ export default {
                 this.$dialog.toast({mes: '请输入登录密码', timeout: 1300})
             } else {
                 let data = {mobile: this.mobile, code: this.code, password: this.pwd}
-                if (this.pid) data.pid = this.pid
+                if (this.invitecode) data.invitecode = this.invitecode
                 data['uuid'] = this.GLOBAL.getStorage('uuid')
                 this.$api.trustBind(data, res => {
                     if (res.status) {

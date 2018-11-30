@@ -140,5 +140,14 @@ Page({
     wx.navigateTo({
         url: '../../../goods/detail/detail?scene=' + ins
     });
-  }
+  },
+
+    //前往物流信息查询
+    logistics: function (e) {
+        let code = e.currentTarget.dataset.code;
+        let no = e.currentTarget.dataset.no;
+        wx.navigateTo({
+            url: '../logistics/logistics?code=' + code + '&no=' + no
+        });
+    }
 });

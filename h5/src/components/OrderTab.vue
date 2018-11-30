@@ -39,7 +39,7 @@
                             </div>
                             <div class="footer-bottom" v-else-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 1">
                                 <yd-button type="hollow" shape="circle" class="left-btn" @click.native="showDetail(item.order_id)">查看</yd-button>
-                                <yd-button type="hollow" shape="circle" class="left-btn" @click.native="logistics(item.order_id)">物流信息</yd-button>
+                                <!--<yd-button type="hollow" shape="circle" class="left-btn" @click.native="logistics(item.order_id)">物流信息</yd-button>-->
                                 <yd-button type="hollow" shape="circle" class="right-btn" @click.native="confirm(item.order_id)">确认收货</yd-button>
                             </div>
                             <div class="footer-bottom" v-else-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 1">
@@ -60,8 +60,8 @@
                 <div class="express-num">{{ logisticsInfo.company }}：{{ logisticsInfo.no }}</div>
                 <yd-timeline>
                     <yd-timeline-item v-for="(item, index) in logisticsInfo.list" :key="index">
-                        <p>{{ item.remark }}</p>
-                        <p style="margin-top: 10px;">{{ item.datetime }}</p>
+                        <p>{{ item.context }}</p>
+                        <p style="margin-top: 10px;">{{ item.time }}</p>
                     </yd-timeline-item>
                 </yd-timeline>
             </div>

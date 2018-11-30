@@ -19,9 +19,15 @@ class Exp{
 
     private $url = 'http://poll.kuaidi100.com/poll/query.do';
 
-    public function __construct(){
-        $this->key = config('jshop.api_express.key');
+    public function __construct()
+    {
+        $this->key       = config('jshop.api_express.key');
         $this->customer = config('jshop.api_express.customer');
+
+        if (getSetting('kuaidi100_customer') && getSetting('kuaidi100_key')) {
+            $this->customer = getSetting('kuaidi100_customer');
+            $this->key       = getSetting('kuaidi100_key');
+        }
     }
 
 

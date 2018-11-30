@@ -20,7 +20,7 @@ class Group extends Api
     public function getList(){
         $return_data = [
             'status' => true,
-            'msg'    => '查询失败',
+            'msg'    => '查询成功',
             'data'   => []
         ];
         $promotion = new Promotion();

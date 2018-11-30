@@ -149,8 +149,8 @@
   overflow: hidden;
 }
 .integral{
-    margin-top: 6rpx;
-    font-size: 24rpx;
+    /* margin-top: 6rpx; */
+    font-size: 28rpx;
     color: #666;
     overflow: hidden;
 }
@@ -179,6 +179,10 @@
   background: transparent;
   transform: translate(-50%, -50%) scale(1);
   -webkit-transform: translate(-50%, -50%) scale(1);
+}
+.integral-details{
+  font-size: 24rpx;
+  color: #999;
 }
 .price-calculation>view>.price-details-right{
   color: #FF3B44;

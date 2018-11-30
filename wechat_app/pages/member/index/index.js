@@ -43,7 +43,7 @@ Page({
       //是否店员
       app.api.isClerk(function(res){
           page.setData({
-              isClerk: res.status
+              isClerk: res.flag
           });
       });
 

@@ -160,16 +160,16 @@ class Goods extends Manage
                 $tmp_product['goods']['costprice']    = isset($val['costprice']) ? $val['costprice'] : 0;
                 $tmp_product['goods']['mktprice']     = isset($val['mktprice']) ? $val['mktprice'] : 0;
                 $tmp_product['goods']['marketable']   = isset($val['marketable']) ? $val['marketable'] : $productsModel::MARKETABLE_DOWN;
-                $tmp_product['goods']['stock']        = isset($val['stock']) ? $val['stock'] : 0;
-                $sn                                   = get_sn(4);
-                $tmp_product['goods']['sn']           = isset($val['sn']) ? $val['sn'] : $sn;
+                $tmp_product['goods']['stock']         = isset($val['stock']) ? $val['stock'] : 0;
+                $sn                                      = get_sn(4);
+                $tmp_product['goods']['sn']             = isset($val['sn']) ? $val['sn'] : $sn;
                 $tmp_product['goods']['product_spes'] = $key;
                 $tmp_product['goods']['is_defalut']   = isset($val['is_defalut']) ? $productsModel::DEFALUT_YES : $productsModel::DEFALUT_NO;
 
-                if($tmp_product['goods']['is_defalut'] == $productsModel::DEFALUT_YES ){
+                if ($tmp_product['goods']['is_defalut'] == $productsModel::DEFALUT_YES) {
                     $isExitDefalut = true;
                 }
-                $checkData                            = $this->checkProductInfo($tmp_product, $goods_id);
+                $checkData = $this->checkProductInfo($tmp_product, $goods_id);
                 if (!$checkData['status']) {
                     $result['msg'] = $checkData['msg'];
                     $goodsModel->rollback();
@@ -503,8 +503,9 @@ class Goods extends Manage
             $this->assign('items', $items);
         }
         $html             = $this->fetch('getSpecHtml');
-        $result['data']   = $html;
-        $result['status'] = true;
+        $result['data']  = $html;
+        $result['status']= true;
+        $result['msg']    = '获取成功';
         return $result;
 
     }

@@ -501,14 +501,11 @@ class Order extends Common
         $order_info->delivery; //发货信息
 
         //获取提货门店
-        $billLadingModel = new BillLading();
-        $bwhere[] = ['order_id', 'eq', $id];
-        $billLadingInfo = $billLadingModel->where($bwhere)->find();
         $order_info['store'] = false;
-        if($billLadingInfo)
+        if($order_info['store_id'] != 0)
         {
             $storeModel = new Store();
-            $storeInfo = $storeModel->get($billLadingInfo['store_id']);
+            $storeInfo = $storeModel->get($order_info['store_id']);
             $storeInfo['all_address'] = get_area($storeInfo['area_id']).$storeInfo['address'];
             $order_info['store'] = $storeInfo;
         }
@@ -541,19 +538,19 @@ class Order extends Common
         switch($order_info['text_status'])
         {
             case self::ALL_PENDING_PAYMENT: //待付款
-                $cancel = 7*86400;
+                $cancel = getSetting('order_cancel_time')*86400;
                 $ctime = $order_info['ctime'];
                 $remaining = $ctime + $cancel - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
                 break;
             case self::ALL_PENDING_RECEIPT: //待收货
-                $sign = 15*86400;
+                $sign = getSetting('order_autoSign_time')*86400;
                 $utime = $order_info['utime'];
                 $remaining = $utime + $sign - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
                 break;
             case self::ALL_PENDING_EVALUATE: //待评价
-                $eval = 15*86400;
+                $eval = getSetting('order_autoEval_time')*86400;
                 $confirm = $order_info['confirm_time'];
                 $remaining = $confirm + $eval - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
@@ -561,6 +558,26 @@ class Order extends Common
             default:
                 $order_info['remaining'] = false;
                 break;
+        }
+
+        //物流信息查询
+        if($order_info['delivery'][0])
+        {
+            $logi_code = $order_info['delivery'][0]['logi_code'];
+            $logi_no = $order_info['delivery'][0]['logi_no'];
+            $billDeliveryModel = new BillDelivery();
+            $express_delivery = $billDeliveryModel->getLogistic($logi_code, $logi_no);
+            if($express_delivery['status'])
+            {
+                $order_info['express_delivery'] = $express_delivery['data']['info']['data'][0];
+            }
+            else
+            {
+                $order_info['express_delivery'] = [
+                    'context' => '已为你发货，请注意查收',
+                    'time' => date('Y-m-d H:i:s', $order_info['delivery'][0]['ctime'])
+                ];
+            }
         }
 
         return $order_info;
@@ -1043,12 +1060,13 @@ class Order extends Common
      * @param bool $store_id
      * @param bool $lading_name
      * @param bool $lading_mobile
+     * @param int   $source     来源平台，1 pc，2 h5，3微信小程序
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0,$coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false)
+    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0,$coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false,$source=2)
     {
         $result = [
             'status' => false,
@@ -1138,6 +1156,7 @@ class Order extends Common
             $item['promotion_list'] = json_encode($promotion_list);
         }
         $order['memo'] = $memo;
+        $order['source'] = $source;
         $order['ip'] = get_client_ip();
         Db::startTrans();
         try {

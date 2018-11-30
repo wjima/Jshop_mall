@@ -97,6 +97,10 @@ class Coupon extends Common
         if(isset($post['is_used']) && $post['is_used'] != ""){
             $where[] = ['is_used','eq',$post['is_used']];
         }
+        if (isset($post['code']) && $post['code'] != "")
+        {
+            $where[] = ['coupon_code', 'like', '%'.$post['code'].'%'];
+        }
         if(isset($post['date']) && $post['date'] != ""){
             $theDate = explode(' 到 ',$post['date']);
             if(count($theDate) == 2){
@@ -117,7 +121,7 @@ class Coupon extends Common
     protected function tableFormat($list)
     {
         foreach ($list as $key => $val) {
-            $list[$key]['utime'] = date('Y-m-d H:i:s',$val['utime']);
+            $list[$key]['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
             if ($val['is_used'] == self::USED_YES)
             {
                 $list[$key]['used_name'] = model('User')->where('id',$val['used_id'])->value('nickname');

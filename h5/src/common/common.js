@@ -115,6 +115,16 @@ function hecong() {
     return entId
 }
 
+
+function locationHost () {
+    if (process.env.NODE_ENV === 'production') {
+        return window.apiUrl.split('/api.html')[0]
+    } else {
+        let url = 'http://www.b2c.com/index.php/api.html'
+        return url.split('/api.html')[0]
+    }
+}
+
 export default {
     setStorage: setStorage,
     getStorage: getStorage,
@@ -127,5 +137,6 @@ export default {
     successToShow: successToShow,
     throttle: throttle,
     getCaptcha: getCaptcha,
-    hecong: hecong
+    hecong: hecong,
+    locationHost: locationHost
 }

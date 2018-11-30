@@ -187,6 +187,7 @@ class BillDelivery extends Common
 
     /**
      * 获取物流信息接口
+     * 根据订单号查询
      * User:tianyu
      * @param string $order_id
      * @return mixed
@@ -224,10 +225,43 @@ class BillDelivery extends Common
         return $result;
     }
 
+
+    /**
+     *  物流信息查询
+     *  根据快递编码和单号查询
+     * @param $code
+     * @param $no
+     * @return array
+     */
+    public function getLogistic ($code, $no)
+    {
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+
+        $logisticsInfo = $this->logistics_query($code, $no);
+        if ($logisticsInfo['status'] === '200')
+        {
+            $result['data']['info'] = [
+                'no' => $logisticsInfo['nu'],
+                'data' => $logisticsInfo['data'],
+                'state' => $logisticsInfo['state'],
+                'state_name' => config('params.order')['logistics_state'][$logisticsInfo['state']]
+            ];
+        } else {
+            $result['status'] = false;
+            $result['msg'] = $logisticsInfo['message'];
+        }
+
+        return $result;
+    }
+
     /**
      *  api获取快递信息
      * User:tianyu
-     * @param $no       快递公司编码
+     * @param $com      快递公司编码
      * @param $code     物流单号
      * @return mixed
      */
@@ -237,6 +271,7 @@ class BillDelivery extends Common
         $res = $exp->postCurl($exp->assembleParam($com, $code));
         return $res;
     }
+
 
     /**
      * 获取发货单列表

@@ -10,7 +10,7 @@
       <image class='goods-img' src='{{item.image_url}}'></image>
       <!-- 好中差评 -->
       <view class='top-right'>
-        这是一个商品标题，对这就是一个商品标题
+        {{item.name}}
       </view>
     </view>
     <view class='top2 top'>

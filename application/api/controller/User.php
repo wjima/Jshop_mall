@@ -5,6 +5,7 @@ use app\common\model\Balance;
 use app\common\model\Setting;
 use app\common\model\UserBankcards;
 use app\common\model\UserPointLog;
+use app\common\model\UserShip;
 use app\common\model\UserTocash;
 use app\common\model\UserToken;
 use app\common\model\User as UserModel;
@@ -33,7 +34,13 @@ class User extends Api
 
 
     /**
-     * 短信验证码登陆
+     * 短信验证码登陆，手机短信验证注册账号
+     * mobile       手机号码，必填
+     * code         手机验证码，必填
+     * invitecode   邀请码，推荐人的邀请码 选填
+     * password     注册的时候，可以传密码 选填
+     * user_wx_id   第三方登录，微信公众号里的登陆，微信小程序登陆等需要绑定账户的时候，要传这个参数，这是第一次的时候需要这样绑定，以后就不需要了  选填
+     *
      * @return array
      */
     public function smsLogin()
@@ -96,14 +103,26 @@ class User extends Api
         }
         $pid = input('param.pid',0);
         $userWxModel = new UserWx();
-        $re = $userWxModel->bindMobile(input('param.open_id'),input('param.edata'),input('param.iv'),$pid);
+        $re = $userWxModel->updateWxInfo(input('param.open_id'),input('param.edata'),input('param.iv'),$pid);
+
         if(!$re['status'])
         {
             return $re;
         }
-        //绑定好手机号码了，去登陆,去取user_token
-        $userTokenModel = new UserToken();
-        return $userTokenModel->setToken($re['data']['user_id'],2);
+        if($re['data']['user_id'] == 0){
+            //未绑定用户，需要先绑定手机号码
+            $result['status'] = true;
+            $result['data'] = ['user_wx_id' => $re['data']['id']];
+            return $result;
+        }else{
+            //绑定好手机号码了，去登陆,去取user_token
+            $userTokenModel = new UserToken();
+            $re = $userTokenModel->setToken($re['data']['user_id'],2);
+            if($re['status']){
+                $re['data'] = ['token'=>$re['data']];
+            }
+            return $re;
+        }
     }
 
 
@@ -160,14 +179,14 @@ class User extends Api
 
 
     /**
-     * 注册
+     * 注册，此接口迟早要废弃，建议直接使用smsLogin接口
      * @return array
      */
     public function reg()
     {
         $userModel = new UserModel();
         $data = input('post.');
-        return $userModel->toAdd($data,2);
+        return $userModel->smsLogin($data,2);
     }
 
 
@@ -662,12 +681,16 @@ class User extends Api
 
     /**
      * 获取用户默认收货地址
-     * @return mixed
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getUserDefaultShip()
     {
         $user_id = $this->userId;
-        $res = model('common/UserShip')->getUserDefaultShip($user_id);
+        $model = new UserShip();
+        $res = $model->getUserDefaultShip($user_id);
         return $res;
     }
 
@@ -1151,16 +1174,15 @@ class User extends Api
         }
         $wxinfo = Cache::get('user_wx_' . $data['uuid']);
         $wxinfo = json_decode($wxinfo, true);
-
-        $data['authorId'] = $wxinfo['id'];
+        $data['user_wx_id'] = $wxinfo['id'];
         $userModel = new UserModel();
         $userWxModel = new UserWx();
-        $wxInfo = $userWxModel->where(['id' => $data['authorId']])->find();
+        $wxInfo = $userWxModel->where(['id' => $data['user_wx_id']])->find();
         if (isset($wxInfo['user_id']) && $wxInfo['user_id'] != '') {
             $returnData['msg'] = '请勿重复绑定';
             return $returnData;
         }
-        return $userModel->toBindAdd($data, 2);
+        return $userModel->smsLogin($data, 2);
     }
 
 

@@ -85,7 +85,7 @@ class Common extends Base
 
     }
     /**
-     * 用户注册页面
+     * 用户注册页面，此页面是通过页面直接登陆注册的，没有走接口，存的是session，暂时没啥用
      * @author sin
      */
     public function reg()
@@ -95,7 +95,7 @@ class Common extends Base
         }
         if(Request::isPost()){
             $userModel = new User();
-            $result = $userModel->toAdd(input('post.'));
+            $result = $userModel->smsLogin(input('post.'));
             if($result['status']){
                 if(Request::isAjax()){
                     $result['data'] = url('seller/index/index');
@@ -167,20 +167,5 @@ class Common extends Base
             $smsModel = new Sms();
             return $smsModel->send(input('post.mobile'), $code,$params);
         }
-    }
-    public function topay()
-    {
-        $config = [
-            'appid' => '',
-            'rsa_private_key' => "",
-        ];
-        $alipay = new \org\payments\alipay($config);
-        $paymentInfo = [
-            'payment_id' => time(),
-            'money' => '0.01',
-        ];
-        $re = $alipay->pay($paymentInfo);
-        dump($re);
-
     }
 }

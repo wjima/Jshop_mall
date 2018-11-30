@@ -433,8 +433,29 @@ const routers = [{
             title: '文章列表',
             keepAlive: false
         }
+    },
+    {
+        path: '/storeorder',
+        component: resolve => require(['../pages/store/Order'], resolve),
+        name: 'StoreOrder',
+        meta: {
+            navShow: true,
+            tabShow: false,
+            title: '自提订单',
+            keepAlive: false
+        },
+    },
+    {
+        path: '/orderverification',
+        component: resolve => require(['../pages/store/OrderVerification'], resolve),
+        name: 'OrderVerification',
+        meta: {
+            navShow: true,
+            tabShow: false,
+            title: '订单核销',
+            keepAlive: false
+        }
     }
-
 ]
 
 export default routers

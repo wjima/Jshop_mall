@@ -419,6 +419,10 @@ return [
                 'code' => 'logistics',
                 'is_login' => true
             ],
+            'logisticbyapi' => [
+                'code' => 'logisticsByApi',
+                'is_login' => false
+            ],
             'getcashpooling' => [
                 'code' => 'getCashPooling',
                 'is_login' => false

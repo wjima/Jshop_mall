@@ -40,98 +40,71 @@ class User extends Common
     ];
 
     /**
-     * 注册添加用户
+     * (废弃)注册添加用户,此接口废弃掉了，建议使用smsLogin方法
      * @param array $data 新建用户的数据数组
      * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
      *
      */
-    public function toAdd($data, $loginType=1)
-    {
-        $result = array(
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        );
-
-        //校验数据
-        $validate = new Validate($this->rule, $this->msg);
-        if(!$validate->check($data)){
-            $result['msg'] = $validate->getError();
-            return $result;
-        }
-
-        //校验短信验证码
-        /*$smsModel = new Sms();
-        if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
-            $result['msg'] = '短信验证码错误';
-            return $result;
-        }*/
-        $data['ctime'] = time();
-        $data['password'] = $this->enPassword($data['password'], $data['ctime']);
-
-        if(!isset($data['avatar'])){
-
-            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-            $data['avatar'] =$http_type . $_SERVER['HTTP_HOST'].config('jshop.default_image');
-        }
-        if(!isset($data['nickname'])){
-            $data['nickname'] = format_mobile($data['mobile']);
-        }
-
-        //保存推荐人
-        if(isset($data['pid'])){
-            $pinfo = $this->where(['id'=>$data['pid']])->find();
-            if(!$pinfo){
-                error_code(10014);
-            }
-        }
-        Db::startTrans();//增加事物
-        try {
-            //插入数据库
-            $this->data($data)->allowField(true)->save();
-
-            if ($data['authorId']) {//有授权过来，说明是第三方登录过来，需要更新user_wx表，此处直接更新老用户手机号，存在风险 TODO
-                $userWxModel = new UserWx();
-                $userWxModel->update(['user_id' => $this->id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
-            }
-            Db::commit();
-        }catch (\Exception $e) {
-                Db::rollback();
-                $result['msg'] = $e->getMessage();
-                return $result;
-        }
-        return $this->setSession($this ,$loginType);
-    }
-
+//    public function toAdd($data, $loginType=1)
+//    {
+//        $result = array(
+//            'status' => false,
+//            'data' => '',
+//            'msg' => ''
+//        );
+//
+//        //校验数据
+//        $validate = new Validate($this->rule, $this->msg);
+//        if(!$validate->check($data)){
+//            $result['msg'] = $validate->getError();
+//            return $result;
+//        }
+//
+//        //校验短信验证码
+//        $smsModel = new Sms();
+//        if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
+//            $result['msg'] = '短信验证码错误';
+//            return $result;
+//        }
+//        $data['ctime'] = time();
+//        $data['password'] = $this->enPassword($data['password'], $data['ctime']);
+//
+//        if(!isset($data['avatar'])){
+//
+//            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+//            $data['avatar'] =$http_type . $_SERVER['HTTP_HOST'].config('jshop.default_image');
+//        }
+//        if(!isset($data['nickname'])){
+//            $data['nickname'] = format_mobile($data['mobile']);
+//        }
+//
+//        //保存推荐人
+//        if(isset($data['pid'])){
+//            $pinfo = $this->where(['id'=>$data['pid']])->find();
+//            if(!$pinfo){
+//                error_code(10014);
+//            }
+//        }
+//        Db::startTrans();//增加事物
+//        try {
+//            //插入数据库
+//            $this->data($data)->allowField(true)->save();
+//
+//            if ($data['authorId']) {//有授权过来，说明是第三方登录过来，需要更新user_wx表，此处直接更新老用户手机号，存在风险 TODO
+//                $userWxModel = new UserWx();
+//                $userWxModel->update(['user_id' => $this->id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
+//            }
+//            Db::commit();
+//        }catch (\Exception $e) {
+//                Db::rollback();
+//                $result['msg'] = $e->getMessage();
+//                return $result;
+//        }
+//        return $this->setSession($this ,$loginType);
+//    }
 
     /**
-     *第三方添加用户，或者总管理员添加用户，不需要校验等一系列的东西，直接创建账户，所以在外面就要先校验好数据
-     * @param $data
-     */
-    public function thirdAdd($data)
-    {
-        $result = array(
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        );
-        if(!isset($data['avatar'])){
-            $data['avatar'] = config('jshop.default_image');
-        }
-        if(isset($data['pid'])){
-            $pinfo = $this->where(['id'=>$data['pid']])->find();
-            if(!$pinfo){
-                error_code(10014);
-            }
-        }
-
-        $data['ctime'] = time();
-        $result['data'] = $this->insertGetId($data);
-        $result['status'] = true;
-        return $result;
-    }
-    /**
-     * 用户登陆
+     * 用户账户密码登陆
      * @param array $data 用户登陆信息
      * @param int   $loginType 1就是默认的，存session，2就是返回user_token
      * @param int   $platform 平台id，主要和session有关系 1就是默认的平台，，2就是微信小程序平台，当需要放回user_token的时候，会用到此字段
@@ -188,9 +161,10 @@ class User extends Common
     }
 
     /**
-     * 手机短信验证码登陆
+     * 手机短信验证码登陆，同时兼有手机短信注册的功能，还有第三方账户绑定的功能
      * @param $data
-     * @param int $loginType
+     * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
+     * @param int $platform
      * @return array
      */
     public function smsLogin($data, $loginType=1,$platform=1)
@@ -211,6 +185,7 @@ class User extends Common
 
         //判断是否是用户名登陆
         $smsModel = new Sms();
+        $userWxModel = new UserWx();
         if(!$smsModel->check($data['mobile'], $data['code'], 'login')){
             $result['msg'] = '短信验证码错误';
             return $result;
@@ -220,15 +195,60 @@ class User extends Common
         if(!$userInfo){
             //没有此用户，创建此用户
             $userData['mobile'] = $data['mobile'];
-            if(isset($data['pid'])){
-                $userData['pid'] = $data['pid'];
+
+            //判断是否是小程序里的微信登陆，如果是，就查出来记录，取他的头像和昵称
+            if(isset($data['user_wx_id'])){
+                $user_wx_info = $userWxModel->where(['id'=>$data['user_wx_id']])->find();
+                if($user_wx_info){
+                    if(!isset($data['avatar'])){
+                        $data['avatar'] = $user_wx_info['avatar'];
+                    }
+                    if(!isset($data['nickname'])){
+                        $data['nickname'] = $user_wx_info['nickname'];
+                    }
+                }
             }
-            $re = $this->thirdAdd($userData);
-            if(!$re['status']){
-                return $re;
+            //如果没有头像和昵称，那么就取系统头像和昵称吧
+            if(isset($data['avatar'])){
+                $userData['avatar'] = $data['avatar'];
+            }else{
+                $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+                $userData['avatar'] =$http_type . $_SERVER['HTTP_HOST'].config('jshop.default_image');
             }
-            $user_id = $re['data'];
+            if(isset($data['nickname'])){
+               $userData['nickname']  = $data['nickname'];
+            }else{
+                $userData['nickname'] = format_mobile($data['mobile']);
+            }
+            if(isset($data['invitecode'])){
+                $pid = $this->getUserIdByShareCode($data['invitecode']);
+                $pinfo = model('common/User')->where(['id'=>$pid])->find();
+                if($pinfo){
+                    $userData['pid'] = $pid;
+                }else{
+                    error_code(10014);
+                }
+            }
+
+            $userData['ctime'] = time();
+            if(isset($data['password'])){
+                $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
+            }
+
+            $user_id = $this->insertGetId($userData);
+            if(!$user_id){
+                return error_code(10000);
+            }
             $userInfo = $this->where(array('id'=>$user_id))->find();
+        }else{
+            //如果有这个账号的话，判断一下是不是传密码了，如果传密码了，就是注册，这里就有问题，因为已经注册过
+            if(isset($data['password'])){
+                return error_code(11019);
+            }
+        }
+        //判断是否是小程序里的微信登陆，如果是，就给他绑定微信账号
+        if(isset($data['user_wx_id'])){
+            $userWxModel->save(['user_id'=>$userInfo['id']],['id'=>$data['user_wx_id']]);
         }
 
         $result = $this->setSession($userInfo ,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
@@ -257,6 +277,7 @@ class User extends Common
                 $result['msg'] = '此账号已经注册过，请直接登陆';
                 return $result;
             }
+            $code = 'login';        //手机短信注册和手机短信登陆是一个接口，所以，在这要换算成login，详见smsLogin方法
 
             //判断账号状态
 //            if($userInfo->status != self::STATUS_NORMAL) {
@@ -393,9 +414,17 @@ class User extends Common
         if(isset($post['status']) && $post['status'] != ""){
             $where[] = ['status', 'eq', $post['status']];
         }
+        if(isset($post['pmobile']) && $post['pmobile'] != ""){
+            if($puser_id = get_user_id($post['pmobile'])){
+                $where[] = ['pid', 'eq', $puser_id];
+            }else{
+                $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+            }
+        }
+
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = "id desc";
         return $result;
     }
 
@@ -417,7 +446,10 @@ class User extends Common
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
             }
             if($v['pid']){
-                $list[$k]['pid_name'] = $this->getUserNickname($v['pid']);
+                $list[$k]['pid_name'] = get_user_info($v['pid']);
+            }
+            if($v['ctime']){
+                $list[$k]['ctime'] = getTime($v['ctime']);
             }
         }
         return $list;
@@ -624,7 +656,7 @@ class User extends Common
 
 
     /**
-     * 获取用户昵称
+     * 获取用户昵称 （废弃方法，不建议使用，建议使用get_user_info()函数）
      * @param $user_id
      * @return mixed|string
      * @throws \think\db\exception\DataNotFoundException
@@ -795,7 +827,7 @@ class User extends Common
 
 
     /**
-     * 绑定用户
+     * （废弃，请用smsLogin方法）绑定用户
      * @param array $data 新建用户的数据数组
      * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
      * @return array|null|\PDOStatement|string|\think\Model
@@ -803,48 +835,48 @@ class User extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toBindAdd($data, $loginType=1)
-    {
-        //判断手机号是否存在
-        $user_id = $this->getUserIdByMobile($data['mobile']);
-        if(!$user_id){
-           return $this->toAdd($data, $loginType);
-        }
-        $result = array(
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        );
-
-        //校验数据
-        $validate = new Validate($this->rule, $this->msg);
-        if(!$validate->check($data)){
-            $result['msg'] = $validate->getError();
-            return $result;
-        }
-
-        //校验短信验证码
-        $smsModel = new Sms();
-        if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
-            $result['msg'] = '短信验证码错误';
-            return $result;
-        }
-
-        Db::startTrans();//增加事物
-        try {
-            //更新数据
-            $userWxModel = new UserWx();
-            $userWxModel->update(['user_id' =>$user_id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
-            Db::commit();
-        }catch (\Exception $e) {
-            Db::rollback();
-            $result['msg'] = $e->getMessage();
-            return $result;
-        }
-        $where[] = ['id', 'eq', $user_id];
-        $result = $this->where($where)->find();
-        return $this->setSession($result ,$loginType);
-    }
+//    public function toBindAdd($data, $loginType=1)
+//    {
+//        //判断手机号是否存在
+//        $user_id = $this->getUserIdByMobile($data['mobile']);
+//        if(!$user_id){
+//           return $this->toAdd($data, $loginType);
+//        }
+//        $result = array(
+//            'status' => false,
+//            'data' => '',
+//            'msg' => ''
+//        );
+//
+//        //校验数据
+//        $validate = new Validate($this->rule, $this->msg);
+//        if(!$validate->check($data)){
+//            $result['msg'] = $validate->getError();
+//            return $result;
+//        }
+//
+//        //校验短信验证码
+//        $smsModel = new Sms();
+//        if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
+//            $result['msg'] = '短信验证码错误';
+//            return $result;
+//        }
+//
+//        Db::startTrans();//增加事物
+//        try {
+//            //更新数据
+//            $userWxModel = new UserWx();
+//            $userWxModel->update(['user_id' =>$user_id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
+//            Db::commit();
+//        }catch (\Exception $e) {
+//            Db::rollback();
+//            $result['msg'] = $e->getMessage();
+//            return $result;
+//        }
+//        $where[] = ['id', 'eq', $user_id];
+//        $result = $this->where($where)->find();
+//        return $this->setSession($result ,$loginType);
+//    }
 
 
     /**

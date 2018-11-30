@@ -73,6 +73,16 @@
                 <span slot="left">收货地址</span>
             </yd-cell-item>
         </yd-cell-group>
+        <yd-cell-group v-if="isClerk">
+            <yd-cell-item href="/storeorder" type="link">
+                <img slot="icon" src="../../static/image/coupon.png">
+                <span slot="left">自提订单</span>
+            </yd-cell-item>
+            <yd-cell-item href="/orderverification" type="link">
+                <img slot="icon" src="../../static/image/ship.png">
+                <span slot="left">订单核销</span>
+            </yd-cell-item>
+        </yd-cell-group>
     </div>
 </template>
 
@@ -83,7 +93,8 @@ export default {
         return {
             user: [],
             orderNum: [],
-            isOpenIntegral: false // 用户是否开启积分
+            isOpenIntegral: false, // 用户是否开启积分
+            isClerk: false // 是否是店员并且开启店铺自提
         }
     },
     components: {
@@ -98,6 +109,7 @@ export default {
             this.$api.userInfo({}, res => {
                 if (res.status) {
                     this.user = res.data
+                    this.storeUser(res.data)
                 }
             })
             // 获取订单不同状态的数量
@@ -108,6 +120,14 @@ export default {
             this.$api.isPoint({}, res => {
                 if (res.status) {
                      res.data === '1' ? this.isOpenIntegral = true : this.isOpenIntegral = false
+                }
+            })
+        },
+        // 判断是否是店员
+        storeUser (user_id) {
+            this.$api.isStoreUser({user_id: user_id}, res => {
+                if (res.status) {
+                    this.isClerk = res.flag
                 }
             })
         },

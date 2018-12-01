@@ -278,7 +278,7 @@ class UserShip extends Common
         $res = $this->where($where)
             ->order('utime desc')
             ->find();
-        if($res !== false)
+        if($res)
         {
             $res['area_name'] = get_area($res['area_id']);
             $return = [

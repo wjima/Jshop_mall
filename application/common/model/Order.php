@@ -590,18 +590,20 @@ class Order extends Common
      */
     protected function dateTimeTransformation($time)
     {
-        if($time/86400 >=2)
-        {
-            return floor($time/86400).'天';
+        $newtime = '';
+        $d = floor($time / (3600*24));
+        $h = floor(($time % (3600*24)) / 3600);
+        $m = floor((($time % (3600*24)) % 3600) / 60);
+        if($d>'0'){
+            $newtime= $d.'天'.$h.'小时'.$m.'分';
+        }else{
+            if($h!='0'){
+                $newtime= $h.'小时'.$m.'分';
+            }else{
+                $newtime= $m.'分';
+            }
         }
-        elseif($time/86400 < 2 && $time/86400 >= 1)
-        {
-            return '1天'.date('G小时i分钟', $time-86400);
-        }
-        else
-        {
-            return date('G小时i分钟', $time);
-        }
+        return $newtime;
     }
 
     /**

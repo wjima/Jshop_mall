@@ -108,7 +108,7 @@ class UserPointLog extends Common
         }
 
         //获取店铺签到积分设置
-        $sign_point_type = self::SIGN_RANDOM_POINT; //getShopSetting( 'sign_point_type'); //签到积分奖励类型
+        $sign_point_type = getSetting( 'sign_point_type'); //签到积分奖励类型
 
         //判断是固定积分计算还是随机积分计算
         if($sign_point_type == self::SIGN_RANDOM_POINT)

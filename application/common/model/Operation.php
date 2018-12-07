@@ -315,6 +315,7 @@ class Operation extends Common
         $where[]   = ['parent_menu_id', 'eq', $pid];
         $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
         $list      = $this->where($where)->order('sort asc')->select()->toArray();
+
         foreach ($list as $key => $val) {
             $isChecked = '0';
             //判断是否选中的数据
@@ -322,7 +323,10 @@ class Operation extends Common
                 $isChecked = '1';
             }
             $isLast = false;
-            $chid   = $this->where(['parent_id' => $val['id']])->count();
+            unset($where);
+            $where[]   = ['parent_menu_id', 'eq', $val['id']];
+            $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
+            $chid   = $this->where($where)->count();
             if (!$chid) {
                 $isLast = true;
             }

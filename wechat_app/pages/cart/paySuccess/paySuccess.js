@@ -69,6 +69,9 @@ Page({
       case 'alipay':
         name = '支付宝支付';
         break;
+      case 'balancepay':
+        name = '余额支付';
+        break;
       default:
         name = '未知支付方式';
         break;

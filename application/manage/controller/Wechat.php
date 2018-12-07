@@ -9,6 +9,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\WeixinMediaMessage;
 use app\common\model\WeixinMenu;
 use app\common\model\WeixinMessage;
 use app\common\validate\WeixinMenu as weixinMenuValidate;
@@ -137,7 +138,6 @@ class Wechat extends Manage
             $menu['params'] = json_decode($menu['params'],true);
         }
         $site_url = \request()->domain();//站点地址
-
 
         $this->assign('id',$id);
         $this->assign('pid',$pid);//父级菜单ID
@@ -317,10 +317,76 @@ class Wechat extends Manage
     }
 
     /**
-     * 微信消息互动
+     * 编辑图文消息
      */
-    public function autoreply(){
+    public function editMediaMessage(){
+        $id = input('id/d',0);
+        if(!$id){
+            $this->error("关键参数丢失");
+        }
+        $weixinMessage      = new WeixinMessage();
+        $message = $weixinMessage->getInfo($id);
+        $params = json_decode( $message['params'],true);
+        $mediaData = [];
 
+        if(isset($params['media_id']) && $params['media_id']){
+            $weixinMedia = new WeixinMediaMessage();
+            $i = 1;
+            foreach($params['media_id'] as $key=>$val){
+                if($val){
+                    $mediaData[$i] = $weixinMedia->getInfo($val);
+                    $i++;
+                }
+            }
+        }
+        $this->assign('id',$id);
+        $this->assign('mediaData',json_encode($mediaData));
+        $this->assign('mediaList',$mediaData);
+        return $this->fetch('edit_media_message');
+    }
+
+    /***
+     * 保存图文消息
+     * @return array
+     */
+    public function doEditMediaMessage()
+    {
+        $data       = input('data/a');
+        $message_id = input('id/d', 0);
+        if (!$message_id) {
+            error_code(10003);
+        }
+        $mediaData = [];
+        foreach ((array)$data as $key => $val) {
+            if ($val) {
+                if (!$val['title']) {
+                    error_code(16001);
+                }
+                $mediaData[] = [
+                    'id'      => $val['id'],
+                    'title'   => $val['title'],
+                    'author'  => $val['author'],
+                    'brief'   => $val['brief'],
+                    'image'   => $val['image'],
+                    'content' => $val['content'],
+                    'url'     => $val['url'],
+                ];
+            }
+        }
+        if (!$mediaData) {
+            error_code(16002);
+        }
+
+
+        $weixinMedia = new WeixinMediaMessage();
+        $res         = $weixinMedia->addData($mediaData);
+        if ($res['status']) {
+            //更新消息参数
+            $params['media_id'] = $res['data'];
+            $weixinMessage      = new WeixinMessage();
+            $weixinMessage->save(['params' => json_encode($params)], ['id' => $message_id]);
+        }
+        return $res;
     }
 
 

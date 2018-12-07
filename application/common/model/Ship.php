@@ -273,7 +273,7 @@ class Ship extends Common
                         $area_value = json_decode($val['area_value'], true);
                         $area_html  = '';
                         foreach ($area_value as $akey => $aval) {
-                            if ($aval['pid'] == '0') {
+                            if ($aval['pid'] <=0) {
                                 $area_html .= $aval['name'] . ',';
                             }
                         }

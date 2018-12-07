@@ -52,25 +52,27 @@ class Role extends Manage
         return $ManageRoleModel->toDel(input('param.id'));
 
     }
+
     public function getOperation()
     {
-        if(!input('?param.id')){
+        $return_data = [
+            'code' => 0,
+            'msg'  => '获取成功',
+            'data' => [],
+        ];
+
+        if (!input('?param.id')) {
             return error_code(10000);
         }
-        $this->view->engine->layout(false);
-
         $manageRoleModel = new ManageRole();
-
-        $re = $manageRoleModel->getRoleOperation(input('param.id/d'));
-        if(!$re['status']){
+        $re              = $manageRoleModel->getRoleOperation(input('param.id/d'));
+        if (!$re['status']) {
             return $re;
         }
-
-        $this->assign('data',json_encode($re['data']));
-        $re['data'] = $this->fetch('getOperation');
-        return $re;
-
+        $return_data['data'] = $re['data'];
+        return $return_data;
     }
+
     public function savePerm(){
         $post = input('param.');
 

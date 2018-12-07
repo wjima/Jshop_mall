@@ -38,13 +38,11 @@
                         <div class="">
                             <img :src="item.user.avatar" alt="" class="user-img">
                             <p class="user-name">{{ item.user.nickname }}</p>
-                            <yd-rate slot="left" v-model="rate1" v-if="item.score === 1" :readonly="true" size=".2rem"></yd-rate>
-                            <yd-rate slot="left" v-model="rate2" v-else-if="item.score === 0" :readonly="true" size=".2rem"></yd-rate>
-                            <yd-rate slot="left" v-model="rate3" v-else :readonly="true" size=".2rem"></yd-rate>
+                            <yd-rate slot="left" v-model="item.score" :readonly="true" size=".2rem"></yd-rate>
                         </div>
                         <p>{{ item.ctime }}  &nbsp;&nbsp;&nbsp;&nbsp;{{ item.addon }}</p>
                         <p>{{ item.content }}</p>
-                        <div class="comment-imgs" v-if="item.images_url.length">
+                        <div class="comment-imgs" v-if="item.hasOwnProperty('images_url')">
                             <div class="comment-img" v-for="(img, key) in item.images_url" :key="key">
                             	<img :src="img">
                             </div>
@@ -87,10 +85,7 @@ export default {
             comment: [], // 商品的评论
             load: true, // 是否显示更多
             is_fav: false, // 是否收藏
-            num: 1, // 购买的商品数量 默认为1
-            rate1: 5, // 好评
-            rate2: 3, // 中评
-            rate3: 1 // 差评
+            num: 1 // 购买的商品数量 默认为1
 
         }
     },
@@ -130,6 +125,7 @@ export default {
                     }
                     // 商品规格信息
                     this.productSpes = res.data.product
+                    this.promotion = res.data.product.promotion_list
                     // 添加用户浏览足迹
                     if (this.GLOBAL.getStorage('user_token')) {
                         this.goodsBrowsing()

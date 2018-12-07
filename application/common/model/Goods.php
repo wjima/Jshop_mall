@@ -291,17 +291,17 @@ class Goods extends Common
             }
             //取出图片集
             $imagesModel = new GoodsImages();
-            $images = $imagesModel->where(['goods_id'=>$list['id']])->select();
+            $images = $imagesModel->where(['goods_id'=>$list['id']])->order('sort asc')->select();
             $album=[];
+            if(isset($list['image_url'])){
+                $album[] = $list['image_url'];
+            }
             if(!$images->isEmpty()){
                 foreach($images as $v){
                     $album[] = _sImage($v['image_id']);
                 }
             }
-            if(isset($list['image_url'])){
-                $album[] = $list['image_url'];
-            }
-            sort($album);
+
             $list['album']=$album;
 
             //取出销量

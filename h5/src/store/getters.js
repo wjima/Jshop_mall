@@ -1,3 +1,5 @@
-export const storeInfo = state => state.storeInfo
-export const storeTab = state => state.storeTab
-export const shipInfo = state => state.shipInfo
+export const getters = {
+    storeInfo: state => state.storeInfo,
+    storeTab: state => state.storeTab,
+    shipInfo: state => state.shipInfo
+}

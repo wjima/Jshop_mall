@@ -43,23 +43,22 @@
             </yd-cell-item>
         </yd-cell-group>
         <!--等待退货 用户发送退货包裹  -->
-        <div v-if="status === 2 && reshipStatus === 1">
-            <h4>退货邮寄地址信息</h4>
-            <p>{{ reship.reship_name }}</p>
-            <p>{{ reship.reship_mobile }}</p>
-            <p>{{ reship.reship_area }} {{ reship.reship_address }}</p>
-            选择快递公司:
-            <select @change="selected">
-                <option :value="item.code" v-for="(item, index) in express" :key="index">{{ item.name }}</option>
-            </select>
-            请输入快递单号:<input type="text" v-model="logisticsCode">
-        <yd-button size="large" type="danger" @click.native="send">提交</yd-button>
-        </div>
+        <yd-cell-group title="退货邮寄地址信息" v-if="status === 2 && reshipStatus === 1">
+            <yd-cell-item>
+                <span slot="left">快递公司：</span>
+                <yd-input slot="right" v-model="logistics" placeholder="请输入快递公司名称"></yd-input>
+            </yd-cell-item>
+            <yd-cell-item>
+                <span slot="left">请输入快递单号：</span>
+                <yd-input slot="right" v-model="logisticsCode" placeholder="请输入快递单号"></yd-input>
+            </yd-cell-item>
+            <yd-button size="large" type="danger" @click.native="send">提交</yd-button>
+        </yd-cell-group>
         <!--用户已退货   显示物流快递单号信息-->
-        <div v-if="status === 2 && reshipStatus > 1">
-            <span>快递公司:{{ logistics }}</span>
-            <span>快递单号:{{ logisticsCode }}</span>
-        </div>
+        <yd-cell-group title="退货邮寄地址信息" v-if="status === 2 && reshipStatus > 1">
+            <p>快递公司:{{ logistics }}</p>
+            <p>快递单号:{{ logisticsCode }}</p>
+        </yd-cell-group>
     </div>
 </template>
 
@@ -82,14 +81,6 @@ export default {
             reshipStatus: '', // 退货单状态
             reshipName: '', // 退款单状态描述
             reship: [], // 商家邮寄地址
-            express: [
-                {name: '顺丰', code: 'sf'},
-                {name: '申通', code: 'sto'},
-                {name: '圆通', code: 'yt'},
-                {name: '中通', code: 'zto'},
-                {name: '百世', code: 'ht'},
-                {name: '韵达', code: 'yd'}
-            ],
             logistics: '', // 快递公司
             logisticsCode: '' // 快递单号
         }
@@ -133,6 +124,10 @@ export default {
                                 this.refundName = '退款中'
                             } else if (info.bill_refund.status === 2) {
                                 this.refundName = '退款成功'
+                            } else if (info.bill_refund.status === 3) {
+                                this.refundName = '退款失败'
+                            } else if (info.bill_refund.status === 4) {
+                                this.refundName = '退款拒绝'
                             }
                         }
                         // 退货单状态
@@ -159,9 +154,6 @@ export default {
                 }
             })
         },
-        selected (e) {
-            this.logistics = e.target.value
-        },
         // 用户发送退货包裹
         send () {
             this.$api.sendShip({
@@ -170,7 +162,13 @@ export default {
                 logi_no: this.logisticsCode
             }, res => {
                 if (res.status) {
-                    this.afterSalesDetail()
+                    this.$dialog.toast({
+                        mes: res.msg,
+                        timeout: 1300,
+                        callback: () => {
+                            this.afterSalesDetail()
+                        }
+                    })
                 }
             })
         }

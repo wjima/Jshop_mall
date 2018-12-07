@@ -210,6 +210,10 @@ function getRealUrl($url='')
     if(stripos($url,'http')!==false||stripos($url,'https')!==false) {
         return $url;
     }else{
+        $storage_params = getSetting('image_storage_params');
+        if($storage_params['domain']){
+            return $storage_params['domain'].$url;
+        }
         if(config('jshop.image_storage.domain')){
             return config('jshop.image_storage.domain').$url;
         }
@@ -882,4 +886,17 @@ function isInGroup($gid = 0, &$promotion_id = 0)
  */
 function isjson($str){
     return is_null(json_decode($str))?false:true;
+}
+
+/**
+ * 判断是否手机号
+ * @param $mobile
+ * @return bool
+ */
+function isMobile($mobile = ''){
+    if (preg_match("/^1[345678]{1}\d{9}$/", $mobile)) {
+        return true;
+    } else {
+        return false;
+    }
 }

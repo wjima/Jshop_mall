@@ -89,9 +89,9 @@ export default {
         // 上传对应商品的图片
         update (key, e) {
             let file = e.target.files[0]
-            let param = new FormData()
-            param.append('upfile', file, file.name)
-            this.$api.uploadFile('image', param, res => {
+            let data = new FormData()
+            data.append('upfile', file, file.name)
+            this.$api.uploadFile(data, res => {
                 if (res.status) {
                     let img = {
                         url: res.data.url,

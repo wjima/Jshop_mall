@@ -208,7 +208,7 @@
 }
 .seller-info-header{
   padding: 16rpx 30rpx 0;
-  font-size:36rpx;
+  font-size:30rpx;
   color:#666;
   margin-bottom:8rpx;
 }

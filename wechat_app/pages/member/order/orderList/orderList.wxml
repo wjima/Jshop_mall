@@ -21,7 +21,9 @@
             <text wx:elif="{{item.status == 1 && item.pay_status == 2 && item.ship_status == 3 && item.confirm == 2 && item.is_comment == 1}}">待评价</text>
             <text wx:elif="{{item.status == 1 && item.pay_status == 2 && item.ship_status == 3 && item.confirm == 2 && item.is_comment == 2}}">已评价</text>
             <text wx:elif="{{item.status == 1 && item.pay_status == 4 && item.ship_status == 3}}">部分退货</text>
-            <text wx:elif="{{item.status == 2 && item.pay_status == 5 && item.ship_status == 3}}">已退货</text>
+            <text wx:elif="{{item.status == 2 && item.pay_status == 5 && item.ship_status == 1}}">售后</text>
+            <text wx:elif="{{item.status == 2 && item.pay_status == 5 && item.ship_status == 3}}">售后</text>
+            <text wx:elif="{{item.status == 2 && item.pay_status == 4 && item.ship_status == 3}}">售后</text>
             <text wx:elif="{{item.status == 2 && item.pay_status == 2 && item.ship_status == 3}}">已完成</text>
             <text wx:elif="{{item.status == 3}}">已取消</text>
             <text wx:else>未知状态</text>

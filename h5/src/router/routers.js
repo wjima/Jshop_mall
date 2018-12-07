@@ -6,7 +6,8 @@
  *      keepAlive    是否缓存页面
  *      @type {*[]}
  */
-const routers = [{
+const routers = [
+    {
         path: '/',
         redirect: '/index'
     },
@@ -18,7 +19,7 @@ const routers = [{
             navShow: false,
             tabShow: true,
             title: '用户绑定',
-            keepAlive: true
+            keepAlive: false
         }
     },
     {
@@ -28,7 +29,7 @@ const routers = [{
         meta: {
             navShow: false,
             tabShow: false,
-            keepAlive: true
+            keepAlive: false
         }
     },
     {
@@ -441,7 +442,7 @@ const routers = [{
         meta: {
             navShow: true,
             tabShow: false,
-            title: '自提订单',
+            title: '店铺提货订单',
             keepAlive: false
         },
     },
@@ -452,7 +453,29 @@ const routers = [{
         meta: {
             navShow: true,
             tabShow: false,
-            title: '订单核销',
+            title: '提货单核销',
+            keepAlive: false
+        }
+    },
+    {
+        path: '/seckilldetail',
+        component: resolve => require(['../pages/activity/SecKilldetail'], resolve),
+        name: 'SecKillDetail',
+        meta: {
+            navShow: false,
+            tabShow: false,
+            title: '秒杀活动',
+            keepAlive: false
+        }
+    },
+    {
+        path: '/groupbuying',
+        component: resolve => require(['../pages/activity/GroupBuying'], resolve),
+        name: 'GroupBuying',
+        meta: {
+            navShow: false,
+            tabShow: false,
+            title: '团购活动',
             keepAlive: false
         }
     }

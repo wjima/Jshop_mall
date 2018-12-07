@@ -19,6 +19,8 @@ class Balance extends Common
     const TYPE_RECHARGE = 3;            //充值
     const TYPE_TOCASH = 4;              //提现
     const TYPE_DISTRIBUTION = 5;        //三级分销佣金
+    const TYPE_ADMIN = 7;               //后台操作
+
 
     //充值
     public function recharge()
@@ -42,8 +44,9 @@ class Balance extends Common
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => ''
+            'msg' => '操作成功'
         ];
+
         //取用户实际余额
         $userModel = new User();
         $userInfo = $userModel::withTrashed()->where([ 'id' => $user_id ])->find();
@@ -62,8 +65,8 @@ class Balance extends Common
         $money = abs($money);
         //如果是减余额的操作，还是加余额操作
         if (
-            $type == self::TYPE_PAY ||
-            $type == self::TYPE_REFUND ||
+            $type == self::TYPE_PAY ||/*
+            $type == self::TYPE_REFUND ||  //退款是往账户上加钱的 */
             $type == self::TYPE_TOCASH
         ) {
             $money = - $money;
@@ -122,6 +125,9 @@ class Balance extends Common
                 break;
             case self::TYPE_DISTRIBUTION:
                 $result[ 'data' ] = '佣金' . $money . '元';
+                break;
+            case self::TYPE_ADMIN:
+                $result[ 'data' ] = '后台操作' . $money . '元';
                 break;
             default:
                 return error_code(10000);

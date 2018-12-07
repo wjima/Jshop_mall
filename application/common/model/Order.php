@@ -87,6 +87,15 @@ class Order extends Common
     }
 
     /**
+     * 售后关联
+     * @return \think\model\relation\HasMany
+     */
+    public function aftersales()
+    {
+        return $this->hasMany('BillAftersales', 'order_id', 'order_id');
+    }
+
+    /**
      * 获取订单原始数据
      * @param $input
      * @return array|\PDOStatement|string|\think\Collection
@@ -328,7 +337,7 @@ class Order extends Common
             ->order('ctime desc')
             ->page($page, $limit)
             ->select();
-
+        
         $count = $this->where($where)
             ->count();
         return array('data' => $data, 'count' => $count);

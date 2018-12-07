@@ -27,9 +27,9 @@ export default {
     methods: {
         uploadImg (e) {
             let file = e.target.files[0]
-            let param = new FormData() // 创建form对象
-            param.append('upfile', file, file.name) // 通过append向form对象添加数据
-            this.$api.uploadFile('image', param, res => {
+            let data = new FormData() // 创建form对象
+            data.append('upfile', file, file.name) // 通过append向form对象添加数据
+            this.$api.uploadFile(data, res => {
                 if (res.status) {
                     this.imgs.push(res.data)
                 }

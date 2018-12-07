@@ -290,7 +290,7 @@
   /* position: relative; */
   }
 .modal-body{
-  position:absolute;
+  position:fixed;
   bottom: 0;
   background-color: #fff;
   height: 700rpx;

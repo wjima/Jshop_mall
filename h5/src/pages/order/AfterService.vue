@@ -25,11 +25,12 @@ export default {
             order_id: this.$route.query.order_id || 0,
             is_delivery: true, // 是否已经发货
             goodsList: [], // 售后商品列表
-            type: 1, // 退款类型 默认仅退款
+            type: '1', // 退款类型 默认仅退款
             img_id: [], // 上传的售后图片id
             items: [], // 选中的退货商品
             reasonMsg: '', // 问题描述
-            afterPrice: '' // 退款金额
+            afterPrice: '', // 退款金额
+            inputPrice: '' // 自定义手输退款金额
         }
     },
     created () {
@@ -97,7 +98,7 @@ export default {
         },
         // 退货类型 退款金额
         custPrice (price) {
-            this.afterPrice = price
+            this.inputPrice = price
         },
         // 退款类型
         afterType (type) {
@@ -105,16 +106,27 @@ export default {
         },
         // 提交售后申请
         formSubmit () {
-            this.$api.addAfterSales({
+            let data = {
                 order_id: this.order_id,
                 type: this.type,
                 images: this.img_id,
                 items: this.items,
                 refund: this.afterPrice,
                 reason: this.reasonMsg
-            }, res => {
+            }
+            if (this.type === '2') {
+                data['refund'] = this.inputPrice
+            }
+            this.$api.addAfterSales(data, res => {
                 if (res.status) {
-                    this.$dialog.toast({mes: '提交成功', time: 1500, icon: 'success'})
+                    this.$dialog.toast({
+                        mes: '提交成功',
+                        time: 1500,
+                        icon: 'success',
+                        callback: () => {
+                            this.$router.go(-1)
+                        }
+                    })
                 }
             })
         }

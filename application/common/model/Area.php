@@ -9,6 +9,7 @@
 
 namespace app\common\model;
 
+use think\Db;
 use think\facade\Cache;
 
 /**
@@ -26,6 +27,7 @@ class Area extends Common
     const FOUR_DEPTH = 4;
     const PROVINCE_PARENT_ID = 0;           //根节点
 
+    public $areaList; //地区数据
 
     /**
      * 指定region id的下级信息
@@ -217,6 +219,7 @@ class Area extends Common
      */
     public function add($data)
     {
+        Cache::set('area_tree', '');//清理地区缓存
         return $this->insert($data);
     }
 
@@ -241,6 +244,7 @@ class Area extends Common
      */
     public function edit($id, $data)
     {
+        Cache::set('area_tree', '');//清理地区缓存
         return $this->where('id', 'eq', $id)
             ->update($data);
     }
@@ -256,6 +260,7 @@ class Area extends Common
      */
     public function del($id)
     {
+        Cache::set('area_tree', '');//清理地区缓存
         $is_parent = $this->where('parent_id', 'eq', $id)->find();
         if ($is_parent) {
             $result = array(
@@ -329,7 +334,11 @@ class Area extends Common
      */
     public function getTreeArea($checked = [])
     {
-        //$this->delAreaCache();
+        $return_data = [
+            'status' => false,
+            'msg'    => '查询失败',
+            'data'   => [],
+        ];
         $area_tree = Cache::get('area_tree');
         if ($area_tree) {
             $list = json_decode($area_tree, true);
@@ -337,46 +346,45 @@ class Area extends Common
             $list = $this->where([])->select()->toArray();
             Cache::set('area_tree', json_encode($list));
         }
-        //地区结构增加缓存 避免打不开情况
-        $list_tree = Cache::get('list_tree');
-        $list_tree = json_decode($list_tree,true);
-        if(!$list_tree){
-            $list_tree = $this->resolve2($list, 0, $checked);
-            Cache::set('area_tree', json_encode($list_tree));
-        }
-        return $list_tree;
+        $tree = $this->resolve2($list, $checked);
+        $return_data['data'] = $tree;
+        $return_data['msg'] = '查询成功';
+        $return_data['status'] = true;
+        return $return_data;
     }
 
-    private function resolve2($list, $pid = 0, $checked = [])
-    {
-        $manages = array();
-        $i       = 0;
-        foreach ($list as $row) {
-            if ($row['parent_id'] == $pid) {
-                $row['checkboxValue'] = $row['id'];
-                if ($checked && in_array($row['id'], $checked)) {
-                    $row['checked'] = true;
-
-                } else {
-                    $row['checked'] = false;
-                }
-                $manages[$i] = $row;
-                $children    = $this->resolve2($list, $row['id'], $checked);
-                $children && $manages[$i]['children'] = $children;
-                $i++;
-
-            }
-        }
-
-        return $manages;
-    }
-
-    /**
-     * 删除地区树缓存
+    /***
+     * 组装地区数据
+     * @param int $list
+     * @param array $checked
+     * @return mixed
      */
-    public function delAreaCache()
+    private function resolve2($list = 0, $checked = [])
     {
-        Cache::set('area_tree', '');
+        foreach ($list as $key => $val) {
+            $isChecked = '0';
+            //判断是否选中的数据
+            if (in_array($val['id'], (array)$checked)) {
+                $isChecked = '1';
+            }
+            $isLast = false;
+            $chid = $this->where(['parent_id' => $val['id']])->count();
+            if(!$chid){
+                $isLast = true;
+            }
+            $area_tree[$key] = [
+                'id'       => $val['id'],
+                'title'    => $val['name'],
+                'isLast'   => $isLast,
+                'level'    => $val['depth'],
+                'parentId' => $val['parent_id'],
+                "checkArr" => [
+                    'type'      => '0',
+                    'isChecked' => $isChecked,
+                ]
+            ];
+        }
+        return $area_tree;
     }
 
 

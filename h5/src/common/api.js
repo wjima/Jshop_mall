@@ -65,7 +65,12 @@ let methodToken = [
     'payments.getinfo',
     'user.getuserpoint',
     'coupon.getcouponkey',
-    'store.isclerk'
+    'store.isclerk',
+    'store.storeladinglist',
+    'store.ladinginfo',
+    'store.lading',
+    'store.ladingdel'
+
 ];
 
 // api接口地址
@@ -74,7 +79,6 @@ const ApiUrl = () => {
     if (process.env.NODE_ENV === 'development') {
         // 开发环境
         apiUrl = 'http://www.b2c.com/api.html'
-        // apiUrl = 'https://b2c.jihainet.com/api.html'
         // apiUrl = 'http://wjima.ngrok.jihainet.com/api.html'
     } else if (process.env.NODE_ENV === 'production') {
         // 生产环境
@@ -94,23 +98,15 @@ const post = (method, data, callback) => {
     sendPost(ApiUrl(), qs.stringify(data), {}, callback)
 };
 
-// 图片上传
-const uploadFile = (type, param, callback) => {
-    if (type === 'image') {
-        param.append('method', 'images.upload')
-    } else if (type === 'video') {
-        param.append('method', 'videos.addvideo')
-    }
-    let config1 = {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    };
-    sendPost(ApiUrl(), param, config1, callback)
-};
-
 // axios 发送请求统一处理
 const sendPost = (url, data, config = {}, callback) => {
-    // _this.$dialog.loading.open(Object.keys(config).length ? '上传中...' : '加载中...')
+    if (Object.keys(config).length) {
+        _this.$dialog.loading.open('上传中...')
+    }
     axios.post(url, data, config).then(response => {
+        if (Object.keys(config).length) {
+            _this.$dialog.loading.close()
+        }
         // _this.$dialog.loading.close()
         if (!response.data.status) {
             // 输出错误显示
@@ -168,359 +164,293 @@ const sendPost = (url, data, config = {}, callback) => {
     })
 };
 
+// 图片上传
+export const uploadFile = (data, callback) => {
+    data.append('method', 'images.upload')
+    let param = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    };
+    sendPost(ApiUrl(), data, param, callback)
+};
+
 // 用户注册
-const reg = (data, callback) => post('user.reg', data, callback);
+export const reg = (data, callback) => post('user.reg', data, callback);
 
 // 用户登录
-const login = (data, callback) => post('user.login', data, callback);
+export const login = (data, callback) => post('user.login', data, callback);
 
 // 用户信息
-const userInfo = (data, callback) => post('user.info', data, callback);
+export const userInfo = (data, callback) => post('user.info', data, callback);
 
 // 上传头像
-const changeAvatar = (data, callback) => post('user.changeavatar', data, callback);
+export const changeAvatar = (data, callback) => post('user.changeavatar', data, callback);
 
 // 编辑用户信息
-const editInfo = (data, callback) => post('user.editinfo', data, callback);
+export const editInfo = (data, callback) => post('user.editinfo', data, callback);
 
 // 发送短信验证码
-const sms = (data, callback) => post('user.sms', data, callback);
+export const sms = (data, callback) => post('user.sms', data, callback);
 
 // 短信验证码登录
-const smsLogin = (data, callback) => post('user.smslogin', data, callback);
+export const smsLogin = (data, callback) => post('user.smslogin', data, callback);
 
 // 退出登录
-const logout = (data, callback) => post('user.logout', data, callback);
+export const logout = (data, callback) => post('user.logout', data, callback);
 
 // 获取首页幻灯片
-const slider = (data, callback) => post('advert.getAdvertList', data, callback);
+export const slider = (data, callback) => post('advert.getAdvertList', data, callback);
 
 // 获取公告列表
-const notice = (data, callback) => post('notice.noticeList', data, callback);
+export const notice = (data, callback) => post('notice.noticeList', data, callback);
 
 // 获取公告详情
-const noticeInfo = (data, callback) => post('notice.noticeInfo', data, callback);
+export const noticeInfo = (data, callback) => post('notice.noticeInfo', data, callback);
 
 // 获取文章详情
-const articleInfo = (data, callback) => post('articles.getArticleDetail', data, callback);
+export const articleInfo = (data, callback) => post('articles.getArticleDetail', data, callback);
 
 // 获取文章列表
-const articleList = (data, callback) => post('articles.getArticleList', data, callback);
+export const articleList = (data, callback) => post('articles.getArticleList', data, callback);
 
 // 获取商品分类
-const categories = (data, callback) => post('categories.getallcat', data, callback);
+export const categories = (data, callback) => post('categories.getallcat', data, callback);
 
 // 获取商品列表
-const goodsList = (data, callback) => post('goods.getlist', data, callback);
+export const goodsList = (data, callback) => post('goods.getlist', data, callback);
 
 // 获取商品详情
-const goodsDetail = (data, callback) => post('goods.getdetial', data, callback);
+export const goodsDetail = (data, callback) => post('goods.getdetial', data, callback);
 
 // 获取商品参数信息
-const goodsParams = (data, callback) => post('goods.getgoodsparams', data, callback);
+export const goodsParams = (data, callback) => post('goods.getgoodsparams', data, callback);
 
 // 获取设置默认货品
-const getProductInfo = (data, callback) => post('goods.getproductinfo', data, callback);
+export const getProductInfo = (data, callback) => post('goods.getproductinfo', data, callback);
 
 // 获取商品评论信息
-const goodsComment = (data, callback) => post('goods.getgoodscomment', data, callback);
+export const goodsComment = (data, callback) => post('goods.getgoodscomment', data, callback);
 
 // 添加购物车
-const addCart = (data, callback) => post('cart.add', data, callback);
+export const addCart = (data, callback) => post('cart.add', data, callback);
 
 // 移除购物车
-const removeCart = (data, callback) => post('cart.del', data, callback);
+export const removeCart = (data, callback) => post('cart.del', data, callback);
 
 // 获取购物车列表
-const cartList = (data, callback) => post('cart.getlist', data, callback);
+export const cartList = (data, callback) => post('cart.getlist', data, callback);
 
 // 设置购物车商品数量
-const setCartNum = (data, callback) => post('cart.setnums', data, callback);
+export const setCartNum = (data, callback) => post('cart.setnums', data, callback);
 
 // 获取用户的收货地址列表
-const userShip = (data, callback) => post('user.getusership', data, callback);
+export const userShip = (data, callback) => post('user.getusership', data, callback);
 
 // 获取用户默认收货地址
-const userDefaultShip = (data, callback) => post('user.getuserdefaultship', data, callback);
+export const userDefaultShip = (data, callback) => post('user.getuserdefaultship', data, callback);
 
 // 存储用户收货地址
-const saveUserShip = (data, callback) => post('user.vuesaveusership', data, callback);
+export const saveUserShip = (data, callback) => post('user.vuesaveusership', data, callback);
 
 // 获取收货地址详情
-const shipDetail = (data, callback) => post('user.getshipdetail', data, callback);
+export const shipDetail = (data, callback) => post('user.getshipdetail', data, callback);
 
 // 收货地址编辑
-const editShip = (data, callback) => post('user.editship', data, callback);
+export const editShip = (data, callback) => post('user.editship', data, callback);
 
 // 收货地址删除
-const removeShip = (data, callback) => post('user.removeship', data, callback);
+export const removeShip = (data, callback) => post('user.removeship', data, callback);
 
 // 设置默认收货地址
-const setDefShip = (data, callback) => post('user.setdefship', data, callback);
+export const setDefShip = (data, callback) => post('user.setdefship', data, callback);
 
 // 生成订单
-const createOrder = (data, callback) => post('order.create', data, callback);
+export const createOrder = (data, callback) => post('order.create', data, callback);
 
 // 获取状态订单列表
-const getOrderList = (data, callback) => post('order.getlist', data, callback);
+export const getOrderList = (data, callback) => post('order.getlist', data, callback);
 
 // 取消订单
-const cancelOrder = (data, callback) => post('order.cancel', data, callback);
+export const cancelOrder = (data, callback) => post('order.cancel', data, callback);
 
 // 删除订单
-const delOrder = (data, callback) => post('order.del', data, callback);
+export const delOrder = (data, callback) => post('order.del', data, callback);
 
 // 获取订单详情
-const orderDetail = (data, callback) => post('order.details', data, callback);
+export const orderDetail = (data, callback) => post('order.details', data, callback);
 
 // 确认收货
-const confirmOrder = (data, callback) => post('order.confirm', data, callback);
+export const confirmOrder = (data, callback) => post('order.confirm', data, callback);
 
 // 获取配送方式
-const orderShip = (data, callback) => post('order.getship', data, callback);
+export const orderShip = (data, callback) => post('order.getship', data, callback);
 
 // 获取全部订单列表
-const orderList = (data, callback) => post('order.getorderlist', data, callback);
+export const orderList = (data, callback) => post('order.getorderlist', data, callback);
 
 // 获取订单不同状态的数量
-const getOrderStatusSum = (data, callback) => post('order.getorderstatusnum', data, callback);
+export const getOrderStatusSum = (data, callback) => post('order.getorderstatusnum', data, callback);
 
 // 售后单列表
-const afterSalesList = (data, callback) => post('order.aftersaleslist', data, callback);
+export const afterSalesList = (data, callback) => post('order.aftersaleslist', data, callback);
 
 // 售后单详情
-const afterSalesInfo = (data, callback) => post('order.aftersalesinfo', data, callback);
+export const afterSalesInfo = (data, callback) => post('order.aftersalesinfo', data, callback);
 
 // 订单售后状态
-const afterSalesStatus = (data, callback) => post('order.aftersalesstatus', data, callback);
+export const afterSalesStatus = (data, callback) => post('order.aftersalesstatus', data, callback);
 
 // 添加售后单
-const addAfterSales = (data, callback) => post('order.addaftersales', data, callback);
+export const addAfterSales = (data, callback) => post('order.addaftersales', data, callback);
 
 // 用户发送退货包裹
-const sendShip = (data, callback) => post('order.sendreship', data, callback);
+export const sendShip = (data, callback) => post('order.sendreship', data, callback);
 
 // 添加商品浏览足迹
-const addGoodsBrowsing = (data, callback) => post('user.addgoodsbrowsing', data, callback);
+export const addGoodsBrowsing = (data, callback) => post('user.addgoodsbrowsing', data, callback);
 
 // 删除商品浏览足迹
-const delGoodsBrowsing = (data, callback) => post('user.delgoodsbrowsing', data, callback);
+export const delGoodsBrowsing = (data, callback) => post('user.delgoodsbrowsing', data, callback);
 
 // 获取商品浏览足迹
-const goodsBrowsing = (data, callback) => post('user.goodsbrowsing', data, callback);
+export const goodsBrowsing = (data, callback) => post('user.goodsbrowsing', data, callback);
 
 // 商品收藏 关注/取消
-const goodsCollection = (data, callback) => post('user.goodscollection', data, callback);
+export const goodsCollection = (data, callback) => post('user.goodscollection', data, callback);
 
 // 获取商品收藏关注列表
-const goodsCollectionList = (data, callback) => post('user.goodscollectionlist', data, callback);
+export const goodsCollectionList = (data, callback) => post('user.goodscollectionlist', data, callback);
 
 // 获取店铺支付方式列表
-const paymentList = (data, callback) => post('payments.getlist', data, callback);
+export const paymentList = (data, callback) => post('payments.getlist', data, callback);
 
 // 获取支付单详情
-const paymentInfo = (data, callback) => post('payments.getinfo', data, callback);
+export const paymentInfo = (data, callback) => post('payments.getinfo', data, callback);
 
 // 支付接口
-const pay = (data, callback) => post('user.pay', data, callback);
+export const pay = (data, callback) => post('user.pay', data, callback);
 
 // 订单评价接口
-const orderEvaluate = (data, callback) => post('user.orderevaluate', data, callback);
+export const orderEvaluate = (data, callback) => post('user.orderevaluate', data, callback);
 
 // 判断是否签到
-const isSign = (data, callback) => post('user.issign', data, callback);
+export const isSign = (data, callback) => post('user.issign', data, callback);
 
 // 签到接口
-const sign = (data, callback) => post('user.sign', data, callback);
+export const sign = (data, callback) => post('user.sign', data, callback);
 
 // 我的积分
-const myPoint = (data, callback) => post('user.mypoint', data, callback);
+export const myPoint = (data, callback) => post('user.mypoint', data, callback);
 
 // 积分记录
-const pointLog = (data, callback) => post('user.pointlog', data, callback);
+export const pointLog = (data, callback) => post('user.pointlog', data, callback);
 
 // 物流信息接口
-const logistics = (data, callback) => post('order.logisticbyapi', data, callback);
+export const logistics = (data, callback) => post('order.logisticbyapi', data, callback);
 
 // 优惠券列表
-const couponList = (data, callback) => post('coupon.couponlist', data, callback);
+export const couponList = (data, callback) => post('coupon.couponlist', data, callback);
 
 // 优惠券详情
-const couponDetail = (data, callback) => post('coupon.coupondetail', data, callback);
+export const couponDetail = (data, callback) => post('coupon.coupondetail', data, callback);
 
 // 用户领取优惠券
-const getCoupon = (data, callback) => post('coupon.getcoupon', data, callback);
+export const getCoupon = (data, callback) => post('coupon.getcoupon', data, callback);
 
 // 用户已领取的优惠券列表
-const userCoupon = (data, callback) => post('coupon.usercoupon', data, callback);
+export const userCoupon = (data, callback) => post('coupon.usercoupon', data, callback);
 
 // 获取店铺设置
-const getSetting = (data, callback) => post('user.getsetting', data, callback);
+export const getSetting = (data, callback) => post('user.getsetting', data, callback);
 
 // 获取商户配置信息
-const getSellerSetting = (data, callback) => post('user.getsellersetting', data, callback);
+export const getSellerSetting = (data, callback) => post('user.getsellersetting', data, callback);
 
 // 获取我的银行卡列表
-const getBankCardList = (data, callback) => post('user.getbankcardlist', data, callback);
+export const getBankCardList = (data, callback) => post('user.getbankcardlist', data, callback);
 
 // 获取默认的银行卡
-const getDefaultBankCard = (data, callback) => post('user.getdefaultbankcard', data, callback);
+export const getDefaultBankCard = (data, callback) => post('user.getdefaultbankcard', data, callback);
 
 // 添加银行卡
-const addBankCard = (data, callback) => post('user.addbankcard', data, callback);
+export const addBankCard = (data, callback) => post('user.addbankcard', data, callback);
 
 // 删除银行卡
-const removeBankCard = (data, callback) => post('user.removebankcard', data, callback);
+export const removeBankCard = (data, callback) => post('user.removebankcard', data, callback);
 
 // 设置默认银行卡
-const setDefaultBankCard = (data, callback) => post('user.setdefaultbankcard', data, callback);
+export const setDefaultBankCard = (data, callback) => post('user.setdefaultbankcard', data, callback);
 
 // 获取银行卡信息
-const getBankCardInfo = (data, callback) => post('user.getbankcardinfo', data, callback);
+export const getBankCardInfo = (data, callback) => post('user.getbankcardinfo', data, callback);
 
 // 获取银行卡组织信息
-const getBankCardOrganization = (data, callback) => post('user.getbankcardorganization', data, callback);
+export const getBankCardOrganization = (data, callback) => post('user.getbankcardorganization', data, callback);
 
 // 用户修改密码
-const editPwd = (data, callback) => post('user.editpwd', data, callback);
+export const editPwd = (data, callback) => post('user.editpwd', data, callback);
 
 // 用户找回密码
-const forgotPwd = (data, callback) => post('user.forgotpwd', data, callback);
+export const forgotPwd = (data, callback) => post('user.forgotpwd', data, callback);
 
 // 获取用户余额明细
-const getBalanceList = (data, callback) => post('user.balancelist', data, callback);
+export const getBalanceList = (data, callback) => post('user.balancelist', data, callback);
 
 // 用户推荐列表
-const recommendList = (data, callback) => post('user.recommend', data, callback);
+export const recommendList = (data, callback) => post('user.recommend', data, callback);
 
 // 邀请码
-const shareCode = (data, callback) => post('user.sharecode', data, callback);
+export const shareCode = (data, callback) => post('user.sharecode', data, callback);
 
 // 用户提现
-const userToCash = (data, callback) => post('user.cash', data, callback);
+export const userToCash = (data, callback) => post('user.cash', data, callback);
 
 // 用户提现列表
-const cashList = (data, callback) => post('user.cashlist', data, callback);
+export const cashList = (data, callback) => post('user.cashlist', data, callback);
 
 // 获取授权登录方式
-const getTrustLogin = (data, callback) => post('user.gettrustlogin', data, callback);
+export const getTrustLogin = (data, callback) => post('user.gettrustlogin', data, callback);
 
 // 绑定授权登录
-const trustBind = (data, callback) => post('user.trustbind', data, callback);
+export const trustBind = (data, callback) => post('user.trustbind', data, callback);
 
 // 获取用户信息
-const trustLogin = (data, callback) => post('user.trustcallback', data, callback);
+export const trustLogin = (data, callback) => post('user.trustcallback', data, callback);
 
 // 判断用户下单可以使用多少积分
-const usablePoint = (data, callback) => post('user.getuserpoint', data, callback);
+export const usablePoint = (data, callback) => post('user.getuserpoint', data, callback);
 
 // 门店列表
-const storeList = (data, callback) => post('store.getstorelist', data, callback);
+export const storeList = (data, callback) => post('store.getstorelist', data, callback);
 
 // 判断是否开启门店自提
-const switchStore = (data, callback) => post('store.getstoreswitch', data, callback);
+export const switchStore = (data, callback) => post('store.getstoreswitch', data, callback);
 
 // 获取默认的门店
-const defaultStore = (data, callback) => post('store.getdefaultstore', data, callback);
+export const defaultStore = (data, callback) => post('store.getdefaultstore', data, callback);
 
 // 判断是否开启积分
-const isPoint = (data, callback) => post('user.ispoint', data, callback);
+export const isPoint = (data, callback) => post('user.ispoint', data, callback);
 
 // 用户输入code领取优惠券
-const couponKey = (data, callback) => post('coupon.getcouponkey', data, callback)
+export const couponKey = (data, callback) => post('coupon.getcouponkey', data, callback);
 
 // 判断是否是店员
-const isStoreUser = (data, callback) => post('store.isclerk', data, callback)
+export const isStoreUser = (data, callback) => post('store.isclerk', data, callback);
 
-export default {
-    reg: reg,
-    login: login,
-    sms: sms,
-    userInfo: userInfo,
-    changeAvatar: changeAvatar,
-    editInfo: editInfo,
-    smsLogin: smsLogin,
-    notice: notice,
-    noticeInfo: noticeInfo,
-    logout: logout,
-    sliderHeader: slider,
-    categories: categories,
-    goodsList: goodsList,
-    goodsDetail: goodsDetail,
-    goodsParams: goodsParams,
-    goodsComment: goodsComment,
-    getProductInfo: getProductInfo,
-    addCart: addCart,
-    articleInfo: articleInfo,
-    removeCart: removeCart,
-    cartList: cartList,
-    setCartNum: setCartNum,
-    userShip: userShip,
-    userDefaultShip: userDefaultShip,
-    saveUserShip: saveUserShip,
-    shipDetail: shipDetail,
-    editShip: editShip,
-    removeShip: removeShip,
-    setDefShip: setDefShip,
-    createOrder: createOrder,
-    orderList: orderList,
-    getOrderList: getOrderList,
-    cancelOrder: cancelOrder,
-    delOrder: delOrder,
-    orderDetail: orderDetail,
-    confirmOrder: confirmOrder,
-    orderShip: orderShip,
-    sendShip: sendShip,
-    getOrderStatusSum: getOrderStatusSum,
-    afterSalesList: afterSalesList,
-    afterSalesInfo: afterSalesInfo,
-    afterSalesStatus: afterSalesStatus,
-    addAfterSales: addAfterSales,
-    addGoodsBrowsing: addGoodsBrowsing,
-    delGoodsBrowsing: delGoodsBrowsing,
-    goodsBrowsing: goodsBrowsing,
-    goodsCollection: goodsCollection,
-    goodsCollectionList: goodsCollectionList,
-    pay: pay,
-    paymentList: paymentList,
-    paymentInfo: paymentInfo,
-    orderEvaluate: orderEvaluate,
-    isSign: isSign,
-    sign: sign,
-    myPoint: myPoint,
-    pointLog: pointLog,
-    logistics: logistics,
-    couponList: couponList,
-    couponDetail: couponDetail,
-    getCoupon: getCoupon,
-    userCoupon: userCoupon,
-    uploadFile: uploadFile,
-    getSetting: getSetting,
-    getSellerSetting: getSellerSetting,
-    getBankCardList: getBankCardList,
-    getDefaultBankCard: getDefaultBankCard,
-    addBankCard: addBankCard,
-    removeBankCard: removeBankCard,
-    setDefaultBankCard: setDefaultBankCard,
-    getBankCardInfo: getBankCardInfo,
-    shareCode: shareCode,
-    recommendList: recommendList,
-    editPwd: editPwd,
-    forgotPwd: forgotPwd,
-    getBankCardOrganization: getBankCardOrganization,
-    getBalanceList: getBalanceList,
-    userToCash: userToCash,
-    cashList: cashList,
-    articleList: articleList,
-    post: post,
-    getTrustLogin: getTrustLogin,
-    trustBind: trustBind,
-    trustLogin: trustLogin,
-    isPoint: isPoint,
-    usablePoint: usablePoint,
-    switchStore: switchStore,
-    couponKey: couponKey,
-    defaultStore: defaultStore,
-    storeList: storeList,
-    isStoreUser: isStoreUser
-}
+// 获取店铺提货单列表
+export const storeLadingList = (data, callback) => post('store.storeladinglist', data, callback);
+
+// 获取提货单详情
+export const ladingInfo = (data, callback) => post('store.ladinginfo', data, callback);
+
+// 店铺提单操作
+export const ladingExec = (data, callback) => post('store.lading', data, callback);
+
+// 提货单删除
+export const ladingDel = (data, callback) => post('store.ladingdel', data, callback);
+
+// 获取活动列表
+export const activityList = (data, callback) => post('group.getlist', data, callback);
+
+// 获取活动详情
+export const activityDetail = (data, callback) => post('group.getgoodsdetial', data, callback);

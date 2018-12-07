@@ -1,8 +1,16 @@
-// 保存门店地址信息
-export const store = (state, info) => state.storeInfo = info
-
-// 保存收货地址信息
-export const ship = (state, info) => state.shipInfo = info
-
-// 保存门店tab切换状态
-export const storeTab = (state, tab) => state.storeTab = tab
+import {
+    SAVE_STORE,
+    SAVE_SHIP,
+    SAVE_STORE_TAB
+} from './mutation-types'
+export const mutations = {
+    [SAVE_STORE] (state, info) {
+        state.storeInfo = info
+    },
+    [SAVE_SHIP] (state, info) {
+        state.shipInfo = info
+    },
+    [SAVE_STORE_TAB] (state, tab) {
+        state.storeTab = tab
+    }
+}

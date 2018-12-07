@@ -89,11 +89,12 @@ class BillRefund extends Common
                 $result = $this->paymentRefund($refund_id);
             }else{
                 //只修改状态，不做实际退款，实际退款线下去退。
-                $data['status'] = self::STATUS_REFUND;
-                $this->where($where)->data($data)->update();
                 $result['status'] = true;
-                $result['msg'] = '退款单退款成功';
             }
+
+            $data['status'] = self::STATUS_REFUND;
+            $this->where($where)->data($data)->update();
+            $result['msg'] = '退款单退款成功';
             if($result['status']){
                 //发送退款消息
                 $eventData              = $info->toArray();
@@ -197,8 +198,6 @@ class BillRefund extends Common
         $re['msg'] = '';
         $re['count'] = $list->total();
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
-
         return $re;
     }
     protected function tableWhere($post)

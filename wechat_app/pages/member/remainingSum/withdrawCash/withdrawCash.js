@@ -35,6 +35,13 @@ Page({
         });
     },
 
+    // 充值
+  recharge: function () {
+      wx.navigateTo({
+        url: '../withdrawCash/recharge?money=' + this.data.balance
+      });
+    },
+
     // 提现
     balance: function () {
         wx.navigateTo({

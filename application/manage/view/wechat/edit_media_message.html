@@ -1,0 +1,452 @@
+<style>
+.title{
+    padding: 10px;
+}
+.media-content{
+    padding: 10px;
+    border: 1px solid #e7e7eb;
+}
+.media-item{
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid #e7e7eb;
+}
+.current{
+    border: 1px solid #43b548;
+    margin-left: -1px;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    z-index: 1;
+}
+.media-detail{
+    position: relative;
+    overflow: hidden;
+    /*margin: 20px 0 20px 0;*/
+
+    background-color: #fff;
+    color: #666;
+
+}
+.media-pop{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,.5);
+    color: #fff;
+    display: none;
+    overflow: hidden;
+}
+.media-item:hover .media-pop{
+    display: block;
+}
+.media-pop-right{
+    float: right;
+}
+.media-tools{
+    display: none;
+}
+.media-cover{
+    /*width: 200px;*/
+    height: 70px;
+    /*background: #ccc;*/
+    margin: auto;
+    padding: auto;
+}
+.media-title{
+    bottom: 20px;
+    position: absolute;
+    left: 33px;
+    /*color: #fff;*/
+}
+#message_1 .media-title{
+    color: #fff;
+}
+#message_1 .media-detail{
+    padding: 20px;
+    /*border: none;*/
+}
+#message_1 .media-cover{
+    height:100px;
+    background: #ccc;
+
+}
+.media-add-content{
+    border: 2px dotted #d9dadc;
+    #font-size: 0;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.media-add-content{
+    height: 100px;
+    line-height: 100px;
+    margin: 10px 0;
+}
+#add-content{
+    cursor:pointer;
+    font-size: 30px;
+    color: #666;
+}
+.add-tools{
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    position: relative;
+    top: -50px;
+    margin: auto;
+    width: 180px;
+    text-align: center;
+    display: none;
+}
+.add-tools:before{
+    content: " ";
+    position: absolute;
+    top: -4px;
+    margin-left: -4px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-width: 4px;
+    border-style: dashed;
+    border-color: transparent;
+    border-top-width: 0;
+    border-bottom-color: rgba(0,0,0,0.5);
+    border-bottom-style: solid;
+}
+.ul-tools{
+    text-align: center;
+    margin: auto;
+}
+.ul-tools li{
+    padding: 10px;
+    cursor:pointer
+}
+.add-message-template{
+    display: none;
+}
+.media-cover img{
+    width: 100%;
+    height: 100%;
+}
+.layui-form-image{
+    margin-top: 10px;
+}
+.layui-container{
+    padding: 0;
+}
+@media screen and (min-width: 1200px){
+.layui-container {
+    width: 100%;
+    min-width: 1170px;
+}
+</style>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md2 seller-alone-form">
+            <div class="title">
+                图文列表
+            </div>
+            <div class="media-content">
+                {notempty name="mediaList"}
+                {volist name="mediaList" id="media" key=key}
+                {if condition="$key == '1' "}
+                <div class="media-item current" id="message_{$key}">
+                    <div class="media-detail">
+                        <div class="media-title">
+                            {$media.title}
+                        </div>
+                        <div class="media-cover">
+                            <img src="{$media.image_url}">
+                        </div>
+                        <div class="media-tools">
+                            工具栏
+                        </div>
+                    </div>
+                    <div class="media-pop">
+                    	<span class="media-pop-right"><i class="iconfont icon-shanchu"></i></span>
+                    </div>
+                </div>
+                {else/}
+
+                <div class="media-item" id="message_{$key}">
+                    <div class="media-detail">
+                        <div class="media-title">
+                            {$media.title}
+                        </div>
+                        <div class="media-cover">
+                        </div>
+                        <div class="media-tools">
+                            工具栏
+                        </div>
+                    </div>
+                    <div class="media-pop">
+                        <span class="media-pop-right"><i class="iconfont icon-shanchu"></i></span>
+                    </div>
+                </div>
+                {/if}
+                {/volist}
+                {/notempty}
+                {empty name="mediaList"}
+                <div class="media-item current" id="message_1">
+                    <div class="media-detail">
+                        <div class="media-title">
+                            文章标题
+                        </div>
+                        <div class="media-cover">
+
+                        </div>
+
+                        <div class="media-tools">
+                            工具栏
+                        </div>
+                    </div>
+                    <div class="media-pop">
+                        <span class="media-pop-left"><i class="iconfont icon-lower"></i></span>
+                        <span class="media-pop-right"><i class="iconfont icon-shanchu"></i></span>
+                    </div>
+                </div>
+                {/empty}
+
+                <div class="media-add">
+                    <div class="media-add-content">
+                       <i class="iconfont icon-icon-test" id="add-content"></i>
+                    </div>
+                    <div class="add-tools">
+                        <ul class="ul-tools">
+                            <li data-type="add"><i></i>写新图文</li>
+                            <li data-type="select"><i></i>选择图文</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md10">
+            <form class="layui-form seller-alone-form" action="{:url('wechat/doEditMediaMessage')}" method="post">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                    <legend>编辑图文消息</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><i class="required-color">*</i>标题：</label>
+                    <input type="hidden" name="current_id" value="1" id="current_message_id">
+                    <div class="layui-input-block">
+                        <input type="text" name="title" required lay-verify="required" autocomplete="off"
+                               placeholder="请输入标题，最多可输入200个汉字" class="layui-input " id="message_title">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">作者：</label>
+
+                    <div class="layui-input-inline">
+                        <input type="text" name="author"  id="author"  autocomplete="off" placeholder="请输入作者"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">摘要：</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入文章摘要" name="brief" id="brief" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-image">
+                    <label class="layui-form-label">封面：</label>
+                    <div class="layui-input-block">
+                        {Jshop:image id='cover' name="image"/}
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">详细内容：</label>
+                </div>
+                <div class="layui-form-item">
+                    <script id="container" name="content" type="text/plain" class="layui-textarea"></script>
+                </div>
+
+                <div class="layui-form-item layui-form-image">
+                    <label class="layui-form-label">原文链接：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="url" id="url" required lay-verify="url" autocomplete="off"
+                               placeholder="输入后打开直接跳转，不输入则跳当前内容文章页" class="layui-input ">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <input type="hidden" name="message_id" value="{$id}" id="message_id">
+                        <input type="hidden" name="id" value="" id="media_id">
+                        <button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
+                        <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        var ue = UE.getEditor('container');
+        var messageData =  eval('({$mediaData|raw})');
+        var last_id = 0;
+        console.log(Object.getOwnPropertyNames(messageData).length);
+        if(Object.getOwnPropertyNames(messageData).length){
+            last_id = Object.getOwnPropertyNames(messageData).length;
+        }else{
+            last_id = 1;
+        }
+        layui.use('form', function () {
+            var $ = layui.jquery;
+            var form = layui.form;
+            form.render();
+            form.on('submit(save)', function (data) {
+                JsPost('{:url("Wechat/doEditMediaMessage")}', {data: messageData,id:$("#message_id").val()}, function (e) {
+                    if (e.status === true) {
+                        layer.msg(e.msg, {time: 1300}, function () {
+                            window.location.href = '{:url("Wechat/message")}';
+                        });
+                    } else {
+                        layer.msg(e.msg, {time: 1300});
+                    }
+                });
+                return false;
+            });
+        });
+
+
+        $(function () {
+            setInfo();
+            $("#add-content").mouseover(function () {
+                $(".add-tools").show();
+            }).mouseout(function () {
+                $(".add-tools").hide();
+            });
+            $(".add-tools").mouseover(function () {
+                $(this).show();
+            }).mouseout(function () {
+                $(".add-tools").hide();
+            });
+
+            $(".add-tools li").click(function () {
+                var type = $(this).attr("data-type");
+                last_id = last_id + 1;
+                if (type == 'add') {
+                    $("#message").find(".media-item").attr("id", "message_" + last_id);
+                    $(".media-add").before($("#message").html());
+                    if($(".media-item").length>8){
+                        $(".media-add").hide();
+                    }
+                } else if (type == 'select') {
+                }
+            });
+            $('#message_title').bind('input propertychange', function () {
+                var value = $(this).val();
+                var current_edit = $("#current_message_id").val();
+                $("#message_" + current_edit).find(".media-title").html(value);
+                updateMessageData();
+            });
+
+            $('#title,#author,#brief,#url').change(function () {
+                updateMessageData();
+            });
+            //重写添加图片方法
+            _editocoverr.addListener('beforeInsertImage', function (t, arg) {
+                $("#image_value_cover").attr("value", arg[0].image_id);
+                //将图片地址赋给img的src,实现预览
+                $("#image_src_cover").attr("src", arg[0].src);
+                var current_edit = $("#current_message_id").val();
+                if(current_edit=='1'){
+                    $("#message_" + current_edit).find(".media-cover").html("<img src='" + arg[0].src + "'>");
+                }
+                updateMessageData();
+            });
+        })
+        $(document).on("click", ".media-item", function () {
+            $(this).addClass("current").siblings().removeClass("current");
+            var id = $(this).attr("id");
+            var num = id.split("_");
+            $("#current_message_id").val(num[1]);
+            setInfo();
+        })
+        $(document).on("click", ".media-pop-right", function () {
+            var mi = $(".media-item")
+            mpr = $(".media-pop-right");
+            var id = $(this).parent().parent().attr("id");
+            var num = id.split("_");
+            var data = messageData[num[1]];
+            //数据库暂时不删除
+            if (mpr.parent().parent().parent().children().length > 3) {
+                $(this).closest(mi).remove();
+                if($(".media-item").length<=8){
+                    $(".media-add").show();
+                }
+            }
+        })
+        /***
+         * 更新数据
+         * @constructor
+         */
+        function updateMessageData() {
+            var current_edit = $("#current_message_id").val();
+            var content = ue.getContent();
+            messageData[current_edit] = {
+                'id':$("#media_id").val(),
+                'title': $('#message_title').val(),
+                'author': $("#author").val(),
+                'brief': $("#brief").val(),
+                'image': $("#image_value_cover").val(),
+                'url': $("#url").val(),
+                'content': content,
+                'image_url': $("#image_src_cover").attr("src")
+            };
+        }
+        /**
+         * 初始化表单信息
+         */
+        function setInfo() {
+            var current_edit = $("#current_message_id").val();
+            if (messageData[current_edit]) {
+                $('#message_title').val(messageData[current_edit].title);
+                $('#media_id').val(messageData[current_edit].id);
+                $('#author').val(messageData[current_edit].author);
+                $('#brief').val(messageData[current_edit].brief);
+                $('#url').val(messageData[current_edit].url);
+                $('#image_value_cover').val(messageData[current_edit].image);
+                $('#image_src_cover').attr('src', messageData[current_edit].image_url);
+                ue.ready(function() {
+                    ue.setContent(messageData[current_edit].content);
+                });
+            } else {
+                $('#message_title').val('');
+                $('#media_id').val('');
+                $('#author').val('');
+                $('#brief').val('');
+                $('#url').val('');
+                $('#image_value_cover').val('');
+                $('#image_src_cover').replaceWith('<img class="layui-upload-img" src="/static/images/default.png" id="image_src_cover" style="width:90px;height:90px;">');
+                ue.ready(function() {
+                    ue.setContent('');
+                });
+            }
+        }
+    </script>
+
+    <div id="message" class="add-message-template">
+        <div class="media-item">
+            <div class="media-detail">
+                <div class="media-title">
+                    文章标题
+                </div>
+                <div class="media-cover">
+                </div>
+                <div class="media-tools">
+                    工具栏
+                </div>
+            </div>
+            <div class="media-pop">
+                <span class="media-pop-left"><i class="iconfont icon-upper"></i></span>
+                <span class="media-pop-right"><i class="iconfont icon-shanchu"></i></span>
+            </div>
+        </div>
+    </div>

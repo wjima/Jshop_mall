@@ -69,6 +69,7 @@
 .safe>text{
   display: inline-block;
 }
+/*
 .remaining-sum-pay, .cash-on-delivery{
   display: none;
-}
+}*/

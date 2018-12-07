@@ -1,19 +1,17 @@
 <template>
     <yd-cell-group>
+        <label><input type="radio" v-model="checkedRadio" value="1"/>仅退款</label>
+        <label v-if="!delivery"><input type="radio" v-model="checkedRadio" value="2" disabled/>退货退款</label>
+        <label v-else><input type="radio" v-model="checkedRadio" value="2"/>退货退款</label>
         <yd-cell-item>
             <span slot="left">商品价格</span>
             <span slot="right">
-                <yd-radio-group v-model="radio" color="#ff3b44">
-                    <yd-radio val="1">仅退款</yd-radio>
-                    <yd-radio val="2" disabled v-if="!delivery">退货退款</yd-radio>
-                    <yd-radio val="2" v-else>退货退款</yd-radio>
-                </yd-radio-group>
             </span>
         </yd-cell-item>
         <yd-cell-item>
             <span slot="left">退款金额</span>
-            <span slot="right" v-if="radio === '1'">{{ price }}元</span>
-            <yd-input slot="right" type="number" v-model="custPrice" v-else-if="radio === '2'" placeholder="请输入退款金额"></yd-input>
+            <span slot="right" v-if="checkedRadio === '1'">{{ price }}元</span>
+            <yd-input slot="right" type="number" v-model="custPrice" v-else-if="checkedRadio === '2'" placeholder="请输入退款金额"></yd-input>
         </yd-cell-item>
     </yd-cell-group>
 </template>
@@ -22,7 +20,7 @@
 export default {
     data () {
         return {
-            radio: '1',
+            checkedRadio: '1',
             custPrice: ''
         }
     },
@@ -41,8 +39,8 @@ export default {
         }
     },
     watch: {
-        radio () {
-            this.$emit('type', this.radio)
+        checkedRadio () {
+            this.$emit('type', this.checkedRadio)
         },
         custPrice () {
             this.$emit('custPrice', this.custPrice)
@@ -50,3 +48,6 @@ export default {
     }
 }
 </script>
+
+<style>
+</style>

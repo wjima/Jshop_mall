@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="__STATIC_LIB__layui/layui_ext/dtree/dtree.css">
+<link rel="stylesheet" href="__STATIC_LIB__layui/layui_ext/dtree/font/iconfont.css">
 
 <style>
     .seller-inline-1{
@@ -241,12 +243,22 @@
 
 
 <script>
-    var laytpl='';
+    var laytpl = '';
+    layui.extend({
+        dtree: '__STATIC_LIB__layui/layui_ext/dtree/dtree'
+    }).use(['table', 'form', 'layer', 'laytpl', 'dtree','util'], function() {
 
-    layui.use(['table','form','layer','laytpl','tree'],function(){
-        var form = layui.form;
-        laytpl = layui.laytpl;
+        var element = layui.element,
+                layer = layui.layer,
+                table = layui.table,
+                util = layui.util,
+                dtree = layui.dtree,
+                form = layui.form,
+                laytpl = layui.laytpl,
+                $ = layui.$;
+
         form.render();
+
         form.on('submit(add-ship)', function(data){
             JsPost("{:url('ship/edit')}",data.field,function (res) {
                 if(res.status == true){
@@ -260,51 +272,68 @@
             return false;
         });
         form.on('radio(type)', function(data){
-            console.log(data.elem); //得到radio原始DOM对象
-            console.log(data.value); //被点击的radio的value值
             if(data.value=='2'){
                 $(".div-none").show();
             }else{
                 $(".div-none").hide();
             }
         });
-    });
 
-    //选择地区
-    $(".layui-table").on('click','.selectArea',function (e) {
-        var tdObj = $(this);
-        var tr = tdObj.parent().parent();
-        var id = tr.attr("data-id");
-        var value = tdObj.parent().find('input').val();
-        JsPost('{:url("ship/chooseArea")}',{data:value},function (e) {
+        //选择地区
+        $(".layui-table").on('click','.selectArea',function (e) {
+            var tdObj = $(this);
+            var tr = tdObj.parent().parent();
+            var id = tr.attr("data-id");
+            var value = tdObj.parent().find('input').val();
+            var DTree = '';
             layer.open({
                 type: 1,
                 area: ['700px', '450px'],
-                data:value,
+                data: value,
                 title: '选择地区',
                 closeBtn: 0,
                 shadeClose: true,
-                content: e.data,
-                btn:['保存','关闭'],
+                content: '<ul id="areaTree" class="dtree" data-id="0"></ul>',
+                btn: ['保存', '关闭'],
+                success: function(layero, index) {
+                    var obj = $(layero).find("#areaTree");
+                    DTree = dtree.render({
+                        obj: obj,
+                        initLevel: 1,
+                        request:{"ids":value},
+                        url: '{:url("ship/getArea")}',
+                        checkbar: true,
+                        cache: true,
+                        checkbarType: "all",
+                        response:{message:"msg",statusCode:0},
+                        dataStyle: "layuiStyle",
+                        dataFormat: "list"
+                    });
+                },
                 yes:function (index,layero) {
-                    console.log(index);
-                    var checked = getAllChecked();
+                    var checked = dtree.getCheckbarNodesParam(DTree);
+                    console.log(checked);
                     if(checked){
                         var html = '已选择地区：';
+                        var ids = [];
                         $.each(checked,function (i,obj) {
-                            if(obj.pid==0){
-                                html=html+obj.name+',';
+                            if(obj.parentId<=0){
+                                html=html+obj.context+',';
                             }
+                            ids.push({'id':obj.nodeId,'pid':obj.parentId,'name':obj.context});
                         });
-                        html = html.substring(0,html.length-1)+'。<a href="javascript:void(0);" class="selectArea">请选择地区</a>';
-                        html = html+"<input type='hidden' name='area_id["+id+"]' value='"+JSON.stringify(checked)+"'>";
+                        html = html.substring(0,html.length-1)+' <a href="javascript:void(0);" class="selectArea">请选择地区</a>';
+                        html = html+"<input type='hidden' name='area_id["+id+"]' value='"+JSON.stringify(ids)+"'>";
                         tdObj.parent().html(html);
                         layer.closeAll();
                     }
                 }
             });
+
         });
     });
+
+
     $(".layui-table").on('click','.addarea-class',function (e) {
         var getTpl = tr_tpl.innerHTML;
         var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');

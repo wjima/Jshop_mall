@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="__STATIC_LIB__layui/layui_ext/dtree/dtree.css">
+<link rel="stylesheet" href="__STATIC_LIB__layui/layui_ext/dtree/font/iconfont.css">
+
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
 
@@ -21,7 +24,19 @@
 </div>
 
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.extend({
+        dtree: '__STATIC_LIB__layui/layui_ext/dtree/dtree'
+    }).use(['table', 'form', 'layer', 'dtree','util'], function() {
+
+        var element = layui.element,
+                layer = layui.layer,
+                table = layui.table,
+                util = layui.util,
+                dtree = layui.dtree,
+                form = layui.form,
+                laytpl = layui.laytpl,
+                $ = layui.$;
+        form.render();
         var userTables =layui.table.render({
             elem: '#userTable',
             height: 'full-330',
@@ -32,7 +47,6 @@
             id:'userTable',
             cols: [[
                 {type:'numbers'},
-//                {field:'username', width:100,title:'账号'},
                 {field:'name',title:'角色名称'},
                 {field:'utime',title:'创建时间'},
                 {field: 'operating', title: '操作', width:250, align: 'center', fixed: 'right',templet:function(data){
@@ -40,7 +54,7 @@
                     html += '<a  class="layui-btn layui-btn-xs option-perm" data-id="' + data.id + '">编辑权限</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
                     return html;
-                }},
+                }}
             ]]
         });
         layui.form.on('submit(*)', function(data){
@@ -118,32 +132,41 @@
         //设置权限
         $(document).on('click','.option-perm',function(){
             var id = $(this).attr('data-id');
-
-            JsPost('{:url("role/getOperation")}',{'id':id},function (res) {
-                if(res.status){
-                    layer.open({
-                        type: 1,
-                        area: ['400px', '600px'],
-                        data:'',
-                        title: '配置权限',
-                        content: res.data,
-                        btn:['保存','关闭'],
-                        yes:function (index,layero) {
-                            var thedata = getAllChecked();
-                            JsPost('{:url("role/savePerm")}',{'id':id,'data':thedata},function (re) {
-                                if(re.status){
-                                    layer.msg('保存成功');
-                                    layer.close(index);
-                                }else{
-                                    layer.msg(re.msg);
-                                }
-                            });
+            layer.open({
+                type: 1,
+                area: ['400px', '600px'],
+                content:'<ul id="areaTree" class="dtree" data-id="0"></ul>',
+                title: '配置权限',
+                btn:['保存','关闭'],
+                success: function(layero, index) {
+                    var obj = $(layero).find("#areaTree");
+                    DTree = dtree.render({
+                        obj: obj,
+                        initLevel: 1,
+                        request:{"id":id},
+                        url: '{:url("role/getOperation")}',
+                        checkbar: true,
+                        cache: true,
+                        checkbarType: "all",
+                        response:{message:"msg",statusCode:0},
+                        dataStyle: "layuiStyle",
+                    });
+                },
+                yes:function (index,layero) {
+                    var thedata = dtree.getCheckbarNodesParam(DTree);
+                    var ids = [];
+                    $.each(thedata,function (i,obj) {
+                        ids.push({'id':obj.nodeId,'pid':obj.parentId,'name':obj.context});
+                    });
+                    JsPost('{:url("role/savePerm")}',{'id':id,'data':ids},function (re) {
+                        if(re.status){
+                            layer.msg('保存成功');
+                            layer.close(index);
+                        }else{
+                            layer.msg(re.msg);
                         }
                     });
-                }else{
-                    layer.msg(res.msg);
                 }
-
             });
         });
 

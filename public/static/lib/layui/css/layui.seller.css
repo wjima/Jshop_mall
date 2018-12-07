@@ -53,3 +53,10 @@
 .seller-form .layui-form-mid {
     padding:4px 0!important;
 }
+
+.layui-layout-admin .layui-side{
+    overflow-x: hidden;
+}
+.layui-layout-admin .layui-side::-webkit-scrollbar{
+    display: none;
+}

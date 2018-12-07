@@ -70,34 +70,32 @@ class ManageRole extends Common
 
     /**
      * 取角色的操作权限数组
-     * @param $seller_id
      * @param $id
+     * @return array|\think\Config
      */
     public function getRoleOperation($id)
     {
         $result = [
             'status' => true,
-            'data' => [],
-            'msg' => ''
+            'data'   => [],
+            'msg'    => ''
         ];
 
-        $where['id'] = $id;
+        $where['id']    = $id;
         $sellerRoleInfo = $this->where($where)->find();
-        if(!$sellerRoleInfo){
+        if (!$sellerRoleInfo) {
             return error_code(11071);
         }
         $mrorModel = new ManageRoleOperationRel();
-        $permList = $mrorModel->where(['manage_role_id'=>$id])->select();
-
-        if(!$permList->isEmpty()){
-            $nodeList = array_column($permList->toArray(),'manage_role_id','operation_id');
-        }else{
+        $permList  = $mrorModel->where(['manage_role_id' => $id])->select();
+        if (!$permList->isEmpty()) {
+            $nodeList = array_column($permList->toArray(), 'manage_role_id', 'operation_id');
+        } else {
             $nodeList = [];
         }
 
         $operationModel = new Operation();
-        $result['data'] = $operationModel->menuTree($operationModel::MENU_MANAGE,$nodeList);
-
+        $result['data'] = $operationModel->menuTree($operationModel::MENU_MANAGE, $nodeList);
         return $result;
     }
 

@@ -50,18 +50,11 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>消息加解密方式：</label>
-        <div class="layui-input-block">
-            <input type="radio" name="wx_official_encode" value="plaintext" title="明文模式" {if condition="$data.wx_official_encode.value eq 'plaintext'"} checked="true" {/if}>
-            <input type="radio" name="wx_official_encode" value="compatible" title="兼容模式" {if condition="$data.wx_official_encode.value eq 'compatible'"} checked="" {/if}>
-            <input type="radio" name="wx_official_encode" value="security" title="安全模式" {if condition="$data.wx_official_encode.value eq 'security'"} checked="" {/if}>
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>EncodingAESKey：</label>
+        <label class="layui-form-label seller-inline-2">EncodingAESKey：</label>
         <div class="layui-input-inline seller-inline-5">
-            <input type="text" name="wx_official_encodeaeskey" required lay-verify="required" value="{$data.wx_official_encodeaeskey.value}" autocomplete="off" placeholder="" class="layui-input">
+            <input type="text" name="wx_official_encodeaeskey"  value="{$data.wx_official_encodeaeskey.value}" autocomplete="off" placeholder="" class="layui-input">
         </div>
+        <div class="layui-form-mid layui-word-aux">如公众号中消息加解密方式为安全模式，此项必填</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>公众号类型：</label>

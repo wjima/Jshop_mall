@@ -2,6 +2,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\Balance;
 use app\common\model\GoodsComment;
 use app\common\model\UserLog;
 use app\common\model\User as UserModel;
@@ -178,5 +179,121 @@ class User extends Manage
         $mobile = Request::param('mobile');
         $model = new UserModel();
         return $model->editInvite($id, $mobile);
+    }
+
+    /**
+     * 添加用户
+     * @return array|mixed
+     */
+    public function addUser()
+    {
+        $this->view->engine->layout(false);
+        if (Request::isPost()) {
+            $input     = Request::param();
+            $userModel = new UserModel();
+            $result    = $userModel->manageAdd($input);
+            return $result;
+        }
+        return $this->fetch('addUser');
+    }
+
+    /**
+     * 编辑用户
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function editUser()
+    {
+        $this->view->engine->layout(false);
+        $userModel = new UserModel();
+
+        if (Request::isPost()) {
+            $input  = Request::param();
+            $result = $userModel->manageEdit($input);
+            return $result;
+        }
+
+        $user_id = Request::param('user_id');
+        $info    = $userModel->getUserInfo($user_id);
+        $this->assign('info', $info);
+        return $this->fetch('editUser');
+    }
+
+
+    /**
+     * 用户详情
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function details()
+    {
+        $this->view->engine->layout(false);
+
+        $user_id = Request::param('user_id');
+        $model   = new UserModel();
+        $info    = $model->getUserInfo($user_id);
+        $this->assign('info', $info);
+        return $this->fetch('details');
+    }
+
+
+    /**
+     * 编辑余额
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function editMoney()
+    {
+        $this->view->engine->layout(false);
+        $user_id = input('user_id');
+        $flag = input('flag', 'false');
+
+        if($flag == 'true')
+        {
+            $money = input('money');
+            $balanceMoney = new Balance();
+            $res = $balanceMoney->change($user_id, $balanceMoney::TYPE_ADMIN, $money, 0);
+            return $res;
+        }
+        else
+        {
+            $this->assign('user_id', $user_id);
+            $User = new UserModel();
+            $where[] = ['id', 'eq', $user_id];
+            $user_info = $User->where($where)->find();
+            $this->assign('money', $user_info['balance']);
+            return $this->fetch('editMoney');
+        }
+    }
+
+
+
+
+    public function moneyLog()
+    {
+        $this->view->engine->layout(false);
+        $user_id = input('user_id');
+        $flag = input('flag', 'false');
+
+        if($flag == 'true')
+        {
+            $userPointLog = new Balance();
+            $post['user_id'] = $user_id;
+            $post['page'] = Request::param('page', 1);
+            $post['limit'] = Request::param('limit', 20);
+            $res = $userPointLog->tableData($post);
+            return $res;
+        }
+        else
+        {
+            $this->assign('user_id', $user_id);
+            return $this->fetch('moneyLog');
+        }
     }
 }

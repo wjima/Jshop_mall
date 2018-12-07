@@ -107,10 +107,14 @@ class Common
     public function valid()
     {
         $encryptStr = "";
+
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $postStr = file_get_contents("php://input");
+
             $array = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
             $this->encrypt_type = isset($_GET["encrypt_type"]) ? $_GET["encrypt_type"] : '';
+
+
             if ($this->encrypt_type == 'aes') {
                 $encryptStr = $array['Encrypt'];
                 !class_exists('Prpcrypt', false) && require __DIR__ . '/Prpcrypt.php';
@@ -134,6 +138,7 @@ class Common
             }
             return false;
         }
+
         if (!$this->checkSignature($encryptStr)) {
             $this->errMsg = 'Interface authentication failed, please use the correct method to call.';
             return false;

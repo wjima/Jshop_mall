@@ -243,6 +243,9 @@ class Order extends Api
     /**
      * 获取订单列表微信小程序
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getOrderList()
     {
@@ -252,36 +255,21 @@ class Order extends Api
             'limit' => input('limit'),
             'user_id' => $this->userId
         );
-        $data = model('common/Order')->getListFromWxApi($input);
+        $model = new orderModel();
+        $data = $model->getListFromWxApi($input);
 
-        if(count($data['data']) > 0)
-        {
-            $return_data = array(
-                'status' => true,
-                'msg' => '获取成功',
-                'data' => array(
-                    'list' => $data['data'],
-                    'count' => $data['count'],
-                    'page' => $input['page'],
-                    'limit' => $input['limit'],
-                    'status' => $input['status']
-                )
-            );
-        }
-        else
-        {
-            $return_data = array(
-                'status' => false,
-                'msg' => '没有符合的订单',
-                'data' => array(
-                    'list' => $data['data'],
-                    'count' => $data['count'],
-                    'page' => $input['page'],
-                    'limit' => $input['limit'],
-                    'status' => $input['status']
-                )
-            );
-        }
+        $return_data = array(
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => array(
+                'list' => $data['data'],
+                'count' => $data['count'],
+                'page' => $input['page'],
+                'limit' => $input['limit'],
+                'status' => $input['status']
+            )
+        );
+
         return $return_data;
     }
 
@@ -350,19 +338,16 @@ class Order extends Api
             return $info;
         }
 
-//        $reship = [
-//            'reship_name' => getShopSetting($this->sellerId,'reship_name'),
-//            'reship_mobile' => getShopSetting($this->sellerId,'reship_mobile'),
-//            'reship_area' => get_area(getShopSetting($this->sellerId,'reship_area_id')),
-//            'reship_address' => getShopSetting($this->sellerId,'reship_address'),
-//        ];
+        $reship = [
+            'reship_name' => getSetting('reship_name'),
+            'reship_mobile' => getSetting('reship_mobile'),
+            'reship_area' => get_area(getSetting('reship_area_id')),
+            'reship_address' => getSetting('reship_address'),
+        ];
         $result['data']['info'] = $info['data'];
-//        $result['data']['reship'] = $reship;
+        $result['data']['reship'] = $reship;
         $result['status'] = true;
         return $result;
-
-
-
     }
 
     /**
@@ -390,7 +375,7 @@ class Order extends Api
 
     /**
      * 添加售后单
-     * @return array|\think\Config
+     * @return array|bool|mixed
      */
     public function addAftersales()
     {
@@ -448,7 +433,7 @@ class Order extends Api
         }
 
         $billReshipModel = new BillReship();
-        return  $billReshipModel->sendReship($this->sellerId,$this->userId,input('param.reship_id'),input('param.logi_code'),input('param.logi_no'));
+        return  $billReshipModel->sendReship($this->userId,input('param.reship_id'),input('param.logi_code'),input('param.logi_no'));
     }
 
     /**

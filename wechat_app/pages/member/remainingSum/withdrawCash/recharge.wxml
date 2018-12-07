@@ -1,0 +1,27 @@
+<view class='content'>
+  <view class="page__bd">
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <!-- <image class='header-img' src='../../image/man.png'></image> -->
+          <view class="weui-label">当前金额</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" value='￥{{balance}}' disabled placeholder-class='p-class' />
+        </view>
+      </view>
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <!-- <image class='header-img' src='../../image/man.png'></image> -->
+          <view class="weui-label">充值金额</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" type="digit"  bindinput='change_money' value='' placeholder-class='p-class' />
+        </view>
+      </view>
+    </view>
+    <view class="weui-btn-area">
+      <button class="weui-btn" type="" bindtap="showTopTips">微信支付</button>
+    </view>
+  </view>
+</view>

@@ -230,6 +230,7 @@ class Goods extends Manage
                 }
                 $imgRelData[$i]['goods_id'] = $goods_id;
                 $imgRelData[$i]['image_id'] = $val;
+                $imgRelData[$i]['sort']     = $i;
                 $i++;
             }
             $goodsImagesModel = new GoodsImages();
@@ -579,7 +580,6 @@ class Goods extends Manage
         $this->assign('open_spec', '0');
         $this->assign('data', $goods['data']);
         $this->assign('products', $goods['data']['products']);
-
         if ($goods['data']['spes_desc'] != '') {
             $this->assign('open_spec', '1');
         } else {
@@ -764,6 +764,7 @@ class Goods extends Manage
                 }
                 $imgRelData[$i]['goods_id'] = $goods_id;
                 $imgRelData[$i]['image_id'] = $val;
+                $imgRelData[$i]['sort'] = $i;
                 $i++;
             }
             $goodsImagesModel = new GoodsImages();

@@ -1,12 +1,5 @@
 <template>
     <div class="ordercell">
-        <div class="orderscore">
-            <yd-cell-item v-if="open_point && usable_point"  type="checkbox">
-                <span slot="left">积分抵扣</span>
-                <span slot="right">可用{{ usable_point }}积分 抵扣￥{{ this.GLOBAL.formatMoney(point_money, 2, '') }}&nbsp;</span>
-                <input slot="right" type="checkbox" v-model="checked"/>
-            </yd-cell-item>
-        </div>
         <yd-cell-group>
             <yd-cell-item v-if="parseFloat(goods_amount)">
                 <span slot="left">商品价格</span>

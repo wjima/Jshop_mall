@@ -87,8 +87,8 @@ class UserShip extends Common
             $ship_data = [
                 'user_id' => $data['user_id'],
                 'area_id' => $data['area_id'],
-                'address' => $data['address'],
-                'name' => $data['name'],
+                'address' => htmlentities($data['address']),
+                'name' => htmlentities($data['name']),
                 'mobile' => $data['mobile'],
                 'utime' => time(),
                 'is_def' => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO

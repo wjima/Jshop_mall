@@ -241,6 +241,8 @@ hot-recommends .name{
   -webkit-box-orient:vertical;
   -webkit-line-clamp:2; 
   white-space: normal;
+  min-height:76rpx;
+
 }
 .loading{
   font-size:22rpx;

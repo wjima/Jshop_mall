@@ -2,6 +2,7 @@
 namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\Balance;
+use app\common\model\GoodsComment;
 use app\common\model\Setting;
 use app\common\model\UserBankcards;
 use app\common\model\UserPointLog;
@@ -426,6 +427,9 @@ class User extends Api
     /**
      * H5 添加收货地址
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function vueSaveUserShip()
     {
@@ -435,7 +439,8 @@ class User extends Api
         $data['name'] = input('param.name');
         $data['mobile'] = input('param.mobile');
         $data['is_def'] = input('param.is_def');
-        $result = model('common/UserShip')->vueSaveShip($data);
+        $model = new UserShip();
+        $result = $model->vueSaveShip($data);
         if($result)
         {
             $return_data = [
@@ -674,7 +679,8 @@ class User extends Api
         $items = input('items/a');
 
         //添加评价
-        $result = model('common/GoodsComment')->addComment($order_id, $items, $this->userId);
+        $model = new GoodsComment();
+        $result = $model->addComment($order_id, $items, $this->userId);
         return $result;
     }
 
@@ -1178,7 +1184,7 @@ class User extends Api
         $userModel = new UserModel();
         $userWxModel = new UserWx();
         $wxInfo = $userWxModel->where(['id' => $data['user_wx_id']])->find();
-        if (isset($wxInfo['user_id']) && $wxInfo['user_id'] != '') {
+        if (isset($wxInfo['user_id']) && $wxInfo['user_id']) {
             $returnData['msg'] = '请勿重复绑定';
             return $returnData;
         }

@@ -188,9 +188,9 @@ Page({
     app.api.sendReship(data, function (res) {
       if (res.status) {
         app.common.successToShow('提交成功',function(){
-          // wx.navigateBack({
-          //   delta: 1
-          // })
+          wx.navigateBack({
+            delta: 1
+          });
         });
       } else {
         app.common.errorToBack(res.msg, 0);

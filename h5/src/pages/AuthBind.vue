@@ -19,10 +19,10 @@
                 <span slot="left">验证码：</span>
                 <yd-input slot="right" v-model="code" placeholder="请输入短信验证码"></yd-input>
             </yd-cell-item>
-            <yd-cell-item>
-                <span slot="left">密码：</span>
-                <yd-input slot="right" type="password" v-model="pwd" placeholder="请输入密码"></yd-input>
-            </yd-cell-item>
+            <!--<yd-cell-item>-->
+                <!--<span slot="left">密码：</span>-->
+                <!--<yd-input slot="right" type="password" v-model="pwd" placeholder="请输入密码"></yd-input>-->
+            <!--</yd-cell-item>-->
         </yd-cell-group>
         <yd-button size="large" type="danger" @click.native="reg">绑定</yd-button>
     </div>
@@ -34,7 +34,7 @@ export default {
         return {
             invitecode: this.GLOBAL.getStorage('invitecode') || '', // 邀请码
             mobile: '',
-            pwd: '',
+            // pwd: '',
             code: '', // 验证码
             countDown: false // 发送验证码倒计时 发送成功后修改为true倒计时启动
         }
@@ -88,10 +88,8 @@ export default {
                 this.$dialog.toast({mes: this.checkMobile.msg, timeout: 1300})
             } else if (!this.code) {
                 this.$dialog.toast({mes: '请输入短信验证码', timeout: 1300})
-            } else if (!this.pwd) {
-                this.$dialog.toast({mes: '请输入登录密码', timeout: 1300})
-            } else {
-                let data = {mobile: this.mobile, code: this.code, password: this.pwd}
+            }  else {
+                let data = {mobile: this.mobile, code: this.code}
                 if (this.invitecode) data.invitecode = this.invitecode
                 data['uuid'] = this.GLOBAL.getStorage('uuid')
                 this.$api.trustBind(data, res => {

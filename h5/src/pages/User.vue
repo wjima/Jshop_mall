@@ -37,7 +37,7 @@
         </yd-cell-group>
         <yd-cell-group>
             <yd-cell-item v-if="isOpenIntegral" type="div" @click.native="signIn">
-                <img slot="icon" src="../../static/image/coupon.png">
+                <img slot="icon" src="../../static/image/sign_in.png">
                 <span slot="left">签到</span>
             </yd-cell-item>
             <yd-cell-item href="/coupon" type="link">
@@ -101,25 +101,31 @@ export default {
         userheader
     },
     mounted () {
-        this.initUserData()
+        this.getUserInfo()
+        this.getOrderSum()
+        this.isOpenPoint()
     },
     methods: {
-        initUserData () {
-            // 获取用户昵称头像等信息
+        // 获取用户昵称头像等信息
+        getUserInfo () {
             this.$api.userInfo({}, res => {
                 if (res.status) {
                     this.user = res.data
                     this.storeUser(res.data)
                 }
             })
-            // 获取订单不同状态的数量
+        },
+        // 获取订单不同状态的数量
+        getOrderSum () {
             this.$api.getOrderStatusSum({}, res => {
                 this.orderNum = res.data
             })
-            // 判断是否开启积分
+        },
+        // 判断是否开启积分
+        isOpenPoint () {
             this.$api.isPoint({}, res => {
                 if (res.status) {
-                     res.data === '1' ? this.isOpenIntegral = true : this.isOpenIntegral = false
+                    res.data === 1 ? this.isOpenIntegral = true : this.isOpenIntegral = false
                 }
             })
         },
@@ -134,9 +140,9 @@ export default {
         // 用户头像上传
         uploadAvatar (e) {
             let file = e.target.files[0]
-            let param = new FormData()
-            param.append('upfile', file, file.name)
-            this.$api.uploadFile('image', param, res => {
+            let data = new FormData()
+            data.append('upfile', file, file.name)
+            this.$api.uploadFile(data, res => {
                 if (res.status) {
                     let avatar = res.data.url // 上传成功的图片地址
                     // 执行头像修改
@@ -159,7 +165,7 @@ export default {
             this.$api.sign({}, res => {
                 if (res.status) {
                     this.$dialog.toast({
-                        mes: res.msg,
+                        mes: '签到成功!',
                         timeout: 1300,
                         callback: () => {
                             this.getUserInfo()
@@ -168,10 +174,6 @@ export default {
                 }
             })
         }
-    },
-    // 页面缓存后每次进入都重新请求订单数量
-    activated () {
-        this.initUserData()
     }
 }
 </script>

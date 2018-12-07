@@ -152,10 +152,12 @@ class UserPointLog extends Common
 
         $where[] = ['user_id', 'eq', $user_id];
         $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
-        $where[] = ['DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")', 'eq', date('Y-m-d', time())];
-
-        $day = $this->field('DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d") as day')
-            ->where($where)
+        $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
+        $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
+        $where[] = ['ctime', 'BETWEEN', [$beginToday,$endToday]];
+        //$where[] = ['DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")', 'eq', date('Y-m-d', time())];
+        //兼容问题
+        $day = $this->where($where)
             ->find();
 
         if($day)
@@ -174,8 +176,8 @@ class UserPointLog extends Common
      */
     protected function signRandomPointCalculation()
     {
-        $sign_random_min = 1; //getShopSetting( 'sign_random_min'); //最小随机
-        $sign_random_max = 10; //getShopSetting( 'sign_random_max'); //最大随机
+        $sign_random_min = getSetting( 'sign_random_min'); //最小随机
+        $sign_random_max = getSetting( 'sign_random_max'); //最大随机
         $point = mt_rand($sign_random_min, $sign_random_max); //随机积分
         //$point = $this->signAppointDatePointCalculation( $point); //判断计算指定日期
         return $point;
@@ -185,28 +187,22 @@ class UserPointLog extends Common
     /**
      * 签到指定积分计算
      * @param $user_id
-     * @return float|int|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * @return array|float|int
+     * @throws \think\db\exception\BindParamException
+     * @throws \think\exception\PDOException
      */
     protected function signFixedPointCalculation($user_id)
     {
-        $first_sign_point = 1;//getShopSetting('first_sign_point'); //首次签到积分
-        $continuity_sign_additional = 1;//getShopSetting('continuity_sign_additional'); //连续签到追加
-        $sign_most_point = 10;//getShopSetting('sign_most_point'); //签到最多积分
+        $first_sign_point = getSetting('first_sign_point'); //首次签到积分
+        $continuity_sign_additional = getSetting('continuity_sign_additional'); //连续签到追加
+        $sign_most_point = getSetting('sign_most_point'); //签到最多积分
 
         //获取连续签到天数
         $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
         $day = date('Y-m-d', strtotime('-'.$max_continuity_day.' day'));
-
-        $where[] = ['user_id', 'eq', $user_id];
-        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
-        $where[] = ['from_unixtime(ctime)', '>=', $day];
-        $res = $this->field('DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d") as day')
-            ->where($where)
-            ->group('DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")')
-            ->select();
+        //兼容问题
+        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day FROM `jshop_user_point_log` WHERE `user_id` = '.$user_id.' AND `type` = '.self::POINT_TYPE_SIGN.' AND from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")';
+        $res = $this->query($sql);
 
         $new_res = [];
         foreach($res as $k => $v)
@@ -257,7 +253,7 @@ class UserPointLog extends Common
                 if($sign_appoint_data_type == self::SIGN_APPOINT_DATE_RATE)
                 {
                     //倍率
-                    $sign_appoint_date_rate = 2;getShopSetting('sign_appoint_date_rate'); //特殊指定日期倍数
+                    $sign_appoint_date_rate = 2;//getShopSetting('sign_appoint_date_rate'); //特殊指定日期倍数
                     $point = $old_point * $sign_appoint_date_rate;
                 }
                 else
@@ -348,7 +344,7 @@ class UserPointLog extends Common
      */
     public function orderComplete($user_id, $money, $order_id)
     {
-        $orders_reward_proportion = 10;//getShopSetting( 'orders_reward_proportion');
+        $orders_reward_proportion = getSetting('orders_reward_proportion');
         $point = floor($money / $orders_reward_proportion);
         $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单:'.$order_id.'的积分奖励');
     }

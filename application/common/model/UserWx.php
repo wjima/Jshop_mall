@@ -99,7 +99,6 @@ class UserWx extends Common
             'data' => '',
             'msg' => ''
         ];
-        Db::startTrans();
         try {
             $data['type'] = self::TYPE_OFFICIAL;            //公众号类型
             if (isset($params['unionId'])) {
@@ -116,9 +115,7 @@ class UserWx extends Common
             $this->save($data);
             $result['status'] = true;
             $result['data']['id'] = $this->getLastInsID();
-            Db::commit();
         } catch (\Exception $e) {
-            Db::rollback();
             $result['msg'] = $e->getMessage();
             return $result;
         }

@@ -44,11 +44,19 @@
             cols: [[ //标题栏
                 {type:'numbers'},
                 {field: 'name', title: '消息名称',align:'center'},
-                {field: 'type', title: '消息类型',align:'center'},
+                {field: 'type_name', title: '消息类型',align:'center'},
                 {field: 'is_attention', title: '关注回复',align:'center'},
                 {field: 'is_default', title: '默认回复',align:'center'},
+                {field: 'enable', title: '禁用',align:'center'},
                 {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
-                {fixed: 'right', width:150, title:'操作',align:'center', toolbar:'#messageBar'}
+                {fixed: 'right', width:180, title:'操作',align:'center',templet:function(data){
+                    var html = '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>'
+                                +'<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
+                    if(data.type == '3'){
+                        html = '<a class="layui-btn layui-btn-xs" lay-event="edit-media">编辑图文</a>'+html;
+                    }
+                    return html;
+                }}
             ]]
         });
 
@@ -72,7 +80,7 @@
                 window.box = layer.open({
                     type: 1,
                     content: e,
-                    area: ['400px', '450px'],
+                    area: ['450px', '550px'],
                     title:'添加消息'
                 });
             })
@@ -140,15 +148,18 @@
                     window.box = layer.open({
                         type:1,
                         content:e,
-                        area:['400px','450px'],
-                        title:'编辑品牌'
+                        area: ['450px', '550px'],
+                        title:'编辑消息'
                     })
                 })
+            }else if(layEvent==='edit-media'){
+                window.location.href = "{:url('Wechat/editMediaMessage')}?id=" + data.id;
             }
         });
     })
 </script>
 <script type="text/html" id="messageBar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit_media">编辑图文</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>

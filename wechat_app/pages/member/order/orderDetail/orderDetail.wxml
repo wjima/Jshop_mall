@@ -59,6 +59,10 @@
       <text>订单已取消</text>
       <text class='information-time'></text>
     </view>
+    <view class='information-content' wx:elif="{{order.text_status == 'completed'}}">
+      <text>订单已完成</text>
+      <text class='information-time'></text>
+    </view>
     <view class='information-content' wx:else>
       <text>你已签收</text>
       <text class='information-time'>{{order.delivery[0].confirm_time}}</text>

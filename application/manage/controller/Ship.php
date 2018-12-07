@@ -44,6 +44,7 @@ class Ship extends Manage
                 $firstunit_area_price = input('firstunit_area_price/a',[]);
                 $continueunit_area_price = input('continueunit_area_price/a',[]);
 
+
                 foreach ($area_id as $key =>$val){
                     if($val){
                         $area_data = json_decode($val,true);
@@ -199,6 +200,28 @@ class Ship extends Manage
         }
         $return_data['msg']    = '删除成功';
         $return_data['status'] = true;
+        return $return_data;
+    }
+
+    public function getArea(){
+        $return_data = [
+            'code' => 0,
+            'msg'=>'获取成功',
+            'data'   => [],
+        ];
+        $parent_id = input('nodeId','0');
+        $ischecked = input('ischecked','0');
+        $areas = input('ids','');
+        $ids = [];
+        if($areas!=''){
+            $areas = json_decode($areas,true);
+            $ids = array_column($areas,'id');
+        }
+        $area = new Area();
+        $areaList=$area->getTreeArea($ids);
+        if($areaList['status']){
+            $return_data['data'] = $areaList['data'];
+        }
         return $return_data;
     }
 

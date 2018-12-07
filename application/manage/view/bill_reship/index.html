@@ -67,7 +67,10 @@
                 {field:'utime',width:170,title:'更新时间'},
                 {field: 'operating', title: '操作', width:200, align: 'center', fixed: 'right',templet:function(data){
                     var html = '';
-                    html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
+                    html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
+                    if(data.status === 2){
+                        html += '<a class="layui-btn layui-btn-xs option-audit" data-id="' + data.reship_id + '">确认收货</a>';
+                    }
                     return html;
                 }},
             ]]
@@ -89,12 +92,12 @@
                 data:'reship_id='+$(this).attr('data-id'),
                 success:function(e){
                     if(e.status){
-                        layer.msg('确认收货成功');
-
+                        layer.msg('确认收货成功', {time: 1500}, function(){
+                            layui.table.reload('billReship');
+                        });
                     }else{
                         layer.msg(e.msg);
                     }
-
                 }
             });
         });
@@ -115,7 +118,6 @@
                     }else{
                         layer.msg(e.msg);
                     }
-
                 }
             });
         });

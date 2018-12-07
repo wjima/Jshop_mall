@@ -5,6 +5,8 @@
         <rollnotice></rollnotice>   <!-- 公告 -->
         <indexcoupon :couponList="couponList"></indexcoupon>   <!-- 优惠券 -->
         <indexgrids></indexgrids>   <!-- 菜单menu -->
+        <seckill></seckill>
+        <groupbuying></groupbuying>
         <indexlistrec></indexlistrec>   <!-- 推荐商品列表 -->
         <indexlisthot></indexlisthot>   <!-- 热卖商品列表 -->
         <yd-backtop></yd-backtop>
@@ -19,6 +21,8 @@ import indexcoupon from '../components/IndexCoupon.vue'
 import indexgrids from '../components/IndexGrids.vue'
 import indexlisthot from '../components/IndexListHot.vue'
 import indexlistrec from '../components/IndexListRec.vue'
+import groupbuying from '../components/GroupBuying'
+import seckill from '../components/Seckill'
 
 export default {
     data () {
@@ -27,7 +31,7 @@ export default {
         }
     },
     components: {
-        search, indexslider, rollnotice, indexcoupon, indexgrids, indexlisthot, indexlistrec
+        search, indexslider, rollnotice, indexcoupon, indexgrids, indexlisthot, indexlistrec, groupbuying, seckill
     },
     // 实例创建并挂载后调用此方法
     mounted () {

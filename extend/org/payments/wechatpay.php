@@ -163,7 +163,9 @@ class wechatpay implements Payment
                 $result['data']['payed_msg'] = $data['err_code'].':'.$data['err_code_des'];
                 $result['data']['trade_no'] = '';
             }
+            $result['msg'] = 'success';
         }else{
+            $result['msg'] = 'fail';
             return $result;
         }
 

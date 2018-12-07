@@ -224,7 +224,7 @@ Page({
 
     app.api.getGroup(data, function (res) {
       if (res.status) {
-        let seckill = page.data.seckill.concat(res.data);
+        let seckill = res.data;
         page.setData({
           seckill: seckill,
           ajaxStatus: true

@@ -54,7 +54,7 @@ class GoodsImages extends Common
         if(!$goods_id){
             return $result;
         }
-        $images = $this->where([ 'goods_id' => $goods_id ])->select();
+        $images = $this->where([ 'goods_id' => $goods_id ])->order('sort desc')->select();
         if(!$images->isEmpty()) {
             $result['status'] = true;
             $result['msg'] = '查询成功';

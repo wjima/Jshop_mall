@@ -22,6 +22,7 @@ class BillPayments extends Common
     const STATUS_OTHER = 3;        //支付状态，其他
 
     const TYPE_ORDER = 1;       //单据类型 订单
+    const TYPE_RECHARGE = 2;       //单据类型 充值
 
 //
 //    const SEX_BOY = 1;
@@ -175,50 +176,50 @@ class BillPayments extends Common
      * @param int $type             支付类型
      * @return array
      */
-    public function toAdd($source_str, $payment_code, $user_id = '', $type = self::TYPE_ORDER,$params = [])
+    public function toAdd($source_str, $payment_code, $user_id = '', $type = self::TYPE_ORDER, $params = [])
     {
         $result = [
             'status' => false,
-            'data' => array(),
-            'msg' => ''
+            'data'   => array(),
+            'msg'    => ''
         ];
         //判断支付方式
         $paymentsModel = new Payments();
-        $paymentsInfo = $paymentsModel->getPayment($payment_code, $paymentsModel::PAYMENT_STATUS_YES);
-        if(!$paymentsInfo){
+        $paymentsInfo  = $paymentsModel->getPayment($payment_code, $paymentsModel::PAYMENT_STATUS_YES);
+        if (!$paymentsInfo) {
             return error_code(10058);
         }
 
-        $paymentRel = $this->formatPaymentRel($source_str, $type);
-        if(!$paymentRel['status']){
+        $paymentRel = $this->formatPaymentRel($source_str, $type, $params);
+        if (!$paymentRel['status']) {
             return $paymentRel;
         }
 
         Db::startTrans();
         try {
             $data['payment_id'] = get_sn(2);
-            $data['money'] = $paymentRel['data']['money'];
-            if($user_id == ''){
+            $data['money']      = $paymentRel['data']['money'];
+            if ($user_id == '') {
                 $data['user_id'] = $paymentRel['data']['user_id'];
-            }else{
+            } else {
                 $data['user_id'] = $user_id;
             }
+            $data['type']         = $type;//保存类型
             $data['payment_code'] = $payment_code;
-            $data['ip'] = get_client_ip();
-            $data['params'] = json_encode($params);         //支付的时候，用到的参数
+            $data['ip']           = get_client_ip();
+            $data['params']       = json_encode($params);         //支付的时候，用到的参数
             $this->save($data);
             //上面保存好收款单表，下面保存收款单明细表
-            foreach($paymentRel['data']['rel'] as $k => $v){
+            foreach ($paymentRel['data']['rel'] as $k => $v) {
                 $rel_data['payment_id'] = $data['payment_id'];
-                $rel_data['source_id'] = $v['source_id'];
-                $rel_data['money'] = $v['money'];
-                $rel_arr[] = $rel_data;
+                $rel_data['source_id']  = $v['source_id'];
+                $rel_data['money']      = $v['money'];
+                $rel_arr[]              = $rel_data;
             }
             $billPaymentsRelModel = new BillPaymentsRel();
             $billPaymentsRelModel->saveAll($rel_arr);
 
             Db::commit();
-
 
         } catch (\Exception $e) {
             Db::rollback();
@@ -226,12 +227,12 @@ class BillPayments extends Common
             return $result;
         }
         //判断支付单金额是否为0，如果为0，直接支付成功,
-        if($data['money'] == 0 ||$data['money'] == '0' || $data['money'] == '0.00'){
-            $this->toUpdate($data['payment_id'],$this::STATUS_PAYED,$data['payment_code'],'金额为0，自动支付成功','');
+        if ($data['money'] == 0 || $data['money'] == '0' || $data['money'] == '0.00') {
+            $this->toUpdate($data['payment_id'], $this::STATUS_PAYED, $data['payment_code'], '金额为0，自动支付成功', '');
             return error_code(10059);
         }
         $result['status'] = true;
-        $result['data'] = $data;
+        $result['data']   = $data;
         return $result;
 
 
@@ -278,6 +279,12 @@ class BillPayments extends Common
                     foreach($billPaymentRelList as $k => $v){
                         $orderModel->pay($v['source_id'], $payment_code);
                     }
+                }elseif($billPaymentInfo['type'] == self::TYPE_RECHARGE){
+                    //给用户做充值
+                    $balance = new Balance();
+                    foreach ($billPaymentRelList as $k => $v) {
+                        $balance->change($v['source_id'], $balance::TYPE_RECHARGE, $v['money'], $v['payment_id']);
+                    }
                 }elseif(false){
                     //::todo 其他业务逻辑
                 }
@@ -322,49 +329,64 @@ class BillPayments extends Common
 
     }
 
-    /**
+    /***
      * 生成支付单的时候，格式化支付单明细
      * @param $source_str
      * @param $type
-     * @return array
+     * @param array $params
+     * @return array|\think\Config
      */
-    public function formatPaymentRel($source_str,$type)
+    public function formatPaymentRel($source_str, $type, $params = [])
     {
-        $result = [
+        $result     = [
             'status' => false,
-            'data' => [],
+            'data'   => [],
 //                'user_id' => '',                //用户id
 //                'money' => 0,                   //总金额
 //                'rel' => array()
-            'msg' => ''
+            'msg'    => ''
         ];
-        $source_arr = explode(',',$source_str);
-        if($type == self::TYPE_ORDER){
+        $source_arr = explode(',', $source_str);
+        if ($type == self::TYPE_ORDER) {
             //如果是订单生成支付单的话，取第一条订单的店铺id，后面的所有订单都要保证是此店铺的id
             $orderModel = new Order();
 
             $data['money'] = 0;
-            foreach($source_arr as $k => $v){
-                $where['order_id'] = $v;
+            foreach ($source_arr as $k => $v) {
+                $where['order_id']   = $v;
                 $where['pay_status'] = $orderModel::PAY_STATUS_NO;
-                $where['status'] = $orderModel::ORDER_STATUS_NORMAL;
-                $order_info = $orderModel->where($where)->find();
-                if($order_info){
+                $where['status']     = $orderModel::ORDER_STATUS_NORMAL;
+                $order_info          = $orderModel->where($where)->find();
+                if ($order_info) {
                     $data['rel'][] = array(
                         'source_id' => $v,
-                        'money' => $order_info->order_amount,
+                        'money'     => $order_info->order_amount,
                     );
                     $data['money'] += $order_info->order_amount;
-                }else {
-                    $result['msg'] = '订单号：'.$v.'没有找到,或不是未支付状态';
+                } else {
+                    $result['msg'] = '订单号：' . $v . '没有找到,或不是未支付状态';
                     return $result;
                 }
             }
             $result['status'] = true;
-            $result['data'] = $data;
-        }elseif(false){
+            $result['data']   = $data;
+        } elseif ($type == self::TYPE_RECHARGE) { //账户充值
+            $data['money'] = (float)$params['money'];//充值金额
+            if (!$data['money']) {
+                $result['msg'] = '请输入正确的充值金额';
+                return $result;
+            }
+            foreach ($source_arr as $k => $v) {
+                $data['rel'][] = array(
+                    'source_id' => $v,
+                    'money'     => $data['money'],
+                );
+            }
+            $result['status'] = true;
+            $result['data']   = $data;
+        } elseif (false) {
             //::todo 其他业务逻辑
-        }else{
+        } else {
             return error_code(10054);
         }
 

@@ -115,7 +115,7 @@ class BillAftersales extends Common
             $data['user_id'] = $user_id;
             $data['type'] = $type;
             $data['refund'] = $refund;
-            $data['reason'] = $reason;
+            $data['reason'] = htmlentities($reason);
 
             $this->save($data);
             //上面保存好售后单表，下面保存售后单明细表

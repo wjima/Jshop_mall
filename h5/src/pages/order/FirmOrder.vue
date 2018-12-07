@@ -6,8 +6,7 @@
             :store="storeInfo"
             :ship="shipInfo"
             @storeTab="selectStoreTab"
-            @name="tackName"
-            @mobile="tackMobile"
+            @consignee="consignee"
             @shipHandler="shipHandler"
             @storeHandler="storeHandler"
         ></openstore>
@@ -125,7 +124,7 @@ export default {
             usable_point: 0, // 可抵扣积分
             point_money: 0, // 积分抵扣的金额
             use_point: false, // 是否使用积分
-            receiptType: 1
+            receiptType: 1 // 1快递配送 2门店自提
         }
     },
     mounted () {
@@ -156,9 +155,15 @@ export default {
             this.storeTab = tab
             if (this.storeTab === 1) {
                 this.params.area_id = this.storeInfo.area_id
+                this.receiptType = 2
             } else {
                 this.params.area_id = this.shipInfo.area_id
+                this.receiptType = 1
             }
+            // 取消积分选中
+            this.use_point = false
+            this.$refs.mychild.checked = status
+            this.params.point = 0
         },
         // 获取用户的默认收货地址
         userDefaultShip () {
@@ -182,7 +187,12 @@ export default {
                 })
                 return false
             }
-            this.$api.cartList(this.params, res => {
+
+            let data = this.params
+            let type = {receipt_type: this.receiptType}
+            data = Object.assign(data, type)
+
+            this.$api.cartList(data, res => {
                 if (res.status) {
                     let list = res.data.list
                     let resData = res.data
@@ -230,6 +240,7 @@ export default {
             this.shipInfo = val
             this.params.area_id = val.area_id
         },
+        // 用户选中的门店信息
         storeHandler (val) {
             this.storeInfo = val
             this.params.area_id = val.area_id
@@ -249,32 +260,31 @@ export default {
             let data = {
                 cart_ids : this.cartIds,
                 memo: this.msg,
-                coupon_code: this.selectCoupon ? this.selectCoupon.coupon_code : '',
-                point: this.use_point ? this.usable_point : ''
+                coupon_code: this.usedCouponCode ? this.usedCouponCode : '',
+                point: this.use_point ? this.usable_point : '',
+                receipt_type: this.receiptType
             }
             if (this.storeTab === 0) {
                 // 快递配送
-                data['uship_id'] = this.$store.state.shipInfo.id
-                data['area_id'] = this.$store.state.shipInfo.area_id
-                data['receipt_type'] = 1
+                data['uship_id'] = this.shipInfo.id
+                data['area_id'] = this.shipInfo.area_id
             }  else {
                 // 门店自提
-                data['receipt_type'] = 2
-                data['store_id'] = this.$store.state.storeInfo.id
-                data['area_id'] = this.$store.state.storeInfo.area_id
+                data['store_id'] = this.storeInfo.id
+                data['area_id'] = this.storeInfo.area_id
                 data['lading_name'] = this.ladingName
                 data['lading_mobile'] = this.ladingMobile
             }
             this.$api.createOrder(data, res => {
-                this.$router.replace({path: '/cashierdesk', query: {order_id: res.data.order_id}})
+                if (res.status) {
+                    this.$router.replace({path: '/cashierdesk', query: {order_id: res.data.order_id}})
+                }
             })
         },
         // 门店自提 联系人,联系方式
-        tackName (name) {
-            this.ladingName = name
-        },
-        tackMobile (mobile) {
-            this.ladingMobile = mobile
+        consignee (val) {
+            this.ladingName = val.name
+            this.ladingMobile = val.mobile
         },
         // 根据类型判断是 快递配送还是 门店自提 根据地区id 重新请求订单数据
         receipt (key) {
@@ -284,7 +294,6 @@ export default {
             }  else {
                 this.params.area_id = ''
             }
-            console.log(this.receiptType)
         },
         showCouponHandler () {
             this.couponShow = true
@@ -368,11 +377,6 @@ export default {
             } else {
                 this.params.point = 0
             }
-        },
-        storeTab () {
-            console.log(this.storeTab)
-            console.log(this.shipInfo)
-            console.log(this.storeInfo)
         }
     }
 }

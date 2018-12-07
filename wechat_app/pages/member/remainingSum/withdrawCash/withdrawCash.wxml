@@ -4,9 +4,15 @@
     <text class='withdrawcash-num'>{{balance}}</text>
   </view>
   <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='recharge'>
+      <image class='member-icon' src='../../../image/top-up.png'></image>
+      <text class='member-text'>账户充值</text>
+    </view>
+  </view>
+  <view class='withdrawcash-bottom'>
     <view class='content-view' bindtap='balance'>
       <image class='member-icon' src='../../../image/ic-money.png'></image>
-      <text class='member-text'>提现</text>
+      <text class='member-text'>余额提现</text>
     </view>
   </view>
   <view class='withdrawcash-bottom'>

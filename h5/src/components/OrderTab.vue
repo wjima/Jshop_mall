@@ -9,6 +9,7 @@
                             <p class="header-left">订单号：{{ item.order_id }}</p>
                             <p class="header-right" v-if="item.status === 1 && item.pay_status === 1">待付款</p>
                             <p class="header-right" v-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 1">待发货</p>
+                            <p class="header-right" v-if="item.status === 1 && item.pay_status === 4">售后单</p>
                             <p class="header-right" v-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 1">待收货</p>
                             <p class="header-right" style="color: #e6a200" v-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 1">待评价</p>
                             <p class="header-right" style="color: #0575f2" v-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 2">已评价</p>
@@ -182,9 +183,11 @@ export default {
                                 order_id: id
                             }, res => {
                                 if (res.status) {
-                                    this.$dialog.toast({mes: res.msg, icon: 'success', timeout: 1000})
-                                } else {
-                                    this.$dialog.toast({mes: res.msg, icon: 'error', timeout: 1000})
+                                    this.$dialog.toast({
+                                        mes: res.msg,
+                                        icon: 'success',
+                                        timeout: 1000
+                                    })
                                 }
                             })
                         }

@@ -65,6 +65,19 @@ function successToShow(msg='保存成功', callback=function(){}){
 }
 
 
+//操作失败的提示信息
+function errorToShow(msg = '操作失败', callback = function () { }) {
+  wx.showToast({
+    title: msg,
+    icon: 'none',
+    duration: 1500,
+  });
+  setTimeout(function () {
+    callback();
+  }, 1500);
+}
+
+
 //时间戳转时间格式
 function timeToDate(date) {
   var date = new Date(date * 1000);//如果date为13位不需要乘1000
@@ -198,5 +211,6 @@ module.exports = {
   throttle: throttle,
   groupCountDown: groupCountDown,
   groupDetailCountDown: groupDetailCountDown,
-  seckillCountDown: seckillCountDown
+  seckillCountDown: seckillCountDown,
+  errorToShow: errorToShow
 }

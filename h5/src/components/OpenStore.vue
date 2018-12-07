@@ -20,18 +20,29 @@
                 </div>
             </yd-tab-panel>
             <yd-tab-panel label="门店自提">
-                <div class="orderadd" v-if="store">
+                <div class="orderadd" v-if="Object.keys(store).length">
                     <img class="orderadd-gps" src="../../static/image/gps.png"/>
                     <div class="orderadd-content" @click="showStoreList">
                         <div class="orderadd-top">
-                            <span>联系人：{{ store.linkman }}</span>
-                            <p>{{ store.mobile }}</p>
+                            <span>{{ store.store_name }}</span>
+                            <!--<p>{{ store.mobile }}</p>-->
                         </div>
                         <div class="orderadd-bottom">
-                            <p>门店名称：{{ store.store_name }}</p>
                             <p>门店地址：{{ store.all_address }}</p>
                             <img class="orderadd-right right-img" src="../../static/image/right.png"/>
                         </div>
+                    </div>
+                    <div style="margin-top: .5em" v-if="Object.keys(store).length">
+                        <yd-cell-group>
+                            <yd-cell-item>
+                                <span slot="left">姓名：</span>
+                                <yd-input slot="right" type="text" v-model="consignee.name" max="20" placeholder="提货人姓名"></yd-input>
+                            </yd-cell-item>
+                            <yd-cell-item>
+                                <span slot="left">电话：</span>
+                                <yd-input slot="right" type="text" v-model="consignee.mobile" placeholder="提货人联系方式"></yd-input>
+                            </yd-cell-item>
+                        </yd-cell-group>
                     </div>
                 </div>
                 <div v-else>
@@ -66,11 +77,10 @@
                 <div v-if="storeList.length">
                     <div style="margin-top: 20px; text-align: left;" v-for="(item, index) in storeList" :key="index" @click="storeHandler(index)">
                         <div class="orderadd-top">
-                            <span>联系人：{{ item.linkman }}</span>
-                            <p>{{ item.mobile }}</p>
+                            <span>{{ item.store_name }}</span>
+                            <!--<p>{{ item.mobile }}</p>-->
                         </div>
                         <div class="orderadd-bottom">
-                            <p>门店名称：{{ item.store_name }}</p>
                             <p>门店地址：{{ item.all_address }}</p>
                             <img class="orderadd-right right-img" src="../../static/image/right.png"/>
                         </div>
@@ -88,6 +98,10 @@
                 key: '', // 搜索关键字
                 openWindow: false,
                 openStore: false,
+                consignee: {
+                    name: '', // 提货人姓名
+                    mobile: '', // 提货人联系方式
+                },
                 shipList: [], // 收货地址列表
                 storeList: [] // 门店列表
             }
@@ -157,6 +171,14 @@
             // 门店搜索
             submitHandler () {
                 this.getStoreList(this.key)
+            }
+        },
+        watch: {
+            consignee: {
+                handler () {
+                    this.$emit('consignee', this.consignee)
+                },
+                deep: true
             }
         }
     }

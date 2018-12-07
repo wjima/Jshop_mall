@@ -206,10 +206,6 @@ class Setting extends Common
             'name'=>'微信验证TOKEN',
             'value' => '',
         ],
-        'wx_official_encode'=>[
-            'name'=>'消息加解密方式',
-            'value'=>'plaintext'
-        ],
         'wx_official_encodeaeskey'=>[
             'name'=>'EncodingAESKey',
             'value'=>''

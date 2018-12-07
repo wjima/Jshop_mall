@@ -302,28 +302,47 @@ class Operation extends Common
         return $result;
     }
 
-
     /**
      * 递归取得节点下面的所有操作，按照菜单的展示来取
      * @param $pid
-     * @param array $defaultNode        这些是默认选中的
-     * @return array|\PDOStatement|string|\think\Collection
+     * @param array $defaultNode   这些是默认选中的
+     * @param int $level 层级深度
+     * @return array
      */
-    public function menuTree($pid,$defaultNode=[]){
-        $where[] = ['parent_menu_id','eq',$pid];
-        $where[] = ['perm_type','neq',self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
-        $list = $this->where($where)->order('sort asc')->select();
-        foreach($list as $k => $v){
-            $list[$k]['checkboxValue'] = $v['id'];
-            if(isset($defaultNode[$v['id']])){
-                $list[$k]['checked'] = true;
-            }else{
-                $list[$k]['checked'] = false;
+    public function menuTree($pid, $defaultNode = [], $level = 1)
+    {
+        $area_tree = [];
+        $where[]   = ['parent_menu_id', 'eq', $pid];
+        $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
+        $list      = $this->where($where)->order('sort asc')->select()->toArray();
+        foreach ($list as $key => $val) {
+            $isChecked = '0';
+            //判断是否选中的数据
+            if ($defaultNode[$val['id']]) {
+                $isChecked = '1';
             }
-
-            $list[$k]['children'] = $this->menuTree($v['id'],$defaultNode);
+            $isLast = false;
+            $chid   = $this->where(['parent_id' => $val['id']])->count();
+            if (!$chid) {
+                $isLast = true;
+            }
+            $area_tree[$key] = [
+                'id'       => $val['id'],
+                'title'    => $val['name'],
+                'isLast'   => $isLast,
+                'level'    => $level,
+                'parentId' => $val['parent_id'],
+                "checkArr" => [
+                    'type'      => '0',
+                    'isChecked' => $isChecked,
+                ]
+            ];
+            if ($chid) {
+                $level                       = $level + 1;
+                $area_tree[$key]['children'] = $this->menuTree($val['id'], $defaultNode, $level);
+            }
         }
-        return $list;
+        return $area_tree;
     }
 
     /**

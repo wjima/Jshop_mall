@@ -114,14 +114,28 @@
               <text wx:if="{{item.user.nickname}}">{{item.user.nickname}}</text><text wx:else>{{item.user.mobile}}</text>
               <view class='star' wx:if="{{item.score == 1}}">
                 <image src='../../image/redstar.png'></image>
+              
+              </view>
+              <view class='star' wx:elif="{{item.score == 2}}">
                 <image src='../../image/redstar.png'></image>
                 <image src='../../image/redstar.png'></image>
               </view>
-              <view class='star' wx:elif="{{item.score == 0}}">
+              <view class='star' wx:elif="{{item.score == 3}}">
+                <image src='../../image/redstar.png'></image>
                 <image src='../../image/redstar.png'></image>
                 <image src='../../image/redstar.png'></image>
               </view>
-              <view class='star' wx:else>
+               <view class='star' wx:elif="{{item.score == 4}}">
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+              </view>
+               <view class='star' wx:elif="{{item.score == 5}}">
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
+                <image src='../../image/redstar.png'></image>
                 <image src='../../image/redstar.png'></image>
               </view>
             </view>

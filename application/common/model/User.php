@@ -360,7 +360,7 @@ class User extends Common
             $data['birthday'] = $birthday;
         }
         if($nickname != ''){
-            $data['nickname'] = $nickname;
+            $data['nickname'] = htmlentities($nickname);
         }
         if ($avatar != '' ){
             $data['avatar'] = $avatar;
@@ -926,6 +926,140 @@ class User extends Common
         }
 
         return $return;
+    }
+
+
+    /**
+     * 后台添加用户
+     * @param $data
+     * @return array
+     */
+    public function manageAdd($data)
+    {
+        $return = [
+            'status' => false,
+            'msg'    => '添加失败',
+            'data'   => ''
+        ];
+
+        if (!isset($data['mobile']) || $data['mobile'] == '') {
+            $return['msg'] = '手机号必填';
+            return $return;
+        }
+        if (!isMobile($data['mobile'])) {
+            $return['msg'] = '请输入正确的手机号';
+            return $return;
+        }
+        $flag = $this->checkUserByMobile($data['mobile']);
+        if ($flag) {
+            $return['msg'] = '手机号已经存在，请更换手机号重新添加';
+            return $return;
+        }
+        if ($data['password'] == '' || strlen($data['password']) < 6 || strlen($data['password']) > 20) {
+            $return['msg'] = '密码必填，6-20位';
+            return $return;
+        }
+        //密码效验
+        if ($data['password'] !== $data['repassword']) {
+            $return['msg'] = '两次输入的密码不一致，请重新输入。';
+            return $return;
+        }
+
+
+        $time                = time();
+        $newData['username'] = null;
+        $newData['mobile']   = $data['mobile'];
+        $newData['password'] = $this->enPassword($data['password'], $time);
+        $newData['sex']      = isset($data['sex']) ? $data['sex'] : 3;
+        $newData['birthday'] = $data['birthday'] ? $data['birthday'] : null;
+        $newData['avatar']   = isset($data['avatar']) ? $data['avatar'] : '';
+        $newData['nickname'] = $data['nickname'];
+        $newData['balance']  = 0;
+        $newData['point']    = 0;
+        $newData['ctime']    = $time;
+        $newData['utime']    = $time;
+        $newData['status']   = isset($data['status']) ? $data['status'] : self::STATUS_NORMAL;
+        $newData['pid']      = 0;
+
+        $result         = $this->save($newData);
+        $return['data'] = $this->id;
+
+        if ($result) {
+            if (session('manage.id')) {
+                $userLogModel = new UserLog();
+                $userLogModel->setLog(session('manage.id'), $userLogModel::USER_REG);
+            }
+            $return['status'] = true;
+            $return['msg']    = '添加成功';
+
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 后台修改用户
+     * @param $data
+     * @return array
+     */
+    public function manageEdit($data)
+    {
+        $return = [
+            'status' => false,
+            'msg'    => '修改失败',
+            'data'   => ''
+        ];
+
+        //校验数据
+        $validate = new Validate($this->rule, $this->msg);
+        if (!$validate->check($data)) {
+            $return['msg'] = $validate->getError();
+            return $return;
+        }
+
+        //输入密码时修改密码
+        if(isset($data['password'])&&$data['password']!=''){
+            if (strlen($data['password']) < 6 || strlen($data['password']) > 20) {
+                $return['msg'] = '密码长度为6-20位';
+                return $return;
+            }
+            //密码效验
+            if ($data['password'] !== $data['repassword']) {
+                $return['msg'] = '两次输入的密码不一致，请重新输入。';
+                return $return;
+            }
+            $userInfo = $this->get($data['id']);
+            $newData['password'] = $this->enPassword($data['password'], $userInfo['ctime']);
+        }
+
+        $where[]             = ['id', 'eq', $data['id']];
+        $newData['nickname'] = $data['nickname'];
+        $newData['sex']      = $data['sex'] ? $data['sex'] : 3;
+        $newData['birthday'] = $data['birthday'] ? $data['birthday'] : null;
+        $newData['avatar']   = $data['avatar'];
+        $newData['status']   = $data['status'];
+
+        $result         = $this->save($newData, $where);
+        $return['data'] = $result;
+
+        if ($result) {
+            $return['status'] = true;
+            $return['msg']    = '修改成功';
+        }
+
+        return $return;
+    }
+
+    /**
+     * 根据用户手机号获取用户id
+     */
+    public function checkUserByMobile($mobile)
+    {
+        $where[] = ['mobile', 'eq', $mobile];
+        $where[] = ['status', 'eq', self::STATUS_NORMAL];
+        $res     = $this->field('id')->where($where)->find();
+        return $res;
     }
 
 }

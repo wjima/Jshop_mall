@@ -8,11 +8,8 @@
     <icon size='15' type='search'></icon> 
   </input>
   <!-- 客服按钮 -->
-  <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" wx:if="{{store_type == 2}}">
+  <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" >
     <image src='../image/img.png'></image>
-  </button>
-  <button class="message" hover-class="none" bindtap='storeList' wx:if="{{store_type == 1}}">
-    <image src='../image/store_list.png'></image>
   </button>
 </view>
 

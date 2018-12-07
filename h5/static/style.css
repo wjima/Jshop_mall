@@ -99,6 +99,10 @@
 .indexlisthot .yd-list-other{
     padding-bottom: 2px;
 }
+.indexlisthot .yd-list-other .yd-btn-danger{
+    height: .45rem;
+    font-size: .2rem;
+}
 .indexlistheader{
     padding: .2rem 0;
 }
@@ -127,7 +131,7 @@
     /*top: 50%;*/
     /*left: 50%;*/
     /*transform: translate(-50%, -50%);*/
-    
+
 }
 
 .scrolltab-li .loading-img{
@@ -415,6 +419,9 @@
     height: 100%;
     float: left;
 }
+.goodsdetailfooter-right>.kill,.goodsdetailfooter-right>.groupbuying{
+    width: 100%;
+}
 .goodsdetailfooter-right .yd-btn{
     height: 100%;
     width: 100%;
@@ -589,6 +596,14 @@
     padding: .2rem 0;
     overflow: hidden;
 }
+.group-buying{
+    color:#A5A5A5;
+    background-color:rgb(252, 226, 80);
+    width: 100%;
+    /*padding: 0 .2rem;*/
+    overflow: hidden;
+    height: 1rem;
+}
 .price{
     display: inline-block;
 }
@@ -603,10 +618,47 @@
     margin-left: .1rem;
     text-decoration:line-through;
 }
+.group-buying .price{
+    /*text-align: center;*/
+    float: left;
+    padding: .1rem .2rem;
+}
+.group-buying .price p{
+    display: block;
+    margin-left: 0;
+}
 .salesvolume{
     display: inline-block;
     float: right;
     margin-top: .12rem;
+}
+.group-buying .salesvolume{
+    margin-left: .3rem;
+    float: left;
+    margin-top: .2rem;
+}
+.group-buying .sanjiao{
+    height: 100%;
+    float: right;
+}
+.commodity-time{
+    text-align: center;
+    display: inline-block;
+    background-color: rgb(255, 115, 0);
+    /**/
+    width: 35%;
+    float: right;
+    height: 100%;
+    padding: .2rem;
+}
+.commodity-time p{
+    color: rgb(250, 233, 0) !important;
+}
+.group-buying .count-down i{
+    background-color:rgb(255, 212, 176);
+    color:rgb(255, 115, 0);
+    border-radius: 3px;
+    padding: 0.02rem .05rem;
 }
 .indexgrids .yd-grids-icon{
     height: 1.4rem;
@@ -1314,4 +1366,9 @@
 }
 .goodsnum .goodsnum-content .yd-spinner>span>i:after{
     transform: translate(-50%,-50%) !important;
+}
+.social-share .icon-wechat .wechat-qrcode{
+    position: fixed !important;
+    top: -184px !important;
+    left: 22px !important;
 }

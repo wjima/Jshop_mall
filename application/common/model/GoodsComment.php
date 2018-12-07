@@ -60,13 +60,18 @@ class GoodsComment extends Common
             ->select();
         foreach($res as $k => &$v)
         {
-            $imagesArr = explode(',', $v['images']);
-            foreach($imagesArr as $kk => &$vv)
+            if($v['images'])
             {
-                $vv = _sImage($vv);
+                $imagesArr = explode(',', $v['images']);
+                if(count($imagesArr)>0)
+                {
+                    foreach($imagesArr as $kk => &$vv)
+                    {
+                        $vv = _sImage($vv);
+                    }
+                    $v['images_url'] = $imagesArr;
+                }
             }
-
-            $v['images_url'] = $imagesArr;
         }
 
         $count = $this->where($where)
@@ -322,7 +327,7 @@ class GoodsComment extends Common
                     'goods_id' => $item_info['goods_id'],
                     'order_id' => $order_id,
                     'images' => $images,
-                    'content' => $v['textarea'],
+                    'content' => htmlentities($v['textarea']),
                     'addon' => $item_info['addon']
                 ];
             }

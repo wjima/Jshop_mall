@@ -1,6 +1,7 @@
 <script type="text/javascript" charset="utf-8" src="__STATIC_JS__/jquery-2.1.3.min.js"> </script>
 <link rel="stylesheet" href="__STATIC_JS__croppic/croppic.css">
 <script type="text/javascript" charset="utf-8" src="__STATIC_JS__croppic/croppic.js"> </script>
+<script type="text/javascript" charset="utf-8" src="__STATIC_JS__ddsort/ddsort.js"> </script>
 
 <style>
     #container{
@@ -115,7 +116,7 @@
         <div class="layui-upload" id="imgs">
             <button type="button" class="layui-btn" id="goods_img" lay-filter="goods_img" onclick="upImage()">上传图片</button>
             <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-                	<p>预览图：[第一张图片为默认图]</p>
+                	<p>预览图：[第一张图片为默认图，可拖动图片进行排序]</p>
                 <div class="layui-upload-list" id="img_preview"></div>
             </blockquote>
         </div>
@@ -688,7 +689,14 @@
         })
     }
 
-
-
+    //商品图片排序
+    $('.layui-upload-list').DDSort({
+        target: '.imgdiv',
+        delay: 100,
+        floatStyle: {
+            'border': '1px solid #ccc',
+            'background-color': '#fff'
+        }
+    });
 </script>
 <textarea id="edit_image" style="display: none;"></textarea>

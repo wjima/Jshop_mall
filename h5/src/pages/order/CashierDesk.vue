@@ -24,8 +24,7 @@ export default {
         return {
             order_id: this.$route.query.order_id,
             order_amount: '', // 订单总价
-            payments: [], // 商户可支付的方式列表
-            weiXinPayStatus: false
+            payments: [] // 商户可支付的方式列表
         }
     },
     created () {
@@ -54,7 +53,7 @@ export default {
                 // 微信支付
                 let params = {
                     trade_type: isWeiXin ? 'JSAPI_OFFICIAL' : 'MWEB',
-                    wap_url: window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
+                    wap_url: this.GLOBAL.locationHost(), // window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
                     wap_name: 'mysite'
                 }
                 let data = {
@@ -69,7 +68,7 @@ export default {
                     this.$api.pay(data, res => {
                         if (res.status) {
                             const data = res.data
-                            console.log(data)
+                            let _this = this
                             WeixinJSBridge.invoke(
                                 'getBrandWCPayRequest', {
                                     "appId": data.appid,     //公众号名称，由商户传入
@@ -81,13 +80,16 @@ export default {
                                 },
                                 function(res){
                                     if(res.err_msg == "get_brand_wcpay_request:ok" ){
-                                        alert('支付成功')
-                                        this.weiXinPayStatus = true
+                                        _this.$dialog.alert({
+                                            mes: '支付成功',
+                                            callback () {
+                                                _this.$router.replace({path: '/orderdetail', query: {order_id: _this.order_id}})
+                                            }
+                                        })
                                         // 使用以上方式判断前端返回,微信团队郑重提示：
                                         //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                                        this.$router.replace({path: '/orderdetail', query: {order_id: this.order_id}})
                                     } else {
-                                        alert('支付失败')
+                                        _this.$dialog.alert({mes: '支付失败'})
                                     }
                                 });
                         }
@@ -105,8 +107,8 @@ export default {
             } else if (code === 'alipay') {
                 let params = {
                     trade_type: 'MWEB',
-                    wap_url: window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
-                    return_url: window.location.protocol + '//' + window.location.host + '/#/orderdetail?order_id=' + this.order_id,
+                    wap_url: this.GLOBAL.locationHost(), // window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
+                    return_url: this.GLOBAL.locationHost() + '/#/orderdetail?order_id=' + this.order_id,
                     wap_name: 'mysite'
                 }
                 let data = {
@@ -118,6 +120,23 @@ export default {
                 this.$api.pay(data, res => {
                     if (res.status) {
                         this.StandardPost(res.data.url, res.data.data)
+                    }
+                })
+            } else if (code === 'balancepay') {
+                let data = {
+                    ids: this.order_id,
+                    payment_code: code,
+                    payment_type: 1
+                }
+                this.$api.pay(data, res => {
+                    if (res.status) {
+                        this.$dialog.toast({
+                            mes: res.msg,
+                            timeout: 1300,
+                            callback: () => {
+                                this.$router.replace({path: '/orderdetail', query: {order_id: this.order_id}})
+                            }
+                        })
                     }
                 })
             } else if (code === 'offline') {

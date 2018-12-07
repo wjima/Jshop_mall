@@ -25,7 +25,7 @@ export default {
     methods: {
         // 获取 轮播图
         getSliderList () {
-            this.$api.sliderHeader({code: 'tpl1_slider'}, res => {
+            this.$api.slider({code: 'tpl1_slider'}, res => {
                 this.sliderList = res.data.list
             })
         },

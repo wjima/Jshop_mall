@@ -27,10 +27,10 @@
       </view>
       <!-- 余额支付 -->
       <view class='remaining-sum-pay' wx:for="{{paymentType}}" wx:key="index" bindtap='balance' wx:if="{{item.code=='balancepay'}}">
-        <view class='left-img'><image src='../../image/remainingsum-pay.png'></image></view>
+       <view class='left-img'><image src='../../image/remainingsum-pay.png'></image></view>
         <view class='content-bot-right'>
           <text class='right-toptext'>余额支付</text>
-          <text class='right-bottext'>当前余额：0.00</text>
+          <text class='right-bottext'>当前余额：{{userInfo.balance}}</text>
         </view>
         <image class='right-image' src='../../image/right.png'></image>
       </view>

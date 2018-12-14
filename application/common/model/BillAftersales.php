@@ -146,8 +146,6 @@ class BillAftersales extends Common
                 ];
                 $templateMessageModel->addSend($message);
             }
-
-
             Db::commit();
 
         } catch (\Exception $e) {

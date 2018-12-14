@@ -59,7 +59,7 @@ class Ietask extends Manage{
             $where = json_decode($filter,true);
         }
         //增加条件验证
-        if (method_exists("app\\common\\model\\$job", export_validate)) {
+        if (method_exists("app\\common\\model\\$job", "export_validate")) {
             $model       = "app\\common\\model\\$job";
             $obj         = new $model();
             $validateRes = $obj->exportValidate($where); //验证过滤条件

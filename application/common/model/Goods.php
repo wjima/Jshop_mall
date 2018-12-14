@@ -276,7 +276,7 @@ class Goods extends Common
                 $list['label_ids'] = [];
             }
             //取默认货品
-            $default_product = $productsModel->where('goods_id', $gid)->find();
+            $default_product = $productsModel->where(['goods_id'=>$gid,'is_defalut'=>$productsModel::DEFALUT_YES])->find();
             if(!$default_product){
                 return error_code(10000);
             }
@@ -446,46 +446,45 @@ class Goods extends Common
     {
         $result = [
             'status' => false,
-            'data'   => [ ],
+            'data'   => [],
             'msg'    => '库存更新失败'
         ];
-        if($product_id === ''){
+        if ($product_id === '') {
             $result['msg'] = '货品ID不能为空';
             return $result;
         }
         $productModel = new Products();
-        $where = [];
-        $where[] = ['id','eq' ,$product_id];
-        $where[] = ['stock','>' ,0];
-        switch ($type)
-        {
+        $where        = [];
+        $where[]      = ['id', 'eq', $product_id];
+        $where[]      = ['stock', '>', 0];
+        switch ($type) {
             case 'order': //下单
-                $res=$productModel->where($where)->setInc('freeze_stock',$num);
+                $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
             case 'send': //发货
-                $res=$productModel->where($where)->setDec('stock',$num);
-                if($res!==false){
-                    $res=$productModel->where($where)->setDec('freeze_stock',$num);
-                }else{
+                $res = $productModel->where($where)->setDec('stock', $num);
+                if ($res !== false) {
+                    $res = $productModel->where($where)->setDec('freeze_stock', $num);
+                } else {
                     $result['msg'] = '库存更新失败';
                     return $result;
                 }
                 break;
             case 'refund': //退款
-                $res=$productModel->where($where)->setDec('freeze_stock',$num);
+                $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 break;
             case 'return': //退货
-                $res=$productModel->where($where)->setInc('stock',$num);
+                $res = $productModel->where($where)->setInc('stock', $num);
                 break;
             case 'cancel': //取消订单
-                $res=$productModel->where($where)->setDec('freeze_stock',$num);
+                $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 break;
             default:
-                $res=$productModel->where($where)->setInc('freeze_stock',$num);
+                $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
         }
-        if($res!==false){
-            $result['msg'] = '库存更新成功';
+        if ($res !== false) {
+            $result['msg']    = '库存更新成功';
             $result['status'] = true;
             return $result;
         }

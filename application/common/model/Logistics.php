@@ -40,17 +40,18 @@ class Logistics extends Common
      * @param array $data
      * @return array
      */
-    public function saveData($data = []){
+    public function saveData($data = [])
+    {
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '保存失败',
         ];
-        if($data['id']){
-            $res = $this->save($data,['id'=>$data['id']]);
-            if($res){
+        if ($data['id']) {
+            $res = $this->save($data, ['id' => $data['id']]);
+            if ($res !== false) {
                 $result['status'] = true;
-                $result['msg'] = '保存成功';
+                $result['msg']    = '保存成功';
             }
         }
         return $result;

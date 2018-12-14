@@ -13,13 +13,15 @@
                 <yd-cell-item>
                     <yd-textarea slot="right" v-model="textarea[item.id]" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" maxlength="200"></yd-textarea>
                 </yd-cell-item>
-                <div class="uploadimg-list"  v-if="images[item.id].length">
-                    <div v-for="(img, index) in images[item.id]" :key="index">
+
+                <div class="evaluatebody-img">
+
+                    <div class="uploadimg-list"  v-if="images[item.id].length" v-for="(img, index) in images[item.id]" :key="index">
+                        <!--<div>-->
                         <yd-badge @click.native="remove(item.id, index)">X</yd-badge>
                         <img class="thumbnail-list" :src="img.url">
+                        <!--</div>-->
                     </div>
-                </div>
-                <div class="evaluatebody-img">
                     <div class="uploadimg">
                         <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update(item.id,$event)"/>
                         <img slot="icon" src="../../../static/image/addimg.png" v-show="isupload[item.id]">

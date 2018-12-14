@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="author" content="novice@jihainet.com"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Jshop小程序商城管理平台</title>
+    <title>{$shop_name}管理平台</title>
     <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont.css"/>
     <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont2.css"/>
     <link rel="stylesheet" href="__STATIC_LIB__layui/css/layui.css">
@@ -21,8 +21,6 @@
     <script src="__STATIC_JS__jshop.js"></script>
     <script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.config.js"></script>
     <script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.all.min.js"> </script>
-
-
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">    
@@ -33,6 +31,7 @@
             </a>
             <dl class="layui-nav-child">
 				<dd><a href="{:url('Manage/information')}">个人中心</a></dd>
+                <dd><a href="{:url('Manage/index/clearCache')}">清除缓存</a></dd>
 			    <dd><a href="{:url('Common/logout')}">退出</a></dd>
 			</dl>
         </li>

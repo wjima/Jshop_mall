@@ -291,7 +291,7 @@ class Order extends Manage
     {
         $this->view->engine->layout(false);
         $billDeliveryModel = new BillDelivery();
-        $data = $billDeliveryModel->getLogisticsInformation(input('param.order_id/d'));
+        $data = $billDeliveryModel->getLogisticsInformation(input('param.order_id',''));
         return $this->fetch('logistics',[ 'data' => $data ]);
     }
 

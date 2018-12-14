@@ -11,7 +11,7 @@
         <label class="layui-form-label">请选择属性</label>
         <div class="layui-input-block">
             {volist name="specList" id="vo"}
-            <input type="checkbox" name="spec_id[]" lay-skin="primary" value="{$vo.id}" {if condition="in_array($vo[id],$typeSids)"}checked{/if}>{$vo.name}
+            <input type="checkbox" name="spec_id[]" lay-skin="primary" value="{$vo.id}" {if condition="in_array($vo['id'],$typeSids)"}checked{/if}>{$vo.name}
 
             {/volist}
         </div>

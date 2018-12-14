@@ -25,6 +25,15 @@ class OperationLog extends Common
     protected function tableWhere($post)
     {
         $where = [];
+
+        if(!empty($post['date']))
+        {
+            $date_string = $post['date'];
+            $date_array = explode(' 到 ', $date_string);
+            $sdate = strtotime($date_array[0].' 00:00:00');
+            $edate = strtotime($date_array[1].' 23:59:59');
+            $where[] = array('ctime', ['>=', $sdate], ['<', $edate], 'and');
+        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = "id desc";

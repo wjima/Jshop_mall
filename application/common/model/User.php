@@ -220,12 +220,12 @@ class User extends Common
             }else{
                 $userData['nickname'] = format_mobile($data['mobile']);
             }
-            if(isset($data['invitecode'])){
-                $pid = $this->getUserIdByShareCode($data['invitecode']);
-                $pinfo = model('common/User')->where(['id'=>$pid])->find();
-                if($pinfo){
+            if (isset($data['invitecode']) && $data['invitecode']) {
+                $pid   = $this->getUserIdByShareCode($data['invitecode']);
+                $pinfo = model('common/User')->where(['id' => $pid])->find();
+                if ($pinfo) {
                     $userData['pid'] = $pid;
-                }else{
+                } else {
                     error_code(10014);
                 }
             }

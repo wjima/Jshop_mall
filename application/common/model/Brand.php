@@ -20,13 +20,11 @@ class Brand extends Common
 
     protected $rule = [
         'name'          => 'require|max:50',
-        'logo'          => 'require',
         'sort'          => 'number',
     ];
     protected $msg = [
         'name.require'  => '请输入品牌名称',
         'name.max'      => '品牌名称长度最大50位',
-        'logo.require'  => '请选择要上传的品牌图片',
         'sort'          => '排序必须为数字'
     ];
 

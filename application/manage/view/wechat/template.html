@@ -47,9 +47,9 @@
                     </p>
                 </div>
             </div>
-            {if condition="$data[data]"}
+            {if isset($data['data']) && $data['data']}
             <div class="layui-row layui-col-space10">
-                {volist name="$data[data]" id="vo"}
+                {volist name="$data['data']" id="vo"}
                 <div class="layui-col-sm6 layui-col-md6 layui-col-lg4">
                     <div class="layui-card">
                         <div class="default_img">

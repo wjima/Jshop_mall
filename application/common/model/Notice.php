@@ -90,17 +90,16 @@ class Notice extends Common
      */
     public function saveData($data = [])
     {
-        $result = ['status' => true, 'msg' => '保存成功' , 'data' => ''];
+        $result = ['status' => true, 'msg' => '保存成功', 'data' => ''];
 
-        $validate = new Validate($this->rule,$this->msg);
-        if(!$validate->check($data))
-        {
+        $validate = new Validate($this->rule, $this->msg);
+        if (!$validate->check($data)) {
             $result['status'] = false;
-            $result['msg'] = $validate->getError();
+            $result['msg']    = $validate->getError();
         } else {
-            if (!$this->allowField(true)->save($data,['id'=>$data['id']])) {
+            if ($this->allowField(true)->save($data, ['id' => $data['id']]) === false) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg']    = '保存失败';
             }
         }
         return $result;

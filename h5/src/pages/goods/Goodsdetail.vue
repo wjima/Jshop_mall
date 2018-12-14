@@ -42,11 +42,29 @@
                         </div>
                         <p>{{ item.ctime }}  &nbsp;&nbsp;&nbsp;&nbsp;{{ item.addon }}</p>
                         <p>{{ item.content }}</p>
-                        <div class="comment-imgs" v-if="item.hasOwnProperty('images_url')">
-                            <div class="comment-img" v-for="(img, key) in item.images_url" :key="key">
-                            	<img :src="img">
-                            </div>
-                        </div>
+                        <!--<div class="comment-imgs" v-if="item.hasOwnProperty('images_url')">-->
+                            <!--<div class="comment-img" v-for="(img, key) in item.images_url" :key="key">-->
+                            	<!--<img :src="img">-->
+                            <!--</div>-->
+                            <yd-lightbox class="comment-imgs">
+                                <yd-lightbox-img class="comment-img" v-for="(img, key) in item.images_url" :key="key" :src="img"></yd-lightbox-img>
+                                <yd-lightbox-txt>
+                                    <h1 slot="top">
+                                        <div class="">
+                                            <p class="user-name">{{ item.user.nickname }}</p>
+                                            <yd-rate slot="left" v-model="item.score" :readonly="true" size=".2rem"></yd-rate>
+                                        </div>
+                                    </h1>
+                                    <div slot="content">
+
+                                        <p>{{ item.content }}</p>
+                                    </div>
+                                    <div slot="bottom">
+                                        <p>{{ item.ctime }}</p>
+                                    </div>
+                                </yd-lightbox-txt>
+                            </yd-lightbox>
+                        <!--</div>-->
                     </li>
                     <li style="text-align: center">
                     <yd-button size="small" type="hollow" color="#F00" shape="circle" v-if="load" @click.native="loadMore">加载更多评论</yd-button>
@@ -228,7 +246,17 @@ export default {
             })
         },
         goBack () {
-            this.$router.back(-1)
+            if (window.history.length <= 1) {
+                this.$router.push({path:'/'})
+                return false
+            } else {
+                this.$router.go(-1)
+            }
+            // 上面都没执行就说明卡在当前页不是最后一条， histroy记录数量大于1，又没有回退记录，只能返回首页，
+            // 如果上面都执行了 页面都跳走了，这个也就不用管了
+            // setTimeout(() => {
+            //     this.$router.push({path:'/'})
+            // },500)
         }
     }
 }

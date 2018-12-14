@@ -47,5 +47,16 @@ return [
         'worker_count'=>1,
         //crontad格式 :秒 分 时 天 月 年 周
         'crontab'     =>'1 * * * * * *',
-    ]
+    ],
+    'order_remind'=>[
+        'callback'=>['app\\crontab\\Order','remind'],//订单催付
+        //指定任务进程最大内存  系统默认为512M
+        'worker_memory'      =>'50M',
+        //开启任务进程的多线程模式
+        'worker_pthreads'   =>false,
+        //任务的进程数 系统默认1
+        'worker_count'=>1,
+        //crontad格式 :秒 分 时 天 月 年 周
+        'crontab'     =>'1 * * * * * *',
+    ],
 ];

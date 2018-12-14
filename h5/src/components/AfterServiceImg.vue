@@ -1,14 +1,15 @@
 <template>
     <div class="afterserviceimg">
-        <div class="uploadimg-list"  v-if="imgs.length">
-            <div v-for="(item, index) in imgs" :key="index">
+
+        <div class="uploadimg-list"  v-if="imgs.length" v-for="(item, index) in imgs" :key="index">
+            <!--<div >-->
                 <yd-badge @click.native="remove(index)">X</yd-badge>
                 <img class="thumbnail-list" :src="item.url">
-            </div>
+            <!--</div>-->
         </div>
-        <div class="uploadimg">
+        <div class="uploadimg" v-show="upload">
             <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="uploadImg"/>
-            <img slot="icon" src="../../static/image/addimg.png" v-show="upload">
+            <img slot="icon" src="../../static/image/addimg.png">
         </div>
     </div>
 </template>

@@ -343,9 +343,9 @@ Page({
       goods_id: this.data.goodsId
     }
     var page = this;
-    // app.api.goodsHistory(data, function (res) {
-    //   //浏览记录添加成功
-    // });
+    app.api.goodsHistory(data, function (res) {
+      //浏览记录添加成功
+    });
   },
 
   //收藏和取消收藏商品

@@ -149,7 +149,7 @@
                     </tr>
                     </thead>
                     <tbody id="view">
-                    {empty name="data[area_fee]"}
+                    {empty name="data['area_fee']"}
                     <tr data-id="0">
                         <td>
                             <input type='hidden' name='area_id[0]' value=''>
@@ -173,7 +173,7 @@
                         </td>
                     </tr>
                     {else /}
-                    {volist name="data[area_fee]" id="vo"}
+                    {volist name="data['area_fee']" id="vo"}
                     <tr data-id="{$key}">
                         <td>
                             已选择地区：{$vo.area_html}
@@ -331,21 +331,25 @@
             });
 
         });
-    });
 
 
-    $(".layui-table").on('click','.addarea-class',function (e) {
-        var getTpl = tr_tpl.innerHTML;
-        var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');
 
-        var tmpData={};
-        tmpData.id=parseInt(lastId)+1;
-        laytpl(getTpl).render(tmpData, function(html){
-            $("#view").append(html);
+        $(".layui-table").on('click','.addarea-class',function (e) {
+            var getTpl = tr_tpl.innerHTML;
+            var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');
+
+            var tmpData={};
+            tmpData.id=parseInt(lastId)+1;
+            laytpl(getTpl).render(tmpData, function(html){
+                $("#view").append(html);
+            });
         });
+        $(".layui-table").on('click','.del-class',function (e) {
+            $(this).parent().parent().remove();
+        })
+
     });
-    $(".layui-table").on('click','.del-class',function (e) {
-        $(this).parent().parent().remove();
-    })
+
+
 
 </script>

@@ -79,33 +79,33 @@
         <label class="layui-form-label">销售价：</label>
         <div class="layui-input-inline">
             <input type="hidden" name="product[id]" value="{$product.id}">
-            <input type="text" name="goods[price]" value="{$goods.price}" placeholder="￥" autocomplete="off" class="layui-input">
+            <input type="text" name="goods[price]" value="{$product.price}" placeholder="￥" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">成本价：</label>
         <div class="layui-input-inline">
-            <input type="text" name="goods[costprice]" value="{$goods.costprice}" placeholder="￥" autocomplete="off" class="layui-input">
+            <input type="text" name="goods[costprice]" value="{$product.costprice}" placeholder="￥" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">市场价：</label>
         <div class="layui-input-inline">
-            <input type="text" name="goods[mktprice]" value="{$goods.mktprice}" placeholder="￥" autocomplete="off" class="layui-input">
+            <input type="text" name="goods[mktprice]" value="{$product.mktprice}" placeholder="￥" autocomplete="off" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">货号：</label>
         <div class="layui-input-inline">
-            <input type="text" name="goods[sn]" value="{$goods.bn}" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
+            <input type="text" name="goods[sn]" value="{$product.sn}" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">库存：</label>
         <div class="layui-input-inline">
-            <input type="text" name="goods[stock]" value="{$goods.stock}"  lay-verify="title" autocomplete="off" placeholder="请输入商品库存" class="layui-input">
+            <input type="text" name="goods[stock]" value="{$product.stock}"  lay-verify="title" autocomplete="off" placeholder="请输入商品库存" class="layui-input">
         </div>
     </div>
 </div>

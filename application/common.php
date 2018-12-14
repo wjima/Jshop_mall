@@ -182,23 +182,26 @@ function mkdirs($dir,$mode = 0777)
  * Email:1457529125@qq.com
  * Date: 2018-01-09 18:34
  */
-function _sImage($image_id,$type='s')
+function _sImage($image_id, $type = 's')
 {
-    if(!$image_id){
-        return config('jshop.default_image');//默认图片
-    }
-    $image_obj= new \app\common\model\Images();
-    $image=$image_obj->where(array(
-        'id'=>$image_id
-    ))->field('url')->find();
-    if($image){
-        if(stripos($image['url'],'http')!==false||stripos($image['url'],'https')!==false) {
-            return str_replace("\\","/",$image['url']);
-        }else{
-            return request()->domain().str_replace("\\","/",$image['url']);
+    if (!$image_id) {
+        $image_id = getSetting('shop_default_image');//系统默认图片
+        if (!$image_id) {
+            return config('jshop.default_image');//默认图片
         }
-    }else{
-        return request()->domain().'/'.config('jshop.default_image');//默认图片
+    }
+    $image_obj = new \app\common\model\Images();
+    $image     = $image_obj->where([
+        'id' => $image_id
+    ])->field('url')->find();
+    if ($image) {
+        if (stripos($image['url'], 'http') !== false || stripos($image['url'], 'https') !== false) {
+            return str_replace("\\", "/", $image['url']);
+        } else {
+            return request()->domain() . str_replace("\\", "/", $image['url']);
+        }
+    } else {
+        return request()->domain() . '/' . config('jshop.default_image');//默认图片
     }
 }
 
@@ -211,8 +214,8 @@ function getRealUrl($url='')
         return $url;
     }else{
         $storage_params = getSetting('image_storage_params');
-        if($storage_params['domain']){
-            return $storage_params['domain'].$url;
+        if (isset($storage_params['domain']) && $storage_params['domain']) {
+            return $storage_params['domain'] . $url;
         }
         if(config('jshop.image_storage.domain')){
             return config('jshop.image_storage.domain').$url;
@@ -899,4 +902,36 @@ function isMobile($mobile = ''){
     } else {
         return false;
     }
+}
+
+
+/**
+ * 秒转换为天，小时，分钟
+ * @param int $second
+ * @return string
+ */
+function secondConversion($second = 0)
+{
+    $newtime = '';
+    $d = floor($second / (3600*24));
+    $h = floor(($second % (3600*24)) / 3600);
+    $m = floor((($second % (3600*24)) % 3600) / 60);
+    if($d>'0'){
+        if($h == '0' && $m == '0'){
+            $newtime= $d.'天';
+        }else{
+            $newtime= $d.'天'.$h.'小时'.$m.'分';
+        }
+    }else{
+        if($h!='0'){
+            if($m == '0'){
+                $newtime= $h.'小时';
+            }else{
+                $newtime= $h.'小时'.$m.'分';
+            }
+        }else{
+            $newtime= $m.'分';
+        }
+    }
+    return $newtime;
 }

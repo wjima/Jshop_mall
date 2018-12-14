@@ -7,19 +7,27 @@ class Setting extends Common
 {
     public $skeys = [
         'shop_name' => [
-            'name' => '店铺名称',
-            'value' => '我的店铺'
+            'name' => '平台名称',
+            'value' => '我的平台'
         ],
         'shop_address' => [
-            'name' => '店铺地址',
-            'value' => '我的店铺地址'
+            'name' => '平台地址',
+            'value' => '我的平台地址'
         ],
         'shop_logo' => [
-            'name' => '店铺logo',
+            'name' => '平台logo',
+            'value' => '',
+        ],
+        'shop_favicon' => [
+            'name' => 'Favicon图标',
+            'value' => '',
+        ],
+        'shop_default_image' => [
+            'name' => '默认图',
             'value' => '',
         ],
         'shop_mobile' => [
-            'name' => '店铺联系方式',
+            'name' => '联系手机号',
             'value' => ''
         ],
         'store_switch' => [
@@ -29,10 +37,6 @@ class Setting extends Common
         'cate_style' => [
             'name' => '分类样式',
             'value' => '3'
-        ],
-        'tocash_money_low'=>[
-            'name'=>'最低提现金额',
-            'value'=>'0'
         ],
         'order_cancel_time' => [
             'name' => '订单取消时间',
@@ -49,6 +53,10 @@ class Setting extends Common
         'order_autoEval_time' => [
             'name' => '订单自动评价时间',
             'value' => '30'
+        ],
+        'remind_order_time'=>[
+            'name' => '订单提醒付款时间',
+            'value' => '1'
         ],
         'goods_stocks_warn' =>  [
             'name' => '库存警报数量',
@@ -214,6 +222,15 @@ class Setting extends Common
             'name'=>'公众号类型',
             'value'=>'service'
         ],
+        // 提现设置
+        'tocash_money_low'=>[
+            'name'=>'最低提现金额',
+            'value'=>'0'
+        ],
+        'tocash_money_rate' => [
+            'name' => '提现服务费率',
+            'value' => '0'
+        ],
         //其他设置
         'qq_map_key'=>[
             'name'=>'腾讯地图key',
@@ -301,7 +318,7 @@ class Setting extends Common
 
         if($skey == 'shop_name'){
             if($value == ''){
-                $result['msg'] = "店铺名称不能为空";
+                $result['msg'] = "平台名称不能为空";
                 return $result;
             }
         }

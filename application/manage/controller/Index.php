@@ -32,18 +32,6 @@ class Index extends Manage
         $goodsStatics=$goodsModel->staticGoods();
         $this->assign('goods_statics',$goodsStatics);
 
-        //是否关闭弹窗
-        $closeauthor = Cache::get("closeauthor",'false');
-        $this->assign('closeauthor',$closeauthor);
-        //获取是否授权
-        $weixinAuthorModel = new WeixinAuthor();
-        $authorInfo = $weixinAuthorModel->getAuthorInfo('b2c','bind_type,id,head_img');
-        if($authorInfo){
-            $this->assign('is_author','true');
-        }else{
-            $this->assign('is_author','false');
-        }
-
         hook('adminindex', $this);//后台首页钩子
 
         return $this->fetch();
@@ -79,7 +67,15 @@ class Index extends Manage
         }else{
             return $this->fetch('tagSelectGoods');
         }
+    }
 
+    /**
+     * 清除整站全部缓存
+     * 如果其它地方写了缓存的读写方法，一定要有判断是否有缓存的情况！！！
+     */
+    public function clearCache(){
+        Cache::clear();
+        $this->success('清除缓存成功');
     }
 
 }

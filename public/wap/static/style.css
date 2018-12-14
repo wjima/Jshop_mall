@@ -230,7 +230,7 @@
     transform: translateY(-50%);
 }
 .goodsdetail .yd-tab .yd-tab-panel img{
-    width: 100%;
+    width: 22%;
     height: auto;
 }
 .goodsdetail .yd-tab .yd-tab-panel ul{
@@ -1060,6 +1060,12 @@
     overflow: hidden;
     float: left;
 }
+/*.uploadimg-list>div{*/
+    /*width: 33%;*/
+    /*float: left;*/
+    /*position: relative;*/
+    /*display: inline-block;*/
+/*}*/
 .uploadimg{
     display: inline-block;
     width: 25%;
@@ -1189,12 +1195,13 @@
 }
 .cart .cartlist .btn-numbox .count .num-jian, .cart .cartlist .input-num, .cart .cartlist .num-jia {
     display: inline-block;
-    width: 22px;
-    height: 22px;
-    line-height: 20px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
     font-size: 10px;
-    color: #999;
+    font-weight: bolder;
+    color: #2d2c2c;
     cursor: pointer;
     border: 1px solid #e6e6e6;
 }
@@ -1204,13 +1211,14 @@
     color:#ACA899;
 }
 .cart .cartlist .btn-numbox .count .input-num {
-    width: 33px;
-    height: 22px;
+    width: 35px;
+    height: 30px;
     color: #333;
     border-left: 0;
     border-right: 0;
 }
 .cart .cartlist .spinner{
+    margin-right: 20px;
     float: right !important;
 }
 .cartfooter-top{

@@ -1200,19 +1200,6 @@ class Order extends Common
                 $userPointLog->setPoint($user_id, 0-$order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
             }
 
-            //消息模板存储
-            if($formId)
-            {
-                $templateMessageModel = new TemplateMessage();
-                $message = [
-                    'type' => $templateMessageModel::TYPE_ORDER,
-                    'code' => $order['order_id'],
-                    'form_id' => $formId,
-                    'status' => $templateMessageModel::SEND_STATUS_NO
-                ];
-                $templateMessageModel->addSend($message);
-            }
-
             //清除购物车信息
             $cartModel = new Cart();
             $cartModel->del($user_id,$cart_ids);
@@ -1229,7 +1216,7 @@ class Order extends Common
             $order['ship_id']   = $ship['name'];
             $order['ship_addr'] = get_area($order['ship_area_id']) . $order['ship_address'];
             Db::commit();
-
+            $order['form_id'] = $formId;
             sendMessage($user_id, 'create_order', $order);
             return $result;
         } catch (\Exception $e) {
@@ -1569,5 +1556,30 @@ class Order extends Common
             "start_time" => $firstDay,
             "end_time" => $lastDay
         ];
+    }
+
+    /***
+     * 订单催付款
+     * 默认提前1小时通知
+     * @param int $setting
+     */
+    public function remind_order_pay($setting = 0)
+    {
+        ini_set('date.timezone','Asia/Shanghai');
+        $where[]           = ['pay_status', 'eq', self::PAY_STATUS_NO];
+        $where[]           = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        $remind_order_time = getSetting('remind_order_time');//催付款时间
+        $second = $setting*86400-$remind_order_time*3600;
+
+        $second = time() - $second;
+
+        $where[]           = ['ctime', '<=', $second];
+        $order_info        = $this->where($where)
+            ->select();
+        if (count($order_info) > 0) {
+            foreach ($order_info as $kk => $vv) {
+                sendMessage($vv['user_id'], 'remind_order_pay', $vv);
+            }
+        }
     }
 }

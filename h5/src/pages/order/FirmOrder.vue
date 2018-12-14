@@ -337,6 +337,9 @@ export default {
         },
         // 优惠券选中/取消
         couponChecked (key, checked) {
+            this.use_point = false
+            this.$refs.mychild.checked = status
+            this.params.point = 0
             if (checked === false) {
                 // 取消选中其他的的优惠券
                 this.userCoupon.forEach((item) => {
@@ -346,9 +349,6 @@ export default {
                 this.usedCouponCode = this.userCoupon[key].coupon_code
                 this.usedCouponName = this.userCoupon[key].name
                 this.userCoupon[key].checked = true
-                this.use_point = false
-                this.$refs.mychild.checked = status
-                this.params.point = 0
                 // 重新请求数据
                 this.params.coupon_code = this.usedCouponCode
             } else {

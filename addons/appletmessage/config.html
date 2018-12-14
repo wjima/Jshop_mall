@@ -4,7 +4,7 @@
         <div class="layui-tab layui-tab-brief">
             <ul class="layui-tab-title">
                 {volist name="template" id="vo"}
-                <li {if condition='$key eq "create_order" '}class="layui-this "{/if} >{$vo.title}</li>
+                <li {if condition='$key eq "remind_order_pay" '}class="layui-this "{/if} >{$vo.title}</li>
                 {/volist}
             </ul>
             <div class="layui-tab-content">
@@ -12,7 +12,7 @@
 
                 {assign name="template_key" value="$key" /}
 
-                <div {if condition='$template_key eq "create_order" '}class=" layui-tab-item layui-show "{else/} class=" layui-tab-item layui-show " {/if}>
+                <div {if condition='$template_key eq "remind_order_pay" '}class=" layui-tab-item layui-show "{else/} class=" layui-tab-item layui-show " {/if}>
                 {volist name="vo.data" id="d"}
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$d.title}：</label>
@@ -32,7 +32,7 @@
         <div class="layui-tab layui-tab-brief">
             <ul class="layui-tab-title">
                 {volist name="template" id="vo"}
-                <li {if condition='$key eq "create_order" '}class="layui-this "{/if} >{$vo.title}</li>
+                <li {if condition='$key eq "remind_order_pay" '}class="layui-this "{/if} >{$vo.title}</li>
                 {/volist}
             </ul>
             <div class="layui-tab-content">
@@ -40,7 +40,7 @@
 
                 {assign name="template_key" value="$key" /}
 
-                <div {if condition='$template_key eq "create_order" '}class=" layui-tab-item layui-show "{else/} class=" layui-tab-item " {/if}>
+                <div {if condition='$template_key eq "remind_order_pay" '}class=" layui-tab-item layui-show "{else/} class=" layui-tab-item " {/if}>
                 {volist name="vo.data" id="d"}
                 <div class="layui-form-item">
                     <label class="layui-form-label">{$d.title}：</label>

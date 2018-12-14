@@ -5,7 +5,7 @@
                 <li class="list-item" :val="item.id" v-for="(item, index) in list" :key="index" data-type="0">
                     <div class="list-box" style="padding: .15rem;position: relative;" @touchstart.capture="touchStart" @touchend.capture="touchEnd">
                         <div class="check-box">
-                            <input type="checkbox" class="input_check" name="box" :id="item.id" :value="item.id" v-model="checked"><label :for="item.id"></label>
+                            <input type="checkbox" @click="radioHandler(index)" class="input_check" name="box" :id="item.id" :value="item.id" v-model="item.is_select"><label :for="item.id"></label>
                         </div>
                         <img :src="item.products.image_path" class="goodsimg" @click="showDetail(item.products.goods_id)">
                         <div class="list-body">
@@ -17,9 +17,9 @@
                                 </li>
                                 <li class="spinner">
                                     <ul class="count">
-                                        <li @click="minus(item.id,item.nums)"><button id="num-jian" class="num-jian">-</button></li>
-                                        <li><input type="text" class="input-num" id="input-num" v-model="item.nums" /></li>
-                                        <li @click="add(item.id,item.nums)"><button id="num-jia" class="num-jia">+</button></li>
+                                        <li @click="minus(item.id,item.nums)"><button id="num-jian" class="num-jian">－</button></li>
+                                        <li><input type="text" class="input-num" id="input-num" v-model="item.nums" readonly/></li>
+                                        <li @click="add(item.id,item.nums)"><button id="num-jia" class="num-jia">＋</button></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div class="cartfooter-btn">
-                <yd-button type="danger" @click.native="balance" v-if="ids.length">去结算</yd-button>
+                <yd-button type="danger" @click.native="balance" v-if="canBuy">去结算</yd-button>
                 <yd-button type="disabled" disabled v-else>去结算</yd-button>
             </div>
         </div>
@@ -77,7 +77,6 @@ export default {
     data () {
         return {
             isCheckAll: true, // 默认全选
-            ids: [], // 选中的商品列表
             list: [], // 购物车列表
             total: '', // 商品总金额
             promotion: [], // 促销信息
@@ -90,42 +89,49 @@ export default {
     },
     // 数据改变自动执行此方法
     computed: {
-        // 选中的购物车商品id
-        checked: {
-            get () {
-                let arr = []
-                for (let i in this.list) {
-                    if (this.list[i].is_select) {
-                        arr.push(this.list[i].id)
-                    }
+        canBuy () {
+            let ids = []
+            this.list.forEach(item => {
+                if (item.is_select) {
+                    ids.push(item.id)
                 }
-                return arr
-            },
-            set (val) {
-                if (val.length) {
-                    if (val.length === this.list.length) {
-                        this.isCheckAll = true
-                    } else {
-                        this.isCheckAll = false
-                    }
-                    this.cartList(val)
-                } else {
-                    this.ids = []
-                    for (let i in this.list) {
-                        this.list[i].is_select = false
-                    }
-                    this.total = '0.00'
-                    this.goods_pmt = '0.00'
-                    this.order_pmt = '0.00'
-                    this.isCheckAll = false
-                    for (let k in this.promotion) {
-                        this.$set(this.promotion[k], 'type', 1)
-                    }
-                }
+            })
+            if (ids.length) {
+                return true
+            } else {
+                return false
             }
         }
     },
     methods: {
+        // 商品列表 单选点击操作
+        radioHandler (index) {
+            this.list[index].is_select = !this.list[index].is_select
+            this.selectedHandler()
+        },
+        // 获取选中的商品重新 返回购物车数据
+        selectedHandler () {
+            let ids = []
+            this.list.forEach (item => {
+                if (item.is_select) {
+                    ids.push(item.id)
+                }
+            })
+            if (!ids.length) {
+                this.list.forEach(item => {
+                    item.is_select = false
+                })
+                this.total = '0.00'
+                this.goods_pmt = '0.00'
+                this.order_pmt = '0.00'
+                this.isCheckAll = false
+                for (let k in this.promotion) {
+                    this.$set(this.promotion[k], 'type', 1)
+                }
+            } else {
+                this.cartList(ids)
+            }
+        },
         // 查看商品详情
         showDetail (goodsId) {
             this.$router.push({path: '/goodsdetail', query: {goods_id: goodsId}})
@@ -150,7 +156,6 @@ export default {
         // 设置商品数量
         setNums (id, nums) {
             this.$api.setCartNum({
-                token: this.GLOBAL.getStorage('user_token'),
                 id: id,
                 nums: nums
             }, res => {
@@ -174,44 +179,21 @@ export default {
             this.$api.cartList(data, res => {
                 if (res.status) {
                     const _list = res.data.list
-                    let arr = []
-                    _list.forEach(val => {
-                        if (val.is_select) arr.push(val.id)
-                    })
-                    this.ids = arr
-                    this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '')
-                    this.promotion = res.data.promotion_list
-                    this.goods_pmt = this.GLOBAL.formatMoney(res.data.goods_pmt, 2, '')
-                    this.order_pmt = this.GLOBAL.formatMoney(res.data.order_pmt, 2, '')
+                    this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '')    // 总金额
+                    this.promotion = res.data.promotion_list    // 促销信息
+                    this.goods_pmt = this.GLOBAL.formatMoney(res.data.goods_pmt, 2, '') // 商品名优惠
+                    this.order_pmt = this.GLOBAL.formatMoney(res.data.order_pmt, 2, '') // 订单优惠
                     this.list = [..._list]
                 }
             })
         },
         // 监听全选
         checkAll (e) {
-            if (e.target.checked) {
-                // 全选
-                this.isCheckAll = true
-                let arr = []
-                for (let k in this.list) {
-                    arr.push(this.list[k].id)
-                }
-                this.ids = arr
-                this.cartList(this.ids)
-            } else {
-                // 全不选
-                this.ids = []
-                for (let i in this.list) {
-                    this.list[i].is_select = false
-                }
-                this.total = '0.00'
-                this.goods_pmt = '0.00'
-                this.order_pmt = '0.00'
-                this.isCheckAll = false
-                for (let k in this.promotion) {
-                    this.$set(this.promotion[k], 'type', 1)
-                }
-            }
+            // 全部取消/选中状态
+            this.list.forEach(item => {
+                item.is_select = e.target.checked
+            })
+            this.selectedHandler()
         },
         // 去结算
         balance () {
@@ -284,6 +266,25 @@ export default {
                 }
             })
         }
+    },
+    watch: {
+        list: {
+            handler () {
+                let length = this.list.length
+                let ids = []
+                this.list.forEach(item=> {
+                    if (item.is_select) {
+                        ids.push(item.id)
+                    }
+                })
+                if (length === ids.length) {
+                    this.isCheckAll = true
+                } else {
+                    this.isCheckAll = false
+                }
+            },
+            deep: true
+        }
     }
 }
 </script>
@@ -348,5 +349,9 @@ export default {
         position: relative;
         top: 50%;
         transform: translateY(-50%);
+    }
+    .not-click {
+        background-color: #eee;
+        color: #999 !important;
     }
 </style>

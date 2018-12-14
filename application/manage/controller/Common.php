@@ -24,6 +24,8 @@ class Common extends Base
     public function login()
     {
 
+        $shop_name = getSetting('shop_name');
+        $this->assign('shop_name',$shop_name);
         if (session('?manage')) {
             $this->success('已经登录成功，跳转中...',redirect_url());
         }

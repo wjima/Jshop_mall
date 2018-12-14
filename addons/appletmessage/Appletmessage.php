@@ -2,6 +2,7 @@
 
 namespace addons\appletmessage;    // 注意命名空间规范
 
+use app\common\model\BillPayments;
 use app\common\model\TemplateMessage;
 use app\common\model\WeixinAuthor;
 use myxland\addons\Addons;
@@ -67,6 +68,50 @@ class Appletmessage extends Addons
      */
     public function sendwxmessage($params)
     {
+        //创建订单
+        if($params['params']['code'] == 'create_order'){
+            if($params['params']['params']['form_id'])
+            {
+                $templateMessageModel = new TemplateMessage();
+                $message = [
+                    'type' => $templateMessageModel::TYPE_ORDER,
+                    'code' => $params['params']['params']['order_id'],
+                    'form_id' => $params['params']['params']['form_id'],
+                    'status' => $templateMessageModel::SEND_STATUS_NO
+                ];
+               $templateMessageModel->addSend($message);
+            }
+            return true;
+        }else if($params['params']['code'] == 'order_payed'){ //todo 付款这里通知有问题，待优化
+            $order_id = $params['params']['params']['order_id'];
+            $billPaymentsRelModel = new BillPayments();
+            $billPaymentInfo = $billPaymentsRelModel->getSuccessPaymentInfo($order_id,$billPaymentsRelModel::TYPE_ORDER);
+            //存储微信消息模板 todo::不清楚 $billPaymentInfo['generate_params'] 里面存的什么数据格式
+            if(isset($billPaymentInfo['generate_params']))
+            {
+                $generate_params = json_decode($billPaymentInfo['generate_params'], true);
+                if($generate_params['package'])
+                {
+                    $prepay_id = str_replace("prepay_id=","", $generate_params['package']);
+                    if($prepay_id)
+                    {
+                        //获取orderid
+                        $billPaymentID = $billPaymentsRelModel->where(array('payment_id'=>$billPaymentInfo['payment_id']))->find();
+                        $templateMessageModel = new TemplateMessage();
+                        $message = [
+                            'type' => $templateMessageModel::TYPE_PAYMENT,
+                            'code' => $order_id,
+                            'form_id' => $prepay_id,
+                            'status' => $templateMessageModel::SEND_STATUS_NO
+                        ];
+                        $templateMessageModel->addSend($message);
+                    }
+                }
+            }
+            return true;
+        }
+
+
         if (!$params['params']['user_id']) {
             return false;
         }
@@ -80,17 +125,17 @@ class Appletmessage extends Addons
         $templateMessageModel = new TemplateMessage();
         $formInfo             = [];
 
-        if ($params['params']['code'] == 'create_order') {
+        if ($params['params']['code'] == 'remind_order_pay') {
             $id = $params['params']['params']['order_id'];
 
-            $closeOrder                           = getSetting('order_cancel_time') * 24;
-            $params['params']['params']['notice'] = '您的订单将在' . floor($closeOrder) . '小时后取消，请及时付款哦';
-            $formInfo                             = $templateMessageModel->where(['type' => $params['params']['code'], 'code' => $id, 'status' => '1'])->find();
+            $remind_order_time = getSetting('remind_order_time');//催付时间
 
+            $lastdesc = secondConversion($remind_order_time*3600);
+            $params['params']['params']['notice'] = '您的订单将在'.$lastdesc.'后取消，请及时付款哦';
+            $formInfo                             = $templateMessageModel->where(['type' =>'create_order', 'code' => $id, 'status' =>$templateMessageModel::SEND_STATUS_NO])->find();
         } else if ($params['params']['code'] == 'delivery_notice') {//发货
             $id = $params['params']['params']['order_id'];
-
-            $formInfo = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => '1'])->find();
+            $formInfo = $templateMessageModel->where(['type' => 'order_payed', 'code' => $id, 'status' => $templateMessageModel::SEND_STATUS_NO])->find();
 
         } else if ($params['params']['code'] == 'refund_success') {//退款成功
             $id                                          = $params['params']['params']['source_id'];
@@ -105,17 +150,19 @@ class Appletmessage extends Addons
         if (!$formInfo) {
             return false;
         }
+
         //发送消息，取出会员open_id，然后发送
         $wxUserinfo = getUserWxInfo($params['params']['user_id']);
+
         if (!$wxUserinfo) {
             return false;
         }
         $template = $setting[$params['params']['code']];
-
         $appid                  = getSetting('wx_appid');
         $secret                 = getSetting('wx_app_secret');
         $message['data']        = $this->replaceWord($params['params']['params'], $template);
         $message['touser']      = $wxUserinfo['openid'];
+
         $message['template_id'] = $template['template_id'];
         $message['page']        = 'pages/index/index';
         $message['form_id']     = $formInfo['form_id'];
@@ -136,15 +183,19 @@ class Appletmessage extends Addons
     {
         $msgData = [];
         foreach ($template as $key => $value) {
-            $mkey           = str_replace("{{", "", $value);
-            $mkey           = str_replace(".DATA}}", "", $mkey);
+            if($key!='template_id'){
 
-            $data[$key] = is_string($data[$key])?$data[$key]:"$data[$key]";
+                $mkey           = str_replace("{{", "", $value);
+                $mkey           = str_replace(".DATA}}", "", $mkey);
 
-            $msgData[$mkey] = [
-                'value' => $data[$key],
-                'color' => '#173177',
-            ];
+                $data[$key] = is_string($data[$key])?$data[$key]:"$data[$key]";
+
+                $msgData[$mkey] = [
+                    'value' => $data[$key],
+                    'color' => '#173177',
+                ];
+            }
+
         }
         return $msgData;
 

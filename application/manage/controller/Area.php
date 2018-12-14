@@ -96,47 +96,40 @@ class Area extends Manage
      */
     public function edit()
     {
-        if(Request::isPost())
-        {
-            $id = input('id');
+        if (Request::isPost()) {
+            $id           = input('id');
             $data['name'] = input('name');
             $data['sort'] = input('sort');
-            $result = model('common/Area')->edit($id, $data);
-            if($result)
-            {
+            $result       = model('common/Area')->edit($id, $data);
+            if ($result !== false) {
                 $return_data = array(
                     'status' => true,
-                    'msg' => '修改成功',
-                    'data' => $result
+                    'msg'    => '修改成功',
+                    'data'   => $result
                 );
-            }
-            else
-            {
+            } else {
                 $return_data = array(
                     'status' => false,
-                    'msg' => '修改失败',
-                    'data' => $result
+                    'msg'    => '修改失败',
+                    'data'   => $result
                 );
             }
             return $return_data;
         }
 
-        $id = input('id');
+        $id   = input('id');
         $info = model('common/Area')->getAreaInfo($id);
-        if($info)
-        {
+        if ($info) {
             $return_data = array(
                 'status' => true,
-                'msg' => '获取成功',
-                'data' => $info
+                'msg'    => '获取成功',
+                'data'   => $info
             );
-        }
-        else
-        {
+        } else {
             $return_data = array(
                 'status' => false,
-                'msg' => '获取失败',
-                'data' => $info
+                'msg'    => '获取失败',
+                'data'   => $info
             );
         }
         return $return_data;

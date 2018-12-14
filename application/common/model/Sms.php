@@ -117,16 +117,16 @@ class Sms extends Common
                 $msg = "恭喜您，订单支付成功,祝您购物愉快。";
                 break;
             case 'remind_order_pay':
-                $msg = "您的订单还有3个小时就要取消了，请立即进行支付。";
+                $msg = "您的订单还有1个小时就要取消了，请及时进行支付。";
                 break;
             case 'delivery_notice':
-                $msg = "你好，你的订单已经发货。";
+                $msg = "您好，您的订单已经发货。";
                 break;
             case 'aftersales_pass':
-                $msg = "你好，您的售后已经通过。";
+                $msg = "您好，您的售后已经通过。";
                 break;
             case 'refund_success':
-                $msg = "用户你好，你的退款已经处理，请确认。";
+                $msg = "用户您好，您的退款已经处理，请确认。";
                 break;
             case 'common':
                 $msg = $params['tpl'];

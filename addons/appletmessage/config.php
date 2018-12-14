@@ -13,7 +13,7 @@ return [
     'template'=>[
         'title'=>'模板配置',
         'value'=>[
-            'create_order'=>[
+            'remind_order_pay'=>[
                 'title'=>'催付提醒',
                 'data'=>[
                     [

@@ -60,4 +60,15 @@ class Order
 
         Utils::log('自动签收订单任务结束时间：'.date('Y-m-d H:i:s').PHP_EOL);
     }
+
+    /**
+     * 催付款
+     */
+    public  static function remind(){
+        Utils::log('催付款开始时间：'.date('Y-m-d H:i:s').PHP_EOL);
+        $setting = getSetting('order_cancel_time');
+        $order = new \app\common\model\Order();
+        $order->remind_order_pay($setting);
+        Utils::log('催付款任务结束时间：'.date('Y-m-d H:i:s').PHP_EOL);
+    }
 }

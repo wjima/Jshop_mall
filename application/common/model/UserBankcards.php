@@ -426,8 +426,7 @@ class UserBankcards extends Common
         $res = $curl->get($url);
         $res = json_decode($res, true);
         if (!$res['validated']) {
-            $result['status'] = false;
-            $result['msg'] = '卡号错误或卡片状态异常';
+            return error_code(11021);
         } else {
             $card = [];
             $card['name'] = config('bank.bank_list')[$res['bank']];

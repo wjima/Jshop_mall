@@ -201,7 +201,7 @@ class UserPointLog extends Common
         $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
         $day = date('Y-m-d', strtotime('-'.$max_continuity_day.' day'));
         //兼容问题
-        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day FROM `jshop_user_point_log` WHERE `user_id` = '.$user_id.' AND `type` = '.self::POINT_TYPE_SIGN.' AND from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")';
+        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day FROM `'.config('database.prefix').'user_point_log` WHERE `user_id` = '.$user_id.' AND `type` = '.self::POINT_TYPE_SIGN.' AND from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")';
         $res = $this->query($sql);
 
         $new_res = [];

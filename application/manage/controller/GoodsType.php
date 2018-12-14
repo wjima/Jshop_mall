@@ -59,93 +59,99 @@ class GoodsType extends Manage
                 'data'   => '',
             ];
             //存储添加内容
-            $typeData   = [
-                'name'      => input('post.name'),
+            $typeData    = [
+                'name' => input('post.name'),
             ];
-            $params_name = input('post.params_name/a',[]);
-            $paramsData = [];
-            foreach($params_name as $key=>$val){
-                $paramsData[$key]['id'] = input('post.params_id.'.$key);
-                $paramsData[$key]['name'] = input('post.params_name.'.$key);
-                $paramsData[$key]['type'] = input('post.params_type.'.$key);
-                $paramsData[$key]['value'] = input('post.params_value.'.$key);
+            $params_name = input('post.params_name/a', []);
+            $paramsData  = [];
+
+            foreach ($params_name as $key => $val) {
+                if ($val) {
+                    $paramsData[$key]['id']    = input('post.params_id.' . $key);
+                    $paramsData[$key]['name']  = input('post.params_name.' . $key);
+                    $paramsData[$key]['type']  = input('post.params_type.' . $key);
+                    $paramsData[$key]['value'] = input('post.params_value.' . $key);
+                }
             }
             //属性值
             $typeSpecData = [];
-            $type_name = input('post.type_name/a',[]);
-            foreach($type_name as $key=>$val){
-                $typeSpecData[$key]['id'] = input('post.type_id.'.$key);
-                $typeSpecData[$key]['name'] = input('post.type_name.'.$key);
-                $typeSpecData[$key]['sort'] = input('post.type_sort.'.$key);
-                $typeSpecData[$key]['value'] = explode(' ',input('post.type_value.'.$key));
+            $type_name    = input('post.type_name/a', []);
+            foreach ($type_name as $key => $val) {
+                if ($val) {
+                    $typeSpecData[$key]['id']    = input('post.type_id.' . $key);
+                    $typeSpecData[$key]['name']  = input('post.type_name.' . $key);
+                    $typeSpecData[$key]['sort']  = input('post.type_sort.' . $key);
+                    $typeSpecData[$key]['value'] = explode(' ', input('post.type_value.' . $key));
+                }
             }
             $goodsType = new typeModel();
-
             Db::startTrans();
-            $result = $goodsType->add($typeData);
+            $result  = $goodsType->add($typeData);
             $type_id = $goodsType->getLastInsID();
-            if($result !== false){
-
+            if ($result !== false) {
                 $goodsTypeParamsModel = new GoodsTypeParams();
-                $typeParamsRel = [];
-
-                foreach($paramsData as $key=>$val){
-                    $goodsParamsModel = new GoodsParams();
-                    if($val['id']){
-                        $goodsParamsModel->save($val,['id'=>$val['id']]);
-                    }else{
-                        unset($val['id']);
-                        $res=$goodsParamsModel->save($val);
-                        $val['id'] = $goodsParamsModel->getLastInsID();
+                $typeParamsRel        = [];
+                if ($paramsData) {
+                    foreach ($paramsData as $key => $val) {
+                        $goodsParamsModel = new GoodsParams();
+                        if ($val['id']) {
+                            $goodsParamsModel->save($val, ['id' => $val['id']]);
+                        } else {
+                            unset($val['id']);
+                            $res       = $goodsParamsModel->save($val);
+                            $val['id'] = $goodsParamsModel->getLastInsID();
+                        }
+                        $typeParamsRel[$key]['params_id'] = $val['id'];
+                        $typeParamsRel[$key]['type_id']   = $type_id;
                     }
-                    $typeParamsRel[$key]['params_id'] =$val['id'];
-                    $typeParamsRel[$key]['type_id'] =$type_id;
+                    $goodsTypeParamsModel->saveAll($typeParamsRel);
                 }
-                $goodsTypeParamsModel->saveAll($typeParamsRel);
                 //保存属性
                 $goodsTypeSpecValue = new GoodsTypeSpecValue();
-                $goodsTypeSpecRel = new GoodsTypeSpecRel();
-                $typeSpecRel = [];
-                foreach($typeSpecData as $key=>$value){
-                    $goodsTypeSpec = new GoodsTypeSpec();
+                $goodsTypeSpecRel   = new GoodsTypeSpecRel();
+                $typeSpecRel        = [];
+                if ($typeSpecData) {
+                    foreach ($typeSpecData as $key => $value) {
+                        $goodsTypeSpec = new GoodsTypeSpec();
 
-                    if($value['id']){
-                        $goodsTypeSpec->save($value,['id'=>$value['id']]);
-                        $goodsTypeSpecValue->where([['spec_id','=',$value['id']]])->delete();
-                        $specValue = $value['value'];
-                        $tempSpecValue = [];
-                        foreach($specValue as $sk=>$sv){
-                            $tempSpecValue[] = [
-                                'spec_id'=>$value['id'],
-                                'value'=>$sv,
-                            ];
+                        if ($value['id']) {
+                            $goodsTypeSpec->save($value, ['id' => $value['id']]);
+                            $goodsTypeSpecValue->where([['spec_id', '=', $value['id']]])->delete();
+                            $specValue     = $value['value'];
+                            $tempSpecValue = [];
+                            foreach ($specValue as $sk => $sv) {
+                                $tempSpecValue[] = [
+                                    'spec_id' => $value['id'],
+                                    'value'   => $sv,
+                                ];
+                            }
+                            $goodsTypeSpecValue->saveAll($tempSpecValue);
+                        } else {
+                            unset($value['id']);
+                            $res           = $goodsTypeSpec->save($value);
+                            $value['id']   = $goodsTypeSpec->getLastInsID();
+                            $specValue     = $value['value'];
+                            $tempSpecValue = [];
+                            foreach ($specValue as $sk => $sv) {
+                                $tempSpecValue[] = [
+                                    'spec_id' => $value['id'],
+                                    'value'   => $sv,
+                                ];
+                            }
+                            $goodsTypeSpecValue->saveAll($tempSpecValue);
                         }
-                        $goodsTypeSpecValue->saveAll($tempSpecValue);
-                    }else{
-                        unset($value['id']);
-                        $res=$goodsTypeSpec->save($value);
-                        $value['id'] = $goodsTypeSpec->getLastInsID();
-                        $specValue = $value['value'];
-                        $tempSpecValue = [];
-                        foreach($specValue as $sk=>$sv){
-                            $tempSpecValue[] = [
-                                'spec_id'=>$value['id'],
-                                'value'=>$sv,
-                            ];
-                        }
-                        $goodsTypeSpecValue->saveAll($tempSpecValue);
+                        $typeSpecRel[$key]['spec_id'] = $value['id'];
+                        $typeSpecRel[$key]['type_id'] = $type_id;
                     }
-                    $typeSpecRel[$key]['spec_id'] =$value['id'];
-                    $typeSpecRel[$key]['type_id'] =$type_id;
+                    $goodsTypeSpecRel->saveAll($typeSpecRel);
                 }
-                $goodsTypeSpecRel->saveAll($typeSpecRel);
                 Db::commit();
                 $return_data = [
                     'status' => true,
                     'msg'    => '添加成功',
                     'data'   => $result,
                 ];
-            }else{
+            } else {
                 Db::rollback();
             }
             return $return_data;

@@ -118,7 +118,8 @@ class wechatpay implements Payment
         switch ($data['trade_type'])
         {
             case 'JSAPI':                   //微信小程序组建数据
-                $app_data['timeStamp'] = time();
+                $time = time();
+                $app_data['timeStamp'] = "$time";
                 $app_data['nonceStr'] = $data['nonce_str'];
                 $app_data['package'] = 'prepay_id='.$data['prepay_id'];
                 $app_data['signType'] = 'MD5';

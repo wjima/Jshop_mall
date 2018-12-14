@@ -245,8 +245,6 @@
             return false;
         });
         form.on('radio(type)', function(data) {
-            console.log(data.elem); //得到radio原始DOM对象
-            console.log(data.value); //被点击的radio的value值
             if (data.value == '2') {
                 $(".div-none").show();
             } else {
@@ -288,7 +286,6 @@
                 },
                 yes:function (index,layero) {
                     var checked = dtree.getCheckbarNodesParam(DTree);
-                    console.log(checked);
                     if(checked){
                         var html = '已选择地区：';
                         var ids = [];
@@ -306,20 +303,25 @@
                 }
             });
         });
-    });
 
+        $(".layui-table").on('click', '.addarea-class', function(e) {
+            var getTpl = tr_tpl.innerHTML;
+            var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');
 
-    $(".layui-table").on('click', '.addarea-class', function(e) {
-        var getTpl = tr_tpl.innerHTML;
-        var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');
-
-        var tmpData = {};
-        tmpData.id = parseInt(lastId) + 1;
-        laytpl(getTpl).render(tmpData, function(html) {
-            $("#view").append(html);
+            var tmpData = {};
+            tmpData.id = parseInt(lastId) + 1;
+            laytpl(getTpl).render(tmpData, function(html) {
+                $("#view").append(html);
+            });
         });
+
+
+
+        $(".layui-table").on('click', '.del-class', function(e) {
+            $(this).parent().parent().remove();
+        })
+
     });
-    $(".layui-table").on('click', '.del-class', function(e) {
-        $(this).parent().parent().remove();
-    })
+
+
 </script>

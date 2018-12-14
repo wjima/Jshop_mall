@@ -346,8 +346,8 @@ Page({
     if (userToken) {
         let myInviteCode = wx.getStorageSync('myInviteCode');
         if (myInviteCode) {
-            let ins = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
-            let path = '/pages/goods/detail/detail?scene=id=' + ins;
+            let ins1 = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
+            let path = '/pages/goods/detail/detail?scene=id=' + ins1;
             return {
                 title: page.data.goodsInfo.name,
                 imageUrl: page.data.goodsImg[0],

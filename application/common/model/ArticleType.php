@@ -91,20 +91,18 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg' => '保存成功',
-            'data' => []
+            'msg'    => '保存成功',
+            'data'   => []
         ];
 
-        $validate = new Validate($this->rule,$this->msg);
-        if(!$validate->check($data))
-        {
+        $validate = new Validate($this->rule, $this->msg);
+        if (!$validate->check($data)) {
             $result['status'] = false;
-            $result['msg'] = $validate->getError();
+            $result['msg']    = $validate->getError();
         } else {
-            if (!$this->allowField(true)->save($data,['id'=>$data['id']]))
-            {
+            if ($this->allowField(true)->save($data, ['id' => $data['id']]) === false) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg']    = '保存失败';
             }
         }
         return $result;
@@ -124,7 +122,7 @@ class ArticleType extends Common
         global $tree;
         foreach($arr as $key=>$val) {
             if($val['pid'] == $pid) {
-                $flg = str_repeat('└―',$step);
+                $flg = str_repeat('└─',$step);
                 $val['type_name'] = $flg.$val['type_name'];
                 $tree[] = $val;
                 $this->getTree($arr , $val['id'] ,$step+1);

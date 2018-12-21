@@ -139,7 +139,7 @@ class Common extends Base
     }
 
     /**
-     * 发送短信验证码
+     * 发送短信验证码，这里只能发送登陆，注册和短信校验的时候的验证码
      */
     public function sms()
     {
@@ -160,12 +160,6 @@ class Common extends Base
         $params = input('param.params',[]);
 
         $code = input('post.code');
-        if($code == 'reg' || $code == 'login' || $code == 'seller_reg'){
-            //此三个短信编码需要做特殊校验，所以先去use里做判断
-            return $userModel->sms(input('post.mobile'),$code);
-        }else{
-            $smsModel = new Sms();
-            return $smsModel->send(input('post.mobile'), $code,$params);
-        }
+        return $userModel->sms(input('post.mobile'),$code);
     }
 }

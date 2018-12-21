@@ -1,6 +1,6 @@
 //订单详情
 var app = getApp(); //全局APP
-
+var sj;
 Page({
   //页面数据
   data: {
@@ -54,9 +54,29 @@ Page({
         page.setData({
           order: res.data
         });
+        page.getDate();
       });
     });
   },
+
+  //倒计时
+  getDate: function (){
+      let page = this;
+      sj = setInterval(function(){
+          let o = page.data.order;
+          o.remaining_time--;
+          o.remaining = app.common.time2date(o.remaining_time);
+          console.log(o.remaining);
+          page.setData({
+              order: o
+          });
+      }, 1000);
+  },
+
+    //页面卸载
+    onUnload: function () {
+        clearInterval(sj);
+    },
 
   //去支付
   payment: function (e) {

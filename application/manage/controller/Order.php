@@ -197,12 +197,15 @@ class Order extends Manage
     /**
      * 取消订单
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function cancel()
     {
         $id = input('id');
-        $seller_id = $this->sellerId;
-        $result = model('common/Order')->cancel($id, $seller_id);
+        $model = new \app\common\model\Order();
+        $result = $model->cancel($id);
         if($result)
         {
             $return_data = array(

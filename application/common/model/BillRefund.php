@@ -59,7 +59,6 @@ class BillRefund extends Common
 
     /**
      * 退款单去退款或者拒绝
-     * @param $seller_id    店铺id
      * @param $refund_id    退款单id
      * @param $status       2或者3，通过或者拒绝
      * @param string $payment_code      退款方式，如果和退款单上的一样，说明没有修改，原路返回，否则只记录状态，不做实际退款

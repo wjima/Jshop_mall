@@ -10,14 +10,14 @@
 		padding: 0 7px;
 		height: 37px;
 	}
-	table{
+	.pop-table table{
 		border: 1px solid #ccc;
 		border-collapse:collapse;
 		margin-bottom: 50px;
 	}	
 	
 </style>
-<div class="layui-form layui-form-pane" style="padding:30px">
+<div class="layui-form layui-form-pane pop-table" style="padding:30px">
     <input type="hidden" id="input_order_id" value="{$order_id}">
     <input type="hidden" id="input_type" value="{$type}">
     {foreach $data.rel as $key=>$vo}

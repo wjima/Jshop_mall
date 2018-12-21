@@ -240,6 +240,30 @@ return [
                     ],
                 ],
             ],
+            'seller_order_notice'=> [
+                'title' => '卖家新订单通知',
+                'data'  => [
+                    'title'    => [
+                        'title' => '模板ID',
+                        'code'  => 'template_id',
+                        'value' => '',
+                    ],
+                    'template' => [
+                        'title'   => '模板变量',
+                        'content' => '订单号 :${order_id}>,付款人 :${user_name},付款时间 :${pay_time},付款金额 :${money}',
+                        'variable'=>[
+                            'order_id'=>'order_id',  //模板变量，对应系统变量名称
+                            'user_name'=>'user_name',
+                            'pay_time'=>'pay_time',
+                            'money'=>'money',
+                        ]
+                    ],
+                    'content'  => [
+                        'title' => '模板内容',
+                        'value' => '卖家您好，您有新的订单了，请及时处理。',
+                    ],
+                ],
+            ],
         ],
     ],
 ];

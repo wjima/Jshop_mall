@@ -133,6 +133,7 @@ Page({
                         userShipId: id,
                         area: region,
                     });
+                    prevPage.getProductData();
                     wx.navigateBack(1);
                 } else {
                     wx.showModal({

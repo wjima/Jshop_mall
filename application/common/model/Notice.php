@@ -149,7 +149,6 @@ class Notice extends Common
 
     /**
      * @param $type
-     * @param $seller_id
      * @param $order
      * @param $orderType
      * @param $page

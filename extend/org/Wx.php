@@ -8,14 +8,6 @@ use think\facade\Log;
 
 class Wx
 {
-    /**
-     * 默认配置
-     * @var array
-     */
-//    private $config = [
-//        'appid' => 'wxd9d17d7370b11efd',
-//        'secret' => '172c182d95a872fbd6148f5f1b4901e6'
-//    ];
 
 
     /**
@@ -121,7 +113,7 @@ class Wx
      * @param string $secret
      * @return mixed
      */
-    public function getAccessToken($appid = 'wxd9d17d7370b11efd', $secret = '172c182d95a872fbd6148f5f1b4901e6')
+    public function getAccessToken($appid = '', $secret = '')
     {
         //todo::$appid和$secret从配置文件获取
         //查询是否有缓存的access_token todo::改成mysql数据库存储

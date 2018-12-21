@@ -33,12 +33,11 @@ class WeixinAuthor extends Common
 
     /**
      * 查看是否能绑定
-     * @param int $seller_id
      * @return string
      */
-    public function checkBind($seller_id = 0, $authorType = 'b2c')
+    public function checkBind($authorType = 'b2c')
     {
-        $author = $this->field('id')->where(['seller_id' => $seller_id, 'author_type' => $authorType])->find();
+        $author = $this->field('id')->where(['author_type' => $authorType])->find();
         return $author ? false : true;
     }
 

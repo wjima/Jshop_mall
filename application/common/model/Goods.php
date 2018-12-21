@@ -91,7 +91,15 @@ class Goods extends Common
             $SettingModel = new Setting();
             $goods_stocks_warn = $SettingModel->getValue('goods_stocks_warn');
             $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
-            $where[] = ['stock', 'elt', $goods_stocks_warn];
+            $productModel = new Products();
+            $baseFilter[] = ['(stock - freeze_stock)', 'lt', $goods_stocks_warn];
+            $goodsIds    = $productModel->field('goods_id')->where($baseFilter)->group('goods_id')->select();
+            if(!$goodsIds->isEmpty()){
+                $goodsIds = array_column($goodsIds->toArray(),'goods_id');
+                $where[] = ['id', 'in', $goodsIds];
+            }else{
+                $where[] = ['id', 'in', 0];
+            }
         }
         if(isset($post['goods_type_id'])&& $post['goods_type_id'] != ""){
             $where[] = ['goods_type_id', 'eq', $post['goods_type_id']];
@@ -216,14 +224,20 @@ class Goods extends Common
         if(!$list->isEmpty()){
             foreach($list as $key=>$value)
             {
-                $image_url = _sImage($value['image_id']);
-                $list[$key]['image_url'] = $image_url;
-                $list[$key]['label_ids'] = getLabel($value['label_ids']);
-                //$list[$key]['products'] = $this->products($value['id']);
+                $goods = $this->getGoodsDetial($value['id'],'*');
+                if($goods['status']){
+                    $list[$key] = $goods['data'];
+                }
+//                $image_url = _sImage($value['image_id']);
+//                $list[$key]['image_url'] = $image_url;
+//                $list[$key]['label_ids'] = getLabel($value['label_ids']);
             }
-            $result['data'] = $list->hidden(['products'=>['isdel'],'isdel']);
+
+            $result['data'] = $list->toArray();
         }
         $result['total'] = ceil($total/$limit);
+
+
         return $result;
     }
 
@@ -306,7 +320,7 @@ class Goods extends Common
 
             //取出销量
             $orderItem = new OrderItems();
-            $count = $orderItem->where(['goods_id'=>$gid])->count();
+            $count = $orderItem->where(['goods_id'=>$gid])->sum('nums');
             $list['buy_count'] = $count;
 
             //获取当前登录是否收藏
@@ -429,7 +443,7 @@ class Goods extends Common
      */
     public function getStock($product)
     {
-        return $product['stock']-$product['freeze_stock'];
+        return $product['stock'] - $product['freeze_stock'];
     }
 
     /**
@@ -877,11 +891,11 @@ class Goods extends Common
         $SettingModel = new Setting();
 
         $goods_stocks_warn = $SettingModel->getValue('goods_stocks_warn');
-        $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
+        $goods_stocks_warn = $goods_stocks_warn ? $goods_stocks_warn : '10';
         unset($baseFilter['marketable']);
-        $baseFilter[]=['stock','elt',$goods_stocks_warn];
-        $totalWarn = $this->where($baseFilter)->count('id');
-
+        $productModel = new Products();
+        $baseFilter[] = ['(stock - freeze_stock)', 'lt', $goods_stocks_warn];
+        $totalWarn    = $productModel->where($baseFilter)->group('goods_id')->count('id');
         return [
             'totalGoods'=>$total,
             'totalMarketableUp'=>$totalMarketableUp,

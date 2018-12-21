@@ -90,6 +90,32 @@ function timeToDate(date) {
   return Y + M + D + h + m + s;
 }
 
+function time2date(micro_second) {
+    var time = {};
+    // 总秒数
+    var second = Math.floor(micro_second);
+    // 天数
+    time.day = PrefixInteger(Math.floor(second / 3600 / 24), 2);
+    // 小时
+    time.hour = PrefixInteger(Math.floor(second / 3600 % 24), 2);
+    // 分钟
+    time.minute = PrefixInteger(Math.floor(second / 60 % 60), 2);
+    // 秒
+    time.second = PrefixInteger(Math.floor(second % 60), 2);
+
+    var newtime = '';
+    if (time.day > 0) {
+        newtime = time.day + '天' + time.hour + '小时' + time.minute + '分' + time.second + '秒';
+    } else {
+        if (time.hour != 0) {
+            newtime = time.hour + '小时' + time.minute + '分' + time.second + '秒';
+        } else {
+            newtime = time.minute + '分' + time.second + '秒';
+        }
+    }
+    return newtime;
+}
+
 //货币格式化
 function formatMoney(number, places, symbol, thousand, decimal) {
   number = number || 0;
@@ -212,5 +238,6 @@ module.exports = {
   groupCountDown: groupCountDown,
   groupDetailCountDown: groupDetailCountDown,
   seckillCountDown: seckillCountDown,
-  errorToShow: errorToShow
+  errorToShow: errorToShow,
+  time2date: time2date
 }

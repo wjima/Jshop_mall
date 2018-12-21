@@ -7,7 +7,8 @@ Page({
     orderId: '',
     orderAmount: 0.00,
     paymentType: [],
-    userInfo:[] //用户信息
+    userInfo:[], //用户信息
+    formId:''//表单ID
   },
 
   //初始化加载
@@ -25,7 +26,6 @@ Page({
   getUserInfo:function(){
     var page = this;
     app.api.userInfo(function (res) {
-      console.log(res);
       if (res.status) {
         page.setData({
           userInfo: res.data
@@ -48,6 +48,20 @@ Page({
       }
     });
   },
+  //支付用这个方法统一传formid
+  payNow:function(e){
+    this.data.formId = e.detail.formId;
+    var type = e.detail.target.dataset.type;
+    console.log(type);
+    if (type == 'balance'){
+      this.balance();
+    } else if (type == 'offline'){
+      this.offline();
+    } else if (type == 'wechatPay') {
+      this.wechatPay();
+    }
+
+  },
 
   //微信支付触发
   wechatPay: function () {
@@ -55,7 +69,8 @@ Page({
     var data = {
       ids: this.data.orderId,
       payment_code: 'wechatpay',
-      payment_type: 1
+      payment_type: 1,
+      params: { formid: this.data.formId}
     };
     //去支付
     app.db.userToken(function (token) {
@@ -123,7 +138,8 @@ Page({
     var data = {
       ids: this.data.orderId,
       payment_code: 'balancepay',
-      payment_type: 1
+      payment_type: 1,
+      params: { formid: this.data.formId }
     };
     //去支付
     app.db.userToken(function (token) {

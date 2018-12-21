@@ -44,7 +44,6 @@ class Coupon extends Common
 
     /**
      * 用户领取优惠券 插入数据
-     * @param $seller_id
      * @param $user_id
      * @param $promotion_id
      * @return array
@@ -284,7 +283,6 @@ class Coupon extends Common
     /**
      * 删除核销多个优惠券
      * @param $coupon_code
-     * @param $seller_id
      * @param $user_id
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException

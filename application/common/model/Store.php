@@ -137,24 +137,21 @@ class Store extends Common
 
     /**
      * 获取商户门店
-     * @param int $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function storeList($seller_id = 0)
+    public function storeList()
     {
         $data = $this
-            ->field('seller_id,store_name,mobile,linkman,logo,area_id,address,coordinate')
-            ->where('seller_id',$seller_id)
+            ->field('store_name,mobile,linkman,logo,area_id,address,coordinate')
             ->select();
 
         if(!$data->isEmpty())
         {
             $count = $this
-                ->field('seller_id,store_name,mobile,linkman,logo,area_id,address,coordinate')
-                ->where('seller_id',$seller_id)
+                ->field('store_name,mobile,linkman,logo,area_id,address,coordinate')
                 ->count();
 
             foreach($data as $key => $val)

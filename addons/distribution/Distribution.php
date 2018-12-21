@@ -17,7 +17,7 @@ class Distribution extends Addons
         'description' => '用户购买商品支付成功后，直推和直推的直推会拿一部分佣金奖励',
         'status' => 0,
         'author' => 'sin',
-        'version' => '1.0'
+        'version' => '1.1'
     ];
 
     /**
@@ -59,6 +59,10 @@ class Distribution extends Addons
         if($info['pid'] == '0'){
             return;
         }
+        if($info['pid'] == $info['id']){
+            //直推不给自己返
+            return;
+        }
         $pinfo = $userModel->where(['id'=>$info['pid']])->find();
         if(!$pinfo){
             return;
@@ -66,6 +70,14 @@ class Distribution extends Addons
         $balanceModel->change($pinfo['id'], $balanceModel::TYPE_DISTRIBUTION, $order_info['order_amount']*$config['level1'],$order_id);
         //去给次推返利
         if($pinfo['pid'] == '0'){
+            return;
+        }
+        if($pinfo['pid'] == $info['id']){
+            //次推不给自己返
+            return;
+        }
+        if($pinfo['pid'] == $pinfo['id']){
+            //次推不给次推返
             return;
         }
         $ppinfo = $userModel->where(['id'=>$pinfo['pid']])->find();

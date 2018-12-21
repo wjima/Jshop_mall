@@ -573,6 +573,7 @@ class Goods extends Manage
         $goodsModel    = new goodsModel();
         $productsModel = new Products();
         $goods         = $goodsModel->getOne($goods_id, '*');
+
         if (!$goods['status']) {
             $this->error("无此商品");
         }
@@ -645,6 +646,7 @@ class Goods extends Manage
             if (isset($product['id']) && !$product['id']) {
                 unset($product['id']);
             }
+
             foreach ($product as $key => $val) {
                 $tmp_product['goods']['price']        = !empty($val['price']) ? $val['price'] : 0;
                 $tmp_product['goods']['costprice']    = !empty($val['costprice']) ? $val['costprice'] : 0;
@@ -662,6 +664,7 @@ class Goods extends Manage
                 if (isset($val['id']) && $val['id']) {
                     $tmp_product['product']['id'] = $val['id'];
                     $checkData                    = $this->checkProductInfo($tmp_product, $goods_id, true);
+
                 } else {
                     unset($tmp_product['product']['id']);
                     $checkData = $this->checkProductInfo($tmp_product, $goods_id);
@@ -674,6 +677,7 @@ class Goods extends Manage
                 $data['product'] = $checkData['data']['product'];
 
                 if (isset($val['id']) && $val['id']) {
+
                     $productRes = $productsModel->updateProduct($val['id'], $data['product']);
                     if (in_array($val['id'], $productIds)) {
                         $productIds = unsetByValue($productIds, $val['id']);

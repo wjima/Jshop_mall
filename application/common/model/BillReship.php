@@ -100,7 +100,6 @@ class BillReship extends Common
 
     /**i
      * 平台客服收到退款包裹，确认收货，这时候，在业务上可以让退款员去退款了
-     * @param $seller_id
      * @param $reship_id
      * @return array|\think\Config
      */

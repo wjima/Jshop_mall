@@ -551,21 +551,25 @@ class Order extends Common
                 $ctime = $order_info['ctime'];
                 $remaining = $ctime + $cancel - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
+                $order_info['remaining_time'] = $remaining;
                 break;
             case self::ALL_PENDING_RECEIPT: //待收货
                 $sign = getSetting('order_autoSign_time')*86400;
                 $utime = $order_info['utime'];
                 $remaining = $utime + $sign - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
+                $order_info['remaining_time'] = $remaining;
                 break;
             case self::ALL_PENDING_EVALUATE: //待评价
                 $eval = getSetting('order_autoEval_time')*86400;
                 $confirm = $order_info['confirm_time'];
                 $remaining = $confirm + $eval - time();
                 $order_info['remaining'] = $this->dateTimeTransformation($remaining);
+                $order_info['remaining_time'] = $remaining;
                 break;
             default:
                 $order_info['remaining'] = false;
+                $order_info['remaining_time'] = false;
                 break;
         }
 
@@ -603,13 +607,15 @@ class Order extends Common
         $d = floor($time / (3600*24));
         $h = floor(($time % (3600*24)) / 3600);
         $m = floor((($time % (3600*24)) % 3600) / 60);
+        $s = floor((($time % (3600*24)) % 3600) % 60);
+        $s = ($s<10)?'0'.$s:$s;
         if($d>'0'){
-            $newtime= $d.'天'.$h.'小时'.$m.'分';
+            $newtime= $d.'天'.$h.'小时'.$m.'分'.$s.'秒';
         }else{
             if($h!='0'){
-                $newtime= $h.'小时'.$m.'分';
+                $newtime= $h.'小时'.$m.'分'.$s.'秒';
             }else{
-                $newtime= $m.'分';
+                $newtime= $m.'分'.$s.'秒';
             }
         }
         return $newtime;
@@ -746,13 +752,29 @@ class Order extends Common
         {
             $result = $this->where($where)
                 ->update($data);
+            //计算订单实际支付金额（要减去售后退款的金额）
+            $money = $info['payed'];
+            $baModel = new BillAftersales();
+            $bawhere[] = ['order_id', 'eq', $id];
+            $bawhere[] = ['status', 'eq', $baModel::STATUS_SUCCESS];
+            $baList = $baModel->where($bawhere)->select();
+            if($baList && count($baList) > 0)
+            {
+                $refundMoney = 0;
+                foreach($baList as $k => $v)
+                {
+                    $refundMoney = bcadd($refundMoney, $v['refund'], 2);
+                }
+                $money = bcsub($money, $refundMoney, 2);
+            }
+
             //奖励积分
-            $money = $info['order_amount']-$info['cost_freight'];
             $userPointLog = new UserPointLog();
-            $userPointLog->orderComplete($info['user_id'], $info['seller_id'], $money, $info['order_id']);
+            $userPointLog->orderComplete($info['user_id'], $money, $info['order_id']);
+
             //订单记录
             $orderLog = new OrderLog();
-            $orderLog->addLog($info['order_id'], $info['user_id'], $info['seller_id'], $orderLog::LOG_TYPE_COMPLETE, '后台订单完成操作', $where);
+            $orderLog->addLog($info['order_id'], $info['user_id'], $orderLog::LOG_TYPE_COMPLETE, '后台订单完成操作', $where);
         }
         else
         {
@@ -771,7 +793,7 @@ class Order extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function cancel($id,$user_id = false)
+    public function cancel($id, $user_id = false)
     {
         $where[] = array('order_id', 'in', $id);
         $where[] = array('pay_status', 'eq', self::PAY_STATUS_NO);
@@ -831,7 +853,6 @@ class Order extends Common
      * 删除订单
      * @param $order_ids
      * @param $user_id
-     * @param $seller_id
      * @return int
      */
     public function del($order_ids, $user_id)
@@ -885,7 +906,7 @@ class Order extends Common
         $w[] = ['order_id', 'eq', $data['order_id']];
         $info = $this->where($w)
             ->find();
-        $orderLog->addLog($info['order_id'], $info['user_id'], $info['seller_id'], $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $update);
+        $orderLog->addLog($info['order_id'], $info['user_id'], $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $update);
 
         return $res;
     }
@@ -1002,6 +1023,7 @@ class Order extends Common
                 $order['user_name'] = get_user_info($order['user_id']);
                 sendMessage($order['user_id'], 'order_payed', $order);
 
+                sendMessage($order['user_id'], 'seller_order_notice', $order);//给卖家发消息
                 //订单支付完成后的钩子
                 Hook('orderpayed',$order_id);
             }
@@ -1018,7 +1040,6 @@ class Order extends Common
      * 确认签收
      * @param $order_id
      * @param $user_id
-     * @param $seller_id
      * @return false|int
      */
     public function confirm($order_id, $user_id)
@@ -1278,7 +1299,6 @@ class Order extends Common
     /**
      * 判断订单是否可以评价
      * @param $order_id
-     * @param $seller_id
      * @param $user_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -1484,7 +1504,6 @@ class Order extends Common
      */
     public function autoComplete($setting)
     {
-        $orderLog = new OrderLog();
         unset($where);
         $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
@@ -1495,20 +1514,10 @@ class Order extends Common
             ->select();
 
         if (count($order_list) > 0) {
-            unset($order_ids);
-            unset($wh);
-            $order_ids = [];
-            foreach ($order_list as $vv) {
-                $order_ids[] = $vv['order_id'];
+            foreach($order_list as $k => $v)
+            {
+                $this->complete($v['order_id']);
             }
-            $wh[]           = ['order_id', 'in', $order_ids];
-            $data['status'] = self::ORDER_STATUS_COMPLETE;
-            $data['utime']  = time();
-            $this->where($wh)
-                ->update($data);
-
-            //订单记录
-            $orderLog->addLogs($order_list, $orderLog::LOG_TYPE_COMPLETE, '订单后台自动完成', $where);
         }
     }
 

@@ -74,6 +74,14 @@ class BillAftersales extends Common
             'msg' => ''
         ];
 
+        $awhere[] = ['order_id', 'eq', $order_id];
+        $awhere[] = ['user_id', 'eq', $user_id];
+        $awhere[] = ['status', 'eq', self::STATUS_WAITAUDIT];
+        $flag = $this->where($awhere)->find();
+        if($flag)
+        {
+            return error_code(13102);
+        }
 
         $orderInfo = $this->orderAftersalesSatatus($order_id,$user_id);
         if(!$orderInfo){

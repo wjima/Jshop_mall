@@ -146,7 +146,8 @@ Page({
       }
       page.setData({
         nodata: nodata,
-        goodsList: page.data.goodsList
+        goodsList: page.data.goodsList,
+        loadingComplete: false
       });
       //移除数据库
       var data = {

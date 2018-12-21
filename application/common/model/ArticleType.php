@@ -25,7 +25,6 @@ class ArticleType extends Common
 
     /**
      *  后台分类 树形列表
-     * @param int $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -135,7 +134,6 @@ class ArticleType extends Common
     /**
      *
      *  获取文章分类列表
-     * @param $seller_id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

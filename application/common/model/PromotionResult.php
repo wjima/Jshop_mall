@@ -39,12 +39,12 @@ class PromotionResult extends Common
             if($this->code[$resultInfo['code']]['type'] == 'goods'){
                 $conditionModel = new PromotionCondition();
                 foreach($cart['list'] as $k => $v){
-                    if($v['is_select']){
-                        $type = $conditionModel->goods_check($promotionInfo['id'],$v['products']['goods_id'],$v['nums']);
-                        if($type == 2){
-                            //到这里就说明此商品信息满足促销商品促销信息的条件，去计算结果
-                            //注意，在明细上面，就不细分促销的种类了，都放到一个上面，在订单上面才细分
-                            $promotionModel = $this->$method($params,$cart['list'][$k],$promotionInfo);
+                    $type = $conditionModel->goods_check($promotionInfo['id'],$v['products']['goods_id'],$v['nums']);
+                    if($type == 2){
+                        //到这里就说明此商品信息满足促销商品促销信息的条件，去计算结果
+                        //注意，在明细上面，就不细分促销的种类了，都放到一个上面，在订单上面才细分
+                        $promotionModel = $this->$method($params,$cart['list'][$k],$promotionInfo);
+                        if($v['is_select']){
                             //根据具体的促销类型取做对应的操作
                             switch ($promotionInfo['type']){
                                 case $promotionInfo::TYPE_PROMOTION:
@@ -72,10 +72,11 @@ class PromotionResult extends Common
                                     $cart['amount'] -= $promotionModel;
                                     break;
                             }
-
                         }
                     }
                 }
+                //商品促销可能做的比较狠，导致订单价格为负数了，这里判断一下，如果订单价格小于0了，就是0了
+                $cart['amount'] = $cart['amount']>0?$cart['amount']:0;
             }else{
                 $this->$method($params,$cart,$promotionInfo);
             }

@@ -160,7 +160,6 @@ class Balance extends Common
         $re[ 'msg' ] = '';
         $re[ 'count' ] = $list->total();
         $re[ 'data' ] = $data;
-        $re[ 'sql' ] = $this->getLastSql();
 
         return $re;
     }
@@ -182,6 +181,13 @@ class Balance extends Common
         }
         if ( isset($post[ 'type' ]) && $post[ 'type' ] != "" ) {
             $where[] = [ 'type', 'eq', $post[ 'type' ] ];
+        }
+        if(isset($post['datetime']) && $post['datetime'] != "")
+        {
+            $datetime = explode(' - ', $post['datetime']);
+            $sd = strtotime($datetime[0].' 00:00:00');
+            $ed = strtotime($datetime[1].' 23:59:59');
+            $where[] = ['ctime', 'BETWEEN', [$sd, $ed]];
         }
         $result[ 'where' ] = $where;
         $result[ 'field' ] = "*";

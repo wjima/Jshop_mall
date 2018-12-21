@@ -54,7 +54,7 @@ class UserWx extends Common
     }
 
     //微信小程序登陆第二步，根据微信端传过来的值解析用户数据,更新user_wx表
-    public function updateWxInfo($openid,$edata,$iv,$pid){
+    public function updateWxInfo($openid,$edata,$iv){
         $info = $this->where(['openid'=>$openid])->find();
         if(!$info){
             return error_code(11002);

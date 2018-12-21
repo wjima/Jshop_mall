@@ -135,9 +135,8 @@ class Manage extends Common
         return $result;
     }
     /**
-     * 用户登陆
+     * 管理员登陆
      * @param array $data 用户登陆信息
-     * @param int   $loginType 1就是默认的，存session，2就是返回user_token
      *
      */
     public function toLogin($data)
@@ -147,10 +146,22 @@ class Manage extends Common
             'data' => '',
             'msg' => ''
         );
-//        if(!isset($data['mobile']) || !isset($data['password'])) {
-//            $result['msg'] = '请输入手机号码或者密码';
-//            return $result;
-//        }
+        if(!isset($data['mobile']) || !isset($data['password'])) {
+            $result['msg'] = '请输入手机号码或者密码';
+            return $result;
+        }
+
+        //校验验证码
+        if(session('?manage_login_fail_num')){
+            if(session('manage_login_fail_num') >= config('jshop.manage_login_fail_num')){
+                if(!isset($data['captcha']) || $data['captcha'] == ''){
+                    return error_code(10013);
+                }
+                if(!captcha_check($data['captcha'])){
+                    return error_code(10012);
+                };
+            }
+        }
 
         $userInfo = $this->where(array('username'=>$data['mobile']))->whereOr(array('mobile'=>$data['mobile']))->find();
         if(!$userInfo){
@@ -171,6 +182,12 @@ class Manage extends Common
         if($userInfo){
             $result = $this->setSession($userInfo);
         }else{
+            //写失败次数到session里
+            if(session('?manage_login_fail_num')){
+                session('manage_login_fail_num',session('manage_login_fail_num')+1);
+            }else{
+                session('manage_login_fail_num',1);
+            }
             $result['msg'] = '密码错误，请重试';
         }
         return $result;

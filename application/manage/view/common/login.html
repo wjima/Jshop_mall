@@ -21,6 +21,15 @@
                                         <input type="password" name="password" autocomplete="off" class="layui-input">
                                     </div>
                                 </div>
+                                <div class="layui-form-item" style="display:none;" id="captcha_div">
+                                    <label class="layui-form-label">验证码：</label>
+                                    <div class="layui-input-inline" style="width:60px;">
+                                        <input type="text" name="captcha" autocomplete="off" id="captcha_ipt" class="layui-input">
+                                    </div>
+                                    <div class="layui-input-inline" style="width:150px;">
+                                        <img src="{:captcha_src()}" id="captcha_img" onclick="setCaptcha()" title="点击更换验证码" alt="captcha" style="max-width:150px;cursor:pointer;" />
+                                    </div>
+                                </div>
                                 <div class="layui-form-item">
                                     <div class="layui-input-inline">
                                         <input class="layui-btn layui-btn-fluid" lay-submit lay-filter="password_login" type="submit" value="登录" />
@@ -44,16 +53,26 @@
 						url: "{:url('manage/common/login')}",
 						data: data.field,
 						success: function(data) {
-							if(data.status) {
-								layer.msg('登陆成功，跳转中...');
-								setTimeout("window.location.href='" + data.data + "'; ", 1500);
-							} else {
-								layer.msg(data.msg);
-							}
+                            if(data.status) {
+                                layer.msg('登陆成功，跳转中...');
+                                setTimeout("window.location.href='" + data.data + "'; ", 1500);
+                            } else {
+                                if(data.data == '10013' || data.data == '10012'){
+                                    $('#captcha_div').show();
+                                }
+                                setCaptcha();
+                                layer.msg(data.msg);
+                            }
 						}
 					});
 					return false;
 				});
 			});
+            //更改验证码图片
+            function setCaptcha() {
+                $('#captcha_ipt').val("");
+                var timestamp=new Date().getTime();
+                $('#captcha_img').attr('src','{:captcha_src()}?'+timestamp);
+            }
 		</script>
 		{include file="common/mini_footer" /}

@@ -195,9 +195,16 @@ class Products extends Common
         return $result;
     }
 
-    public function updateProduct($product_id,$data=[])
+    //后台是实际库存，实际库存变动时，需要加上冻结库存
+    public function updateProduct($product_id, $data = [])
     {
-        return $this->save($data,['id'=>$product_id]);
+        $product = $this->field('freeze_stock')->where(['id' => $product_id])->find();
+        if ($data['stock'] > 0 && $product['freeze_stock'] > 0) {
+            $data['stock'] = $data['stock'] + $product['freeze_stock'];
+        } elseif ($data['stock'] == 0) {
+            $data['stock'] = $product['freeze_stock'];
+        }
+        return $this->update($data, ['id' => $product_id]);
     }
 
     public function deleteProduct($ids = [])

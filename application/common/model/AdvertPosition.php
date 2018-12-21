@@ -56,15 +56,14 @@ class AdvertPosition extends Common
 
     /**
      *  获取广告位列表
-     * @param $seller_id
      * @return array|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($seller_id)
+    public function getList()
     {
-        return $this->field('id,code,name')->where('seller_id',$seller_id)->select();
+        return $this->field('id,code,name')->select();
     }
 
 
@@ -131,7 +130,6 @@ class AdvertPosition extends Common
     /**
      *
      *  广告位删除
-     * @param $seller_id
      * @param int $id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -227,7 +225,6 @@ class AdvertPosition extends Common
     /**
      *  获取广告位列表
      * User:tianyu
-     * @param $seller_id
      * @param int $page
      * @param int $limit
      * @param string $order

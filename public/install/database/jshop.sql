@@ -1,4 +1,3 @@
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -9,7 +8,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- 数据库: `jshoptest`
+-- 数据库: `jshop`
 --
 
 -- --------------------------------------------------------
@@ -4207,11 +4206,11 @@ CREATE TABLE IF NOT EXISTS `jshop_goods_type_spec_value` (
 CREATE TABLE IF NOT EXISTS `jshop_hooks` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8 DEFAULT NULL COMMENT '钩子名称',
-  `description` text CHARACTER SET utf8 NOT NULL COMMENT '钩子描述',
-  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '钩子类型,1是控制器，2是视图',
-  `addons` text CHARACTER SET utf8 NOT NULL COMMENT '钩子挂载的插件，逗号分隔',
-  `ctime` int(10) NOT NULL COMMENT '创建时间',
-  `utime` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `description` text COMMENT '钩子描述',
+  `type` tinyint(1) DEFAULT '1' COMMENT '钩子类型,1是控制器，2是视图',
+  `addons` text COMMENT '钩子挂载的插件，逗号分隔',
+  `ctime` int(10) DEFAULT NULL COMMENT '创建时间',
+  `utime` int(11) DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=15 ;
 
@@ -5573,7 +5572,7 @@ CREATE TABLE IF NOT EXISTS `jshop_operation` (
   KEY `id` (`id`),
   KEY `parent_menu_id` (`parent_menu_id`),
   KEY `sort` (`sort`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='权限表' AUTO_INCREMENT=527 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='权限表' AUTO_INCREMENT=535 ;
 
 --
 -- 转存表中的数据 `jshop_operation`

@@ -51,7 +51,15 @@ class Manage extends Base
             }
         }
         //取菜单导航信息
-        $this->assign('nav', $operationModel->nav($operationModel::MENU_MANAGE, $cont_name, $act_name));
+        if($cont_name == 'Index' && $act_name == 'index'){      //后台首页做特殊处理，因为没有加入到operation表
+            $nav = [
+                ['name' => '管理后台','url' => url('/manage')],
+                ['name' => '首页','url' => ''],
+            ];
+        }else{
+            $nav = $operationModel->nav($operationModel::MENU_MANAGE, $cont_name, $act_name);
+        }
+        $this->assign('nav', $nav);
 
         $this->assign('menu', $operationModel->manageMenu(session('manage')['id'], $cont_name, $act_name));
 

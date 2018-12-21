@@ -287,6 +287,7 @@ class User extends Manage
             $post['user_id'] = $user_id;
             $post['page'] = Request::param('page', 1);
             $post['limit'] = Request::param('limit', 20);
+            $post['datetime'] = Request::param('datetime', '');
             $res = $userPointLog->tableData($post);
             return $res;
         }

@@ -18,7 +18,6 @@ class Message extends Common
     protected $updateTime = 'utime';
 
     /**
-     * @param $seller_id            商户id
      * @param $user_id              接受者id
      * @param $code                 模板编码
      * @param $params               参数
@@ -83,19 +82,9 @@ class Message extends Common
             case 'aftersales_add':
                 $msg = "你好，有新的售后订单了，请及时处理。";
                 break;
-            case 'wx_authorize_notice':
-                $msg = "恭喜你微信授权通过，请登录平台进行下一步操作吧。";
+            case 'seller_order_notice':
+                $msg = "卖家您好，您有新的订单了，请及时处理。";
                 break;
-            case 'wxapp_tpl_examine_notice':
-                $msg = "恭喜你，你的微信小程序模板审核通过，请上线体验吧。";
-                break;
-            case 'platform_expire':
-                $msg = "尊敬的商户你好，您的店铺马上到期，请立即续费。";
-                break;
-            case 'modify_domain':
-                $msg = "尊敬的商户".$params['seller_name']."：您好，".$params['msg'];
-                break;
-
         }
         return $msg;
     }
@@ -103,7 +92,6 @@ class Message extends Common
     /**
      * 判断是否有新消息
      * @param $user_id      用户id
-     * @param $seller_id    平台id，如果是0的话，就是只看平台发送的消息
      */
     public function hasNew($user_id)
     {

@@ -191,7 +191,13 @@
     <view class='stockno'>该商品已售罄</view>
   </view>
 </view>
-
+<!-- 快捷导航 -->
+<view class='pop-btn'>
+  <view class='pop-btn-block {{hidebtn}} close-img quickbtn' bindtap='hidebtn'><image src='../../image/guanbi.png'></image></view>
+  <view class='pop-btn-block {{showbtn}} quickbtn' bindtap='showbtn'>快捷导航</view>
+  <view class='pop-btn-block {{homebtn}}' animation="{{poptopanimhome1}}" bindtap='goHome'><image src='../../image/dollar6-white.png'></image></view>
+  <view class='pop-btn-block {{homebtn}}' animation="{{poptopanimhome2}}" bindtap='goMember'><image src='../../image/dollar-white.png'></image></view>
+</view>
 <view class='map-pop' catchtouchmove="move" wx:if="{{pop}}">
     <view class='mask-c'>
         <image src="{{shareImage}}" class="share-image"></image>

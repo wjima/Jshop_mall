@@ -4,20 +4,22 @@
             <ul slot="list" v-if="list.length">
                 <li class="list-item" data-type="0" v-for="(item, index) in list" :key="index">
                     <div class="list-box" style="padding: .15rem;" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="showDetail(item.goods_id)">
-                        <img slot="img" v-lazy="item.goods.image_url" class="goodsimg">
-                        <div class="list-body">
-                            <h3 class="goodsname" slot="title">{{ item.goods_name }}</h3>
-                            <div class="btn-numbox">
-                                <div>
-                                    <span class="demo-list-price"><em>¥</em>{{ item.goods.price }}</span>
+                        <div v-if="item.goods">
+                            <img slot="img" v-lazy="item.goods.image_url" class="goodsimg">
+                            <div class="list-body">
+                                <h3 class="goodsname" slot="title">{{ item.goods_name }}</h3>
+                                <div class="btn-numbox">
+                                    <div>
+                                        <span class="demo-list-price"><em>¥</em>{{ item.goods.price }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div slot="other">
-                                <div>
-                                    <span class="time">{{ item.ctime }}</span>
+                                <div slot="other">
+                                    <div>
+                                        <span class="time">{{ item.ctime }}</span>
+                                    </div>
                                 </div>
+                                <img class="right-img" slot="other" src="../../../static/image/right.png"/>
                             </div>
-                            <img class="right-img" slot="other" src="../../../static/image/right.png"/>
                         </div>
                     </div>
                     <div class="delete" @click="deleteItem" :data-index="index">取消收藏</div>

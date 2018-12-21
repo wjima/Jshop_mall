@@ -45,7 +45,12 @@ class Mms1086 extends Addons
     {
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
-
+        if ($params['params']['code'] == 'seller_order_notice') {
+            $params['params']['mobile'] = getSetting('shop_mobile');
+            if (!$params['params']['mobile']) {
+                return false;
+            }
+        }
         $sms_password = config('?jshop.sms_password') ? config('jshop.sms_password') : $setting['sms_password'];     //为了演示效果，此密码从配置文件中取，如果正式使用，请删除此行，并在后台店铺设置里配置密码即可。
         $content      = $params['params']['content'] . '【' . $setting['sms_prefix'] . '】';
         //$content = iconv("utf-8","gb2312",$content);
@@ -57,8 +62,7 @@ class Mms1086 extends Addons
 
     public function config($params = [])
     {
-        $config = $this->getConfig();
-        $this->assign('config', $config);
+        $this->assign('config', $params);
         return $this->fetch('config');
     }
 

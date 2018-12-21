@@ -1,7 +1,16 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2018 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: sin <sin@jihainet.com>
+// +----------------------------------------------------------------------
+
 /**
- * 此控制器不用api校验，不需要token登陆，不需要seller_id就是单纯的标准的接口数据,用于取一些通用的信息
+ * 此控制器不用api校验，不需要token登陆，就是单纯的标准的接口数据,用于取一些通用的信息
  */
+
 namespace app\api\controller;
 
 use app\common\model\Area;
@@ -42,32 +51,6 @@ class Common extends Base
     }
 
     /**
-     * 获取店铺列表
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getStoreInfo()
-    {
-        $token = input('token/a', '');
-        $sellerModel = new Seller();
-        $res = $sellerModel->getStoreInfo($token);
-
-        $operating_mode = config('app.operating_mode');
-        if($operating_mode == 'review')
-        {
-            //审核模式
-            $res['mode'] = '7881f454af469aa8';
-        }
-        else
-        {
-            //正式模式
-            $res['mode'] = '31e70f53929daa89';
-        }
-        return $res;
-    }
-
-    /**
      * 获取验证码，如果登陆失败次数太多，就需要验证码了
      * @return string
      */
@@ -80,4 +63,16 @@ class Common extends Base
         }
         return captcha_src($id);
     }
+
+    //获取店铺设置，此接口用于统一返回店铺的公开设置，然后本地缓存即可
+    public function jshopConf()
+    {
+        $conf = [];
+
+        $conf['abc'] = '123';
+
+
+        return $conf;
+    }
+
 }

@@ -161,7 +161,6 @@ class Article extends Common
     /**
      *  获取文章列表
      * User:tianyu
-     * @param $seller_id
      * @param $type_id
      * @param $page
      * @param $limit

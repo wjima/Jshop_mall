@@ -155,6 +155,12 @@ Page({
         }
         this.getMyShareCode(); //获取我的推荐码
         this.getUserInfo(); //获取个人信息
+      //工具条操作
+      this.setData({
+        hidebtn: 'hidebtn',
+        showbtn: '',
+        homebtn: 'hidebtn',
+      });
     },
 
     //获取我的推荐码
@@ -213,6 +219,11 @@ Page({
   //页面首次渲染完成执行
   onReady: function () {
     this.goodsHistory(); //添加商品浏览记录
+    this.animation = wx.createAnimation({
+      duration: 500,
+      timingFunction: "ease",
+      delay: 0
+    });//工具动画
   },
 
   //通过接口查询商品信息
@@ -346,8 +357,8 @@ Page({
     if (userToken) {
         let myInviteCode = wx.getStorageSync('myInviteCode');
         if (myInviteCode) {
-            let ins1 = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
-            let path = '/pages/goods/detail/detail?scene=id=' + ins1;
+            let ins = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
+            let path = '/pages/goods/detail/detail?scene=' + ins;
             return {
                 title: page.data.goodsInfo.name,
                 imageUrl: page.data.goodsImg[0],
@@ -752,5 +763,54 @@ Page({
   },
   
   //客服功能
-  customerService: function (e) {}
+  customerService: function (e) {},
+
+  //展示工具条
+  showbtn: function () {
+    this.setData({
+      hidebtn: '',
+      homebtn: '',
+      showbtn: 'hidebtn',
+    });
+    this.showbtna();
+
+  },
+  hidebtn: function () {
+    this.setData({
+      hidebtn: 'hidebtn',
+      showbtn: '',
+    });
+    this.hidebtna();
+    var that = this;
+    setTimeout(function () {
+      that.setData({
+        homebtn: 'hidebtn',
+      });
+    }.bind(this), 300)
+  },
+
+  showbtna: function () {
+    this.animation.translateY(-120).rotate(360).opacity(1).step();
+    var poptopanimhome1 = this.animation.export();
+    this.animation.translateY(-60).rotate(360).opacity(1).step();
+    var poptopanimhome2 = this.animation.export();
+    this.setData({ poptopanimhome1: poptopanimhome1, poptopanimhome2: poptopanimhome2 });
+  },
+  hidebtna: function () {
+    this.animation.translateY(0).rotate(-360).opacity(.2).step();
+    var am = this.animation.export();
+    this.setData({ poptopanimhome1: am, poptopanimhome2: am });
+  },
+
+  goHome: function () {
+    wx.switchTab({
+      url: '../../index/index'
+    })
+  },
+
+  goMember: function () {
+    wx.switchTab({
+      url: '../../member/index/index'
+    })
+  }
 });

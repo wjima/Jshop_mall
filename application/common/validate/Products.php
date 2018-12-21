@@ -21,7 +21,7 @@ class Products extends Validate
         'price'      => 'float',
         'is_defalut' => 'in:1,2',
         'marketable' => 'in:1,2',
-        'stock'      => 'number|max:8',
+        'stock'      => 'number|max:8|egt:0',
         'sn'         => 'unique:products',
     ];
 
@@ -40,6 +40,7 @@ class Products extends Validate
         'stock.number'     => '库存非法',
         'stock.max'        => '库存最多只能输入8位数字',
         'sn.unique'        => '货品编号不能重复',
+        'stock.egt'        => '库存不能小于0',
     ];
 
 }

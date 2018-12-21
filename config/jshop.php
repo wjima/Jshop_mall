@@ -18,10 +18,11 @@ return [
     ],
 
     'login_fail_num' => 3,              //登陆失败次数，如果每天登陆失败次数超过次数字，就会显示图片验证码
+    'manage_login_fail_num' => 5,       //管理员登陆失败次数，如果超过这个次数，会显示图片验证码，防止暴力破解
     'tocash_money_low' => '100' ,       //最低提现金额
     'authorization_url'=>'https://jshop.jihainet.com', //授权查询地址
     'product'=>'Jshop-b2c标准版',//产品名称
-    'version'=>'v1.0.8',//版本号
+    'version'=>'v1.0.9',//版本号
     /*
      * 图片存储引擎配置
      * 本地存储

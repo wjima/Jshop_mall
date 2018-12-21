@@ -673,25 +673,7 @@ function get_lately_days($day, $data)
 }
 
 /**
- * 判断用户积分是否满足
- * @param $user_id
- * @param $seller_id
- * @param $num //正整数
- * @return array
- * @throws \think\db\exception\DataNotFoundException
- * @throws \think\db\exception\ModelNotFoundException
- * @throws \think\exception\DbException
- */
-function is_user_point($user_id, $seller_id, $num)
-{
-    $sellerUser = new \app\common\model\SellerUser();
-    $res = $sellerUser->isPointBalance($user_id, $seller_id, $num);
-    return $res;
-}
-
-/**
  * 商家发送信息助手
- * @param $seller_id
  * @param $user_id
  * @param $code
  * @param $params
@@ -706,7 +688,6 @@ function sendMessage($user_id, $code, $params)
 
 /**
  * 根据商户id和用户id获取openid (废弃方法)
- * @param $seller_id
  * @param $user_id
  * @return bool|array
  */
@@ -727,7 +708,6 @@ function getUserWxInfo($user_id)
 /**
  * 判断用户是否有新消息，用于前端显示小红点
  * @param $user_id
- * @param int $seller_id
  */
 function hasNewMessage($user_id)
 {

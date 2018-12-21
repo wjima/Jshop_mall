@@ -438,14 +438,17 @@ class Order extends Api
 
     /**
      * 是否可以评价
-     * @return mixed
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function isComment()
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $seller_id = $this->sellerId;
-        $res = model('common/Order')->isOrderComment($order_id, $seller_id, $user_id);
+        $model = new \app\common\model\Order();
+        $res = $model->isOrderComment($order_id, $user_id);
         return $res;
     }
 

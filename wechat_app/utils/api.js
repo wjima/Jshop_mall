@@ -587,12 +587,6 @@ function pointLog(callback) {
       callback(res);
   });
 }
-//获取共享店铺列表
-function getStoreByToken(data, callback) {
-  post2('Common/getStoreInfo', {}, function(res) {
-    callback(res);
-  });
-}
 //获取店铺名称
 function getStoreName(callback) {
   api('user.getstorename', {}, function (res) {
@@ -897,7 +891,6 @@ module.exports = {
   isSign: isSign,
   sign: sign,
   pointLog: pointLog,
-  getStoreByToken: getStoreByToken,
   getStoreName: getStoreName,
   getSellerSetting: getSellerSetting,
   getCashList: getCashList,

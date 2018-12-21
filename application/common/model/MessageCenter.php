@@ -50,6 +50,12 @@ class MessageCenter extends Common
             'sms' => self::SEND_FALSE,
             'message' => self::SEND_TRUE,
             'wx_tpl_message' => self::SEND_FALSE,
+        ],
+        'seller_order_notice' =>[                              //订单付款
+            'name' => '卖家订单付款通知',
+            'sms' => self::SEND_TRUE,
+            'message' => self::SEND_FALSE,
+            'wx_tpl_message' => self::SEND_FALSE,
         ]
     ];
 

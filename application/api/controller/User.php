@@ -102,9 +102,9 @@ class User extends Api
             $result['msg'] = '加密参数缺失';
             return $result;
         }
-        $pid = input('param.pid',0);
+        //$pid = input('param.pid',0);
         $userWxModel = new UserWx();
-        $re = $userWxModel->updateWxInfo(input('param.open_id'),input('param.edata'),input('param.iv'),$pid);
+        $re = $userWxModel->updateWxInfo(input('param.open_id'),input('param.edata'),input('param.iv'));
 
         if(!$re['status'])
         {
@@ -144,6 +144,7 @@ class User extends Api
             $result['msg'] = '请输入手机号码';
             return $result;
         }
+        //code的值可以为loign，reg，veri
         if(!input("?param.code"))
         {
             $result['msg'] = '缺少核心参数';
@@ -151,7 +152,7 @@ class User extends Api
         }
         $code = input('param.code');
         $type = input('param.type');
-        if($type == 'bind'){ //绑定会员
+        if($type == 'bind'){ //绑定会员，这个if迟早要拿掉，绑定的话，也发送login状态就行
             $code = 'login';
         }
         return $userModel->sms(input('param.mobile'),$code);

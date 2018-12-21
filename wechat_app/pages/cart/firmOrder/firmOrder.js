@@ -25,6 +25,7 @@ Page({
     available_point: 0,
     orderPromotionList: [],
     totalAmount: 0.00,
+    totalAmounts: 0.00,
     costFreight: 0.00,
     showcoupon: false,
     couponitems: [], //用户优惠券列表
@@ -145,11 +146,13 @@ Page({
                   cartIds: cart_id,
                   productData: res.data.list,
                   goodsAmount: app.common.formatMoney(res.data.goods_amount, 2, ''),
+                  goodsAmounts: res.data.goods_amount,
                   goodsPmt: app.common.formatMoney(res.data.goods_pmt, 2, ''),
                   orderPmt: app.common.formatMoney(res.data.order_pmt, 2, ''),
                   couponPmt: app.common.formatMoney(res.data.coupon_pmt, 2, ''),
                   orderPromotionList: res.data.promotion_list,
                   totalAmount: app.common.formatMoney(res.data.amount, 2, ''),
+                  totalAmounts: res.data.amount,
                   costFreight: app.common.formatMoney(res.data.cost_freight * 1, 2, ''),
                   usedCouponOk: res.data.coupon,
                   usedCouponName: couponName,
@@ -463,7 +466,7 @@ Page({
   getUserPoint: function (e) {
       let page = this;
       let data = {
-          'order_money': page.data.totalAmount
+          'order_money': page.data.totalAmounts
       }
       app.api.getUserPoint(data, function(res){
         if(res.status){

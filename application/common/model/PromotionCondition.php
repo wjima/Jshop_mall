@@ -28,6 +28,34 @@ class PromotionCondition extends Common
     ];
 
 
+    /**
+     * @param $code
+     * @param array $params
+     * @return string
+     */
+    public function getConditionMsg($code, $params = [])
+    {
+        switch($code)
+        {
+            case 'GOODS_ALL':
+                $msg = '购买所有商品 ';
+                break;
+            case 'GOODS_IDS':
+                $msg = '购买指定商品 ';
+                break;
+            case 'GOODS_CATS':
+                $msg = '购买指定分类商品 ';
+                break;
+            case 'GOODS_BRANDS':
+                $msg = '购买指定品牌商品 ';
+                break;
+            case 'ORDER_FULL':
+                $msg = '购买订单满'.$params['money'].'元 ';
+                break;
+        }
+        return $msg;
+    }
+
 
     //检查是否满足条件
     public function check($conditionInfo,&$cart,$promotionInfo)
@@ -171,7 +199,12 @@ class PromotionCondition extends Common
     //指定某些商品满足条件
     private function condition_GOODS_IDS($params,$goods_id,$nums){
         if($goods_id == $params['goods_id']){
-            return 2;
+            if($nums>= $params['nums']){
+                return 2;
+            }else{
+                return 1;
+            }
+            //return 2;
         }else{
             return 0;
         }
@@ -186,7 +219,12 @@ class PromotionCondition extends Common
             return 0;
         }
         if($goodsCatModel->isChild($params['cat_id'],$goodsInfo['goods_cat_id'])){
-            return 2;
+            if($nums>= $params['nums']){
+                return 2;
+            }else{
+                return 1;
+            }
+            //return 2;
         }else{
             return 0;
         }
@@ -289,6 +327,21 @@ class PromotionCondition extends Common
         }
         return $info;
     }
+
+    public function getConditionList($id)
+    {
+        $where[] = ['promotion_id', 'eq', $id];
+        $list = $this->where($where)->select();
+        if($list !== false && count($list)>0)
+        {
+            foreach($list as $k => &$v)
+            {
+                $v['params'] = json_decode($v['params'], true);
+            }
+        }
+        return $list;
+    }
+
     /**
      *  添加促销的条件
      * User:wht

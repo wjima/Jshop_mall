@@ -156,13 +156,13 @@ class BillPayments extends Common
         $payment = \org\Payment::create($payment_code,$conf);       //'wechatpay'
         $result1 = $payment->pay($result['data']);
 
-        //更新
-        if($result1['status'])
-        {
-            $wh[] = ['payment_id', 'eq', $result['data']['payment_id']];
-            $da['generate_params'] = json_encode($result1['data']);
-            $this->save($da, $wh);
-        }
+        //更新，存储微信支付生成的参数
+//        if($result1['status'])
+//        {
+//            $wh[] = ['payment_id', 'eq', $result['data']['payment_id']];
+//            $da['generate_params'] = json_encode($result1['data']);
+//            $this->save($da, $wh);
+//        }
 
         return $result1;
 
@@ -376,7 +376,7 @@ class BillPayments extends Common
      * @param $payment_id
      * @return array|null|\PDOStatement|string|\think\Model
      */
-    public function getInfo($payment_id)
+    public function getInfo($payment_id,$user_id = 0)
     {
         $result = [
             'status' => true,
@@ -384,6 +384,9 @@ class BillPayments extends Common
             'msg' => ''
         ];
         $where['payment_id'] = $payment_id;
+        if($user_id != 0){
+            $where['user_id'] = $user_id;
+        }
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
             $result['msg'] = '没有找到此支付记录';

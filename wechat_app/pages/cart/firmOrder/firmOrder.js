@@ -50,6 +50,7 @@ Page({
     couponKey: '', //输入的优惠券号
     couponKey2: '', //存储的
     noCoupon: true, //没有使用优惠券
+    goodsNums: '', //总数量
   },
 
   //页面加载
@@ -127,6 +128,7 @@ Page({
         coupon_code: page.data.usedCoupon,
         receipt_type: page.data.receipt_type
       };
+      console.log(data);
       if(page.data.pointStatus){
           data['point'] = page.data.available_point;
       }
@@ -142,6 +144,11 @@ Page({
                   couponName = couponName.substr(0, couponName.length - 1);
                   noCoupon = false;
               }
+              let goodsNumber = 0;
+              for (var i = 0; i < res.data.list.length; i++) {
+                  goodsNumber += res.data.list[i].nums;
+              }
+
               page.setData({
                   cartIds: cart_id,
                   productData: res.data.list,
@@ -156,7 +163,9 @@ Page({
                   costFreight: app.common.formatMoney(res.data.cost_freight * 1, 2, ''),
                   usedCouponOk: res.data.coupon,
                   usedCouponName: couponName,
-                  noCoupon: noCoupon
+                  noCoupon: noCoupon,
+                  goodsNums: goodsNumber,
+                  showcoupon: false,
               });
               page.setSpes();
               if (!page.data.pointStatus) {
@@ -169,9 +178,14 @@ Page({
                 duration: 2000
             });
 
-              let k2 = page.data.couponKey2;
-              if (page.data.couponKey != ''){
-                  k2 = page.data.couponKey2.substr(0, page.data.couponKey2.length*1-page.data.couponKey.length*1-1);
+              if (page.data.usedCoupon != ''){
+                  let k2 = page.data.couponKey2;
+                  let all = page.data.usedCoupon;
+                  all = all.replace(k2, "");
+                  page.setData({
+                      usedCoupon: all,
+                      couponKey2: ''
+                  });
               }
 
                 if (res.data == 15009 || res.data == 15013 || res.data == 15015){
@@ -180,7 +194,7 @@ Page({
                     //同一类优惠券，只能使用一张
                     page.setData({
                         couponKey: '',
-                        couponKey2: k2
+                        couponKey2: ''
                     });
                 }
           }
@@ -361,8 +375,8 @@ Page({
       app.api.myCouponList(data, function (res) {
         if(res.status){
           let coupon = [];
-          for (let k in res.data){
-            coupon.push({ name: res.data[k].coupon_code, value: res.data[k].name});
+          for (let k in res.data.list){
+            coupon.push({ name: res.data.list[k].coupon_code, value: res.data.list[k].name});
           }
           page.setData({
             couponitems: coupon
@@ -585,7 +599,7 @@ Page({
             page.setData({
                 usedCoupon: s,
                 couponKey2: d,
-                showcoupon: false,
+                //showcoupon: false,
                 pointStatus: false
             });
             page.getProductData();

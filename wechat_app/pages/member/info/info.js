@@ -52,11 +52,22 @@ Page({
     if(this.data.nickname == ''){
       wx.showToast({
         title: '请输入昵称',
-        icon: 'success',
+          icon: 'none',
         duration: 2000
       })
       return false;
     }
+      if (this.data.birthday == '选择出生日期'){
+          wx.showToast({
+              title: '请选择出生日期',
+              icon: 'none',
+              duration: 2000
+          })
+          return false;
+      }
+
+      
+
     var the_sex = this.data.sex;
     if (the_sex== 0) {
       the_sex = 3;
@@ -68,7 +79,11 @@ Page({
     };
     app.api.userEditInfo(data,function (res) {
       if (res.status) {
-        app.common.successToShow();
+        app.common.successToShow('保存成功', function(){
+            wx.navigateBack({
+                delta: 1
+            });
+        });
       } else {
         app.common.errorToBack(res.msg,0);
       }

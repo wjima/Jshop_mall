@@ -17,11 +17,14 @@ page{
   font-size: 28rpx;
 }
 .weui-btn{
-  height: 70rpx;
-  line-height: 70rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  width: 100%;
   background-color: #ff3b44;
-  font-size: 30rpx;
   color: #fff;
+  font-size: 30rpx;
+  border-radius: 0;
 }
 .weui-select{
   border-right: none;

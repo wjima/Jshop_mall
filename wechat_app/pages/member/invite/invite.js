@@ -15,7 +15,8 @@ Page({
         qrcode: '',
         qrcodeErrorMsg: '小程序二维码生成失败，无法生成海报，请稍候尝试',
         nickname: '',
-        avatar: ''
+        avatar: '',
+        title: app.config.app_title
     },
 
 
@@ -62,7 +63,6 @@ Page({
             'goods': 0
         }
         app.api.getQRCode(data, function (e) {
-            console.log(e);
             if (e.status) {
                 let url = app.config.api_url + e.data;
                 page.setData({
@@ -150,8 +150,6 @@ Page({
         let nickname = page.data.nickname;
         let storename = app.config.app_title;
         let invite = page.data.code;
-        console.log(page.data.avatar);
-        console.log(page.data.qrcode);
         if (page.data.qrcode == '') {
             wx.showToast({
                 title: page.data.qrcodeErrorMsg,
@@ -224,12 +222,25 @@ Page({
                         },
                         {
                             type: 'text',
-                            content: '长按图片识别图中二维码进入' + storename + '小程序一起寻好物',
+                            content: '长按图片识别图中二维码',
                             fontSize: 22,
                             lineHeight: 30,
                             color: '#727272',
                             textAlign: 'center',
                             top: 580,
+                            left: 280,
+                            width: 360,
+                            MaxLineNumber: 2,
+                            breakWord: true,
+                        },
+                        {
+                            type: 'text',
+                            content: '进入' + storename + '小程序一起寻好物',
+                            fontSize: 22,
+                            lineHeight: 30,
+                            color: '#727272',
+                            textAlign: 'center',
+                            top: 612,
                             left: 280,
                             width: 360,
                             MaxLineNumber: 2,

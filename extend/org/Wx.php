@@ -24,7 +24,8 @@ class Wx
             'msg' => ''
         );
         $url = 'https://api.weixin.qq.com/sns/jscode2session?appid='.$appid.'&secret='.$secret.'&js_code='.$code.'&grant_type=authorization_code';
-        $re = file_get_contents($url);
+        $curl = new Curl();
+        $re = $curl->get($url);
         $re = json_decode($re,true);
         if(!isset($re['errcode'])){
             $result['data'] = $re;
@@ -32,7 +33,6 @@ class Wx
         }else{
             $result['msg'] = $re['errcode'].":".$re['errmsg'];
         }
-        $result['url'] = $url;
         return $result;
     }
     /**

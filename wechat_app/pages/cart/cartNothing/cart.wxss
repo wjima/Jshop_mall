@@ -1,13 +1,14 @@
+page{
+  background-color: #f8f8f8;
+}
 .touch-item {
  font-size: 28rpx;
  display: flex;
  justify-content: space-between;
- border-bottom:2rpx solid #ccc;
  width: 100%;
  overflow: hidden
 }
 .content {
- width: 690rpx;
  padding: 25rpx 30rpx 15rpx;
  line-height: 44rpx;
  margin-right:0;
@@ -18,6 +19,7 @@
  margin-left: -240rpx;
  overflow: hidden;
  display: flex;
+ position: relative;
 }
 .touch-move-active .content,
 .touch-move-active .collect-del {
@@ -25,15 +27,17 @@
  transform: translateX(0);
 } 
 .cart-content{
-  border-top: 2rpx solid #E8E8E8;
-  margin-bottom: 188rpx;
+  margin-bottom: 200rpx;
 }
 .list-body{  
-  border-bottom: 16rpx solid #f8f8f8;
+  margin-bottom: 2rpx;
   overflow: hidden;
   display: flex;
   justify-content: space-between;
   width: 100%;
+  position: relative;
+  background-color: #fff;
+  min-height: 210rpx;
 }
 label{
   position: relative;
@@ -55,11 +59,25 @@ label{
   display: inline-block; 
   margin-left: 16rpx;
 }
+.click-right{
+  width: 330rpx;
+}
+.click-del{
+  width: 120rpx;
+  line-height: 214rpx;
+  text-align: center;
+  height: 100%;
+  background-color: #FF3B44;
+  color: #fff;
+  position: absolute;
+  right: 0rpx;
+  top: 0;
+}
 .body-right-title{
   color: #666;
   font-size: 24rpx;
   overflow: hidden; 
-  width: 404rpx;
+  width: 440rpx;
   height: 88rpx;  
 }
 .right-img{
@@ -79,7 +97,12 @@ label{
 }
 .body-right-price text{
   color: #FF3B44;
+  font-size: 26rpx;
+}
+.goods-num{
+  float: right;
   font-size: 24rpx;
+  color: #333;
 }
 .collect-del{
   width: 240rpx;
@@ -122,14 +145,10 @@ label{
 .cart-footer-left{
   width: 554rpx;
   padding-left: 30rpx;
-  border-top: 2rpx solid #E8E8E8;
   display: inline-block;
   font-size: 28rpx;
   color: #666;
   overflow: hidden;
-}
-.cart-footer-left>view{
-  display: inline-block;
 }
 .cart-footer-left>text{
   display: inline-block;
@@ -138,19 +157,20 @@ label{
 .footer-left-right{
   width: 240rpx;
   float: right;
-  position: relative;
-}
-.footer-left-right>text{
-  position: relative;
-  top: -10rpx;
+  margin-right: 18rpx;
+  text-align:right;
 }
 .footer-left-right>view{
-  position: absolute;
-  top: 30rpx;
-  right: 40rpx;
+  height: 50rpx;
+  line-height: 46rpx;
   font-size: 24rpx;
   color: #999;
 }
+.footer-left-right .footer-left-right-t{
+  line-height: 56rpx;
+  font-weight: 600;
+}
+
 .cart-footer-right{
   float: right;  
   display: inline-block;
@@ -191,31 +211,31 @@ label{
 }
 .stepper {  
     width: 156rpx;  
-    height: 36rpx;   
+    height: 48rpx;   
     border: 2rpx solid #ccc;  
     border-radius: 6rpx;  
     margin:0 auto; 
     display: inline-block;
-    float: right; 
+    /* float: right;  */
+    overflow: hidden;
+    box-sizing: border-box;
 }  
 .stepper text {  
     width: 44rpx;  
-    line-height: 36rpx;  
+    line-height: 42rpx;  
     text-align: center;  
     float: left;  
 }  
 .stepper input {      
-    width: 58rpx;  
-    height: 36rpx;  
+    width: 64rpx;  
+    height: 38rpx;  
     float: left;  
-    margin: 0 auto;  
     text-align: center;  
     font-size: 22rpx;  
     border-left: 2rpx solid #ccc;  
     border-right: 2rpx solid #ccc;  
     display: inline-block;
-    position: relative; 
-    margin-top:-4rpx;
+    box-sizing: border-box;
 }
 .stepper .normal{  
     color: black;  
@@ -227,7 +247,6 @@ label{
   background-color: #999 !important;
 }
 .cart-none{
-  border-top: 2rpx solid #E8E8E8;
   text-align: center;
   padding-top: 240rpx;
   font-size: 28rpx;
@@ -236,10 +255,17 @@ label{
   width: 338rpx;
   height: 244rpx;
 }
-.cart-none text{
+.cart-none .cart-none-t{
+  display: block;
+  color: #666;
+  font-size: 32rpx;
+  margin: 30rpx 0 10rpx;
+}
+.cart-none .cart-none-m{
   display: block;
   color: #999;
-  margin: 30rpx 0 50rpx;
+  margin: 0rpx 0 50rpx;
+  font-size: 24rpx;
 }
 .cart-none navigator{
   width: 254rpx;
@@ -299,4 +325,31 @@ label{
   height:28rpx;
   line-height:28rpx;
   padding: 0 10rpx;
+  margin-right: 6rpx;
+}
+.cart-title{
+  padding: 16rpx 30rpx;
+  overflow: hidden;
+  border-bottom: 2rpx solid #e8e8e8;
+  font-size: 26rpx;
+  background-color: #fff;
+}
+.cart-title-left{
+  color: #666;
+  float: left;
+  position: relative;
+}
+.shop-logo{
+  width: 26rpx;
+  height: 26rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.cart-title-left text{
+  margin-left: 36rpx;
+}
+.cart-title .cart-title-r{
+  color: rgb(0, 174, 255);  
+  float: right;
 }

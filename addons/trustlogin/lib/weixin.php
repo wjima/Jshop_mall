@@ -25,7 +25,7 @@ class weixin{
     public function getOauthUrl($redirect_uri,$uuid = ''){
         $state = rand(10000,99999);
         Cache::set("user_".$uuid,$state);//用户id和session对应
-        return  $this->oauth->getOauthRedirect($redirect_uri,$state);
+        return  $this->oauth->getOauthRedirect($redirect_uri,$state,'snsapi_userinfo');
     }
 
     /**

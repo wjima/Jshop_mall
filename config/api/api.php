@@ -347,6 +347,10 @@ return [
             'getallcat' => [
                 'code' => 'getAllCat',
                 'is_login' => false
+            ],
+            'getname' => [
+                'code' => 'getName',
+                'is_login' => false
             ]
         ]
     ],

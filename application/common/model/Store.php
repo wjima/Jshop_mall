@@ -16,7 +16,7 @@ class Store extends Common
         'store_name'    =>  'require|max:50',
         'mobile'        =>  'mobile',
         'linkman'       =>  'require|max:25',
-        'address'       =>  'require|chsAlphaNum',
+        'address'       =>  'require',
         'coordinate'    =>  'require'
     ];
 
@@ -26,7 +26,6 @@ class Store extends Common
         'mobile.mobile'          => '手机号格式错误',
         'logo.require'          =>  '请上传门店logo',
         'address.require'       =>  '请输入门店详细地址',
-        'address.chsAlphaNum'   =>  '详细地址格式错误',
         'coordinate.require'    =>  '请选择门店坐标位置'
     ];
 

@@ -3,6 +3,7 @@
         <userheader
             :avatar="user.avatar"
             :name="user.nickname"
+            :balance="user.balance"
             :point="user.point"
             :isOpenIntegral="isOpenIntegral"
             @upload="uploadAvatar"
@@ -38,7 +39,7 @@
         <yd-cell-group>
             <yd-cell-item v-if="isOpenIntegral" type="div" @click.native="signIn">
                 <img slot="icon" src="../../static/image/sign_in.png">
-                <span slot="left">签到</span>
+                <span slot="left">积分签到</span>
             </yd-cell-item>
             <yd-cell-item href="/coupon" type="link">
                 <img slot="icon" src="../../static/image/coupon.png">
@@ -66,7 +67,7 @@
         <yd-cell-group>
             <yd-cell-item href="/share" type="link">
                 <img slot="icon" src="../../static/image/coupon.png">
-                <span slot="left">我要推荐</span>
+                <span slot="left">邀请好友</span>
             </yd-cell-item>
             <yd-cell-item href="/addresslist" type="link">
                 <img slot="icon" src="../../static/image/ship.png">
@@ -76,11 +77,11 @@
         <yd-cell-group v-if="isClerk">
             <yd-cell-item href="/storeorder" type="link">
                 <img slot="icon" src="../../static/image/coupon.png">
-                <span slot="left">自提订单</span>
+                <span slot="left">提货单列表</span>
             </yd-cell-item>
             <yd-cell-item href="/orderverification" type="link">
                 <img slot="icon" src="../../static/image/ship.png">
-                <span slot="left">订单核销</span>
+                <span slot="left">提货单核销</span>
             </yd-cell-item>
         </yd-cell-group>
     </div>

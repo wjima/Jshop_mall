@@ -15,6 +15,7 @@ page{
   overflow: hidden;
   width: 100%;
   margin-bottom: 10rpx;
+  padding-top:2rpx;
 }
 .orderadd-header-tag{
     background-color: #ef4f4f;

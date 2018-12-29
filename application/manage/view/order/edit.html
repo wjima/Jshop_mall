@@ -9,10 +9,39 @@
 	}
 </style>
 <div class="layui-form seller-alone-form">
+	{if $order.store}
 	<div class="layui-form-item" lay-size="sm">
 		<label class="layui-form-label">订单号：</label>
 		<div class="layui-form-mid seller-inline-3">{$order.order_id}</div>
 		<input type="hidden" id="order_id" value="{$order.order_id}">
+		<input type="hidden" id="edit_type" value="2">
+
+		<label class="layui-form-label">收货门店：</label>
+		<div class="layui-input-inline seller-inline-4 address-class">
+			<select name="store_id" id="store_id">
+				{foreach $store_list as $v}
+				<option value="{$v.id}" {if $order.store.id == $v.id}selected{/if}>{$v.store_name}</option>
+				{/foreach}
+			</select>
+		</div>
+	</div>
+	<div class="layui-form-item" lay-size="sm">
+		<label class="layui-form-label">提货人名：</label>
+		<div class="layui-input-inline seller-inline-3">
+			<input type="text" value="{$order.ship_name}" name="ship_name" id="ship_name" class="layui-input">
+		</div>
+
+		<label class="layui-form-label">提货人电话：</label>
+		<div class="layui-input-inline seller-inline-4">
+			<input type="text" value="{$order.ship_mobile}" name="ship_mobile" id="ship_mobile" class="layui-input">
+		</div>
+	</div>
+	{else/}
+	<div class="layui-form-item" lay-size="sm">
+		<label class="layui-form-label">订单号：</label>
+		<div class="layui-form-mid seller-inline-3">{$order.order_id}</div>
+		<input type="hidden" id="order_id" value="{$order.order_id}">
+		<input type="hidden" id="edit_type" value="1">
 
 		<label class="layui-form-label">收货区域：</label>
 		<div class="layui-input-inline seller-inline-4 address-class">
@@ -45,5 +74,13 @@
 			<div class="layui-form-mid seller-inline-4">{$order.order_amount}</div>
 		{/if}
 	</div>
+	{/if}
 	<button class="layui-btn layui-btn-fluid order-edit-btn">保存</button>
 </div>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

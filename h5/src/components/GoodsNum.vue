@@ -3,7 +3,7 @@
         <div class="goodsnum-content">
             <div>数量</div>
             <yd-spinner :longpress="true" :max="stock" v-model="spinner"></yd-spinner>
-            <div class="inventory">库存：{{ stock }}</div>
+            <div class="inventory">库存：{{ stock }} {{ unit }}</div>
         </div>
     </div>
 </template>
@@ -19,6 +19,12 @@ export default {
         stock: {
             type: [String, Number],
             require: true
+        },
+        unit:{
+            type: String,
+            default () {
+                return ''
+            }
         }
     },
     watch: {

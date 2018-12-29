@@ -36,17 +36,17 @@ page{
   display: block;
 }
 .mybackcardlist-bottom{
-  width: 80%;
-  margin: 40rpx auto 0;
+  margin: 40rpx 30rpx 0;
 }
 .mybackcardlist-bottom button{
-  height: 70rpx;
-  line-height: 70rpx;
+  height: 80rpx;
+  line-height: 80rpx;
   text-align: center;
   width: 100%;
   background-color: #ff3b44;
   color: #fff;
   font-size: 30rpx;
+  border-radius: 0;
 }
 .bankcard-btn{
   position: absolute;

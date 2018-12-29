@@ -4,8 +4,10 @@
     <view class="list-body touch-item"  wx:for="{{items}}" wx:key='index'> 
       <!-- 商品信息 -->
       <view class="content">
-        <view class="check-box">
-          <checkbox value="{{index}}"  disabled="{{type_list[1].disabled}}" checked="true"/>
+        <view class="check-box {{checkgray}}">
+          <label>
+            <checkbox value="{{index}}" disabled="{{goods_disabled}}" checked="true"/>
+          </label>
         </view>
         <!-- 商品图片 -->
         <image class='thumbnail' src='{{item.image_url}}'></image>
@@ -44,7 +46,7 @@
           <input type="digit" bindinput="bindRefundChange" disabled="{{refund_input_noedit}}" value="{{refund}}" /><text>元</text>
         </view>
       </view>
-      <view class='refund-bottom' hidden="{{type_list[1].disabled}}">最多可退<text>{{refund_show}}</text>元</view>  
+      <!-- <view class='refund-bottom' hidden="{{type_list[1].disabled}}">最多可退<text>{{refund_show}}</text>元</view>   -->
     <!-- </view> -->
   </view>
 

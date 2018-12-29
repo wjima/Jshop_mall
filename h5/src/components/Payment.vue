@@ -4,7 +4,8 @@
             <img class="payment-img" :src="item.img"/>
             <div class="payment-left">
                 <h3>{{ item.name }}</h3>
-                <p>{{ item.memo }}</p>
+                <p v-if="item.code === 'balancepay'">当前余额: {{user.balance}}</p>
+                <p v-else>{{ item.memo }}</p>
             </div>
             <img class="right-img" src="../../static/image/right.png"/>
         </div>
@@ -18,6 +19,12 @@ export default {
             type: [Array, Object],
             default () {
                 return []
+            }
+        },
+        user: {
+            type: Object,
+            default () {
+                return {}
             }
         }
     },

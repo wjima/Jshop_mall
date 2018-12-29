@@ -1111,13 +1111,24 @@ class User extends Api
             //有这个openid的时候，先用unionid，再用这个判断
             $where['openid'] = $user['openid'];
         }
-        $where['type'] = $userWxModel::TYPE_OFFICIAL;
         $wxInfo = $userWxModel->where($where)->find();
         if($wxInfo)
         {
             //存在第三方账号，检查是否存在会员，存在的话，直接登录，不存在则绑定手机号
             if($wxInfo['user_id'])
             {
+                $where['type'] = $userWxModel::TYPE_OFFICIAL;
+                $h5WxInfo      = $userWxModel->where($where)->find();
+                if (!$h5WxInfo) {
+                    //插入公众号授权信息
+                    $user['user_id'] = $wxInfo['user_id'];
+                    $user['type']    = $userWxModel::TYPE_OFFICIAL;
+                    $res             = $userWxModel->toAddWx($user);
+                    if (!$res['status']) {
+                        $returnData['msg'] = $res['msg'];
+                        return $returnData;
+                    }
+                }
                 //直接登录
                 $userModel = new UserModel();
                 $userInfo = $userModel->where(array('id'=>$wxInfo['user_id']))->find();

@@ -836,6 +836,11 @@ function getLogisticsData(data, callback){
         callback(res);
     });
 }
+function getGoodsClass(data, callback){
+    api('categories.getname', data, function(res){
+        callback(res);
+    });
+}
 
 module.exports = {
   login1: login1,
@@ -928,5 +933,6 @@ module.exports = {
   myInvite: myInvite,
   setMyInvite: setMyInvite,
   getQRCode: getQRCode,
-  getLogisticsData: getLogisticsData
+  getLogisticsData: getLogisticsData,
+  getGoodsClass: getGoodsClass
 }

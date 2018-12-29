@@ -7,71 +7,83 @@
     <view class="{{express?'show':'hidden'}}">
       <!-- 用户收货地址 -->
       <view class='userinfo' bindtap='selectAddress' wx-if="{{isAddress}}">
-        <image class='gps-img' src='../../image/gps.png'></image>
-        <view class='userinfo-body'>
-          <!-- 收货人信息 -->
-          <view class='userinfo-body-top'>
-            <text class='consignee'>收货人：</text>   
-            <text class='consignee-name'>{{name}}</text>     
-            <text class='phone-num'>{{mobile}}</text>
-          </view>
-          <!-- 收货地址信息 -->
-          <view class='userinfo-body-bottom'>
-            <view class='address'>
-              <text>收货地址：</text>
-              <text>{{area}} {{address}}</text>
+        <view class='userinfo-c'>
+          <image class='gps-img' src='../../image/gps.png'></image>
+          <view class='userinfo-body'>
+            <!-- 收货人信息 -->
+            <view class='userinfo-body-top'>
+              <text class='consignee'>收货人：</text>   
+              <text class='consignee-name'>{{name}}</text>     
+              <text class='phone-num'>{{mobile}}</text>
             </view>
-            <image src='../../image/right.png'></image>
+            <!-- 收货地址信息 -->
+            <view class='userinfo-body-bottom'>
+              <view class='address'>
+                <text>收货地址：</text>
+                <text>{{area}} {{address}}</text>
+              </view>
+              <image src='../../image/right.png'></image>
+            </view>
           </view>
         </view>
+        <image class='bottom-line' src='../../image/line.png'></image>
       </view>
       <!-- 没有用户收货地址的时候 -->
       <view class='userinfo' bindtap='selectAddress' wx-if="{{!isAddress}}">
-        <view class='userinfo-body noaddress'>
-          <image class="gps-ico" src='../../image/gps.png'></image>
-          <text>请选择收货地址信息</text>
-          <image class="right-ico" src='../../image/right.png'></image>
+        <view class='userinfo-c'>
+          <image class="gps-ico" src='../../image/add.png'></image>
+          <view class='userinfo-body noaddress'>
+            <text>请选择收货地址</text>
+            <image class="right-ico" src='../../image/right.png'></image>
+          </view>
         </view>
+        <image class='bottom-line' src='../../image/line.png'></image>
       </view>
     </view>
     <!-- 自提 -->
     <view class="{{lifting?'show':'hidden'}}">
       <view class='userinfo' bindtap='gostore' wx-if="{{isAddress}}">
-        <image class='gps-img' src='../../image/shopblack.png'></image>
-        <view class='userinfo-body'>
-          <!-- 收货人信息 -->
-          <view class='userinfo-body-top'>
-            <text class='consignee'>{{store_name}}</text>
-            <text class='phone-num'>{{store_mobile}}</text>
-          </view>
-          <!-- 收货地址信息 -->
-          <view class='userinfo-body-bottom'>
-            <view class='address'>
-              <text>门店地址：</text>
-              <text>{{store_address}}</text>
+        <view class='userinfo-c'>
+          <image class='gps-img' src='../../image/shopblack.png'></image>
+          <view class='userinfo-body'>
+            <!-- 收货人信息 -->
+            <view class='userinfo-body-top'>
+              <text class='consignee'>{{store_name}}</text>
+              <text class='phone-num'>{{store_mobile}}</text>
             </view>
-            <image src='../../image/right.png'></image>
+            <!-- 收货地址信息 -->
+            <view class='userinfo-body-bottom'>
+              <view class='address'>
+                <text>门店地址：</text>
+                <text>{{store_address}}</text>
+              </view>
+              <image src='../../image/right.png'></image>
+            </view>
           </view>
         </view>
+        <image class='bottom-line' src='../../image/line.png'></image>
       </view>
       <!-- 没有收货门店的时候 -->
       <view class='userinfo' bindtap='gostore' wx-if="{{!isAddress}}">
-        <image class='gps-img' src='../../image/shopblack.png'></image>
-        <view class='userinfo-body noaddress'>
-          <!-- 收货人信息 -->
-          <view class='userinfo-body-top'>
-            <text class='consignee'>{{store_name}}</text>
-            <text class='phone-num'>{{store_mobile}}</text>
-          </view>
-          <!-- 收货地址信息 -->
-          <view class='userinfo-body-bottom'>
-            <view class='address'>
-              <text>门店地址：</text>
-              <text>{{store_address}}</text>
+        <view class='userinfo-c'>
+          <image class='gps-img' src='../../image/shopblack.png'></image>
+          <view class='userinfo-body noaddress'>
+            <!-- 收货人信息 -->
+            <view class='userinfo-body-top'>
+              <text class='consignee'>{{store_name}}</text>
+              <text class='phone-num'>{{store_mobile}}</text>
             </view>
-            <image src='../../image/right.png'></image>
+            <!-- 收货地址信息 -->
+            <view class='userinfo-body-bottom'>
+              <view class='address'>
+                <text>门店地址：</text>
+                <text>{{store_address}}</text>
+              </view>
+              <image src='../../image/right.png'></image>
+            </view>
           </view>
         </view>
+        <image class='bottom-line' src='../../image/line.png'></image>
       </view>
       <view class='user-name-phone'>
         <view class='user-name'>
@@ -102,25 +114,33 @@
           </view>
         </view>
       </view>
+      <view class='goods-foot'><text class='goods-foot-l'>共{{goodsNums}}件商品</text><text class='goods-foot-mid'>小计：</text><text class='goods-foot-r'>￥{{goodsAmount}}</text></view>
     </view>
     <view class='price-list'>
-      <view class='price-details' bindtap="couponbtn" data-statu="open">
-        <text class='price-details-left'>优惠券</text>
-        <text class='price-details-right'>{{usedCouponName}}</text>
-      </view> 
       <view class='price-details'>
         <text class='price-details-left'>订单活动</text>
         <text class='price-details-right'><text wx:for="{{cartData.promotion_list}}" wx:for-item="vv" wx:key="ind" class="{{vv.type==2?'promotion_on':'promotion_off'}}">{{vv.name}}</text></text>
       </view>
-      <view class='price-calculation'>
-        <view class='integral' wx:if="{{pointSwitch == 1 && available_point > 0}}">
-          <checkbox-group bindchange="checkboxChange">
+      <view class='price-details' bindtap="couponbtn" data-statu="open"> 
+        <text class='price-details-left'>优惠券</text>
+        <text class='price-details-right'>{{usedCouponName}}</text>
+      </view> 
+    </view>
+    <view class='price-list'> 
+      <view class='price-calculation' wx:if="{{pointSwitch == 1}}">
+        <view class='integral'>
+          <checkbox-group bindchange="checkboxChange" wx:if="{{available_point > 0}}">
             <checkbox class='integral-checkbox' value="pointStatus" checked="{{pointStatus}}"/>使用积分
           </checkbox-group>
         </view>
         <view class='integral-details'>可用{{available_point}}积分，可抵扣{{pointRmb}}元，共有{{point}}积分。</view>
       </view>
+      <view class='price-details buyer'>
+        <text class='price-details-left'>买家留言</text>
+        <input placeholder-class='buyer-input' type='text' bindchange="buyerMessage" placeholder='50字以内（选填）'></input>
+      </view>
       <view class='price-calculation'>
+        
         <view>
           <text class='price-details-left'>商品小计</text>
           <text class='price-details-right'>¥{{goodsAmount}}</text>
@@ -143,18 +163,15 @@
         </view>        
       </view>
       
-      <view class='price-details buyer'>
-        <text class='price-details-left'>买家留言</text>
-        <input placeholder-class='buyer-input' type='text' bindchange="buyerMessage" placeholder='50字以内（选填）'></input>
-      </view>
+      
     </view>  
     <view class='firmorder-footer'>
       <view class='firmorder-footer-right'>
         <view class='pay-num'>
-          <text>需付：</text>
+          <text>合计：</text>
           <text class='total-price'>¥{{totalAmount}}</text>
         </view>
-        <button form-type="submit" type="default" size="mini" class='immediate-pay'>立即支付</button>
+        <button form-type="submit" type="default" size="mini" class='immediate-pay'>提交订单</button>
       </view>
     </view>
   </form>
@@ -173,7 +190,7 @@
           <text data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'>{{item.value}}</text>
           <radio value="{{item.name}}" color="#ff3b44" checked="{{item.checked}}" data-id="{{item.name}}" data-name="{{item.value}}" bindtap='clickCoupon'/>
         </label>
-        <label class="radio" data-statu="close" data-id="0" data-name="未使用" bindtap='clickNoCoupon'>
+        <label class="radio" wx:if="{{couponitems.length > 0}}" data-statu="close" data-id="0" data-name="未使用" bindtap='clickNoCoupon'>
           <text data-id="0" data-name="未使用" bindtap='clickNoCoupon'>不使用</text>
           <radio value="未使用" color="#ff3b44" checked="{{noCoupon}}" data-id="0" data-name="未使用" bindtap='clickNoCoupon'/>
         </label>

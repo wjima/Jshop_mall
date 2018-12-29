@@ -60,7 +60,7 @@
           <view class='bottom'>
             <!-- 待付款 -->
             <view wx:if="{{item.status == 1 && item.pay_status == 1}}">
-              <view class='bottom-left' bindtap='showOrder' data-id="{{item.order_id}}">查看</view>
+              <view class='bottom-left' bindtap='cancelOrder' data-id="{{item.order_id}}">取消</view>
               <view class='bottom-right' bindtap='payment' data-id="{{item.order_id}}" data-amount="{{item.order_amount}}">立即付款</view>
             </view>
             <!-- 待收货 -->

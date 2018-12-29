@@ -1,6 +1,13 @@
+page{
+  background-color: #f8f8f8;
+}
+.evaluate-item{
+  background-color: #fff;
+  margin-bottom: 16rpx;
+}
 .top{
   width: 690rpx;
-  padding: 0 30rpx;
+  padding: 20rpx 30rpx 0;
   overflow: hidden;
 }
 .top2 {
@@ -12,11 +19,11 @@
   float:left;
 }
 .top-right{
-  width: 600rpx;
+  width: 580rpx;
   float: left;
-  margin-left:2rpx;
+  margin-left:10rpx;
   text-align:left;
-  font-size:30rpx;
+  font-size:26rpx;
   overflow:hidden;
   text-overflow:ellipsis;
   display:-webkit-box;
@@ -43,7 +50,6 @@
 .mid{
   width: 690rpx;
   padding: 0 30rpx;
-  border-bottom: 16rpx solid #f3f3f3;
 }
 .mid .mid-text{
   padding: 20rpx 0;
@@ -52,10 +58,10 @@
 .mid .mid-textarea{
   width: 690rpx;
   height: 260rpx !important;
-  font-size: 32rpx;
+  font-size: 28rpx;
 }
 .mid-textarea-p{
-  font-size: 32rpx;
+  font-size: 28rpx;
 }
 .upload-img{
   display: inline-block;
@@ -93,30 +99,35 @@
   bottom: 6rpx;
 }
 .star-view{
+  margin-left: 20rpx;
   display:inline-block;
 }
 .star-img{
   color: #666;
-  font-size: 32rpx;
-  margin: 30rpx 0;
+  font-size: 28rpx;
+  margin-bottom:20rpx;
 }
 .star-img text{
-  margin-right: 20rpx;
+  position:relative;
+  top:4rpx;
+
 }
 .star-img image{
-  width: 44rpx;
-  height: 44rpx;
-  margin-left: 20rpx;
+  width: 38rpx;
+  height: 38rpx;
+  
   position: relative;
   top: 10rpx;
 }
 .submit{
   padding-top: 20rpx;
   padding-bottom: 80rpx;
-  background-color: #fff;
 }
 .weui-btn{
   width: 690rpx;
+  height: 80rpx;
+  font-size: 30rpx;
   margin: 0 auto;
   background-color: #FF3B44 !important;
+  border-radius: 0;
 }

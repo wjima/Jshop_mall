@@ -1,16 +1,27 @@
+page{
+  background-color: #f8f8f8;
+}
 .firmorder-content{
   padding-bottom:100rpx;
 }
 .userinfo{
-  padding: 30rpx;
+  margin-bottom: 16rpx;
+  position: relative;
+  padding-bottom: 6rpx;
+  background-color: #fff;
+}
+.userinfo-c{
+  padding: 30rpx 30rpx 20rpx;
   overflow: hidden; 
-  border-bottom: 16rpx solid #f3f3f3;
   display: flex;
   position: relative;
+  min-height: 104rpx;
+  box-sizing: border-box;
 }
 .user-name-phone{
-  border-bottom: 16rpx solid #f3f3f3;
+  margin-bottom: 16rpx;
   font-size:28rpx;
+  background-color: #fff;
 }
 .user-name-phone>view{
   height:80rpx;
@@ -43,19 +54,21 @@
   width: 44rpx;
   height: 44rpx;
   display: inline-block;
-  margin: auto;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .userinfo-body{
   display: inline-block;
   width: 620rpx;
   overflow: hidden;
   font-size: 28rpx;
-  margin-left: 20rpx 
+  margin-left: 76rpx 
 }
 .userinfo-body>text{
   position: relative;
-  bottom: 6rpx;
   margin-left: 10rpx;
+  color: #333;
 }
 .userinfo-body-top{
   margin-bottom: 10rpx;
@@ -63,11 +76,11 @@
 }
 .consignee,.consignee-name{
   font-size: 28rpx;
-  color: #666;
+  color: #333;
 }
 .phone-num{
   font-size: 26rpx;
-  color: #999;
+  color: #333;
   float: right;
 }
 .address{
@@ -89,14 +102,19 @@
   margin: auto;
 }
 .list-details{
-  margin: 16rpx 0;
-  padding: 20rpx 30rpx;
+  padding: 10rpx 30rpx;
   background-color: #f9f9f9;
   overflow: hidden;
 }
 .thumbnail{
   width: 160rpx;
   height: 160rpx;
+  float: left;
+}
+.order-list{
+  background-color: #fff;
+  padding: 20rpx 0 0;
+  margin-bottom: 16rpx;
 }
 .order-details{
   width: 500rpx;
@@ -129,21 +147,29 @@
   color: #666;
   float: right;
   font-size: 24rpx;
+  /* background-color: #fff; */
 }
 .price-list{
   font-size: 28rpx;
   color: #666;
+  background-color: #fff;
+  margin-bottom: 16rpx;
 }
 .price-details{
   height: 80rpx;
   line-height: 80rpx;
-  padding: 0 30rpx;
+  padding: 0 30rpx 0 0;
+  margin-left: 30rpx;
   border-bottom: 2rpx solid #f1f1f1; 
   overflow: hidden;
 }
+.price-details:last-child{
+  border: none;
+}
 .price-calculation{
-  padding: 10rpx 30rpx;
-  border-bottom: 2rpx solid #f1f1f1; 
+  padding: 20rpx 30rpx 20rpx 0;
+  margin-left: 30rpx;
+  /* border-bottom: 2rpx solid #f1f1f1;  */
 }
 .price-calculation>view{
   overflow: hidden;
@@ -165,7 +191,7 @@
     border: 1rpx solid #888;
 }
 .integral checkbox .wx-checkbox-input.wx-checkbox-input-checked {
-    border: 1rpx solid #FF525C;
+  border: 1rpx solid #FF525C;
   background: #FF525C;
 }
 /*checkbox选中后图标样式  */
@@ -206,11 +232,12 @@
   height: 100rpx;
   width: 750rpx;
   line-height: 100rpx;
-  background-color: #f8f8f8;
+  /* background-color: #f8f8f8; */
   position: fixed;
   bottom: 0;
   overflow: hidden;
   z-index:999;
+  background-color: #fff;
 }
 .firmorder-footer-right{
   float: right;
@@ -234,17 +261,20 @@
   border-radius: 0;
 }
 .gps-ico{
-  width:40rpx;
-  height:40rpx;
+  width:60rpx;
+  height:60rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .right-ico{
-  width:20rpx;
-  height:40rpx;
+  width:16rpx;
+  height:28rpx;
   float:right;
 }
-.noaddress{
-  width:100%;
-}
+/* .noaddress{
+  height: 40rpx;
+} */
 .promotion_on{
   background-color:#FF3B44;
   color:#fff;
@@ -264,6 +294,7 @@
   display: inline-block;
   height:28rpx;
   line-height:28rpx;
+  margin-right: 6rpx;
 }
 .preferential{
   height: 40rpx;
@@ -271,6 +302,8 @@
 }
 .pay-num{
   display: inline-block;
+  font-weight: 600;
+  font-size: 26rpx;
 }
 .userinfo-btm{
   position: absolute;
@@ -287,8 +320,7 @@
   background:rgba(0,0,0,0.4);
   overflow: hidden;
   z-index: 1000;
-  /* position: relative; */
-  }
+}
 .modal-body{
   position:fixed;
   bottom: 0;
@@ -332,6 +364,7 @@
   display:flex;
   flex-direction:row;
   border-top: 2rpx solid #e8e8e8;
+  background-color: #fff;
 }
 .default{
   text-align:center;
@@ -385,4 +418,26 @@
 }
 .entry-item .del{
   margin-left: 10rpx;
+}
+.bottom-line{
+  width: 100%;
+  height: 6rpx;
+  position: absolute;
+  bottom: 0;
+}
+.goods-foot{
+  padding: 0rpx 30rpx 10rpx;
+  text-align: right;
+}
+.goods-foot-l{
+  font-size: 22rpx;
+  color: #999;
+  margin-right: 20rpx;
+}
+.goods-foot-mid{
+  font-size: 26rpx;
+}
+.goods-foot-r{
+  font-size: 26rpx;
+  color: #FF3B44;
 }

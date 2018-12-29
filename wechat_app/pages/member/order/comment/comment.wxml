@@ -1,7 +1,7 @@
 <!-- 订单评论 -->
 <view>
   <!-- 订单商品循环 -->
-  <view wx:for="{{goodsList}}" wx:key="index">
+  <view wx:for="{{goodsList}}" wx:key="index" class='evaluate-item'>
     <view class='top'>
       <!-- 商品图片 -->
       <view class='top-left'>

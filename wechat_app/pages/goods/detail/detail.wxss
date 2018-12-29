@@ -245,6 +245,29 @@ swiper{
   float: left;
   display: inline-block;
 }
+.contact{
+  overflow:visible;
+  background-color:transparent;
+  width:50%;
+  box-sizing:border-box;
+  float:left;
+  display:inline-block;
+  position: relative;
+  margin-left:0;
+  margin-right:0;
+  padding-left:0;
+  padding-right:0;
+  font-size:24rpx;
+  line-height:1.6;
+  color:#666666;
+  border: none;
+  border-radius:0;
+}
+.contact .weui-badge{
+  padding:.08em .35em;
+  font-size: 20rpx;
+  background-color: #FF3B44;
+}
 .detail-footer-left>view image{
   height: 36rpx;
   width: 36rpx;

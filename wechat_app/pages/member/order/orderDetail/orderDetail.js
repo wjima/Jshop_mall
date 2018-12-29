@@ -15,6 +15,10 @@ Page({
       'wechatpay': '微信支付',
       'alipay': '支付宝支付',
       'offline': '线下支付'
+    },
+    //订单状态默认隐藏
+    delivery:{
+      status:'deliverynone',
     }
   },
 
@@ -41,18 +45,22 @@ Page({
       app.api.orderDetails(data, function (res) {
         res.data.ctime = app.common.timeToDate(res.data.ctime);
         res.data.payment_time = app.common.timeToDate(res.data.payment_time);
+        res.data.utime = app.common.timeToDate(res.data.utime);
         res.data.payment_code = page.data.payment_type[res.data.payment_code];
+        res.data.goods_nums = 0;
         for(var k in res.data.items){
           if (res.data.items[k].promotion_list != "[]") {
             res.data.items[k].promotion_list = JSON.parse(res.data.items[k].promotion_list);
           }
+            res.data.goods_nums += res.data.items[k].nums;
         }
         if (res.data.delivery.length > 0) {
           res.data.delivery[0].ctime = app.common.timeToDate(res.data.delivery[0].ctime);
           res.data.delivery[0].confirm_time = app.common.timeToDate(res.data.delivery[0].confirm_time);
         }
         page.setData({
-          order: res.data
+          order: res.data,
+          delivery: { status:''},//显示订单状态
         });
         page.getDate();
       });
@@ -66,7 +74,6 @@ Page({
           let o = page.data.order;
           o.remaining_time--;
           o.remaining = app.common.time2date(o.remaining_time);
-          console.log(o.remaining);
           page.setData({
               order: o
           });

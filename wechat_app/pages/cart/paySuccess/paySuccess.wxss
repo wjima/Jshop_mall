@@ -1,5 +1,5 @@
 .top{
-  margin-top: 30rpx;
+  margin: 230rpx 0 40rpx;
   text-align: center;
 }
 .top image{
@@ -23,11 +23,12 @@
   position: static;
   border: none;
   font-size: 30rpx;
-  border-bottom: 2rpx #cfcfcf solid;  
+  border-bottom: 2rpx #f2f2f2 solid;  
 }
 .weui-btn{
-  width: 400rpx;
+  width: 300rpx;
   height: 80rpx;
-  line-height: 80rpx;
+  line-height: 78rpx;
   font-size: 30rpx;
+  border-radius: 0;
 }

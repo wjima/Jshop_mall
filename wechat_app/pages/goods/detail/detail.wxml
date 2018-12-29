@@ -44,7 +44,7 @@
       <!-- 促销信息 -->
       <view class='sales-promotion' wx:if="{{goodsInfo.product.promotion_list.length !== 0}}">
         <text class='salespromotion-service-name'>促销</text>
-        <text wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items" class='salespromotion-service-body' wx:if="{{items.type == 2}}">{{items.name}}</text>
+        <text wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items" class='salespromotion-service-body' wx:if="{{items.type}}">{{items.name}}</text>
         
       </view>
       <!-- 服务信息 -->
@@ -79,7 +79,7 @@
           <input type="number" bindchange="bindManual" value="{{nums}}"/>  
           <text class="{{maxStatus}}" bindtap="bindPlus">+</text>  
         </view>
-        <text>库存 </text><text> {{goodsInfo.product.stock}}</text>
+        <text>库存 </text><text> {{goodsInfo.product.stock}} {{goodsInfo.unit}}</text>
       </view>
     </view>
 
@@ -98,7 +98,7 @@
     </view>
     <view class="{{selected1?'show':'hidden'}}">
       <view class='parameter'>
-        <view class='parameter-list' wx:for="{{goodsAllParameter}}" wx:key="{{index}}">
+        <view class='parameter-list' wx:for="{{goodsAllParameter}}" wx:key="{{index}}" wx:if="{{item.value}}">
           <view class='parameter-left'>{{item.name}}</view>
           <view class='parameter-right'>{{item.value}}</view>
         </view>
@@ -178,7 +178,8 @@
         <text>收藏</text>
       </view>
     </view>
-    <view bindtap='goCartPage'>
+    <view class='contact' bindtap='goCartPage'>
+      <view class="weui-badge" style="position: absolute;top: -.4em;right: .8em;" wx:if="{{cnumber > 0}}">{{cnumber}}</view>
       <image src='../../image/cart4.png'></image>
       <text>购物车</text>
     </view>
@@ -194,7 +195,7 @@
 <!-- 快捷导航 -->
 <view class='pop-btn'>
   <view class='pop-btn-block {{hidebtn}} close-img quickbtn' bindtap='hidebtn'><image src='../../image/guanbi.png'></image></view>
-  <view class='pop-btn-block {{showbtn}} quickbtn' bindtap='showbtn'>快捷导航</view>
+  <view class='pop-btn-block {{showbtn}} quickbtn' bindtap='showbtn'><view>快捷</view><view>导航</view></view>
   <view class='pop-btn-block {{homebtn}}' animation="{{poptopanimhome1}}" bindtap='goHome'><image src='../../image/dollar6-white.png'></image></view>
   <view class='pop-btn-block {{homebtn}}' animation="{{poptopanimhome2}}" bindtap='goMember'><image src='../../image/dollar-white.png'></image></view>
 </view>

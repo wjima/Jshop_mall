@@ -81,7 +81,10 @@ export default {
                 }
             })
         }
-        this.getAuth()
+        // 判断是否是微信浏览器
+        if (this.GLOBAL.isWeiXinBrowser()) {
+            this.getAuth()
+        }
     },
     computed: {
         // 验证手机号

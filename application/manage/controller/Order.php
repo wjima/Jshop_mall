@@ -2,9 +2,11 @@
 namespace app\Manage\controller;
 use app\common\controller\Manage;
 use app\common\model\BillDelivery;
+use app\common\model\Order as Model;
 use app\common\model\OrderItems;
 use app\common\model\OrderLog;
-use Request;
+use app\common\model\Store;
+use think\facade\Request;
 
 /**
  * 订单模块
@@ -97,8 +99,8 @@ class Order extends Manage
     public function view($id)
     {
         $this->view->engine->layout(false);
-        $orderModel = new \app\common\model\Order();
-        $order_info = $orderModel->getOrderInfoByOrderID($id);
+        $orderModel = new Model();
+        $order_info = $orderModel->getOrderInfoByOrderID($id, false, false);
         $this->assign('order', $order_info);
 
         $orderLog = new OrderLog();
@@ -119,26 +121,34 @@ class Order extends Manage
     /**
      * 编辑订单
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function edit()
     {
         $this->view->engine->layout(false);
+        $orderModel = new Model();
         if(!Request::isPost())
         {
             //订单信息
-            $id = input('id');
-            $order_info = model('common/Order')->getOrderInfoByOrderID($id);
+            $id = Request::param('id');
+            $order_info = $orderModel->getOrderInfoByOrderID($id);
             $this->assign('order', $order_info);
 
-            $order_type = input('order_type');
+            $order_type = Request::param('order_type');
             $this->assign('order_type', $order_type);
+
+            $storeModel = new Store();
+            $store_list = $storeModel->getAllList();
+            $this->assign('store_list', $store_list);
 
             return $this->fetch('edit');
         }
         else
         {
-            $data = input('param.');
-            $result = model('common/Order')->edit($data);
+            $data = Request::param();
+            $result = $orderModel->edit($data);
             if($result)
             {
                 $return_data = array(

@@ -38,7 +38,6 @@ Page({
   getPaymentType: function () {
     var page = this;
     app.api.getPaymentType(function(res) {
-      console.log(res);
       if (res.status) {
         page.setData({
           paymentType: res.data
@@ -52,7 +51,6 @@ Page({
   payNow:function(e){
     this.data.formId = e.detail.formId;
     var type = e.detail.target.dataset.type;
-    console.log(type);
     if (type == 'balance'){
       this.balance();
     } else if (type == 'offline'){

@@ -56,7 +56,8 @@ class Ietask extends Manage{
         $where = [];
 
         if ($filter) {
-            $where = json_decode($filter,true);
+            //$where = json_decode($filter,true);
+            $where = convertUrlQuery($filter);
         }
         //增加条件验证
         if (method_exists("app\\common\\model\\$job", "export_validate")) {

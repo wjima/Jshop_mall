@@ -4,8 +4,7 @@
             <div slot="list" class="balancelist-item" v-for="(item, index) in list" :key="index">
                 <div class="balancelist-content">
                     <div class="balancelist-top">
-                        <span>{{ item.type }}：</span>
-                        <span style="color: #999;">[ {{ item.memo }} ]</span>
+                        <span>{{ item.type }}</span>
                         <p>{{ item.ctime }}</p>
                     </div>
                     <div class="balancelist-bottom">

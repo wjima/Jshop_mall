@@ -113,6 +113,33 @@ Page({
     //添加地址
     editAddress: function () {
         let page = this;
+        if (page.data.name == '') {
+            wx.showModal({
+                title: '提示',
+                content: '请输入收货人姓名',
+                showCancel: false
+            });
+            return false;
+        }
+
+        if (!app.common.isPhoneNumber(page.data.mobile)) {
+            wx.showModal({
+                title: '提示',
+                content: '请输入正确的手机号',
+                showCancel: false
+            });
+            return false;
+        }
+
+        if (page.data.address == '') {
+            wx.showModal({
+                title: '提示',
+                content: '请输入收货详细地址',
+                showCancel: false
+            });
+            return false;
+        }
+
         let data = {
             'id': page.data.id,
             'name': page.data.name,

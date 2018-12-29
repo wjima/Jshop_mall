@@ -1,3 +1,4 @@
+
 .icon-msnui-cloud-download:before { content: "\e639"; }
 
 .icon-tuikuan:before { content: "\e601"; }
@@ -86,6 +87,8 @@
 
 .icon-cuohao:before { content: "\e632"; }
 
+.icon-shouyeshouye:before { content: "\e63d"; }
+
 .icon-chaxun:before { content: "\e607"; }
 
 .icon-shanghu1:before { content: "\e658"; }
@@ -150,6 +153,8 @@
 
 .icon-hongbao:before { content: "\e61a"; }
 
+.icon-shouye1:before { content: "\e613"; }
+
 .icon-shijijihua-chuangxinjidijianshejihua:before { content: "\e69f"; }
 
 .icon-wode:before { content: "\e60c"; }
@@ -167,3 +172,4 @@
 .icon-lower:before { content: "\e622"; }
 
 .icon-icon-test:before { content: "\e62c"; }
+

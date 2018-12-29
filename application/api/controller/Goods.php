@@ -143,8 +143,11 @@ class Goods extends Api
                 $where[] = ['goods_cat_id','eq', $postWhere['cat_id']];
             }
             //价格区间
-            if(isset($postWhere['price_f']) && isset($postWhere['price_t'])){
-                $where[] = ['price',['>=',$postWhere['price_f']], ['<',$postWhere['price_t']],'and'];
+            if(isset($postWhere['price_f']) && $postWhere['price_f']){
+                $where[] = ['price','>=',$postWhere['price_f']];
+            }
+            if(isset($postWhere['price_t']) && $postWhere['price_t']){
+                $where[] = ['price','<',$postWhere['price_t']];
             }
             if(isset($postWhere['recommend'])) {
                 $where[] = ['is_recommend', 'eq', '1'];

@@ -1,7 +1,8 @@
 <?php
 namespace app\api\controller;
 use app\common\controller\Api;
-use Request;
+use app\common\model\GoodsCat;
+use think\facade\Request;
 
 /**
  * 商品分类
@@ -93,5 +94,20 @@ class Categories extends Api
         }
 
         return $return;
+    }
+
+
+    /**
+     * 获取分类名称
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getName()
+    {
+        $model = new GoodsCat();
+        $id = Request::param('id');
+        return $model->getNameById($id);
     }
 }

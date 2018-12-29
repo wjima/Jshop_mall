@@ -6,7 +6,7 @@
                 <input name="file" type="file" accept="image/png,image/gif,image/jpeg,image/jpg" @change="upload($event)"/>
                 <img :src="avatar"/>
                 <p>{{ name }}</p>
-                <span v-if="isOpenIntegral">积分余额: {{ point }}</span>
+                <span v-if="isOpenIntegral">积分: {{ point }}</span>
             </div>
             <div class="user-setting">
                 <i class="iconfont icon-shezhi" @click="setting"></i>
@@ -34,6 +34,12 @@ export default {
             type: [String, Number],
             default () {
                 return ''
+            }
+        },
+        balance: {
+            type: String,
+            default () {
+                return '0'
             }
         },
         isOpenIntegral: {

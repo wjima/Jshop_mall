@@ -112,12 +112,15 @@ class Store extends Manage
         $id = Request::param('id', false);
         if(Request::isAjax())
         {
-            $storeModel = new Clerk();
+            $clerkModel = new Clerk();
             $page = Request::param('page', 1);
             $limit = Request::param('limit', 20);
-            return $storeModel->getList($id, $page, $limit);
+            return $clerkModel->getList($id, $page, $limit);
         }
         $this->assign('id', $id);
+        $storeModel = new storeModel();
+        $store = $storeModel->getAllList();
+        $this->assign('store', $store);
         return $this->fetch('clerkList');
     }
 

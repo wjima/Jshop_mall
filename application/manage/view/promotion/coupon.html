@@ -129,12 +129,9 @@
                 yes:function () {
                     var nums = $('#nums').val();
                     var taskname = $('#taskname').val();
-                    var filter = {
-                        nums:nums,
-                        id:id
-                    };
+                    var filter = "nums="+nums+"&id="+id;
                     var data = {
-                        'filter': JSON.stringify(filter),
+                        'filter': filter,
                         'taskname': taskname,
                         'model': "Coupon"
                     };

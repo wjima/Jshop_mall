@@ -1,2 +1,2 @@
-window.apiUrl = 'https://b2c.jihainet.com/api.html';
+window.apiUrl = 'http://wjima.ngrok.jihainet.com/api.html';
 window.entId = '';

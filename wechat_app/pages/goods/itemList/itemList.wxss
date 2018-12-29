@@ -1,3 +1,6 @@
+page{
+  background-color: #f3f3f3;
+}
 .itemlist-content{
   padding-top: 90rpx;
   border-top: 2rpx solid #f4f4f4;
@@ -6,7 +9,8 @@
 .content-header{
   overflow: hidden;
   width: 700rpx;
-  margin: 20rpx auto;
+  padding: 20rpx 25rpx;
+  background-color: #fff;
 }
 .content-header>view{
   width: 25%;
@@ -15,12 +19,18 @@
   color: #666;
   float: left;
 }
-.filter{
+.comprehensive{
   color: #FF3B44 !important;
+}
+.content-body{
+  overflow: hidden;
+}
+.filter{
+  
 }
 .filter image{
   width: 20rpx;
-  height: 22rpx;
+  height: 20rpx;
 }
 .sales-volume text,.price text,.sales-volume view,.price view,.comprehensive view{
   display: inline-block;
@@ -98,8 +108,9 @@
 }
 .every-commodity{
   padding: 20rpx 30rpx;  
-  border-bottom: 2rpx solid #e8e8e8;
+  margin-bottom: 2rpx;
   overflow: hidden;
+  background-color: #fff;
 }
 .commodity-pic{
   width: 240rpx;
@@ -113,6 +124,7 @@
   height: 240rpx;
   float: right;
   position: relative;
+
 }
 .commodity-name{
   font-size: 26rpx;
@@ -190,4 +202,46 @@
   display: block;
   color:#ccc;
   font-size:28rpx;
+}
+.every-commodity-grid{
+  width: 345rpx;
+  float: left;
+  box-sizing: border-box;
+  border-bottom: 0;
+  /* text-align: center; */
+  padding: 0rpx;
+  margin: 15rpx;
+}
+.every-commodity-grid:nth-child(even){
+  margin-right: 15rpx;
+  margin-left: 0;
+}
+.every-commodity-grid:nth-child(odd){
+  margin-right: 30rpx;
+}
+.every-commodity-grid>image{
+  width: 345rpx;
+  height: 345rpx;
+}
+.every-commodity-grid .every-commodity-right{
+  width: 100%;
+  height: 236rpx;
+  text-align: left;
+  box-sizing: border-box;
+  padding: 0rpx 20rpx;
+}
+.every-commodity-grid .commodity-name{
+  width: 100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  min-height:76rpx;
+}
+.every-commodity-grid .price-cart{
+  width: 100%;
+}
+.every-commodity-grid .commodity-pic{
+
 }

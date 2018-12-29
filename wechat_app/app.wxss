@@ -18,6 +18,7 @@
   padding: 18rpx 32rpx 40rpx;
   position: fixed;
   z-index: 1000;
+  background-color: #fff;
 }
 .search-input{
   width: 506rpx;

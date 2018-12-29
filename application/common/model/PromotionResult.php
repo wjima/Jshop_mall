@@ -29,6 +29,35 @@ class PromotionResult extends Common
 
     ];
 
+
+    /**
+     * @param $code
+     * @param array $params
+     * @return string
+     */
+    public function getResultMsg($code, $params = [])
+    {
+        switch($code)
+        {
+            case 'GOODS_REDUCE':
+                $msg = '减'.$params['money'].'元 ';
+                break;
+            case 'GOODS_DISCOUNT':
+                $msg = '打'.$params['discount'].'折 ';
+                break;
+            case 'GOODS_ONE_PRICE':
+                $msg = '一口价'.$params['money'].'元 ';
+                break;
+            case 'ORDER_REDUCE':
+                $msg = '订单减'.$params['money'].'元 ';
+                break;
+            case 'ORDER_DISCOUNT':
+                $msg = '订单打'.$params['discount'].'折 ';
+                break;
+        }
+        return $msg;
+    }
+
     //去计算结果
     public function toResult($resultInfo,&$cart, $promotionInfo)
     {
@@ -298,6 +327,21 @@ class PromotionResult extends Common
         }
         return $info;
     }
+
+    public function getResultList($id)
+    {
+        $where[] = ['promotion_id', 'eq', $id];
+        $list = $this->where($where)->select();
+        if($list !== false && count($list)>0)
+        {
+            foreach($list as $k => &$v)
+            {
+                $v['params'] = json_decode($v['params'], true);
+            }
+        }
+        return $list;
+    }
+
     /**
      *  添加促销的条件
      * User:wht

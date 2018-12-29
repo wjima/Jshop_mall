@@ -10,7 +10,7 @@ Page({
     isPoint: false, //开启积分
     avatar: '../../image/default_avatar.png',
     bindMobile: false,
-    statusData: [], //状态数据
+    statusData: [0,0,0,0], //状态数据
     isClerk: false, //是不是店员
   },
 

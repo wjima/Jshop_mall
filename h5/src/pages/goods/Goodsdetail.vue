@@ -19,7 +19,7 @@
             :spes="productSpes.default_spes_desc"
             @changeSpes="changeSpes"
         ></goodsstandard>
-        <goodsnum :stock="productSpes.stock" @num="goodsNum"></goodsnum>
+        <goodsnum :stock="productSpes.stock" @num="goodsNum" :unit="goodsData.unit"></goodsnum>
         <yd-tab>
             <yd-tab-panel label="图文详情">
                 <ul v-html="goodsData.intro"></ul>
@@ -27,7 +27,7 @@
             <yd-tab-panel class="params" label="产品参数">
                 <ul v-if="params.length">
                     <li v-for="(item, index) in params" :key="index">
-                        <span id="paramsleft">{{ item.name }} : </span><span id="paramsright">{{ item.value }}</span>
+                        <div v-if="item.value"><span id="paramsleft">{{ item.name }} : </span><span id="paramsright">{{ item.value }}</span></div>
                     </li>
                 </ul>
                 <ul v-else>没有详细参数</ul>

@@ -91,15 +91,18 @@
   float: right;
 }
 .member-icon{
-  width: 34rpx;
-  height: 36rpx;
-  margin-right: 12rpx;
-  position: relative;
-  top: 8rpx;
+  width: 50rpx;
+  height: 50rpx;
+  /* margin-right: 8rpx; */
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  /* top: 14rpx; */
 }
 .member-text{
   color: #666;
   font-size: 24rpx;
+  margin-left:56rpx;
 }
 .order-top-left{
   float: left;
@@ -142,16 +145,17 @@
 }
 .order-num{
   display: block;
-  width: 24rpx;
-  height: 24rpx;
-  line-height: 26rpx;
+  min-width: 16rpx;
+  height: 28rpx;
+  line-height: 28rpx;
   background-color: #FF3B44;
   color: #fff;
-  font-size: 20rpx;
-  border-radius: 50%;
+  font-size: 16rpx;
+  border-radius: 50rpx;
   position: absolute;
-  right: 64rpx;
+  left: 100rpx;
   top: -12rpx;
+  padding: 0 6rpx;
 }
 .content-body .content-view{
   width: 696rpx;
@@ -159,6 +163,7 @@
   line-height: 60rpx; 
   padding: 10rpx 30rpx 10rpx 24rpx;
   border-bottom: 2rpx solid #f2f2f2;
+  position: relative;
 }
 .content-four{
   border: none;

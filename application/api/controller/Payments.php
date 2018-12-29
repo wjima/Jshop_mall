@@ -39,7 +39,7 @@ class Payments extends Api
             return error_code(10056);
         }
         $billPayments = new BillPayments();
-        return $billPayments->getInfo(input('param.payment_id'),$this->sellerId,$this->userId);
+        return $billPayments->getInfo(input('param.payment_id'),$this->userId);
     }
 
 

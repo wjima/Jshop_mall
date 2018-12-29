@@ -485,11 +485,14 @@ class Order extends Common
     /**
      * 获取订单信息
      * @param $id
-     * @param $user_id
-     * @return bool|null|static
+     * @param bool $user_id
+     * @param bool $logistics
+     * @return Order|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getOrderInfoByOrderID($id, $user_id = false)
+    public function getOrderInfoByOrderID($id, $user_id = false, $logistics = true)
     {
         $order_info = $this->get($id); //订单信息
 
@@ -574,7 +577,7 @@ class Order extends Common
         }
 
         //物流信息查询
-        if($order_info['delivery'][0])
+        if($order_info['delivery'][0] && $logistics)
         {
             $logi_code = $order_info['delivery'][0]['logi_code'];
             $logi_no = $order_info['delivery'][0]['logi_no'];
@@ -888,16 +891,27 @@ class Order extends Common
      */
     public function edit($data)
     {
-        $update = [
-            'ship_area_id' => $data['ship_area_id'],
-            'ship_address' => $data['ship_address'],
-            'ship_name' => $data['ship_name'],
-            'ship_mobile' => $data['ship_mobile']
-        ];
-        if($data['order_amount'])
+        if($data['edit_type'] == 1)
         {
-            $update['order_amount'] = $data['order_amount'];
+            $update = [
+                'ship_area_id' => $data['ship_area_id'],
+                'ship_address' => $data['ship_address'],
+                'ship_name' => $data['ship_name'],
+                'ship_mobile' => $data['ship_mobile']
+            ];
+            if($data['order_amount'])
+            {
+                $update['order_amount'] = $data['order_amount'];
+            }
         }
+        elseif($data['edit_type'] == 2)
+        {
+            $update['store_id'] = $data['store_id'];
+            $update['ship_name'] = $data['ship_name'];
+            $update['ship_mobile'] = $data['ship_mobile'];
+        }
+
+
         $res = $this->where('order_id', 'eq', $data['order_id'])
             ->update($update);
 
@@ -1193,12 +1207,18 @@ class Order extends Common
         Db::startTrans();
         try {
             $this->save($order);
-            //上面保存好收款单表，下面保存收款单明细表，更改库存
+            //上面保存好订单表，下面保存订单的其他信息
+            //更改库存
             $goodsModel = new Goods();
             foreach($orderInfo['data']['items'] as $k => $v){
                 $orderInfo['data']['items'][$k]['order_id'] = $order['order_id'];
                 //更改库存
-                $goodsModel->changeStock($v['product_id'], 'order', $v['nums']);
+                $sflag = $goodsModel->changeStock($v['product_id'], 'order', $v['nums']);
+                if(!$sflag['status'])
+                {
+                    Db::rollback();
+                    return $sflag;
+                }
             }
             $orderItemsModel = new OrderItems();
             $orderItemsModel->saveAll($orderInfo['data']['items']);
@@ -1210,6 +1230,7 @@ class Order extends Common
                 $coupon_res = $coupon->usedMultipleCoupon($coupon_code, $user_id);
                 if(!$coupon_res['status'])
                 {
+                    Db::rollback();
                     return $coupon_res;
                 }
             }
@@ -1218,8 +1239,16 @@ class Order extends Common
             if($order['point'] > 0)
             {
                 $userPointLog = new UserPointLog();
-                $userPointLog->setPoint($user_id, 0-$order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
+                $pflag = $userPointLog->setPoint($user_id, 0-$order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
+                if(!$pflag['status'])
+                {
+                    Db::rollback();
+                    return $pflag;
+                }
             }
+
+            //提交数据库
+            Db::commit();
 
             //清除购物车信息
             $cartModel = new Cart();
@@ -1229,16 +1258,16 @@ class Order extends Common
             $orderLog = new OrderLog();
             $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
 
-            $result['status'] = true;
-            $result['data']   = $order;
-            //添加订单其它信息，发送短信时使用
+            //发送消息
             $shipModel          = new Ship();
             $ship               = $shipModel->getInfo(['id' => $order['logistics_id']]);
             $order['ship_id']   = $ship['name'];
             $order['ship_addr'] = get_area($order['ship_area_id']) . $order['ship_address'];
-            Db::commit();
             $order['form_id'] = $formId;
             sendMessage($user_id, 'create_order', $order);
+
+            $result['status'] = true;
+            $result['data']   = $order;
             return $result;
         } catch (\Exception $e) {
             Db::rollback();

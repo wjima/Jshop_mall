@@ -190,6 +190,11 @@ function _sImage($image_id, $type = 's')
             return config('jshop.default_image');//默认图片
         }
     }
+
+    if (stripos($image_id, 'http') !== false || stripos($image_id, 'https') !== false) {
+        return $image_id;
+    }
+
     $image_obj = new \app\common\model\Images();
     $image     = $image_obj->where([
         'id' => $image_id

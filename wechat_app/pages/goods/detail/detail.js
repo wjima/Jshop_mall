@@ -439,7 +439,7 @@ Page({
         //todo::头像和用户昵称需要授权获取
         let page = this;
         let avatar = page.data.avatar;
-        let nickname = page.data.nickname;
+        let nickname = page.data.nickname ? page.data.nickname: '匿名好友';
         if (avatar == ''){
             avatar = '/static/images/default.png';
         }

@@ -214,5 +214,4 @@ class Categories extends Manage
         }
         return $result;
     }
-
 }

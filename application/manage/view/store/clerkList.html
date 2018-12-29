@@ -1,11 +1,23 @@
 <form class="layui-form seller-form">
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <a class="layui-btn layui-btn-sm" href="{:url('manage/store/index')}"><i class="layui-icon">&#xe603;</i> 返回</a>
             <button type="button" class="layui-btn layui-btn-sm add-store"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
+        <div class="layui-inline">
+            <label class="layui-form-label">所属门店：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <select name="id" id="id">
+                    <option value="">-- 全部 --</option>
+                    {foreach $store as $v}
+                    <option value="{$v.id}" {if $id == $v.id}selected{/if}>{$v.store_name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
     </div>
 </form>
 
@@ -24,18 +36,21 @@
             page: 'true',
             limit:'20',
             id:'clerkTable',
-            url: "{:url('Store/clerkList')}?id={$id}",
+            url: "{:url('Store/clerkList')}",
+            where: {
+                id: "{$id}"
+            },
             response: {
                 statusName: 'status',
                 statusCode: 1
             },
             cols: [[ //标题栏
                 {type: 'numbers'},
-                {field: 'store_name', width:150, title: '店铺名称'},
-                {field: 'user_nickname', width:150, title: '店员昵称'},
-                {field: 'user_mobile', width:150, title: '店员手机号'},
-                {field: 'ctime', width:170, title: '关联时间'},
-                {title:'操作',align:'center',toolbar:'#clerkBar', fixed:'right',width: 100}
+                {field: 'store_name',  title: '店铺名称'},
+                {field: 'user_nickname', title: '店员昵称'},
+                {field: 'user_mobile',  title: '店员手机号'},
+                {field: 'ctime',  title: '关联时间'},
+                {title:'操作',align:'center',toolbar:'#clerkBar', fixed:'right'}
             ]] //设置表头
         });
 
@@ -59,6 +74,15 @@
                     });
                 });
             }
+        });
+
+        //筛选条件
+        form.on('submit(*)', function(data){
+            layui.table.reload('clerkTable', {
+                where: data.field,
+                page: {curr: 1}
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
     });
 </script>

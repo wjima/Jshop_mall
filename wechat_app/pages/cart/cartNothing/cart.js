@@ -13,7 +13,9 @@ Page({
     cartId: '',
     cartNum: '',
     isLoad: false,
-    cartNums: 0
+    cartNums: 0,
+    editStatus: false,
+    shopName: app.config.app_title
   },
 
   //获取购物车数据
@@ -29,6 +31,51 @@ Page({
         var data = res.data;
         page.showHandle(data); //数量设置
       }
+    });
+  },
+
+  editBtn: function () {
+    this.setData({
+      editStatus: true
+    });
+  },
+
+  editNoBtn: function () {
+    let page = this;
+    this.setData({
+      editStatus: false
+    });
+    var is_select = false;
+    for (var i in page.data.cartData.list) {
+      if (page.data.cartData.list[i].is_select) {
+        is_select = true;
+        break;
+      }
+    }
+    if (is_select) {
+      page.getCartData();
+    }
+  },
+
+  delList: function () {
+    var page = this;
+    var ids = [];
+    for (var k in page.data.cartData.list) {
+      if (page.data.cartData.list[k].is_select) {
+        ids += page.data.cartData.list[k].id + ',';
+      }
+    }
+    var data = {
+      ids: ids
+    }
+    app.api.goodsDelCart(data, function (res) {
+      if (res.status) {
+        wx.showToast({
+          title: res.msg
+        });
+      }
+      page.setNumsData();
+      page.isAllCheckbox();
     });
   },
 
@@ -71,7 +118,7 @@ Page({
       //添加左滑效果
       data.list[i].isTouchMove = false;
       //是否可以去支付
-      if(data.list[i].is_select) {
+      if (data.list[i].is_select) {
         goSettlement = true;
       }
     }
@@ -79,7 +126,7 @@ Page({
     data.order_pmt = app.common.formatMoney(data.order_pmt, 2, '');
     data.amount = app.common.formatMoney(data.amount, 2, '');
     var isLoad = false;
-    if(data.list.length < 1){
+    if (data.list.length < 1) {
       isLoad = true;
     }
     var n = 0;
@@ -259,7 +306,7 @@ Page({
         if (cartData.list[key].nums < cartData.list[key].products.stock) {
           cartData.list[key].nums++;
           num = cartData.list[key].nums;
-          if (num >= cartData.list[key].products.stock){
+          if (num >= cartData.list[key].products.stock) {
             cartData.list[key].maxStatus = 'disabled';
           }
           if (num > 1) {
@@ -292,7 +339,7 @@ Page({
     var cartData = page.data.cartData;
     for (var key in cartData.list) {
       if (cartData.list[key].id == id) {
-        if (e.detail.value < 1){
+        if (e.detail.value < 1) {
           e.detail.value = 1;
           cartData.list[key].minStatus = 'disabled';
         }
@@ -315,7 +362,7 @@ Page({
       nums: nums
     }
     app.api.setCartNum(data, function (res) {
-      page.getCartData();
+      //page.getCartData();
     });
   },
 
@@ -325,7 +372,8 @@ Page({
     //移除渲染
     page.data.cartData.list.splice(e.currentTarget.dataset.index, 1);
     page.setData({
-      cartData: page.data.cartData
+      cartData: page.data.cartData,
+      isLoad: true
     });
     //移除数据库
     var data = {
@@ -351,10 +399,10 @@ Page({
       }
       app.api.goodsCollection(data, function (res) {
         for (var k in page.data.cartData.list) {
-          if(page.data.cartData.list[k].products.goods_id == e.currentTarget.dataset.goodsid) {
-            if(res.msg == '收藏成功'){
+          if (page.data.cartData.list[k].products.goods_id == e.currentTarget.dataset.goodsid) {
+            if (res.msg == '收藏成功') {
               page.data.cartData.list[k].isCollection = true;
-            }else{
+            } else {
               page.data.cartData.list[k].isCollection = false;
             }
           }
@@ -390,13 +438,13 @@ Page({
     }
   },
 
-    //查看商品详情
-    goodsDetail: function (e) {
-        let ins = encodeURIComponent('id=' + e.currentTarget.dataset.id);
-        wx.navigateTo({
-            url: '../../goods/detail/detail?scene=' + ins
-        });
-    },
+  //查看商品详情
+  goodsDetail: function (e) {
+    let ins = encodeURIComponent('id=' + e.currentTarget.dataset.id);
+    wx.navigateTo({
+      url: '../../goods/detail/detail?scene=' + ins
+    });
+  },
 
   //手指触摸动作开始 记录起点X坐标
   touchstart: function (e) {
@@ -452,6 +500,9 @@ Page({
     var page = this;
     app.db.userToken(function (token) {
       page.getCartData(); //获取购物车数据
+    });
+    this.setData({
+      editStatus: false
     });
   }
 });

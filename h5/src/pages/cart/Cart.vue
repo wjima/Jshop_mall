@@ -79,7 +79,7 @@ export default {
             isCheckAll: true, // 默认全选
             list: [], // 购物车列表
             total: '', // 商品总金额
-            promotion: [], // 促销信息
+            promotion: {}, // 促销信息
             goods_pmt: '', // 商品优惠
             order_pmt: '' // 订单优惠
         }
@@ -126,7 +126,7 @@ export default {
                 this.order_pmt = '0.00'
                 this.isCheckAll = false
                 for (let k in this.promotion) {
-                    this.$set(this.promotion[k], 'type', 1)
+                    this.promotion[k].type = 1
                 }
             } else {
                 this.cartList(ids)
@@ -197,7 +197,13 @@ export default {
         },
         // 去结算
         balance () {
-            this.$router.push({path: '/firmorder', query: {cartIds: this.ids.toString()}})
+            let ids = []
+            this.list.forEach (item => {
+                if (item.is_select) {
+                    ids.push(item.id)
+                }
+            })
+            this.$router.push({path: '/firmorder', query: {cartIds: ids.join(',')}})
         },
         // 跳转
         skip () {

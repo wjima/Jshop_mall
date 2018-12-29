@@ -1,7 +1,5 @@
-.cart-content{
-  background-color: #f3f3f3;
-  border-top: 2rpx solid #ccc;
-  height: 100vh;
+page{
+  background-color: #f8f8f8;
 }
 .content {
  width: 700rpx;
@@ -18,8 +16,7 @@
 .content-top{
   background-color: #fff;
 }
-.list-body{  
-  border-bottom: 2rpx solid #f3f3f3;
+.list-body{
   overflow: hidden;
   display: flex;
   justify-content: space-between;
@@ -36,8 +33,13 @@
 }
 .body-right-title{
   color: #666;
-  font-size: 28rpx;
-  overflow: hidden;  
+  font-size: 26rpx;
+  overflow: hidden;
+  display: -webkit-box;
+  text-overflow:ellipsis;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  white-space:normal;
 }
 .body-right-title text{
   width: 284rpx;
@@ -95,12 +97,12 @@
   background-color: #999 !important;
 }
 .content-top{
-  border-bottom: 14rpx solid #f3f3f3;
+  margin-bottom: 16rpx;
 }
 .problem-description{
   width: 690rpx;
   padding: 30rpx 30rpx 20rpx;
-  border-bottom: 16rpx solid #f3f3f3;
+  margin-bottom: 16rpx;
   background-color: #fff;
 }
 .problem-title{
@@ -128,18 +130,26 @@
 .rf-ror .radio{
   margin-left: 10rpx;
 }
+.rf-ror .radio radio{
+  transform:scale(0.7);
+  position:relative;
+  top:4rpx;
+}
 .rf-ror .radio text{
   position: relative;
   top: 6rpx;
 }
 .refund-service .refund-service-list{
   height: 54rpx;
-  border-bottom: 2rpx solid #e8e8e8;
+  border-bottom: 2rpx solid #f9f9f9;
   background-color: #fff;
   padding:10px 15px;
   align-items:center;
   overflow: hidden;
   position:relative;
+}
+.refund-service .refund-service-list:last-child{
+  border: none;
 }
 .refund-service-list-left{
   color: #666;
@@ -184,11 +194,14 @@
 }
 .upload{
   width: 690rpx;
-  padding: 16rpx 30rpx 0;
+  padding: 16rpx 30rpx 10rpx;
   background-color: #fff;
   margin: 16rpx 0;
   color: #666;
   font-size: 30rpx;
+}
+.upload-img{
+  margin-top: 10rpx;
 }
 .upload-img>image{
   width: 166rpx;
@@ -207,7 +220,6 @@
 .submit{
   padding-top: 20rpx;
   padding-bottom: 80rpx;
-  background-color: #f3f3f3;
   text-align: center;
 }
 .weui-btn{
@@ -216,6 +228,8 @@
   line-height: 80rpx !important;
   margin: 0 auto;
   color: #fff;
+  border-radius: 0;
+  font-size: 30rpx;
   background-color: #FF3B44 !important;
 }
 .delImageicon{
@@ -232,10 +246,6 @@
   font-size: 34rpx;
   text-align: center;
 }
-.problem-body{
-  /* background-color: #f8f8f8; */
-  padding: 0 20rpx;
-}
 .problem-body textarea{
   width: 650rpx;
   min-height: 100rpx;
@@ -251,4 +261,33 @@
   padding: 8rpx 30rpx;
   color: #666;
   font-size: 26rpx;
+}
+
+.check-box checkbox .wx-checkbox-input{
+   border-radius: 50%;/* 圆角 */
+   width: 40rpx; /* 背景的宽 */
+   height: 40rpx; /* 背景的高 */
+}
+/* 选中后的 背景样式 （红色背景 无边框 可根据UI需求自己修改） */
+.check-box checkbox .wx-checkbox-input.wx-checkbox-input-checked{
+   border: 2rpx solid #FF3B44;
+   background: #FF3B44;
+}
+/* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
+.check-box checkbox .wx-checkbox-input.wx-checkbox-input-checked::before{
+   border-radius: 50%;/* 圆角 */
+   width: 40rpx;/* 选中后对勾大小，不要超过背景的尺寸 */
+   height: 40rpx;/* 选中后对勾大小，不要超过背景的尺寸 */
+   line-height: 40rpx;
+   text-align: center;
+   font-size:30rpx; /* 对勾大小 30rpx */
+   color:#fff; /* 对勾颜色 白色 */
+   background: transparent;
+   transform:translate(-50%, -50%) scale(1);
+   -webkit-transform:translate(-50%, -50%) scale(1);
+}
+
+.prohibit .wx-checkbox-input.wx-checkbox-input-checked{
+   border: 2rpx solid #eee !important;
+   background: #eee !important;
 }

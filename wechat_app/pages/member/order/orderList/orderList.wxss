@@ -1,23 +1,27 @@
+page{
+  background-color: #f3f3f3;
+}
 .nav{
   width:100%;
-  height:70rpx;
-  line-height: 70rpx;
+  height:80rpx;
+  line-height: 80rpx;
   display:flex;
   flex-direction:row;
   border-top: 2rpx solid #e8e8e8;
+  background-color: #fff;
 }
 .default{
   text-align:center;
   flex:1;
   color:#666;
-  font-size:32rpx;
+  font-size:28rpx;
   border-bottom: 2rpx solid #e8e8e8;
 }
 .red{
   text-align:center;
   color:#FF3B44 ;
   flex:1;
-  font-size:32rpx;
+  font-size:28rpx;
   border-bottom: 2rpx solid #FF3B44;
 }
 .show{
@@ -25,6 +29,10 @@
 }
 .hidden{
   display:none;
+}
+.listdetails{
+  margin-bottom: 16rpx;
+  background-color: #fff;
 }
 .top{
   width: 690rpx;
@@ -37,6 +45,9 @@
   font-size: 24rpx;
   color: #FF3B44;
   float: right;
+}
+.orderlist{
+  /* background-color: #fff; */
 }
 .mid-top{
   background-color: #FBFBFB;
@@ -96,6 +107,7 @@
   padding: 0 30rpx;
   border-bottom: 2rpx solid #e8e8e8;
   overflow: hidden;
+  background-color: #fff;
 }
 .mid-bot>view{
   float: right;
@@ -105,20 +117,17 @@
 }
 .bottom{
   width: 690rpx;
-  padding: 20rpx 30rpx;
+  padding: 10rpx 30rpx 14rpx;
   overflow: hidden;
-  border-bottom: 16rpx solid #f3f3f3;
+  background-color: #fff;
 }
 .bottom>view{      
   float: right;    
 }
 .bottom>view>view{
-  line-height: 60rpx;
   text-align: center;  
-  font-size: 28rpx;
-  width: 180rpx;
-  height: 58rpx;  
-  border-radius: 40rpx;
+  font-size: 24rpx;
+  padding: 6rpx 20rpx;
   display: inline-block;
   margin-left: 26rpx;
 }
@@ -127,8 +136,9 @@
   border: 2rpx solid #ccc;
 }
 .bottom-right{
-  color: #FF3B44;
+  color: #fff;
   border: 2rpx solid #FF3B44;
+  background-color: #FF3B44;
 }
 .loading{
   text-align:center;
@@ -137,17 +147,17 @@
   color:#bbb;
 }
 .none-img{
-  margin: 100rpx auto;
+  margin: 180rpx auto;
   text-align: center;
 }
 .none-img image{
-  width: 200rpx;
-  height: 200rpx;
+  width: 160rpx;
+  height: 160rpx;
 }
 .none-img text{
   display: block;
   color:#bbb;
-  font-size:32rpx;
+  font-size:26rpx;
 }
 .number{
   float: left !important;

@@ -86,21 +86,12 @@ class Coupon extends Api
      */
     public function userCoupon()
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '获取失败'
-        ];
         $couponModel = new couponModel();
-        $res = $couponModel->getMyCoupon($this->userId, '', input('display', 'all'));
-
-        if ( $res )
-        {
-            $result['status'] = true;
-            $result['data'] = $res;
-            $result['msg'] = '获取成功';
-        }
-        return $result;
+        $page = Request::param('page', 1);
+        $limit = Request::param('limit', 10);
+        $display = Request::param('display', 'all');
+        $res = $couponModel->getMyCoupon($this->userId, '', $display, $page, $limit);
+        return $res;
     }
 
     /**
@@ -124,8 +115,8 @@ class Coupon extends Api
         }
         //判断用户是否已领取?
         $couponModel = new couponModel();
-        $coupon = $couponModel->getMyCoupon($this->userId,input('promotion_id'));
-        if ( !$coupon->isEmpty() )
+        $coupon = $couponModel->getMyCoupon($this->userId, input('promotion_id'));
+        if ( count($coupon['data']['list']) > 0 )
         {
             return error_code(15008);
         }

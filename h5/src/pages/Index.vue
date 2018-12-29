@@ -37,7 +37,6 @@ export default {
     mounted () {
         this.getCouponList()
         var url = GetUrlPara();
-        console.log(url)
     },
     methods: {
         // 获取商户优惠券信息

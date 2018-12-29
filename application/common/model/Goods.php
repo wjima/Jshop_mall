@@ -470,7 +470,7 @@ class Goods extends Common
         $productModel = new Products();
         $where        = [];
         $where[]      = ['id', 'eq', $product_id];
-        $where[]      = ['stock', '>', 0];
+        $where[]      = ['(stock-freeze_stock)-'.$num, '>', 0];
         switch ($type) {
             case 'order': //下单
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);

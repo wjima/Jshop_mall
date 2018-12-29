@@ -1,4 +1,3 @@
-
 //把obj对象里的值覆盖到newobj里面
 function deepCopy(newobj,obj) {
   if (typeof obj != 'object') {
@@ -227,6 +226,17 @@ function groupDetailCountDown(that) {
 function PrefixInteger(num, length) {
   return (Array(length).join('0') + num).slice(-length); 
 }
+
+//验证是否是手机号
+function isPhoneNumber(str){
+    var myreg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+    if (!myreg.test(str)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 module.exports = {
   deepCopy:deepCopy,
   jumpToLogin: jumpToLogin,
@@ -239,5 +249,6 @@ module.exports = {
   groupDetailCountDown: groupDetailCountDown,
   seckillCountDown: seckillCountDown,
   errorToShow: errorToShow,
-  time2date: time2date
+  time2date: time2date,
+  isPhoneNumber: isPhoneNumber
 }

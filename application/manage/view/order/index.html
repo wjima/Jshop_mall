@@ -146,7 +146,7 @@
                 {field: 'status_text', title: '订单状态', width: 90, align: 'center'},
                 {field: 'username', title: '用户名', width:120, align: 'center'},
                 {field: 'ship_mobile', title: '收货人手机号', width:120, align: 'center'},
-                {field: 'area_name', title: '收货地址', width:260, align: 'center'},
+                {field: 'area_name', title: '收货地址', align: 'center'},
                 {field: 'pay_status', title: '支付状态', width:90, align: 'center'},
                 {field: 'ship_status', title: '发货状态', width:90, align: 'center'},
                 {field: 'order_amount', title: '订单总额', width:100, align: 'center', templet:function(data){return '￥'+data.order_amount}},
@@ -238,6 +238,8 @@
         //保存编辑订单
         $(document).on('click', '.order-edit-btn', function(){
             var order_id = $("#order_id").val();
+            var edit_type = $("#edit_type").val();
+            var store_id = $("#store_id").val();
             var ship_area_id = $("input[name='ship_area_id']").val();
             var ship_address = $("#ship_address").val();
             var ship_name = $("#ship_name").val();
@@ -249,6 +251,8 @@
                 type: 'post',
                 data: {
                     'order_id': order_id,
+                    'edit_type': edit_type,
+                    'store_id': store_id,
                     'ship_area_id': ship_area_id,
                     'ship_address': ship_address,
                     'ship_name': ship_name,
@@ -279,7 +283,7 @@
                         window_box = layer.open({
                             type: 1,
                             title: '支付订单',
-                            area: ['530px', '350px'], //宽高
+                            area: ['530px', '360px'], //宽高
                             content: e.data.tpl
                         });
                     }else{

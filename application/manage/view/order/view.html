@@ -94,6 +94,29 @@
 
 			<!--收货人信息-->
 			<div class="layui-tab-item">
+				{if $order.store}
+				<div class="layui-form-item">
+					<label class="layui-form-label">自提店铺名：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.store.store_name}</div>
+
+					<label class="layui-form-label">店铺地址：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.store.all_address}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">店铺联系人：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.store.linkman}</div>
+
+					<label class="layui-form-label">店铺联系电话：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.store.mobile}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">提货人名：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.ship_name}</div>
+
+					<label class="layui-form-label">提货人电话：</label>
+					<div class="layui-form-mid seller-inline-4">{$order.ship_mobile}</div>
+				</div>
+				{else/}
 				<div class="layui-form-item">
 					<label class="layui-form-label">收货时间：</label>
 					<div class="layui-form-mid seller-inline-4">{if $order.confirm == 2}{:date('Y-m-d H:i:s', $order.confirm_time)}{else/}未收货{/if}</div>
@@ -112,6 +135,7 @@
 					<label class="layui-form-label">收货地址：</label>
 					<div class="layui-form-mid seller-inline-9">{$order.ship_address}</div>
 				</div>
+				{/if}
 			</div>
 
 			<!--商品详情-->

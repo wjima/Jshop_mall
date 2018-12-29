@@ -44,7 +44,6 @@ Page({
         stars[key] = [true, true, true, true, true];
         textarea[key] = '';
       }
-      console.log(res.data.items);
       page.setData({
         images: images,
         goodsList: res.data.items,
@@ -95,9 +94,11 @@ Page({
     var index = e.target.dataset.index;
     var goods_id = e.target.dataset.goodsid;
     var page = this;
+    var s = 0;
     for (var i = 0; i < 5; i++) {
       if(i <= index){
         newData.push(true);
+        s++;
       }else{
         newData.push(false);
       }
@@ -105,7 +106,7 @@ Page({
     var stars = this.data.stars;
     var scores = this.data.scores;
     stars[goods_id] = newData;
-    scores[goods_id] = i+1;
+    scores[goods_id] = s;
     page.setData({
       stars: stars,
       scores:scores

@@ -29,7 +29,8 @@ class UserPointLog extends Common
      * @param $num
      * @param int $type
      * @param string $remarks
-     * @return array|bool
+     * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -53,32 +54,25 @@ class UserPointLog extends Common
             return $return;
         }
 
-        $return = false;
-        Db::startTrans();
-        try{
-            //插入记录
-            $data = [
-                'user_id' => $user_id,
-                'type' => $type,
-                'num' => $num,
-                'balance' => $new_point,
-                'remarks' => $remarks,
-                'ctime' => time()
-            ];
-            $this->insert($data);
+        //插入记录
+        $data = [
+            'user_id' => $user_id,
+            'type' => $type,
+            'num' => $num,
+            'balance' => $new_point,
+            'remarks' => $remarks,
+            'ctime' => time()
+        ];
+        $this->insert($data);
 
-            //插入主表
-            $where[] = ['id', 'eq', $user_id];
-            $user_info->where($where)
-                ->setInc('point', $num);
+        //插入主表
+        $where[] = ['id', 'eq', $user_id];
+        $user_info->where($where)
+            ->setInc('point', $num);
 
-            Db::commit();
-            $return['status'] = true;
-            $return['msg'] = '积分更改成功';
-        }catch(\Exception $e){
-            Db::rollback();
-            $return['msg'] = '积分更改失败';
-        }
+        $return['status'] = true;
+        $return['msg'] = '积分更改成功';
+
         return $return;
     }
 

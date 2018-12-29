@@ -10,7 +10,7 @@
                 <span slot="right">￥{{ order_amount }}</span>
             </yd-cell-item>
         </yd-cell-group>
-        <payment :payments="payments" @pay="pay"></payment>
+        <payment :payments="payments" @pay="pay" :user="userInfo"></payment>
     </div>
 </template>
 
@@ -24,19 +24,23 @@ export default {
         return {
             order_id: this.$route.query.order_id,
             order_amount: '', // 订单总价
-            payments: [] // 商户可支付的方式列表
+            payments: [], // 商户可支付的方式列表
+            userInfo: {} // 用户信息
         }
     },
     created () {
         this.orderDetail()
         this.getPaymentType()
+        this.getUserInfo()
     },
     methods: {
+        // 获取订单详情
         orderDetail () {
             this.$api.orderDetail({order_id: this.order_id}, res => {
                 this.order_amount = res.data.order_amount
             })
         },
+        // 获取支付方式列表
         getPaymentType () {
             this.$api.paymentList({}, res => {
                 let data = res.data
@@ -46,10 +50,17 @@ export default {
                 this.payments = data
             })
         },
+        getUserInfo () {
+            this.$api.userInfo({}, res => {
+                if (res.status) {
+                    this.userInfo = res.data
+                }
+            })
+        },
         // 根据code 区分支付方式
         pay (code) {
             if (code === 'wechatpay') {
-                let isWeiXin = this.isWeiXinBrowser()
+                let isWeiXin = this.GLOBAL.isWeiXinBrowser()
                 // 微信支付
                 let params = {
                     trade_type: isWeiXin ? 'JSAPI_OFFICIAL' : 'MWEB',
@@ -88,8 +99,6 @@ export default {
                                         })
                                         // 使用以上方式判断前端返回,微信团队郑重提示：
                                         //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                                    } else {
-                                        _this.$dialog.alert({mes: '支付失败'})
                                     }
                                 });
                         }
@@ -163,6 +172,7 @@ export default {
                 })
             }
         },
+        // alipay 模拟get提交
         StandardPost (url, data) {
             let tempForm = document.createElement('form')
             tempForm.id = 'aliPay'
@@ -182,13 +192,6 @@ export default {
             tempForm.dispatchEvent(new Event('submit'))
             tempForm.submit()
             document.body.removeChild(tempForm)
-        },
-        // 判断是否是微信浏览器发起不同的微信支付请求
-        isWeiXinBrowser () {
-            //window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
-            let ua = window.navigator.userAgent.toLowerCase();
-            //通过正则表达式匹配ua中是否含有MicroMessenger字符串
-            return ua.match(/MicroMessenger/i) == 'micromessenger' ? true : false
         }
     },
     watch: {

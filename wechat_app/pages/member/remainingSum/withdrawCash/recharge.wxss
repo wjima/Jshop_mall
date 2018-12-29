@@ -47,9 +47,14 @@ picker .weui-input{
   margin-right: 30rpx;
 }
 .weui-btn{
-  background-color: #FF3B44 ;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  width: 100%;
+  background-color: #ff3b44;
   color: #fff;
-  font-size: 32rpx;
+  font-size: 30rpx;
+  border-radius: 0;
 }
 .header-img{
   width: 36rpx;

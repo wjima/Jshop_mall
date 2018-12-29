@@ -22,16 +22,19 @@ Page({
         key:'id',
         sort:'desc'
       }
-    }
+    },
+    alllist: true,
+    allgrid: false
   },
 
   //加载执行
   onLoad: function (options) {
     var where = {};
     if (options.id) {
-      where = {
-        cat_id: options.id
-      }
+        where = {
+            cat_id: options.id
+        }
+        this.getGoodsClass(options.id);
     }
     if (options.key) {
       where = {
@@ -63,6 +66,18 @@ Page({
       });
     }
   },
+
+    //获取分类名称
+    getGoodsClass: function (id){
+        let data = {
+            id: id
+        }
+        app.api.getGoodsClass(data, function(res){
+            wx.setNavigationBarTitle({
+                title: res.data
+            });
+        });
+    },
 
   onChangeShowState: function () {
     var that = this;
@@ -125,7 +140,10 @@ Page({
   maxPrice: function(e) {
     var reg = /^[0-9]+(.[0-9]{2})?$/;
     if (!reg.test(e.detail.value)) {
-      app.common.errorToBack('请输入正确金额', 0);
+      app.common.errorToShow('请输入正确金额');
+      this.setData({
+        maxPrice:''
+      })
     } else {
       this.setData({
         maxPrice: e.detail.value
@@ -136,26 +154,24 @@ Page({
   minPrice: function (e) {
     var reg = /^[0-9]+(.[0-9]{2})?$/;
     if (!reg.test(e.detail.value)) {
-      app.common.errorToBack('请输入正确金额',0);
+      app.common.errorToShow('请输入正确金额');
+      this.setData({
+        minPrice: ''
+      })
     }else{
       this.setData({
         minPrice: e.detail.value
       })
     }
-
-
-
-    
   },
 
   //查询价格区间
   searchPrice: function (event) {
-    if (this.data.minPrice > this.data.maxPrice){
-      app.common.errorToBack('价格区间有误', 0);
+
+    if (this.data.minPrice > 0 && this.data.maxPrice>0&&this.data.minPrice > this.data.maxPrice){
+      app.common.errorToShow('价格区间有误');
       return false;
     }
-
-
 
     this.setSearchData({
       page:1,
@@ -228,7 +244,7 @@ Page({
         if (page.data.searchData.page == 1 && res.data.list.length == 0){
           isEmpty = true;
         }
-
+        console.log(res.data.list);
         page.setData({
           goodsList: page.data.goodsList.concat(res.data.list),
           ajaxStatus: false,
@@ -273,5 +289,22 @@ Page({
     wx.navigateTo({
       url: '../search/search'
     });
+  },
+  listgrid: function(){
+    let page = this;    
+    if(page.data.alllist){
+      page.setData({
+      allgrid: true,
+      listgrid: true,
+      alllist: false,
+      })
+
+    } else{
+      page.setData({
+      alllist: true,
+      allgrid: false,
+      listgrid: false,
+      });
+    }    
   }
 });

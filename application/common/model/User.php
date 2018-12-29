@@ -438,18 +438,21 @@ class User extends Common
      */
     protected function tableFormat($list)
     {
-        foreach($list as $k => $v) {
-            if($v['sex']) {
+        foreach ($list as $k => $v) {
+            if ($v['sex']) {
                 $list[$k]['sex'] = config('params.user')['sex'][$v['sex']];
             }
-            if($v['status']) {
+            if ($v['status']) {
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
             }
-            if($v['pid']){
+            if ($v['pid']) {
                 $list[$k]['pid_name'] = get_user_info($v['pid']);
             }
-            if($v['ctime']){
+            if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);
+            }
+            if (isset($v['avatar']) && $v['avatar']) {
+                $list[$k]['avatar'] = _sImage($v['avatar']);
             }
         }
         return $list;
@@ -1060,6 +1063,148 @@ class User extends Common
         $where[] = ['status', 'eq', self::STATUS_NORMAL];
         $res     = $this->field('id')->where($where)->find();
         return $res;
+    }
+
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'mobile',
+                'desc' => '手机号',
+            ],
+            [
+                'id' => 'user_type_name',
+                'desc' => '用户类型',
+            ],
+            [
+                'id' => 'sex',
+                'desc' => '性别',
+            ],
+            [
+                'id' => 'birthday',
+                'desc' => '生日',
+            ],
+            [
+                'id' => 'avatar',
+                'desc' => '头像',
+            ],
+            [
+                'id' => 'nickname',
+                'desc' => '昵称',
+            ],
+            [
+                'id' => 'balance',
+                'desc' => '余额',
+            ],
+            [
+                'id' => 'point',
+                'desc' => '积分',
+                // 'modify'=>'getBool'
+            ],
+            [
+                'id' => 'status',
+                'desc' => '状态',
+                //'modify'=>'getMarketable',
+            ],
+            [
+                'id' => 'review_status_name',
+                'desc' => '审核状态',
+            ],
+            [
+                'id' => 'pid_name',
+                'desc' => '邀请人',
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '创建时间',
+            ]
+        ];
+    }
+
+
+    /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post,$isPage=true)
+    {
+        if(isset($post['limit'])){
+            $limit = $post['limit'];
+        }else{
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = [];
+        if($isPage){
+            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $re['count'] = $list->total();
+        }else{
+            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->select();
+            if(!$list->isEmpty()){
+                $data = $this->tableFormat($list->toArray());
+            }
+            $re['count'] = count($list);
+        }
+        $re['code'] = 0;
+        $re['msg'] = '';
+
+        $re['data'] = $data;
+
+        return $re;
+    }
+
+
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出商品'
+        ];
+        $header = $this->csvHeader();
+        $userData = $this->tableData($post, false);
+
+
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body = [];
+            $i = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) &&!empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
     }
 
 }

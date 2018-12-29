@@ -16,11 +16,6 @@ class UserWx extends Common
 
     //微信小程序登陆第一步，需要现在后台微信配置 小程序配置里面配置好参数
     public function codeToInfo($code){
-        $result = array(
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        );
         //根据code取openid和session_key
         $wx = new \org\Wx();
 
@@ -39,6 +34,7 @@ class UserWx extends Common
         if($info){
             //更新session_key
             $this->save(['session_key'=>$result['data']['session_key']],$where);
+            $user_wx_id = $info['id'];
         }else{
             if(isset($result['data']['unionid']) && $result['data']['unionid']){
                 $data['unionid'] = $result['data']['unionid'];
@@ -47,15 +43,15 @@ class UserWx extends Common
             $data['openid'] = $result['data']['openid'];
             $data['session_key'] = $result['data']['session_key'];
             $this->save($data);
+            $user_wx_id = $this->id;
         }
-        $result['data'] = $result['data']['openid'];
-        //unset($result['data']['session_key']);
+        $result['data'] = $user_wx_id;
         return $result;
     }
 
     //微信小程序登陆第二步，根据微信端传过来的值解析用户数据,更新user_wx表
-    public function updateWxInfo($openid,$edata,$iv){
-        $info = $this->where(['openid'=>$openid])->find();
+    public function updateWxInfo($id,$edata,$iv){
+        $info = $this->where(['id'=>$id])->find();
         if(!$info){
             return error_code(11002);
         }
@@ -68,9 +64,18 @@ class UserWx extends Common
         //加密信息里有openid或unionid，前台传过来的值查出来的数据里也有，需要判断是否一致，否则可能会有漏洞
         if($info['openid'] != $result['data']['openId'] && $info['unionid'] != $result['data']['unionId']){
             return error_code(10000);
-
+        }
+        if(isset($result['data']['unionId']) && $result['data']['unionId']){
+            $where[] = ['unionid','eq',$result['data']['unionId']];
+            $where[] = ['user_id','neq','0'];
+            $wxUserInfo = $this->where($where)->find();
+            if($wxUserInfo){
+                $info['user_id'] = $wxUserInfo['user_id'];
+                $data['user_id'] = $wxUserInfo['user_id'];
+            }
         }
         //更新微信信息
+        $data['type'] = self::TYPE_MINIPROGRAM;
         $data['avatar'] = $result['data']['avatarUrl'];
         $data['nickname'] = $result['data']['nickName'];
         $data['gender'] = $result['data']['gender'];
@@ -103,6 +108,9 @@ class UserWx extends Common
             $data['type'] = self::TYPE_OFFICIAL;            //公众号类型
             if (isset($params['unionId'])) {
                 $data['unionid'] = $params['unionId'];
+            }
+            if (isset($params['user_id'])) {
+                $data['user_id'] = $params['user_id'];
             }
             $data['avatar'] = $params['avatar'];
             $data['openid'] = $params['openid'];

@@ -85,7 +85,7 @@ class Appletmessage extends Addons
             $order_id             = $params['params']['params']['order_id'];
             $billPaymentsRelModel = new BillPayments();
             $billPaymentInfo      = $billPaymentsRelModel->getSuccessPaymentInfo($order_id, $billPaymentsRelModel::TYPE_ORDER);
-            //存储微信消息模板 todo::不清楚 $billPaymentInfo['generate_params'] 里面存的什么数据格式
+            //存储微信消息模板
             if (isset($billPaymentInfo['params'])) {
                 $billParams = json_decode($billPaymentInfo['params'], true);
                 if (isset($billParams['formid']) && $billParams['formid']) {

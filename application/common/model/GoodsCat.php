@@ -513,4 +513,32 @@ class GoodsCat extends Common
         }
 
     }
+
+
+    /**
+     * 获取名称
+     * @param $id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getNameById($id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => ''
+        ];
+        $where[] = ['id', 'eq', $id];
+        $info = $this->field('name')->where($where)->find();
+        if($info)
+        {
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+            $return['data'] = $info['name'];
+        }
+
+        return $return;
+    }
 }

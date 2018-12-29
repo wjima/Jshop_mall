@@ -158,31 +158,84 @@ class Coupon extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getMyCoupon($user_id, $promotion_id = '', $display = 'all')
+    public function getMyCoupon($user_id, $promotion_id = '', $display = 'all', $page = 1, $limit = 10)
     {
-        $where[] = ['user_id','eq',$user_id];
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => [
+                'list' => [],
+                'count' => 0,
+                'page' => $page,
+                'limit' => $limit
+            ]
+        ];
+        $where[] = ['c.user_id', 'eq', $user_id];
+        $where[] = ['p.type', 'eq', 2];
         if($display == 'no_used')
         {
-            $where[] = ['is_used', 'eq', self::USED_NO];
+            $where[] = ['c.is_used', 'eq', self::USED_NO];
+            $where[] = ['p.etime', '>=', time()];
         }
-
+        if($display == 'yes_used')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_YES];
+        }
+        if($display == 'invalid')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_NO];
+            $where[] = ['p.etime', '<', time()];
+        }
         if($promotion_id)
         {
-            $where[] = ['promotion_id','eq',$promotion_id];
+            $where[] = ['c.promotion_id','eq',$promotion_id];
         }
-        $list = $this::with('promotion')->where($where)->select();
-        if(!$list->isEmpty()){
-            foreach($list as $k =>$v){
-                if($v['etime']<time()){
-                    $list[$k]['overdue'] = true;
-                }else{
-                    $list[$k]['overdue'] = false;
+        else
+        {
+            $where[] = ['p.status', 'eq', 1];
+        }
+
+        $return['data']['list'] = $this->alias('c')
+            ->join('promotion p', 'p.id = c.promotion_id')
+            ->where($where)
+            ->page($page, $limit)
+            ->select();
+
+        $return['data']['count'] = $this->alias('c')
+            ->join('promotion p', 'p.id = c.promotion_id')
+            ->where($where)
+            ->count();
+
+        if($return['data']['list'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+            if(count($return['data']['list']) > 0)
+            {
+                $conditionModel = new PromotionCondition();
+                $resultModel = new PromotionResult();
+                foreach($return['data']['list'] as $k => $v)
+                {
+                    $pcondition = $conditionModel->getConditionList($v['id']);
+                    $presult = $resultModel->getResultList($v['id']);
+                    $expression1 = '';
+                    $expression2 = '';
+                    foreach($pcondition as $kk => $vv)
+                    {
+                        $expression1 .= $conditionModel->getConditionMsg($vv['code'], $vv['params']);
+                    }
+                    foreach($presult as $kk => $vv)
+                    {
+                        $expression2 .= $resultModel->getResultMsg($vv['code'], $vv['params']);
+                    }
+                    $return['data']['list'][$k]['expression1'] = $expression1;
+                    $return['data']['list'][$k]['expression2'] = $expression2;
+                    $return['data']['list'][$k]['stime'] = date('Y-m-d', $v['stime']);
+                    $return['data']['list'][$k]['etime'] = date('Y-m-d', $v['etime']);
                 }
-                $list[$k]['stime'] = date('Y-m-d',$v['stime']);
-                $list[$k]['etime'] = date('Y-m-d',$v['etime']);
             }
         }
-        return $list;
+        return $return;
     }
 
     /**

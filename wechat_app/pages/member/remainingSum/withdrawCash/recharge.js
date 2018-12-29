@@ -12,6 +12,8 @@ Page({
 
   },
 
+
+
   /**
    * 生命周期函数--监听页面加载
    */
@@ -27,6 +29,9 @@ Page({
     var page = this;
     app.api.userInfo(function (res) {
       page.userInfo = res.data;
+      page.setData({
+        balance: res.data.balance
+      });
     });
   },
 
@@ -62,6 +67,7 @@ Page({
           'success': function (e) {
             if (e.errMsg == "requestPayment:ok") {
               app.common.errorToBack('支付成功');
+              page.getUserInfo();//刷新账户余额状态
             } else if (res.errMsg == 'requestPayment:cancel') {
               app.common.errorToShow('支付已取消');
             }

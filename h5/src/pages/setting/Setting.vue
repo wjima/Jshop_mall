@@ -39,7 +39,7 @@ export default {
                                 if (res.status) {
                                     this.GLOBAL.removeStorage('user_token')
                                     this.GLOBAL.removeStorage('login-type')
-                                    this.$router.replace('/login')
+                                    this.$router.replace('/index')
                                 }
                             })
                         }

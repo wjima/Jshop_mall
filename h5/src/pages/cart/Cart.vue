@@ -112,7 +112,7 @@ export default {
         // 获取选中的商品重新 返回购物车数据
         selectedHandler () {
             let ids = []
-            this.list.forEach (item => {
+            this.list.forEach(item => {
                 if (item.is_select) {
                     ids.push(item.id)
                 }
@@ -179,8 +179,8 @@ export default {
             this.$api.cartList(data, res => {
                 if (res.status) {
                     const _list = res.data.list
-                    this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '')    // 总金额
-                    this.promotion = res.data.promotion_list    // 促销信息
+                    this.total = this.GLOBAL.formatMoney(res.data.amount, 2, '') // 总金额
+                    this.promotion = res.data.promotion_list // 促销信息
                     this.goods_pmt = this.GLOBAL.formatMoney(res.data.goods_pmt, 2, '') // 商品名优惠
                     this.order_pmt = this.GLOBAL.formatMoney(res.data.order_pmt, 2, '') // 订单优惠
                     this.list = [..._list]
@@ -198,7 +198,7 @@ export default {
         // 去结算
         balance () {
             let ids = []
-            this.list.forEach (item => {
+            this.list.forEach(item => {
                 if (item.is_select) {
                     ids.push(item.id)
                 }
@@ -278,7 +278,7 @@ export default {
             handler () {
                 let length = this.list.length
                 let ids = []
-                this.list.forEach(item=> {
+                this.list.forEach(item => {
                     if (item.is_select) {
                         ids.push(item.id)
                     }

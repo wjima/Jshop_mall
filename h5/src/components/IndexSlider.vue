@@ -12,6 +12,7 @@
 </template>
 
 <script type="text/babel">
+import {mapGetters} from 'vuex'
 export default {
     data () {
         return {
@@ -22,11 +23,22 @@ export default {
     mounted () {
         this.getSliderList()
     },
+    computed: {
+        ...mapGetters([
+            'shopName',
+            'shopDesc'
+        ])
+    },
     methods: {
         // 获取 轮播图
         getSliderList () {
             this.$api.slider({code: 'tpl1_slider'}, res => {
                 this.sliderList = res.data.list
+                if (Object.keys(this.sliderList).length) {
+                    if (this.GLOBAL.isWeiXinBrowser()) {
+                        this.$api.weixinShare(this.shopName, this.sliderList[0].img, this.shopDesc)
+                    }
+                }
             })
         },
         showDetail (type, val) {

@@ -44,7 +44,6 @@ class Ship extends Manage
                 $firstunit_area_price = input('firstunit_area_price/a',[]);
                 $continueunit_area_price = input('continueunit_area_price/a',[]);
 
-
                 foreach ($area_id as $key =>$val){
                     if($val){
                         $area_data = json_decode($val,true);

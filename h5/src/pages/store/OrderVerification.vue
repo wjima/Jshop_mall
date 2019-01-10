@@ -35,7 +35,7 @@
 
 <script>
 export default {
-    name: "OrderVerification",
+    name: 'OrderVerification',
     data () {
         return {
             id: this.$route.query.id,

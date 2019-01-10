@@ -30,11 +30,10 @@ Vue.config.productionTip = false
 Vue.prototype.$api = Api
 Vue.prototype.GLOBAL = Common
 
-
 const router = new VueRouter({
     mode: 'hash',
     routes: routers,
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior (to, from, savedPosition) {
         if (savedPosition) {
             return savedPosition
         }

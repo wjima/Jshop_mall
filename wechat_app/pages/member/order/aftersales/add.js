@@ -17,7 +17,7 @@ Page({
     reason_size:0,
     image_max: app.config.image_max,    //用于前台判断上传图片按钮是否显示
     refund_input_noedit: true,
-    mode: 'aspectFit',
+    mode: 'aspectFill',
   },
   
   //生命周期函数--监听页面加载

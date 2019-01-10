@@ -32,7 +32,7 @@
           <view class='mid' bindtap='showOrder' data-id="{{item.order_id}}">
             <!-- 子订单货品 -->
             <view class='mid-top' wx:for="{{item.items}}" wx:for-item="v" wx:key='k'>
-              <image class='goods-img' src='{{v.image_url}}'></image>
+              <image class='goods-img' mode='aspectFill' src='{{v.image_url}}'></image>
               <view class='mid-top-right'> 
                 <view class='name'>{{v.name}}</view>
                 <view class='style-num'>
@@ -84,6 +84,6 @@
     <!-- 加载功能 -->
     <view class="loading" id="loading" hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
     <view class="loading" id="loading" hidden="{{!loadingComplete}}">已载入全部</view>
-    <view class='none-img' wx:if="{{nodata}}"><image src='../../../image/page1copy.png'></image><text>没有数据</text></view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../../image/listnothing.png'></image><text>没有数据</text></view>
   </view>
 </scroll-view>

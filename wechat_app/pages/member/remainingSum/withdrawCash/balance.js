@@ -8,7 +8,8 @@ Page({
         money: 0.00,
         isCard: false,
         cardInfo: {},
-        maxMoney: 0.00
+        maxMoney: 0.00,
+        tocash_money_rate:0//提现手续费
     },
     
     // 银行卡选择
@@ -32,7 +33,8 @@ Page({
         this.getUserDefaultBankCard();
 
         this.setData({
-            maxMoney: options.money
+            maxMoney: options.money,
+            tocash_money_rate: app.config.tocash_money_rate
         });
     },
 

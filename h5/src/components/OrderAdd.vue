@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="orderadd" v-else>
-            <yd-button size="small" type="danger" style="margin-top: 20px" @click.native="newShipAdd">新增收货地址</yd-button>
+            <yd-button size="small" type="danger" style="position: relative;left: 50%;transform: translateX(-50%);" @click.native="newShipAdd">新增收货地址</yd-button>
         </div>
         <yd-popup v-model="openWindow" position="bottom" width="20%" height="60%">
             <div class="orderadd-content">

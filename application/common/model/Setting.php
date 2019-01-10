@@ -10,6 +10,10 @@ class Setting extends Common
             'name' => '平台名称',
             'value' => '我的平台'
         ],
+        'shop_desc' => [
+            'name' => '平台描述',
+            'value' => '平台描述会展示在前台及微信分享店铺描述'
+        ],
         'shop_address' => [
             'name' => '平台地址',
             'value' => '我的平台地址'

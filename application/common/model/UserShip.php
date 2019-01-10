@@ -38,13 +38,26 @@ class UserShip extends Common
         }
         else
         {
+            $awhere[] = ['user_id', 'eq', $data['user_id']];
+            $awhere[] = ['is_def', 'eq', self::SHIP_DEFAULT];
+            $flag = $this->where($awhere)->find();
+            if(!$flag)
+            {
+                //没有默认
+                $ship_data['is_def'] = self::SHIP_DEFAULT;
+            }
+            else
+            {
+                //有默认
+                $ship_data['is_def'] = $data['is_def']?$data['is_def']:self::SHIP_DEFAULT_NO;
+            }
+
             $ship_data['user_id'] = $data['user_id'];
             $ship_data['area_id'] = $data['area_id'];
             $ship_data['address'] = $data['address'];
             $ship_data['name'] = $data['name'];
             $ship_data['mobile'] = $data['mobile'];
             $ship_data['utime'] = time();
-            $ship_data['is_def'] = $data['is_def']?$data['is_def']:self::SHIP_DEFAULT_NO;
             $ship_id = $this->insertGetId($ship_data);
         }
         return $ship_id;

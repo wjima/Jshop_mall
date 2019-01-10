@@ -88,7 +88,7 @@ export default {
                 this.$dialog.toast({mes: this.checkMobile.msg, timeout: 1300})
             } else if (!this.code) {
                 this.$dialog.toast({mes: '请输入短信验证码', timeout: 1300})
-            }  else {
+            } else {
                 let data = {mobile: this.mobile, code: this.code}
                 if (this.invitecode) data.invitecode = this.invitecode
                 data['uuid'] = this.GLOBAL.getStorage('uuid')

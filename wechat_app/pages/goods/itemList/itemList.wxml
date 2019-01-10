@@ -13,8 +13,8 @@
     <view class='comprehensive' bindtap="comprehensive">
       <text>综合</text>
       <view>
-        <image wx:if="{{searchData.order.key == 'id'}}" src='../../image/bottom.png'></image>
-        <image wx:if="{{searchData.order.key != 'id'}}" src='../../image/bottom-none.png'></image>
+        <image wx:if="{{searchData.order.key == 'sort'}}" src='../../image/bottom.png'></image>
+        <image wx:if="{{searchData.order.key != 'sort'}}" src='../../image/bottom-none.png'></image>
       </view>
     </view>
     <view class='sales-volume' bindtap="salesVolume">
@@ -51,7 +51,7 @@
   <scroll-view scroll-y="true" scroll-into-view="{{toView}}" style="height:86vh;" bindscrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
     <view class='content-body'>
       <view class='every-commodity {{listgrid?"every-commodity-grid":""}}' wx:for="{{goodsList}}" wx:key="{{index}}" bindtap="goodsDetail" data-id="{{item.id}}">
-        <image class='commodity-pic' src='{{item.image_url}}'></image>
+        <image class='commodity-pic' mode='aspectFill' src='{{item.image_url}}'></image>
         <view class='every-commodity-right'>
           <text class='commodity-name'>{{item.name}}</text>
           <view class='preferential'>

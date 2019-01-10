@@ -103,7 +103,7 @@ class BillPayments extends Manage
         }
 
         //支付单支付
-        return $BillPaymentsModel->toUpdate($result['data']['payment_id'], $BillPaymentsModel::STATUS_PAYED, $result['data']['payment_code']);
+        return $BillPaymentsModel->toUpdate($result['data']['payment_id'], $BillPaymentsModel::STATUS_PAYED, $result['data']['payment_code'],$result['data']['money'],"后台手动支付");
     }
     //支付单查看
     public function view()

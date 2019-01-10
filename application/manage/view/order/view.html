@@ -11,171 +11,327 @@
 	<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
 		<ul class="layui-tab-title">
 			<li class="layui-this">基本信息</li>
-			<li>收货人信息</li>
 			<li>商品信息</li>
-			<li>备注信息</li>
+			<li>支付单/退款单</li>
+			<li>发货单/提货单/退货单</li>
 			<li>订单记录</li>
 		</ul>
 	  	<div class="layui-tab-content">
 	  	
 			<!--订单信息-->
 			<div class="layui-tab-item layui-show">
+				<!--订单信息-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">订单信息</legend>
+				</fieldset>
 				<div class="layui-form-item" lay-size="sm">
 					<label class="layui-form-label">订单号：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.order_id}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.order_id}</div>
 
 					<label class="layui-form-label">订单总金额：</label>
-					<div class="layui-form-mid seller-inline-4">￥{$order.order_amount}元</div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">支付状态：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.order.pay_status')[$order.pay_status]}</div>
+					<div class="layui-form-mid seller-inline-2">￥{$order.order_amount}元</div>
 
-					<label class="layui-form-label">发货状态：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.order.ship_status')[$order.ship_status]}</div>
+					<label class="layui-form-label">支付状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.pay_status')[$order.pay_status]}</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">发货状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.ship_status')[$order.ship_status]}</div>
+
 					<label class="layui-form-label">订单状态：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.order.status')[$order.status]}</div>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.status')[$order.status]}</div>
 
 					<label class="layui-form-label">已支付金额：</label>
-					<div class="layui-form-mid seller-inline-4">￥{$order.payed}元</div>
+					<div class="layui-form-mid seller-inline-2">￥{$order.payed}元</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">支付方式：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.payment_type')[$order.payment_code]}</div>
+					<div class="layui-form-mid seller-inline-2">{:config('params.payment_type')[$order.payment_code]}</div>
 
 					<label class="layui-form-label">配送方式：</label>
-					<div class="layui-form-mid seller-inline-4">{if $order.logistics}{$order.logistics['logi_name']}{/if}</div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">发票类型：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.order.tax_type')[$order.tax_type]}</div>
+					<div class="layui-form-mid seller-inline-2">{if $order.logistics}{$order.logistics['logi_name']}{/if}</div>
 
-					<label class="layui-form-label">发票内容：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.tax_content}</div>
+					<label class="layui-form-label">发票类型：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.tax_type')[$order.tax_type]}</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">发票内容：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.tax_content}</div>
+
 					<label class="layui-form-label">税号：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.tax_code}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.tax_code}</div>
 
 					<label class="layui-form-label">发票抬头：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.tax_title}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.tax_title}</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">订单优惠金额：</label>
-					<div class="layui-form-mid seller-inline-4">￥{$order.order_pmt}</div>
+					<div class="layui-form-mid seller-inline-2">￥{$order.order_pmt}</div>
 
 					<label class="layui-form-label">商品优惠金额：</label>
-					<div class="layui-form-mid seller-inline-4">￥{$order.goods_pmt}</div>
+					<div class="layui-form-mid seller-inline-2">￥{$order.goods_pmt}</div>
+
+					<label class="layui-form-label">优惠券优惠：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.coupon_pmt}</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">积分优惠：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.point_money}</div>
+
 					<label class="layui-form-label">商品总重量：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.weight}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.weight}</div>
 
 					<label class="layui-form-label">商品总价：</label>
-					<div class="layui-form-mid seller-inline-4">￥{$order.goods_amount}</div>
+					<div class="layui-form-mid seller-inline-2">￥{$order.goods_amount}</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">下单来源：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.order.source')[$order.source]}</div>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.source')[$order.source]}</div>
 
 					<label class="layui-form-label">下单时间：</label>
-					<div class="layui-form-mid seller-inline-4">{:date('Y-m-d H:i:s', $order.ctime)}</div>
+					<div class="layui-form-mid seller-inline-2">{:date('Y-m-d H:i:s', $order.ctime)}</div>
+
+					<label class="layui-form-label">配送费用：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
 				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">配送费用：</label>
-					<div class="layui-form-mid seller-inline-4">￥{$order.cost_freight}元</div>
-
 					<label class="layui-form-label">收货状态：</label>
-					<div class="layui-form-mid seller-inline-4">{:config('params.order.confirm')[$order.confirm]}</div>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.confirm')[$order.confirm]}</div>
 				</div>
-			</div>
 
-			<!--收货人信息-->
-			<div class="layui-tab-item">
+				<!--收货人信息-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">收货人信息</legend>
+				</fieldset>
 				{if $order.store}
 				<div class="layui-form-item">
 					<label class="layui-form-label">自提店铺名：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.store.store_name}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.store.store_name}</div>
 
 					<label class="layui-form-label">店铺地址：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.store.all_address}</div>
-				</div>
-				<div class="layui-form-item">
-					<label class="layui-form-label">店铺联系人：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.store.linkman}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.store.all_address}</div>
 
-					<label class="layui-form-label">店铺联系电话：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.store.mobile}</div>
+					<label class="layui-form-label">店铺联系人：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.store.linkman}</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">店铺联系电话：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.store.mobile}</div>
+
 					<label class="layui-form-label">提货人名：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.ship_name}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.ship_name}</div>
 
 					<label class="layui-form-label">提货人电话：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.ship_mobile}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.ship_mobile}</div>
 				</div>
 				{else/}
 				<div class="layui-form-item">
 					<label class="layui-form-label">收货时间：</label>
-					<div class="layui-form-mid seller-inline-4">{if $order.confirm == 2}{:date('Y-m-d H:i:s', $order.confirm_time)}{else/}未收货{/if}</div>
+					<div class="layui-form-mid seller-inline-2">{if $order.confirm == 2}{:date('Y-m-d H:i:s', $order.confirm_time)}{else/}未收货{/if}</div>
 
-					<label class="layui-form-label">收货区域：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.ship_area_name}</div>
-				</div>
-				<div class="layui-form-item">
 					<label class="layui-form-label">收货人姓名：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.ship_name}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.ship_name}</div>
 
 					<label class="layui-form-label">收货人电话：</label>
-					<div class="layui-form-mid seller-inline-4">{$order.ship_mobile}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.ship_mobile}</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">收货地址：</label>
-					<div class="layui-form-mid seller-inline-9">{$order.ship_address}</div>
+					<div class="layui-form-mid seller-inline-9">{$order.ship_area_name} - {$order.ship_address}</div>
 				</div>
 				{/if}
+
+				<!--买家备注-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">买家备注</legend>
+				</fieldset>
+				<div class="layui-form-item">
+					<label class="layui-form-label">买家备注：</label>
+					<div class="layui-form-mid seller-inline-9">{$order.memo}</div>
+				</div>
 			</div>
 
 			<!--商品详情-->
 			<div class="layui-tab-item">
 				<table class="layui-table" lay-size="sm">
 					<thead>
-						<tr>
-							<th>商品名称</th>
-							<th>商品单价</th>
-							<th>购买数量</th>
-							<th>商品总价</th>
-							<th>货品编码</th>
-							<th>商品编码</th>
-							<th>商品总重量</th>
-							<th>发货数量</th>
-						</tr>
+					<tr>
+						<th>商品名称</th>
+						<th>商品单价</th>
+						<th>购买数量</th>
+						<th>商品总价</th>
+						<th>货品编码</th>
+						<th>商品编码</th>
+						<th>商品总重量</th>
+						<th>发货数量</th>
+					</tr>
 					</thead>
 					<tbody>
-						{foreach $order.items as $key=>$vo}
-							<tr>
-								<td>{$vo.name} - {$vo.addon}</td>
-								<td>{$vo.price}</td>
-								<td>{$vo.nums}</td>
-								<td>{$vo.amount}</td>
-								<td>{$vo.sn}</td>
-								<td>{$vo.bn}</td>
-								<td>{$vo.weight}</td>
-								<td>{if $vo.sendnums}{$vo.sendnums}{else /}0{/if}</td>
-							</tr>
-						{/foreach}
+					{foreach $order.items as $key=>$vo}
+					<tr>
+						<td>{$vo.name} - {$vo.addon}</td>
+						<td>{$vo.price}</td>
+						<td>{$vo.nums}</td>
+						<td>{$vo.amount}</td>
+						<td>{$vo.sn}</td>
+						<td>{$vo.bn}</td>
+						<td>{$vo.weight}</td>
+						<td>{if $vo.sendnums}{$vo.sendnums}{else /}0{/if}</td>
+					</tr>
+					{/foreach}
 					</tbody>
 				</table>
 			</div>
 
-			<!--备注信息-->
+			<!--支付单/退款单-->
 			<div class="layui-tab-item">
-				<div class="layui-form-item">
-					<label class="layui-form-label">买家备注：</label>
-					<div class="layui-form-mid seller-inline-9">{$order.memo}</div>
-				</div>
+				<!--支付单-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">支付单</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>支付单号</th>
+						<th>支付方式</th>
+						<th>第三方支付单号</th>
+						<th>支付金额</th>
+						<th>支付状态</th>
+						<th>支付时间</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.paymentRelItem as $key=>$vo}
+					<tr>
+						<td>{$vo.bill.payment_id}</td>
+						<td>{$vo.bill.payment_code_name}</td>
+						<td>{$vo.bill.trade_no}</td>
+						<td>{$vo.bill.money}</td>
+						<td>{$vo.bill.status_name}</td>
+						<td>{$vo.bill.utime_name}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+
+				<!--退款单-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">退款单</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>退款单号</th>
+						<th>退款方式</th>
+						<th>第三方支付单号</th>
+						<th>退款金额</th>
+						<th>退款状态</th>
+						<th>申请时间</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.refundItem as $key=>$vo}
+					<tr>
+						<td>{$vo.refund_id}</td>
+						<td>{$vo.payment_code_name}</td>
+						<td>{$vo.trade_no}</td>
+						<td>{$vo.money}</td>
+						<td>{$vo.status_name}</td>
+						<td>{$vo.ctime_name}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+			</div>
+
+			<!--发货单/提货单/退货单-->
+			<div class="layui-tab-item">
+				<!--发货单-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">发货单</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>发货单号</th>
+						<th>快递公司</th>
+						<th>快递单号</th>
+						<th>收货人名</th>
+						<th>收货电话</th>
+						<th>收货地址</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.delivery as $key=>$vo}
+					<tr>
+						<td>{$vo.delivery_id}</td>
+						<td>{$vo.logi_code_name}</td>
+						<td>{$vo.logi_no}</td>
+						<td>{$vo.ship_name}</td>
+						<td>{$vo.ship_mobile}</td>
+						<td>{$vo.ship_area_id_name}-{$vo.ship_address}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+
+				<!--提货单-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">提货单</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>提货单号</th>
+						<th>提货门店</th>
+						<th>提货人名</th>
+						<th>提货电话</th>
+						<th>提货状态</th>
+						<th>提货时间</th>
+						<th>接待店员</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.ladingItem as $key=>$vo}
+					<tr>
+						<td>{$vo.id}</td>
+						<td>{$vo.store_id_name}</td>
+						<td>{$vo.name}</td>
+						<td>{$vo.mobile}</td>
+						<td>{$vo.status_name}</td>
+						<td>{$vo.utime_name}</td>
+						<td>{$vo.clerk_id_name}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+
+				<!--退货单-->
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">退货单</legend>
+				</fieldset>
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>退货单号</th>
+						<th>快递公司</th>
+						<th>快递单号</th>
+						<th>退货状态</th>
+						<th>退货时间</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.returnItem as $key=>$vo}
+					<tr>
+						<td>{$vo.reship_id}</td>
+						<td>{$vo.logi_code_name}</td>
+						<td>{$vo.logi_no}</td>
+						<td>{$vo.status_name}</td>
+						<td>{$vo.utime_name}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
 			</div>
 
 			<!--订单记录-->

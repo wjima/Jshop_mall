@@ -20,7 +20,7 @@ export default {
             type: [String, Number],
             require: true
         },
-        unit:{
+        unit: {
             type: String,
             default () {
                 return ''

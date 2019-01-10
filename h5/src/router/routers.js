@@ -150,6 +150,7 @@ const routers = [
         component: resolve => require(['../pages/order/OrderDetail'], resolve),
         name: 'OrderDetail',
         meta: {
+            navShow: true,
             tabShow: false,
             title: '订单详情',
             keepAlive: false,
@@ -444,7 +445,7 @@ const routers = [
             tabShow: false,
             title: '店铺提货订单',
             keepAlive: false
-        },
+        }
     },
     {
         path: '/orderverification',

@@ -151,7 +151,7 @@
   <!-- 收货地址管理 -->
   <view class='content-view' bindtap='addressList'>
     <image class='member-icon' src='../../image/me-ic-site.png'></image>
-    <text class='member-text'>收货地址管理</text>
+    <text class='member-text'>收货地址</text>
   </view>
   
   <view class='content-view' bindtap='setting'>

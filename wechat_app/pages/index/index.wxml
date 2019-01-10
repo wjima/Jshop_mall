@@ -35,11 +35,32 @@
     </view>
   </view>
   <!-- 优惠券 -->
-  <view class='news-coupons-mid' wx:if="{{coupon.length > 0}}">
+  <!-- <view class='news-coupons-mid' wx:if="{{coupon.length > 0}}">
     <view class='coupons'>
       <block wx:for="{{coupon}}" wx:key="{{index}}" wx:for-index="index" wx:for-item="item">
         <view bindtap='getCoupon' data-id="{{item.id}}">{{item.name}}</view>
       </block>
+    </view>
+  </view> -->
+  <view class='coupon'>
+    <view class='coupon-red' wx:for="{{coupon}}" wx:key="index">
+      <!-- <image class='coupon-bg' src='../image/coupon-bg.png'></image> -->
+      <view class='coupon-c'>
+        <view class='red-left'>
+          <view class='coupon-sum'>{{item.name}}</view>
+        </view>
+        <view class='red-right'>
+          <text class='conpon-f'>{{item.expression2}}</text>
+          <text>{{item.expression1}}</text>
+          <text>{{item.stime}}至{{item.etime}}</text>
+        </view>
+        <view class='coupon-btn' bindtap='getCoupon' data-id="{{item.id}}">
+          立即领取
+        </view>
+      </view>
+      <!-- <view class='conpon-bot'>
+        {{item.description!=null?item.description:''}}
+      </view> -->
     </view>
   </view>
 
@@ -68,7 +89,7 @@
         <!-- 绑定商品 -->
         <view bindtap="GroupDetail" data-id="{{item.id}}" data-groupid="{{item.group_id}}">
           <!-- 商品图片 -->
-          <image class='pic' src='{{item.image_url}}'></image>
+          <image class='pic' mode='aspectFill' src='{{item.image_url}}'></image>
           <!-- 商品名称和价格 -->
           <view class='recommends-body-bottom'>
             <text class='name'>{{item.name}}</text>
@@ -99,7 +120,7 @@
         <!-- 绑定商品 -->
         <view bindtap="GroupDetail" data-id="{{item.id}}" data-groupid="{{item.group_id}}">
           <!-- 商品图片 -->
-          <image class='pic' src='{{item.image_url}}'></image>
+          <image class='pic' mode='aspectFill' src='{{item.image_url}}'></image>
           <!-- 商品名称和价格 -->
           <view class='recommends-body-bottom'>
             <text class='name'>{{item.name}}</text>
@@ -131,7 +152,7 @@
         <view wx:for="{{recommend}}" wx:key="{{index}}">
           <view bindtap="goodsDetail" data-id="{{item.id}}" class='seller-body-mid'>
             <!-- 商品图片 -->
-            <image class='pic' src='{{item.image_url}}'></image>
+            <image class='pic' mode='aspectFill' src='{{item.image_url}}'></image>
             <!-- 商品信息 -->
             <view class='recommends-body-bottom'>
               <text class='name'>{{item.name}}</text>
@@ -161,7 +182,7 @@
           <!-- 绑定商品 -->
           <view bindtap="goodsDetail" data-id="{{item.id}}">
             <!-- 商品图片 -->
-            <image class='pic' src='{{item.image_url}}'></image>
+            <image class='pic' mode='aspectFill' src='{{item.image_url}}'></image>
             <!-- 商品名称和价格 -->
             <view class='recommends-body-bottom'>
               <text class='name'>{{item.name}}</text>

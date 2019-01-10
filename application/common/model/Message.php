@@ -83,7 +83,7 @@ class Message extends Common
                 $msg = "你好，有新的售后订单了，请及时处理。";
                 break;
             case 'seller_order_notice':
-                $msg = "卖家您好，您有新的订单了，请及时处理。";
+                $msg = "您有新的订单了，请及时处理。";
                 break;
         }
         return $msg;

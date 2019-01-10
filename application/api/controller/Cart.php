@@ -116,4 +116,34 @@ class Cart extends Api
         return model('common/Cart')->info($this->userId,  input('param.ids',""));
 
     }
+
+
+    /**
+     *
+     *  获取购物车数量
+     * @return array
+     */
+    public function getNumber()
+    {
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+
+        $model = new Model();
+        $where[] = ['user_id', 'eq', $this->userId];
+        $vclass = getSetting('virtual_card_class');
+        $where[] = ['g.goods_cat_id', 'neq', $vclass];
+
+        $cartNums = $model->alias('c')
+            ->where($where)
+            ->join('products p', 'p.id = c.product_id')
+            ->join('goods g', 'g.id = p.goods_id')
+            ->sum('nums');
+
+        $result['data'] = $cartNums;
+
+        return $result;
+    }
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="backcard">
         <yd-cell-group>
             <yd-cell-item v-if="showType">
                 <span slot="left">卡类型：</span>
@@ -27,7 +27,7 @@
             </yd-cell-item>
         </yd-cell-group>
         <yd-cityselect v-model="show" :callback="result" :items="district"></yd-cityselect>
-        <yd-button size="large" type="danger" @click.native="submitHandler" style="height: .8rem;width: 80%;margin: 0 auto;">保存</yd-button>
+        <yd-button size="large" type="danger" @click.native="submitHandler" style="height: .8rem;">保存</yd-button>
     </div>
 </template>
 

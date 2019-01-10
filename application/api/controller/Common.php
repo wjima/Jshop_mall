@@ -37,7 +37,7 @@ class Common extends Base
     public function area()
     {
         $areaModel = new Area();
-        return $areaModel->getArea(input('param.id'));
+        return $areaModel->getArea(input('param.id',0));
     }
 
     /**
@@ -68,9 +68,14 @@ class Common extends Base
     public function jshopConf()
     {
         $conf = [];
-
-        $conf['abc'] = '123';
-
+        $conf['shop_logo'] = _sImage(getSetting('shop_logo'));         //店铺logo
+        $conf['shop_name'] = getSetting('shop_name');                   //店铺名称
+        $conf['shop_desc'] = getSetting('shop_desc');                   // 店铺描述
+        $conf['image_max'] = 5;             //前端上传图片最多几张
+        $conf['store_switch'] = getSetting('store_switch');             //开启门店自提状态
+        $conf['cate_style'] = getSetting('cate_style');                 //分类样式
+        $conf['tocash_money_low'] = getSetting('tocash_money_low');                 //最低提现
+        $conf['tocash_money_rate'] = getSetting('tocash_money_rate');                 //服务费
 
         return $conf;
     }

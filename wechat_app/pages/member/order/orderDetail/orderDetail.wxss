@@ -59,7 +59,7 @@ page{
   margin: 0 0 0 30rpx;
 }
 .address .information-content{
-  width: 630rpx;
+  width: 614rpx;
 }
 .information-time{
   font-size: 24rpx;
@@ -73,7 +73,7 @@ page{
 .address{
   border-bottom: 16rpx solid #fff;
   position: relative;
-  padding-bottom: 20rpx;
+  padding: 0 30rpx 20rpx;
 }
 .address-c{
   width: 690rpx;

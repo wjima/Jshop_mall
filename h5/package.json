@@ -28,6 +28,7 @@
     "vue-social-share": "0.0.3",
     "vue-ydui": "^1.2.6",
     "vuex": "^3.0.1",
+    "weixin-js-sdk": "^1.4.0-test",
     "ydui-district": "^1.1.0"
   },
   "devDependencies": {

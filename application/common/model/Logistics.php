@@ -69,4 +69,12 @@ class Logistics extends Common
             ->order('sort asc')
             ->select();
     }
+
+
+    public function getNameByCode($code)
+    {
+        $where[] = ['logi_code', 'eq', $code];
+        $info = $this->field('logi_name')->where($where)->find();
+        return $info['logi_name']?$info['logi_name']:'';
+    }
 }

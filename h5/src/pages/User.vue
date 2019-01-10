@@ -38,7 +38,7 @@
         </yd-cell-group>
         <yd-cell-group>
             <yd-cell-item v-if="isOpenIntegral" type="div" @click.native="signIn">
-                <img slot="icon" src="../../static/image/sign_in.png">
+                <img slot="icon" src="../../static/image/signin.png">
                 <span slot="left">积分签到</span>
             </yd-cell-item>
             <yd-cell-item href="/coupon" type="link">
@@ -50,7 +50,7 @@
                 <span slot="left">我的购物车</span>
             </yd-cell-item>
             <yd-cell-item href="/balance" type="link">
-                <img slot="icon" src="../../static/image/balance.png">
+                <img slot="icon" src="../../static/image/remainingsum.png">
                 <span slot="left">我的余额</span>
             </yd-cell-item>
         </yd-cell-group>
@@ -66,11 +66,11 @@
         </yd-cell-group>
         <yd-cell-group>
             <yd-cell-item href="/share" type="link">
-                <img slot="icon" src="../../static/image/coupon.png">
+                <img slot="icon" src="../../static/image/me-ic-invite.png">
                 <span slot="left">邀请好友</span>
             </yd-cell-item>
             <yd-cell-item href="/addresslist" type="link">
-                <img slot="icon" src="../../static/image/ship.png">
+                <img slot="icon" src="../../static/image/me-ic-site.png">
                 <span slot="left">收货地址</span>
             </yd-cell-item>
         </yd-cell-group>
@@ -131,8 +131,8 @@ export default {
             })
         },
         // 判断是否是店员
-        storeUser (user_id) {
-            this.$api.isStoreUser({user_id: user_id}, res => {
+        storeUser (userId) {
+            this.$api.isStoreUser({user_id: userId}, res => {
                 if (res.status) {
                     this.isClerk = res.flag
                 }

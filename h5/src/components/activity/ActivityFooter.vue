@@ -15,6 +15,7 @@
             </div>
             <router-link tag="div" class="star" to="/cart">
                 <img src="../../../static/image/goods-cart.png"/>
+                <yd-badge type="danger" v-if="cart_nums">{{ cart_nums }}</yd-badge>
                 <p>购物车</p>
             </router-link>
         </div>
@@ -40,6 +41,12 @@ export default {
             default () {
                 return ''
             }
+        },
+        cart_nums: {
+            type: Number,
+            default () {
+                return 0
+            }
         }
     },
     methods: {
@@ -52,18 +59,18 @@ export default {
         showChat () {
             let _this = this
             window._AIHECONG('ini', {
-                entId : _this.GLOBAL.hecong(),
+                entId: _this.GLOBAL.hecong(),
                 button: false,
                 appearance: {
                     panelMobile: {
                         tone: '#FF3B44',
                         sideMargin: 30,
                         ratio: 'part',
-                        headHeight:50
+                        headHeight: 50
                     }
                 }
-            });
-            _AIHECONG('showChat');
+            })
+            window._AIHECONG('showChat')
         }
     }
 }

@@ -89,7 +89,7 @@
 }
 .refund-service .refund-service-list{
   height: 54rpx;
-  border-bottom: 2rpx solid #e8e8e8;
+  border-bottom: 2rpx solid #f0f0f0;
   background-color: #fff;
   padding:10px 15px;
   align-items:center;

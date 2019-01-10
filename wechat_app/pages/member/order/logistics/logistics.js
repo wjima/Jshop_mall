@@ -7,6 +7,7 @@ Page({
         no: '',
         data: '',
         status: '',
+        address: '',
         flag: false
     },
 
@@ -15,7 +16,8 @@ Page({
     onLoad: function (e) {
         this.setData({
             code: e.code,
-            no: e.no
+            no: e.no,
+            address: e.address
         });
 
         this.getLogisticsData();

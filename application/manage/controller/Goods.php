@@ -271,6 +271,9 @@ class Goods extends Manage
         $data['goods']['goods_type_id'] = input('post.goods_type_id', 0);
         $data['goods']['brand_id']      = input('post.goods.brand_id', 0);
         $data['goods']['bn']            = input('post.goods.bn', $bn);
+        if (empty($data['goods']['bn'])) {
+            $data['goods']['bn'] = $bn;
+        }
         $data['goods']['brief']         = input('post.goods.brief', '');
         $data['goods']['intro']         = input('post.goods.intro', '');
         $data['goods']['price']         = input('post.goods.price', '');
@@ -284,7 +287,6 @@ class Goods extends Manage
         $data['goods']['is_hot']        = input('post.goods.is_hot', '2');
         $open_spec                      = input('post.open_spec', 0);
         $specdesc                       = input('post.spec/a', []);
-
         if ($specdesc && $open_spec) {
             if(count($specdesc) == 1){//优化只一个规格的情况
                 $product = input('post.product/a',[]);
@@ -377,6 +379,9 @@ class Goods extends Manage
         $open_spec                     = input('post.open_spec', 0);
         if ($open_spec && $data['goods']['product_spes']) {
             $data['product']['spes_desc'] = $data['goods']['product_spes'];
+        }
+        if(!$data['product']['sn']){
+            $data['product']['sn'] = get_sn(4);
         }
         if ($isEdit) {
             $validate = new ProductsValidate();

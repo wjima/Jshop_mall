@@ -212,20 +212,52 @@ class Promotion extends Common
     }
 
     /**
-     *
-     *  获取可领取的优惠券
+     * 获取可领取的优惠券
+     * @param int $limit
      * @return array|\PDOStatement|string|\think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function receiveCouponList()
+    public function receiveCouponList($limit = 3)
     {
         $where[] = ['etime','>',time()];                //判断优惠券失效时间 是否可领取
         $where[] = ['status','eq',self::STATUS_OPEN];   //启用状态
         $where[] = ['type','eq',self::TYPE_COUPON];     //促销 类型
         $where[] = ['auto_receive','eq',self::AUTO_RECEIVE_YES];    //自动领取状态
-        return $this->field('id,name,status,exclusive,stime,etime')->where($where)->select();
+        $data = $this->field('id,name,status,exclusive,stime,etime')
+            ->where($where)
+            ->limit($limit)
+            ->select();
+
+        if($data !== false)
+        {
+            if(count($data) > 0)
+            {
+                $conditionModel = new PromotionCondition();
+                $resultModel = new PromotionResult();
+                foreach($data as $k => $v)
+                {
+                    $pcondition = $conditionModel->getConditionList($v['id']);
+                    $presult = $resultModel->getResultList($v['id']);
+                    $expression1 = '';
+                    $expression2 = '';
+                    foreach($pcondition as $kk => $vv)
+                    {
+                        $expression1 .= $conditionModel->getConditionMsg($vv['code'], $vv['params']);
+                    }
+                    foreach($presult as $kk => $vv)
+                    {
+                        $expression2 .= $resultModel->getResultMsg($vv['code'], $vv['params']);
+                    }
+                    $data[$k]['expression1'] = $expression1;
+                    $data[$k]['expression2'] = $expression2;
+                    $data[$k]['stime'] = date('Y-m-d', $v['stime']);
+                    $data[$k]['etime'] = date('Y-m-d', $v['etime']);
+                }
+            }
+        }
+        return $data;
     }
 
     /**

@@ -5,7 +5,7 @@
   autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
   <block wx:for="{{goodsImg}}" wx:key="{{index}}">
     <swiper-item>
-      <image src="{{item}}" class="slide-image" />
+      <image src="{{item}}" mode='aspectFill' class="slide-image" bindtap='previewImg'/>
     </swiper-item>
   </block>  
 </swiper>
@@ -149,7 +149,7 @@
               {{item.content}}
             </view>
             <view class='comment-img'>
-                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/pages/image/default_avatar.png'}}" wx:key="indexs" wx:for-item="vo"  mode="{{mode}}" src='{{vo}}'></image>
+                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/pages/image/default_avatar.png'}}" wx:key="indexs" wx:for-item="vo"  mode="{{mode}}" src='{{vo}}' bindtap='commentImg'></image>
             </view>
           </view>
         </view>

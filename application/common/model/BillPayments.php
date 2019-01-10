@@ -228,7 +228,7 @@ class BillPayments extends Common
         }
         //判断支付单金额是否为0，如果为0，直接支付成功,
         if ($data['money'] == 0 || $data['money'] == '0' || $data['money'] == '0.00') {
-            $this->toUpdate($data['payment_id'], $this::STATUS_PAYED, $data['payment_code'], '金额为0，自动支付成功', '');
+            $this->toUpdate($data['payment_id'], SELF::STATUS_PAYED, $data['payment_code'],$data['money'], '金额为0，自动支付成功', '');
             return error_code(10059);
         }
         $result['status'] = true;
@@ -243,11 +243,12 @@ class BillPayments extends Common
      * @param $payment_id
      * @param $status     支付单状态
      * @param string $payment_code  支付方式编码
+     * @param string $money         支付的金额
      * @param string $payed_msg     支付回调后的状态描述
      * @param string $trade_no      第三方支付单号
      * @return array
      */
-    public function toUpdate($payment_id, $status, $payment_code='', $payed_msg='', $trade_no='')
+    public function toUpdate($payment_id, $status, $payment_code,$money, $payed_msg='', $trade_no='')
     {
         $result = [
             'status' => false,
@@ -259,8 +260,9 @@ class BillPayments extends Common
         $data['payed_msg'] = $payed_msg;
         $data['trade_no'] = $trade_no;
 
-        $where['payment_id'] = $payment_id;
-        $where['status'] = self::STATUS_NOPAY;
+        $where[] = ['payment_id','eq', $payment_id];
+        $where[] = ['money','eq',$money];
+        $where[] = ['status','neq',self::STATUS_PAYED];
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
             $result['msg'] = '没有找到此未支付的支付单号';

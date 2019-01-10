@@ -46,13 +46,16 @@
             </div>
         </div>
         <div class="layui-inline">
-	        <div class="layui-input-block">
-	            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
                 <button class="layui-btn layui-btn-sm" lay-submit  lay-filter="user-add"><i class="layui-icon">&#xe608;</i>添加</button>
             </div>
         </div>
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-user"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+        </div>
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="import-user"><i class="layui-icon"></i>导入</button>
         </div>
     </div>
 </form>
@@ -79,8 +82,33 @@
     </form>
 </div>
 
+
+<div id="importUser" style="display: none;">
+    <form class="layui-form import-form" method="post" action="{:url('ietask/import')}" enctype="multipart/form-data">
+        <div class="layui-form-item">
+            <div class="layui-margin-10">
+                <blockquote class="layui-elem-quote layui-text">
+                    请先下载<a href="{:url('ietask/importTemplete',['tplName'=>'user'])}">导入模板</a>
+                </blockquote>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">
+                    <input type="file" class="layui-file" name="importFile" id="importFile">
+                    <input type="hidden" name="model" value="User">
+                </label>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/html" id="infoMoney">
+    <div class="infoMoney" data-id="{{d.id}}">{{ d.balance }}</div>
+</script>
+<script type="text/html" id="pointlog">
+    <div class="pointLog" data-id="{{d.id}}">{{ d.point }}</div>
+</script>
+<script src="__STATIC_JS__jquery.form.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var table;
+    var table,window_box;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         table = layui.table.render({
             elem: '#userTable',
@@ -93,9 +121,9 @@
             cols: [[
                 {type:'numbers'},
 //                {field:'username', width:100,title:'账号'},
-                {field:'mobile', width:150, title:'手机号码'},
+                {field:'mobile', width:135, title:'手机号码'},
                 {field:'sex', width:80, title:'性别'},
-                {field:'birthday',width:150, title:'生日'},
+                {field:'birthday',width:120, title:'生日'},
                 {field:'avatar',title:'头像',
                     templet: function(d){
                         if (d.avatar) {
@@ -105,24 +133,20 @@
                         }
                     }, width: 80
                 },
-                {field:'nickname',title:'昵称'},
-                {field:'balance',title:'余额'},
-                {field:'point', sort:true, title:'积分'},
-                {field:'status',title:'状态'},
-                {field:'pid_name', title: '邀请人'},
-                {field:'ctime', title:'创建时间'},
+                {field:'nickname',title:'昵称',width:150},
+                {field:'balance',title:'余额',templet: '#infoMoney',width:100},
+                {field:'point', sort:true, title:'积分',templet: '#pointlog',width:100},
+                {field:'status',title:'状态',width:100},
+                {field:'pid_name', title: '邀请人',width:120},
+                {field:'ctime', title:'创建时间',width:180},
                 {field:'option',title:'操作', templet: function (d) {
-                    var html = '<span class="layui-btn layui-btn-xs inviteEdit" data-id="'+d.id+'">邀请人修改</span>';
-                    html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';
-                    html += '<span class="layui-btn layui-btn-xs pointLog" data-id="'+d.id+'">积分详情</span>';
-
-                    html += '<a class="layui-btn layui-btn-xs edit" data-id="' + d.id + '">修改</a>';
-                    html += '<a class="layui-btn layui-btn-xs editMoney" data-id="' + d.id + '">修改余额</a>';
-                    html += '<a class="layui-btn layui-btn-xs infoMoney" data-id="' + d.id + '">余额明细</a>';
-                    return html;
+                        var html = '<a class="layui-btn layui-btn-xs edit" data-id="' + d.id + '">修改</a>';
+                        html += '<a class="layui-btn layui-btn-xs editMoney" data-id="' + d.id + '">修改余额</a>';
+                        html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="'+d.id+'">积分修改</span>';
+                        return html;
 
 
-                }, align:'center', fixed:'right',width:415}
+                    }, align:'center', fixed:'right',width:200}
             ]]
         });
         //搜索
@@ -161,6 +185,9 @@
             var user_id = $("#user_id").val();
             var point = $("#point").val();
             var memo = $("#memo").val();
+            if($.trim(point) == ''){
+                layer.msg('积分变更不能为空');
+            }
             $.ajax({
                 url: "{:url('manage/user/editPoint')}",
                 type: 'post',
@@ -201,32 +228,6 @@
                     });
                 }
             });
-        });
-        //邀请人修改
-        $(document).on('click', '.inviteEdit', function () {
-            var id = $(this).attr('data-id');
-            layer.prompt({title: '请输入邀请人手机号', formType: 3}, function(mobile, index){
-                $.ajax({
-                    url: "{:url('manage/User/editInvite')}",
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        'id': id,
-                        'mobile': mobile
-                    },
-                    success: function (e) {
-                        if(e.status){
-                            layer.close(index);
-                            layer.msg(e.msg, {time: 1500}, function(){
-                                layui.table.reload('userTable');
-                            });
-                        }else{
-                            layer.msg(e.msg);
-                        }
-                    }
-                });
-            });
-
         });
 
         //添加
@@ -278,7 +279,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e,
-                        area: ['700px', '500px'],
+                        area: ['700px', '550px'],
                         title:'编辑用户',
                         btn: ['确定','取消'],
                         yes: function(){
@@ -353,22 +354,7 @@
         //余额明细
         $(document).on('click', '.infoMoney', function () {
             var id = $(this).attr('data-id');
-            $.ajax({
-                url: "{:url('manage/user/moneyLog')}",
-                type: 'get',
-                data: {
-                    'user_id': id,
-                    'flag': 'false'
-                },
-                success: function (e) {
-                    layer.open({
-                        type: 1,
-                        title: '用户余额明细',
-                        area: ['800px', '587px'], //宽高
-                        content: e
-                    });
-                }
-            });
+            window.location.href="{:url('manage/balance/index')}"+'?user_id='+id;
         });
 
 
@@ -388,19 +374,48 @@
                     var data = $(".export-form:last").serializeArray();
                     data.push({'name':'model','value':'User'});
                     JsPost("{:url('Ietask/export')}",data,function(res){
-                                layer.msg(res.msg, {time:1500}, function(){
-                                    if(res.status){
-                                        table.reload();
-                                        layer.closeAll();
-                                    }
-                                });
-                            }
+                            layer.msg(res.msg, {time:1500}, function(){
+                                if(res.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+                            });
+                        }
                     );
                 },btn2:function () {
                     layer.closeAll();
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //会员导入
+        layui.form.on('submit(import-user)', function(data) {
+            layer.open({
+                type: 1,
+                title:'会员导入',
+                area: ['400px', '290px'], //宽高
+                btn:['确定','取消'],
+                content: $("#importUser").html(),
+                yes:function (index,obj) {
+                    $(obj).find('.import-form').ajaxSubmit({
+                        type:'post',
+                        dataType:'json',
+                        success:function(result){
+                            layer.msg(result.msg, {time:1500}, function(){
+                                if(result.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+                            });
+                        },
+                        error:function(result){
+                            layer.msg("导入失败");
+                        }
+                    });
+                },btn2:function () {
+                    layer.closeAll();
+                }
+            });
         });
     });
 </script>

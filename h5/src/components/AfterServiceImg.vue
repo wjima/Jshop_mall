@@ -25,6 +25,11 @@ export default {
             }
         }
     },
+    computed: {
+        uploadImageMax () {
+            return this.$store.state.config.upload_image_max
+        }
+    },
     methods: {
         uploadImg (e) {
             let file = e.target.files[0]
@@ -43,7 +48,7 @@ export default {
     watch: {
         imgs () {
             this.$emit('images', this.imgs)
-            if (this.imgs.length >= 4) {
+            if (this.imgs.length >= this.uploadImageMax) {
                 this.upload = false
             } else {
                 this.upload = true

@@ -1,15 +1,16 @@
 <template>
     <div class="coupon" v-if="couponList.length">
-        <div class="coupon-content" v-for="(item, index) in couponList" :key="index">
-            <div class="coupon-red">
-                <div class="coupon-content-left">{{ item.name }}</div>
-                <div class="coupon-content-right">
-                    <div class="">
-                        <p>{{ item.stime }}</p>
-                        <p>到</p>
-                        <p>{{ item.etime }}</p>
-                    </div>
-                </div>
+        <div class="indexcoupon-item" v-for="(item, index) in couponList" :key="index" @click="userGetCoupon(index)">
+            <div class="coupon-left">
+                <p>{{ item.name }}</p>
+            </div>
+            <div class="coupon-right">
+                <p class="conpon-f">{{ item.expression2 }}</p>
+                <p>{{ item.expression1 }}</p>
+                <p>{{ item.stime }} - {{ item.etime }}</p>
+            </div>
+            <div class="coupon-btn" @click="goIndex">
+                去使用
             </div>
         </div>
     </div>
@@ -32,8 +33,13 @@ export default {
         userCoupon () {
             this.$api.userCoupon({}, res => {
                 if (res.status) {
-                    this.couponList = res.data
+                    this.couponList = res.data.list
                 }
+            })
+        },
+        goIndex () {
+            this.$router.push({
+                path: '/index'
             })
         }
     }
@@ -41,4 +47,5 @@ export default {
 </script>
 
 <style>
+    
 </style>

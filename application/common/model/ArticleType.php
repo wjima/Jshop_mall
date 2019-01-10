@@ -141,24 +141,16 @@ class ArticleType extends Common
      */
     public function articleTypeList()
     {
+        $result = [
+            'status' =>  true,
+            'msg'    =>  '获取成功',
+            'data'   =>  []
+        ];
+
         $list = $this->field('id,type_name')->select();
-        if(!$list->isEmpty())
-        {
-            $result = [
-                'status' =>  true,
-                'msg'    =>  '获取成功',
-                'data'   =>  [
-                    'list' => $list,
-                    'count' => count($list)
-                ],
-            ];
-        }else{
-            $result = [
-                'status' =>  false,
-                'msg'    =>  '获取失败',
-                'data'   =>  ''
-            ];
-        }
+
+        $result['data']['list'] = $list;
+
         return $result;
     }
 

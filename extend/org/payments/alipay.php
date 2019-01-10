@@ -16,6 +16,32 @@ class alipay implements Payment
             'data' => [],
             'msg' => ''
         ];
+
+        //其实就是判断是pc端支付，还是h5端支付，pc端传trade_type的值为PC，h5端传trade_type为WAP
+        if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
+            $params = json_decode($paymentInfo['params'],true);
+        }else{
+            $params['trade_type'] = "WAP";
+        }
+        if(!isset($params['trade_type'])){
+            $params['trade_type'] = "WAP";
+        }
+        //if($params['trade_type'] == 'MWEB'){$params['trade_type'] = "WAP";}        //兼容h5端，其实这一行是不需要的
+
+        if($params['trade_type'] != "PC" && $params['trade_type'] != "WAP"){
+            $result['msg'] = $params;
+            return $result;
+        }
+        if($params['trade_type'] == "WAP"){
+            $method = "alipay.trade.wap.pay";
+            $product_code = "QUICK_WAP_WAY";
+        }else{
+            $method = "alipay.trade.page.pay";
+            $product_code = "FAST_INSTANT_TRADE_PAY";
+        }
+
+
+
         $url = 'https://openapi.alipay.com/gateway.do';
 
         //组装系统参数
@@ -23,9 +49,9 @@ class alipay implements Payment
         $data["version"] = "1.0";
         $data["format"] = "json";
         $data["sign_type"] = "RSA2";
-        $data["method"] = "alipay.trade.wap.pay";
+        $data["method"] = $method;
         $data["timestamp"] = date("Y-m-d H:i:s");
-        $data["notify_url"] = url('b2c/Callback/pay',['code'=>'alipay','payment_id'=>$paymentInfo['payment_id']],'html',true);
+        $data["notify_url"] = url('b2c/Callback/pay',['code'=>'alipay'],'html',true);
 
         $return_url = "";
         if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
@@ -43,7 +69,7 @@ class alipay implements Payment
         $ydata["subject"] = 'jshopgoods';          //商品名称,此处用商户名称代替
         $ydata["out_trade_no"] = $paymentInfo['payment_id'];     //平台订单号
         $ydata["total_amount"] = $paymentInfo['money'];          //总金额，精确到小数点两位
-        $ydata["product_code"] = "QUICK_WAP_WAY";
+        $ydata["product_code"] = $product_code;
 
         $data["biz_content"] = json_encode($ydata,JSON_UNESCAPED_UNICODE);
 
@@ -84,39 +110,28 @@ class alipay implements Payment
         $data['sign'] = null;
 
         $re = $this->verify($this->getSignContent($data), $sign,"RSA2");
-        trace($re,'alipay');
 
         if($re){
-            if ($data['trade_status'] == 'TRADE_SUCCESS') {
+            if ($data['trade_status'] == 'TRADE_SUCCESS' || $data['trade_status'] == 'TRADE_FINISHED') {
                 $result['status'] = true;
+                $result['data']['payment_id'] = $data['out_trade_no'];
                 $result['data']['status'] = 2;          //1未支付，2支付成功，3其他
                 $result['data']['payed_msg'] = $data['trade_status'];
                 $result['data']['trade_no'] = $data['trade_no'];
+                $result['data']['money'] = $data['total_amount'];
+            }else{
+                //如果未支付成功，也更新支付单
+                $result['status'] = true;
+                $result['data']['payment_id'] = $data['out_trade_no'];
+                $result['data']['status'] = 3;          //1未支付，2支付成功，3其他
+                $result['data']['payed_msg'] = $data['trade_status'];
+                $result['data']['trade_no'] = '';
+                $result['data']['money'] = $data['total_amount'];
             }
             $result['msg'] = 'success';
         }else{
             $result['msg'] = "fail";
-            return $result;
         }
-
-        if($data && $data['return_code'] == 'SUCCESS'){
-            //说明值没问题，并且验证签名通过
-            if($data['result_code'] == "SUCCESS"){
-                $result['status'] = true;
-                $result['data']['status'] = 2;          //1未支付，2支付成功，3其他
-                $result['data']['payed_msg'] = $data['result_code'];
-                $result['data']['trade_no'] = $data['transaction_id'];
-            }else{
-                //如果未支付成功，也更新支付单
-                $result['status'] = true;
-                $result['data']['status'] = 3;          //1未支付，2支付成功，3其他
-                $result['data']['payed_msg'] = $data['err_code'].':'.$data['err_code_des'];
-                $result['data']['trade_no'] = '';
-            }
-        }else{
-            return $result;
-        }
-
         return $result;
     }
     public function refund($refundInfo,$paymentInfo){

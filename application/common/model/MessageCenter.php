@@ -52,7 +52,7 @@ class MessageCenter extends Common
             'wx_tpl_message' => self::SEND_FALSE,
         ],
         'seller_order_notice' =>[                              //订单付款
-            'name' => '卖家订单付款通知',
+            'name' => '订单付款成功平台通知',
             'sms' => self::SEND_TRUE,
             'message' => self::SEND_FALSE,
             'wx_tpl_message' => self::SEND_FALSE,

@@ -26,7 +26,7 @@
 	padding: 0;
 }
 .iconfont{
-	font-size: 20px;
+	font-size: 20px !important;
 	margin-right: 10px;
 }
 .layui-nav .layui-nav-item a{

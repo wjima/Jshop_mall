@@ -1,7 +1,17 @@
 <template>
     <div class="indexcoupon"  v-if="couponList.length">
         <div class="indexcoupon-item" v-for="(item, index) in couponList.slice(0, 3)" :key="index" @click="userGetCoupon(index)">
-            {{ item.name }}
+            <div class="coupon-left">
+                <p>{{ item.name }}</p>
+            </div>
+            <div class="coupon-right">
+                <p class="conpon-f">{{ item.expression2 }}</p>
+                <p>{{ item.expression1 }}</p>
+                <p>{{ item.stime }} - {{ item.etime }}</p>
+            </div>
+            <div class="coupon-btn">
+                立即领取
+            </div>
         </div>
     </div>
 </template>
@@ -27,36 +37,5 @@ export default {
 </script>
 
 <style>
-    .indexcoupon{
-        width: 100%;
-        margin-bottom: .2rem;
-        background-color: #fff;
-        padding: .1rem .3rem;
-        overflow: hidden;
-    }
-    .indexcoupon-item{
-        display: inline-block;
-        width: 32%;
-        height: 1.5rem;
-        line-height: 1.5rem;
-        float: left;
-        box-sizing: border-box;
-    }
-    .indexcoupon-item:nth-child(1){
-        color: rgb(249, 164, 203);
-        background-color: rgb(255, 245, 244);
-        border-left: 1px dashed rgb(249, 164, 203);
-        margin-right: 2%;
-    }
-    .indexcoupon-item:nth-child(2){
-        color: rgb(253, 179, 58);
-        background-color: rgb(253, 244, 237);
-        border-left: 1px dashed rgb(253, 179, 58);
-        margin-right: 2%;
-    }
-    .indexcoupon-item:nth-child(3){
-        color: rgb(244, 144, 155);
-        background-color: rgb(245, 241, 241);
-        border-left: 1px dashed rgb(244, 144, 155);
-    }
+    
 </style>

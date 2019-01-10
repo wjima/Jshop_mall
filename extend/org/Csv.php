@@ -53,7 +53,6 @@ class Csv
             }
             $csvData = $this->csv_array;
             unset($this->csv_array);
-
             foreach ($csvData['header'] as $key => $v) {
                 $csvData['header'][$key] = @iconv('UTF-8', 'GB2312//IGNORE', $v);
             }

@@ -13,7 +13,7 @@
         <image class="{{item.is_select?'show':'hide'}}" bindtap="checkbox" src='../../image/checked.png' data-id="{{index}}"></image>
       </view>
       <!-- 商品图片 -->
-      <image bindtap='goodsDetail' data-id="{{item.products.goods_id}}" class='thumbnail' src='{{item.products.image_path}}'></image>
+      <image bindtap='goodsDetail' mode='aspectFill' data-id="{{item.products.goods_id}}" class='thumbnail' src='{{item.products.image_path}}'></image>
       <!-- 商品详情 -->
       <view class='list-body-right {{editStatus?"click-right":""}}'>
         <!-- 商品名称 -->

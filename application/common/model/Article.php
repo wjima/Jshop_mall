@@ -159,41 +159,45 @@ class Article extends Common
 
 
     /**
-     *  获取文章列表
-     * User:tianyu
-     * @param $type_id
+     * @param int $type_id
      * @param $page
      * @param $limit
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function articleList($type_id,$page,$limit)
     {
-        $where[] = ['type_id','eq',$type_id];
+        $result = [
+            'status' =>  true,
+            'msg'    =>  '获取成功',
+            'data'   =>  []
+        ];
+
+        // 发布状态
         $where[] = ['is_pub','eq',self::IS_PUB_YES];
+        // 分类id
+        if ($type_id) {
+            $where[] = ['type_id', 'eq', $type_id];
+        }
         $list = $this->where($where)->order('ctime DESC')->page($page,$limit)->select();
+
+        $count = $this->where($where)->count();
         if(!$list->isEmpty())
         {
             $list = $list->hidden(['is_pub','isdel']);
-            foreach ($list as $v) {
+            foreach ($list as &$v) {
                 $v['cover'] = _sImage($v['cover']);
             }
-            $result = [
-                'status' =>  true,
-                'msg'    =>  '获取成功',
-                'data'   =>  [
-                    'list' => $list,
-                    'count' => count($list),
-                    'page' => $page,
-                    'limit' => $limit
-                ],
-            ];
-        }else{
-            $result = [
-                'status' =>  false,
-                'msg'    =>  '获取失败',
-                'data'   =>  ''
-            ];
         }
+        $result['data'] = [
+            'list' => $list,
+            'count' => $count,
+            'page' => $page,
+            'limit' => $limit
+        ];
+
         return $result;
     }
 
@@ -206,22 +210,20 @@ class Article extends Common
      */
     public function articleDetail($article_id)
     {
+        $result = [
+            'status' =>  false,
+            'msg'    =>  '文章不存在',
+            'data'   =>  [],
+        ];
+
         $where[] = ['id','eq',$article_id];
         $where[] = ['is_pub','eq',self::IS_PUB_YES];
         $data = $this->field('id,title,content,type_id,ctime,utime')->where($where)->find();
         if(!empty($data))
         {
-            $result = [
-                'status' =>  true,
-                'msg'    =>  '获取成功',
-                'data'   =>  $data,
-            ];
-        }else{
-            $result = [
-                'status' =>  false,
-                'msg'    =>  '获取失败',
-                'data'   =>  $data,
-            ];
+            $result['status'] = true;
+            $result['msg'] = '获取成功';
+            $result['data'] = $data;
         }
         return $result;
     }

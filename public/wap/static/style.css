@@ -230,6 +230,10 @@
     transform: translateY(-50%);
 }
 .goodsdetail .yd-tab .yd-tab-panel img{
+    width: 100%;
+    height: auto;
+}
+.goodsdetail .yd-tab .yd-tab-panel .comment img{
     width: 22%;
     height: auto;
 }
@@ -274,6 +278,9 @@
 .yd-cell-left{
     color: #666 !important;
     font-size: .25rem !important;
+}
+.yd-cell-icon img{
+    height: .4rem !important;
 }
 .yd-cell-right{
     min-height: .9rem !important;
@@ -671,6 +678,7 @@
 }
 .indexgrids .yd-grids-item{
     font-size: .18rem;
+    padding: .05rem 0 .25rem;
 }
 .orderadd, .deliveryinformation{
     width: 100%;
@@ -680,6 +688,7 @@
     padding: .35rem .2rem;
     position: relative;
     font-size: .25rem;
+    /*text-align: center;*/
 }
 .deliveryinformation{
     margin-bottom: 1px;
@@ -696,6 +705,10 @@
     display: inline-block;
     width: 90%;
     margin-left: 8%;
+}
+.yd-popup-content .orderadd-content{
+    width: 90%;
+    margin: 0 auto;
 }
 .deliveryinformation-content{
     position: relative;
@@ -741,10 +754,15 @@
     transform: translateY(-50%);
 }
 .yd-cell-item:not(:last-child):after{
-    margin-left: 0 !important;
+    /*margin-left: 0 !important;*/
+    background-image: none !important;
+    background-color: #efefef;
 }
 .yd-cell:after{
-    border-bottom: 1px solid #d9d9d9 !important;
+    /*border-bottom: 1px solid #d9d9d9 !important;*/
+}
+.yd-grids-item:after{
+    background-image: none !important;
 }
 .orderfooter, .orderdetailfooter{
     position: fixed;
@@ -763,10 +781,12 @@
 }
 .orderdetailfooter .left-btn{
     color: #888;
+    border-radius: 0;
 }
 .orderdetailfooter .right-btn{
     color: #FF3B44;
     border-color: #FF3B44 !important;
+    border-radius: 0;
 }
 .orderfooter>div{
     display: inline-block;
@@ -935,6 +955,12 @@
 .notice-footer{
     text-align: right;
 }
+.afterservice .yd-button,.evaluate .yd-button, .addresslist .yd-btn-block,.address .yd-btn-block,.withdrawcash-bottom,.backcard .yd-btn-block,.withdrawcash .yd-btn-block{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+}
 .afterserviceimg{
     background-color: #fff;
 }
@@ -952,6 +978,76 @@
 }
 .afterserviceimg .yd-grids-icon img, .evaluatebody .yd-grids-icon img{
     height: 85%;
+}
+.coupon{
+    width: 100%;
+    margin-bottom: .2rem;
+    padding: .1rem .3rem;
+    overflow: hidden;
+}
+.indexcoupon{
+    width: 100%;
+    margin-bottom: .2rem;
+    background-color: #fff;
+    padding: .1rem .3rem;
+    overflow: hidden;
+}
+.indexcoupon-item{
+    display: inline-block;
+    width: 100%;
+    height: 1.5rem;
+    box-sizing: border-box;
+    background: linear-gradient(to right, #ff6565 , #ff8a8a);
+    margin: .1rem 0;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+.coupon-left{
+    width:28%;
+    height:1rem;
+    color:rgb(255, 247, 247);
+    font-size: .22rem;
+    padding:0 .3rem;
+    float:left;
+    margin:.25rem 0;
+    text-align: center;
+    box-sizing:border-box;
+    border-right:1px dotted #fff;
+    display:inline-block;
+}
+.coupon-left p{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.coupon-right{
+    width: 50%;
+    height: 100%;
+    font-size: .2rem;
+    float: left;
+    text-align: left;
+    color: #fff;
+    box-sizing: border-box;
+    padding: .2rem .15rem;
+    display:inline-block;
+}
+.coupon-right p{
+    margin-bottom: .08rem;
+}
+.coupon-right .conpon-f{
+    font-size: .3rem;
+}
+.coupon-btn{
+    padding: 0 .16rem;
+    background-color: #ffe7e7;
+    color: #ff5454;
+    font-size: .24rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: .3rem;
+    border-radius: 2px;
 }
 .coupon-red, .coupon-gray{
     width: 90%;
@@ -1292,8 +1388,8 @@
     height: .8rem !important;
 }
 .addresslist .yd-btn-block, .address .yd-btn-block{
-    width: 90%;
-    margin: .5rem auto 0;
+    /*width: 90%;*/
+    /*margin: .5rem auto 0;*/
     font-size: .3rem;
     height: .8rem;
 }
@@ -1309,11 +1405,14 @@
 .aftersalesdetail .thumbnail-list{
     width: 25%;
 }
+.ordertab .yd-tab-nav:after{
+    background-color: #F0F0F0;
+}
 .ordertab .order-content .yd-list, .ordertab .yd-tab-panel, .ordertab .order-content .yd-list .yd-list-mes{
-    background-color: #f5f5f5;
+    background-color: #FBFBFB;
 }
 .ordertab .order-content .yd-list .yd-list-item{
-    border-bottom: 1px solid #fff;
+    /*border-bottom: 1px solid #fff;*/
 }
 .ordertab .yd-tab-nav-item:not(:last-child):after{
     border: none;
@@ -1353,7 +1452,9 @@
     padding: .15rem 10px;
 }
 .order-content-footer .footer-bottom .yd-btn{
-    padding: 0 .4rem;
+    padding: 0 .3rem;
+    height: .55rem;
+    border-radius: 0;
 }
 .order-content-footer .footer-bottom .left-btn{
     border-color: #e9e9e9;
@@ -1379,4 +1480,38 @@
     position: fixed !important;
     top: -184px !important;
     left: 22px !important;
+}
+.yd-btn-block{
+    border-radius: 0 !important;
+}
+.goodsdetail .goodsdetailfooter .yd-badge{
+    position: absolute !important;
+    top: -6px;
+    right: 10px;
+}
+.goodsheader .yd-btn-primary:active{
+    background-color: #fff;
+}
+a.icon-google, a.icon-twitter, a.icon-facebook, a.icon-diandian{
+    display: none !important;
+}
+.goodstitle .wechatshare{
+    top: 14%;
+}
+.wechatshare-img{
+    width: 100%;
+}
+.yd-keyboard, .yd-mask{
+    position: absolute !important;
+}
+.yd-popup-content{
+    overflow-y: inherit !important;
+}
+.social-share .icon-wechat .wechat-qrcode{
+    z-index: 1999 !important;
+}
+.yd-list-theme4 .yd-list-item .yd-list-title{
+    /*! autoprefixer: off */
+    -webkit-box-orient: vertical;
+    /* autoprefixer: on */
 }

@@ -136,10 +136,6 @@ return [
                 'code' => 'getSetting',
                 'is_login' => false
             ],
-            'getsellersetting' => [
-                'code' => 'getSetting',
-                'is_login' => false
-            ],
             'getdefaultbankcard' => [
                 'code' => 'getDefaultBankCard',
                 'is_login' => true
@@ -327,6 +323,10 @@ return [
             ],
             'setnums' => [
                 'code' => 'setNums',
+                'is_login' => true
+            ],
+            'getnumber' => [
+                'code' => 'getNumber',
                 'is_login' => true
             ]
         ]
@@ -546,5 +546,17 @@ return [
                 'is_login'=>false
             ]
         ]
+    ],
+
+    // h5 微信浏览器里分享
+    'weixinshare' => [
+        'code' => 'WeiXinShare',
+        'method' => [
+            'share' => [
+                'code' => 'share',
+                'is_login' => false
+            ]
+        ]
     ]
+
 ];

@@ -217,6 +217,7 @@ class User extends Manage
 
         $user_id = Request::param('user_id');
         $info    = $userModel->getUserInfo($user_id);
+
         $this->assign('info', $info);
         return $this->fetch('editUser');
     }
@@ -275,26 +276,5 @@ class User extends Manage
 
 
 
-    public function moneyLog()
-    {
-        $this->view->engine->layout(false);
-        $user_id = input('user_id');
-        $flag = input('flag', 'false');
 
-        if($flag == 'true')
-        {
-            $userPointLog = new Balance();
-            $post['user_id'] = $user_id;
-            $post['page'] = Request::param('page', 1);
-            $post['limit'] = Request::param('limit', 20);
-            $post['datetime'] = Request::param('datetime', '');
-            $res = $userPointLog->tableData($post);
-            return $res;
-        }
-        else
-        {
-            $this->assign('user_id', $user_id);
-            return $this->fetch('moneyLog');
-        }
-    }
 }

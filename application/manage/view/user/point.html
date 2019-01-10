@@ -135,15 +135,15 @@
 
         //编辑保存积分
         $(document).on('click', '.edit-point-save', function () {
-            let user_id = $("#user_id").val();
-            let point = $("#point").val();
-            let memo = $("#memo").val();
-            let point_old = $("#point_old").val();
+            var user_id = $("#user_id").val();
+            var point = $("#point").val();
+            var memo = $("#memo").val();
+            var point_old = $("#point_old").val();
             if(point_old*1+point*1 < 0) {
                 layer.msg('扣除积分不能大于用余额积分');
                 return false;
             } else {
-                let data = {
+                var data = {
                     user_id: user_id
                     point: point,
                     memo: memo,

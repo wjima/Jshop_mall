@@ -47,6 +47,11 @@ export default {
             isupload: [] // 启/禁用 图片上传按钮
         }
     },
+    computed: {
+        uploadImageMax () {
+            return this.$store.state.config.upload_image_max
+        }
+    },
     created () {
         if (!this.order_id) {
             this.$dialog.alert({
@@ -134,7 +139,7 @@ export default {
         // 监听图片数量  是否超出限制
         images () {
             for (let k in this.images) {
-                if (this.images[k].length >= 4) {
+                if (this.images[k].length >= this.uploadImageMax) {
                     this.isupload[k] = false
                 } else {
                     this.isupload[k] = true

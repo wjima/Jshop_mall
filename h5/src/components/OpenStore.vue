@@ -16,23 +16,25 @@
                     </div>
                 </div>
                 <div class="orderadd" v-else>
-                    <yd-button size="small" type="danger" style="margin-top: 20px" @click.native="newShipAdd">新增收货地址</yd-button>
+                    <yd-button size="small" type="danger" style="position: relative;left: 50%;transform: translateX(-50%);" @click.native="newShipAdd">新增收货地址</yd-button>
                 </div>
             </yd-tab-panel>
             <yd-tab-panel label="门店自提">
-                <div class="orderadd" v-if="Object.keys(store).length">
-                    <img class="orderadd-gps" src="../../static/image/gps.png"/>
-                    <div class="orderadd-content" @click="showStoreList">
-                        <div class="orderadd-top">
-                            <span>{{ store.store_name }}</span>
-                            <!--<p>{{ store.mobile }}</p>-->
-                        </div>
-                        <div class="orderadd-bottom">
-                            <p>门店地址：{{ store.all_address }}</p>
-                            <img class="orderadd-right right-img" src="../../static/image/right.png"/>
+                <div class="orderadd" style="padding-bottom: .1rem;" v-if="Object.keys(store).length">
+                    <div style="position: relative;">
+                    	<img class="orderadd-gps" src="../../static/image/gps.png"/>
+                        <div class="orderadd-content" @click="showStoreList">
+                            <div class="orderadd-top">
+                                <span>{{ store.store_name }}</span>
+                                <!--<p>{{ store.mobile }}</p>-->
+                            </div>
+                            <div class="orderadd-bottom">
+                                <p>门店地址：{{ store.all_address }}</p>
+                                <img class="orderadd-right right-img" src="../../static/image/right.png"/>
+                            </div>
                         </div>
                     </div>
-                    <div style="margin-top: .5em" v-if="Object.keys(store).length">
+                    <div class="consignee" v-if="Object.keys(store).length">
                         <yd-cell-group>
                             <yd-cell-item>
                                 <span slot="left">姓名：</span>
@@ -45,7 +47,7 @@
                         </yd-cell-group>
                     </div>
                 </div>
-                <div v-else>
+                <div v-else style="padding: 20px 0;">
                     <span>暂无门店信息</span>
                 </div>
             </yd-tab-panel>
@@ -70,7 +72,7 @@
         </yd-popup>
         <yd-popup v-model="openStore" position="bottom" width="20%" height="60%">
             <div class="orderadd-content">
-                <div class="search-input">
+                <div class="search-input search-store">
                     <i class="search-icon" ></i>
                     <input v-model="key" type="text" placeholder="搜索门店" @keyup.enter="submitHandler"/>
                 </div>
@@ -92,101 +94,129 @@
 </template>
 
 <script>
-    export default {
-        data () {
-            return {
-                key: '', // 搜索关键字
-                openWindow: false,
-                openStore: false,
-                consignee: {
-                    name: '', // 提货人姓名
-                    mobile: '', // 提货人联系方式
-                },
-                shipList: [], // 收货地址列表
-                storeList: [] // 门店列表
-            }
-        },
-        props: {
-            storeTab: {
-                type: Number,
-                default () {
-                    return 0
-                }
-            },
-            // 用户选中||默认收货地址
-            ship: {
-                type: [Array, Object],
-                default () {
-                    return []
-                }
-            },
-            // 默认门店信息
-            store: {
-                type: [Array, Object],
-                default () {
-                    return []
-                }
-            }
-        },
-        methods: {
-            // 收货地址弹窗
-            showHandler () {
-                this.openWindow = true
-                this.$api.userShip({}, res => {
-                    this.shipList = res.data
-                })
-            },
-            // 选中的收货地址
-            shipHandler (index) {
-                this.openWindow = false
-                this.$emit('shipHandler', this.shipList[index])
-            },
-            // 选中的门店
-            storeHandler (index) {
-                this.openStore = false
-                this.$emit('storeHandler', this.storeList[index])
-            },
-            // 添加收货地址
-            newShipAdd () {
-                this.$router.push({path: '/address'})
-            },
-            // tab点击切换
-            storeClick (key) {
-                this.$emit('storeTab', key)
-            },
-            // 查看门店列表
-            showStoreList () {
-                this.openStore = true
-                this.getStoreList()
-            },
-            // 获取门店列表
-            getStoreList (key = '') {
-                let data = {key: key}
-                this.$api.storeList(data, res => {
-                    if (res.status) {
-                        this.storeList = res.data
-                    }
-                })
-            },
-            // 门店搜索
-            submitHandler () {
-                this.getStoreList(this.key)
-            }
-        },
-        watch: {
+export default {
+    data () {
+        return {
+            key: '', // 搜索关键字
+            openWindow: false,
+            openStore: false,
             consignee: {
-                handler () {
-                    this.$emit('consignee', this.consignee)
-                },
-                deep: true
+                name: '', // 提货人姓名
+                mobile: '' // 提货人联系方式
+            },
+            shipList: [], // 收货地址列表
+            storeList: [] // 门店列表
+        }
+    },
+    props: {
+        storeTab: {
+            type: Number,
+            default () {
+                return 0
+            }
+        },
+        // 用户选中||默认收货地址
+        ship: {
+            type: Object,
+            default () {
+                return {}
+            }
+        },
+        // 默认门店信息
+        store: {
+            type: Object,
+            default () {
+                return {}
             }
         }
+    },
+    methods: {
+        // 收货地址弹窗
+        showHandler () {
+            this.openWindow = true
+            this.$api.userShip({}, res => {
+                this.shipList = res.data
+            })
+        },
+        // 选中的收货地址
+        shipHandler (index) {
+            this.openWindow = false
+            this.$emit('shipHandler', this.shipList[index])
+        },
+        // 选中的门店
+        storeHandler (index) {
+            this.openStore = false
+            this.$emit('storeHandler', this.storeList[index])
+        },
+        // 添加收货地址
+        newShipAdd () {
+            this.$router.push({path: '/address'})
+        },
+        // tab点击切换
+        storeClick (key) {
+            this.$emit('storeTab', key)
+        },
+        // 查看门店列表
+        showStoreList () {
+            this.openStore = true
+            this.getStoreList()
+        },
+        // 获取门店列表
+        getStoreList (key = '') {
+            let data = {key: key}
+            this.$api.storeList(data, res => {
+                if (res.status) {
+                    this.storeList = res.data
+                }
+            })
+        },
+        // 门店搜索
+        submitHandler () {
+            this.getStoreList(this.key)
+        }
+    },
+    watch: {
+        consignee: {
+            handler () {
+                this.$emit('consignee', this.consignee)
+            },
+            deep: true
+        }
     }
+}
 </script>
 
 <style>
     .orderadd>button{
         margin-top: 0;
         font-size: .26rem;
+    }
+    .orderadd .consignee{
+        margin-top: 0.5em;
+    }
+    .orderadd .consignee .yd-input{
+        height: .8rem;
+        
+    }
+    .orderadd .consignee .yd-input input{
+        height: 100%;
+        font-size: .24rem;
+    }
+    .search-store{
+        margin-top: .2rem;
+        width: 100%;
+        position: relative;
+    }
+    .search-store .search-icon{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: .2rem;
+    }
+    .search-store input{
+        width: 100%;
+        height: .8rem;
+        padding: .2rem .2rem .2rem .7rem;
+        border: 1px solid #eee;
     }
 </style>

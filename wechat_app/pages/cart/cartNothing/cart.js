@@ -15,9 +15,14 @@ Page({
     isLoad: false,
     cartNums: 0,
     editStatus: false,
-    shopName: app.config.app_title
+    shopName: app.config.shop_name
   },
 
+  onLoad:function(){
+    this.setData({
+      shopName: app.config.shop_name
+    });
+  },
   //获取购物车数据
   getCartData: function () {
     var page = this;

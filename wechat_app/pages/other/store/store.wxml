@@ -20,7 +20,7 @@
         </view>
         <view class='store-item-r'>
           <view class='store-item-r-c'>
-            <image src='../../image/gps.png'></image>
+            <!-- <image src='../../image/gps.png'></image> -->
             <image src='../../image/gps.png'></image>
           </view>
         </view>

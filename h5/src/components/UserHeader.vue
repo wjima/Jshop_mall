@@ -4,7 +4,7 @@
         <div class="userimg">
             <div class="headerimg">
                 <input name="file" type="file" accept="image/png,image/gif,image/jpeg,image/jpg" @change="upload($event)"/>
-                <img :src="avatar"/>
+                <img :src="avatar" v-if="avatar"/>
                 <p>{{ name }}</p>
                 <span v-if="isOpenIntegral">积分: {{ point }}</span>
             </div>

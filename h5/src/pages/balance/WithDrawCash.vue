@@ -22,7 +22,7 @@
             <p v-show="showError" style="color: #f00;">金额已超过可用余额</p>
         </div>
         <div class="withdrawcash-bottom">
-            <div style="margin: 15px">
+            <div>
                 <yd-button size="large" type="danger" v-show="isSubmit" @click.native="submitHandler">确认提现</yd-button>
                 <yd-button size="large" type="disabled" disabled v-show="!isSubmit">确认提现</yd-button>
             </div>
@@ -43,9 +43,9 @@
                 <div v-else style="text-align: center">
                     没有银行卡
                 </div>
-                <div style="margin: 15px">
+                <!--<div>-->
                     <yd-button size="large" type="danger" @click.native="addCard">添加银行卡</yd-button>
-                </div>
+                <!--</div>-->
             </div>
         </yd-popup>
     </div>

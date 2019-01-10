@@ -44,7 +44,7 @@
 
 <script>
 export default {
-    name: "StoreOrder",
+    name: 'StoreOrder',
     data () {
         return {
             orderList: []
@@ -83,7 +83,7 @@ export default {
                         }
                     })
                 }
-            });
+            })
         }
     }
 }

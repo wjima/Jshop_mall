@@ -45,6 +45,13 @@
                     </div>
 
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['shop_desc']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <textarea name="shop_desc" class="layui-textarea">{$data['shop_desc']['value']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" style="margin-top: 20px;">
                         <label class="layui-form-label">{$data['shop_mobile']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5">
                             <input type="text" name="shop_mobile" value="{$data['shop_mobile']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入接收通知手机号" class="layui-input">
@@ -364,6 +371,13 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">图片保存方式</div>
                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">绑定域名：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="image_storage_params[domain]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['domain']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">图片分离时使用，使用阿里云OSS时也尽量绑定域名，例如：https://image.jihainet.com</div>
+                    </div>
                     <div class="image_storage_type ">
                         <div class="item Aliyun" {if condition="$data['image_storage_type']['value'] eq 'Aliyun' "} style="display: block" {/if}>
                             <div class="layui-form-item">
@@ -394,13 +408,7 @@
                                 </div>
                                 <div class="layui-form-mid layui-word-aux">阿里云OSS的 bucket</div>
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">绑定域名：</label>
-                                <div class="layui-input-inline seller-inline-5">
-                                    <input type="text" name="image_storage_params[domain]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['domain']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                                </div>
-                                <div class="layui-form-mid layui-word-aux">阿里云OSS绑定的域名，例如：https://image.jihainet.com</div>
-                            </div>
+
                         </div>
 
 

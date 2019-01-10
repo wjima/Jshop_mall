@@ -96,6 +96,38 @@ class Order extends Common
     }
 
     /**
+     * 支付单关联
+     */
+    public function paymentRelItem()
+    {
+        return $this->hasMany('BillPaymentsRel', 'source_id', 'order_id');
+    }
+
+    /**
+     * 退款单关联
+     */
+    public function refundItem()
+    {
+        return $this->hasMany('BillRefund', 'source_id', 'order_id');
+    }
+
+    /**
+     * 提货单关联
+     */
+    public function ladingItem()
+    {
+        return $this->hasMany('BillLading', 'order_id', 'order_id');
+    }
+
+    /**
+     * 退货单关联
+     */
+    public function returnItem()
+    {
+        return $this->hasMany('BillReship', 'order_id', 'order_id');
+    }
+
+    /**
      * 获取订单原始数据
      * @param $input
      * @return array|\PDOStatement|string|\think\Collection
@@ -456,10 +488,10 @@ class Order extends Common
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="'.$id.'">发货</a>';
                 }
                 $html .= '<a class="layui-btn layui-btn-xs complete-order" data-id="'.$id.'">完成</a>';
-                if($ship_status == self::SHIP_STATUS_YES)
-                {
-                    $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
-                }
+//                if($ship_status == self::SHIP_STATUS_YES)
+//                {
+//                    $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
+//                }
             }
             if($pay_status == self::PAY_STATUS_NO)
             {
@@ -470,10 +502,10 @@ class Order extends Common
                 $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="'.$id.'">取消</a>';
             }
         }
-        if ($order_status == self::ORDER_STATUS_COMPLETE)
-        {
-            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
-        }
+//        if ($order_status == self::ORDER_STATUS_COMPLETE)
+//        {
+//            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
+//        }
         if ($order_status == self::ORDER_STATUS_CANCEL)
         {
             $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-order" data-id="'.$id.'">删除</a>';
@@ -510,7 +542,11 @@ class Order extends Common
 
         $order_info->items; //订单详情
         $order_info->user; //用户信息
+        $order_info->paymentRelItem; //支付单
+        $order_info->refundItem; //退款单
         $order_info->delivery; //发货信息
+        $order_info->ladingItem; //提货单
+        $order_info->returnItem; //退货单
 
         //获取提货门店
         $order_info['store'] = false;
@@ -593,6 +629,84 @@ class Order extends Common
                     'context' => '已为你发货，请注意查收',
                     'time' => date('Y-m-d H:i:s', $order_info['delivery'][0]['ctime'])
                 ];
+            }
+        }
+
+        //支付单
+        if(count($order_info['paymentRelItem']) > 0)
+        {
+            $billPaymentsModel = new BillPayments();
+            foreach($order_info['paymentRelItem'] as &$v)
+            {
+                $v['bill'] = $billPaymentsModel->get($v['payment_id']);
+                $v['bill']['payment_code_name'] = config('params.payment_type')[$v['bill']['payment_code']];
+                $v['bill']['status_name'] = config('params.bill_payments')['status'][$v['bill']['status']];
+                $v['bill']['utime_name'] = getTime($v['bill']['utime']);
+            }
+        }
+
+        //退款单
+        if(count($order_info['refundItem']) > 0)
+        {
+            foreach($order_info['refundItem'] as &$v)
+            {
+                $v['payment_code_name'] = config('params.payment_type')[$v['payment_code']];
+                $v['status_name'] = config('params.bill_refund')['status'][$v['status']];
+                $v['ctime_name'] = getTime($v['ctime']);
+            }
+        }
+
+        //发货单
+        if(count($order_info['delivery']) > 0)
+        {
+            $logiModel = new Logistics();
+            $areaModel = new Area();
+            foreach($order_info['delivery'] as &$v)
+            {
+                $v['logi_code_name'] = $logiModel->getNameByCode($v['logi_code']);
+                $v['ship_area_id_name'] = $areaModel->getAllName($v['ship_area_id']);
+            }
+        }
+
+        //提货单
+        if(count($order_info['ladingItem']) > 0)
+        {
+            $storeModel = new Store();
+            $clerkModel = new Clerk();
+            $billLadingModel = new BillLading();
+            foreach($order_info['ladingItem'] as &$v)
+            {
+                $v['store_id_name'] = $storeModel->getStoreName($v['store_id']);
+                $v['status_name'] = config('params.bill_lading')['status'][$v['status']];
+                if($v['status'] == $billLadingModel::STATUS_YES)
+                {
+                    $v['utime_name'] = getTime($v['utime']);
+                }
+                else
+                {
+                    $v['utime_name'] = '';
+                }
+
+                if($v['clerk_id'])
+                {
+                    $v['clerk_id_name'] = $clerkModel->getClerkName($v['clerk_id']);
+                }
+                else
+                {
+                    $v['clerk_id_name'] = '';
+                }
+            }
+        }
+
+        //退货单
+        if(count($order_info['returnItem']) > 0)
+        {
+            $logiModel = new Logistics();
+            foreach($order_info['returnItem'] as &$v)
+            {
+                $v['logi_code_name'] = $logiModel->getNameByCode($v['logi_code']);
+                $v['status_name'] = config('params.bill_reship')['status'][$v['status']];
+                $v['utime_name'] = getTime($v['utime']);
             }
         }
 
@@ -1015,6 +1129,7 @@ class Order extends Common
         {
             $return_data['msg'] = '订单支付失败，该订单已支付';
             $return_data['data'] = $order;
+            $data = "订单".$order_id."支付失败，订单已经支付";
         }
         else
         {
@@ -1303,7 +1418,7 @@ class Order extends Common
             $item['bn'] = $v['products']['bn'];
             $item['name'] = $v['products']['name'];
             $item['price'] = $v['products']['price'];
-            $item['costproce'] = $v['products']['costprice'];
+            $item['costprice'] = $v['products']['costprice'];
             $item['mktprice'] = $v['products']['mktprice'];
             $item['image_url'] = get_goods_info($v['products']['goods_id'],'image_id');
             $item['nums'] = $v['nums'];

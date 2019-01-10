@@ -50,6 +50,6 @@
     <!-- 加载功能 -->
     <view class="loading" id="loading" hidden="{{!loading}}"><view class='weui-loading'></view>正在载入更多</view>
     <view class="loading" id="loading" hidden="{{!loadingComplete}}">已载入全部</view>
-    <view class='none-img' wx:if="{{nodata}}"><image src='../../../image/page1copy.png'></image><text>没有数据</text></view>
+    <view class='none-img' wx:if="{{nodata}}"><image src='../../../image/listnothing.png'></image><text>没有数据</text></view>
   </view>
 </scroll-view>

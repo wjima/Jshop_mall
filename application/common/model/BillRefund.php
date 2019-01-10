@@ -202,9 +202,9 @@ class BillRefund extends Common
     protected function tableWhere($post)
     {
         $where = [];
-//        if(isset($post['source_id']) && $post['source_id'] != ""){      //这个得关联查询：：todo
-//            $where[] = ['order_id', 'like', '%'.$post['order_id'].'%'];
-//        }
+        if(isset($post['source_id']) && $post['source_id'] != ""){
+            $where[] = ['source_id', 'like', '%'.$post['source_id'].'%'];
+        }
         if(isset($post['refund_id']) && $post['refund_id'] != ""){
             $where[] = ['refund_id', 'like', '%'.$post['refund_id'].'%'];
         }

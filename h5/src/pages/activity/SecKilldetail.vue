@@ -46,11 +46,24 @@
                         </div>
                         <p>{{ item.ctime }}  &nbsp;&nbsp;&nbsp;&nbsp;{{ item.addon }}</p>
                         <p>{{ item.content }}</p>
-                        <div class="comment-imgs" v-if="item.images_url.length">
-                            <div class="comment-img" v-for="(img, key) in item.images_url" :key="key">
-                            	<img :src="img">
-                            </div>
-                        </div>
+                        <yd-lightbox class="comment-imgs">
+                            <yd-lightbox-img class="comment-img" v-for="(img, key) in item.images_url" :key="key" :src="img"></yd-lightbox-img>
+                            <yd-lightbox-txt>
+                                <h1 slot="top">
+                                    <div class="">
+                                        <p class="user-name">{{ item.user.nickname }}</p>
+                                        <yd-rate slot="left" v-model="item.score" :readonly="true" size=".2rem"></yd-rate>
+                                    </div>
+                                </h1>
+                                <div slot="content">
+
+                                    <p>{{ item.content }}</p>
+                                </div>
+                                <div slot="bottom">
+                                    <p>{{ item.ctime }}</p>
+                                </div>
+                            </yd-lightbox-txt>
+                        </yd-lightbox>
                     </li>
                     <li style="text-align: center">
                     <yd-button size="small" type="hollow" color="#F00" shape="circle" v-if="load" @click.native="loadMore">加载更多评论</yd-button>
@@ -62,6 +75,7 @@
         <activityfooter
             :is_fav="is_fav"
             :label="labelName"
+            :cart_nums="cart_nums"
             @collection="collection"
             @buyNow="buyNow"
         ></activityfooter>
@@ -90,6 +104,7 @@ export default {
             comment: [], // 商品的评论
             load: true, // 是否显示更多
             is_fav: false, // 是否收藏
+            cart_nums: 0, // 购物车数量
             num: 1, // 购买的商品数量 默认为1
             rate1: 5, // 好评
             rate2: 3, // 中评
@@ -104,6 +119,7 @@ export default {
         this.activityDetail()
         this.goodsParams()
         this.goodsComment()
+        this.getCartNums()
     },
     computed: {
         // 促销信息重新计算满足的条件 如果存在不满足的条件 就不显示促销信息
@@ -138,6 +154,8 @@ export default {
                     if (this.GLOBAL.getStorage('user_token')) {
                         this.goodsBrowsing()
                     }
+                    // 微信分享
+                    this.weixinConfig()
                 } else {
                     this.$dialog.alert({
                         mes: '该商品不存在',
@@ -193,6 +211,24 @@ export default {
                 }
             })
         },
+        // 获取微信分享配置参数
+        weixinConfig () {
+            let isWeiXinBrowser = this.GLOBAL.isWeiXinBrowser()
+            if (isWeiXinBrowser) {
+                this.$api.weixinShare(this.goodsData.name, this.goodsData.image_url, this.goodsData.brief)
+            }
+        },
+        // 获取购物车数量
+        getCartNums () {
+            let user_token = this.GLOBAL.getStorage('user_token')
+            if (user_token) {
+                this.$api.getCartNum({token: user_token}, res => {
+                    if (res.status) {
+                        this.cart_nums = res.data
+                    }
+                })
+            }
+        },
         // 更改默认货品
         changeSpes (id) {
             this.$api.getProductInfo({id: id}, res => {
@@ -222,6 +258,7 @@ export default {
         add () {
             this.$api.addCart({product_id: this.productSpes.id, nums: this.num}, res => {
                 if (res.status) {
+                    this.getCartNum() // 重新请求接口获取购物车数量
                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})
                 }
             })
@@ -236,7 +273,17 @@ export default {
             })
         },
         goBack () {
-            this.$router.back(-1)
+            if (window.history.length <= 1) {
+                this.$router.push({path: '/'})
+                return false
+            } else {
+                this.$router.go(-1)
+            }
+            // 上面都没执行就说明卡在当前页不是最后一条， histroy记录数量大于1，又没有回退记录，只能返回首页，
+            // 如果上面都执行了 页面都跳走了，这个也就不用管了
+            // setTimeout(() => {
+            //     this.$router.push({path:'/'})
+            // },500)
         }
     }
 }

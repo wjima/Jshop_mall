@@ -9,6 +9,8 @@
 
 namespace app\common\model;
 
+use Illuminate\Support\Debug\Dumper;
+
 /**
  * 商品分类
  * Class GoodsCat
@@ -129,11 +131,11 @@ class GoodsCat extends Common
             $where[] = ['id', 'neq', $id];
             $where[] = ['parent_id', 'neq', $id];
         }
-
         $data = $this->field('id, parent_id, name, sort, image_id')
             ->where($where)
             ->order('sort asc')
             ->select();
+
         $return_data = $this->getTreeApi($data);
         return $return_data;
     }
@@ -184,6 +186,12 @@ class GoodsCat extends Common
                 }
             }
         }
+        foreach ($new_data as $key => $val)
+        {
+            $edition[] = $val['sort'];
+        }
+        array_multisort($edition, SORT_ASC, $new_data);
+
         return $new_data;
     }
 

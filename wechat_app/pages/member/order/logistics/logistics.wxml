@@ -2,7 +2,7 @@
     <!-- <view class='status' wx:if="{{flag}}">当前状态：{{status}}</view> -->
     <view class='list status' >
       <view class='item-circle'>收</view>
-      <view class='item-line'><view class='item-context'>河南省郑州市中原区xx路荣成大厦908</view></view>
+      <view class='item-line'><view class='item-context'>{{address}}</view></view>
     </view>
     <view class='list' wx:for="{{data}}" wx:key="index">
         <view class='item-circle'></view>

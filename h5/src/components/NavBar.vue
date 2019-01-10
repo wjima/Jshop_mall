@@ -14,11 +14,18 @@ export default {
     props: ['title'],
     methods: {
         back () {
-            if (window.history.length <= 1) {
-                this.$router.push({path:'/'})
-                return false
+            // 特殊情况处理 订单详情页返回至订单列表 订单列表返回至用户中心或者首页
+            if (this.$route.path === '/allorder') {
+                this.$router.push({path: '/user'})
+            } else if (this.$route.path === '/orderdetail') {
+                this.$router.push({path: '/allorder'})
             } else {
-                this.$router.go(-1)
+                if (window.history.length <= 1) {
+                    this.$router.push({path: '/'})
+                    return false
+                } else {
+                    this.$router.go(-1)
+                }
             }
             // 上面都没执行就说明卡在当前页不是最后一条， histroy记录数量大于1，又没有回退记录，只能返回首页，
             // 如果上面都执行了 页面都跳走了，这个也就不用管了

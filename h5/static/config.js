@@ -1,2 +1,2 @@
-window.apiUrl = 'https://b2c.jihainet.com/api.html';
+window.host = 'https://b2c.jihainet.com';
 window.entId = '';

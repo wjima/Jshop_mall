@@ -62,7 +62,9 @@ class Balance extends Common
         $memo = $re[ 'data' ];
 
         (float)$money = $money;
-        $money = abs($money);
+        if($type != self::TYPE_ADMIN) {//后台充值或调不改绝对值
+            $money = abs($money);
+        }
         //如果是减余额的操作，还是加余额操作
         if (
             $type == self::TYPE_PAY ||/*

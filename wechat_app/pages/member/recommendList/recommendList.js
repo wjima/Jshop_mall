@@ -38,11 +38,8 @@ Page({
                         ajaxStatus = false;
                     }
                     for (let i = 0; i < res.data.length; i++) {
-                        if (res.data[i].avatar == '/pages/image/default_avatar.png') {
-                            res.data[i].avatar = app.config.cdn_url + res.data[i].avatar;
-                        }
                         if (res.data[i].avatar == null) {
-                            res.data[i].avatar = app.config.cdn_url +'/pages/image/default_avatar.png';
+                            res.data[i].avatar = '/pages/image/default_avatar.png';
                         }
                         if (res.data[i].nickname == null) {
                             res.data[i].nickname = '暂无昵称'

@@ -98,7 +98,7 @@
     <view class='order-list'>
       <view wx:for="{{productData}}" wx:key="{{index}}">
         <view class='list-details'>
-          <image class='thumbnail' src='{{item.products.image_path}}'></image>
+          <image class='thumbnail' mode='aspectFill' src='{{item.products.image_path}}'></image>
           <view class='order-details'>
             <text class='name'>{{item.products.name}}</text>
             <view class='size-style'>

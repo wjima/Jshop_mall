@@ -129,7 +129,7 @@ class Sms extends Common
                 $msg = "用户您好，您的退款已经处理，请确认。";
                 break;
             case 'seller_order_notice':
-                $msg = "卖家您好，您有新的订单了，请及时处理。";
+                $msg = "您有新的订单了，请及时处理。";
                 break;
             case 'common':
                 $msg = $params['tpl'];

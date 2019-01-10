@@ -16,11 +16,11 @@ Page({
     toView: "",
     searchData: {
       where: {},
-      limit: app.config.list_limit,
+      limit: 10,
       page: 1,
       order: {
-        key:'id',
-        sort:'desc'
+        key:'sort',
+        sort:'asc'
       }
     },
     alllist: true,
@@ -90,8 +90,8 @@ Page({
   comprehensive:function() {
     this.setSearchData({
       order: {
-        key: 'id',
-        sort: 'desc'
+        key: 'sort',
+        sort: 'asc'
       },
       page:1
     },true);

@@ -148,7 +148,7 @@ function get_file_extension($filename)
 function get_hash_dir($name='default')
 {
     $ident = sha1(uniqid('',true) . $name . microtime());
-    $dir   = DIRECTORY_SEPARATOR . $ident{0} . $ident{1} . DIRECTORY_SEPARATOR . $ident{2} . $ident{3} . DIRECTORY_SEPARATOR . $ident{4} . $ident{5} . DIRECTORY_SEPARATOR;
+    $dir   = '/' . $ident{0} . $ident{1} . '/' . $ident{2} . $ident{3} . '/' . $ident{4} . $ident{5} . '/';
     return $dir;
 }
 

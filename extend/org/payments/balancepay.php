@@ -14,7 +14,7 @@ class balancepay implements Payment
         $this->config = $config;
     }
 
-    //减去用户余额
+    //去余额支付，减去用户余额
     public function pay($paymentInfo)
     {
         $result = [
@@ -35,7 +35,7 @@ class balancepay implements Payment
         if(!$billPaymentInfo){
             return error_code(10056,true);
         }
-        $resultBillPayment = $billPaymentModel->toUpdate( $paymentInfo['payment_id'],2,'balancepay',$res['data']['memo'],$res['data']['id']);
+        $resultBillPayment = $billPaymentModel->toUpdate( $paymentInfo['payment_id'],$billPaymentModel::STATUS_PAYED,'balancepay',$paymentInfo['money'],$res['data']['memo'],$res['data']['id']);
         if($resultBillPayment['status']){
             $result['msg'] = $resultBillPayment['msg'];
             $result['status'] = true;

@@ -21,10 +21,8 @@ class Advert extends Api
      */
     public function positionList()
     {
-        $position = new AdvertPosition();
-        $page = input('page/d',1);
-        $limit = input('limit/d',5);
-        return $position->getOptionsList($page,$limit);
+        $positionModel = new AdvertPosition();
+        return $positionModel->getOptionsList(input('page/d',1), input('limit/d',5));
     }
 
 
@@ -40,10 +38,8 @@ class Advert extends Api
     {
         $code = input('code/s', '');
         if (!$code) return error_code(10051);
-        $page = input('page/d',1);
-        $limit = input('limit/d',5);
-        $advert = new Advertisement();
-        return $advert->getAdvertList($code,$page,$limit);
+        $advertModel = new Advertisement();
+        return $advertModel->getAdvertList($code, input('page/d',1), input('limit/d',5));
     }
 
 }

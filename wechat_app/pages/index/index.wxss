@@ -248,3 +248,90 @@ hot-recommends .name{
   font-size:22rpx;
   color:#bbb;
 }
+
+.coupon-red{
+  width: 694rpx;
+  margin: 30rpx auto 0;
+  border-radius: 10rpx;
+  overflow: hidden;
+  position: relative;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+.coupon-bg{
+  position: absolute;
+  width: 100%;
+  height: 160rpx;
+}
+.coupon-c{
+  position: relative;
+  z-index: 100;
+  width: 100%;
+  height: 160rpx;
+  box-sizing: border-box;
+  background: linear-gradient(to right, #ff6565 , #ff8a8a);
+}
+.red-left,.gray-left{
+  width: 28%;
+  height: 100rpx;
+  color: rgb(255, 247, 247);
+  font-size: 22rpx;
+  padding: 0 30rpx;
+  float: left;
+  margin: 30rpx 0;
+  text-align: center;
+  box-sizing: border-box;
+  border-right: 2rpx dotted #fff;
+  display:inline-block;
+}
+.red-right,.gray-right{
+  width: 50%;
+  height: 100%;
+  font-size: 22rpx;
+  float: left;
+  text-align: left;
+  color: #fff;
+  box-sizing: border-box;
+  padding: 20rpx 16rpx;
+  display:inline-block;
+}
+.coupon-sum{
+  max-height: 100%;
+  font-size: 26rpx;
+  line-height: 1.3;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  text-overflow: ellipsis;  
+}
+.red-right text,.gray-right text{
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.conpon-f{
+  font-size: 28rpx;
+}
+.coupon-btn{
+  padding: 0 16rpx;
+  background-color: #ffe7e7;
+  color: #ff5454;
+  font-size: 24rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 30rpx;
+  border-radius: 4rpx;
+}
+.conpon-bot{
+  padding: 10rpx 30rpx;
+  color: #999;
+  font-size: 20rpx;
+  border: 2rpx solid #f3f3f3;
+  border-top: none;
+}

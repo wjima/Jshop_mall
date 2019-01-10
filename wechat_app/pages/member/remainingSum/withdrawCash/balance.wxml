@@ -19,7 +19,7 @@
         </view>
     </view>    
     <view class='balance-mid'>
-        <text class='balance-mid-title'>提现金额（收取0.1%服务费）</text>
+        <text class='balance-mid-title'>提现金额（收取{ {tocash_money_rate}}%服务费）</text>
         <view class='balance-mid-input'>
             <text>￥</text>
             <input type='number' bindinput="changeMoney"></input>

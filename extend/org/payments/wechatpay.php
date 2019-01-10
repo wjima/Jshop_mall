@@ -74,11 +74,14 @@ class wechatpay implements Payment
             $data['scene_info'] = [
                 'h5_info' => [
                     'type' => 'Wap',
-                    'wap_url' => $params['wap_url'],
+                    'wap_url' => $params['return_url'],
                     'wap_name' => 'mysite',//$params['wap_name'],
                 ]
             ];
             $data['scene_info'] = json_encode($data['scene_info']);
+        }
+        if($trade_type == "NATIVE"){
+            $data['product_id'] = $params['product_id']?$params['product_id']:"";
         }
 
         $data['sign'] = $this->makeSign($data);
@@ -89,7 +92,7 @@ class wechatpay implements Payment
         $re = $this->fromXml($response);
 
         if(!isset($re['return_code'])){
-            $result['msg'] = "出错了";
+            $result['msg'] = $re;           //把错误信息都返回到前台吧，方便调试。
             return $result;
         }
         if($re['return_code'] == 'SUCCESS'){
@@ -98,7 +101,6 @@ class wechatpay implements Payment
                 $data = $this->wxapppay($re);
                 //支付单传到前台
                 $data['payment_id'] = $paymentInfo['payment_id'];
-                $data['appid'] = $data['appid'];
                 $result['data'] = $data;
             }else{
                 $result['data'] = $re['err_code'];
@@ -135,6 +137,10 @@ class wechatpay implements Payment
                 break;
             case 'MWEB':                //微信H5支付
                 $app_data['mweb_url'] = $data['mweb_url'];
+                break;
+            case 'NATIVE':
+                $app_data['code_url'] = $data['code_url'];
+                break;
         }
 
         return $app_data;
@@ -150,19 +156,25 @@ class wechatpay implements Payment
         $xml = file_get_contents('php://input');
         $data = $this->xmlToArray($xml);
 
+        trace($data,'wechatpay');
+
         if($data && $data['return_code'] == 'SUCCESS' && $data['sign'] == $this->makeSign($data)){
             //说明值没问题，并且验证签名通过
             if($data['result_code'] == "SUCCESS"){
                 $result['status'] = true;
+                $result['data']['payment_id'] = $data['out_trade_no'];
                 $result['data']['status'] = 2;          //1未支付，2支付成功，3其他
                 $result['data']['payed_msg'] = $data['result_code'];
                 $result['data']['trade_no'] = $data['transaction_id'];
+                $result['data']['money'] = $data['total_fee']/100;
             }else{
                 //如果未支付成功，也更新支付单
                 $result['status'] = true;
+                $result['data']['payment_id'] = $data['out_trade_no'];
                 $result['data']['status'] = 3;          //1未支付，2支付成功，3其他
                 $result['data']['payed_msg'] = $data['err_code'].':'.$data['err_code_des'];
                 $result['data']['trade_no'] = '';
+                $result['data']['money'] = $data['total_fee']/100;
             }
             $result['msg'] = 'success';
         }else{
@@ -251,7 +263,7 @@ class wechatpay implements Payment
             'msg' => ''
         ];
         //判断是否是指定的三种类型
-        if($params['trade_type'] != 'JSAPI' && $params['trade_type'] != 'MWEB' && $params['trade_type'] != 'JSAPI_OFFICIAL'){
+        if($params['trade_type'] != 'JSAPI' && $params['trade_type'] != 'MWEB' && $params['trade_type'] != 'JSAPI_OFFICIAL' && $params['trade_type'] != 'NATIVE'){
             $result['msg'] = '参数错误，trade_type为非法值';
             return $result;
         }
@@ -281,9 +293,9 @@ class wechatpay implements Payment
             $appid = getSetting('wx_appid');
         }elseif($type == 'JSAPI_OFFICIAL'){
             $appid = getSetting('wx_official_appid');
-        }elseif($type == 'MWEB'){
+        }elseif($type == 'MWEB' || $type == 'NATIVE') {
             $appid = getSetting('wx_appid');
-            if($appid == ""){
+            if ($appid == "") {
                 $appid = getSetting('wx_official_appid');
             }
         }else{

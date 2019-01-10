@@ -84,7 +84,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline" style="margin-left: 17px;">
-            <button class="layui-btn layui-btn-sm" id="pay-order-array"><i class="iconfont icon-zhifu-01"></i>支付</button>
+            <button class="layui-btn layui-btn-sm" id="pay-order-array"><i class="iconfont icon-zhifu-01"></i>批量支付</button>
             <button class="layui-btn layui-btn-sm" id="cancel-order-array"><i class="iconfont icon-cancel"></i>取消</button>
         </div>
     </div>
@@ -283,7 +283,7 @@
                         window_box = layer.open({
                             type: 1,
                             title: '支付订单',
-                            area: ['530px', '360px'], //宽高
+                            area: ['500px', '600px'], //宽高
                             content: e.data.tpl
                         });
                     }else{

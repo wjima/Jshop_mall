@@ -31,9 +31,10 @@ class Coupon extends Api
         ];
 
         $promotionModel = new Promotion();
-        $res = $promotionModel->receiveCouponList();
+        $limit = Request::param('limit', 3);
+        $res = $promotionModel->receiveCouponList($limit);
 
-        if ( $res )
+        if($res)
         {
             $result['status'] = true;
             $result['data'] = $res;

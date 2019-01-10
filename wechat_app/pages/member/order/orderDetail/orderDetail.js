@@ -173,8 +173,11 @@ Page({
     logistics: function (e) {
         let code = e.currentTarget.dataset.code;
         let no = e.currentTarget.dataset.no;
+        let address1 = this.data.order.ship_area_name ? this.data.order.ship_area_name : '';
+        let address2 = this.data.order.ship_address ? this.data.order.ship_address : '';
+        let address = address1 + address2;
         wx.navigateTo({
-            url: '../logistics/logistics?code=' + code + '&no=' + no
+            url: '../logistics/logistics?code=' + code + '&no=' + no + '&address=' + address
         });
     }
 });

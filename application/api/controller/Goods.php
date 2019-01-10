@@ -132,28 +132,31 @@ class Goods extends Api
         $limit       = input('limit/d');
         $order       = input('order','sort asc');
 
-        if(input('?param.where')){
-            $postWhere = json_decode(input('param.where'),true);
+        if (input('?param.where')) {
+            $postWhere = json_decode(input('param.where'), true);
             //判断商品搜索,
-            if(isset($postWhere['search_name'])){
-                $where[] = ['name|bn|brief','LIKE', '%'.$postWhere['search_name'].'%'];
+            if (isset($postWhere['search_name']) && $postWhere['search_name']) {
+                $where[] = ['name|bn|brief', 'LIKE', '%' . $postWhere['search_name'] . '%'];
+            }
+            if (isset($postWhere['bn']) && $postWhere['bn']) {
+                $where[] = ['bn', '=', $postWhere['bn']];
             }
             //商品分类
-            if(isset($postWhere['cat_id'])){
-                $where[] = ['goods_cat_id','eq', $postWhere['cat_id']];
+            if (isset($postWhere['cat_id'])) {
+                $where[] = ['goods_cat_id', 'eq', $postWhere['cat_id']];
             }
             //价格区间
-            if(isset($postWhere['price_f']) && $postWhere['price_f']){
-                $where[] = ['price','>=',$postWhere['price_f']];
+            if (isset($postWhere['price_f']) && $postWhere['price_f']) {
+                $where[] = ['price', '>=', $postWhere['price_f']];
             }
-            if(isset($postWhere['price_t']) && $postWhere['price_t']){
-                $where[] = ['price','<',$postWhere['price_t']];
+            if (isset($postWhere['price_t']) && $postWhere['price_t']) {
+                $where[] = ['price', '<', $postWhere['price_t']];
             }
-            if(isset($postWhere['recommend'])) {
+            if (isset($postWhere['recommend'])) {
                 $where[] = ['is_recommend', 'eq', '1'];
             }
-            if(isset($postWhere['hot'])){
-                $where[] = ['is_hot','eq', '1'];
+            if (isset($postWhere['hot'])) {
+                $where[] = ['is_hot', 'eq', '1'];
             }
         }
         $goodsModel = new GoodsModel();
@@ -185,7 +188,6 @@ class Goods extends Api
         $return_data['data']['limit'] = $limit;
         $return_data['data']['where'] = $where;
         $return_data['data']['order'] = $order;
-        $return_data['sql'] = $returnGoods['sql'];
 
         return $return_data;
     }

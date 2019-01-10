@@ -109,7 +109,7 @@
   <view class='goods'>
     <!-- <view class='goods-title'><image></image><text>吃饱了</text></view> -->
     <view class='goods-lists' wx:for="{{order.items}}" wx:key="index" bindtap='showGoods' data-goods_id="{{item.goods_id}}">
-      <image src='{{item.image_url}}'></image>
+      <image src='{{item.image_url}}' mode='aspectFill' ></image>
       <view class='goods-content'>
         <view class='goods-content-header'>
           <text class='goods-header-left'>{{item.name}}</text> 
@@ -148,27 +148,27 @@
         <view class="weui-cell__bd">商品总价</view>
         <view class="weui-cell__ft">￥{{order.goods_amount}}</view>
       </view>
-      <view class="weui-cell" wx:if="{{order.cost_freight != 0}}">
+      <view class="weui-cell" wx:if="{{order.cost_freight && order.cost_freight != 0}}">
         <view class="weui-cell__bd">快递运费</view>
-        <view class="weui-cell__ft">+￥{{order.cost_freight}}</view>
+        <view class="weui-cell__ft">￥{{order.cost_freight}}</view>
       </view>
-      <view class="weui-cell" wx:if="{{order.goods_pmt != 0}}">
+      <view class="weui-cell" wx:if="{{order.goods_pmt && order.goods_pmt != 0}}">
         <view class="weui-cell__bd">商品优惠</view>
         <view class="weui-cell__ft">-￥{{order.goods_pmt}}</view>
       </view>
-      <view class="weui-cell" wx:if="{{order.order_pmt != 0}}">
+      <view class="weui-cell" wx:if="{{order.order_pmt && order.order_pmt != 0}}">
         <view class="weui-cell__bd">订单优惠</view>
         <view class="weui-cell__ft">-￥{{order.order_pmt}}</view>
       </view>
-      <view class="weui-cell" wx:if="{{order.coupon_pmt != 0}}">
+      <view class="weui-cell" wx:if="{{order.coupon_pmt && order.coupon_pmt != 0}}">
         <view class="weui-cell__bd">优惠券优惠</view>
         <view class="weui-cell__ft">-￥{{order.coupon_pmt}}</view>
       </view>
-      <view class="weui-cell" wx:if="{{order.point_money != 0}}">
+      <view class="weui-cell" wx:if="{{order.point_money && order.point_money != 0}}">
         <view class="weui-cell__bd">积分抵扣</view>
         <view class="weui-cell__ft">-￥{{order.point_money}}</view>
       </view>
-      <view class="weui-cell">
+      <view class="weui-cell" wx:if="{{order.payment_code}}">
         <view class="weui-cell__bd">支付方式</view>
         <view class="weui-cell__ft">{{order.payment_code}}</view>
       </view>

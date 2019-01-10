@@ -36,7 +36,6 @@ export default {
     // 实例创建并挂载后调用此方法
     mounted () {
         this.getCouponList()
-        var url = GetUrlPara();
     },
     methods: {
         // 获取商户优惠券信息
@@ -49,16 +48,6 @@ export default {
         }
     }
 }
-
-function GetUrlPara()
-{
-    var url = document.location.toString();
-    var arrUrl = url.split("?");
-
-    var para = arrUrl[1];
-    return para;
-}
-
 </script>
 
 <style>

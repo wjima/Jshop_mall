@@ -8,66 +8,65 @@
 </template>
 
 <script>
-    export default {
-        name: "author",
-        data () {
-            return {
-                code: '',
-                type: this.$route.query.type,
-                uuid: '',
-                state: ''
+export default {
+    name: 'author',
+    data () {
+        return {
+            code: '',
+            type: this.$route.query.type,
+            uuid: '',
+            state: ''
+        }
+    },
+    mounted () {
+        // 获取url上的参数
+        this.code = this.getUrlParam('code')
+        this.state = this.getUrlParam('state')
+        this.uuid = this.GLOBAL.getStorage('uuid')
+        this.userTrustLogin()
+    },
+    methods: {
+        getUrlParam (paraName) {
+            let url = document.location.toString()
+            let arrObj = url.split('?')
+            if (arrObj.length > 1) {
+                let arrPara = arrObj[1].split('&')
+                let arr
+                for (let i = 0; i < arrPara.length; i++) {
+                    arr = arrPara[i].split('=')
+                    if (arr != null && arr[0] == paraName) {
+                        if ((arr[1].indexOf('#'))) {
+                            let str
+                            str = arr[1].split('#')
+                            return str[0]
+                        }
+                        return arr[1]
+                    }
+                }
+                return ''
+            } else {
+                return ''
             }
         },
-        mounted () {
-            // 获取url上的参数
-            this.code = this.getUrlParam('code')
-            this.state = this.getUrlParam('state')
-            this.uuid = this.GLOBAL.getStorage('uuid')
-            this.userTrustLogin()
-        },
-        methods: {
-            getUrlParam(paraName) {
-                let url = document.location.toString()
-                let arrObj = url.split('?')
-                if (arrObj.length > 1) {
-                    let arrPara = arrObj[1].split('&')
-                    let arr
-                    for (let i = 0; i < arrPara.length; i++) {
-                        arr = arrPara[i].split("=")
-                        if (arr != null && arr[0] == paraName) {
-                            if ((arr[1].indexOf('#'))) {
-                                let str
-                                str = arr[1].split('#')
-                                return str[0]
-                            }
-                            return arr[1]
-                        }
+        userTrustLogin () {
+            this.$api.trustLogin({
+                code: this.code,
+                type: this.type,
+                state: this.state,
+                uuid: this.uuid
+            }, res => {
+                if (res.status) {
+                    if (res.data.is_new) {
+                        this.$router.replace({path: '/authbind'})
+                    } else if (res.data) {
+                        this.GLOBAL.setStorage('user_token', res.data)
+                        this.$router.replace({path: '/user'})
                     }
-                    return ''
                 }
-                else {
-                    return ''
-                }
-            },
-            userTrustLogin () {
-                this.$api.trustLogin({
-                    code: this.code,
-                    type: this.type,
-                    state: this.state,
-                    uuid: this.uuid
-                }, res => {
-                    if (res.status) {
-                        if (res.data.is_new) {
-                            this.$router.replace({path: '/authbind'})
-                        } else if (res.data) {
-                            this.GLOBAL.setStorage('user_token', res.data)
-                            this.$router.replace({path: '/user'})
-                        }
-                    }
-                })
-            }
+            })
         }
     }
+}
 </script>
 
 <style>
@@ -83,4 +82,3 @@
         transform: translate(-50%, -50%);
     }
 </style>
-

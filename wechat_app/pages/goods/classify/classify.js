@@ -8,7 +8,7 @@ Page({
     class_list: [],
     on_class: 0,
     content_height: 0,
-    cate_style: 3 //新增分类样式
+    cate_style: app.config.cate_style
   },
 
   //加载执行
@@ -17,12 +17,12 @@ Page({
     app.api.getClassTop(function (res) {
       if (res.status) {
         page.setData({
+          cate_style: app.config.cate_style,
           top_class: res.data,
-          cate_style: res.cate_style, //新增分类样式
           on_class: res.data[0].id
         });
         
-        if (res.cate_style == 3){
+        if (app.config.cate_style == 3){    //如果是二级小图，取二级数据
           page.getClassList(res.data[0].id);
         }
       }

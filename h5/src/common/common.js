@@ -1,7 +1,7 @@
 import _this from '../main'
 
 // 设置localStorage
-function setStorage(name, content) {
+function setStorage (name, content) {
     if (!name) return
     if (typeof content !== 'string') {
         content = JSON.stringify(content)
@@ -10,19 +10,19 @@ function setStorage(name, content) {
 }
 
 // 获取localStorage
-function getStorage(name) {
+function getStorage (name) {
     if (!name) return
     return window.localStorage.getItem(name)
 }
 
 // 删除localStorage
-function removeStorage(name) {
+function removeStorage (name) {
     if (!name) return
     window.localStorage.removeItem(name)
 }
 
 // 把obj对象里的值覆盖到newobj里面
-function deepCopy(newobj, obj) {
+function deepCopy (newobj, obj) {
     if (typeof obj !== 'object') {
         return obj
     }
@@ -37,7 +37,7 @@ function deepCopy(newobj, obj) {
 }
 
 // 跳转到登陆页面
-function jumpToLogin() {
+function jumpToLogin () {
     _this.$router.push({
         path: '/login',
         query: {
@@ -47,14 +47,14 @@ function jumpToLogin() {
 }
 
 // 当出错的时候，显示错误信息，并且跳转
-function errorToBack(msg = '出错了，请重试', time = 1500) {
+function errorToBack (msg = '出错了，请重试', time = 1500) {
     _this.$dialog.toast({
         mes: msg,
         timeout: time
     })
 }
 // 操作成功后，的提示信息
-function successToShow(msg = '保存成功', callback = function() {}) {
+function successToShow (msg = '保存成功', callback = function () {}) {
     // wx.showToast({
     //   title: msg,
     //   icon: 'success',
@@ -62,11 +62,11 @@ function successToShow(msg = '保存成功', callback = function() {}) {
     // });
     // setTimeout(function () {
     //   callback();
-    // }, 1500);
+    // }, 1500)
 }
 
 // 时间戳转时间格式
-function timeToDate(date) {
+function timeToDate (date) {
     let dateTime = new Date(date * 1000) // 如果date为13位不需要乘1000
     let Y = dateTime.getFullYear() + '-'
     let M = (dateTime.getMonth() + 1 < 10 ? '0' + (dateTime.getMonth() + 1) : dateTime.getMonth() + 1) + '-'
@@ -78,7 +78,7 @@ function timeToDate(date) {
 }
 
 // 货币格式化
-function formatMoney(number, places, symbol, thousand, decimal) {
+function formatMoney (number, places, symbol, thousand, decimal) {
     number = number || 0
     places = !isNaN(places = Math.abs(places)) ? places : 2
     symbol = symbol !== undefined ? symbol : '￥'
@@ -90,20 +90,20 @@ function formatMoney(number, places, symbol, thousand, decimal) {
     return symbol + negative + (j ? i.substr(0, j) + thousand : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : '')
 }
 
-function throttle(fn, context, delay) {
+function throttle (fn, context, delay) {
     clearTimeout(fn.timeoutId)
-    fn.timeoutId = setTimeout(function() {
+    fn.timeoutId = setTimeout(function () {
         fn.call(context)
     }, delay)
 }
 
 // 获取验证码
-function getCaptcha() {
+function getCaptcha () {
     let randomNumber = Math.random() * 10 + 1
-    return window.apiUrl.replace('api', 'captcha') + '?' + randomNumber
+    return window.host + '/captcha?' + randomNumber
 }
 
-function hecong() {
+function hecong () {
     // 测试环境
     let entId
     if (process.env.NODE_ENV === 'development') {
@@ -115,21 +115,23 @@ function hecong() {
     return entId
 }
 
-
 function locationHost () {
     if (process.env.NODE_ENV === 'production') {
-        return window.apiUrl.split('/api.html')[0]
+        return window.host
     } else {
-        let url = 'http://www.b2c.com/index.php/api.html'
-        return url.split('/api.html')[0]
+        return 'http://www.b2c.com'
     }
 }
 
 function isWeiXinBrowser () {
-    //window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
-    let ua = window.navigator.userAgent.toLowerCase();
-    //通过正则表达式匹配ua中是否含有MicroMessenger字符串
-    return ua.match(/MicroMessenger/i) == 'micromessenger' ? true : false
+    // window.navigator.userAgent属性包含了浏览器类型、版本、操作系统类型、浏览器引擎类型等信息，这个属性可以用来判断浏览器类型
+    let ua = window.navigator.userAgent.toLowerCase()
+    // 通过正则表达式匹配ua中是否含有MicroMessenger字符串
+    if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+        return true
+    } else {
+        return false
+    }
 }
 
 export default {

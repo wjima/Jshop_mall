@@ -61,20 +61,16 @@ export default {
         pay (code) {
             if (code === 'wechatpay') {
                 let isWeiXin = this.GLOBAL.isWeiXinBrowser()
-                // 微信支付
-                let params = {
-                    trade_type: isWeiXin ? 'JSAPI_OFFICIAL' : 'MWEB',
-                    wap_url: this.GLOBAL.locationHost(), // window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
-                    wap_name: 'mysite'
-                }
-                let data = {
-                    ids: this.order_id,
-                    payment_code: code,
-                    payment_type: 1,
-                    params: params
-                }
-
                 if (isWeiXin) {
+                    // 公众号支付参数
+                    let data = {
+                        ids: this.order_id,
+                        payment_code: code,
+                        payment_type: 1,
+                        params: {
+                            trade_type: 'JSAPI_OFFICIAL'
+                        }
+                    }
                     // 微信jsapi支付
                     this.$api.pay(data, res => {
                         if (res.status) {
@@ -82,15 +78,15 @@ export default {
                             let _this = this
                             WeixinJSBridge.invoke(
                                 'getBrandWCPayRequest', {
-                                    "appId": data.appid,     //公众号名称，由商户传入
-                                    "timeStamp": data.timeStamp,         //时间戳，自1970年以来的秒数
-                                    "nonceStr": data.nonceStr, //随机串
-                                    "package": data.package,
-                                    "signType": data.signType,         //微信签名方式：
-                                    "paySign": data.paySign //微信签名
+                                    'appId': data.appid, // 公众号名称，由商户传入
+                                    'timeStamp': data.timeStamp, // 时间戳，自1970年以来的秒数
+                                    'nonceStr': data.nonceStr, // 随机串
+                                    'package': data.package,
+                                    'signType': data.signType, // 微信签名方式：
+                                    'paySign': data.paySign // 微信签名
                                 },
-                                function(res){
-                                    if(res.err_msg == "get_brand_wcpay_request:ok" ){
+                                function (res) {
+                                    if (res.err_msg === 'get_brand_wcpay_request:ok') {
                                         _this.$dialog.alert({
                                             mes: '支付成功',
                                             callback () {
@@ -98,13 +94,23 @@ export default {
                                             }
                                         })
                                         // 使用以上方式判断前端返回,微信团队郑重提示：
-                                        //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+                                        // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                                     }
-                                });
+                                })
                         }
                     })
                 } else {
-                    // h5支付
+                    // h5端支付参数
+                    let data = {
+                        ids: this.order_id,
+                        payment_code: code,
+                        payment_type: 1,
+                        params: {
+                            trade_type: 'MWEB',
+                            return_url: this.GLOBAL.locationHost() + '/#/orderdetail?order_id=' + this.order_id
+                        }
+                    }
+                    // 微信h5支付
                     this.$api.pay(data, res => {
                         if (res.status) {
                             window.location.href = res.data.mweb_url
@@ -114,17 +120,14 @@ export default {
                     })
                 }
             } else if (code === 'alipay') {
-                let params = {
-                    trade_type: 'MWEB',
-                    wap_url: this.GLOBAL.locationHost(), // window.location.protocol + '//' + window.location.host, // 'http://h5.jihainet.com',
-                    return_url: this.GLOBAL.locationHost() + '/#/orderdetail?order_id=' + this.order_id,
-                    wap_name: 'mysite'
-                }
                 let data = {
                     ids: this.order_id,
                     payment_code: code,
                     payment_type: 1,
-                    params: params
+                    params: {
+                        trade_type: 'WAP',
+                        return_url: this.GLOBAL.locationHost() + '/#/orderdetail?order_id=' + this.order_id
+                    }
                 }
                 this.$api.pay(data, res => {
                     if (res.status) {

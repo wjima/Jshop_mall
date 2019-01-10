@@ -20,7 +20,7 @@ page{
   float: left;
 }
 .comprehensive{
-  color: #FF3B44 !important;
+  
 }
 .content-body{
   overflow: hidden;

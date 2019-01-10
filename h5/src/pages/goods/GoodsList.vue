@@ -211,4 +211,7 @@ export default {
     .active {
         color: #FF3B44;
     }
+    .goodslist .yd-list-theme4 .yd-list-item .yd-list-title{
+        -webkit-line-clamp: 2;
+    }
 </style>

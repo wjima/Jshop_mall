@@ -385,6 +385,9 @@ class User extends Api
     /**
      * 存储用户收货地址接口
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function saveUserShip()
     {
@@ -404,7 +407,8 @@ class User extends Api
         $data['is_def'] = $is_def;
 
         //存储收货地址
-        $result = model('common/UserShip')->saveShip($data);
+        $model = new UserShip();
+        $result = $model->saveShip($data);
         if($result)
         {
             $return_data = array(
@@ -766,32 +770,32 @@ class User extends Api
     }
 
 
-    /**
-     * 获取店铺设置
-     * @return array|mixed
-     */
-    public function getSetting()
-    {
-        $result = [
-            'status' => true,
-            'msg' => '',
-            'data' => ''
-        ];
-
-        $key = input('param.key/s');
-        if(!$key) return error_code(10003);
-        $result['data'] = getSetting($key);
-
-        switch ($key)
-        {
-            case 'shop_logo':
-                $result['data'] = _sImage($result['data']);
-                break;
-            default:
-                break;
-        }
-        return $result;
-    }
+//    /**废弃接口（此接口有泄密风险，并且取值方式也不友好，统一用api/common/jshopConf方法）
+//     * 获取店铺设置
+//     * @return array|mixed
+//     */
+//    public function getSetting()
+//    {
+//        $result = [
+//            'status' => true,
+//            'msg' => '',
+//            'data' => ''
+//        ];
+//
+//        $key = input('param.key/s');
+//        if(!$key) return error_code(10003);
+//        $result['data'] = getSetting($key);
+//
+//        switch ($key)
+//        {
+//            case 'shop_logo':
+//                $result['data'] = _sImage($result['data']);
+//                break;
+//            default:
+//                break;
+//        }
+//        return $result;
+//    }
 
 
     /**

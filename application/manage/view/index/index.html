@@ -284,7 +284,7 @@
 			<script type="text/javascript">
 				layui.use(['laytpl','layer'],function(){
 					var $ = layui.$, laytpl = layui.laytpl,layer = layui.layer;
-					$.get("{:url('manage/manage/getVersion')}",function(data){
+					$.get("{:url('manage/administrator/getVersion')}",function(data){
 						var getTpl = version.innerHTML,view = document.getElementById('view');
 						laytpl(getTpl).render(data.data, function(html){
 							view.innerHTML = html;

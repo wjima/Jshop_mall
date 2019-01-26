@@ -1,2 +1,2 @@
-window.host = 'http://www.b2c.com';
+window.host = 'https://b2c.jihainet.com';
 window.entId = '';

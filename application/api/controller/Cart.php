@@ -134,7 +134,10 @@ class Cart extends Api
         $model = new Model();
         $where[] = ['user_id', 'eq', $this->userId];
         $vclass = getSetting('virtual_card_class');
-        $where[] = ['g.goods_cat_id', 'neq', $vclass];
+        if($vclass)
+        {
+            $where[] = ['g.goods_cat_id', 'neq', $vclass];
+        }
 
         $cartNums = $model->alias('c')
             ->where($where)

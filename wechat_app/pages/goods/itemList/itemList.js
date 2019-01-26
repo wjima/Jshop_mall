@@ -40,6 +40,9 @@ Page({
       where = {
         search_name: options.key
       }
+      this.setData({
+        searchKey: options.key
+      });
     }
     if (options.type) {
       if (options.type == 'hot') {

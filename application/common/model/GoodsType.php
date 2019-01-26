@@ -170,6 +170,7 @@ class GoodsType extends Common
                 }
             }
             $typeInfo['spec'] = $rel;
+            $result['msg'] ='获取成功';
             $result['data']   = $typeInfo;
             $result['status'] = true;
         }

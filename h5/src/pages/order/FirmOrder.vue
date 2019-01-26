@@ -302,9 +302,9 @@ export default {
         },
         // 获取优惠券列表
         getCouponList () {
-            this.$api.userCoupon({}, res => {
+            this.$api.userCoupon({display: 'no_used'}, res => {
                 if (res.status) {
-                    this.userCoupon = res.data.list.filter(item => item.is_used === 1)
+                    this.userCoupon = res.data.list
                     this.userCoupon.forEach(item => {
                         if (this.usedCouponCode) {
                             if (this.usedCouponCode === item.coupon_code) {

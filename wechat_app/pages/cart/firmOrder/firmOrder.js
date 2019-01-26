@@ -84,7 +84,8 @@ Page({
     var page = this;
     app.db.userToken(function (token) {
       app.api.getDefaultShip(function (res) {
-        if(res.status){
+        console.log(res.data);
+        if (res.status && res.data.area_id){
           page.setData({
             isAddress: true,
             areaId: res.data.area_id,

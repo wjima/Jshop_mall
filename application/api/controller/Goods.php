@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\common\controller\Api;
+use app\common\model\GoodsComment;
 use Request;
 use app\common\model\Goods as GoodsModel;
 use app\common\model\Products;
@@ -362,6 +363,10 @@ class Goods extends Api
 
     /**
      * 获取商品评价
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getGoodsComment()
     {
@@ -371,7 +376,8 @@ class Goods extends Api
         if (empty($goods_id)) {
             return error_code(13403);
         }
-        $res = model('common/GoodsComment')->getList($goods_id, $page, $limit, 1);
+        $model = new GoodsComment();
+        $res = $model->getList($goods_id, $page, $limit, 1);
         return $res;
     }
 }

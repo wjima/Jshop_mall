@@ -196,15 +196,15 @@ class Ship extends Common
         return $postfee;
 
     }
-
+    
     /**
      * 根据地区获取配送方式
      * todo 地区判断以后再加
      * @param int $area_id
      * @return array|bool|null|\PDOStatement|string|\think\Model
-     * User: wjima
-     * Email:1457529125@qq.com
-     * Date: 2018-02-01 15:36
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getShip($area_id = 0)
     {

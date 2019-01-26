@@ -133,7 +133,7 @@
 
         table = layui.table.render({
             elem: '#goodsTable',
-            height: 'full-330',
+            height: 'full-310',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -244,6 +244,7 @@
                     var data = $(".export-form:last").serializeArray();
 
                     data.push({'name':'model','value':'Goods'});
+
                     JsPost("{:url('Ietask/export')}",data,function(res){
                                 layer.msg(res.msg, {time:1500}, function(){
                                     if(res.status){

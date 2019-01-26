@@ -181,3 +181,18 @@
 .sousuo button{
   font-size: 24rpx;
 }
+.history{
+    overflow: hidden;
+    margin-bottom: 20rpx;
+}
+.history-text{
+    font-size: 26rpx;
+    color: #333;
+    float: left;
+}
+.delete{
+    display: inline-block;
+    float: right;
+    font-size: 26rpx;
+    color: #999;
+}

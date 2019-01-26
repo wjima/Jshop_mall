@@ -124,12 +124,16 @@ class GoodsCat extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getAllCat( $id = false)
+    public function getAllCat($id = false)
     {
         if($id)
         {
             $where[] = ['id', 'neq', $id];
             $where[] = ['parent_id', 'neq', $id];
+        }
+        else
+        {
+            $where = [];
         }
         $data = $this->field('id, parent_id, name, sort, image_id')
             ->where($where)
@@ -145,6 +149,9 @@ class GoodsCat extends Common
      * API使用的树装
      * @param $data
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function getTreeApi($data)
     {
@@ -159,6 +166,10 @@ class GoodsCat extends Common
                 if($v['image_id'])
                 {
                     $new_data[$v['id']]['image_url'] = _sImage($v['image_id']);
+                }
+                else
+                {
+                    $new_data[$v['id']]['image_url'] = _sImage();
                 }
                 $new_data[$v['id']]['sort'] = $v['sort'];
             }
@@ -186,7 +197,8 @@ class GoodsCat extends Common
                 }
             }
         }
-        foreach ($new_data as $key => $val)
+        $edition = [];
+        foreach ((array)$new_data as $key => $val)
         {
             $edition[] = $val['sort'];
         }

@@ -388,6 +388,11 @@
                 imageMaxSize = editor.getOpt('imageMaxSize'),
                 imageCompressBorder = editor.getOpt('imageCompressBorder');
 
+            if(editor.options.single == true){
+                $("span[data-content-id='upload']").hide();
+                $("span[data-content-id='online']").hide();
+                $("span[data-content-id='search']").hide();
+            }
             if (!WebUploader.Uploader.support()) {
                 $('#filePickerReady').after($('<div>').html(lang.errorNotSupport)).hide();
                 return;

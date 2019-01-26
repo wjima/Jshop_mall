@@ -73,7 +73,7 @@ page{
 .address{
   border-bottom: 16rpx solid #fff;
   position: relative;
-  padding: 0 30rpx 20rpx;
+  padding: 0 0rpx 20rpx;
 }
 .address-c{
   width: 690rpx;

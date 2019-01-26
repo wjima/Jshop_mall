@@ -397,3 +397,11 @@
     margin-bottom: 10px;
     text-align: center;
 }
+
+/* 报表页面样式 */
+.report_table_bar {
+    text-align:right;
+}
+.report_table_bar span {
+    cursor: pointer;
+}

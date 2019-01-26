@@ -15,7 +15,7 @@
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         table = layui.table.render({
             elem: '#typeTable',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -23,8 +23,8 @@
             id: 'typeTable',
             cols: [[
                 {type:'numbers'},
-                {field: 'name', width: 100, title: '名称'},
-                {field: 'spec_value', width: 200, title: '属性值',templet:function(data){
+                {field: 'name', width: 150, title: '名称'},
+                {field: 'spec_value', width: 240, title: '属性值',templet:function(data){
                     var html="";
                     if(data.spec_value.length>0){
                         $.each(data.spec_value,function(i,j){

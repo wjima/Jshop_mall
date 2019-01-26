@@ -298,6 +298,17 @@ class Promotion extends Manage
                 return error_code(15004);
             }
             $code = $info['code'];
+            if($code == 'GOODS_CATS'){
+                if(isset($info['params']['cat_id']) && $info['params']['cat_id']){
+                    $goodsCatModel = new GoodsCat();
+                    $catInfo = $goodsCatModel->getCatByLastId( $info['params']['cat_id']);
+                    $catInfo = _krsort($catInfo);
+                    $this->assign('catInfo', $catInfo);
+                    $secondCat = $goodsCatModel->getCatByParentId($catInfo[0]['id']);
+                    $this->assign('secondCat', $secondCat);
+                }
+            }
+
             $this->assign($info->toArray());
         }else{
             $code = input('param.condition_code');
@@ -602,5 +613,56 @@ class Promotion extends Manage
         }else{
             return error_code(10007);
         }
+    }
+
+
+    /**
+     *  更改设置状态
+     *
+     */
+    public function changeState()
+    {
+        $result = [
+            'status' => false,
+            'msg' => '关键参数丢失',
+            'data' => []
+        ];
+        $promotionModel = new \app\common\model\Promotion();
+        $id = input('param.id/d', 0);
+        $elem = input('param.elem/s', '');
+        $state = input('param.state/s', 'true');
+
+        if (!$id && !$elem) return $result;
+        if ($elem === 'status') {
+            $change = $state === 'true'
+                ? $promotionModel::STATUS_OPEN
+                : $promotionModel::STATUS_CLOSE;
+        } else if ($elem === 'exclusive') {
+            $change = $state === 'true'
+                ? $promotionModel::EXCLUSIVE_YES
+                : $promotionModel::EXCLUSIVE_NO;
+        }
+        switch ($elem)
+        {
+            case 'status':
+                $iData['status'] = $change;
+                break;
+            case 'exclusive':
+                $iData['exclusive'] = $change;
+                break;
+            default:
+                $iData = '';
+                break;
+        }
+
+        if ($promotionModel->save($iData, ['id' => $id]))
+        {
+            $result['status'] = true;
+            $result['msg'] = '设置成功';
+        } else {
+            $result['msg'] = '设置失败';
+        }
+
+        return $result;
     }
 }

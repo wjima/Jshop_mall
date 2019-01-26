@@ -66,7 +66,7 @@ export default {
             code: null, // 短信验证码
             isShowCaptcha: false, // 是否需要登录验证码
             captcha: '', // 用户输入的验证码
-            localCaptcha: this.GLOBAL.getCaptcha(), // 验证码图片
+            localCaptcha: '', // 登录次数过多验证码图片
             countDown: false, // 发送验证码倒计时 发送成功后修改为true倒计时启动
             authList: []
         }
@@ -130,18 +130,26 @@ export default {
             if (!this.rightMobile.status) {
                 this.$dialog.toast({mes: this.rightMobile.msg, timeout: 1000})
             } else {
-                // 账号密码登录
                 if (!this.tab) {
+                    // 账号密码登录
                     if (!this.password) {
                         this.$dialog.toast({mes: '请输入密码!', timeout: 1000})
                     } else {
-                        this.$api.login({mobile: this.mobile, password: this.password}, res => {
+                        let data = {
+                            mobile: this.mobile,
+                            password: this.password
+                        }
+                        // 判断是否需要验证码登录
+                        if (this.isShowCaptcha) {
+                            data['captcha'] = this.captcha
+                        }
+                        this.$api.login(data, res => {
                             if (res.status) {
                                 this.GLOBAL.setStorage('user_token', res.data)
                                 this.redirectHandler()
                             } else {
-                                // 需要输入验证码
-                                if (res.data === 10013) {
+                                // 需要输入验证码 或者 验证码错误刷新
+                                if (res.data === 10013 || res.data === 10012) {
                                     this.isShowCaptcha = true
                                 }
                                 // 密码错误刷新

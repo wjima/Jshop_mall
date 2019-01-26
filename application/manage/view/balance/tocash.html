@@ -34,7 +34,7 @@
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         var tocashTable = layui.table.render({
             elem: '#balanceTable',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -42,18 +42,19 @@
             id:'balanceTable',
             cols: [[
                 {type:'numbers'},
-                {field: 'mobile',width:120, title: '用户', align: 'center',templet:function(data){
+                {field: 'mobile',width:150, title: '用户', align: 'center',templet:function(data){
                     var html = '';
                     html += data.mobile;
                     return html;
                 }},
-                {field:'money', width:100,title:'金额'},
-                {field:'account_bank', width: 200, title:'开户行'},
-                {field:'account_name', width: 200, title:'账户名'},
-                {field:'card_number',width: 180, title:'卡号'},
-                {field:'type',title:'类型'},
-                {field:'ctime',width:160,title:'创建时间'},
-                {field:'ctime',width:160,title:'更新时间'},
+                {field:'money', width:100,align: 'center', title:'金额'},
+                {field:'withdrawals',width: 100, align: 'center', title:'手续费'},
+                {field:'account_bank', width: 200, align: 'center', title:'开户行'},
+                {field:'account_name', width: 150, align: 'center', title:'账户名'},
+                {field:'card_number',width: 180, align: 'center', title:'卡号'},
+                {field:'type', align: 'center', title:'类型', templet: '#type'},
+                {field:'ctime',width:160, align: 'center', title:'创建时间'},
+                {field:'ctime',width:160, align: 'center', title:'更新时间'},
                 {field: 'operating', title: '操作', width:180, align: 'center',templet:function(data){
                     var html = '';
                     if(data.type == "待审核"){
@@ -112,4 +113,14 @@
             });
         });
     });
+</script>
+
+<script type="text/html" id="type">
+    {{#  if(d.type == '提现失败'){ }}
+    <span style="color: #F581B1;">{{ d.type }}</span>
+    {{#  } else if (d.type == '提现成功'){ }}
+    <span style="color: #20a53a;">{{ d.type }}</span>
+    {{#  } else if (d.type == '待审核') {}}
+    <span style="color: #00ABE9;">{{ d.type }}</span>
+    {{# }; }}
 </script>

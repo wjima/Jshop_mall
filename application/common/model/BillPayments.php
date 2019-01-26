@@ -78,12 +78,20 @@ class BillPayments extends Common
         if(isset($post['payment_id']) && $post['payment_id'] != ""){
             $where[] = ['payment_id', 'like', '%'.$post['payment_id'].'%'];
         }
+        if(isset($post['date']) && $post['date'] != "")
+        {
+            $date = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
         if(isset($post['mobile']) && $post['mobile'] != ""){
             if($user_id = get_user_id($post['mobile'])){
                 $where[] = ['user_id', 'eq', $user_id];
             }else{
                 $where[] = ['user_id', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
+        }
+        if(isset($post['id']) && $post['id'] != ""){
+            $where[] = ['payment_id', 'in', $post['id']];
         }
         if(isset($post['trade_no']) && $post['trade_no'] != ""){
             $where[] = ['trade_no', 'eq', $post['trade_no']];
@@ -434,5 +442,181 @@ class BillPayments extends Common
         $res = Db::query($sql);
         $data = get_lately_days($num, $res);
         return ['day' => $data['day'], 'data' => $data['data']];
+    }
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'payment_id',
+                'desc' => '支付单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'status',
+                'desc' => '状态',
+            ],
+            [
+                'id' => 'payment_code',
+                'desc' => '支付方式',
+            ],
+            [
+                'id' => 'type',
+                'desc' => '单据类型',
+            ],
+
+
+            [
+                'id' => 'user_id',
+                'desc' => '用户',
+            ],
+            [
+                'id' => 'money',
+                'desc' => '金额',
+
+            ],
+            [
+                'id' => 'trade_no',
+                'desc' => '第三方支付单号',
+
+            ],
+            [
+                'id' => 'utime',
+                'desc' => '支付时间',
+
+            ],
+        ];
+    }
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出数据',
+
+        ];
+        $header = $this->csvHeader();
+        $userData = $this->getExportList($post);
+
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body = [];
+            $i = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) &&!empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        return $result;
+    }
+    //导出格式
+    public function getExportList($post = [])
+    {
+        $return_data = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => '',
+            'count' => 0
+        ];
+        $where = [];
+        if(isset($post['payment_id']) && $post['payment_id'] != ""){
+            $where[] = ['payment_id', 'like', '%'.$post['payment_id'].'%'];
+        }
+        if(isset($post['date']) && $post['date'] != "")
+        {
+            $date = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
+        if(isset($post['mobile']) && $post['mobile'] != ""){
+            if($user_id = get_user_id($post['mobile'])){
+                $where[] = ['user_id', 'eq', $user_id];
+            }else{
+                $where[] = ['user_id', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+            }
+        }
+        if(isset($post['id']) && $post['id'] != ""){
+            $where[] = ['payment_id', 'in', $post['id']];
+        }
+        if(isset($post['trade_no']) && $post['trade_no'] != ""){
+            $where[] = ['trade_no', 'eq', $post['trade_no']];
+        }
+        if(isset($post['status']) && $post['status'] != ""){
+            $where[] = ['status', 'eq', $post['status']];
+        }
+        if(isset($post['type']) && $post['type'] != ""){
+            $where[] = ['type', 'eq', $post['type']];
+        }
+
+        $list = $this->where($where)
+            ->order('utime desc')
+            ->select();
+
+        if($list){
+            $count = $this->where($where)->count();
+            foreach($list as $k => $v) {
+                if($v['status']) {
+                    $list[$k]['status'] = config('params.bill_payments')['status'][$v['status']];
+                }
+                if($v['user_id']) {
+                    $list[$k]['user_id'] = get_user_info($v['user_id']);
+                }
+                if($v['payment_code']) {
+                    $list[$k]['payment_code'] = config('params.payment_type')[$v['payment_code']];
+                }
+                if($v['utime']) {
+                    $list[$k]['utime'] = getTime($v['utime']);
+                }
+                if($v['type']) {
+                    $list[$k]['type'] = config('params.bill_payments')['type'][$v['type']];
+                }
+            }
+            $return_data = [
+                'status' => true,
+                'msg' => '获取成功',
+                'data' => $list,
+                'count' => $count
+            ];
+        }
+        return $return_data;
     }
 }

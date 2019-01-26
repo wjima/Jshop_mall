@@ -51,6 +51,13 @@ class Aliyunsms extends Addons
      */
     public function sendsms($data)
     {
+        if ($data['params']['code'] == 'seller_order_notice') {
+            $data['params']['mobile'] = getSetting('shop_mobile');
+            if (!$data['params']['mobile']) {
+                return false;
+            }
+        }
+
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
         $params     = array();

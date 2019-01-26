@@ -80,6 +80,22 @@ class Payments extends Common
         return $result;
     }
 
+
+    /**
+     * 根据输入的查询条件，返回所需要的where
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    protected function tableWhere($post)
+    {
+        $result['where'] = [];
+        $result['field'] = "*";
+        $result['order'] = ['sort asc'];
+        return $result;
+    }
+
+
     protected function tableFormat($list)
     {
         foreach($list as $key => $val)

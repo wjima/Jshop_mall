@@ -1,4 +1,4 @@
-<div class="layui-form seller-form"  action="" >
+<!--<div class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">支付名称：</label>
@@ -25,7 +25,7 @@
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="payments-search"><i class="iconfont icon-chaxun"></i>筛选</button>
         </div>
     </div>
-</div>
+</div>-->
 <div class="table-body">
 	<table id="paymentsSellerTable" lay-filter="paymentsSellerTable"></table>
 </div>
@@ -35,16 +35,16 @@
         //第一个实例
         table.render({
             elem: '#paymentsSellerTable', //指定原始表格元素选择器（推荐id选择器）
-            height: 'full-260',
+            height: 'full-150',
             cellMinWidth: '80',
             id:'paymentsSellerTable',
             url: "{:url('payments/index')}",
             cols: [[ //表头
                 {type:'numbers'},
-                {field: 'name',title:'支付方式名称',align:'center'},
+                {field: 'name',title:'支付方式名称',align:'center', width: 300},
                 {field: 'code', title: '支付类型编码',align:'center'},
-                {field: 'is_online', title: '类型',align:'center'},
-                {field: 'status', title: '状态', sort: true,align:'center',width:100,templet: '#status', unresize: true},
+                {field: 'is_online', title: '类型',align:'center', width: 150},
+                {field: 'status', title: '状态', sort: true,align:'center',width:150, templet: '#status', unresize: true},
                 {field: 'sort', title: '排序',align:'center',width:100},
                 {fixed: 'right', width:150,title:'操作', align:'center', toolbar: '#payments'}
             ]]

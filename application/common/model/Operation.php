@@ -23,6 +23,7 @@ class Operation extends Common
             'Worksheet'=>['worklist','sheetlist','sheetlist1','sheetlist2','sheetlist3','add','addwork','wsdetail','adddetail','updata','del','inquiries'],
             'Manage' => ['information','editpwd','getversion'],
             'OperationLog' => ['getlastlog'],
+            'Report' => ['getdatetype']
         ],
     ];
 

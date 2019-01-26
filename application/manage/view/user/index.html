@@ -83,7 +83,7 @@
 </div>
 
 
-<div id="importUser" style="display: none;">
+<div id="importUser"  style="display: none;">
     <form class="layui-form import-form" method="post" action="{:url('ietask/import')}" enctype="multipart/form-data">
         <div class="layui-form-item">
             <div class="layui-margin-10">
@@ -100,19 +100,14 @@
         </div>
     </form>
 </div>
-<script type="text/html" id="infoMoney">
-    <div class="infoMoney" data-id="{{d.id}}">{{ d.balance }}</div>
-</script>
-<script type="text/html" id="pointlog">
-    <div class="pointLog" data-id="{{d.id}}">{{ d.point }}</div>
-</script>
+
 <script src="__STATIC_JS__jquery.form.js" type="text/javascript" charset="utf-8"></script>
 <script>
     var table,window_box;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         table = layui.table.render({
             elem: '#userTable',
-            height: 'full-260',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -121,9 +116,9 @@
             cols: [[
                 {type:'numbers'},
 //                {field:'username', width:100,title:'账号'},
-                {field:'mobile', width:135, title:'手机号码'},
-                {field:'sex', width:80, title:'性别'},
-                {field:'birthday',width:120, title:'生日'},
+                {field:'mobile',  title:'手机号码',width:150},
+                {field:'sex',  title:'性别'},
+                {field:'birthday',title:'生日',width:150},
                 {field:'avatar',title:'头像',
                     templet: function(d){
                         if (d.avatar) {
@@ -133,12 +128,19 @@
                         }
                     }, width: 80
                 },
-                {field:'nickname',title:'昵称',width:150},
-                {field:'balance',title:'余额',templet: '#infoMoney',width:100},
-                {field:'point', sort:true, title:'积分',templet: '#pointlog',width:100},
-                {field:'status',title:'状态',width:100},
-                {field:'pid_name', title: '邀请人',width:120},
-                {field:'ctime', title:'创建时间',width:180},
+                {field:'nickname',title:'昵称'},
+                { title:'余额',templet:function(data){
+                        var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">'+data.balance+'</a>';
+                        return html;
+                    }},
+                { title:'积分',templet:function(data){
+                        var html = '<a class="link-hot option-show point" data-id="' + data.id + '">'+data.point+'</a>';
+                        return html;
+                    }},
+
+                {field:'status',title:'状态'},
+                {field:'pid_name', title: '邀请人'},
+                {field:'ctime', title:'创建时间',width:200},
                 {field:'option',title:'操作', templet: function (d) {
                         var html = '<a class="layui-btn layui-btn-xs edit" data-id="' + d.id + '">修改</a>';
                         html += '<a class="layui-btn layui-btn-xs editMoney" data-id="' + d.id + '">修改余额</a>';
@@ -210,7 +212,7 @@
             });
         });
         //积分记录
-        $(document).on('click', '.pointLog', function () {
+        $(document).on('click', '.point', function () {
             var id = $(this).attr('data-id');
             $.ajax({
                 url: "{:url('manage/user/pointLog')}",
@@ -306,7 +308,6 @@
             });
         });
 
-
         //余额编辑
         $(document).on('click', '.editMoney', function () {
             var id = $(this).attr('data-id');
@@ -352,7 +353,8 @@
             });
         });
         //余额明细
-        $(document).on('click', '.infoMoney', function () {
+        $(document).on('click', '.balance', function () {
+
             var id = $(this).attr('data-id');
             window.location.href="{:url('manage/balance/index')}"+'?user_id='+id;
         });

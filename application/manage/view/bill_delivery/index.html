@@ -13,6 +13,12 @@
             </div>
         </div>
         <div class="layui-inline">
+            <label class="layui-form-label">下单时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
             <label class="layui-form-label">快递单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="logi_no" lay-verify="title" placeholder="请输入快递单号" autocomplete="off" class="layui-input">
@@ -26,6 +32,7 @@
         </div>
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-delivery"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
         </div>
     </div>
 </form>
@@ -33,13 +40,35 @@
 <div class="table-body">
     <table id="billDelivery" lay-filter="test"></table>
 </div>
+<div id="exportDelivery" style="display: none;">
+    <form class="layui-form export-form"  action="" >
+        <div class="layui-form-item">
+            <div class="layui-margin-10">
+                <blockquote class="layui-elem-quote layui-text">
+                    请先选中或筛选要导出的订单
+                </blockquote>
+            </div>
 
+            <div class="layui-inline">
+                <label class="layui-form-label">任务名称：</label>
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
 <script>
     layui.use(['form', 'layedit', 'laydate', 'table'], function(){
+        //时间插件
+        layui.laydate.render({
+            elem: '#date',
+            range: '到',
+            format: 'yyyy-MM-dd'
+        });
         //获取列表数据
+
         layui.table.render({
             elem: '#billDelivery',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit: '20',
@@ -51,6 +80,7 @@
                 statusCode: 1
             },
             cols: [[
+                {type:'checkbox', fixed: 'left'},
                 {field:'delivery_id', width:140, title:'发货单号', align:'center', fixed:'left'},
                 {field:'order_id', width:140, title:'订单号', align:'center'},
                 {field:'username', width:130, title:'用户名', align:'center'},
@@ -99,5 +129,50 @@
                 }
             });
         });
+        //发货单导出
+        layui.form.on('submit(export-delivery)', function(data){
+
+            layer.open({
+                type: 1,
+                title:'发货单导出',
+                area: ['400px', '290px'], //宽高
+                btn:['确定','取消'],
+                content: $("#exportDelivery").html(),
+                yes:function () {
+                    //判断是否有选中
+                    var checkStatus = layui.table.checkStatus('billDelivery');
+                    var checkData = checkStatus.data;
+                    var length = checkStatus.data.length;
+                    var ids = [];
+                    if(length){
+                        $.each(checkData,function (i,obj) {
+                            ids.push(obj.delivery_id);
+                        });
+                    }
+
+                    //判断是否有选中
+                    var filter = $(".seller-form").serialize();
+                    filter+='&ids='+ids;
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    var data = $(".export-form:last").serializeArray();
+
+                    data.push({'name':'model','value':'BillDelivery'});
+
+                    JsPost("{:url('Ietask/export')}",data,function(res){
+                            layer.msg(res.msg, {time:1500}, function(){
+                                if(res.status){
+                                    layui.table.reload('billDelivery');
+                                    layer.closeAll();
+                                }
+                            });
+                        }
+                    );
+                },btn2:function () {
+                    layer.closeAll();
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
     });
 </script>

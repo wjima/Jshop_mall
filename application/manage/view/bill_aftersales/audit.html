@@ -1,104 +1,92 @@
-<form class="layui-form aftersales_form" id="aftersales_form" action="" style="margin:10px;">
-    <input type="hidden" name="aftersales_id" value="{$info.aftersales_id}" />
+<style>
+    .layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+        margin:0;
+    }
+    #aftersales_form .layui-table-view {
+        margin:0;
+    }
+</style>
+<form class="layui-form seller-alone-form" id="aftersales_form"  style="padding:20px;">
+<input type="hidden" name="aftersales_id" value="{$info.aftersales_id}" />
     <div class="layui-form-item">
+
         <label class="layui-form-label">售后单号：</label>
-        <div class="layui-input-block">
+        <div class="layui-input-inline seller-inline-2">
             <div class="layui-form-mid">{$info.aftersales_id}</div>
         </div>
     </div>
     <div class="layui-form-item">
-        <div class="layui-form-item">
-            <label class="layui-form-label">用户：</label>
-            <div class="layui-input-block">
-                <div class="layui-form-mid">{:get_user_info($info.user_id)}</div>
-            </div>
+        <label class="layui-form-label">用户：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{:format_mobile(get_user_info($info.user_id))}</div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$params.bill_aftersales.status[$info.status]}</div>
-            </div>
+        <label class="layui-form-label">退款金额：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$info.refund}</div>
         </div>
     </div>
-
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">售后类型：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$params.bill_aftersales.type[$info.type]}</div>
-            </div>
+        <label class="layui-form-label">售后类型：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$params.bill_aftersales.type[$info.type]}</div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$params.bill_aftersales.status[$info.status]}</div>
-            </div>
+        <label class="layui-form-label">状态：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$params.bill_aftersales.status[$info.status]}</div>
         </div>
     </div>
-
-
     <div class="layui-form-item">
-        <label class="layui-form-label">描述：</label>
-        <div class="layui-input-block">
+        <label class="layui-form-label">原因：</label>
+        <div class="layui-input-inline seller-inline-8">
             <div class="layui-form-mid">{$info.reason}</div>
         </div>
     </div>
 
-    {if $info.images}
     <div class="layui-form-item">
         <label class="layui-form-label">图片：</label>
-        <div class="layui-input-block">
+        <div class="layui-input-inline seller-inline-8">
             <div class="layui-form-mid">
                 {volist name="info.images" id="image" empty="暂时图片"}
                 <a href="{:_sImage($image['image_id'])}" target="_blank" style="padding:1px;border:1px solid #cdcdcd;height:50px;width:50px;display:block;float:left;margin-right:1px;" >
-                    <img style="max-height:50px;max-height:50px;" src="{:_sImage($image['image_id'])}" />
+                    <img style="max-width:50px;max-height:50px;position: relative;top: 50%;left: 50%;transform: translate(-50%,-50%)" src="{:_sImage($image['image_id'])}" />
                 </a>
                 {/volist}
             </div>
         </div>
     </div>
-    {/if}
-    <style>
-        .layui-form-item .layui-form-checkbox[lay-skin="primary"] {
-            margin:0;
-        }
-
-    </style>
     <div class="layui-form-item">
-        <label class="layui-form-label">退货商品：</label>
+        <label class="layui-form-label">退款商品：</label>
         <div class="layui-input-block">
             <div class="layui-form-mid">
                 <table id="billAftersalesItems" lay-filter="billAftersalesItems"></table>
             </div>
         </div>
     </div>
-
     <div class="layui-form-item">
         <label class="layui-form-label">退款金额：</label>
         <div class="layui-input-block">
-            <input name="refund" value="{$info.refund}" required="" style="width:150px;" lay-verify="required" placeholder="退款金额" autocomplete="off" class="layui-input" type="text">
+                <input name="refund" value="{$info.refund}" required="" style="width:150px;" lay-verify="required" placeholder="退款金额" autocomplete="off" class="layui-input" type="text">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">审核结果：</label>
-        <div class="layui-input-block">
-            <input name="status" value="2" title="通过" checked="" type="radio">
-            <input name="status" value="3" title="拒绝" type="radio">
+        <div class="layui-input-inline seller-inline-8" style="padding-top:5px;">
+                <input name="status" value="2" title="通过" checked="" type="radio">
+                <input name="status" value="3" title="拒绝" type="radio">
+
         </div>
     </div>
+
+
+
     <div class="layui-form-item">
         <label class="layui-form-label">备注：</label>
-        <div class="layui-input-block">
-            <div class="layui-form-mid">
-                <input name="mark" value="" required="" lay-verify="required" placeholder="请输入备注" style="width:380px;" autocomplete="off" class="layui-input" type="text">
-            </div>
+        <div class="layui-input-inline seller-inline-8">
+            <input name="mark" value="" required="" lay-verify="required" placeholder="请输入备注" style="width:100%;" autocomplete="off" class="layui-input" type="text">
         </div>
     </div>
 
-
-
 </form>
-
 
 <script>
     layui.use(['form', 'table'], function(){

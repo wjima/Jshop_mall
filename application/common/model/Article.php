@@ -140,7 +140,7 @@ class Article extends Common
             $where[] = ['title', 'like', '%'.$post['title'].'%'];
         }
         if(isset($post['utime']) && $post['utime'] != ""){
-            $date_array = explode('~',$post['utime']);
+            $date_array = explode('到',$post['utime']);
             $sutime = strtotime($date_array[0].'00:00:00',time());
             $eutime = strtotime($date_array[1].'23:59:59',time());
             $where[] = ['utime', ['EGT',$sutime],['ELT',$eutime],'and'];
@@ -212,7 +212,7 @@ class Article extends Common
     {
         $result = [
             'status' =>  false,
-            'msg'    =>  '文章不存在',
+            'msg'    =>  '文章不存在或已删除',
             'data'   =>  [],
         ];
 

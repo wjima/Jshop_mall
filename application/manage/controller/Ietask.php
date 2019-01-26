@@ -59,6 +59,7 @@ class Ietask extends Manage{
             //$where = json_decode($filter,true);
             $where = convertUrlQuery($filter);
         }
+
         //增加条件验证
         if (method_exists("app\\common\\model\\$job", "export_validate")) {
             $model       = "app\\common\\model\\$job";
@@ -193,6 +194,25 @@ class Ietask extends Manage{
         }else{
             $this->error("文件不存在");
         }
+    }
+    //删除
+    public function del(){
+        $result = [
+            'status' => false,
+            'msg' => '删除失败'
+        ];
+        $id = input('id/d','');
+        if(!$id){
+            $result['msg'] = '关键参数丢失';
+            return $result;
+        }
+        $model  =new \app\common\model\Ietask();
+        $rel = $model->where('id','eq',$id)->delete();
+        if($rel){
+            $result['status'] = true;
+            $result['msg'] = '删除成功';
+        }
+        return $result;
     }
 
 }

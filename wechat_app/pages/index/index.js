@@ -207,6 +207,7 @@ Page({
       app.common.groupCountDown(page);
     });
   },
+
   //获取秒杀数据
   seckillList: function (flag = false) {
     var page = this;
@@ -255,7 +256,10 @@ Page({
     var val = e.target.dataset.val;
     if (types == 1) {
       //URL
-
+      let ins = encodeURIComponent(val);
+      wx.navigateTo({
+        url: '../other/special/special?url=' + ins,
+      });
     } else if (types == 2) {
         //商品
         let ins = encodeURIComponent('id=' + val);
@@ -370,6 +374,7 @@ Page({
     wx.stopPullDownRefresh();
     this.groupList(); //获取精品团购数据
     this.seckillList(); //获取限时秒杀数据
+    app.db.del('all_cat');
   },
   
     //转发分享

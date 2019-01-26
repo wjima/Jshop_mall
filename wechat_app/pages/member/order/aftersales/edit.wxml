@@ -75,11 +75,11 @@
     <view class='deliver-body'>
       <view class='deliver-body-bot'>
         <text>快递公司：</text>
-        <input type='number' bindblur='logicodeChange' placeholder-class='deliver-input' placeholder='请填写快递公司名称'></input>
+        <input type='text' bindblur='logicodeChange' placeholder-class='deliver-input' placeholder='请填写快递公司名称'></input>
       </view>
       <view class='deliver-body-bot'>
         <text>物流单号：</text>
-        <input type='number' bindblur='loginoChange' placeholder-class='deliver-input' placeholder='请填写物流单号'></input>
+        <input type='text' bindblur='loginoChange' placeholder-class='deliver-input' placeholder='请填写物流单号'></input>
       </view>      
     </view>
   </view>
@@ -99,5 +99,5 @@
   <view class='submit' wx:if="{{status==2 && reship_status==1}}">
     <button class="weui-btn" bindtap="submitBtn" type="warn">提交</button>
   </view>
-  
+  <view wx:if="{{(order_status == 1 && status == 3) || (order_status == 1 && status == 2 && refund_status != 1 && refund_status != 0) || (order_status == 1 && status == 2 && reship_status == 3)}}" bindtap='repeat' data-id="{{order_id}}" class='bottom-btn'>再次申请售后</view>
 </view>

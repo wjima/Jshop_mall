@@ -7,33 +7,55 @@
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 0;">
         <legend>收货人信息</legend>
     </fieldset>
-    <div class="layui-form-item" lay-size="sm">
+    <div class="layui-form-item">
         <label class="layui-form-label">订单号：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.order_id}</div>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$order.order_id}</div>
+        </div>
         <input type="hidden" id="order_id" value="{$order.order_id}">
-        <label class="layui-form-label">配送方式：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.logistics_name}</div>
-        <label class="layui-form-label">配送费用：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.cost_freight}</div>
-        <label class="layui-form-label">收货区域：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.ship_area_id}</div>
-    </div>
-    <div class="layui-form-item" lay-size="sm">
-        <label class="layui-form-label">收货人姓名：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.ship_name}</div>
-        <label class="layui-form-label">收货人电话：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.ship_mobile}</div>
 
+        <label class="layui-form-label">配送方式：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$order.logistics_name}</div>
+        </div>
+
+        <label class="layui-form-label">配送费用：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$order.cost_freight}</div>
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">商品总重：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.weight}</div>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$order.weight}</div>
+        </div>
+
+        <label class="layui-form-label">收货人姓名：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$order.ship_name}</div>
+        </div>
+
+        <label class="layui-form-label">收货人电话：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$order.ship_mobile}</div>
+        </div>
     </div>
-    <div class="layui-form-item" lay-size="sm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">收货区域：</label>
+        <div class="layui-input-inline seller-inline-3">
+            <div class="layui-form-mid">{$order.ship_area_id}</div>
+        </div>
+
         <label class="layui-form-label">详细收货地址：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.ship_address}</div>
+        <div class="layui-input-inline seller-inline-4">
+            <div class="layui-form-mid">{$order.ship_address}</div>
+        </div>
     </div>
-    <div class="layui-form-item" lay-size="sm">
+    <div class="layui-form-item">
         <label class="layui-form-label">买家备注信息：</label>
-        <div class="layui-form-mid seller-inline-4">{$order.memo}</div>
+        <div class="layui-input-inline seller-inline-6">
+            <div class="layui-form-mid">{$order.memo}</div>
+        </div>
     </div>
     <fieldset class="layui-elem-field layui-field-title">
         <legend>商品详情</legend>
@@ -63,24 +85,25 @@
     <fieldset class="layui-elem-field layui-field-title">
         <legend>物流信息</legend>
     </fieldset>
-    <div class="layui-form-item" lay-size="sm">
+    <div class="layui-form-item">
         <label class="layui-form-label">物流公司：</label>
         <div class="layui-input-inline seller-inline-3">
             <select name="logi_code" id="logi_code" lay-search>
-				<option value="">搜索选择物流公司</option>
-				{foreach $logi as $k=>$v}
-					<option value="{$v['logi_code']}" {if $v['logi_code'] == $ship['logi_code']}selected{/if}>{$v['logi_name']}</option>
-				{/foreach}
-			</select>
+                <option value="">搜索选择物流公司</option>
+                {foreach $logi as $k=>$v}
+                    <option value="{$v['logi_code']}" {if $v['logi_code'] == $ship['logi_code']}selected{/if}>{$v['logi_name']}</option>
+                {/foreach}
+            </select>
         </div>
+
         <label class="layui-form-label">物流单号：</label>
-        <div class="layui-input-inline seller-inline-3">
+        <div class="layui-input-inline seller-inline-4">
             <input type="text" id="logi_no" value="" class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item" lay-size="sm">
+    <div class="layui-form-item">
         <label class="layui-form-label">发货备注：</label>
-        <div class="layui-input-inline seller-inline-9">
+        <div class="layui-input-inline seller-inline-10">
             <input type="text" id="memo" value="" class="layui-input">
         </div>
     </div>

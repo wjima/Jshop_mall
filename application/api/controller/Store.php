@@ -162,4 +162,17 @@ class Store extends Api
             ];
         }
     }
+
+
+    public function getRecommendKeys()
+    {
+        $recommend_keys = getSetting('recommend_keys');
+        $recommend_keys = explode(',', $recommend_keys);
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => $recommend_keys
+        ];
+        return $result;
+    }
 }

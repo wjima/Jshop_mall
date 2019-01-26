@@ -230,6 +230,7 @@ class Coupon extends Common
                     }
                     $return['data']['list'][$k]['expression1'] = $expression1;
                     $return['data']['list'][$k]['expression2'] = $expression2;
+                    $return['data']['list'][$k]['is_expire'] = $v['etime'] > time() ? 1 : 2;
                     $return['data']['list'][$k]['stime'] = date('Y-m-d', $v['stime']);
                     $return['data']['list'][$k]['etime'] = date('Y-m-d', $v['etime']);
                 }

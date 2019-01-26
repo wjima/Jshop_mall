@@ -95,13 +95,15 @@
   
   <!-- 自提门店 -->
   <view class='address' wx:if="{{order.store_id != 0}}">
-    <image class='gps' src='../../../image/shopblack.png'></image>
-    <view class='information-content'>
-      <view>
-        <text class='username'>提货门店：{{order.store.store_name}}</text>
-        <text class='phone'>{{order.store.mobile}}</text>
+    <view class='address-c'>
+      <image class='gps' src='../../../image/shopblack.png'></image>
+      <view class='information-content'>
+        <view>
+          <text class='username'>提货门店：{{order.store.store_name}}</text>
+          <text class='phone'>{{order.store.mobile}}</text>
+        </view>
+        <text class='add'>地址：{{order.store.all_address}}</text>
       </view>
-      <text class='add'>地址：{{order.store.all_address}}</text>
     </view>
   </view>
 
@@ -201,34 +203,44 @@
       <text>将在{{order.remaining}}后自动评价</text>
     </view>
   </view> -->
-  <view class='footer-right'>
-    <!-- 待付款 -->
-    <view wx:if="{{order.text_status == 'pending_payment'}}">
-      <!-- <view bindtap='cancelOrder' data-id="{{order.order_id}}">取消订单</view> -->
-      <view>合计：<text class='red-price'>￥{{order.order_amount}}</text></view>
-      <view class='footer-right-red' bindtap='payment' data-id="{{order.order_id}}" data-amount="{{order.order_amount}}">去支付</view>
+    <view class='footer-right'>
+        <!-- 待付款 -->
+        <view wx:if="{{order.text_status == 'pending_payment'}}">
+            <!-- <view bindtap='cancelOrder' data-id="{{order.order_id}}">取消订单</view> -->
+            <view>合计：<text class='red-price'>￥{{order.order_amount}}</text></view>
+            <view class='footer-right-red' bindtap='payment' data-id="{{order.order_id}}" data-amount="{{order.order_amount}}">去支付</view>
+        </view>
+
+        <!-- 待发货 -->
+        <view wx:elif="{{order.text_status == 'pending_delivery'}}">
+            <view wx:if="{{order.bill_aftersales_id == false}}" class='footer-right-red' bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
+            <view wx:elif="{{order.bill_aftersales_id && order.bill_aftersales_id != false}}" class='gray-circle' bindtap='viewAfterSale' data-id="{{order.bill_aftersales_id}}">查看售后</view>
+        </view>
+
+        <!-- 待收货 -->
+        <view wx:elif="{{order.text_status == 'pending_receipt'}}">
+            <view wx:if="{{order.bill_aftersales_id == false}}" bindtap='customer' data-id="{{order.order_id}}" class='gray-circle'>申请售后</view>
+            <view wx:elif="{{order.bill_aftersales_id && order.bill_aftersales_id != false}}" class='gray-circle' bindtap='viewAfterSale' data-id="{{order.bill_aftersales_id}}">查看售后</view>
+            <view bindtap='logistics' data-id="{{order.order_id}}" bindtap="logistics" data-code="{{order.delivery[0].logi_code}}" data-no="{{order.delivery[0].logi_no}}" class='gray-circle'>查看物流</view>
+            <view class='footer-right-red' bindtap='sign' data-id="{{order.order_id}}">确认收货</view>
+        </view>
+
+        <!-- 待评价 -->
+        <view wx:elif="{{order.text_status == 'pending_evaluate'}}">
+            <view wx:if="{{order.bill_aftersales_id == false}}" bindtap='customer' data-id="{{order.order_id}}" class='gray-circle'>申请售后</view>
+            <view wx:elif="{{order.bill_aftersales_id && order.bill_aftersales_id != false}}" class='gray-circle' bindtap='viewAfterSale' data-id="{{order.bill_aftersales_id}}">查看售后</view>
+            <view class='footer-right-red' bindtap='evaluate' data-id="{{order.order_id}}">立即评价</view>
+        </view>
+
+        <!-- 已完成已取消 -->
+        <view wx:elif="{{order.text_status == 'completed' || order.text_status == 'cancel'}}">
+            <view wx:if="{{order.bill_aftersales_id && order.bill_aftersales_id != false}}" class='gray-circle' bindtap='viewAfterSale' data-id="{{order.bill_aftersales_id}}">查看售后</view>
+        </view>
+
+        <!-- 其他 -->
+        <view wx:else>
+            <view wx:if="{{order.bill_aftersales_id == false}}" bindtap='customer' data-id="{{order.order_id}}" class='footer-right-red'>申请售后</view>
+            <view wx:elif="{{order.bill_aftersales_id && order.bill_aftersales_id != false}}" class='gray-circle' bindtap='viewAfterSale' data-id="{{order.bill_aftersales_id}}">查看售后</view>
+        </view>
     </view>
-    <!-- 待发货 -->
-    <view wx:elif="{{order.text_status == 'pending_delivery'}}">
-      <view class='footer-right-red' bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
-    </view>
-    <!-- 待收货 -->
-    <view wx:elif="{{order.text_status == 'pending_receipt'}}">
-      <view bindtap='customer' data-id="{{order.order_id}}" class='gray-circle'>申请售后</view>
-      <view bindtap='logistics' data-id="{{order.order_id}}" bindtap="logistics" data-code="{{order.delivery[0].logi_code}}" data-no="{{order.delivery[0].logi_no}}" class='gray-circle'>查看物流</view>
-      <view class='footer-right-red' bindtap='sign' data-id="{{order.order_id}}">确认收货</view>
-    </view>
-    <!-- 待评价 -->
-    <view wx:elif="{{order.text_status == 'pending_evaluate'}}">
-      <view bindtap='customer' data-id="{{order.order_id}}" class='gray-circle'>申请售后</view>
-      <view class='footer-right-red' bindtap='evaluate' data-id="{{order.order_id}}">立即评价</view>
-    </view>
-    <!-- 已完成已取消 -->
-    <view wx:elif="{{order.text_status == 'completed' || order.text_status == 'cancel'}}">
-    </view>
-    <!-- 其他 -->
-    <view wx:else>
-      <view class='footer-right-red' bindtap='customer' data-id="{{order.order_id}}">申请售后</view>
-    </view>
-  </view>
 </view>

@@ -78,6 +78,11 @@ class BillLading extends Common
         {
             $where[] = ['id', 'like', '%'.$post['id'].'%'];
         }
+        if($post['date'])
+        {
+            $date = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
         if($post['order_id'])
         {
             $where[] = ['order_id', 'like', '%'.$post['order_id'].'%'];
@@ -370,6 +375,212 @@ class BillLading extends Common
             $return['status'] = true;
             $return['msg'] = '操作成功';
         }
+        return $return;
+    }
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'id',
+                'desc' => '提货单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'order_id',
+                'desc' => '订单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'store_name',
+                'desc' => '提货门店',
+            ],
+            [
+                'id' => 'name',
+                'desc' => '提货人名',
+            ],
+            [
+                'id' => 'mobile',
+                'desc' => '提货电话',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'status_name',
+                'desc' => '提货状态',
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '下单时间',
+
+            ],
+            [
+                'id' => 'ptime',
+                'desc' => '收货电话',
+
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '创建时间',
+
+            ],
+        ];
+    }
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出数据',
+
+        ];
+        $header = $this->csvHeader();
+        $userData = $this->getExportList($post);
+
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body = [];
+            $i = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) &&!empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        return $result;
+    }
+
+    //导出格式
+    public function getExportList($post = [])
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => [],
+            'count' =>0
+        ];
+
+        $where = [];
+        if($post['id'])
+        {
+            $where[] = ['id', 'like', '%'.$post['id'].'%'];
+        }
+        if($post['idss'])
+        {
+            $where[] = ['id', 'in', $post['idss']];
+        }
+        if($post['order_id'])
+        {
+            $where[] = ['order_id', 'like', '%'.$post['order_id'].'%'];
+        }
+        if($post['store_id'])
+        {
+            $where[] = ['store_id', 'eq', $post['store_id']];
+        }
+        if($post['name'])
+        {
+            $where[] = ['name', 'like', '%'.$post['name'].'%'];
+        }
+        if($post['mobile'])
+        {
+            $where[] = ['mobile', 'like', '%'.$post['mobile'].'%'];
+        }
+        if($post['status'])
+        {
+            $where[] = ['status', 'eq', $post['status']];
+        }
+        if($post['date'])
+        {
+            $date = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
+        $return['data'] = $this->where($where)
+            ->order('ctime desc')
+            ->select();
+
+        if($return['data'] !== false)
+        {
+            $storeModel = new Store();
+            foreach($return['data'] as &$v)
+            {
+                if($v['store_id'])
+                {
+                    $v['store_name'] = $storeModel->getStoreName($v['store_id']);
+                }
+                else
+                {
+                    $v['store_name'] = '';
+                }
+                if($v['status'])
+                {
+                    $v['status_name'] = config('params.bill_lading.status')[$v['status']];
+                }
+                else
+                {
+                    $v['status_name'] = '未知';
+                }
+                if($v['ctime'])
+                {
+                    $v['ctime'] = getTime($v['ctime']);
+                }
+                else
+                {
+                    $v['ctime'] = '';
+                }
+                if($v['ptime'])
+                {
+                    $v['ptime'] = getTime($v['ptime']);
+                }
+                else
+                {
+                    $v['ptime'] = '';
+                }
+            }
+
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+            $count = $this->where($where)->count();
+            $return['count'] =$count;
+        }
+
         return $return;
     }
 }

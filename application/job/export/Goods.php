@@ -27,6 +27,7 @@ class Goods
         }
 
         $filter = json_decode($params['params'], true);
+
         if (isset($filter['ids'])) {
             if ($filter['ids']) {
                 $filter['id'] = explode(',', $filter['ids']);

@@ -20,7 +20,7 @@
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         table = layui.table.render({
             elem: '#typeTable',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -28,8 +28,8 @@
             id:'typeTable',
             cols: [[
                 {type:'numbers'},
-                {field:'name', width:100,title:'名称'},
-                {field:'type', width:100,title:'类型',templet:function (data) {
+                {field:'name', width:150,title:'名称'},
+                {field:'type', width:150,title:'类型',templet:function (data) {
 					if(data.type=='text'){
 					    return '文本框';
 					}else if(data.type=='radio'){
@@ -38,7 +38,7 @@
                         return '复选框';
                     }
                 }},
-                {field:'value', width:100,title:'参数'},
+                {field:'value', width:150,title:'参数'},
                 {field:'operating',title:'操作',templet:function(data){
                     var html='';
                     var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';

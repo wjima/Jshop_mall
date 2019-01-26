@@ -1,6 +1,6 @@
 <!--pages/itemlist/itemlist.wxml-->
 <view class="header-input">
-  <input class="search-input" placeholder="搜索商品" bindfocus="searchNav">
+  <input class="search-input" value="{{searchKey}}" placeholder="搜索商品" bindfocus="searchNav">
      <icon size='15' type='search'></icon> 
   </input>
   <view class='message' bindtap='listgrid'>

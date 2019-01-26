@@ -351,6 +351,7 @@
 		,inputXssFilter: true
 		//output xss过滤
 		,outputXssFilter: true
+		,single: false
 		// xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
 		,whitList: {
 			a:      ['target', 'href', 'title', 'class', 'style'],

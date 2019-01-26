@@ -4,5 +4,7 @@ export const getters = {
     shopLogo: state => state.config.shop_logo,
     shopUploadImageMax: state => state.config.upload_image_max,
     shopStoreSwitch: state => state.config.store_switch,
-    shopCaseStyle: state => state.config.case_style
+    shopCateStyle: state => state.config.cate_style_h5,
+    tocashMoneyLow: state => state.config.tocash_money_low,
+    tocashMoneyRate: state => state.config.tocash_money_rate
 }

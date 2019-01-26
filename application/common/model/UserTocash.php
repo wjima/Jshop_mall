@@ -26,6 +26,7 @@ class UserTocash extends Common
             $result['msg'] = "提现最低不能少于".getSetting('tocash_money_low')."元";
             return $result;
         }
+
         $userModel = new User();
         $userInfo = $userModel->getUserInfo($user_id);
         if(!$userInfo){
@@ -34,23 +35,32 @@ class UserTocash extends Common
         if($money > $userInfo['balance']){
             return error_code(11015);
         }
+        // 计算提现服务费(金额)
+        $cateMoney = $this->cateMoney($money);
+        if (($money + $cateMoney) > $userInfo['balance']) {
+            return error_code(11015);
+        }
+
         $userBankcardsModel = new UserBankcards();
         $bankcardsInfo = $userBankcardsModel->where(['user_id'=>$user_id,'id'=>$bankcards_id])->find();
         if(!$bankcardsInfo){
             return error_code(11016);
         }
+
         $data['user_id'] = $user_id;
         $data['money'] = $money;
-        $data['account_bank'] = $bankcardsInfo['account_bank'] ;
-        $data['account_name'] = $bankcardsInfo['account_name'] ;
+        $data['account_bank'] = $bankcardsInfo['account_bank'];
+        $data['account_name'] = $bankcardsInfo['account_name'];
         $data['card_number'] = $bankcardsInfo['card_number'];
         $data['bank_name'] = $bankcardsInfo['bank_name'];
         $data['bank_area_id'] = $bankcardsInfo['bank_area_id'];
         $data['bank_code'] = $bankcardsInfo['bank_code'];
+        $data['withdrawals'] = $cateMoney;
         $re = $this->save($data);
+
         if($re){
             $balanceModel = new Balance();
-            return $balanceModel->change($user_id,$balanceModel::TYPE_TOCASH,$money,$this->id);
+            return $balanceModel->change($user_id,$balanceModel::TYPE_TOCASH,$money,$this->id, $cateMoney);
         }else{
             $result['msg'] = "提现失败";
             return $result;
@@ -82,7 +92,8 @@ class UserTocash extends Common
                     $tocash = $this->get($id);
                     $userModel = new User();
                     $userWhere[] = ['id', 'eq', $tocash['user_id']];
-                    $userData['balance'] = ['inc', 'balance', $tocash['money']];
+                    // 提现金额 加 服务费返还
+                    $userData['balance'] = ['inc', 'balance', $tocash['money'] + $tocash['withdrawals']];
                     $r = $userModel->save($userData, $userWhere);
                     if($r !== false)
                     {
@@ -92,7 +103,7 @@ class UserTocash extends Common
                         $balanceData = [
                             'user_id' => $tocash['user_id'],
                             'type' => $balanceModel::TYPE_TOCASH,
-                            'money' => $tocash['money'],
+                            'money' => $tocash['money'] + $tocash['withdrawals'],
                             'balance' => $newUserInfo['balance'],
                             'source_id' => $id,
                             'memo' => '提现驳回退款'.$tocash['money'].'元',
@@ -106,6 +117,22 @@ class UserTocash extends Common
         }else{
             return error_code(10000);
         }
+    }
+
+
+    /**
+     *
+     *  提现服务费(金额)
+     * @param $tocashMoney
+     * @return float|int
+     */
+    protected function cateMoney ($tocashMoney)
+    {
+        $cate = getSetting('tocash_money_rate');
+
+        $cateMoney = $tocashMoney * ($cate / 100);
+
+        return $cateMoney;
     }
 
     /**

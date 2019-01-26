@@ -10,5 +10,18 @@
 
 <!-- 搜索词记录 -->
 <view class='keys'>
-  <view class='key' wx:for="{{keys}}" wx:key="index" bindtap='{{navType}}' data-key="{{item}}">{{item}}</view>
+    <view class="history">
+        <text class='history-text'>历史记录</text>
+        <view class='delete' bindtap='delete' wx:if="{{keys && keys.length > 0}}">清除</view>
+    </view>
+    <view wx:if="{{!keys || keys.length < 0}}"></view>
+    <view class='key' wx:for="{{keys}}" wx:key="index" bindtap='{{navType}}' data-key="{{item}}">{{item}}</view>
+</view>
+
+<!-- 推荐搜索词 -->
+<view class='keys'>
+    <view wx:if="{{recommend && recommend.length > 0}}" class="history">
+        <text class='history-text'>搜索发现</text>
+    </view>
+    <view class='key' wx:for="{{recommend}}" wx:key="index" bindtap='{{navType}}' data-key="{{item}}">{{item}}</view>
 </view>

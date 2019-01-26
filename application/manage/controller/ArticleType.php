@@ -49,7 +49,7 @@ class  ArticleType extends Manage
             return $articleTypeModel->addData(input('param.'));
         }
         $list = $articleTypeModel->select();
-        return $this->fetch('',['list' => $list]);
+        return $this->fetch('',['list' => $articleTypeModel->getTree($list)]);
     }
 
 

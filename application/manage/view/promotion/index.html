@@ -57,7 +57,7 @@
         //表格渲染
         var promotionTable = layui.table.render({
             elem: '#promotion',
-            height: 'full-300',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'{:config("jshop.page_limit")}',
@@ -67,8 +67,8 @@
                 {type:'numbers'},
                 {field:'name',title:'促销名称'},
                 {field:'sort', width:140, sort: true,title:'权重'},
-                {field:'status', width:100,title:'启用状态'},
-                {field:'exclusive', width:100,title:'是否排他'},
+                {field:'status', width:100,title:'启用状态', templet: '#status'},
+                {field:'exclusive', width:100,title:'是否排他', templet: '#exclusive'},
                 {field:'stime',width:170,title:'开始时间'},
                 {field:'etime',width:170,title:'结束时间'},
                 {field: 'operating', title: '操作', width:200, align: 'center',templet:function(data){
@@ -109,5 +109,24 @@
                 layer.close(1);
             });
         });
+
+        //监听 操作状态
+        layui.form.on('switch(change)', function(obj){
+            JsPost("{:url('Promotion/changeState')}",{
+                id: obj.value,
+                elem: obj.elem.name,
+                state: obj.elem.checked
+            },function(res){
+                layer.msg(res.msg);
+            });
+        });
     });
+</script>
+
+<script type="text/html" id="status">
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="change" {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="exclusive">
+    <input type="checkbox" name="exclusive" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="change" {{ d.exclusive == 2 ? 'checked' : '' }}>
 </script>

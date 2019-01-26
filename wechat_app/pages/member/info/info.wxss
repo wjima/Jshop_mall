@@ -18,20 +18,20 @@ page{
   border-bottom: 2rpx solid #f3f3f3;
 }
 .weui-label{
-  font-size: 32rpx;
+  font-size: 24rpx;
   color: #666;
   display: inline-block;
 }
 .p-class{
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #ccc;
 }
 .weui-input{
-  font-size: 32rpx;
+  font-size: 24rpx;
   color: #666;
 }
 picker .weui-input{
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #ccc;
 }
 .weui-vcode-btn{
@@ -41,7 +41,7 @@ picker .weui-input{
   text-align: center;
   border: 2rpx solid #FF3B44;
   border-radius: 30rpx;
-  font-size: 32rpx;
+  font-size: 24rpx;
   color: #FF3B44;
   box-sizing: border-box;
   margin-right: 30rpx;
@@ -53,7 +53,7 @@ picker .weui-input{
   width: 100%;
   background-color: #ff3b44;
   color: #fff;
-  font-size: 30rpx;
+  font-size: 24rpx;
   border-radius: 0;
 }
 .header-img{

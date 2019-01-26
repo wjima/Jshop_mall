@@ -28,10 +28,6 @@ use app\common\model\Setting;
  */
 class Goods extends Common
 {
-
-    use SoftDelete;
-    protected $deleteTime = 'isdel';
-
     protected $autoWriteTimestamp = true;
     protected $createTime = 'ctime';
     protected $updateTime = 'utime';
@@ -146,12 +142,9 @@ class Goods extends Common
      */
     public function doAdd($data = [])
     {
-        $result=$this->insert($data);
-        if($result)
-        {
-            return $this->getLastInsID();
-        }
-        return $result;
+        $goodsid = $this->allowField(true)->insertGetId($data);
+
+        return $goodsid ? $goodsid : 0;
     }
 
     protected function tableFormat($list)
@@ -597,7 +590,7 @@ class Goods extends Common
 
         $this->startTrans();
 
-        $res = self::destroy($goods_id);
+        $res = $this->where(['id'=>$goods_id])->delete();
         if (!$res) {
             $this->rollback();
             $result['msg'] = '商品删除失败';
@@ -605,22 +598,7 @@ class Goods extends Common
         }
         $productsModel = new Products();
         $delProduct = $productsModel->where(['goods_id' => $goods_id])->delete(true);
-        if (!$delProduct) {
-            $this->rollback();
-            $result['msg'] = '货品删除失败';
-            return $result;
-        }
-        //删除关联图片
-        $goodsImagesModel = new GoodsImages();
-        $delImages = $goodsImagesModel->delImages($goods_id);
-        if (!$delImages['status']) {
-            $this->rollback();
-            $result['msg'] = '图片删除失败';
-            return $result;
-        }
-        delImage($goods['image_id']);
         $this->commit();
-
         hook('deletegoodsafter', $goods);//删除商品后增加钩子
 
         $result['status'] = true;
@@ -685,9 +663,9 @@ class Goods extends Common
                     }
                     $spes_desc = substr($spes_desc,1);
                     $val['spes_desc'] = $spes_desc;
+
                 }
                 if (count($product) > 1) {//多规格
-
                     foreach ($product as $productKey => $productVal) {
                         $i++;
                         if ($productKey != 0) {
@@ -700,6 +678,7 @@ class Goods extends Common
                         $val['stock'] = $productVal['stock'];
                         $val['product_spes_desc'] = $productVal['spes_desc'];
                         $val['is_defalut'] = $productVal['is_defalut'];
+                        $val['is_spec'] = '1';//多规格
                         foreach ($header as $hk => $hv) {
                             if ($val[$hv['id']] && isset($hv['modify'])) {
                                 if (function_exists($hv['modify'])) {
@@ -714,6 +693,7 @@ class Goods extends Common
 
                     }
                 } else {//单规格
+                    $val['is_spec'] = '2';
                     $i++;
                     $val['sn'] = $product[0]['sn'];
                     $val['price'] = $product[0]['price'];
@@ -758,13 +738,14 @@ class Goods extends Common
             [
                 'id' => 'bn',
                 'desc' => '商品编号',
+                'modify'=>'convertString'
             ],
             [
                 'id' => 'brief',
                 'desc' => '商品简介',
             ],
             [
-                'id' => 'image_url',
+                'id' => 'image_id',
                 'desc' => '商品主图',
             ],
             [
@@ -827,6 +808,11 @@ class Goods extends Common
 
             ],
             [
+                'id' => 'is_spec',
+                'desc' => '是否多规格',
+                'modify'=>'getBool'
+            ],
+            [
                 'id' => 'label_ids',
                 'desc' => '商品标签',
                 'modify'=>'getExportLabel'
@@ -848,6 +834,7 @@ class Goods extends Common
             [
                 'id' => 'sn',
                 'desc' => '货品编码',
+                'modify'=>'convertString'
             ],
             [
                 'id' => 'price',

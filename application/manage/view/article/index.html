@@ -4,16 +4,16 @@
 
         <div class="layui-inline">
             <label class="layui-form-label">文章标题：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="title" lay-verify="title" placeholder="请输入标题关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-inline">
             <label class="layui-form-label">文章类型：</label>
-            <div class="layui-input-inline">
+            <div class="layui-input-inline seller-inline-3">
                 <select name="type_id" id="type" lay-verify="">
-                    <option value="">请选择文章分类</option>
+                    <option value="">选择分类</option>
                     {volist name='list' id='vo'}
                     <option value="{$vo.id}">{$vo.type_name}</option>
                     {/volist}
@@ -23,9 +23,9 @@
 
         <div class="layui-inline">
             <label class="layui-form-label">发布状态：</label>
-            <div class="layui-input-inline"  style="width: 120px;">
+            <div class="layui-input-inline seller-inline-3">
                 <select name="is_pub" lay-verify="">
-                    <option value=""></option>
+                    <option value="">选择状态</option>
                     <option value="1">已发布</option>
                     <option value="2">未发布</option>
                 </select>
@@ -33,9 +33,9 @@
         </div>
 
         <div class="layui-inline">
-            <label class="layui-form-label">更新时间：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择时间段" autocomplete="off" class="layui-input">
+            <label class="layui-form-label">选择时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -59,7 +59,7 @@
         //执行渲染
         table.render({
             elem: '#articleTable', //指定原始表格元素选择器（推荐id选择器）
-            height: 'full-300',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -94,13 +94,8 @@
         });
 
         date.render({
-            elem: '#ctime',
-            range: '~'
-        });
-
-        date.render({
             elem: '#utime',
-            range: '~'
+            range: '到'
         });
 
         $(document).on('click','.add-article',function(){

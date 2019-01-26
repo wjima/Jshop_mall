@@ -16,9 +16,6 @@ use app\common\model\Goods;
 class Products extends Common
 {
 
-    #use SoftDelete;
-    #protected $deleteTime = 'isdel';
-
     const MARKETABLE_UP = 1; //上架
     const MARKETABLE_DOWN = 2;//下架
     const DEFALUT_NO = 2;//非默认货品
@@ -34,12 +31,8 @@ class Products extends Common
      */
     public function doAdd($data = [])
     {
-        $result=$this->insert($data);
-        if($result)
-        {
-            return $this->getLastInsID();
-        }
-        return $result;
+        $product_id = $this->insertGetId($data);
+        return $product_id?$product_id:0;
     }
 
     public function goods()
@@ -93,8 +86,8 @@ class Products extends Common
 
             //设置on的效果
             $productSpesDesc = getProductSpesDesc($product['spes_desc']);
-            foreach($spesDesc as $k => $v){
-                foreach($v as $j){
+            foreach((array)$spesDesc as $k => $v){
+                foreach((array)$v as $j){
                     $defaultSpec[$k][$j]['name'] = $j;
                     if($productSpesDesc[$k] == $j){
                         $defaultSpec[$k][$j]['is_default'] = true;

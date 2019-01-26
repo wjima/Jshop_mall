@@ -22,7 +22,7 @@
 
         table = layui.table.render({
             elem: '#typeTable',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -30,8 +30,8 @@
             id:'typeTable',
             cols: [[
                 {type:'numbers'},
-                {field:'name', width:100,title:'名称'},
-                {field:'params', width:150,title:'参数',templet:function (data) {
+                {field:'name', width:150,title:'名称'},
+                {field:'params', width:240,title:'参数',templet:function (data) {
                     if(typeof(data.params) == "undefined"||data.params.length==0){
                         var html='<a href="javascript:void(0);" data-id="'+data.id+'" onclick="addParams('+data.id+')">关联参数</a>';
                         return html;
@@ -44,7 +44,7 @@
                         return html;
                     }
                 }},
-                {field:'spec', width:150,title:'属性',templet:function(data){
+                {field:'spec', width:240,title:'属性',templet:function(data){
                     if(typeof(data.spec) == "undefined"||data.spec.length==0){
                         var html='<a href="javascript:void(0);" data-id="'+data.id+'" onclick="addRel('+data.id+')">关联属性</a>';
                         return html;

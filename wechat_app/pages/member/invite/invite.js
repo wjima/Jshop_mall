@@ -16,7 +16,7 @@ Page({
         qrcodeErrorMsg: '小程序二维码生成失败，无法生成海报，请稍候尝试',
         nickname: '',
         avatar: '',
-        title: app.config.app_title
+        title: app.config.shop_name
     },
 
 
@@ -148,7 +148,7 @@ Page({
         let page = this;    
         let avatar = page.data.avatar;
         let nickname = page.data.nickname;
-        let storename = app.config.app_title;
+        let storename = app.config.shop_name;
         let invite = page.data.code;
         if (page.data.qrcode == '') {
             wx.showToast({
@@ -235,7 +235,7 @@ Page({
                         },
                         {
                             type: 'text',
-                            content: '进入' + storename + '小程序一起寻好物',
+                            content: '进入『' + storename + '』小程序一起寻好物',
                             fontSize: 22,
                             lineHeight: 30,
                             color: '#727272',

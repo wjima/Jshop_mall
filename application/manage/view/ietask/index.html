@@ -43,7 +43,7 @@
         //执行渲染
         table = layui.table.render({
             elem: '#taskTable', //指定原始表格元素选择器（推荐id选择器）
-            height: '500px',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -59,8 +59,27 @@
                 {field: 'file_path', title: '文件下载',align:'center',templet:function (data) {
                     return '<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="downfile('+data.id+')">下载文件</button>';
                 }},
-                {field: 'ctime',sort: true, title: '创建时间' ,align:'center'}
+                {field: 'ctime',sort: true, title: '创建时间' ,align:'center'},
+                {field: 'operating', title: '操作', width:100, align: 'center', fixed: 'right',templet:function(data){
+                        var html = '';
+                        html += '<a  class="layui-btn layui-btn-xs task-del" data-id="' + data.id + '">删除</a>';
+                        return html;
+                    }},
             ]]
+        });
+        //查看操作
+        $(document).on('click','.task-del',function(){
+            var id = $(this).attr('data-id');
+            //删除
+            layer.confirm('真的删除么', {icon: 3}, function(index){
+                JsGet("{:url('manage/ietask/del')}?id="+id, function(res){
+                    if(res.status){
+                        layui.table.reload('taskTable');
+                        layer.closeAll();
+                    }
+                    layer.msg(res.msg);
+                });
+            });
         });
 
         layui.form.on('submit(task-search)', function(data){

@@ -20,18 +20,23 @@ class GoodsCollection extends Common
      * @param $userId
      * @param $goodsId
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function toDo($userId, $goodsId)
     {
         $where['user_id'] = $userId;
         $where['goods_id'] = $goodsId;
         $collectionInfo = $this->where($where)->find();
-        if($collectionInfo){
+        if($collectionInfo)
+        {
             return $this->toDel($userId, $goodsId);
-        }else{
+        }
+        else
+        {
             return $this->toAdd($userId, $goodsId);
         }
-
     }
 
     /**
@@ -78,6 +83,9 @@ class GoodsCollection extends Common
      * @param $userId
      * @param $goodsId
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     private function toAdd($userId, $goodsId)
     {
@@ -88,7 +96,8 @@ class GoodsCollection extends Common
         );
         $goodsModel = new Goods();
         $goodsInfo = $goodsModel->where(array('id'=>$goodsId))->find();
-        if(!$goodsInfo){
+        if(!$goodsInfo)
+        {
             $result['msg'] = '没有此商品';
             return $result;
         }
@@ -102,6 +111,19 @@ class GoodsCollection extends Common
         $result['msg'] = '收藏成功';
         return $result;
     }
+
+    /**
+     * 取得商品收藏列表
+     * @param $user_id
+     * @param int $page
+     * @param int $limit
+     * @param array $where
+     * @param string $order
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getList($user_id,$page = 1,$limit = 10,$where = [], $order = "id asc")
     {
         $result = array(
@@ -116,15 +138,25 @@ class GoodsCollection extends Common
             ->order($order)
             ->limit(($page-1) * $limit, $limit)
             ->select();
-        if(!$list->isEmpty()){
+        if(!$list->isEmpty())
+        {
             $list = $list->hidden(['goods'=>['isdel']]);
+            $list = $list->toArray();
         }
 
         $count = $this->where($where)->count();
 
-        foreach($list as $k => $v){
-            if($v['goods']){
+        foreach($list as $k => $v)
+        {
+            if($v['goods'])
+            {
                 $list[$k]['goods']['image_url'] = _sImage($v['goods']['image_id']);
+            }
+            else
+            {
+                //商品被删除时
+                $list[$k]['goods']['price'] = 0;
+                $list[$k]['goods']['image_url'] = _sImage();
             }
         }
 
@@ -134,9 +166,13 @@ class GoodsCollection extends Common
         $result['data']['page'] = $page;
         return $result;
     }
+
+    /**
+     * 关联商品
+     * @return \think\model\relation\HasOne
+     */
     public function goods()
     {
         return $this->hasOne('Goods', 'id','goods_id');
     }
-
 }

@@ -841,6 +841,18 @@ function getGoodsClass(data, callback){
         callback(res);
     });
 }
+//获取全部分类
+function getAllCat(callback){
+    api('categories.getallcat', {}, function(res){
+        callback(res);
+    });
+}
+//获取推荐搜索词
+function getRecommendKeys(callback){
+    api('store.getrecommendkeys', {}, function (res) {
+        callback(res);
+    });
+}
 
 module.exports = {
   login1: login1,
@@ -934,5 +946,7 @@ module.exports = {
   getQRCode: getQRCode,
   getLogisticsData: getLogisticsData,
   getGoodsClass: getGoodsClass,
-  getCartNumber: getCartNumber
+  getCartNumber: getCartNumber,
+  getAllCat: getAllCat,
+  getRecommendKeys: getRecommendKeys
 }

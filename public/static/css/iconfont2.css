@@ -79,7 +79,7 @@
 
 .icon-iconfontzhizuobiaozhun0299:before { content: "\e6f8"; }
 
-.icon-yunying1:before { content: "\e657"; }
+.icon-notice:before { content: "\e657"; }
 
 .icon-caiwushuju:before { content: "\e60f"; }
 
@@ -171,3 +171,6 @@
 
 .icon-icon-test:before { content: "\e62c"; }
 
+.icon-baobiaotongji:before { content: "\e653"; }
+
+.icon-report:before { content: "\e613";}

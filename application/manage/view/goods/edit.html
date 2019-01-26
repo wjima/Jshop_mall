@@ -52,8 +52,8 @@
                 {/if}
             </select>
         </div>
+        {if condition="$secondCat"}
         <div id="view">
-            {if condition="$secondCat"}
             <div class="layui-input-inline">
                 <select name="goods_cat_id[]">
                     <option value="">请选择分类</option>
@@ -62,8 +62,8 @@
                     {/volist}
                 </select>
             </div>
-            {/if}
         </div>
+        {/if}
     </div>
 
     <div class="layui-form-item">
@@ -190,6 +190,7 @@
 </form>
 
 <script id="cat_tpl" type="text/html">
+    {{# if (d.list.length) { }}
     <div class="layui-input-inline">
         <select name="goods_cat_id[]">
             <option value="">请选择分类</option>
@@ -198,6 +199,7 @@
             {{#  }); }}
         </select>
     </div>
+    {{# }; }}
 </script>
 
 <script id="image_tpl" type="text/html">
@@ -249,16 +251,13 @@
                     dataType: 'json',
                     success: function(e){
                         if(e.status === true){
-                            if(e.data.length>0){
-                                var tmpData = {};
-                                tmpData.list = e.data;
-                                laytpl(getTpl).render(tmpData, function(html){
-                                    view.innerHTML = html;
-                                });
-                                form.render();
-                            }else{
-                                $("#view").html("");
-                            }
+                            var tmpData = {};
+                            tmpData.list = e.data.length ? e.data : []
+                            // laytpl 执行渲染
+                            laytpl(getTpl).render(tmpData, function(html){
+                                view.innerHTML = html;
+                            });
+                            form.render();
                         }else{
                             layer.msg(e.msg, {time: 1300});
                         }

@@ -1,48 +1,49 @@
-<!--pages/classify.wxml-->
 <view class="header-input">
-  <!-- <input class="search-input" placeholder="搜索商品" confirm-type="搜索" bindconfirm="search" value="{{key}}"> -->
-  <input class="search-input" placeholder="搜索商品" bindfocus="searchNav">
-     <icon size='15' type='search'></icon> 
-  </input>
-  <!-- 客服按钮 -->
-  <button class="message" hover-class="none" open-type="contact" bindcontact="customerService">
-    <image src='../../image/message3.png'></image>
-  </button>
+    <!-- <input class="search-input" placeholder="搜索商品" confirm-type="搜索" bindconfirm="search" value="{{key}}"> -->
+    <input class="search-input" placeholder="搜索商品" bindfocus="searchNav">
+        <icon size='15' type='search'></icon> 
+    </input>
+    <!-- 客服按钮 -->
+    <button class="message" hover-class="none" open-type="contact" bindcontact="customerService">
+        <image src='../../image/message3.png'></image>
+    </button>
 </view>
+
 <!-- 二级分类 -->
-<view class='classify-content' style="height:{{content_height}}px"  wx:if="{{cate_style==3}}"> 
-  <scroll-view class='classify-content-left' scroll-y="true">
-    <block wx:for="{{top_class}}" wx:key="{{index}}" wx:for-index="index" wx:for-item="item">
-      <view class="{{on_class==item.id?'choose':''}}" bindtap="topclass" data-id="{{item.id}}">{{item.name}}</view>
-    </block>
-  </scroll-view>
-  <scroll-view class='classify-content-right' scroll-y="true">
-    <view class='right-body'>
-      <view wx:for="{{class_list}}" wx:key="{{index}}">
-        <image bindtap='goodsList' data-id="{{item.id}}" src='{{item.image_url}}' ></image>
-        <text bindtap='goodsList' data-id="{{item.id}}">{{item.name}}</text>
-      </view>
-    </view>
-  </scroll-view>
- </view>
+<view class='classify-content' style="height:{{content_height}}px" wx:if="{{cate_style==3}}"> 
+    <scroll-view class='classify-content-left' scroll-y="true">
+        <block wx:for="{{all_cat}}" wx:key="index" wx:for-index="index" wx:for-item="item">
+            <view class="{{on_class==item.id?'choose':''}}" bindtap="topclass" data-id="{{item.id}}">{{item.name}}</view>
+        </block>
+    </scroll-view>
+
+    <scroll-view class='classify-content-right' scroll-y="true">
+        <view class='right-body'>
+            <view wx:for="{{class_list}}" wx:key="{{index}}">
+                <image bindtap='goodsList' data-id="{{item.id}}" src='{{item.image_url}}' ></image>
+                <text bindtap='goodsList' data-id="{{item.id}}">{{item.name}}</text>
+            </view>
+        </view>
+    </scroll-view>
+</view>
 
 <!-- 一级大图 -->
 <view class='classify-big' wx:if="{{cate_style==1}}">
-  <view class='classify-big-list'>
-   <block wx:for="{{top_class}}" wx:key="{{index}}">
-    <image src='{{item.image_url}}' mode='aspectFit' bindtap='goodsList' data-id="{{item.id}}" ></image>
-   </block>
-  </view>
+    <view class='classify-big-list'>
+        <block wx:for="{{all_cat}}" wx:key="index">
+            <image src='{{item.image_url}}' mode='aspectFit' bindtap='goodsList' data-id="{{item.id}}" ></image>
+        </block>
+    </view>
 </view>
 
 <!-- 一级小图 -->
 <view class='classify-small'  wx:if="{{cate_style==2}}">
-  <view class='classify-small-list'>
-  <block wx:for="{{top_class}}" wx:key="{{index}}">
-    <view class='classify-small-item'  bindtap='goodsList' data-id="{{item.id}}" >
-      <image src='{{item.image_url}}' mode='aspectFit'  ></image>
-      <text>{{item.name}}</text>
+    <view class='classify-small-list'>
+        <block wx:for="{{all_cat}}" wx:key="index">
+            <view class='classify-small-item'  bindtap='goodsList' data-id="{{item.id}}" >
+                <image src='{{item.image_url}}' mode='aspectFit'  ></image>
+                <text>{{item.name}}</text>
+            </view>
+        </block>
     </view>
-   </block>
-  </view>
 </view>

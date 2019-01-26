@@ -5,14 +5,14 @@
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">品牌名称：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="name" lay-verify="title" placeholder="请输入品牌名称关键字" autocomplete="off" class="layui-input">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入名称关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">更新时间：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择更新时间" autocomplete="off" class="layui-input">
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="utime" name="utime" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -35,7 +35,7 @@
         //执行渲染
         table.render({
             elem: '#brandTable', //指定原始表格元素选择器（推荐id选择器）
-            height: 'full-320',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -43,21 +43,21 @@
             url: "{:url('brand/index')}",
             cols: [[ //标题栏
                 {type:'numbers'},
-                {field: 'name', title: '品牌名',align:'center'},
+                {field: 'name', title: '品牌名', width:200, align:'center'},
                 {field: 'logo', title: 'LOGO',align:'center',width:120, templet: function(data){
                         return '<a href="javascript:void(0);" onclick=viewImage("'+data.logo+'")><image style="max-width:30px;max-height:30px;" src="'+data.logo+'"/></a>';
                     }
                 },
-                {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
-                {field: 'sort', sort: true, title: '排序',align:'center',width:80},
-                {fixed: 'right', width:150, title:'操作',align:'center', toolbar:'#brandBar'}
+                {field: 'utime',sort: true, title: '更新时间' ,align:'center', width: 200},
+                {field: 'sort', sort: true, title: '排序',align:'center',width: 100},
+                {fixed: 'right', title:'操作', toolbar:'#brandBar'}
             ]] //设置表头
             //,…… //更多参数参考右侧目录：基本参数选项
         });
 
-        //search
         date.render({
-            elem:'#utime'
+            elem: '#utime',
+            range: '到'
         });
 
         form.on('submit(brand-search)', function(data){

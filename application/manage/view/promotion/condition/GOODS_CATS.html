@@ -14,12 +14,23 @@
                 <option value="">请选择分类</option>
                 {if condition="count($catList)>0"}
                 {volist name="catList" id="vo"}
-                <option value="{$vo.id}">{$vo.name}</option>
+                    <option value="{$vo.id}" {if condition="$catInfo[0]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
                 {/volist}
                 {/if}
             </select>
         </div>
-        <div id="view"></div>
+        <div id="view">
+            {if condition="$secondCat"}
+            <div class="layui-input-inline">
+                <select name="goods_cat_id[]" lay-filter="goods_cat_id">
+                    <option value="">请选择分类</option>
+                    {volist name="secondCat" id="vo"}
+                    <option value="{$vo.id}" {if condition="$catInfo[1]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            {/if}
+        </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">商品数量：</label>
@@ -31,7 +42,7 @@
 </form>
 <script id="cat_tpl" type="text/html">
     <div class="layui-input-inline">
-        <select name="goods_cat_id[]">
+        <select name="goods_cat_id[]"  lay-filter="goods_cat_id">
             <option value="">请选择分类</option>
             {{#  layui.each(d.list, function(index, item){ }}
             <option value="{{ item.id }}">{{ item.name }}</option>

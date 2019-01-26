@@ -35,11 +35,12 @@ class Balance extends Common
      * @param $user_id          当前用户id,当是店铺的时候，取店铺创始人的user_id
      * @param $type             类型
      * @param $money            金额，永远是正的
+     * @param $cate_money       服务费金额 (提现)
      * @param string $source_id 资源id
      *
      * @return array
      */
-    public function change( $user_id, $type, $money, $source_id = "" )
+    public function change( $user_id, $type, $money, $source_id = "", $cate_money = 0 )
     {
         $result = [
             'status' => false,
@@ -55,7 +56,7 @@ class Balance extends Common
         }
 
         //取描述，并简单校验
-        $re = $this->getMemo($type, $money, $source_id);
+        $re = $this->getMemo($type, $money, $source_id, $cate_money);
         if ( !$re[ 'status' ] ) {
             return $re;
         }
@@ -71,7 +72,7 @@ class Balance extends Common
             $type == self::TYPE_REFUND ||  //退款是往账户上加钱的 */
             $type == self::TYPE_TOCASH
         ) {
-            $money = - $money;
+            $money = - $money - $cate_money;
         }
         $balance = $userInfo[ 'balance' ] + $money;
         if ( ( $balance ) < 0 ) {
@@ -104,7 +105,7 @@ class Balance extends Common
      *
      * @return array|\think\Config
      */
-    private function getMemo( $type, $money, $source_id = "" )
+    private function getMemo( $type, $money, $source_id = "", $cate_money = '')
     {
         $result = [
             'status' => true,
@@ -124,6 +125,7 @@ class Balance extends Common
                 break;
             case self::TYPE_TOCASH:
                 $result[ 'data' ] = '提现了' . $money . '元';
+                $result['data'] .= $cate_money ? ',手续费'. $cate_money . '元' : '';
                 break;
             case self::TYPE_DISTRIBUTION:
                 $result[ 'data' ] = '佣金' . $money . '元';

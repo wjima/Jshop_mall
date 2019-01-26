@@ -29,7 +29,8 @@ class GoodsBrowsing extends Common
         );
         $goodsModel = new Goods();
         $goodsInfo = $goodsModel->where(array('id'=>$goodsId))->find();
-        if(!$goodsInfo){
+        if(!$goodsInfo)
+        {
             $result['msg'] = '没有此商品';
             return $result;
         }
@@ -46,8 +47,11 @@ class GoodsBrowsing extends Common
     /**
      * 删除浏览记录
      * @param $userId
-     * @param $goodsId
+     * @param $goods_ids
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function toDel($userId, $goods_ids)
     {
@@ -60,7 +64,8 @@ class GoodsBrowsing extends Common
         $where[] = ['goods_id','in',$goods_ids];
 
         $info = $this->where($where)->select();
-        foreach($info as $v){
+        foreach($info as $v)
+        {
             $v->delete();               //为什么这么删，因为软删除只能这样删
         }
         $result['data'] = count($info);
@@ -69,7 +74,16 @@ class GoodsBrowsing extends Common
         return $result;
     }
 
-    //取用户的浏览记录,倒叙，并去重
+    /**
+     * 取用户的浏览记录,倒叙，并去重
+     * @param $user_id
+     * @param int $page
+     * @param int $limit
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getList($user_id, $page = 1,$limit = 10)
     {
         $result = array(
@@ -87,18 +101,31 @@ class GoodsBrowsing extends Common
             ->limit(($page-1) * $limit, $limit)
             ->order('ctime desc')
             ->select();
-        if(!$list->isEmpty()){
+        if(!$list->isEmpty())
+        {
             $list = $list->hidden(['goods'=>['isdel','intro'],'isdel']);
         }
         $count = $this->where($where)->group('goods_id')->count();
 
         //取关联图片和是否收藏
-        foreach($list as $k => $v){
-            if($v['goods']){
-                $list[$k]['goods']['image_url'] = _sImage($v['goods']['image_id']);
+        if(!$list->isEmpty()){
+            $list = $list->toArray();
+            foreach($list as $k => $v)
+            {
+                if($v['goods'])
+                {
+                    $list[$k]['goods']['image_url'] = _sImage($v['goods']['image_id']);
+                }
+                else
+                {
+                    //商品被删除时
+                    $list[$k]['goods']['price'] = 0;
+                    $list[$k]['goods']['image_url'] = _sImage();
+                }
+                $list[$k]['isCollection'] = model('common/GoodsCollection')->check($v['user_id'], $v['goods_id']);
             }
-            $list[$k]['isCollection'] = model('common/GoodsCollection')->check($v['user_id'], $v['goods_id']);
         }
+
         
         $result['data']['list'] = $list;
         $result['data']['count'] = $count;

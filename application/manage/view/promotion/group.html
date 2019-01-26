@@ -47,7 +47,7 @@
         //表格渲染
         var promotionTable = layui.table.render({
             elem: '#promotion',
-            height: 'full-300',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'{:config("jshop.page_limit")}',
@@ -64,7 +64,7 @@
                         return '秒杀';
                     }
                 }},
-                {field:'status',title:'启用状态'},
+                {field:'status',title:'启用状态', templet: '#status', width: 120},
                 {field:'stime',title:'开始时间'},
                 {field:'etime',title:'结束时间'},
                 {field: 'operating', title: '操作', align: 'center',templet:function(data){
@@ -106,5 +106,21 @@
             });
         });
 
+
+        //监听 操作状态
+        layui.form.on('switch(change)', function(obj){
+            JsPost("{:url('Promotion/changeState')}",{
+                id: obj.value,
+                elem: obj.elem.name,
+                state: obj.elem.checked
+            },function(res){
+                layer.msg(res.msg);
+            });
+        });
+
     });
+</script>
+
+<script type="text/html" id="status">
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="change" {{ d.status == 1 ? 'checked' : '' }}>
 </script>

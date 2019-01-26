@@ -61,22 +61,29 @@ class Area extends Common
     {
         $county = $this->where('name', 'eq', $countyName)
             ->find();
-        if ($county) {
+        if($county)
+        {
             $id = $county['id'];
-        } else {
+        }
+        else
+        {
             $city = $this->where('name', 'eq', $cityName)
                 ->find();
-            if ($city) {
+            if($city)
+            {
                 //创建区域
                 $county_data['parent_id']   = $city['id'];
                 $county_data['depth']       = self::COUNTY_DEPTH;
                 $county_data['name']        = $countyName;
                 $county_data['postal_code'] = $postalCode;
                 $id                         = $this->insertGetId($county_data);
-            } else {
+            }
+            else
+            {
                 $province = $this->where('name', 'eq', $provinceName)
                     ->find();
-                if ($province) {
+                if($province)
+                {
                     //创建城市
                     $city_data['parent_id'] = $province['id'];
                     $city_data['depth']     = self::CITY_DEPTH;
@@ -89,7 +96,9 @@ class Area extends Common
                     $county_data['name']        = $countyName;
                     $county_data['postal_code'] = $postalCode;
                     $id                         = $this->insertGetId($county_data);
-                } else {
+                }
+                else
+                {
                     //创建省份
                     $province_data['parent_id'] = self::PROVINCE_PARENT_ID;
                     $province_data['depth']     = self::PROVINCE_DEPTH;

@@ -92,7 +92,8 @@ class BillRefund extends Common
             }
 
             $data['status'] = self::STATUS_REFUND;
-            $this->where($where)->data($data)->update();
+            $data['payment_code'] = $payment_code;
+            $this->save($data,$where);
             $result['msg'] = '退款单退款成功';
             if($result['status']){
                 //发送退款消息
@@ -104,7 +105,8 @@ class BillRefund extends Common
             //退款拒绝
 
             $data['status'] = $status;
-            $this->where($where)->data($data)->update();
+            $data['payment_code'] = $payment_code;
+            $this->save($data,$where);
             $result['status'] = true;
             $result['msg'] = '退款单拒绝成功';
             return $result;

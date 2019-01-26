@@ -326,7 +326,7 @@ class Goods extends Manage
             $result['msg'] = '请先上传图片';
             return $result;
         }
-        $data['goods']['image_id'] = $images[0];
+        $data['goods']['image_id'] = reset($images);
         $data['images']            = $images;
         $goodsModel                = new goodsModel();
 
@@ -344,6 +344,7 @@ class Goods extends Manage
                 return $result;
             }
         }
+
         $result['data']   = $data;
         $result['status'] = true;
         return $result;
@@ -623,7 +624,6 @@ class Goods extends Manage
             $result['msg'] = $checkData['msg'];
             return $result;
         }
-
         $data = $checkData['data'];
         //验证商品数据
         $goodsModel    = new goodsModel();

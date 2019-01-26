@@ -175,14 +175,17 @@ function mkdirs($dir,$mode = 0777)
 /**
  * 返回图片地址
  * TODO 水印，裁剪，等操作
- * @param $image_id
- * @param $type
- * @return string
+ * @param string $image_id
+ * @param string $type
+ * @return array|mixed|string
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
  * User: wjima
  * Email:1457529125@qq.com
  * Date: 2018-01-09 18:34
  */
-function _sImage($image_id, $type = 's')
+function _sImage($image_id = '', $type = 's')
 {
     if (!$image_id) {
         $image_id = getSetting('shop_default_image');//系统默认图片
@@ -206,7 +209,7 @@ function _sImage($image_id, $type = 's')
             return request()->domain() . str_replace("\\", "/", $image['url']);
         }
     } else {
-        return request()->domain() . '/' . config('jshop.default_image');//默认图片
+        return _sImage();
     }
 }
 
@@ -416,8 +419,9 @@ function delImage($image_id){
         //删除图片数据
         $res = $image_obj->where(['id'=>$image_id])->delete();
         if($image['type']=='local'){
-            $dd = @unlink($image['path']);
+            @unlink($image['path']);
         }
+        //todo 其它存储引擎不调整
         if($res){
             return true;
         }
@@ -882,7 +886,7 @@ function isjson($str){
  * @return bool
  */
 function isMobile($mobile = ''){
-    if (preg_match("/^1[345678]{1}\d{9}$/", $mobile)) {
+    if (preg_match("/^1[3456789]{1}\d{9}$/", $mobile)) {
         return true;
     } else {
         return false;
@@ -919,4 +923,12 @@ function secondConversion($second = 0)
         }
     }
     return $newtime;
+}
+
+/***
+ * 导出时字符串太长不显示时，处理
+ */
+function convertString($value = '')
+{
+    return $value."\t";
 }

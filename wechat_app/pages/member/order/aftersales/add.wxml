@@ -10,7 +10,7 @@
           </label>
         </view>
         <!-- 商品图片 -->
-        <image class='thumbnail' src='{{item.image_url}}'></image>
+        <image class='thumbnail' mode='aspectFill' src='{{item.image_url}}'></image>
         <!-- 商品详情 -->
         <view class='list-body-right'>
           <view class='body-right-title'>

@@ -368,16 +368,18 @@ class User extends Common
             $data['avatar'] = $avatar;
         }
         $re = $this->save($data,['id'=>$id]);
-        if($re){
+        if($re !== false)
+        {
             //$userLogModel = new UserLog();
             //$userLogModel->setLog($id,$userLogModel::USER_EDIT);
             $result['status'] = true;
             $result['msg'] = '保存成功';
             return $result;
-        }else{
+        }
+        else
+        {
             return error_code(10005);
         }
-
     }
 
 

@@ -201,12 +201,12 @@ class Promotion extends Common
             if($v['etime']){
                 $list[$k]['etime'] = getTime($v['etime']);
             }
-            if($v['status']){
-                $list[$k]['status'] = config('params.promotion.status')[$v['status']];
-            }
-            if($v['exclusive']){
-                $list[$k]['exclusive'] = config('params.promotion.exclusive')[$v['exclusive']];
-            }
+//            if($v['status']){
+//                $list[$k]['status'] = config('params.promotion.status')[$v['status']];
+//            }
+//            if($v['exclusive']){
+//                $list[$k]['exclusive'] = config('params.promotion.exclusive')[$v['exclusive']];
+//            }
         }
         return $list;
     }

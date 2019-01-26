@@ -20,7 +20,7 @@ class Jshop extends TagLib
     protected $tags = [
         // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
         'image' => [
-            'attr'  => 'id,name,style,width,height,type,value',
+            'attr'  => 'id,name,style,width,height,type,value,single',
             'close' => 0
         ],
         'uploadImage' => [
@@ -62,6 +62,8 @@ class Jshop extends TagLib
         $num      = !empty($tag['num']) ? $tag['num'] : 1;
         $width    = !empty($tag['width']) ? $tag['width'] : '90px';
         $height   = !empty($tag['height']) ? $tag['height'] : '90px';
+        $single   = !empty($tag['single']) ? $tag['single'] : 'false';//是否单图上传
+
         $str_name = '';
         if($num > 1) {
             $str_name = $name . '[]';
@@ -82,6 +84,7 @@ class Jshop extends TagLib
             var _edito'.$id.'r = UE.getEditor("edit_'.$id.'",{
                 initialFrameWidth:800,
                 initialFrameHeight:300,
+                 single:'.$single.'
             });
             _edito'.$id.'r.ready(function (){
                 //_edito'.$id.'r.setDisabled();

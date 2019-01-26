@@ -121,9 +121,10 @@ class Brand extends Common
             $where[] = ['name', 'like', '%'.$post['name'].'%'];
         }
         if(isset($post['utime']) && $post['utime'] != ""){
-            $stime = strtotime($post['utime'].'00:00:00',time());
-            $etime = strtotime($post['utime'].'23:59:59',time());
-            $where[] = ['utime', ['EGT',$stime],['ELT',$etime],'and'];
+            $date_array = explode('到',$post['utime']);
+            $sutime = strtotime($date_array[0].'00:00:00',time());
+            $eutime = strtotime($date_array[1].'23:59:59',time());
+            $where[] = ['utime', ['EGT',$sutime],['ELT',$eutime],'and'];
         }
         $result['where'] = $where;
         $result['field'] = "*";

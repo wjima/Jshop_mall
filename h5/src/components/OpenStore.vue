@@ -21,8 +21,8 @@
             </yd-tab-panel>
             <yd-tab-panel label="门店自提">
                 <div class="orderadd" style="padding-bottom: .1rem;" v-if="Object.keys(store).length">
-                    <div style="position: relative;">
-                    	<img class="orderadd-gps" src="../../static/image/gps.png"/>
+                    <div style="position: relative">
+                        <img class="orderadd-gps" src="../../static/image/gps.png"/>
                         <div class="orderadd-content" @click="showStoreList">
                             <div class="orderadd-top">
                                 <span>{{ store.store_name }}</span>
@@ -196,7 +196,6 @@ export default {
     }
     .orderadd .consignee .yd-input{
         height: .8rem;
-        
     }
     .orderadd .consignee .yd-input input{
         height: 100%;

@@ -6,6 +6,7 @@ use app\common\model\BillPayments;
 use app\common\model\BillDelivery;
 use app\common\model\BillReship;
 use app\common\model\Order as orderModel;
+use app\common\model\Ship;
 use think\facade\Request;
 
 /**
@@ -18,14 +19,17 @@ class Order extends Api
 {
     /**
      * 取消订单接口
-     * @param array order_ids
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function cancel()
     {
         $order_ids = input('order_ids');
         $user_id = $this->userId;
-        $result = model('common/Order')->cancel($order_ids, $user_id);
+        $model = new orderModel();
+        $result = $model->cancel($order_ids, $user_id);
         if($result !== false)
         {
             $return_data = array(
@@ -45,16 +49,17 @@ class Order extends Api
         return $return_data;
     }
 
+
     /**
      * 删除订单接口
-     * @param array order_ids
      * @return array
      */
     public function del()
     {
         $order_ids = input('order_ids');
         $user_id = $this->userId;
-        $result = model('common/Order')->del($order_ids, $user_id);
+        $model = new orderModel();
+        $result = $model->del($order_ids, $user_id);
         if($result)
         {
             $return_data = array(
@@ -73,6 +78,7 @@ class Order extends Api
         }
         return $return_data;
     }
+
 
     /**
      * 获取订单详情
@@ -104,16 +110,17 @@ class Order extends Api
         return $return_data;
     }
 
+
     /**
      * 确认收货
-     * @param int order_id
      * @return array
      */
     public function confirm()
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $result = model('common/Order')->confirm($order_id, $user_id);
+        $model = new orderModel();
+        $result = $model->confirm($order_id, $user_id);
         if($result)
         {
             $return_data = array(
@@ -133,9 +140,13 @@ class Order extends Api
         return $return_data;
     }
 
+
     /**
      * 获取订单列表
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getList()
     {
@@ -150,7 +161,8 @@ class Order extends Api
             'limit' => input('limit'),
             'user_id' => $this->userId
         );
-        $data = model('common/Order')->getListFromApi($input);
+        $model = new orderModel();
+        $data = $model->getListFromApi($input);
 
         if(count($data['data']) > 0)
         {
@@ -217,12 +229,13 @@ class Order extends Api
         return $model->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId, $receipt_type, $store_id, $lading_name, $lading_mobile,$source);
     }
 
+
     /**
      * 获取配送方式
      * @return array
-     * User: wjima
-     * Email:1457529125@qq.com
-     * Date: 2018-02-01 15:43
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getShip()
     {
@@ -232,13 +245,15 @@ class Order extends Api
             'data'   => '',
             'msg'    => '暂未设置配送方式',
         ];
-        $ship        = model('common/Ship')->getShip($area_id);
+        $model = new Ship();
+        $ship        = $model->getShip($area_id);
         if($ship) {
             $return_data['status'] = true;
             $return_data['data']   = $ship;
         }
         return $return_data;
     }
+
 
     /**
      * 获取订单列表微信小程序
@@ -273,8 +288,10 @@ class Order extends Api
         return $return_data;
     }
 
+
     /**
      * 获取订单不同状态的数量
+     * @return array
      */
     public function getOrderStatusNum()
     {
@@ -282,7 +299,8 @@ class Order extends Api
             'user_id' => $this->userId,
             'ids' => input('ids', '1,2,3,4')
         );
-        $data = model('common/Order')->getOrderStatusNum($input);
+        $model = new orderModel();
+        $data = $model->getOrderStatusNum($input);
 
         if($data)
         {
@@ -303,8 +321,13 @@ class Order extends Api
         return $return_data;
     }
 
+
     /**
      * 售后单列表
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function aftersalesList()
     {
@@ -315,11 +338,15 @@ class Order extends Api
         ];
         $asModel = new BillAftersales();
         return $asModel->getListApi($data);
-
     }
+
 
     /**
      * 售后单详情
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function aftersalesInfo()
     {
@@ -344,14 +371,25 @@ class Order extends Api
             'reship_area' => get_area(getSetting('reship_area_id')),
             'reship_address' => getSetting('reship_address'),
         ];
+
+        //获取订单状态
+        $orderModel = new orderModel();
+        $owhere[] = ['order_id', 'eq', $info['data']['order_id']];
+        $orderStatus = $orderModel->field('status')->where($owhere)->find();
+        $info['data']['order_status'] = $orderStatus['status'];
         $result['data']['info'] = $info['data'];
         $result['data']['reship'] = $reship;
         $result['status'] = true;
         return $result;
     }
 
+
     /**
      * 查看订单售后状态
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function aftersalesStatus()
     {
@@ -373,13 +411,16 @@ class Order extends Api
         return $result;
     }
 
+
     /**
      * 添加售后单
-     * @return array|bool|mixed
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function addAftersales()
     {
-
         if(!input("?param.order_id")){
             return error_code(13100);
         }
@@ -387,10 +428,6 @@ class Order extends Api
             return error_code(10051);
         }
 
-//        $items = [
-//            4=>1,
-//            3=>3
-//        ];
         $items = [];
         $post = input('param.');
         if(isset($post['items'])){
@@ -404,19 +441,22 @@ class Order extends Api
             $images = $post['images'];
         }
 
-
         $refund = input('param.refund/f',0);        //退款金额，如果type是退款，这个值无所谓，
 
         //formId
-        $formId = \think\facade\Request::param('formId');
+        $formId = input('param.formId',"");
 
         $billAftersalesModel = new BillAftersales();
         return  $billAftersalesModel->toAdd($this->userId,input('param.order_id'),input('param.type'),$items,$images,input('param.reason',''),$refund, $formId);
     }
 
+
     /**
      * 退货单，用户发送退货包裹
-     * @return bool
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function sendReship()
     {
@@ -436,6 +476,7 @@ class Order extends Api
         return  $billReshipModel->sendReship($this->userId,input('param.reship_id'),input('param.logi_code'),input('param.logi_no'));
     }
 
+
     /**
      * 是否可以评价
      * @return array
@@ -447,15 +488,14 @@ class Order extends Api
     {
         $order_id = input('order_id');
         $user_id = $this->userId;
-        $model = new \app\common\model\Order();
+        $model = new orderModel();
         $res = $model->isOrderComment($order_id, $user_id);
         return $res;
     }
 
+
     /**
-     *
-     * 后台
-     * 获取订单的物流信息
+     * 后台获取订单的物流信息
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -463,7 +503,8 @@ class Order extends Api
      */
     public function logistics()
     {
-        if(!input("?param.order_id")){
+        if(!input("?param.order_id"))
+        {
             return error_code(13100);
         }
         $billDeliveryModel = new BillDelivery();
@@ -472,8 +513,7 @@ class Order extends Api
 
 
     /**
-     *  前台
-     *  物流查询接口
+     * 前台物流查询接口
      * @return array|mixed
      */
     public function logisticsByApi ()
@@ -491,6 +531,10 @@ class Order extends Api
     }
 
 
+    /**
+     * 获取当月的资金池
+     * @return array
+     */
     public function getCashPooling()
     {
         $orderModel = new orderModel();

@@ -274,12 +274,16 @@ class GoodsComment extends Common
         }
         return $return;
     }
+
     /**
      * 添加评价
      * @param $order_id
-     * @param $goods
+     * @param $items
      * @param $user_id
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function addComment($order_id, $items, $user_id)
     {

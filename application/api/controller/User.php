@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 use app\common\controller\Api;
+use app\common\model\Area;
 use app\common\model\Balance;
 use app\common\model\GoodsComment;
 use app\common\model\Setting;
@@ -211,7 +212,7 @@ class User extends Api
             ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,status')
             ->where(array('id'=>$this->userId))
             ->find();
-        if($userInfo)
+        if($userInfo !== false)
         {
             $result['data'] = $userInfo;
             $result['status'] = true;
@@ -288,6 +289,9 @@ class User extends Api
     /**
      * 删除商品浏览足迹
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function delGoodsBrowsing()
     {
@@ -309,10 +313,12 @@ class User extends Api
     /**
      * 取得商品浏览足迹
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function goodsBrowsing()
     {
-
         if(input("?param.limit"))
         {
             $limit = input("param.limit");
@@ -337,6 +343,9 @@ class User extends Api
     /**
      * 添加商品收藏（关注）
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function goodsCollection()
     {
@@ -358,6 +367,9 @@ class User extends Api
     /**
      * 取得商品收藏记录（关注）
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function goodsCollectionList()
     {
@@ -409,7 +421,7 @@ class User extends Api
         //存储收货地址
         $model = new UserShip();
         $result = $model->saveShip($data);
-        if($result)
+        if($result !== false)
         {
             $return_data = array(
                 'status' => true,
@@ -469,11 +481,15 @@ class User extends Api
     /**
      * 获取收货地址详情
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getShipDetail()
     {
         $id = input('param.id');
-        $result = model('common/UserShip')->getShipById($id,$this->userId);
+        $model = new UserShip();
+        $result = $model->getShipById($id,$this->userId);
         if($result)
         {
             $result['area_name'] = get_area($result['area_id']);
@@ -498,6 +514,9 @@ class User extends Api
     /**
      * 收货地址编辑
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function editShip()
     {
@@ -508,7 +527,8 @@ class User extends Api
         $data['is_def'] = input('param.is_def');
         $data['id'] = input('param.id');
 
-        $result = model('common/UserShip')->editShip($data, $this->userId);
+        $model = new UserShip();
+        $result = $model->editShip($data, $this->userId);
         if($result)
         {
             $res = [
@@ -531,7 +551,11 @@ class User extends Api
 
     /**
      * 删除收货地址
-     * @return mixed
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function removeShip()
     {
@@ -539,13 +563,18 @@ class User extends Api
         {
             return error_code(10051);
         }
-        return model('common/UserShip')->removeShip(input('param.id'), $this->userId);
+        $model = new UserShip();
+        return $model->removeShip(input('param.id'), $this->userId);
     }
 
 
     /**
      * 设置默认地址
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function setDefShip()
     {
@@ -553,18 +582,23 @@ class User extends Api
         {
             return error_code(10051);
         }
-        return model('common/UserShip')->setDefaultShip(input('param.id'),$this->userId);
+        $model = new UserShip();
+        return $model->setDefaultShip(input('param.id'),$this->userId);
     }
 
 
     /**
      * 获取用户收货地址列表
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getUserShip()
     {
         $user_id = $this->userId;
-        $list = model('common/UserShip')->getUserShip($user_id);
+        $model = new UserShip();
+        $list = $model->getUserShip($user_id);
         if($list)
         {
             $return_data = array(
@@ -599,6 +633,9 @@ class User extends Api
     /**
      * 获取最终地区ID
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getAreaId()
     {
@@ -606,7 +643,8 @@ class User extends Api
         $city_name = input('city_name');
         $county_name = input('county_name');
         $postal_code = input('postal_code');
-        $area_id = model('common/Area')->getThreeAreaId($county_name, $city_name, $province_name, $postal_code);
+        $model = new Area();
+        $area_id = $model->getThreeAreaId($county_name, $city_name, $province_name, $postal_code);
         if($area_id)
         {
             $res = [
@@ -666,6 +704,9 @@ class User extends Api
     /**
      * 订单评价接口
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function orderEvaluate()
     {

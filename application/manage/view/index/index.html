@@ -153,8 +153,9 @@
 
 			<div class="layui-col-md6">
 				<div class="layui-card">
-					<div class="layui-card-header">
-						<i class="iconfont icon-dingdan1"></i>操作日志
+					<div class="layui-card-header loading-more">
+						<div><i class="iconfont icon-dingdan1"></i>操作日志</div>
+						<a href="{:url('OperationLog/logList')}">查看更多>></a>
 					</div>
 					<div class="layui-card-body" id="oplog-table"></div>
 				</div>
@@ -236,12 +237,12 @@
 						<td style="padding-bottom: 0;">
 							<div class="layui-btn-container">
 								{{# if(d.is_authorization ==true){ }}
-								<a href="https://www.jihainet.com/download/download.php?class2=39" target="_blank"
+								<a href="https://www.jihainet.com" target="_blank"
 								   class="layui-btn  layui-btn-sm">下载更新</a>
 								{{#  }else{ }}
 								<a href="https://www.jihainet.com/" target="_blank"
 								   class="layui-btn layui-btn-danger  layui-btn-sm">获取授权</a>
-								<a href="https://www.jihainet.com/download/download.php?class2=39" target="_blank"
+								<a href="https://www.jihainet.com/" target="_blank"
 								   class="layui-btn  layui-btn-sm">立即下载</a>
 								{{#  } }}
 							</div>
@@ -370,3 +371,16 @@
 		</div>
 	</div>
 </div>
+<style>
+	.loading-more{
+		overflow: hidden;
+	}
+	.loading-more>div{
+		display: inline-block;
+	}
+	.loading-more a{
+		float: right;
+		font-size: 12px;
+		margin-top: 5px;
+	}
+</style>

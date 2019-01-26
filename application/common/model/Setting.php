@@ -39,8 +39,12 @@ class Setting extends Common
             'value' => '2'
         ],
         'cate_style' => [
-            'name' => '分类样式',
+            'name' => '小程序分类样式',
             'value' => '3'
+        ],
+        'cate_style_h5' => [
+            'name' => 'H5分类样式',
+            'value' => 1
         ],
         'order_cancel_time' => [
             'name' => '订单取消时间',
@@ -256,6 +260,11 @@ class Setting extends Common
             'name'=>'图片存储配置参数',
             'value'=>''
         ],
+        //搜索发现关键字
+        'recommend_keys' => [
+            'name' => '搜索发现关键词',
+            'value' => '羽绒服,iphonexs,小米mix'
+        ]
     ];
 
 
@@ -329,11 +338,7 @@ class Setting extends Common
 
         if($skey == 'shop_mobile'){
             if($value != ''){
-                $isMob="/^1[34578]{1}\d{9}$/";
-
-                $isTel="/^([0-9]{3,4}-)?[0-9]{7,8}$/";
-
-                if(!preg_match($isMob,$value) && !preg_match($isTel,$value))
+                if(!isMobile($value))
                 {
                     $result['msg'] = '联系方式号码格式错误';
                     return $result;

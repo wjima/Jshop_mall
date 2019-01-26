@@ -48,7 +48,7 @@ class Article extends Manage
         }
         $articleTypeModel = new articleTypeModel();
         $list = $articleTypeModel->select();
-        return $this->fetch('add',['list'=>$list]);
+        return $this->fetch('add',['list'=> $articleTypeModel->getTree($list)]);
     }
 
 

@@ -62,9 +62,15 @@ class BillRefund extends Manage
                 return error_code(10000);
             }
 
-            $payment_code = input('param.payment_code',"");
+            if(!input('?param.payment_code')){
+                return error_code(10000);
+            }
+            if(!input('?param.refund_id')){
+                return error_code(10000);
+            }
 
-            return $billRefundModel->toRefund(input('param.refund_id'),input('param.status'),$payment_code);
+
+            return $billRefundModel->toRefund(input('param.refund_id'),input('param.status'),input('param.payment_code'));
         }
 
 

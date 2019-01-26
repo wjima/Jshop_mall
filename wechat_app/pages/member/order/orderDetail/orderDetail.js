@@ -104,6 +104,14 @@ Page({
     });
   },
 
+    //查看售后
+    viewAfterSale: function (e) {
+        var aftersale_id = e.target.dataset.id;
+        wx.navigateTo({
+            url: '../aftersales/edit?aftersales_id=' + aftersale_id
+        });
+    },
+
   //确认收货
   sign: function (e) {
     var page = this;

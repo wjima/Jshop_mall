@@ -19,13 +19,14 @@ export default {
     },
     created () {
         this.$api.articleInfo({article_id: this.$route.query.article_id}, res => {
-            if (res.data) {
+            if (res.status && res.data) {
                 this.article = res.data
             } else {
                 this.$dialog.alert({
-                    mes: '该文章信息不存在',
+                    mes: res.msg,
+                    timeout: 1300,
                     callback: () => {
-                        this.$router.go(-1)
+                        this.$router.back(-1)
                     }
                 })
             }

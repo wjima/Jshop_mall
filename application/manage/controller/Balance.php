@@ -17,11 +17,14 @@ class Balance extends Manage
 {
     public function index()
     {
+        $user_id = input('user_id','');
         if(Request::isAjax()){
+
             $data = input('param.');
             $balanceModel = new BalanceModel();
             return $balanceModel->tableData($data);
         }else{
+            $this->assign('user_id',$user_id);
             return $this->fetch('index');
         }
     }

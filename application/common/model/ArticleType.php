@@ -35,7 +35,7 @@ class ArticleType extends Common
         if(isset($post['limit'])){
             $limit = $post['limit'];
         }else{
-            $limit = config('paginate.list_rows');
+            $limit = 50; // 后台列表分页数量默认50条
         }
         $tableWhere = $this->tableWhere($post);
         $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
@@ -44,7 +44,7 @@ class ArticleType extends Common
         $re['code'] = 0;
         $re['msg'] = '';
         $re['count'] = $list->total();
-        $re['data'] = $this->getTree($data);
+        $re['data'] = $data;
         return $re;
     }
 
@@ -117,7 +117,7 @@ class ArticleType extends Common
      * @param $step 节点替换次数
      * @return array
      */
-    private function getTree($arr,$pid=0,$step=0){
+    public function getTree($arr,$pid=0,$step=0){
         global $tree;
         foreach($arr as $key=>$val) {
             if($val['pid'] == $pid) {

@@ -205,7 +205,8 @@ class BillDelivery extends Common
         $deliveryInfo = $this->where('order_id', $order_id)->find();
         if ($deliveryInfo) {
             // 获取发货单物流公司编码和单号
-            if ( !$deliveryInfo[ 'logi_code' ] && !$deliveryInfo[ 'logi_no' ] ) {
+            if ( !$deliveryInfo[ 'logi_code' ] && !$deliveryInfo[ 'logi_no' ] )
+            {
                 return error_code(10051);
             }
 
@@ -227,8 +228,7 @@ class BillDelivery extends Common
 
 
     /**
-     *  物流信息查询
-     *  根据快递编码和单号查询
+     * 物流信息查询根据快递编码和单号查询
      * @param $code
      * @param $no
      * @return array
@@ -302,7 +302,11 @@ class BillDelivery extends Common
         {
             $where[] = ['ship_mobile', 'like', '%'.$input['mobile'].'%'];
         }
-
+        if($input['date'])
+        {
+            $date = explode(' 到 ', $input['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
         $res = $this->where($where)
             ->order('ctime desc')
             ->page($page, $limit)
@@ -376,5 +380,177 @@ class BillDelivery extends Common
         $res = Db::query($sql);
         $data = get_lately_days($num, $res);
         return $data['data'];
+    }
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'delivery_id',
+                'desc' => '发货单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'order_id',
+                'desc' => '订单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'username',
+                'desc' => '用户名',
+            ],
+            [
+                'id' => 'logi_name',
+                'desc' => '快递公司',
+            ],
+            [
+                'id' => 'logi_no',
+                'desc' => '快递单号',
+            ],
+            [
+                'id' => 'ship_address',
+                'desc' => '收货地址',
+            ],
+            [
+                'id' => 'ship_name',
+                'desc' => '收货人',
+
+            ],
+            [
+                'id' => 'ship_mobile',
+                'desc' => '收货电话',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'status',
+                'desc' => '发货单状态',
+
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '创建时间',
+
+            ],
+        ];
+    }
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出数据'
+        ];
+        $header = $this->csvHeader();
+        $userData = $this->getExportList($post);
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body = [];
+            $i = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) &&!empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        return $result;
+    }
+
+    //导出格式
+    public function getExportList($input = [])
+    {
+        $return_data = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => '',
+            'count' => 0
+        ];
+        $where = [];
+
+        if (isset($input['id']) && $input['id'] != "") {
+            $where[] = ['delivery_id', 'in', $input['id']];
+        }
+
+        if($input['delivery_id'])
+        {
+            $where[] = ['delivery_id', 'like', '%'.$input['delivery_id'].'%'];
+        }
+        if($input['date'])
+        {
+            $date = explode(' 到 ', $input['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
+        if($input['order_id'])
+        {
+            $where[] = ['order_id', 'like', '%'.$input['order_id'].'%'];
+        }
+        if($input['logi_no'])
+        {
+            $where[] = ['logi_no', 'like', '%'.$input['logi_no'].'%'];
+        }
+        if($input['mobile'])
+        {
+            $where[] = ['ship_mobile', 'like', '%'.$input['mobile'].'%'];
+        }
+
+        $res = $this->where($where)
+            ->order('ctime desc')
+            ->select();
+
+        if($res){
+            $count = $this->where($where)->count();
+            foreach($res as $k => &$v){
+                $v['username'] = get_user_info($v['user_id'], 'nickname');
+                $v['logi_name'] = get_logi_info($v['logi_code']);
+                $v['ship_address'] = get_area($v['ship_area_id']).'- '.$v['ship_address'];
+                $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
+                $v['status'] = config('params.bill_delivery.status')[$v['status']];
+            }
+            $return_data = [
+                'status' => true,
+                'msg' => '获取成功',
+                'data' => $res,
+                'count' => $count
+            ];
+
+        }
+        return $return_data;
     }
 }

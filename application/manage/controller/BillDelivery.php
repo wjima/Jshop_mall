@@ -27,6 +27,7 @@ class BillDelivery extends Manage
             $input['order_id'] = input('order_id');
             $input['logi_no'] = input('logi_no');
             $input['mobile'] = input('mobile');
+            $input['date'] = input('date');
             $billDeliveryModel = new \app\common\model\BillDelivery();
             $res = $billDeliveryModel->getList($page, $limit, $input);
             if($res['status'])

@@ -128,19 +128,34 @@ class Order extends Common
     }
 
     /**
+     * 售后单关联
+     * @return \think\model\relation\HasMany
+     */
+    public function aftersalesItem()
+    {
+        return $this->hasMany('BillAftersales', 'order_id', 'order_id');
+    }
+
+    /**
      * 获取订单原始数据
      * @param $input
-     * @return array|\PDOStatement|string|\think\Collection
+     * @param bool $isPage
+     * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    protected function getListByWhere($input)
+    protected function getListByWhere($input, $isPage = true)
     {
         $where = [];
+        //单个订单模糊搜索时
         if(!empty($input['order_id']))
         {
             $where[] = array('o.order_id', 'LIKE', '%'.$input['order_id'].'%');
+        }
+        //多个订单时
+        if (isset($input['order_ids']) && $input['order_ids'] != "") {
+            $where[] = ['o.order_id', 'in', $input['order_ids']];
         }
         if(!empty($input['username']))
         {
@@ -158,31 +173,31 @@ class Order extends Common
         {
             $where[] = array('o.ship_status', 'eq', $input['ship_status']);
         }
-        
+
         if(!empty($input['date']))
         {
             $date_string = $input['date'];
             $date_array = explode(' 到 ', $date_string);
-            $sdate = strtotime($date_array[0].' 00:00:00')*100;
-            $edate = strtotime($date_array[1].' 23:59:59')*100;
+            $sdate = strtotime($date_array[0].' 00:00:00');
+            $edate = strtotime($date_array[1].' 23:59:59');
             $where[] = array('o.ctime', ['>=', $sdate], ['<=', $edate], 'and');
         }
         if(!empty($input['start_date']) || !empty($input['end_date']))
         {
             if(!empty($input['start_date']) && !empty($input['end_date']))
             {
-                $sdate = strtotime($input['start_date'].' 00:00:00')*100;
-                $edate = strtotime($input['end_date'].' 23:59:59')*100;
+                $sdate = strtotime($input['start_date'].' 00:00:00');
+                $edate = strtotime($input['end_date'].' 23:59:59');
                 $where[] = array('o.ctime', ['>=', $sdate], ['<=', $edate], 'and');
             }
             elseif(!empty($input['start_date']))
             {
-                $sdate = strtotime($input['start_date'].' 00:00:00')*100;
+                $sdate = strtotime($input['start_date'].' 00:00:00');
                 $where[] = array('o.ctime', '>=', $sdate);
             }
             elseif(!empty($input['end_date']))
             {
-                $edate = strtotime($input['end_date'].' 23:59:59')*100;
+                $edate = strtotime($input['end_date'].' 23:59:59');
                 $where[] = array('o.ctime', '<=', $edate);
             }
         }
@@ -202,19 +217,33 @@ class Order extends Common
         $page = $input['page']?$input['page']:1;
         $limit = $input['limit']?$input['limit']:20;
 
-        $data = $this->alias('o')
-            ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
-            ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
-            ->where($where)
-            ->order('ctime desc')
-            ->page($page, $limit)
-            ->select();
+        if($isPage){
+            $data = $this->alias('o')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
+                ->where($where)
+                ->order('ctime desc')
+                ->page($page, $limit)
+                ->select();
 
-        $count = $this->alias('o')
-            ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id')
-            ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
-            ->where($where)
-            ->count();
+            $count = $this->alias('o')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
+                ->where($where)
+                ->count();
+        }else{
+            $data = $this->alias('o')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
+                ->where($where)
+                ->order('ctime desc')
+                ->select();
+            $count = $this->alias('o')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
+                ->where($where)
+                ->count();
+        }
 
         return array('data' => $data, 'count' => $count);
     }
@@ -222,15 +251,15 @@ class Order extends Common
     /**
      * 后台获取数据
      * @param $input
-     * @return array|\PDOStatement|string|\think\Collection
+     * @param bool $isPage
+     * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getListFromAdmin($input)
+    public function getListFromAdmin($input, $isPage = true)
     {
-        $result = $this->getListByWhere($input);
-
+        $result = $this->getListByWhere($input,$isPage);
         if(count($result['data']) > 0)
         {
             foreach($result['data'] as $k => &$v)
@@ -547,6 +576,7 @@ class Order extends Common
         $order_info->delivery; //发货信息
         $order_info->ladingItem; //提货单
         $order_info->returnItem; //退货单
+        $order_info->aftersalesItem; //售后单
 
         //获取提货门店
         $order_info['store'] = false;
@@ -707,6 +737,22 @@ class Order extends Common
                 $v['logi_code_name'] = $logiModel->getNameByCode($v['logi_code']);
                 $v['status_name'] = config('params.bill_reship')['status'][$v['status']];
                 $v['utime_name'] = getTime($v['utime']);
+            }
+        }
+
+        //售后单
+        $order_info['bill_aftersales_id'] = false;
+        if(count($order_info['aftersalesItem']) > 0)
+        {
+            $billAftersalesModel = new BillAftersales();
+            foreach($order_info['aftersalesItem'] as $v)
+            {
+                $order_info['bill_aftersales_id'] = $v['aftersales_id'];
+                //如果售后单里面有待审核的活动售后单，那就直接拿这条
+                if($v['status'] == $billAftersalesModel::STATUS_WAITAUDIT)
+                {
+                    break;
+                }
             }
         }
 
@@ -1279,23 +1325,24 @@ class Order extends Common
         if($receipt_type == 1)
         {
             //快递邮寄
-            $order['ship_area_id'] = $ushopInfo['area_id'];
-            $order['ship_address'] = $ushopInfo['address'];
-            $order['ship_name'] = $ushopInfo['name'];
-            $order['ship_mobile'] = $ushopInfo['mobile'];
-            $shipInfo = model('common/Ship')->getShip($ushopInfo['area_id']);
-            $order['logistics_id'] = $shipInfo['id'];
-            $order['cost_freight'] = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'],$order['goods_amount']);
-            $order['store_id'] = 0;
+            $order['ship_area_id']   = $ushopInfo['area_id'];
+            $order['ship_address']   = $ushopInfo['address'];
+            $order['ship_name']      = $ushopInfo['name'];
+            $order['ship_mobile']    = $ushopInfo['mobile'];
+            $shipInfo                = model('common/Ship')->getShip($ushopInfo['area_id']);
+            $order['logistics_id']   = $shipInfo['id'];
+            $order['logistics_name'] = $shipInfo['name'];
+            $order['cost_freight']   = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'], $order['goods_amount']);
+            $order['store_id']       = 0;
         }
         else
         {
             //门店自提
             $order['ship_area_id'] = $storeInfo['area_id'];
             $order['ship_address'] = $storeInfo['address'];
-            $order['ship_name'] = $lading_name;
-            $order['ship_mobile'] = $lading_mobile;
-            $order['store_id'] = $store_id;
+            $order['ship_name']    = $lading_name;
+            $order['ship_mobile']  = $lading_mobile;
+            $order['store_id']     = $store_id;
             $order['logistics_id'] = 0;
             $order['cost_freight'] = 0;
         }
@@ -1667,8 +1714,7 @@ class Order extends Common
 
 
     /**
-     *
-     *  获取当月的资金池
+     * 获取当月的资金池
      * @return array
      */
     public function cashPooling()
@@ -1734,5 +1780,172 @@ class Order extends Common
                 sendMessage($vv['user_id'], 'remind_order_pay', $vv);
             }
         }
+    }
+
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出订单'
+        ];
+        $header = $this->csvHeader();
+        $orderData = $this->getListFromAdmin($post, false);
+        if ($orderData['count'] > 0) {
+            $tempBody = $orderData['data'];
+            $body = [];
+            $i = 0;
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                $orderItems = $this->orderItems($val['order_id']);
+                $itemData = [];
+                foreach ($header as $hk => $hv) {
+
+                    if ( isset($hv['modify']) &&isset($val[$hv['id']])&&$val[$hv['id']]) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    }elseif (isset($val[$hv['id']])&&$val[$hv['id']]) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+
+
+                foreach ($orderItems as $itemKey => $itemVal) {
+                    $i++;
+                    $sval['item_name']   = $itemVal['name'] . '-' . $itemVal['addon'];
+                    $sval['item_price']  = $itemVal['price'];
+                    $sval['item_nums']   = $itemVal['nums'];
+                    $sval['item_amount'] = $itemVal['amount'];
+                    $sval['item_sn']     = $itemVal['sn'];
+                    $sval['item_bn']     = $itemVal['bn'];
+                    $sval['item_weight'] = $itemVal['weight'];
+                    foreach ($header as $hk => $hv) {
+                        if ( isset($hv['modify']) &&isset($sval[$hv['id']])&&$sval[$hv['id']]) {
+                            if (function_exists($hv['modify'])) {
+                                $body[$i][] = $hv['modify']($sval[$hv['id']]);
+                            }
+                        }elseif (isset($sval[$hv['id']]) && $sval[$hv['id']]) {
+                            $body[$i][] = $sval[$hv['id']];
+                        }else{
+                            $body[$i][] = '';
+                        }
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '获取成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'order_id',
+                'desc' => '订单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '下单时间',
+                'modify'=>'getTime',
+            ],
+            [
+                'id' => 'status_text',
+                'desc' => '订单状态',
+            ],
+            [
+                'id' => 'username',
+                'desc' => '用户名',
+            ],
+            [
+                'id' => 'ship_name',
+                'desc' => '收货人',
+            ],
+            [
+                'id' => 'area_name',
+                'desc' => '收货地址',
+            ],
+            [
+                'id' => 'ship_mobile',
+                'desc' => '收货人手机号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'pay_status',
+                'desc' => '支付状态',
+            ],
+            [
+                'id' => 'ship_status',
+                'desc' => '发货状态',
+            ],
+            [
+                'id' => 'order_amount',
+                'desc' => '订单总额',
+            ],
+            [
+                'id' => 'source',
+                'desc' => '订单来源',
+            ],
+            [
+                'id' => 'item_name',
+                'desc' => '商品名称',
+            ],
+            [
+                'id' => 'item_price',
+                'desc' => '商品单价',
+            ],
+            [
+                'id' => 'item_nums',
+                'desc' => '购买数量',
+            ],
+            [
+                'id' => 'item_amount',
+                'desc' => '商品总价',
+            ],
+            [
+                'id' => 'item_sn',
+                'desc' => '货品编码',
+            ],
+            [
+                'id' => 'item_bn',
+                'desc' => '商品编码',
+            ],
+            [
+                'id' => 'item_weight',
+                'desc' => '商品总重量',
+            ]
+        ];
+    }
+
+    /**
+     * 获取明细
+     * @param string $order_id
+     * @return array|\PDOStatement|string|\think\Collection
+     */
+    private function orderItems($order_id = ''){
+        $itemModel = new OrderItems();
+        $items = $itemModel->field('*')->where(['order_id'=>$order_id])->select();
+        if(!$items->isEmpty()){
+            return $items->toArray();
+        }
+        return [];
     }
 }

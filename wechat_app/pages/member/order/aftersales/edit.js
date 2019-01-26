@@ -25,7 +25,9 @@ Page({
     logi_no:'',            //回填物流信息
     logi_code:'',          //物流公司
     reship_id:'',
-    mode: 'aspectFit',
+    mode: 'aspectFill',
+    order_id: '', //订单号
+    order_status: '', //订单状态
   },
   bindDeliverChange: function (e) {
     this.setData({
@@ -50,6 +52,11 @@ Page({
         page.data.images = info.images;
         page.data.reason = info.reason;
         page.data.reship_info = res.data.reship;
+        page.data.order_id = info.order_id;
+        page.data.order_status = info.order_status;
+        if(info.mark){
+          page.data.mark = info.mark;
+        }
         if(info.status == 1)
         {
           page.data.status = 1;
@@ -115,54 +122,6 @@ Page({
     });
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
-  },
   loginoChange: function (e) {
     this.setData({
       logi_no: e.detail.value
@@ -198,4 +157,11 @@ Page({
     });
 
   },
+
+  repeat: function (e) {
+      let order_id = e.target.dataset.id;
+      wx.navigateTo({
+          url: '../aftersales/add?order_id=' + order_id
+      });
+  }
 })

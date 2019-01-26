@@ -11,7 +11,7 @@
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">更新时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" id="date" name="ctime" lay-verify="title" placeholder="请选择更新时间段" autocomplete="off" class="layui-input">
+                <input type="text" id="date" name="ctime" lay-verify="title" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -33,7 +33,7 @@
         var table = layui.table,form = layui.form,date = layui.laydate;
         table.render({
             elem: '#noticeTable',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             url: "{:url('Notice/index')}", //数据接口
             id: "noticeTable",

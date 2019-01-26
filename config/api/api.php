@@ -220,14 +220,14 @@ return [
     ],
 
     'advert' => [
-        'code' => 'Advert',
+        'code' => 'Carousel',
         'method' => [
             'positionList' => [
-                'code' => 'positionList',
+                'code' => 'carouselSeatList',
                 'is_login' => false
             ],
             'getAdvertList' => [
-                'code' => 'getAdvertList',
+                'code' => 'getList',
                 'is_login' => false
             ]
         ],
@@ -528,6 +528,10 @@ return [
             ],
             'getinviteqrcode' => [
                 'code' => 'getInviteQRCode',
+                'is_login' => false
+            ],
+            'getrecommendkeys' => [
+                'code' => 'getRecommendKeys',
                 'is_login' => false
             ]
         ]

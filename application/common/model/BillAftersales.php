@@ -22,13 +22,18 @@ class BillAftersales extends Common
     protected $updateTime = 'utime';
     //软删除位
     protected $deleteTime = 'isdel';
+
     /**
      * 订单售后状态，返回退款的金额和退货的明细
-     * @param $orderId
+     * @param $order_id
+     * @param bool $user_id
+     * @return Order|bool|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function orderAftersalesSatatus($order_id, $user_id = false)
     {
-
         //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
         $orderModel = new Order();
         $orderInfo = $orderModel->getOrderInfoByOrderID($order_id , $user_id );
@@ -59,12 +64,18 @@ class BillAftersales extends Common
 
     /**
      * 创建售后单
-     * @param $order_id             发起售后的订单
-     * @param $type                 售后类型，1退款，2退款退货，如果是退款
-     * @param $items                如果是退款退货，退货的明细 以 [[order_item_id=>nums]]的二维数组形式传值
-     * @param int $refund           退款金额，只在退款退货的时候用，如果是退款，直接就是订单金额
-     * @param string $reason        售后理由
-     * @return bool
+     * @param $user_id
+     * @param $order_id //发起售后的订单
+     * @param $type //售后类型，1退款，2退款退货，如果是退款
+     * @param array $items //如果是退款退货，退货的明细 以 [[order_item_id=>nums]]的二维数组形式传值
+     * @param array $images
+     * @param string $reason //售后理由
+     * @param int $refund //退款金额，只在退款退货的时候用，如果是退款，直接就是订单金额
+     * @param bool $formId
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function toAdd($user_id,$order_id, $type,$items = [],$images = [],$reason="", $refund = 0, $formId = false)
     {
@@ -421,6 +432,14 @@ class BillAftersales extends Common
         if(isset($post['aftersales_id']) && $post['aftersales_id'] != ""){
             $where[] = ['aftersales_id', 'like', '%'.$post['aftersales_id'].'%'];
         }
+        if(isset($post['id']) && $post['id'] != ""){
+            $where[] = ['aftersales_id', 'in', $post['id']];
+        }
+        if(isset($post['date']) && $post['date'] != "")
+        {
+            $date = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
         if(isset($post['mobile']) && $post['mobile'] != ""){
             if($user_id = get_user_id($post['mobile'])){
                 $where[] = ['user_id', 'eq', $user_id];
@@ -467,7 +486,14 @@ class BillAftersales extends Common
         return $list;
     }
 
-    //前端接口，分页
+    /**
+     * 前端接口，分页
+     * @param $data
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getListApi($data)
     {
         $result = [
@@ -495,6 +521,11 @@ class BillAftersales extends Common
     /**
      * 获取售后单信息
      * @param $aftersales_id
+     * @param $user_id
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getInfo($aftersales_id,$user_id)
     {
@@ -552,5 +583,179 @@ class BillAftersales extends Common
     public function billRefund()
     {
         return $this->hasOne('billRefund','aftersales_id','aftersales_id');
+    }
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'aftersales_id',
+                'desc' => '售后单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'order_id',
+                'desc' => '订单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'status_name',
+                'desc' => '状态',
+            ],
+            [
+                'id' => 'type',
+                'desc' => '售后类型',
+            ],
+            [
+                'id' => 'user_id',
+                'desc' => '用户',
+            ],
+            [
+                'id' => 'refund',
+                'desc' => '退款金额',
+            ],
+            [
+                'id' => 'reason',
+                'desc' => '原因',
+
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '申请时间',
+
+            ],
+        ];
+    }
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出数据',
+
+        ];
+        $header = $this->csvHeader();
+        $userData = $this->getExportList($post);
+
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body = [];
+            $i = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) &&!empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        return $result;
+    }
+
+//导出格式
+    public function getExportList($post = [])
+    {
+        $return_data = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => '',
+            'count' => 0
+        ];
+        $where = [];
+        if(isset($post['order_id']) && $post['order_id'] != ""){
+            $where[] = ['order_id', 'like', '%'.$post['order_id'].'%'];
+        }
+        if(isset($post['aftersales_id']) && $post['aftersales_id'] != ""){
+            $where[] = ['aftersales_id', 'like', '%'.$post['aftersales_id'].'%'];
+        }
+        if(isset($post['id']) && $post['id'] != ""){
+            $where[] = ['aftersales_id', 'in', $post['id']];
+        }
+        if(isset($post['date']) && $post['date'] != "")
+        {
+            $date = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+        }
+        if(isset($post['mobile']) && $post['mobile'] != ""){
+            if($user_id = get_user_id($post['mobile'])){
+                $where[] = ['user_id', 'eq', $user_id];
+            }else{
+                $where[] = ['user_id', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+            }
+        }
+
+        if(isset($post['status']) && $post['status'] != ""){
+            $where[] = ['status', 'eq', $post['status']];
+        }
+        if(isset($post['type']) && $post['type'] != ""){
+            $where[] = ['type', 'eq', $post['type']];
+        }
+
+        $list = $this->where($where)
+            ->order('aftersales_id desc')
+            ->select();
+
+        if($list){
+            $count = $this->where($where)->count();
+            foreach($list as $k => $v) {
+                if($v['status']) {
+                    $list[$k]['status_name'] = config('params.bill_aftersales')['status'][$v['status']];
+                }
+                if($v['user_id']) {
+                    $list[$k]['user_id'] = format_mobile(get_user_info($v['user_id']));
+                }
+
+                if($v['ctime']) {
+                    $list[$k]['ctime'] = date('Y-m-d H:i:s',$v['ctime']);
+                }
+                if($v['type']) {
+                    $list[$k]['type'] = config('params.bill_aftersales')['type'][$v['type']];
+                }
+            }
+            $return_data = [
+                'status' => true,
+                'msg' => '获取成功',
+                'data' => $list,
+                'count' => $count
+            ];
+        }
+        return $return_data;
     }
 }

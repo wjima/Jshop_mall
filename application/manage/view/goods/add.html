@@ -208,6 +208,7 @@
 <div id="croppic" style="display: none;"></div>
 
 <script id="cat_tpl" type="text/html">
+    {{# if (d.list.length) { }}
     <div class="layui-input-inline">
         <select name="goods_cat_id[]">
             <option value="">请选择分类</option>
@@ -216,6 +217,7 @@
             {{#  }); }}
         </select>
     </div>
+    {{# }; }}
 </script>
 
 <script id="image_tpl" type="text/html">
@@ -280,7 +282,6 @@
 
             var getTpl = cat_tpl.innerHTML
                     ,view = document.getElementById('view');
-
             if(cat_id){
                 $.ajax({
                     url: '{:url("Goods/getCat")}',
@@ -291,14 +292,13 @@
                     dataType: 'json',
                     success: function(e){
                         if(e.status === true){
-                            if(e.data.length>0){
-                                var tmpData = {};
-                                tmpData.list = e.data;
-                                laytpl(getTpl).render(tmpData, function(html){
-                                    view.innerHTML = html;
-                                });
-                                form.render();
-                            }
+                            var tmpData = {};
+                            tmpData.list = e.data.length ? e.data : []
+                            // laytpl 执行渲染
+                            laytpl(getTpl).render(tmpData, function(html){
+                                view.innerHTML = html;
+                            });
+                            form.render();
                         }else{
                             layer.msg(e.msg, {time: 1300});
                         }

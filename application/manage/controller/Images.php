@@ -449,4 +449,23 @@ class Images extends Manage
         preg_match('/\/([^\/]+\.[a-z]+)[^\/]*$/',$url,$match);
         return $match[1];
     }
+
+
+    public function del()
+    {
+        $return_data = [
+            'status' => false,
+            'msg'    => '删除失败',
+            'data'   => ''
+        ];
+        $id          = input('param.id/s', '');
+        if (!$id) {
+            return $return_data;
+        }
+        if (delImage($id)) {
+            $return_data['msg']    = '删除成功';
+            $return_data['status'] = true;
+        }
+        return $return_data;
+    }
 }

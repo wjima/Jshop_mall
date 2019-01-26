@@ -30,6 +30,7 @@ class BillLading extends Manage
             $where['name'] = Request::param('name', false);
             $where['mobile'] = Request::param('mobile', false);
             $where['status'] = Request::param('status', false);
+            $where['date'] = Request::param('date', false);
             $page = Request::param('page', 1);
             $limit = Request::param('limit', 20);
             return $model->getList($where, $page, $limit);

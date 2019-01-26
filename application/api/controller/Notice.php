@@ -13,8 +13,6 @@ use app\common\controller\Api;
 
 class Notice extends Api
 {
-
-
     /**
      * @return array
      * @throws \think\db\exception\DataNotFoundException

@@ -117,9 +117,11 @@
       <view class='goods-foot'><text class='goods-foot-l'>共{{goodsNums}}件商品</text><text class='goods-foot-mid'>小计：</text><text class='goods-foot-r'>￥{{goodsAmount}}</text></view>
     </view>
     <view class='price-list'>
-      <view class='price-details'>
+      <view class='price-details' wx:if="{{cartData.promotion_list && cartData.promotion_list.length > 0}}">
         <text class='price-details-left'>订单活动</text>
-        <text class='price-details-right'><text wx:for="{{cartData.promotion_list}}" wx:for-item="vv" wx:key="ind" class="{{vv.type==2?'promotion_on':'promotion_off'}}">{{vv.name}}</text></text>
+        <text class='price-details-right'>
+            <text wx:for="{{cartData.promotion_list}}" wx:for-item="vv" wx:key="ind" class="{{vv.type==2?'promotion_on':'promotion_off'}}">{{vv.name}}</text>
+        </text>
       </view>
       <view class='price-details' bindtap="couponbtn" data-statu="open"> 
         <text class='price-details-left'>优惠券</text>
@@ -159,7 +161,7 @@
         </view>
         <view wx:if="{{costFreight !== '0.00'}}">
           <text class='price-details-left'>运费</text>
-          <text class='price-details-right'>+¥{{costFreight}}</text>
+          <text class='price-details-right'>¥{{costFreight}}</text>
         </view>        
       </view>
       

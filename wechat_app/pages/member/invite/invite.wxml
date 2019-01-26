@@ -4,7 +4,7 @@
     <view class='invite-w'>
       <view class='invite-w-t'>我的专属邀请码</view>
       <text class='invite-w-num'>{{code}}</text>
-      <view class='invite-w-detail'>分享你的邀请码，让更多的好友加入{{title}}你也可以获得奖励</view>
+      <view class='invite-w-detail'>快去分享您的邀请码吧，让更多的好友加入到【{{title}}】，您也可以获得丰厚的奖励！</view>
       <view class='invite-w-bot'>
         <view>
           <image class='invite-w-bot-ic' src='../../image/ic-earnings.png'></image>

@@ -29,8 +29,8 @@ Page({
         //如果不是未支付的，已取消的，已完成的状态，就都可以售后
         if (res.data.text_status != 'pending_payment' && res.data.text_status != 'completed' && res.data.text_status != 'cancel'){
           //判断是已付款未发货，如果是，就禁用退货
+          var type_list = page.data.type_list;
           if (res.data.text_status == 'pending_delivery'){
-            var type_list = page.data.type_list;
             type_list[1].disabled = true; 
           }
 

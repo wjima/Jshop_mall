@@ -83,6 +83,14 @@
                         </div>
                     </div>
 
+                    <div class="layui-form-item" style="margin-top: 20px;">
+                        <label class="layui-form-label">{$data['recommend_keys']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="recommend_keys" value="{$data['recommend_keys']['value']}" lay-verify="title" autocomplete="off" placeholder="搜索发现关键字" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">多个【搜索发现】关键字请用英文逗号分割</div>
+                    </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['cate_style']['name']}：</label>
                         <div class="layui-input-inline seller-inline-12 classifyimg">
@@ -105,6 +113,22 @@
                                 2、一级小图分类图标尺寸建议：105px*105px<br/>
                                 3、二级分类图标尺寸建议：60px*60px<br/>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['cate_style_h5']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-12 classifyimg">
+                            <div class="classifyimg-item">
+                                <input type="radio" lay-filter="cate_style_h5" name="cate_style_h5" value="1" title="样式一" {eq name="$data['cate_style_h5']['value']" value="1" }checked{/eq}>
+                                <img src="__STATIC__images/cate-h5-one.png" onclick="viewImage('__STATIC__images/cate-h5-one.png')">
+                            </div>
+
+                            <div class="classifyimg-item">
+                                <input type="radio" lay-filter="cate_style_h5" name="cate_style_h5" value="2" title="样式二" {eq name="$data['cate_style_h5']['value']" value="2" }checked{/eq}>
+                                <img src="__STATIC__images/cate-h5-two.png" onclick="viewImage('__STATIC__images/cate-h5-two.png')">
+                            </div>
+
                         </div>
                     </div>
 

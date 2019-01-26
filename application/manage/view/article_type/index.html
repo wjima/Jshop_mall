@@ -15,32 +15,78 @@
 </div>
 
 <script>
-    layui.use(['table','form','layer'],function(){
-        var layer = layui.layer, table = layui.table,form = layui.form;
+	layui.config({
+		base: '__STATIC_LIB__layui/'
+	}).extend({
+		treetable: 'treetable-lay/treetable'
+	}).use(['layer', 'table', 'treetable', 'form', 'jquery'], function() {
+		var $ = layui.jquery,
+				layer = layui.layer,
+				table = layui.table,
+				form = layui.form,
+				treeTable = layui.treetable;
         //执行渲染
-        table.render({
-            elem: '#articleTypeTable', //指定原始表格元素选择器（推荐id选择器）
-            height: 'full-220',
-            cellMinWidth: '80',
-            id:'articleTypeTable',
-            url: "{:url('ArticleType/index')}",
-            cols: [[ //标题栏
-                {type: 'numbers'},
-                {field: 'type_name', title: '文章分类名称'},
-                {fixed: 'right', width:240, title:'操作',align:'center', toolbar:'#articleTypeBar'}
-            ]] //设置表头
-            //,…… //更多参数参考右侧目录：基本参数选项
-        });
+		// treeTable.render({
+        //     elem: '#articleTypeTable', //指定原始表格元素选择器（推荐id选择器）
+        //     height: 'full-220',
+        //     cellMinWidth: '80',
+        //     id:'articleTypeTable',
+        //     url: "{:url('ArticleType/index')}",
+        //     cols: [[ //标题栏
+        //         {type: 'numbers'},
+        //         {field: 'type_name', title: '文章分类名称'},
+        //         {fixed: 'right', width:240, title:'操作',align:'center', toolbar:'#articleTypeBar'}
+        //     ]] //设置表头
+        //     //,…… //更多参数参考右侧目录：基本参数选项
+        // });
 
-        form.on('submit(seller)', function(data){
-            layui.table.reload('articleTypeTable', {
-                where: data.field
-                ,page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-            });
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        });
+		/**
+		 *
+		 * 树形表格	treetable
+		 *
+		 * treeColIndex	int	是				树形图标显示在第几列
+		 * treeSpid	object	是				最上级的父级id
+		 * treeIdName	string	否			id字段的名称
+		 * treePidName	string	否			pid字段的名称
+		 * treeDefaultClose	boolean	否		是否默认折叠
+		 * treeLinkage	boolean	否			父级展开时是否自动展开所有子级
+		 *
+		 */
+
+		var renderTable = function() {
+			treeTable.render({
+				treeColIndex: 1,
+				treeSpid: 0,
+				treeIdName: 'id',
+				treePidName: 'pid',
+				treeDefaultClose: false,
+				treeLinkage: false,
+				elem: '#articleTypeTable',
+				url: "{:url('ArticleType/index')}",
+				// toolbar:'#deploy',
+				page: true,
+				cols: [
+					[{
+						type: 'numbers'
+					}, {
+						field: 'type_name',
+						minWidth: 200,
+						title: '分类名称',
+						width: 400
+					}, {
+						fixed: 'right',
+						align: 'center',
+						title: '操作',
+						toolbar: '#articleTypeBar'
+					}]
+				],
+				done: function() {
+					layer.closeAll('loading');
+				}
+			});
+		};
+
+		renderTable();
 
         $(document).on('click','.add-article-type',function(){
             JsGet("{:url('ArticleType/add')}", function(e){
@@ -59,7 +105,7 @@
                 if(res.status){
                     layer.close(window.box);
                     layer.msg(res.msg, {time:1300},function(){
-                        table.reload('articleTypeTable');
+						renderTable();
                     });
                 }else{
                     layer.msg(res.msg);
@@ -73,7 +119,7 @@
                 if(res.status){
                     layer.close(window.box);
                     layer.msg(res.msg, {time: 1300},function(){
-                        table.reload('articleTypeTable');
+						renderTable();
                     });
                 }else{
                     layer.msg(res.msg);
@@ -92,6 +138,7 @@
                         if(res.status){
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
+							renderTable();
                         }
                         layer.msg(res.msg);
 					})

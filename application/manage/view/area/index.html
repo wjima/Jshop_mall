@@ -1,39 +1,29 @@
-<div class="layui-form seller-alone-form">
+<div class="layui-form seller-form">
     <div class="layui-form-item">
         <div class="layui-inline">
-
-        <label class="layui-form-label">地区管理：</label>
-        <div class="layui-input-inline" id="province_box">
-            <select name="province" lay-filter="province" id="province">
-                <option value="0">请选择省</option>
-            </select>
-        </div>
-        </div>
-            <div class="layui-inline">
-        <span class="layui-btn layui-btn-sm  add-area">添加</span>
-        <span class="layui-btn layui-btn-sm  edit-area">编辑</span>
-        <span class="layui-btn layui-btn-sm layui-btn-danger  del-area">删除</span>
+            <label class="layui-form-label">地区管理：</label>
+            <div class="layui-input-inline" id="province_box">
+                <select name="province" lay-filter="province" id="province" lay-search>
+                    <option value="0"></option>
+                </select>
             </div>
+        </div>
+        <div class="layui-inline">
+            <span class="layui-btn layui-btn-sm add-area">添加</span>
+            <span class="layui-btn layui-btn-sm edit-area">编辑</span>
+            <span class="layui-btn layui-btn-sm layui-btn-danger del-area">删除</span>
+        </div>
     </div>
 
-
-
-
-
 </div>
-
 
 <div class="table-body">
     <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
     <table id="areaTable" lay-filter="areaTable"></table>
 </div>
 
-
-
-
 <script>
     var table = '';
-
     layui.use(['form','table'], function(){
         var form = layui.form, layer = layui.layer, $ = layui.jquery;
         var a_id = 0, b_id = 0, c_id = 0, d_id = 0, depth = 1, action_id;
@@ -41,7 +31,7 @@
 
         table = layui.table.render({
             elem: '#areaTable', //指定原始表格元素选择器（推荐id选择器）
-            height: '500px',
+            height: 'full-250',
             cellMinWidth: '80',
             page: 'true',
             limit:'50',

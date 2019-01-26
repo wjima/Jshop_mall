@@ -175,10 +175,11 @@ export default {
             }, res => {
                 if (res.status) {
                     const _list = res.data.list
+                    let commentCount = res.data.count
                     for (let k in _list) {
                         _list[k].ctime = this.GLOBAL.timeToDate(_list[k].ctime)
                     }
-                    if (_list.length < this.pageSize) {
+                    if (_list.length >= commentCount) {
                         this.load = false
                     }
                     this.comment = [..._list]
@@ -193,13 +194,14 @@ export default {
             }, res => {
                 if (res.status) {
                     const _list = res.data.list
+                    let commentCount = res.data.count
                     for (let k in _list) {
                         _list[k].ctime = this.GLOBAL.timeToDate(_list[k].ctime)
                     }
-                    if (_list.length < this.pageSize) {
+                    this.comment = [...this.comment, ..._list]
+                    if (this.comment.length >= commentCount) {
                         this.load = false
                     }
-                    this.comment = [...this.comment, ..._list]
                 }
             })
         },
@@ -212,9 +214,9 @@ export default {
         },
         // 获取购物车数量
         getCartNums () {
-            let user_token = this.GLOBAL.getStorage('user_token')
-            if (user_token) {
-                this.$api.getCartNum({token: user_token}, res => {
+            let userToken = this.GLOBAL.getStorage('user_token')
+            if (userToken) {
+                this.$api.getCartNum({token: userToken}, res => {
                     if (res.status) {
                         this.cart_nums = res.data
                     }

@@ -100,7 +100,12 @@ function throttle (fn, context, delay) {
 // 获取验证码
 function getCaptcha () {
     let randomNumber = Math.random() * 10 + 1
-    return window.host + '/captcha?' + randomNumber
+    if (process.env.NODE_ENV === 'production') {
+        return window.host + '/captcha?' + randomNumber
+    } else {
+        // 开发模式下更改次地址
+        return 'http://www.b2c.com/captcha?' + randomNumber
+    }
 }
 
 function hecong () {

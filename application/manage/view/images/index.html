@@ -16,21 +16,25 @@
 
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="image-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button type="button" class="layui-btn layui-btn-sm add-image"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
     </div>
 </form>
 <div class="table-body">
     <table id="imagesTable" lay-filter="imagesTable"></table>
 </div>
+
+
 <script>
     var table = '';
 
     layui.use(['table','form','layer','laydate'],function(){
         var layer = layui.layer;
+        var table = layui.table,form = layui.form;
         //执行渲染
-        table = layui.table.render({
+        var imageTable = table.render({
             elem: '#imagesTable', //指定原始表格元素选择器（推荐id选择器）
-            height: '500px',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -39,16 +43,18 @@
             cols: [[ //标题栏
                 {type:'numbers'},
                 {field: 'id', title: 'ID',width:350,align:'center'},
-                {field: 'name', title: '图片名称',align:'center'},
-                {field: 'url', title: '图片地址',width:100,align:'center',templet: function(data){
+                {field: 'url', title: '缩略图',width:100,align:'center',templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.url+'")><image style="max-width:30px;max-height:30px;" src="'+data.url+'"/></a>';
                 }},
-                {field: 'ctime',sort: true, width:200, title: '创建时间' ,align:'center'}
+                {field: 'name', title: '图片名称',align:'center'},
+                {field: 'url', title: '图片地址',align:'center'},
+                {field: 'ctime',sort: true, width:200, title: '创建时间' ,align:'center'},
+                {title:'操作',align:'center',toolbar:'#imageBar',fixed:'right',width: 190}
             ]]
         });
 
         layui.form.on('submit(image-search)', function(data){
-            table.reload({
+            imageTable.reload({
                 where: data.field
                 ,page: {
                     curr: 1 //重新从第 1 页开始
@@ -57,6 +63,56 @@
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
-    });
+        //监听工具条
+        table.on('tool(imagesTable)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+            if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除么',{icon:3}, function(index){
+                    JsGet("{:url('images/del')}?id="+data.id,function(res){
+                        if(res.status){
+                            imageTable.reload();
+                            layer.close(index);//向服务端发送删除指令
+                        }
+                        layer.msg(res.msg);
+                    });
+                });
+            }
+        });
 
+        var _editor = UE.getEditor("edit_image",{
+            initialFrameWidth:800,
+            initialFrameHeight:300,
+            single:true
+        });
+        _editor.ready(function (){
+            _editor.hide();
+            _editor.addListener('beforeInsertImage',function(t,arg){
+                if(arg.length>5){
+                    layer.msg("最多只能选择5张图片，请重新选择");
+                    return false;
+                }
+                if(arg.length>0) {
+                    imageTable.reload();
+                }else{
+                    layer.msg("请先上传图片");
+                    return false;
+                }
+            });
+        });
+
+        $(document).on('click','.add-image',function(){
+            upImage();
+        });
+        //上传dialog
+        function upImage(){
+            var myImage = _editor.getDialog("insertimage");
+            myImage.open();
+        }
+    });
 </script>
+
+<script type="text/html" id="imageBar">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<textarea id="edit_image" style="display: none;"></textarea>

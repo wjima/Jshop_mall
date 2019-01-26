@@ -1,55 +1,41 @@
-<form class="layui-form reship_form" id="reship_form" action="" style="margin:10px;">
+<form class="layui-form seller-alone-form" id="reship_form" action="" style="margin:10px;">
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">退货单号：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$info.reship_id}</div>
-            </div>
+        <label class="layui-form-label">退货单号：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$info.reship_id}</div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">订单号：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$info.order_id}</div>
-            </div>
+        <label class="layui-form-label">订单号：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$info.order_id}</div>
         </div>
     </div>
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">用户：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{:format_mobile(get_user_info($info.user_id))}</div>
-            </div>
+        <label class="layui-form-label">用户：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{:format_mobile(get_user_info($info.user_id))}</div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$params.bill_reship.status[$info.status]}</div>
-            </div>
+        <label class="layui-form-label">状态：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$params.bill_reship.status[$info.status]}</div>
         </div>
     </div>
-
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">物流公司：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{:get_logi_info($info['logi_code'])}</div>
-            </div>
+        <label class="layui-form-label">物流公司：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{:get_logi_info($info['logi_code'])}</div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">物流单号：</label>
-            <div class="layui-input-inline" style="width:100px;">
-                <div class="layui-form-mid">{$info.logi_no}</div>
-            </div>
+        <label class="layui-form-label">物流单号：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$info.logi_no}</div>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">退货商品：</label>
-        <div class="layui-input-block">
-            <div class="layui-form-mid">
-                <table id="billAftersalesItems" lay-filter="billAftersalesItems"></table>
-            </div>
+        <div class="layui-input-inline seller-inline-8">
+            <table id="billAftersalesItems" lay-filter="billAftersalesItems"></table>
         </div>
     </div>
+
 </form>
 
 <script>

@@ -34,7 +34,6 @@ class UserToken extends Common
                 $result['data'] = $data['token'];
                 $result['status'] = true;
 
-
                 return $result;
             }else{
                 $result['msg'] = "生成token失败";

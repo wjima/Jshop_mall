@@ -4,6 +4,7 @@
             <label class="layui-form-label">手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <input type="hidden" id="user_id" value="{$user_id}">
             </div>
         </div>
         <div class="layui-inline">
@@ -35,13 +36,15 @@
 
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
+
         layui.table.render({
             elem: '#balanceTable',
-            height: 'full-330',
+            height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
-            url: "{:url('balance/index')}?_ajax=1",
+            user_id:33,
+            url: "{:url('balance/index')}?_ajax=1&user_id=" +$('#user_id').val(),
             id:'balanceTable',
             cols: [[
                 {type:'numbers'},
@@ -50,11 +53,11 @@
                     html += data.mobile;
                     return html;
                 }},
-                {field:'type', width:120,title:'类型'},
-                {field:'money', width:160,title:'金额'},
-                {field:'balance', width:160,title:'余额'},
-                {field:'memo',title:'描述'},
-                {field:'ctime',width:200,title:'时间'}
+                {field:'type', align: 'center', width:120,title:'类型'},
+                {field:'money', align: 'center', width:160,title:'金额'},
+                {field:'balance', align: 'center', width:160,title:'余额'},
+                {field:'memo', align: 'center', title:'描述'},
+                {field:'ctime', align: 'center', width:200,title:'时间'}
             ]]
         });
         layui.form.on('submit(*)', function(data){

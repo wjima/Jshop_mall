@@ -248,3 +248,14 @@
 .header-content-bot{
   font-size: 24rpx;
 }
+.bottom-btn{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 80rpx;
+    line-height: 80rpx;
+    font-size: 28rpx;
+    text-align: center;
+    color: #fff;
+    background-color: #FF3B44;
+}

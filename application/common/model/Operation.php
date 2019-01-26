@@ -21,7 +21,7 @@ class Operation extends Common
             'MessageCenter' => ['message','messageview','messagedel'],
             'Promotion' => ['conditionlist','conditionadd','conditionedit','conditiondel','resultlist','resultadd','resultedit','resultdel'],
             'Worksheet'=>['worklist','sheetlist','sheetlist1','sheetlist2','sheetlist3','add','addwork','wsdetail','adddetail','updata','del','inquiries'],
-            'Manage' => ['information','editpwd','getversion'],
+            'Administrator' => ['information','editpwd','getversion'],
             'OperationLog' => ['getlastlog'],
             'Report' => ['getdatetype']
         ],

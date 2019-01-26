@@ -461,7 +461,7 @@ class Report extends Manage
                 (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10) x3,
                 (SELECT @xi:=-1) x0 limit 0,".$date_arr['num'].") tmp_x
             left join (
-                select * from ".config('database.prefix')."order
+                select * from `".config('database.prefix')."order`
                 where 1=1
                 ".$where."
             ) o on tmp_x.x = ((o.".$join_val." - ".$date_arr['start'].") div (".$date_arr['section']."))

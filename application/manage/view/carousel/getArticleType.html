@@ -1,0 +1,26 @@
+<div class="table-body">
+    <table id="articleTypeTable" lay-filter="articleTypeTable"></table>
+</div>
+
+<script>
+    layui.use(['table','form'],function(){
+        var layer = layui.layer, table = layui.table;
+        //执行渲染
+        table.render({
+            elem: '#articleTypeTable', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-220',
+            cellMinWidth: '80',
+            id:'articleTypeTable',
+            url: "{:url('ArticleType/index')}",
+            cols: [[ //标题栏
+                {type: 'numbers'},
+                {field: 'type_name', title: '文章分类名称'},
+                {fixed: 'right', width:240, title:'操作',align:'center', toolbar:'#articleTypeBar'}
+            ]] //设置表头
+            //,…… //更多参数参考右侧目录：基本参数选项
+        });
+    })
+</script>
+<script type="text/html" id="articleTypeBar">
+    <a class="layui-btn layui-btn-xs" lay-event="selectType">选择</a>
+</script>

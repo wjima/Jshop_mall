@@ -1,0 +1,58 @@
+<div class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label seller-inline-2">操作时间：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" id="date" name="date" lay-verify="title" placeholder="请选择操作时间段" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="search"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="table-body">
+	<table id="operationlog" lay-filter="operationlog"></table>
+</div>
+
+<script>
+    layui.use(['table','form','laydate'],function(){
+        var table = layui.table,form = layui.form,date = layui.laydate;
+        table.render({
+            elem: '#operationlog',
+            height: 'full-220',
+            cellMinWidth: '80',
+            url: "{:url('OperationLog/logList')}", //数据接口
+            id: "operationlog",
+            page: true ,//开启分页
+            limit:'20',
+            cols: [[ //表头
+                {type: 'numbers'},
+                {field: 'username', title: '操作员', width: 120},
+                {field: 'controller', title: '操作控制器',align:'center'},
+                {field: 'desc', title: '操作内容', width: 300, align:'center'},
+                {field: 'ctime', title: '操作时间',align:'center', sort: true},
+                {field: 'ip', title: '操作IP', align:'center'},
+            ]]
+        });
+
+        date.render({
+            elem: '#date',
+            range: '到'
+        });
+
+        form.on('submit(search)', function(data){
+            layui.table.reload('operationlog', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    })
+</script>

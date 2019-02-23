@@ -7,7 +7,7 @@
     </view>
     <view class="orderadd-content" data-id='{{item.id}}' bindtap='editAddress'>
       <view class="orderadd-top">
-        <text class='orderadd-user'>收货人：{{item.name}}</text>
+        <text class='orderadd-user'>收货人：{{item.name}}阿阿阿阿阿阿</text>
         <text class='orderadd-num'>{{item.mobile}}</text>
       </view>
       <view class="orderadd-bottom">

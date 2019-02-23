@@ -74,7 +74,7 @@ class Common extends Base
         $conf['image_max'] = 5;             //前端上传图片最多几张
         $conf['store_switch'] = getSetting('store_switch');             //开启门店自提状态
         $conf['cate_style'] = getSetting('cate_style');                 //分类样式
-        $conf['cate_style_h5'] = getSetting('cate_style_h5');           // H5分类样式
+        $conf['cate_type'] = getSetting('cate_type');                   // H5分类类型
         $conf['tocash_money_low'] = getSetting('tocash_money_low');                 //最低提现
         $conf['tocash_money_rate'] = getSetting('tocash_money_rate');                 //服务费
 

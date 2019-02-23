@@ -1,0 +1,22 @@
+吉海科技Jshop（https://www.jihainet.com）
+=========================================================================================
+欢迎使用吉海科技Jshop系列产品。
+本产品采用前后端分离技术，后端采用tp5.1框架，前端h5端采用vue框架，源码在/h5,编译后的目录放在/public/wap下面，小程序端的源码在/wechat_app,小程序上线需要用微信开发者工具上传
+安装方法如下，或参考https://gitee.com/hnjihai/jshop_mall/wikis/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2?sort_id=881805
+1. 配置tp5.1的伪静态
+2. 配置网站根目录到public目录下
+3. 输入域名，会自动安装，安装结束，即代表后台安装成功 可通过http://你的域名/manage地址或者http://你的域名/index.php/manage访问后台
+4. 安装结束后，修改/public/wap/static/config.js中的window.host参数为你的域名
+5. 用微信开发者工具打开小程序源码/wechat_app,修改/wechat_app/utils/config.js中的api_url参数为你的域名，然后上传小程序源码即可
+6. 通过以上6步即可简单快速的部署jshop商城系统，有任何疑问可加qq群823732583咨询
+
+
+
+项目地址：https://gitee.com/hnjihai/jshop_mall
+安装部署：https://gitee.com/hnjihai/jshop_mall/wikis/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2?sort_id=881805
+阿里云短信配置：https://gitee.com/hnjihai/jshop_mall/wikis/%E9%98%BF%E9%87%8C%E4%BA%91%E7%9F%AD%E4%BF%A1%E9%85%8D%E7%BD%AE?sort_id=942243
+迈信短信：http://www.jihainet.com/index/article/index/id/65.html
+接口文档：http://www.jihainet.com/index/article/index/id/51.html
+操作手册：http://www.jihainet.com/index/article/index/id/34.html
+开发文档：http://www.jihainet.com/index/article/index/id/43.html
+购买授权：http://www.jihainet.com/index/authorize/index.html

@@ -71,7 +71,7 @@
 .classify-big-list image{
   width: 100%;
   box-sizing: border-box;
-  height: 300rpx;
+  /* height: 300rpx; */
   padding: 6rpx 30rpx;
 }
 

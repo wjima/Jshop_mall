@@ -39,10 +39,10 @@ class Setting extends Common
             'value' => '2'
         ],
         'cate_style' => [
-            'name' => '小程序分类样式',
+            'name' => '分类样式',
             'value' => '3'
         ],
-        'cate_style_h5' => [
+        'cate_type' => [
             'name' => 'H5分类样式',
             'value' => 1
         ],

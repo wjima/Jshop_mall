@@ -461,6 +461,10 @@ return [
             'getgoodscomment' => [
                 'code' => 'getGoodsComment',
                 'is_login' => false
+            ],
+            'getgoodscathotgoods' => [
+                'code' => 'getGoodsCatHotGoods',
+                'is_login' => false
             ]
         ]
     ],
@@ -561,6 +565,20 @@ return [
                 'is_login' => false
             ]
         ]
+    ],
+    'form'=>[
+        'code'=>'Form',
+        'method'=>[
+            'getformdetial'=>[
+                'code'=>'getFormDetial',
+                'is_login' => false
+            ],
+            'addsubmit'=>[
+                'code'=>'addSubmit',
+                'is_login' => false
+            ],
+
+        ],
     ]
 
 ];

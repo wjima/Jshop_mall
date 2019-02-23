@@ -321,6 +321,18 @@
             $(this).parent().parent().remove();
         })
 
+
+
+        //图片排序
+        $('.layui-upload-list').DDSort({
+            target: '.imgdiv',
+            delay: 100,
+            floatStyle: {
+                'border': '1px solid #ccc',
+                'background-color': '#fff'
+            }
+        });
+
     });
 
 

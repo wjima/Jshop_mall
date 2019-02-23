@@ -42,33 +42,36 @@ class UserPointLog extends Common
             'msg' => ''
         ];
 
-        //获取积分账号信息
-        $user_model = new User();
-        $user_info = $user_model->where(['id'=>$user_id])->find();
-
-        $new_point = $user_info['point'] + $num;
-        //积分余额判断
-        if($new_point < 0)
+        if($num != 0)
         {
-            $return['msg'] = '积分余额不足';
-            return $return;
+            //获取积分账号信息
+            $user_model = new User();
+            $user_info = $user_model->where(['id'=>$user_id])->find();
+
+            $new_point = $user_info['point'] + $num;
+            //积分余额判断
+            if($new_point < 0)
+            {
+                $return['msg'] = '积分余额不足';
+                return $return;
+            }
+
+            //插入记录
+            $data = [
+                'user_id' => $user_id,
+                'type' => $type,
+                'num' => $num,
+                'balance' => $new_point,
+                'remarks' => $remarks,
+                'ctime' => time()
+            ];
+            $this->insert($data);
+
+            //插入主表
+            $where[] = ['id', 'eq', $user_id];
+            $user_info->where($where)
+                ->setInc('point', $num);
         }
-
-        //插入记录
-        $data = [
-            'user_id' => $user_id,
-            'type' => $type,
-            'num' => $num,
-            'balance' => $new_point,
-            'remarks' => $remarks,
-            'ctime' => time()
-        ];
-        $this->insert($data);
-
-        //插入主表
-        $where[] = ['id', 'eq', $user_id];
-        $user_info->where($where)
-            ->setInc('point', $num);
 
         $return['status'] = true;
         $return['msg'] = '积分更改成功';

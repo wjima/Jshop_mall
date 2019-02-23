@@ -1,12 +1,24 @@
-<div class="layui-form seller-form">
-	<div class="layui-form-item">
-		<div class="layui-inline">
-			<button class="layui-btn layui-btn-sm add-logistics">
-				<i class="layui-icon">&#xe608;</i> 添加
-			</button>
-		</div>
-	</div>
-</div>
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label seller-inline-2">物流公司名称：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入公司名称关键字" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label seller-inline-2">物流公司编码：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="code" lay-verify="title" placeholder="请输入公司编码关键字" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="logistics-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button type="button" class="layui-btn layui-btn-sm add-logistics"><i class="layui-icon">&#xe608;</i> 添加</button>
+        </div>
+    </div>
+</form>
 
 <div class="table-body">
 	<table id="logisticsTable" lay-filter="logisticsTable"></table>

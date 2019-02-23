@@ -134,6 +134,18 @@ const routers = [
         }
     },
     {
+        path: '/payresult',
+        component: resolve => require(['../pages/order/PayResult'], resolve),
+        name: 'PayResult',
+        meta: {
+            tabShow: false,
+            navShow: true,
+            title: '支付结果',
+            keepAlive: false,
+            isLogin: true
+        }
+    },
+    {
         path: '/allorder',
         component: resolve => require(['../pages/order/AllOrder'], resolve),
         name: 'AllOrder',

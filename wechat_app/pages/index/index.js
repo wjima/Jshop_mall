@@ -275,6 +275,10 @@ Page({
         wx.navigateTo({
             url: '../other/articleList/articleList?id=' + val,
         });
+    } else if (types == 5) {
+      wx.navigateTo({
+        url: '../form/detail/form?id=' + val,
+      });
     }
   },
 

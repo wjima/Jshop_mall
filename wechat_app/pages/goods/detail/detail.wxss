@@ -218,7 +218,7 @@ swiper{
 .nav{width:100%;height:100rpx;display:flex;flex-direction:row;}
 .default{line-height:100rpx;text-align:center;flex:1;color:#999;font-size:32rpx;background-color: #F8F8F8;}
 .red{line-height:100rpx;text-align:center;color:#FF3B44;flex:1;font-size:32rpx;}
-.show{display:block;font-size: 30rpx;color: #999;width: 750rpx;}
+.show{display:block;font-size: 30rpx;color: #999;width: 750rpx;padding-bottom: 100rpx;}
 .hidden{display:none;text-align:center;line-height:200px;}
 .detail-footer{
   overflow: hidden;
@@ -445,8 +445,9 @@ swiper{
   margin: 0;
 }
 .wxParse-p {
-  padding-bottom: 100rpx;
+  /* padding-bottom: 100rpx; */
   width: 750rpx;
+  overflow: hidden;
 }
 .commentLoading{
   text-align:center;

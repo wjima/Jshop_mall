@@ -30,13 +30,14 @@ class Images extends Api
         if(isset($_FILES['upfile']))
         {
             $file_extension = get_file_extension($_FILES['upfile']['name']);
-            $savepath = DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'uploads' . get_hash_dir($_FILES['upfile']['name']);
+            $savepath =  '/static/uploads/images/' . get_hash_dir($_FILES['upfile']['name']);
         }
         else
         {
             $file_extension = get_file_extension($_FILES['file']['name']);
-            $savepath = DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'uploads' . get_hash_dir($_FILES['file']['name']);
+            $savepath =  '/static/uploads/images/' . get_hash_dir($_FILES['file']['name']);
         }
+
         //上传处理类
         $config = array(
             'rootPath' => ROOT_PATH . DIRECTORY_SEPARATOR . 'public',

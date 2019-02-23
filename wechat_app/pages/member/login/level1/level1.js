@@ -25,7 +25,8 @@ Page({
           })
         }else{
           page.setData({
-            open_id: res.data
+            open_id: res.data,
+            logo: app.config.shop_logo
           });
         }
       });

@@ -17,7 +17,7 @@ class Categories extends Api
 
 
     /**
-     * 获取顶级分类（弃用）
+     * 获取顶级分类
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -47,7 +47,7 @@ class Categories extends Api
 
 
     /**
-     * 获取顶级分类下的子分类（弃用）
+     * 获取顶级分类下的子分类
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

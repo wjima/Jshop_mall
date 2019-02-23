@@ -1,0 +1,125 @@
+<form class="layui-form aftersales_form " id="aftersales_form" action="" style="margin:10px;">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">表单名称：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$info.name}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">用户：</label>
+            <div class="layui-input-inline  seller-inline-2">
+                <div class="layui-form-mid">{:get_user_info($info.user_id)}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">是否支付：</label>
+            <div class="layui-input-inline  seller-inline-2">
+                <div class="layui-form-mid">{:config('params.form.submit_pay_status')[$info['pay_status']]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">支付金额：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$info.money}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">表单类型：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$params.form.type[$info.type]}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{$params.form.submit_status[$info.status]}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">创建时间：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{:getTime($info.ctime)}</div>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">更新时间：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <div class="layui-form-mid">{:getTime($info.utime)}</div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">表单反馈：</label>
+            <div class="layui-input-inline seller-inline-6">
+                <div class="layui-form-mid">{$info.feedback}</div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+            margin: 0;
+        }
+    </style>
+    <div class="layui-form-item">
+        <label class="layui-form-label">提交明细：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid print-area">
+                <table id="formItem"></table>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form', 'table'], function () {
+        layui.form.render();
+        layui.table.render({
+            elem: '#formItem'
+            , size: 'sm'
+            , cols: [[ //标题栏
+                {field: 'name', title: '字段名', width: 200}
+                , {
+                    field: 'svalue', title: '字段值', minWidth: 150, templet: function (e) {
+                        //todo 地图处理
+                        if (Array.isArray(e.svalue) && e.type=='image') {
+                            var html = '';
+                            $.each(e.svalue, function (i, j) {
+                                html += '<img src="' + j + '" style="width: 30px;height: 30px;" onclick=viewImage("' + j + '")>';
+                            });
+                            return html;
+                        }else if(Array.isArray(e.svalue) && e.type=='goods'){
+                            var html = '';
+                            $.each(e.svalue, function (i, j) {
+                                html += j+'、';
+                            });
+                            html = html.substr(0, html.length - 1);
+                            return html;
+                        } else {
+                            return e.svalue;
+                        }
+                    }
+                }
+            ]]
+            , data: stringToJson(htmlDecodeByRegExp('{$items}'))
+            , even: true
+        });
+    });
+    //明细打印
+    function printTemplate(){
+        var newWindow = window.open("明细打印","_blank");
+        var docStr = $(".print-area").html();
+        newWindow.document.write(docStr);
+        newWindow.document.close();
+        newWindow.print();
+        newWindow.close();
+    }
+</script>

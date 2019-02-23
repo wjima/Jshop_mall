@@ -297,29 +297,6 @@ function get_user_id($mobile)
 }
 
 /**
- * 根据operation_id 取得链接地址
- * @param $id
- * @return string|Url
- */
-function get_operation_url($id)
-{
-    $operationModel = new Operation();
-    $actionInfo = $operationModel->where(array('id' => $id))->find();
-    if (!$actionInfo) {
-        return "";
-    }
-    $controllerInfo = $operationModel->where(array('id' => $actionInfo['parent_id']))->find();
-    if (!$controllerInfo) {
-        return "";
-    }
-
-    $modueInfo = $operationModel->where(array('id' => $controllerInfo['parent_id']))->find();
-    if (!$modueInfo) {
-        return "";
-    }
-    return url($modueInfo['code'] . '/' . $controllerInfo['code'] . '/' . $actionInfo['code']);
-}
-/**
  * 获取转换后金额
  * @param int $money
  * @return string
@@ -925,6 +902,53 @@ function secondConversion($second = 0)
     return $newtime;
 }
 
+
+/**
+ * 返回文件地址
+ * @param $file_id
+ * @param $type
+ * @return string
+ * User: wjima
+ * Email:1457529125@qq.com
+ * Date: 2018-01-15
+ */
+function _sFile($file_id, $type = 's')
+{
+    if (!$file_id) {
+        return false;
+    }
+    if (stripos($file_id, 'http') !== false || stripos($file_id, 'https') !== false) {
+        return $file_id;
+    }
+    $file_obj = new \app\common\model\Files();
+    $file     = $file_obj->where([
+        'id' => $file_id
+    ])->field('url')->find();
+    if ($file) {
+        if (stripos($file['url'], 'http') !== false || stripos($file['url'], 'https') !== false) {
+            return str_replace("\\", "/", $file['url']);
+        } else {
+            return request()->domain() . str_replace("\\", "/", $file['url']);
+        }
+    } else {
+        return false;
+    }
+}
+
+/**
+ * 验证是否邮箱
+ * @param $email
+ * @return bool
+ */
+function isEmail($email){
+    $pattern = '/^[a-z0-9]+([._-][a-z0-9]+)*@([0-9a-z]+\.[a-z]{2,14}(\.[a-z]{2})?)$/i';
+    if(preg_match($pattern,$email)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
 /***
  * 导出时字符串太长不显示时，处理
  */
@@ -932,3 +956,4 @@ function convertString($value = '')
 {
     return $value."\t";
 }
+

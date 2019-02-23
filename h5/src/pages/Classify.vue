@@ -1,15 +1,34 @@
 <template>
     <div id="classify">
         <!--<search></search>-->
-        <scrolltab
-                v-if="cateStyle === 1"
-                :goodsType="typeList"
-        ></scrolltab>
-        <newscrolltab
-                v-else
-                :goodsType="typeList"
-                @changeSelected="changeSelected"
-        ></newscrolltab>
+
+		<!--分类一级大图-->
+		<classbig
+				v-if="shopCateStyle === 1"
+				:goodsType="typeList"
+				@clickHandler="clickHandler"
+		></classbig>
+
+		<!--分类一级小图-->
+		<classsmall
+				v-else-if="shopCateStyle === 2"
+				:goodsType="typeList"
+				@clickHandler="clickHandler"
+		></classsmall>
+
+		<!--正常分类二级-->
+		<scrolltab
+				v-if="shopCateStyle === 3 && shopCateType === 1"
+				:goodsType="typeList"
+				@clickHandler="clickHandler"
+		></scrolltab>
+		<newscrolltab
+				v-else-if="shopCateStyle === 3 && shopCateType === 2"
+				:goodsType="typeList"
+				@changeSelected="changeSelected"
+				@clickHandler="clickHandler"
+		></newscrolltab>
+
     </div>
 </template>
 
@@ -18,9 +37,11 @@ import {mapGetters} from 'vuex'
 import search from '../components/Search'
 import scrolltab from '../components/ScrollTab'
 import newscrolltab from '../components/Newscrolltab'
+import classbig from '../components/ClassifyBig'
+import classsmall from  '../components/ClassifySmall'
 export default {
     components: {
-        search, scrolltab, newscrolltab
+        search, scrolltab, newscrolltab, classbig, classsmall
     },
     data () {
         return {
@@ -28,14 +49,16 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            cateStyle: 'shopCateStyle'
-        })
+        ...mapGetters([
+            'shopCateStyle',
+			'shopCateType'
+        ])
     },
     mounted () {
         this.goodsTypeList()
     },
     methods: {
+    	// 获取商品分类
         goodsTypeList () {
             this.$api.categories({}, res => {
                 if (res.status) {
@@ -54,10 +77,15 @@ export default {
                 }
             })
             this.typeList[key].selected = true
-        }
+        },
+		// 分类点击 这里统一作跳转
+		clickHandler (val) {
+			this.$router.push({path: '/goodslist', query: val})
+		}
     }
 }
 </script>
 
 <style>
+
 </style>

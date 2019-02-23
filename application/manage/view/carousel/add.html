@@ -81,6 +81,16 @@
         </div>
     </div>
 
+    <div id="div5"  style="display: none">
+        <input type="hidden" name="form_id" id="form_id">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>表单名称：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="form_select" name="form" readonly="readonly" required placeholder="请选择智能表单" autocomplete="off" class="layui-input" onclick="form_list()">
+            </div>
+        </div>
+    </div>
+
     <div class="layui-form-item">
         <label class="layui-form-label">广告排序：</label>
         <div class="layui-input-inline seller-inline-2">
@@ -110,7 +120,9 @@
             $("#div2").show();
         }else if(type === '3'){
             $("#div3").show();
-        } else {
+        }else if(type === '5'){
+            $("#div5").show();
+        }  else {
             $("#div4").show()
         }
 
@@ -121,24 +133,35 @@
                 $("#div2").hide();
                 $("#div3").hide();
                 $("#div4").hide();
+                $("#div5").hide();
             }
             if (data.value === '2') {
                 $("#div1").hide();
                 $("#div2").show();
                 $("#div3").hide();
                 $("#div4").hide();
+                $("#div5").hide();
             }
             if (data.value === '3') {
                 $("#div1").hide();
                 $("#div2").hide();
                 $("#div3").show();
                 $("#div4").hide();
+                $("#div5").hide();
             }
             if (data.value === '4') {
-                $("#div1").hide()
-                $("#div2").hide()
-                $("#div3").hide()
-                $("#div4").show()
+                $("#div1").hide();
+                $("#div2").hide();
+                $("#div3").hide();
+                $("#div4").show();
+                $("#div5").hide();
+            }
+            if (data.value === '5') {
+                $("#div1").hide();
+                $("#div2").hide();
+                $("#div3").hide();
+                $("#div4").hide();
+                $("#div5").show()
             }
         });
 
@@ -155,6 +178,8 @@
                 $("#url").val('');
                 $("#article_type_id").val('');
                 $("#article_type").val('');
+                $("#form_id").val('');
+                $("#form_select").val('');
                 layer.close(window.box);
             }
         });
@@ -173,6 +198,8 @@
                 $("#url").val('');
                 $("#article_type_id").val('');
                 $("#article_type").val('');
+                $("#form_id").val('');
+                $("#form_select").val('');
                 layer.close(window.box);
             }
         });
@@ -186,6 +213,27 @@
             if(layEvent === 'selectType'){ //选择
                 $("#article_type_id").val(data.id);
                 $("#article_type").val(data.type_name.replace(/\└―/g, ''));
+                $("#goods").val('');
+                $("#goods_id").val('');
+                $("#article_id").val('');
+                $("#article").val('');
+                $("#url").val('');
+                $("#form_id").val('');
+                $("#form_select").val('');
+                layer.close(window.box);
+            }
+        })
+
+        // 监听表单列表页工具条
+        table.on('tool(formTable)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+            var tr = obj.tr;
+            if(layEvent === 'selectform'){ //选择
+                $("#form_id").val(data.id);
+                $("#form_select").val(data.name);
+                $("#article_type_id").val();
+                $("#article_type").val();
                 $("#goods").val('');
                 $("#goods_id").val('');
                 $("#article_id").val('');
@@ -255,4 +303,19 @@
             })
         })
     }
+
+
+    function form_list()
+    {
+        JsGet("{:url('Carousel/getForm')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'表单列表'
+            });
+        });
+    }
+
+
 </script>

@@ -216,7 +216,6 @@ label{
     border-radius: 6rpx;  
     margin:0 auto; 
     display: inline-block;
-    /* float: right;  */
     overflow: hidden;
     box-sizing: border-box;
 }  
@@ -242,7 +241,7 @@ label{
 }  
 .stepper .disabled{  
     color: #ccc;  
-}  
+}
 .checknone{
   background-color: #999 !important;
 }

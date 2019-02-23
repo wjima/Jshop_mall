@@ -21,6 +21,7 @@ class Carousel extends Common
     const GOODS_TYPE        = 2;
     const ARTICLE_TYPE      = 3;
     const ARTICLE_LIST_TYPE = 4;
+    const FORM_TYPE         = 5;
 
     protected $rule =   [
         'name'              =>  'require|max:50',
@@ -149,6 +150,9 @@ class Carousel extends Common
             case self::ARTICLE_LIST_TYPE:
                 $data['val'] = $data['article_type_id'];
                 break;
+            case self::FORM_TYPE:
+                $data['val'] = $data['form_id'];
+                break;
             default:
                 break;
         }
@@ -200,11 +204,12 @@ class Carousel extends Common
                 $list[$key]['value'] = model('Article')->where('id', $val['val'])->value('title');
             } elseif ($val['type'] == self::ARTICLE_LIST_TYPE){
                 $list[$key]['value'] = model('ArticleType')->where('id', $val['val'])->value('type_name');
+            } elseif ($val['type'] == self::FORM_TYPE){
+                $list[$key]['value'] = model('Form')->where('id', $val['val'])->value('name');
             } else {
                 $list[$key]['value'] = $val['val'];
             }
         }
-
         return $list;
     }
 

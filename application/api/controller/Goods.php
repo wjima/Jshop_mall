@@ -4,7 +4,7 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\model\GoodsComment;
-use Request;
+use think\facade\Request;
 use app\common\model\Goods as GoodsModel;
 use app\common\model\Products;
 use app\common\model\Brand;
@@ -378,6 +378,23 @@ class Goods extends Api
         }
         $model = new GoodsComment();
         $res = $model->getList($goods_id, $page, $limit, 1);
+        return $res;
+    }
+
+
+    /**
+     * 获取某个分类的热卖商品
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getGoodsCatHotGoods()
+    {
+        $cat_id = Request::param('cat_id');
+        $limit = Request::param('limit', 6);
+        $model = new GoodsModel();
+        $res = $model->getGoodsCatHotGoods($cat_id, $limit);
         return $res;
     }
 }

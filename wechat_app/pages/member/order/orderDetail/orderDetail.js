@@ -5,7 +5,9 @@ Page({
   //页面数据
   data: {
     orderId: '',
-    order: {},
+    order: {
+      store_id:0//默认不显示门店
+    },
     status: 1,
     expressName: '',
     expressId: '',
@@ -18,7 +20,7 @@ Page({
     },
     //订单状态默认隐藏
     delivery:{
-      status:'deliverynone',
+      status: 'deliverynone',
     }
   },
 

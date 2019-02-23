@@ -12,9 +12,9 @@
                             <h3 class="goodsname" @click="showDetail(item.products.goods_id)">{{ item.products.name }}</h3>
                             <p class="standard" @click="showDetail(item.products.goods_id)">{{ item.products.spes_desc }}</p>
                             <ul class="btn-numbox">
-                                <li>
+                                <!--<li>-->
                                 <p class="price" @click="showDetail(item.products.goods_id)">￥{{ item.products.price }}</p>
-                                </li>
+                                <!--</li>-->
                                 <li class="spinner">
                                     <ul class="count">
                                         <li @click="minus(item.id,item.nums)"><button id="num-jian" class="num-jian">－</button></li>
@@ -23,7 +23,7 @@
                                     </ul>
                                 </li>
                             </ul>
-                            <div v-if="item.products.promotion_list">
+                            <div class="goods-tip" v-if="item.products.promotion_list">
                                 <div v-for="(val, key) in item.products.promotion_list" :key="key">
                                     <yd-badge shape="square" type="danger" v-if="val.type">{{ val.name }}</yd-badge>
                                     <yd-badge shape="square" type="square" v-else>{{ val.name }}</yd-badge>
@@ -359,5 +359,13 @@ export default {
     .not-click {
         background-color: #eee;
         color: #999 !important;
+    }
+    .goods-tip{
+        margin-top: .1rem;
+    }
+    .goods-tip>div{
+        display: inline-block;
+        margin-bottom: .1rem;
+        margin-left: .1rem;
     }
 </style>

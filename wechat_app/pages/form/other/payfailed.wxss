@@ -1,0 +1,60 @@
+/* pages/other/pay/payfailed.wxss */
+/* pages/other/pay/paysuccess.wxss */
+
+.paysuccess {
+  padding: 100rpx;
+  background-color: #fff;
+  height: 100%;
+  text-align: center;
+}
+
+.paysuccess-t {
+  margin-bottom: 42rpx;
+}
+
+.paysuccess-img {
+  width: 150rpx;
+  height: 150rpx;
+  margin-bottom: 10rpx;
+}
+
+.paysuccess-tip {
+  font-size: 44rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.paysuccess-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.paysuccess-m {
+  margin-bottom: 70rpx;
+}
+
+.paysuccess-name {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+
+.paysuccess-price {
+  font-size: 30rpx;
+  color: #f43530;
+}
+
+.paysuccess-price i {
+  font-size: 54rpx;
+}
+
+.paysuccess-b button {
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 36rpx;
+  color: #f43530;
+  border: 1px solid #f43530;
+  border-radius: 5px;
+  background-color: #fff;
+}

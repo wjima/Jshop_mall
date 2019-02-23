@@ -117,18 +117,22 @@
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{$data['cate_style_h5']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-12 classifyimg">
+                        <label class="layui-form-label">{$data['cate_type']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-8 classifyimg">
                             <div class="classifyimg-item">
-                                <input type="radio" lay-filter="cate_style_h5" name="cate_style_h5" value="1" title="样式一" {eq name="$data['cate_style_h5']['value']" value="1" }checked{/eq}>
+                                <input type="radio" lay-filter="cate_type" name="cate_type" value="1" title="类型一" {eq name="$data['cate_type']['value']" value="1" }checked{/eq}>
                                 <img src="__STATIC__images/cate-h5-one.png" onclick="viewImage('__STATIC__images/cate-h5-one.png')">
                             </div>
 
                             <div class="classifyimg-item">
-                                <input type="radio" lay-filter="cate_style_h5" name="cate_style_h5" value="2" title="样式二" {eq name="$data['cate_style_h5']['value']" value="2" }checked{/eq}>
+                                <input type="radio" lay-filter="cate_type" name="cate_type" value="2" title="类型二" {eq name="$data['cate_type']['value']" value="2" }checked{/eq}>
                                 <img src="__STATIC__images/cate-h5-two.png" onclick="viewImage('__STATIC__images/cate-h5-two.png')">
                             </div>
 
+                            <div class="layui-form-mid layui-word-aux" style="float:right;">
+                                1、此设置只在H5端有效<br/>
+                                2、此功能只在 "分类样式" 为 "二级小图" 的时候生效,小程序请忽略<br/>
+                            </div>
                         </div>
                     </div>
 

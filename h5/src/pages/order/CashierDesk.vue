@@ -3,7 +3,7 @@
         <yd-cell-group>
             <yd-cell-item>
                 <span slot="left">订单编号</span>
-                <span slot="right">{{ order_id }}</span>
+                <span slot="right">{{ orderId }}</span>
             </yd-cell-item>
             <yd-cell-item>
                 <span slot="left">订单金额</span>
@@ -22,7 +22,7 @@ export default {
     },
     data () {
         return {
-            order_id: this.$route.query.order_id,
+            orderId: this.$route.query.order_id,
             order_amount: '', // 订单总价
             payments: [], // 商户可支付的方式列表
             userInfo: {} // 用户信息
@@ -36,7 +36,7 @@ export default {
     methods: {
         // 获取订单详情
         orderDetail () {
-            this.$api.orderDetail({order_id: this.order_id}, res => {
+            this.$api.orderDetail({order_id: this.orderId}, res => {
                 this.order_amount = res.data.order_amount
             })
         },
@@ -64,7 +64,7 @@ export default {
                 if (isWeiXin) {
                     // 公众号支付参数
                     let data = {
-                        ids: this.order_id,
+                        ids: this.orderId,
                         payment_code: code,
                         payment_type: 1,
                         params: {
@@ -87,12 +87,13 @@ export default {
                                 },
                                 function (res) {
                                     if (res.err_msg === 'get_brand_wcpay_request:ok') {
-                                        _this.$dialog.alert({
-                                            mes: '支付成功',
-                                            callback () {
-                                                _this.$router.replace({path: '/orderdetail', query: {order_id: _this.order_id}})
-                                            }
-                                        })
+                                        _this.$router.replace({path: '/payresult', query: {order_id: _this.orderId}})
+                                        // _this.$dialog.alert({
+                                        //     mes: '支付成功',
+                                        //     callback () {
+                                        //         _this.$router.replace({path: '/payresult', query: {order_id: _this.orderId}})
+                                        //     }
+                                        // })
                                         // 使用以上方式判断前端返回,微信团队郑重提示：
                                         // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                                     }
@@ -102,12 +103,12 @@ export default {
                 } else {
                     // h5端支付参数
                     let data = {
-                        ids: this.order_id,
+                        ids: this.orderId,
                         payment_code: code,
                         payment_type: 1,
                         params: {
                             trade_type: 'MWEB',
-                            return_url: this.GLOBAL.locationHost() + '/#/orderdetail?order_id=' + this.order_id
+                            return_url: this.GLOBAL.locationHost() + '/#/payresult?order_id=' + this.orderId
                         }
                     }
                     // 微信h5支付
@@ -121,12 +122,12 @@ export default {
                 }
             } else if (code === 'alipay') {
                 let data = {
-                    ids: this.order_id,
+                    ids: this.orderId,
                     payment_code: code,
                     payment_type: 1,
                     params: {
                         trade_type: 'WAP',
-                        return_url: this.GLOBAL.locationHost() + '/#/orderdetail?order_id=' + this.order_id
+                        return_url: this.GLOBAL.locationHost() + '/#/payresult?order_id=' + this.orderId
                     }
                 }
                 this.$api.pay(data, res => {
@@ -136,19 +137,20 @@ export default {
                 })
             } else if (code === 'balancepay') {
                 let data = {
-                    ids: this.order_id,
+                    ids: this.orderId,
                     payment_code: code,
                     payment_type: 1
                 }
                 this.$api.pay(data, res => {
                     if (res.status) {
-                        this.$dialog.toast({
-                            mes: res.msg,
-                            timeout: 1300,
-                            callback: () => {
-                                this.$router.replace({path: '/orderdetail', query: {order_id: this.order_id}})
-                            }
-                        })
+                        this.$router.replace({path: '/payresult', query: {order_id: this.orderId}})
+                        // this.$dialog.toast({
+                        //     mes: res.msg,
+                        //     timeout: 1300,
+                        //     callback: () => {
+                        //         this.$router.replace({path: '/orderdetail', query: {order_id: this.order_id}})
+                        //     }
+                        // })
                     }
                 })
             } else if (code === 'offline') {
@@ -160,7 +162,7 @@ export default {
                             txt: '订单详情',
                             color: false,
                             callback: () => {
-                                this.$router.push({path: '/orderdetail', query: {order_id: this.order_id}})
+                                this.$router.push({path: '/orderdetail', query: {order_id: this.orderId}})
                             }
                         },
                         {

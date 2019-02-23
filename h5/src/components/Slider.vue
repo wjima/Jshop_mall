@@ -27,8 +27,8 @@ export default {
         }
     },
     mounted () {
-        let w = this.$refs.slider.offsetWidth
-        this.$refs.slider.style.height = w + 'px'
+        let w = this.$refs.slider.offsetWidth;
+        this.$refs.slider.style.height = w + 'px';
     }
 }
 </script>

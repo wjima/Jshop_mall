@@ -780,6 +780,7 @@ Page({
   //客服功能
   customerService: function (e) {},
 
+
   // 主图点击放大
   previewImg: function (e) {
     var index = e.currentTarget.dataset.index;

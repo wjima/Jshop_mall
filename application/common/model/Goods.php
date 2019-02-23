@@ -36,6 +36,8 @@ class Goods extends Common
     const MARKETABLE_DOWN = 2;//下架
     const VIRTUAL_YES = 2;//虚拟商品
     const VIRTUAL_NO = 1;//普通商品
+    const HOT_YES = 1; //热卖
+    const HOT_NO = 2; //非热卖
 
     public function tableData($post,$isPage=true)
     {
@@ -67,6 +69,9 @@ class Goods extends Common
      * 默认排序
      * @param $post
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-11 16:32
@@ -181,6 +186,9 @@ class Goods extends Common
      * @param int    $page 当前页码
      * @param int    $limit 每页数量
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-29 16:33
@@ -234,13 +242,15 @@ class Goods extends Common
         return $result;
     }
 
-
     /**
      * 获取商品详情
      * @param $gid
      * @param string $fields
      * @param string $token
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getGoodsDetial($gid,$fields = '*',$token = '')
     {
@@ -323,11 +333,11 @@ class Goods extends Common
         return $result;
     }
 
-    /***
+    /**
      * 获取默认规格
-     * @param $specDefault 默认规格
-     * @param $specKey 当前规格名称
-     * @param $specValue 当前规格值
+     * @param $specDefault //默认规格
+     * @param $specKey //当前规格名称
+     * @param $specValue //当前规格值
      * @return string
      * User: wjima
      * Email:1457529125@qq.com
@@ -346,8 +356,14 @@ class Goods extends Common
 
     /**
      * 获取商品下面所有货品
+     * @param $goods_id
+     * @param bool $isPromotion
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function products($goods_id,$isPromotion=true)
+    public function products($goods_id, $isPromotion=true)
     {
         $productModel = new Products();
         $pids         = $productModel->field('id')->where(['goods_id' => $goods_id])->select();
@@ -369,7 +385,7 @@ class Goods extends Common
 
     /**
      * 获取goods表图片对应图片地址
-     * @return $this
+     * @return \think\model\relation\HasOne
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-29 16:26
@@ -381,7 +397,7 @@ class Goods extends Common
 
     /**
      * 获取品牌信息
-     * @return $this
+     * @return \think\model\relation\HasOne
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-31 11:43
@@ -391,10 +407,9 @@ class Goods extends Common
         return $this->hasOne('Brand','id','brand_id')->field('id,name,logo')->bind([ 'brand_name' => 'name' ]);
     }
 
-
     /**
      * 获取分类名称
-     * @return $this
+     * @return \think\model\relation\HasOne
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-31 11:46
@@ -406,7 +421,7 @@ class Goods extends Common
 
     /**
      * 获取类型名称
-     * @return $this
+     * @return \think\model\relation\HasOne
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-03 8:55
@@ -415,8 +430,11 @@ class Goods extends Common
     {
         return $this->hasOne('GoodsType','id','goods_type_id')->field('id,name')->bind([ 'type_name' => 'name' ]);
     }
+
     /**
      * 获取销售价
+     * @param $product
+     * @return mixed
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-02 10:26
@@ -441,10 +459,11 @@ class Goods extends Common
 
     /**
      * 库存改变机制。库存机制：商品下单 总库存不变，冻结库存加1， 商品发货：冻结库存减1，总库存减1，   商品退款&取消订单：总库存不变，冻结库存减1, 商品退货：总库存加1，冻结库存不变, 可销售库存：总库存-冻结库存
-     * @param        $product_id
+     * @param $product_id
      * @param string $type
      * @param int $num
      * @return array
+     * @throws \think\Exception
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-02 10:34
@@ -498,9 +517,15 @@ class Goods extends Common
         return $result;
     }
 
-    /*
+    /**
      * 无数据转换
-     * */
+     * @param $goods_id
+     * @param string $fields
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getOne($goods_id,$fields='*')
     {
         $result = [
@@ -575,6 +600,8 @@ class Goods extends Common
      * 删除商品
      * @param int $goods_id
      * @return array
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function delGoods($goods_id = 0)
     {
@@ -630,6 +657,9 @@ class Goods extends Common
      * 获取csv数据
      * @param $post
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getCsvData($post)
     {
@@ -724,6 +754,7 @@ class Goods extends Common
             return $result;
         }
     }
+
     /**
      * 设置csv header
      * @return array
@@ -891,8 +922,6 @@ class Goods extends Common
         ];
     }
 
-
-
     /**
      * 获取重量
      * @param $product_id
@@ -934,5 +963,49 @@ class Goods extends Common
             'msg'    => '参数丢失',
         ];
         return $result;
+    }
+
+    /**
+     * 获取某个分类的热卖商品
+     * @param $cat_id
+     * @param int $limit
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getGoodsCatHotGoods($cat_id, $limit = 6)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => []
+        ];
+        $where[] = ['is_hot', 'eq', self::HOT_YES];
+        $where[] = ['marketable', 'eq', self::MARKETABLE_UP];
+        $where[] = ['goods_cat_id', 'eq', $cat_id];
+        $return['data']['list'] = $this->field('id,name,image_id,price,brief')
+            ->where($where)
+            ->limit(0, $limit)
+            ->order('ctime DESC')
+            ->select();
+
+        $catModel = new GoodsCat();
+        $catName = $catModel->getNameById($cat_id);
+        $return['data']['name'] = $catName['data'];
+
+        if($return['data']['list'] !== false)
+        {
+            if(count($return['data']['list']) > 0)
+            {
+                foreach($return['data']['list'] as $k => &$v)
+                {
+                    $v['image_url'] = _sImage($v['image_id']);
+                }
+            }
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+        }
+        return $return;
     }
 }

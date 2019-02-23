@@ -1,5 +1,5 @@
 <template>
-    <div class="scrolltab">
+    <div class="scrolltab" style="height: 100%;">
         <div v-if="goodsType" class="goods-type" >
             <div class="goods-panel" v-for="(item, key) in goodsType">
                 <div :class="[item.selected ? newhead : head]" @click="change(key)">
@@ -12,7 +12,7 @@
         </div>
         <div class="goods-detail">
             <div v-if="childItem.length">
-                <span class="scrolltab-li" v-for="(v, k) in childItem" :key="k" @click="showList(v.id)">
+                <span class="scrolltab-li" v-for="(v, k) in childItem" :key="k" @click="clickHandler(v.id)">
                     <img :src="v.image_url">
                     <p style="font-size: 120%">{{v.name}}</p>
                 </span>
@@ -60,8 +60,8 @@ export default {
         }
     },
     methods: {
-        showList (catId) {
-            this.$router.push({path: '/goodslist', query: {cat_id: catId}});
+        clickHandler (id) {
+            this.$emit('clickHandler', {cat_id: id})
         },
         // 向父组件传递 点击对应的顶级分类更改选中
         change (key) {

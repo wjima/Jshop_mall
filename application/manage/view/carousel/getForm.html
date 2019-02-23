@@ -1,0 +1,65 @@
+<div class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">表单标题：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" lay-verify="title" placeholder="标题关键字" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="form_search">提交</button>
+        </div>
+    </div>
+</div>
+
+<table id="formTable" lay-filter="formTable"></table>
+<script>
+    layui.use(['table','form','layer','laydate'],function(){
+        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+        //执行渲染
+        table.render({
+            elem: '#formTable', //指定原始表格元素选择器（推荐id选择器）
+            height: '330',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            id:'formTable',
+            url: "{:url('form/index')}",
+            cols: [[ //标题栏
+                {type: 'numbers'},
+                {field: 'name', title: '表单名称',align:'center'},
+                {field: 'type', title: '类型',align:'center'},
+                {field: 'is_login', title: '需要登录',align:'center'},
+                {fixed: 'right', width:150, title:'操作',align:'center', toolbar:'#formBar'}
+            ]]
+        });
+
+        //搜索
+        form.on('submit(form_search)', function(data){
+            console.log(data.field);
+            layui.table.reload('formTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        date.render({
+            elem: '#ctime',
+            range: '~'
+        });
+
+        date.render({
+            elem: '#utime',
+            range: '~'
+        });
+
+    })
+</script>
+
+<script type="text/html" id="formBar">
+    <a class="layui-btn layui-btn-xs" lay-event="selectform">选择</a>
+</script>

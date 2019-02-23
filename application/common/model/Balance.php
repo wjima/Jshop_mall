@@ -48,49 +48,53 @@ class Balance extends Common
             'msg' => '操作成功'
         ];
 
-        //取用户实际余额
-        $userModel = new User();
-        $userInfo = $userModel::withTrashed()->where([ 'id' => $user_id ])->find();
-        if ( !$userInfo ) {
-            return error_code(11004);
-        }
+        if($money != 0)
+        {
+            //取用户实际余额
+            $userModel = new User();
+            $userInfo = $userModel::withTrashed()->where([ 'id' => $user_id ])->find();
+            if ( !$userInfo ) {
+                return error_code(11004);
+            }
 
-        //取描述，并简单校验
-        $re = $this->getMemo($type, $money, $source_id, $cate_money);
-        if ( !$re[ 'status' ] ) {
-            return $re;
-        }
-        $memo = $re[ 'data' ];
+            //取描述，并简单校验
+            $re = $this->getMemo($type, $money, $source_id, $cate_money);
+            if ( !$re[ 'status' ] ) {
+                return $re;
+            }
+            $memo = $re[ 'data' ];
 
-        (float)$money = $money;
-        if($type != self::TYPE_ADMIN) {//后台充值或调不改绝对值
-            $money = abs($money);
-        }
-        //如果是减余额的操作，还是加余额操作
-        if (
-            $type == self::TYPE_PAY ||/*
+
+            (float)$money = $money;
+            if($type != self::TYPE_ADMIN) {//后台充值或调不改绝对值
+                $money = abs($money);
+            }
+            //如果是减余额的操作，还是加余额操作
+            if (
+                $type == self::TYPE_PAY ||/*
             $type == self::TYPE_REFUND ||  //退款是往账户上加钱的 */
-            $type == self::TYPE_TOCASH
-        ) {
-            $money = - $money - $cate_money;
-        }
-        $balance = $userInfo[ 'balance' ] + $money;
-        if ( ( $balance ) < 0 ) {
-            return error_code(11007);
-        }
+                $type == self::TYPE_TOCASH
+            ) {
+                $money = - $money - $cate_money;
+            }
+            $balance = $userInfo[ 'balance' ] + $money;
+            if ( ( $balance ) < 0 ) {
+                return error_code(11007);
+            }
 
-        $data[ 'user_id' ] = $user_id;
-        $data[ 'type' ] = $type;
-        $data[ 'money' ] = $money;
-        $data[ 'balance' ] = $balance;
-        $data[ 'source_id' ] = $source_id;
-        $data[ 'memo' ] = $memo;
-        $data[ 'ctime' ] = time();
-        $blanceModel = new Balance();
-        $blanceModel->save($data);      //为啥要now在save，是因为存在多个余额更新的时候，只会更新一条
-        //上面保存好主体表，下面保存明细表
-        $userInfo->balance = $balance;
-        $userInfo->save();
+            $data[ 'user_id' ] = $user_id;
+            $data[ 'type' ] = $type;
+            $data[ 'money' ] = $money;
+            $data[ 'balance' ] = $balance;
+            $data[ 'source_id' ] = $source_id;
+            $data[ 'memo' ] = $memo;
+            $data[ 'ctime' ] = time();
+            $blanceModel = new Balance();
+            $blanceModel->save($data);      //为啥要now在save，是因为存在多个余额更新的时候，只会更新一条
+            //上面保存好主体表，下面保存明细表
+            $userInfo->balance = $balance;
+            $userInfo->save();
+        }
 
         $result[ 'status' ] = true;
         return $result;

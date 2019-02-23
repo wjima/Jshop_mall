@@ -229,9 +229,15 @@
     top: 50%;
     transform: translateY(-50%);
 }
+.goodsdetail .yd-tab .yd-tab-panel p{
+    overflow: hidden;
+    float: left;
+    text-align: left;
+}
 .goodsdetail .yd-tab .yd-tab-panel img{
     width: 100%;
     height: auto;
+    float: left;
 }
 .goodsdetail .yd-tab .yd-tab-panel .comment img{
     width: 22%;
@@ -239,6 +245,7 @@
 }
 .goodsdetail .yd-tab .yd-tab-panel ul{
     width: 100% !important;
+    overflow: hidden;
 }
 .goodsdetail .yd-tab .yd-tab-panel ul table{
     width: 100%;
@@ -1364,6 +1371,7 @@
 }
 .list-box .list-body{
     text-align: left;
+    padding-left: 2.75rem;
 }
 .cartfooter-top .cartfooter-right-price{
     display: inline-block;

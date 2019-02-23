@@ -1,0 +1,57 @@
+<div class="layui-form seller-alone-form">
+    <div class="layui-row">
+        <div class="layui-col-xs6">
+            <div class="grid-left">
+                <div class="layui-form-item" lay-size="sm">
+                    <label class="layui-form-label">总提交：</label>
+                    <div class="layui-form-mid seller-inline-2">{$total_submit}</div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6">
+            <div class="grid-right">
+                <div class="layui-form-item" lay-size="sm">
+                    <label class="layui-form-label">总金额：</label>
+                    <div class="layui-form-mid seller-inline-2">{$total_sum}元</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div id="main" class="main" style="width: 540px;height: 360px;"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: '__STATIC_LIB__echarts/build/dist'
+            }
+        });
+        require(
+                ['echarts','echarts/chart/line'],
+                function (ec) {
+                    var myChart = ec.init(document.getElementById('main'));
+                    var option = {
+                        tooltip: {show:true},
+                        legend: {},
+                        yAxis: [{type:'value'}],
+                        xAxis: [],
+                        series: []
+                    };
+                    $.get("{:url('Form/statistics',['id'=>$id])}").done(function (data) {
+                        myChart.setOption({
+                            legend: data.legend,
+                            xAxis: data.xAxis,
+                            series: data.series
+                        });
+                    });
+                    myChart.setOption(option);
+                }
+        );
+    });
+</script>

@@ -54,6 +54,9 @@ class GoodsCat extends Common
      * 转换成树状
      * @param $data
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function getTree($data)
     {
@@ -211,7 +214,10 @@ class GoodsCat extends Common
     /**
      * 获取图片
      * @param $image_id
-     * @return string
+     * @return array|mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function getImage($image_id)
     {
@@ -465,6 +471,7 @@ class GoodsCat extends Common
         return $data;
     }
 
+
     /**
      * 根据名称获取分类信息
      * @param string $name
@@ -521,7 +528,16 @@ class GoodsCat extends Common
         return false;
     }
 
-    //根据最后一级id 获取分类信息
+
+    /**
+     * 根据最后一级id 获取分类信息
+     * @param $id
+     * @param array $data
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getCatByLastId($id, $data = [])
     {
         $info   = $this->where(['id' => $id])->find();
@@ -531,7 +547,6 @@ class GoodsCat extends Common
         } else {
             return $data;
         }
-
     }
 
 

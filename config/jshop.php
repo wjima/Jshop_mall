@@ -23,9 +23,10 @@ return [
     'tocash_money_low' => '100' ,       //最低提现金额
     'authorization_url'=>'https://jshop.jihainet.com', //授权查询地址
     'product'=>'Jshop-b2c标准版',//产品名称
-    'version'=>'v1.1.2',//版本号
-    'sms_password' => '',          //短信密码，会覆盖项目配置里的此参数，为了保密密码
+    'version'=>'v1.1.3',    //版本号
+    'sms_password' => '',  //短信密码，会覆盖项目配置里的此参数，为了保密密码
     'image_storage'=>[
         'type'=>'Local'
-    ]
+    ],
+    'file_size'=>'104857600',//100M
 ];

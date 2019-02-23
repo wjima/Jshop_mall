@@ -26,7 +26,10 @@ class PromotionResult extends Common
             'name' => '订单打X折',
             'type' => 'order',
         ],
-
+        'GOODS_HALF_PRICE' => [
+            'name' => '指定商品每第几件减指定金额',
+            'type' => 'goods',
+        ],
     ];
 
 
@@ -53,6 +56,9 @@ class PromotionResult extends Common
                 break;
             case 'ORDER_DISCOUNT':
                 $msg = '订单打'.$params['discount'].'折 ';
+                break;
+            case 'GOODS_HALF_PRICE':
+                $msg = '第'.$params['num'].'件'.$params['money'].'元';
                 break;
         }
         return $msg;
@@ -473,6 +479,25 @@ class PromotionResult extends Common
                     return $result;
                 }
                 break;
+            case 'GOODS_HALF_PRICE':
+                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
+                    $result['msg'] = "请正确输入金额，最多2位小数";
+                    return $result;
+                }
+                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
+                    $result['msg'] = "请输入金额";
+                    return $result;
+                }
+
+                if($data['params']['num'] == '' || $data['params']['num'] == '0'){
+                    $result['msg'] = "请输入大于0的数字";
+                    return $result;
+                }
+                if(!($data['params']['num']>0)){
+                    $result['msg'] = "请输入大于0的数字";
+                    return $result;
+                }
+                break;
         }
         $result['status'] = true;
 
@@ -498,6 +523,30 @@ class PromotionResult extends Common
             $result['msg'] = '没有找到此促销记录';
             return $result;
         }
+    }
+
+    //第几件减去指定金额
+    private function result_GOODS_HALF_PRICE($params,&$v,$promotionInfo)
+    {
+        $promotionMoney = 0;
+        //判断是否满足件数
+        if($v['nums'] < $params['num']){
+            return $promotionMoney;
+        }
+        //此次商品促销一共优惠了多少钱
+        $times = floor($v['nums']/$params['num']);
+        if($times>0){
+            $promotionMoney =  $params['money']*$times;
+        }
+        //设置商品优惠总金额
+        if(!isset($v['products']['promotion_amount'])){
+            $v['products']['promotion_amount'] = 0;
+        }
+        $v['products']['promotion_amount'] += $promotionMoney;
+        //设置商品的实际销售金额（单品）
+        $v['products']['amount'] -= $promotionMoney;
+        $v['products']['amount'] = $v['products']['amount']>0?$v['products']['amount']:0;
+        return $promotionMoney;
     }
 
 }

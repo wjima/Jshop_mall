@@ -1,10 +1,10 @@
 <template>
-    <div ref="scrolltab" class="scrolltab" style="overflow-y: auto; position: relative;">
+    <div ref="scrolltab" class="scrolltab" style="overflow-y: auto; position: relative;height: 100%;">
         <yd-scrolltab v-if="goodsType">
             <yd-scrolltab-panel :label="item.name" icon="demo-icons-category1" v-for="(item, key) in goodsType" :key="key">
                 <div class="scrolltabbody">
                     <ul class="scrolltab-ul" v-if="item.child">
-                       <li class="scrolltab-li" v-for="(childItem, key) in item.child" :key="key" @click="showList(childItem.id)">
+                       <li class="scrolltab-li" v-for="(childItem, key) in item.child" :key="key" @click="clickHandler(childItem.id)">
                            <!--<img src="../../static/image/loading.gif" class="loading-img"/>-->
                            <img v-lazy="childItem.image_url">
                            <p>{{ childItem.name }}</p>
@@ -12,7 +12,6 @@
                     </ul>
                 </div>
             </yd-scrolltab-panel>
-            <!-- ... -->
         </yd-scrolltab>
     </div>
 </template>
@@ -28,8 +27,8 @@ export default {
         }
     },
     methods: {
-        showList (catId) {
-            this.$router.push({path: '/goodslist', query: {cat_id: catId}})
+        clickHandler (id) {
+            this.$emit('clickHandler', {cat_id: id})
         }
     }
 }

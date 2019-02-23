@@ -250,4 +250,54 @@ class Wx
         }
     }
 
+    /**
+     * 后台生成小程序码
+     * @param int $form_id
+     * @return bool
+     */
+    public function getFormWxcode($form_id = 0)
+    {
+        $return = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => ''
+        ];
+        if (!$form_id) {
+            return $return;
+        }
+        $appid       = getSetting('wx_appid');
+        $secret      = getSetting('wx_app_secret');
+        $accessToken = $this->getAccessToken($appid, $secret);
+        $path        = "pages/form/detail/form?id=" . $form_id;
+        $curl        = new Curl();
+        $url         = 'https://api.weixin.qq.com/wxa/getwxacode?access_token=' . $accessToken;
+        $data        = [
+            'path'       => $path,
+            'width'      => 300,
+            'is_hyaline' => false,
+            'auto_color' => false
+        ];
+        $data        = json_encode($data, JSON_UNESCAPED_SLASHES);
+        $res         = $curl->post($url, $data);
+        Log::info('生成小程序码消息返回：' . $res);
+        $res = json_decode($res, true);
+        if (isset($res['errcode']) && $res['errcode'] == 0) {
+            $filePath = ROOT_PATH . '/public/qrcode';
+            if (!is_dir($filePath)) {
+                @mkdir($filePath);
+            }
+            $filename = $filePath . "/" . md5($path) . ".jpg";
+            $file     = fopen($filename, "w");//打开文件准备写入
+            fwrite($file, $res);//写入
+            fclose($file);//关闭
+            $return['data']   = $filename;
+            $return['status'] = true;
+            $return['msg']    = '获取成功';
+            return $return;
+        } else {
+            $return['msg'] = $res['errmsg'];
+            return $return;
+        }
+    }
+
 }

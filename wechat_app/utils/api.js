@@ -854,6 +854,19 @@ function getRecommendKeys(callback){
     });
 }
 
+//获取表单详情
+function getFormDetial(data, callback) {
+  api('form.getformdetial', data, function (res) {
+    callback(res);
+  });
+}
+//提交表单
+function addSubmitForm(data, callback) {
+  api('form.addsubmit', data, function (res) {
+    callback(res);
+  });
+}
+
 module.exports = {
   login1: login1,
   login2: login2,
@@ -947,6 +960,8 @@ module.exports = {
   getLogisticsData: getLogisticsData,
   getGoodsClass: getGoodsClass,
   getCartNumber: getCartNumber,
+  getFormDetial: getFormDetial,
+  addSubmitForm: addSubmitForm,
   getAllCat: getAllCat,
   getRecommendKeys: getRecommendKeys
 }

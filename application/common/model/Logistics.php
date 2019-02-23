@@ -25,7 +25,14 @@ class Logistics extends Common
 
     protected function tableWhere($post)
     {
-        $result['where'] = [];
+        $where = [];
+        if(isset($post['name']) && $post['name']){
+            $where[] = ['logi_name','=',$post['name']];
+        }
+        if(isset($post['code']) && $post['code']){
+            $where[] = ['logi_code','=',$post['code']];
+        }
+        $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['sort'=>'asc'];
         return $result;

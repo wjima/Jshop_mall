@@ -13,6 +13,7 @@ use app\common\model\Brand;
 
 class Index extends Manage
 {
+
     public function index()
     {
         $orderModel = new Order();
@@ -31,9 +32,7 @@ class Index extends Manage
         $goodsModel = new Goods();
         $goodsStatics=$goodsModel->staticGoods();
         $this->assign('goods_statics',$goodsStatics);
-
         hook('adminindex', $this);//后台首页钩子
-
         return $this->fetch();
     }
 

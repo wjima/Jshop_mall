@@ -1,0 +1,13 @@
+<!--pages/other/pay/paysuccess.wxml-->
+<view class="paysuccess">
+  <view class='paysuccess-t'>
+    <image class="paysuccess-img" src='../../image/win.png'></image>
+    <view class="paysuccess-tip">支付成功</view>
+  </view>
+  <view class='paysuccess-m'>
+    <view class="paysuccess-price">￥<i>{{money}}</i></view>
+  </view>
+  <view class='paysuccess-b'  bindtap="successButton">
+    <button>完成</button>
+  </view>
+</view>

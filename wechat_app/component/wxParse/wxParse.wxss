@@ -97,6 +97,7 @@ view{
     /*background-color: #efefef;*/
     overflow: hidden;
     width: 750rpx;
+    float: left;
 }
 .wxParse-table .wxParse-img{
   /* max-width: 30%; */

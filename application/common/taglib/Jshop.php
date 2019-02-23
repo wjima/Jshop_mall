@@ -39,7 +39,7 @@ class Jshop extends TagLib
         ],
         //此标签增加了权限判断，只供商户端（seller）使用
         'sellergoods' => [
-            'attr' => 'name,value,num',
+            'attr' => 'name,value,num,key',
             'close' => 0
         ]
     ];
@@ -367,6 +367,7 @@ class Jshop extends TagLib
             $tag['value'] = "";
         }
 
+
         if(isset($tag['num'])){
             $tag['num'] = $this->autoBuildVar($tag['num']);
             $num = "<?php echo (" . $tag['num'] . ");?>";
@@ -374,6 +375,16 @@ class Jshop extends TagLib
             $num = "1";
         }
         $time = "g".time().rand(1,4);
+
+        //增加变量key，解决同时存在多个选择商品时的问题
+        if (isset($tag['key']) && $tag['key']) {
+            $tag['key']  = $this->autoBuildVar($tag['key']);
+            $tag['key']  = "<?php echo (" . $tag['key'] . ");?>";
+            $tag['name'] = $tag['name'] . '[' . $tag['key'] . ']';
+            $time        = $time . '_' . $tag['key'];
+        } else {
+            $tag['key'] = "";
+        }
 
         $parse = '
             <div id="'.$time.'_box" class="select_seller_goods_box">

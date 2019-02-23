@@ -17,6 +17,7 @@ class Operation extends Common
             'Index'=> ['index','tagselectbrands','tagselectgoods','clearcache'],
             'Order' => ['statistics'],
             'Images' => ['uploadimage','listimage','manage','cropper'],
+            'Files' => ['uploadVideo'],
             'User' => ['userloglist','statistics'],
             'MessageCenter' => ['message','messageview','messagedel'],
             'Promotion' => ['conditionlist','conditionadd','conditionedit','conditiondel','resultlist','resultadd','resultedit','resultdel'],
@@ -219,13 +220,32 @@ class Operation extends Common
 
     /**
      * 根据传过来的数组，构建以p_id为父节点的树..
-     * @param $list
-     * @param $p_id
-     * 'parent_menu_id'
+     * @param $list 构建树所需要的节点，此值是根据权限节点算出来的
+     * @param $parent_menu_id   构建树的根节点
+     * @param $p_str        根据物理节点（parent_id）还是逻辑节点(parent_menu_id)来构建树,只能选择这两个值
+     * @param array $onMenu 当前url的节点信息
+     * @param array $allOperation   所有的节点树，外面不用传进来，里面会自动判断没有了，就全部取出来，方便生成各个节点的url
+     * @return array
      */
-    public function createTree($list,$parent_menu_id,$p_str,$onMenu=[])
+    public function createTree($list,$parent_menu_id,$p_str,$onMenu=[],$allOperation=[])
     {
         $data = [];
+
+        //判断所有节点的值是否有，没有了，全部取出来，省的一个一个的查
+        if(!$allOperation){
+            $allOperation = $this->select();
+            if(!$allOperation->isEmpty()){
+                $allOperation = $allOperation->toArray();
+            }else{
+                $allOperation = [];
+            }
+            $nallOperation = [];
+            foreach($allOperation as $v){
+                $nallOperation[$v['id']] = $v;
+            }
+            $allOperation = $nallOperation;
+        }
+
         foreach($list as $k => $v){
             if($v[$p_str] == $parent_menu_id){
                 $row = $v;
@@ -235,12 +255,47 @@ class Operation extends Common
                 }else{
                     $row['selected'] = false;
                 }
-                $row['children'] = $this->createTree($list,$v['id'],$p_str,$onMenu);
+                //取当前节点的url
+                $row['url'] = $this->getUrl($v['id'],$allOperation);
+
+                $row['children'] = $this->createTree($list,$v['id'],$p_str,$onMenu,$allOperation);
+
                 $data[] = $row;
             }
         }
 
         return $data;
+    }
+
+    /**
+     * 根据当前节点，取出当前节点的url，用于后台菜单节点的url生成
+     * @param $operation_id
+     * @param $list
+     */
+    private function getUrl($operation_id,$list){
+        if(!isset($list[$operation_id])){
+            return "";
+        }
+        if($list[$operation_id]['type'] == 'm'){
+            return $list[$operation_id]['code'] . '/index/index';          //一个模型，搞什么url？
+        }
+        if($list[$operation_id]['type'] == 'c'){
+            if(isset($list[$list[$operation_id]['parent_id']])){
+                return $list[$list[$operation_id]['parent_id']]['code'] . '/'.$list[$operation_id]['code'].'/index';
+            }else{
+                return "";
+            }
+        }
+        if($list[$operation_id]['type'] == 'a'){
+            //取控制器
+            if(isset($list[$list[$operation_id]['parent_id']]) && isset($list[$list[$list[$operation_id]['parent_id']]['parent_id']])){
+                return $list[$list[$list[$operation_id]['parent_id']]['parent_id']]['code'] . '/'.$list[$list[$operation_id]['parent_id']]['code'].'/'.$list[$operation_id]['code'];
+            }else{
+                return "";
+            }
+        }
+        return "";
+
     }
 
 //    /**

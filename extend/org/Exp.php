@@ -38,10 +38,9 @@ class Exp{
     public function assembleParam ($com, $no)
     {
         $data['customer'] = $this->customer;
-        $data['param'] = '{"com":"'.$com.'","num":"'.$no.'"}';
+        $data['param'] = '{"com":"'.$com.'","num":"'.trim($no).'"}';
         $data['sign'] = $this->toSign($data['param'], $this->key, $data['customer']);
         $vo = '';
-
         foreach ($data as $k => $v) {
             $vo.= "$k=".urlencode($v)."&";		//默认UTF-8编码格式
         }

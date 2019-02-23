@@ -1,0 +1,15 @@
+<form class="layui-form  seller-alone-form" id="formSubmitEdit" style="padding: 20px;">
+    <div class="layui-form-item">
+            <label class="layui-form-label">反馈：</label>
+            <div class="layui-input-inline" style="width: 70%">
+                <textarea name="feedback" class="layui-textarea"></textarea>
+                <input type="hidden" name="id" value="{$id}">
+            </div>
+    </div>
+</form>
+<script>
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, laydate = layui.laydate;
+        form.render();
+    });
+</script>

@@ -12,6 +12,7 @@ use app\common\controller\Manage;
 use app\common\model\Carousel as CarouselModel;
 use app\common\model\CarouselSeat;
 use app\common\model\Article;
+use app\common\model\Form;
 use app\common\model\Goods;
 use think\facade\Request;
 
@@ -185,4 +186,24 @@ class Carousel extends Manage
         $articleType = new \app\common\model\ArticleType();
         return $articleType->field('id,type_name')->where('id',input('param.id'))->find();
     }
+
+
+    /**
+     *  加载表单列表模板
+     * User:mark
+     * @return mixed
+     */
+    public function getForm()
+    {
+        $this->view->engine->layout(false);
+        return $this->fetch('getForm');
+    }
+
+    public function formInfo()
+    {
+        $formModel = new Form();
+        return $formModel->field('id,name')->where('id',input('param.id'))->find();
+    }
+
+
 }

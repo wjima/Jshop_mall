@@ -72,7 +72,7 @@
             @evaluate="evaluate"
             @logistics="logistics"
         ></orderdetailfooter>
-        <yd-popup v-model="showLogistics" position="center" width="80%" height="80%">
+        <!--<yd-popup v-model="showLogistics" position="center" width="80%" height="80%">
             <div class="express-info">
                 <div class="express-num"></div>
                 <yd-timeline>
@@ -82,7 +82,7 @@
                     </yd-timeline-item>
                 </yd-timeline>
             </div>
-        </yd-popup>
+        </yd-popup>-->
     </div>
 </template>
 

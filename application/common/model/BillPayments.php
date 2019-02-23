@@ -23,6 +23,8 @@ class BillPayments extends Common
 
     const TYPE_ORDER = 1;       //单据类型 订单
     const TYPE_RECHARGE = 2;       //单据类型 充值
+    const TYPE_FORM_ORDER = 5;       //单据类型 表单订单
+    const TYPE_FORM_PAY = 6;       //单据类型 表单付款码
 
 //
 //    const SEX_BOY = 1;
@@ -152,6 +154,7 @@ class BillPayments extends Common
         if(!$paymentInfo){
             return error_code(10050);
         }
+
         $result = $this->toAdd($source_str, $payment_code, $user_id, $type,$params);
         if(!$result['status']){
             return $result;
@@ -295,10 +298,15 @@ class BillPayments extends Common
                     foreach ($billPaymentRelList as $k => $v) {
                         $balance->change($v['source_id'], $balance::TYPE_RECHARGE, $v['money'], $v['payment_id']);
                     }
+                }elseif($billPaymentInfo['type'] == self::TYPE_FORM_PAY || $billPaymentInfo['type'] == self::TYPE_FORM_ORDER ){
+                    //form表单支付
+                    $formSubitModel = new FormSubmit();
+                    foreach ($billPaymentRelList as $k => $v) {
+                        $formSubitModel->pay($v['source_id'],$payment_code);
+                    }
                 }elseif(false){
                     //::todo 其他业务逻辑
                 }
-
             }
             Db::commit();
             $result['status'] = true;
@@ -371,7 +379,27 @@ class BillPayments extends Common
             }
             $result['status'] = true;
             $result['data']   = $data;
-        } elseif (false) {
+        } elseif ($type == self::TYPE_FORM_PAY ||$type == self::TYPE_FORM_ORDER) { //表单支付
+            $formSubmit = new FormSubmit();
+            $data['money'] = 0;
+            foreach ($source_arr as $k => $v) {
+                $where['id']   = $v;
+                $where['pay_status'] = $formSubmit::FORM_PAY_STATUS_NO;
+                $form_info           = $formSubmit->where($where)->find();
+                if ($form_info) {
+                    $data['rel'][] = array(
+                        'source_id' => $v,
+                        'money'     => $form_info->money,
+                    );
+                    $data['money'] += $form_info->money;
+                } else {
+                    $result['msg'] = '表单：' . $v . '没有找到,或不是未支付状态';
+                    return $result;
+                }
+            }
+            $result['status'] = true;
+            $result['data']   = $data;
+        }elseif (false) {
             //::todo 其他业务逻辑
         } else {
             return error_code(10054);

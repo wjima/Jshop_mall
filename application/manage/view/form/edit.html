@@ -1,0 +1,573 @@
+<script type="text/javascript" charset="utf-8" src="__STATIC_JS__ddsort/ddsort.js"> </script>
+
+<style>
+    #container{
+        padding: 0px;
+        border-radius:0px;
+        border-width:0px;
+    }
+    #img_preview{
+        display: inline;
+        float: left;
+        margin-top: 40px;
+        overflow: hidden;
+    }
+    .imgdiv{
+        display: inline;
+        float: left;
+        text-align: center;
+        border: 1px solid #ccc;
+        padding: 5px;
+        padding-bottom: 0;
+        margin-right: 10px;
+    }
+    #operate{
+    	margin-top: 5px;
+    }
+    #operate a{
+     	cursor:pointer
+    }
+    #operate a:hover{
+    	color: #009688;
+    }
+    .layui-btn{
+    	margin-top: 10px;
+    }
+    .sm-input{
+        height: 24px;
+        margin-top: 5px;
+        margin-bottom: 5px !important;
+    }
+    .table-button{
+        margin-top: 0px;
+    }
+    .form-content{
+        width: 60%;
+    }
+    .layui-table .layui-form-select,.layui-table .layui-select-title ,.layui-table .layui-unselect{
+        height: 24px;
+    }
+    .layui-table .layui-form-select dl dd,.layui-table .layui-form-select dl dt{
+        line-height: 24px;
+    }
+    .layui-table .layui-form-radio{
+        margin: 0px 0px 0 0;
+    }
+    .layui-table .layui-btn{
+        margin-top: 0px;;
+    }
+</style>
+<form class="layui-form seller-alone-form" action="{:url('form/add')}" method="post">
+    <div class="form-content">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>表单名称：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="name" value="{$form.name}" required lay-verify="required" autocomplete="off" placeholder="请输入表单名称"
+                       class="layui-input ">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">表单类型：</label>
+            <div class="layui-input-inline">
+                <select name="type">
+                    {volist name='type' id='vo' key=key}
+                    <option value="{$key}" {if condition="$key eq $form.type"}selected{/if}>{$vo}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">表头类型：</label>
+            <div class="layui-input-inline">
+                <select name="head_type" lay-filter="head_type">
+                    {volist name='head_type' id='vo' key=key}
+                    <option value="{$key}" {if condition="$key eq $form.head_type"}selected{/if}>{$vo}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item image" {if condition="$form.head_type eq 3"}style="display: none;"{/if}>
+            <label class="layui-form-label"><i class="required-color">*</i>头部图片：</label>
+            <div class="layui-upload" id="imgs">
+                <button type="button" class="layui-btn" id="goods_img" lay-filter="goods_img" onclick="upImage()">上传图片
+                </button>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    <p>说明：[当表头类型为图片时只取第一张图片，轮播可有多张，可拖动图片进行排序]</p>
+                    <div class="layui-upload-list" id="img_preview">
+                        {volist name="form['head_type_value_url']" id="image"}
+                        <div class="imgdiv">
+                            <img src="{$image}"  class="layui-upload-img" style="width: 100px;height:100px;">
+                            <div id="operate">
+                                <div><a class="del" onclick="delImg(this,'{$form[head_type_value_image][$key]}')">删除</a></div>
+                            </div>
+                            <input type='hidden' name='img[]' value="{$form[head_type_value_image][$key]}">
+                        </div>
+                        {/volist}
+                    </div>
+                </blockquote>
+            </div>
+        </div>
+        <div class="layui-form-item video" {if condition="$form.head_type neq 3"}style="display: none;"{/if}>
+            <label class="layui-form-label"><i class="required-color">*</i>头部视频：</label>
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn" id="video"><i class="layui-icon"></i>上传视频</button>
+            </div>
+            <div id="fileName">
+                {$video}
+            </div>
+            <input type='hidden' name='video' id="video_value" value='{$form.head_type_video}'>
+        </div>
+
+        <div class="layui-form-item layui-upload video" {if condition="$form.head_type neq 3"}style="display: none;"{/if}>
+            <label class="layui-form-label">视频封面：</label>
+            <div class="layui-input-inline seller-inline-4">
+                {Jshop:image id='video_cover' name="video_cover" value="$head_type_value[1]"/}
+                <div class="layui-form-mid layui-word-aux">
+                    图标尺寸建议：377px*177px
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">表单描述：</label>
+
+            <div class="layui-input-block">
+                <textarea placeholder="请输入表单描述" name="desc" class="layui-textarea">{$form.desc}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">表单字段：</label>
+            <div class="layui-input-block">
+                <table class="layui-table" lay-size="sm">
+                    <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th style="width: 90px;">字段值</th>
+                        <th>默认值</th>
+                        <th>验证类型</th>
+                        <th  style="width: 112px;">必填</th>
+                        <th>排序</th>
+                        <th style="width: 82px;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="view">
+                    {empty name="form.items"}
+                    <tr data-id="0">
+                        <td>
+                            <input type="text" name="field[name][0]" required value="" placeholder="" autocomplete="off"
+                                   class="layui-input  sm-input">
+                        </td>
+                        <td>
+                            <select name="field[type][0]" class="sm-input" style="height: 24px;" lay-filter="change_type">
+                                {volist name='field_type' id='vo' key=key}
+                                <option value="{$key}">{$vo}</option>
+                                {/volist}
+                            </select>
+                        </td>
+                        <td class="field_value">
+                            <input type="text" name="field[value][0]" required value="" placeholder="空格分割"
+                                   autocomplete="off" class="layui-input  sm-input">
+                        </td>
+                        <td>
+                            <input type="text" name="field[default][0]" required value="" lay-verify=""
+                                   placeholder="空格分割" autocomplete="off" class="layui-input  sm-input">
+                        </td>
+                        <td>
+                            <select name="field[validation_type][0]" class="sm-input" style="height: 24px;">
+                                {volist name='validation_type' id='vo' key=key}
+                                <option value="{$key}">{$vo}</option>
+                                {/volist}
+                            </select>
+                        </td>
+                        <td>
+                            <input type="radio" name="field[required][0]" value="1" title="是">
+                            <input type="radio" name="field[required][0]" value="2" title="否" checked>
+                        </td>
+                        <td>
+                            <input type="text" name="field[sort][0]" required value="100" placeholder="" autocomplete="off"
+                                   class="layui-input seller-inline-1 sm-input">
+                        </td>
+                        <td>
+                            <a class="layui-btn layui-btn-xs addfield-class table-button">
+                                添加
+                            </a>
+                            <a class="layui-btn layui-btn-danger layui-btn-xs del-class table-button">
+                                删除
+                            </a>
+                        </td>
+                    </tr>
+                    {/empty}
+                    {notempty name="form.items"}
+
+                        {volist name="form.items" id="item"}
+                        <tr data-id="{$item.id}">
+                            <td>
+                                <input type="text" name="field[name][{$item.id}]" required value="{$item.name}" placeholder="" autocomplete="off"
+                                       class="layui-input  sm-input">
+                                <input type="hidden" name="field[id][{$item.id}]" value="{$item.id}">
+                            </td>
+                            <td>
+                                <select name="field[type][{$item.id}]" class="sm-input" style="height: 24px;" lay-filter="change_type">
+                                    {volist name='field_type' id='vo' key=key}
+                                    <option value="{$key}" {if condition="$key eq $item.type"}selected{/if} >{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </td>
+                            <td class="field_value">
+                                {if condition="$item.type == 'goods'"}
+                                    {Jshop:sellergoods value="$item.value" num="1" name="field[value]" key="$item.id" type="checkbox"/}
+                                {else}
+                                <input type="text" name="field[value][{$item.id}]" required  value="{$item.value}" placeholder="空格分割"
+                                       autocomplete="off" class="layui-input  sm-input">
+                                {/if}
+
+                            </td>
+                            <td>
+                                <input type="text" name="field[default][{$item.id}]" required value="{$item.default_value}" lay-verify=""
+                                       placeholder="空格分割" autocomplete="off" class="layui-input  sm-input">
+                            </td>
+                            <td>
+                                <select name="field[validation_type][{$item.id}]" class="sm-input" style="height: 24px;">
+                                    {volist name='validation_type' id='vo' key=key}
+                                    <option value="{$key}" {if condition="$key eq $item.validation_type"}selected{/if} >{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="radio" name="field[required][{$item.id}]" value="1" title="是" {if condition="1 eq $item.required"}checked{/if}>
+                                <input type="radio" name="field[required][{$item.id}]" value="2" title="否" {if condition="2 eq $item.required"}checked{/if}>
+                            </td>
+                            <td>
+                                <input type="text" name="field[sort][{$item.id}]" required value="{$item.sort}" placeholder="" autocomplete="off"
+                                       class="layui-input seller-inline-1 sm-input">
+                            </td>
+                            <td>
+                                <a class="layui-btn layui-btn-xs addfield-class table-button">
+                                    添加
+                                </a>
+                                <a class="layui-btn layui-btn-danger layui-btn-xs del-class table-button">
+                                    删除
+                                </a>
+                            </td>
+                        </tr>
+                        {/volist}
+                    {/notempty}
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-input-block layui-word-aux">
+                1. 类型是商品时：可不输入字段名，默认值为默认下单数量<br/>
+                2. 类型是金额时，字段值可不填
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">按钮名称：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="button_name" value="{$form.button_name}" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">按钮颜色：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="button_color" value="{$form.button_color}" placeholder="" autocomplete="off" class="layui-input" id="color-form-input">
+            </div>
+            <div class="layui-inline" style="left: -11px;">
+                <div id="color-form"></div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">需要登录：</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="is_login" value="1" {if condition="$form.is_login=='1'"}checked{/if} lay-skin="switch" lay-text="是|否">
+
+            </div>
+            <div class="layui-form-mid layui-word-aux">订单和付款码类型请一定要选择登录哦~</div>
+
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">排序：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="sort" required value="{$form.sort}" autocomplete="off" placeholder="越小越靠前"
+                       class="layui-input ">
+            </div>
+            <div class="layui-form-mid layui-word-aux">数字越小越靠前</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">提示语：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="return_msg" required value="{$form.return_msg}" autocomplete="off" placeholder="提交后提示语"
+                       class="layui-input ">
+            </div>
+            <div class="layui-form-mid layui-word-aux">表单提交后给用户展示</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">到期时间：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="end_date" id="date" value="{$form.end_date}" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">为空时无到期时间</div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="id" value="{$form.id}">
+                <button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
+                <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+<script id="tr_tpl" type="text/html">
+    <tr data-id="{{ d.id }}">
+        <td>
+            <input type="text" name="field[name][{{ d.id }}]" required value=""  placeholder="" autocomplete="off" class="layui-input  sm-input">
+        </td>
+        <td>
+            <select name="field[type][{{ d.id }}]" class="sm-input" style="height: 24px;" lay-filter="change_type">
+                {volist name='field_type' id='vo' key=key}
+                <option value="{$key}">{$vo}</option>
+                {/volist}
+            </select>
+        </td>
+        <td class="field_value">
+            <input type="text" name="field[value][{{ d.id }}]" required value=""  placeholder="空格分割" autocomplete="off" class="layui-input  sm-input"  >
+        </td>
+        <td>
+            <input type="text" name="field[default][{{ d.id }}]" required value=""  placeholder="空格分割" autocomplete="off" class="layui-input  sm-input">
+        </td>
+        <td>
+            <select name="field[validation_type][{{ d.id }}]" class="sm-input" style="height: 24px;">
+                {volist name='validation_type' id='vo' key=key}
+                <option value="{$key}">{$vo}</option>
+                {/volist}
+            </select>
+        </td>
+        <td>
+            <input type="radio" name="field[required][{{ d.id }}]" value="1" title="是">
+            <input type="radio" name="field[required][{{ d.id }}]" value="2" title="否" checked>
+        </td>
+        <td>
+            <input type="text" name="field[sort][{{ d.id }}]" required value="100"  placeholder="" autocomplete="off" class="layui-input seller-inline-1 sm-input">
+        </td>
+        <td>
+            <a class="layui-btn layui-btn-xs addfield-class table-button">
+                添加
+            </a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs del-class table-button">
+                删除
+            </a>
+        </td>
+    </tr>
+</script>
+
+
+
+<script id="image_tpl" type="text/html">
+    {{# layui.each(d, function(index, item){  }}
+    <div class="imgdiv">
+        <img src="{{ item.src }}"  class="layui-upload-img" style="width: 100px;height:100px;">
+        <div id="operate">
+            <div><a class="del" onclick="delImg(this,'{{ item.image_id }}')">删除</a></div>
+        </div>
+        <input type='hidden' name='img[]' value="{{ item.image_id }}">
+    </div>
+    {{#  }); }}
+</script>
+
+<div id="selectgoods" style="display: none;">
+    {Jshop:sellergoods value="$goods.goods_id" num="1" name="field[value][]" type="checkbox"/}
+</div>
+
+<script type="text/javascript">
+    var laytpl='';
+    //渲染表单
+    layui.use(['form','laytpl','upload','colorpicker','laydate'], function() {
+        var $ = layui.jquery
+                ,colorpicker = layui.colorpicker
+                 ,upload = layui.upload
+                ,laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        var form = layui.form;
+        laytpl = layui.laytpl;
+        form.render();
+
+        form.on('select(head_type)', function (data) {
+            var type_id = data.value;
+            if(type_id == 3){
+                $(".video").show();
+                $(".image").hide();
+            }else{
+                $(".image").show();
+                $(".video").hide();
+            }
+        });
+        form.on('select(change_type)', function (data) {
+
+            var type = data.value;
+            if(type =='goods'){
+                var goodsHtml = $("#selectgoods").html();
+                var tempid = $("#selectgoods").find(".select_seller_goods_box").attr("id");
+                var id = tempid.split("_");
+                var currentid = $(data.elem).parent().parent().attr('data-id');
+                var newid = id[0] + "_" + currentid;
+                var reg = new RegExp(id[0], "g"); //创建正则RegExp对象
+                goodsHtml = goodsHtml.replace(reg, newid);
+
+                $(data.elem).parent().next('.field_value').html(goodsHtml);
+                var title = $("#"+newid+"_list").html();
+                console.log(title);
+                form.render();
+            }
+        });
+
+
+        //表单赋值
+        colorpicker.render({
+            elem: '#color-form'
+            ,color: '#1c97f5'
+            ,done: function(color){
+                $('#color-form-input').val(color);
+            }
+        });
+
+        /***
+         * 上传视频
+         * */
+        upload.render({
+            elem: '#video'
+            ,url: "{:url('Files/uploadVideo')}"
+            ,accept: 'video' //视频
+            ,before: function(obj){
+                layer.load(1);
+            }
+            ,done: function(res){
+                layer.closeAll('loading');
+                layer.msg(res.msg);
+                if(res.status){
+                    $("#fileName").html(res.data.name);
+                    $("#video_value").val(res.data.id);
+                }
+            }
+            ,error: function(res){
+                layer.closeAll('loading');
+                layer.msg("上传失败，请重新上传");
+            }
+        });
+
+        $(".layui-table").on('click', '.addfield-class', function(e) {
+            var getTpl = tr_tpl.innerHTML;
+            var lastId = $(this).parent().parent().parent().find('tr').last().attr('data-id');
+
+            var tmpData = {};
+            tmpData.id = parseInt(lastId) + 1;
+            laytpl(getTpl).render(tmpData, function(html) {
+                $("#view").append(html);
+                form.render();
+            });
+        });
+
+
+
+        $(".layui-table").on('click', '.del-class', function(e) {
+            $(this).parent().parent().remove();
+        })
+
+
+
+        //保存商品
+        form.on('submit(save)', function(data){
+            formData = data.field;
+            if(!formData){
+                layer.msg('请先完善数据', {time: 1300});
+                return false;
+            }
+            $.ajax({
+                url: '{:url("Form/edit")}',
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                success: function(e){
+                    if(e.status === true){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            window.location.href='{:url("Form/index")}';
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300});
+                    }
+                }
+            })
+            return false;
+        });
+    });
+
+
+    var _editor = UE.getEditor("edit_image",{
+        initialFrameWidth:800,
+        initialFrameHeight:300,
+    });
+    _editor.ready(function (){
+        _editor.hide();
+        _editor.addListener('beforeInsertImage',function(t,arg){
+            if(arg.length>5){
+                layer.msg("最多只能选择5张图片，请重新选择");
+                return false;
+            }
+            var getTpl = image_tpl.innerHTML
+                    ,view = document.getElementById('img_preview');
+            var oldHtml = $("#img_preview").html();
+            if(arg.length>0) {
+                laytpl(getTpl).render(arg, function (html) {
+                    view.innerHTML = oldHtml+html;
+                });
+            }else{
+                layer.msg("请先上传图片");
+                return false;
+            }
+        });
+    });
+    //上传dialog
+    function upImage(){
+        var myImage = _editor.getDialog("insertimage");
+        myImage.open();
+    }
+
+    /**
+     * 删除图片
+     * @param obj
+     * @param imageId
+     */
+    function delImg(obj,imageId) {
+        var imgDiv = $(obj).parent().parent().parent();
+        imgDiv.remove();
+    }
+
+    //图片排序
+    $('.layui-upload-list').DDSort({
+        target: '.imgdiv',
+        delay: 100,
+        floatStyle: {
+            'border': '1px solid #ccc',
+            'background-color': '#fff'
+        }
+    });
+</script>
+<textarea id="edit_image" style="display: none;"></textarea>

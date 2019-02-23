@@ -31,19 +31,4 @@ class OperationLog extends Manage
         return $logModel->tableData($request);
     }
 
-
-    /**
-     *
-     *  后台操作日志记录列表
-     * @return mixed
-     */
-    public function logList ()
-    {
-        if (\think\facade\Request::isAjax()) {
-            $logModel = new logModel();
-            return $logModel->tableData($this->request->param());
-        }
-        return $this->fetch('list');
-    }
-
 }

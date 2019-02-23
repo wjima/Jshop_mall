@@ -16,6 +16,10 @@ use think\facade\Request;
  */
 class Order extends Manage
 {
+
+    const SHOPPING = 1;//购物清单
+    const DISTRIBUTION = 2;//配货单
+    const UNION = 3;//联合打印
     /**
      * 订单列表
      * @return array|mixed
@@ -342,5 +346,33 @@ class Order extends Manage
             ]
         ];
         return $data;
+    }
+
+    /**
+     * 订单打印
+     */
+    public function print_tpl()
+    {
+        $order_id = input('order_id/s', '');
+        $type     = input('type/d', self::SHOPPING);
+
+        if (!$order_id) {
+            $this->error("关键参数丢失");
+        }
+        $orderModel = new Model();
+        $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+        $this->assign('order', $order_info);
+        $this->view->engine->layout(false);
+        $shop_name   = getSetting('shop_name');
+        $shop_mobile = getSetting('shop_mobile');
+        $this->assign('shop_name', $shop_name);
+        $this->assign('shop_mobile', $shop_mobile);
+        if ($type == self::SHOPPING) {//购物清单
+            return $this->fetch('shopping');
+        } elseif ($type == self::DISTRIBUTION) {//配货单
+            return $this->fetch('distribution');
+        } elseif ($type == self::UNION) {
+            return $this->fetch('union');
+        }
     }
 }

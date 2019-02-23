@@ -157,6 +157,12 @@
             cols: [[
                 {type:'checkbox', fixed: 'left'},
                 {field: 'order_id', title: '订单号', width:140, align: 'center', fixed: 'left'},
+                {field: 'order_id', title: '打印',align: 'center', fixed: 'left',templet:function (data) {
+                    var html='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=1" target="_blank">购</a>&nbsp;';
+                    html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=2"  target="_blank">配</a>&nbsp;';
+                    html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=3"  target="_blank">联</a>';
+                    return html;
+                }},
                 {field: 'ctime', title: '下单时间', width:160, align: 'center'},
                 {field: 'status_text', title: '订单状态', width: 90, align: 'center'},
                 {field: 'username', title: '用户名', width:120, align: 'center'},
@@ -594,4 +600,5 @@
         });
 
     });
+
 </script>

@@ -19,7 +19,8 @@
           </view>
           <view class='body-right-style'>
             <!-- 商品规格 -->
-            <text >{{item.addon}}X{{item.nums}}</text>
+            <text wx:if="{{item.addon}}">{{item.addon}}X{{item.nums}}</text>
+            <text wx:if="{{!item.addon}}">X{{item.nums}}</text>
           </view>
         </view>
       </view>    
@@ -63,7 +64,7 @@
     <text class='problem-title'>问题描述</text>
     <view class="problem-body">
       <view class="">
-        <textarea class="" bindinput="bindReasonChange" placeholder-class='problem-textarea' placeholder="请您在此描述问题"/>
+        <textarea bindinput="bindReasonChange" placeholder-class='problem-textarea' placeholder="请您在此描述问题" focus="true" auto-focus="true" />
         <view class="weui-textarea-counter">{{reason_size}}/200</view>
       </view>
     </view>

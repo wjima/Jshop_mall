@@ -1,0 +1,14 @@
+<!--pages/other/pay/payfailed.wxml-->
+<view class="paysuccess">
+  <view class='paysuccess-t'>
+    <image class="paysuccess-img" src='../../image/pastdue.png'></image>
+  </view>
+  <view class='paysuccess-m'>
+    
+    <view class="paysuccess-tip">{{errorMsg}}</view>
+    <view class="paysuccess-time">您访问的{{errorMsg}}，请扫描新的二维码</view>
+  </view>
+  <view class='paysuccess-b'  bindtap="failedButton">
+    <button>确定</button>
+  </view>
+</view>

@@ -23,7 +23,7 @@
     </view>
     <view class='mid'>
       <view class='mid-text'>
-        <textarea class="mid-textarea" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" placeholder-class='mid-textarea-p' bindinput="textarea" data-goodsid="{{item.id}}" />
+        <textarea class="mid-textarea" placeholder="宝贝满足你的期望吗？说说它的优点和美中不足的地方吧" placeholder-class='mid-textarea-p' bindinput="textarea" data-goodsid="{{item.id}}" focus="true" auto-focus="true" />
       </view>
       <view class='upload-img' wx:for="{{images[item.id]}}" wx:key="indexs" wx:for-item="items" wx:for-index="indexss">
         <image src='{{items.url}}' bindtap='delImage' data-index="{{indexss}}" data-goodsid="{{item.id}}"></image>

@@ -341,8 +341,8 @@ page{
 }
 .bottom-btn button{
   width: 100%;
-  height: 80rpx;
-  line-height: 80rpx;
+  height: 90rpx;
+  line-height: 90rpx;
   margin: 0 auto;
   background-color: #333;
   color: #fff;
@@ -443,14 +443,14 @@ page{
   font-size: 28rpx;
 }
 .modal-payment>view{
-  height: 70rpx;
+  height: 80rpx;
   width: 100%;
-  line-height: 70rpx;
+  line-height: 80rpx;
   text-align: center;
 }
 .modal-payment .immediate-pay{
-  height: 70rpx;
-  line-height: 70rpx;
+  height: 80rpx;
+  line-height: 80rpx;
   width: 100%;
   text-align: center;
   border: none;

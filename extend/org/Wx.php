@@ -280,22 +280,22 @@ class Wx
         $data        = json_encode($data, JSON_UNESCAPED_SLASHES);
         $res         = $curl->post($url, $data);
         Log::info('生成小程序码消息返回：' . $res);
-        $res = json_decode($res, true);
-        if (isset($res['errcode']) && $res['errcode'] == 0) {
+        if(isjson($res)){
+            $res = json_decode($res, true);
+            $return['msg'] = $res['errmsg'];
+            return $return;
+        }else{
             $filePath = ROOT_PATH . '/public/qrcode';
             if (!is_dir($filePath)) {
                 @mkdir($filePath);
             }
-            $filename = $filePath . "/" . md5($path) . ".jpg";
-            $file     = fopen($filename, "w");//打开文件准备写入
+            $filename =  md5($path) . ".jpg";
+            $file     = fopen($filePath.'/'.$filename, "w");//打开文件准备写入
             fwrite($file, $res);//写入
             fclose($file);//关闭
-            $return['data']   = $filename;
+            $return['data']   = getRealUrl('/qrcode/'.$filename);
             $return['status'] = true;
             $return['msg']    = '获取成功';
-            return $return;
-        } else {
-            $return['msg'] = $res['errmsg'];
             return $return;
         }
     }

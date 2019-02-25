@@ -145,7 +145,7 @@
             </view>
             <view class='ib-item-right'>
               <view class="ib-item-mid">
-                <input class='ib-item-input' name="{{item.id}}" value="{{item.default_value}}" placeholder-class='ib-item-input-c' placeholder='请输入{{item.name}}'></input>
+                <input class='ib-item-input' type="digit" name="{{item.id}}" value="{{item.default_value}}" placeholder-class='ib-item-input-c' placeholder='请输入{{item.name}}'></input>
               </view>
             </view>
           </view>

@@ -124,11 +124,7 @@ abstract class Addons
     {
         $data = explode('\\', get_class($this));
         $class_name = array_pop($data);
-        if($class_name == 'KdniaoExpress'){ //todo 临时过渡
-            return array_pop($data);
-        }else{
-            return  strtolower(array_pop($data));
-        }
+        return array_pop($data);
     }
 
     /**

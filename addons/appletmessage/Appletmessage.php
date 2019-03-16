@@ -1,6 +1,6 @@
 <?php
 
-namespace addons\appletmessage;    // 注意命名空间规范
+namespace addons\Appletmessage;    // 注意命名空间规范
 
 use app\common\model\BillPayments;
 use app\common\model\TemplateMessage;
@@ -16,7 +16,7 @@ class Appletmessage extends Addons
 {
     // 该插件的基础信息
     public $info = [
-        'name'          => 'appletmessage',    // 插件标识
+        'name'          => 'Appletmessage',    // 插件标识
         'title'         => '微信小程序模板消息',    // 插件名称
         'description'   => '微信小程序模板消息',    // 插件简介
         'status'        => 1,    // 状态

@@ -1,5 +1,5 @@
 <?php
-namespace addons\distribution;
+namespace addons\Distribution;
 
 use app\common\model\Balance;
 use app\common\model\Order;
@@ -12,7 +12,7 @@ class Distribution extends Addons
 {
     // 该插件的基础信息
     public $info = [
-        'name' => 'distribution',
+        'name' => 'Distribution',
         'title' => '三级分销系统插件',
         'description' => '用户购买商品支付成功后，直推和直推的直推会拿一部分佣金奖励',
         'status' => 0,

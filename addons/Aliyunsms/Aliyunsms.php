@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
-namespace addons\aliyunsms;    // 注意命名空间规范
+namespace addons\Aliyunsms;    // 注意命名空间规范
 
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
@@ -19,7 +19,7 @@ class Aliyunsms extends Addons
 {
     // 该插件的基础信息
     public $info = [
-        'name'        => 'aliyunsms',    // 插件标识
+        'name'        => 'Aliyunsms',    // 插件标识
         'title'       => '阿里云短信通道',    // 插件名称
         'description' => '阿里云发送短信插件，请勿和其它短信通道一起使用',    // 插件简介
         'status'      => 0,    // 状态

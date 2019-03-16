@@ -1,5 +1,5 @@
 <?php
-namespace addons\mms1086;	// 注意命名空间规范
+namespace addons\Mms1086;	// 注意命名空间规范
 
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
@@ -11,7 +11,7 @@ class Mms1086 extends Addons
 {
     // 该插件的基础信息
     public $info = [
-        'name' => 'mms1086',	// 插件标识
+        'name' => 'Mms1086',	// 插件标识
         'title' => 'mms1086短信插件',	// 插件名称
         'description' => 'mms1086发送短信插件，请勿和其它短信通道一起使用',	// 插件简介
         'status' => 0,	// 状态

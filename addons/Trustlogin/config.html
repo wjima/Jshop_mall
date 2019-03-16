@@ -1,0 +1,20 @@
+<form class="layui-form" action="#" method="post">
+    <div style="padding: 30px;" class="layui-form ">
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信登录：</label>
+                <div class="layui-input-line">
+                    <input type="radio" name="setting[weixin]" value="1" title="启用" {if condition="$config_params.weixin eq '1'"} checked="" {/if} >
+                    <input type="radio" name="setting[weixin]" value="0" title="禁用" {if condition="$config_params.weixin eq '0'"} checked="" {/if}>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        layui.use('form', function () {
+            var $ = layui.jquery;
+            var form = layui.form;
+            form.render();
+        });
+    </script>
+</form>

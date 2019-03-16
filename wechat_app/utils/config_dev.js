@@ -5,4 +5,10 @@ module.exports = {
   shop_name: 'jshop云商',
   image_max: 5,           //上传图片的时候，最多能够上传几张
   cate_style: 3,          //商品分类页样式，1一级大图，2一级小图，3二级小图
+  payment_type: {      //支付单类型
+    order: 1,    //订单
+    recharge: 2, //充值
+    form_order: 5, //表单付款码
+    form_pay: 6 //表单订单
+  }
 }

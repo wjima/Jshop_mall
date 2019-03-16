@@ -41,27 +41,25 @@ Page({
     // 获取默认银行卡信息
     getUserDefaultBankCard: function () {
         let page = this;
-        app.db.userToken(function (token) {
-            app.api.getUserDefaultBankCard(function (res) {
-                if (res.status) {
-                    if (res.data.id) {
-                        page.setData({
-                            cardId: res.data.id,
-                            cardInfo: res.data,
-                            isCard: true,
-                        });
-                    }
-                } else {
-                    wx.showModal({
-                        title: '提示',
-                        content: '银行卡信息获取失败，请返回重新操作',
-                        showCancel: false,
-                        complete: function () {
-                            wx.navigateBack(1);
-                        }
+        app.api.getUserDefaultBankCard(function (res) {
+            if (res.status) {
+                if (res.data.id) {
+                    page.setData({
+                        cardId: res.data.id,
+                        cardInfo: res.data,
+                        isCard: true,
                     });
                 }
-            });
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: '银行卡信息获取失败，请返回重新操作',
+                    showCancel: false,
+                    complete: function () {
+                        wx.navigateBack(1);
+                    }
+                });
+            }
         });
     },
 
@@ -71,7 +69,6 @@ Page({
         let money = parseFloat(this.data.money);
         let maxMoney = parseFloat(this.data.maxMoney);
         let page = this;
-
         if (id <= 0) {
             wx.showModal({
                 title: '提示',
@@ -94,31 +91,27 @@ Page({
             });
             return false;
         }
-
         let data = {
             cardId: id,
             money: money
         }
-
-        app.db.userToken(function (token) {
-            app.api.userCash(data, function (res) {
-                if (res.status) {
-                    wx.showModal({
-                        title: '成功',
-                        content: '提现申请成功，请注意查收',
-                        showCancel: false,
-                        complete: function () {
-                            wx.navigateBack(1);
-                        }
-                    });
-                } else {
-                    wx.showModal({
-                        title: '提示',
-                        content: res.msg,
-                        showCancel: false
-                    });
-                }
-            });
+        app.api.userCash(data, function (res) {
+            if (res.status) {
+                wx.showModal({
+                    title: '成功',
+                    content: '提现申请成功，请注意查收',
+                    showCancel: false,
+                    complete: function () {
+                        wx.navigateBack(1);
+                    }
+                });
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: res.msg,
+                    showCancel: false
+                });
+            }
         });
     }
 })

@@ -41,23 +41,13 @@ class Order extends Common
     const NO_COMMENT = 1;                   //没有评价
     const ALREADY_COMMENT = 2;              //已经评价
 
-    const ALL_PENDING_PAYMENT = 'pending_payment';  //总订单类型 待付款
-    const ALL_PENDING_DELIVERY = 'pending_delivery';        //待发货
-    const ALL_PENDING_RECEIPT = 'pending_receipt';  //待收货
-    const ALL_PENDING_EVALUATE = 'pending_evaluate';    //待评价
-    const ALL_COMPLETED_EVALUATE = 'completed_evaluate'; //已评价
-    const ALL_COMPLETED = 'completed';          //已完成
-    const ALL_CANCEL = 'cancel';                //已取消
-
-    protected $status_relation = [
-        1 => self::ALL_PENDING_PAYMENT,
-        2 => self::ALL_PENDING_DELIVERY,
-        3 => self::ALL_PENDING_RECEIPT,
-        4 => self::ALL_PENDING_EVALUATE,
-        5 => self::ALL_COMPLETED_EVALUATE,
-        6 => self::ALL_COMPLETED,
-        7 => self::ALL_CANCEL
-    ];
+    const ALL_PENDING_PAYMENT = 1;          //总订单类型 待付款
+    const ALL_PENDING_DELIVERY = 2;         //待发货
+    const ALL_PENDING_RECEIPT = 3;          //待收货
+    const ALL_PENDING_EVALUATE = 4;         //待评价
+    const ALL_COMPLETED_EVALUATE = 5;       //已评价
+    const ALL_COMPLETED = 6;                //已完成
+    const ALL_CANCEL = 7;                   //已取消
 
     /**
      * 订单明细表关联
@@ -154,7 +144,8 @@ class Order extends Common
             $where[] = array('o.order_id', 'LIKE', '%'.$input['order_id'].'%');
         }
         //多个订单时
-        if (isset($input['order_ids']) && $input['order_ids'] != "") {
+        if(isset($input['order_ids']) && $input['order_ids'] != "")
+        {
             $where[] = ['o.order_id', 'in', $input['order_ids']];
         }
         if(!empty($input['username']))
@@ -211,7 +202,7 @@ class Order extends Common
         }
         if(!empty($input['order_unified_status']))
         {
-            $where = array_merge($where, $this->getReverseStatus($this->status_relation[$input['order_unified_status']], '`o`.'));
+            $where = array_merge($where, $this->getReverseStatus($input['order_unified_status'], '`o`.'));
         }
 
         $page = $input['page']?$input['page']:1;
@@ -259,18 +250,24 @@ class Order extends Common
      */
     public function getListFromAdmin($input, $isPage = true)
     {
-        $result = $this->getListByWhere($input,$isPage);
-        if(count($result['data']) > 0)
-        {
-            foreach($result['data'] as $k => &$v)
-            {
+        $result = $this->getListByWhere($input, $isPage);
+
+        if (count($result['data']) > 0) {
+            foreach ($result['data'] as $k => &$v) {
                 $v['status_text'] = config('params.order')['status_text'][$this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment'])];
-                $v['username'] = get_user_info($v['user_id'], 'nickname');
-                $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status']);
-                $v['area_name'] = get_area($v['ship_area_id']).'-'.$v['ship_address'];
-                $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
+                $v['username']    = get_user_info($v['user_id'], 'nickname');
+                $v['operating']   = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status']);
+                $v['area_name']   = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
+                $v['pay_status']  = config('params.order')['pay_status'][$v['pay_status']];
                 $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
-                $v['source'] = config('params.order')['source'][$v['source']];
+                $v['source']      = config('params.order')['source'][$v['source']];
+                //获取订单打印状态
+                $print_express = hook('getPrintExpressInfo', ['order_id' => $v['order_id']]);
+                if ($print_express[0]['status']) {
+                    $v['print'] = true;
+                } else {
+                    $v['print'] = false;
+                }
             }
         }
         return $result;
@@ -361,30 +358,7 @@ class Order extends Common
         $where = [];
         if(!empty($input['status']))
         {
-            switch ($input['status']) {
-                case 1: //待付款
-                    $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                    $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
-                    break;
-                case 2: //待发货
-                    $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                    $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                    $where[] = ['ship_status', 'eq', self::SHIP_STATUS_NO];
-                    break;
-                case 3: //待收货
-                    $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                    $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                    $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-                    $where[] = ['confirm', 'eq', self::RECEIPT_NOT_CONFIRMED];
-                    break;
-                case 4: //待评价
-                    $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                    $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                    $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-                    $where[] = ['confirm', 'eq', self::CONFIRM_RECEIPT];
-                    $where[] = ['is_comment', 'eq', self::NO_COMMENT];
-                    break;
-            }
+            $where = $this->getReverseStatus($input['status']);
         }
         if(!empty($input['user_id']))
         {
@@ -435,7 +409,7 @@ class Order extends Common
      * @param bool $user_id
      * @return int|string
      */
-    protected function orderCount($id = 'all', $user_id = false)
+    protected function orderCount($id = 0, $user_id = false)
     {
         $where = [];
         //都需要验证的
@@ -444,46 +418,7 @@ class Order extends Common
             $where[] = ['user_id', 'eq', $user_id];
         }
 
-        switch($id)
-        {
-            case 1: //待付款
-                $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
-                break;
-            case 2: //待发货
-                $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                $where[] = ['ship_status', 'eq', self::SHIP_STATUS_NO];
-                break;
-            case 3: //待收货
-                $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-                $where[] = ['confirm', 'eq', self::RECEIPT_NOT_CONFIRMED];
-                break;
-            case 4: //待评价
-                $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-                $where[] = ['confirm', 'eq', self::CONFIRM_RECEIPT];
-                $where[] = ['is_comment', 'eq', self::NO_COMMENT];
-                break;
-            case 5: //已评价
-                $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-                $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-                $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
-                $where[] = ['confirm', 'eq', self::CONFIRM_RECEIPT];
-                $where[] = ['is_comment', 'eq', self::ALREADY_COMMENT];
-                break;
-            case 6: //已取消订单
-                $where[] = ['status', 'eq', self::ORDER_STATUS_CANCEL];
-                break;
-            case 7: //已完成订单
-                $where[] = ['status', 'eq', self::ORDER_STATUS_COMPLETE];
-                break;
-            default: //全部
-                break;
-        }
+        $where = array_merge($where, $this->getReverseStatus($id));
 
         return $this->where($where)
             ->count();
@@ -607,7 +542,12 @@ class Order extends Common
         $order_info['text_status'] = $this->getStatus($order_info['status'], $order_info['pay_status'], $order_info['ship_status'], $order_info['confirm'], $order_info['is_comment']);
         $order_info['ship_area_name'] = get_area($order_info['ship_area_id']);
 
-        $payment_name = config('params.payment_type')[$order_info['payment_code']];
+        if(isset(config('params.payment_type')[$order_info['payment_code']])){
+            $payment_name = config('params.payment_type')[$order_info['payment_code']];
+        }else{
+            $payment_name = false;
+        }
+
         $order_info['payment_name'] = $payment_name ? $payment_name : '未知支付方式';
 
         //如果有优惠券，数据处理
@@ -646,7 +586,7 @@ class Order extends Common
         }
 
         //物流信息查询
-        if($order_info['delivery'][0] && $logistics)
+        if(isset($order_info['delivery'][0]) && $order_info['delivery'][0] && $logistics)
         {
             $logi_code = $order_info['delivery'][0]['logi_code'];
             $logi_no = $order_info['delivery'][0]['logi_no'];
@@ -759,6 +699,12 @@ class Order extends Common
             }
         }
 
+        //促销信息
+        if($order_info['promotion_list'])
+        {
+            $order_info['promotion_list'] = json_decode($order_info['promotion_list'], true);
+        }
+
         return $order_info;
     }
 
@@ -813,10 +759,15 @@ class Order extends Common
             //待收货
             return self::ALL_PENDING_RECEIPT;
         }
-        elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status > 1 && $ship_status == self::SHIP_STATUS_YES && $confirm == self::CONFIRM_RECEIPT && $is_comment == self::NO_COMMENT)
+        elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status > self::PAY_STATUS_NO && $ship_status == self::SHIP_STATUS_YES && $confirm == self::CONFIRM_RECEIPT && $is_comment == self::NO_COMMENT)
         {
             //待评价
             return self::ALL_PENDING_EVALUATE;
+        }
+        elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status > self::PAY_STATUS_NO && $ship_status == self::SHIP_STATUS_YES && $confirm == self::CONFIRM_RECEIPT && $is_comment == self::ALREADY_COMMENT)
+        {
+            //已评价
+            return self::ALL_COMPLETED_EVALUATE;
         }
         elseif ($status == self::ORDER_STATUS_COMPLETE)
         {
@@ -1134,6 +1085,7 @@ class Order extends Common
         //发货
         $where[] = ['order_id', 'eq', $order_id];
         $result = $this->save($order_data, $where);
+
         if($result)
         {
             //判断生成门店自提单
@@ -1270,13 +1222,14 @@ class Order extends Common
      * @param bool $store_id
      * @param bool $lading_name
      * @param bool $lading_mobile
-     * @param int   $source     来源平台，1 pc，2 h5，3微信小程序
+     * @param int $source //来源平台，1 pc，2 h5，3微信小程序
+     * @param array $tax
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0,$coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false,$source=2)
+    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0,$coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false,$source=2, $tax = [])
     {
         $result = [
             'status' => false,
@@ -1350,6 +1303,17 @@ class Order extends Common
             $order['cost_freight'] = 0;
         }
 
+        //优惠信息存储
+        $promotion_list = [];
+        foreach($orderInfo['data']['promotion_list'] as $k => $v)
+        {
+            if($v['type'] == 2)
+            {
+                $promotion_list[] = $v;
+            }
+        }
+        $order['promotion_list'] = json_encode($promotion_list);
+
         //积分使用情况
         $order['point'] = $orderInfo['data']['point'];
         $order['point_money'] = $orderInfo['data']['point_money'];
@@ -1368,6 +1332,11 @@ class Order extends Common
         }
         $order['memo'] = $memo;
         $order['source'] = $source;
+        $order['tax_type'] = $tax['tax_type'];
+        $order['tax_title'] = $tax['tax_name'];
+        $order['tax_code'] = $tax['tax_code'];
+        $order['tax_content'] = '商品明细';
+
         $order['ip'] = get_client_ip();
         Db::startTrans();
         try {
@@ -1422,6 +1391,16 @@ class Order extends Common
             //订单记录
             $orderLog = new OrderLog();
             $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
+
+            //企业发票信息记录
+            if($tax['tax_type'] == 3)
+            {
+                $irModel = new InvoiceRecord();
+                $irModel->add(['name' => $tax['tax_name'], 'code' => $tax['tax_code']]);
+            }
+            $order['tax_title'] = $tax['tax_name'];
+            $order['tax_code'] = $tax['tax_code'];
+            $order['tax_content'] = '商品明细';
 
             //发送消息
             $shipModel          = new Ship();
@@ -1715,7 +1694,6 @@ class Order extends Common
         }
     }
 
-
     /**
      * 获取当月的资金池
      * @return array
@@ -1736,14 +1714,14 @@ class Order extends Common
         return $result;
     }
 
-
     /**
      * 获取指定年月的第一天开始和最后一天结束的时间戳
-     *
-     * @param int $y 年份 $m 月份
-     * @return array(本月开始时间，本月结束时间)
+     * @param string $year 年份
+     * @param string $month 月份
+     * @return array (本月开始时间，本月结束时间)
      */
-    public function specifiedTimeStamp($year = "", $month = ""){
+    public function specifiedTimeStamp($year = "", $month = "")
+    {
         if ($year == "") $year = date("Y");
         if ($month == "") $month = date("m");
         $month = sprintf("%02d", intval($month));
@@ -1760,26 +1738,31 @@ class Order extends Common
         ];
     }
 
-    /***
+    /**
      * 订单催付款
      * 默认提前1小时通知
      * @param int $setting
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function remind_order_pay($setting = 0)
     {
-        ini_set('date.timezone','Asia/Shanghai');
-        $where[]           = ['pay_status', 'eq', self::PAY_STATUS_NO];
-        $where[]           = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        ini_set('date.timezone', 'Asia/Shanghai');
+        $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
+        $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $remind_order_time = getSetting('remind_order_time');//催付款时间
-        $second = $setting*86400-$remind_order_time*3600;
+        $second = $setting * 86400 - $remind_order_time * 3600;
 
         $second = time() - $second;
 
-        $where[]           = ['ctime', '<=', $second];
-        $order_info        = $this->where($where)
+        $where[] = ['ctime', '<=', $second];
+        $order_info = $this->where($where)
             ->select();
-        if (count($order_info) > 0) {
-            foreach ($order_info as $kk => $vv) {
+        if (count($order_info) > 0)
+        {
+            foreach ($order_info as $kk => $vv)
+            {
                 sendMessage($vv['user_id'], 'remind_order_pay', $vv);
             }
         }
@@ -1789,6 +1772,9 @@ class Order extends Common
      * 获取csv数据
      * @param $post
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getCsvData($post)
     {
@@ -1799,45 +1785,60 @@ class Order extends Common
         ];
         $header = $this->csvHeader();
         $orderData = $this->getListFromAdmin($post, false);
-        if ($orderData['count'] > 0) {
+        if ($orderData['count'] > 0)
+        {
             $tempBody = $orderData['data'];
             $body = [];
             $i = 0;
-            foreach ($tempBody as $key => $val) {
+            foreach ($tempBody as $key => $val)
+            {
                 $i++;
                 $orderItems = $this->orderItems($val['order_id']);
                 $itemData = [];
-                foreach ($header as $hk => $hv) {
-
-                    if ( isset($hv['modify']) &&isset($val[$hv['id']])&&$val[$hv['id']]) {
-                        if (function_exists($hv['modify'])) {
+                foreach ($header as $hk => $hv)
+                {
+                    if (isset($hv['modify']) && isset($val[$hv['id']]) && $val[$hv['id']])
+                    {
+                        if (function_exists($hv['modify']))
+                        {
                             $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
                         }
-                    }elseif (isset($val[$hv['id']])&&$val[$hv['id']]) {
+                    }
+                    elseif (isset($val[$hv['id']]) && $val[$hv['id']])
+                    {
                         $body[$i][$hk] = $val[$hv['id']];
-                    } else {
+                    }
+                    else
+                    {
                         $body[$i][$hk] = '';
                     }
                 }
 
-
-                foreach ($orderItems as $itemKey => $itemVal) {
+                foreach ($orderItems as $itemKey => $itemVal)
+                {
                     $i++;
-                    $sval['item_name']   = $itemVal['name'] . '-' . $itemVal['addon'];
-                    $sval['item_price']  = $itemVal['price'];
-                    $sval['item_nums']   = $itemVal['nums'];
+                    $sval['item_name'] = $itemVal['name'] . '-' . $itemVal['addon'];
+                    $sval['item_price'] = $itemVal['price'];
+                    $sval['item_nums'] = $itemVal['nums'];
                     $sval['item_amount'] = $itemVal['amount'];
-                    $sval['item_sn']     = $itemVal['sn'];
-                    $sval['item_bn']     = $itemVal['bn'];
+                    $sval['item_sn'] = $itemVal['sn'];
+                    $sval['item_bn'] = $itemVal['bn'];
                     $sval['item_weight'] = $itemVal['weight'];
-                    foreach ($header as $hk => $hv) {
-                        if ( isset($hv['modify']) &&isset($sval[$hv['id']])&&$sval[$hv['id']]) {
-                            if (function_exists($hv['modify'])) {
+                    foreach ($header as $hk => $hv)
+                    {
+                        if (isset($hv['modify']) && isset($sval[$hv['id']]) && $sval[$hv['id']])
+                        {
+                            if (function_exists($hv['modify']))
+                            {
                                 $body[$i][] = $hv['modify']($sval[$hv['id']]);
                             }
-                        }elseif (isset($sval[$hv['id']]) && $sval[$hv['id']]) {
+                        }
+                        elseif (isset($sval[$hv['id']]) && $sval[$hv['id']])
+                        {
                             $body[$i][] = $sval[$hv['id']];
-                        }else{
+                        }
+                        else
+                        {
                             $body[$i][] = '';
                         }
                     }
@@ -1847,7 +1848,9 @@ class Order extends Common
             $result['msg'] = '获取成功';
             $result['data'] = $body;
             return $result;
-        } else {
+        }
+        else
+        {
             //失败，导出失败
             return $result;
         }
@@ -1941,12 +1944,17 @@ class Order extends Common
     /**
      * 获取明细
      * @param string $order_id
-     * @return array|\PDOStatement|string|\think\Collection
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    private function orderItems($order_id = ''){
+    private function orderItems($order_id = '')
+    {
         $itemModel = new OrderItems();
         $items = $itemModel->field('*')->where(['order_id'=>$order_id])->select();
-        if(!$items->isEmpty()){
+        if(!$items->isEmpty())
+        {
             return $items->toArray();
         }
         return [];

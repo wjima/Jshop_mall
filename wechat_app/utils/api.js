@@ -1,7 +1,7 @@
 var config = require('config.js');
 var common = require('common.js');
 //需要token才能访问的数组
-var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode', 'user.getusership', 'user.vuesaveusership', 'user.removeship', 'user.setdefship', 'user.getshipdetail', 'user.editship', 'user.getuserpoint', 'store.isclerk', 'store.storeladinglist', 'store.getdefaultstore', 'store.ladingdel', 'store.ladinginfo', 'store.lading', 'coupon.getcouponkey', 'user.myinvite', 'user.activationinvite', 'cart.getnumber'];
+var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode', 'user.getusership', 'user.vuesaveusership', 'user.removeship', 'user.setdefship', 'user.getshipdetail', 'user.editship', 'user.getuserpoint', 'store.isclerk', 'store.storeladinglist', 'store.getdefaultstore', 'store.ladingdel', 'store.ladinginfo', 'store.lading', 'coupon.getcouponkey', 'user.myinvite', 'user.activationinvite', 'cart.getnumber', 'user.userpointlog', 'user.getsigninfo'];
 
 //接口统一封装
 function api(method,data,callback,show = true){
@@ -583,12 +583,6 @@ function sign(callback) {
       callback(res);
   });
 }
-//我的积分记录
-function pointLog(callback) {
-  api('user.pointlog', {}, function (res) {
-      callback(res);
-  });
-}
 //获取店铺名称
 function getStoreName(callback) {
   api('user.getstorename', {}, function (res) {
@@ -853,7 +847,6 @@ function getRecommendKeys(callback){
         callback(res);
     });
 }
-
 //获取表单详情
 function getFormDetial(data, callback) {
   api('form.getformdetial', data, function (res) {
@@ -865,6 +858,24 @@ function addSubmitForm(data, callback) {
   api('form.addsubmit', data, function (res) {
     callback(res);
   });
+}
+//获取用户积分明细
+function userPointLog(data, callback) {
+    api('user.userpointlog', data, function (res) {
+        callback(res);
+    });
+}
+//获取税号
+function getTaxCode(data, callback) {
+    api('order.gettaxcode', data, function (res) {
+        callback(res);
+    });
+}
+//获取签到信息
+function getSignInfo (callback) {
+    api('user.getsigninfo', {}, function (res) {
+        callback(res);
+    });
 }
 
 module.exports = {
@@ -920,7 +931,6 @@ module.exports = {
   changeAvatar: changeAvatar,
   isSign: isSign,
   sign: sign,
-  pointLog: pointLog,
   getStoreName: getStoreName,
   getCashList: getCashList,
   getUserDefaultBankCard: getUserDefaultBankCard,
@@ -963,5 +973,8 @@ module.exports = {
   getFormDetial: getFormDetial,
   addSubmitForm: addSubmitForm,
   getAllCat: getAllCat,
-  getRecommendKeys: getRecommendKeys
+  getRecommendKeys: getRecommendKeys,
+  userPointLog: userPointLog,
+  getTaxCode: getTaxCode,
+  getSignInfo: getSignInfo
 }

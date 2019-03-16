@@ -145,7 +145,8 @@ swiper{
   display: inline-block; 
 }
 .sales-promotion .salespromotion-service-body{
-  margin: auto;
+  /* margin: auto; */
+  max-width: 600rpx;
 }
 .sales-promotion text.salespromotion-service-body{
   background-color:#FF3B44;
@@ -156,6 +157,7 @@ swiper{
   height:28rpx;
   line-height:28rpx;
   padding:0 10rpx;
+  margin-right: 6rpx;
   
 }
 .salespromotion-service-body view{ 
@@ -475,11 +477,14 @@ swiper{
 }
 .lable_green{
   display: inline-block;
-  padding: 2rpx 12rpx;
   background-color: #009688;
   color: #fff;
-  font-size: 24rpx;
-  margin-right: 18rpx;
+  font-size:18rpx;
+  margin-right:18rpx;
+  border-radius:10rpx;
+  height:28rpx;
+  line-height:28rpx;
+  padding:0 10rpx;
 }
 .lable_orange{
   color: #fff;
@@ -646,4 +651,7 @@ swiper{
 }
 .quickbtn{
   z-index: 99;
+}
+.sales-promotion .no-promotion{
+    background-color:#ccc !important;
 }

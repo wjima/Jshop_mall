@@ -1,0 +1,18 @@
+<view>
+  <view class='withdrawcash-top'>
+    <text class='withdrawcash-title'>当前积分</text>
+    <text class='withdrawcash-num'>{{point}}<text class='unit'>分</text></text>
+  </view>
+  <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='sign'>
+      <image class='member-icon' src='../../image/ic-money.png'></image>
+      <text class='member-text'>积分签到</text>
+    </view>
+  </view>
+  <view class='withdrawcash-bottom'>
+    <view class='content-view' bindtap='pointList'>
+      <image class='member-icon' src='../../image/ic-money-detail.png'></image>
+      <text class='member-text'>积分明细</text>
+    </view>
+  </view>
+</view>

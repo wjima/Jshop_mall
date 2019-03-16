@@ -71,41 +71,39 @@ Page({
       params: { formid: this.data.formId}
     };
     //去支付
-    app.db.userToken(function (token) {
-      app.api.pay(data, function (res) {
+    app.api.pay(data, function (res) {
         if (res.status) {
-          wx.requestPayment({
+            wx.requestPayment({
             'timeStamp': '' + res.data.timeStamp,
             'nonceStr': res.data.nonceStr,
             'package': res.data.package,
             'signType': res.data.signType,
             'paySign': res.data.paySign,
             'success': function (e) {　　　
-              if (e.errMsg == "requestPayment:ok") {
+                if (e.errMsg == "requestPayment:ok") {
                 wx.redirectTo({
-                  url: '../../cart/paySuccess/paySuccess?payment_id=' + res.data.payment_id
+                    url: '../../cart/paySuccess/paySuccess?payment_id=' + res.data.payment_id
                 });
-              } else if (res.errMsg == 'requestPayment:cancel') {
+                } else if (res.errMsg == 'requestPayment:cancel') {
                 wx.showToast({
-                  icon: 'none',
-                  title: '支付已取消'
+                    icon: 'none',
+                    title: '支付已取消'
                 });
-              }
+                }
             },
             'fail': function (e) {
-              wx.showToast({
+                wx.showToast({
                 icon: 'none',
                 title: '支付失败请重新支付'
-              });
+                });
             }
-          });
+            });
         } else {
-          wx.showToast({
+            wx.showToast({
             icon: 'none',
             title: '支付订单出现问题，请返回重新操作'
-          });
+            });
         }
-      });
     });
   },
 
@@ -140,18 +138,15 @@ Page({
       params: { formid: this.data.formId }
     };
     //去支付
-    app.db.userToken(function (token) {
-      app.api.pay(data, function (res) {
+    app.api.pay(data, function (res) {
         if (res.status) {
-          app.common.errorToShow(res.msg);
-
-          wx.redirectTo({
-            url: '../../cart/paySuccess/paySuccess?payment_id=' + res.data.payment_id
-          });
+            app.common.errorToShow(res.msg);
+            wx.redirectTo({
+                url: '../../cart/paySuccess/paySuccess?payment_id=' + res.data.payment_id
+            });
         } else {
-          app.common.errorToShow(res.msg);
+            app.common.errorToShow(res.msg);
         }
-      });
     });
   },
 });

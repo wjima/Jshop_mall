@@ -240,6 +240,14 @@ abstract class Addons
         return $dialog;
     }
 
+    /**
+     * 显示错误信息
+     * @param $msg
+     */
+    public function showError($msg){
+        header("Content-type: text/html; charset=utf-8");
+        echo $msg;return;
+    }
     //todo 临时这么处理，后期调整
     function __destruct()
     {

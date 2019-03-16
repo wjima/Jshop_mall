@@ -297,7 +297,8 @@ class Goods extends Common
             if(!$default_product){
                 return error_code(10000);
             }
-            $product_info = $productsModel->getProductInfo($default_product['id'],true);
+            $user_id = getUserIdByToken($token);//获取user_id
+            $product_info = $productsModel->getProductInfo($default_product['id'],true,$user_id);
             if(!$product_info['status']){
                 return $product_info;
             }
@@ -318,7 +319,6 @@ class Goods extends Common
                     $album[] = _sImage($v['image_id']);
                 }
             }
-
             $list['album']=$album;
 
             //取出销量
@@ -327,8 +327,12 @@ class Goods extends Common
             $list['buy_count'] = $count;
 
             //获取当前登录是否收藏
-            $list['isfav']=$this->getFav($list['id'],$token);
+
+            $list['isfav']=$this->getFav($list['id'],$user_id);
             $result['data'] = $list;
+
+            //图片处理
+            $list['intro'] = str_replace("<img","<img style='max-width: 100%'", $list['intro'] );
         }
         return $result;
     }
@@ -439,9 +443,33 @@ class Goods extends Common
      * Email:1457529125@qq.com
      * Date: 2018-02-02 10:26
      */
-    public function getPrice($product)
+    public function getPrice($product, $user_id = '')
     {
-        return $product['price'];
+        $price = $product['price'];
+
+        //获取会员优惠
+        $user_grade                    = get_user_info($user_id, 'grade');
+        $priceData['grade_info']['id'] = $user_grade;
+        $goodsGradeModel               = new GoodsGrade();
+        $goodsGrade                    = $goodsGradeModel->getGradePrice($product['goods_id']);
+        $grade_price                   = [];
+        $userGradeModel                = new UserGrade();
+        if ($goodsGrade['status']) {
+            foreach ($goodsGrade['data'] as $key => $val) {
+                $grade_price[$key]               = $val;
+                $userGrade                       = $userGradeModel->where(['id' => $val['grade_id']])->field('name')->find();
+                $grade_price[$key]['grade_name'] = isset($userGrade['name']) ? $userGrade['name'] : '';
+                if ($user_grade && $user_grade == $val['grade_id']) {
+                    $price                           = ($product['price'] - $val['grade_price']) > 0 ? $product['price'] - $val['grade_price'] : 0;
+                    $priceData['grade_info']['name'] = $grade_price[$key]['grade_name'];
+                }
+                $grade_price[$key]['grade_price'] = ($product['price'] - $val['grade_price']) > 0 ? $product['price'] - $val['grade_price'] : 0;
+            }
+        }
+
+        $priceData['grade_price'] = $grade_price;
+        $priceData['price']       = $price;
+        return $priceData;
     }
 
     /**
@@ -571,24 +599,18 @@ class Goods extends Common
     /**
      * 判断是否收藏过
      * @param int    $goods_id
-     * @param string $token
+     * @param string $user_id
      * @return string
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-03 8:36
      */
-    public function getFav($goods_id = 0,$token = '')
+    public function getFav($goods_id = 0,$user_id = '')
     {
         $favRes = 'false';
-        if($token) {
-            $userTokenModel = new UserToken();
-            $return_token   = $userTokenModel->checkToken($token);
-            if($return_token['status'] == false) {
-                return $favRes;
-            }
-            $tokenData            = $return_token['data'];
+        if($user_id) {
             $goodsCollectionModel = new GoodsCollection();
-            $isfav                = $goodsCollectionModel->check($tokenData['user_id'],$goods_id);
+            $isfav                = $goodsCollectionModel->check($user_id,$goods_id);
             if($isfav) {
                 $favRes = 'true';
             }

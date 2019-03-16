@@ -118,8 +118,9 @@ page{
 }
 .goods-lists{
   overflow: hidden;
-  padding: 20rpx 30rpx 0;
+  padding: 20rpx 30rpx;
   background-color: #F9F9F9;
+  border-bottom:1px solid #f1f1f1;
 }
 .goods-content{
   display: inline-block;
@@ -230,7 +231,12 @@ page{
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  text-align: right;
 }
+/* .leaving-message-r-i{
+    float: right;
+    margin-bottom: 6rpx
+} */
 .price{
   color: #FF3B44;
 }

@@ -38,31 +38,45 @@ Page({
             data['display'] = 'invalid';
         }
         app.api.myCouponList(data, function (res) {
-            var c = page.data.listData.concat(res.data.list);
-            var p = res.data.page * 1 + 1;
-            var allpage = Math.ceil(res.data.count / res.data.limit * 1);
-            var lc = false;
-            var lo = true;
-            if (allpage < p) {
-                lc = true;
+            if (res.status) {
+                //防止网速过慢的问题
+                let now_type = 'no_used';
+                if (page.data.used == true) {
+                    now_type = 'yes_used';
+                }
+                if (page.data.invalid == true) {
+                    now_type = 'invalid';
+                }
+                if (now_type == res.data.q_type) {
+                    if (res.data.page >= page.data.page) {
+                        var c = page.data.listData.concat(res.data.list);
+                        var p = res.data.page * 1 + 1;
+                        var allpage = Math.ceil(res.data.count / res.data.limit * 1);
+                        var lc = false;
+                        var lo = true;
+                        if (allpage < p) {
+                            lc = true;
+                        }
+                        if (lc == true) {
+                            lo = false;
+                        }
+                        var nodata = false;
+                        if (c.length < 1) {
+                            nodata = true;
+                            lc = false;
+                        }
+                        page.setData({
+                            listData: c,
+                            page: p,
+                            ajaxStatus: true,
+                            loading: lo,
+                            nodata: nodata,
+                            loadingComplete: lc,
+                            toView: ''
+                        });
+                    }
+                }
             }
-            if (lc == true) {
-                lo = false;
-            }
-            var nodata = false;
-            if (c.length < 1) {
-                nodata = true;
-                lc = false;
-            }
-            page.setData({
-                listData: c,
-                page: p,
-                ajaxStatus: true,
-                loading: lo,
-                nodata: nodata,
-                loadingComplete: lc,
-                toView: ''
-            });
         });
     },
 

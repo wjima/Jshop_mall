@@ -27,10 +27,9 @@ Page({
     var data = {}
     data['page'] = page.data.page;
     data['limit'] = page.data.limit;
-    app.db.userToken(function (token) {
-      app.api.getBrowsingHistory(data, function (res) {
+    app.api.getBrowsingHistory(data, function (res) {
         for(var i=0; i<res.data.list.length; i++){
-          res.data.list[i].ctime = app.common.timeToDate(res.data.list[i].ctime);
+            res.data.list[i].ctime = app.common.timeToDate(res.data.list[i].ctime);
         }
         var c = page.data.goodsList.concat(res.data.list);
         var p = res.data.page * 1 + 1;
@@ -38,26 +37,25 @@ Page({
         var lc = false;
         var lo = true;
         if (allpage < p) {
-          lc = true;
+            lc = true;
         }
         if(lc == true) {
-          lo = false;
+            lo = false;
         }
         var nodata = false;
         if (c.length < 1) {
-          nodata = true;
-          lc = false;
+            nodata = true;
+            lc = false;
         }
         page.setData({
-          goodsList: c,
-          page: p,
-          ajaxStatus: true,
-          loading: lo,
-          nodata: nodata,
-          loadingComplete: lc,
-          toView: ''
+            goodsList: c,
+            page: p,
+            ajaxStatus: true,
+            loading: lo,
+            nodata: nodata,
+            loadingComplete: lc,
+            toView: ''
         });
-      });
     });
   },
 
@@ -137,7 +135,6 @@ Page({
   //删除事件
   del: function (e) {
     var page = this;
-    app.db.userToken(function (token) {
       //移除渲染
       page.data.goodsList.splice(e.currentTarget.dataset.index, 1);
       var nodata = false;
@@ -160,13 +157,11 @@ Page({
           });
         }
       });
-    });
   },
 
   //收藏
   collection: function (e) {
     var page = this;
-    app.db.userToken(function (token) {
       var data = {
         goods_id: e.currentTarget.dataset.goodsid
       }
@@ -184,6 +179,5 @@ Page({
           title: res.msg
         });
       });
-    });
   },
 });

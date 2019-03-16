@@ -35,7 +35,7 @@
             <yd-tab-panel class="comment" label="买家评论">
                 <ul>
                     <li v-for="(item, index) in comment" :key="index">
-                        <div class="">
+                        <div class="comment-info">
                             <img :src="item.user.avatar" alt="" class="user-img">
                             <p class="user-name">{{ item.user.nickname }}</p>
                             <yd-rate slot="left" v-model="item.score" :readonly="true" size=".2rem"></yd-rate>
@@ -119,7 +119,7 @@ export default {
             if (this.promotion) {
                 let arr = []
                 for (let k in this.promotion) {
-                    if (this.promotion[k].type === 2 || this.promotion[k].type === true) {
+                    if (this.promotion[k].type === 2 || this.promotion[k].type === 1) {
                         arr.push(this.promotion[k])
                     }
                 }
@@ -287,6 +287,24 @@ export default {
     .comment{
         text-align: left;
     }
+    .comment-info{
+        height: 30px;
+        /*position: relative;*/
+    }
+    .comment p{
+        float: none !important;
+    }
+    .comment-info p{
+        float: left !important;
+    }
+    .comment-info .yd-rate{
+        float: left;
+        position: relative;
+        top: 50%;
+        /*left: 10px;*/
+        
+        transform: translateY(-50%);
+    }
     .comment ul{
         padding: 10px;
     }
@@ -305,6 +323,7 @@ export default {
         left: 10px;
         transform: translateY(-50%);
         color: #a0a0a0;
+        margin-right: 15px;
     }
     .goodsdetail-back {
         position: absolute;

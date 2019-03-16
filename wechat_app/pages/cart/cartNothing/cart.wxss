@@ -27,7 +27,8 @@ page{
  transform: translateX(0);
 } 
 .cart-content{
-  margin-bottom: 200rpx;
+  margin-bottom: 20rpx;
+  min-height:760rpx;
 }
 .list-body{  
   margin-bottom: 2rpx;
@@ -315,16 +316,18 @@ label{
   display: inline-block;
   height:28rpx;
   line-height:28rpx;
+  margin:0 6rpx;
 }
 .promotion_off{
   background-color:#ccc;
   color:#fff;
   font-size: 18rpx;
   border-radius: 10rpx;
+  padding: 0 10rpx;
+  display: inline-block;
   height:28rpx;
   line-height:28rpx;
-  padding: 0 10rpx;
-  margin-right: 6rpx;
+  margin:0 6rpx;
 }
 .cart-title{
   padding: 16rpx 30rpx;
@@ -351,4 +354,46 @@ label{
 .cart-title .cart-title-r{
   color: rgb(0, 174, 255);  
   float: right;
+}
+.order-promotion{
+    /* position:fixed;
+    bottom:100rpx; */
+    overflow: hidden;
+    width: 100%;
+    background-color:#fff;
+    line-height:84rpx;
+    /* box-shadow:0 0 20rpx #ccc;
+    border-bottom: 1px solid #e8e8e8 */
+    margin-bottom: 120rpx;
+}
+.order-promotion-title{
+    float:left;
+    font-size:24rpx;
+    margin:0 20rpx;
+}
+.promotion-ok{
+    float:right;
+    font-size:18rpx;
+    background-color:#ff3b44;
+    color:#fff;
+    padding:6rpx;
+    border-radius:10rpx;
+    height:22rpx;
+    line-height:22rpx;
+}
+.promotion-no{
+    float:right;
+    font-size:18rpx;
+    background-color:#ccc;
+    color:#fff;
+    padding:6rpx;
+    border-radius:10rpx;
+    height:22rpx;
+    line-height:22rpx;
+}
+.order-promotion-right{
+    height:40rpx;
+}
+.promotion-box{
+    padding:26rpx 12rpx;
 }

@@ -45,9 +45,14 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">头像：</label>
+            <label class="layui-form-label">等级：</label>
             <div class="layui-input-inline">
-                {Jshop:image id="avatar" name="avatar" value="$info.avatar"}
+                <select name="grade" >
+                    <option value="">请选择</option>
+                    {foreach $grade as $k=>$v}
+                    <option value="{$v.id}" {if $v.id == $info.grade}selected="selected"{/if}>{$v.name}</option>
+                    {/foreach}
+                </select>
             </div>
         </div>
         <div class="layui-inline">
@@ -57,6 +62,14 @@
                     <option value="1" {if $info.status == 1}selected="selected"{/if}>可用</option>
                     <option value="2" {if $info.status == 2}selected="selected"{/if}>停用</option>
                 </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">头像：</label>
+            <div class="layui-input-inline">
+                {Jshop:image id="avatar" name="avatar" value="$info.avatar"}
             </div>
         </div>
     </div>

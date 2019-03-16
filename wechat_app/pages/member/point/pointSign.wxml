@@ -1,0 +1,56 @@
+<!-- 打卡日历页面 -->
+<view class='all'>
+    <!-- 坚持打卡天数 -->
+    <view class='count'>
+        <view class='daynumber'>
+            <text>累计签到{{total}}天</text>
+        </view>
+    </view>
+    <view class='btn-circle' wx:if="{{!isSign}}" bindtap='sign'>签到</view>
+    <view class='btn-circle btn-gray' wx:if="{{isSign}}">已签到</view>
+    <view class="bar">
+        <!-- 上一个月 -->
+        <view class="previous" bindtap="handleCalendar" data-handle="prev">
+            <image src='../../image/left.png'></image>
+        </view>
+        <!-- 显示年月 -->
+        <view class="date">{{cur_year || "--"}} 年 {{cur_month || "--"}} 月</view>
+        <!-- 下一个月 -->
+        <view class="next" bindtap="handleCalendar" data-handle="next">
+            <image src='../../image/right.png'></image>
+        </view>
+    </view>
+    <!-- 显示星期 -->
+    <view class="week">
+        <view wx:for="{{weeks_ch}}" wx:key="{{index}}" data-idx="{{index}}">{{item}}</view>
+    </view>
+    <view class='days'>
+        <!-- 列 -->
+        <view class="columns" wx:for="{{days.length/7}}" wx:for-index="i" wx:key="i">
+            <view wx:for="{{days}}" wx:for-index="j" wx:key="j">
+                <!-- 行 -->
+                <view class="rows" wx:if="{{j/7 == i}}">
+                    <view class="rows" wx:for="{{7}}" wx:for-index="k" wx:key="k">
+                        <!-- 每个月份的空的单元格 -->
+                        <view class='cell' wx:if="{{days[j+k].date == null}}">
+                            <text decode="{{true}}">  </text>
+                        </view>
+                        <!-- 每个月份的有数字的单元格 -->
+                        <view class='cell complete' wx:elif="{{days[j+k].isSign}}">
+                            <text class=''>{{days[j+k].date}}</text>
+                        </view>
+                        <view class='cell' wx:elif="{{!days[j+k].isSign }}">
+                            <text class=''>{{days[j+k].date}}</text>
+                        </view>
+                        <!-- <view class='cell complete not-started' wx:else>
+                            <text class=''>{{days[j+k].date}}</text>
+                        </view> -->
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view class='point-sign-tip'>
+        <view class='pst-item' wx:for="{{rule}}" wx:key="index">{{index+1}}.{{item}}</view>
+    </view>
+</view>

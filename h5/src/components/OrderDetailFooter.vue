@@ -1,21 +1,21 @@
 <template>
-    <div class="orderdetailfooter" v-if="status === 'pending_payment'">
+    <div class="orderdetailfooter" v-if="status === 1">
         <yd-button type="hollow" shape="circle" class="left-btn" @click.native="cancel">取消订单</yd-button>
         <yd-button type="hollow" shape="circle" class="right-btn" @click.native="pay">立即支付</yd-button>
     </div>
-    <div class="orderdetailfooter" v-else-if="status === 'pending_delivery'">
+    <div class="orderdetailfooter" v-else-if="status === 2">
         <yd-button type="hollow" shape="circle" class="right-btn" @click.native="afterSales">申请售后</yd-button>
     </div>
-    <div class="orderdetailfooter" v-else-if="status === 'pending_receipt'">
+    <div class="orderdetailfooter" v-else-if="status === 3">
         <yd-button type="hollow" shape="circle" class="left-btn" @click.native="afterSales">申请售后</yd-button>
         <yd-button type="hollow" shape="circle" class="right-btn" @click.native="logistics">查看物流</yd-button>
         <yd-button type="hollow" shape="circle" class="right-btn" @click.native="confirm">确认收货</yd-button>
     </div>
-    <div class="orderdetailfooter" v-else-if="status === 'pending_evaluate'">
+    <div class="orderdetailfooter" v-else-if="status === 4">
         <yd-button type="hollow" shape="circle" class="left-btn" @click.native="afterSales">申请售后</yd-button>
         <yd-button type="hollow" shape="circle" class="right-btn" @click.native="evaluate">立即评价</yd-button>
     </div>
-    <div class="orderdetailfooter" v-else-if="status === 'completed' || status === 'cancel'">
+    <div class="orderdetailfooter" v-else-if="status === 6 || status === 7">
     </div>
     <div class="orderdetailfooter" v-else>
         <yd-button type="hollow" shape="circle" class="left-btn" @click.native="afterSales">申请售后</yd-button>
@@ -27,9 +27,9 @@ export default {
     props: {
         // 状态
         status: {
-            type: [Array, String],
+            type: Number,
             default () {
-                return []
+                return 1
             }
         }
     },

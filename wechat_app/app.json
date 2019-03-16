@@ -12,6 +12,7 @@
         "pages/member/info/info",
         "pages/cart/cashierDesk/cashierDesk",
         "pages/cart/firmOrder/firmOrder",
+        "pages/cart/firmOrder/invoice",
         "pages/cart/paySuccess/paySuccess",
         "pages/member/index/index",
         "pages/member/userSetting/userSetting",
@@ -51,7 +52,10 @@
         "pages/form/other/payfailed",
         "component/canvasdrawer/canvasdrawer",
         "pages/member/order/logistics/logistics",
-        "pages/other/special/special"
+        "pages/other/special/special",
+        "pages/member/point/point",
+        "pages/member/point/pointList",
+        "pages/member/point/pointSign"
     ],
     "window": {
         "backgroundTextStyle": "light",

@@ -1,6 +1,6 @@
 <template>
     <div class="goodslist">
-        <div class="itembox" v-if="list.length">
+        <div class="itembox">
             <ul>
                 <li v-for="(item, index) in label" :key="index">
                     <span :class="{active: item.checked}" @click="clickFilter(index)">{{ item.title }}</span>
@@ -80,9 +80,13 @@ export default {
         // 筛选条件点击
         clickFilter (index) {
             // 如果已经是选中的 再次点击切换倒序升序切换 且不是综合的筛选
-            if (this.checkedFilter === index && index !== 0) {
-                this.label[index].top = !this.label[index].top
-                this.label[index].bottom = !this.label[index].bottom
+            if (this.checkedFilter === index) {
+                if (index !== 0) {
+                    this.label[index].top = !this.label[index].top
+                    this.label[index].bottom = !this.label[index].bottom
+                } else {
+                    return false
+                }
             } else {
                 // 否则切换对应的筛选条件
                 this.label.forEach((v, k) => {
@@ -109,6 +113,8 @@ export default {
             this.filter = this.label[index].condition + str
             this.GLOBAL.setStorage('filter', this.filter)
             this.page = 1 // 筛选条件重新第一页开始
+            this.list = []
+            this.$refs.infinitescrollDemo.$emit('ydui.infinitescroll.reInit');
             this.goodsList()
         },
         // 获取商品数据

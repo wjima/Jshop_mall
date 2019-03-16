@@ -143,7 +143,8 @@ class BillDelivery extends Common
             //修改订单详细表
             model('common/OrderItems')->ship($order['order_id'], $ship_data);
             //修改订单主表
-            model('common/Order')->ship($order['order_id']);
+            $orderModel = new \app\common\model\Order();
+            $orderModel->ship($order['order_id']);
             $return = true;
             Db::commit();
 
@@ -241,7 +242,12 @@ class BillDelivery extends Common
             'data' => []
         ];
 
-        $logisticsInfo = $this->logistics_query($code, $no);
+        if (checkAddons('logisticsQuery')) {
+            $Info          = hook("logisticsQuery", ['code' => $code, 'no' => $no]);
+            $logisticsInfo = $Info[0];//快递查询插件，只用第一个
+        } else {
+            $logisticsInfo = $this->logistics_query($code, $no);
+        }
         if ($logisticsInfo['status'] === '200')
         {
             $result['data']['info'] = [
@@ -369,15 +375,22 @@ class BillDelivery extends Common
 
     /**
      * 发货单统计
-     * @return array
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function statistics()
     {
         $num = 7;
         $day = date('Y-m-d', strtotime('-'.$num.' day'));
-        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM '.config('database.prefix')
-            .'bill_delivery WHERE from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
-        $res = Db::query($sql);
+
+        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
+        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
+            ->where($where)
+            ->group('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")')
+            ->select();
+
         $data = get_lately_days($num, $res);
         return $data['data'];
     }

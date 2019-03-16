@@ -373,6 +373,7 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">腾讯地图key，申请地址：https://lbs.qq.com/</div>
                     </div>
+
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>快递100</legend></fieldset>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['kuaidi100_customer']['name']}：</label>
@@ -388,6 +389,7 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">快递100授权key，申请地址：https://www.kuaidi100.com</div>
                     </div>
+
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>图片存储</legend></fieldset>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['image_storage_type']['name']}：</label>
@@ -439,6 +441,14 @@
 
                         </div>
 
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>统计代码</legend></fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['statistics_code']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-8">
+                            <textarea name="statistics_code" id="statistics_code" cols="30" rows="10" class="layui-input" style="height: 100px; padding: 10px">{$data['statistics_code']['value']}</textarea>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">只需要粘贴&lt;script&gt;&lt;/script&gt;内的代码，只统计H5端。微信小程序请使用"小程序数据助手"</div>
+                    </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
@@ -446,7 +456,6 @@
                             <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>

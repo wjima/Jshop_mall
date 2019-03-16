@@ -74,14 +74,22 @@ class FormSubmit extends common{
      * 表单提交统计
      * @param int $id
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function statisticsByFormid($id = 0)
     {
         $num  = 7;
         $day  = date('Y-m-d', strtotime('-' . $num . ' day'));
-        $sql  = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM ' . config('database.prefix')
-            . 'form_submit WHERE from_unixtime(ctime) >= "' . $day . '" and form_id=' . $id . ' GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
-        $res  = Db::query($sql);
+
+        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
+        $where[] = ['form_id', 'eq', $id];
+        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
+            ->where($where)
+            ->group('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")')
+            ->select();
+
         $data = get_lately_days($num, $res);
         return ['day' => $data['day'], 'data' => $data['data']];
     }

@@ -267,18 +267,27 @@ class Form extends common
                     'sort'            => $data['field']['sort'][$key],
                 ];
             }
-            # print_r($field);die();
             $formItem = new FormItem();
+            $ids = [];
             foreach ((array)$field as $key => $val) {
                 if ($val['id']) {
+                    $ids[] = $val['id'];
                     $res = $formItem->update($val, ['id' => $val['id']]);
                 } else {
                     $res = $formItem->add($val);
+                    $ids[] = $formItem->getLastInsID();
                 }
                 if ($res === false) {
                     Db::rollback();
                     return false;
                 }
+            }
+            //删除不匹配的
+            if ($ids) {
+                $where   = [];
+                $where[] = ['id', 'not in', $ids];
+                $where[] = ['form_id', '=', $formid];
+                $formItem->where($where)->delete();
             }
         }
         Db::commit();

@@ -12,9 +12,9 @@
                     <div>x{{ item.nums }}</div>
                 </yd-list-other>
                 <yd-list-other slot="other">
-                    <div v-if="item.products.promotion_list">
+                    <div class="order-tips" v-if="item.products.promotion_list">
                         <div v-for="(val, key) in item.products.promotion_list" :key="key">
-                            <yd-badge shape="square" type="danger" v-if="val.type">{{ val.name }}</yd-badge>
+                            <yd-badge shape="square" :type="val.type === 2 ? 'danger' : ''">{{ val.name }}</yd-badge>
                         </div>
                     </div>
                 </yd-list-other>
@@ -42,4 +42,12 @@ export default {
 </script>
 
 <style type="text/css">
+   .order-tips{
+       overflow: hidden;
+       width: 100%;
+   }
+   .order-tips>div{
+       float: left;
+       margin-right: .1rem;
+   }
 </style>

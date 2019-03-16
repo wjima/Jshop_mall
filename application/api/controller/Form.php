@@ -183,8 +183,15 @@ class Form extends Api
                 }
                 if($formitem['type'] == 'goods'){
                     foreach($value as $k=>$v){
-                        $product =  $productModel->where(['id'=>$v['productId']])->find();
+                        $productData = $productModel->getProductInfo($v['productId']);
+                        if(!$productData['status']){
+                            $return_data['msg'] = '货品不存在';
+                            Db::rollback();
+                            return $return_data;
+                        }
+                        $product = $productData['data'];
                         $form_item_name = ($product['spes_desc'])?$product['spes_desc'].':'.$product['sn']:$product['sn'];
+
                         $item[] = [
                             'submit_id'       => $formSubmitId,
                             'form_id'         => $id,

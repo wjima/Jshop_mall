@@ -142,13 +142,12 @@ class Cart extends Common
         $goodsModel = new Goods();
         foreach($list as $k => $v){
             //如果没有此商品，就在购物车里删掉
-            $productInfo = $productsModel->getProductInfo($v['product_id'],false);           //第二个参数是不算促销信息,否则促销信息就算重复了
+            $productInfo = $productsModel->getProductInfo($v['product_id'],false,$userId);           //第二个参数是不算促销信息,否则促销信息就算重复了
             if(!$productInfo['status']){
                 unset($list[$k]);
                 $this::destroy($v['id']);
                 continue;
             }
-
             $goodsWeight = $goodsModel->getWeight($v['product_id']);
             $list[$k]['weight'] = $goodsWeight;
 

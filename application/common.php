@@ -103,7 +103,15 @@ function get_sn($type){
             $str = $type.substr(msectime().rand(0,9),1);
             break;
         case 9:         //提货单号
-            $str = 'T'.$type.substr(msectime().rand(0,5), 1);
+            //$str = 'T'.$type.substr(msectime().rand(0,5), 1);
+            $chars = ['Q','W','E','R','T','Y','U','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M','2','3','4','5','6','7','8','9'];
+            $charsLen = count($chars) - 1;
+            shuffle($chars);
+            $str = '';
+            for($i = 0; $i < 6; $i++)
+            {
+                $str .= $chars[mt_rand(0, $charsLen)];
+            }
             break;
         default:
             $str = substr(msectime().rand(0,9),1);
@@ -209,7 +217,7 @@ function _sImage($image_id = '', $type = 's')
             return request()->domain() . str_replace("\\", "/", $image['url']);
         }
     } else {
-        return _sImage();
+        return config('jshop.default_image');//默认图片
     }
 }
 
@@ -957,3 +965,20 @@ function convertString($value = '')
     return $value."\t";
 }
 
+/**
+ * 根据token获取userid
+ * @param string $token
+ * @return int
+ */
+function getUserIdByToken($token = '')
+{
+    if (!$token) {
+        return 0;
+    }
+    $userTokenModel = new \app\common\model\UserToken();
+    $return_token   = $userTokenModel->checkToken($token);
+    if ($return_token['status'] == false) {
+        return 0;
+    }
+    return $return_token['data']['user_id'];
+}

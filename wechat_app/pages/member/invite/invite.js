@@ -310,5 +310,21 @@ Page({
     },
 
 
-    move: function () {}
+    move: function () {},
+
+
+    //推荐列表
+    recommendlist: function () {
+        wx.navigateTo({
+            url: '../recommendList/recommendList'
+        });
+    },
+
+
+    //佣金收益
+    commission: function () {
+        wx.navigateTo({
+            url: '../remainingSum/withdrawCash/balanceList?type=5'
+        });
+    }
 })

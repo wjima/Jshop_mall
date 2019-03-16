@@ -75,11 +75,6 @@
 
 <!-- 功能模块第一部分 -->
 <view class='content-one content-body'>
-  <!-- 积分签到 -->
-  <view class='sign-in content-view' bindtap='sign' wx:if="{{isPoint}}">
-    <image class='member-icon' src='../../image/signin.png'></image>
-    <text class='member-text'>积分签到</text>
-  </view>
   <!-- 我的优惠券 -->
   <view class='coupon content-view' bindtap='coupon'>
     <image class='member-icon' src='../../image/coupon.png'></image>
@@ -91,20 +86,22 @@
     <image class='member-icon' src='../../image/remainingsum.png'></image>
     <text class='member-text'>我的余额</text>
   </view>
+
+  <!-- 积分签到 -->
+  <view class='sign-in content-view' bindtap='myPoint' wx:if="{{isPoint}}">
+    <image class='member-icon' src='../../image/signin.png'></image>
+    <text class='member-text'>我的积分</text>
+  </view>
 </view>
 
 <!-- 功能模块第二部分 -->
 <view class='content-two content-body'>
-  <!-- 我的购物车 -->
-  <view class='content-view' bindtap='cart'>
-    <image class='member-icon' src='../../image/member-cart.png'></image>
-    <text class='member-text'>我的购物车</text>
-  </view>
   <!-- 我的关注 -->
   <view class='content-view' bindtap='attention'>
     <image class='member-icon' src='../../image/heart.png'></image>
     <text class='member-text'>我的关注</text>
   </view>
+  
   <!-- 我的足迹 -->
   <view class='content-view' bindtap='browsingHistory'>
     <image class='member-icon' src='../../image/footer.png'></image>
@@ -118,12 +115,6 @@
     <image class='member-icon' src='../../image/me-ic-invite.png'></image>
     <text class='member-text'>邀请好友</text>
   </view>
-  <!-- 推荐记录 -->
-  <view class='content-view' bindtap='recommendlist'>
-    <image class='member-icon' src='../../image/me-ic-recommend.png'></image>
-    <text class='member-text'>推荐记录</text>
-  </view>
-
 </view>
 
 <!-- 功能模块第三部分 -->

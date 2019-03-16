@@ -167,7 +167,8 @@ class Coupon extends Common
                 'list' => [],
                 'count' => 0,
                 'page' => $page,
-                'limit' => $limit
+                'limit' => $limit,
+                'q_type' => $display
             ]
         ];
         $where[] = ['c.user_id', 'eq', $user_id];

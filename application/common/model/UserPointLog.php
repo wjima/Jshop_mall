@@ -82,11 +82,14 @@ class UserPointLog extends Common
 
     /**
      * 签到
-     * @param int $user_id
+     * @param $user_id
      * @return array
+     * @throws \think\Exception
+     * @throws \think\db\exception\BindParamException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function sign($user_id)
     {
@@ -185,8 +188,9 @@ class UserPointLog extends Common
      * 签到指定积分计算
      * @param $user_id
      * @return array|float|int
-     * @throws \think\db\exception\BindParamException
-     * @throws \think\exception\PDOException
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function signFixedPointCalculation($user_id)
     {
@@ -197,9 +201,15 @@ class UserPointLog extends Common
         //获取连续签到天数
         $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
         $day = date('Y-m-d', strtotime('-'.$max_continuity_day.' day'));
+
         //兼容问题
-        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day FROM `'.config('database.prefix').'user_point_log` WHERE `user_id` = '.$user_id.' AND `type` = '.self::POINT_TYPE_SIGN.' AND from_unixtime(ctime) >= "'.$day.'" GROUP BY DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")';
-        $res = $this->query($sql);
+        $where[] = ['user_id', 'eq', $user_id];
+        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
+        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
+        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d") as day')
+            ->where($where)
+            ->group('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d")')
+            ->select();
 
         $new_res = [];
         foreach($res as $k => $v)
@@ -291,7 +301,9 @@ class UserPointLog extends Common
         $return = [
             'status' => false,
             'msg' => '获取失败',
-            'data' => []
+            'data' => [],
+            'total' => 0,
+            'count' => 0
         ];
         if($type)
         {
@@ -309,6 +321,7 @@ class UserPointLog extends Common
 
         $return['data'] = $res;
         $return['count'] = $count;
+        $return['total'] = ceil($count/$limit);
         if($res)
         {
             $return['status'] = true;
@@ -335,6 +348,7 @@ class UserPointLog extends Common
      * @param $user_id
      * @param $money
      * @param $order_id
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -346,11 +360,12 @@ class UserPointLog extends Common
         $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单:'.$order_id.'的积分奖励');
     }
 
+
     /**
      * 返回layui的table所需要的格式
-     * @author sin
      * @param $post
      * @return mixed
+     * @throws \think\exception\DbException
      */
     public function tableData($post)
     {
@@ -372,6 +387,11 @@ class UserPointLog extends Common
         return $re;
     }
 
+
+    /**
+     * @param $post
+     * @return mixed
+     */
     protected function tableWhere($post)
     {
         $where = [];
@@ -390,10 +410,12 @@ class UserPointLog extends Common
         $result['order'] = 'ctime desc';
         return $result;
     }
+
+
     /**
      * 根据查询结果，格式化数据
      * @author sin
-     * @param $list  array格式的collection
+     * @param $list  //array格式的collection
      * @return mixed
      */
     protected function tableFormat($list)
@@ -411,5 +433,123 @@ class UserPointLog extends Common
             }
         }
         return $list;
+    }
+
+
+    /**
+     * 获取签到信息
+     * @param $user_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getSignInfo($user_id)
+    {
+        $return = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => [
+                'isSign' => true, //今日是否已经签到
+                'asi' => [], //签到的日期
+                'total' => 0, //累计签到
+                'continuous' => 0, //连续签到
+                'next' => 0, //下次签到奖励积分
+                'rule' => [] //签到规则
+            ]
+        ];
+
+        $where[] = ['user_id', 'eq', $user_id];
+        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
+        $date = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as `date`')
+            ->where($where)
+            ->group('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d")')
+            ->select();
+
+        $asi = [];
+        $total = 0;
+        $isSign = false;
+        if($date !== false)
+        {
+            foreach($date as $k => $v)
+            {
+                $_date = explode("-", $v['date']);
+                array_push($asi, $_date);
+                $total++;
+                if($v['date'] == date('Y-m-d', time()))
+                {
+                    $isSign = true;
+                }
+            }
+        }
+        $fasi = array_reverse($asi);
+        $continuous = $this->continuousSignCalculation($fasi);
+        $next = $this->nextSignCalculation($fasi);
+        $rule = $this->getSignRule();
+
+        $return['data']['isSign'] = $isSign;
+        $return['data']['asi'] = $asi;
+        $return['data']['total'] = $total;
+        $return['data']['continuous'] = $continuous;
+        $return['data']['next'] = $next;
+        $return['data']['rule'] = $rule;
+        return $return;
+    }
+
+
+    /**
+     * 连续签到计算
+     * @param $fasi
+     * @return int
+     */
+    public function continuousSignCalculation($fasi)
+    {
+        //todo::连续签到时长计算
+        return 0;
+    }
+
+
+    /**
+     * 下一次签到积分计算
+     * @return int
+     */
+    public function nextSignCalculation($fasi)
+    {
+        //下一次签到奖励积分计算（包括今天没签到或今天已签到）
+        return 0;
+    }
+
+
+    /**
+     * 获取签到规则
+     * @return array
+     */
+    public function getSignRule()
+    {
+        $point_discounted_proportion = getSetting('point_discounted_proportion');
+        $orders_point_proportion = getSetting('orders_point_proportion');
+        $orders_reward_proportion = getSetting('orders_reward_proportion');
+        $sign_point_type = getSetting('sign_point_type');
+        $first_sign_point = getSetting('first_sign_point');
+        $continuity_sign_additional = getSetting('continuity_sign_additional');
+        $sign_most_point = getSetting('sign_most_point');
+        $sign_random_min = getSetting('sign_random_min');
+        $sign_random_max = getSetting('sign_random_max');
+
+        $rule[] = '下单时'.$point_discounted_proportion.'积分可抵扣1元人民币。';
+        $rule[] = '下单使用积分抵扣时，最多可以抵扣订单额的'.$orders_point_proportion.'%。';
+        $rule[] = '订单额每满'.$orders_reward_proportion.'元，奖励1积分。';
+        if($sign_point_type == self::SIGN_FIXED_POINT)
+        {
+            //固定积分奖励
+            $rule[] = '连续签到首次奖励'.$first_sign_point.'积分，之后每日多奖励'.$continuity_sign_additional.'积分，单日最多可获得签到奖励'.$sign_most_point.'积分。';
+        }
+        else
+        {
+            //随机积分奖励
+            $rule[] = '每日随机签到奖励积分，最少'.$sign_random_min.'积分，最多'.$sign_random_max.'积分。';
+        }
+
+        return $rule;
     }
 }

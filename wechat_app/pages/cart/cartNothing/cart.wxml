@@ -34,7 +34,7 @@
         </view>
         <!-- 商品优惠信息 -->
         <view wx:if="{{item.products.promotion_list.length != 0}}">
-          <text wx:for="{{item.products.promotion_list}}" wx:for-item="val" wx:key="{{ind}}" class="{{val.type == 2?'promotion_on':'promotion_off'}}">{{val.name}}</text>
+          <view wx:for="{{item.products.promotion_list}}" wx:for-item="val" wx:key="{{ind}}" class="{{val.type == 2?'promotion_on':'promotion_off'}}">{{val.name}}</view>
         </view>
         <view class='body-right-price'>
           <!-- 商品价格 -->
@@ -60,7 +60,17 @@
     <text class='cart-none-t'>购物车快饿瘪了 T.T</text>
     <text class='cart-none-m'>快给我挑点宝贝吧</text>
     <navigator url='../../index/index' hover-class='none' open-type="switchTab">去逛逛</navigator>
-  </view>  
+  </view>
+</view>
+
+<view class='order-promotion' wx:if="{{cartData.promotion_list.length != [] && cartData.list.length > 0}}">
+    <view class='order-promotion-title'>订单优惠</view>
+    <view class='promotion-box'>
+        <view class='order-promotion-right' wx:for="{{cartData.promotion_list}}" wx:key="index">
+            <view class='promotion-ok' wx:key="index" wx:if="{{item.type == 2}}">{{item.name}}</view>
+            <view class='promotion-no' wx:key="index" wx:if="{{item.type == 1}}">{{item.name}}</view>
+        </view>
+    </view>
 </view>
 
 <!-- 统一固定底部 -->

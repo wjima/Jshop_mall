@@ -15,6 +15,7 @@ page{
   font-size: 70rpx;
   display: block;
   margin-top: 20rpx;
+  margin-left: 50rpx;
 }
 .content-view{
   width: 696rpx;

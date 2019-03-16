@@ -5,6 +5,7 @@
 // +----------------------------------------------------------------------
 
 return [
+    //用户
     'user'    => [
         'code' => 'User',
         'method' => [
@@ -124,10 +125,6 @@ return [
                 'code' => 'sign',
                 'is_login' => true
             ],
-            'pointlog' => [
-                'code' => 'pointLog',
-                'is_login' => true
-            ],
             'getuserpoint' => [
                 'code' => 'getUserPoint',
                 'is_login' => true
@@ -214,6 +211,14 @@ return [
             ],
             'activationinvite' => [
                 'code' => 'activationInvite',
+                'is_login' => true
+            ],
+            'userpointlog' => [
+                'code' => 'userPointLog',
+                'is_login' => true
+            ],
+            'getsigninfo' => [
+                'code' => 'getSignInfo',
                 'is_login' => true
             ]
         ]
@@ -430,6 +435,10 @@ return [
             'getcashpooling' => [
                 'code' => 'getCashPooling',
                 'is_login' => false
+            ],
+            'gettaxcode' => [
+                'code' => 'getTaxCode',
+                'is_login' => false
             ]
         ]
     ],
@@ -566,6 +575,8 @@ return [
             ]
         ]
     ],
+
+    // 表单
     'form'=>[
         'code'=>'Form',
         'method'=>[
@@ -580,5 +591,4 @@ return [
 
         ],
     ]
-
 ];

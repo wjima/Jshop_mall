@@ -44,12 +44,13 @@ class Products extends Common
      * 根据货品ID获取货品信息
      * @param array  $where
      * @param bool $isPromotion 默认是true，如果为true的时候，就去算此商品的促销信息，否则，就不算
+     * @param string $token 默认空，传后取会员等级优惠价
      * @return array
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
      */
-    public function getProductInfo($id,$isPromotion = true)
+    public function getProductInfo($id,$isPromotion = true,$user_id = '')
     {
         $result  = [
             'status' => false,
@@ -68,7 +69,6 @@ class Products extends Common
             return $result;
         }
 
-
         $product['name']       = $goods['name'];
         $product['image_id']   = $goods['image_id'];
         $product['bn'] = $goods['bn'];
@@ -77,8 +77,11 @@ class Products extends Common
 
         $product['stock'] = $goodsModel->getStock($product);
 
-        $product['price'] = $goodsModel->getPrice($product);
+        $priceData = $goodsModel->getPrice($product, $user_id);
 
+        $product['price']       = $priceData['price'];
+        $product['grade_price'] = $priceData['grade_price'];
+        $product['grade_info']  = $priceData['grade_info'];
         //如果是多规格商品，算多规格
         if($goods['spes_desc']) {
             $defaultSpec = [];
@@ -165,20 +168,19 @@ class Products extends Common
             $promotionModel = new Promotion();
             $cart = $promotionModel->toPromotion($miniCart);
 
+
             //把促销信息和新的价格等，覆盖到这里
+            $promotionList = $cart['promotion_list'];
             if($cart['list'][0]['products']['promotion_list']){
-                $newProduct = $cart['list'][0]['products'];
                 //把订单促销和商品促销合并,都让他显示
-                $promotionList = $cart['promotion_list'];
-                foreach($newProduct['promotion_list'] as $k => $v){
+                foreach($cart['list'][0]['products']['promotion_list'] as $k => $v){
                     $promotionList[$k] = $v;
                 }
-                $product['price'] = $newProduct['price'];                               //新的商品单价
-                $product['amount'] = $newProduct['amount'];                             //商品总价格
-                $product['promotion_list'] = $promotionList;             //促销列表
-                $product['promotion_amount'] = $newProduct['promotion_amount'];         //如果商品促销应用了，那么促销的金额
-
             }
+            $product['price'] = $cart['list'][0]['products']['price'];                               //新的商品单价
+            $product['amount'] = $cart['list'][0]['products']['amount'];                             //商品总价格
+            $product['promotion_list'] = $promotionList;             //促销列表
+            $product['promotion_amount'] = $cart['list'][0]['products']['promotion_amount'];         //如果商品促销应用了，那么促销的金额
         }
         $result = [
             'status' => true,

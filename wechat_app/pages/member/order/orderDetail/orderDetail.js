@@ -37,37 +37,43 @@ Page({
     this.getOrderData(this.data.orderId);
   },
 
-  //获取数据
-  getOrderData: function (order_id) {
-    var page = this;
-    var data = {
-      order_id: order_id
-    }
-    app.db.userToken(function (token) {
-      app.api.orderDetails(data, function (res) {
-        res.data.ctime = app.common.timeToDate(res.data.ctime);
-        res.data.payment_time = app.common.timeToDate(res.data.payment_time);
-        res.data.utime = app.common.timeToDate(res.data.utime);
-        res.data.payment_code = page.data.payment_type[res.data.payment_code];
-        res.data.goods_nums = 0;
-        for(var k in res.data.items){
-          if (res.data.items[k].promotion_list != "[]") {
-            res.data.items[k].promotion_list = JSON.parse(res.data.items[k].promotion_list);
-          }
-            res.data.goods_nums += res.data.items[k].nums;
+    //获取数据
+    getOrderData: function (order_id) {
+        var page = this;
+        var data = {
+            order_id: order_id
         }
-        if (res.data.delivery.length > 0) {
-          res.data.delivery[0].ctime = app.common.timeToDate(res.data.delivery[0].ctime);
-          res.data.delivery[0].confirm_time = app.common.timeToDate(res.data.delivery[0].confirm_time);
-        }
-        page.setData({
-          order: res.data,
-          delivery: { status:''},//显示订单状态
+        app.api.orderDetails(data, function (res) {
+            res.data.ctime = app.common.timeToDate(res.data.ctime);
+            res.data.payment_time = app.common.timeToDate(res.data.payment_time);
+            res.data.utime = app.common.timeToDate(res.data.utime);
+            res.data.payment_code = page.data.payment_type[res.data.payment_code];
+            res.data.goods_nums = 0;
+            for(var k in res.data.items){
+                if (res.data.items[k].promotion_list != "[]") {
+                    res.data.items[k].promotion_list = JSON.parse(res.data.items[k].promotion_list);
+                }
+                res.data.goods_nums += res.data.items[k].nums;
+            }
+            if (res.data.delivery.length > 0) {
+                res.data.delivery[0].ctime = app.common.timeToDate(res.data.delivery[0].ctime);
+                res.data.delivery[0].confirm_time = app.common.timeToDate(res.data.delivery[0].confirm_time);
+            }
+
+            //发票处理
+            if(res.data.tax_type == 2) {
+                res.data.tax_type_name = '个人或事业单位';
+            } else if (res.data.tax_type == 3){
+                res.data.tax_type_name = '企业';
+            }
+
+            page.setData({
+                order: res.data,
+                delivery: { status:''},//显示订单状态
+            });
+            page.getDate();
         });
-        page.getDate();
-      });
-    });
-  },
+    },
 
   //倒计时
   getDate: function (){
@@ -120,22 +126,20 @@ Page({
     var data = {
       order_id: e.target.dataset.id
     }
-    app.db.userToken(function (token) {
-      app.api.confirm(data, function (res) {
+    app.api.confirm(data, function (res) {
         wx.showModal({
-          title: '确认签收成功，现在去评价？',
-          content: '确认签收订单：'+res.data+'成功，现在去评价订单？',
-          success: function (res) {
+            title: '确认签收成功，现在去评价？',
+            content: '确认签收订单：'+res.data+'成功，现在去评价订单？',
+            success: function (res) {
             if (res.confirm) {
-              wx.navigateTo({
-                  url: '../comment/comment?order_id=' + e.target.dataset.id,
-              });
+                wx.navigateTo({
+                    url: '../comment/comment?order_id=' + e.target.dataset.id,
+                });
             } else if (res.cancel) {
-              page.getOrderData(page.data.orderId);
+                page.getOrderData(page.data.orderId);
             }
-          }
+            }
         })
-      });
     });
   },
 
@@ -160,14 +164,12 @@ Page({
     var data = {
       order_ids: e.target.dataset.id
     }
-    app.db.userToken(function (token) {
       app.api.cancelOrder(data, function (res) {
         wx.showToast({
           title: res.msg
         });
         setTimeout(function(){page.getOrderData(page.data.orderId)},1500);
       });
-    });
   },
 
   //前往商品

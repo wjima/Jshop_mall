@@ -5,6 +5,7 @@ use app\common\model\BillAftersales;
 use app\common\model\BillPayments;
 use app\common\model\BillDelivery;
 use app\common\model\BillReship;
+use app\common\model\InvoiceRecord;
 use app\common\model\Order as orderModel;
 use app\common\model\Ship;
 use think\facade\Request;
@@ -225,8 +226,12 @@ class Order extends Api
         $point = Request::param('point', 0);
         $coupon_code = Request::param('coupon_code', '');
         $formId = Request::param('formId', false);
+        $tax['tax_type'] = Request::param('tax_type', 1);
+        $tax['tax_name'] = Request::param('tax_name', '');
+        $tax['tax_code'] = Request::param('tax_code', '');
+
         $model = new orderModel();
-        return $model->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId, $receipt_type, $store_id, $lading_name, $lading_mobile,$source);
+        return $model->toAdd($this->userId, $cart_ids, $uship_id, $memo, $area_id, $point, $coupon_code, $formId, $receipt_type, $store_id, $lading_name, $lading_mobile,$source,$tax);
     }
 
 
@@ -539,5 +544,20 @@ class Order extends Api
     {
         $orderModel = new orderModel();
         return $orderModel->cashPooling();
+    }
+
+
+    /**
+     * 获取税号
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getTaxCode()
+    {
+        $irModel = new InvoiceRecord();
+        $name = Request::param('name');
+        return $irModel->getCodeByName($name);
     }
 }

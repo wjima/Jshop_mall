@@ -11,6 +11,8 @@
   <view class='write-body'>
     <view class='write-content'>
       <view class='write-list'>
+        <view wx:if="{{allData.ptime}}" class="date">上次提货时间：{{allData.ptime}}</view>
+        <view wx:if="{{allData.clerk_id}}" class="clerk">服务店员：{{allData.clerk}}</view>
         <view class='write-item' wx:for="{{goodsList}}" wx:key="index">
           <view class='write-item-left'><image mode='aspectFit' src='{{item.image_url}}'></image></view>
           <view class='write-item-right'>

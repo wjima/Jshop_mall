@@ -114,25 +114,23 @@ Page({
             cardType: this.data.cardType,
             isDefault: this.data.isDefault,
         }
-        app.db.userToken(function (token) {
-            app.api.addBankCard(data, function (res) {
-                if (res.status) {
-                    wx.showToast({
-                        title: '银行卡添加成功',
-                        icon: 'success',
-                        mask: true,
-                        complete: function () {
-                            wx.navigateBack(1);
-                        }
-                    });
-                } else {
-                    wx.showModal({
-                        title: '提示',
-                        content: res.msg,
-                        showCancel: false
-                    });
-                }
-            });
+        app.api.addBankCard(data, function (res) {
+            if (res.status) {
+                wx.showToast({
+                    title: '银行卡添加成功',
+                    icon: 'success',
+                    mask: true,
+                    complete: function () {
+                        wx.navigateBack(1);
+                    }
+                });
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: res.msg,
+                    showCancel: false
+                });
+            }
         });
     }
 });

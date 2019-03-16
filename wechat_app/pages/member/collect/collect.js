@@ -27,7 +27,6 @@ Page({
     var data = {}
     data['page'] = page.data.page;
     data['limit'] = page.data.limit;
-    app.db.userToken(function (token) {
       app.api.goodsCollectionList(data, function (res) {
         var c = page.data.goodsList.concat(res.data.list);
         var p = res.data.page * 1 + 1;
@@ -55,7 +54,6 @@ Page({
           toView: ''
         });
       });
-    });
   },
 
   //上拉加载
@@ -134,7 +132,6 @@ Page({
   //取消收藏
   collection: function (e) {
     var page = this;
-    app.db.userToken(function (token) {
       //移除渲染
       page.data.goodsList.splice(e.currentTarget.dataset.index, 1);
       var nodata = false;
@@ -154,6 +151,5 @@ Page({
           title: res.msg
         });
       });
-    });
   }
 });

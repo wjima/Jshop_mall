@@ -57,3 +57,42 @@ page{
 .balancelist{
     margin-top: 18rpx;
 }
+.typeAll{
+    height:30px;
+    background-color:#fff;
+}
+.typeName{
+    width:200rpx;
+    font-size:28rpx;
+    float:left;
+    height:100%;
+}
+.typeValue{
+    float:left;
+    width:300rpx;
+    height:100%;
+    font-size:28rpx;
+}
+.typeSelect{
+    /* height:30px; */
+    /* border:1px solid #ccc; */
+    /* width:100px; */
+    display: inline-block;
+}
+.type-selcet{
+    overflow: hidden;
+    padding: 20rpx;
+    background-color: #fff;
+    
+}
+.type-selcet-left{
+    float: left;
+    font-size: 26rpx;
+    margin-right: 40rpx;
+    color: #666;
+}
+.icon-b{
+    width: 20rpx;
+    height: 20rpx;
+    margin-left: 10rpx;
+}

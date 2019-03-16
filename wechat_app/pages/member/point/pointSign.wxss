@@ -1,0 +1,155 @@
+.all{
+  margin-top: 20rpx;
+}
+
+.all .bar{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 20rpx;
+  padding: 10rpx;
+  font-size: 30rpx;
+}
+.previous,.next{
+  position: relative;
+  width: 16rpx;
+  height: 48rpx;
+}
+.all .bar image{
+  width: 16rpx;
+  height: 32rpx;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.all .week{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 16rpx;
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+  margin: 0 40rpx;
+  background-color: #e8e8e8;
+  color: #666;
+  font-size: 26rpx;
+}
+
+.all .days{
+  min-height: 382rpx;
+  margin: 0 50rpx;
+  font-size: 26rpx;
+  border-bottom: 2rpx solid #e8e8e8;
+  padding: 10rpx 0;
+}
+
+.all .columns{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+}
+
+.all .columns .rows{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.all .columns .rows .cell{
+  width: 90rpx;
+  height: 70rpx;
+  padding: 0 10rpx;
+  margin: 3rpx;
+  text-align: center;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.all .columns .rows .cell text{
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  line-height: 70rpx;
+  border-radius: 50%;
+}
+
+.count .daynumber{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.count .daynumber .day{
+  margin-top: 50rpx;
+}
+
+.count{
+  /* margin: 20rpx; */
+  padding: 10rpx 30rpx;
+  display: flex;
+  text-align: center;
+  border-radius: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 34rpx;
+  /* background-color: #ff626a; */
+  /* color: #fff; */
+}
+
+.btn-circle{
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background-color: #ff3b44;
+  color: #fff;
+  font-size: 40rpx;
+  margin: 0 auto 30rpx;
+  text-align: center;
+  line-height: 200rpx;
+}
+
+.btn-gray{
+  background-color: #dadada;
+}
+
+.count .number{
+  color: red;
+  font-size: 60rpx;
+  background-color: #fff;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20rpx;
+}
+
+.count text{
+  margin: 10rpx;
+}
+
+.cell.complete text{
+  background-color: #ff3b44;
+  color: #fff;
+}
+
+.cell.not-started text{
+  background-color: #e8e8e8;
+  color: #999;
+}
+
+.point-sign-tip{
+  margin: 40rpx;
+}
+
+.pst-item{
+  margin-bottom: 10rpx;
+  color: #666;
+  font-size: 24rpx;
+}

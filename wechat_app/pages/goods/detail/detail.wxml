@@ -44,8 +44,10 @@
       <!-- 促销信息 -->
       <view class='sales-promotion' wx:if="{{goodsInfo.product.promotion_list.length !== 0}}">
         <text class='salespromotion-service-name'>促销</text>
-        <text wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items" class='salespromotion-service-body' wx:if="{{items.type}}">{{items.name}}</text>
-        
+        <view class='salespromotion-service-body'>
+            <text class='salespromotion-service-body' wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items"  wx:if="{{items.type == 2}}">{{items.name}}</text>
+        <text wx:for="{{goodsInfo.product.promotion_list}}" wx:key="inde" wx:for-item="items" class='no-promotion salespromotion-service-body' wx:if="{{items.type == 1}}">{{items.name}}</text>
+        </view>
       </view>
       <!-- 服务信息 -->
       <view class='service'>

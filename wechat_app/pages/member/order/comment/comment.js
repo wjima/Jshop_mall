@@ -163,7 +163,6 @@ Page({
         textarea: page.data.textarea[key],
       }
     }
-    app.db.userToken(function (token) {
       app.api.orderEvaluate(data, function (res) {
         wx.showToast({
           title: res.msg,
@@ -174,6 +173,5 @@ Page({
           }
         });
       });
-    });
   }
 });

@@ -56,7 +56,7 @@ Loader::addNamespace('addons', ADDON_PATH);
 function hook($hook, $params = [])
 {
     $result = Hook::listen($hook, $params);
-    if (count($result) > 0) {
+    if (count($result) > 0 && $result[0]) {
         return $result;
     }
 }
@@ -71,7 +71,8 @@ function hook($hook, $params = [])
  */
 function get_addon_class($name, $type = 'hook', $class = null)
 {
-    $name = Loader::parseName($name);
+    $name = Loader::parseName($name,1);
+
     // 处理多级控制器情况
     if (! is_null($class) && strpos($class, '.')) {
         $class = explode('.', $class);
@@ -89,7 +90,6 @@ function get_addon_class($name, $type = 'hook', $class = null)
         default:
             $namespace = "\\addons\\" . $name . "\\" . $class;
     }
-
     return class_exists($namespace) ? $namespace : '';
 }
 
@@ -120,14 +120,13 @@ function get_addon_config($name)
  * @param bool|string $suffix 生成的URL后缀
  * @param bool|string $domain 域名
  */
-function addon_url($url, $param = [], $suffix = true, $domain = false)
+function get_addon_url($url, $param = [], $suffix = true, $domain = false)
 {
     $url        = parse_url($url);
     $case       = config('url_convert');
     $addons     = $case ? Loader::parseName($url['scheme']) : $url['scheme'];
     $controller = $case ? Loader::parseName($url['host']) : $url['host'];
     $action     = trim($case ? strtolower($url['path']) : $url['path'], '/');
-
     /* 解析URL带的参数 */
     if (isset($url['query'])) {
         parse_str($url['query'], $query);

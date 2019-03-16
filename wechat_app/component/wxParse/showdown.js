@@ -685,11 +685,11 @@ if (showdown.helper.isUndefined(console)) {
   console = {
     warn: function (msg) {
       'use strict';
-      alert(msg);
+      //alert(msg);
     },
     log: function (msg) {
       'use strict';
-      alert(msg);
+      //alert(msg);
     },
     error: function (msg) {
       'use strict';

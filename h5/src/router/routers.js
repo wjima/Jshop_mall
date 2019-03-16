@@ -170,6 +170,18 @@ const routers = [
         }
     },
     {
+        path: '/express',
+            component: resolve => require(['../pages/order/Express'], resolve),
+        name: 'Express',
+        meta: {
+            navShow: true,
+            tabShow: false,
+            title: '物流信息',
+            keepAlive: false,
+            isLogin: true
+        }
+    },
+    {
         path: '/afterservice',
         component: resolve => require(['../pages/order/AfterService'], resolve),
         name: 'AfterService',
@@ -489,6 +501,17 @@ const routers = [
             navShow: false,
             tabShow: false,
             title: '团购活动',
+            keepAlive: false
+        }
+    },
+    {
+        path: '/invoice',
+        component: resolve => require(['../pages/order/Invoice'], resolve),
+        name: 'GroupBuying',
+        meta: {
+            navShow: true,
+            tabShow: false,
+            title: '发票',
             keepAlive: false
         }
     }

@@ -237,6 +237,14 @@ class User extends Common
                 $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
             }
 
+            //取默认的用户等级
+            $userGradeModel = new UserGrade();
+            $userGradeInfo = $userGradeModel->where('is_def',$userGradeModel::IS_DEF_YES)->find();
+            if($userGradeInfo){
+                $userData['grade'] = $userGradeInfo['id'];
+            }
+
+
             $user_id = $this->insertGetId($userData);
             if(!$user_id){
                 return error_code(10000);
@@ -981,6 +989,7 @@ class User extends Common
         $newData['utime']    = $time;
         $newData['status']   = isset($data['status']) ? $data['status'] : self::STATUS_NORMAL;
         $newData['pid']      = 0;
+        $newData['grade']      = $data['grade'];
 
         $result         = $this->save($newData);
         $return['data'] = $this->id;
@@ -1027,6 +1036,9 @@ class User extends Common
                 $data['pid'] = $p['data'];
             }
         }
+        if($data['p_mobile']==''){
+            $data['pid'] = '';
+        }
         //输入密码时修改密码
         if(isset($data['password'])&&$data['password']!=''){
             if (strlen($data['password']) < 6 || strlen($data['password']) > 20) {
@@ -1049,7 +1061,7 @@ class User extends Common
         $newData['avatar']   = $data['avatar'];
         $newData['status']   = $data['status'];
         $newData['pid']   = $data['pid'];
-
+        $newData['grade']      = $data['grade'];
         $result         = $this->save($newData, $where);
         $return['data'] = $result;
 
@@ -1147,7 +1159,7 @@ class User extends Common
         $tableWhere = $this->tableWhere($post);
         $list = [];
         if($isPage){
-            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $list = $this->with('grade')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
             $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
         }else{
@@ -1219,6 +1231,9 @@ class User extends Common
             return $this->getLastInsID();
         }
         return $result;
+    }
+    public function grade(){
+        return $this->hasOne("UserGrade",'id','grade')->bind(['grade_name'	=> 'name']);
     }
 
 }

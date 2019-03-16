@@ -247,7 +247,6 @@ Page({
         if (page.data.searchData.page == 1 && res.data.list.length == 0){
           isEmpty = true;
         }
-        console.log(res.data.list);
         page.setData({
           goodsList: page.data.goodsList.concat(res.data.list),
           ajaxStatus: false,

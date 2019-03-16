@@ -120,6 +120,8 @@ export default {
         // tab切换请求数据
         itemClick (key) {
             this.intTab = key
+            this.$refs.infinitescrollDemo[this.intTab].$emit('ydui.infinitescroll.reInit');
+            this.items[key].page = 1
             this.orderList(this.items[key].page, this.items[key].status)
         },
         // 订单列表
@@ -130,9 +132,12 @@ export default {
                 status: status
             }, res => {
                 const _list = res.data.list
-                this.items[this.intTab].list = [...this.items[this.intTab].list, ..._list]
-                if (_list.length < this.pageSize) {
-                    this.$refs.infinitescrollDemo[this.intTab].$emit('ydui.infinitescroll.loadedDone')
+                if (res.data.status == this.intTab) {
+                    this.items[this.intTab].list = [..._list]
+                    if (_list.length < this.pageSize) {
+                        this.$refs.infinitescrollDemo[this.intTab].$emit('ydui.infinitescroll.loadedDone')
+                        return false
+                    }
                 }
             })
         },
@@ -148,6 +153,7 @@ export default {
                 if (_list.length < this.pageSize) {
                     /* 所有数据加载完毕 */
                     this.$refs.infinitescrollDemo[this.intTab].$emit('ydui.infinitescroll.loadedDone')
+                    return false
                 }
 
                 /* 单次请求数据完毕 */

@@ -284,6 +284,7 @@ page{
   display: inline-block;
   height:28rpx;
   line-height:28rpx;
+  margin:0 6rpx;
 }
 .promotion_off{
   background-color:#ccc;
@@ -294,10 +295,10 @@ page{
   display: inline-block;
   height:28rpx;
   line-height:28rpx;
-  margin-right: 6rpx;
+  margin:0 6rpx;
 }
 .preferential{
-  height: 40rpx;
+  /* height: 40rpx; */
   line-height: 28rpx;
 }
 .pay-num{
@@ -441,3 +442,34 @@ page{
   font-size: 26rpx;
   color: #FF3B44;
 }
+.order-discount{
+    border-bottom:2rpx solid #f1f1f1;
+    overflow:hidden;
+    padding:20rpx 30rpx 20rpx 0;
+    margin-left:30rpx;
+}
+.order-discount .price-details-right{
+    max-width: 500rpx;
+    overflow: hidden;
+}
+.order-discount .price-details-right>view{
+    float: right;
+}
+.promotion{
+    background-color:#ff3b44;
+    color:#fff;
+    font-size:20rpx;
+    line-height:42rpx;
+    padding:0 12rpx;
+    margin:4rpx 6rpx;
+    border-radius:10rpx;
+}
+.right-arrow {
+  width:14rpx;
+  height:24rpx;
+  position:relative;
+  top:28rpx;
+  float: right;
+  margin-left: 10rpx;
+}
+

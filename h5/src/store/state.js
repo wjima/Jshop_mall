@@ -8,6 +8,7 @@ export const state = {
         cate_style: 3, // 分类页样式
         cate_type: 1, // 分类页类型
         tocash_money_low: 0, // 最低提现金额
-        tocash_money_rate: 0 // 提现服务费
+        tocash_money_rate: 0 ,// 提现服务费
+		statistics: '', //统计代码
     }
 }

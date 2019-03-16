@@ -11,6 +11,7 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\BillPayments as BillPaymentsModel;
+use app\common\model\Goods;
 use app\common\model\Order;
 use app\common\model\Payments;
 use app\common\model\BillRefund as BillRefundModel;
@@ -343,6 +344,77 @@ class Report extends Manage
         }
     }
 
+    //商品收藏统计
+    public function goodsCollection(){
+        if(Request::isAJAX()){
+            $result = [
+                'code' => 0,
+                'msg' => '',
+                'count' => 0,
+                'data' => []
+            ];
+            $page = input('param.page',1);
+            $limit = input('param.limit',5000);
+            $sort = input('param.thesort','desc');
+
+            if(input('?param.date')){
+                $theDate = explode(' 到 ',input('param.date'));
+                if(count($theDate) == 2){
+                    $start = strtotime($theDate[0]);
+                    $end = strtotime($theDate[1])+60*60*24;
+                }else{
+                    return result;
+                }
+            }else{
+                //默认今天
+                $start = strtotime(date('Y-m-d'));
+                $end = $start+60*60*24;
+            }
+            $sql = "
+                from ".config('database.prefix')."goods_collection gc
+                left join `".config('database.prefix')."goods` g on gc.goods_id = g.id
+                where gc.ctime > ".$start."
+                and gc.ctime <= ".$end."
+                group by gc.goods_id
+                order by sum(gc.goods_id) ".$sort."
+            ";
+            $goodsModel = new Goods();
+            $count = $goodsModel->query("select 1 ".$sql);
+            if(!$count){
+                return $result;
+            }
+            $result['count'] = count($count);
+
+            $select = "select count(gc.goods_id) as nums,gc.goods_id,gc.goods_name,g.image_id";
+            $limit_sql = " limit ".($page-1)*$limit.",".$limit;
+            $result['data'] = $goodsModel->query($select.$sql.$limit_sql);
+            if($sort == "desc"){
+                $row = ($page-1)*$limit;
+            }else{
+                $row = $result['count'] - ($page-1)*$limit + 1;
+            }
+            foreach($result['data'] as $k => $v){
+                if($sort == "desc"){
+                    $v['id'] = ++$row;
+                }else{
+                    $v['id'] = --$row;
+                }
+
+
+                $v['image_url'] = _sImage($v['image_id']);
+                $result['data'][$k] = $v;
+            }
+            $result['start'] = $start;
+            $result['end'] = $end;
+            $result['sql'] = $select.$sql.$limit_sql;
+            return $result;
+
+
+        }else{
+            return $this->fetch();
+        }
+    }
+
 
     //根据时间，返回时间段
     private function getDate(){
@@ -464,11 +536,13 @@ class Report extends Manage
                 select * from `".config('database.prefix')."order`
                 where 1=1
                 ".$where."
-            ) o on tmp_x.x = ((o.".$join_val." - ".$date_arr['start'].") div (".$date_arr['section']."))
+            ) o on tmp_x.x = (( cast(o.".$join_val." as signed) - ".$date_arr['start'].") div (".$date_arr['section']."))
             group by tmp_x.x
         ";
+
         $model = new Order();
         $re = $model->query($sql);
+
         $result['data'] = $re;
         $result['sql'] = $sql;
         $result['status'] = true;
@@ -495,7 +569,7 @@ class Report extends Manage
                 select * from `".config('database.prefix')."bill_payments`
                 where 1=1
                 ".$where."
-            ) o on tmp_x.x = ((o.".$join_val." - ".$date_arr['start'].") div (".$date_arr['section']."))
+            ) o on tmp_x.x = (( cast(o.".$join_val." as signed)  - ".$date_arr['start'].") div (".$date_arr['section']."))
             group by tmp_x.x
         ";
         $model = new Order();
@@ -525,7 +599,7 @@ class Report extends Manage
                 select * from `".config('database.prefix')."bill_refund`
                 where 1=1
                 ".$where."
-            ) o on tmp_x.x = ((o.".$join_val." - ".$date_arr['start'].") div (".$date_arr['section']."))
+            ) o on tmp_x.x = (( cast(o.".$join_val." as signed) - ".$date_arr['start'].") div (".$date_arr['section']."))
             group by tmp_x.x
         ";
         $model = new Order();
@@ -556,7 +630,7 @@ class Report extends Manage
                 select * from `".config('database.prefix')."user_tocash`
                 where 1=1
                 ".$where."
-            ) o on tmp_x.x = ((o.".$join_val." - ".$date_arr['start'].") div (".$date_arr['section']."))
+            ) o on tmp_x.x = ((cast(o.".$join_val." as signed) - ".$date_arr['start'].") div (".$date_arr['section']."))
             group by tmp_x.x
         ";
         $model = new Order();

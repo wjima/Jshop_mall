@@ -17,7 +17,6 @@ Page({
   //加载执行
   onShow: function (options) {
     var page = this;
-    app.db.userToken(function (token) {
       app.api.userInfo(function (res) {
         if (res.status) {
           //如果没有头像，设置本地默认头像
@@ -46,18 +45,11 @@ Page({
               isClerk: res.flag
           });
       });
-
-      //是否开启积分
-      app.api.isPoint(function(res){
-          let isPoint = false;
-          if(res.data == 1){
-              isPoint = true;
-          }
-          page.setData({
-              isPoint: isPoint
-          });
-      });
-    });
+      
+        //是否开启积分
+        page.setData({
+            isPoint: app.config.point_switch
+        });
   },
 
   //查看全部订单
@@ -95,61 +87,17 @@ Page({
     });
   },
 
-  //积分签到
-  sign: function () {
-      var page = this;
-      app.db.userToken(function (token) {
-          app.api.isSign(function (res) {
-              if (res.status) {
-                  wx.showToast({
-                      title: '今日已签到，无需重复签到',
-                      icon: 'none',
-                      duration: 1000
-                  });
-              } else {
-                  app.api.sign(function (e) {
-                        if (e.status) {
-                            wx.showToast({
-                                title: '签到成功',
-                                icon: 'success',
-                                duration: 1000,
-                                complete: function() {
-                                    setTimeout(function(){
-                                        app.api.userInfo(function (res) {
-                                            if (res.status) {
-                                                page.setData({
-                                                    point: res.data.point
-                                                });
-                                            }
-                                        });
-                                    }, 1000);
-                                }
-                            });
-                        } else {
-                            wx.showToast({
-                                title: e.msg,
-                                icon: 'none',
-                                duration: 1000
-                            });
-                        }
-                  });
-              }
-          });
-      });
-    //todo:跳转到对应的积分页面
-  },
+    //我的积分
+    myPoint: function () {
+        wx.navigateTo({
+            url: '../point/point',
+        });
+    },
 
   //我的优惠券
   coupon: function () {
     wx.navigateTo({
       url: '../coupon/coupon',
-    });
-  },
-
-  //我的购物车
-  cart: function () {
-    wx.switchTab({
-      url: '/pages/cart/cartNothing/cart'
     });
   },
 
@@ -171,13 +119,6 @@ Page({
   browsingHistory: function () {
     wx.navigateTo({
       url: '../browsingHistory/browsingHistory'
-    });
-  },
-
-  //推荐列表
-  recommendlist: function () {
-    wx.navigateTo({
-      url: '../recommendList/recommendList'
     });
   },
 

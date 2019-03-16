@@ -101,13 +101,13 @@ return [
             '2' => '已确认收货'
         ],
         'status_text' => [
-            'pending_payment' => '待付款',
-            'pending_delivery' => '待发货',
-            'pending_receipt' => '待收货',
-            'pending_evaluate' => '待评价',
-            'completed_evaluate' => '已评价',
-            'completed' => '已完成',
-            'cancel' => '已取消'
+            '1' => '待付款',
+            '2' => '待发货',
+            '3' => '待收货',
+            '4' => '待评价',
+            '5' => '已评价',
+            '6' => '已完成',
+            '7' => '已取消'
         ],
         //发票类型
         'tax_type' => [

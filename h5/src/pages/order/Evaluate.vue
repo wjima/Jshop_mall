@@ -23,7 +23,7 @@
                         <!--</div>-->
                     </div>
                     <div class="uploadimg">
-                        <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update(item.id,$event)"/>
+                        <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update(item.id,$event)" ref="file"/>
                         <img slot="icon" src="../../../static/image/addimg.png" v-show="isupload[item.id]">
                     </div>
                 </div>
@@ -65,7 +65,7 @@ export default {
         this.$api.orderDetail({
             order_id: this.order_id
         }, res => {
-            if (res.data.text_status !== 'pending_evaluate') {
+            if (res.data.text_status !== 4) {
                 this.$dialog.alert({
                     mes: '该订单状态有误暂不可评价',
                     callback: () => {
@@ -107,6 +107,8 @@ export default {
                     this.images[key].push(img)
                 }
             })
+            // 上传完成后清空input的值
+            this.$refs.file[0].value = ''
         },
         // 删除对应的商品评论图片
         remove (key, index) {
@@ -125,6 +127,7 @@ export default {
                     textarea: this.textarea[k]
                 }
             }
+
             this.$api.orderEvaluate(data, res => {
                 if (res.status) {
                     this.$dialog.toast({mes: res.msg, timeout: 1000, icon: 'success'})

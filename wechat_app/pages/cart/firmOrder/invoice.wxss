@@ -1,0 +1,85 @@
+.content-body{
+  overflow: hidden;
+  border-bottom: 16rpx solid #F3F3F3;
+}
+.content-body .content-view{
+  width: 696rpx;
+  height: 60rpx; 
+  line-height: 60rpx; 
+  padding: 10rpx 30rpx 10rpx 24rpx;
+  border-bottom: 2rpx solid #f2f2f2;
+  position: relative;
+}
+.order-top-left{
+  float: left;
+}
+.order-top-right{
+  float: right;
+  /* min-width: 400rpx; */
+}
+.order-top-right text{
+  font-size: 24rpx;
+  color: #999;
+}
+.order-top-right-img{ 
+  margin-left: 12rpx;
+}
+.right-arrow{
+  width: 14rpx;
+  height: 24rpx;
+  position: relative;
+  top: 2rpx;
+}
+.member-text{
+  color: #666;
+  font-size: 24rpx;
+  /* margin-left:56rpx; */
+}
+.radio-right-item{
+  display: inline-block;
+  /* float: right; */
+  font-size: 24rpx;
+  color: #666;
+  /* margin-left: 20rpx; */
+}
+.radio-right-item label{
+  position: relative;
+  display: inline-block;
+  padding-left: 44rpx;
+  margin-left: 10rpx;
+}
+.radio-right-item label icon{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  margin: 0;
+  width: 40rpx;
+  height: 38rpx;
+}
+.input-right{
+  width: 520rpx;
+  text-align: right;
+  font-size: 24rpx;
+  color: #333;
+  margin-top: 4rpx;
+}
+.input-right-p{
+  color: #999;
+  font-size: 24rpx;
+}
+.invoice-b{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 80rpx;
+}
+.invoice-b button{
+    width: 100%;
+    height: 100%;
+    line-height: 80rpx;
+    background-color: #ff3b44;
+    color: #fff;
+    font-size: 30rpx;
+    border-radius: 0;
+}

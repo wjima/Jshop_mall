@@ -35,7 +35,7 @@ export default {
     },
     // 实例创建并挂载后调用此方法
     mounted () {
-        this.getCouponList()
+        this.getCouponList();
     },
     methods: {
         // 获取商户优惠券信息

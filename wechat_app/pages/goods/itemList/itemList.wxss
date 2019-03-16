@@ -121,10 +121,9 @@ page{
   width: 430rpx;
   display: inline-block;
   margin-left: 20rpx;
-  height: 240rpx;
+  /* height: 240rpx; */
   float: right;
   position: relative;
-
 }
 .commodity-name{
   font-size: 26rpx;
@@ -138,7 +137,9 @@ page{
   white-space: normal;
 }
 .preferential{
-   height: 48rpx; 
+    /* height: 48rpx; */
+    /* overflow: hidden; */
+    line-height:36rpx;
 }
 .preferential>text{
   display: inline-block;

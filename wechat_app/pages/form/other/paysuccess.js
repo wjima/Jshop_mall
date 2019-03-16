@@ -33,7 +33,6 @@ Page({
         payment_id: options.payment_id
       }
       app.api.paymentInfo(data, function (res) {
-        console.log(res);
         if (res.status) {
           var payName = page.getPaymentCodeName(res.data.payment_code);
           page.setData({

@@ -36,6 +36,15 @@
     .layui-btn{
     	margin-top: 10px;
     }
+    .grade_price{
+        width: 80% !important;
+        float: left;
+        display: inline;
+    }
+    .grade_price input{
+        display: inline;
+        width: 190px;;
+    }
 </style>
 <form class="layui-form seller-alone-form" action="{:url('goods/doEdit')}" method="post">
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>基础信息</legend></fieldset>
@@ -141,7 +150,17 @@
 
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>商品详情</legend></fieldset>
     {:hook('editgoodsview',['id'=>$data.id])}
-
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员价：</label>
+        <div class="layui-input-inline grade_price">
+            {volist name="gradelist" id="vo"}
+            {$vo.name}：<input type="text" name="goods[grade_price][{$vo.id}]" lay-verify="title" autocomplete="off" placeholder="会员优惠" value="{$vo.grade_price}" class="layui-input">
+            {/volist}
+        </div>
+        <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">
+            会员价为0时，使用默认价格。大于0时，商品实际价格为商品价格减去会员价
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">重量：</label>
         <div class="layui-input-inline">

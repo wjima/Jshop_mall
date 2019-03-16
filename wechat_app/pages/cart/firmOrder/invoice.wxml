@@ -1,0 +1,60 @@
+<view class='content-body'>
+  <view class='content-view'>
+    <view class='order-top-left'>
+      <text class='member-text'>发票类型</text>
+    </view>
+    <view class='order-top-right'>
+      <view class='radio-right-item'>
+        <radio-group bindchange="radioChange">
+          <label wx:for="{{radioItems}}" wx:key="value">
+            <radio class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
+            <icon color="#666" class="weui-icon-checkbox_circle" type="circle" size="18" wx:if="{{!item.checked}}"></icon>
+            <icon color="#ff3b44" class="weui-icon-checkbox_success" type="success" size="18" wx:if="{{item.checked}}"></icon>
+            {{item.name}}
+          </label>
+        </radio-group>
+      </view>
+    </view>
+  </view>
+  <view class='content-view'>
+    <view class='order-top-left'>
+      <text class='member-text'>发票抬头</text>
+    </view>
+    <view class='order-top-right'>
+      <input class='input-right' placeholder='抬头名称' value='{{name}}' placeholder-class='input-right-p' type='text' bindinput='setName' bindblur='setOkName'></input>
+    </view>
+  </view>
+  <view class='content-view' wx:if="{{type == 1}}">
+    <view class='order-top-left'>
+      <text class='member-text'>税号</text>
+    </view>
+    <view class='order-top-right'>
+      <input class='input-right' placeholder='纳税人识别号' value="{{code}}" placeholder-class='input-right-p' type='number' bindinput='setCode'></input>
+    </view>
+  </view>
+</view>
+<view class='content-body'>
+  <view class='content-view'>
+    <view class='order-top-left'>
+      <text class='member-text'>发票内容</text>
+    </view>
+    <view class='order-top-right'>
+      <text>明细</text>
+    </view>
+  </view>
+
+</view>
+<view class='content-body' bindtap='noTax'>
+  <view class='content-view'>
+    <view class='order-top-left'>
+      <text class='member-text'>本次不开具发票，继续下单</text>
+    </view>
+    <view class='order-top-right'>
+      <!-- <text>明细</text> -->
+      <image class='order-top-right-img right-arrow' src='../../image/right.png'></image>
+    </view>
+  </view>
+</view>
+<view class='invoice-b' bindtap='yesTax'>
+    <button>确认</button>
+</view>

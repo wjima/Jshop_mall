@@ -113,7 +113,7 @@ class Form extends Manage
                 'status' => false,
                 'msg'    => '',
                 'data'   => '',
-            ];;
+            ];
             $data['id']           = input('id/d', '0');
             $data['name']         = input('name/s', '');
             $data['img']          = input('img/a', []);

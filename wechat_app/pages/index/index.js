@@ -5,7 +5,7 @@ const app = getApp(); //获取全局app.js
 Page({
   //页面使用的数据
   data: {
-    appTitle: '', //小程序标题
+    appTitle: 'Jshop小程序商城——致力于为客户创造有价值的产品。', //小程序标题
     imageUrl: '/static/images/share.png', //分享封面图
     indicatorDots: true, //商品轮播图底部圆点
     autoplay: true, //商品轮播图自动播放
@@ -287,7 +287,6 @@ Page({
 
   //领取优惠券
   getCoupon: function (e) {
-    app.db.userToken(function (token) {
       var data = {
         promotion_id: e.currentTarget.dataset.id
       }
@@ -296,7 +295,6 @@ Page({
           title: res.msg,
         });
       });
-    });
   },
 
   //前往全部分类

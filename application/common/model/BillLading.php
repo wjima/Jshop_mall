@@ -36,7 +36,7 @@ class BillLading extends Common
             'data' => ''
         ];
 
-        $data['id'] = get_sn(9);
+        $data['id'] = $this->generateId();
         $data['order_id'] = $order_id;
         $data['store_id'] = $store_id;
         $data['name'] = $name;
@@ -51,6 +51,22 @@ class BillLading extends Common
         }
 
         return $return;
+    }
+
+
+    /**
+     * 生成唯一提货单号
+     * @return string
+     */
+    public function generateId()
+    {
+        do {
+            $id = get_sn(9);
+            $where[] = ['id', 'eq', $id];
+            $res = $this->where($where)->count();
+        } while ($res != 0);
+
+        return $id;
     }
 
 

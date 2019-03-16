@@ -1,0 +1,38 @@
+<form style="padding:30px;" class="layui-form seller-alone-form" id="edit_form">
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>编号：</label>
+        {if $data.id}
+        <div class="layui-form-mid">
+            <input type="hidden" name="id" value="{$data.id}" />
+            {$data.id}
+        </div>
+        {else /}
+            <div class="layui-input-inline seller-inline-1">
+                <input name="id" value="{$data.id}" lay-verify="required" placeholder="ID" class="layui-input" type="text">
+            </div>
+        <div class="layui-form-mid layui-word-aux">请输入1~99的数字，编号不能重复</div>
+        {/if}
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>等级名称：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input name="name" value="{$data.name}" placeholder="请输入等级名称" class="layui-input" type="text">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>是否默认：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input type="checkbox" name="is_def" value="1" {if $data.is_def == 1}checked=""{/if} lay-skin="switch" lay-text="是|否">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">注意：</label>
+        <div class="layui-form-mid layui-word-aux">在新增的时候，如果编号已经存在，会更新此会员等级而不会新增</div>
+    </div>
+
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

@@ -61,12 +61,13 @@ class AddonController extends Controller
         $this->action     = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $this->controller = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $this->addon      = $convert ? strtolower(array_pop($param)) : array_pop($param);
+        $addonName        = Loader::parseName($this->addon, 1);
 
         // 生成view_path
-        $view_path = $this->config['view_path'] ?'view': 'view';
+        $view_path = $this->config['view_path'] ? 'view' : 'view';
 
         // 重置配置
-        config('template.view_path', ADDON_PATH . $this->addon . DIRECTORY_SEPARATOR . $view_path . DIRECTORY_SEPARATOR);
+        config('template.view_path', ADDON_PATH . $addonName . DIRECTORY_SEPARATOR . $view_path . DIRECTORY_SEPARATOR);
 
         parent::__construct($request);
     }

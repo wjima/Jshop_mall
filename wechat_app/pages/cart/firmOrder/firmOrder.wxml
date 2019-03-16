@@ -125,7 +125,9 @@
       </view>
       <view class='price-details' bindtap="couponbtn" data-statu="open"> 
         <text class='price-details-left'>优惠券</text>
+        <image class='order-top-right-img right-arrow' src='../../image/right.png'></image>
         <text class='price-details-right'>{{usedCouponName}}</text>
+        
       </view> 
     </view>
     <view class='price-list'> 
@@ -136,6 +138,17 @@
           </checkbox-group>
         </view>
         <view class='integral-details'>可用{{available_point}}积分，可抵扣{{pointRmb}}元，共有{{point}}积分。</view>
+      </view>
+      <view class='order-discount'> 
+        <text class='price-details-left'>订单优惠</text>
+        <view class='price-details-right'>
+            <view wx:for="{{orderPromotionList}}" class='promotion' wx:key="index" wx:if="{{item.type == 2}}">{{item.name}}</view>
+        </view>
+      </view>
+      <view class='price-details'> 
+        <text class='price-details-left'>发票</text>
+        <image class='order-top-right-img right-arrow' src='../../image/right.png'></image>
+        <text class='price-details-right' bindtap='invoice'>{{tax_name}}</text>
       </view>
       <view class='price-details buyer'>
         <text class='price-details-left'>买家留言</text>

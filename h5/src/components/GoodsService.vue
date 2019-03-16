@@ -21,7 +21,7 @@
             <div class="service-content-header">
                 <p>促销</p>
             </div>
-            <yd-badge shape="square" type="danger" v-for="(item, index) in promotion" :key="index">{{ item.name }}</yd-badge>
+            <yd-badge shape="square" :type="item.type === 2 ? 'danger' : ''" v-for="(item, index) in promotion" :key="index">{{ item.name }}</yd-badge>
         </div>
     </div>
 </template>

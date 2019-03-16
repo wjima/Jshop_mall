@@ -4,15 +4,14 @@
   <view class='content'>
     <!-- 广告图 -->
     <view class='banner' wx:if="{{form.head_type==1}}">
-      <image src='{{form.head_type_value_url[0]}}' mode='aspectFit'></image>
+      <image src='{{form.head_type_value_url[0]}}' mode='aspectFill'></image>
     </view>
-
     <!-- 轮播图 -->
     <view class='sw' wx:if="{{form.head_type==2}}">
       <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{duration}}">
         <block wx:for="{{form.head_type_value_url}}" wx:key="{{index}}" wx:for-index="index" wx:for-item="item">
           <swiper-item>
-            <image src="{{item}}" class="slide-image" mode='aspectFit'/>
+            <image src="{{item}}" class="slide-image" mode='aspectFill'/>
           </swiper-item>
         </block>
       </swiper>

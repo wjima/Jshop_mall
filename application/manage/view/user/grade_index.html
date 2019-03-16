@@ -1,0 +1,110 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit  lay-filter="role-add"><i class="layui-icon">&#xe608;</i>添加</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="userTable" lay-filter="test"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var userTables =layui.table.render({
+            elem: '#userTable',
+            height: 'full-220',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('user/grade')}?_ajax=1",
+            id:'userTable',
+            cols: [[
+                {field:'id',width:100,title:'编号'},
+                {field:'name', width:100,title:'等级名称'},
+                {field:'is_def',title:'是否默认'},
+                {field: 'operating', title: '操作', width:250, align: 'center', fixed: 'right',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }},
+            ]]
+        });
+        //监听form提交  (add)
+        layui.form.on('submit(role-add)',function(data){
+            JsGet('{:url("user/gradeAdd")}',function (tpl) {
+                layer.open({
+                    type: 1,
+                    area: ['600px', '400px'],
+                    data:'',
+                    title: '添加用户等级',
+                    content: tpl,
+                    btn:['保存','关闭'],
+                    yes:function (index,layero) {
+                        var thedata = $('#edit_form').serialize();
+                        JsPost('{:url("user/gradeAdd")}',thedata,function (re) {
+                            if(re.status){
+                                layer.msg('保存成功');
+                                layer.close(index);
+                                userTables.reload();
+                            }else{
+                                layer.msg(re.msg);
+                            }
+                        });
+                    }
+                });
+            });
+            return false;
+        });
+
+        //角色删除
+        $(document).on('click','.option-del',function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('您确定删除此会员等级吗？', {
+                btn: ['确认','取消'] //按钮
+            }, function(){
+                //去删除
+                JsPost("{:url('user/gradeDel')}",{'id':id},function(res){
+                    if(res.status){
+                        layer.msg('删除成功');
+                        userTables.reload();
+                    }else{
+                        layer.msg(res.msg);
+                    }
+
+                });
+            }, function(){
+                layer.close(1);
+            });
+        });
+
+        //编辑
+        $(document).on('click','.option-edit',function(){
+            var id = $(this).attr('data-id');
+            JsGet('{:url("user/gradeAdd")}?id='+id,function (tpl) {
+                layer.open({
+                    type: 1,
+                    area: ['600px', '400px'],
+                    data:'',
+                    title: '编辑会员等级',
+                    content: tpl,
+                    btn:['保存','关闭'],
+                    yes:function (index,layero) {
+                        var thedata = $('#edit_form').serialize();
+                        JsPost('{:url("user/gradeAdd")}',thedata,function (re) {
+                            if(re.status){
+                                layer.msg('保存成功');
+                                layer.close(index);
+                                userTables.reload();
+                            }else{
+                                layer.msg(re.msg);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>

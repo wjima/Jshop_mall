@@ -13,44 +13,42 @@ Page({
     rel: [] //支付详情
   },
 
-  //加载执行
-  onLoad: function (options) {
-    var page = this;
-    if(options.payment_id == 'null'){
-      page.setData({
-        orderId: options.order_id,
-        status: true,
-        money: 0,
-        paymentCode: false,
-        paymentType: false,
-        rel: false
-      });
-    } else {
-      var data = {
-        payment_id: options.payment_id
-      }
-      app.db.userToken(function (token) {
-        app.api.paymentInfo(data, function (res) {
-          if (res.status) {
-            var payName = page.getPaymentCodeName(res.data.payment_code);
+    //加载执行
+    onLoad: function (options) {
+        var page = this;
+        if(options.payment_id == 'null'){
             page.setData({
-              paymentId: res.data.payment_id,
-              status: true,
-              money: res.data.money,
-              paymentCode: payName,
-              paymentType: res.data.type,
-              rel: res.data.rel
+                orderId: options.order_id,
+                status: true,
+                money: 0,
+                paymentCode: false,
+                paymentType: false,
+                rel: false
             });
-          } else {
-            //支付失败
-            page.setData({
-              status: false
+        } else {
+            var data = {
+                payment_id: options.payment_id
+            }
+            app.api.paymentInfo(data, function (res) {
+                if (res.status) {
+                    var payName = page.getPaymentCodeName(res.data.payment_code);
+                    page.setData({
+                        paymentId: res.data.payment_id,
+                        status: true,
+                        money: res.data.money,
+                        paymentCode: payName,
+                        paymentType: res.data.type,
+                        rel: res.data.rel
+                    });
+                } else {
+                    //支付失败
+                    page.setData({
+                        status: false
+                    });
+                }
             });
-          }
-        });
-      });
-    }
-  },
+        }
+    },
 
   //查看订单详情
   orderInfo: function (e) {

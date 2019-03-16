@@ -23,7 +23,6 @@ Page({
   getOrderList: function () {
     var page = this;
     var data = {};
-    app.db.userToken(function (token) {
       data['page'] = page.data.page;
       data['limit'] = page.data.limit;
       app.api.getAftersalesList(data, function (res) {
@@ -53,7 +52,6 @@ Page({
           loadingComplete: lc
         });
       });
-    });
   },
 
   //数据格式处理

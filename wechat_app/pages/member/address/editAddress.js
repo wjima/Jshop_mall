@@ -121,7 +121,6 @@ Page({
             });
             return false;
         }
-
         if (!app.common.isPhoneNumber(page.data.mobile)) {
             wx.showModal({
                 title: '提示',
@@ -130,7 +129,6 @@ Page({
             });
             return false;
         }
-
         if (page.data.address == '') {
             wx.showModal({
                 title: '提示',
@@ -139,7 +137,6 @@ Page({
             });
             return false;
         }
-
         let data = {
             'id': page.data.id,
             'name': page.data.name,
@@ -148,28 +145,25 @@ Page({
             'address': page.data.address,
             'is_def': page.data.is_def
         }
-
-        app.db.userToken(function (token) {
-            app.api.editship(data, function (res) {
-                if (res.status) {
-                    wx.showToast({
-                        title: '保存成功',
-                        icon: 'success',
-                        mask: true,
-                        complete: function () {
-                            setTimeout(function () {
-                                wx.navigateBack(1);
-                            }, 1500);
-                        }
-                    });
-                } else {
-                    wx.showModal({
-                        title: '提示',
-                        content: res.msg,
-                        showCancel: false
-                    });
-                }
-            });
+        app.api.editship(data, function (res) {
+            if (res.status) {
+                wx.showToast({
+                    title: '保存成功',
+                    icon: 'success',
+                    mask: true,
+                    complete: function () {
+                        setTimeout(function () {
+                            wx.navigateBack(1);
+                        }, 1500);
+                    }
+                });
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: res.msg,
+                    showCancel: false
+                });
+            }
         });
     }
 });

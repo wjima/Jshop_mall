@@ -7,5 +7,6 @@ export const getters = {
     shopCateStyle: state => state.config.cate_style,
     shopCateType: state => state.config.cate_type,
     tocashMoneyLow: state => state.config.tocash_money_low,
-    tocashMoneyRate: state => state.config.tocash_money_rate
+    tocashMoneyRate: state => state.config.tocash_money_rate,
+	statistics: state => state.config.statistics,
 }

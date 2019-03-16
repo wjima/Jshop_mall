@@ -26,11 +26,12 @@ export default {
         ...mapGetters([
             'shopName',
             'shopDesc',
-            'shopLogo'
+            'shopLogo',
+			'statistics'
         ])
     },
     beforeMount () {
-        this.getShopSetting()
+        this.getShopSetting();
     },
     methods: {
         // 获取店铺配置 存入vuex
@@ -40,7 +41,13 @@ export default {
                 if (this.$route.path === '/index') {
                     document.title = this.shopName
                 }
-            })
+                //百度统计
+                if(res.statistics){
+                    var script=document.createElement("script");
+                    script.innerHTML = res.statistics;
+                    document.getElementsByTagName("body")[0].appendChild(script);
+                }
+            });
         }
     },
     watch: {
@@ -52,7 +59,6 @@ export default {
     }
 }
 </script>
-
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

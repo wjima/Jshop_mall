@@ -766,9 +766,12 @@ class User extends Api
     /**
      * 签到操作
      * @return array
+     * @throws \think\Exception
+     * @throws \think\db\exception\BindParamException
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function sign()
     {
@@ -780,18 +783,17 @@ class User extends Api
 
 
     /**
-     * 积分记录
+     * 获取签到信息
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function pointLog()
+    public function getSignInfo()
     {
         $user_id = $this->userId;
         $userPointLog = new UserPointLog();
-        $res = $userPointLog->pointLogList($user_id);
-        return $res;
+        return $userPointLog->getSignInfo($user_id);
     }
 
 
@@ -810,33 +812,6 @@ class User extends Api
         return $userModel->getUserPoint($user_id, $order_money);
     }
 
-
-//    /**废弃接口（此接口有泄密风险，并且取值方式也不友好，统一用api/common/jshopConf方法）
-//     * 获取店铺设置
-//     * @return array|mixed
-//     */
-//    public function getSetting()
-//    {
-//        $result = [
-//            'status' => true,
-//            'msg' => '',
-//            'data' => ''
-//        ];
-//
-//        $key = input('param.key/s');
-//        if(!$key) return error_code(10003);
-//        $result['data'] = getSetting($key);
-//
-//        switch ($key)
-//        {
-//            case 'shop_logo':
-//                $result['data'] = _sImage($result['data']);
-//                break;
-//            default:
-//                break;
-//        }
-//        return $result;
-//    }
 
 
     /**
@@ -1005,11 +980,12 @@ class User extends Api
      */
     public function userBalance()
     {
-        $page = input('param.page', 1);
-        $limit = input('param.limit', config('jshop.page_limit'));
-        $order = input('param.order','ctime desc');
+        $page = Request::param('page', 1);
+        $limit = Request::param('limit', config('jshop.page_limit'));
+        $order = Request::param('order', 'ctime desc');
+        $type = Request::param('type', 0);
         $balanceModel = new Balance();
-        return $balanceModel->getBalanceList($this->userId, $order, $page, $limit);
+        return $balanceModel->getBalanceList($this->userId, $order, $page, $limit, $type);
     }
 
 
@@ -1285,8 +1261,14 @@ class User extends Api
         $userModel = new UserModel();
         $where[] = ['pid', 'eq', $this->userId];
         $return['data']['number'] = $userModel->where($where)->count();
-        //邀请赚的佣金 todo::暂时没有
+        //邀请赚的佣金
         $return['data']['money'] = 0;
+        $balanceModel = new Balance();
+        $balance = $balanceModel->getInviteCommission($this->userId);
+        if($balance['status'])
+        {
+            $return['data']['money'] = $balance['data'];
+        }
         //是否有上级
         $userInfo = $userModel->get($this->userId);
         $is_superior = false;
@@ -1310,5 +1292,23 @@ class User extends Api
         $code = Request::param('code');
         $userModel = new UserModel();
         return $userModel->setMyInvite($this->userId, $userModel->getUserIdByShareCode($code));
+    }
+
+
+    /**
+     * 用户积分明细
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function userPointLog()
+    {
+        $user_id = $this->userId;
+        $userPointLog = new UserPointLog();
+        $page = Request::param('page', 1);
+        $limit = Request::param('limit', 10);
+        $res = $userPointLog->pointLogList($user_id, false, $page, $limit);
+        return $res;
     }
 }

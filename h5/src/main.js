@@ -51,6 +51,12 @@ const that = new Vue({
 
 router.beforeEach((route, redirect, next) => {
     document.title = route.meta.title ? route.meta.title : ''
+    //百度统计
+    if (typeof _hmt != "undefined" ) {
+        if (route.path) {
+            _hmt.push(['_trackPageview', '/#' + route.fullPath]);
+        }
+    }
     // 如果将要跳转的页面需要登录 用户没有登录将跳转登录页面
     if (route.meta.isLogin) {
         if (!Common.getStorage('user_token')) {

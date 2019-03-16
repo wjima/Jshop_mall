@@ -77,6 +77,8 @@ class Common extends Base
         $conf['cate_type'] = getSetting('cate_type');                   // H5分类类型
         $conf['tocash_money_low'] = getSetting('tocash_money_low');                 //最低提现
         $conf['tocash_money_rate'] = getSetting('tocash_money_rate');                 //服务费
+        $conf['point_switch'] = getSetting('point_switch');             //是否开启积分功能
+        $conf['statistics'] = getSetting('statistics_code');            //获取统计代码
 
         return $conf;
     }

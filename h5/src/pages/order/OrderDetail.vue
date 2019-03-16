@@ -210,13 +210,11 @@ export default {
         },
         // 查看物流信息详情
         logistics () {
-            this.$api.logistics({code: this.order.delivery[0].logi_code, no: this.order.delivery[0].logi_no}, res => {
-                if (res.status) {
-                    this.showLogistics = true
-                    this.logisticsInfo = res.data.info
-                    console.log(this.logisticsInfo)
-                }
-            })
+
+            let address1 = this.order.ship_area_name ? this.order.ship_area_name : '';
+            let address2 = this.order.ship_address ? this.order.ship_address : '';
+            let address = address1 + address2;
+            this.$router.push({path: '/express', query: {code:this.order.delivery[0].logi_code,no: this.order.delivery[0].logi_no,address:address}})
         }
     }
 }

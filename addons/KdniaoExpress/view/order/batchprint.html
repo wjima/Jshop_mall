@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="__STATIC_LIB__layui/css/layui.css">
+<script src="__STATIC_JS__jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC_LIB__layui/layui.js"></script>
+<script src="__STATIC_JS__jshop.js"></script>
+<div class="progress_content" style="padding: 20px;">
+    <div class="progress-tip">
+        面单获取中，请稍后，请勿关闭此窗口
+    </div>
+    <div id="progress-bar">
+        <div class="layui-progress layui-progress-big" lay-filter="syncExpress" >
+            <div class="layui-progress-bar" lay-percent="0%"></div>
+        </div>
+    </div>
+</div>
+<style>
+    .progress-tip{
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+<script>
+    layui.use(['element', 'layer'], function () {
+        var element = layui.element;
+        element.render();
+        var page = parseInt("{$page}");
+        var total_page = parseInt("{$total_page}");
+        var data = "{$data}";
+        nextPrint(page, total_page, data);
+        function nextPrint(page, total_page, data) {
+            JsPost("{:get_addon_url('KdniaoExpress://Order/nextPrint')}", {
+                page: page,
+                total_page: total_page,
+                ids: data,
+                logi_code: "{$logi_code}"
+            }, function (res) {
+                if (res.status) {
+                    if (res.data.page <= res.data.total_page) {
+                        element.progress('syncExpress', res.data.percent + '%');
+                        nextPrint(res.data.page, total_page, data);
+                    } else {
+                        element.progress('syncExpress', '100%');
+                        layer.msg("面单获取完成，开始打印", {time: 1000}, function () {
+                            if (res.status) {
+                                var url = "{:get_addon_url('KdniaoExpress://Order/printExpress')}?ids=" + data;
+                                window.open(url, "_blank");
+                                window.parent.table.reload();
+                                window.parent.layer.closeAll();
+                                //window.parent.printClose(data);
+                            }
+                        });
+                    }
+                } else {
+                    layer.msg(res.msg);
+                    return false;
+                }
+            });
+        }
+    });
+</script>

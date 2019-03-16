@@ -13,7 +13,11 @@
 			<li class="layui-this">基本信息</li>
 			<li>商品信息</li>
 			<li>支付单/退款单</li>
+			{if $order.store_id != 0}
 			<li>发货单/提货单/退货单</li>
+			{else}
+			<li>发货单/退货单</li>
+			{/if}
 			<li>订单记录</li>
 		</ul>
 	  	<div class="layui-tab-content">
@@ -275,6 +279,7 @@
 					</tbody>
 				</table>
 
+				{if $order.store_id != 0}
 				<!--提货单-->
 				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
 					<legend style="font-size:14px;">提货单</legend>
@@ -305,6 +310,7 @@
 					{/foreach}
 					</tbody>
 				</table>
+				{/if}
 
 				<!--退货单-->
 				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">

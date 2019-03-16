@@ -25,6 +25,10 @@ class PromotionCondition extends Common
             'name' => '订单满XX金额满足条件',
             'type' => 'order',
         ],
+        'USER_GRADE' => [
+            'name' => '用户符合指定等级',
+            'type' => 'user'
+        ]
     ];
 
 
@@ -193,7 +197,7 @@ class PromotionCondition extends Common
 
     //所有商品满足条件
     private function condition_GOODS_ALL($params,$goods_id,$nums){
-        return true;
+        return 2;
     }
 
     //指定某些商品满足条件

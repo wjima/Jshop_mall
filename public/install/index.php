@@ -3,7 +3,7 @@ header('Content-type:text/html;charset=utf-8');
 session_start();
 //配置信息
 $config = array(
-    'version'     => 'v1.1.3',           //版本号
+    'version'     => 'v1.1.2',           //版本号
     'indexPage'   => 'step1',         //用户协议
     'checkPage'   => 'step2',         //环境检测
     'createPage'  => 'step3',         //数据库配置
@@ -16,7 +16,8 @@ $config = array(
     'demoData'    => 'demo',          //演示数据文件名称
     'databaseUrl' => '../../config/database.php',     //database.php文件地址
     'account'     => 'admin',         //默认账号
-    'password'    => '123456'         //默认密码
+    'password'    => '123456',         //默认密码
+    //'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
 );
 
 
@@ -199,6 +200,15 @@ php;
         }
         //创建数据库链接配置文件
         file_put_contents($config['databaseUrl'], $db_str);
+
+        //配置H5的host
+        /*$host_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'];
+        $h5config = <<<h5
+window.host = '{$host_url}';
+window.entId = '';
+h5;
+        file_put_contents($config['h5ConfigUrl'], $h5config);*/
+
         @touch(dirname(dirname(dirname(__FILE__))).'/config/install.lock');
     }
 }

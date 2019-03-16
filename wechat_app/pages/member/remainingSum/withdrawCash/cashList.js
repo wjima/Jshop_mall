@@ -25,36 +25,34 @@ Page({
         var data = {}
         data['page'] = page.data.page;
         data['limit'] = page.data.limit;
-        app.db.userToken(function (token) {
-            app.api.getCashList(data, function (res) {
-                if (res.status) {
-                    let loadingComplete = false;
-                    let loading = true;
-                    let ajaxStatus = true;
-                    let pages = page.data.page + 1;
-                    if (res.total <= page.data.page) {
-                        loadingComplete = true;
-                        loading = false;
-                        ajaxStatus = false;
-                    }
-                    let lists = page.data.lists.concat(res.data);
-                    let nodata = false;
-                    if (lists.length < 1) {
-                        nodata = true;
-                        loading = false;
-                        loadingComplete = false;
-                    }
-
-                    page.setData({
-                        lists: lists,
-                        page: pages,
-                        ajaxStatus: ajaxStatus,
-                        loading: loading,
-                        loadingComplete: loadingComplete,
-                        nodata: nodata
-                    });
+        app.api.getCashList(data, function (res) {
+            if (res.status) {
+                let loadingComplete = false;
+                let loading = true;
+                let ajaxStatus = true;
+                let pages = page.data.page + 1;
+                if (res.total <= page.data.page) {
+                    loadingComplete = true;
+                    loading = false;
+                    ajaxStatus = false;
                 }
-            });
+                let lists = page.data.lists.concat(res.data);
+                let nodata = false;
+                if (lists.length < 1) {
+                    nodata = true;
+                    loading = false;
+                    loadingComplete = false;
+                }
+
+                page.setData({
+                    lists: lists,
+                    page: pages,
+                    ajaxStatus: ajaxStatus,
+                    loading: loading,
+                    loadingComplete: loadingComplete,
+                    nodata: nodata
+                });
+            }
         });
     },
 

@@ -1,0 +1,41 @@
+<form class="layui-form print-form"  style="padding:30px">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">订单号：</label>
+            <div class="layui-input-inline seller-inline-4"> <label style="line-height: 38px;">{$order_id}</label></div>
+
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">快递公司：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <select name="logi_code" id="logi_code" lay-search>
+                    <option value="">搜索选择快递公司</option>
+                    {foreach $logi as $k=>$v}
+                    <option value="{$v['logi_code']}" {if $v['logi_code'] == $ship['logi_code']}selected{/if}>{$v['logi_name']}</option>
+                    {/foreach}
+                </select>
+                <input type="hidden" name="order_id" value="{$order_id}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">快递单号：</label>
+            <input type="text" name="logi_no" value="{$ship['logi_no']}" lay-verify="title" style="width:200px;" placeholder="为空时从打印平台获取" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+</form>
+<script>
+    //渲染表单
+    layui.use('form', function() {
+        var form = layui.form;
+        form.render();
+        //获取表单数据
+        getFormData = function(){
+            if($("#logi_code").val()==''){
+                layer.msg("请先选择快递公司");
+                return false;
+            }
+            return $(".print-form").serialize();
+        }
+    });
+
+</script>

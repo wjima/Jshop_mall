@@ -8,7 +8,8 @@ Page({
         goodsList: [],
         lading_id: false,
         isgo: false,
-        isgotext: '确认核销'
+        isgotext: '确认核销',
+        allData: {}
     },
 
     //页面加载
@@ -65,7 +66,8 @@ Page({
             isgo = true;
             page.setData({
                 lading_id: data.id,
-                goodsList: data.goods
+                goodsList: data.goods,
+                allData: data
             });
         } else {
             wx.showModal({

@@ -282,8 +282,7 @@ class Wx
         Log::info('生成小程序码消息返回：' . $res);
         if(isjson($res)){
             $res = json_decode($res, true);
-            $return['msg'] = $res['errmsg'];
-            return $return;
+            echo $res['errmsg'];exit;//输出错误信息
         }else{
             $filePath = ROOT_PATH . '/public/qrcode';
             if (!is_dir($filePath)) {

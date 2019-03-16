@@ -264,6 +264,11 @@ class Setting extends Common
         'recommend_keys' => [
             'name' => '搜索发现关键词',
             'value' => '羽绒服,iphonexs,小米mix'
+        ],
+        //统计代码
+        'statistics_code' => [
+            'name' => '百度统计代码',
+            'value' => ''
         ]
     ];
 

@@ -81,6 +81,7 @@
             <button class="layui-btn layui-btn-sm" id="pay-order-array"><i class="iconfont icon-zhifu-01"></i>批量支付</button>
             <button class="layui-btn layui-btn-sm" id="cancel-order-array"><i class="iconfont icon-cancel"></i>取消</button>
             <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-order"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            {:hook('orderExtBtn')}
         </div>
     </div>
 </form>
@@ -102,9 +103,6 @@
     </div>
 </div>
 
-
-
-
 <div id="exportOrder" style="display: none;">
     <form class="layui-form export-form"  action="" >
         <div class="layui-form-item">
@@ -121,7 +119,6 @@
         </div>
     </form>
 </div>
-
 <script>
     var window_box, table;
     layui.use(['table', 'layer', 'laydate', 'form', 'element'], function(){
@@ -160,7 +157,12 @@
                 {field: 'order_id', title: '打印',align: 'center', fixed: 'left',templet:function (data) {
                     var html='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=1" target="_blank">购</a>&nbsp;';
                     html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=2"  target="_blank">配</a>&nbsp;';
-                    html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=3"  target="_blank">联</a>';
+                    html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=3"  target="_blank">联</a>&nbsp;';
+                    if(data.print){
+                        html+='<a href="javascript:void(0);" style="color: green;" onclick="printExpress('+data.order_id+')">递</a>';
+                    }else{
+                        html+='<a href="javascript:void(0);"  onclick="printExpress('+data.order_id+')">递</a>';
+                    }
                     return html;
                 }},
                 {field: 'ctime', title: '下单时间', width:160, align: 'center'},
@@ -598,7 +600,58 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
-
+        /**
+         * 打印快递单
+         * @param order_id
+         */
+        printExpress = function (order_id) {
+            if (!order_id) {
+                layer.msg("订单号不存在！");
+                return false;
+            }
+            JsGet('{:url("order/print_form")}?order_id=' + order_id, function (e) {
+                if(e.hasOwnProperty('status') && !e.status){
+                    layer.msg(e.msg);return false;
+                }
+                window_box = layer.open({
+                    type: 1,
+                    title: '选择快递',
+                    area: ['450px', '305px'], //宽高
+                    content: e,
+                    btnAlign: 'c',
+                    btn: ['直接打单', '只获取单号', '只打单', '关闭'],
+                    yes: function (index, layero) {
+                        var data = getFormData();
+                        if(data){
+                            var url = "{:url('order/print_tpl')}?type=4&bt=1&" + data;
+                            window.open(url, "_blank");
+                        }
+                    },
+                    btn2: function (index, layero) {
+                        var data = getFormData();
+                        if(data){
+                            var url = "{:url('order/print_tpl')}?type=4&bt=2&" + data;
+                            JsGet(url,function(res){
+                                layer.msg(res.msg, {time:1500}, function(){
+                                    if(res.status){
+                                        table.reload();
+                                        layer.closeAll();
+                                    }
+                                });
+                            });
+                        }
+                    },
+                    btn3:function(index, layero){
+                        var data = getFormData();
+                        if(data){
+                            var url = "{:url('order/print_tpl')}?type=4&bt=3&" + data;
+                            window.open(url, "_blank");
+                        }
+                    }
+                });
+            });
+        };
+        {:hook('orderExtJs')}
     });
 
 </script>

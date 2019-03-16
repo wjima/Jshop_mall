@@ -12,7 +12,7 @@ Page({
     interval: 3000, //商品轮播图切换间隔
     duration: 500, //商品轮播图切换动画时间
     slideImg: [], //幻灯片广告数据
-    num: 1, // 商品数量input默认是1
+    num: 0, // 商品数量input默认是1
     minusStatus: 'disabled', // 使用data数据对象设置样式名
     gotoType: 1,
     animationData: {},
@@ -26,7 +26,7 @@ Page({
     region: ['河南省', '郑州市', '中原区'], //开户行地区
     areaId: 410102, //地区id
     pics: [], //图片
-    goodsNums: 1,
+    goodsNums: 0,
     cart: [],
     currentKey: 0, //当前下单的商品的Key
     currentGoodsId: 0, //当前选中的商品ID
@@ -87,7 +87,7 @@ Page({
       wx.setNavigationBarTitle({
         title: res.data.name
       })
-      console.log(res.data);
+      //console.log(res.data);
       that.data.originForm = res.data;
       that.setData({
         hiddenForm:false,//显示表单
@@ -99,10 +99,10 @@ Page({
   onShow(){
     if (this.data.hiddenForm && app.db.get("formId")){
       var options = { id: app.db.get("formId")}
-      console.log("调试开始");
-      console.log(this.data.hiddenForm);
-      console.log(app.db.get("formId"));
-      console.log("调试结束");
+      //console.log("调试开始");
+      //console.log(this.data.hiddenForm);
+      //console.log(app.db.get("formId"));
+      //console.log("调试结束");
       this.onLoad(options);
     }
   },
@@ -166,7 +166,7 @@ Page({
 
   // 单选
   radioChange: function (e) {
-    console.log('radiook发生change事件，携带value值为：', e.detail.value);
+    //console.log('radiook发生change事件，携带value值为：', e.detail.value);
     var id = e.currentTarget.dataset.value;
     var items = this.data.form.items;
     for (var i = 0, len = items.length; i < len; ++i) {
@@ -486,8 +486,7 @@ Page({
         formid: this.data.formId
       }
     };
-    //去支付
-    app.db.userToken(function (token) {
+      //去支付
       app.api.pay(data, function (res) {
         if (res.status) {
           that.formReset(); //清空表单
@@ -501,7 +500,6 @@ Page({
           app.common.errorToShow(res.msg);
         }
       });
-    });
   },
 
   // 弹出付款方式
@@ -646,8 +644,8 @@ Page({
     var minStatus = 'normal';
     var maxStatus = 'normal';
 
-    if (nums <= 1) {
-      nums = 1;
+    if (nums <= 0) {
+      nums = 0;
       minStatus = 'disabled';
     }
     if (nums > stock) {
@@ -773,6 +771,12 @@ Page({
 
     var productId = that.data.productId;
     var currentKey = that.data.currentKey;
+    //无加入购物车
+    if (that.data.goodsNums<1){
+      that.getCartNums();
+      that.anims('closespecs');
+      return true;
+    }
 
     if (that.data.cart.length < 1) {
       that.data.cart.push({
@@ -827,14 +831,14 @@ Page({
   getNumsByKey: function (key, productId) {
     var that = this;
     if (that.data.cart.length < 1) {
-      return 1;
+      return 0;
     } else {
       for (var i = 0; i < that.data.cart.length; i++) {
         if (that.data.cart[i].key == key && that.data.cart[i].productId == productId) {
           return that.data.cart[i].nums
         }
       }
-      return 1;
+      return 0;
     }
   },
 
@@ -854,7 +858,7 @@ Page({
         var cart_count = 0;
         var currentKey = that.data.currentKey;
         that.data.cart.forEach(function (item, index, input) {
-          console.log(item);
+          //console.log(item);
           if (item.key == currentKey) {
             cart_count += item.nums;
           }

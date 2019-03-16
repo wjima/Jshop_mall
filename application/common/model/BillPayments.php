@@ -460,14 +460,23 @@ class BillPayments extends Common
     /**
      * 支付单统计
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function statistics()
     {
         $num = 7;
         $day = date('Y-m-d', strtotime('-'.$num.' day'));
-        $sql = 'SELECT DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums FROM '.config('database.prefix')
-            .'bill_payments WHERE from_unixtime(ctime) >= "'.$day.'" AND `status` = 2 AND `type` = 1 GROUP BY DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")';
-        $res = Db::query($sql);
+
+        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
+        $where[] = ['status', 'eq', self::STATUS_PAYED];
+        $where[] = ['type', 'eq', self::TYPE_ORDER];
+        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
+            ->where($where)
+            ->group('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")')
+            ->select();
+
         $data = get_lately_days($num, $res);
         return ['day' => $data['day'], 'data' => $data['data']];
     }

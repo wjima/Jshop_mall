@@ -136,6 +136,13 @@ class Wechat extends Manage
         $menu = $weixinMenu->where(['menu_id'=>$id,'pid'=>$pid])->find();
         if($menu){
             $menu['params'] = json_decode($menu['params'],true);
+            if($menu['params'] && $menu['type'] == 'miniprogram' && isset($menu['params']['appid'])){
+                $wx_appid = $menu['params']['appid'];
+            }else{
+                $wx_appid = getSetting('wx_appid');
+            }
+        }else{
+            $wx_appid = getSetting('wx_appid');
         }
         $site_url = \request()->domain();//站点地址
 
@@ -143,7 +150,7 @@ class Wechat extends Manage
         $this->assign('pid',$pid);//父级菜单ID
         $this->assign('menu',$menu);
         $this->assign('site_url',$site_url);
-        $this->assign('wx_appid',getSetting('wx_appid'));
+        $this->assign('wx_appid',$wx_appid);
         return $this->fetch('edit_menu');
 
     }
@@ -228,7 +235,7 @@ class Wechat extends Manage
         $weixinMenu = new WeixinMenu();
         $menuData   = $weixinMenu->weixinMenu();
         $result     = $menu->createMenu($menuData);
-        try{
+        try {
             // 处理创建结果
             if ($result === FALSE) {
                 // 接口失败的处理
@@ -240,7 +247,7 @@ class Wechat extends Manage
                 $returnData['status'] = true;
                 return $returnData;
             }
-        }catch (Exception $e){
+        } catch (Exception $e) {
             $returnData['msg'] = $e->getMessage();
             return $returnData;
         }

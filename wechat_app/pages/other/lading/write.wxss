@@ -87,3 +87,17 @@
 .write-button button::after{
   border: none;  
 }
+.date{
+    font-size:26rpx;
+    text-align:center;
+    width:100%;
+    margin-bottom:10rpx;
+    color:#666;
+}
+.clerk{
+    font-size:26rpx;
+    text-align:center;
+    width:100%;
+    margin-bottom:20rpx;
+    color:#666;
+}

@@ -58,7 +58,7 @@
             <text wx:for="{{item.label_ids}}" wx:key="ind" wx:for-item="items" class="lable_{{items.style}}">{{items.name}}</text>
           </view>
           <view class='preferential' wx:if="{{item.product.promotion_list}}">
-            <text wx:for="{{item.product.promotion_list}}" wx:key="ind" wx:for-item="items" class='{{items.type==true?"promotion_on":"promotion_off"}}'>{{items.name}}</text>
+            <text wx:for="{{item.product.promotion_list}}" wx:key="ind" wx:for-item="items" class='{{items.type==2?"promotion_on":"promotion_off"}}'>{{items.name}}</text>
           </view>
           <view class='price-cart'>
             <text class='price'>￥{{item.price}}</text>

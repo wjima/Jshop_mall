@@ -9,6 +9,8 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\GoodsGrade;
+use app\common\model\UserGrade;
 use Request;
 use app\common\model\Goods as goodsModel;
 use app\common\model\GoodsType;
@@ -60,6 +62,14 @@ class Goods extends Manage
     public function add()
     {
         $this->_common();
+        //处理会员价
+        if ($this->view->gradelist) {
+            $gradelist = [];
+            foreach ($this->view->gradelist as $key => $value) {
+                $gradelist[$key] = $value;
+                $gradelist[$key]['grade_price'] = 0;
+            }
+        }
         return $this->fetch('add');
     }
 
@@ -84,6 +94,11 @@ class Goods extends Manage
         $brandModel = new Brand();
         $brandList  = $brandModel->getAllBrand();
         $this->assign('brandList', $brandList);
+
+        //会员等级
+        $gradeModel = new UserGrade();
+        $gradelist = $gradeModel->getAll();
+        $this->assign('gradelist', $gradelist);
 
         hook('goodscommon', $this);//商品编辑、添加时增加钩子
 
@@ -220,6 +235,26 @@ class Goods extends Manage
                 return $result;
             }
         }
+        //保存会员价
+        $grade_price = input('post.goods.grade_price/a', []);
+        if ($grade_price) {
+            $grade_price_arr = [];
+            foreach ($grade_price as $key => $value) {
+                $grade_price_arr[] = [
+                    'goods_id'    => $goods_id,
+                    'grade_id'    => $key,
+                    'grade_price' => $value,
+                ];
+            }
+            $goodsGrade = new GoodsGrade();
+            $goodsGrade->where(['goods_id' => $goods_id])->delete();
+            if (!$goodsGrade->saveAll($grade_price_arr)) {
+                $goodsModel->rollback();
+                $result['msg'] = '会员价保存失败';
+                return $result;
+            }
+        }
+
         //保存图片
         if (isset($data['images']) && count($data['images']) > 1) {
             $imgRelData = [];
@@ -605,6 +640,25 @@ class Goods extends Manage
         $this->assign('secondCat', $secondCat);
 
         $this->_common();
+        //处理会员价
+        $goodsGradeModel = new GoodsGrade();
+        $goodsGrade      = $goodsGradeModel->getGradePrice($goods_id);
+        if ($this->view->gradelist) {
+            $gradelist = [];
+            foreach ($this->view->gradelist as $key => $value) {
+                $gradelist[$key] = $value;
+                if ($goodsGrade['status']) {
+                    foreach ($goodsGrade['data'] as $k => $v) {
+                        if ($value['id'] == $v['grade_id']) {
+                            $gradelist[$key]['grade_price'] = $v['grade_price'];
+                        }
+                    }
+                } else {
+                    $gradelist[$key]['grade_price'] = 0;
+                }
+            }
+        }
+        $this->assign('gradelist', $gradelist);
         return $this->fetch('edit');
     }
 
@@ -760,6 +814,26 @@ class Goods extends Manage
         if ($productIds) {
             $productsModel->deleteProduct($productIds);
         }
+        //保存会员价
+        $grade_price = input('post.goods.grade_price/a', []);
+        if ($grade_price) {
+            $grade_price_arr = [];
+            foreach ($grade_price as $key => $value) {
+                $grade_price_arr[] = [
+                    'goods_id'    => $goods_id,
+                    'grade_id'    => $key,
+                    'grade_price' => $value,
+                ];
+            }
+            $goodsGrade = new GoodsGrade();
+            $goodsGrade->where(['goods_id' => $goods_id])->delete();
+            if (!$goodsGrade->saveAll($grade_price_arr)) {
+                $goodsModel->rollback();
+                $result['msg'] = '会员价保存失败';
+                return $result;
+            }
+        }
+
         //保存图片
         if (isset($data['images']) && count($data['images']) >= 1) {
             $imgRelData = [];

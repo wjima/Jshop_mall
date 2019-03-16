@@ -2,9 +2,11 @@
 namespace app\Manage\controller;
 use app\common\controller\Manage;
 use app\common\model\BillDelivery;
+use app\common\model\BillPayments;
 use app\common\model\Order as Model;
 use app\common\model\OrderItems;
 use app\common\model\OrderLog;
+use app\common\model\Ship;
 use app\common\model\Store;
 use think\facade\Request;
 
@@ -20,9 +22,14 @@ class Order extends Manage
     const SHOPPING = 1;//购物清单
     const DISTRIBUTION = 2;//配货单
     const UNION = 3;//联合打印
+    const EXPRESS = 4;//联合打印
+
     /**
      * 订单列表
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function index()
     {
@@ -37,7 +44,8 @@ class Order extends Manage
                 'ids' => '0,1,2,3,4,5,6,7'
             ];
 
-            $count = model('common/Order')->getOrderStatusNum($input);
+            $model = new Model();
+            $count = $model->getOrderStatusNum($input);
             $counts = [
                 'all' => $count[0],
                 'payment' => $count[1],
@@ -45,8 +53,8 @@ class Order extends Manage
                 'receive' => $count[3],
                 'evaluated' => $count[4],
                 'no_evaluat' => $count[5],
-                'cancel' => $count[6],
-                'complete' => $count[7]
+                'cancel' => $count[7],
+                'complete' => $count[6]
             ];
             $this->assign('count', $counts);
 
@@ -55,16 +63,17 @@ class Order extends Manage
         else
         {
             $input = array(
-                'order_id' => input('order_id'),
-                'username' => input('username'),
-                'ship_mobile' => input('ship_mobile'),
-                'order_unified_status' => input('order_unified_status'),
-                'date' => input('date'),
-                'source' => input('source'),
-                'page' => input('page'),
-                'limit' => input('limit')
+                'order_id' => Request::param('order_id'),
+                'username' => Request::param('username'),
+                'ship_mobile' => Request::param('ship_mobile'),
+                'order_unified_status' => Request::param('order_unified_status'),
+                'date' => Request::param('date'),
+                'source' => Request::param('source'),
+                'page' => Request::param('page'),
+                'limit' => Request::param('limit')
             );
-            $data = model('common/Order')->getListFromAdmin($input);
+            $model = new Model();
+            $data = $model->getListFromAdmin($input);
 
             if(count($data['data']) > 0)
             {
@@ -316,11 +325,16 @@ class Order extends Manage
     /**
      * 数据统计
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function statistics()
     {
-        $payres = model('common/BillPayments')->statistics();
-        $deliveryres = model('common/BillDelivery')->statistics();
+        $bpModel = new BillPayments();
+        $bdModel = new BillDelivery();
+        $payres = $bpModel->statistics();
+        $deliveryres = $bdModel->statistics();
 
         $data = [
             'legend' => [
@@ -367,12 +381,77 @@ class Order extends Manage
         $shop_mobile = getSetting('shop_mobile');
         $this->assign('shop_name', $shop_name);
         $this->assign('shop_mobile', $shop_mobile);
+
+
         if ($type == self::SHOPPING) {//购物清单
             return $this->fetch('shopping');
         } elseif ($type == self::DISTRIBUTION) {//配货单
             return $this->fetch('distribution');
         } elseif ($type == self::UNION) {
             return $this->fetch('union');
+        } elseif ($type == self::EXPRESS) {
+            $return = [
+                'msg'    => '请先安装快递打印插件',
+                'data'   => '',
+                'status' => false
+            ];
+            $logi_code = input('logi_code/s', '');
+            $logi_no   = input('logi_no/s', '');
+            $bt        = input('bt/s', '1');//按钮类型
+            if (!$logi_code) {
+                $return['msg'] = '快递公司编码不能为空';
+                return $return;
+            }
+            $order_info['logi_code'] = $logi_code;
+            $order_info['logi_no']   = $logi_no;
+            $order_info['bt']        = $bt;
+
+            if (!checkAddons('printOrder')) {
+                return $return;
+            } else {
+                $res = hook("printOrder", $order_info);
+                return is_array($res) ? $res[0] : '';
+            }
+        }
+    }
+
+    /**
+    * 打印快递单时，先选择快递公司
+    */
+    public function print_form()
+    {
+        $return = [
+            'msg'    => '关键参数错误',
+            'data'   => '',
+            'status' => false
+        ];
+        if (!Request::isPost()) {
+            $this->view->engine->layout(false);
+            $order_id = input('order_id');
+            $this->assign('order_id', $order_id);
+
+            //默认快递公司
+            $orderModel = new Model();
+            $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+            $this->assign('order_info', $order_info);
+
+            $ship['logi_code'] = $order_info['logistics']['logi_code'];
+            $ship['logi_no']   = '';
+            //获取是否获取电子面板
+            if (!checkAddons('getPrintExpressInfo')) {
+                $this->error("请先安装快递打印插件");return;
+            }
+            $print_express = hook('getPrintExpressInfo', ['order_id' => $order_id]);
+            if ($print_express[0]['status']) {
+                $ship['logi_code'] = $print_express[0]['data']['shipper_code'];
+                $ship['logi_no']   = $print_express[0]['data']['logistic_code'];
+            }
+            $this->assign('ship', $ship);
+
+            //获取物流公司
+            $logi_info = model('common/Logistics')->getAll();
+            $this->assign('logi', $logi_info);
+            return $this->fetch('print_form');
         }
     }
 }

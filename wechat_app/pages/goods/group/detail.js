@@ -351,7 +351,6 @@ Page({
   //收藏和取消收藏商品
   goodsCollection: function () {
     var page = this;
-    app.db.userToken(function (token) {
       var data = {
         goods_id: page.data.goodsId
       }
@@ -367,7 +366,6 @@ Page({
           title: res.msg
         });
       });
-    });
   },
 
   //前往购物车
@@ -380,7 +378,6 @@ Page({
   //加入购物车
   goodsAddCart: function () {
     var page = this;
-    app.db.userToken(function (token) {
       //page.getNowProduct(); //获取当前选中的货品信息
       var data = {
         product_id: page.data.productId,
@@ -391,7 +388,6 @@ Page({
           title: res.msg
         });
       });
-    });
   },
 
   //获取当前选中的货品
@@ -427,7 +423,6 @@ Page({
   //立即购买
   buyNow: function () {
     var page = this;
-    app.db.userToken(function (token) {
       //page.getNowProduct(); //获取当前选中的货品信息
       var data = {
         product_id: page.data.productId,
@@ -439,7 +434,6 @@ Page({
           url: '../../cart/firmOrder/firmOrder?data=' + JSON.stringify(res.data),
         });
       });
-    });
   },
   
   //规格选择

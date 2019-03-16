@@ -63,6 +63,14 @@
             :point_money="point_money"
             @isUsePoint="isUsePoint"
         ></ordercell>
+        <div class="invoice-item">
+            <yd-cell-group>
+                <yd-cell-item arrow type="link">
+                    <span slot="left">发票</span>
+                    <span slot="right">本次不开具发票，继续下单</span>
+                </yd-cell-item>
+            </yd-cell-group>
+        </div>
         <orderinput
             @msg="sendMsg"
         ></orderinput>

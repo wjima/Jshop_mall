@@ -8,7 +8,7 @@
             <!--</div>-->
         </div>
         <div class="uploadimg" v-show="upload">
-            <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="uploadImg"/>
+            <input name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="uploadImg" ref="file"/>
             <img slot="icon" src="../../static/image/addimg.png">
         </div>
     </div>
@@ -40,6 +40,8 @@ export default {
                     this.imgs.push(res.data)
                 }
             })
+            // 上传完成后清空input 的值
+            this.$refs.file[0].value = ''
         },
         remove (index) {
             this.imgs.splice(index, 1)

@@ -6,12 +6,12 @@
       <text class='invite-w-num'>{{code}}</text>
       <view class='invite-w-detail'>快去分享您的邀请码吧，让更多的好友加入到【{{title}}】，您也可以获得丰厚的奖励！</view>
       <view class='invite-w-bot'>
-        <view>
+        <view bindtap='commission'>
           <image class='invite-w-bot-ic' src='../../image/ic-earnings.png'></image>
           <text class='invite-w-bot-red'>￥{{money}}元</text>
           <text class='invite-w-bot-gray'>佣金收益</text>
         </view>
-        <view>
+        <view bindtap='recommendlist'>
           <image class='invite-w-bot-ic' src='../../image/ic-number.png'></image>
           <text class='invite-w-bot-red'>{{number}}人</text>
           <text class='invite-w-bot-gray'>邀请人数</text>

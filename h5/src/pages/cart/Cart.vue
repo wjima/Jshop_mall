@@ -44,8 +44,8 @@
                     <p>促销</p>
                 </div>
                 <div v-for="(val, key) in promotion" :key="key">
-                    <yd-badge shape="square" type="danger" v-if="val.type === 2">{{ val.name }}</yd-badge>
-                    <yd-badge shape="square" type="square" v-else>{{ val.name }}</yd-badge>
+                    <yd-badge shape="square" :type="val.type === 2 ? 'danger' : ''">{{ val.name }}</yd-badge>
+                    <!--<yd-badge shape="square" type="square" v-else>{{ val.name }}</yd-badge>-->
                 </div>
             </div>
             <div class="cartfooter-right-price">

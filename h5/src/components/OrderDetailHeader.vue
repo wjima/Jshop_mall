@@ -1,27 +1,27 @@
 <template>
     <div class="orderdetailheader">
-        <div class="" v-if="status === 'pending_payment'">
+        <div class="" v-if="status === 1">
             <h3>待付款</h3>
             <p>请于 {{ remaining }} 内完成付款操作</p>
         </div>
-        <div class="" v-else-if="status === 'pending_delivery'">
+        <div class="" v-else-if="status === 2">
             <h3>已付款</h3>
             <p>商家会尽快发货,请等待</p>
         </div>
-        <div class="" v-else-if="status === 'pending_receipt'">
+        <div class="" v-else-if="status === 3">
             <h3>待签收</h3>
             <p>快递公司: {{ delivery[0].logi_name }}</p>
             <p>快递单号: {{ delivery[0].logi_no }}</p>
         </div>
-        <div class="" v-else-if="status === 'pending_evaluate'">
+        <div class="" v-else-if="status === 4">
             <h3>待评价</h3>
             <p>订单 {{ remaining }} 后将会自动评价</p>
         </div>
-        <div class="" v-else-if="status === 'completed'">
+        <div class="" v-else-if="status === 6">
             <h3>交易完成</h3>
             <p></p>
         </div>
-        <div class="" v-else-if="status === 'cancel'">
+        <div class="" v-else-if="status === 7">
             <h3>交易取消</h3>
             <p></p>
         </div>
@@ -37,9 +37,9 @@ export default {
     props: {
         // 状态
         status: {
-            type: [String, Array],
+            type: Number,
             default () {
-                return []
+                return 1
             }
         },
         // 剩余时间

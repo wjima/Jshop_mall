@@ -42,7 +42,7 @@ class Trustlogin extends Addons
         $trustData = [];
         foreach($setting as $key=>$value){
             if($value){
-                $class = "\\addons\\trustlogin\\lib\\$key";
+                $class = "\\addons\\Trustlogin\\lib\\$key";
                 $lib = new $class();
                 $trustData[$key] = [
                     'url'=>$lib->getOauthUrl($params['url'].'?type='.$key,$params['uuid']),
@@ -63,7 +63,7 @@ class Trustlogin extends Addons
         if (!isset($params['type']) && !$params['type']) {
             return $data;
         }
-        $class = "\\addons\\trustlogin\\lib\\" . $params['type'];
+        $class = "\\addons\\Trustlogin\\lib\\" . $params['type'];
         $lib = new $class();
         $res = $lib->getUserInfo($params);
         if (!$res) {

@@ -2,7 +2,7 @@
 /**
  * 微信快捷登录
  */
-namespace addons\trustlogin\lib;
+namespace addons\Trustlogin\lib;
 
 use think\facade\Cache;
 use think\facade\Log;

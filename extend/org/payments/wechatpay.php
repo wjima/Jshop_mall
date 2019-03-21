@@ -98,7 +98,7 @@ class wechatpay implements Payment
         if($re['return_code'] == 'SUCCESS'){
             if($re['result_code'] == 'SUCCESS'){
                 $result['status'] = true;
-                $data = $this->wxapppay($re);
+                $data = $this->wxapppay($re,$params['return_url']);
                 //支付单传到前台
                 $data['payment_id'] = $paymentInfo['payment_id'];
                 $result['data'] = $data;
@@ -113,8 +113,8 @@ class wechatpay implements Payment
         return $result;
     }
 
-    //根据统一下单接口的数据拼装调起支付所需要的参数
-    private function wxapppay($data){
+    //根据统一下单接口的数据拼装调起支付所需要的参数,为什么要传第二个参数$source_data,这是原始参数，为了h5支付拼接回调地址
+    private function wxapppay($data,$return_url = ""){
         $app_data = [];
 
         switch ($data['trade_type'])
@@ -137,6 +137,11 @@ class wechatpay implements Payment
                 break;
             case 'MWEB':                //微信H5支付
                 $app_data['mweb_url'] = $data['mweb_url'];
+                if($return_url != ""){
+                    $app_data['mweb_url'] .= "&redirect_url=".urlencode($return_url);
+                }
+
+
                 break;
             case 'NATIVE':
                 $app_data['code_url'] = $data['code_url'];

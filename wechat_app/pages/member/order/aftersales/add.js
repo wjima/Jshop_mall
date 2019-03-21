@@ -27,10 +27,10 @@ Page({
     app.api.aftersalesStatus(options.order_id, function (res) {
       if (res.status) {
         //如果不是未支付的，已取消的，已完成的状态，就都可以售后
-        if (res.data.text_status != 'pending_payment' && res.data.text_status != 'completed' && res.data.text_status != 'cancel'){
+        if (res.data.text_status != 1 && res.data.text_status != 6 && res.data.text_status != 7){
           //判断是已付款未发货，如果是，就禁用退货
           var type_list = page.data.type_list;
-          if (res.data.text_status == 'pending_delivery'){
+          if (res.data.text_status == 2){
             type_list[1].disabled = true; 
           }
 

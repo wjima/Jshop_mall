@@ -30,7 +30,7 @@ Page({
       if (!res.status) {
         app.common.errorToBack(res.msg);
       }
-      if (res.data.text_status !== 'pending_evaluate') {
+      if (res.data.text_status !== 4) {
         app.common.errorToBack('该订单状态有误不能评价');
       }
       var images = {};

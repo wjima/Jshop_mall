@@ -16,7 +16,7 @@ class Operation extends Common
     //不需要权限判断的控制器和方法,前台传过来的都是小写，这里就不采用驼峰法写了。
     private $noPerm = [
         self::MENU_MANAGE => [
-            'Index'=> ['index','tagselectbrands','tagselectgoods','clearcache'],
+            'Index'=> ['index','tagselectbrands','tagselectgoods','clearcache','welcome'],
             'Order' => ['statistics'],
             'Images' => ['uploadimage','listimage','manage','cropper'],
             'Files' => ['uploadVideo'],

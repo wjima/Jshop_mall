@@ -20,7 +20,7 @@
 
 <!-- 推荐搜索词 -->
 <view class='keys'>
-    <view wx:if="{{recommend && recommend.length > 0}}" class="history">
+    <view wx:if="{{recommend}}" class="history">
         <text class='history-text'>搜索发现</text>
     </view>
     <view class='key' wx:for="{{recommend}}" wx:key="index" bindtap='{{navType}}' data-key="{{item}}">{{item}}</view>

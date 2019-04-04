@@ -57,13 +57,21 @@ export default {
                 'static/image/kong.png', // 未选中
                 'static/image/xuanzhong.png' // 选中
             ],
-            type: 1, // 发票类型 0=个人 1=企业 2=不开发票
+            type: 1, // 发票类型 2=个人 3=企业 1=不开发票
             name: '', // 发票抬头
             code: '' // 发票税号
         }
     },
     mounted () {
-
+        if(this.$store.state.invoice){
+            this.type = this.$store.state.invoice.type
+            this.name = this.$store.state.invoice.name
+            this.code = this.$store.state.invoice.code
+            if(this.type === 2){
+                this.items[0].checked = true
+                this.items[1].checked = false
+            }
+        }
     },
     methods: {
         // 更改默认选中的
@@ -82,12 +90,15 @@ export default {
         },
         // 点击确定完成后
         completeHandler () {
+            if(this.type === 1){
+                this.type = 3
+            }
             if (this.type === 0) {
                 if (!this.name) {
                     this.$dialog.toast({mes: '请填写发票抬头', timeout: 1300})
                     return false
                 }
-            } else if (this.type === 1) {
+            } else if (this.type === 3) {
                 if (!this.name) {
                     this.$dialog.toast({mes: '请填写发票抬头', timeout: 1300})
                     return false

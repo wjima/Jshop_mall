@@ -51,6 +51,7 @@ H5端采用Vue开发，数据和页面分离，封装APP时体验效果也更好
 智能表单可以为您的线上线下结合提供更强大的助力。
 
 #### 项目演示
+- uniapp简约模板项目地址：https://gitee.com/hnjihai/uniapp
 - 前台H5演示：[https://b2c.jihainet.com/](https://b2c.jihainet.com/)
 - 后台演示：[https://b2c.jihainet.com/manage/](https://b2c.jihainet.com/manage/)
 - QQ交流群：823732583（开发手册、接口文档、操作手册请进群查看哦~）

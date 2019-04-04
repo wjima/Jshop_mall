@@ -66,6 +66,9 @@
 .icon-wechat:before {
     content: "\e628";
 }
+.icon-weixin:before {
+    content: "\e628";
+}
 
 .icon-shejishi:before {
     content: "\e6a2";

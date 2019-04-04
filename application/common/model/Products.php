@@ -58,6 +58,8 @@ class Products extends Common
             'data'   => [ ],
         ];
         $product = $this->where(['id'=>$id])->field('*')->find();
+
+
         if(!$product) {
             return $result;
         }
@@ -70,10 +72,13 @@ class Products extends Common
         }
 
         $product['name']       = $goods['name'];
-        $product['image_id']   = $goods['image_id'];
-        $product['bn'] = $goods['bn'];
-        $product['image_path'] = _sImage($goods['image_id']);
-
+        $product['image_id']   = (isset($product['image_id']) && $product['image_id'] != '') ? $product['image_id'] :'';
+        $product['bn']         = $goods['bn'];
+        if (!$product['image_id']) {
+            $product['image_path'] = _sImage($goods['image_id']);
+        } else {
+            $product['image_path'] = _sImage($product['image_id']);
+        }
 
         $product['stock'] = $goodsModel->getStock($product);
 
@@ -167,7 +172,6 @@ class Products extends Common
             ];
             $promotionModel = new Promotion();
             $cart = $promotionModel->toPromotion($miniCart);
-
 
             //把促销信息和新的价格等，覆盖到这里
             $promotionList = $cart['promotion_list'];

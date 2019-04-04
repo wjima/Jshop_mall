@@ -83,12 +83,20 @@
                         </div>
                     </div>
 
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['invoice_switch']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-7">
+                            <input type="radio" lay-filter="invoice_switch" name="invoice_switch" value="1" title="开启" {eq name="$data['invoice_switch']['value']" value="1" }checked{/eq}>
+                            <input type="radio" lay-filter="invoice_switch" name="invoice_switch" value="2" title="不开启" {eq name="$data['invoice_switch']['value']" value="2" }checked{/eq}>
+                        </div>
+                    </div>
+
                     <div class="layui-form-item" style="margin-top: 20px;">
                         <label class="layui-form-label">{$data['recommend_keys']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5">
                             <input type="text" name="recommend_keys" value="{$data['recommend_keys']['value']}" lay-verify="title" autocomplete="off" placeholder="搜索发现关键字" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">多个【搜索发现】关键字请用英文逗号分割</div>
+                        <div class="layui-form-mid layui-word-aux">多个【搜索发现】关键字请用空格分割</div>
                     </div>
 
                     <div class="layui-form-item">

@@ -355,4 +355,17 @@ class GoodsComment extends Common
         }
         return $return_data;
     }
+
+
+    /**
+     * 获取商品评价数量
+     * @param $goods_id
+     * @return float|int|string
+     */
+    public function getCommentCount($goods_id)
+    {
+        $where[] = ['goods_id', 'eq', $goods_id];
+        $num = $this->where($where)->count();
+        return $num?$num:0;
+    }
 }

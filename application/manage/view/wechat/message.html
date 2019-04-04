@@ -49,7 +49,7 @@
                 {field: 'is_default', title: '默认回复',align:'center'},
                 {field: 'enable', title: '禁用',align:'center'},
                 {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
-                {fixed: 'right', width:180, title:'操作',align:'center',templet:function(data){
+                {width:180, title:'操作',align:'center',templet:function(data){
                     var html = '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>'
                                 +'<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
                     if(data.type == '3'){

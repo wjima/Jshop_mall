@@ -5,29 +5,28 @@
                 <yd-cell-item>
                     <span slot="left">抬头类型</span>
                     <span slot="right" class="radio-right">
-                        <div class="radio-right-item">
-                        	<input type="radio" name="checkd" id="private"/>
-                            <label for="private">个人或事业单位</label>
-                        </div>
-                        <div class="radio-right-item">
-                        	<input type="radio" name="checkd" id="companies"/>
-                            <label for="companies">企业</label>
+                        <div class="radio-right-item"
+                        v-for="(item, index) in items" :key="index"
+                             @click="changeHandler"
+                        >
+                            <span slot="left" class="invoice-type">{{ item.name }}</span>
+                            <span slot="right" class="demo-list-price"><img :src="checked[0]" v-show="!item.checked"/><img :src="checked[1]" v-show="item.checked"/></span>
                         </div>
                     </span>
                 </yd-cell-item>
                 <yd-cell-item>
                     <span slot="left">发票抬头</span>
-                    <span slot="right" class="input-right"><input type="text" placeholder="抬头名称"></span>
+                    <span slot="right" class="input-right"><input type="text" v-model="name" placeholder="抬头名称"></span>
                 </yd-cell-item>
-                <yd-cell-item>
+                <yd-cell-item v-if="items[1].checked">
                     <span slot="left">税号</span>
-                    <span slot="right" class="input-right"><input type="number" placeholder="纳税人识别号"></span>
+                    <span slot="right" class="input-right"><input type="number" v-model="code" placeholder="纳税人识别号"></span>
                 </yd-cell-item>
             </yd-cell-group>
     	</div>
     	<div class="invoice-item">
             <yd-cell-group>
-                <yd-cell-item >
+                <yd-cell-item>
                     <span slot="left">发票内容</span>
                     <span slot="right">明细</span>
                 </yd-cell-item>
@@ -35,18 +34,73 @@
         </div>
     	<div class="invoice-item">
             <yd-cell-group>
-                <yd-cell-item arrow type="link" href="#">
-                    <span slot="left">本次不开具发票，继续下单</span>
+                <yd-cell-item arrow @click.native="goBack">
+                    <span slot="left" >本次不开具发票，继续下单</span>
                 </yd-cell-item>
             </yd-cell-group>
         </div>
         <div class="footer-bottom">
-        	<yd-button type="warning" >完成</yd-button>
+        	<yd-button type="warning" @click.native="completeHandler">完成</yd-button>
         </div>
     </div>
 </template>
 
 <script>
+export default {
+    data () {
+        return {
+            items: [
+                {name: '个人或事业单位', value: 2, checked: false},
+                {name: '企业', value: 3, checked: true}
+            ],
+            checked: [
+                'static/image/kong.png', // 未选中
+                'static/image/xuanzhong.png' // 选中
+            ],
+            type: 1, // 发票类型 0=个人 1=企业 2=不开发票
+            name: '', // 发票抬头
+            code: '' // 发票税号
+        }
+    },
+    mounted () {
+
+    },
+    methods: {
+        // 更改默认选中的
+        changeHandler () {
+            this.items.forEach(item => {
+                item.checked = !item.checked
+                if (item.checked) {
+                    this.type = item.value
+                }
+            })
+        },
+        // 不开具发票 返回
+        goBack () {
+            this.$store.commit('INVOICE', {name: '', type: 1, code: ''})
+            this.$router.back(-1)
+        },
+        // 点击确定完成后
+        completeHandler () {
+            if (this.type === 0) {
+                if (!this.name) {
+                    this.$dialog.toast({mes: '请填写发票抬头', timeout: 1300})
+                    return false
+                }
+            } else if (this.type === 1) {
+                if (!this.name) {
+                    this.$dialog.toast({mes: '请填写发票抬头', timeout: 1300})
+                    return false
+                } else if (!this.code) {
+                    this.$dialog.toast({mes: '请填写发票税号', timeout: 1300})
+                    return false
+                }
+            }
+            this.$store.commit('INVOICE', {name: this.name, type: this.type, code: this.code})
+            this.$router.back(-1)
+        }
+    }
+}
 
 </script>
 
@@ -63,6 +117,8 @@
     }
     .radio-right-item{
         display: inline-block;
+        position: relative;
+        margin-left: 10px;
     }
     .radio-right label{
         position: relative;
@@ -98,17 +154,31 @@
         border-right: none;
         transform: rotate(-45deg);
     }
-    .footer-bottom{
+    .invoice .footer-bottom{
         position: fixed;
         bottom: 0;
         width: 100%;
         height: .8rem;
     }
-    .footer-bottom .yd-btn{
+    .invoice .footer-bottom .yd-btn{
         width: 100%;
         height: 100%;
         background-color: #FF3B44;
         /*text-align: center;*/
         padding: 0;
+    }
+    .invoice .radio-right-item .demo-list-price{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+    }
+    .invoice .radio-right-item .demo-list-price img{
+        width: 20px;
+        height: 20px;
+    }
+    .invoice-type{
+        margin-left: 25px;
+        line-height: 1;
     }
 </style>

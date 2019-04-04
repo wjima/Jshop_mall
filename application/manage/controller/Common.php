@@ -23,7 +23,6 @@ class Common extends Base
      */
     public function login()
     {
-
         $shop_name = getSetting('shop_name');
         $this->assign('shop_name',$shop_name);
         if (session('?manage')) {
@@ -58,6 +57,6 @@ class Common extends Base
             $userLogModel->setLog(session('manage.id'),$userLogModel::USER_LOGOUT);
         }
         session('manage', null);
-        $this->success('退出成功','/manage');
+        $this->success('退出成功',url('common/login'));
     }
 }

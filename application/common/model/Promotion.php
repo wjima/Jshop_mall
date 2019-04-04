@@ -26,7 +26,6 @@ class Promotion extends Common
 
     //购物车的数据传过来，然后去算促销
     public function toPromotion($cart){
-        //return $cart;       //暂时先返回去，不做促销，做好了之后再放开。
         //按照权重取所有已生效的促销列表
         $where[] = ['status','eq',self::STATUS_OPEN];
         $where[] = ['stime','lt',time()];
@@ -107,7 +106,7 @@ class Promotion extends Common
             $re = $conditionModel->check($v,$cart,$promotionInfo);
             if($key){
                 if(!$re){
-                    $key = false;    //多个促销条件中，如果有一个不满足，整体就不满足，但是要运算完所有的促销条件
+                    $key = false;    //多个促销条件中，如果有一个不满足，整体就不满足，但是为了显示完整的促销标签，还是要运算完所有的促销条件
                 }
             }
         }

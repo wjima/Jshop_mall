@@ -16,9 +16,11 @@ class UserShip extends Common
      * 存储收货地址
      * @param $data
      * @return int|mixed|string
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function saveShip($data)
     {
@@ -67,10 +69,12 @@ class UserShip extends Common
     /**
      * Vue存储用户收货地址
      * @param $data
-     * @return int|mixed|string
+     * @return int|string
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function vueSaveShip($data)
     {
@@ -86,10 +90,20 @@ class UserShip extends Common
         {
             if($data['is_def'] === self::SHIP_DEFAULT)
             {
-                $setData['is_def'] = self::SHIP_DEFAULT;
+                //查找该用户是否有默认的地址
+                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
+                if(count($defData)>0)
+                {
+                    foreach($defData as $k => $v)
+                    {
+                        $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    }
+                }
             }
+            $setData['is_def'] = $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO;
             $setData['utime'] = time();
             $this->where($where)->update($setData);
+
             $ship_id = $res_data['id'];
         }
         else
@@ -98,10 +112,13 @@ class UserShip extends Common
             if($data['is_def'] == self::SHIP_DEFAULT)
             {
                 //查找该用户是否有默认的地址
-                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->find();
-                if($defData)
+                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
+                if(count($defData)>0)
                 {
-                    $this->where('id',$defData['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    foreach($defData as $k => $v)
+                    {
+                        $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    }
                 }
             }
             $ship_data = [
@@ -125,27 +142,45 @@ class UserShip extends Common
      * @param $data
      * @param $user_id
      * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function editShip ($data,$user_id)
     {
-        $res = ['status'=>false,'msg'=>'保存失败','data'=>''];
-        $res_data = $this->where(['id'=>$data['id'],'user_id'=>$user_id])->find();
-        if($res_data)
+        $return = [
+            'status' => false,
+            'msg' => '保存失败',
+            'data' => ''
+        ];
+        $where[] = ['id', 'eq', $data['id']];
+        $where[] = ['user_id', 'eq', $user_id];
+        $oldData = $this->where($where)->find();
+        if($oldData)
         {
-            if ($this->allowField(true)->save($data,['id'=>$data['id'],'user_id'=>$user_id]))
+            if($data['is_def'] == self::SHIP_DEFAULT)
             {
-                $res['status'] = true;
-                $res['msg'] = '保存成功';
+                $where1[] = ['user_id', 'eq', $user_id];
+                $where1[] = ['is_def', 'eq', self::SHIP_DEFAULT];
+                $defData = $this->where($where1)->select();
+                foreach($defData as $k => $v)
+                {
+                    $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                }
+            }
+            if($this->allowField(true)->save($data,['id'=>$data['id'],'user_id'=>$user_id]))
+            {
+                $return['status'] = true;
+                $return['msg'] = '保存成功';
             }
         }
         else
         {
-            $res['msg'] = '该地址不存在';
+            $return['msg'] = '该地址不存在';
         }
-        return $res;
+        return $return;
     }
 
 
@@ -154,6 +189,7 @@ class UserShip extends Common
      * @param $id
      * @param $user_id
      * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException

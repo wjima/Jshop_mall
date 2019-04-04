@@ -69,6 +69,13 @@ class Aliyunsms extends Addons
         $accessKeyId     = $setting['accessKeyId'];
         $accessKeySecret = $setting['accessKeySecret'];
 
+		if ($data['params']['code'] == 'seller_order_notice') {
+            $data['params']['mobile'] = getSetting('shop_mobile');
+            if (!$data['params']['mobile']) {
+                return false;
+            }
+        }
+
         // fixme 必填: 短信接收号码
         $params["PhoneNumbers"] = $data['params']['mobile'];
 

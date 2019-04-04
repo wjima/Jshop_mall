@@ -6,13 +6,13 @@
         </div>
         <div class="balance-bottom">
             <yd-cell-group>
-                <!--<yd-cell-item href="/collect" type="link">
-                    <img slot="icon" src="../../static/image/heart.png">
-                    <span slot="left">充值</span>
-                </yd-cell-item>-->
+                <yd-cell-item href="/recharge" type="link">
+                    <img slot="icon" src="../../../static/image/heart.png">
+                    <span slot="left">账户充值</span>
+                </yd-cell-item>
                 <yd-cell-item href="/withdrawcash" type="link">
                     <img slot="icon" src="../../../static/image/tixian.png">
-                    <span slot="left">提现</span>
+                    <span slot="left">余额提现</span>
                 </yd-cell-item>
                 <yd-cell-item href="/balancelist" type="link">
                     <img slot="icon" src="../../../static/image/mingxi.png">

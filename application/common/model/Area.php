@@ -59,15 +59,36 @@ class Area extends Common
      */
     public function getThreeAreaId($countyName, $cityName, $provinceName, $postalCode)
     {
-        $county = $this->where('name', 'eq', $countyName)
-            ->find();
-        if($county)
+        $where1[] = ['name', 'eq', $countyName];
+        $where1[] = ['depth', 'eq', self::COUNTY_DEPTH];
+        $county = $this->where($where1)
+            ->select();
+        if(count($county) > 0)
         {
-            $id = $county['id'];
+            if(count($county) > 1)
+            {
+                $where2[] = ['name', 'eq', $cityName];
+                $where2[] = ['depth', 'eq', self::CITY_DEPTH];
+                $city = $this->where($where2)
+                    ->find();
+                foreach($county as $k => $v)
+                {
+                    if($v['parent_id'] == $city['id'])
+                    {
+                        $id = $v['id'];
+                    }
+                }
+            }
+            else
+            {
+                $id = $county[0]['id'];
+            }
         }
         else
         {
-            $city = $this->where('name', 'eq', $cityName)
+            $where2[] = ['name', 'eq', $cityName];
+            $where2[] = ['depth', 'eq', self::CITY_DEPTH];
+            $city = $this->where($where2)
                 ->find();
             if($city)
             {
@@ -80,7 +101,9 @@ class Area extends Common
             }
             else
             {
-                $province = $this->where('name', 'eq', $provinceName)
+                $where3[] = ['name', 'eq', $provinceName];
+                $where3[] = ['depth', 'eq', self::PROVINCE_DEPTH];
+                $province = $this->where($where3)
                     ->find();
                 if($province)
                 {
@@ -296,10 +319,14 @@ class Area extends Common
         return $result;
     }
 
+
     /**
      * 根据id来返回省市区信息，如果没有查到，就返回省的列表
-     * @param int $id 省市区id，不传为直接取省的信息
+     * @param int $id //省市区id，不传为直接取省的信息
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getArea($id = 0)
     {
@@ -311,11 +338,14 @@ class Area extends Common
         return $data;
     }
 
+
     /**
      * 递归取得父节点信息
-     * @author sin
      * @param $id
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getParentArea($id)
     {
@@ -337,9 +367,14 @@ class Area extends Common
         return $pdata;
     }
 
+
     /**
      * 获取所有省市区信息
+     * @param array $checked
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getTreeArea($checked = [])
     {
@@ -362,7 +397,8 @@ class Area extends Common
         return $return_data;
     }
 
-    /***
+
+    /**
      * 组装地区数据
      * @param int $list
      * @param array $checked
@@ -399,7 +435,6 @@ class Area extends Common
 
     /**
      * 根据输入的查询条件，返回所需要的where
-     * @author sin
      * @param $post
      * @return mixed
      */
@@ -415,6 +450,11 @@ class Area extends Common
         return $result;
     }
 
+
+    /**
+     * @param $list
+     * @return mixed
+     */
     protected function tableFormat($list)
     {
         foreach ($list as $key => $val) {
@@ -431,4 +471,5 @@ class Area extends Common
         }
         return $list;
     }
+
 }

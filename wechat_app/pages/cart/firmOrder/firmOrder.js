@@ -53,7 +53,8 @@ Page({
     goodsNums: '', //总数量
     tax_type: 1,
     tax_name: '本次订单不需要发票',
-    tax_code: ''
+    tax_code: '',
+    invoice_switch: 2, //发票开关 1=开启 2=关闭
   },
 
   //页面加载
@@ -68,7 +69,8 @@ Page({
     this.getUserCoupon();
     this.setData({
         cartIds: cart_id,
-        storeSwitch: app.config.store_switch
+        storeSwitch: app.config.store_switch,
+        invoice_switch: app.config.invoice_switch
     });
   },
 
@@ -159,11 +161,7 @@ Page({
                     page.getUserPoint();
                 }
             }else{
-                wx.showToast({
-                    title: res.msg,
-                    icon: 'none',
-                    duration: 2000
-                });
+                app.common.errorToBack(res.msg, 0);
 
                 if (page.data.usedCoupon != ''){
                     let k2 = page.data.couponKey2;
@@ -241,35 +239,23 @@ Page({
         let flag = true;
         if(page.data.receipt_type == 1){
             if (!page.data.isAddress) {
-                wx.showToast({
-                    icon: 'none',
-                    title: '请选择收货地址信息'
-                });
+                app.common.errorToBack('请选择收货地址信息', 0);
                 flag = false;
                 return false;
             }
         }else{
             if (!page.data.store_id){
-                wx.showToast({
-                    icon: 'none',
-                    title: '请选择自提门店'
-                });
+                app.common.errorToBack('请选择自提门店', 0);
                 flag = false;
                 return false;
             }
             if (!page.data.lading_name){
-                wx.showToast({
-                    icon: 'none',
-                    title: '请输入提货人姓名'
-                });
+                app.common.errorToBack('请输入提货人姓名', 0);
                 flag = false;
                 return false;
             }
             if (!page.data.lading_mobile) {
-                wx.showToast({
-                    icon: 'none',
-                    title: '请输入提货人电话'
-                });
+                app.common.errorToBack('请输入提货人电话', 0);
                 flag = false;
                 return false;
             }

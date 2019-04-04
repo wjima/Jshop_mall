@@ -1311,4 +1311,24 @@ class User extends Api
         $res = $userPointLog->pointLogList($user_id, false, $page, $limit);
         return $res;
     }
+
+    /**
+     * 获取省市区信息
+     */
+    public function getAreaList()
+    {
+        $return = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+        $area = config('jshop.area_list');
+        if(!file_exists($area)){
+            $return['status'] = false;
+            $return['msg'] = '地址库不存在，请重新生成';
+            return $return;
+        }
+        $data = file_get_contents($area);
+        echo $data;exit();
+    }
 }

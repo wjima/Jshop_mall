@@ -15,8 +15,19 @@ class Index extends Api
     public function index()
     {
         //解决跨域问题
-        header('Access-Control-Allow-Origin:*');//允许所有来源访问
-        header('Access-Control-Allow-Method:POST,GET');//允许访问的方式
+/*      header('Access-Control-Allow-Origin:*');//允许所有来源访问
+        header('Access-Control-Allow-Method:POST,GET');//允许访问的方式*/
+
+        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
+            header("Access-Control-Allow-Origin: *");
+            header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+            header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
+           exit;
+        }
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
+
         $result = [
             'status' => false,
             'data' => [],

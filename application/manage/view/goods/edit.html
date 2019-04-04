@@ -46,33 +46,11 @@
         width: 190px;;
     }
 </style>
-<form class="layui-form seller-alone-form" action="{:url('goods/doEdit')}" method="post">
+<form class="layui-form seller-alone-form" action="{:url('goods/doEdit')}" method="post"   lay-filter="goodsForm">
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>基础信息</legend></fieldset>
-
     <div class="layui-form-item">
         <label class="layui-form-label"> 商品分类：</label>
-        <div class="layui-input-inline">
-            <select name="goods_cat_id[]" id="goods_cat_id" lay-filter="goods_cat_id">
-                <option value="">请选择分类</option>
-                {if condition="count($catList)>0"}
-                    {volist name="catList" id="vo"}
-                        <option value="{$vo.id}" {if condition="$catInfo[0]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
-                    {/volist}
-                {/if}
-            </select>
-        </div>
-        {if condition="$secondCat"}
-        <div id="view">
-            <div class="layui-input-inline">
-                <select name="goods_cat_id[]">
-                    <option value="">请选择分类</option>
-                    {volist name="secondCat" id="vo"}
-                    <option value="{$vo.id}" {if condition="$catInfo[1]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
-                    {/volist}
-                </select>
-            </div>
-        </div>
-        {/if}
+        {Jshop:goodscat id='goods_cat_id' name="goods_cat_id" value="$catids"/}
     </div>
 
     <div class="layui-form-item">
@@ -208,18 +186,7 @@
     </div>
 </form>
 
-<script id="cat_tpl" type="text/html">
-    {{# if (d.list.length) { }}
-    <div class="layui-input-inline">
-        <select name="goods_cat_id[]">
-            <option value="">请选择分类</option>
-            {{#  layui.each(d.list, function(index, item){ }}
-                <option value="{{ item.id }}">{{ item.name }}</option>
-            {{#  }); }}
-        </select>
-    </div>
-    {{# }; }}
-</script>
+
 
 <script id="image_tpl" type="text/html">
     {{# layui.each(d, function(index, item){  }}
@@ -253,37 +220,6 @@
             laytpl = layui.laytpl;
 
         form.render();
-        form.on('select(goods_cat_id)', function(data){
-            var cat_id = data.value;
-            var first_select = $("#goods_cat_id");
-
-            var getTpl = cat_tpl.innerHTML
-                    ,view = document.getElementById('view');
-
-            if(cat_id){
-                $.ajax({
-                    url: '{:url("Goods/getCat")}',
-                    type: 'post',
-                    data: {
-                        'cat_id': cat_id,
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        if(e.status === true){
-                            var tmpData = {};
-                            tmpData.list = e.data.length ? e.data : []
-                            // laytpl 执行渲染
-                            laytpl(getTpl).render(tmpData, function(html){
-                                view.innerHTML = html;
-                            });
-                            form.render();
-                        }else{
-                            layer.msg(e.msg, {time: 1300});
-                        }
-                    }
-                })
-            }
-        });
         //保存商品
         form.on('submit(save)', function(data){
             formData = data.field;
@@ -308,6 +244,35 @@
             })
             return false;
         });
+        var defaultTypeId = parseInt('{$data.goods_type_id}');
+
+        //商品分类联动商品类型
+        form.on('select', function (data) {
+            var obj = data.elem;
+            var type = $(obj).attr('lay-filter');
+            var value = data.value;
+            if (type == 'goods_cat_id' && value) {
+                JsPost('{:url("Categories/getInfo")}', {id: value}, function (res) {
+                    if (res.status) {
+                        if (res.data.type_id && res.data.type_id != defaultTypeId) {
+                            JsPost('{:url("Goods/getSpec")}', {'type_id': res.data.type_id}, function (e) {
+                                if (e.status === true) {
+                                    form.val("goodsForm", {
+                                        "goods_type_id": res.data.type_id
+                                    })
+                                    defaultTypeId = res.data.type_id;
+                                    $("#product-info").html(e.data);
+                                } else {
+                                    layer.msg(e.msg);
+                                }
+                            });
+                        }
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                });
+            }
+        });
 
         form.on('select(goods_type_id)', function (data) {
             var type_id = data.value;
@@ -317,6 +282,7 @@
                     , title: '提示',
                 }, function (index) {
                     layer.close(index);
+                    defaultTypeId = type_id;
                     $.ajax({
                         url: '{:url("Goods/getSpec")}',
                         type: 'post',
@@ -340,7 +306,7 @@
 
     });
 
-    $(".layui-body").on("click", "#open_spec", function () {
+    $("body").on("click", "#open_spec", function () {
         var is_open = $(this).attr("is_open");
         if (is_open == 'false') {
             $("input[name=open_spec]").val("1");
@@ -359,7 +325,7 @@
     });
 
 
-    $(".layui-body").on("click", ".generate-spec", function () {
+    $("body").on("click", ".generate-spec", function () {
         var list = $('#spec_select input[type=checkbox]:checked');
         if (list.length > 0) {
             var data = $("#spec_form input").serialize();
@@ -385,7 +351,7 @@
         return false;
     });
     //删除行规格
-    $(".layui-body").on("click", ".del-class", function () {
+    $("body").on("click", ".del-class", function () {
         $(this).parent().parent('tr').remove();
     });
 
@@ -396,25 +362,45 @@
     _editor.ready(function (){
         _editor.hide();
         _editor.addListener('beforeInsertImage',function(t,arg){
-            if(arg.length>5){
-                layer.msg("最多只能选择5张图片，请重新选择");
-                return false;
+            var obj = _editor.queryCommandValue("serverparam");
+            if(obj.type == "goods"){
+                if(arg.length>5){
+                    layer.msg("最多只能选择5张图片，请重新选择");
+                    return false;
+                }
+                var getTpl = image_tpl.innerHTML
+                        ,view = document.getElementById('img_preview');
+                var oldHtml = $("#img_preview").html();
+                if(arg.length>0) {
+                    laytpl(getTpl).render(arg, function (html) {
+                        view.innerHTML = oldHtml+html;
+                    });
+                }else{
+                    layer.msg("请先上传图片");
+                    return false;
+                }
+            }else if(obj.type == "spec"){
+                if(arg.length>1){
+                    layer.msg("最多只能选择1张图片，请重新选择");
+                    return false;
+                }
+                if(arg.length>0) {
+                    var specImageTd = obj.specItem.parent().find(".spec_image");
+                    specImageTd.find('img').attr('src',arg[0].src);
+                    specImageTd.find('input').val(arg[0].image_id);
+                    specImageTd.show();
+                }else{
+                    layer.msg("请先选择图片");
+                    return false;
+                }
             }
-            var getTpl = image_tpl.innerHTML
-                ,view = document.getElementById('img_preview');
-            var oldHtml = $("#img_preview").html();
-            if(arg.length>0) {
-                laytpl(getTpl).render(arg, function (html) {
-                    view.innerHTML = oldHtml+html;
-                });
-            }else{
-                layer.msg("请先上传图片");
-                return false;
-            }
+            return true;
         });
     });
     //上传dialog
     function upImage(){
+        var obj = _editor.queryCommandValue("serverparam");
+        obj.type = "goods";
         var myImage = _editor.getDialog("insertimage");
         myImage.open();
     }
@@ -472,6 +458,20 @@
             'background-color': '#fff'
         }
     });
-
+    //上传规格图片
+    $("body").on("click", ".upSpecImage", function () {
+        var obj = _editor.queryCommandValue("serverparam");
+        obj.type = "spec";
+        obj.specItem = $(this);
+        var specImage = _editor.getDialog("insertimage");
+        specImage.open();
+    });
+    // 删除规格图片
+    $("body").on("click", ".del-img", function () {
+        var specImageDiv =  $(this).parent().parent();
+        specImageDiv.find('img').attr('src','');
+        specImageDiv.find('input').val('');
+        specImageDiv.hide();
+    })
 </script>
 <textarea id="edit_image" style="display: none;"></textarea>

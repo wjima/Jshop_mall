@@ -1,6 +1,6 @@
 <!-- 搜索页面 -->
 <view class="header-input">
-  <input class="search-input" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="true" bindblur="addkey" bindinput="addkey">
+  <input class="search-input" type="text" placeholder="搜索商品" value="{{key}}" confirm-type="搜索" bindconfirm="search" focus="{{focus}}" bindblur="addkey" bindinput="addkey">
      <icon size='15' type='search'></icon> 
   </input>
   <view class='sousuo' bindtap='search'>

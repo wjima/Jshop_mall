@@ -12,6 +12,10 @@
         background-color: #fff;
         border-top: 1px solid #e1e1e1;
         z-index: 1000;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        max-width: 750px;
     }
     .tabbar-item{
         display: inline-block;

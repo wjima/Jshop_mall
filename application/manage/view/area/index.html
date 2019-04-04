@@ -12,6 +12,7 @@
             <span class="layui-btn layui-btn-sm add-area">添加</span>
             <span class="layui-btn layui-btn-sm edit-area">编辑</span>
             <span class="layui-btn layui-btn-sm layui-btn-danger del-area">删除</span>
+            <span class="layui-btn layui-btn-sm generate-cache">生成缓存</span>
         </div>
     </div>
 
@@ -534,6 +535,12 @@
                     }
                 })
             });
+        });
+        //生成地区缓存文件
+        $(document).on('click', '.generate-cache', function(){
+           JsGet('{:url("area/generateCache")}', function (res) {
+               layer.msg(res.msg);
+           });
         });
 
     });

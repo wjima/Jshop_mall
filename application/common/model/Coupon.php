@@ -199,6 +199,7 @@ class Coupon extends Common
         $return['data']['list'] = $this->alias('c')
             ->join('promotion p', 'p.id = c.promotion_id')
             ->where($where)
+            ->order('c.ctime asc')
             ->page($page, $limit)
             ->select();
 
@@ -232,9 +233,12 @@ class Coupon extends Common
                     $return['data']['list'][$k]['expression1'] = $expression1;
                     $return['data']['list'][$k]['expression2'] = $expression2;
                     $return['data']['list'][$k]['is_expire'] = $v['etime'] > time() ? 1 : 2;
+                    $return['data']['list'][$k]['start_time'] = $v['stime'];
+                    $return['data']['list'][$k]['end_time'] = $v['etime'];
                     $return['data']['list'][$k]['stime'] = date('Y-m-d', $v['stime']);
                     $return['data']['list'][$k]['etime'] = date('Y-m-d', $v['etime']);
                 }
+
             }
         }
         return $return;

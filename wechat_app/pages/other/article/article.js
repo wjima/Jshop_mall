@@ -78,24 +78,24 @@ Page({
   //文章分享功能
   onShareAppMessage: function () {
       let page = this;
-      let userToken = wx.getStorageSync('userToken');
+      let userToken = app.db.get('userToken');
       if (userToken) {
-          let myInviteCode = wx.getStorageSync('myInviteCode');
+          let myInviteCode = app.db.get('myInviteCode');
           if (myInviteCode) {
-              let path = '/pages/other/article/article?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.id + '&invite=' + myInviteCode;
+              let path = '/pages/other/article/article?scene=' + app.db.get('site_token') + '&id=' + page.data.id + '&invite=' + myInviteCode;
               return {
                   title: page.data.title,
                   path: path
               }
           } else {
-              let path = '/pages/other/article/article?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.id;
+              let path = '/pages/other/article/article?scene=' + app.db.get('site_token') + '&id=' + page.data.id;
               return {
                   title: page.data.title,
                   path: path
               }
           }
       } else {
-          let path = '/pages/other/article/article?scene=' + wx.getStorageSync('site_token') + '&id=' + page.data.id;
+          let path = '/pages/other/article/article?scene=' + app.db.get('site_token') + '&id=' + page.data.id;
           return {
               title: page.data.title,
               path: path

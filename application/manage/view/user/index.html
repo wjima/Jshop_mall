@@ -149,7 +149,7 @@
                         return html;
 
 
-                    }, align:'center', fixed:'right',width:200}
+                    }, align:'center',width:200}
             ]]
         });
         //搜索
@@ -245,6 +245,7 @@
                         area: ['700px', '550px'],
                         title:'添加用户',
                         btn: ['确定','取消'],
+                        zIndex:1800,
                         yes: function(){
                             var data = $("#userAdd").serializeArray();
                             $.ajax({
@@ -285,6 +286,7 @@
                         area: ['700px', '550px'],
                         title:'编辑用户',
                         btn: ['确定','取消'],
+                        zIndex:1800,
                         yes: function(){
                             var data = $("#userEdit").serializeArray();
                             $.ajax({

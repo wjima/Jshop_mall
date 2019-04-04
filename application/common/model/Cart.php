@@ -190,6 +190,7 @@ class Cart extends Common
         $result = [
             'status' => false,
             'data' => [
+                'user_id' => $userId,
                 'list' => [],
                 'goods_amount' =>0,         //商品总金额
                 'amount' => 0,              //总金额
@@ -214,8 +215,16 @@ class Cart extends Common
         }
         //算订单总金额
         foreach($result['data']['list']as $k=>$v){
+            //库存不足不计算金额不可以选择
+            if($v['nums'] > $v['products']['stock'])
+            {
+                $result['data']['list'][$k]['is_select'] = false;
+                $v['is_select'] = false;
+            }
+
             //单条商品总价
             $result['data']['list'][$k]['products']['amount'] = $v['nums']*$v['products']['price'];
+
             if($v['is_select']){
                 //算订单总商品价格
                 $result['data']['goods_amount'] += $result['data']['list'][$k]['products']['amount'];
@@ -225,6 +234,8 @@ class Cart extends Common
                 $result['data']['weight'] += $v['weight']*$v['nums'];
             }
         }
+
+        //echo json_encode($result['data']['list']);exit;
 
         //运费判断
         if($receipt_type == 1)

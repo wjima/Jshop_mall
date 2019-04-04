@@ -14,7 +14,14 @@ use app\common\model\Brand;
 class Index extends Manage
 {
 
-    public function index()
+    public function index(){
+        $operationModel = new Operation();
+        $this->assign('menu', $operationModel->manageMenu(session('manage')['id']));
+
+        return $this->fetch('index');
+    }
+
+    public function welcome()
     {
         $orderModel = new Order();
         //未发货数量
@@ -33,7 +40,7 @@ class Index extends Manage
         $goodsStatics=$goodsModel->staticGoods();
         $this->assign('goods_statics',$goodsStatics);
         hook('adminindex', $this);//后台首页钩子
-        return $this->fetch();
+        return $this->fetch('welcome');
     }
 
     /**
@@ -49,7 +56,6 @@ class Index extends Manage
         }else{
             return $this->fetch('tagSelectBrands');
         }
-
     }
     /**
      * 供tag标签选择商品的时候使用
@@ -74,7 +80,6 @@ class Index extends Manage
      */
     public function clearCache(){
         Cache::clear();
-        $this->success('清除缓存成功');
+        $this->success('清除缓存成功','index/welcome');
     }
-
 }

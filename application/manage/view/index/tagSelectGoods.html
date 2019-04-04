@@ -85,7 +85,6 @@
                 }
             }
             $('#tagGoodsNum').html(Object.getOwnPropertyNames(ids).length);
-            console.log(ids);
         });
         layui.form.on('submit(goods-search)', function(data){
             layui.table.reload('tagGoodsTable', {

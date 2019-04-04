@@ -1,15 +1,38 @@
+<style type="text/css">
+    .spec_image{
+        display: inline-block;
+    }
+    .spec_image_item{
+        position: relative;
+        display: inline-block;
+    }
+    .del-img{
+        position: absolute;
+        background-color: rgba(0,0,0,.5);
+        color: #fff;
+        width: 13px;
+        height: 13px;
+        line-height: 12px;
+        font-size: 10px;
+        display: inline-block;
+        text-align: center;
+        border-radius: 50%;
+        right: -6px;
+        top: -6px;
+    }
+</style>
 <div id="spec_form">
 <div id="spec_select" {if condition="$items"}{else/}style="display:none;"{/if}>
     <div id="spec_form_item"  >
         {volist name="spec" id="vo"}
-        <div class="layui-form-item" pane>
-            <label class="layui-form-label">{$vo.name}</label>
-            <div class="layui-input-block">
-                {volist name="vo.specValue" id="v"}
-                <input type="checkbox" name="spec[{$vo.name}][]" {if condition="$v['isSelected'] eq 'true'"} checked="true"  {/if} value="{$v.value}" lay-skin="primary" title="{$v.value}" lay-filter="spec_select">
-                {/volist}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">{$vo.name}</label>
+                <div class="layui-input-block">
+                    {volist name="vo.specValue" id="v"}
+                    <input type="checkbox" name="spec[{$vo.name}][]" {if condition="$v['isSelected'] eq 'true'"} checked="true"  {/if} value="{$v.value}" lay-skin="primary" title="{$v.value}" lay-filter="spec_select">
+                    {/volist}
+                </div>
             </div>
-        </div>
         {/volist}
     </div>
     <div class="layui-form-item">
@@ -29,6 +52,7 @@
             <thead>
             <tr>
                 <th>默认货品</th>
+                <th>图片</th>
                 <th>货号</th>
                 <th>规格</th>
                 <th>库存</th>
@@ -39,11 +63,23 @@
             </tr>
             </thead>
             <tbody>
-            {volist name="items" id="vo"}
+            {volist name="items" id="vo" key="key"}
             <tr>
                 <td>
                     <input type="hidden" name="product[{$vo.spec_name}][id]" value="{$vo.product_id}">
                     <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" value="1" {if condition="$vo['is_defalut'] eq 1"} checked="true"  {/if} class="isdefalut" lay-filter="isdefalut">
+                </td>
+                <td>
+                    <a class="upSpecImage" href="javascript:void(0);">选择图片</a>
+                    <div class="spec_image" {if condition="!$vo.image_id" } style="display: none;" {/if}>
+                        <div class="spec_image_item">
+                            <div class="del-img">
+                                x
+                            </div>
+                            <img src="{$vo.image_id|_sImage}" id="image-{$key}" style="width:60px;height:60px">
+                        </div>
+                        <input type="hidden" name="product[{$vo.spec_name}][image_id]"  value="{$vo.image_id}"  >
+                    </div>
                 </td>
                 <td>
                     <input type="text" name="product[{$vo.spec_name}][sn]" value="{$vo.sn}"  placeholder="货号" autocomplete="off" class="layui-input">
@@ -137,8 +173,8 @@
             <input type="text" name="goods[params][{$vo.params.name}]" value="{$goodsParams[$vo.params.name]}" class="layui-input">
         {elseif condition="$vo.params.type eq 'checkbox'"/}
             {volist name="$vo.params.value" id="params"}
-                {if condition="$goodsParams[$vo['params']['name']]"}
-                <input type="checkbox" name="goods[params][{$vo.params.name}][{$params}]" lay-skin="primary" title="{$params}" {if condition="in_array($params, $goodsParams[$vo['params']['name']])"}checked{/if}>
+                {if condition="isset($goodsParams[$vo['params']['name']]) && $goodsParams[$vo['params']['name']]"}
+                <input type="checkbox" name="goods[params][{$vo.params.name}][{$params}]" lay-skin="primary" title="{$params}" {if condition=" is_array($goodsParams[$vo['params']['name']]) && in_array($params, $goodsParams[$vo['params']['name']])"}checked{/if}>
                 {else}
                 <input type="checkbox" name="goods[params][{$vo.params.name}][{$params}]" lay-skin="primary" title="{$params}">
                 {/if}

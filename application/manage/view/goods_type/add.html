@@ -1,3 +1,8 @@
+<style>
+    #addTypeForm .layui-btn-xs{
+        margin-left: 0px !important;
+    }
+</style>
 <form id="addTypeForm">
 <div style="padding:30px" class="layui-form layui-form-pane">
     <div class="layui-form-item">
@@ -42,7 +47,7 @@
                                     placeholder="空格分隔" autocomplete="off"
                                    class="layui-input seller-inline-1">
                         </td>
-                        <td>
+                        <td style="width: 110px;">
                             <a class="layui-btn layui-btn-xs select-params-class">
                                 选择
                             </a>
@@ -175,11 +180,11 @@
 
 <script>
     //渲染表单
-    layui.use(['form','table'], function(){
+    layui.use(['form','table','element'], function(){
         var form = layui.form;
         var table = layui.table;
         var laytpl = layui.laytpl;
-
+        var element = layui.element;
         form.render();
 
 

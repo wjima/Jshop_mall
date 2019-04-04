@@ -152,9 +152,7 @@ Page({
       }
       app.api.delGoodsBrowsing(data, function (res) {
         if (res.status) {
-          wx.showToast({
-            title: res.msg
-          });
+            app.common.successToShow(res.msg);
         }
       });
   },
@@ -175,9 +173,7 @@ Page({
             }
           }
         }
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
       });
   },
 });

@@ -175,6 +175,7 @@ class GoodsCat extends Common
                     $new_data[$v['id']]['image_url'] = _sImage();
                 }
                 $new_data[$v['id']]['sort'] = $v['sort'];
+                $new_data[$v['id']]['child'] = [];
             }
             else
             {
@@ -575,5 +576,25 @@ class GoodsCat extends Common
         }
 
         return $return;
+    }
+
+    /***
+     * 获取当前分类以及所有上级分类id
+     * @param $id
+     * @return string
+     */
+    public function getCatIdsByLastId($id)
+    {
+        $ids     = $this->getCatByLastId($id);
+        $catInfo = _krsort($ids);
+        if ($catInfo) {
+            $ids = '';
+            foreach ($catInfo as $key => $value) {
+                $ids .= $value['id'] . ',';
+            }
+            return substr($ids, 0, -1);
+        } else {
+            return $id;
+        }
     }
 }

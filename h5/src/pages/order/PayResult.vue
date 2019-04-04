@@ -1,6 +1,6 @@
 <template>
     <div class="paysuccess">
-        <div v-if="Object.keys(orderInfo).length">
+        <div>
             <div class="paysuccess-t" v-if="orderInfo.pay_status === 2 && orderInfo.payment_time >0">
                 <img class="paysuccess-img" src="../../../static/image/win.png"/>
                 <p class="paysuccess-tip">支付成功</p>
@@ -27,19 +27,27 @@
 export default {
     data () {
         return {
-            orderId: this.$route.query.order_id || 0,
-            orderInfo: {} // 支付结果
+            orderId: this.$route.query.order_id,
+            orderInfo: {
+                pay_status: 2,
+                payment_name: '微信支付',
+                payment_time: 1 // 默认展示成功
+            } // 支付结果
         }
     },
     mounted () {
         if (this.orderId) {
             this.getOrderInfo()
+        }else{
+            this.$dialog.toast({mes:'关键参数丢失'});
         }
     },
     methods: {
         // 查询订单详情 获取订单支付状态
         getOrderInfo () {
-            let data = {order_id: this.orderId}
+            let data = {
+                order_id: this.orderId
+            }
             this.$api.orderDetail(data, res => {
                 this.orderInfo = res.data
             })

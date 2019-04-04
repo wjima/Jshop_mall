@@ -1,9 +1,10 @@
+<?php if(!session_id()) session_start();?>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>安装完成 - Jshop小程序商城安装</title>
-    <link rel="stylesheet" href="style/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/lib/layuiadmin/layui/css/layui.css">
     <link rel="stylesheet" href="style/css/install.css">
 </head>
 <body>
@@ -11,7 +12,7 @@
     <h1 class="site-h1">安装完成</h1>
     <blockquote class="layui-elem-quote">
         <h1>安装已经成功</h1>
-        <p>账号:&nbsp;<?php echo $_POST['admin_account']; ?>&nbsp;密码:&nbsp;<?php echo $_POST['admin_password']; ?>&nbsp;</p>
+        <p>账号:&nbsp;<?php echo $_SESSION['admin_account']; ?>&nbsp;密码:&nbsp;<?php echo $_SESSION['admin_password']; ?>&nbsp;</p>
     </blockquote>
     <div class="btn-box">
         <a href="/" class="layui-btn layui-btn-small">前往前台浏览</a>

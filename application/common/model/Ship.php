@@ -111,7 +111,7 @@ class Ship extends Common
         }
         $data['logi_name'] = $logistics['logi_name'];
 
-        if ($this->save($data, ['id' => $id])) {
+        if ($this->save($data, ['id' => $id]) !== false) {
             $result['status'] = true;
             $result['msg']    = '保存成功';
         }
@@ -268,17 +268,18 @@ class Ship extends Common
             $data = $data->toArray();
             if ($data['type'] == self::TYPE_PART) {
                 $data['area_fee'] = json_decode($data['area_fee'], true);
-                foreach ($data['area_fee'] as $key => &$val) {
+
+                foreach ((array)$data['area_fee'] as $key => &$val) {
                     if ($val['area_value']) {
                         $area_value = json_decode($val['area_value'], true);
                         $area_html  = '';
                         foreach ($area_value as $akey => $aval) {
-                            if ($aval['pid'] <=0) {
+                            if ($aval['pid'] <= 0) {
                                 $area_html .= $aval['name'] . ',';
                             }
                         }
-                        $area_html        = substr($area_html, 0, -1);
-                        $val['area_html'] = $area_html;
+                        $area_html                           = substr($area_html, 0, -1);
+                        $data['area_fee'][$key]['area_html'] = $area_html;
                     }
                 }
             }

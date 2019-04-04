@@ -56,6 +56,9 @@ class PromotionCondition extends Common
             case 'ORDER_FULL':
                 $msg = '购买订单满'.$params['money'].'元 ';
                 break;
+            case 'USER_GRADE':
+                $msg = '用户符合指定等级';
+                break;
         }
         return $msg;
     }
@@ -74,34 +77,11 @@ class PromotionCondition extends Common
                     $type = $this->$method($params,$v['products']['goods_id'],$v['nums']);
 
                     if($type > 0){
-                        switch ($promotionInfo['type']){
-                            case $promotionInfo::TYPE_PROMOTION:
-                                //设置商品促销列表
-                                if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
-                                    $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
-                                        'name' => $promotionInfo['name'],
-                                        'type' => $type
-                                    ];
-                                }
-                                break;
-                            case $promotionInfo::TYPE_GROUP:
-                                //团购
-                                if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
-                                    $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
-                                        'name' => $promotionInfo['name'],
-                                        'type' => $type
-                                    ];
-                                }
-                                break;
-                            case $promotionInfo::TYPE_SKILL:
-                                //秒杀
-                                if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
-                                    $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
-                                        'name' => $promotionInfo['name'],
-                                        'type' => $type
-                                    ];
-                                }
-                                break;
+                        if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
+                            $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
+                                'name' => $promotionInfo['name'],
+                                'type' => $type
+                            ];
                         }
 
                     }
@@ -115,22 +95,25 @@ class PromotionCondition extends Common
                     }
                 }
                 return $key;
-            }else{
+            }elseif($this->code[$conditionInfo['code']]['type'] == 'order'){
                 $type = $this->$method($params,$cart);
                 if($type > 0){
-                    switch ($promotionInfo['type']){
-                        case $promotionInfo::TYPE_PROMOTION:
-                            //这里是订单促销，那么不管怎么样，加入待满足的促销列表里,针对本次促销来说，他永远都是没有或者type等于2的状态
-                            if(!isset($cart['promotion_list'][$promotionInfo['id']])){
-                                $cart['promotion_list'][$promotionInfo['id']] = [
-                                    'name' => $promotionInfo['name'],
-                                    'type' => $type
-                                ];
-                            }
-                            break;
+                    //这里是订单促销，那么不管怎么样，加入待满足的促销列表里,针对本次促销来说，他永远都是没有或者type等于2的状态
+                    if(!isset($cart['promotion_list'][$promotionInfo['id']])){
+                        $cart['promotion_list'][$promotionInfo['id']] = [
+                            'name' => $promotionInfo['name'],
+                            'type' => $type
+                        ];
                     }
 
                 }
+                if($type == 2){
+                    return true;
+                }else{
+                    return false;
+                }
+            }elseif($this->code[$conditionInfo['code']]['type'] == 'user'){
+                $type = $this->$method($params,$cart['user_id']);
                 if($type == 2){
                     return true;
                 }else{
@@ -252,6 +235,23 @@ class PromotionCondition extends Common
         }else{
             return 0;
         }
+    }
+
+    //指定用户等级满足条件
+    private function condition_USER_GRADE($params,$user_id){
+        $userModel = new User();
+        $where[] = ['id', 'eq', $user_id];
+        $info = $userModel->where($where)->find();
+        if(!$info){
+            return 0;
+        }
+        foreach($params as $k => $v){
+            if($info['grade'] == $k){
+                return 2;
+            }
+        }
+        return 0;
+
     }
 
 

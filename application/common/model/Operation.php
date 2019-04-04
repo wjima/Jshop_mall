@@ -1,6 +1,8 @@
 <?php
 namespace app\common\model;
 
+use think\facade\Hook;
+
 class Operation extends Common
 {
     const MENU_START = 1;       //起始节点
@@ -123,12 +125,12 @@ class Operation extends Common
      * @param $parent_menu_id
      * @return array
      */
-    public function manageMenu($manage_id, $controllerName, $actionName)
+    public function manageMenu($manage_id, $controllerName="", $actionName="")
     {
         $parent_menu_id = self::MENU_MANAGE;
 
         //根据菜单取菜单on的样式
-        $onMenu = $this->getMenuNode($parent_menu_id, $controllerName, $actionName);
+        $onMenu = [];//$this->getMenuNode($parent_menu_id, $controllerName, $actionName);       采用iframe架构后，不需要有菜单on的状态了，故此这里先注释掉。
 
         if(cache('?manage_operation_'.$manage_id)){
             $list = cache('manage_operation_'.$manage_id);
@@ -136,7 +138,7 @@ class Operation extends Common
             $manageModel = new Manage();
             $manageRoleRel = new ManageRoleRel();
 
-            //如果是超级管理员，直接返回
+            //如果是超级管理员，直接返回所有
             if($manage_id == $manageModel::TYPE_SUPER_ID){
                 //直接取所有数据，然后返回
                 $list = $this->where(['perm_type'=>self::PERM_TYPE_SUB])->order('sort asc')->select();
@@ -159,11 +161,11 @@ class Operation extends Common
                     ->where('o.perm_type',self::PERM_TYPE_SUB)
                     ->order('o.sort asc')
                     ->select();
-                if($list->isEmpty()){
-                    $list = [];     //啥权限都没有
-                }else{
-                    $list = $list->toArray();
-                }
+            }
+            if($list->isEmpty()){
+                $list = [];     //啥权限都没有
+            }else{
+                $list = $list->toArray();
             }
             //存储
             cache('manage_operation_'.$manage_id,$list,3600);
@@ -171,6 +173,10 @@ class Operation extends Common
         }
 
         $re = $this->createTree($list,$parent_menu_id,"parent_menu_id",$onMenu);        //构建菜单树
+
+        //把插件的菜单也增加上去
+        $this->addonsMenu($re);
+
         return  $re;
     }
 
@@ -277,11 +283,11 @@ class Operation extends Common
             return "";
         }
         if($list[$operation_id]['type'] == 'm'){
-            return $list[$operation_id]['code'] . '/index/index';          //一个模型，搞什么url？
+            return url($list[$operation_id]['code'] . '/index/index');          //一个模型，搞什么url？
         }
         if($list[$operation_id]['type'] == 'c'){
             if(isset($list[$list[$operation_id]['parent_id']])){
-                return $list[$list[$operation_id]['parent_id']]['code'] . '/'.$list[$operation_id]['code'].'/index';
+                return url($list[$list[$operation_id]['parent_id']]['code'] . '/'.$list[$operation_id]['code'].'/index');
             }else{
                 return "";
             }
@@ -289,7 +295,7 @@ class Operation extends Common
         if($list[$operation_id]['type'] == 'a'){
             //取控制器
             if(isset($list[$list[$operation_id]['parent_id']]) && isset($list[$list[$list[$operation_id]['parent_id']]['parent_id']])){
-                return $list[$list[$list[$operation_id]['parent_id']]['parent_id']]['code'] . '/'.$list[$list[$operation_id]['parent_id']]['code'].'/'.$list[$operation_id]['code'];
+                return url($list[$list[$list[$operation_id]['parent_id']]['parent_id']]['code'] . '/'.$list[$list[$operation_id]['parent_id']]['code'].'/'.$list[$operation_id]['code']);
             }else{
                 return "";
             }
@@ -641,5 +647,57 @@ class Operation extends Common
         return $this->checkDie($id,$pinfo[$p_str],$p_str,--$n);
     }
 
+    //通过钩子，把插件里的菜单都吸出来，然后增加到树上
+    private function addonsMenu(&$tree){
+        $list = hook('menu', []);
+        if($list){
+            foreach($list as $v){
+                $this->addonsMenuAdd($v,$tree);
+            }
+        }
+
+    }
+    //把某一个插件的菜单加到树上
+    private function addonsMenuAdd($conf,&$tree){
+        foreach($conf as $v){
+            $this->addonsMenuAdd2($v,$tree);
+        }
+    }
+    //把某一个插件的某一个菜单节点加到树上
+    private function addonsMenuAdd2($opt,&$tree){
+        //查找树
+        foreach($tree as &$v){
+            if($v['id'] == $opt['parent_menu_id']){
+                //todo
+                $this->addonsMenuAdd3($opt,$v['children']);
+                return true;
+            }
+            //查看他的孩子是否有
+            if($this->addonsMenuAdd2($opt,$v['children'])){
+                return true;        //如果找到了，就不要空跑了。
+            }
+        }
+        return false;
+    }
+
+    //把一个插件的菜单加到这个节点的孩子列表里
+    private function addonsMenuAdd3($opt,&$tree){
+        if($tree){
+            foreach($tree as $k => $v){
+                if($v['sort'] > $opt['sort']){
+                    //插入到当前位置
+
+                    array_splice($tree,$k,0,[$opt]);
+                    return true;
+                }
+            }
+        }else{
+            //这里还需要开发一下
+            return false;
+            array_splice($tree,0,0,[$opt]);
+            return true;
+        }
+        return false;
+    }
 
 }

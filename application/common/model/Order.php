@@ -202,35 +202,37 @@ class Order extends Common
         }
         if(!empty($input['order_unified_status']))
         {
-            $where = array_merge($where, $this->getReverseStatus($input['order_unified_status'], '`o`.'));
+            $where = array_merge($where, $this->getReverseStatus($input['order_unified_status'], 'o.'));
         }
 
         $page = $input['page']?$input['page']:1;
         $limit = $input['limit']?$input['limit']:20;
 
         if($isPage){
+
             $data = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
                 ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->order('ctime desc')
                 ->page($page, $limit)
                 ->select();
 
+
             $count = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
                 ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->count();
         }else{
             $data = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
                 ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->order('ctime desc')
                 ->select();
             $count = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
                 ->join(config('database.prefix').'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->count();
@@ -267,6 +269,13 @@ class Order extends Common
                     $v['print'] = true;
                 } else {
                     $v['print'] = false;
+                }
+                //备注醒目
+                if(isset($v['mark']) && !empty($v['mark']) && $v['mark'] != '')
+                {
+                    $v['order_id_k'] = '<span style="color:#FF7159;" title="'.$v['mark'].'">'.$v['order_id'].'</span>';
+                }else{
+                    $v['order_id_k'] = $v['order_id'];
                 }
             }
         }
@@ -399,6 +408,15 @@ class Order extends Common
         foreach ($ids as $k => $v)
         {
             $data[$v] = $this->orderCount($v, $user_id);
+        }
+
+        //售后状态查询
+        $isAfterSale = $input['isAfterSale'];
+        if($isAfterSale)
+        {
+            $model = new BillAftersales();
+            $number = $model->getUserAfterSalesNum($user_id, $model::STATUS_WAITAUDIT);
+            $data['isAfterSale'] = $number;
         }
         return $data;
     }
@@ -1958,5 +1976,33 @@ class Order extends Common
             return $items->toArray();
         }
         return [];
+    }
+
+
+    /**
+     * 卖家备注
+     * @param $order_id
+     * @param string $mark
+     * @return array
+     */
+    public function saveMark($order_id, $mark = '')
+    {
+        $return = [
+            'status' => false,
+            'msg' => '备注失败',
+            'data' => $mark
+        ];
+
+        $where[] = ['order_id', 'eq', $order_id];
+        $data['mark'] = $mark;
+        $result = $this->save($data, $where);
+
+        if($result !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '备注成功';
+        }
+
+        return $return;
     }
 }

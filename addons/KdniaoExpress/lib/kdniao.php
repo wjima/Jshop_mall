@@ -60,6 +60,10 @@ class kdniao
         $sender["Name"]   = getSetting('reship_name');
         $sender["Mobile"] = getSetting('reship_mobile');
         $senderAreaId     = getSetting('reship_area_id');
+        if (!$senderAreaId) {
+            $return['msg'] = '请先配置退货信息';
+            return $return;
+        }
         $areainfo         = get_area($senderAreaId);
         list($province, $city, $area) = explode(' ', $areainfo);
         $sender["ProvinceName"] = $province;
@@ -97,6 +101,7 @@ class kdniao
         $return['data']['printTemplate'] = $result['PrintTemplate'];
         $return['msg']                   = '获取成功';
         $return['status']                = true;
+
         return $return;
     }
 

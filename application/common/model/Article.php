@@ -219,6 +219,8 @@ class Article extends Common
         $where[] = ['id','eq',$article_id];
         $where[] = ['is_pub','eq',self::IS_PUB_YES];
         $data = $this->field('id,title,content,type_id,ctime,utime')->where($where)->find();
+        $data['content'] = clearHtml($data['content'], ['width', 'height']);//清除文章中宽高
+        
         if(!empty($data))
         {
             $result['status'] = true;

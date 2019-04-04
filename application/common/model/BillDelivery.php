@@ -258,7 +258,7 @@ class BillDelivery extends Common
             ];
         } else {
             $result['status'] = false;
-            $result['msg'] = $logisticsInfo['message'];
+            $result['msg'] = $logisticsInfo['message']?$logisticsInfo['message']:"暂无消息";
         }
 
         return $result;
@@ -384,10 +384,9 @@ class BillDelivery extends Common
     {
         $num = 7;
         $day = date('Y-m-d', strtotime('-'.$num.' day'));
-
-        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
-        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
-            ->where($where)
+        
+        $res = $this->field(['count(1)'=> 'nums','DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")'=> 'day'])
+            ->where('FROM_UNIXTIME(ctime) >= '.$day)
             ->group('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")')
             ->select();
 

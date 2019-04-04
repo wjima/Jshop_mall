@@ -145,7 +145,7 @@ Page({
 
         //记录被邀请
         if (invite != '') {
-            wx.setStorageSync("invitecode", invite);
+            app.db.set("invitecode", invite);
         }
 
         //获取商品ID
@@ -167,12 +167,12 @@ Page({
     //获取我的推荐码
     getMyShareCode: function () {
         let page = this;
-        let userToken = wx.getStorageSync('userToken');
+        let userToken = app.db.get('userToken');
         if (userToken) {
             app.api.sharecode(function (e) {
                 if (e.status) {
                     //获取邀请码成功
-                    wx.setStorageSync("myInviteCode", e.data);
+                    app.db.set("myInviteCode", e.data);
                     page.setData({
                         code: e.data
                     });
@@ -187,19 +187,23 @@ Page({
     //获取购物车数量
     getCartNumber: function () {
         let page = this;
-        app.api.getCartNumber(function (res) {
-            if(res.status){
-                page.setData({
-                    cnumber: res.data
-                });
-            }
-        });
+        let userToken = app.db.get('userToken');
+        let myInviteCode = app.db.get('myInviteCode');
+        if (userToken && !myInviteCode) {
+            app.api.getCartNumber(function (res) {
+                if (res.status) {
+                    page.setData({
+                        cnumber: res.data
+                    });
+                }
+            });
+        }
     },
 
     //获取用户信息
     getUserInfo: function () {
         let page = this;
-        let userToken = wx.getStorageSync('userToken');
+        let userToken = app.db.get('userToken');
         if (userToken) {
             app.api.userInfo(function (res) {
                 page.setData({
@@ -213,7 +217,7 @@ Page({
     //刷新页面
     onShow: function () {
         let userToken = app.db.get('userToken');
-        let myInviteCode = wx.getStorageSync('myInviteCode');
+        let myInviteCode = app.db.get('myInviteCode');
         if (userToken && !myInviteCode) {
             app.api.sharecode(function (e) {
                 if (e.status) {
@@ -367,9 +371,9 @@ Page({
   //商品分享功能
   onShareAppMessage: function () {
     let page = this;
-    let userToken = wx.getStorageSync('userToken');
+    let userToken = app.db.get('userToken');
     if (userToken) {
-        let myInviteCode = wx.getStorageSync('myInviteCode');
+        let myInviteCode = app.db.get('myInviteCode');
         if (myInviteCode) {
             let ins = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
             let path = '/pages/goods/detail/detail?scene=' + ins;
@@ -458,11 +462,7 @@ Page({
             avatar = '/static/images/default.png';
         }
         if (page.data.qrcode == '') {
-            wx.showToast({
-                title: page.data.qrcodeErrorMsg,
-                icon: 'none',
-                duration: 2000
-            });
+            app.common.errorToBack(page.data.qrcodeErrorMsg, 0);
             page.clone();
             return false;
         }else{
@@ -592,11 +592,7 @@ Page({
         wx.saveImageToPhotosAlbum({
             filePath: this.data.shareImage,
             success(res) {
-                wx.showToast({
-                    title: '保存图片成功',
-                    icon: 'success',
-                    duration: 2000
-                })
+                app.common.successToShow('保存图片成功');
             }
         })
     },
@@ -635,9 +631,7 @@ Page({
         page.setData({
           isfav: isfav
         });
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
       });
   },
 
@@ -657,9 +651,7 @@ Page({
         nums: page.data.nums
       }
       app.api.goodsAddCart(data, function (res) {
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
         page.getCartNumber();
       });
   },
@@ -683,9 +675,7 @@ Page({
   //       });
   //       return this.data.goodsAllProducts[now];
   //     } else {
-  //       wx.showToast({
-  //         title: '该货品不存在，请重新选择规格'
-  //       });
+  //       app.common.errorToBack('该货品不存在，请重新选择规格',0);
   //       return false;
   //     }
   //   } else {
@@ -709,9 +699,7 @@ Page({
                     url: '../../cart/firmOrder/firmOrder?data=' + JSON.stringify(res.data),
                 });
             }else{
-                wx.showToast({
-                    title: res.msg
-                });
+                app.common.errorToBack(res.msg, 0);
             }
         });
     },

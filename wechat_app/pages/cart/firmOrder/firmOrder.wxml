@@ -145,7 +145,7 @@
             <view wx:for="{{orderPromotionList}}" class='promotion' wx:key="index" wx:if="{{item.type == 2}}">{{item.name}}</view>
         </view>
       </view>
-      <view class='price-details'> 
+      <view class='price-details' wx:if="{{invoice_switch == 1}}"> 
         <text class='price-details-left'>发票</text>
         <image class='order-top-right-img right-arrow' src='../../image/right.png'></image>
         <text class='price-details-right' bindtap='invoice'>{{tax_name}}</text>

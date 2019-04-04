@@ -35,11 +35,7 @@ Page({
   clickVerify: function () {
     var that = this;
     if (this.data.mobile == '') {
-      wx.showToast({
-        title: '请输入手机号码',
-        icon: 'success',
-        duration: 2000
-      })
+      app.common.errorToBack('请输入手机号码', 0);
       return false;
     }
     app.api.sms(this.data.mobile,'login', function (res) {
@@ -50,18 +46,10 @@ Page({
         })
         settime(that);
 
-        wx.showToast({
-          title: '发送成功',
-          icon: 'success',
-          duration: 2000
-        })
+        app.common.successToShow('发送成功');
       } else {
         //报错了
-        wx.showToast({
-          title: res.msg,
-          icon: 'success',
-          duration: 2000
-        })
+        app.common.errorToBack(res.msg, 0);
       }
     });
     
@@ -116,19 +104,11 @@ Page({
   //提交按钮
   showTopTips: function () {
     if (this.data.mobile == '') {
-      wx.showToast({
-        title: '请输入手机号码',
-        icon: 'success',
-        duration: 2000
-      })
+      app.common.errorToBack('请输入手机号码', 0);
       return false;
     }
     if (this.data.code == '') {
-      wx.showToast({
-        title: '请输入验证码',
-        icon: 'success',
-        duration: 2000
-      })
+      app.common.errorToBack('请输入验证码', 0);
       return false;
     }
   
@@ -146,24 +126,14 @@ Page({
     app.api.smsLogin(data, function (res) {
       if (res.status) {
         app.db.set('userToken', res.data);
-        wx.showToast({
-          title: '登陆成功',
-          icon: 'success',
-          duration: 2000,
-          success: function(res) {
-            wx.navigateBack({
-              delta: 1
-            })
-          }
-        });
-        
+          app.common.successToShow('登陆成功', function () {
+              wx.navigateBack({
+                  delta: 1
+              });
+          });
       } else {
         //报错了
-        wx.showToast({
-          title: res.msg,
-          icon: 'success',
-          duration: 2000
-        })
+        app.common.errorToBack(res.msg, 0);
       }
     });
 

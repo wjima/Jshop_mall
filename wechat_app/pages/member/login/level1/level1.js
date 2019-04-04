@@ -13,16 +13,11 @@ Page({
       };
       app.api.login1(data, function (res) {
         if(!res.status){
-          wx.showToast({
-            title: res.msg,
-            icon: 'success',
-            duration: 2000,
-            success: function (res) {
-              wx.navigateBack({
-                delta: 1
-              })
-            }
-          })
+            app.common.successToShow(res.msg, function () {
+                wx.navigateBack({
+                    delta: 1
+                });
+            });
         }else{
           page.setData({
             open_id: res.data,
@@ -65,20 +60,12 @@ Page({
           return res.code;
         } else {
           //wx.login成功，但是没有取到code
-          wx.showToast({
-            title: '未取得code',
-            icon: 'warn',
-            duration: 2000
-          })
+          app.common.errorToBack('未取得code', 0);
         }
       },
       fail: function (res) {
         //wx.login的fail
-        wx.showToast({
-          title: '用户授权失败wx.login',
-          icon: 'warn',
-          duration: 2000
-        })
+        app.common.errorToBack('用户授权失败wx.login', 0);
       }
     });
   },

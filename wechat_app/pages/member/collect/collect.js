@@ -147,9 +147,7 @@ Page({
         goods_id: e.currentTarget.dataset.goodsid
       }
       app.api.goodsCollection(data, function (res) {
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
       });
   }
 });

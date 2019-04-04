@@ -76,9 +76,7 @@ Page({
     }
     app.api.goodsDelCart(data, function (res) {
       if (res.status) {
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
       }
       page.setNumsData();
       page.isAllCheckbox();
@@ -387,9 +385,7 @@ Page({
     }
     app.api.goodsDelCart(data, function (res) {
       if (res.status) {
-        wx.showToast({
-          title: res.msg
-        });
+          app.common.successToShow(res.msg);
       }
       page.setNumsData();
       page.isAllCheckbox();
@@ -405,16 +401,14 @@ Page({
     app.api.goodsCollection(data, function (res) {
         for (var k in page.data.cartData.list) {
             if (page.data.cartData.list[k].products.goods_id == e.currentTarget.dataset.goodsid) {
-            if (res.msg == '收藏成功') {
-                page.data.cartData.list[k].isCollection = true;
-            } else {
-                page.data.cartData.list[k].isCollection = false;
-            }
+                if (res.msg == '收藏成功') {
+                    page.data.cartData.list[k].isCollection = true;
+                } else {
+                    page.data.cartData.list[k].isCollection = false;
+                }
             }
         }
-        wx.showToast({
-            title: res.msg
-        });
+        app.common.successToShow(res.msg);
     });
   },
 

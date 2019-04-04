@@ -24,10 +24,10 @@
                 {field:'id',width:100,title:'编号'},
                 {field:'name', width:100,title:'等级名称'},
                 {field:'is_def',title:'是否默认'},
-                {field: 'operating', title: '操作', width:250, align: 'center', fixed: 'right',templet:function(data){
+                {field: 'operating', title: '操作', width:250, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
-                    html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-danger" data-id="' + data.id + '">删除</a>';
                     return html;
                 }},
             ]]

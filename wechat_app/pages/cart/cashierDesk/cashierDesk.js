@@ -43,7 +43,7 @@ Page({
           paymentType: res.data
         });
       }else{
-        app.common.errorToBack('获取支付方式失败');
+        app.common.errorToBack('获取支付方式失败', 0);
       }
     });
   },
@@ -81,28 +81,19 @@ Page({
             'paySign': res.data.paySign,
             'success': function (e) {　　　
                 if (e.errMsg == "requestPayment:ok") {
-                wx.redirectTo({
-                    url: '../../cart/paySuccess/paySuccess?payment_id=' + res.data.payment_id
-                });
+                    wx.redirectTo({
+                        url: '../../cart/paySuccess/paySuccess?payment_id=' + res.data.payment_id
+                    });
                 } else if (res.errMsg == 'requestPayment:cancel') {
-                wx.showToast({
-                    icon: 'none',
-                    title: '支付已取消'
-                });
+                    app.common.errorToBack('支付已取消',0);
                 }
             },
             'fail': function (e) {
-                wx.showToast({
-                icon: 'none',
-                title: '支付失败请重新支付'
-                });
+                app.common.errorToBack('支付失败请重新支付', 0);
             }
             });
         } else {
-            wx.showToast({
-            icon: 'none',
-            title: '支付订单出现问题，请返回重新操作'
-            });
+            app.common.errorToBack('支付订单出现问题，请返回重新操作', 0);
         }
     });
   },

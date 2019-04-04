@@ -40,7 +40,8 @@ class UserGrade extends Common
             $data1['is_def'] = self::IS_DEF_NO;
             $where1[] = ['id','neq', $id];
             $where1[] = ['is_def','eq', self::IS_DEF_YES];
-            $this->save($data1,$where1);
+            $s = new UserGrade();
+            $s->save($data1,$where1);
         }
 
         return $result;

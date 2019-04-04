@@ -6,8 +6,7 @@
  *      keepAlive    是否缓存页面
  *      @type {*[]}
  */
-const routers = [
-    {
+const routers = [{
         path: '/',
         redirect: '/index'
     },
@@ -29,6 +28,7 @@ const routers = [
         meta: {
             navShow: false,
             tabShow: false,
+            title: '登录授权中',
             keepAlive: false
         }
     },
@@ -171,7 +171,7 @@ const routers = [
     },
     {
         path: '/express',
-            component: resolve => require(['../pages/order/Express'], resolve),
+        component: resolve => require(['../pages/order/Express'], resolve),
         name: 'Express',
         meta: {
             navShow: true,
@@ -512,6 +512,17 @@ const routers = [
             navShow: true,
             tabShow: false,
             title: '发票',
+            keepAlive: false
+        }
+    },
+    {
+        path: '/recharge',
+        component: resolve => require(['../pages/balance/Recharge'], resolve),
+        name: 'Recharge',
+        meta: {
+            navShow: true,
+            tabShow: false,
+            title: '余额充值',
             keepAlive: false
         }
     }

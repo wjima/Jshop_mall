@@ -63,7 +63,7 @@
                         //html += '<a class="layui-btn layui-btn-xs comment-show" data-id="' + data.id + '">查看评价</a>';
                         html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
                         return html;
-                }, fixed:'right'}
+                }}
             ]]
         });
 
@@ -91,7 +91,6 @@
         //回复
         $(document).on("click", '.comment-return', function () {
             var id = $(this).attr('data-id');
-            console.log(1);
             JsPost("{:url('Goods/getCommentInfo')}", {'id':id}, function(res) {
                 if(res.status) {
                     var seller_content = res.data.seller_content == null?'':res.data.seller_content;

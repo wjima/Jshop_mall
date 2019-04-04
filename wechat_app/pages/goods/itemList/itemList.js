@@ -24,7 +24,8 @@ Page({
       }
     },
     alllist: true,
-    allgrid: false
+    allgrid: false,
+    searchKey: '搜索商品'
   },
 
   //加载执行
@@ -228,11 +229,7 @@ Page({
     });
     //如果已经没有数据了，就不取数据了，直接提示已经没有数据
     if (page.data.loadingComplete) {
-      wx.showToast({
-        title: '暂时没有数据了',
-        icon: 'success',
-        duration: 2000
-      });
+      app.common.errorToBack('暂时没有数据了', 0);
       return false;
     }
     app.api.goodsList(this.data.searchData,function(res){
@@ -288,10 +285,20 @@ Page({
 
   //跳转搜索
   searchNav: function () {
-    wx.navigateTo({
-      url: '../search/search'
-    });
+      let pages = getCurrentPages();
+      let prevPage = pages[pages.length - 2]
+      let search_flag = prevPage.route;
+      if (search_flag == 'pages/goods/search/search') {
+          wx.navigateBack({
+              delta: 1
+          })
+      }else{
+          wx.navigateTo({
+              url: '../search/search'
+          });
+      }
   },
+
   listgrid: function(){
     let page = this;    
     if(page.data.alllist){

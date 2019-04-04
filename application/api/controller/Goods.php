@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\common\controller\Api;
+use app\common\model\GoodsCat;
 use app\common\model\GoodsComment;
 use think\facade\Request;
 use app\common\model\Goods as GoodsModel;
@@ -142,9 +143,15 @@ class Goods extends Api
             if (isset($postWhere['bn']) && $postWhere['bn']) {
                 $where[] = ['bn', '=', $postWhere['bn']];
             }
-            //商品分类
+            //商品分类,同时取所有子分类 todo 无限极分类时要注意
             if (isset($postWhere['cat_id'])) {
-                $where[] = ['goods_cat_id', 'eq', $postWhere['cat_id']];
+                //$where[] = ['goods_cat_id', 'eq', $postWhere['cat_id']];
+                $goodsCatModel = new GoodsCat();
+                $catIds        = [];
+                $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
+                $catIds        = array_column($childCats->toArray(), 'id');
+                $catIds[]      = $postWhere['cat_id'];
+                $where[]       = ['goods_cat_id', 'in', $catIds];
             }
             //价格区间
             if (isset($postWhere['price_f']) && $postWhere['price_f']) {

@@ -88,13 +88,13 @@ class WeixinMenu extends Common
                         $sub_button[$ck]['name'] = $cv['name'];
                         $cvparams                = json_decode($cv['params'], true);
                         if ($cv['type'] == 'click') {
-                            $sub_button[$key]['key'] = $cvparams['keyword'];
+                            $sub_button[$ck]['key'] = $cvparams['keyword'];
                         } elseif ($cv['type'] == 'view') {
-                            $sub_button[$key]['url'] = $cvparams['url'];
+                            $sub_button[$ck]['url'] = $cvparams['url'];
                         } elseif ($cv['type'] == 'miniprogram') {
-                            $sub_button[$key]['url']      = $cvparams['program_url'];
-                            $sub_button[$key]['appid']    = $cvparams['appid'];
-                            $sub_button[$key]['pagepath'] = $cvparams['page'];
+                            $sub_button[$ck]['url']      = $cvparams['program_url'];
+                            $sub_button[$ck]['appid']    = $cvparams['appid'];
+                            $sub_button[$ck]['pagepath'] = $cvparams['page'];
                         }
                     }
                     if ($sub_button) {

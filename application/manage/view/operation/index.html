@@ -41,7 +41,7 @@
                 {field:'parent_menu_name',title:'父菜单'},
                 {field:'perm_type',title:'许可类型'},
                 {field:'sort',title:'排序'},
-                {field: 'operating', title: '操作', width:250, align: 'center', fixed: 'right',templet:function(data){
+                {field: 'operating', title: '操作', width:250, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
@@ -62,13 +62,23 @@
             JsGet('{:url("Operation/add")}',function (tpl) {
                 layer.open({
                     type: 1,
-                    area: ['800px', '700px'],
+                    area: ['600px', '500px'],
                     data:'',
                     title: '添加',
                     content: tpl,
                     btn:['保存','关闭'],
                     yes:function (index,layero) {
                         var thedata = $('.operationForm').serialize();
+                        var parent_id = $("#parent_id").val();
+                        if (parent_id == '' || !parent_id) {
+                            layer.msg("请选择父节点");
+                            return false;
+                        }
+                        var parent_menu_id = $("#parent_menu_id").val();
+                        if (parent_menu_id == '' || !parent_menu_id) {
+                            layer.msg("请选择菜单节点");
+                            return false;
+                        }
                         JsPost('{:url("Operation/add")}',thedata,function (re) {
                             if(re.status){
                                 layer.msg('保存成功');
@@ -123,13 +133,23 @@
             JsGet('{:url("Operation/add")}?id='+id,function (tpl) {
                 layer.open({
                     type: 1,
-                    area: ['800px', '700px'],
+                    area: ['600px', '500px'],
                     data:'',
                     title: '编辑',
                     content: tpl,
                     btn:['保存','关闭'],
                     yes:function (index,layero) {
                         var thedata = $('.operationForm').serialize();
+                        var parent_id = $("#parent_id").val();
+                        if (parent_id == '' || !parent_id) {
+                            layer.msg("请选择父节点");
+                            return false;
+                        }
+                        var parent_menu_id = $("#parent_menu_id").val();
+                        if (parent_menu_id == '' || !parent_menu_id) {
+                            layer.msg("请选择菜单节点");
+                            return false;
+                        }
                         JsPost('{:url("Operation/add")}',thedata,function (re) {
                             if(re.status){
                                 layer.msg('保存成功');

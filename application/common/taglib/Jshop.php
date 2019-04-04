@@ -8,6 +8,7 @@
  */
 namespace app\common\taglib;
 
+use app\common\model\GoodsCat;
 use think\template\TagLib;
 
 
@@ -41,7 +42,12 @@ class Jshop extends TagLib
         'sellergoods' => [
             'attr' => 'name,value,num,key',
             'close' => 0
-        ]
+        ],
+        //商品分类
+        'goodscat' => [
+            'attr' => 'id,name,value',
+            'close' => 0
+        ],
     ];
 
     /**
@@ -462,5 +468,63 @@ class Jshop extends TagLib
 
     public function tagUploadImage(){
 
+    }
+
+    /**
+     * 无限极商品分类
+     * @param $tag
+     * @return string
+     */
+    public function tagGoodscat($tag)
+    {
+        if(isset($tag['value'])){
+            $tag['value'] = $this->autoBuildVar($tag['value']);
+        }else{
+            $tag['value'] = "";
+        }
+        $id            = !empty($tag['id']) ? $tag['id'] : '_goods_cat';
+        $name          = !empty($tag['name']) ? $tag['name'] : $id;
+        $value         = !empty($tag['value']) ? $tag['value'] : 0; //todo 默认值
+
+        $goodsCatModel = new GoodsCat();
+        $cat           = $goodsCatModel->getAllCat();
+        $parseStr      = '<div id="' . $id . '"></div>';
+        $selected      = ',selected: []';
+        if ($value) {
+            $selected = ',selected: [<?php echo ' . $value . ' ?>] ';
+        }
+        $parseStr .= '<script>
+  layui.config({
+    base : " __STATIC_LIB__layuiadmin/layui/"
+  }).extend({
+    selectN: "./layui_ext/select/selectN"
+  }).use(["layer","form","jquery","selectN"],function(){
+    $ = layui.jquery;
+    var form = layui.form
+    ,selectN = layui.selectN;
+
+    goodscat' . $id . ' = function(){
+            $.ajax({
+            type:"get",
+            url:"<?php echo url("api/Categories/getAllCat");  ?>",
+            data:"",
+            success:function(e){
+                var catData = e.data;
+                var catIns' . $id . ' = selectN({
+                  elem: "#' . $id . '"
+                  ,name:"'.$name.'"
+                  ' . $selected . '
+                  ,search:[false,true]
+                  ,last:true
+                  ,field:{idName:\'id\',titleName:\'name\',statusName:\'status\',childName:\'child\'}
+                  ,data: catData
+                });
+            }
+        });
+    }
+goodscat' . $id . '();
+});
+</script>';
+        return $parseStr;
     }
 }

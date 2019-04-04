@@ -3,11 +3,14 @@
         <navbar slot="navbar" :title="$route.meta.title" v-show="$route.meta.navShow"></navbar>
         <transition name="router-fade" mode="out-in">
             <keep-alive>
-                <router-view v-if="$route.meta.keepAlive" class="top"></router-view>
+                <router-view v-if="$route.meta.keepAlive && isRouterAlive" class="top"></router-view>
             </keep-alive>
         </transition>
         <transition name="router-fade" mode="out-in">
-            <router-view v-if="!$route.meta.keepAlive" class="top"></router-view>
+            <router-view v-if="!isRouterAlive && !$route.meta.keepAlive" class="top"></router-view>
+        </transition>
+        <transition name="router-fade" mode="out-in">
+            <router-view v-if="isRouterAlive && !$route.meta.keepAlive" class="top"></router-view>
         </transition>
         <tabbar slot="tabbar" v-show="$route.meta.tabShow"></tabbar>
     </yd-layout>
@@ -19,6 +22,11 @@ import tabbar from './components/TabBar.vue'
 import {mapGetters} from 'vuex'
 
 export default {
+    data () {
+        return {
+            isRouterAlive: true
+        }
+    },
     components: {
         navbar, tabbar
     },
@@ -32,6 +40,11 @@ export default {
     },
     beforeMount () {
         this.getShopSetting();
+    },
+    provide () {
+        return {
+            reload: this.reload
+        }
     },
     methods: {
         // 获取店铺配置 存入vuex
@@ -48,6 +61,12 @@ export default {
                     document.getElementsByTagName("body")[0].appendChild(script);
                 }
             });
+        },
+        reload () {
+            this.isRouterAlive = false
+            this.$nextTick(() => {
+                this.isRouterAlive = true
+            })
         }
     },
     watch: {

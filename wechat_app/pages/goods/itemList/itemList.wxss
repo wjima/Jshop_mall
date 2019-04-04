@@ -246,3 +246,12 @@ page{
 .every-commodity-grid .commodity-pic{
 
 }
+.search-key{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    left:76rpx;
+}
+.placeholder{
+    color: #999;
+}

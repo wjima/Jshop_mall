@@ -335,3 +335,10 @@ hot-recommends .name{
   border: 2rpx solid #f3f3f3;
   border-top: none;
 }
+.search-key{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    left:76rpx;
+    color: #999;
+}

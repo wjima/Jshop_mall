@@ -469,11 +469,11 @@ class BillPayments extends Common
         $num = 7;
         $day = date('Y-m-d', strtotime('-'.$num.' day'));
 
-        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
         $where[] = ['status', 'eq', self::STATUS_PAYED];
         $where[] = ['type', 'eq', self::TYPE_ORDER];
-        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
+        $res = $this->field(['count(1)'=> 'nums','DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")'=> 'day'])
             ->where($where)
+            ->where('FROM_UNIXTIME(ctime) >= '.$day)
             ->group('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")')
             ->select();
 

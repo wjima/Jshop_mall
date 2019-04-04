@@ -60,7 +60,7 @@
                     return '<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="downfile('+data.id+')">下载文件</button>';
                 }},
                 {field: 'ctime',sort: true, title: '创建时间' ,align:'center'},
-                {field: 'operating', title: '操作', width:100, align: 'center', fixed: 'right',templet:function(data){
+                {field: 'operating', title: '操作', width:100, align: 'center',templet:function(data){
                         var html = '';
                         html += '<a  class="layui-btn layui-btn-xs task-del" data-id="' + data.id + '">删除</a>';
                         return html;

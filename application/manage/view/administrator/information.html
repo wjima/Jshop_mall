@@ -56,8 +56,10 @@
 </div>
 
 <script>
-    layui.use(['form','layer','laydate'],function(){
+    layui.use(['form','layer','laydate','element'],function(){
         var $ = layui.$, form = layui.form, layer = layui.layer,laydate = layui.laydate;
+        var element = layui.element;
+
         //修改密码
         form.on('submit(editPwd)',function(data){
             JsPost("{:url('administrator/editPwd')}",data.field,function(res){

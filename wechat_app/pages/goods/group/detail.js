@@ -154,7 +154,7 @@ Page({
     //刷新页面
     onShow: function () {
         let userToken = app.db.get('userToken');
-        let myInviteCode = wx.getStorageSync('myInviteCode');
+        let myInviteCode = app.db.get('myInviteCode');
         if (userToken && !myInviteCode) {
             app.api.sharecode(function (e) {
                 if (e.status) {
@@ -306,9 +306,9 @@ Page({
   //商品分享功能
   onShareAppMessage: function () {
     let page = this;
-    let userToken = wx.getStorageSync('userToken');
+    let userToken = app.db.get('userToken');
     if (userToken) {
-        let myInviteCode = wx.getStorageSync('myInviteCode');
+        let myInviteCode = app.db.get('myInviteCode');
         if (myInviteCode) {
             let ins = encodeURIComponent('id=' + page.data.goodsInfo.id + '&invite=' + myInviteCode);
             let path = '/pages/goods/detail/detail?scene=' + ins;
@@ -362,9 +362,7 @@ Page({
         page.setData({
           isfav: isfav
         });
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
       });
   },
 
@@ -384,9 +382,7 @@ Page({
         nums: page.data.nums
       }
       app.api.goodsAddCart(data, function (res) {
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
       });
   },
 
@@ -409,9 +405,7 @@ Page({
   //       });
   //       return this.data.goodsAllProducts[now];
   //     } else {
-  //       wx.showToast({
-  //         title: '该货品不存在，请重新选择规格'
-  //       });
+  //       app.common.errorToBack('该货品不存在，请重新选择规格', 0);
   //       return false;
   //     }
   //   } else {

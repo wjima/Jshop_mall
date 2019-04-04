@@ -80,7 +80,7 @@
                 statusCode: 1
             },
             cols: [[
-                {field: 'order_id', title: '订单号', width:180, align: 'center', fixed: 'left'},
+                {field: 'order_id', title: '订单号', width:180, align: 'center'},
                 {field: 'ctime', title: '下单时间', width:180, align: 'center'},
                 {field: 'username', title: '用户名', width:150, align: 'center'},
                 {field: 'ship_mobile', title: '收货人手机号', width:150, align: 'center'},
@@ -89,7 +89,7 @@
                 {field: 'ship_status', title: '发货状态', width:130, align: 'center'},
                 {field: 'order_amount', title: '订单总额', width:130, align: 'center', templet:function(data){return '￥'+data.order_amount}},
                 {field: 'source', title: '订单来源', width:130, align: 'center'},
-                {field: 'operating', title: '操作', width:300, align: 'center', fixed: 'right'}
+                {field: 'operating', title: '操作', width:300, align: 'center'}
             ]]
         });
 

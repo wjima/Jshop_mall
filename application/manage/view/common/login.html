@@ -1,78 +1,113 @@
-{include file="common/mini_header" /}
-<div class="login-content-l"></div>
-<div class="login-content">
-	<div class="login-content-mid">
-		<div class="layui-container">
-			<div>
-				<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-				    <h3 class="login-header">登录</h3>
-                    <div class="layui-tab-item layui-show">
-                        <div class="layui-tab-content layui-form-pane">
-                            <form class="layui-form" action="" method="post">
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">账号：</label>
-                                    <div class="layui-input-inline">
-                                        <input type="text" name="mobile" lay-verify="required" autocomplete="off" class="layui-input">
-                                    </div>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>{$shop_name|default='Jshop小程序商城'}管理系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/style/login.css" media="all">
+</head>
+
+<body>
+
+    <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+        <div class="layadmin-user-login-main">
+            <div class="layadmin-user-login-box layadmin-user-login-header">
+                <h2>Jshop小程序商城</h2>
+                <p>吉海科技 -- 致力于为客户创造有价值的产品</p>
+            </div>
+            <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+                <form class="layui-form" action="" method="post">
+
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+                        <input type="text" name="mobile" id="LAY-user-login-username" lay-verify="required" placeholder="账号" class="layui-input">
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+                        <input type="password" name="password" id="LAY-user-login-password" lay-verify="required" placeholder="密码" class="layui-input">
+                    </div>
+
+                    <div class="layui-form-item" style="display:none;" id="captcha_div">
+                        <div class="layui-row">
+                            <div class="layui-col-xs7">
+                                <label class="layadmin-user-login-icon layui-icon layui-icon-vercode" for="LAY-user-login-vercode"></label>
+                                <input type="text" name="captcha" id="captcha_ipt" placeholder="验证码" class="layui-input">
+                            </div>
+                            <div class="layui-col-xs5">
+                                <div style="margin-left: 10px;">
+                                    <img src="{:captcha_src()}" id="captcha_img" onclick="setCaptcha()" title="点击更换验证码" alt="captcha" style="max-width:120px;cursor:pointer;" />
                                 </div>
-                                <div class="layui-form-item">
-                                    <label class="layui-form-label">密码：</label>
-                                    <div class="layui-input-inline">
-                                        <input type="password" name="password" autocomplete="off" class="layui-input">
-                                    </div>
-                                </div>
-                                <div class="layui-form-item" style="display:none;" id="captcha_div">
-                                    <label class="layui-form-label">验证码：</label>
-                                    <div class="layui-input-inline" style="width:60px;">
-                                        <input type="text" name="captcha" autocomplete="off" id="captcha_ipt" class="layui-input">
-                                    </div>
-                                    <div class="layui-input-inline" style="width:150px;">
-                                        <img src="{:captcha_src()}" id="captcha_img" onclick="setCaptcha()" title="点击更换验证码" alt="captcha" style="max-width:150px;cursor:pointer;" />
-                                    </div>
-                                </div>
-                                <div class="layui-form-item">
-                                    <div class="layui-input-inline">
-                                        <input class="layui-btn layui-btn-fluid" lay-submit lay-filter="password_login" type="submit" value="登录" />
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="login-content-r"></div>
-		<script>
-			layui.use(['element', 'form'], function() {
-				//密码登陆
-				layui.form.on('submit(password_login)', function(data) {
-					$.ajax({
-						type: "POST",
-						url: "{:url('manage/common/login')}",
-						data: data.field,
-						success: function(data) {
-                            if(data.status) {
-                                layer.msg('登陆成功，跳转中...');
-                                setTimeout("window.location.href='" + data.data + "'; ", 1500);
-                            } else {
-                                if(data.data == '10013' || data.data == '10012'){
-                                    $('#captcha_div').show();
-                                }
-                                setCaptcha();
-                                layer.msg(data.msg);
+                    <div class="layui-form-item">
+                        <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="password_login">登 录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="layui-trans layadmin-user-login-footer">
+
+            <p>© 2019 <a href="https://www.jihainet.com/" target="_blank">河南吉海网络科技有限公司 jihainet.com</a></p>
+            <p>
+                <span><a href="https://www.jihainet.com/" target="_blank">获取授权</a></span>
+                <span><a href="https://b2c.jihainet.com/manage" target="_blank">在线演示</a></span>
+                <span><a href="https://www.jihainet.com/" target="_blank">前往官网</a></span>
+            </p>
+        </div>
+    </div>
+
+    <script src="__STATIC_LIB__layuiadmin/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '__STATIC_LIB__layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'form'], function() {
+            var $ = layui.$,
+                setter = layui.setter,
+                admin = layui.admin;
+
+            var form = layui.form;
+            form.render();
+
+            //提交
+            form.on('submit(password_login)', function(data) {
+                $.ajax({
+                    type: "POST",
+                    url: "{:url('manage/common/login')}",
+                    data: data.field,
+                    success: function(data) {
+                        if (data.status) {
+                            layer.msg('登陆成功，跳转中...');
+                            setTimeout("window.location.href='" + data.data + "'; ", 1500);
+                        } else {
+                            if (data.data == '10013' || data.data == '10012') {
+                                $('#captcha_div').show();
                             }
-						}
-					});
-					return false;
-				});
-			});
+                            setCaptcha();
+                            layer.msg(data.msg);
+                        }
+                    }
+                });
+                return false;
+            });
+
             //更改验证码图片
-            function setCaptcha() {
+            setCaptcha = function() {
                 $('#captcha_ipt').val("");
-                var timestamp=new Date().getTime();
-                $('#captcha_img').attr('src','{:captcha_src()}?'+timestamp);
+                var timestamp = new Date().getTime();
+                $('#captcha_img').attr('src', '{:captcha_src()}?' + timestamp);
             }
-		</script>
-		{include file="common/mini_footer" /}
+        });
+    </script>
+</body>
+
+</html>

@@ -8,29 +8,8 @@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">商品分类id：</label>
-        <div class="layui-input-inline">
-            <input name="params[cat_id]"  value="{$params.cat_id}" id="the_cat_val"  type="hidden">
-            <select name="goods_cat_id[]" id="goods_cat_id" lay-filter="goods_cat_id">
-                <option value="">请选择分类</option>
-                {if condition="count($catList)>0"}
-                {volist name="catList" id="vo"}
-                    <option value="{$vo.id}" {if condition="$catInfo[0]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
-                {/volist}
-                {/if}
-            </select>
-        </div>
-        <div id="view">
-            {if condition="$secondCat"}
-            <div class="layui-input-inline">
-                <select name="goods_cat_id[]" lay-filter="goods_cat_id">
-                    <option value="">请选择分类</option>
-                    {volist name="secondCat" id="vo"}
-                    <option value="{$vo.id}" {if condition="$catInfo[1]['id'] eq $vo.id"} selected{/if}>{$vo.name}</option>
-                    {/volist}
-                </select>
-            </div>
-            {/if}
-        </div>
+        <input name="params[cat_id]"  value="{$params.cat_id}" id="the_cat_val"  type="hidden">
+        {Jshop:goodscat id='goods_cat_id' name="goods_cat_id" value="$catids"/}
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">商品数量：</label>
@@ -55,40 +34,14 @@
     layui.use(['form','laytpl'], function(){
         laytpl = layui.laytpl;
         layui.form.render();
-        layui.form.on('select(goods_cat_id)', function(data){
-            var cat_id = data.value;
-            var first_select = $("#goods_cat_id");
-
-            //此很重要，赋值的，最终取的就是这里的值  add by wht
-            $("#the_cat_val").val(cat_id);
-
-
-            var getTpl = cat_tpl.innerHTML
-                    ,view = document.getElementById('view');
-
-            if(cat_id){
-                $.ajax({
-                    url: '{:url("Goods/getCat")}',
-                    type: 'post',
-                    data: {
-                        'cat_id': cat_id,
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        if(e.status === true){
-                            if(e.data.length>0){
-                                var tmpData = {};
-                                tmpData.list = e.data;
-                                laytpl(getTpl).render(tmpData, function(html){
-                                    view.innerHTML = html;
-                                });
-                                layui.form.render();
-                            }
-                        }else{
-                            layer.msg(e.msg, {time: 1300});
-                        }
-                    }
-                })
+        var form = layui.form;
+        //商品分类联动商品类型
+        form.on('select', function (data) {
+            var obj = data.elem;
+            var type = $(obj).attr('lay-filter');
+            var value = data.value;
+            if (type == 'goods_cat_id' && value) {
+                $("#the_cat_val").val(value);
             }
         });
     });

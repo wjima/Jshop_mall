@@ -19,9 +19,6 @@ use think\facade\App;
 
 class Schema extends Command
 {
-    /** @var  Output */
-    protected $output;
-
     protected function configure()
     {
         $this->setName('optimize:schema')
@@ -56,7 +53,7 @@ class Schema extends Command
             return;
         } elseif ($input->hasOption('table')) {
             $table = $input->getOption('table');
-            if (!strpos($table, '.')) {
+            if (false === strpos($table, '.')) {
                 $dbName = Db::getConfig('database');
             }
 
@@ -99,7 +96,7 @@ class Schema extends Command
             $info    = $class::getConnection()->getFields($table);
             $content .= var_export($info, true) . ';';
 
-            file_put_contents(App::getRuntimePath() . 'schema/' . $dbName . '.' . $table . '.php', $content);
+            file_put_contents(App::getRuntimePath() . 'schema' . DIRECTORY_SEPARATOR . $dbName . '.' . $table . '.php', $content);
         }
     }
 

@@ -95,20 +95,12 @@ Page({
         }
         app.api.setMyInvite(data, function(res){
             if(res.status){
-                wx.showToast({
-                    title: '邀请码填写成功',
-                    icon: 'success',
-                    duration: 1500
-                });
+                app.common.successToShow('邀请码填写成功');
                 page.setData({
                     is_superior: true
                 });
             }else{
-                wx.showToast({
-                    title: res.msg,
-                    icon: 'none',
-                    duration: 1500
-                });
+                app.common.errorToBack(res.msg, 0);
             }
         });
     },
@@ -151,11 +143,7 @@ Page({
         let storename = app.config.shop_name;
         let invite = page.data.code;
         if (page.data.qrcode == '') {
-            wx.showToast({
-                title: page.data.qrcodeErrorMsg,
-                icon: 'none',
-                duration: 2000
-            });
+            app.common.errorToBack(page.data.qrcodeErrorMsg, 0);
             page.clone();
             return false;
         } else {
@@ -292,11 +280,7 @@ Page({
         wx.saveImageToPhotosAlbum({
             filePath: this.data.shareImage,
             success(res) {
-                wx.showToast({
-                    title: '保存图片成功',
-                    icon: 'success',
-                    duration: 2000
-                })
+                app.common.successToShow('保存图片成功');
             }
         })
     },

@@ -215,7 +215,8 @@ class User extends Common
                 $userData['avatar'] = $data['avatar'];
             }else{
                 $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-                $userData['avatar'] =$http_type . $_SERVER['HTTP_HOST'].config('jshop.default_image');
+//                $userData['avatar'] = config('jshop.default_image');
+                $userData['avatar'] = _sImage('');
             }
             if(isset($data['nickname'])){
                $userData['nickname']  = $data['nickname'];

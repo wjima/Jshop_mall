@@ -250,6 +250,7 @@ class UserTocash extends Common
         if (!$list->isEmpty()) {
             foreach ($list as $v) {
                 $v['type'] = config('params.user_tocash')['type'][$v['type']];
+                $v['card_number'] = bankCardNoFormat($v['card_number']);
                 $v['ctime'] = getTime($v['ctime']);
             }
             $result[ 'data' ] = $list;

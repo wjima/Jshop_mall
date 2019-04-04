@@ -232,18 +232,14 @@ Page({
         content: '您确认取消订单：' + e.target.dataset.id + '吗？',
         success: function (ee) {
             if (ee.confirm) {
-            var data = {
-                order_ids: e.target.dataset.id
-            }
-            app.api.cancelOrder(data, function (res) {
-                wx.showToast({
-                title: res.msg,
-                duration: 3000,
-                complete: function () {
-                    page.refresh();
+                var data = {
+                    order_ids: e.target.dataset.id
                 }
+                app.api.cancelOrder(data, function (res) {
+                    app.common.successToShow(res.msg, function () {
+                        page.refresh();
+                    });
                 });
-            });
             }
         }
     });

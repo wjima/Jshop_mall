@@ -107,3 +107,10 @@
   display: block;
   line-height: 1;
 }
+.search-key{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    left:76rpx;
+    color: #999;
+}

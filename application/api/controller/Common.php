@@ -79,7 +79,11 @@ class Common extends Base
         $conf['tocash_money_rate'] = getSetting('tocash_money_rate');                 //服务费
         $conf['point_switch'] = getSetting('point_switch');             //是否开启积分功能
         $conf['statistics'] = getSetting('statistics_code');            //获取统计代码
-
+        $recommend_keys = getSetting('recommend_keys');
+        $conf['recommend_keys'] = explode(' ', $recommend_keys);    //搜索推荐关键字
+        $conf['invoice_switch'] = getSetting('invoice_switch'); //发票功能开关
+        $conf['goods_stocks_warn'] = getSetting('goods_stocks_warn'); //库存报警数量
+        $conf['shop_default_image'] = _sImage(getSetting('shop_default_image')); //获取默认图片
         return $conf;
     }
 

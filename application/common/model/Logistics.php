@@ -80,8 +80,16 @@ class Logistics extends Common
 
     public function getNameByCode($code)
     {
-        $where[] = ['logi_code', 'eq', $code];
-        $info = $this->field('logi_name')->where($where)->find();
+        if($code)
+        {
+            $where[] = ['logi_code', 'eq', $code];
+            $info = $this->field('logi_name')->where($where)->find();
+        }
+        else
+        {
+            $info['logi_name'] = '';
+        }
+
         return $info['logi_name']?$info['logi_name']:'';
     }
 }

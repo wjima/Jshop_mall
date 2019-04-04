@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>初始数据配置 - Jshop小程序商城安装</title>
-    <link rel="stylesheet" href="style/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/lib/layuiadmin/layui/css/layui.css">
     <link rel="stylesheet" href="style/css/install.css">
 </head>
 <body>
@@ -21,29 +21,172 @@
             </div>
             <label class="layui-form-label"></label>
             <div class="layui-input-inline">
-                <input type="checkbox" name="demo" title="安装演示数据">
+                <input type="checkbox" name="demo" id="demo" title="安装演示数据">
             </div>
         </div>
-
         <div class="layui-form-item">
             <div class="btn-box">
                 <a class="layui-btn layui-btn-small layui-btn-normal" href="./index.php?type=<?php echo $config['createPage']?>">上一步</a>
-                <button type="submit" class="layui-btn layui-btn-small" lay-submit >下一步</button>
+                <button lay-submit=""  class="layui-btn layui-btn-small" lay-filter="install" >开始安装</button>
             </div>
         </div>
     </form>
 </div>
-<script type="text/javascript" src="style/layui/layui.js"></script>
+<div id="installDialog" style="display: none;">
+    <div id="installDialogContent">
+        <div class="start-install" id="install-desc">
+            开始安装基础数据，安装过程请勿关闭窗口
+        </div>
+        <div>
+            <div class="layui-progress layui-progress-big" lay-filter="syncInstall" lay-showPercent="yes">
+                <div class="layui-progress-bar" lay-percent="0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/static/lib/layuiadmin/layui/layui.js"></script>
 <script>
-layui.use(['form','layer'], function(){
-    var form = layui.form(), layer = layui.layer;
+
+layui.use(['form','layer','jquery','element'], function(){
+    var form = layui.form;
+    var layer = layui.layer;
+    var $ = layui.jquery;
+    var element = layui.element;
+    form.render();
+    element.render();
+
+
 
     //监听提交
-    form.on('submit(formDemo)', function(data){
-        layer.msg(JSON.stringify(data.field));
+    form.on('submit(install)', function (data) {
+        var data = $('form').serialize();
+        var url = getUrlPath();
+
+        window_box = layer.open({
+            type: 1,
+            title: '开始安装',
+            area: ['450px', '305px'], //宽高
+            content: $("#installDialog").html()
+        });
+        $.ajax({
+            type: 'POST',
+            url: url + '?type=step5-1',
+            data: data + '&type=1',
+            success: function (res) {
+                if (!res.status) {
+                    layer.msg(res.msg);
+                    return false;
+                } else {
+                    installBase(res.data.page, res.data.totalPage, data)
+                }
+            },
+            dataType: 'json'
+        });
         return false;
     });
+    //安装基础数据
+    function installBase(page, total, data) {
+        var url = getUrlPath();
+        if (page <= total) {
+            $.ajax({
+                type: 'POST',
+                url: url + '?type=step5-1',
+                data: {page: page, type: 2},
+                success: function (res) {
+                    if (!res.status) {
+                        layer.msg(res.msg);
+                        return false;
+                    } else {
+                        element.progress('syncInstall', res.data.percent + '%');
+                        installBase(res.data.page, res.data.totalPage, data);
+                    }
+                },
+                dataType: 'json'
+            });
+        } else {
+            layer.msg("基础数据安装成功");
+            //添加管理员账号
+            installManage(data);
+        }
+    }
+    //添加管理员账号
+    function installManage(data){
+        var url = getUrlPath();
+        element.progress('syncInstall', '0%');
+        $("#install-desc").html('开始添加管理员账号');
+        $.ajax({
+            type: 'POST',
+            url: url + '?type=step5-1',
+            data: data + '&type=3',
+            success: function (res) {
+                console.log(res);
+                if (!res.status) {
+                    layer.msg(res.msg);
+                    return false;
+                } else {
+                    element.progress('syncInstall',  '100%');
+                    var check = document.getElementById("demo").checked;
+                    if(check){
+                        element.progress('syncInstall',  '0%');
+                        installDemo(res.data.page, res.data.totalPage, data);
+                    }else{
+                        layer.msg("安装成功", {time: 1000}, function () {
+                            window.location.href=url+'?type=step5-1';
+                        })
+                    }
+                }
+            },
+            dataType: 'json'
+        });
+    }
+    //安装演示数据
+    function installDemo(page, total){
+        var url = getUrlPath();
+        if (page <= total) {
+            $.ajax({
+                type: 'POST',
+                url: url + '?type=step5-1',
+                data: {page: page, type: 4},
+                success: function (res) {
+                    if (!res.status) {
+                        layer.msg(res.msg);
+                        return false;
+                    } else {
+                        element.progress('syncInstall', res.data.percent + '%');
+                        installDemo(res.data.page, res.data.totalPage);
+                    }
+                },
+                dataType: 'json'
+            });
+        } else {
+            layer.msg("演示数据安装成功", {time: 1000}, function () {
+                window.location.href=url+'?type=step5-1';
+            })
+        }
+    }
+
+    function getUrlPath()
+    {
+        var domain = window.location.host;
+        var url = document.location.toString();
+        var arrUrl = url.split("//");
+        var start = arrUrl[1].indexOf("/");
+        var relUrl = arrUrl[1].substring(start);
+        if(relUrl.indexOf("?") != -1){
+            relUrl = relUrl.split("?")[0];
+        }
+        return arrUrl[0]+'//'+domain+relUrl;
+    }
 });
 </script>
+<style>
+    .start-install{
+        padding: 20px;
+        text-align: center;
+    }
+    #installDialogContent{
+        padding:20px;;
+    }
+</style>
 </body>
 </html>

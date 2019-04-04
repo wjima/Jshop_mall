@@ -10,13 +10,13 @@
       <!-- 头像昵称 -->
       <view class='top-mid'>
         <open-data class='head-sculpture' type="userAvatarUrl"></open-data>
-        <open-data class='username' type="userNickName"></open-data>
+        <!-- <open-data class='username' type="userNickName"></open-data> -->
         <!-- <image mode='aspectFill' class='head-sculpture' bindtap='chooseAvatar' src='{{avatar}}'></image> -->
-        <!-- <text class='username'>{{nickname}} </text> -->
+        <text class='username'>{{nickname}} </text>
       </view>
        <view class='top-right'>
-        <text class='accumulate-points' wx:if="{{isPoint}}">积分</text>
-        <text class='accumulatepoints-num' wx:if="{{isPoint}}">{{point}}</text>
+        <text class='accumulate-points' wx:if="{{isPoint == 1}}">积分</text>
+        <text class='accumulatepoints-num' wx:if="{{isPoint == 1}}">{{point}}</text>
        </view>
       <!-- <image bindtap='setting' class='user-setting' src='../../image/chilun.png'></image> -->
     </view>
@@ -88,7 +88,7 @@
   </view>
 
   <!-- 积分签到 -->
-  <view class='sign-in content-view' bindtap='myPoint' wx:if="{{isPoint}}">
+  <view class='sign-in content-view' bindtap='myPoint' wx:if="{{isPoint == 1}}">
     <image class='member-icon' src='../../image/signin.png'></image>
     <text class='member-text'>我的积分</text>
   </view>

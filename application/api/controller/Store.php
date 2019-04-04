@@ -25,6 +25,7 @@ class Store extends Api
             'msg' => '获取成功',
             'data' => 2
         ];
+
         $settingModel = new Setting();
         $return['data'] = $settingModel->getValue('store_switch');
         return $return;
@@ -167,7 +168,7 @@ class Store extends Api
     public function getRecommendKeys()
     {
         $recommend_keys = getSetting('recommend_keys');
-        $recommend_keys = explode(',', $recommend_keys);
+        $recommend_keys = explode(' ', $recommend_keys);
         $result = [
             'status' => true,
             'msg' => '获取成功',

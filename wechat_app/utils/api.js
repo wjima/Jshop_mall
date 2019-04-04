@@ -1,5 +1,6 @@
 var config = require('config.js');
 var common = require('common.js');
+var db = require('db.js');
 //需要token才能访问的数组
 var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscollection', 'cart.add', 'cart.del', 'cart.setnums', 'user.saveusership', 'order.create', 'user.goodsbrowsing', 'user.pay', 'payments.getinfo', 'order.getorderlist', 'order.cancel', 'order.getorderstatusnum', 'user.delgoodsbrowsing', 'user.goodscollectionlist', 'coupon.getcoupon', 'coupon.usercoupon', 'order.details', 'order.confirm', 'user.orderevaluate', 'order.aftersalesstatus', 'order.addaftersales', 'order.aftersalesinfo', 'order.aftersaleslist', 'order.sendreship', 'order.iscomment', 'user.getuserdefaultship', 'user.changeavatar', 'user.issign', 'user.sign', 'user.pointlog', 'user.getdefaultbankcard', 'user.getbankcardlist', 'user.getbankcardinfo', 'user.cash', 'user.setdefaultbankcard', 'user.removebankcard', 'user.addbankcard', 'user.cashlist', 'user.balancelist', 'user.recommend', 'user.sharecode', 'user.getusership', 'user.vuesaveusership', 'user.removeship', 'user.setdefship', 'user.getshipdetail', 'user.editship', 'user.getuserpoint', 'store.isclerk', 'store.storeladinglist', 'store.getdefaultstore', 'store.ladingdel', 'store.ladinginfo', 'store.lading', 'coupon.getcouponkey', 'user.myinvite', 'user.activationinvite', 'cart.getnumber', 'user.userpointlog', 'user.getsigninfo'];
 
@@ -7,7 +8,7 @@ var methodToken = ['user.info', 'user.editinfo', 'cart.getlist', 'user.goodscoll
 function api(method,data,callback,show = true){
   //如果是需要登陆的，增加token
   if (methodToken.indexOf(method)>= 0){
-    var userToken = wx.getStorageSync('userToken');
+    var userToken = db.get('userToken');
     if (!userToken){
       common.jumpToLogin();
     }else{
@@ -115,19 +116,14 @@ function error(res,callback,postData){
   }
 }
 // function jumpToLogin(){
-//   var value = wx.getStorageSync('jump_to_login');
+//   var value = db.get('jump_to_login');
 //   if (!value) {
-//     wx.setStorageSync('jump_to_login', true);   //因为可能多个接口同时调用，所以这里要设置个状态位，保证登陆页面只显示一次，此值在登陆页面出去的时候，必须清空
-//     wx.showToast({
-//       title: '请登录...',
-//       icon: 'success',
-//       duration: 2000,
-//       success: function (res) {
-//         wx.navigateTo({
-//           url: '/pages/member/login/login'
-//         });
-//       }
-//     })
+//     db.set('jump_to_login', true);   //因为可能多个接口同时调用，所以这里要设置个状态位，保证登陆页面只显示一次，此值在登陆页面出去的时候，必须清空
+//      common.successToShow('请登录...', function () {
+//          wx.navigateTo({
+//              url: '/pages/member/login/login'
+//          });
+//      });
 //   } 
 // }
 
@@ -149,7 +145,7 @@ function login1(data,callback) {
 }
 function login2(data, callback) {
     //加入邀请码
-    let pid = wx.getStorageSync('invitecode');
+    let pid = db.get('invitecode');
     if (pid) {
         data['pid'] = pid;
     }
@@ -212,20 +208,12 @@ function sms(mobile,code, callback) {
   //       })
   //     } else {
   //       //wx.login成功，但是没有取到code
-  //       wx.showToast({
-  //         title: '用户授权失败wx.login',
-  //         icon: 'warn',
-  //         duration: 2000
-  //       })
+  //       common.errorToBack('用户授权失败wx.login', 0);
   //     }
   //   },
   //   fail: function (res) {
   //     //wx.login的fail
-  //     wx.showToast({
-  //       title: '用户授权失败wx.login',
-  //       icon: 'warn',
-  //       duration: 2000
-  //     })
+  //     common.errorToBack('用户授权失败wx.login', 0);
   //   }
   // });
 //}
@@ -320,7 +308,7 @@ function goodsParameter(data, callback) {
 //商品浏览记录添加接口，此接口有点特殊，登陆状态在这里判断，而不是在基类里判断
 function goodsHistory(data, callback) {
   //如果本地有token，那么就去增加浏览记录，否则，就不增加，极个别情况，登陆状态失效了，可能会跳转到登陆页面，此种情况不考虑
-  var userToken = wx.getStorageSync('userToken');
+  var userToken = db.get('userToken');
   if (userToken) {
     data.token = userToken;
     api('user.addgoodsbrowsing', data, function (res) {
@@ -669,7 +657,7 @@ function recommendList(data, callback) {
 }
 //获取用户邀请码
 function sharecode(callback) {
-  var userToken = wx.getStorageSync('userToken');
+  var userToken = db.get('userToken');
   if (userToken) {
     var data = {
         token: userToken

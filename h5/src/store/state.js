@@ -8,7 +8,14 @@ export const state = {
         cate_style: 3, // 分类页样式
         cate_type: 1, // 分类页类型
         tocash_money_low: 0, // 最低提现金额
-        tocash_money_rate: 0 ,// 提现服务费
-		statistics: '', //统计代码
-    }
+        tocash_money_rate: 0, // 提现服务费
+        statistics: '', //统计代码
+    },
+    // 发票信息
+    invoice: {
+        type: 1,
+        name: '',
+        code: ''
+    },
+    wechatPayShow: false // 微信支付弹窗(仅微信H5支付成功后判断弹窗提示)
 }

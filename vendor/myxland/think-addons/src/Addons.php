@@ -1,27 +1,16 @@
 <?php
 namespace myxland\addons;
 
-use think\Config;
-use think\Container;
 use think\Db;
-use think\facade\View;
-
-
+use think\Controller;
 /**
  * 插件基类
  * Class Addons
  *
  * @package myxland\addons
  */
-abstract class Addons
+abstract class Addons extends Controller
 {
-    /**
-     * 视图实例对象
-     *
-     * @var view
-     * @access protected
-     */
-    private $view = null;
 
     // 当前错误信息
     protected $error;
@@ -49,30 +38,14 @@ abstract class Addons
      */
     public function __construct()
     {
-
-
         // 获取当前插件目录
         $this->addons_path = ADDON_PATH . $this->getName() . DIRECTORY_SEPARATOR;
         // 读取当前插件配置信息
         if (is_file($this->addons_path . 'config.php')) {
             $this->config_file = $this->addons_path . 'config.php';
         }
-        $this->app = Container::get('app');
-        // 初始化视图模型
-        $config = ['view_path' => $this->addons_path];
-
-        // 初始化视图模型
-        $template_config = \config('template.');
-        $config          = array_merge($template_config, $config);
-        $view            = new view();
-        $this->view      = $view::init(
-            $config
-        );
-
         // 控制器初始化
-        if (method_exists($this, 'initialize')) {
-            $this->initialize();
-        }
+        parent::__construct();
     }
 
     /**
@@ -155,49 +128,18 @@ abstract class Addons
      * @return mixed
      * @throws \Exception
      */
-    public function fetch($template = '', $vars = [], $replace = [], $config = [])
+    protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
         if (!is_file($template)) {
             $template = '/' . $template;
         }
         // 关闭模板布局
         $this->view->engine->layout(false);
-        return $this->view->fetch($template, $vars, $replace, $config);
+        $this->view->engine(['view_path'=>  $this->addons_path]);
+        return parent::fetch($template, $vars, $replace, $config);
     }
 
-    /**
-     * 渲染内容输出
-     *
-     * @access public
-     * @param string $content 内容
-     * @param array $vars 模板输出变量
-     * @param array $replace 替换内容
-     * @param array $config 模板参数
-     * @return mixed
-     */
-    public function display($content, $vars = [], $replace = [], $config = [])
-    {
-        // 关闭模板布局
-        $this->view->engine->layout(false);
 
-        echo $this->view->display($content, $vars, $replace, $config);
-    }
-
-    /**
-     * 渲染内容输出
-     *
-     * @access public
-     * @param string $content 内容
-     * @param array $vars 模板输出变量
-     * @return mixed
-     */
-    public function show($content, $vars = [])
-    {
-        // 关闭模板布局
-        $this->view->engine->layout(false);
-
-        echo $this->view->fetch($content, $vars, [], [], true);
-    }
 
     /**
      * 模板变量赋值
@@ -207,9 +149,9 @@ abstract class Addons
      * @param mixed $value 变量的值
      * @return void
      */
-    public function assign($name, $value = '')
+    protected function assign($name, $value = '')
     {
-        $this->view->assign($name, $value);
+       return parent::assign($name, $value);
     }
 
     /**
@@ -248,10 +190,5 @@ abstract class Addons
         header("Content-type: text/html; charset=utf-8");
         echo $msg;return;
     }
-    //todo 临时这么处理，后期调整
-    function __destruct()
-    {
-        $this->view->engine(['view_path'=> '']);
-        // TODO: Implement __destruct() method.
-    }
+
 }

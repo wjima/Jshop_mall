@@ -4,9 +4,11 @@
 <view class="header-input topnav {{scrollTop>50 ? 'topnav' : 'bottomnav'}}">
   <!-- 搜索条 -->
   <!--confirm-type="搜索" bindconfirm="search" value="{{key}}"-->
-  <input class="search-input" placeholder="搜索商品" bindfocus="searchNav">
-    <icon size='15' type='search'></icon> 
-  </input>
+  <view class="search-input" bindtap="searchNav">
+    <icon size='15' type='search'></icon>
+    <text class='search-key'>搜索商品</text>
+  </view>
+
   <!-- 客服按钮 -->
   <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" >
     <image src='../image/img.png'></image>

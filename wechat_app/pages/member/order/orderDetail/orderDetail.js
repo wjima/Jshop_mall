@@ -165,9 +165,7 @@ Page({
       order_ids: e.target.dataset.id
     }
       app.api.cancelOrder(data, function (res) {
-        wx.showToast({
-          title: res.msg
-        });
+        app.common.successToShow(res.msg);
         setTimeout(function(){page.getOrderData(page.data.orderId)},1500);
       });
   },

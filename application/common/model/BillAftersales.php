@@ -758,4 +758,18 @@ class BillAftersales extends Common
         }
         return $return_data;
     }
+
+
+    /**
+     * 统计用户的售后数量
+     * @param $user_id
+     * @param $status
+     * @return float|string
+     */
+    public function getUserAfterSalesNum($user_id, $status)
+    {
+        $where[] = ['user_id', 'eq', $user_id];
+        $where[] = ['status', 'in', $status];
+        return $this->where($where)->count();
+    }
 }

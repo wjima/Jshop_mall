@@ -156,7 +156,7 @@ class Form extends common
             $goodsModel = new Goods();
             foreach ($items as $key => $val) {
                 if ($val['type'] == 'goods') {
-                    $detial               = $goodsModel->getGoodsDetial($val['value']);
+                    $detial               = $goodsModel->getGoodsDetial($val['value'],'id,bn,name,price,costprice,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,freeze_stock,weight,spes_desc');
                     $items[$key]['goods'] = $detial['data'];
                 } elseif ($val['type'] == 'radio') {
                     $items[$key]['radio_value'] = explode(' ', $val['value']);

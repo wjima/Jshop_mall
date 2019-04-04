@@ -9,6 +9,7 @@
 
 namespace app\common\model;
 
+use think\Exception;
 use think\model\concern\SoftDelete;
 use app\common\model\GoodsImages;
 use app\common\model\UserToken;
@@ -16,6 +17,7 @@ use app\common\model\GoodsCollection;
 use app\common\model\Products;
 use app\common\model\GoodsCat;
 use app\common\model\Setting;
+use think\Db;
 
 
 /**
@@ -93,8 +95,8 @@ class Goods extends Common
             $goods_stocks_warn = $SettingModel->getValue('goods_stocks_warn');
             $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
             $productModel = new Products();
-            $baseFilter[] = ['(stock - freeze_stock)', 'lt', $goods_stocks_warn];
-            $goodsIds    = $productModel->field('goods_id')->where($baseFilter)->group('goods_id')->select();
+            //$baseFilter[] = ['(stock - freeze_stock)', 'lt', $goods_stocks_warn];
+            $goodsIds    = $productModel->field('goods_id')->where("(stock - freeze_stock) < ".$goods_stocks_warn)->group('goods_id')->select();
             if(!$goodsIds->isEmpty()){
                 $goodsIds = array_column($goodsIds->toArray(),'goods_id');
                 $where[] = ['id', 'in', $goodsIds];
@@ -115,18 +117,14 @@ class Goods extends Common
         if(isset($post['last_cat_id'])&& $post['last_cat_id'] != ""){
             $where[] = ['goods_cat_id', 'eq', $post['last_cat_id']];
         }
-
-        if(isset($post['goods_cat_id'])&& $post['goods_cat_id'] != ""&&!$post['last_cat_id']){
-
-            if($post['goods_cat_id']){
+        if (isset($post['goods_cat_id']) && $post['goods_cat_id'] != "" && !$post['last_cat_id']) {//取出来所有子分类进行查询
+            if ($post['goods_cat_id']) {
                 $goodsCatModel = new GoodsCat();
-                $catIds=[];
-                $childCats = $goodsCatModel->field('id')->where(['parent_id'=>$post['goods_cat_id']])->select();
-                if(!$childCats->isEmpty()) {
-                    $catIds = array_column($childCats->toArray(), 'id');
-                }
-                $catIds[] = $post['goods_cat_id'];
-                $whereOr[] = ['goods_cat_id', 'in', $catIds];
+                $catIds        = [];
+                $childCats     = $goodsCatModel->getCatByParentId($post['goods_cat_id']);
+                $catIds        = array_column($childCats->toArray(), 'id');
+                $catIds[]      = $post['goods_cat_id'];
+                $where[]       = ['goods_cat_id', 'in', $catIds];
             }
         }
 
@@ -223,6 +221,7 @@ class Goods extends Common
             ->count();
 
         if(!$list->isEmpty()){
+            $gcModel = new GoodsComment();
             foreach($list as $key=>$value)
             {
                 $goods = $this->getGoodsDetial($value['id'],'*');
@@ -232,6 +231,7 @@ class Goods extends Common
 //                $image_url = _sImage($value['image_id']);
 //                $list[$key]['image_url'] = $image_url;
 //                $list[$key]['label_ids'] = getLabel($value['label_ids']);
+                $list[$key]['comments_count'] = $gcModel->getCommentCount($value['id']);
             }
 
             $result['data'] = $list->toArray();
@@ -255,14 +255,14 @@ class Goods extends Common
     public function getGoodsDetial($gid,$fields = '*',$token = '')
     {
 
-        $result = [
+        $result        = [
             'status' => true,
-            'data'   => [ ],
+            'data'   => [],
             'msg'    => ''
         ];
         $productsModel = new Products();
-        $preModel = '';
-        if($fields=='*'){
+        $preModel      = '';
+        if ($fields == '*') {
             $preModel = 'brand,goodsCat';
         } else {
 
@@ -275,67 +275,71 @@ class Goods extends Common
             }
             $preModel = substr($preModel, 0, -1);
         }
-        $list = $this::with($preModel)->field($fields)->where([ 'id' => $gid ])->find();
-        if($list) {
+        $list = $this::with($preModel)->field($fields)->where(['id' => $gid])->find();
+        if ($list) {
             //$list = $list->toArray();
             //$list['products'] = $this->products($list['id']);
 
-            if(isset($list['image_id'])){
+            if (isset($list['image_id'])) {
                 $image_url         = _sImage($list['image_id']);
                 $list['image_url'] = $image_url;
             }
 //            if($list['products']){
 //                $list['default']   = $list['products'][0];
 //            }
-            if(isset($list['label_ids'])){
+            if (isset($list['label_ids'])) {
                 $list['label_ids'] = getLabel($list['label_ids']);
-            }else{
+            } else {
                 $list['label_ids'] = [];
             }
             //取默认货品
-            $default_product = $productsModel->where(['goods_id'=>$gid,'is_defalut'=>$productsModel::DEFALUT_YES])->find();
-            if(!$default_product){
+            $default_product = $productsModel->where(['goods_id' => $gid, 'is_defalut' => $productsModel::DEFALUT_YES])->find();
+            if (!$default_product) {
                 return error_code(10000);
             }
-            $user_id = getUserIdByToken($token);//获取user_id
-            $product_info = $productsModel->getProductInfo($default_product['id'],true,$user_id);
-            if(!$product_info['status']){
+            $user_id      = getUserIdByToken($token);//获取user_id
+            $product_info = $productsModel->getProductInfo($default_product['id'], true, $user_id);
+            if (!$product_info['status']) {
                 return $product_info;
             }
             $list['product'] = $product_info['data'];
-            $list['price'] = $list['product']['price'];
-            if($list['spes_desc']) {
+            $list['price']   = $list['product']['price'];
+            if ($list['spes_desc']) {
                 $list['spes_desc'] = unserialize($list['spes_desc']);
             }
             //取出图片集
             $imagesModel = new GoodsImages();
-            $images = $imagesModel->where(['goods_id'=>$list['id']])->order('sort asc')->select();
-            $album=[];
-            if(isset($list['image_url'])){
+            $images      = $imagesModel->where(['goods_id' => $list['id']])->order('sort asc')->select();
+            $album       = [];
+            if (isset($list['image_url'])) {
                 $album[] = $list['image_url'];
             }
-            if(!$images->isEmpty()){
-                foreach($images as $v){
+            if (!$images->isEmpty()) {
+                foreach ($images as $v) {
                     $album[] = _sImage($v['image_id']);
                 }
             }
-            $list['album']=$album;
+            $list['album'] = $album;
 
             //取出销量
-            $orderItem = new OrderItems();
-            $count = $orderItem->where(['goods_id'=>$gid])->sum('nums');
+            $orderItem         = new OrderItems();
+            $count             = $orderItem->where(['goods_id' => $gid])->sum('nums');
             $list['buy_count'] = $count;
 
             //获取当前登录是否收藏
 
-            $list['isfav']=$this->getFav($list['id'],$user_id);
+            $list['isfav']  = $this->getFav($list['id'], $user_id);
             $result['data'] = $list;
 
             //图片处理
-            $list['intro'] = str_replace("<img","<img style='max-width: 100%'", $list['intro'] );
+            if (isset($list['intro'])) {
+                $list['intro'] = clearHtml($list['intro'], ['width', 'height']);
+                $list['intro'] = str_replace("<img", "<img style='max-width: 100%'", $list['intro']);
+            }
         }
         return $result;
     }
+
 
     /**
      * 获取默认规格
@@ -382,7 +386,6 @@ class Goods extends Common
                     $products[$key] = [];
                 }
             }
-
         }
         return $products;
     }
@@ -510,7 +513,7 @@ class Goods extends Common
         $productModel = new Products();
         $where        = [];
         $where[]      = ['id', 'eq', $product_id];
-        $where[]      = ['(stock-freeze_stock)-'.$num, '>', 0];
+        $where[]      = [0, 'exp', Db::raw('(stock-freeze_stock)-' . $num . ' >0')];
         switch ($type) {
             case 'order': //下单
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
@@ -921,12 +924,12 @@ class Goods extends Common
     public function staticGoods($baseFilter=[]){
 
         $total = $this->where($baseFilter)->count('id');
-        $baseFilter['marketable']=self::MARKETABLE_UP;
+        $baseFilter[]=['marketable', 'eq',self::MARKETABLE_UP];
 
 
         $totalMarketableUp = $this->where($baseFilter)->count('id');
-        $baseFilter['marketable']=self::MARKETABLE_DOWN;
-        $totalMarketableDown = $this->where($baseFilter)->count('id');
+        $baseFilter1[]=['marketable', 'eq',self::MARKETABLE_DOWN];
+        $totalMarketableDown = $this->where($baseFilter1)->count('id');
         //警戒库存
         $SettingModel = new Setting();
 
@@ -934,8 +937,7 @@ class Goods extends Common
         $goods_stocks_warn = $goods_stocks_warn ? $goods_stocks_warn : '10';
         unset($baseFilter['marketable']);
         $productModel = new Products();
-        $baseFilter[] = ['(stock - freeze_stock)', 'lt', $goods_stocks_warn];
-        $totalWarn    = $productModel->where($baseFilter)->group('goods_id')->count('id');
+        $totalWarn    = $productModel->where("(stock - freeze_stock) < ".$goods_stocks_warn)->group('goods_id')->count('id');
         return [
             'totalGoods'=>$total,
             'totalMarketableUp'=>$totalMarketableUp,

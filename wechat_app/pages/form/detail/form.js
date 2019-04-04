@@ -12,7 +12,6 @@ Page({
     interval: 3000, //商品轮播图切换间隔
     duration: 500, //商品轮播图切换动画时间
     slideImg: [], //幻灯片广告数据
-    num: 0, // 商品数量input默认是1
     minusStatus: 'disabled', // 使用data数据对象设置样式名
     gotoType: 1,
     animationData: {},
@@ -21,7 +20,7 @@ Page({
     _vsi: 0,
     submitId: 0, //提交表单id
     formMoney: 0.00, //表单金额
-    showcoupon: false,
+    showcoupon: false,//是否显示付款方式
     formType: 'nopay', //是否需要支付
     region: ['河南省', '郑州市', '中原区'], //开户行地区
     areaId: 410102, //地区id
@@ -46,7 +45,7 @@ Page({
       return false;
     }
     var that = this;
-    var userToken = wx.getStorageSync('userToken');
+    var userToken = app.db.get('userToken');
 
     app.api.getFormDetial({
       'id': id,
@@ -373,7 +372,7 @@ Page({
       });
       data = Object.assign(data, tempArray);
     }
-    var userToken = wx.getStorageSync('userToken');
+    var userToken = app.db.get('userToken');
     app.api.addSubmitForm({
       data: data,
       'token': userToken,
@@ -419,7 +418,7 @@ Page({
           paymentType: res.data
         });
       } else {
-        app.common.errorToBack('获取支付方式失败');
+        app.common.errorToBack('获取支付方式失败', 0);
       }
     });
   },
@@ -453,24 +452,15 @@ Page({
                 url: '../other/paysuccess?payment_id=' + res.data.payment_id
               });
             } else if (res.errMsg == 'requestPayment:cancel') {
-              wx.showToast({
-                icon: 'none',
-                title: '支付已取消'
-              });
+                app.common.errorToBack('支付已取消', 0);
             }
           },
           'fail': function (e) {
-            wx.showToast({
-              icon: 'none',
-              title: '支付失败请重新支付'
-            });
+              app.common.errorToBack('支付失败请重新支付', 0);
           }
         });
       } else {
-        wx.showToast({
-          icon: 'none',
-          title: '支付订单出现问题，请返回重新操作'
-        });
+          app.common.errorToBack('支付订单出现问题，请返回重新操作', 0);
       }
     });
   },
@@ -543,18 +533,13 @@ Page({
 
   //检查是否登录
   checkLogin() {
-    var userToken = wx.getStorageSync('userToken');
+    var userToken = app.db.get('userToken');
     if (!userToken) {
-      wx.showToast({
-        title: '请登录...',
-        icon: 'success',
-        duration: 2000,
-        success: function (res) {
-          wx.navigateTo({
-            url: '../../member/login/level1/level1'
-          });
-        }
-      })
+        app.common.successToShow('请登录...', function () {
+            wx.navigateTo({
+                url: '../../member/login/level1/level1'
+            });
+        });
     }
   },
 
@@ -821,9 +806,7 @@ Page({
       nums: that.data.goodsNums
     }
     app.api.goodsAddCart(data, function(res) {
-      wx.showToast({
-        title: res.msg
-      });
+      app.common.successToShow(res.msg);
     });*/
   },
 

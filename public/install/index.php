@@ -3,7 +3,7 @@ header('Content-type:text/html;charset=utf-8');
 session_start();
 //配置信息
 $config = array(
-    'version'     => 'v1.1.2',           //版本号
+    'version'     => 'v2.0',           //版本号
     'indexPage'   => 'step1',         //用户协议
     'checkPage'   => 'step2',         //环境检测
     'createPage'  => 'step3',         //数据库配置
@@ -18,6 +18,7 @@ $config = array(
     'account'     => 'admin',         //默认账号
     'password'    => '123456',         //默认密码
     //'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
+    'limit'       =>'50',   //安装时多少条数据一次翻页
 );
 
 
@@ -34,19 +35,21 @@ $db_config = array(
 //错误提示信息
 $errorTitle = '出错了';
 $errorMsg   = '';
-//检测是否已安装
-if (file_exists('./install.lock')||file_exists(dirname(dirname(dirname(__FILE__))).'/config/install.lock')) {
-    $errorTitle = '系统已安装';
-    $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或config/install.lock 文件';
-    die(require $config['errorPage'] . '.html');
-}
-
 //引入页面
 $get = @$_GET['type'] ? $_GET['type'] : $config['indexPage'];
+//检测是否已安装
+if($get!='step5-1'){
+    if (file_exists('./install.lock')||file_exists(dirname(dirname(dirname(__FILE__))).'/config/install.lock')) {
+        $errorTitle = '系统已安装';
+        $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或config/install.lock 文件';
+        die(require $config['errorPage'] . '.html');
+    }
+}
 
 //数据库配置
 if ($get == $config['importPage']) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
         $link  = @new mysqli("{$_POST['DB_HOST']}:{$_POST['DB_PORT']}", $_POST['DB_USER'], $_POST['DB_PASS']);
         $error = $link->connect_error;
         if (!is_null($error)) {
@@ -70,73 +73,169 @@ if ($get == $config['importPage']) {
 //开始安装
 if ($get == $config['endPage']) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $return = [
+            'status'=>false,
+            'msg'=>'安装失败',
+            'data'=>[]
+        ];
 
-        //连接数据库
-        $db = $_SESSION['db'];
 
-        $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
-        //获取错误信息
-        $error = $link->connect_error;
-        if (!is_null($error)) {
-            $errorMsg = addslashes($error);
-            die(require $config['errorPage'] . '.html');
-        }
-        //设置字符集
-        $link->query("SET NAMES 'utf8'");
-        $link->server_info > 5.0 or die("<script>alert('请将您的mysql升级到5.0以上');history.go(-1)</script>");
-        //创建数据库并选中
-        if (!$link->select_db($db['DB_NAME'])) {
-            $create_sql = 'CREATE DATABASE IF NOT EXISTS ' . $db['DB_NAME'] . ' DEFAULT CHARACTER SET utf8;';
-            if (!$link->query($create_sql)) {
-                $errorMsg = '创建数据库失败';
-                die(require $config['errorPage'] . '.html');
+        if($_POST['type']=='1'){
+            //连接数据库
+            $db = $_SESSION['db'];
+            $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
+            //获取错误信息
+            $error = $link->connect_error;
+            if (!is_null($error)) {
+                $errorMsg = addslashes($error);
+                $return['msg'] = $errorMsg;
+                echoJson($return);
+                //die(require $config['errorPage'] . '.html');
             }
+            //设置字符集
+            $link->query("SET NAMES 'utf8'");
+            if($link->server_info < 5.5){
+                $return['msg'] = '请将您的mysql升级到5.0以上';
+                echoJson($return);
+            }
+            //创建数据库并选中
+            if (!$link->select_db($db['DB_NAME'])) {
+                $create_sql = 'CREATE DATABASE IF NOT EXISTS ' . $db['DB_NAME'] . ' DEFAULT CHARACTER SET utf8;';
+                if (!$link->query($create_sql)) {
+                    $return['msg'] = '创建数据库失败';
+                    echoJson($return);
+                }
+                $link->select_db($db['DB_NAME']);
+            }
+            //导入sql数据并创建表
+            if (!file_exists($sqlPath = $config['sqlDir'] . $config['sqlName'] . '.sql')) {
+                $return['msg'] = '文件丢失:' . $sqlPath;
+                echoJson($return);
+            }
+            // 获取数据
+            $sql_str = file_get_contents($sqlPath);
+            $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
+            $total_page = ceil(count($sql_array)/$config['limit']);
+            $return['data']['page']=1;
+            $return['data']['totalPage']=$total_page;
+            $return['status'] = true;
+            $return['msg'] = '安装中';
+            $link->close();
+            echoJson($return);
+
+        }elseif($_POST['type']=='2'){
+            $db = $_SESSION['db'];
+            $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
+            //设置字符集
+            $link->query("SET NAMES 'utf8'");
             $link->select_db($db['DB_NAME']);
-        }
-
-        //导入sql数据并创建表
-        if (!file_exists($sqlPath = $config['sqlDir'] . $config['sqlName'] . '.sql')) {
-            $errorMsg = '文件丢失:' . $sqlPath;
-            die(require $config['errorPage'] . '.html');
-        }
-
-        // 获取数据
-        $sql_str = file_get_contents($sqlPath);
-
-        //修改表前缀
-        $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
-
-        //循环query
-        foreach ($sql_array as $k => $v) {
-            if (!empty($v)) {
-                $link->query($v);
+            // 获取数据
+            $sqlPath = $config['sqlDir'] . $config['sqlName'] . '.sql';
+            $sql_str = file_get_contents($sqlPath);
+            //修改表前缀
+            $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
+            $start = ($_POST['page']-1)*$config['limit'];
+            $end = $start+$config['limit'];
+			
+            //循环query
+            $total_page = ceil(count($sql_array)/$config['limit']);
+            if($_POST['page']<=$total_page){
+                foreach ($sql_array as $k => $v) {
+                    if($k>=$start && $k<$end){
+                        if (!empty($v)) {
+                            $link->query($v);
+                        }
+                    }
+                }
             }
-        }
+            $return['status'] = true;
+            $return['msg'] = '安装中';
+            $return['data']['page']      = $_POST['page'] + 1;
+            $return['data']['totalPage'] = $total_page;
+            $return['data']['percent']   = sprintf("%.2f", ($_POST['page'] / $total_page) * 100);
+            $link->close();
+            echoJson($return);
+        }elseif($_POST['type']=='3'){//插入默认管理员账号
 
-        //插入数据库默认账号密码
-        $account  = $_POST['admin_account'];
-        $time     = time();
-        $password = md5(md5($_POST['admin_password']) . $time);
+            $_SESSION['admin_account'] = $_POST['admin_account'];//账号
+            $_SESSION['admin_password'] = $_POST['admin_password'];//密码
 
-        $add_user_sql = "INSERT INTO `" . $db['DB_PREFIX'] . "manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES (13, '" . $account . "', '" . $password . "', '', NULL, NULL, " . $time . ", " . $time . ", 1);";
-        $link->query($add_user_sql);
+            $db = $_SESSION['db'];
+            $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
+            //设置字符集
+            $link->query("SET NAMES 'utf8'");
+            $link->select_db($db['DB_NAME']);
+            //插入数据库默认账号密码
+            $account  = $_POST['admin_account'];
+            $time     = time();
+            $password = md5(md5($_POST['admin_password']) . $time);
+            $add_user_sql = "INSERT INTO `" . $db['DB_PREFIX'] . "manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES (13, '" . $account . "', '" . $password . "', '', NULL, NULL, " . $time . ", " . $time . ", 1);";
+            $link->query($add_user_sql);
 
-        //判断是否添加演示数据
-        if (isset($_POST['demo']) && $_POST['demo'] == 'on') {
+            $return['data']['page']=1;
+            $return['data']['totalPage']=1000;//临时给一个随便默认值
+            $return['status'] = true;
+            $return['msg'] = '安装中';
+            $link->close();
+            doWrite($config);
+            echoJson($return);
+
+        }elseif($_POST['type']=='4'){//安装演示数据
+            $db = $_SESSION['db'];
+            $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
+            //设置字符集
+            $link->query("SET NAMES 'utf8'");
+            $link->select_db($db['DB_NAME']);
+            //判断是否添加演示数据
             $demoPath = $config['sqlDir'] . $config['demoData'] . '.sql';
             $demo_sql = file_get_contents($demoPath);
             //修改表前缀
             $demo_sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $demo_sql));
+            $total_page = ceil(count($demo_sql_array)/$config['limit']);
+            $start = ($_POST['page']-1)*$config['limit'];
+            $end = $start+$config['limit'];
             //循环query
-            foreach ($demo_sql_array as $k => $v) {
-                if (!empty($v)) {
-                    $link->query($v);
+            if($_POST['page']<=$total_page){
+                foreach ($demo_sql_array as $k => $v) {
+                    if($k>=$start && $k<$end){
+                        if (!empty($v)) {
+                            $link->query($v);
+                        }
+                    }
                 }
+                $return['status'] = true;
+                $return['msg'] = '安装中';
+                $return['data']['page']      = $_POST['page'] + 1;
+                $return['data']['totalPage'] = $total_page;
+                $return['data']['percent']   = sprintf("%.2f", ($_POST['page'] / $total_page) * 100);
+                $link->close();
+                echoJson($return);
+            }else{
+                $return['status'] = true;
+                $return['msg'] = '安装中';
+                $return['data']['page']      = $_POST['page'] + 1;
+                $return['data']['totalPage'] = $total_page;
+                $return['data']['percent']   = sprintf("%.2f", ($_POST['page'] / $total_page) * 100);
+                echoJson($return);
             }
-
         }
-        $link->close();
-        $db_str = <<<php
+    }
+}
+
+//判断是否有该页面
+if(file_exists($url = $get . '.html'))
+{
+    require $url;
+}
+else
+{
+    $errorMsg = '没有该安装页面:' . $url;
+    die(require $config['errorPage'].'.html');
+}
+//写入文件
+function doWrite($config){
+    $db = $_SESSION['db'];
+    $db_str = <<<php
 <?php
 // +----------------------------------------------------------------------
 // | ThinkPHP [ WE CAN DO IT JUST THINK ]
@@ -193,33 +292,19 @@ return [
     'query'           => '\\think\\db\\Query',
 ];
 php;
-        //数据库连接配置文件路径
-        if (file_exists($config['databaseUrl'])) {
-            //删除原配置文件
-            unlink($config['databaseUrl']);
-        }
-        //创建数据库链接配置文件
-        file_put_contents($config['databaseUrl'], $db_str);
-
-        //配置H5的host
-        /*$host_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'];
-        $h5config = <<<h5
-window.host = '{$host_url}';
-window.entId = '';
-h5;
-        file_put_contents($config['h5ConfigUrl'], $h5config);*/
-
-        @touch(dirname(dirname(dirname(__FILE__))).'/config/install.lock');
+    //数据库连接配置文件路径
+    if (file_exists($config['databaseUrl'])) {
+        //删除原配置文件
+        unlink($config['databaseUrl']);
     }
+    //创建数据库链接配置文件
+    file_put_contents($config['databaseUrl'], $db_str);
+
+    @touch(dirname(dirname(dirname(__FILE__))).'/config/install.lock');
 }
 
-//判断是否有该页面
-if(file_exists($url = $get . '.html'))
+
+function echoJson($data)
 {
-    require $url;
-}
-else
-{
-    $errorMsg = '没有该安装页面:' . $url;
-    die(require $config['errorPage'].'.html');
+    echo json_encode($data,true);die();
 }

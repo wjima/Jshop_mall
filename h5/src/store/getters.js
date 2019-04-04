@@ -9,4 +9,5 @@ export const getters = {
     tocashMoneyLow: state => state.config.tocash_money_low,
     tocashMoneyRate: state => state.config.tocash_money_rate,
 	statistics: state => state.config.statistics,
+    invoice: state => state.invoice
 }

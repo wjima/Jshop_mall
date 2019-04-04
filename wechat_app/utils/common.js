@@ -1,3 +1,6 @@
+var db = require('db.js');
+var config = require('config.js');
+
 //把obj对象里的值覆盖到newobj里面
 function deepCopy(newobj,obj) {
   if (typeof obj != 'object') {
@@ -16,12 +19,12 @@ function deepCopy(newobj,obj) {
 //跳转到登陆页面
 function jumpToLogin() {
   var now_time = Date.parse(new Date());
-  var value = wx.getStorageSync('jump_to_login');
+  var value = db.get('jump_to_login');
   if(!value){
     value=0;
   }
   if((now_time - value)> 3000 ){
-    wx.setStorageSync('jump_to_login', now_time); 
+    db.set('jump_to_login', now_time); 
     wx.showToast({
       title: '请登录...',
       icon: 'success',
@@ -40,7 +43,7 @@ function jumpToLogin() {
 function errorToBack(msg = '出错了，请重试',delta=1){
   wx.showToast({
     title: msg,
-    icon: 'success',
+    icon: 'warn',
     duration: 2000,
   });
   if(delta > 0){
@@ -51,6 +54,7 @@ function errorToBack(msg = '出错了，请重试',delta=1){
     }, 1000);
   }
 }
+
 //操作成功后，的提示信息
 function successToShow(msg='保存成功', callback=function(){}){
   wx.showToast({
@@ -63,7 +67,6 @@ function successToShow(msg='保存成功', callback=function(){}){
   }, 1500);
 }
 
-
 //操作失败的提示信息
 function errorToShow(msg = '操作失败', callback = function () { }) {
   wx.showToast({
@@ -75,7 +78,6 @@ function errorToShow(msg = '操作失败', callback = function () { }) {
     callback();
   }, 1500);
 }
-
 
 //时间戳转时间格式
 function timeToDate(date) {
@@ -127,40 +129,41 @@ function formatMoney(number, places, symbol, thousand, decimal) {
     j = (j = i.length) > 3 ? j % 3 : 0;
   return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
 }
+
 function throttle(fn, context, delay) {
   clearTimeout(fn.timeoutId);
   fn.timeoutId = setTimeout(function () {
     fn.call(context);
   }, delay);
 }
+
 //团购/秒杀列表倒计时
 function groupCountDown(that) {
   var group = that.data.group;
-    var nowTime = new Date().getTime();
-    for (var i = 0; i < group.length; i++){
-      var startTime = group[i].stime * 1000 || [];
-      if (startTime - nowTime>0){
-        group[i].lasttime = '即将开始';
-      }else{
-        var endTime = group[i].etime * 1000 || [];
-        var total_micro_second = endTime - nowTime || [];
-        if (total_micro_second <= 0) {
-          group[i].lasttime = '已经结束';
-        } else {
-          group[i].lasttime = dateformat(total_micro_second)
-        }
+  var nowTime = new Date().getTime();
+  for (var i = 0; i < group.length; i++){
+    var startTime = group[i].stime * 1000 || [];
+    if (startTime - nowTime>0){
+      group[i].lasttime = '即将开始';
+    }else{
+      var endTime = group[i].etime * 1000 || [];
+      var total_micro_second = endTime - nowTime || [];
+      if (total_micro_second <= 0) {
+        group[i].lasttime = '已经结束';
+      } else {
+        group[i].lasttime = dateformat(total_micro_second)
       }
     }
-    
-    // 渲染倒计时时钟
-    that.setData({
-      group: group
-    });
-    setTimeout(function () {
-      total_micro_second -= 1000;
-      groupCountDown(that);
-    }, 1000)
   }
+  // 渲染倒计时时钟
+  that.setData({
+    group: group
+  });
+  setTimeout(function () {
+    total_micro_second -= 1000;
+    groupCountDown(that);
+  }, 1000)
+}
 
 //秒杀列表倒计时
 function seckillCountDown(that) {
@@ -206,21 +209,22 @@ function groupDetailCountDown(that) {
     groupDetailCountDown(that);
   }, 1000)
 }
- // 时间格式化输出，如11:03 25:19 每1s都会调用一次
- function dateformat(micro_second) {
-    var time = {};
+
+// 时间格式化输出，如11:03 25:19 每1s都会调用一次
+function dateformat(micro_second) {
+    var time = {};
     // 总秒数
     var second = Math.floor(micro_second / 1000);
-    // 天数
+      // 天数
     time.day = PrefixInteger(Math.floor(second / 3600 / 24),2);
-    // 小时
+      // 小时
     time.hour = PrefixInteger(Math.floor(second / 3600 % 24),2);
-    // 分钟
+      // 分钟
     time.minute = PrefixInteger(Math.floor(second / 60 % 60),2);
-    // 秒
+      // 秒
     time.second = PrefixInteger(Math.floor(second % 60),2);
     return time;
- }
+}
 
 //不足位数前面补0
 function PrefixInteger(num, length) {
@@ -251,6 +255,30 @@ function isInArray(arr, value) {
   return false;
 }
 
+//获取jshop配置
+function getJshopConf() {
+    let line_conf = db.get('config');
+    if (line_conf) {
+        config = this.deepCopy(config, line_conf);
+    }
+    //取最新的店铺配置信息
+    wx.request({
+        url: config.api_url + 'api/common/jshopconf',//未开启伪静态时，请把api改成index.php/api
+        data: {},
+        method: 'POST',
+        success: function (res) {
+            if (res.statusCode == 200) {
+                db.set('config', res.data)
+                config = deepCopy(config, res.data);
+            }
+        },
+        fail: function (res) {
+        },
+        complete: function (res) {
+        }
+    });
+}
+
 module.exports = {
   deepCopy:deepCopy,
   jumpToLogin: jumpToLogin,
@@ -265,5 +293,6 @@ module.exports = {
   errorToShow: errorToShow,
   time2date: time2date,
   isPhoneNumber: isPhoneNumber,
-  isInArray: isInArray
+  isInArray: isInArray,
+  getJshopConf: getJshopConf
 }

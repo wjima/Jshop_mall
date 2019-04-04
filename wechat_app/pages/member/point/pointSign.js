@@ -175,22 +175,13 @@ Page({
         });
         app.api.sign(function (e) {
             if (e.status) {
-                wx.showToast({
-                    title: '签到成功，获得'+e.data+'个积分奖励',
-                    icon: 'none',
-                    duration: 1000,
-                    complete: function () {
-                        setTimeout(function () {
-                            page.getSignInfo();
-                        }, 1000);
-                    }
+                app.common.successToShow('签到成功，获得' + e.data + '个积分奖励', function () {
+                    setTimeout(function () {
+                        page.getSignInfo();
+                    }, 1000);
                 });
             } else {
-                wx.showToast({
-                    title: e.msg,
-                    icon: 'none',
-                    duration: 1000
-                });
+                app.common.errorToBack(e.msg, 0);
             }
         });
     }

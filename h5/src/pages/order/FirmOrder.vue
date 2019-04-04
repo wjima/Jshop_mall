@@ -65,9 +65,10 @@
         ></ordercell>
         <div class="invoice-item">
             <yd-cell-group>
-                <yd-cell-item arrow type="link">
+                <yd-cell-item arrow>
                     <span slot="left">发票</span>
-                    <span slot="right">本次不开具发票，继续下单</span>
+                    <span slot="right" @click="toInvoice" v-if="invoice.type != 1 && invoice.name">{{invoice.name}}</span>
+                    <span slot="right" @click="toInvoice" v-else>{{tax_name}}</span>
                 </yd-cell-item>
             </yd-cell-group>
         </div>
@@ -88,7 +89,7 @@ import ordercell from '../../components/OrderCell.vue'
 import orderinput from '../../components/OrderInput.vue'
 import orderfooter from '../../components/OrderFooter.vue'
 import openstore from '../../components/OpenStore'
-
+import {mapGetters} from 'vuex'
 export default {
     components: {
         orderadd, orderlist, ordercell, orderinput, orderfooter, openstore
@@ -130,7 +131,10 @@ export default {
             usable_point: 0, // 可抵扣积分
             point_money: 0, // 积分抵扣的金额
             use_point: false, // 是否使用积分
-            receiptType: 1 // 1快递配送 2门店自提
+            receiptType: 1, // 1快递配送 2门店自提
+            tax_type: 1,
+            tax_name: '本次不开具发票，继续下单',
+            tax_code: ''
         }
     },
     mounted () {
@@ -146,7 +150,10 @@ export default {
                 this.getDefaultStore()
             }
             return status
-        }
+        },
+        ...mapGetters([
+            'invoice'
+        ])
     },
     methods: {
         // 获取默认门店
@@ -282,6 +289,11 @@ export default {
                 data['lading_name'] = this.ladingName
                 data['lading_mobile'] = this.ladingMobile
             }
+            // 发票信息
+            data['tax_type'] = this.invoice.type
+            data['tax_name'] = this.invoice.name
+            data['tax_code'] = this.invoice.code
+
             this.$api.createOrder(data, res => {
                 if (res.status) {
                     this.$router.replace({path: '/cashierdesk', query: {order_id: res.data.order_id}})
@@ -367,6 +379,10 @@ export default {
         },
         isUsePoint (status) {
             this.use_point = status
+        },
+        // 跳转发票页面
+        toInvoice () {
+            this.$router.push({path: '/invoice'})
         }
     },
     watch: {

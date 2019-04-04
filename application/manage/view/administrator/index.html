@@ -26,10 +26,10 @@
                 {field:'mobile',title:'手机号码'},
                 {field:'nickname',title:'昵称'},
                 {field:'role_name',title:'角色'},
-                {field: 'operating', title: '操作', width:250, align: 'center', fixed: 'right',templet:function(data){
+                {field: 'operating', title: '操作', width:250, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
-                    html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-danger" data-id="' + data.id + '">删除</a>';
                     return html;
                 }},
             ]]

@@ -86,7 +86,7 @@
             url: "{:url('billReship/index')}?_ajax=1",
             id:'billReship',
             cols: [[
-                {type:'checkbox', fixed: 'left'},
+                {type:'checkbox'},
                 {field:'reship_id', width:140, sort: true,title:'退货单号'},
                 {field:'order_id',width:140,title:'订单号'},
                 {field:'user_id', width:150,minWidth: 50,title:'用户'},
@@ -95,7 +95,7 @@
                 {field:'logi_no',title:'物流单号'},
                 {field:'ctime',width:170,title:'创建时间'},
                 {field:'utime',width:170,title:'更新时间'},
-                {field: 'operating', title: '操作', width:200, align: 'center', fixed: 'right',templet:function(data){
+                {field: 'operating', title: '操作', width:200, align: 'center', templet:function(data){
                     var html = '';
                     html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
                     if(data.status === 2){

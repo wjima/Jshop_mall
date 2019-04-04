@@ -264,6 +264,45 @@ class Carousel extends Common
 
 
     /**
+     * 获取多个广告位数据
+     * @param $codes
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getCarouselLists($codes)
+    {
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+
+        $field = 'id,position_id,code,name,img,type,val,sort';
+        $where[] = ['code', 'in', $codes];
+
+        $list = $this
+            ->field($field)
+            ->where($where)
+            ->order('sort ASC')
+            ->select();
+
+        $newList = [];
+        if(!$list->isEmpty())
+        {
+            foreach($list as $k => &$v)
+            {
+                $v['img'] = _sImage($v['img']);
+                $newList[$v['code']][] = $v;
+            }
+        }
+        $result['data']['list'] = $newList;
+        return $result;
+    }
+
+
+    /**
      *  关联广告位表
      * @return \think\model\relation\HasOne
      */

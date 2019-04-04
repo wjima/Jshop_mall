@@ -4,7 +4,7 @@
             <img src="../../../static/image/group14.png"/>
         </div>
         <!--<yd-cell-group>-->
-        <yd-tab v-model="tab" :prevent-default="false" :item-click="itemClick">
+        <yd-tab v-model="tab" :prevent-default="false" :item-click="itemClick" v-if="!isWeiXinBrowser">
             <yd-tab-panel label="账号登陆">
                 <div class="login-content">
                     <yd-cell-item>
@@ -42,16 +42,17 @@
                 </div>
             </yd-tab-panel>
             <yd-button size="large" type="danger" @click.native="login">登录</yd-button>
-            <div v-if="authList.length">
-                <div v-for="(item, index) in authList" :key="index">
-                    <div class="wechat-login" v-for="(child, key) in item" :key="key">
-                        <img src="https://b2c.jihainet.com/static/images/wechat_login.png" alt="" @click="toAuth(child.url)">
-                    </div>
+            没有账号?<span style="color: #10aeff;" @click="toRegister">&nbsp;立即注册</span>
+        </yd-tab>
+        <div v-if="authList.length">
+            <div v-for="(item, index) in authList" :key="index">
+                <div class="wechat-login" v-for="(child, key) in item" :key="key">
+                    <yd-button size="large" type="primary" @click.native="toAuth(child.url)" v-if="key === 'weixin'">微信登录</yd-button>
                 </div>
             </div>
-        </yd-tab>
+        </div>
         <!--</yd-cell-group>-->
-        没有账号?<span style="color: #10aeff;" @click="toRegister">&nbsp;立即注册</span>
+
     </div>
 </template>
 
@@ -82,7 +83,7 @@ export default {
             })
         }
         // 判断是否是微信浏览器
-        if (this.GLOBAL.isWeiXinBrowser()) {
+        if (this.isWeiXinBrowser) {
             this.getAuth()
         }
     },
@@ -100,6 +101,13 @@ export default {
                 res.status = true
             }
             return res
+        },
+        isWeiXinBrowser () {
+            if (this.GLOBAL.isWeiXinBrowser()) {
+                return true
+            } else {
+                return false
+            }
         }
     },
     methods: {
@@ -238,7 +246,7 @@ export default {
        margin: .5rem auto;
     }
     .wechat-login{
-        width: 1rem;
+        width: 80%;
         height: 1rem;
         margin: 0 auto .5rem;
     }

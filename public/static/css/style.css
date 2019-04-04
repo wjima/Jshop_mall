@@ -1,10 +1,5 @@
-.layui-layout-admin .layui-nav{
-	width: 200px;
-	padding: 0;
-	border-radius: 0;
-}
-.layui-layout-admin>.layui-nav>.layui-nav-bar{
-	display: none;
+.layui-nav>.manage{
+    margin-right: 10px;
 }
 .layui-layout-admin>.layui-nav>.layui-nav-item>.layui-nav-child{
 	top: 60px;
@@ -22,25 +17,12 @@
 .layui-breadcrumb a{
 	color: #444 !important;
 }
-.layui-fluid{
-	padding: 0;
-}
+
 .iconfont{
 	font-size: 20px !important;
 	margin-right: 10px;
 }
-.layui-nav .layui-nav-item a{
-	padding: 0 25px 0 15px;
-}
-.layui-nav-tree .layui-nav-more{
-	right: 15px;
-}
-.layui-body{
-	background-color: rgb(242,242,242);
-}
-.layui-card-body .layadmin-carousel{
-	background-color: #fff;
-}
+
 .layadmin-shortcut li .iconfont{
 	display: inline-block;
     width: 100%;
@@ -48,7 +30,7 @@
     line-height: 60px;
     text-align: center;
     border-radius: 2px;
-    font-size: 30px;
+    font-size: 30px !important;
     background-color: #F8F8F8;
     color: #333;
     transition: all .3s;
@@ -78,7 +60,7 @@
     transition: all .3s;
     -webkit-transition: all .3s;
 }
-.layadmin-backlog .layadmin-backlog-body {
+/*.layadmin-backlog .layadmin-backlog-body {
     display: block;
     padding: 10px 15px;
     background-color: #f8f8f8;
@@ -97,6 +79,7 @@
     font-weight: 300;
     color: #009688;
 }
+
 .layadmin-backlog-body:hover {
     background-color: #f2f2f2;
     color: #888;
@@ -108,6 +91,7 @@
 	line-height: 1.35;
 	margin: 0;
 }
+*/
 .seller-form,.layui-table-box, .layui-table-view,.seller-alone-form{
 	background-color: #fff;	
 }
@@ -150,7 +134,7 @@
 }
 
 
-.layui-card .layui-table{
+/*.layui-card .layui-table{
 	margin: 1px 0;
 }
 .layui-card .layui-table td,.layui-card .layui-table th{
@@ -166,7 +150,7 @@
 	border-radius: 50%;
 	font-style: normal;
 	margin-right: 10px;
-}
+}*/
 .layui-card .layui-table tr:last-child td i{
 	background-color: #ccc;
 }
@@ -404,4 +388,34 @@
 }
 .report_table_bar span {
     cursor: pointer;
+}
+
+
+/*新目标样式*/
+
+.layui-layout-admin .layui-body{
+    margin-bottom: 44px;
+}
+.layui-layout-admin .layui-footer{
+    padding: 0;
+}
+.layui-nav-tree .layui-nav-bar{
+    background-color: #FF7159 !important;
+}
+.layui-btn{
+    background-color: #FF7159 !important;
+}
+.layui-laypage .layui-laypage-curr .layui-laypage-em{
+    background-color: #FF7159 !important;
+}
+.layui-btn-primary{
+    border-color: #FF7159;
+    color: #fff;
+}
+.layui-btn-primary:hover{
+    border-color: #FF7159;
+    color: #fff;
+}
+.layui-btn-danger{
+    background-color: #393D49 !important;
 }

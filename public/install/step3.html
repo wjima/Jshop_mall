@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>数据库配置 - Jshop小程序商城安装</title>
-    <link rel="stylesheet" href="style/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/lib/layuiadmin/layui/css/layui.css">
     <link rel="stylesheet" href="style/css/install.css">
 </head>
 <body>
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            
+
         </div>
 
         <div class="layui-form-item">
@@ -50,16 +50,10 @@
         </div>
     </form>
 </div>
-<script type="text/javascript" src="style/layui/layui.js"></script>
+<script type="text/javascript" src="/static/lib/layuiadmin/layui/layui.js"></script>
 <script>
 layui.use(['form','layer'], function(){
-    var form = layui.form(), layer = layui.layer;
-
-    //监听提交
-    form.on('submit(formDemo)', function(data){
-        layer.msg(JSON.stringify(data.field));
-        return false;
-    });
+    var form = layui.form, layer = layui.layer;
 });
 </script>
 </body>

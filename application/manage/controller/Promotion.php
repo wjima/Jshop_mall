@@ -6,6 +6,7 @@ use app\common\controller\Manage;
 use app\common\model\Promotion as PromotionModel;
 use app\common\model\PromotionCondition;
 use app\common\model\PromotionResult;
+use app\common\model\UserGrade;
 use Request;
 use app\common\model\GoodsCat;
 
@@ -300,12 +301,11 @@ class Promotion extends Manage
             $code = $info['code'];
             if($code == 'GOODS_CATS'){
                 if(isset($info['params']['cat_id']) && $info['params']['cat_id']){
+
                     $goodsCatModel = new GoodsCat();
-                    $catInfo = $goodsCatModel->getCatByLastId( $info['params']['cat_id']);
-                    $catInfo = _krsort($catInfo);
-                    $this->assign('catInfo', $catInfo);
-                    $secondCat = $goodsCatModel->getCatByParentId($catInfo[0]['id']);
-                    $this->assign('secondCat', $secondCat);
+                    $catids = $goodsCatModel->getCatIdsByLastId($info['params']['cat_id']);
+                    $this->assign('catids', $catids);
+
                 }
             }
 
@@ -323,6 +323,11 @@ class Promotion extends Manage
                 $catList       = $goodsCatModel->getCatByParentId(0);
                 $this->assign('catList', $catList);
 
+                break;
+            case 'USER_GRADE':
+                $userGradeModel = new UserGrade();
+                $gradeList = $userGradeModel->select();
+                $this->assign('gradeList',$gradeList);
                 break;
         }
 

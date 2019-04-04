@@ -4,7 +4,8 @@ import _this from '../main'
 import common from './common'
 import wx from 'weixin-js-sdk'
 import {
-    host, apiUrl
+    host,
+    apiUrl
 } from './serviceUrl'
 
 // 需要登陆的，都写到这里，否则就是不需要登陆的接口
@@ -109,7 +110,7 @@ const sendPost = (url, data, config = {}, callback) => {
             if (response.data.data === 14007 || response.data.data === 14006) {
                 // 用户未登录或者token过期 清空本地user_token
                 common.removeStorage('user_token')
-                // 跳转至登录
+                    // 跳转至登录
                 common.jumpToLogin()
             }
         }
@@ -117,41 +118,41 @@ const sendPost = (url, data, config = {}, callback) => {
     }).catch(err => {
         if (err && err.response) {
             switch (err.response.status) {
-            case 400:
-                err.message = '请求参数错误'
-                break
-            case 401:
-                err.message = '未授权，请登录'
-                break
-            case 403:
-                err.message = '跨域拒绝访问'
-                break
-            case 404:
-                err.message = `请求地址出错: ${err.response.config.url}`
-                break
-            case 408:
-                err.message = '请求超时'
-                break
-            case 500:
-                err.message = '服务器内部错误'
-                break
-            case 501:
-                err.message = '服务未实现'
-                break
-            case 502:
-                err.message = '网关错误'
-                break
-            case 503:
-                err.message = '服务不可用'
-                break
-            case 504:
-                err.message = '网关超时'
-                break
-            case 505:
-                err.message = 'HTTP版本不受支持'
-                break
-            default:
-                break
+                case 400:
+                    err.message = '请求参数错误'
+                    break
+                case 401:
+                    err.message = '未授权，请登录'
+                    break
+                case 403:
+                    err.message = '跨域拒绝访问'
+                    break
+                case 404:
+                    err.message = `请求地址出错: ${err.response.config.url}`
+                    break
+                case 408:
+                    err.message = '请求超时'
+                    break
+                case 500:
+                    err.message = '服务器内部错误'
+                    break
+                case 501:
+                    err.message = '服务未实现'
+                    break
+                case 502:
+                    err.message = '网关错误'
+                    break
+                case 503:
+                    err.message = '服务不可用'
+                    break
+                case 504:
+                    err.message = '网关超时'
+                    break
+                case 505:
+                    err.message = 'HTTP版本不受支持'
+                    break
+                default:
+                    break
             }
             _this.$dialog.loading.close()
             common.errorToBack(err.message)
@@ -458,23 +459,29 @@ export const activityDetail = (data, callback) => post('group.getgoodsdetial', d
 
 // 微信浏览器分享
 export const weixinShare = (shareTitle, shareImg, shareDesc) => {
-    var url = location.href.split('#')[0]
+    let url = location.href.split('#')[0]
 
     var length = url.indexOf('?')
-    url = url.substr(0, length)
+
+    if (length > 0) {
+        url = url.substr(0, length)
+    }
 
     if (url.indexOf('index.html') >= 0) {
         url = url.replace('index.html', 'redirect.html')
     } else {
         url = url + 'redirect.html'
     }
+
     url = url + '?redirect=' + encodeURIComponent(location.href)
+
     var linkShare = location.href.split('#')[0]
 
     let param = {
         method: 'weixinshare.share',
         url: linkShare
     }
+
     axios.post(apiUrl, qs.stringify(param)).then(res => {
         var getMsg = res.data.data
 
@@ -489,24 +496,24 @@ export const weixinShare = (shareTitle, shareImg, shareDesc) => {
                 'onMenuShareAppMessage' // 分享到朋友圈
             ]
         })
-        wx.ready(function () {
+        wx.ready(function() {
             // 分享到朋友圈
             wx.onMenuShareAppMessage({
-                title: shareTitle, // 分享标题
-                desc: shareDesc, // 分享描述
-                link: url,
-                imgUrl: shareImg, // 分享图标
-                success: function () {
-                    // 用户确认分享后执行的回调函数
-                }
-            })
-            // 分享给朋友
+                    title: shareTitle, // 分享标题
+                    desc: shareDesc, // 分享描述
+                    link: url,
+                    imgUrl: shareImg, // 分享图标
+                    success: function() {
+                        // 用户确认分享后执行的回调函数
+                    }
+                })
+                // 分享给朋友
             wx.onMenuShareTimeline({
                 title: shareTitle, // 分享标题
                 desc: shareDesc, // 分享描述
                 link: url,
                 imgUrl: shareImg, // 分享图标
-                success: function () {
+                success: function() {
                     // 用户确认分享后执行的回调函数
 
                 }

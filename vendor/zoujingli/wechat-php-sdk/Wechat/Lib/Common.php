@@ -52,15 +52,12 @@ class Common
      */
     public function __construct($options = array())
     {
-        $config      = Loader::config($options);
+        $config = Loader::config($options);
         $this->token = isset($config['token']) ? $config['token'] : '';
         $this->appid = isset($config['appid']) ? $config['appid'] : '';
-        if(isset($config['access_token']) && $config['access_token'] != '') {
-            $this->access_token = isset($config['access_token']) ? $config['access_token'] : '';
-        }
-        $this->appsecret      = isset($config['appsecret']) ? $config['appsecret'] : '';
+        $this->appsecret = isset($config['appsecret']) ? $config['appsecret'] : '';
         $this->encodingAesKey = isset($config['encodingaeskey']) ? $config['encodingaeskey'] : '';
-        $this->config         = $config;
+        $this->config = $config;
     }
 
     /**
@@ -107,14 +104,12 @@ class Common
     public function valid()
     {
         $encryptStr = "";
-
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $postStr = file_get_contents("php://input");
-
+            $disableEntities = libxml_disable_entity_loader(true);
             $array = (array)simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+            libxml_disable_entity_loader($disableEntities);
             $this->encrypt_type = isset($_GET["encrypt_type"]) ? $_GET["encrypt_type"] : '';
-
-
             if ($this->encrypt_type == 'aes') {
                 $encryptStr = $array['Encrypt'];
                 !class_exists('Prpcrypt', false) && require __DIR__ . '/Prpcrypt.php';
@@ -138,7 +133,6 @@ class Common
             }
             return false;
         }
-
         if (!$this->checkSignature($encryptStr)) {
             $this->errMsg = 'Interface authentication failed, please use the correct method to call.';
             return false;
@@ -178,9 +172,6 @@ class Common
         }
         if ($token) {
             return $this->access_token = $token;
-        }
-        if($this->access_token){
-            return $this->access_token;
         }
         $cache = 'wechat_access_token_' . $appid;
         if (($access_token = Tools::getCache($cache)) && !empty($access_token)) {

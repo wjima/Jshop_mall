@@ -293,7 +293,7 @@ class Balance extends Common
             $result['data'] = $data;
         }
         $count = $this
-            ->where('user_id', $user_id)
+            ->where($where)
             ->count();
         $result['total'] = ceil($count/$limit);
         return $result;

@@ -50,23 +50,13 @@ Page({
   //提交按钮
   showTopTips: function () {
     if(this.data.nickname == ''){
-      wx.showToast({
-        title: '请输入昵称',
-          icon: 'none',
-        duration: 2000
-      })
+      app.common.errorToBack('请输入昵称', 0);
       return false;
     }
-      if (this.data.birthday == '选择出生日期'){
-          wx.showToast({
-              title: '请选择出生日期',
-              icon: 'none',
-              duration: 2000
-          })
+      if (this.data.birthday == '请选择'){
+          app.common.errorToBack('请选择出生日期', 0);
           return false;
       }
-
-      
 
     var the_sex = this.data.sex;
     if (the_sex== 0) {

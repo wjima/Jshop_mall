@@ -220,6 +220,10 @@ return [
             'getsigninfo' => [
                 'code' => 'getSignInfo',
                 'is_login' => true
+            ],
+            'getarealist' => [
+                'code' => 'getAreaList',
+                'is_login' => false
             ]
         ]
     ],
@@ -233,6 +237,10 @@ return [
             ],
             'getAdvertList' => [
                 'code' => 'getList',
+                'is_login' => false
+            ],
+            'getcarousellists' => [
+                'code' => 'getCarouselLists',
                 'is_login' => false
             ]
         ],

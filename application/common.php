@@ -982,3 +982,20 @@ function getUserIdByToken($token = '')
     }
     return $return_token['data']['user_id'];
 }
+
+/**
+ * 清除HTML中指定样式
+ * @param $content
+ * @return mixed
+ */
+function clearHtml($content,$rule = [] ){
+    if(!$rule){
+        return $content;
+    }
+    foreach($rule as $v){
+        $content = preg_replace('/'.$v.'\s*=\s*\d+\s*/i', '', $content);
+        $content = preg_replace('/'.$v.'\s*=\s*.+?["\']/i', '', $content);
+        $content = preg_replace('/'.$v.'\s*:\s*\d+\s*px\s*;?/i', '', $content);
+    }
+    return $content;
+}

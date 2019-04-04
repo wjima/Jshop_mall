@@ -116,31 +116,19 @@ Page({
 
         if (page.data.type == 1) {
             if (page.data.name.length < 1) {
-                wx.showToast({
-                    title: '请填写发票抬头',
-                    icon: 'none',
-                    duration: 2000
-                });
+                app.common.errorToBack('请填写发票抬头', 0);
                 flag = false;
                 return false;
             }
             if (page.data.code.length < 1) {
-                wx.showToast({
-                    title: '请填写发票税号',
-                    icon: 'none',
-                    duration: 2000
-                });
+                app.common.errorToBack('请填写发票税号', 0);
                 flag = false;
                 return false;
             }
             tax_type = 3;
         } else if(page.data.type == 0) {
             if (page.data.name.length < 1) {
-                wx.showToast({
-                    title: '请填写发票抬头',
-                    icon: 'none',
-                    duration: 2000
-                });
+                app.common.errorToBack('请填写发票抬头', 0);
                 flag = false;
                 return false;
             }

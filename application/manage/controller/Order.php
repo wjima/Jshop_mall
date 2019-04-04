@@ -7,6 +7,7 @@ use app\common\model\Order as Model;
 use app\common\model\OrderItems;
 use app\common\model\OrderLog;
 use app\common\model\Ship;
+use app\common\model\Logistics;
 use app\common\model\Store;
 use think\facade\Request;
 
@@ -101,6 +102,7 @@ class Order extends Manage
         }
     }
 
+
     /**
      * 查看订单详情
      * @param $id
@@ -185,7 +187,9 @@ class Order extends Manage
 
     /**
      * 订单发货
-     * @return mixed
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function ship()
@@ -194,16 +198,19 @@ class Order extends Manage
         if(!Request::isPost())
         {
             //订单发货信息
-            $id = input('order_id');
-            $order_info = model('common/Order')->getOrderShipInfo($id);
+            $id = Request::param('order_id');
+            $model = new Model();
+            $order_info = $model->getOrderShipInfo($id);
             $this->assign('order', $order_info);
 
             //获取默认快递公司
-            $ship = model('common/ship')->get($order_info['logistics_id']);
+            $shipModel = new Ship();
+            $ship = $shipModel->get($order_info['logistics_id']);
             $this->assign('ship', $ship);
 
             //获取物流公司
-            $logi_info = model('common/Logistics')->getAll();
+            $logisticsModel = new Logistics();
+            $logi_info = $logisticsModel->getAll();
             $this->assign('logi', $logi_info);
 
             return $this->fetch('ship');
@@ -211,7 +218,8 @@ class Order extends Manage
         else
         {
             $data = input('param.');
-            $result = model('common/BillDelivery')->ship($data['order_id'], $data['logi_code'], $data['logi_no'], $data['memo'], $data['ship_data']);
+            $billDeliveryModel = new BillDelivery();
+            $result = $billDeliveryModel->ship($data['order_id'], $data['logi_code'], $data['logi_no'], $data['memo'], $data['ship_data']);
             return $result;
         }
     }
@@ -227,7 +235,7 @@ class Order extends Manage
     public function cancel()
     {
         $id = input('id');
-        $model = new \app\common\model\Order();
+        $model = new Model();
         $result = $model->cancel($id);
         if($result)
         {
@@ -252,11 +260,15 @@ class Order extends Manage
     /**
      * 完成订单
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function complete()
     {
-        $id = input('id');
-        $result = model('common/Order')->complete($id);
+        $id = Request::param('id');
+        $model = new Model();
+        $result = $model->complete($id);
         if($result)
         {
             $return_data = array(
@@ -283,8 +295,9 @@ class Order extends Manage
      */
     public function del()
     {
-        $id = input('id');
-        $result = model('common/Order')->destroy($id);
+        $id = Request::param('id');
+        $model = new Model();
+        $result = $model->destroy($id);
         if($result)
         {
             $return_data = array(
@@ -362,8 +375,13 @@ class Order extends Manage
         return $data;
     }
 
+
     /**
      * 订单打印
+     * @return array|mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function print_tpl()
     {
@@ -381,7 +399,6 @@ class Order extends Manage
         $shop_mobile = getSetting('shop_mobile');
         $this->assign('shop_name', $shop_name);
         $this->assign('shop_mobile', $shop_mobile);
-
 
         if ($type == self::SHOPPING) {//购物清单
             return $this->fetch('shopping');
@@ -415,9 +432,14 @@ class Order extends Manage
         }
     }
 
+
     /**
-    * 打印快递单时，先选择快递公司
-    */
+     * 打印快递单时，先选择快递公司
+     * @return mixed|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function print_form()
     {
         $return = [
@@ -453,5 +475,18 @@ class Order extends Manage
             $this->assign('logi', $logi_info);
             return $this->fetch('print_form');
         }
+    }
+
+
+    /**
+     * 存储卖家备注
+     * @return array
+     */
+    public function saveMark()
+    {
+        $orderModel = new Model();
+        $order_id = Request::param('id');
+        $mark = Request::param('mark', '');
+        return $orderModel->saveMark($order_id, $mark);
     }
 }

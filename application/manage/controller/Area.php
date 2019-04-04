@@ -72,6 +72,10 @@ class Area extends Manage
         $data['parent_id'] = input('parent_id');
         $data['depth']     = input('depth');
         $data['sort']      = input('sort');
+        if($data['parent_id']){
+            $parentAreaInfo =  $areaModel->get($data['parent_id']);
+            $data['depth'] = $parentAreaInfo['depth']+1;
+        }
         $result            = $areaModel->add($data);
         if ($result) {
             $return_data = array(
@@ -254,4 +258,47 @@ class Area extends Manage
 
     }
 
+    /**
+     * 生成缓存
+     */
+    public function generateCache(){
+
+        $return = [
+            'status' => true,
+            'msg' => '生成成功',
+            'data' => []
+        ];
+        $model = new AreaModel();
+        $pid = 0;
+        $data = $model->getAllChild($pid);
+        $areaData = [];
+        foreach($data as $key=>$val){
+            $areaData[$key]['label'] = $val['name'];
+            $areaData[$key]['value'] = $val['id'];
+            $childrens = $model->getAllChild($val['id']);
+            $children = [];
+            if($childrens){
+                foreach($childrens as $skey=>$sval){
+                    $children[$skey]['label'] = $sval['name'];
+                    $children[$skey]['value'] = $sval['id'];
+                    $lastchildrens = $model->getAllChild($sval['id']);
+                    if($lastchildrens){
+                        $lchildren = [];
+                        foreach($lastchildrens as $lkey=>$lval) {
+                            $lchildren[$lkey]['label'] = $lval['name'];
+                            $lchildren[$lkey]['value'] = $lval['id'];
+                        }
+                        $children[$skey]['children'] = $lchildren;
+                    }
+                }
+                $areaData[$key]['children'] = $children;
+            }
+        }
+        $return['data'] = $areaData;
+        $area = config('jshop.area_list');
+
+        @file_put_contents($area,json_encode($return,JSON_UNESCAPED_UNICODE));
+        $return['data'] = '';
+        return $return;
+    }
 }

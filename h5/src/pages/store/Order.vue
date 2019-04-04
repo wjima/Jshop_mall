@@ -6,7 +6,7 @@
                 <p class="header-right" v-if="item.status === 1">{{ item.status_name }}</p>
                 <p class="header-right" style="color: #ccc;" v-else-if="item.status === 2">{{ item.status_name }}</p>
             </div>
-            <div class="order-content-header">
+            <div class="order-content-header" v-if="item.order_info">
                 <p class="header-left">订单号：{{ item.order_id }}</p>
                 <p class="header-right" v-if="item.order_info.status === 1 && item.order_info.pay_status === 2 && item.order_info.ship_status === 1">待发货</p>
                 <p class="header-right" v-if="item.order_info.status === 1 && item.order_info.pay_status === 2 && item.order_info.ship_status === 3 && item.order_info.confirm === 1">待收货</p>

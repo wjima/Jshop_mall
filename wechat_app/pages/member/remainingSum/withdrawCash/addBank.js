@@ -116,13 +116,8 @@ Page({
         }
         app.api.addBankCard(data, function (res) {
             if (res.status) {
-                wx.showToast({
-                    title: '银行卡添加成功',
-                    icon: 'success',
-                    mask: true,
-                    complete: function () {
-                        wx.navigateBack(1);
-                    }
+                app.common.successToShow('银行卡添加成功', function () {
+                    wx.navigateBack(1);
                 });
             } else {
                 wx.showModal({

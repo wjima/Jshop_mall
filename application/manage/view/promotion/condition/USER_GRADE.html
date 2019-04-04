@@ -1,0 +1,22 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="conditionEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="promotion_id" value="{$promotion_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">条件名称：</label>
+        <div class="layui-form-mid">指定用户等级</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>请选择：</label>
+        <div class="layui-input-block">
+            {volist name="gradeList" id="vo"}
+                <input type="checkbox" name="params[{$vo.id}]"  lay-skin="primary" title="{$vo.name}{if condition='$vo.is_def eq 1'} (默) {/if}" {if condition="isset($params[$vo['id']])"}checked=""{/if} >
+            {/volist}
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

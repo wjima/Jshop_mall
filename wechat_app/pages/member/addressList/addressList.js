@@ -55,15 +55,10 @@ Page({
         }
         app.api.removeship(data, function(res){
             if (res.status) {
-                wx.showToast({
-                    title: '删除成功',
-                    icon: 'success',
-                    mask: true,
-                    complete: function () {
-                        setTimeout(function () {
-                            page.getDataList();
-                        }, 1500);
-                    }
+                app.common.successToShow('删除成功', function () {
+                    setTimeout(function () {
+                        page.getDataList();
+                    }, 1500);
                 });
             } else {
                 wx.showModal({
@@ -85,15 +80,10 @@ Page({
         }
         app.api.setdefship(data, function (res) {
             if (res.status) {
-                wx.showToast({
-                    title: '设置成功',
-                    icon: 'success',
-                    mask: true,
-                    complete: function () {
-                        setTimeout(function () {
-                            page.getDataList();
-                        }, 1500);
-                    }
+                app.common.successToShow('设置成功', function () {
+                    setTimeout(function () {
+                        page.getDataList();
+                    }, 1500);
                 });
             } else {
                 wx.showModal({
@@ -179,15 +169,10 @@ Page({
                             }
                             app.api.saveUserShip(userShipData, function (res2) {
                                 if (res2.status) {
-                                    wx.showToast({
-                                        title: '存储微信地址成功',
-                                        icon: 'success',
-                                        mask: true,
-                                        complete: function () {
-                                            setTimeout(function () {
-                                                page.getDataList();
-                                            }, 1500);
-                                        }
+                                    app.common.successToShow('存储微信地址成功', function () {
+                                        setTimeout(function () {
+                                            page.getDataList();
+                                        }, 1500);
                                     });
                                 }else{
                                     wx.showModal({

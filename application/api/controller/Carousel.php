@@ -7,10 +7,10 @@
 // | Author: tianyu <tianyu@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use app\common\model\CarouselSeat;
 use app\common\model\Carousel as CarouselModel;
+use think\facade\Request;
 
 class Carousel extends Api
 {
@@ -40,6 +40,25 @@ class Carousel extends Api
         if (!$code) return error_code(10051);
         $carouselModel = new CarouselModel();
         return $carouselModel->getCarouselList($code, input('page/d',1), input('limit/d',5));
+    }
+
+
+    /**
+     * 获取多个广告位广告
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getCarouselLists()
+    {
+        $codes = Request::param('codes', false);
+        if(!$codes)
+        {
+            return error_code(10051);
+        }
+        $carouselModel = new CarouselModel();
+        return $carouselModel->getCarouselLists($codes);
     }
 
 }

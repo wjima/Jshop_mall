@@ -1,10 +1,11 @@
 <form style="padding:30px;" class="layui-form layui-form-pane operationForm">
     <input type="hidden" value="{$info.id}" name="id" />
     <div class="layui-form-item">
-        <label class="layui-form-label">父节点：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>父节点：</label>
         <div class="layui-input-block">
-            <select name="parent_id" id="parent_id" lay-filter="parent_id" >
+            <select name="parent_id" id="parent_id" lay-filter="parent_id" lay-verify="required" lay-search="" >
                 <!--<option value="1">根节点</option>-->
+                <option value="">直接选择或搜索选择</option>
                 {volist name='tree' id='vo'}
                     <option value="{$vo.id}" {if $info.parent_id == $vo.id} selected=""{/if}> |— {$vo.name}({$vo.code})</option>
                     {volist name='vo["children"]' id='vi'}
@@ -18,23 +19,24 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">名称：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>名称：</label>
         <div class="layui-input-inline">
             <input type="text" name="name"  placeholder="请输入名称" value="{$info.name}" autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">请输入操作的名称</div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">编码：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>编码：</label>
         <div class="layui-input-inline">
             <input type="text" name="code"  placeholder="请输入编码" value="{$info.code}" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">菜单节点：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>菜单节点：</label>
         <div class="layui-input-block">
-            <select name="parent_menu_id" id="parent_menu_id" lay-filter="parent_menu_id" >
+            <select name="parent_menu_id" id="parent_menu_id" lay-filter="parent_menu_id" lay-search="" lay-verify="required">
                 <!--<option value="1">根节点</option>-->
+                <option value="">直接选择或搜索选择</option>
                 {volist name='menuTree' id='vo'}
                 <option value="{$vo.id}" {if $info.parent_menu_id == $vo.id} selected=""{/if}> |— {$vo.name}({$vo.code})</option>
                 {volist name='vo["children"]' id='vi'}
@@ -48,7 +50,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">类型：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>类型：</label>
         <div class="layui-input-block">
             <!--<input type="radio" name="type" value="m" title="模块" {if $info.type == 'm'} checked=""{/if}>-->
             <input type="radio" name="type" value="c" title="控制器" {if $info.type == 'c'} checked=""{/if}>
@@ -56,7 +58,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">权限许可：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>权限许可：</label>
         <div class="layui-input-block">
             <input type="radio" name="perm_type" value="1" title="主体权限-在菜单上和权限设置上都显示" {if !isset($info) || $info.perm_type == '1'} checked=""{/if}><br />
             <input type="radio" name="perm_type" value="2" title="半主体权限-只在权限设置上显示" {if $info.perm_type == '2'} checked=""{/if}><br />

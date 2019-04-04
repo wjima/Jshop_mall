@@ -302,7 +302,8 @@ class Order extends Api
     {
         $input = array(
             'user_id' => $this->userId,
-            'ids' => input('ids', '1,2,3,4')
+            'ids' => input('ids', '1,2,3,4'),
+            'isAfterSale' => Request::param('isAfterSale', false)
         );
         $model = new orderModel();
         $data = $model->getOrderStatusNum($input);

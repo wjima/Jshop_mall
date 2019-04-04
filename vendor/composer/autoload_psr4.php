@@ -13,12 +13,5 @@ return array(
     'myxland\\addons\\' => array($vendorDir . '/myxland/think-addons/src'),
     'app\\' => array($baseDir . '/application'),
     'Wechat\\' => array($vendorDir . '/zoujingli/wechat-php-sdk/Wechat'),
-    'QL\\' => array($vendorDir . '/jaeger/querylist/src'),
-    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
-    'Jaeger\\' => array($vendorDir . '/jaeger/g-http/src'),
-    'Illuminate\\' => array($vendorDir . '/tightenco/collect/src/Illuminate'),
-    'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
-    'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
-    'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Apfelbox\\FileDownload\\' => array($vendorDir . '/apfelbox/php-file-download/src'),
 );

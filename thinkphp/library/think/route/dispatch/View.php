@@ -11,18 +11,16 @@
 
 namespace think\route\dispatch;
 
-use think\Container;
+use think\Response;
 use think\route\Dispatch;
 
 class View extends Dispatch
 {
-    public function run()
+    public function exec()
     {
         // 渲染模板输出
-        $vars = array_merge($this->app['request']->param(), $this->param);
+        $vars = array_merge($this->request->param(), $this->param);
 
-        return Container::get('view')
-            ->init(Container::get('config')->pull('template'))
-            ->fetch($this->dispatch, $vars);
+        return Response::create($this->dispatch, 'view')->assign($vars);
     }
 }

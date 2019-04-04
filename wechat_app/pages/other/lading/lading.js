@@ -45,11 +45,8 @@ Page({
                         'lading_id': id
                     }
                     app.api.ladingDel(data, function (res) {
-                        wx.showToast({
-                            title: res.msg,
-                            success: function () {
-                                page.getLadingList();
-                            }
+                        app.common.successToShow(res.msg, function () {
+                            page.getLadingList();
                         });
                     });
                 }

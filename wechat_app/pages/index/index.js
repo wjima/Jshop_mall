@@ -38,7 +38,7 @@ Page({
         }
     }
     if (invite != '') {
-        wx.setStorageSync("invitecode", invite);
+        app.db.set("invitecode", invite);
     }
 
     this.slideImg(); //获取幻灯片广告数据
@@ -56,20 +56,20 @@ Page({
     app.api.sharecode(function (e) {
         if (e.status) {
             //获取邀请码成功
-            wx.setStorageSync("myInviteCode", e.data);
+            app.db.set("myInviteCode", e.data);
         }
     });
   },
 
   //页面显示
   onShow: function () {
-      let userToken = wx.getStorageSync('userToken');
-      let myInviteCode = wx.getStorageSync('myInviteCode');
+      let userToken = app.db.get('userToken');
+      let myInviteCode = app.db.get('myInviteCode');
       if (userToken && !myInviteCode) {
           app.api.sharecode(function (e) {
               if (e.status) {
                   //获取邀请码成功
-                  wx.setStorageSync("myInviteCode", e.data);
+                  app.db.set("myInviteCode", e.data);
               }
           });
       }
@@ -291,9 +291,7 @@ Page({
         promotion_id: e.currentTarget.dataset.id
       }
       app.api.getCoupon(data, function (res) {
-        wx.showToast({
-          title: res.msg,
-        });
+        app.common.successToShow(res.msg);
       });
   },
 
@@ -368,6 +366,7 @@ Page({
 
   //下拉刷新
   onPullDownRefresh: function () {
+    app.common.getJshopConf(); //重新获取配置
     this.slideImg(); //获取幻灯片广告数据
     this.notice(); //获取公告数据
     this.coupon(); //获取优惠券数据
@@ -382,9 +381,9 @@ Page({
     //转发分享
     onShareAppMessage: function () {
         let page = this;
-        let userToken = wx.getStorageSync('userToken');
+        let userToken = app.db.get('userToken');
         if (userToken) {
-            let myInviteCode = wx.getStorageSync('myInviteCode');
+            let myInviteCode = app.db.get('myInviteCode');
             if (myInviteCode) {
                 //缓存里面有邀请码
                 let ins = encodeURIComponent('invite='+myInviteCode);

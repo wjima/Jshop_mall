@@ -214,4 +214,24 @@ class Categories extends Manage
         }
         return $result;
     }
+
+    public function getInfo()
+    {
+        $result        = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => [],
+        ];
+        $id = input('id/d','0');
+
+        $goodsCatModel = new GoodsCat();
+        $cat     = $goodsCatModel->field('id,name,sort,type_id')->where([['id','=',$id]])->find();
+        if ($cat) {
+            $result['data']   = $cat->toArray();
+            $result['status'] = true;
+            $result['msg']    = '获取成功';
+        }
+        return $result;
+    }
+
 }

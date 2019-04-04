@@ -58,7 +58,7 @@ Page({
         let province_name = e.detail.value[0];
         let city_name = e.detail.value[1];
         let county_name = e.detail.value[2];
-        let postal_code = 0;
+        let postal_code = e.detail.postcode;
         let page = this;
         let data = {
             province_name: province_name,
@@ -122,15 +122,10 @@ Page({
         }
         app.api.addSaveAddress(data, function(res){
             if (res.status) {
-                wx.showToast({
-                    title: '添加成功',
-                    icon: 'success',
-                    mask: true,
-                    complete: function () {
-                        setTimeout(function(){
-                            wx.navigateBack(1);
-                        }, 1500);
-                    }
+                app.common.successToShow('添加成功', function () {
+                    setTimeout(function () {
+                        wx.navigateBack(1);
+                    }, 1500);
                 });
             } else {
                 wx.showModal({

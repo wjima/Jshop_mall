@@ -28,6 +28,20 @@ class Tools
 {
 
     /**
+     * 判断字符串是否经过编码方法
+     * @param string $str
+     * @return bool
+     */
+    static public function isBase64($str)
+    {
+        if ($str == base64_encode(base64_decode($str))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 产生随机字符串
      * @param int $length 指定字符长度
      * @param string $str 字符串前缀
@@ -110,12 +124,11 @@ class Tools
             } else {
                 $content .= '<![CDATA[' . preg_replace("/[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]/", '', $val) . ']]>';
             }
-            list($_key,) = explode(' ', $key . ' ');
+            list($_key, ) = explode(' ', $key . ' ');
             $content .= "</$_key>";
         }
         return $content;
     }
-
 
     /**
      * 将xml转为array
@@ -124,7 +137,10 @@ class Tools
      */
     static public function xml2arr($xml)
     {
-        return json_decode(Tools::json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        $disableEntities = libxml_disable_entity_loader(true);
+        $result = json_decode(Tools::json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        libxml_disable_entity_loader($disableEntities);
+        return $result;
     }
 
     /**
@@ -153,6 +169,9 @@ class Tools
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        if(defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
+            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        }
         list($content, $status) = array(curl_exec($curl), curl_getinfo($curl), curl_close($curl));
         return (intval($status["http_code"]) === 200) ? $content : false;
     }
@@ -172,6 +191,9 @@ class Tools
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_POST, true);
+        if(defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
+            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        }
         curl_setopt($curl, CURLOPT_POSTFIELDS, self::_buildPost($data));
         list($content, $status) = array(curl_exec($curl), curl_getinfo($curl), curl_close($curl));
         return (intval($status["http_code"]) === 200) ? $content : false;
@@ -204,6 +226,9 @@ class Tools
             curl_setopt($curl, CURLOPT_SSLKEY, $ssl_key);
         }
         curl_setopt($curl, CURLOPT_POST, true);
+        if(defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
+            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        }
         curl_setopt($curl, CURLOPT_POSTFIELDS, self::_buildPost($data));
         list($content, $status) = array(curl_exec($curl), curl_getinfo($curl), curl_close($curl));
         return (intval($status["http_code"]) === 200) ? $content : false;

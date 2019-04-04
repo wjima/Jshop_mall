@@ -1,3 +1,26 @@
+<style type="text/css">
+    .spec_image{
+        display: inline-block;
+    }
+	.spec_image_item{
+	    position: relative;
+	    display: inline-block;
+	}
+	.del-img{
+	    position: absolute;
+	    background-color: rgba(0,0,0,.5);
+	    color: #fff;
+	    width: 13px;
+	    height: 13px;
+	    line-height: 12px;
+	    font-size: 10px;
+	    display: inline-block;
+	    text-align: center;
+	    border-radius: 50%;
+	    right: -6px;
+        top: -6px;
+	}
+</style>
 <table class="layui-table" lay-size="sm">
     <colgroup>
         <col width="150">
@@ -7,6 +30,7 @@
     <thead>
     <tr>
         <th>默认货品</th>
+        <th>图片</th>
         <th>货号</th>
         <th>规格</th>
         <th>库存</th>
@@ -23,6 +47,18 @@
         <td>
             <input type="hidden" name="product[{$vo.spec_name}][id]" value="{$vo.product_id}">
             <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" value="1" {if condition="$vo['is_defalut'] eq 1"} checked="true"  {elseif condition="$key eq 1 "/}checked="true"{/if} class="isdefalut" lay-filter="isdefalut">
+        </td>
+        <td class="spec-td">
+            <a class="upSpecImage" href="javascript:void(0);">选择图片</a>
+            <div class="spec_image"  {if condition="!$vo.image_id" } style="display: none;" {/if}>
+                <div class="spec_image_item">
+                    <div class="del-img">
+                    	x
+                    </div>
+                    <img src="{$vo.image_id|_sImage}" id="image-{$key}" style="width:60px;height:60px">
+                </div>
+                <input type="hidden" name="product[{$vo.spec_name}][image_id]"  value="{$vo.image_id}"  >
+            </div>
         </td>
         <td>
             <input type="text" name="product[{$vo.spec_name}][sn]" value="{$vo.sn}"  placeholder="货号" autocomplete="off" class="layui-input">
@@ -50,6 +86,18 @@
         <tr>
             <td>
                 <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" {if condition="$key eq 1 "} checked="true"   {/if}value="1" class="isdefalut" lay-filter="isdefalut">
+            </td>
+            <td class="spec-td">
+                <a class="upSpecImage" href="javascript:;">选择图片</a>
+                <div class="spec_image" style="display: none;">
+                    <div class="spec_image_item">
+                        <div  class="del-img">
+                            x
+                        </div>
+                        <img src="{$vo.image_id|_sImage}" id="image-{$key}" style="width:60px;height:60px">
+                    </div>
+                    <input type="hidden" name="product[{$vo.spec_name}][image_id]"  value="{$vo.image_id}" >
+                </div>
             </td>
             <td>
                 <input type="text" name="product[{$vo.spec_name}][sn]"  value="{$vo.sn}" placeholder="货号" autocomplete="off" class="layui-input">

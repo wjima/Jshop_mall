@@ -152,9 +152,9 @@
                 statusCode: 1
             },
             cols: [[
-                {type:'checkbox', fixed: 'left'},
-                {field: 'order_id', title: '订单号', width:140, align: 'center', fixed: 'left'},
-                {field: 'order_id', title: '打印',align: 'center', fixed: 'left',templet:function (data) {
+                {type:'checkbox'},
+                {field: 'order_id_k', title: '订单号', width:140, align: 'center'},
+                {field: 'order_id', title: '打印',align: 'center', templet:function (data) {
                     var html='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=1" target="_blank">购</a>&nbsp;';
                     html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=2"  target="_blank">配</a>&nbsp;';
                     html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=3"  target="_blank">联</a>&nbsp;';
@@ -174,7 +174,7 @@
                 {field: 'ship_status', title: '发货状态', width:90, align: 'center'},
                 {field: 'order_amount', title: '订单总额', width:100, align: 'center', templet:function(data){return '￥'+data.order_amount}},
                 {field: 'source', title: '订单来源', width:130, align: 'center'},
-                {field: 'operating', title: '操作', width:200, align: 'center', fixed: 'right'}
+                {field: 'operating', title: '操作', width:200, align: 'center'}
             ]]
         });
 
@@ -600,6 +600,7 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
+
         /**
          * 打印快递单
          * @param order_id
@@ -652,6 +653,30 @@
             });
         };
         {:hook('orderExtJs')}
+
+        //保存卖家备注
+        $(document).on('click', '.mark-save', function () {
+            var mark = $("#mark").val();
+            var id = $("#mark-order-id").val();
+            if(mark.length > 500){
+                layer.msg('备注内容不能大于500字');
+            }else {
+                $.ajax({
+                    url: '{:url("order/saveMark")}',
+                    type: 'post',
+                    data: {
+                        'mark': mark,
+                        'id': id
+                    },
+                    dataType: 'json',
+                    success: function (e) {
+                        layer.msg(e.msg, {time: 1500}, function () {
+                            layer.close(window_box);
+                        });
+                    }
+                });
+            }
+        });
     });
 
 </script>

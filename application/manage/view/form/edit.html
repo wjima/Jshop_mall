@@ -102,9 +102,9 @@
                         <div class="imgdiv">
                             <img src="{$image}"  class="layui-upload-img" style="width: 100px;height:100px;">
                             <div id="operate">
-                                <div><a class="del" onclick="delImg(this,'{$form[head_type_value_image][$key]}')">删除</a></div>
+                                <div><a class="del" onclick="delImg(this,'{$form[\'head_type_value_image\'][$key]}')">删除</a></div>
                             </div>
-                            <input type='hidden' name='img[]' value="{$form[head_type_value_image][$key]}">
+                            <input type='hidden' name='img[]' value="{$form[\'head_type_value_image\'][$key]}">
                         </div>
                         {/volist}
                     </div>

@@ -2,6 +2,7 @@
 
 namespace myxland\addons\library;
 
+use think\Container;
 use think\Loader;
 use think\Controller;
 
@@ -52,8 +53,10 @@ class AddonController extends Controller
         $this->config = config('template.') ?: $this->config;
 
         // 处理路由参数
-        $route = $this->request->param('route', '');
-        $param = explode('-', $route);
+        $path = $this->request->path();
+        $url = explode('/',$path);
+        $param = explode('-', $url[1]);
+
 
         // 是否自动转换控制器和操作名
         $convert = config('app.url_convert');
@@ -62,7 +65,6 @@ class AddonController extends Controller
         $this->controller = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $this->addon      = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $addonName        = Loader::parseName($this->addon, 1);
-
         // 生成view_path
         $view_path = $this->config['view_path'] ? 'view' : 'view';
 
@@ -70,6 +72,12 @@ class AddonController extends Controller
         config('template.view_path', ADDON_PATH . $addonName . DIRECTORY_SEPARATOR . $view_path . DIRECTORY_SEPARATOR);
 
         parent::__construct($request);
+        $jshopHost = Container::get('request')->domain();
+        $this->assign('jshopHost', $jshopHost);
+        //店铺名称
+        $shop_name = getSetting('shop_name');
+        $this->assign('shop_name', $shop_name);
+        $this->view->engine->layout('layout');
     }
 
     /**

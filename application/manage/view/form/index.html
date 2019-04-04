@@ -32,7 +32,7 @@
             id:'formTable',
             url: "{:url('form/index')}",
             cols: [[ //标题栏
-                {type:'checkbox', fixed: 'left'},
+                {type:'checkbox'},
                 {type:'numbers'},
                 {field: 'name', title: '表单名称',align:'center'},
                 {field: 'desc', title: '表单描述',align:'center'},
@@ -40,7 +40,7 @@
                 {field: 'is_login', title: '需要登录',align:'center'},
                 {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
                 {field: 'sort', sort: true, title: '排序',align:'center'},
-                {fixed: 'right',title:'操作',align:'center', toolbar:'#formBar'}
+                {title:'操作',align:'center', toolbar:'#formBar'}
             ]]
         });
         //search

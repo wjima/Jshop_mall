@@ -18,6 +18,10 @@ class Setting extends Common
             'name' => '平台地址',
             'value' => '我的平台地址'
         ],
+        'shop_beian' => [
+            'name' => '备案信息',
+            'value' => '网站备案信息'
+        ],
         'shop_logo' => [
             'name' => '平台logo',
             'value' => '',
@@ -263,12 +267,17 @@ class Setting extends Common
         //搜索发现关键字
         'recommend_keys' => [
             'name' => '搜索发现关键词',
-            'value' => '羽绒服,iphonexs,小米mix'
+            'value' => '羽绒服 iphone 小米mix'
         ],
         //统计代码
         'statistics_code' => [
             'name' => '百度统计代码',
             'value' => ''
+        ],
+        //发票开关
+        'invoice_switch' => [
+            'name' => '发票功能',
+            'value' => '1'
         ]
     ];
 

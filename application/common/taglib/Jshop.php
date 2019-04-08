@@ -90,6 +90,7 @@ class Jshop extends TagLib
             var _edito'.$id.'r = UE.getEditor("edit_'.$id.'",{
                 initialFrameWidth:800,
                 initialFrameHeight:300,
+                zIndex:19891026,
                  single:'.$single.'
             });
             _edito'.$id.'r.ready(function (){
@@ -121,6 +122,8 @@ class Jshop extends TagLib
             var _edito'.$id.'r = UE.getEditor("edit_'.$id.'",{
                 initialFrameWidth:800,
                 initialFrameHeight:300,
+                zIndex:19891026,
+                single:'.$single.'
             });
             _edito'.$id.'r.ready(function (){
                 //_edito'.$id.'r.setDisabled();

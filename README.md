@@ -52,7 +52,7 @@ H5端采用Vue开发，数据和页面分离，封装APP时体验效果也更好
 
 #### 项目演示
 - uniapp简约模板项目地址：https://gitee.com/hnjihai/uniapp
-- uniapp简约模板体验地址：https://b2c.jihainet.com/wap1/#/
+- uniapp简约模板体验地址：https://demo.jihainet.com/wap
 - 前台H5演示：[https://b2c.jihainet.com/](https://b2c.jihainet.com/)
 - 后台演示：[https://b2c.jihainet.com/manage/](https://b2c.jihainet.com/manage/)
 - QQ交流群：823732583（开发手册、接口文档、操作手册请进群查看哦~）
@@ -63,7 +63,8 @@ H5端采用Vue开发，数据和页面分离，封装APP时体验效果也更好
 
 - 简约模板体验二维码
 
-![输入图片说明](https://gitee.com/uploads/images/2019/0404/205642_02d78ebc_8503.png "1554382542.png")
+![输入图片说明](https://gitee.com/uploads/images/2019/0409/182147_ecec17d7_8503.png "1554805258.png")
+
 
 - 安卓APP体验二维码【可进群下载体验】
 

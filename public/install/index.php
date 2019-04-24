@@ -3,7 +3,7 @@ header('Content-type:text/html;charset=utf-8');
 session_start();
 //配置信息
 $config = array(
-    'version'     => 'v2.0',           //版本号
+    'version'     => 'v2.0.2',        //版本号
     'indexPage'   => 'step1',         //用户协议
     'checkPage'   => 'step2',         //环境检测
     'createPage'  => 'step3',         //数据库配置
@@ -302,7 +302,8 @@ php;
     file_put_contents($config['databaseUrl'], $db_str);
 
     //配置H5的host
-    $host_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'];
+    $scheme = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:'http';
+    $host_url = $scheme . '://' . $_SERVER['HTTP_HOST'];
     $h5config = <<<h5
 window.host = '{$host_url}';
 window.entId = '';

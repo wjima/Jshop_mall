@@ -78,6 +78,7 @@ class ValidateToken
             'wechat@doedit',
             'form@add',
             'form@edit',
+            'common@login'
         ];
     }
 

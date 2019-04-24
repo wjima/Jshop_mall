@@ -170,6 +170,7 @@ export default {
         bottom: 0;
         width: 100%;
         height: .8rem;
+		max-width: 750px;
     }
     .invoice .footer-bottom .yd-btn{
         width: 100%;
@@ -192,4 +193,7 @@ export default {
         margin-left: 25px;
         line-height: 1;
     }
+	.invoice .yd-cell-item:not(:last-child):after{
+		border-bottom: 1px solid #e9e9e9;
+	}
 </style>

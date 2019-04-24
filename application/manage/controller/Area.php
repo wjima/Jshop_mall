@@ -27,29 +27,22 @@ class Area extends Manage
      */
     public function index()
     {
-        /*$areaList=$areaModel->getTreeArea();
-        $this->assign('arealist',json_encode($areaList));*/
-
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $type = input('type');
-            $id = input('id');
+            $id   = input('id');
 
             $result = model('common/Area')->getAreaList($type, $id);
-            if($result)
-            {
+            if ($result) {
                 $return_data = array(
                     'status' => true,
-                    'msg' => '获取成功',
-                    'data' => $result
+                    'msg'    => '获取成功',
+                    'data'   => $result
                 );
-            }
-            else
-            {
+            } else {
                 $return_data = array(
                     'status' => false,
-                    'msg' => '获取失败',
-                    'data' => $result
+                    'msg'    => '获取失败',
+                    'data'   => $result
                 );
             }
             return $return_data;
@@ -72,11 +65,11 @@ class Area extends Manage
         $data['parent_id'] = input('parent_id');
         $data['depth']     = input('depth');
         $data['sort']      = input('sort');
-        if($data['parent_id']){
-            $parentAreaInfo =  $areaModel->get($data['parent_id']);
-            $data['depth'] = $parentAreaInfo['depth']+1;
+        if ($data['parent_id']) {
+            $parentAreaInfo = $areaModel->get($data['parent_id']);
+            $data['depth']  = $parentAreaInfo['depth'] + 1;
         }
-        $result            = $areaModel->add($data);
+        $result = $areaModel->add($data);
         if ($result) {
             $return_data = array(
                 'status' => true,
@@ -146,7 +139,7 @@ class Area extends Manage
      */
     public function del()
     {
-        $id = input('id');
+        $id     = input('id');
         $result = model('common/Area')->del($id);
         return $result;
     }
@@ -154,8 +147,8 @@ class Area extends Manage
     public function getlist()
     {
         if (Request::isAjax()) {
-            $areaModel       = new AreaModel();
-            $filter          = input('request.');
+            $areaModel = new AreaModel();
+            $filter    = input('request.');
             if (!isset($filter['parent_id']) || !$filter['parent_id']) {
                 $filter['parent_id'] = 0;
             }
@@ -167,7 +160,8 @@ class Area extends Manage
     /**
      * 获取地区信息，暂时不删除
      */
-    public function geCity(){
+    public function geCity()
+    {
         header('content-type:text/html;charset=utf-8');
         /*$content = file_get_contents('http://www.jshop.com/city.text');
         $content = json_decode($content,true);
@@ -261,30 +255,31 @@ class Area extends Manage
     /**
      * 生成缓存
      */
-    public function generateCache(){
+    public function generateCache()
+    {
 
-        $return = [
+        $return   = [
             'status' => true,
-            'msg' => '生成成功',
-            'data' => []
+            'msg'    => '生成成功',
+            'data'   => []
         ];
-        $model = new AreaModel();
-        $pid = 0;
-        $data = $model->getAllChild($pid);
+        $model    = new AreaModel();
+        $pid      = 0;
+        $data     = $model->getAllChild($pid);
         $areaData = [];
-        foreach($data as $key=>$val){
+        foreach ($data as $key => $val) {
             $areaData[$key]['label'] = $val['name'];
             $areaData[$key]['value'] = $val['id'];
-            $childrens = $model->getAllChild($val['id']);
-            $children = [];
-            if($childrens){
-                foreach($childrens as $skey=>$sval){
+            $childrens               = $model->getAllChild($val['id']);
+            $children                = [];
+            if ($childrens) {
+                foreach ($childrens as $skey => $sval) {
                     $children[$skey]['label'] = $sval['name'];
                     $children[$skey]['value'] = $sval['id'];
-                    $lastchildrens = $model->getAllChild($sval['id']);
-                    if($lastchildrens){
+                    $lastchildrens            = $model->getAllChild($sval['id']);
+                    if ($lastchildrens) {
                         $lchildren = [];
-                        foreach($lastchildrens as $lkey=>$lval) {
+                        foreach ($lastchildrens as $lkey => $lval) {
                             $lchildren[$lkey]['label'] = $lval['name'];
                             $lchildren[$lkey]['value'] = $lval['id'];
                         }
@@ -295,9 +290,9 @@ class Area extends Manage
             }
         }
         $return['data'] = $areaData;
-        $area = config('jshop.area_list');
+        $area           = config('jshop.area_list');
 
-        @file_put_contents($area,json_encode($return,JSON_UNESCAPED_UNICODE));
+        @file_put_contents($area, json_encode($return, JSON_UNESCAPED_UNICODE));
         $return['data'] = '';
         return $return;
     }

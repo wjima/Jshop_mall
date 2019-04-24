@@ -115,4 +115,5 @@ return [
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '',
+    'rename_manage'          => false,//后台是否重名了，后台重命名需要开启
 ];

@@ -263,7 +263,6 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
                 }
             } catch (Exception $e) {
                 echo  $e->getMessage();
-                print_r($printExpressModel->getLastSql());die();
                 $return['msg']    = $e->getMessage();
                 $return['status'] = false;
                 return $return;

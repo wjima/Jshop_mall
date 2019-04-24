@@ -173,7 +173,6 @@ class Operation extends Common
         }
 
         $re = $this->createTree($list,$parent_menu_id,"parent_menu_id",$onMenu);        //构建菜单树
-
         //把插件的菜单也增加上去
         $this->addonsMenu($re);
 
@@ -652,10 +651,11 @@ class Operation extends Common
         $list = hook('menu', []);
         if($list){
             foreach($list as $v){
-                $this->addonsMenuAdd($v,$tree);
+                if($v){
+                    $this->addonsMenuAdd($v,$tree);
+                }
             }
         }
-
     }
     //把某一个插件的菜单加到树上
     private function addonsMenuAdd($conf,&$tree){
@@ -666,35 +666,42 @@ class Operation extends Common
     //把某一个插件的某一个菜单节点加到树上
     private function addonsMenuAdd2($opt,&$tree){
         //查找树
-        foreach($tree as &$v){
-            if($v['id'] == $opt['parent_menu_id']){
-                //todo
-                $this->addonsMenuAdd3($opt,$v['children']);
-                return true;
+        if($opt['parent_menu_id'] != '0'){
+            foreach($tree as &$v){
+                if($v['id'] == $opt['parent_menu_id']){
+                    //todo
+                    if(!isset($v['children'])){
+                        $v['children'] = [];
+                    }
+                    $this->addonsMenuAdd3($opt,$v['children']);
+                    return true;
+                }
+                //查看他的孩子是否有
+                if(isset($v['children']) && $this->addonsMenuAdd2($opt,$v['children'])){
+                    return true;        //如果找到了，就不要空跑了。
+                }
             }
-            //查看他的孩子是否有
-            if($this->addonsMenuAdd2($opt,$v['children'])){
-                return true;        //如果找到了，就不要空跑了。
-            }
+        }else{
+            //插入到一级菜单上，图标就需要自定义了，而且$opt里必须得有code字段
+            $this->addonsMenuAdd3($opt,$tree);
         }
         return false;
     }
 
     //把一个插件的菜单加到这个节点的孩子列表里
     private function addonsMenuAdd3($opt,&$tree){
-        if($tree){
+        if(!empty($tree)){
             foreach($tree as $k => $v){
                 if($v['sort'] > $opt['sort']){
                     //插入到当前位置
-
                     array_splice($tree,$k,0,[$opt]);
                     return true;
                 }
             }
+            //能走到这里，插入到最后
+            $tree[] = $opt;
         }else{
-            //这里还需要开发一下
-            return false;
-            array_splice($tree,0,0,[$opt]);
+            $tree[] = $opt;
             return true;
         }
         return false;

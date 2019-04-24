@@ -155,7 +155,7 @@ class Wx
         ];
 
         $styles = implode("-", $style);
-        $filename = "qrcode/".md5($page.$invite.$goods.$wx_appid.$styles).".jpg";
+        $filename = "static/qrcode/wechat/".md5($page.$invite.$goods.$wx_appid.$styles).".jpg";
 
         if(file_exists($filename))
         {

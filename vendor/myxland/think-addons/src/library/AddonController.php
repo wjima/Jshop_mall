@@ -77,7 +77,6 @@ class AddonController extends Controller
         //店铺名称
         $shop_name = getSetting('shop_name');
         $this->assign('shop_name', $shop_name);
-        $this->view->engine->layout('layout');
     }
 
     /**

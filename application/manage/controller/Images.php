@@ -57,12 +57,12 @@ class Images extends Manage
             if(isset($_FILES['upfile']))
             {
                 $file_extension = get_file_extension($_FILES['upfile']['name']);
-                $savepath =  '/static/uploads/images/' . get_hash_dir($_FILES['upfile']['name']);
+                $savepath =  '/static/uploads/images' . get_hash_dir($_FILES['upfile']['name']);
             }
             else
             {
                 $file_extension = get_file_extension($_FILES['file']['name']);
-                $savepath =  '/static/uploads/images/' . get_hash_dir($_FILES['file']['name']);
+                $savepath =  '/static/uploads/images' . get_hash_dir($_FILES['file']['name']);
             }
 
             //上传处理类
@@ -111,7 +111,7 @@ class Images extends Manage
                             'name' => $first['savename'],
                             'url' => $url,
                             'size' => $first['size'],
-                            'type' => $type,
+                            'type' => $iData['type'],
                             'state' => 'SUCCESS',
                             'image_id' => $iData['id'],
                         ];
@@ -241,6 +241,7 @@ class Images extends Manage
         if(!Request::isPost()) {
             return $response;
         }
+        $image_model = new imageModel();
         $imgUrl = $_POST['imgUrl'];
         $imgInitW = $_POST['imgInitW'];
         $imgInitH = $_POST['imgInitH'];
@@ -254,8 +255,9 @@ class Images extends Manage
 
         $jpeg_quality = 100;
         //todo 判断文件是否是图片
-        $output_file_path = DS . 'static' . DS . 'uploads' . get_hash_dir();
+        $output_file_path =  '/static/uploads/images' . get_hash_dir();
         $relpath = ROOT_PATH . DS . 'public' . $output_file_path;
+
 
         if (!is_dir($relpath)) {
             mkdirs($relpath);
@@ -264,7 +266,7 @@ class Images extends Manage
         $imgUrl = $this->getRealPath($imgUrl);
 
         if ((stripos($imgUrl, 'http') !== false) || (stripos($imgUrl, 'https') !== false)) {
-            $tmp_img = $this->getImage($imgUrl, $relpath);
+            $tmp_img = $image_model->getImage($imgUrl, $relpath);
             if ($tmp_img['error'] > 0) {
                 $response = Array(
                     "status" => 'error',
@@ -328,7 +330,7 @@ class Images extends Manage
             $iData['url'] = $url;
             $iData['ctime'] = time();
             $iData['path'] = $output_filename . $type;
-            $image_model = new imageModel();
+
             if ($image_model->save($iData)) {
                 $response = [
                     "status" => 'success',
@@ -367,77 +369,7 @@ class Images extends Manage
         return $image_path;
     }
 
-    /**
-     * php完美实现下载远程图片保存到本地
-     * 参数：文件url,保存文件目录,保存文件名称，使用的下载方式
-     * 当保存文件名称为空时则使用远程文件原来的名称
-     * @param        $url
-     * @param string $save_dir
-     * @param string $filename
-     * @param int    $type
-     * @return array
-     * User: wjima
-     * Email:1457529125@qq.com
-     * Date: 2017-11-28 16:00
-     */
-    private function getImage($url,$save_dir = '',$filename = '',$type = 0) {
-        if(trim($url) == '') {
-            return array(
-                'file_name' => '',
-                'save_path' => '',
-                'error'     => 1
-            );
-        }
-        if(trim($save_dir) == '') {
-            $save_dir = './';
-        }
-        if(trim($filename) == '') {//保存文件名
-            $ext = strrchr($url,'.');
-            if($ext != '.gif' && $ext != '.jpg'&& $ext != '.png') {
-                return array(
-                    'file_name' => '',
-                    'save_path' => '',
-                    'error'     => 3
-                );
-            }
-            $filename = time() . $ext;
-        }
-        if(0 !== strrpos($save_dir,'/')) {
-            $save_dir .= '/';
-        }
-        //创建保存目录
-        if(!file_exists($save_dir) && !mkdir($save_dir,0777,true)) {
-            return array(
-                'file_name' => '',
-                'save_path' => '',
-                'error'     => 5
-            );
-        }
-        //获取远程文件所采用的方法
-        if($type) {
-            $ch = curl_init();
-            $timeout = 5;
-            curl_setopt($ch,CURLOPT_URL,$url);
-            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-            curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
-            $img = curl_exec($ch);
-            curl_close($ch);
-        }else {
-            ob_start();
-            readfile($url);
-            $img = ob_get_contents();
-            ob_end_clean();
-        }
-        $fp2 = @fopen($save_dir . $filename,'a');
-        fwrite($fp2,$img);
-        fclose($fp2);
-        unset($img,$url);
-        return array(
-            'file_name' => $filename,
-            'save_path' => $save_dir . $filename,
-            'error'     => 0
-        );
-    }
+
 
     /**
      * 获取文件名
@@ -470,4 +402,7 @@ class Images extends Manage
         }
         return $return_data;
     }
+
+
+
 }

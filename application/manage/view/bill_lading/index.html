@@ -1,3 +1,19 @@
+<style>
+    @media screen and (max-width: 500px) {
+
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width: 1200px !important;
+            box-sizing: border-box;
+        }
+
+    }
+</style>
 <form class="layui-form seller-form">
     <div class="layui-form-item">
         <div class="layui-inline">
@@ -9,13 +25,15 @@
         <div class="layui-inline">
             <label class="layui-form-label">订单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="order_id" id="order_id" placeholder="订单号" autocomplete="off" class="layui-input">
+                <input type="text" name="order_id" id="order_id" placeholder="订单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">下单时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
@@ -55,8 +73,10 @@
         </div>
         <div class="layui-inline">
             <div class="layui-input-inline">
-                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-                <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-lading"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+                        class="iconfont icon-chaxun"></i>筛选</button>
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-lading"><i
+                        class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
             </div>
         </div>
     </div>
@@ -66,7 +86,7 @@
     <table class="layui-table" id="ladingTable" lay-filter="ladingTable"></table>
 </div>
 <div id="exportLading" style="display: none;">
-    <form class="layui-form export-form"  action="" >
+    <form class="layui-form export-form" action="">
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
@@ -76,14 +96,15 @@
 
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
-                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
 </div>
 <script>
     var table;
-    layui.use(['table', 'form', 'layer','laydate'], function(){
+    layui.use(['table', 'form', 'layer', 'laydate'], function () {
         var form = layui.form, layer = layui.layer;
         table = layui.table;
         //时间插件
@@ -105,34 +126,34 @@
                 statusCode: 1
             },
             cols: [[ //标题栏
-                {type:'checkbox'},
-                {type: 'numbers'},
-                {field: 'id', title: '提货单号', align: 'center', width: 150},
-                {field: 'order_id', title: '订单号', align: 'center', width: 150},
-                {field: 'store_name',title: '提货门店', align: 'center', width: 150, sort: true},
-                {field: 'name', title: '提货人名', align: 'center'},
-                {field: 'mobile', title: '提货电话', align: 'center' },
-                {field: 'status_name', title: '提货状态', align: 'center', sort: true},
-                {field: 'ctime', title: '下单时间', align: 'center', sort: true},
-                {field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar'}
+                { type: 'checkbox' },
+                { type: 'numbers' },
+                { field: 'id', title: '提货单号', align: 'center', width: 150 },
+                { field: 'order_id', title: '订单号', align: 'center', width: 150 },
+                { field: 'store_name', title: '提货门店', align: 'center', width: 150, sort: true },
+                { field: 'name', title: '提货人名', align: 'center' },
+                { field: 'mobile', title: '提货电话', align: 'center' },
+                { field: 'status_name', title: '提货状态', align: 'center', sort: true },
+                { field: 'ctime', title: '下单时间', align: 'center', sort: true },
+                { field: 'option', title: '操作', align: 'center', toolbar: '#ladingBar' }
             ]]
         });
 
         //筛选条件
-        form.on('submit(*)', function(data){
+        form.on('submit(*)', function (data) {
             table.reload('ladingTable', {
                 where: data.field,
-                page: {curr: 1}
+                page: { curr: 1 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
         //监听工具条
-        table.on('tool(ladingTable)', function(obj){
+        table.on('tool(ladingTable)', function (obj) {
             var data = obj.data;
             var layEvent = obj.event;
 
-            if(layEvent === 'info'){
+            if (layEvent === 'info') {
                 //获取详情
                 $.ajax({
                     url: "{:url('manage/billLading/info')}",
@@ -149,14 +170,14 @@
                         });
                     }
                 });
-            }else if(layEvent === 'write'){
+            } else if (layEvent === 'write') {
                 //核销提货单
-                if(data.status === 2){
+                if (data.status === 2) {
                     layer.msg('该提货单已经核销，无需重复核销');
-                }else{
+                } else {
                     layer.confirm('确认核销该提货单吗？', {
                         btn: ['确认', '取消'] //按钮
-                    }, function(){
+                    }, function () {
                         $.ajax({
                             url: "{:url('manage/BillLading/write')}",
                             data: {
@@ -164,21 +185,21 @@
                             },
                             type: 'post',
                             dataType: 'json',
-                            success: function(e){
-                                layer.msg(e.msg, {time: 1500}, function(){
+                            success: function (e) {
+                                layer.msg(e.msg, { time: 1500 }, function () {
                                     table.reload('ladingTable');
                                 });
                             }
                         });
-                    }, function(){
+                    }, function () {
 
                     });
                 }
-            }else if(layEvent === 'del'){
+            } else if (layEvent === 'del') {
                 //删除
-                layer.confirm('真的删除么', {icon: 3}, function(index){
-                    JsGet("{:url('manage/billLading/delLading')}?id="+data.id, function(res){
-                        if(res.status){
+                layer.confirm('真的删除么', { icon: 3 }, function (index) {
+                    JsGet("{:url('manage/billLading/delLading')}?id=" + data.id, function (res) {
+                        if (res.status) {
                             obj.del();
                             layer.close(index);
                         }
@@ -189,7 +210,7 @@
         });
 
         //修改保存
-        $(document).on('click', '.editBtn', function(){
+        $(document).on('click', '.editBtn', function () {
             var data = $('#edit-form').serialize();
             $.ajax({
                 url: '{:url("manage/BillLading/info")}',
@@ -197,12 +218,12 @@
                 type: 'post',
                 dataType: 'json',
                 success: function (e) {
-                    if(e.status){
-                        layer.msg(e.msg, {time:1500}, function(){
+                    if (e.status) {
+                        layer.msg(e.msg, { time: 1500 }, function () {
                             layer.closeAll();
                             table.reload('ladingTable');
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
                 }
@@ -210,44 +231,44 @@
             return false;
         });
         //提货单导出
-        layui.form.on('submit(export-lading)', function(data){
+        layui.form.on('submit(export-lading)', function (data) {
 
             layer.open({
                 type: 1,
-                title:'提货单导出',
+                title: '提货单导出',
                 area: ['400px', '290px'], //宽高
-                btn:['确定','取消'],
+                btn: ['确定', '取消'],
                 content: $("#exportLading").html(),
-                yes:function () {
+                yes: function () {
                     //判断是否有选中
                     var checkStatus = layui.table.checkStatus('ladingTable');
                     var checkData = checkStatus.data;
                     var length = checkStatus.data.length;
                     var ids = [];
-                    if(length){
-                        $.each(checkData,function (i,obj) {
+                    if (length) {
+                        $.each(checkData, function (i, obj) {
                             ids.push(obj.id);
                         });
                     }
 
                     //判断是否有选中
                     var filter = $(".seller-form").serialize();
-                    filter+='&ids='+ids;
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    filter += '&ids=' + ids;
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'BillLading'});
+                    data.push({ 'name': 'model', 'value': 'BillLading' });
 
-                    JsPost("{:url('Ietask/export')}",data,function(res){
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if(res.status){
-                                    table.reload('ladingTable');
-                                    layer.closeAll();
-                                }
-                            });
-                        }
+                    JsPost("{:url('Ietask/export')}", data, function (res) {
+                        layer.msg(res.msg, { time: 1500 }, function () {
+                            if (res.status) {
+                                table.reload('ladingTable');
+                                layer.closeAll();
+                            }
+                        });
+                    }
                     );
-                },btn2:function () {
+                }, btn2: function () {
                     layer.closeAll();
                 }
             });

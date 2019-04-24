@@ -474,7 +474,7 @@ class Jshop extends TagLib
     }
 
     /**
-     * 无限极商品分类
+     * 无限极商品分类  注意 该方法需要开启伪静态
      * @param $tag
      * @return string
      */
@@ -496,6 +496,11 @@ class Jshop extends TagLib
         if ($value) {
             $selected = ',selected: [<?php echo ' . $value . ' ?>] ';
         }
+        if (config('?rename_manage') && config('rename_manage')) {
+            $catUrl = '/Api/Categories/getAllCat';
+        } else {
+            $catUrl = url('/Api/Categories/getAllCat');
+        }
         $parseStr .= '<script>
   layui.config({
     base : " __STATIC_LIB__layuiadmin/layui/"
@@ -509,7 +514,7 @@ class Jshop extends TagLib
     goodscat' . $id . ' = function(){
             $.ajax({
             type:"get",
-            url:"<?php echo url("api/Categories/getAllCat");  ?>",
+            url:"<?php echo "'.$catUrl.'";  ?>",
             data:"",
             success:function(e){
                 var catData = e.data;

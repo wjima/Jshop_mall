@@ -24,6 +24,7 @@
     }
 </style>
 <div class="layui-card" style="padding:10px;">
+    {:jshopToken()}
     <div class="layui-tab" lay-filter="setting">
         <ul class="layui-tab-title">
             <li lay-id="platform" class="layui-this">平台设置</li>
@@ -50,7 +51,12 @@
                             <textarea name="shop_desc" class="layui-textarea">{$data['shop_desc']['value']}</textarea>
                         </div>
                     </div>
-
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['shop_beian']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <textarea name="shop_beian" class="layui-textarea">{$data['shop_beian']['value']}</textarea>
+                        </div>
+                    </div>
                     <div class="layui-form-item" style="margin-top: 20px;">
                         <label class="layui-form-label">{$data['shop_mobile']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5">
@@ -494,19 +500,13 @@
                 }); //layer.msg(JSON.stringify(data.field));
                 return false;
             }
-            $.ajax({
-                url: '{:url("Setting/index")}',
-                type: 'post',
-                data: formData,
-                dataType: 'json',
-                success: function(e) {
-                    if (e.status === true) {
-                        layer.msg('保存成功');
-                    } else {
-                        layer.msg(e.msg, {
-                            time: 1300
-                        });
-                    }
+            JsPost('{:url("Setting/index")}',formData,function(e){
+                if (e.status === true) {
+                    layer.msg('保存成功');
+                } else {
+                    layer.msg(e.msg, {
+                        time: 1300
+                    });
                 }
             });
             return false;

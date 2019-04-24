@@ -42,19 +42,19 @@
 
     <div class="action-type miniprogram" {if condition="$menu.type neq 'miniprogram' "}style="display: none"{/if} >
         <div class="layui-form-item">
-            <label class="layui-form-label seller-inline-2">appid：</label>
+            <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>appid：</label>
             <div class="layui-input-inline seller-inline-5">
                 <input type="text"  name="params[appid]" value="{$wx_appid}" class="layui-input" placeholder="仅认证公众号可配置" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label seller-inline-2">备用url：</label>
+            <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>备用url：</label>
             <div class="layui-input-inline seller-inline-5">
                 <input type="text"  name="params[program_url]" value="{$menu.params.program_url}" class="layui-input" placeholder="仅认证公众号可配置" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label seller-inline-2">小程序路径：</label>
+            <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>小程序路径：</label>
             <div class="layui-input-inline seller-inline-5">
                 <input type="text"  name="params[page]" value="{$menu.params.page}" class="layui-input" placeholder="pages/index/index" class="layui-input">
             </div>
@@ -68,6 +68,7 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
+            {:jshopToken()}
             <button class="layui-btn" lay-submit="" lay-filter="save-menu">保存</button>
         </div>
     </div>

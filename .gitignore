@@ -8,3 +8,5 @@ config/install.lock
 vendor/zoujingli/wechat-php-sdk/Wechat/Cache/
 public/static/file
 public/install/install.lock
+wechat_app/sitemap.json
+public/qrcode/

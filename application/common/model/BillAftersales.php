@@ -23,6 +23,7 @@ class BillAftersales extends Common
     //软删除位
     protected $deleteTime = 'isdel';
 
+
     /**
      * 订单售后状态，返回退款的金额和退货的明细
      * @param $order_id
@@ -61,6 +62,7 @@ class BillAftersales extends Common
 
         return $orderInfo;
     }
+
 
     /**
      * 创建售后单
@@ -177,15 +179,19 @@ class BillAftersales extends Common
         return $result;
     }
 
+
     /**
      * 平台审核通过或者审核不通过
      * 如果审核通过了，是退款单的话，自动生成退款单，并做订单完成状态，如果是退货的话，自动生成退款单和退货单，如果
      * @param $aftersales_id
-     * @param $type
-     * @param array $items
-     * @param string $mark
+     * @param $status
      * @param int $refund
-     * @return bool
+     * @param string $mark
+     * @param array $items
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function audit($aftersales_id, $status,$refund = 0,$mark="",$items = [] ){
         $result = [
@@ -288,6 +294,11 @@ class BillAftersales extends Common
                     }
                 }
                 $orderModel->where(['order_id'=>$orderInfo['order_id'],'status'=>$orderModel::ORDER_STATUS_NORMAL])->data($order_data)->update();
+
+                // 添加退货并审核成功的钩子
+                if($info['type'] == self::TYPE_RESHIP && $items){
+                    hook('exchange', $aftersales_id);
+                }
             }
 
             Db::commit();
@@ -308,7 +319,6 @@ class BillAftersales extends Common
         return $result;
 
     }
-
 
 
     //校验是否可以进行售后
@@ -351,6 +361,7 @@ class BillAftersales extends Common
             'msg' => ''
         ];
     }
+
 
     /**
      * 根据退货的明细，生成售后单明细表的数据
@@ -397,11 +408,12 @@ class BillAftersales extends Common
         ];
     }
 
+
     /**
      * 返回layui的table所需要的格式
-     * @author sin
      * @param $post
      * @return mixed
+     * @throws \think\exception\DbException
      */
     public function tableData($post)
     {
@@ -423,6 +435,11 @@ class BillAftersales extends Common
         return $re;
     }
 
+
+    /**
+     * @param $post
+     * @return mixed
+     */
     protected function tableWhere($post)
     {
         $where = [];
@@ -460,6 +477,8 @@ class BillAftersales extends Common
         $result['order'] = 'aftersales_id desc';
         return $result;
     }
+
+
     /**
      * 根据查询结果，格式化数据
      * @author sin
@@ -485,6 +504,7 @@ class BillAftersales extends Common
         }
         return $list;
     }
+
 
     /**
      * 前端接口，分页
@@ -517,6 +537,7 @@ class BillAftersales extends Common
         $result['data']['total_page'] = ceil($total/$data['limit']);
         return $result;
     }
+
 
     /**
      * 获取售后单信息
@@ -564,26 +585,50 @@ class BillAftersales extends Common
     }
 
 
+    /**
+     * @return \think\model\relation\HasMany
+     */
     public function images()
     {
         return $this->hasMany('BillAftersalesImages','aftersales_id','aftersales_id');
     }
+
+
+    /**
+     * @return \think\model\relation\HasMany
+     */
     public function items()
     {
         return $this->hasMany('BillAftersalesItems','aftersales_id','aftersales_id');
     }
+
+
+    /**
+     * @return \think\db\Query|\think\model\relation\HasOne
+     */
     public function order()
     {
         return $this->hasOne('Order','order_id','order_id');
     }
+
+
+    /**
+     * @return \think\model\relation\HasOne
+     */
     public function billReship()
     {
         return $this->hasOne('BillReship','aftersales_id','aftersales_id');
     }
+
+
+    /**
+     * @return \think\model\relation\HasOne
+     */
     public function billRefund()
     {
         return $this->hasOne('billRefund','aftersales_id','aftersales_id');
     }
+
 
     /**
      * 设置csv header
@@ -630,6 +675,8 @@ class BillAftersales extends Common
             ],
         ];
     }
+
+
     /**
      * 获取csv数据
      * @param $post
@@ -674,6 +721,8 @@ class BillAftersales extends Common
             return $result;
         }
     }
+
+
     /**
      * 导出验证
      * @param array $params
@@ -689,7 +738,8 @@ class BillAftersales extends Common
         return $result;
     }
 
-//导出格式
+
+    //导出格式
     public function getExportList($post = [])
     {
         $return_data = [
@@ -771,5 +821,60 @@ class BillAftersales extends Common
         $where[] = ['user_id', 'eq', $user_id];
         $where[] = ['status', 'in', $status];
         return $this->where($where)->count();
+    }
+
+
+    /**
+     * @param $order_id
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getOrderAfterSaleStatus($order_id)
+    {
+        $where[] = ['order_id', 'eq', $order_id];
+        $info = $this->where($where)->find();
+        if($info)
+        {
+            if($info['status'] == self::STATUS_WAITAUDIT)
+            {
+                $text = '<span style="color:#ff7159;">待审核</span>';
+            }
+            else if($info['status'] == self::STATUS_SUCCESS)
+            {
+                if($info['type'] == self::TYPE_REFUND)
+                {
+                    $refundModel = new BillRefund();
+                    $text = '<span style="color:#ff7159;">'.$refundModel->getAftersalesStatus($info['aftersales_id']).'</span>';
+                }
+                else if($info['type'] == self::TYPE_RESHIP)
+                {
+                    $refundModel = new BillRefund();
+                    $refund = $refundModel->getAftersalesStatus($info['aftersales_id']);
+                    $reshipModel = new BillReship();
+                    $reship = $reshipModel->getAftersalesStatus($info['aftersales_id']);
+                    $text = '<span style="color:#ff7159;">'.$reship.','.$refund.'</span>';
+                }
+                else
+                {
+                    $text = '<span style="color:#ff7159;">状态异常</span>';
+                }
+            }
+            else if($info['status'] == self::STATUS_REFUSE)
+            {
+                $text = '<span style="color:#ff7159;">审核拒绝</span>';
+            }
+            else
+            {
+                $text = '<span style="color:#ff7159;">状态异常</span>';
+            }
+        }
+        else
+        {
+            $text = '';
+        }
+
+        return $text;
     }
 }

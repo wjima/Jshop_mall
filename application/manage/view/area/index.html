@@ -17,7 +17,7 @@
     </div>
 
 </div>
-
+{:jshopToken()}
 <div class="table-body">
     <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
     <table id="areaTable" lay-filter="areaTable"></table>
@@ -394,23 +394,17 @@
         });
         $(document).on('click', '.add-save', function(){
             if($("#area_name").val().length > 0){
-                $.ajax({
-                    url: '{:url("area/add")}',
-                    type: 'post',
-                    data: {
-                        'name': $("#area_name").val(),
-                        'parent_id': action_id,
-                        'depth': depth,
-                        'sort': $("#area_sort").val()
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        layer.close(window_box);
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
-                    }
-                })
+                JsPost('{:url("area/add")}',{
+                    'name': $("#area_name").val(),
+                    'parent_id': action_id,
+                    'depth': depth,
+                    'sort': $("#area_sort").val()
+                },function(e){
+                    layer.close(window_box);
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
+                });
             }else{
                 layer.msg('请填写地区名称');
             }

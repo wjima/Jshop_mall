@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { host } from "../../common/serviceUrl"
 export default {
     data () {
         return {
@@ -202,7 +203,7 @@ export default {
         // 获取授权登录方式列表
         getAuth () {
             this.$api.getTrustLogin({
-                url: window.location.protocol + '//' + window.location.host,
+                url: host + '/wap/index.html#/author',
                 uuid: this.genNonDuplicateID()
             }, res => {
                 if (res.status) {

@@ -261,6 +261,7 @@ function getJshopConf() {
     if (line_conf) {
         config = this.deepCopy(config, line_conf);
     }
+  
     //取最新的店铺配置信息
     wx.request({
         url: config.api_url + 'api/common/jshopconf',//未开启伪静态时，请把api改成index.php/api

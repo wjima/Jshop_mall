@@ -167,7 +167,6 @@ class Ship extends Common
         }
         if ($def['type'] == self::TYPE_PART) {
             $area_fee = json_decode($def['area_fee'], true);
-
             if ($area_fee) {
                 $isIn = false;
                 foreach ($area_fee as $key => $val) {
@@ -181,7 +180,7 @@ class Ship extends Common
                     }
                 }
                 if (!$isIn) {
-                    $total   = self::calculate_fee($val, $weight, $totalmoney);
+                    $total   = self::calculate_fee($def, $weight, $totalmoney);
                     $postfee = getMoney($total);
                 }
             } else {
@@ -196,7 +195,7 @@ class Ship extends Common
         return $postfee;
 
     }
-    
+
     /**
      * 根据地区获取配送方式
      * todo 地区判断以后再加
@@ -243,13 +242,13 @@ class Ship extends Common
                 return 0;
             }
             $shipmoney = 0;
-            $tmp_exp = trim(str_replace('w', $weight, $ship['exp']));
+            $tmp_exp   = trim(str_replace('w', $weight, $ship['exp']));
             eval("\$shipmoney = $tmp_exp;");
             return $shipmoney;
         } else {
-            if(isset($ship['firstunit_price'])){
+            if (isset($ship['firstunit_price'])) {
                 return $ship['firstunit_price'];
-            }else{
+            } else {
                 return $ship['firstunit_area_price'];
             }
         }
@@ -335,7 +334,7 @@ class Ship extends Common
      */
     protected function tableWhere($post)
     {
-        $where = [];
+        $where           = [];
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['id' => 'desc'];

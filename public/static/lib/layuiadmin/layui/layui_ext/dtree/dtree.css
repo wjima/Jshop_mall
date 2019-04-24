@@ -1,48 +1,4 @@
 
-/* 菜单栏*/
-.dtree-menubar {padding-left: 10px;}
-.dtree-menubar .layui-btn-group .layui-btn-sm{height: 20px;line-height: 20px;padding: 0 5px;font-size: 12px;}
-.dtree-menubar .layui-btn-group .layui-btn-sm i{font-size: 12px!important;}
-
-/* 工具栏*/
-.nav-tree-toolbar-div{position: absolute;z-index: 940520;padding: 0;background-color: #eceaeb;}
-.nav-tree-toolbar-div .layui-nav-child{position: static;}
-.nav-tree-toolbar-div .layui-nav-child dd{cursor: pointer;}
-.nav-tree-toolbar-div .layui-nav-child dd a i.iconfont{font-size:16px;display: inline-block;margin: 0px 1px;color:#fe7786;}
-.nav-tree-toolbar-div .layui-nav-child dd a i.iconfont:hover{font-weight: bold;}
-.nav-tree-toolbar-div .layui-nav-bar{display: none!important;}
-.nav-tree-toolbar-div-tool{padding: 30px;}
-
-/* 树基本*/
-.layui-side-scroll{width: 260px;height: auto;padding: 10px 1px 10px 0px;}
-.dtree{width:260px;}
-.nav-tree-item{line-height:33px;padding-left:16px;}
-.nav-tree-ul-sid{display: none;}
-
-/* 图标及复选框*/
-.iconfont{cursor: pointer;}
-.iconfont-special{margin: 0 4px;}
-.nav-tree-checkbox-div{display: inline-block;}
-.nav-tree-checkbox-div>i.iconfont{display: inline-block;margin: 0px 1px;}
-.nav-tree-checkbox-div>i.iconfont:last-child{margin-right: 4px;}
-.nav-tree-checkbox-div>i.iconfont:hover{opacity:0.8;filter:Alpha(opacity=80);}
-
-/* 行 文字*/
-.nav-tree-div{display:block;vertical-align:top;position:relative;cursor: pointer;}
-.nav-tree-div cite{font-style: normal;cursor: pointer;}
-.nav-tree-div:hover cite{opacity:0.7;filter:Alpha(opacity=70);transition: all .3s;-webkit-transition: all .3s;}
-
-/* 规则属性*/
-.nav-show {display: block!important;}
-.nav-this {}
-.icon-hide {opacity:0;filter:Alpha(opacity=0);}
-.icon-null-open,.icon-null-close,.icon-null{margin: 0 2px;}
-
-/* 简单适配*/
-@media screen and (max-width:1700px) and (min-width:1300px){	
-	.nav-tree-item {padding-left: 15px;}
-}
-
 /**************** 主题换肤  ****************/
 /* 默认风格*/
 .dtree-theme-item-this{background-color: #d2d2d2!important;}
@@ -50,7 +6,7 @@
 .dtree-theme-item cite{font-size:12px!important;}
 .dtree-theme-item:hover cite{color:#fe7786!important;}
 
-.dtree-theme-iconfont{font-size: 16px!important;}
+.dtree-theme-dtreefont{font-size: 16px!important;}
 .dtree-theme-ficon{color:#000!important;}
 .dtree-theme-icon{color:orange!important;}
 .dtree-theme-checkbox:hover{color:#fe7786!important;}
@@ -62,12 +18,66 @@
 .dtree-layui-item cite{font-size:12px!important;}
 .dtree-layui-item:hover cite{color:#01AAED!important;}
 
-.dtree-layui-iconfont{font-size: 16px!important;}
+.dtree-layui-dtreefont{font-size: 16px!important;}
 .dtree-layui-ficon{font-size: 14px!important;color:#393D49!important;}
 .dtree-layui-icon{color:#393D49!important;}
 .dtree-layui-checkbox:hover{color:#01AAED!important;}
 .dtree-layui-choose{color:#01AAED!important;}
 
+
+/**************** 树基础  ****************/
+/* 菜单栏*/
+.dtree-menubar {padding-left: 10px;}
+.dtree-menubar .layui-btn-group .layui-btn-sm{height: 20px;line-height: 20px;padding: 0 5px;font-size: 12px;}
+.dtree-menubar .layui-btn-group .layui-btn-sm i{font-size: 12px!important;}
+
+/* 工具栏*/
+.dtree-toolbar{position: absolute;z-index: 940520;padding: 0;background-color: #eceaeb;}
+.dtree-toolbar .layui-nav-child{position: static;}
+.dtree-toolbar .layui-nav-child dd{cursor: pointer;}
+.dtree-toolbar .layui-nav-child dd a i{font-size:16px;display: inline-block;margin: 0px 1px;color:#fe7786;}
+.dtree-toolbar .layui-nav-child dd a i:hover{font-weight: bold;}
+.dtree-toolbar .layui-nav-bar{display: none!important;}
+.dtree-toolbar-tool{padding: 30px;}
+
+.dtree-toolbar-fixed{position: absolute;right: 5px;top: 2px;font-style: normal;transition: all .3s;-webkit-transition: all .3s;}
+/*.dtree-toolbar-fixed a{border:1px solid #fe7786;}*/
+.dtree-toolbar-fixed a i{font-size:14px;display: inline-block;margin: 0px 1px;color:#fe7786;}
+.dtree-toolbar-fixed a i:hover{opacity:0.8;filter:Alpha(opacity=80);}
+
+/* 树基本*/
+.dtree{width:260px;}
+.dtree-nav-item{line-height:33px;padding-left:16px;}
+.dtree-nav-ul-sid{display: none;}
+
+/* 图标及复选框*/
+.dtreefont{cursor: pointer;}
+.dtreefont-special{margin: 0 4px;}
+.dtree-nav-checkbox-div{display: inline-block;}
+.dtree-nav-checkbox-div>i{display: inline-block;margin: 0px 1px;}
+.dtree-nav-checkbox-div>i:last-child{margin-right: 4px;}
+.dtree-nav-checkbox-div>i:hover{opacity:0.8;filter:Alpha(opacity=80);}
+
+/* 行 文字*/
+.dtree-nav-div{display:block;vertical-align:top;position:relative;}
+.dtree-nav-div cite{font-style: normal;cursor: pointer;}
+.dtree-nav-div:hover cite{opacity:0.7;filter:Alpha(opacity=70);transition: all .3s;-webkit-transition: all .3s;}
+
+/* 规则属性*/
+.dtree-nav-show {display: block!important;}
+.dtree-nav-hide {display: none!important;}
+.dtree-nav-this {}
+.dtree-icon-hide {opacity:0;filter:Alpha(opacity=0);}
+.dtree-icon-null-open,.dtree-icon-null-close,.dtree-icon-null{margin: 0 2px;}
+.dtree-disabled{cursor: not-allowed; color:#c2c2c2!important;}
+.dtree-disabled:hover{color:#c2c2c2!important;}
+.dtree-nav-div cite.dtree-disabled{font-style: normal; cursor: not-allowed; color:#c2c2c2!important;}
+.dtree-nav-div>cite.dtree-disabled:hover{color:#c2c2c2!important;}
+
+/* 简单适配*/
+@media screen and (max-width:1700px) and (min-width:1300px){	
+	.dtree-nav-item {padding-left: 15px;}
+}
 
 
 

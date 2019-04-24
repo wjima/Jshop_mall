@@ -1,27 +1,65 @@
-<form class="layui-form seller-form"  action="" >
+<style>
+    @media screen and (max-width: 500px) {
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width: 1200px !important;
+            box-sizing: border-box;
+        }
+
+        .layui-layer.layui-layer-page {
+            width: 100% !important;
+            overflow: hidden !important;
+            left: 0 !important;
+        }
+
+        .layui-layer-title {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .layui-layer-content {
+            width: 100% !important;
+        }
+
+    }
+
+    .w100 {
+        width: 100px !important;
+    }
+</style>
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">退货单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="reship_id" lay-verify="title" placeholder="请输入退货单号" autocomplete="off" class="layui-input">
+                <input type="text" name="reship_id" lay-verify="title" placeholder="请输入退货单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">订单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off" class="layui-input">
+                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">下单时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label style="width:120px" class="layui-form-label">用户手机号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
     </div>
@@ -40,12 +78,15 @@
         <div class="layui-inline">
             <label class="layui-form-label">物流单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="logi_no" lay-verify="title" placeholder="请输入物流单号" autocomplete="off" class="layui-input">
+                <input type="text" name="logi_no" lay-verify="title" placeholder="请输入物流单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-reship"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-reship"><i
+                    class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
         </div>
     </div>
 </form>
@@ -54,7 +95,7 @@
     <table id="billReship" lay-filter="test"></table>
 </div>
 <div id="exportReship" style="display: none;">
-    <form class="layui-form export-form"  action="" >
+    <form class="layui-form export-form" action="">
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
@@ -64,13 +105,14 @@
 
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
-                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
 </div>
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         //时间插件
         layui.laydate.render({
             elem: '#date',
@@ -82,114 +124,116 @@
             height: 'full-250',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
+            limit: '20',
             url: "{:url('billReship/index')}?_ajax=1",
-            id:'billReship',
+            id: 'billReship',
             cols: [[
-                {type:'checkbox'},
-                {field:'reship_id', width:140, sort: true,title:'退货单号'},
-                {field:'order_id',width:140,title:'订单号'},
-                {field:'user_id', width:150,minWidth: 50,title:'用户'},
-                {field:'status_name', width:100,title:'状态'},
-                {field:'logi_code',title:'物流公司'},
-                {field:'logi_no',title:'物流单号'},
-                {field:'ctime',width:170,title:'创建时间'},
-                {field:'utime',width:170,title:'更新时间'},
-                {field: 'operating', title: '操作', width:200, align: 'center', templet:function(data){
-                    var html = '';
-                    html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
-                    if(data.status === 2){
-                        html += '<a class="layui-btn layui-btn-xs option-audit" data-id="' + data.reship_id + '">确认收货</a>';
+                { type: 'checkbox' },
+                { field: 'reship_id', width: 140, sort: true, title: '退货单号' },
+                { field: 'order_id', width: 140, title: '订单号' },
+                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
+                { field: 'status_name', width: 100, title: '状态' },
+                { field: 'logi_code', title: '物流公司' },
+                { field: 'logi_no', title: '物流单号' },
+                { field: 'ctime', width: 170, title: '创建时间' },
+                { field: 'utime', width: 170, title: '更新时间' },
+                {
+                    field: 'operating', title: '操作', width: 200, align: 'center', templet: function (data) {
+                        var html = '';
+                        html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
+                        if (data.status === 2) {
+                            html += '<a class="layui-btn layui-btn-xs option-audit" data-id="' + data.reship_id + '">确认收货</a>';
+                        }
+                        return html;
                     }
-                    return html;
-                }},
+                },
             ]]
         });
-        layui.form.on('submit(*)', function(data){
+        layui.form.on('submit(*)', function (data) {
             layui.table.reload('billReship', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
         //确认收货操作
-        $(document).on('click','.option-audit',function(){
+        $(document).on('click', '.option-audit', function () {
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{:url('billReship/confirmReship')}",
-                data:'reship_id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
-                        layer.msg('确认收货成功', {time: 1500}, function(){
+                data: 'reship_id=' + $(this).attr('data-id'),
+                success: function (e) {
+                    if (e.status) {
+                        layer.msg('确认收货成功', { time: 1500 }, function () {
                             layui.table.reload('billReship');
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
                 }
             });
         });
         //查看操作
-        $(document).on('click','.option-view',function(){
+        $(document).on('click', '.option-view', function () {
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{:url('billReship/view')}",
-                data:'reship_id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
+                data: 'reship_id=' + $(this).attr('data-id'),
+                success: function (e) {
+                    if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
                             area: ['600px', '400px'],
-                            title:'退货单查看'
+                            title: '退货单查看'
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
                 }
             });
         });
         //退货单导出
-        layui.form.on('submit(export-reship)', function(data){
+        layui.form.on('submit(export-reship)', function (data) {
 
             layer.open({
                 type: 1,
-                title:'退货单导出',
+                title: '退货单导出',
                 area: ['400px', '290px'], //宽高
-                btn:['确定','取消'],
+                btn: ['确定', '取消'],
                 content: $("#exportReship").html(),
-                yes:function () {
+                yes: function () {
                     //判断是否有选中
                     var checkStatus = layui.table.checkStatus('billReship');
                     var checkData = checkStatus.data;
                     var length = checkStatus.data.length;
                     var ids = [];
-                    if(length){
-                        $.each(checkData,function (i,obj) {
+                    if (length) {
+                        $.each(checkData, function (i, obj) {
                             ids.push(obj.reship_id);
                         });
                     }
 
                     //判断是否有选中
                     var filter = $(".seller-form").serialize();
-                    filter+='&ids='+ids;
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    filter += '&ids=' + ids;
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'BillReship'});
+                    data.push({ 'name': 'model', 'value': 'BillReship' });
 
-                    JsPost("{:url('Ietask/export')}",data,function(res){
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if(res.status){
-                                    layui.table.reload('billReship');
-                                    layer.closeAll();
-                                }
-                            });
-                        }
+                    JsPost("{:url('Ietask/export')}", data, function (res) {
+                        layer.msg(res.msg, { time: 1500 }, function () {
+                            if (res.status) {
+                                layui.table.reload('billReship');
+                                layer.closeAll();
+                            }
+                        });
+                    }
                     );
-                },btn2:function () {
+                }, btn2: function () {
                     layer.closeAll();
                 }
             });

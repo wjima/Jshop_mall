@@ -30,26 +30,28 @@ Page({
             point: res.data.point,
             balance: res.data.balance
           });
+
+          app.api.getOrderStatusNum('1,2,3,4', function (res) {
+            page.setData({
+              statusData: res.data
+            });
+          });
+
+          //是否店员
+          app.api.isClerk(function (res) {
+            page.setData({
+              isClerk: res.flag
+            });
+          });
+
+          //是否开启积分
+          page.setData({
+            isPoint: app.config.point_switch
+          });
         }
       });
 
-      app.api.getOrderStatusNum('1,2,3,4', function (res) {
-        page.setData({
-          statusData: res.data
-        });
-      });
 
-      //是否店员
-      app.api.isClerk(function(res){
-          page.setData({
-              isClerk: res.flag
-          });
-      });
-      
-        //是否开启积分
-        page.setData({
-            isPoint: app.config.point_switch
-        });
   },
 
   //查看全部订单

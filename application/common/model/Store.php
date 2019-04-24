@@ -252,12 +252,14 @@ class Store extends Common
     /**
      * 获取全部店铺列表
      * @param string $key
+     * @param bool $longitude
+     * @param bool $latitude
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getAllStoreList($key = '')
+    public function getAllStoreList($key = '', $longitude = false, $latitude = false)
     {
         $return = [
             'status' => false,

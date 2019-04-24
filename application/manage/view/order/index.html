@@ -1,39 +1,69 @@
 <style>
-    .layui-btn .layui-icon{
+    .layui-btn .layui-icon {
         margin-right: 0;
     }
-    .layui-form-pane .layui-form-label, .layui-form-pane .layui-input-inline{
+
+    .layui-form-pane .layui-form-label,
+    .layui-form-pane .layui-input-inline {
         width: auto;
     }
-    .view-data{
+
+    .view-data {
         height: 36px;
         line-height: 36px;
         display: inline-block;
         padding: 0 20px;
-        border-style:solid;
-        border-width:1px;
-        background-color:#fff;
-        border-radius:2px;
-        border-color:#e6e6e6;
+        border-style: solid;
+        border-width: 1px;
+        background-color: #fff;
+        border-radius: 2px;
+        border-color: #e6e6e6;
     }
-    .table-body .layui-btn .iconfont{
-    	font-size: 17px !important;
+
+    .table-body .layui-btn .iconfont {
+        font-size: 17px !important;
     }
-    .layui-card-body{
+
+    .layui-card-body {
         background-color: #fff;
         padding: 10px;
         margin-top: 10px;
         border: 1px solid #e6e6e6;
     }
-    .layui-tab-card>.layui-tab-title{
+
+    .layui-tab-card>.layui-tab-title {
         background-color: #f9f9f9;
         border-bottom: none;
     }
-    .layui-tab-content{
+
+    .layui-tab-content {
         padding: 0;
     }
-    .layui-table, .layui-table-view{
+
+    .layui-table,
+    .layui-table-view {
         margin: 0;
+    }
+
+    #layui-btn-group-container .layui-btn {
+        margin-right: 10px !important;
+        margin-bottom: 10px !important;
+    }
+
+    @media screen and (max-width: 500px) {
+        .layui-layer.layui-layer-page {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-layer-title {
+            width: 800px !important;
+        }
+
+        .layui-layer-content {
+            width: 800px !important;
+        }
     }
 </style>
 
@@ -41,35 +71,54 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">订单号：</label>
-            <div class="layui-input-inline seller-inline-3">
+            <!-- <div class="layui-input-inline seller-inline-3"> -->
+            <div class="layui-input-inline">
                 <input type="text" name="order_id" placeholder="请输入订单号" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">下单时间：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+            <div class="layui-input-inline">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">订单来源：</label>
-            <div class="layui-input-inline seller-inline-3">
+            <div class="layui-input-inline">
                 <select name="source" id="source">
                     <option value="">-- 全部 --</option>
                     {foreach $source as $key=>$vo}
-                        <option value="{$key}">{$vo}</option>
+                    <option value="{$key}">{$vo}</option>
                     {/foreach}
                 </select>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">用户：</label>
-            <div class="layui-input-inline seller-inline-4">
+            <div class="layui-input-inline">
                 <input type="text" name="username" placeholder="用户名、昵称、手机" autocomplete="off" class="layui-input">
             </div>
         </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">手机号：</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="ship_mobile" placeholder="收货人手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-btn-group" id="layui-btn-group-container">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm" id="pay-order-array"><i
+                    class="iconfont icon-zhifu-01"></i>批量支付</button>
+            <button class="layui-btn layui-btn-sm" id="cancel-order-array"><i
+                    class="iconfont icon-cancel"></i>取消</button>
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-order"><i
+                    class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            {:hook('orderExtBtn')}
+        </div>
     </div>
-    <div class="layui-form-item">
+    <!-- <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">手机号：</label>
             <div class="layui-input-inline seller-inline-3">
@@ -83,13 +132,14 @@
             <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-order"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
             {:hook('orderExtBtn')}
         </div>
-    </div>
+    </div> -->
 </form>
 
 <div class="table-body">
     <div class="layui-tab layui-tab-card" lay-filter="order-tab">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="all">全部订单<span class="layui-badge layui-bg-gray">{$count.all|default=0}</span></li>
+            <li class="layui-this" lay-id="all">全部订单<span
+                    class="layui-badge layui-bg-gray">{$count.all|default=0}</span></li>
             <li lay-id="payment">待支付<span class="layui-badge layui-bg-green">{$count.payment|default=0}</span></li>
             <li lay-id="delivered">待发货<span class="layui-badge layui-bg-black">{$count.delivered|default=0}</span></li>
             <li lay-id="receive">待收货<span class="layui-badge layui-bg-blue">{$count.receive|default=0}</span></li>
@@ -104,7 +154,7 @@
 </div>
 
 <div id="exportOrder" style="display: none;">
-    <form class="layui-form export-form"  action="" >
+    <form class="layui-form export-form" action="">
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
@@ -114,14 +164,15 @@
 
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
-                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
 </div>
 <script>
     var window_box, table;
-    layui.use(['table', 'layer', 'laydate', 'form', 'element'], function(){
+    layui.use(['table', 'layer', 'laydate', 'form', 'element'], function () {
         var layer = layui.layer,
             $ = layui.jquery,
             laydate = layui.laydate,
@@ -138,13 +189,13 @@
         });
 
         //获取订单数据
-        table  = layui.table.render({
+        table = layui.table.render({
             id: 'order',
             elem: '#order',
             height: 'full-300',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
+            limit: '20',
             url: '{:url("order/index")}',
             method: 'post',
             response: {
@@ -152,29 +203,32 @@
                 statusCode: 1
             },
             cols: [[
-                {type:'checkbox'},
-                {field: 'order_id_k', title: '订单号', width:140, align: 'center'},
-                {field: 'order_id', title: '打印',align: 'center', templet:function (data) {
-                    var html='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=1" target="_blank">购</a>&nbsp;';
-                    html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=2"  target="_blank">配</a>&nbsp;';
-                    html+='<a href="{:url("order/print_tpl")}?order_id='+data.order_id+'&type=3"  target="_blank">联</a>&nbsp;';
-                    if(data.print){
-                        html+='<a href="javascript:void(0);" style="color: green;" onclick="printExpress('+data.order_id+')">递</a>';
-                    }else{
-                        html+='<a href="javascript:void(0);"  onclick="printExpress('+data.order_id+')">递</a>';
+                { type: 'checkbox' },
+                { field: 'order_id_k', title: '订单号', width: 140, align: 'center' },
+                {
+                    field: 'order_id', title: '打印', align: 'center', width: 100, templet: function (data) {
+                        var html = '<a href="{:url("order/print_tpl")}?order_id=' + data.order_id + '&type=1" target="_blank">购</a>&nbsp;';
+                        html += '<a href="{:url("order/print_tpl")}?order_id=' + data.order_id + '&type=2"  target="_blank">配</a>&nbsp;';
+                        html += '<a href="{:url("order/print_tpl")}?order_id=' + data.order_id + '&type=3"  target="_blank">联</a>&nbsp;';
+                        if (data.print) {
+                            html += '<a href="javascript:void(0);" style="color: green;" onclick="printExpress(' + data.order_id + ')">递</a>';
+                        } else {
+                            html += '<a href="javascript:void(0);"  onclick="printExpress(' + data.order_id + ')">递</a>';
+                        }
+                        return html;
                     }
-                    return html;
-                }},
-                {field: 'ctime', title: '下单时间', width:160, align: 'center'},
-                {field: 'status_text', title: '订单状态', width: 90, align: 'center'},
-                {field: 'username', title: '用户名', width:120, align: 'center'},
-                {field: 'ship_mobile', title: '收货人手机号', width:120, align: 'center'},
-                {field: 'area_name', title: '收货地址', align: 'center'},
-                {field: 'pay_status', title: '支付状态', width:90, align: 'center'},
-                {field: 'ship_status', title: '发货状态', width:90, align: 'center'},
-                {field: 'order_amount', title: '订单总额', width:100, align: 'center', templet:function(data){return '￥'+data.order_amount}},
-                {field: 'source', title: '订单来源', width:130, align: 'center'},
-                {field: 'operating', title: '操作', width:200, align: 'center'}
+                },
+                { field: 'ctime', title: '下单时间', width: 160, align: 'center' },
+                { field: 'status_text', title: '订单状态', width: 90, align: 'center' },
+                { field: 'after_sale_status', title: '售后状态', width: 150, align: 'center' },
+                { field: 'username', title: '用户名', width: 120, align: 'center' },
+                { field: 'ship_mobile', title: '收货人手机号', width: 120, align: 'center' },
+                { field: 'area_name', title: '收货地址', width: 110, align: 'center' },
+                { field: 'pay_status', title: '支付状态', width: 90, align: 'center' },
+                { field: 'ship_status', title: '发货状态', width: 90, align: 'center' },
+                { field: 'order_amount', title: '订单总额', width: 100, align: 'center', templet: function (data) { return '￥' + data.order_amount } },
+                { field: 'source', title: '订单来源', width: 130, align: 'center' },
+                { field: 'operating', title: '操作', width: 200, align: 'center' }
             ]]
         });
 
@@ -197,27 +251,27 @@
             }
             var basefilter = $(".seller-form").serializeArray();
             $.each(basefilter, function (i, obj) {
-                if(!filter.hasOwnProperty(obj.name)){
+                if (!filter.hasOwnProperty(obj.name)) {
                     filter[obj.name] = obj.value;
                 }
             });
             table.reload({
                 where: filter,
-                page: {curr: 1}
+                page: { curr: 1 }
             });
         });
 
         //筛选条件
-        form.on('submit(*)', function(data){
+        form.on('submit(*)', function (data) {
             table.reload({
                 where: data.field,
-                page: {curr: 1}
+                page: { curr: 1 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
         //查看订单
-        $(document).on('click', '.view-order', function(){
+        $(document).on('click', '.view-order', function () {
             var id = $(this).attr('data-id');
             $.ajax({
                 url: '{:url("order/view")}',
@@ -225,19 +279,20 @@
                 data: {
                     'id': id
                 },
-                success: function(e){
+                success: function (e) {
                     window_box = layer.open({
                         type: 1,
                         title: '订单详情',
                         area: ['800px', '445px'], //宽高
-                        content: e
+                        content: e,
+                        moveOut: true
                     });
                 }
             });
         });
 
         //编辑订单
-        $(document).on('click', '.edit-order', function(){
+        $(document).on('click', '.edit-order', function () {
             var id = $(this).attr('data-id');
 
             $.ajax({
@@ -247,7 +302,7 @@
                     'id': id,
                     'order_type': $(this).attr('data-type')
                 },
-                success: function(e){
+                success: function (e) {
                     window_box = layer.open({
                         type: 1,
                         title: '编辑订单',
@@ -259,7 +314,7 @@
         });
 
         //保存编辑订单
-        $(document).on('click', '.order-edit-btn', function(){
+        $(document).on('click', '.order-edit-btn', function () {
             var order_id = $("#order_id").val();
             var edit_type = $("#edit_type").val();
             var store_id = $("#store_id").val();
@@ -268,6 +323,7 @@
             var ship_name = $("#ship_name").val();
             var ship_mobile = $("#ship_mobile").val();
             var order_amount = $("#order_amount").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
 
             $.ajax({
                 url: '{:url("order/edit")}',
@@ -280,11 +336,12 @@
                     'ship_address': ship_address,
                     'ship_name': ship_name,
                     'ship_mobile': ship_mobile,
-                    'order_amount': order_amount
+                    'order_amount': order_amount,
+                    __Jshop_Token__:__Jshop_Token__
                 },
-                success: function(e){
+                success: function (e) {
                     layer.close(window_box);
-                    layer.msg(e.msg, {time: 1300}, function(){
+                    layer.msg(e.msg, { time: 1300 }, function () {
                         table.reload();
                     });
                 }
@@ -292,7 +349,7 @@
         });
 
         //单个去支付订单页面展示
-        $(document).on('click', '.pay-order', function(){
+        $(document).on('click', '.pay-order', function () {
             var id = $(this).attr('data-id');
             $.ajax({
                 url: '{:url("bill_payments/pay")}',
@@ -301,32 +358,31 @@
                     'order_id': id,
                     'type': 1
                 },
-                success: function(e){
-                    if(e.status){
+                success: function (e) {
+                    if (e.status) {
                         window_box = layer.open({
                             type: 1,
                             title: '支付订单',
                             area: ['500px', '600px'], //宽高
                             content: e.data.tpl
                         });
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
                 }
             });
         });
-
         //多个去支付订单页面展示
-        var pay_order_array = function(){ //获取选中数据
+        var pay_order_array = function () { //获取选中数据
             var checkStatus = tables.checkStatus('order'), data = checkStatus.data;
             var ids = '';
-            $.each(data, function(){
-                ids += this.order_id+',';
+            $.each(data, function () {
+                ids += this.order_id + ',';
             });
-            ids = ids.substring(0, ids.length-1);
-            if(ids){
+            ids = ids.substring(0, ids.length - 1);
+            if (ids) {
                 $.ajax({
                     url: '{:url("bill_payments/pay")}',
                     type: 'get',
@@ -334,47 +390,49 @@
                         'order_id': ids,
                         'type': 1
                     },
-                    success: function(e){
-                       if(e.status){
-                           window_box = layer.open({
-                               type: 1,
-                               title: '支付订单',
-                               area: ['530px', '520px'], //宽高
-                               content: e.data.tpl
-                           });
-                       }else{
-                           layer.msg(e.msg, {time: 1300}, function(){
-                               table.reload();
-                           });
-                       }
+                    success: function (e) {
+                        if (e.status) {
+                            window_box = layer.open({
+                                type: 1,
+                                title: '支付订单',
+                                area: ['530px', '520px'], //宽高
+                                content: e.data.tpl
+                            });
+                        } else {
+                            layer.msg(e.msg, { time: 1300 }, function () {
+                                table.reload();
+                            });
+                        }
                     }
                 });
-            }else{
+            } else {
                 layer.msg('请勾选需要支付的订单');
             }
             return false;
         };
-        $('#pay-order-array').on('click', function(){
+        $('#pay-order-array').on('click', function () {
             pay_order_array ? pay_order_array.call(this) : '';
             return false;
         });
 
         //去支付
-        $(document).on('click', '.goto-pay', function(){
+        $(document).on('click', '.goto-pay', function () {
             var order_id = $("#input_order_id").val();
             var type = $("#input_type").val();
             var payment_code = $("#payment_code").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
             $.ajax({
                 url: '{:url("bill_payments/toPay")}',
-                type: 'get',
+                type: 'post',
                 data: {
                     'order_id': order_id,
                     'type': type,
-                    'payment_code': payment_code
+                    'payment_code': payment_code,
+                    __Jshop_Token__:__Jshop_Token__
                 },
-                success: function(e){
+                success: function (e) {
                     layer.close(window_box);
-                    layer.msg(e.msg, {time: 1300}, function(){
+                    layer.msg(e.msg, { time: 1300 }, function () {
                         table.reload();
                     });
                 }
@@ -383,7 +441,7 @@
         });
 
         //发货页面
-        $(document).on('click', '.ship-order', function(){
+        $(document).on('click', '.ship-order', function () {
             var id = $(this).attr('data-id');
             $.ajax({
                 url: '{:url("order/ship")}',
@@ -391,7 +449,7 @@
                 data: {
                     'order_id': id
                 },
-                success: function(e){
+                success: function (e) {
                     window_box = layer.open({
                         type: 1,
                         title: '订单发货',
@@ -404,27 +462,27 @@
         });
 
         //发货生成
-        $(document).on('click', '.order-ship-btn', function(){
+        $(document).on('click', '.order-ship-btn', function () {
             var ship_data = [];
             var order_id = $("#order_id").val();
             var logi_no = $("#logi_no").val();
             var logi_code = $("#logi_code").val();
             var memo = $("#memo").val();
             var flag = true;
-            $(".order-ship-nums").each(function(){
+            $(".order-ship-nums").each(function () {
                 var ship_num = $(this).val();
                 var max = $(this).attr('max');
                 var id = $(this).attr('data-id');
-                if(ship_num > max || ship_num < 0){
+                if (ship_num > max || ship_num < 0) {
                     flag = false;
                     layer.msg('发货数量不符合真实情况');
                     return false;
-                }else{
+                } else {
                     var item = [id, ship_num];
                     ship_data.push(item);
                 }
             });
-            if(flag){
+            if (flag) {
                 $.ajax({
                     url: '{:url("order/ship")}',
                     type: 'post',
@@ -435,9 +493,9 @@
                         'logi_code': logi_code,
                         'ship_data': ship_data
                     },
-                    success: function(e){
+                    success: function (e) {
                         layer.close(window_box);
-                        layer.msg(e.msg, {time: 1300}, function(){
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
@@ -446,19 +504,19 @@
         });
 
         //取消订单
-        $(document).on('click', '.cancel-order', function(){
+        $(document).on('click', '.cancel-order', function () {
             var id = $(this).attr('data-id');
-            layer.confirm('确认取消订单号：'+id+' 的订单吗？', {
+            layer.confirm('确认取消订单号：' + id + ' 的订单吗？', {
                 title: '提示', btn: ['确认', '取消'] //按钮
-            }, function(){
+            }, function () {
                 $.ajax({
                     url: '{:url("order/cancel")}',
                     type: 'post',
                     data: {
                         'id': id
                     },
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    success: function (e) {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
@@ -468,54 +526,54 @@
         });
 
         //取消多个订单
-        var cancel_order_array = function(){ //获取选中数据
+        var cancel_order_array = function () { //获取选中数据
             var checkStatus = tables.checkStatus('order'), data = checkStatus.data;
             var ids = '';
-            $.each(data, function(){
-                ids += this.order_id+',';
+            $.each(data, function () {
+                ids += this.order_id + ',';
             });
-            ids = ids.substring(0, ids.length-1);
-            if(ids){
+            ids = ids.substring(0, ids.length - 1);
+            if (ids) {
                 layer.confirm('确认取消这些订单吗？', {
                     title: '提示', btn: ['确认', '取消'] //按钮
-                }, function(){
+                }, function () {
                     $.ajax({
                         url: '{:url("order/cancel")}',
                         type: 'post',
                         data: {
                             'id': ids
                         },
-                        success: function(e){
-                            layer.msg(e.msg, {time: 1300}, function(){
+                        success: function (e) {
+                            layer.msg(e.msg, { time: 1300 }, function () {
                                 table.reload();
                             });
                         }
                     });
                 });
-            }else{
+            } else {
                 layer.msg('请勾选要取消的订单');
             }
             return false;
         };
-        $('#cancel-order-array').on('click', function(){
+        $('#cancel-order-array').on('click', function () {
             cancel_order_array ? cancel_order_array.call(this) : '';
             return false;
         });
 
         //完成订单
-        $(document).on('click', '.complete-order', function(){
+        $(document).on('click', '.complete-order', function () {
             var id = $(this).attr('data-id');
-            layer.confirm('确认设置订单号：'+id+' 为完成吗？<br /><font style="color:#f00">完成订单后将不能再对订单进行任何操作。</font>', {
+            layer.confirm('确认设置订单号：' + id + ' 为完成吗？<br /><font style="color:#f00">完成订单后将不能再对订单进行任何操作。</font>', {
                 title: '提示', btn: ['确认', '取消'] //按钮
-            }, function(){
+            }, function () {
                 $.ajax({
                     url: '{:url("order/complete")}',
                     type: 'post',
                     data: {
                         'id': id
                     },
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    success: function (e) {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
@@ -524,19 +582,19 @@
         });
 
         //删除订单
-        $(document).on('click', '.del-order', function(){
+        $(document).on('click', '.del-order', function () {
             var id = $(this).attr('data-id');
-            layer.confirm('确认删除订单号：'+id+' 的订单吗？', {
+            layer.confirm('确认删除订单号：' + id + ' 的订单吗？', {
                 title: '提示', btn: ['确认', '取消'] //按钮
-            }, function(){
+            }, function () {
                 $.ajax({
                     url: '{:url("order/del")}',
                     type: 'post',
                     data: {
                         'id': id
                     },
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    success: function (e) {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
@@ -545,9 +603,9 @@
         });
 
         //已发货的物流信息查看
-        $(document).on('click','.order-logistics',function(){
-           var id = $(this).attr('data-id');
-            JsGet("{:url('order/logistics')}?order_id="+id,function(res){
+        $(document).on('click', '.order-logistics', function () {
+            var id = $(this).attr('data-id');
+            JsGet("{:url('order/logistics')}?order_id=" + id, function (res) {
                 window_box = layer.open({
                     type: 1,
                     title: '物流信息',
@@ -558,43 +616,43 @@
         });
 
         //订单导出
-        layui.form.on('submit(export-order)', function(data){
+        layui.form.on('submit(export-order)', function (data) {
             var tabStatus = filter.order_unified_status;
             layer.open({
                 type: 1,
-                title:'订单导出',
+                title: '订单导出',
                 area: ['400px', '290px'], //宽高
-                btn:['确定','取消'],
+                btn: ['确定', '取消'],
                 content: $("#exportOrder").html(),
-                yes:function () {
+                yes: function () {
                     //判断是否有选中
                     var checkStatus = layui.table.checkStatus('order');
                     var checkData = checkStatus.data;
                     var length = checkStatus.data.length;
                     var selectIds = '';
                     var ids = [];
-                    if(length){
-                        $.each(checkData,function (i,obj) {
+                    if (length) {
+                        $.each(checkData, function (i, obj) {
                             ids.push(obj.order_id);
                         });
                     }
-                    var filter=$(".seller-form").serialize();
-                    filter+='&order_ids='+ids+'&order_unified_status='+tabStatus;
+                    var filter = $(".seller-form").serialize();
+                    filter += '&order_ids=' + ids + '&order_unified_status=' + tabStatus;
 
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'Orders'});
-                    JsPost("{:url('Ietask/export')}",data,function(res){
-                                layer.msg(res.msg, {time:1500}, function(){
-                                    if(res.status){
-                                        table.reload();
-                                        layer.closeAll();
-                                    }
-                                });
+                    data.push({ 'name': 'model', 'value': 'Orders' });
+                    JsPost("{:url('Ietask/export')}", data, function (res) {
+                        layer.msg(res.msg, { time: 1500 }, function () {
+                            if (res.status) {
+                                table.reload();
+                                layer.closeAll();
                             }
+                        });
+                    }
                     );
-                },btn2:function () {
+                }, btn2: function () {
                     layer.closeAll();
                 }
             });
@@ -611,8 +669,8 @@
                 return false;
             }
             JsGet('{:url("order/print_form")}?order_id=' + order_id, function (e) {
-                if(e.hasOwnProperty('status') && !e.status){
-                    layer.msg(e.msg);return false;
+                if (e.hasOwnProperty('status') && !e.status) {
+                    layer.msg(e.msg); return false;
                 }
                 window_box = layer.open({
                     type: 1,
@@ -623,18 +681,18 @@
                     btn: ['直接打单', '只获取单号', '只打单', '关闭'],
                     yes: function (index, layero) {
                         var data = getFormData();
-                        if(data){
+                        if (data) {
                             var url = "{:url('order/print_tpl')}?type=4&bt=1&" + data;
                             window.open(url, "_blank");
                         }
                     },
                     btn2: function (index, layero) {
                         var data = getFormData();
-                        if(data){
+                        if (data) {
                             var url = "{:url('order/print_tpl')}?type=4&bt=2&" + data;
-                            JsGet(url,function(res){
-                                layer.msg(res.msg, {time:1500}, function(){
-                                    if(res.status){
+                            JsGet(url, function (res) {
+                                layer.msg(res.msg, { time: 1500 }, function () {
+                                    if (res.status) {
                                         table.reload();
                                         layer.closeAll();
                                     }
@@ -642,9 +700,9 @@
                             });
                         }
                     },
-                    btn3:function(index, layero){
+                    btn3: function (index, layero) {
                         var data = getFormData();
-                        if(data){
+                        if (data) {
                             var url = "{:url('order/print_tpl')}?type=4&bt=3&" + data;
                             window.open(url, "_blank");
                         }
@@ -652,15 +710,15 @@
                 });
             });
         };
-        {:hook('orderExtJs')}
+        {:hook('orderExtJs') }
 
         //保存卖家备注
         $(document).on('click', '.mark-save', function () {
             var mark = $("#mark").val();
             var id = $("#mark-order-id").val();
-            if(mark.length > 500){
+            if (mark.length > 500) {
                 layer.msg('备注内容不能大于500字');
-            }else {
+            } else {
                 $.ajax({
                     url: '{:url("order/saveMark")}',
                     type: 'post',
@@ -670,7 +728,7 @@
                     },
                     dataType: 'json',
                     success: function (e) {
-                        layer.msg(e.msg, {time: 1500}, function () {
+                        layer.msg(e.msg, { time: 1500 }, function () {
                             layer.close(window_box);
                         });
                     }

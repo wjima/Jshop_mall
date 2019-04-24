@@ -19,6 +19,7 @@ $config = array(
     'password'    => '123456',         //默认密码
     //'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
     'limit'       =>'50',   //安装时多少条数据一次翻页
+    'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
 );
 
 
@@ -299,6 +300,15 @@ php;
     }
     //创建数据库链接配置文件
     file_put_contents($config['databaseUrl'], $db_str);
+
+    //配置H5的host
+    $host_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'];
+    $h5config = <<<h5
+window.host = '{$host_url}';
+window.entId = '';
+h5;
+    @file_put_contents($config['h5ConfigUrl'], $h5config);
+
 
     @touch(dirname(dirname(dirname(__FILE__))).'/config/install.lock');
 }

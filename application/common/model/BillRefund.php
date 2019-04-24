@@ -21,10 +21,17 @@ class BillRefund extends Common
     const STATUS_FAIL = 3;        //退款状态,退款失败，可以再次退款
     const STATUS_REFUSE = 4;        //退款拒绝
 
-
     const TYPE_ORDER = 1;       //单据类型 订单
 
 
+    /**
+     * @param $user_id
+     * @param $source_id
+     * @param $type
+     * @param $money
+     * @param $aftersales_id
+     * @return array|mixed
+     */
     public function toAdd($user_id,$source_id,$type,$money,$aftersales_id)
     {
         $result = [
@@ -57,12 +64,16 @@ class BillRefund extends Common
 
     }
 
+
     /**
      * 退款单去退款或者拒绝
-     * @param $refund_id    退款单id
-     * @param $status       2或者3，通过或者拒绝
-     * @param string $payment_code      退款方式，如果和退款单上的一样，说明没有修改，原路返回，否则只记录状态，不做实际退款
-     * @return array|\think\Config
+     * @param $refund_id  //退款单id
+     * @param $status  //2或者3，通过或者拒绝
+     * @param string $payment_code  //退款方式，如果和退款单上的一样，说明没有修改，原路返回，否则只记录状态，不做实际退款
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function toRefund($refund_id,$status,$payment_code="")
     {
@@ -115,8 +126,14 @@ class BillRefund extends Common
         }
     }
 
+
     /**
      * 如果是在线支付的原路退还，去做退款操作
+     * @param $refund_id
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function paymentRefund($refund_id)
     {
@@ -184,6 +201,11 @@ class BillRefund extends Common
     }
 
 
+    /**
+     * @param $post
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
     public function tableData($post)
     {
         if(isset($post['limit'])){
@@ -201,6 +223,12 @@ class BillRefund extends Common
         $re['data'] = $data;
         return $re;
     }
+
+
+    /**
+     * @param $post
+     * @return mixed
+     */
     protected function tableWhere($post)
     {
         $where = [];
@@ -230,10 +258,10 @@ class BillRefund extends Common
         return $result;
     }
 
+
     /**
      * 根据查询结果，格式化数据
-     * @author sin
-     * @param $list  array格式的collection
+     * @param $list //array格式的collection
      * @return mixed
      */
     protected function tableFormat($list)
@@ -259,5 +287,48 @@ class BillRefund extends Common
 
         }
         return $list;
+    }
+
+
+    /**
+     * 获取退款状态
+     * @param $aftersales_id
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getAftersalesStatus($aftersales_id)
+    {
+        $where[] = ['aftersales_id', 'eq', $aftersales_id];
+        $info = $this->where($where)->find();
+        if($info)
+        {
+            if($info['status'] == self::STATUS_NOREFUND)
+            {
+                $text = '未退款';
+            }
+            else if($info['status'] == self::STATUS_REFUND)
+            {
+                $text = '已退款';
+            }
+            else if($info['status'] == self::STATUS_FAIL)
+            {
+                $text = '退款失败';
+            }
+            else if($info['status'] == self::STATUS_REFUSE)
+            {
+                $text = '退款拒绝';
+            }
+            else
+            {
+                $text = '状态异常';
+            }
+        }
+        else
+        {
+            $text = '未退款';
+        }
+        return $text;
     }
 }

@@ -1,14 +1,17 @@
 <form class="layui-form  seller-alone-form" id="userEdit" style="padding: 20px;">
     <div class="layui-form-item">
         <input type="hidden" name="id" value="{$info.id}">
+
         <div class="layui-inline">
             <label class="layui-form-label">手机号：</label>
+
             <div class="layui-input-inline">
-                {$info.mobile}
+                <span style="display:block;height: 38px;line-height: 38px;">{$info.mobile}</span>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">昵称：</label>
+
             <div class="layui-input-inline">
                 <input type="text" name="nickname" class="layui-input" value="{$info.nickname}">
             </div>
@@ -17,27 +20,31 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">密码：</label>
+
             <div class="layui-input-inline">
-                <input type="password" name="password" class="layui-input" placeholder="为空时不修改密码" >
+                <input type="password" name="password" class="layui-input" placeholder="为空时不修改密码">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">确认密码：</label>
+
             <div class="layui-input-inline">
-                <input type="password" name="repassword" class="layui-input"  placeholder="请与密码保持一致" >
+                <input type="password" name="repassword" class="layui-input" placeholder="请与密码保持一致">
             </div>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">性别：</label>
+
             <div class="layui-input-inline">
-                <input type="radio" name="sex" value="1" title="男" {if $info.sex == 1}checked="checked"{/if}>
-                <input type="radio" name="sex" value="2" title="女" {if $info.sex == 2}checked="checked"{/if}>
+                <input type="radio" name="sex" value="1" title="男" {if $info.sex==1}checked="checked" {/if}> <input
+                    type="radio" name="sex" value="2" title="女" {if $info.sex==2}checked="checked" {/if}>
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">生日：</label>
+
             <div class="layui-input-inline">
                 <input type="text" name="birthday" id="birthday" class="layui-input" value="{$info.birthday}">
             </div>
@@ -46,28 +53,28 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">等级：</label>
+
             <div class="layui-input-inline">
-                <select name="grade" >
+                <select name="grade">
                     <option value="">请选择</option>
                     {foreach $grade as $k=>$v}
-                    <option value="{$v.id}" {if $v.id == $info.grade}selected="selected"{/if}>{$v.name}</option>
-                    {/foreach}
-                </select>
-            </div>
+                    <option value="{$v.id}" {if $v.id==$info.grade}selected="selected" {/if}>{$v.name} </option>
+                    {/foreach} </select></div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">状态：</label>
+
             <div class="layui-input-inline">
                 <select name="status" id="status">
-                    <option value="1" {if $info.status == 1}selected="selected"{/if}>可用</option>
-                    <option value="2" {if $info.status == 2}selected="selected"{/if}>停用</option>
-                </select>
-            </div>
+                    <option value="1" {if $info.state=='1' }selected="selected" {/if}>正常 </option>
+                    <option value="2" {if $info.state=='2' }selected="selected" {/if}>停用 </option>
+                </select></div>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">头像：</label>
+
             <div class="layui-input-inline">
                 {Jshop:image id="avatar" name="avatar" value="$info.avatar"}
             </div>
@@ -75,12 +82,15 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label" style="width: 100px">邀请人修改：</label>
-            <div class="layui-input-inline" >
-                <input type="text" name="p_mobile" class="layui-input" value="{$info.p_mobile}" placeholder="请输入邀请人的手机号码" >
+            <label class="layui-form-label">邀请人修改：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="p_mobile" class="layui-input" value="{$info.p_mobile}"
+                       placeholder="请输入邀请人的手机号码">
             </div>
         </div>
     </div>
+    {:jshopToken()}
 </form>
 <script>
     layui.use(['form', 'laydate'], function () {

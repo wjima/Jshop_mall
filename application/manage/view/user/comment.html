@@ -1,31 +1,48 @@
+<style>
+    @media screen and (max-width: 500px) {
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width: 1500px !important;
+            box-sizing: border-box;
+        }
+
+    }
+</style>
 <form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label style="width:120px" class="layui-form-label">用户手机号码：</label>
+            <label style="width:100px" class="layui-form-label">用户手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">订单号：</label>
+            <label style="width:100px" class="layui-form-label">订单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="order_id" placeholder="请输入订单号" autocomplete="off" class="layui-input">
             </div>
         </div>
         <!--<div class="layui-inline">-->
-            <!--<label class="layui-form-label">评价类型：</label>-->
-            <!--<div class="layui-input-inline seller-inline-2">-->
-                <!--<select name="evaluate" id="evaluate">-->
-                    <!--<option value="all">&#45;&#45; 全部 &#45;&#45;</option>-->
-                    <!--<option value="1">好评</option>-->
-                    <!--<option value="0">中评</option>-->
-                    <!--<option value="-1">差评</option>-->
-                <!--</select>-->
-            <!--</div>-->
+        <!--<label class="layui-form-label">评价类型：</label>-->
+        <!--<div class="layui-input-inline seller-inline-2">-->
+        <!--<select name="evaluate" id="evaluate">-->
+        <!--<option value="all">&#45;&#45; 全部 &#45;&#45;</option>-->
+        <!--<option value="1">好评</option>-->
+        <!--<option value="0">中评</option>-->
+        <!--<option value="-1">差评</option>-->
+        <!--</select>-->
+        <!--</div>-->
         <!--</div>-->
         <div class="layui-inline" style="margin-left: 17px;">
             <div class="layui-input-inline">
-                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+                        class="iconfont icon-chaxun"></i>筛选</button>
             </div>
         </div>
     </div>
@@ -36,66 +53,74 @@
 </div>
 
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         layui.table.render({
             elem: '#CommentTable',
             height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
+            limit: '20',
             url: "{:url('user/comment')}",
-            id:'CommentTable',
+            id: 'CommentTable',
             method: 'post',
             response: {
                 statusName: 'status',
                 statusCode: true
             },
             cols: [[
-                {type:'numbers'},
-                {field:'nickname', width:210, title:'用户', align:'center', templet: function(data) {
-                    if(data.user)
-                    {
-                        return data.user.nickname?data.user.nickname:data.user.mobile;
-                    }
-                    else
-                    {
-                        return data.user_id;
-                    }
-                }},
-                {field:'evaluate', width:150, sort:true, title:'评价星数', align:'center', templet: function (data) {
-                    // if (data.score == 1) {
-                    //     return '好评';
-                    // } else if (data.score == 0) {
-                    //     return '中评';
-                    // } else if (data.score == -1) {
-                    //     return '差评';
-                    // }
-                        return data.score+'星';
-                }},
-                {field:'goods_name', width:250, sort:true, title:'商品名称', align:'center', templet: function (data) {
-                    return data.goods.name;
-                }},
-                {field:'content', title:'评价内容', align:'center'},
-                {field:'order_id', width:190, title:'订单号', align:'center'},
-                {field:'ctime', width:230, sort:true, title:'评价时间', align:'center'},
-                {field:'display', width:150, sort:true, title:'前台显示', align:'center', templet:function(data){
-                        if(data.display === 1){
-                            return '<a href="javascript:void(0);" class="display" data-id="'+data.id+'">隐藏</a>';
-                        }else{
-                            return '<a href="javascript:void(0);" class="display" data-id="'+data.id+'">显示</a>';
+                { type: 'numbers' },
+                {
+                    field: 'nickname', width: 210, title: '用户', align: 'center', templet: function (data) {
+                        if (data.user) {
+                            return data.user.nickname ? data.user.nickname : data.user.mobile;
                         }
-                    }},
-                {field:'operating', width:200, title:'操作', align:'center', templet:function(data){
+                        else {
+                            return data.user_id;
+                        }
+                    }
+                },
+                {
+                    field: 'evaluate', width: 150, sort: true, title: '评价星数', align: 'center', templet: function (data) {
+                        // if (data.score == 1) {
+                        //     return '好评';
+                        // } else if (data.score == 0) {
+                        //     return '中评';
+                        // } else if (data.score == -1) {
+                        //     return '差评';
+                        // }
+                        return data.score + '星';
+                    }
+                },
+                {
+                    field: 'goods_name', width: 250, sort: true, title: '商品名称', align: 'center', templet: function (data) {
+                        return data.goods.name;
+                    }
+                },
+                { field: 'content', title: '评价内容', align: 'center' },
+                { field: 'order_id', width: 190, title: '订单号', align: 'center' },
+                { field: 'ctime', width: 230, sort: true, title: '评价时间', align: 'center' },
+                {
+                    field: 'display', width: 150, sort: true, title: '前台显示', align: 'center', templet: function (data) {
+                        if (data.display === 1) {
+                            return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">隐藏</a>';
+                        } else {
+                            return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">显示</a>';
+                        }
+                    }
+                },
+                {
+                    field: 'operating', width: 200, title: '操作', align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
                         return html;
-                }}
+                    }
+                }
             ]]
         });
-        layui.form.on('submit(*)', function(data){
+        layui.form.on('submit(*)', function (data) {
             layui.table.reload('CommentTable', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
@@ -109,11 +134,11 @@
                 title: "提示",
                 btn: ['是', '否']
             }, function () {
-                JsPost("{:url('Goods/setDisplay')}",{'id':id},function(res){
+                JsPost("{:url('Goods/setDisplay')}", { 'id': id }, function (res) {
                     layer.msg(res.msg);
                     layui.table.reload('CommentTable');
                 });
-            }, function(){
+            }, function () {
                 layer.closeAll();
             });
         });
@@ -121,34 +146,33 @@
         //回复
         $(document).on("click", '.comment-return', function () {
             var id = $(this).attr('data-id');
-            JsPost("{:url('Goods/getCommentInfo')}", {'id':id}, function(res) {
-                if(res.status) {
-                    var seller_content = res.data.seller_content == null?'':res.data.seller_content;
+            JsPost("{:url('Goods/getCommentInfo')}", { 'id': id }, function (res) {
+                if (res.status) {
+                    var seller_content = res.data.seller_content == null ? '' : res.data.seller_content;
                     var score = '';
-                    for(var i = 0; i < res.data.score; i++)
-                    {
+                    for (var i = 0; i < res.data.score; i++) {
                         score += '<img src="/static/images/redstar.png" width="15" height="15" />';
                     }
                     window_box = layer.open({
                         type: 1,
                         title: "商家回复",
                         area: ['500px', '380px'], //宽高
-                        btn:['保存','关闭'],
-                        content: '<div style="padding:20px"><input type="hidden" id="return-id" value="'+id+'">' +
-                        '<div><span>用户评价：</span>'+res.data.content+'</div>' +
-                        '<div style="margin-top: 15px;"><span>用户评分：</span>'+score+'</div>'+
-                        '<div style="margin-top: 15px;"><span style="display: block;margin-bottom: 15px;">商家回复：</span><textarea class="layui-textarea" name="return-content" id="return-content" cols="10" rows="5">'+seller_content+'</textarea></div></div>',
-                        yes:function () {
+                        btn: ['保存', '关闭'],
+                        content: '<div style="padding:20px"><input type="hidden" id="return-id" value="' + id + '">' +
+                            '<div><span>用户评价：</span>' + res.data.content + '</div>' +
+                            '<div style="margin-top: 15px;"><span>用户评分：</span>' + score + '</div>' +
+                            '<div style="margin-top: 15px;"><span style="display: block;margin-bottom: 15px;">商家回复：</span><textarea class="layui-textarea" name="return-content" id="return-content" cols="10" rows="5">' + seller_content + '</textarea></div></div>',
+                        yes: function () {
                             var id = $("#return-id").val();
                             var return_content = $("#return-content").val();
-                            JsPost("{:url('Goods/sellerContent')}", {'id':id, "seller_content":return_content}, function(res) {
+                            JsPost("{:url('Goods/sellerContent')}", { 'id': id, "seller_content": return_content }, function (res) {
                                 layer.closeAll();
                                 layer.msg(res.msg);
                                 layui.table.reload('CommentTable');
                             });
                         }
                     });
-                }else{
+                } else {
                     layer.msg(res.msg);
                     layui.table.reload('CommentTable');
                 }

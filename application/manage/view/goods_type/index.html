@@ -138,6 +138,7 @@
         $(document).on('click', '.add-edit-btn', function(){
             var name = $("#type_name").val();
             var id = $("#type_id").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
             var error = false;
             if(name.length > 6 || name.length < 1){
                 error = true;
@@ -154,7 +155,8 @@
                     type: 'post',
                     data: {
                         'name': name,
-                        'id':id
+                        'id':id,
+                        __Jshop_Token__:__Jshop_Token__
                     },
                     dataType: 'json',
                     success: function(e){

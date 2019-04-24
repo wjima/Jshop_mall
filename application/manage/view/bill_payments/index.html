@@ -1,32 +1,55 @@
-<form class="layui-form seller-form"  action="" >
+<style>
+    @media screen and (max-width: 500px) {
+        .layui-layer.layui-layer-page {
+            width: 100% !important;
+            overflow: hidden !important;
+            left: 0 !important;
+        }
+
+        .layui-layer-title {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .layui-layer-content {
+            width: 100% !important;
+        }
+
+    }
+</style>
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item" style="margin-bottom:0;">
         <div class="layui-inline">
             <label class="layui-form-label">支付单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="payment_id" lay-verify="title"  placeholder="请输入支付单号" autocomplete="off" class="layui-input">
+                <input type="text" name="payment_id" lay-verify="title" placeholder="请输入支付单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label style="width:120px" class="layui-form-label">第三方支付单号：</label>
             <div class="layui-input-inline seller-inline-5">
-                <input type="text" name="trade_no" lay-verify="title" placeholder="请输入第三方支付单号" autocomplete="off" class="layui-input">
+                <input type="text" name="trade_no" lay-verify="title" placeholder="请输入第三方支付单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">下单时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label style="width:120px" class="layui-form-label">用户手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">支付状态：</label>
-            <div class="layui-input-inline" style="width:98px;" >
+            <div class="layui-input-inline" style="width:98px;">
                 <select name="status" lay-verify="">
                     <option value=""></option>
                     <option value="1">待支付</option>
@@ -37,18 +60,20 @@
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">单据类型：</label>
-            <div class="layui-input-inline" style="width:85px;" >
+            <div class="layui-input-inline" style="width:85px;">
                 <select name="type" lay-verify="">
                     <option value=""></option>
                     {foreach $bill_payments_type as $key=>$vo}
-                        <option value="{$key}">{$vo}</option>
+                    <option value="{$key}">{$vo}</option>
                     {/foreach}
                 </select>
             </div>
         </div>
         <div class="layui-inline">
-            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-payments"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-payments"><i
+                    class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
         </div>
     </div>
 </form>
@@ -56,7 +81,7 @@
     <table id="billPayments" lay-filter="test"></table>
 </div>
 <div id="exportPayments" style="display: none;">
-    <form class="layui-form export-form"  action="" >
+    <form class="layui-form export-form" action="">
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
@@ -66,7 +91,8 @@
 
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
-                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
@@ -75,7 +101,7 @@
 
 
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         //时间插件
         layui.laydate.render({
             elem: '#date',
@@ -87,50 +113,52 @@
             height: 'full-250',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
+            limit: '20',
             url: "{:url('billPayments/index')}?_ajax=1",
-            id:'billPayments',
+            id: 'billPayments',
             cols: [[
-                {type:'checkbox'},
-                {field:'payment_id', width:140, sort: true,title:'支付单号'},
-                {field:'status', width:100,title:'状态'},
-                {field:'payment_code', width:120,title:'支付方式'},
-                {field:'type', width:100,title:'单据类型'},
-                {field:'user_id', width:150,minWidth: 50,title:'用户'},
-                {field:'money',width:100,title:'金额'},
-                {field:'trade_no',title:'第三方支付单号'},
-                {field:'utime',title:'支付时间'},
-                {field: 'operating', title: '操作', width:100, align: 'center',templet:function(data){
-                    var html = '';
-                    html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.payment_id + '">明细</a>';
-                    return html;
-                }},
+                { type: 'checkbox' },
+                { field: 'payment_id', width: 140, sort: true, title: '支付单号' },
+                { field: 'status', width: 100, title: '状态' },
+                { field: 'payment_code', width: 120, title: '支付方式' },
+                { field: 'type', width: 100, title: '单据类型' },
+                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
+                { field: 'money', width: 100, title: '金额' },
+                { field: 'trade_no', title: '第三方支付单号' },
+                { field: 'utime', title: '支付时间' },
+                {
+                    field: 'operating', title: '操作', width: 100, align: 'center', templet: function (data) {
+                        var html = '';
+                        html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.payment_id + '">明细</a>';
+                        return html;
+                    }
+                },
             ]]
         });
-        layui.form.on('submit(*)', function(data){
+        layui.form.on('submit(*)', function (data) {
             layui.table.reload('billPayments', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
         //查看操作
-        $(document).on('click','.option-view',function(){
+        $(document).on('click', '.option-view', function () {
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{:url('billPayments/view')}",
-                data:'payment_id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
+                data: 'payment_id=' + $(this).attr('data-id'),
+                success: function (e) {
+                    if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
                             area: ['600px', '600px'],
-                            title:'支付单查看'
+                            title: '支付单查看'
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
 
@@ -138,44 +166,44 @@
             });
         });
         //支付单导出
-        layui.form.on('submit(export-payments)', function(data){
+        layui.form.on('submit(export-payments)', function (data) {
 
             layer.open({
                 type: 1,
-                title:'支付单导出',
+                title: '支付单导出',
                 area: ['400px', '290px'], //宽高
-                btn:['确定','取消'],
+                btn: ['确定', '取消'],
                 content: $("#exportPayments").html(),
-                yes:function () {
+                yes: function () {
                     //判断是否有选中
                     var checkStatus = layui.table.checkStatus('billPayments');
                     var checkData = checkStatus.data;
                     var length = checkStatus.data.length;
                     var ids = [];
-                    if(length){
-                        $.each(checkData,function (i,obj) {
+                    if (length) {
+                        $.each(checkData, function (i, obj) {
                             ids.push(obj.payment_id);
                         });
                     }
 
                     //判断是否有选中
                     var filter = $(".seller-form").serialize();
-                    filter+='&ids='+ids;
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    filter += '&ids=' + ids;
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'BillPayments'});
+                    data.push({ 'name': 'model', 'value': 'BillPayments' });
 
-                    JsPost("{:url('Ietask/export')}",data,function(res){
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if(res.status){
-                                    layui.table.reload('billPayments');
-                                    layer.closeAll();
-                                }
-                            });
-                        }
+                    JsPost("{:url('Ietask/export')}", data, function (res) {
+                        layer.msg(res.msg, { time: 1500 }, function () {
+                            if (res.status) {
+                                layui.table.reload('billPayments');
+                                layer.closeAll();
+                            }
+                        });
+                    }
                     );
-                },btn2:function () {
+                }, btn2: function () {
                     layer.closeAll();
                 }
             });

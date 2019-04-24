@@ -50,7 +50,7 @@ class Products extends Common
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
      */
-    public function getProductInfo($id,$isPromotion = true,$user_id = '')
+    public function getProductInfo($id,$isPromotion = true,$user_id = 0)
     {
         $result  = [
             'status' => false,
@@ -148,6 +148,7 @@ class Products extends Common
             $product['amount'] = $product['price'];
             //模拟购物车数据库结构，去取促销信息
             $miniCart =[
+                'user_id' => $user_id,
                 'goods_amount' =>$product['amount'],         //商品总金额
                 'amount' => $product['amount'],              //总金额
                 'order_pmt' => 0,           //订单促销金额            单纯的订单促销的金额
@@ -162,7 +163,7 @@ class Products extends Common
                 'list' => [
                     [
                         'id'=> 0,
-                        'user_id' => '',
+                        'user_id' => $user_id,
                         'product_id' => $id,
                         'nums' => 1,
                         'products' => $product->toArray(),

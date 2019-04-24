@@ -2,16 +2,37 @@
     <li data-name="home"  class="layui-nav-item layui-nav-itemed">
         <a class="" lay-href="{:url('index/welcome')}" href="javascript:;" lay-tips="首页" lay-direction="2" ><i class="iconfont icon-shouyeshouye"></i>首页</a>
     </li>
-    {if $menu }{foreach $menu as $k=>$v}
-    <li data-name="{:strtolower($v['code'])}" class="layui-nav-item {if $v.selected} layui-nav-itemed{/if}">
-        <a class="menu-icon-{:strtolower($v['code'])}" href="javascript:;" lay-tips="{$v.name}"  lay-direction="2"><i class="iconfont icon-{:strtolower($v['code'])}"></i>{$v.name}</a>
-        <dl class="layui-nav-child">
-            {foreach $v['children'] as $x=>$y}
-            <dd data-name="{:strtolower($v['code'])}" class="{if $y.selected} layui-this{/if}">
-                <a lay-href="{$y.url}">{$y.name}</a>
-            </dd>
-            {/foreach}
-        </dl>
+    {if $menu }
+    {foreach $menu as $k=>$v}
+    <li data-name="{:strtolower($v['code'])}" class="layui-nav-item">
+        {if isset($v['children']) && !empty($v['children'])}
+            <a class="menu-icon-{:strtolower($v['code'])}" href="javascript:;" lay-tips="{$v.name}"  lay-direction="2">
+                <i class="iconfont icon-{:strtolower($v['code'])}"></i>{$v.name}
+            </a>
+            <dl class="layui-nav-child">
+                {foreach $v['children'] as $x=>$y}
+                <dd data-name="{:strtolower($v['code'])}">
+                    {if isset($y['children']) && !empty($y['children'])}
+                        <a href="javascript:;" href="javascript:;" style="padding-left: 44px;">{$y.name}</a>
+                        <dl class="layui-nav-child">
+                            {foreach $y['children'] as $a=>$b}
+                            <dd data-name="{:strtolower($b['code'])}" class="{if $b.selected} layui-this{/if}">
+                                <a lay-href="{$b.url}">{$b.name}</a>
+                            </dd>
+                            {/foreach}
+                        </dl>
+                    {else /}
+                        <a href="javascript:;" lay-href="{$y.url}" style="padding-left: 44px;">{$y.name}</a>
+                    {/if}
+                </dd>
+                {/foreach}
+            </dl>
+        {else /}
+            <a class="menu-icon-{:strtolower($v['code'])}" lay-href="{$v.url}" lay-tips="{$v.name}"  lay-direction="2">
+                <i class="iconfont icon-{:strtolower($v['code'])}"></i>{$v.name}
+            </a>
+        {/if}
+
     </li>
     {/foreach}
     {/if}

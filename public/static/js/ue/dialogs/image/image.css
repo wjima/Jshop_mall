@@ -1,5 +1,6 @@
 @charset "utf-8";
 /* dialog样式 */
+
 .wrapper {
     zoom: 1;
     width: 630px;
@@ -11,10 +12,14 @@
     font-family: sans-serif;
 }
 
+
+
 /*tab样式框大小*/
+
 .tabhead {
-    float:left;
+    float: left;
 }
+
 .tabbody {
     width: 100%;
     height: 346px;
@@ -38,25 +43,27 @@
 }
 
 /* 图片对齐方式 */
-.alignBar{
-    float:right;
+
+.alignBar {
+    float: right;
     margin-top: 5px;
     position: relative;
 }
 
-.alignBar .algnLabel{
-    float:left;
+.alignBar .algnLabel {
+    float: left;
     height: 20px;
     line-height: 20px;
 }
 
-.alignBar #alignIcon{
-    zoom:1;
+.alignBar #alignIcon {
+    zoom: 1;
     _display: inline;
     display: inline-block;
     position: relative;
 }
-.alignBar #alignIcon span{
+
+.alignBar #alignIcon span {
     float: left;
     cursor: pointer;
     display: block;
@@ -66,75 +73,84 @@
     margin-left: 3px;
     background-image: url(./images/alignicon.jpg);
 }
-.alignBar #alignIcon .none-align{
+
+.alignBar #alignIcon .none-align {
     background-position: 0 -18px;
 }
-.alignBar #alignIcon .left-align{
+
+.alignBar #alignIcon .left-align {
     background-position: -20px -18px;
 }
-.alignBar #alignIcon .right-align{
+
+.alignBar #alignIcon .right-align {
     background-position: -40px -18px;
 }
-.alignBar #alignIcon .center-align{
+
+.alignBar #alignIcon .center-align {
     background-position: -60px -18px;
 }
-.alignBar #alignIcon .none-align.focus{
+
+.alignBar #alignIcon .none-align.focus {
     background-position: 0 0;
 }
-.alignBar #alignIcon .left-align.focus{
+
+.alignBar #alignIcon .left-align.focus {
     background-position: -20px 0;
 }
-.alignBar #alignIcon .right-align.focus{
+
+.alignBar #alignIcon .right-align.focus {
     background-position: -40px 0;
 }
-.alignBar #alignIcon .center-align.focus{
+
+.alignBar #alignIcon .center-align.focus {
     background-position: -60px 0;
 }
 
-
-
-
 /* 远程图片样式 */
+
 #remote {
     z-index: 200;
 }
 
-#remote .top{
+#remote .top {
     width: 100%;
     margin-top: 25px;
 }
-#remote .left{
+
+#remote .left {
     display: block;
     float: left;
     width: 300px;
-    height:10px;
+    height: 10px;
 }
-#remote .right{
+
+#remote .right {
     display: block;
     float: right;
     width: 300px;
-    height:10px;
+    height: 10px;
 }
-#remote .row{
+
+#remote .row {
     margin-left: 20px;
     clear: both;
     height: 40px;
 }
 
-#remote .row label{
+#remote .row label {
     text-align: center;
     width: 50px;
-    zoom:1;
+    zoom: 1;
     _display: inline;
-    display:inline-block;
+    display: inline-block;
     vertical-align: middle;
 }
-#remote .row label.algnLabel{
-    float: left;
 
+#remote .row label.algnLabel {
+    float: left;
 }
 
-#remote input.text{
+#remote input.text {
     width: 150px;
     padding: 3px 6px;
     font-size: 14px;
@@ -149,40 +165,43 @@
     -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+
 #remote input.text:focus {
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
 }
-#remote #url{
+
+#remote #url {
     width: 500px;
     margin-bottom: 2px;
 }
-#remote #width,
-#remote #height{
+
+#remote #width, #remote #height {
     width: 20px;
     margin-left: 2px;
     margin-right: 2px;
 }
-#remote #border,
-#remote #vhSpace,
-#remote #title{
+
+#remote #border, #remote #vhSpace, #remote #title {
     width: 180px;
     margin-right: 5px;
 }
-#remote #lock{
-}
-#remote #lockicon{
+
+#remote #lock {}
+
+#remote #lockicon {
     zoom: 1;
-    _display:inline;
+    _display: inline;
     display: inline-block;
     width: 20px;
     height: 20px;
     background: url("../../themes/default/images/lock.gif") -13px -13px no-repeat;
     vertical-align: middle;
 }
-#remote #preview{
+
+#remote #preview {
     clear: both;
     width: 260px;
     height: 240px;
@@ -193,6 +212,7 @@
 }
 
 /* 上传图片 */
+
 .tabbody #upload.panel {
     width: 0;
     height: 0;
@@ -244,7 +264,7 @@
     color: #cccccc;
     font-size: 18px;
     position: relative;
-    top:0;
+    top: 0;
     *top: 10px;
 }
 
@@ -265,7 +285,6 @@
 #upload .placeholder .webuploader-pick-hover {
     background: #00a2d4;
 }
-
 
 #filePickerContainer {
     text-align: center;
@@ -365,19 +384,16 @@
     width: 0;
     height: 100%;
     background: #1483d8 url(./images/progress.png) repeat-x;
-
     -webit-transition: width 200ms linear;
     -moz-transition: width 200ms linear;
     -o-transition: width 200ms linear;
     -ms-transition: width 200ms linear;
     transition: width 200ms linear;
-
     -webkit-animation: progressmove 2s linear infinite;
     -moz-animation: progressmove 2s linear infinite;
     -o-animation: progressmove 2s linear infinite;
     -ms-animation: progressmove 2s linear infinite;
     animation: progressmove 2s linear infinite;
-
     -webkit-transform: translateZ(0);
 }
 
@@ -416,13 +432,11 @@
     overflow: hidden;
     width: 113px;
     height: 113px;
-
     -webkit-transform-origin: 50% 50%;
     -moz-transform-origin: 50% 50%;
     -o-transform-origin: 50% 50%;
     -ms-transform-origin: 50% 50%;
     transform-origin: 50% 50%;
-
     -webit-transition: 200ms ease-out;
     -moz-transition: 200ms ease-out;
     -o-transition: 200ms ease-out;
@@ -444,7 +458,7 @@
     line-height: 28px;
     width: 100%;
     z-index: 100;
-    display:none;
+    display: none;
 }
 
 #upload .filelist li .success {
@@ -466,7 +480,8 @@
     border: 1px solid #eeeeee;
     border-radius: 0;
 }
-#upload .filelist li.filePickerBlock div.webuploader-pick  {
+
+#upload .filelist li.filePickerBlock div.webuploader-pick {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -499,7 +514,7 @@
     background: url(./images/icons.gif) no-repeat \9;
     margin: 5px 1px 1px;
     cursor: pointer;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -507,7 +522,7 @@
 }
 
 #upload .filelist div.file-panel span.rotateLeft {
-    display:none;
+    display: none;
     background-position: 0 -24px;
 }
 
@@ -516,7 +531,7 @@
 }
 
 #upload .filelist div.file-panel span.rotateRight {
-    display:none;
+    display: none;
     background-position: -24px -24px;
 }
 
@@ -555,6 +570,7 @@
     color: #6dbfff;
     margin: 0 10px 0 0;
 }
+
 #upload .statusBar .progress span.percentage {
     width: 0;
     height: 100%;
@@ -563,6 +579,7 @@
     background: #1483d8;
     position: absolute;
 }
+
 #upload .statusBar .progress span.text {
     position: relative;
     z-index: 10;
@@ -585,10 +602,8 @@
     display: inline-block;
     float: left;
 }
-#upload .statusBar .btns .webuploader-pick,
-#upload .statusBar .btns .uploadBtn,
-#upload .statusBar .btns .uploadBtn.state-uploading,
-#upload .statusBar .btns .uploadBtn.state-paused {
+
+#upload .statusBar .btns .webuploader-pick, #upload .statusBar .btns .uploadBtn, #upload .statusBar .btns .uploadBtn.state-uploading, #upload .statusBar .btns .uploadBtn.state-paused {
     background: #ffffff;
     border: 1px solid #cfcfcf;
     color: #565656;
@@ -604,53 +619,52 @@
     -ms-user-select: none;
     user-select: none;
 }
-#upload .statusBar .btns .webuploader-pick-hover,
-#upload .statusBar .btns .uploadBtn:hover,
-#upload .statusBar .btns .uploadBtn.state-uploading:hover,
-#upload .statusBar .btns .uploadBtn.state-paused:hover {
+
+#upload .statusBar .btns .webuploader-pick-hover, #upload .statusBar .btns .uploadBtn:hover, #upload .statusBar .btns .uploadBtn.state-uploading:hover, #upload .statusBar .btns .uploadBtn.state-paused:hover {
     background: #f0f0f0;
 }
 
-#upload .statusBar .btns .uploadBtn,
-#upload .statusBar .btns .uploadBtn.state-paused{
+#upload .statusBar .btns .uploadBtn, #upload .statusBar .btns .uploadBtn.state-paused {
     background: #00b7ee;
     color: #fff;
     border-color: transparent;
 }
-#upload .statusBar .btns .uploadBtn:hover,
-#upload .statusBar .btns .uploadBtn.state-paused:hover{
+
+#upload .statusBar .btns .uploadBtn:hover, #upload .statusBar .btns .uploadBtn.state-paused:hover {
     background: #00a2d4;
 }
 
 #upload .statusBar .btns .uploadBtn.disabled {
     pointer-events: none;
-    filter:alpha(opacity=60);
-    -moz-opacity:0.6;
+    filter: alpha(opacity=60);
+    -moz-opacity: 0.6;
     -khtml-opacity: 0.6;
     opacity: 0.6;
 }
 
-
-
 /* 图片管理样式 */
+
 #online {
     width: 100%;
     height: 336px;
     padding: 10px 0 0 0;
 }
-#online #imageList{
+
+#online #imageList {
     width: 100%;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
 }
+
 #online ul {
     display: block;
     list-style: none;
     margin: 0;
     padding: 0;
 }
+
 #online li {
     float: left;
     display: block;
@@ -665,18 +679,21 @@
     cursor: pointer;
     position: relative;
 }
+
 #online li.clearFloat {
     float: none;
     clear: both;
     display: block;
-    width:0;
-    height:0;
+    width: 0;
+    height: 0;
     margin: 0;
     padding: 0;
 }
+
 #online li img {
     cursor: pointer;
 }
+
 #online li .icon {
     cursor: pointer;
     width: 113px;
@@ -688,16 +705,19 @@
     border: 0;
     background-repeat: no-repeat;
 }
+
 #online li .icon:hover {
     width: 107px;
     height: 107px;
     border: 3px solid #1094fa;
 }
+
 #online li.selected .icon {
     background-image: url(images/success.png);
     background-image: url(images/success.gif)\9;
     background-position: 75px 75px;
 }
+
 #online li.selected .icon:hover {
     width: 107px;
     height: 107px;
@@ -705,8 +725,8 @@
     background-position: 72px 72px;
 }
 
-
 /* 图片搜索样式 */
+
 #search .searchBar {
     width: 100%;
     height: 30px;
@@ -714,7 +734,7 @@
     padding: 0;
 }
 
-#search input.text{
+#search input.text {
     width: 150px;
     padding: 3px 6px;
     font-size: 14px;
@@ -729,14 +749,16 @@
     -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+
 #search input.text:focus {
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
 }
+
 #search input.searchTxt {
-    margin-left:5px;
+    margin-left: 5px;
     padding-left: 5px;
     background: #FFF;
     width: 300px;
@@ -750,7 +772,7 @@
 #search .searchType {
     width: 65px;
     height: 28px;
-    padding:0;
+    padding: 0;
     line-height: 28px;
     border: 1px solid #d7d7d7;
     border-radius: 0;
@@ -760,8 +782,7 @@
     dislay: block;
 }
 
-#search #searchBtn,
-#search #searchReset {
+#search #searchBtn, #search #searchReset {
     display: inline-block;
     margin-bottom: 0;
     margin-right: 5px;
@@ -788,14 +809,17 @@
     border-color: #285e8e;
     background-color: #3b97d7;
 }
+
 #search #searchReset {
     color: #333;
     border-color: #ccc;
     background-color: #fff;
 }
+
 #search #searchBtn:hover {
     background-color: #3276b1;
 }
+
 #search #searchReset:hover {
     background-color: #eee;
 }
@@ -804,16 +828,17 @@
     margin-left: 5px;
 }
 
-#search .searchList{
+#search .searchList {
     width: 100%;
     height: 300px;
     overflow: hidden;
     clear: both;
 }
-#search .searchList ul{
-    margin:0;
-    padding:0;
-    list-style:none;
+
+#search .searchList ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
     clear: both;
     width: 100%;
     height: 100%;
@@ -824,13 +849,13 @@
 }
 
 #search .searchList li {
-    list-style:none;
+    list-style: none;
     float: left;
     display: block;
     width: 115px;
     margin: 5px 10px 5px 20px;
     *margin: 5px 10px 5px 15px;
-    padding:0;
+    padding: 0;
     font-size: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
@@ -858,8 +883,8 @@
     margin: 0;
     padding: 0;
     position: relative;
-    width:100%;
-    height:115px;
+    width: 100%;
+    height: 115px;
     overflow: hidden;
 }
 
@@ -876,10 +901,10 @@
     display: block;
     padding: 0 5px;
     width: 105px;
-    height:32px;
-    line-height:32px;
-    white-space:nowrap;
-    text-overflow:ellipsis;
+    height: 32px;
+    line-height: 32px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     text-decoration: none;
     overflow: hidden;
     word-break: break-all;
@@ -889,6 +914,7 @@
     text-decoration: underline;
     color: #333;
 }
-#search .searchList .clearFloat{
+
+#search .searchList .clearFloat {
     clear: both;
 }

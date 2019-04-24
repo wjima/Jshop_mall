@@ -18,8 +18,8 @@ class Ship extends Manage
     public function index()
     {
         if (Request::isAjax()) {
-            $shiModel            = new ShipModel();
-            $filter              = input('request.');
+            $shiModel = new ShipModel();
+            $filter   = input('request.');
             return $shiModel->tableData($filter);
         }
         return $this->fetch();
@@ -28,6 +28,7 @@ class Ship extends Manage
 
     public function add()
     {
+
         $logisticsModel = new Logistics();
         $logisticsList  = $logisticsModel->getAll();
         $this->assign('logisticsList', $logisticsList);
@@ -37,24 +38,24 @@ class Ship extends Manage
                 'msg'    => '添加失败',
                 'data'   => '',
             ];
-            $type = input('type/d','1');
-            $area_fee = [];
-            if($type==ShipModel::TYPE_PART){
-                $area_id = input('area_id/a',[]);
-                $firstunit_area_price = input('firstunit_area_price/a',[]);
-                $continueunit_area_price = input('continueunit_area_price/a',[]);
 
-                foreach ($area_id as $key =>$val){
-                    if($val){
-                        $area_data = json_decode($val,true);
-                        $areaids = array_column($area_data,'id');
-                        $area_fee[$key]['area_value'] = $val;
-                        $area_fee[$key]['area'] = implode($areaids,',');
-                        $area_fee[$key]['firstunit_area_price'] = $firstunit_area_price[$key];
+            $type     = input('type/d', '1');
+            $area_fee = [];
+            if ($type == ShipModel::TYPE_PART) {
+                $area_id                 = input('area_id/a', []);
+                $firstunit_area_price    = input('firstunit_area_price/a', []);
+                $continueunit_area_price = input('continueunit_area_price/a', []);
+                foreach ($area_id as $key => $val) {
+                    if ($val) {
+                        $area_data                                 = json_decode($val, true);
+                        $areaids                                   = $this->getAreaIds($area_data);//取出所有id
+                        $area_fee[$key]['area_value']              = $val;
+                        $area_fee[$key]['area']                    = implode($areaids, ',');
+                        $area_fee[$key]['firstunit_area_price']    = $firstunit_area_price[$key];
                         $area_fee[$key]['continueunit_area_price'] = $continueunit_area_price[$key];
                     }
                 }
-                if(count($area_fee)<=0){
+                if (count($area_fee) <= 0) {
                     $return_data['msg'] = '请选择配送地区';
                     return $return_data;
                 }
@@ -62,7 +63,7 @@ class Ship extends Manage
             $status = input('post.status');
             $status = ($status == 'on') ? ShipModel::STATUS_YES : ShipModel::STATUS_NO;
             //存储添加内容
-            $data = [
+            $data     = [
                 'name'               => input('post.name'),
                 'logi_code'          => input('post.logi_code'),
                 'free_postage'       => input('post.free_postage', '2'),
@@ -77,7 +78,7 @@ class Ship extends Manage
                 'def_area_fee'       => input('post.def_area_fee', '1'),
                 'sort'               => input('post.sort'),
                 'goodsmoney'         => input('post.goodsmoney'),
-                'area_fee'=>$area_fee,
+                'area_fee'           => $area_fee,
             ];
             $shiModel = new ShipModel();
             $result   = $shiModel->add($data);
@@ -110,29 +111,29 @@ class Ship extends Manage
                 'msg'    => '保存失败',
                 'data'   => '',
             ];
-            $id = input('post.id/d','0');
-            if(!$id){
-                $return_data['msg']='保存失败';
+            $id          = input('post.id/d', '0');
+            if (!$id) {
+                $return_data['msg'] = '保存失败';
                 return $return_data;
             }
-            $type = input('type/d','1');
+            $type     = input('type/d', '1');
             $area_fee = [];
-            if($type==ShipModel::TYPE_PART){
-                $area_id = input('area_id/a',[]);
-                $firstunit_area_price = input('firstunit_area_price/a',[]);
-                $continueunit_area_price = input('continueunit_area_price/a',[]);
+            if ($type == ShipModel::TYPE_PART) {
+                $area_id                 = input('area_id/a', []);
+                $firstunit_area_price    = input('firstunit_area_price/a', []);
+                $continueunit_area_price = input('continueunit_area_price/a', []);
 
-                foreach ($area_id as $key =>$val){
-                    if($val){
-                        $area_data = json_decode($val,true);
-                        $areaids = array_column($area_data,'id');
-                        $area_fee[$key]['area_value'] = $val;
-                        $area_fee[$key]['area'] = implode($areaids,',');
-                        $area_fee[$key]['firstunit_area_price'] = $firstunit_area_price[$key];
+                foreach ($area_id as $key => $val) {
+                    if ($val) {
+                        $area_data                                 = json_decode($val, true);
+                        $areaids                                   = $this->getAreaIds($area_data);//取出所有id
+                        $area_fee[$key]['area_value']              = $val;
+                        $area_fee[$key]['area']                    = implode($areaids, ',');
+                        $area_fee[$key]['firstunit_area_price']    = $firstunit_area_price[$key];
                         $area_fee[$key]['continueunit_area_price'] = $continueunit_area_price[$key];
                     }
                 }
-                if(count($area_fee)<=0){
+                if (count($area_fee) <= 0) {
                     $return_data['msg'] = '请选择配送地区';
                     return $return_data;
                 }
@@ -140,7 +141,7 @@ class Ship extends Manage
             $status = input('post.status');
             $status = ($status == 'on') ? ShipModel::STATUS_YES : ShipModel::STATUS_NO;
             //存储添加内容
-            $data = [
+            $data     = [
                 'id'                 => $id,
                 'name'               => input('post.name'),
                 'logi_code'          => input('post.logi_code'),
@@ -159,7 +160,7 @@ class Ship extends Manage
                 'area_fee'           => $area_fee,
             ];
             $shiModel = new ShipModel();
-            $result   = $shiModel->toSave($data,$id);
+            $result   = $shiModel->toSave($data, $id);
             if ($result['status'] !== false) {
                 $return_data = [
                     'status' => true,
@@ -173,9 +174,9 @@ class Ship extends Manage
 
         }
         $filter = [
-            'id'=>input('param.id/d'),
+            'id' => input('param.id/d'),
         ];
-        $data = $shiModel->getInfo($filter);
+        $data   = $shiModel->getInfo($filter);
         $this->assign('data', $data);
         return $this->fetch('edit');
     }
@@ -190,7 +191,7 @@ class Ship extends Manage
         ];
         $shiModel    = new ShipModel();
         $id          = input('post.id/d');
-        $filter = [
+        $filter      = [
             'id' => $id,
         ];
         $res         = $shiModel->where($filter)->delete();
@@ -202,51 +203,51 @@ class Ship extends Manage
         return $return_data;
     }
 
-    public function getArea(){
-        $return_data = [
+    public function getArea()
+    {
+        $return_data    = [
             'code' => 0,
-            'msg'=>'获取成功',
-            'data'   => [],
+            'msg'  => '获取成功',
+            'data' => [],
         ];
-        $parent_id = input('nodeId','0');
-        $ischecked = input('ischecked','0');
-        $areas = input('ids','');
-        $ids = [];
-        if($areas!=''){
-            $areas = json_decode($areas,true);
-            $ids = array_column($areas,'id');
+        $parent_id      = input('nodeId', '0');
+        $areas          = input('ids/s', '');//当前所有选择的节点
+        $currentChecked = input('ischecked', '');//当前节点状态，0未选中，1全选，2半选
+        $checked        = [];   //组装新数据
+        if ($areas != '') {
+            $areas = json_decode($areas, true);
+            if (is_array($areas) && $areas) {
+                foreach ($areas as $key => $val) {
+                    $checked[$val['id']] = $val;
+                }
+            }
         }
-        $area = new Area();
-        $areaList=$area->getTreeArea($ids);
-        if($areaList['status']){
+        $area     = new Area();
+        $areaList = $area->getTreeArea($checked, $parent_id, $currentChecked);
+        if ($areaList['status']) {
             $return_data['data'] = $areaList['data'];
         }
         return $return_data;
     }
 
-    /**
-     * 地区筛选
-     */
-    public function chooseArea()
-    {
-        $result = [
-            'status' => true,
-            'msg'    => '关键参数丢失',
-            'data'   => '',
-        ];
-        $data = input('data','');
-        $checked=[];
-        if($data!=''){
-            $data = json_decode($data,true);
-            $checked = array_column($data,'id');
-        }
-        $area = new Area();
-        $areaList=$area->getTreeArea($checked);
-        $this->assign('arealist',json_encode($areaList));
-        $this->view->engine->layout(false);
 
-        $result['data']=$this->fetch('chooseArea');
-        return $result;
+    /**
+     * 获取所有地区id
+     */
+    private function getAreaIds($areaids = '')
+    {
+        $ids       = [];
+        $areaModel = new Area();
+        foreach ($areaids as $key => $val) {
+            $ids[] = $val['id'];
+            if ($val['ischecked'] == '1') {//全选中
+                if ($val['pid'] <= 0) {//一级
+                    $areaModel->getAllChildArea($val['id'], $ids);
+                }
+            }
+        }
+        $ids = array_unique($ids);
+        return $ids;
     }
 
 

@@ -9,9 +9,9 @@
       </view>
       <!-- 头像昵称 -->
       <view class='top-mid'>
-        <open-data class='head-sculpture' type="userAvatarUrl"></open-data>
+        <!-- <open-data class='head-sculpture' type="userAvatarUrl"></open-data> -->
         <!-- <open-data class='username' type="userNickName"></open-data> -->
-        <!-- <image mode='aspectFill' class='head-sculpture' bindtap='chooseAvatar' src='{{avatar}}'></image> -->
+        <image mode='aspectFill' class='head-sculpture' bindtap='chooseAvatar' src='{{avatar}}'></image>
         <text class='username'>{{nickname}} </text>
       </view>
        <view class='top-right'>

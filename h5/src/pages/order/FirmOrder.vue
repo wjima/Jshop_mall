@@ -26,7 +26,7 @@
             <yd-popup v-model="couponShow" position="bottom" height="40%" class="ordercoupon-content">
                 <yd-tab v-model="couponPopTab" :prevent-default="false" :item-click="couponPopClickHandler">
                     <yd-tab-panel label="已领取优惠券">
-                        <yd-cell-group>
+                        <yd-cell-group class="pop-cell">
                             <div v-if="userCoupon.length">
                                 <yd-cell-item @click.native="couponChecked(index, item.checked)" v-for="(item, index) in userCoupon" :key="index">
                                     <span slot="left">{{ item.name }}</span>
@@ -45,7 +45,7 @@
                         </div>
                     </yd-tab-panel>
                 </yd-tab>
-                <yd-button type="warning" style="margin: 30px;" @click.native="couponShow=false">关闭</yd-button>
+                <yd-button type="button" style="margin: 30px;" @click.native="couponShow=false">关闭</yd-button>
             </yd-popup>
         </div>
         <ordercell
@@ -63,7 +63,7 @@
             :point_money="point_money"
             @isUsePoint="isUsePoint"
         ></ordercell>
-        <div class="invoice-item">
+        <div class="invoice-item" v-if="invoiceSwitch === 1">
             <yd-cell-group>
                 <yd-cell-item arrow>
                     <span slot="left">发票</span>
@@ -133,7 +133,7 @@ export default {
             use_point: false, // 是否使用积分
             receiptType: 1, // 1快递配送 2门店自提
             tax_type: 1,
-            tax_name: '本次不开具发票，继续下单',
+            tax_name: '不开发票',
             tax_code: ''
         }
     },
@@ -151,6 +151,11 @@ export default {
             }
             return status
         },
+        // 获取发票开启状态
+        invoiceSwitch () {
+          return this.$store.state.config.invoice_switch || 1
+        },
+        // 从vuex中获取发票信息
         ...mapGetters([
             'invoice'
         ])
@@ -406,9 +411,21 @@ export default {
 </script>
 
 <style>
+	.yd-popup{
+		max-width: 750px;
+		left: auto;
+		right: auto;
+	}
+	.yd-popup .yd-tab-nav:after{
+		background-image: none;
+	}
     .ordercoupon{
         background-color: #fff;
     }
+	.ordercoupon .yd-cell-item:not(:last-child):after{
+		border-bottom: 1px solid #e9e9e9 !important;
+		margin: 0;
+	}
     .ordercoupon-content .yd-btn{
         width: 100%;
         background-color: #FF3B44;
@@ -419,6 +436,8 @@ export default {
         color: #fff;
         border-radius: 0;
         height: .7rem;
+		max-width: 750px;
+		box-sizing: border-box;
     }
     .ordercoupon-content .yd-cell .demo-list-price img{
         width: .35rem;
@@ -447,4 +466,8 @@ export default {
         margin-left: 4%;
         color: #fff;
     }
+	.pop-cell .yd-cell:after{
+		background-image: none !important;
+		border-bottom: none !important;
+	}
 </style>

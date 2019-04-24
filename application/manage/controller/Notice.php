@@ -39,6 +39,7 @@ class Notice extends Manage
         $noticeModel = new noticeModel();
         if(Request::isPost())
         {
+            validateJshopToken();
             return $noticeModel->addData(input('param.'));
         }
         return $this->fetch();
@@ -79,7 +80,7 @@ class Notice extends Manage
     {
         $result = ['status' => true, 'msg' => '删除成功', 'data'  => ''];
         $noticeModel = new noticeModel();
-        if (!$noticeModel->destroy(input('param.id/d')))
+        if (!$noticeModel->destroy(input('post.id/d')))
         {
             $result['status'] = false;
             $result['msg'] = '删除失败';

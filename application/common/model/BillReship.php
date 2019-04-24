@@ -5,7 +5,6 @@ use think\model\concern\SoftDelete;
 
 class BillReship extends Common
 {
-
     protected $pk = 'reship_id';
 
     //时间自动存储
@@ -19,6 +18,15 @@ class BillReship extends Common
     const STATUS_SHIPPED = 2;        //状态，已发货
     const STATUS_SUCCESS = 3;       //状态，已收货
 
+
+    /**
+     * @param $user_id
+     * @param $order_id
+     * @param $aftersales_id
+     * @param $aftersalesItems
+     * @return array|mixed
+     * @throws \Exception
+     */
     public function toAdd($user_id,$order_id,$aftersales_id,$aftersalesItems)
     {
         $result = [
@@ -62,6 +70,7 @@ class BillReship extends Common
         return $result;
     }
 
+
     /**
      * 用户发送退货包裹
      * @param $user_id //用户id
@@ -69,9 +78,11 @@ class BillReship extends Common
      * @param $logi_code //退货物流公司
      * @param $logi_no //退货订单号
      * @return array|mixed
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function sendReship($user_id,$reship_id,$logi_code,$logi_no)
     {
@@ -101,10 +112,16 @@ class BillReship extends Common
 
     }
 
-    /**i
+
+    /**
      * 平台客服收到退款包裹，确认收货，这时候，在业务上可以让退款员去退款了
      * @param $reship_id
-     * @return array|\think\Config
+     * @return array|mixed
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function confirmReship($reship_id)
     {
@@ -130,6 +147,12 @@ class BillReship extends Common
         return $result;
     }
 
+
+    /**
+     * @param $post
+     * @return mixed
+     * @throws \think\exception\DbException
+     */
     public function tableData($post)
     {
         if(isset($post['limit'])){
@@ -151,6 +174,11 @@ class BillReship extends Common
         return $re;
     }
 
+
+    /**
+     * @param $post
+     * @return mixed
+     */
     protected function tableWhere($post)
     {
         $where = [];
@@ -187,16 +215,17 @@ class BillReship extends Common
         $result['order'] = "status asc,utime desc";
         return $result;
     }
+
+
     /**
      * 根据查询结果，格式化数据
-     * @author sin
-     * @param $list  array格式的collection
+     * @param $list //array格式的collection
      * @return mixed
      */
     protected function tableFormat($list)
     {
-
-        foreach($list as $k => $v) {
+        foreach($list as $k => $v)
+        {
             if($v['status']) {
                 $list[$k]['status_name'] = config('params.bill_reship')['status'][$v['status']];
             }
@@ -224,10 +253,17 @@ class BillReship extends Common
         }
         return $list;
     }
+
+
+    /**
+     * @return \think\model\relation\HasMany
+     */
     public function items()
     {
         return $this->hasMany('BillReshipItems','reship_id','reship_id');
     }
+
+
     /**
      * 设置csv header
      * @return array
@@ -275,10 +311,15 @@ class BillReship extends Common
             ],
         ];
     }
+
+
     /**
      * 获取csv数据
      * @param $post
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getCsvData($post)
     {
@@ -319,6 +360,8 @@ class BillReship extends Common
             return $result;
         }
     }
+
+
     /**
      * 导出验证
      * @param array $params
@@ -333,7 +376,16 @@ class BillReship extends Common
         ];
         return $result;
     }
-//导出格式
+
+
+    /**
+     * 导出格式
+     * @param array $post
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getExportList($post = [])
     {
         $return_data = [
@@ -412,5 +464,43 @@ class BillReship extends Common
             ];
         }
         return $return_data;
+    }
+
+
+    /**
+     * @param $aftersales_id
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getAftersalesStatus($aftersales_id)
+    {
+        $where[] = ['aftersales_id', 'eq', $aftersales_id];
+        $info = $this->where($where)->find();
+        if($info)
+        {
+            if($info['status'] == self::STATUS_WAIT_SHIP)
+            {
+                $text = '待发退货';
+            }
+            else if($info['status'] == self::STATUS_SHIPPED)
+            {
+                $text = '已发退货';
+            }
+            else if($info['status'] == self::STATUS_SUCCESS)
+            {
+                $text = '已收退货';
+            }
+            else
+            {
+                $text = '状态异常';
+            }
+        }
+        else
+        {
+            $text = '待发退货';
+        }
+        return $text;
     }
 }

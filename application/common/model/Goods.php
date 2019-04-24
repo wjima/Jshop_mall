@@ -41,6 +41,17 @@ class Goods extends Common
     const HOT_YES = 1; //热卖
     const HOT_NO = 2; //非热卖
 
+
+    //商品禁止输出字段
+    private $goodsForbidFields = [
+        'costprice','freeze_stock'
+    ];
+    //货品禁止输出字段
+    private $productForbidFields = [
+        'costprice','freeze_stock'
+    ];
+
+
     public function tableData($post,$isPage=true)
     {
         if(isset($post['limit'])){
@@ -179,10 +190,10 @@ class Goods extends Common
     /**
      * 查询商品列表信息
      * @param string $fields 查询字段
-     * @param array  $where 查询条件
+     * @param array $where 查询条件
      * @param string $order 查询排序
-     * @param int    $page 当前页码
-     * @param int    $limit 每页数量
+     * @param int $page 当前页码
+     * @param int $limit 每页数量
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -191,41 +202,90 @@ class Goods extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-29 16:33
      */
-    public function getList($fields='*',$where=[],$order='id desc',$page=1,$limit=10)
+    public function getList($fields = '*', $where = [], $order = 'id desc', $page = 1, $limit = 10)
     {
         $result = [
             'status' => true,
-            'data'   => [ ],
+            'data'   => [],
             'msg'    => ''
         ];
 
-        if($fields != '*')
-        {
-            $tmpData = explode(',',$fields);
-            if(in_array('products',$tmpData))
-            {
-                $key        = array_search('products',$tmpData);
+        if ($fields != '*') {
+            $tmpData = explode(',', $fields);
+            if (in_array('products', $tmpData)) {
+                $key = array_search('products', $tmpData);
                 unset($tmpData[$key]);
             }
-            $fields = implode(',',$tmpData);
+            $fields = implode(',', $tmpData);
         }
-        $list = $this
+        $list  = $this
+            ->alias('g')
             ->field($fields)
             ->where($where)
             ->order($order)
-            ->page($page,$limit)
+            ->page($page, $limit)
             ->select();
         $total = $this
+            ->alias('g')
             ->field($fields)
             ->where($where)
             ->count();
 
-        if(!$list->isEmpty()){
+
+        /*取出标签、品牌、分类*/
+        if (!$this->checkWhere($where)) {
+
+            $label_ids = $this
+                ->alias('g')
+                ->field('label_ids')
+                ->where($where)
+                ->group('label_ids')
+                ->select();
+            if (!$label_ids->isEmpty()) {
+                $label_arr = [];
+                foreach ($label_ids->toArray() as $key => $value) {
+                    $label     = explode(',', $value['label_ids']);
+                    $label_arr = array_merge((array)$label_arr, (array)$label);
+                }
+                $label_arr  = array_unique($label_arr);
+                $labelModel = new Label();
+                $label_ids  = $labelModel->where([['id', 'in', implode(',', $label_arr)]])->select();
+            }
+
+
+            $result['filter']['label_ids'] = $label_ids;
+            $result['filter']['brand_ids'] = $this
+                ->field('g.brand_id,b.name')
+                ->alias('g')
+                ->leftJoin('brand b', 'b.id = g.brand_id')
+                ->where($where)
+                ->where([['g.brand_id', '<>', '0']])
+                ->group('g.brand_id')
+                ->select();
+
+            /*$result['filter']['type_ids']  = $this
+                ->field('g.goods_type_id,gt.name')
+                ->alias('g')
+                ->leftJoin('goods_type gt', 'g.goods_type_id = gt.id')
+                ->where($where)
+                ->where([['g.goods_type_id', '<>', '0']])
+                ->group('goods_type_id')
+                ->select();*/
+
+            $result['filter']['goods_cat'] = $this
+                ->field('g.goods_cat_id,gc.name')
+                ->alias('g')
+                ->leftJoin('goods_cat gc', 'g.goods_cat_id = gc.id')
+                ->where($where)
+                ->where([['g.goods_cat_id', '<>', '0']])
+                ->group('goods_cat_id')
+                ->select();
+        }
+        if (!$list->isEmpty()) {
             $gcModel = new GoodsComment();
-            foreach($list as $key=>$value)
-            {
-                $goods = $this->getGoodsDetial($value['id'],'*');
-                if($goods['status']){
+            foreach ($list as $key => $value) {
+                $goods = $this->getGoodsDetial($value['id'], $fields);
+                if ($goods['status']) {
                     $list[$key] = $goods['data'];
                 }
 //                $image_url = _sImage($value['image_id']);
@@ -236,9 +296,7 @@ class Goods extends Common
 
             $result['data'] = $list->toArray();
         }
-        $result['total'] = ceil($total/$limit);
-
-
+        $result['total'] = ceil($total / $limit);
         return $result;
     }
 
@@ -265,11 +323,9 @@ class Goods extends Common
         if ($fields == '*') {
             $preModel = 'brand,goodsCat';
         } else {
-
             if (stripos($fields, 'brand_id') !== false) {
                 $preModel .= 'brand,';
             }
-
             if (stripos($fields, 'goods_cat_id') !== false) {
                 $preModel .= 'goodsCat,';
             }
@@ -329,13 +385,14 @@ class Goods extends Common
             //获取当前登录是否收藏
 
             $list['isfav']  = $this->getFav($list['id'], $user_id);
-            $result['data'] = $list;
 
             //图片处理
             if (isset($list['intro'])) {
                 $list['intro'] = clearHtml($list['intro'], ['width', 'height']);
                 $list['intro'] = str_replace("<img", "<img style='max-width: 100%'", $list['intro']);
             }
+            $list = $this->filterFields($list,'goods');
+            $result['data'] = $list;
         }
         return $result;
     }
@@ -513,14 +570,14 @@ class Goods extends Common
         $productModel = new Products();
         $where        = [];
         $where[]      = ['id', 'eq', $product_id];
-        $where[]      = [0, 'exp', Db::raw('(stock-freeze_stock)-' . $num . ' >0')];
+        $where[]      = [0, 'exp', Db::raw('(stock-freeze_stock)-' . $num . ' >= 0')];
         switch ($type) {
             case 'order': //下单
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
             case 'send': //发货
                 $res = $productModel->where($where)->setDec('stock', $num);
-                if ($res !== false) {
+                if ($res != false) {
                     $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 } else {
                     $result['msg'] = '库存更新失败';
@@ -540,11 +597,14 @@ class Goods extends Common
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
         }
-        if ($res !== false) {
+        if ($res != false) {
             $result['msg']    = '库存更新成功';
             $result['status'] = true;
             return $result;
+        } else {
+            $result['msg'] = '库存不足';
         }
+
         return $result;
     }
 
@@ -713,7 +773,7 @@ class Goods extends Common
                             }
                             $spes_desc = substr($spes_desc,0,-1);
                         }else{
-                            $spes_desc=$spes_desc.$sv;
+                            $spes_desc = $spes_desc.$tsVal;
                         }
                     }
                     $spes_desc = substr($spes_desc,1);
@@ -1031,5 +1091,55 @@ class Goods extends Common
             $return['msg'] = '获取成功';
         }
         return $return;
+    }
+
+
+    /**
+     * 过滤商品输出字段
+     * @param $data
+     * @param string $type
+     * @return array
+     */
+    private function filterFields($data, $type = 'goods')
+    {
+        if ($data) {
+            if (!is_array($data)) {
+                $data = $data->toArray();
+            }
+            foreach ($data as $key => $value) {
+                if ($type == 'goods') {
+                    if ($key == 'product') {
+                        $data[$key] = $this->filterFields($value, 'product');
+                    } else {
+                        if (in_array($key, $this->goodsForbidFields)) {
+                            unset($data[$key]);
+                        }
+                    }
+                } elseif($type == 'product') {
+                    if (in_array($key, $this->productForbidFields)) {
+                        unset($data[$key]);
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * 判断是否返回筛选
+     * @param array $where
+     * @return bool
+     */
+    private function checkWhere($where = [])
+    {
+        $noFilter = [
+            'g.brand_id', 'g.price', 'g.label_id','g.goods_cat_id'
+        ];
+        foreach ((array)$where as $key => $val) {
+            if (in_array($val[0], $noFilter) || $val[0] == '') {
+                return true;
+            }
+        }
+        return false;
     }
 }

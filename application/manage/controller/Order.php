@@ -234,24 +234,31 @@ class Order extends Manage
      */
     public function cancel()
     {
-        $id = input('id');
+        $id = input('post.id');
+        if(!$id){
+            return [
+                'status' => false,
+                'msg' => '操作失败',
+                'data' => ''
+            ];
+        }
         $model = new Model();
         $result = $model->cancel($id);
         if($result)
         {
-            $return_data = array(
+            $return_data = [
                 'status' => true,
                 'msg' => '操作成功',
                 'data' => $result
-            );
+            ];
         }
         else
         {
-            $return_data = array(
+            $return_data = [
                 'status' => false,
                 'msg' => '操作失败',
                 'data' => $result
-            );
+            ];
         }
         return $return_data;
     }

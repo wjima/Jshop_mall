@@ -233,6 +233,7 @@ const routers = [{
         component: resolve => require(['../pages/other/Notice'], resolve),
         name: 'Notice',
         meta: {
+			navShow: true,
             tabShow: false,
             title: '公告详情',
             keepAlive: false

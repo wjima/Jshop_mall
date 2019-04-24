@@ -28,7 +28,7 @@ class User extends Api
      */
     public function login()
     {
-        $platform = input('param.platform',1);
+        $platform = input('param.platform',1);      //1就是h5登陆（h5端和微信公众号端），2就是微信小程序登陆，3是支付宝小程序，4是app，5是pc
         $userModel = new UserModel();
         $data = input('param.');
         return $userModel->toLogin($data, 2,$platform);
@@ -70,8 +70,13 @@ class User extends Api
             $result['msg'] = 'code参数缺失';
             return $result;
         }
+        $type = input('type','weixin');
         $userWxModel = new UserWx();
-        return $userWxModel->codeToInfo(input('param.code'));
+        if($type == 'weixin'){
+            return $userWxModel->codeToInfo(input('param.code'));
+        }elseif ($type == 'alipay'){
+            return $userWxModel->alipayCodeToInfo(input('param.code'));
+        }
     }
 
 
@@ -105,6 +110,7 @@ class User extends Api
         }
         //$pid = input('param.pid',0);
         $userWxModel = new UserWx();
+
         $re = $userWxModel->updateWxInfo(input('param.open_id'),input('param.edata'),input('param.iv'));
 
         if(!$re['status'])
@@ -457,24 +463,24 @@ class User extends Api
         $data['mobile'] = input('param.mobile');
         $data['is_def'] = input('param.is_def');
         $model = new UserShip();
-        $result = $model->vueSaveShip($data);
-        if($result)
-        {
-            $return_data = [
-                'status' => true,
-                'msg' => '存储收货地址成功',
-                'data' => $result
-            ];
-        }
-        else
-        {
-            $return_data = [
-                'status' => false,
-                'msg' => '存储收货地址失败',
-                'data' => $result
-            ];
-        }
-        return $return_data;
+        return $model->vueSaveShip($data);
+//        if($result)
+//        {
+//            $return_data = [
+//                'status' => true,
+//                'msg' => '存储收货地址成功',
+//                'data' => $result
+//            ];
+//        }
+//        else
+//        {
+//            $return_data = [
+//                'status' => false,
+//                'msg' => '存储收货地址失败',
+//                'data' => $result
+//            ];
+//        }
+//        return $return_data;
     }
 
 
@@ -528,24 +534,7 @@ class User extends Api
         $data['id'] = input('param.id');
 
         $model = new UserShip();
-        $result = $model->editShip($data, $this->userId);
-        if($result)
-        {
-            $res = [
-                'status' => true,
-                'msg' => '保存成功',
-                'data' => ''
-            ];
-        }
-        else
-        {
-            $res = [
-                'status' => false,
-                'msg' => '保存失败',
-                'data' => ''
-            ];
-        }
-        return $res;
+        return $model->editShip($data, $this->userId);
     }
 
 
@@ -1069,7 +1058,9 @@ class User extends Api
         if(!$url){
             $url = Container::get('request')->domain();
         }
-        $params['url'] = $url.'/wap/index.html#/author';
+        // $params['url'] = $url.'/wap/index.html#/author';
+
+        $params['url'] = $url;
         $params['uuid'] = $uuid;
         if(!$params['url']||!$uuid)
         {
@@ -1330,5 +1321,33 @@ class User extends Api
         }
         $data = file_get_contents($area);
         echo $data;exit();
+    }
+
+
+    /**
+     * 生成海报
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getPoster()
+    {
+        $token = Request::param('token', false);
+        if($token)
+        {
+            $data['user_id'] = getUserIdByToken($token);
+        }
+        else
+        {
+            $data['user_id'] = 0;
+        }
+        $data['type'] = Request::param('type', 1); //分享类型 1=商品海报 2=邀请海报
+        $data['id'] = Request::param('id', 0); //类型值 1商品海报就是商品ID 2邀请海报无需填
+        $data['source'] = Request::param('source', 1); //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
+        $data['return_url'] = Request::param('return_url', ''); //返回URL地址
+
+        $model = new UserModel();
+        return $model->posterGenerate($data);
     }
 }

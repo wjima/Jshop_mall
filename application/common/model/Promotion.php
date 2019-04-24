@@ -313,6 +313,7 @@ class Promotion extends Common
                         $activeGoods[$i]['time']     = time();
                         $activeGoods[$i]['stime']    = $value['stime'];
                         $activeGoods[$i]['etime']    = $value['etime'];
+                        $activeGoods[$i]['lasttime'] = secondConversionArray($value['etime']-time());
                         $i++;
                     }
                 }
@@ -365,6 +366,7 @@ class Promotion extends Common
         $goods['data']['time']       = time();
         $goods['data']['stime']      = $promotion['stime'];
         $goods['data']['etime']      = $promotion['etime'];
+        $goods['data']['lasttime']   = secondConversionArray($promotion['etime']-time());
         return $goods;
     }
 

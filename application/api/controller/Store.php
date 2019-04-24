@@ -57,7 +57,9 @@ class Store extends Api
     {
         $model = new Model();
         $key = Request::param('key', '');
-        return $model->getAllStoreList($key);
+        $longitude = Request::param('longitude', false);
+        $latitude = Request::param('latitude', false);
+        return $model->getAllStoreList($key, $longitude, $latitude);
     }
 
 

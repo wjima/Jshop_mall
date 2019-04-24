@@ -199,7 +199,16 @@ class UserPointLog extends Common
         $sign_most_point = getSetting('sign_most_point'); //签到最多积分
 
         //获取连续签到天数
-        $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
+        if($continuity_sign_additional > 0)
+        {
+            $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
+        }
+        else
+        {
+            //连续追加0的话说明每天签到积分都一样多，那么最大连续签到天数就是1天
+            $max_continuity_day = 1; //最大连续签到天数
+        }
+
         $day = date('Y-m-d', strtotime('-'.$max_continuity_day.' day'));
 
         //兼容问题

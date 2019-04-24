@@ -22,12 +22,17 @@ use app\common\model\Area;
 use app\common\model\Payments;
 use app\common\model\Logistics;
 
-//毫秒数
-//返回当前的毫秒时间戳
+
+/**
+ * 返回当前的毫秒时间戳
+ * @return string
+ */
 function msectime() {
     list($tmp1, $tmp2) = explode(' ', microtime());
     return sprintf('%.0f', (floatval($tmp1) + floatval($tmp2)) * 1000);
 }
+
+
 /**
  * 获取客户端IP地址
  * @param integer $type 返回类型 0 返回IP地址 1 返回IPV4地址数字
@@ -58,7 +63,11 @@ function get_client_ip($type = 0,$adv=false) {
     return $ip[$type];
 }
 
-//判断前端浏览器类型
+
+/**
+ * 判断前端浏览器类型
+ * @return bool|string
+ */
 function get_client_broswer(){
     $ua = $_SERVER['HTTP_USER_AGENT'];
 
@@ -74,7 +83,13 @@ function get_client_broswer(){
     }
     return false;
 }
-//生成编号
+
+
+/**
+ * 生成编号
+ * @param $type
+ * @return string
+ */
 function get_sn($type){
     switch ($type)
     {
@@ -132,6 +147,7 @@ function get_hash()
     return sha1($content);
 }
 
+
 /**
  * @param $filename
  * @return string
@@ -144,6 +160,7 @@ function get_file_extension($filename)
     $pathinfo = pathinfo($filename);
     return strtolower($pathinfo['extension']);
 }
+
 
 /***
  * 获取HASH目录
@@ -159,6 +176,7 @@ function get_hash_dir($name='default')
     $dir   = '/' . $ident{0} . $ident{1} . '/' . $ident{2} . $ident{3} . '/' . $ident{4} . $ident{5} . '/';
     return $dir;
 }
+
 
 /**
  *
@@ -221,8 +239,11 @@ function _sImage($image_id = '', $type = 's')
     }
 }
 
+
 /**
  * 相对地址转换为绝对地址
+ * @param string $url
+ * @return string
  */
 function getRealUrl($url='')
 {
@@ -240,15 +261,22 @@ function getRealUrl($url='')
     }
 }
 
+
 /**
  * 格式化数据化手机号码
+ * @param $mobile
+ * @return string
  */
 function format_mobile($mobile)
 {
     return substr($mobile,0,5)."****".substr($mobile,9,2);
 }
 
-//如果没有登陆的情况下，记录来源url，并跳转到登陆页面
+
+/**
+ * 如果没有登陆的情况下，记录来源url，并跳转到登陆页面
+ * @return mixed|string
+ */
 function redirect_url()
 {
     if(cookie('?redirect_url')){
@@ -259,7 +287,14 @@ function redirect_url()
     }
     return $str;
 }
-//返回用户信息
+
+
+/**
+ * 返回用户信息
+ * @param $user_id
+ * @param string $field
+ * @return string
+ */
 function get_user_info($user_id,$field = 'mobile')
 {
     $user = app\common\model\User::get($user_id);
@@ -277,7 +312,17 @@ function get_user_info($user_id,$field = 'mobile')
         return "";
     }
 }
-//返回商品信息
+
+
+/**
+ * 返回商品信息
+ * @param $goods_id
+ * @param string $field
+ * @return array|mixed|string
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
+ */
 function get_goods_info($goods_id,$field = 'name')
 {
     $goodsModel = new \app\common\model\Goods();
@@ -292,7 +337,16 @@ function get_goods_info($goods_id,$field = 'name')
         return '';
     }
 }
-//返回用户信息
+
+
+/**
+ * 返回用户信息
+ * @param $mobile
+ * @return bool|mixed
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
+ */
 function get_user_id($mobile)
 {
     $userModel = new app\common\model\User();
@@ -303,6 +357,7 @@ function get_user_id($mobile)
         return false;
     }
 }
+
 
 /**
  * 获取转换后金额
@@ -317,7 +372,16 @@ function getMoney($money = 0)
     return sprintf("%.2f", $money);
 }
 
-//根据支付方式编码取支付方式名称等
+
+/**
+ * 根据支付方式编码取支付方式名称等
+ * @param $payment_code
+ * @param string $field
+ * @return mixed
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
+ */
 function get_payment_info($payment_code,$field = 'name')
 {
     $paymentModel = new Payments();
@@ -329,7 +393,16 @@ function get_payment_info($payment_code,$field = 'name')
     }
 }
 
-//根据物流编码取物流名称等信息
+
+/**
+ * 根据物流编码取物流名称等信息
+ * @param $logi_code
+ * @param string $field
+ * @return mixed
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
+ */
 function get_logi_info($logi_code,$field='logi_name')
 {
     $logisticsModel = new Logistics();
@@ -341,10 +414,14 @@ function get_logi_info($logi_code,$field='logi_name')
     }
 }
 
+
 /**
  * 根据地区id取省市区的信息
  * @param $area_id
  * @return string
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
  */
 function get_area($area_id)
 {
@@ -358,6 +435,13 @@ function get_area($area_id)
     }
     return $parse;
 }
+
+
+/**
+ * @param $code
+ * @param bool $mini
+ * @return array|mixed
+ */
 function error_code($code,$mini = false)
 {
     $result = [
@@ -376,6 +460,7 @@ function error_code($code,$mini = false)
     }
 }
 
+
 /**
  * 删除数组中指定值
  * @param $arr
@@ -392,10 +477,16 @@ function unsetByValue($arr, $value){
     return $arr;
 }
 
+
 /**
  * 删除图片
  * @param $image_id
  * @return bool
+ * @throws \think\Exception
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
+ * @throws \think\exception\PDOException
  */
 function delImage($image_id){
     $image_obj= new \app\common\model\Images();
@@ -416,10 +507,14 @@ function delImage($image_id){
     }
 }
 
+
 /**
  * 查询标签
  * @param $ids
  * @return array
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
  */
 function getLabel($ids)
 {
@@ -434,6 +529,11 @@ function getLabel($ids)
     return [];
 }
 
+
+/**
+ * @param $style
+ * @return string
+ */
 function getLabelStyle($style){
     $label_style='';
     switch ($style) {
@@ -455,7 +555,12 @@ function getLabelStyle($style){
     return $label_style;
 }
 
-/* 单位自动转换函数 */
+
+/**
+ * 单位自动转换函数
+ * @param $size
+ * @return string
+ */
 function getRealSize($size)
 {
     $kb = 1024;         // Kilobyte
@@ -485,6 +590,7 @@ function getRealSize($size)
     }
 }
 
+
 /**
  * url参数转换为数组
  * @param $query
@@ -501,6 +607,7 @@ function convertUrlQuery($query)
     return $params;
 }
 
+
 /**
  * bool型转义
  * @param string $value
@@ -511,6 +618,7 @@ function getBool($value='1'){
     return $bool[$value];
 }
 
+
 /**
  * 时间格式化
  * @param int $time
@@ -519,6 +627,7 @@ function getBool($value='1'){
 function getTime($time = 0){
     return date('Y-m-d H:i:s',$time);
 }
+
 
 /**
  * 标签转换
@@ -533,6 +642,7 @@ function getExportLabel($labels = []){
     return substr($labelString,0,-1);
 }
 
+
 /**
  * 上下架状态转换
  * @param string $status
@@ -542,7 +652,6 @@ function getMarketable($marketable='1'){
     $status = ['1'=>'上架','2'=>'下架'];
     return $status[$marketable];
 }
-
 
 
 /**
@@ -564,6 +673,7 @@ function arrayToXml($arr, $root = "root")
     $xml .= "</" . $root . ">";
     return $xml;
 }
+
 
 /**
  * 在模板中，有时候，新增的时候，要设置默认值
@@ -589,6 +699,7 @@ function xmlToArray($xml)
     return $values;
 }
 
+
 /**
  * 判断url是否内网ip
  * @param string $url
@@ -607,6 +718,7 @@ function isIntranet($url = '')
     }
     return false;
 }
+
 
 /**
  * 获取微信操作对象（单例模式）
@@ -635,8 +747,8 @@ function & load_wechat($type = '') {
         $wechat[$index] = \Wechat\Loader::get($type);
     }
     return $wechat[$index];
-
 }
+
 
 /**
  * 获取最近天数的日期和数据
@@ -666,6 +778,7 @@ function get_lately_days($day, $data)
     return ['day' => $d, 'data' => $new];
 }
 
+
 /**
  * 商家发送信息助手
  * @param $user_id
@@ -683,7 +796,10 @@ function sendMessage($user_id, $code, $params)
 /**
  * 根据商户id和用户id获取openid (废弃方法)
  * @param $user_id
- * @return bool|array
+ * @return array|bool
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
  */
 function getUserWxInfo($user_id)
 {
@@ -698,10 +814,10 @@ function getUserWxInfo($user_id)
 }
 
 
-
 /**
  * 判断用户是否有新消息，用于前端显示小红点
  * @param $user_id
+ * @return bool
  */
 function hasNewMessage($user_id)
 {
@@ -710,7 +826,12 @@ function hasNewMessage($user_id)
     return $re;
 }
 
-//格式化银行卡号，前四位和最后显示原样的，其他隐藏
+
+/**
+ * 格式化银行卡号，前四位和最后显示原样的，其他隐藏
+ * @param $cardNo
+ * @return string
+ */
 function bankCardNoFormat($cardNo){
     $n = strlen($cardNo);
     //判断尾部几位显示原型
@@ -733,43 +854,78 @@ function bankCardNoFormat($cardNo){
     return $str;
 }
 
+
 /**
  * 获取系统设置
  * @param string $key
- * @return array
+ * @return mixed|string
  */
 function getSetting($key = ''){
     $systemSettingModel = new \app\common\model\Setting();
     return $systemSettingModel->getValue($key);
 }
 
-/***
+
+/**
  * 获取插件配置信息
- * @param string $name 插件名称
- * @return array
+ * @param string $name
+ * @return array|mixed
  */
-function getAddonsConfig($name = ''){
+function getAddonsConfig($name){
     if(!$name){
         return [];
     }
     $addonModel = new \app\common\model\Addons();
     return $addonModel->getSetting($name);
 }
-//货品上的多规格信息，自动拆分成二维数组
-function getProductSpesDesc($str_spes_desc){
-    if($str_spes_desc == ""){
+
+/**
+ * 获取插件的某一个配置信息
+ * @param $name     插件名称
+ * @param $val      插件的配置文件
+ * @return string   插件的值
+ */
+function getAddonsConfigVal($name,$val){
+    $conf = getAddonsConfig($name);
+    if(isset($conf[$val])){
+        return $conf[$val];
+    }else{
+        return "";
+    }
+
+}
+
+
+/**
+ * 货品上的多规格信息，自动拆分成二维数组
+ * @param $str_spes_desc
+ * @return array
+ */
+function getProductSpesDesc($str_spes_desc)
+{
+    if ($str_spes_desc == "" ) {
         return [];
     }
-    $spes = explode(',',$str_spes_desc);
-    $re = [];
-    foreach($spes as $v){
-        $val = explode(':',$v);
-        $re[$val[0]] = $val[1];
+    $spes = explode(',', $str_spes_desc);
+    if (is_array($spes)) {
+        $re = [];
+        foreach ($spes as $v) {
+            $val = explode(':', $v);
+            if (count($val) >= 2) {
+                $re[$val[0]] = $val[1];
+            }
+        }
     }
     return $re;
 }
 
-//返回管理员信息
+
+/**
+ * 返回管理员信息
+ * @param $manage_id
+ * @param string $field
+ * @return string
+ */
 function get_manage_info($manage_id,$field = 'username')
 {
     $user = app\common\model\Manage::get($manage_id);
@@ -787,6 +943,7 @@ function get_manage_info($manage_id,$field = 'username')
         return "";
     }
 }
+
 
 /**
  * 数组倒排序，取新的键
@@ -809,10 +966,14 @@ function _krsort($array = [])
     }
 }
 
+
 /**
  * 判断钩子是否有插件
  * @param string $hookname
  * @return bool
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
  */
 function checkAddons($hookname = '')
 {
@@ -825,10 +986,15 @@ function checkAddons($hookname = '')
     }
 }
 
+
 /**
  * 判断商品是否参加团购
  * @param int $gid
- * @return array
+ * @param int $promotion_id
+ * @return bool
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
  */
 function isInGroup($gid = 0, &$promotion_id = 0)
 {
@@ -856,6 +1022,7 @@ function isInGroup($gid = 0, &$promotion_id = 0)
     return false;
 }
 
+
 /***
  * 判断是否json
  * @param $str
@@ -864,6 +1031,7 @@ function isInGroup($gid = 0, &$promotion_id = 0)
 function isjson($str){
     return is_null(json_decode($str))?false:true;
 }
+
 
 /**
  * 判断是否手机号
@@ -943,6 +1111,7 @@ function _sFile($file_id, $type = 's')
     }
 }
 
+
 /**
  * 验证是否邮箱
  * @param $email
@@ -957,6 +1126,7 @@ function isEmail($email){
     }
 }
 
+
 /***
  * 导出时字符串太长不显示时，处理
  */
@@ -964,6 +1134,7 @@ function convertString($value = '')
 {
     return $value."\t";
 }
+
 
 /**
  * 根据token获取userid
@@ -983,6 +1154,7 @@ function getUserIdByToken($token = '')
     return $return_token['data']['user_id'];
 }
 
+
 /**
  * 清除HTML中指定样式
  * @param $content
@@ -998,4 +1170,236 @@ function clearHtml($content,$rule = [] ){
         $content = preg_replace('/'.$v.'\s*:\s*\d+\s*px\s*;?/i', '', $content);
     }
     return $content;
+}
+
+
+/**
+ * 生成海报
+ * @param $config
+ * @param string $filename
+ * @return bool|string
+ */
+function createPoster($config, $filename = '')
+{
+    if(empty($filename))
+    {
+        header("content-type: image/png");
+    }
+
+    $imageDefault = [
+        'left' => 0,
+        'top' => 0,
+        'right' => 0,
+        'bottom' => 0,
+        'width' => 100,
+        'height' => 100,
+        'opacity' => 100
+    ];
+    $textDefault = [
+        'text' => '',
+        'left' => 0,
+        'top' => 0,
+        'fontSize' => 24,
+        'width' => 0,
+        'lineHeight' => 30,
+        'length' => 100,
+        'fontColor' => '255,255,255',
+        'angle' => 0,
+        'center' => false
+    ];
+    $background = $config['background'];
+
+    //获取背景
+    $backgroundInfo = getimagesize($background);
+    $backgroundFun = 'imagecreatefrom'.image_type_to_extension($backgroundInfo[2], false);
+    $background = $backgroundFun($background);
+    $backgroundWidth = imagesx($background);
+    $backgroundHeight = imagesy($background);
+    $imageRes = imageCreatetruecolor($backgroundWidth, $backgroundHeight);
+    $color = imagecolorallocate($imageRes, 0, 0, 0);
+    imagefill($imageRes, 0, 0, $color);
+    // imageColorTransparent($imageRes, $color);  //颜色透明
+    imagecopyresampled($imageRes,$background,0,0,0,0,imagesx($background),imagesy($background),imagesx($background),imagesy($background));
+
+    //处理图片
+    if(!empty($config['image']))
+    {
+        foreach($config['image'] as $key => $val)
+        {
+            $val = array_merge($imageDefault, $val);
+            $info = getimagesize($val['url']);
+            $function = 'imagecreatefrom'.image_type_to_extension($info[2], false);
+            if($val['stream'])
+            {
+                $info = getimagesizefromstring($val['url']);
+                $function = 'imagecreatefromstring';
+            }
+            $res = $function($val['url']);
+            $resWidth = $info[0];
+            $resHeight = $info[1];
+            $canvas = imagecreatetruecolor($val['width'], $val['height']);
+            imagefill($canvas, 0, 0, $color);
+            imagecopyresampled($canvas, $res, 0, 0, 0, 0, $val['width'], $val['height'], $resWidth, $resHeight);
+            $val['left'] = $val['left'] < 0 ? $backgroundWidth - abs($val['left']) - $val['width'] : $val['left'];
+            $val['top'] = $val['top'] < 0 ? $backgroundHeight - abs($val['top']) - $val['height'] : $val['top'];
+            imagecopymerge($imageRes, $canvas, $val['left'], $val['top'], $val['right'], $val['bottom'], $val['width'], $val['height'], $val['opacity']);
+        }
+    }
+
+    //处理文字
+    if(!empty($config['text']))
+    {
+        foreach($config['text'] as $key => $val)
+        {
+            $val = array_merge($textDefault, $val);
+            list($R, $G, $B) = explode(',', $val['fontColor']);
+            $val['fontColor'] = imagecolorallocate($imageRes, $R, $G, $B);
+            $val['left'] = $val['left'] < 0 ? $backgroundWidth - abs($val['left']) : $val['left'];
+            $val['top'] = $val['top'] < 0 ? $backgroundHeight - abs($val['top']) : $val['top'];
+            if($val['length'] != 0)
+            {
+                if(mb_strlen($val['text'], 'utf8') > $val['length'])
+                {
+                    $val['text'] = mb_substr($val['text'], 0, $val['length'], 'utf8').'...';
+                }
+            }
+            $temp_string = '';
+            $rows = 0;
+            for($i = 0; $i < mb_strlen($val['text']); $i++)
+            {
+                $box = imagettfbbox($val['fontSize'], $val['angle'], $val['fontPath'], $temp_string);
+                $_string_length = $box[2] - $box[0];
+                $tempText = mb_substr($val['text'], $i, 1);
+                $temp = imagettfbbox($val['fontSize'], $val['angle'], $val['fontPath'], $tempText);
+                if($_string_length + $temp[2] - $temp[0] < $val['width'])
+                {
+                    $temp_string .= mb_substr($val['text'], $i, 1);
+                    if($i == mb_strlen($val['text']) - 1)
+                    {
+                        $val['top'] += $val['lineHeight'];
+                        $rows++;
+                        if($val['center'])
+                        {
+                            $fontBox = imagettfbbox($val['fontSize'], $val['angle'], $val['fontPath'], $temp_string);
+                            imagettftext($imageRes, $val['fontSize'], $val['angle'], $val['left']+ceil(($backgroundWidth - $val['left'] - $fontBox[2]) / 2), $val['top'], $val['fontColor'], $val['fontPath'], $temp_string);
+                        }
+                        else
+                        {
+                            imagettftext($imageRes, $val['fontSize'], $val['angle'], $val['left'], $val['top'], $val['fontColor'], $val['fontPath'], $temp_string);
+                        }
+                    }
+                }
+                else
+                {
+                    $texts = mb_substr($val['text'], $i, 1);
+                    $isSymbol = preg_match("/[\\\\pP]/u", $texts) ? true : false;
+                    if($isSymbol)
+                    {
+                        $temp_string .= $texts;
+                        $f = mb_substr($val['text'], $i + 1, 1);
+                        $fh = preg_match("/[\\\\pP]/u", $f) ? true : false;
+                        if($fh)
+                        {
+                            $temp_string .= $f;
+                            $i++;
+                        }
+                    }
+                    else
+                    {
+                        $i--;
+                    }
+                    $tmp_str_len = mb_strlen($temp_string);
+                    $s = mb_substr($temp_string, $tmp_str_len - 1, 1);
+                    $symbol = array("\"", "“", "'", "<", "《",);
+                    $symbolRes = in_array($s, $symbol);
+                    if($symbolRes)
+                    {
+                        $temp_string = rtrim($temp_string, $s);
+                        $i--;
+                    }
+                    $val['top'] += $val['lineHeight'];
+                    $rows++;
+                    if($val['center'])
+                    {
+                        $fontBox = imagettfbbox($val['fontSize'], $val['angle'], $val['fontPath'], $temp_string);
+                        imagettftext($imageRes, $val['fontSize'], $val['angle'], ceil(($backgroundWidth - $val['width'] - $fontBox[2]) / 2), $val['top'], $val['fontColor'], $val['fontPath'], $temp_string);
+                    }
+                    else
+                    {
+                        imagettftext($imageRes, $val['fontSize'], $val['angle'], $val['left'], $val['top'], $val['fontColor'], $val['fontPath'], $temp_string);
+                    }
+                    $temp_string = "";
+                }
+            }
+        }
+    }
+
+    //生成图片
+    if(!empty($filename))
+    {
+        $res = imagejpeg($imageRes, $filename,95); //保存到本地
+        //$res = imagepng($imageRes,$filename,9);
+        //$res = imagegif($imageRes,$filename);
+        imagedestroy($imageRes);
+        if(!$res) return false;
+        return $filename;
+    }
+    else
+    {
+        imagejpeg ($imageRes);     //在浏览器上显示
+        imagedestroy($imageRes);
+    }
+}
+
+
+/**
+ * 获取秒数对应的时间
+ * @param int $second
+ * @return array
+ */
+function secondConversionArray($second = 0)
+{
+    $d = floor($second / (3600*24));
+    $h = floor(($second % (3600*24)) / 3600);
+    $m = floor((($second % (3600*24)) % 3600) / 60);
+    $s = floor((($second % (3600*24)) % 3600) % 60);
+    $newtime = [
+        'day' => $d,
+        'hour' => $h,
+        'minute' => $m,
+        'second' => $s
+    ];
+    return $newtime;
+}
+
+/***
+ * 令牌校检
+ * @return array
+ */
+function validateJshopToken()
+{
+    $_token = input('__Jshop_Token__/s', '');
+    if (!$_token || $_token != session('__Jshop_Token__')) {
+        if (\think\facade\Request::isAjax()) {
+            $return = [
+                'data'   => '',
+                'msg'    => '请勿重复提交！',
+                'status' => false
+            ];
+            header('Content-type:text/json');
+            echo json_encode($return);
+            exit;
+        } else {
+            die("CSRF is die");
+        }
+    }
+}
+
+/**
+ * 生成令牌
+ */
+function jshopToken()
+{
+    $data = \think\facade\Request::token('__Jshop_Token__', 'sha1');
+    return '<input type="hidden" name="__Jshop_Token__" value="' . $data . '" class="Jshop_Token">';
 }

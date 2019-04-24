@@ -9,6 +9,7 @@
 namespace app\b2c\controller;
 
 use app\common\controller\Base;
+use app\common\model\Payments;
 
 
 class Index extends Base

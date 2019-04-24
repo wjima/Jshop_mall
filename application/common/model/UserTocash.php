@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 use org\Curl;
+use think\Db;
 use think\Validate;
 
 
@@ -86,6 +87,7 @@ class UserTocash extends Common
             $result['data'] = $type;
             if($res !== false)
             {
+
                 //失败给用户退钱到余额
                 if($type == self::TYPE_FAIL)
                 {
@@ -93,8 +95,7 @@ class UserTocash extends Common
                     $userModel = new User();
                     $userWhere[] = ['id', 'eq', $tocash['user_id']];
                     // 提现金额 加 服务费返还
-                    $userData['balance'] = ['inc', 'balance', $tocash['money'] + $tocash['withdrawals']];
-                    $r = $userModel->save($userData, $userWhere);
+                    $r = $userModel->where($userWhere)->inc('balance',$tocash['money'] + $tocash['withdrawals'])->update();
                     if($r !== false)
                     {
                         //添加记录

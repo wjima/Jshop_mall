@@ -376,21 +376,22 @@ class Area extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getTreeArea($checked = [])
+    public function getTreeArea($checked = [],$parent_id=0,$currentChecked='0')
     {
         $return_data = [
             'status' => false,
             'msg'    => '查询失败',
             'data'   => [],
         ];
-        $area_tree = Cache::get('area_tree');
+       /* $area_tree = Cache::get('area_tree');
         if ($area_tree) {
             $list = json_decode($area_tree, true);
         } else {
-            $list = $this->where([])->select()->toArray();
+            $list = $this->where(['parent_id'=>$parent_id])->select()->toArray();
             Cache::set('area_tree', json_encode($list));
-        }
-        $tree = $this->resolve2($list, $checked);
+        }*/
+        $list = $this->where(['parent_id'=>$parent_id])->select()->toArray();
+        $tree = $this->resolve2($list, $checked,$currentChecked);
         $return_data['data'] = $tree;
         $return_data['msg'] = '查询成功';
         $return_data['status'] = true;
@@ -402,19 +403,28 @@ class Area extends Common
      * 组装地区数据
      * @param int $list
      * @param array $checked
+     * @param string $currentChecked
      * @return mixed
      */
-    private function resolve2($list = 0, $checked = [])
+    public function resolve2($list = 0, $checked = [], $currentChecked = '0')
     {
         foreach ($list as $key => $val) {
             $isChecked = '0';
             //判断是否选中的数据
-            if (in_array($val['id'], (array)$checked)) {
+
+            if (isset($checked[$val['id']]) && $checked[$val['id']]) {
+                $isChecked = $checked[$val['id']]['ischecked'];
+            }
+            if (isset($checked[$val['parent_id']]) && $checked[$val['parent_id']] && $checked[$val['parent_id']]['ischecked'] == '1') {
+                $isChecked = '1';
+            }
+            //当前父节点是1，下面肯定都是1
+            if ($currentChecked == '1') {
                 $isChecked = '1';
             }
             $isLast = false;
-            $chid = $this->where(['parent_id' => $val['id']])->count();
-            if(!$chid){
+            $chid   = $this->where(['parent_id' => $val['id']])->count();
+            if (!$chid) {
                 $isLast = true;
             }
             $area_tree[$key] = [
@@ -471,5 +481,29 @@ class Area extends Common
         }
         return $list;
     }
+
+    /***
+     * 递归循环取出
+     * @param $areaId
+     * @param array $ids
+     * @return array|\PDOStatement|string|\think\Collection
+     */
+    public function getAllChildArea($areaId, &$ids = [])
+    {
+        $data = $this->where([
+            'parent_id' => intval($areaId),
+        ])->select();
+        if (!$data->isEmpty()) {
+            $data = $data->toArray();
+            foreach ((array)$data as $key => $val) {
+                $ids[] = $val['id'];
+                if ($val['depth'] < 3) {
+                    $data[$key]['child'] = $this->getAllChildArea($val['id'], $ids);
+                }
+            }
+        }
+        return $data;
+    }
+
 
 }

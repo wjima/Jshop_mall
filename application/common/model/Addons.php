@@ -117,7 +117,12 @@ class Addons extends Common
     public function getSetting($name)
     {
         $info = $this->where(['name' => $name])->find();
-        return json_decode($info['config'], true);
+        if($info){
+            return json_decode($info['config'], true);
+        }else{
+            return [];
+        }
+
     }
 
     /**

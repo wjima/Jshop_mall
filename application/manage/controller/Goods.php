@@ -866,7 +866,7 @@ class Goods extends Manage
             'msg'    => '关键参数丢失',
             'data'   => '',
         ];
-        $goods_id   = input("id");
+        $goods_id   = input("post.id");
         $goodsModel = new goodsModel();
         if (!$goods_id) {
             return $result;

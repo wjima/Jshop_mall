@@ -132,7 +132,6 @@ class UserBankcards extends Common
             $return['msg'] = '该卡片已经添加';
             return $return;
         }
-
         $new_data = [
             'user_id' => $user_id,
             'bank_name' => $data['bank_name'],
@@ -142,7 +141,7 @@ class UserBankcards extends Common
             'bank_code' => $data['bank_code'],
             'card_number' => $data['card_number'],
             'card_type' => $data['card_type'],
-            'is_default' => isset($data['is_default']) && $data['is_default'] ? self::DEFAULT_YES : self::DEFAULT_NO
+            'is_default' =>( isset($data['is_default']) && $data['is_default']==self::DEFAULT_YES )? self::DEFAULT_YES : self::DEFAULT_NO
         ];
 
         if ($new_data['is_default'] == self::DEFAULT_YES)

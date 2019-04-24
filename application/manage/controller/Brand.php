@@ -83,7 +83,7 @@ class Brand extends Manage
             'data' => []
         ];
         $brandModel = new BrandsModel();
-        if ($brandModel::destroy(input('param.id/d'))) {
+        if ($brandModel::destroy(input('post.id/d'))) {
             $result['status'] = true;
             $result['msg'] = '删除成功';
         }

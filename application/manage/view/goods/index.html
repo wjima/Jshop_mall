@@ -133,7 +133,7 @@
 
         table = layui.table.render({
             elem: '#goodsTable',
-            height: 'full-310',
+            height: 'full-180',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -500,17 +500,10 @@
 
     //删除操作
     function delClass(id){
-        $.ajax({
-            url: '{:url("goods/del")}',
-            type: 'post',
-            data: {
-                'id': id
-            },
-            success: function(e){
-                layer.msg(e.msg, {time: 1300}, function(){
-                    table.reload('goodsTable');
-                });
-            }
+        JsPost('{:url("goods/del")}',{id:id},function(e){
+            layer.msg(e.msg, {time: 1300}, function(){
+                table.reload('goodsTable');
+            });
         });
     }
 

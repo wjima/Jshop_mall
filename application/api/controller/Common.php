@@ -84,6 +84,8 @@ class Common extends Base
         $conf['invoice_switch'] = getSetting('invoice_switch'); //发票功能开关
         $conf['goods_stocks_warn'] = getSetting('goods_stocks_warn'); //库存报警数量
         $conf['shop_default_image'] = _sImage(getSetting('shop_default_image')); //获取默认图片
+        $conf['shop_mobile'] = getSetting('shop_mobile'); // 店铺联系电话
+        $conf['app_update_auto'] = checkAddons('appupdate');
         return $conf;
     }
 

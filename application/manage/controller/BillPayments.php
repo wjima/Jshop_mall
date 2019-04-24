@@ -68,12 +68,12 @@ class BillPayments extends Manage
             'data' => array(),
             'msg' => ''
         ];
-        if(!input('?param.order_id')){
+        if(!input('?post.order_id')){
             $result['msg'] = "请输入编号";
             return $result;
         }
 
-        if(!input('?param.type')){
+        if(!input('?post.type')){
             $result['msg'] = "订单类型不能为空";
             return $result;
         }
@@ -81,11 +81,11 @@ class BillPayments extends Manage
 
         //查支付人id
         $user_id = 0;
-        switch (input('param.type'))
+        switch (input('post.type'))
         {
             case $BillPaymentsModel::TYPE_ORDER:
                 $orderModel = new Order();
-                $orderInfo = $orderModel->where('order_id','in',input('param.order_id'))->find();
+                $orderInfo = $orderModel->where('order_id','in',input('post.order_id'))->find();
                 if(!$orderInfo){
                     return error_code(10000);
                 }
@@ -99,7 +99,7 @@ class BillPayments extends Manage
 
         //生成支付单
 
-        $result = $BillPaymentsModel->toAdd(input('param.order_id'), input('param.payment_code'), $user_id, input('param.type'));
+        $result = $BillPaymentsModel->toAdd(input('param.order_id'), input('post.payment_code'), $user_id, input('post.type'));
         if(!$result['status']){
             return $result;
         }

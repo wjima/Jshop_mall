@@ -782,18 +782,18 @@ Page({
     })
   },
 
-  // 评论图片点击放大
-  commentImg: function (e) {
-    var index = e.currentTarget.dataset.index;
-    // var goodsImg = this.data.goodsImg;
-    // wx.previewImage({
-    //   current: goodsImg[index],     //当前图片地址
-    //   urls: goodsImg,               //所有要预览的图片的地址集合 数组形式
-    //   success: function (res) { },
-    //   fail: function (res) { },
-    //   complete: function (res) { },
-    // })
-  },
+    // 评论图片点击放大
+    commentImg: function (e) {
+        let img = e.target.dataset.img;
+        let imgs = [img];
+        wx.previewImage({
+            current: img,     //当前图片地址
+            urls: imgs,               //所有要预览的图片的地址集合 数组形式
+            success: function (res) { },
+            fail: function (res) { },
+            complete: function (res) { },
+        });
+    },
 
   //展示工具条
   showbtn: function () {

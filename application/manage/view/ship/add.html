@@ -1,23 +1,23 @@
 <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/layui_ext/dtree/dtree.css">
-<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/layui_ext/dtree/font/iconfont.css">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/layui_ext/dtree/font/dtreefont.css">
 
 <style>
     .seller-inline-1 {
         height: 25px;
     }
-    
+
     .layui-table .layui-form-label {
         padding: 3px 3px;
     }
-    
+
     .selectArea {
         color: #46a751;
     }
-    
+
     .div-none {
         display: none;
     }
-    
+
     .layui-form-radio {
         float: left;
     }
@@ -142,42 +142,43 @@
 
                 <table class="layui-table" lay-size="sm">
                     <thead>
-                        <tr>
-                            <th>选择地区</th>
-                            <th>首重费用</th>
-                            <th>续重费用</th>
-                            <th>操作</th>
-                        </tr>
+                    <tr>
+                        <th>选择地区</th>
+                        <th>首重费用</th>
+                        <th>续重费用</th>
+                        <th>操作</th>
+                    </tr>
                     </thead>
                     <tbody id="view">
-                        <tr data-id="0">
-                            <td>
-                                <input type='hidden' name='area_id[0]' value=''>
-                                <a href="javascript:void(0);" class="selectArea">请选择地区</a>
-                            </td>
-                            <td>
-                                <label class="layui-form-label">首重费用：</label>
-                                <input type="text" name="firstunit_area_price[0]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
-                            </td>
-                            <td>
-                                <label class="layui-form-label">续重费用：</label>
-                                <input type="text" name="continueunit_area_price[0]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
-                            </td>
-                            <td>
-                                <a class="layui-btn layui-btn-xs addarea-class">
+                    <tr data-id="0">
+                        <td>
+                            <input type='hidden' name='area_id[0]' value=''>
+                            <a href="javascript:void(0);" class="selectArea">请选择地区</a>
+                        </td>
+                        <td>
+                            <label class="layui-form-label">首重费用：</label>
+                            <input type="text" name="firstunit_area_price[0]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+                        </td>
+                        <td>
+                            <label class="layui-form-label">续重费用：</label>
+                            <input type="text" name="continueunit_area_price[0]" required value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input seller-inline-1">
+                        </td>
+                        <td>
+                            <a class="layui-btn layui-btn-xs addarea-class">
                                 添加地区
                             </a>
-                                <a class="layui-btn layui-btn-danger layui-btn-xs del-class">
+                            <a class="layui-btn layui-btn-danger layui-btn-xs del-class">
                                 删除
                             </a>
-                            </td>
-                        </tr>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block" style="padding-top: 20px;">
+                {:jshopToken()}
                 <button class="layui-btn save-ship" lay-submit="" lay-filter="add-ship">保存</button>
                 <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary" lay-filter="cancleAuthor">返回</a>
             </div>
@@ -259,6 +260,7 @@
             var tr = tdObj.parent().parent();
             var id = tr.attr("data-id");
             var value = tdObj.parent().find('input').val();
+            console.log(value);
             var DTree = '';
             layer.open({
                 type: 1,
@@ -276,9 +278,11 @@
                         initLevel: 1,
                         request:{"ids":value},
                         url: '{:url("ship/getArea")}',
+                        async: false,  // 只需将该参数设置为false，即可同步加载
                         checkbar: true,
                         cache: true,
-                        checkbarType: "all",
+                        checkbarType: "no-all",
+                        checkbarData: 'halfChoose',
                         response:{message:"msg",statusCode:0},
                         dataStyle: "layuiStyle",
                         dataFormat: "list"
@@ -293,7 +297,7 @@
                             if(obj.parentId<=0){
                                 html=html+obj.context+',';
                             }
-                            ids.push({'id':obj.nodeId,'pid':obj.parentId,'name':obj.context});
+                            ids.push({'id':obj.nodeId,'pid':obj.parentId,'name':obj.context,ischecked:obj.ischecked});
                         });
                         html = html.substring(0,html.length-1)+' <a href="javascript:void(0);" class="selectArea">请选择地区</a>';
                         html = html+"<input type='hidden' name='area_id["+id+"]' value='"+JSON.stringify(ids)+"'>";
@@ -321,17 +325,6 @@
             $(this).parent().parent().remove();
         })
 
-
-
-        //图片排序
-        $('.layui-upload-list').DDSort({
-            target: '.imgdiv',
-            delay: 100,
-            floatStyle: {
-                'border': '1px solid #ccc',
-                'background-color': '#fff'
-            }
-        });
 
     });
 

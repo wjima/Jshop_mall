@@ -2,6 +2,9 @@
 
 namespace org\payments;
 
+use org\Curl;
+use app\common\model\UserWx;
+
 class alipay implements Payment
 {
     private $config = [];
@@ -28,40 +31,50 @@ class alipay implements Payment
         }
         //if($params['trade_type'] == 'MWEB'){$params['trade_type'] = "WAP";}        //兼容h5端，其实这一行是不需要的
 
-        if($params['trade_type'] != "PC" && $params['trade_type'] != "WAP"){
-            $result['msg'] = $params;
+        if($params['trade_type'] != "PC" && $params['trade_type'] != "WAP" && $params['trade_type'] != "APP" && $params['trade_type'] != "JSAPI"){
+            $result['msg'] = "不支持的支付模式";
             return $result;
         }
-        if($params['trade_type'] == "WAP"){
+        if($params['trade_type'] == "WAP") {
             $method = "alipay.trade.wap.pay";
             $product_code = "QUICK_WAP_WAY";
+        }elseif($params['trade_type'] == "APP"){
+            $method = "alipay.trade.app.pay";
+            $product_code = "QUICK_MSECURITY_PAY";
+        }elseif($params['trade_type'] == "JSAPI"){//支付宝小程序支付，调用统一下单接口
+            $method = "alipay.trade.create";
+            $product_code = "";
         }else{
             $method = "alipay.trade.page.pay";
             $product_code = "FAST_INSTANT_TRADE_PAY";
         }
 
-
-
         $url = 'https://openapi.alipay.com/gateway.do';
 
         //组装系统参数
-        $data["app_id"] = $this->config['appid'];
+        if($params['trade_type'] == "JSAPI"){
+            $data["app_id"] = getAddonsConfigVal("MPAlipay","mp_alipay_appid");
+        }else{
+            $data["app_id"] = $this->config['appid'];
+        }
         $data["version"] = "1.0";
-        $data["format"] = "json";
+        $data["format"] = "JSON";
         $data["sign_type"] = "RSA2";
         $data["method"] = $method;
         $data["timestamp"] = date("Y-m-d H:i:s");
         $data["notify_url"] = url('b2c/Callback/pay',['code'=>'alipay'],'html',true);
 
-        $return_url = "";
-        if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
-            $params = json_decode($paymentInfo['params'],true);
-            if(isset($params['return_url'])){
-                $return_url = $params['return_url'];
+        if($params['trade_type'] == "PC" || $params['trade_type'] == "WAP"){
+            $return_url = "";
+            if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
+                $params = json_decode($paymentInfo['params'],true);
+                if(isset($params['return_url'])){
+                    $return_url = $params['return_url'];
+                }
             }
+            $data["return_url"] = $return_url;
         }
 
-        $data["return_url"] = $return_url;
         $data["charset"] = "utf-8";
 
 
@@ -69,21 +82,46 @@ class alipay implements Payment
         $ydata["subject"] = 'jshopgoods';          //商品名称,此处用商户名称代替
         $ydata["out_trade_no"] = $paymentInfo['payment_id'];     //平台订单号
         $ydata["total_amount"] = $paymentInfo['money'];          //总金额，精确到小数点两位
-        $ydata["product_code"] = $product_code;
+        if($$product_code != ""){
+            $ydata["product_code"] = $product_code;
+        }
+
+        if($params['trade_type'] == 'JSAPI'){
+            //取open_id
+            $openid_re = $this->getOpenId($paymentInfo['user_id']);
+            if(!$openid_re['status']){
+                return $openid_re;
+            }
+            $ydata["buyer_id"] = $openid_re['data'];
+        }
+
+        //$ydata["buyer_id"] = "2088902044999606";
 
         $data["biz_content"] = json_encode($ydata,JSON_UNESCAPED_UNICODE);
 
 
        //待签名字符串
         $preSignStr = $this->getSignContent($data);
-        
 
-        $data['sign'] = $this->sign($preSignStr,$data['sign_type']);
+        $sign = $this->sign($preSignStr,$data['sign_type']);
 
 
-        //$sign = $this->sign($preSignStr,$data['sign_type']);
+        if($params['trade_type'] == "APP") {
+            $data = $preSignStr . "&sign=" . urlencode($sign);
+        }elseif($params['trade_type'] == "JSAPI"){
+            //走统一下单接口
+            $data = $preSignStr . "&sign=" . urlencode($sign);
+            $re = $this->create($url,$data);
+            if(!$re['status']){
+                return $re;
+            }
+            $re['data']['payment_id'] = $paymentInfo['payment_id'];
+            return $re;
+            //组装数据。
+        }else{
+            $data['sign'] = $sign;      //wap和pc传所有值，在前端模拟表单提交吧
+        }
 
-        //$requestUrl = $url."?".$preSignStr."&sign=".urlencode($sign);
 
         $result['data'] = [
             'payment_id' => $paymentInfo['payment_id'],
@@ -140,8 +178,61 @@ class alipay implements Payment
             'data' => [],
             'msg' => ''
         ];
+    }
+
+    //支付宝统一下单接口
+    private function create($url,$data){
+        $curl = new Curl();
+        $re = $curl::post($url,$data);
+        $re = json_decode($re,true);
+
+        if(!isset($re['alipay_trade_create_response']['code'])){
+            return error_code(10000);
+        }
+        if($re['alipay_trade_create_response']['code'] != '10000'){
+            return [
+                'status' => false,
+                'data' => $re['alipay_trade_create_response'],
+                'msg' => $re['alipay_trade_create_response']['sub_msg']
+            ];
+        }
+        return [
+            'status' => true,
+            'data' => [
+                'out_trade_no' => $re['alipay_trade_create_response']['out_trade_no'],
+                'trade_no' => $re['alipay_trade_create_response']['trade_no']
+            ],
+            'msg' => ''
+        ];
+
 
     }
+
+    /**
+     * 获取seller_id
+     * @param $user_id      用户id
+     * @return array
+     */
+    private function getOpenId($user_id){
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
+        $userWxModel = new UserWx();
+
+        $type = $userWxModel::TYPE_ALIPAY;
+
+        $userWxInfo = $userWxModel->where(['type'=>$type,'user_id'=>$user_id])->find();
+        if(!$userWxInfo){
+            return error_code(10063);
+        }
+        $result['data'] = $userWxInfo['openid'];
+        $result['status'] = true;
+        return $result;
+    }
+
+
 
     private function verify($data, $sign, $signType = 'RSA') {
         $pubKey=$this->config['alipay_public_key'];
@@ -177,7 +268,7 @@ class alipay implements Payment
         return $sign;
     }
 
-    protected function getSignContent($params) {
+    private function getSignContent($params) {
         ksort($params);
 
         $stringToBeSigned = "";
@@ -201,7 +292,7 @@ class alipay implements Payment
      *  if not set ,return true;
      *    if is null , return true;
      **/
-    protected function checkEmpty($value) {
+    private function checkEmpty($value) {
         if (!isset($value))
             return true;
         if ($value === null)
@@ -218,11 +309,11 @@ class alipay implements Payment
      * @param string $str
      * @return string
      */
-    function encrypt($str,$screct_key){
+    private function encrypt($str,$screct_key){
         //AES, 128 模式加密数据 CBC
         $screct_key = base64_decode($screct_key);
         $str = trim($str);
-        $str = addPKCS7Padding($str);
+        $str = $this->addPKCS7Padding($str);
         $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128,MCRYPT_MODE_CBC),1);
         $encrypt_str =  mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $screct_key, $str, MCRYPT_MODE_CBC);
         return base64_encode($encrypt_str);
@@ -233,7 +324,7 @@ class alipay implements Payment
      * @param string $str
      * @return string
      */
-    function decrypt($str,$screct_key){
+    private function decrypt($str,$screct_key){
         //AES, 128 模式加密数据 CBC
         $str = base64_decode($str);
         $screct_key = base64_decode($screct_key);
@@ -241,7 +332,7 @@ class alipay implements Payment
         $encrypt_str =  mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $screct_key, $str, MCRYPT_MODE_CBC);
         $encrypt_str = trim($encrypt_str);
 
-        $encrypt_str = stripPKSC7Padding($encrypt_str);
+        $encrypt_str = $this->stripPKSC7Padding($encrypt_str);
         return $encrypt_str;
 
     }
@@ -251,7 +342,7 @@ class alipay implements Payment
      * @param string $source
      * @return string
      */
-    function addPKCS7Padding($source){
+    private function addPKCS7Padding($source){
         $source = trim($source);
         $block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
 
@@ -267,7 +358,7 @@ class alipay implements Payment
      * @param string $source
      * @return string
      */
-    function stripPKSC7Padding($source){
+    private function stripPKSC7Padding($source){
         $source = trim($source);
         $char = substr($source, -1);
         $num = ord($char);

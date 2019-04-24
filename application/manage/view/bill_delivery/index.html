@@ -1,38 +1,61 @@
-<form class="layui-form seller-form"  action="">
+<style>
+    @media screen and (max-width: 500px) {
+
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width: 1200px !important;
+            box-sizing: border-box;
+        }
+
+    }
+</style>
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">发货单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="delivery_id" lay-verify="title"  placeholder="请输入发货单号" autocomplete="off" class="layui-input">
+                <input type="text" name="delivery_id" lay-verify="title" placeholder="请输入发货单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">订单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off" class="layui-input">
+                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">下单时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">快递单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="logi_no" lay-verify="title" placeholder="请输入快递单号" autocomplete="off" class="layui-input">
+                <input type="text" name="logi_no" lay-verify="title" placeholder="请输入快递单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">电话号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入收货电话号码" autocomplete="off" class="layui-input">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入收货电话号码" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-delivery"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-delivery"><i
+                    class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
         </div>
     </div>
 </form>
@@ -41,7 +64,7 @@
     <table id="billDelivery" lay-filter="test"></table>
 </div>
 <div id="exportDelivery" style="display: none;">
-    <form class="layui-form export-form"  action="" >
+    <form class="layui-form export-form" action="">
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
@@ -51,13 +74,14 @@
 
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
-                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
 </div>
 <script>
-    layui.use(['form', 'layedit', 'laydate', 'table'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         //时间插件
         layui.laydate.render({
             elem: '#date',
@@ -80,28 +104,30 @@
                 statusCode: 1
             },
             cols: [[
-                {type:'checkbox'},
-                {field:'delivery_id', width:140, title:'发货单号', align:'center'},
-                {field:'order_id', width:140, title:'订单号', align:'center'},
-                {field:'username', width:130, title:'用户名', align:'center'},
-                {field:'logi_name', width:120, title:'快递公司', align:'center'},
-                {field:'logi_no', width:150, title:'快递单号', align:'center'},
-                {field:'ship_address',  title:'收货地址', align:'center'},
-                {field:'ship_mobile', title:'收货电话', align:'center'},
-                {field:'ctime', title:'创建时间', align:'center'},
-                {field:'operating', title:'操作', align:'center',templet:function(data){
-                    var html = '';
-                    html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-delivery" data-id="' + data.delivery_id + '">明细</a>';
-                    return html;
-                }}
+                { type: 'checkbox' },
+                { field: 'delivery_id', width: 140, title: '发货单号', align: 'center' },
+                { field: 'order_id', width: 140, title: '订单号', align: 'center' },
+                { field: 'username', width: 130, title: '用户名', align: 'center' },
+                { field: 'logi_name', width: 120, title: '快递公司', align: 'center' },
+                { field: 'logi_no', width: 150, title: '快递单号', align: 'center' },
+                { field: 'ship_address', title: '收货地址', align: 'center' },
+                { field: 'ship_mobile', title: '收货电话', align: 'center' },
+                { field: 'ctime', title: '创建时间', align: 'center' },
+                {
+                    field: 'operating', title: '操作', align: 'center', templet: function (data) {
+                        var html = '';
+                        html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-delivery" data-id="' + data.delivery_id + '">明细</a>';
+                        return html;
+                    }
+                }
             ]]
         });
 
         //搜索操作
-        layui.form.on('submit(*)', function(data){
+        layui.form.on('submit(*)', function (data) {
             layui.table.reload('billDelivery', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
@@ -109,20 +135,20 @@
         });
 
         //查看操作
-        $(document).on('click', '.option-view', function(){
+        $(document).on('click', '.option-view', function () {
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{:url('billDelivery/view')}",
-                data:'delivery_id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
+                data: 'delivery_id=' + $(this).attr('data-id'),
+                success: function (e) {
+                    if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
                             area: ['600px', '600px'],
-                            title:'发货单查看'
+                            title: '发货单查看'
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
 
@@ -130,44 +156,44 @@
             });
         });
         //发货单导出
-        layui.form.on('submit(export-delivery)', function(data){
+        layui.form.on('submit(export-delivery)', function (data) {
 
             layer.open({
                 type: 1,
-                title:'发货单导出',
+                title: '发货单导出',
                 area: ['400px', '290px'], //宽高
-                btn:['确定','取消'],
+                btn: ['确定', '取消'],
                 content: $("#exportDelivery").html(),
-                yes:function () {
+                yes: function () {
                     //判断是否有选中
                     var checkStatus = layui.table.checkStatus('billDelivery');
                     var checkData = checkStatus.data;
                     var length = checkStatus.data.length;
                     var ids = [];
-                    if(length){
-                        $.each(checkData,function (i,obj) {
+                    if (length) {
+                        $.each(checkData, function (i, obj) {
                             ids.push(obj.delivery_id);
                         });
                     }
 
                     //判断是否有选中
                     var filter = $(".seller-form").serialize();
-                    filter+='&ids='+ids;
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    filter += '&ids=' + ids;
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'BillDelivery'});
+                    data.push({ 'name': 'model', 'value': 'BillDelivery' });
 
-                    JsPost("{:url('Ietask/export')}",data,function(res){
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if(res.status){
-                                    layui.table.reload('billDelivery');
-                                    layer.closeAll();
-                                }
-                            });
-                        }
+                    JsPost("{:url('Ietask/export')}", data, function (res) {
+                        layer.msg(res.msg, { time: 1500 }, function () {
+                            if (res.status) {
+                                layui.table.reload('billDelivery');
+                                layer.closeAll();
+                            }
+                        });
+                    }
                     );
-                },btn2:function () {
+                }, btn2: function () {
                     layer.closeAll();
                 }
             });

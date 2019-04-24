@@ -1,6 +1,8 @@
 <?php
 namespace app\common\model;
 
+use org\QRcode;
+use org\Wx;
 use think\model\concern\SoftDelete;
 use think\Validate;
 use think\Db;
@@ -146,7 +148,12 @@ class User extends Common
         //判断是否是用户名登陆
         $userInfo = $this->where(array('username|mobile'=>$data['mobile'],'password'=>$this->enPassword($data['password'], $userInfo->ctime)))->find();
         if($userInfo){
-            $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
+            if($userInfo['status'] == self::STATUS_NORMAL){
+                $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
+            }else{
+                return error_code(11022);
+            }
+
         }else{
             //写失败次数到session里
             if(session('?login_fail_num')){
@@ -262,8 +269,11 @@ class User extends Common
             $userWxModel->save(['user_id'=>$userInfo['id']],['id'=>$data['user_wx_id']]);
         }
 
-        $result = $this->setSession($userInfo ,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
-
+        if($userInfo['status'] == self::STATUS_NORMAL){
+            $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
+        }else{
+            return error_code(11022);
+        }
 
         return $result;
 
@@ -316,7 +326,7 @@ class User extends Common
      * @param $userInfo
      * @param $data
      * @param $loginType            登陆类型1是存session，主要是商户端的登陆和网页版本的登陆,2就是token
-     * @param int $platform         1就是普通的登陆，主要是vue登陆，2就是小程序登陆，写这个是为了保证h5端和小程序端可以同时保持登陆状态
+     * @param int $platform         1就是普通的登陆，主要是vue登陆，2就是微信小程序登陆，3是支付宝小程序，4是app，5是pc，写这个是为了保证h5端和小程序端可以同时保持登陆状态
      * @param int $type         1的话就是登录,2的话就是更新
      * @return array
      */
@@ -492,13 +502,13 @@ class User extends Common
     {
         $data = $this->where('id',$user_id)->find();
         if($data){
+            $data['state'] =  $data['status'];
             $data['status'] = config('params.user')['status'][$data['status']];
             $data['p_mobile'] = $this->getUserMobile($data['pid']);
             return $data;
         }else{
             return "";
         }
-
     }
 
     /**
@@ -787,35 +797,26 @@ class User extends Common
 
 
     /**
-     * 是否是可以关联的
-     * @param $user_id
-     * @param $superior_id
+     * 判断pid是否是user_id的父节点或者祖父节点
+     * @param $user_id      下级节点
+     * @param $pid          父节点
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
-    public function isInvited($user_id, $superior_id)
+    public function isInvited($user_id, $pid)
     {
-        $result = true;
-        $return = true;
-        while ($result) {
-            unset($where);
-            $where[] = ['id', 'eq', $superior_id];
-            $superior = $this->field('pid')->where($where)->find();
-            if($superior['pid'] == $user_id)
-            {
-                //不能
-                $result = false;
-                $return = false;
-            }else if($superior['pid'] == 0){
-                //能
-                $result = false;
-                $return = true;
+
+        $where[] = ['id', 'eq', $user_id];
+        $info = $this->field('pid')->where($where)->find();
+        if($info || $info['pid'] == 0 ){
+            return false;
+        }else{
+            if($info['pid'] == $pid){
+                return true;
+            }else{
+                return $this->isInvited($info['pid'],$pid);
             }
-            $superior_id = $superior['pid'];
         }
-        return $return;
+
     }
 
 
@@ -826,7 +827,7 @@ class User extends Common
      */
     public function getShareCodeByUserId($user_id)
     {
-        $code = ($user_id+1234)*3;
+        $code = ((int)$user_id+1234)*3;
         return $code;
     }
 
@@ -838,62 +839,9 @@ class User extends Common
      */
     public function getUserIdByShareCode($code)
     {
-        $user_id = ($code/3)-1234;
+        $user_id = ((int)$code/3)-1234;
         return $user_id;
     }
-
-
-    /**
-     * （废弃，请用smsLogin方法）绑定用户
-     * @param array $data 新建用户的数据数组
-     * @param int $loginType 登陆类型，1网页登陆，存session，2接口登陆，返回token
-     * @return array|null|\PDOStatement|string|\think\Model
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-//    public function toBindAdd($data, $loginType=1)
-//    {
-//        //判断手机号是否存在
-//        $user_id = $this->getUserIdByMobile($data['mobile']);
-//        if(!$user_id){
-//           return $this->toAdd($data, $loginType);
-//        }
-//        $result = array(
-//            'status' => false,
-//            'data' => '',
-//            'msg' => ''
-//        );
-//
-//        //校验数据
-//        $validate = new Validate($this->rule, $this->msg);
-//        if(!$validate->check($data)){
-//            $result['msg'] = $validate->getError();
-//            return $result;
-//        }
-//
-//        //校验短信验证码
-//        $smsModel = new Sms();
-//        if(!$smsModel->check($data['mobile'], $data['code'], 'reg')){
-//            $result['msg'] = '短信验证码错误';
-//            return $result;
-//        }
-//
-//        Db::startTrans();//增加事物
-//        try {
-//            //更新数据
-//            $userWxModel = new UserWx();
-//            $userWxModel->update(['user_id' =>$user_id, 'mobile' => $data['mobile']], ['id' => $data['authorId']]);
-//            Db::commit();
-//        }catch (\Exception $e) {
-//            Db::rollback();
-//            $result['msg'] = $e->getMessage();
-//            return $result;
-//        }
-//        $where[] = ['id', 'eq', $user_id];
-//        $result = $this->where($where)->find();
-//        return $this->setSession($result ,$loginType);
-//    }
 
 
     /**
@@ -926,8 +874,8 @@ class User extends Common
             return $return;
         }
 
-        $isInvited = $this->isInvited($id, $inviteInfo['id']);
-        if(!$isInvited)
+        $isInvited = $this->isInvited($inviteInfo['id'],$id);
+        if($isInvited)
         {
             $return['msg'] = '不能关联这个邀请人，因为他是你的下级或者下下级';
             return $return;
@@ -1237,4 +1185,438 @@ class User extends Common
         return $this->hasOne("UserGrade",'id','grade')->bind(['grade_name'	=> 'name']);
     }
 
+
+    /**
+     * 海报生成方法
+     * @param $data
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function posterGenerate($data)
+    {
+        $return = [
+            'status' => true,
+            'msg' => '生成海报',
+            'data' => ''
+        ];
+
+        $user_id = $data['user_id']; //用户ID
+        $type = $data['type']; //分享类型 1=商品海报 2=邀请海报
+        $id = $data['id']; //类型值 1商品海报就是商品ID 2邀请海报无需填
+        $source = $data['source']; //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
+        $return_url = $data['return_url']; //返回URL地址
+        $path = '../public/static/poster/'.$type.'/'.$source.'-'.md5($type.'-'.$id.'-'.$return_url.'-'.$user_id).'.jpg';
+        $paths = '/static/poster/'.$type.'/'.$source.'-'.md5($type.'-'.$id.'-'.$return_url.'-'.$user_id).'.jpg';
+        $return['data'] = request()->domain().str_replace("\\", "/", $paths);
+
+        //判断来源和类型准备生成的材料
+        //判断来源和分享类型和用户ID和返回URL生成所需的二维码
+        include_once '../extend/org/phpqrcode.php';
+        $qrc_text = '扫描或长按识别二维码';
+        switch($source)
+        {
+            case 1:
+                //普通H5页面 普通二维码
+                if($user_id)
+                {
+                    $qrc_name = md5($return_url.$id.$user_id);
+                }
+                else
+                {
+                    $qrc_name = md5($return_url.$id);
+                }
+                $qrc_uri = '../public/static/qrcode/h5/'.$qrc_name.'.png';
+                $qrc = $qrc_uri;
+                if($type == 1)
+                {
+                    //商品
+                    if($user_id)
+                    {
+                        $code = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url.'?scene=id%253D'.$id.'invite%253D'.$code;
+                    }
+                    else
+                    {
+                        $qrc_data = $return_url.'?scene=id%253D'.$id;
+                    }
+                }
+                else if($type == 2)
+                {
+                    //邀请
+                    if($user_id)
+                    {
+                        $code = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url.'?scene=invite%253D'.$code;
+                    }
+                    else
+                    {
+                        $qrc_data = $return_url;
+                    }
+                }
+                else
+                {
+                    $qrc_data = $return_url;
+                }
+                QRcode::png($qrc_data, $qrc_uri , 'L', 10, 2);
+                break;
+            case 2:
+                //微信小程序 小程序码
+                $qrc_text = '扫描或长按识别小程序码';
+                if($type == 1)
+                {
+                    //商品
+                    $code = $this->getShareCodeByUserId($user_id);
+                    $page = 'pages/goods/index/index';
+                    $page = 'pages/goods/detail/detail';
+                    $wx = new Wx();
+                    $wx_appid = getSetting('wx_appid');
+                    $wx_app_secret = getSetting('wx_app_secret');
+                    $accessToken = $wx->getAccessToken($wx_appid, $wx_app_secret);
+                    if($accessToken)
+                    {
+                        $style['width'] = 300;
+                        $wxImg = $wx->getParameterQRCode($accessToken, $page, $code, $id, $style, $wx_appid);
+                        if($wxImg['status'])
+                        {
+                            $qrc = $wxImg['data'];
+                        }
+                        else
+                        {
+                            return $wxImg;
+                        }
+                    }
+                    else
+                    {
+                        return $return = [
+                            'status' => false,
+                            'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
+                            'data' => ''
+                        ];
+                    }
+                }
+                else if($type == 2)
+                {
+                    //邀请
+                    $code = $this->getShareCodeByUserId($user_id);
+                    $page = 'pages/index/index';
+                    $wx = new Wx();
+                    $wx_appid = getSetting('wx_appid');
+                    $wx_app_secret = getSetting('wx_app_secret');
+                    $accessToken = $wx->getAccessToken($wx_appid, $wx_app_secret);
+                    if($accessToken)
+                    {
+                        $style['width'] = 500;
+                        $wxImg = $wx->getParameterQRCode($accessToken, $page, $code, $id, $style, $wx_appid);
+                        if($wxImg['status'])
+                        {
+                            $qrc = $wxImg['data'];
+                        }
+                        else
+                        {
+                            return $wxImg;
+                        }
+                    }
+                    else
+                    {
+                        return $return = [
+                            'status' => false,
+                            'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
+                            'data' => ''
+                        ];
+                    }
+                }
+                break;
+            default:
+                //其他全部生成普通二维码
+                if($user_id)
+                {
+                    $qrc_name = md5($return_url.$id.$user_id);
+                }
+                else
+                {
+                    $qrc_name = md5($return_url.$id);
+                }
+                $qrc_uri = '../public/static/qrcode/h5/'.$qrc_name.'.png';
+                $qrc = $qrc_uri;
+                if($type == 1)
+                {
+                    //商品
+                    if($user_id)
+                    {
+                        $code = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url.'?scene=id%253D'.$id.'invite%253D'.$code;
+                    }
+                    else
+                    {
+                        $qrc_data = $return_url.'?scene=id%253D'.$id;
+                    }
+                }
+                else if($type == 2)
+                {
+                    //邀请
+                    if($user_id)
+                    {
+                        $code = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url.'?scene=invite%253D'.$code;
+                    }
+                    else
+                    {
+                        $qrc_data = $return_url;
+                    }
+                }
+                else
+                {
+                    $qrc_data = $return_url;
+                }
+                QRcode::png($qrc_data, $qrc_uri , 'L', 10, 2);
+                break;
+        }
+
+        //判断类型得到所需要的背景图和素材图
+        if($type == 1)
+        {
+            //商品海报
+            //商品信息查询获取商品图片、商品名称、什么价格
+            $goodsModel = new Goods();
+            $goods_info = $goodsModel->getGoodsDetial($id, 'id,name,image_id,price,spes_desc');
+            $new_data['goods_img'] = $goods_info['data']['image_url'];
+            $new_data['qrc_img'] = $qrc;
+            $new_data['goods_name'] = $goods_info['data']['name'];
+            $new_data['goods_price'] = getMoney($goods_info['data']['price']);
+            $new_data['qrc_text'] = $qrc_text;
+
+            //开始生成
+            $config = $this->goodsPosterConfig($new_data);
+            createPoster($config, $path);
+        }
+        else if($type == 2)
+        {
+            //邀请海报
+            //通过用户ID获取用户头像、昵称
+            $code = $this->getShareCodeByUserId($user_id);
+            $nickname = $this->getUserNickname($user_id);
+            $avatar = $this->field('avatar')->where('id', 'eq', $user_id)->find();
+            $shopname = getSetting('shop_name');
+
+            $data['avatar_img'] = _sImage($avatar['avatar']);
+            $data['qrc_img'] = $qrc;
+            $data['nickname'] = $nickname;
+            $data['shop_name'] = $shopname;
+            $data['share_code'] = $code;
+            $data['qrc_text'] = $qrc_text;
+
+            //开始生成
+            $config = $this->indexPosterConfig($data);
+            createPoster($config, $path);
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 商品海报生成需要的配置
+     * @param $data
+     * @return array
+     */
+    public function goodsPosterConfig($data)
+    {
+        $goods_config = [
+            'image' => [
+                [
+                    'url' => $data['goods_img'],
+                    'left' => 0,
+                    'top' => 0,
+                    'stream' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'width' => 560,
+                    'height' => 560,
+                    'opacity' => 100
+                ],
+                [
+                    'url' => $data['qrc_img'],
+                    'left' => -20,
+                    'top' => 575,
+                    'stream' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'width' => 150,
+                    'height' => 150,
+                    'opacity' => 100
+                ]
+            ],
+            'text' => [
+                [
+                    'text' => $data['goods_name'],
+                    'left' => 20,
+                    'top' => 580,
+                    'width' => 350,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Light.otf',
+                    'fontSize' => 20,
+                    'fontColor' => '0,0,0',
+                    'angle' => 0,
+                    'lineHeight' => 36,
+                    'length' => 25,
+                ],
+                [
+                    'text' => '￥'.$data['goods_price'],
+                    'left' => 20,
+                    'top' => 680,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Bold.otf',
+                    'fontSize' => 30,
+                    'fontColor'=>'255,0,0',
+                    'angle' => 0,
+                    'width' => 340,
+                    'lineHeight' => 36,
+                    'length' => 23,
+                ],
+                [
+                    'text' => $data['qrc_text'],
+                    'left' => 370,
+                    'top' => 725,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Light.otf',
+                    'fontSize' => 10,
+                    'fontColor'=> '50,50,50',
+                    'angle' => 0,
+                    'width' => 170,
+                    'lineHeight' => 20,
+                    'length' => 12,
+                    'center' => true
+                ]
+            ],
+            'background' => '../public/static/share/goods.png',
+        ];
+        return $goods_config;
+    }
+
+
+    /**
+     * 邀请海报生成需要的配置
+     * @param $data
+     * @return array
+     */
+    public function indexPosterConfig($data)
+    {
+        $index_config = [
+            'image' => [
+                [
+                    'url' => $data['avatar_img'],
+                    'left' => 50,
+                    'top' => 40,
+                    'stream' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'width' => 100,
+                    'height' => 100,
+                    'opacity' => 100
+                ],
+                [
+                    'url' => $data['qrc_img'],
+                    'left' => 120,
+                    'top' => 215,
+                    'stream' => 0,
+                    'right' => 0,
+                    'bottom' => 0,
+                    'width' => 320,
+                    'height' => 320,
+                    'opacity' => 100
+                ]
+            ],
+            'text' => [
+                [
+                    'text' => '您的好友【'.$data['nickname'].'】',
+                    'left' => 170,
+                    'top' => 60,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Bold.otf',
+                    'fontSize' => 18,
+                    'fontColor' => '255,255,255',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 30,
+                ],
+                [
+                    'text' => '发现了一家好店，邀您查看',
+                    'left' => 170,
+                    'top' => 100,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Light.otf',
+                    'fontSize' => 16,
+                    'fontColor' => '255,255,255',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 30,
+                ],
+                [
+                    'text' => $data['shop_name'],
+                    'top' => 555,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Bold.otf',
+                    'fontSize' => 16,
+                    'fontColor' => '0,0,0',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 20,
+                    'center' => true
+                ],
+                [
+                    'text' => $data['qrc_text'],
+                    'top' => 590,
+                    'left' => 0,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Light.otf',
+                    'fontSize' => 14,
+                    'fontColor' => '30,30,30',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 20,
+                    'center' => true
+                ],
+                [
+                    'text' => '进入【'.$data['shop_name'].'】小程序一起寻好物！',
+                    'top' => 620,
+                    'left' => 0,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Light.otf',
+                    'fontSize' => 14,
+                    'fontColor' => '30,30,30',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 60,
+                    'center' => true
+                ],
+                [
+                    'text' => $data['share_code'],
+                    'top' => 715,
+                    'left' => 0,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Bold.otf',
+                    'fontSize' => 32,
+                    'fontColor' => '255,0,0',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 30,
+                    'center' => true
+                ],
+                [
+                    'text' => '我的专属邀请码',
+                    'top' => 760,
+                    'left' => 0,
+                    'width' => 400,
+                    'fontPath' => ROOT_PATH.'public'.DS.'static'.DS.'share'.DS.'SourceHanSansCN-Light.otf',
+                    'fontSize' => 16,
+                    'fontColor' => '0,0,0',
+                    'angle' => 0,
+                    'lineHeight' => 20,
+                    'length' => 30,
+                    'center' => true
+                ],
+            ],
+            'background' => '../public/static/share/index.png',
+        ];
+        return $index_config;
+    }
 }

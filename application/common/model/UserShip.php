@@ -67,9 +67,11 @@ class UserShip extends Common
 
 
     /**
-     * Vue存储用户收货地址
+     *
+     *
+     *  添加收货地址
      * @param $data
-     * @return int|string
+     * @return array
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -78,6 +80,20 @@ class UserShip extends Common
      */
     public function vueSaveShip($data)
     {
+
+        $result = [
+            'status' => false,
+            'msg' => '保存失败',
+            'data' => []
+        ];
+
+        $checkStatus = $this->checkData($data);
+
+        if (!$checkStatus['status'])
+        {
+            return $checkStatus;
+        }
+
         $where = [];
         $where[] = ['user_id', 'eq', $data['user_id']];
         $where[] = ['area_id', 'eq', $data['area_id']];
@@ -104,7 +120,10 @@ class UserShip extends Common
             $setData['utime'] = time();
             $this->where($where)->update($setData);
 
-            $ship_id = $res_data['id'];
+            if ($this->allowField(true)->save($setData)) {
+                $result['status'] = true;
+                $result['msg'] = '保存成功';
+            }
         }
         else
         {
@@ -130,10 +149,42 @@ class UserShip extends Common
                 'utime' => time(),
                 'is_def' => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO
             ];
-            $ship_id = $this->insertGetId($ship_data);
+
+            if ($this->allowField(true)->save($ship_data)) {
+                $result['status'] = true;
+                $result['msg'] = '保存成功';
+            }
         }
 
-        return $ship_id;
+        return $result;
+    }
+
+
+    /**
+     *
+     *  验证信息
+     * @param $data
+     * @return array
+     */
+    protected function checkData ($data)
+    {
+        $result = [
+            'status' => false,
+            'msg' => '',
+            'data' => []
+        ];
+
+        $validate = new \app\common\validate\UserShip();
+
+        if (!$validate->check($data))
+        {
+            $result['msg'] = $validate->getError();
+            return $result;
+        }
+
+        $result['status'] = true;
+        return $result;
+
     }
 
 
@@ -150,11 +201,22 @@ class UserShip extends Common
      */
     public function editShip ($data,$user_id)
     {
-        $return = [
+        $result = [
             'status' => false,
             'msg' => '保存失败',
             'data' => ''
         ];
+
+
+        // 收货地址验证
+        $checkStatus = $this->checkData($data);
+
+        if (!$checkStatus['status'])
+        {
+            return $checkStatus;
+        }
+
+
         $where[] = ['id', 'eq', $data['id']];
         $where[] = ['user_id', 'eq', $user_id];
         $oldData = $this->where($where)->find();
@@ -172,15 +234,15 @@ class UserShip extends Common
             }
             if($this->allowField(true)->save($data,['id'=>$data['id'],'user_id'=>$user_id]))
             {
-                $return['status'] = true;
-                $return['msg'] = '保存成功';
+                $result['status'] = true;
+                $result['msg'] = '保存成功';
             }
         }
         else
         {
-            $return['msg'] = '该地址不存在';
+            $result['msg'] = '该地址不存在';
         }
-        return $return;
+        return $result;
     }
 
 

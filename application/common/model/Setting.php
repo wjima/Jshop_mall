@@ -44,7 +44,7 @@ class Setting extends Common
         ],
         'cate_style' => [
             'name' => '分类样式',
-            'value' => '3'
+            'value' => 3
         ],
         'cate_type' => [
             'name' => 'H5分类样式',
@@ -74,10 +74,10 @@ class Setting extends Common
             'name' => '库存警报数量',
             'value' => '10'
         ],
-        'is_author'           =>  [         //此字段不显示到前台，在控制器中直接进行操作的，对商户不可见
-            'name' => '是否授权',
-            'value' => ''
-        ],
+//        'is_author'           =>  [         //此字段不显示到前台，在控制器中直接进行操作的，对商户不可见
+//            'name' => '是否授权',
+//            'value' => ''
+//        ],
         'reship_name' => [
             'name' => '退货联系人',
             'value' => ''
@@ -180,27 +180,27 @@ class Setting extends Common
             'name'=>'简介',
             'value' => 'Jshop小程序是一款标准B2C商城小程序',
         ],
-        //小程序logo
-        'wx_head_img'=>[
-            'name'=>'Logo',
-            'value'=>''
-        ],
-        'sms_user_id' => [
-            'name' => '短信通道用户ID',
-            'value' => ''
-        ],
-        'sms_account' => [
-            'name' => '短信通道用户名',
-            'value' => ''
-        ],
-        'sms_password' => [
-            'name' => '短信通道用户密码',
-            'value' => ''
-        ],
-        'sms_prefix' => [
-            'name' => '短信前缀',
-            'value' => 'Jshop'
-        ],
+        //小程序logo,暂时注释掉了。
+//        'wx_head_img'=>[
+//            'name'=>'Logo',
+//            'value'=>''
+//        ],
+//        'sms_user_id' => [
+//            'name' => '短信通道用户ID',
+//            'value' => ''
+//        ],
+//        'sms_account' => [
+//            'name' => '短信通道用户名',
+//            'value' => ''
+//        ],
+//        'sms_password' => [
+//            'name' => '短信通道用户密码',
+//            'value' => ''
+//        ],
+//        'sms_prefix' => [
+//            'name' => '短信前缀',
+//            'value' => 'Jshop'
+//        ],
         //公众号设置
         'wx_official_name'=>[
             'name'=>'公众号名称',
@@ -277,8 +277,13 @@ class Setting extends Common
         //发票开关
         'invoice_switch' => [
             'name' => '发票功能',
-            'value' => '1'
-        ]
+            'value' => 1
+        ],
+        //APP设置
+        'wx_app_appid' => [             //微信支付在app上的appid
+            'name' => '微信APP支付appid',
+            'value' => 'wxf62e2f29f15741af'
+        ],
     ];
 
 

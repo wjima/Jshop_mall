@@ -17,6 +17,102 @@
         <goodsservice
             :promotion="checkPromotion"
         ></goodsservice>
+		<!-- <div class="group-slider">
+			<div class="gs-title">
+				<div class="gs-title-l">这些人刚刚购买成功</div>
+				<div class="gs-title-r">查看更多</div>
+			</div>
+			<div class="gs-body" >
+				<div style="height: 110px;min-height: 110px;">
+					<yd-slider autoplay="3000" direction="vertical">
+						<yd-slider-item>
+							<div class="gs-body-item">
+								<div class="gs-body-item-l">
+									<img class="user-img" src="../../../../thinkphp/logo.png" alt="">
+									<div class="user-name">debug</div>
+								</div>
+								<div class="gs-body-item-r">
+									<div class="gsbir-l">
+										<div class="gsbir-l-t">还差<span>1人</span>拼成</div>
+										<div class="gsbir-l-b">剩余23:55:24</div>
+									</div>
+									<yd-button class="gsbir-btn">去拼单</yd-button>
+								</div>
+							</div>
+							<div class="gs-body-item">
+								<div class="gs-body-item-l">
+									<img class="user-img" src="../../../../thinkphp/logo.png" alt="">
+									<div class="user-name">debug</div>
+								</div>
+								<div class="gs-body-item-r">
+									<div class="gsbir-l">
+										<div class="gsbir-l-t">还差<span>1人</span>拼成</div>
+										<div class="gsbir-l-b">剩余23:55:24</div>
+									</div>
+									<yd-button class="gsbir-btn">去拼单</yd-button>
+								</div>
+							</div>
+						</yd-slider-item>
+						<yd-slider-item>
+							<div class="gs-body-item">
+								<div class="gs-body-item-l">
+									<img class="user-img" src="../../../../thinkphp/logo.png" alt="">
+									<div class="user-name">debug</div>
+								</div>
+								<div class="gs-body-item-r">
+									<div class="gsbir-l">
+										<div class="gsbir-l-t">还差<span>1人</span>拼成</div>
+										<div class="gsbir-l-b">剩余23:55:24</div>
+									</div>
+									<yd-button class="gsbir-btn">去拼单</yd-button>
+								</div>
+							</div>
+							<div class="gs-body-item">
+								<div class="gs-body-item-l">
+									<img class="user-img" src="../../../../thinkphp/logo.png" alt="">
+									<div class="user-name">debug</div>
+								</div>
+								<div class="gs-body-item-r">
+									<div class="gsbir-l">
+										<div class="gsbir-l-t">还差<span>1人</span>拼成</div>
+										<div class="gsbir-l-b">剩余23:55:24</div>
+									</div>
+									<yd-button class="gsbir-btn">去拼单</yd-button>
+								</div>
+							</div>
+						</yd-slider-item>
+						<yd-slider-item>
+							<div class="gs-body-item">
+								<div class="gs-body-item-l">
+									<img class="user-img" src="../../../../thinkphp/logo.png" alt="">
+									<div class="user-name">debug</div>
+								</div>
+								<div class="gs-body-item-r">
+									<div class="gsbir-l">
+										<div class="gsbir-l-t">还差<span>1人</span>拼成</div>
+										<div class="gsbir-l-b">剩余23:55:24</div>
+									</div>
+									<yd-button class="gsbir-btn">去拼单</yd-button>
+								</div>
+							</div>
+							<div class="gs-body-item">
+								<div class="gs-body-item-l">
+									<img class="user-img" src="../../../../thinkphp/logo.png" alt="">
+									<div class="user-name">debug</div>
+								</div>
+								<div class="gs-body-item-r">
+									<div class="gsbir-l">
+										<div class="gsbir-l-t">还差<span>1人</span>拼成</div>
+										<div class="gsbir-l-b">剩余23:55:24</div>
+									</div>
+									<yd-button class="gsbir-btn">去拼单</yd-button>
+								</div>
+							</div>
+						</yd-slider-item>
+					</yd-slider>
+				</div>
+			</div>
+		</div> -->
         <goodsstandard
             :spes="productSpes.default_spes_desc"
             @changeSpes="changeSpes"
@@ -353,4 +449,86 @@ export default {
         max-width: 100%;
         transform: translate(-50%, -50%);
     }
+	.group-slider{
+		margin-bottom: .15rem ;
+	}
+	.gs-title{
+		overflow: hidden;
+		padding: .2rem;
+		background-color: #fff;
+		margin-bottom: 1px;
+		font-size: .28rem;
+		color: #666;
+	}
+	.gs-title-l{
+		float: left;
+		
+	}
+	.gs-title-r{
+		float: right;
+	}
+	.gs-body{
+		background-color: #fff;
+	}
+	.gs-body .yd-slider-pagination-vertical{
+		display: none;
+	}
+	.gs-body .yd-slider-item{
+		min-height: 100px;
+	}
+	.gs-body-item{
+		overflow: hidden;
+		padding: .1rem .2rem;
+		height: 55px;
+		box-sizing: border-box;
+		border-bottom: 1px solid #f0f0f0;
+	}
+	.gs-body-item-l{
+		float: left;
+		position: relative;
+		height: 100%;
+	}
+	.gs-body-item-l .user-img{
+		width: .5rem;
+		height: .5rem;
+		border-radius: 50%;
+	}
+	.gs-body-item-l .user-name{
+		font-size: .28rem;
+		color: #666;
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		left: .6rem;
+	}
+	.gs-body-item-r{
+		float: right;
+		overflow: hidden;
+		position: relative;
+		height: 100%;
+	}
+	.gsbir-l{
+		float: left;
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		margin-right: .2rem;
+	}
+	.gsbir-l-t{
+		color: #666;
+		font-size: .26rem;
+	}
+	.gsbir-l-t span{
+		color: #FF3B44;
+	}
+	.gsbir-l-b{
+		float: right;
+		font-size: .22rem;
+	}
+	.gsbir-btn{
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		background-color: #FF3B44 !important;
+	}
 </style>

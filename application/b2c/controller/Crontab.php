@@ -1,5 +1,6 @@
 <?php
 namespace app\b2c\controller;
+
 use app\common\controller\Base;
 
 class Crontab extends Base

@@ -50,53 +50,54 @@ class GoodsComment extends Common
     public function getList($goods_id, $page = 1, $limit = 10, $display = 'all')
     {
         $where[] = ['goods_id', 'eq', $goods_id];
-        if($display != 'all')
-        {
+        if ($display != 'all') {
             $where[] = ['display', 'eq', $display];
         }
         $res = $this::with('user')->where($where)
             ->order('ctime desc')
             ->page($page, $limit)
             ->select();
-        foreach($res as $k => &$v)
-        {
-            if($v['images'])
-            {
+        foreach ($res as $k => $v) {
+            if ($v['user']) {
+                $res[$k]['user']['avatar'] = _sImage($v['user']['avatar']);
+                $res[$k]['user']['mobile'] = format_mobile($v['user']['mobile']);
+            } else {
+                $res[$k]['user'] = [
+                    'avatar'   => _sImage(),
+                    'nickname' => '匿名用户',
+                    'id'       => 0,
+                ];
+            }
+            if ($v['images']) {
                 $imagesArr = explode(',', $v['images']);
-                if(count($imagesArr)>0)
-                {
-                    foreach($imagesArr as $kk => &$vv)
-                    {
+                if (count($imagesArr) > 0) {
+                    foreach ($imagesArr as $kk => &$vv) {
                         $vv = _sImage($vv);
                     }
-                    $v['images_url'] = $imagesArr;
+                    $res[$k]['images_url'] = $imagesArr;
                 }
             }
         }
-
         $count = $this->where($where)
             ->count();
 
-        if($res !== false)
-        {
-            $res->hidden(['goods_id','images','user_id','user'=>['id','isdel','password','status','username','ctime','utime']]);
+        if ($res !== false) {
+            $res->hidden(['goods_id', 'images', 'user_id', 'user' => ['id', 'isdel', 'password', 'status', 'username', 'ctime', 'utime','balance','point','pid']]);
             $data = [
                 'status' => true,
-                'msg' => '获取成功',
-                'data' => [
-                    'list' => $res,
+                'msg'    => '获取成功',
+                'data'   => [
+                    'list'  => $res,
                     'count' => $count,
-                    'page' => $page,
+                    'page'  => $page,
                     'limit' => $limit
                 ]
             ];
-        }
-        else
-        {
+        } else {
             $data = [
                 'status' => false,
-                'msg' => '获取失败',
-                'data' => []
+                'msg'    => '获取失败',
+                'data'   => []
             ];
         }
         return $data;

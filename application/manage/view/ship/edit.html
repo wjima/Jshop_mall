@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/layui_ext/dtree/dtree.css">
-<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/layui_ext/dtree/font/iconfont.css">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/layui_ext/dtree/font/dtreefont.css">
 
 <style>
     .seller-inline-1{
@@ -207,6 +207,7 @@
 
             <div class="layui-input-block" style="padding-top: 20px;">
             <input type="hidden" name="id" value="{$data.id}">
+            {:jshopToken()}
             <button class="layui-btn save-ship" lay-submit="" lay-filter="add-ship">保存</button>
             <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary" lay-filter="cancleAuthor">返回</a>
             </div>
@@ -302,9 +303,11 @@
                         initLevel: 1,
                         request:{"ids":value},
                         url: '{:url("ship/getArea")}',
+                        async: false,  // 只需将该参数设置为false，即可同步加载
                         checkbar: true,
                         cache: true,
-                        checkbarType: "all",
+                        checkbarType: "no-all",
+                        checkbarData: 'halfChoose',
                         response:{message:"msg",statusCode:0},
                         dataStyle: "layuiStyle",
                         dataFormat: "list"
@@ -320,7 +323,7 @@
                             if(obj.parentId<=0){
                                 html=html+obj.context+',';
                             }
-                            ids.push({'id':obj.nodeId,'pid':obj.parentId,'name':obj.context});
+                            ids.push({'id':obj.nodeId,'pid':obj.parentId,'name':obj.context,ischecked:obj.ischecked});
                         });
                         html = html.substring(0,html.length-1)+' <a href="javascript:void(0);" class="selectArea">请选择地区</a>';
                         html = html+"<input type='hidden' name='area_id["+id+"]' value='"+JSON.stringify(ids)+"'>";

@@ -1,34 +1,73 @@
-<form class="layui-form seller-form"  action="" >
+<style>
+    @media screen and (max-width: 500px) {
+
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width: 1200px !important;
+            box-sizing: border-box;
+        }
+
+        .layui-layer.layui-layer-page {
+            width: 100% !important;
+            overflow: hidden !important;
+            left: 0 !important;
+        }
+
+        .layui-layer-title {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .layui-layer-content {
+            width: 100% !important;
+        }
+
+    }
+
+    .w100 {
+        width: 100px !important;
+    }
+</style>
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">售后单号：</label>
+            <label class="layui-form-label w100">售后单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="aftersales_id" lay-verify="title" placeholder="请输入售后单号" autocomplete="off" class="layui-input">
+                <input type="text" name="aftersales_id" lay-verify="title" placeholder="请输入售后单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">订单号：</label>
+            <label class="layui-form-label w100">订单号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off" class="layui-input">
+                <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">下单时间：</label>
+            <label class="layui-form-label w100">下单时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+                <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label" style="width:120px;">用户手机号：</label>
+            <label class="layui-form-label w100">用户手机号：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">售后类型：</label>
-            <div class="layui-input-inline seller-inline-3" >
+            <label class="layui-form-label w100">售后类型：</label>
+            <div class="layui-input-inline seller-inline-3">
                 <select name="type" lay-verify="">
                     <option value=""></option>
                     <option value="1">只退款</option>
@@ -37,8 +76,8 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline seller-inline-3" >
+            <label class="layui-form-label w100">状态：</label>
+            <div class="layui-input-inline seller-inline-3">
                 <select name="status" lay-verify="">
                     <option value=""></option>
                     <option value="1">未审核</option>
@@ -48,8 +87,10 @@
             </div>
         </div>
         <div class="layui-inline">
-            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-aftersales"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-aftersales"><i
+                    class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
         </div>
     </div>
 </form>
@@ -58,7 +99,7 @@
     <table id="billAftersales" lay-filter="test"></table>
 </div>
 <div id="exportAftersales" style="display: none;">
-    <form class="layui-form export-form"  action="" >
+    <form class="layui-form export-form" action="">
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
@@ -68,13 +109,14 @@
 
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
-                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
+                    autocomplete="off" class="layui-input">
             </div>
         </div>
     </form>
 </div>
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         //时间插件
         layui.laydate.render({
             elem: '#date',
@@ -87,69 +129,71 @@
             height: 'full-250',
             cellMinWidth: '80',
             page: 'true',
-            limit:'{:config('jshop.page_limit')}',
+            limit: '{:config('jshop.page_limit')}',
             url: "{:url('billAftersales/index')}?_ajax=1",
-            id:'billAftersales',
+            id: 'billAftersales',
             cols: [[
-                {type:'checkbox'},
-                {field:'aftersales_id', width:140, sort: true,title:'售后单号'},
-                {field:'order_id', width:140, sort: true,title:'订单号'},
-                {field:'status_name', width:100,title:'状态'},
-                {field:'type', width:100,title:'售后类型'},
-                {field:'user_id', width:150,minWidth: 50,title:'用户'},
-                {field:'refund',width:100,title:'退款金额'},
-                {field:'reason',title:'原因'},
-                {field:'ctime',width:170,title:'申请时间'},
-                {field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
+                { type: 'checkbox' },
+                { field: 'aftersales_id', width: 140, sort: true, title: '售后单号' },
+                { field: 'order_id', width: 140, sort: true, title: '订单号' },
+                { field: 'status_name', width: 100, title: '状态' },
+                { field: 'type', width: 100, title: '售后类型' },
+                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
+                { field: 'refund', width: 100, title: '退款金额' },
+                { field: 'reason', title: '原因' },
+                { field: 'ctime', width: 170, title: '申请时间' },
+                {
+                    field: 'operating', title: '操作', width: 120, align: 'center', templet: function (data) {
                         var html = '';
-                        if(data.status == 1){
+                        if (data.status == 1) {
                             html += '<a  class="layui-btn layui-btn-xs option-audit" data-id="' + data.aftersales_id + '">操作</a>';
                         }
                         html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.aftersales_id + '">明细</a>';
                         return html;
-                    }},
+                    }
+                },
             ]]
         });
-        layui.form.on('submit(*)', function(data){
+        layui.form.on('submit(*)', function (data) {
             layui.table.reload('billAftersales', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
         //审核操作
-        $(document).on('click','.option-audit',function(){
+        $(document).on('click', '.option-audit', function () {
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{:url('billAftersales/audit')}",
-                data:'aftersales_id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
+                data: 'aftersales_id=' + $(this).attr('data-id'),
+                success: function (e) {
+                    if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
                             area: ['800px', '650px'],
-                            title:'售后单审核',
-                            btn: ['确认','取消'],
-                            yes: function(index, layero){
+                            title: '售后单审核',
+                            btn: ['确认', '取消'],
+                            yes: function (index, layero) {
                                 $.ajax({
-                                    type:'post',
+                                    type: 'post',
                                     url: "{:url('billAftersales/audit')}",
                                     data: $('#aftersales_form').serialize(),
-                                    success:function(res){
-                                        if(res.status){
+                                    success: function (res) {
+                                        if (res.status) {
                                             layer.msg('保存成功');
-                                            window.setTimeout("window.location.reload();",500);     //如果想做的更好就关掉弹出框，然后表格重新加载即可
-                                        }else{
+                                            window.setTimeout("window.location.reload();", 500);     //如果想做的更好就关掉弹出框，然后表格重新加载即可
+                                        } else {
                                             layer.msg(res.msg);
                                         }
                                     }
                                 });
                             }
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
 
@@ -157,20 +201,20 @@
             });
         });
         //查看操作
-        $(document).on('click','.option-view',function(){
+        $(document).on('click', '.option-view', function () {
             $.ajax({
-                type:'get',
+                type: 'get',
                 url: "{:url('billAftersales/view')}",
-                data:'aftersales_id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
+                data: 'aftersales_id=' + $(this).attr('data-id'),
+                success: function (e) {
+                    if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
                             area: ['600px', '600px'],
-                            title:'售后单查看'
+                            title: '售后单查看'
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
 
@@ -178,44 +222,44 @@
             });
         });
         //售后单导出
-        layui.form.on('submit(export-aftersales)', function(data){
+        layui.form.on('submit(export-aftersales)', function (data) {
 
             layer.open({
                 type: 1,
-                title:'售后单导出',
+                title: '售后单导出',
                 area: ['400px', '290px'], //宽高
-                btn:['确定','取消'],
+                btn: ['确定', '取消'],
                 content: $("#exportAftersales").html(),
-                yes:function () {
+                yes: function () {
                     //判断是否有选中
                     var checkStatus = layui.table.checkStatus('billAftersales');
                     var checkData = checkStatus.data;
                     var length = checkStatus.data.length;
                     var ids = [];
-                    if(length){
-                        $.each(checkData,function (i,obj) {
+                    if (length) {
+                        $.each(checkData, function (i, obj) {
                             ids.push(obj.aftersales_id);
                         });
                     }
 
                     //判断是否有选中
                     var filter = $(".seller-form").serialize();
-                    filter+='&ids='+ids;
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
+                    filter += '&ids=' + ids;
+                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'BillAftersales'});
+                    data.push({ 'name': 'model', 'value': 'BillAftersales' });
 
-                    JsPost("{:url('Ietask/export')}",data,function(res){
-                            layer.msg(res.msg, {time:1500}, function(){
-                                if(res.status){
-                                    layui.table.reload('billAftersales');
-                                    layer.closeAll();
-                                }
-                            });
-                        }
+                    JsPost("{:url('Ietask/export')}", data, function (res) {
+                        layer.msg(res.msg, { time: 1500 }, function () {
+                            if (res.status) {
+                                layui.table.reload('billAftersales');
+                                layer.closeAll();
+                            }
+                        });
+                    }
                     );
-                },btn2:function () {
+                }, btn2: function () {
                     layer.closeAll();
                 }
             });

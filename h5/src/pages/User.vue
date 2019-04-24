@@ -183,4 +183,7 @@ export default {
     .user .yd-btn-block{
         height: .8rem;
     }
+	.user .yd-cell-item:not(:last-child):after{
+		border-bottom: 1px solid #e9e9e9;
+	}
 </style>

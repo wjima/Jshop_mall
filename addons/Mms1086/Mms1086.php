@@ -51,7 +51,7 @@ class Mms1086 extends Addons
                 return false;
             }
         }
-        $sms_password = config('?jshop.sms_password') ? config('jshop.sms_password') : $setting['sms_password'];     //为了演示效果，此密码从配置文件中取，如果正式使用，请删除此行，并在后台店铺设置里配置密码即可。
+        $sms_password = $setting['sms_password'];     //为了演示效果，此密码从配置文件中取，如果正式使用，请删除此行，并在后台店铺设置里配置密码即可。
         $content      = $params['params']['content'] . '【' . $setting['sms_prefix'] . '】';
         //$content = iconv("utf-8","gb2312",$content);
         $content = urlencode($content);      //内容

@@ -224,6 +224,10 @@ return [
             'getarealist' => [
                 'code' => 'getAreaList',
                 'is_login' => false
+            ],
+            'getposter' => [
+                'code' => 'getPoster',
+                'is_login' => false
             ]
         ]
     ],
@@ -460,7 +464,11 @@ return [
                 'is_login' => false
             ],
             'getdetial' => [
-                'code' => 'getDetial',
+                'code' => 'getDetail',
+                'is_login' => false
+            ],
+            'appgetdetial' => [
+                'code' => 'appGetDetail',
                 'is_login' => false
             ],
             'getskudetial' => [
@@ -473,6 +481,10 @@ return [
             ],
             'getproductinfo' => [
                 'code' => 'getProductInfo',
+                'is_login' => false
+            ],
+            'appgetproductinfo' => [
+                'code' => 'appGetProductInfo',
                 'is_login' => false
             ],
             'getgoodscomment' => [
@@ -598,5 +610,14 @@ return [
             ],
 
         ],
+    ],
+    'appplus' => [
+        'code' => 'AppPlus',
+        'method' => [
+            'checkversion' => [
+                'code' => 'checkVersion',
+                'is_login' => false
+            ]
+        ]
     ]
 ];

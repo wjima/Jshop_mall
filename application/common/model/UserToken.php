@@ -7,7 +7,7 @@ class UserToken extends Common
     /**
      * 登陆存token
      * @param $user_id
-     * @param int $platform     如果是1，就是前端普通登陆，如果是2就是微信小程序登陆
+     * @param int $platform     //1就是h5登陆（h5端和微信公众号端），2就是微信小程序登陆，3是支付宝小程序，4是app，5是pc
      * @return array
      */
     public function setToken($user_id,$platform=1){
@@ -62,7 +62,14 @@ class UserToken extends Common
         }
         return $result;
     }
-    public function checkToken($token){
+
+    /**
+     * 根据token来获取用户的id
+     * @param $token                token的值
+     * @param int $status           用户状态，0是所有状态，1是取正常的用户状态
+     * @return array
+     */
+    public function checkToken($token,$status = 1){
         $result = array(
             'status' => false,
             'data' => '',
@@ -72,6 +79,15 @@ class UserToken extends Common
         $where[] = ['ctime', 'gt', time()-60*60*24*180];     //有效期180天
         $tokenInfo = $this->where($where)->find();
         if($tokenInfo){
+            $userModel = new User();
+            $where1[] = ['id','eq', $tokenInfo['user_id']];
+            $userInfo = $userModel->where($where1)->find();
+            if(!$userInfo){
+                return error_code(11004);
+            }
+            if($status == 1 && $userInfo['status'] != 1){
+                return error_code(11022);
+            }
             $result['status'] = true;
             $result['data'] = $tokenInfo;
             return $result;

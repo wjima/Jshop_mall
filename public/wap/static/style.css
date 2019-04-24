@@ -408,6 +408,7 @@
     overflow: hidden;
     background-color: #F5F5F5;
     max-width: 750px;
+	z-index: 666;
 }
 .goodsdetailfooter-left, .goodsdetailfooter-right{
     display: inline-block;
@@ -530,7 +531,7 @@
 .standard-content>div{
     display: inline-block;
     max-width: 89%;
-    margin-left: .1rem;
+    margin-right: .2rem;
     float: left;
 }
 .standard-content>div>div{
@@ -680,6 +681,14 @@
 }
 .indexgrids .yd-grids-4 .yd-grids-item:not(:nth-child(4n)):before{
     border: none;
+	background-image: none;
+}
+.indexgrids .yd-grids-4:before{
+	 border: none;
+	background-image: none;
+}
+.yd-scrolltab-item:after{
+	background-image: none !important;
 }
 .indexgrids .yd-grids-txt{
     color: #9f9f9f;
@@ -764,10 +773,12 @@
 .yd-cell-item:not(:last-child):after{
     /*margin-left: 0 !important;*/
     background-image: none !important;
-    background-color: #efefef;
+    /* background-color: #efefef; */
+	
 }
 .yd-cell:after{
-    /*border-bottom: 1px solid #d9d9d9 !important;*/
+    border-bottom: 1px solid #e9e9e9 !important;
+	background-image: none;
 }
 .yd-grids-item:after{
     background-image: none !important;
@@ -1333,6 +1344,7 @@
     overflow: hidden;
     background-color: #fff;
     border-top: 1px solid #F5F5F5;
+	max-width: 750px;
 }
 .list-item {
     position: relative;
@@ -1401,6 +1413,7 @@
     /*margin: .5rem auto 0;*/
     font-size: .3rem;
     height: .8rem;
+	max-width: 750px;
 }
 .address .acquiesce{
     padding: 0 .3rem;
@@ -1515,6 +1528,7 @@ a.icon-google, a.icon-twitter, a.icon-facebook, a.icon-diandian{
 }
 .yd-popup-content{
     overflow-y: inherit !important;
+	/* max-width: 750px; */
 }
 .social-share .icon-wechat .wechat-qrcode{
     z-index: 1999 !important;

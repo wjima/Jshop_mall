@@ -1,15 +1,30 @@
-<form class="layui-form seller-form"  action="" >
+<style>
+    @media screen and (max-width: 500px) {
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width:1000px !important;
+            box-sizing: border-box;
+        }
+    }
+</style>
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                    class="layui-input">
                 <input type="hidden" id="user_id" value="{$user_id}">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label">类型：</label>
-            <div class="layui-input-inline seller-inline-2" >
+            <div class="layui-input-inline seller-inline-2">
                 <select name="type" lay-verify="">
                     <option value=""></option>
                     <option value="1">消费</option>
@@ -23,9 +38,10 @@
         </div>
 
         <div class="layui-inline">
-	        <div class="layui-input-block">
-	            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
-	        </div>
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+                        class="iconfont icon-chaxun"></i>筛选</button>
+            </div>
         </div>
     </div>
 </form>
@@ -35,35 +51,37 @@
 </div>
 
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
 
         layui.table.render({
             elem: '#balanceTable',
             height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
-            user_id:33,
-            url: "{:url('balance/index')}?_ajax=1&user_id=" +$('#user_id').val(),
-            id:'balanceTable',
+            limit: '20',
+            user_id: 33,
+            url: "{:url('balance/index')}?_ajax=1&user_id=" + $('#user_id').val(),
+            id: 'balanceTable',
             cols: [[
-                {type:'numbers'},
-                {field: 'mobile',width:140, title: '用户', align: 'center',templet:function(data){
-                    var html = '';
-                    html += data.mobile;
-                    return html;
-                }},
-                {field:'type', align: 'center', width:120,title:'类型'},
-                {field:'money', align: 'center', width:160,title:'金额'},
-                {field:'balance', align: 'center', width:160,title:'余额'},
-                {field:'memo', align: 'center', title:'描述'},
-                {field:'ctime', align: 'center', width:200,title:'时间'}
+                { type: 'numbers' },
+                {
+                    field: 'mobile', width: 140, title: '用户', align: 'center', templet: function (data) {
+                        var html = '';
+                        html += data.mobile;
+                        return html;
+                    }
+                },
+                { field: 'type', align: 'center', width: 120, title: '类型' },
+                { field: 'money', align: 'center', width: 160, title: '金额' },
+                { field: 'balance', align: 'center', width: 160, title: '余额' },
+                { field: 'memo', align: 'center', title: '描述' },
+                { field: 'ctime', align: 'center', width: 200, title: '时间' }
             ]]
         });
-        layui.form.on('submit(*)', function(data){
+        layui.form.on('submit(*)', function (data) {
             layui.table.reload('balanceTable', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });

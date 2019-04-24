@@ -45,7 +45,7 @@
                         <div>x{{ item.nums }}</div>
                     </yd-list-other>
                     <yd-list-other slot="other">
-                        <div v-if="item.promotion_list">
+                        <div class="goods-order-tip" v-if="item.promotion_list">
                             <div v-for="(val, key) in toObj(item.promotion_list)" :key="key">
                                 <yd-badge shape="square" type="danger">{{ val }}</yd-badge>
                             </div>
@@ -238,4 +238,12 @@ export default {
         margin-top: calc(.5rem - 1px);
         font-size: .1rem;
     }
+	.goods-order-tip{
+		overflow: hidden;
+	}
+	.goods-order-tip>div{
+		display: inline-block;
+		margin-right: .1rem;
+		margin-bottom: .1rem;
+	}
 </style>

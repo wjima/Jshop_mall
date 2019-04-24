@@ -10,13 +10,14 @@
                 <yd-input slot="right" v-model="recharge" placeholder="请输入要充值的金额"></yd-input>
             </yd-cell-item>
 
-            <div class="recharge-btn" v-if="paymentList.length">
-                <yd-button size="large" type="primary" v-for="item in paymentList" @click.native="toRecharge(item.code)">{{ item.name }}</yd-button>
-            </div>
-            <div v-else>
-                <yd-button size="large" type="hollow">暂无可充值方式</yd-button>
-            </div>
+            
         </yd-cell-group>
+		<div class="recharge-btn" v-if="paymentList.length">
+		    <yd-button size="large" type="primary" v-for="item in paymentList" @click.native="toRecharge(item.code)">{{ item.name }}</yd-button>
+		</div>
+		<div v-else>
+		    <yd-button size="large" type="hollow">暂无可充值方式</yd-button>
+		</div>
     </div>
 </template>
 
@@ -167,5 +168,16 @@ export default {
 }
 .recharge-btn .btn{
     background-color: #FF3B44;
+}
+.recharge .yd-cell-item:not(:last-child):after{
+	border-bottom: 1px solid #e9e9e9;
+}
+.recharge .yd-cell:after{
+	border: none !important;
+	background-image: none !important;
+	
+}
+.yd-cell{
+	background-color: #000;
 }
 </style>

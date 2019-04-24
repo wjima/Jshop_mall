@@ -209,6 +209,7 @@ export default {
     .withdrawcash-bottom .yd-btn-block{
         height: .8rem;
         font-size: .3rem;
+		max-width: 750px;
     }
     .cardlist{
         text-align: left;

@@ -32,7 +32,7 @@
         <text class='current-price'>￥{{goodsInfo.product.price}}</text>
         <text class='cost-price'>￥{{goodsInfo.product.mktprice}}</text>
       </view>
-      <view class='commodity-salesvolume'>销量：{{goodsInfo.buy_count}}件</view>
+      <view class='commodity-salesvolume'>销量：{{goodsInfo.buy_count}} {{goodsInfo.unit}}</view>
     </view>
 
     <!-- 促销服务 -->
@@ -111,12 +111,11 @@
         <view class='comment-header'><text>买家评论</text><text>（{{commentCount}}）</text></view>
         <view wx:for="{{commentList}}" wx:key="{{index}}">
           <view class='comment-body'>
-            <view class='username'>              
-              <image src='{{item.user.avatar}}'></image>              
+            <view class='username'>
+              <image src='{{item.user.avatar}}'></image>
               <text wx:if="{{item.user.nickname}}">{{item.user.nickname}}</text><text wx:else>{{item.user.mobile}}</text>
               <view class='star' wx:if="{{item.score == 1}}">
                 <image src='../../image/redstar.png'></image>
-              
               </view>
               <view class='star' wx:elif="{{item.score == 2}}">
                 <image src='../../image/redstar.png'></image>
@@ -151,7 +150,7 @@
               {{item.content}}
             </view>
             <view class='comment-img'>
-                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/pages/image/default_avatar.png'}}" wx:key="indexs" wx:for-item="vo"  mode="{{mode}}" src='{{vo}}' bindtap='commentImg'></image>
+                <image wx:for="{{item.images_url}}" wx:if="{{vo != '/pages/image/default_avatar.png'}}" wx:key="indexs" wx:for-item="vo" mode="{{mode}}" src='{{vo}}' data-img="{{vo}}" bindtap='commentImg'></image>
             </view>
           </view>
         </view>

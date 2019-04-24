@@ -7,20 +7,20 @@
             {$manageInfo.username}({$manageInfo.username})
         </div>
         {else /}
-            <div class="layui-input-inline seller-inline-6">
+            <div class="layui-input-inline">
                 <input name="username" value="{$data.username}" lay-verify="required" placeholder="请输入用户名" class="layui-input" type="text">
             </div>
         {/if}
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>手机号码：</label>
-        <div class="layui-input-inline seller-inline-6">
+        <div class="layui-input-inline">
             <input name="mobile" value="{$manageInfo.mobile}" lay-verify="phone" placeholder="请输入管理员手机号码" class="layui-input" type="text">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>密码：</label>
-        <div class="layui-input-inline seller-inline-4">
+        <div class="layui-input-inline">
             <input name="password" value="" placeholder="请输入密码" lay-verify="pass" class="layui-input" type="text">
         </div>
         <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
@@ -33,12 +33,13 @@
     {/if}
     <div class="layui-form-item">
         <label class="layui-form-label">角色：</label>
-        <div class="layui-input-inline seller-inline-6">
+        <div class="layui-input-inline">
             {volist name="roleList" id="vo"}
                 <input type="checkbox" name="role_id[{$vo.id}]" lay-skin="primary" title="{$vo.name}" {if isset($vo['checked']) && $vo['checked']}checked=""{/if} >
             {/volist}
         </div>
     </div>
+    {:jshopToken()}
 </form>
 <script>
     layui.use('form', function(){

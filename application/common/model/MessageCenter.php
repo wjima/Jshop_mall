@@ -107,6 +107,9 @@ class MessageCenter extends Common
         if($info['sms'] == self::SEND_TRUE){
             //判断短信是否够,如果够，就去发
             $mobile = get_user_info($user_id,'mobile');
+            if($code == 'seller_order_notice'){
+                $mobile = getSetting('shop_mobile');
+            }
             if($mobile){
                 $smsModel = new Sms();
                 $smsModel->send($mobile,$code,$params);

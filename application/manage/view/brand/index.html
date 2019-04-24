@@ -114,13 +114,13 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的要删除么',{icon: 3}, function(index){
-                    JsGet("{:url('Brand/del')}?id=" + data.id, function(res){
+                    JsPost("{:url('Brand/del')}",{id:data.id}, function (res) {
                         if(res.status){
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
                         }
                         layer.msg(res.msg);
-                    })
+                    });
                 });
             } else if(layEvent === 'edit'){ //编辑
                 JsGet("{:url('Brand/edit')}?id=" + data.id, function(e){

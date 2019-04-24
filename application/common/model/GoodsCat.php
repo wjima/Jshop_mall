@@ -166,7 +166,7 @@ class GoodsCat extends Common
                 $new_data[$v['id']]['id'] = $v['id'];
                 $new_data[$v['id']]['name'] = $v['name'];
                 $new_data[$v['id']]['image_id'] = $v['image_id'];
-                if($v['image_id'])
+                if ($v['image_id'])
                 {
                     $new_data[$v['id']]['image_url'] = _sImage($v['image_id']);
                 }
@@ -177,9 +177,12 @@ class GoodsCat extends Common
                 $new_data[$v['id']]['sort'] = $v['sort'];
                 $new_data[$v['id']]['child'] = [];
             }
-            else
+        }
+        foreach($data as $v)
+        {
+            if($v['parent_id'] != self::TOP_CLASS_PARENT_ID)
             {
-                if($v['image_id'])
+                if ($v['image_id'])
                 {
                     $new_data[$v['parent_id']]['child'][] = array(
                         'id' => $v['id'],
@@ -201,6 +204,7 @@ class GoodsCat extends Common
                 }
             }
         }
+
         $edition = [];
         foreach ((array)$new_data as $key => $val)
         {

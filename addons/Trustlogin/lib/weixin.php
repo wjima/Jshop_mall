@@ -6,7 +6,6 @@ namespace addons\Trustlogin\lib;
 
 use think\facade\Cache;
 use think\facade\Log;
-use app\common\model\Images;
 
 class weixin{
 
@@ -69,17 +68,10 @@ class weixin{
      */
     public function getUserData($params = [])
     {
-
-        $imageModel = new Images();
-        $image      = $imageModel->saveRemoteImage($params['headimgurl']);//头像都按统一方法保存到本地或者远程图片服务器
-        if (!$image['status']) {
-            return $image;
-        }
-
         $userData['openid']    = $params['openid'];
         $userData['unionId']   = $params['unionid'];
         $userData['privilege'] = $params['privilege'];
-        $userData['avatar']    = $image['data']['image_id'];
+        $userData['avatar']    = $params['headimgurl'];
         $userData['country']   = $params['country'];
         $userData['language']  = $params['language'];
         $userData['province']  = $params['province'];

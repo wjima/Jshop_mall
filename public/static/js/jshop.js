@@ -96,6 +96,7 @@ function JsAjax(url, type, dataType, data, success, error, cache, alone, async) 
             setTimeout(function () {
                 layer.msg(data.msg);
             }, 300);
+
             if (data.status) {
                 setTimeout(function () {
                     if (data.url) {
@@ -109,6 +110,13 @@ function JsAjax(url, type, dataType, data, success, error, cache, alone, async) 
                 layer.msg("服务器开小差了，请稍后再试");
             }
         };
+    var newSuccess = function(data){
+        if(data.token){
+            $(".Jshop_Token").val(data.token);
+        }
+        success(data);
+    }
+
     var error = error || function (data) {
             layer.closeAll('loading');
             setTimeout(function () {
@@ -127,7 +135,7 @@ function JsAjax(url, type, dataType, data, success, error, cache, alone, async) 
         'type': type,
         'dataType': dataType,
         'async': async,
-        'success': success,
+        'success': newSuccess,
         'error': error,
         'jsonpCallback': 'jsonp' + (new Date()).valueOf().toString().substr(-4),
         'beforeSend': function () {

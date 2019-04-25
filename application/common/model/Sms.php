@@ -76,12 +76,14 @@ class Sms extends Common
         return $re;
     }
 
-    public function check($phone,$ver_code,$code){
+    public function check($phone,$ver_code,$code,$platform = 'normal'){
 
         $where[] = ['mobile', 'eq', $phone];
         $where[] = ['code', 'eq', $code];
         $where[] = ['ctime', 'gt', time()-60*10];
-        $where[] = ['ip', 'eq', get_client_ip()];
+        if ($platform == 'normal') {
+            $where[] = ['ip', 'eq', get_client_ip()]; //todo 支付宝真机无法获取固定客户端ip地址
+        }
         $where[] = ['status', 'eq', self::STATUS_UNUSED];
         $sms_info = $this->where($where)->order('id desc')->find();
         if($sms_info){

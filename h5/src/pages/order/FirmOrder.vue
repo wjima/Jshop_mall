@@ -299,9 +299,10 @@ export default {
             data['tax_name'] = this.invoice.name
             data['tax_code'] = this.invoice.code
 
+            // 跳转支付页面 商品订单类型1 充值订单类型2
             this.$api.createOrder(data, res => {
                 if (res.status) {
-                    this.$router.replace({path: '/cashierdesk', query: {order_id: res.data.order_id}})
+                    this.$router.replace({path: '/cashierdesk', query: {ids: res.data.order_id, type: 1}})
                 }
             })
         },

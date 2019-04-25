@@ -310,7 +310,7 @@ class wechatpay implements Payment
                 $appid = getSetting('wx_official_appid');
             }
         }elseif($type == 'APP'){
-            $appid = getSetting('wx_app_appid');
+            $appid =  getAddonsConfigVal("App","open_weixin_appid");
         }else{
             $result['msg'] = '未知的微信支付类型';
             return $result;

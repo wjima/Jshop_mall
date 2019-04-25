@@ -167,7 +167,7 @@ class Images extends Common
      * Email:1457529125@qq.com
      * Date: 2017-11-28 16:00
      */
-    public function getImage($url, $save_dir = '', $filename = '', $type = 0)
+    public function getImage($url, $save_dir = '', $filename = '', $type = 1)
     {
         if (trim($url) == '') {
             return array(

@@ -1051,15 +1051,12 @@ class User extends Api
             'msg' => '获取成功',
             'data' => []
         ];
-        #$jshopHost = Container::get('request')->domain();
-        #$jshopHost = 'http://b2c.jihainet.com';
+
         $url = input('url/s','');//前台地址
         $uuid = input('uuid/s','');//前台用户信息，记录是同一个用户
         if(!$url){
             $url = Container::get('request')->domain();
         }
-        // $params['url'] = $url.'/wap/index.html#/author';
-
         $params['url'] = $url;
         $params['uuid'] = $uuid;
         if(!$params['url']||!$uuid)

@@ -288,6 +288,9 @@
                 data: formData,
                 dataType: 'json',
                 success: function(e){
+                    if(e.token){
+                        $(".Jshop_Token").val(e.token);
+                    }
                     if(e.status === true){
                        layer.msg(e.msg, {time: 1300}, function(){
                             window.location.href='{:url("Goods/index")}';
@@ -428,29 +431,23 @@
                 return false;
             }
             if(!error){
-                $.ajax({
-                    url: '{:url("categories/add")}',
-                    type: 'post',
-                    data: {
-                        'parent_id': parent_id,
-                        'type_id': type_id,
-                        'name': name,
-                        'image_id': image_id,
-                        'sort': sort
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        if(e.status === true){
-                            layer.close(window_box);
-                            layer.msg(e.msg, {time: 1300}, function(){
-                                goodscatgoods_cat_id();//刷新获取分类方法
-                                form.render();
-                            });
-                        }else{
-                            layer.msg(e.msg, {time: 1300});
-                        }
+                JsPost( '{:url("categories/add")}',{
+                    'parent_id': parent_id,
+                    'type_id': type_id,
+                    'name': name,
+                    'image_id': image_id,
+                    'sort': sort
+                },function(e){
+                    if(e.status === true){
+                        layer.close(window_box);
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            goodscatgoods_cat_id();//刷新获取分类方法
+                            form.render();
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300});
                     }
-                })
+                });
             }
         });
 

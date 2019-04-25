@@ -57,6 +57,7 @@ class GoodsType extends Manage
                 'status' => false,
                 'msg'    => '添加失败',
                 'data'   => '',
+                'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
             ];
             //存储添加内容
             $typeData    = [
@@ -150,6 +151,7 @@ class GoodsType extends Manage
                     'status' => true,
                     'msg'    => '添加成功',
                     'data'   => $result,
+                    'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
                 ];
             } else {
                 Db::rollback();

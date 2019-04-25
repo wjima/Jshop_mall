@@ -159,15 +159,16 @@ class Article extends Common
 
 
     /**
-     * @param int $type_id
-     * @param $page
-     * @param $limit
+     * 获取文章列表
+     * @param bool $type_id
+     * @param int $page
+     * @param int $limit
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function articleList($type_id,$page,$limit)
+    public function articleList($type_id = false, $page = 1, $limit = 10)
     {
         $result = [
             'status' =>  true,
@@ -176,18 +177,26 @@ class Article extends Common
         ];
 
         // 发布状态
-        $where[] = ['is_pub','eq',self::IS_PUB_YES];
+        $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
+
         // 分类id
-        if ($type_id) {
+        if($type_id)
+        {
             $where[] = ['type_id', 'eq', $type_id];
         }
-        $list = $this->where($where)->order('ctime DESC')->page($page,$limit)->select();
+        $list = $this->where($where)
+            ->order('ctime DESC')
+            ->page($page, $limit)
+            ->select();
 
-        $count = $this->where($where)->count();
+        $count = $this->where($where)
+            ->count();
+
         if(!$list->isEmpty())
         {
-            $list = $list->hidden(['is_pub','isdel']);
-            foreach ($list as &$v) {
+            $list = $list->hidden(['is_pub', 'isdel']);
+            foreach ($list as &$v)
+            {
                 $v['cover'] = _sImage($v['cover']);
             }
         }
@@ -203,10 +212,12 @@ class Article extends Common
 
 
     /**
-     *  获取指定id 的文章详情
-     * User:tianyu
+     * 获取指定id 的文章详情
      * @param $article_id
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function articleDetail($article_id)
     {
@@ -216,13 +227,19 @@ class Article extends Common
             'data'   =>  [],
         ];
 
-        $where[] = ['id','eq',$article_id];
-        $where[] = ['is_pub','eq',self::IS_PUB_YES];
-        $data = $this->field('id,title,content,type_id,ctime,utime')->where($where)->find();
-        $data['content'] = clearHtml($data['content'], ['width', 'height']);//清除文章中宽高
-        
+        $where[] = ['id', 'eq', $article_id];
+        $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
+        $data = $this->field('id,title,content,type_id,ctime,utime')
+            ->where($where)
+            ->find();
+
         if(!empty($data))
         {
+            $data['content'] = clearHtml($data['content'], ['width', 'height']);//清除文章中宽高
+            $data['content'] = str_replace("<img", "<img style='max-width: 100%'", $data['content']);
+            $typeModel = new ArticleType();
+            $data['article_type'] = $typeModel->getArticleTypeFather($data['type_id']);
+
             $result['status'] = true;
             $result['msg'] = '获取成功';
             $result['data'] = $data;

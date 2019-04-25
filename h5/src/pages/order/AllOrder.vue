@@ -166,7 +166,7 @@ export default {
         },
         // 立即付款
         pay (id) {
-            this.$router.push({path: 'cashierdesk', query: {order_id: id}})
+            this.$router.push({path: 'cashierdesk', query: {ids: id, type: 1}})
         },
         // 确认收货
         confirm (key, orderId) {

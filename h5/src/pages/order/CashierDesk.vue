@@ -2,15 +2,19 @@
     <div class="cashierdesk">
         <yd-cell-group>
             <yd-cell-item>
+                <span slot="left">订单类型</span>
+                <span slot="right" v-html="type == 1 ? '商品订单' : '充值订单'"></span>
+            </yd-cell-item>
+            <yd-cell-item v-if="type == 1">
                 <span slot="left">订单编号</span>
-                <span slot="right">{{ orderId }}</span>
+                <span slot="right">{{ ids }}</span>
             </yd-cell-item>
             <yd-cell-item>
                 <span slot="left">订单金额</span>
-                <span slot="right">￥{{ order_amount }}</span>
+                <span slot="right">￥{{ money }}</span>
             </yd-cell-item>
         </yd-cell-group>
-        <payment :payments="payments" @pay="pay" :user="userInfo"></payment>
+        <payment :payments="payments" @pay="pay" :money="userInfo.balance"></payment>
         <yd-popup class="payresult"
         v-model="popShow"
         position="center"
@@ -18,7 +22,7 @@
         :close-on-masker="false"
         >
             <div>
-                <div class="payresult-i">请确认 {{ payname }} 是否已完成</div>
+                <div class="payresult-i">请确认微信支付是否已完成</div>
                 <div class="payresult-i" @click="completed">已完成支付</div>
                 <div class="payresult-i" @click="heavyLoad">支付遇到问题,重新支付</div>
             </div>
@@ -32,55 +36,101 @@ export default {
     components: {
         payment
     },
-    inject: ['reload'],
+    // inject: ['reload'],
     data () {
         return {
-            orderId: this.$route.query.order_id,
+            ids: this.$route.query.ids, // 订单号
+            type: this.$route.query.type || 1, // 订单类型
+            money: this.$route.query.recharge || 0, // 充值单要充值的金额
             order_amount: '', // 订单总价
             payments: [], // 商户可支付的方式列表
             userInfo: {}, // 用户信息
             popShow: false,
-            pay_type:this.$route.query.pay_type, //支付方式
-            payname: '',
-            timer: ''
+            // payType: this.$route.query.pay_type || '', //支付方式
+            // payname: this.$route.query.pay_type || '',
+            // timer: ''
         }
     },
     created () {
-        this.orderDetail()
-        this.getPaymentType()
-        this.getUserInfo()
-        if(this.pay_type!=''){
-            if (this.pay_type == 'weixin') {
-                this.payname = '微信支付'
-                this.paymentedHandle()
-            } else if (this.pay_type == 'alipay') {
-                this.payname = '支付宝支付'
-                this.paymentedHandle()
-            }
-
+        // this.orderDetail()
+        // this.getUserInfo()
+        // if(this.pay_type!=''){
+        //     if (this.pay_type == 'weixin') {
+        //         this.payname = '微信支付'
+        //         this.paymentedHandle()
+        //     } else if (this.pay_type == 'alipay') {
+        //         this.payname = '支付宝支付'
+        //         this.paymentedHandle()
+        //     }
+        //
+        // } else {
+        //     if(this.popShow) {
+        //         this.popShow = false
+        //     }
+        // }
+        // this.timer = setInterval(() => {
+        //     this.getOrderInfo()
+        // },3000)
+        if (this.ids && this.type == 1) {
+            // 商品订单
+            this.orderDetail()
+        } else if (this.money && this.type == 2) {
+            // 充值订单 获取用户id
+            // this.getUserInfo()
         } else {
-            if(this.popShow) {
-                this.popShow = false
+            this.$dialog.toast({
+                mes: '订单支付参数错误',
+                timeout: 1300,
+                callback: () => {
+                    this.$router.go(-1)
+                }
+            })
+        }
+
+        this.getUserInfo()
+        this.getPaymentType()
+    },
+    computed: {
+        payType: {
+            get () {
+
+            },
+            set (val) {
+                if (val === 'weixin') {
+                    this.popShow = true
+                }
             }
         }
-        this.timer = setInterval(() => {
-            this.getOrderInfo()
-        },1000)
     },
     methods: {
         // 获取订单详情
         orderDetail () {
-            this.$api.orderDetail({order_id: this.orderId}, res => {
-                this.order_amount = res.data.order_amount
+            this.$api.orderDetail({order_id: this.ids}, res => {
+                this.money = res.data.order_amount
             })
         },
         // 获取支付方式列表
         getPaymentType () {
             this.$api.paymentList({}, res => {
                 let data = res.data
-                for (let k in data) {
-                    data[k].img = './static/image/' + data[k].code + '.png'
+
+                // 过滤非线上支付方式
+                if (this.GLOBAL.isWeiXinBrowser()) {
+                    // h5支付并且是在微信浏览器内 过滤支付宝支付
+                    data = data.filter(item => item.is_online === 1 || item.code !== 'alipay')
+                } else {
+                    // 其他浏览器内
+                    data = data.filter(item => item.is_online === 1)
                 }
+
+                // 如果是充值订单 过滤余额支付
+                if (this.type == 2) {
+                    data = data.filter(item => item.code !== 'balancepay')
+                }
+
+                data.forEach(item => {
+                    this.$set(item, 'img', './static/image/' + item.code + '.png')
+                })
                 this.payments = data
             })
         },
@@ -93,18 +143,26 @@ export default {
         },
         // 根据code 区分支付方式
         pay (code) {
+            let data = {
+                ids: this.ids,
+                payment_code: code,
+                payment_type: this.type
+            }
             if (code === 'wechatpay') {
                 let isWeiXin = this.GLOBAL.isWeiXinBrowser()
                 if (isWeiXin) {
                     // 公众号支付参数
-                    let data = {
-                        ids: this.orderId,
-                        payment_code: code,
-                        payment_type: 1,
-                        params: {
+                    if (this.type == 1 && this.ids) {
+                        // 微信jsapi支付
+                        data['params'] = {
                             trade_type: 'JSAPI_OFFICIAL'
                         }
+                    } else if (this.type == 2 && this.money) {
+                        data['params'] = {
+                            money: this.money
+                        }
                     }
+
                     // 微信jsapi支付
                     this.$api.pay(data, res => {
                         if (res.status) {
@@ -121,7 +179,11 @@ export default {
                                 },
                                 function (res) {
                                     if (res.err_msg === 'get_brand_wcpay_request:ok') {
-                                        _this.$router.replace({path: '/payresult', query: {order_id: _this.orderId}})
+                                        if (_this.type == 1) {
+                                            _this.$router.replace({path: '/payresult', query: {order_id: _this.ids}})
+                                        } else if (_this.type == 2) {
+                                            _this.$router.replace({path: '/balance'})
+                                        }
                                         // _this.$dialog.alert({
                                         //     mes: '支付成功',
                                         //     callback () {
@@ -136,19 +198,22 @@ export default {
                     })
                 } else {
                     // h5端支付参数
-                    let data = {
-                        ids: this.orderId,
-                        payment_code: code,
-                        payment_type: 1,
-                        params: {
+                    if (this.type == 1 && this.ids) {
+                        data['params'] = {
                             trade_type: 'MWEB',
-			                return_url: this.GLOBAL.locationHost() + '/#/cashierdesk?order_id=' + this.orderId+'&pay_type=weixin'
+                            return_url: this.GLOBAL.locationHost() + '/#/cashierdesk?ids=' + this.ids + '&type=' + this.type + '&pay_type=weixin'
+                        }
+                    } else if (this.type == 2 && this.money) {
+                        data['params'] = {
+                            trade_type: 'MWEB',
+                            money: this.money,
+                            return_url: this.GLOBAL.locationHost() + '/#/cashierdesk?ids=' + this.ids + '&type=' + this.type + '&pay_type=weixin'
                         }
                     }
                     // 微信h5支付
                     this.$api.pay(data, res => {
                         if (res.status) {
-                            this.pay_type='weixin';
+                            this.payType = 'weixin'
                             location.href = res.data.mweb_url
                         } else {
                             this.$dialog.alert({mes: res.msg})
@@ -156,32 +221,33 @@ export default {
                     })
                 }
             } else if (code === 'alipay') {
-                let data = {
-                    ids: this.orderId,
-                    payment_code: code,
-                    payment_type: 1,
-                    params: {
+                // 支付宝支付
+                if (this.type == 1 && this.ids) {
+                    data['params'] = {
                         trade_type: 'WAP',
-                        return_url: this.GLOBAL.locationHost() + '/#/cashierdesk?order_id=' + this.orderId + '&pay_type=alipay'
+                        return_url: this.GLOBAL.locationHost() + '/#/payresult?order_id=' + this.ids
+                    }
+                } else if (this.type == 2 && this.money) {
+                    data['params'] = {
+                        money: this.money,
+                        return_url: this.GLOBAL.locationHost() + '/#/balance'
                     }
                 }
+
                 this.$api.pay(data, res => {
                     if (res.status) {
                         this.StandardPost(res.data.url, res.data.data)
                     }
                 })
             } else if (code === 'balancepay') {
-                let data = {
-                    ids: this.orderId,
-                    payment_code: code,
-                    payment_type: 1
-                }
+                // 余额支付
                 this.$api.pay(data, res => {
                     if (res.status) {
-                        this.$router.replace({path: '/payresult', query: {order_id: this.orderId}})
+                        this.$router.replace({path: '/payresult', query: {order_id: this.ids}})
                     }
                 })
             } else if (code === 'offline') {
+                // 线下支付
                 this.$dialog.confirm({
                     title: '线下支付说明',
                     mes: '请联系客服进行线下支付',
@@ -190,7 +256,7 @@ export default {
                             txt: '订单详情',
                             color: false,
                             callback: () => {
-                                this.$router.push({path: '/orderdetail', query: {order_id: this.orderId}})
+                                this.$router.push({path: '/orderdetail', query: {order_id: this.ids}})
                             }
                         },
                         {
@@ -206,18 +272,18 @@ export default {
             }
         },
 	    // 查询订单详情 获取订单支付状态
-        getOrderInfo () {
-            let data = {
-                order_id: this.orderId
-            }
-            this.$api.orderDetail(data, res => {
-                this.orderInfo = res.data
-                if(this.orderInfo.pay_status === 2){
-                    clearInterval(this.timer)
-                    this.$router.replace({path: '/payresult', query: {order_id: this.orderId}})
-                }
-            })
-        },
+        // getOrderInfo () {
+        //     let data = {
+        //         order_id: this.orderIds
+        //     }
+        //     this.$api.orderDetail(data, res => {
+        //         this.orderInfo = res.data
+        //         if(this.orderInfo.pay_status === 2){
+        //             clearInterval(this.timer)
+        //             this.$router.replace({path: '/payresult', query: {order_id: this.orderIds}})
+        //         }
+        //     })
+        // },
         // alipay 模拟get提交
         StandardPost (url, data) {
             let tempForm = document.createElement('form')
@@ -240,31 +306,35 @@ export default {
             document.body.removeChild(tempForm)
         },
         // 微信H5支付完成后触发的弹窗事件
-        paymentedHandle () {
-            this.popShow = true
-        },
+        // paymentedHandle () {
+        //     this.popShow = true
+        // },
         // 支付完后点击跳转
         completed () {
             this.popShow = false // 关闭弹窗
-            this.$router.replace({path: '/payresult', query: {order_id: this.orderId}})
+            if (this.type == 1) {
+                this.$router.replace({path: '/payresult', query: {order_id: this.ids}})
+            } else {
+                this.$router.replace({path: '/balance'})
+            }
         },
         // 支付遇到问题重新刷新页面
         heavyLoad () {
             this.popShow = false // 关闭弹窗
-            this.$router.replace({path: '/cashierdesk', query: {order_id: this.orderId}})
+            this.$router.replace({path: '/cashierdesk', query: {ids: this.ids, type: this.type}})
         }
     },
     watch: {
-        pay_type () {
-            if (pay_type === 'weixin') {
-                this.payname = '微信支付'
-            }
-
-            if (pay_type === 'alipay') {
-                this.payname = '支付宝支付'
-            }
-            this.paymentedHandle()
-        }
+        // pay_type () {
+        //     if (pay_type === 'weixin') {
+        //         this.payname = '微信支付'
+        //     }
+        //
+        //     if (pay_type === 'alipay') {
+        //         this.payname = '支付宝支付'
+        //     }
+        //     this.paymentedHandle()
+        // }
     }
 }
 </script>

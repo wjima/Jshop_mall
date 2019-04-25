@@ -264,13 +264,16 @@ class Store extends Common
         $return = [
             'status' => false,
             'msg' => '获取失败',
-            'data' => []
+            'data' => [],
+            'longitude' => $longitude,
+            'latitude' => $latitude
         ];
 
         $where = [];
         if($key)
         {
             $where[] = ['store_name', 'like', '%'.$key.'%'];
+
         }
 
         $return['data'] = $this->where($where)->select();

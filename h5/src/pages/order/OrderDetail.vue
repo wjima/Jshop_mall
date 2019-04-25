@@ -198,7 +198,7 @@ export default {
             })
         },
         pay () {
-            this.$router.push({path: '/cashierdesk', query: {order_id: this.order_id}})
+            this.$router.push({path: '/cashierdesk', query: {ids: this.order_id, type: 1}})
         },
         // 申请售后
         afterSales () {

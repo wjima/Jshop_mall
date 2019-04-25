@@ -186,7 +186,7 @@ class kdniao
             $output = curl_exec($ch);
             return $output;
         } else {
-            return $res;
+            return $ip;
         }
     }
 

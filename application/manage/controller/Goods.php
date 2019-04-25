@@ -142,6 +142,7 @@ class Goods extends Manage
             'status' => false,
             'msg'    => '',
             'data'   => '',
+            'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
         ];
         //商品数据组装并校检
         $checkData = $this->checkGoodsInfo();
@@ -294,6 +295,7 @@ class Goods extends Manage
             'status' => false,
             'msg'    => '',
             'data'   => '',
+            'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
         ];
         $bn                             = get_sn(3);
         $data['goods']['name']          = input('post.goods.name', '');

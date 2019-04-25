@@ -24,10 +24,9 @@ class ArticleType extends Common
 
 
     /**
-     *  后台分类 树形列表
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * 后台分类 树形列表
+     * @param $post
+     * @return mixed
      * @throws \think\exception\DbException
      */
     public function tableData( $post )
@@ -108,16 +107,15 @@ class ArticleType extends Common
     }
 
 
-
     /**
-     *  递归遍历表格输出
+     * 递归遍历表格输出
      * User:tianyu
-     * @param $arr  要输出的数组
-     * @param $pid   父id
-     * @param $step 节点替换次数
+     * @param $arr //要输出的数组
+     * @param int $pid //父id
+     * @param int $step //节点替换次数
      * @return array
      */
-    public function getTree($arr,$pid=0,$step=0){
+    public function getTree($arr, $pid = 0, $step = 0){
         global $tree;
         foreach($arr as $key=>$val) {
             if($val['pid'] == $pid) {
@@ -132,8 +130,7 @@ class ArticleType extends Common
 
 
     /**
-     *
-     *  获取文章分类列表
+     * 获取文章分类列表
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -147,23 +144,82 @@ class ArticleType extends Common
             'data'   =>  []
         ];
 
-        $list = $this->field('id,type_name')->select();
-
-        $result['data']['list'] = $list;
+        $list = $this->field('id,pid,type_name')->select();
+        $tree = $this->getArticleTypeTree($list, 0);
+        $result['data']['list'] = $tree;
 
         return $result;
     }
 
 
+    /**
+     * 树状图递归
+     * @param $data
+     * @param int $pid
+     * @return array
+     */
+    public function getArticleTypeTree($data, $pid = 0)
+    {
+        $tree = [];
+        foreach($data as $k => $v)
+        {
+            if($v['pid'] == $pid)
+            {
+                $v['child'] = $this->getArticleTypeTree($data, $v['id']);
+                $tree[] = $v;
+            }
+        }
+        return $tree;
+    }
+
 
     /**
-     *  文章分类 与 文章 一对多关联
-     * User:tianyu
+     * 获取文章分类父级分类
+     * @param $type_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getArticleTypeFather($type_id)
+    {
+        return $this->getArticleTypeFatherTree($type_id);
+    }
+
+
+    /**
+     * 递归获取文章父类分类树状图
+     * @param $type_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getArticleTypeFatherTree($type_id)
+    {
+        $tree = [];
+        $where[] = ['id', 'eq', $type_id];
+        $info = $this->where($where)->find();
+        if($info['pid'] != 0)
+        {
+            $info['father'] = $this->getArticleTypeFatherTree($info['pid']);
+        }
+        else
+        {
+            $info['father'] = [];
+        }
+        $tree[] = $info;
+
+        return $tree;
+    }
+
+
+    /**
+     * 文章分类 与 文章 一对多关联
      * @return \think\model\relation\HasMany
      */
     public function comments()
     {
         return $this->hasMany('Article');
     }
-
 }

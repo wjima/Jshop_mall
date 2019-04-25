@@ -4,7 +4,7 @@
             <img class="payment-img" :src="item.img"/>
             <div class="payment-left">
                 <h3>{{ item.name }}</h3>
-                <p v-if="item.code === 'balancepay'">当前余额: {{user.balance}}</p>
+                <p v-if="item.code === 'balancepay'">当前余额: {{money}}</p>
                 <p v-else>{{ item.memo }}</p>
             </div>
             <img class="right-img" src="../../static/image/right.png"/>
@@ -16,15 +16,15 @@
 export default {
     props: {
         payments: {
-            type: [Array, Object],
+            type: Array,
             default () {
                 return []
             }
         },
-        user: {
-            type: Object,
+        money: {
+            type: String,
             default () {
-                return {}
+                return '0'
             }
         }
     },

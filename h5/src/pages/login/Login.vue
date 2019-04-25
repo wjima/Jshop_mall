@@ -104,11 +104,7 @@ export default {
             return res
         },
         isWeiXinBrowser () {
-            if (this.GLOBAL.isWeiXinBrowser()) {
-                return true
-            } else {
-                return false
-            }
+            return this.GLOBAL.isWeiXinBrowser()
         }
     },
     methods: {

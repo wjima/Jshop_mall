@@ -82,10 +82,7 @@ class UserWx extends Common
 
         $imageModel = new Images();
         $image      = $imageModel->saveRemoteImage($result['data']['avatarUrl']);//头像都按统一方法保存到本地或者远程图片服务器
-        if (!$image['status']) {
-            return $image;
-        }
-        $result['data']['avatarUrl']  = $image['data']['image_id'];
+        $result['data']['avatarUrl']  = isset($image['data']['image_id'])?$image['data']['image_id']:_sImage();
 
         $data['type']     = self::TYPE_MINIPROGRAM;
         $data['avatar']   = $result['data']['avatarUrl'];
@@ -124,7 +121,9 @@ class UserWx extends Common
             if (isset($params['user_id'])) {
                 $data['user_id'] = $params['user_id'];
             }
-            $data['avatar']   = $params['avatar'];
+            $imageModel = new Images();
+            $image      = $imageModel->saveRemoteImage($params['avatar']);//头像都按统一方法保存到本地或者远程图片服务器
+            $data['avatar']   = isset($image['data']['image_id'])?$image['data']['image_id']:_sImage();
             $data['openid']   = $params['openid'];
             $data['nickname'] = $params['nickName'];
             $data['gender']   = $params['gender'];
@@ -133,8 +132,10 @@ class UserWx extends Common
             $data['province'] = $params['province'];
             $data['country']  = $params['country'];
             $this->save($data);
-            $result['status']     = true;
-            $result['data']['id'] = $this->getLastInsID();
+            $result['status'] = true;
+            $result['data']   = [
+                'id' => $this->id
+            ];
         } catch (\Exception $e) {
             $result['msg'] = $e->getMessage();
             return $result;

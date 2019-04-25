@@ -282,7 +282,7 @@ class Setting extends Common
         //APP设置
         'wx_app_appid' => [             //微信支付在app上的appid
             'name' => '微信APP支付appid',
-            'value' => 'wxf62e2f29f15741af'
+            'value' => ''
         ],
     ];
 

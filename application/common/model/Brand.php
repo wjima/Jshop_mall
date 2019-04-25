@@ -68,7 +68,8 @@ class Brand extends Common
         $result = [
             'status' => true,
             'msg' => '保存成功',
-            'data'=> []
+            'data'=> [],
+            'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
         ];
         $validate = new Validate($this->rule,$this->msg);
         if (!$validate->check($data)) {

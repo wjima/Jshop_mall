@@ -90,7 +90,8 @@ class Categories extends Manage
                 $return_data = array(
                     'status' => true,
                     'msg' => '添加成功',
-                    'data' => $result
+                    'data' => $result,
+                    'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
                 );
             }
             else
@@ -98,7 +99,8 @@ class Categories extends Manage
                 $return_data = array(
                     'status' => false,
                     'msg' => '添加失败',
-                    'data' => $result
+                    'data' => $result,
+                    'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
                 );
             }
             return $return_data;

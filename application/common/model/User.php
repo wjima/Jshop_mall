@@ -176,58 +176,62 @@ class User extends Common
      * @param int $platform
      * @return array
      */
-    public function smsLogin($data, $loginType=1,$platform=1)
+    public function smsLogin($data, $loginType = 1, $platform = 1)
     {
         $result = array(
             'status' => false,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         );
-        if(!isset($data['mobile'])) {
+        if (!isset($data['mobile'])) {
             $result['msg'] = '请输入手机号码';
             return $result;
         }
-        if(!isset($data['code'])) {
+        if (!isset($data['code'])) {
             $result['msg'] = '请输入验证码';
             return $result;
         }
 
         //判断是否是用户名登陆
-        $smsModel = new Sms();
+        $smsModel    = new Sms();
         $userWxModel = new UserWx();
-        if(!$smsModel->check($data['mobile'], $data['code'], 'login')){
+        $checkIp     = 'normal';
+        if ($platform == '3') {
+            $checkIp = 'alipay';
+        }
+        if (!$smsModel->check($data['mobile'], $data['code'], 'login', $checkIp)) {
             $result['msg'] = '短信验证码错误';
             return $result;
         }
 
-        $userInfo = $this->where(array('mobile'=>$data['mobile']))->find();
-        if(!$userInfo){
+        $userInfo = $this->where(array('mobile' => $data['mobile']))->find();
+        if (!$userInfo) {
             //没有此用户，创建此用户
             $userData['mobile'] = $data['mobile'];
 
             //判断是否是小程序里的微信登陆，如果是，就查出来记录，取他的头像和昵称
-            if(isset($data['user_wx_id'])){
-                $user_wx_info = $userWxModel->where(['id'=>$data['user_wx_id']])->find();
-                if($user_wx_info){
-                    if(!isset($data['avatar'])){
+            if (isset($data['user_wx_id'])) {
+                $user_wx_info = $userWxModel->where(['id' => $data['user_wx_id']])->find();
+                if ($user_wx_info) {
+                    if (!isset($data['avatar'])) {
                         $data['avatar'] = $user_wx_info['avatar'];
                     }
-                    if(!isset($data['nickname'])){
+                    if (!isset($data['nickname'])) {
                         $data['nickname'] = $user_wx_info['nickname'];
                     }
                 }
             }
             //如果没有头像和昵称，那么就取系统头像和昵称吧
-            if(isset($data['avatar'])){
+            if (isset($data['avatar'])) {
                 $userData['avatar'] = $data['avatar'];
-            }else{
+            } else {
                 $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 //                $userData['avatar'] = config('jshop.default_image');
                 $userData['avatar'] = _sImage('');
             }
-            if(isset($data['nickname'])){
-               $userData['nickname']  = $data['nickname'];
-            }else{
+            if (isset($data['nickname'])) {
+                $userData['nickname'] = $data['nickname'];
+            } else {
                 $userData['nickname'] = format_mobile($data['mobile']);
             }
             if (isset($data['invitecode']) && $data['invitecode']) {
@@ -241,37 +245,37 @@ class User extends Common
             }
 
             $userData['ctime'] = time();
-            if(isset($data['password'])){
+            if (isset($data['password'])) {
                 $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
             }
 
             //取默认的用户等级
             $userGradeModel = new UserGrade();
-            $userGradeInfo = $userGradeModel->where('is_def',$userGradeModel::IS_DEF_YES)->find();
-            if($userGradeInfo){
+            $userGradeInfo  = $userGradeModel->where('is_def', $userGradeModel::IS_DEF_YES)->find();
+            if ($userGradeInfo) {
                 $userData['grade'] = $userGradeInfo['id'];
             }
 
 
             $user_id = $this->insertGetId($userData);
-            if(!$user_id){
+            if (!$user_id) {
                 return error_code(10000);
             }
-            $userInfo = $this->where(array('id'=>$user_id))->find();
-        }else{
+            $userInfo = $this->where(array('id' => $user_id))->find();
+        } else {
             //如果有这个账号的话，判断一下是不是传密码了，如果传密码了，就是注册，这里就有问题，因为已经注册过
-            if(isset($data['password'])){
+            if (isset($data['password'])) {
                 return error_code(11019);
             }
         }
         //判断是否是小程序里的微信登陆，如果是，就给他绑定微信账号
-        if(isset($data['user_wx_id'])){
-            $userWxModel->save(['user_id'=>$userInfo['id']],['id'=>$data['user_wx_id']]);
+        if (isset($data['user_wx_id'])) {
+            $userWxModel->save(['user_id' => $userInfo['id']], ['id' => $data['user_wx_id']]);
         }
 
-        if($userInfo['status'] == self::STATUS_NORMAL){
-            $result = $this->setSession($userInfo,$loginType,$platform);            //根据登陆类型，去存session，或者是返回user_token
-        }else{
+        if ($userInfo['status'] == self::STATUS_NORMAL) {
+            $result = $this->setSession($userInfo, $loginType, $platform);            //根据登陆类型，去存session，或者是返回user_token
+        } else {
             return error_code(11022);
         }
 
@@ -1198,214 +1202,178 @@ class User extends Common
     {
         $return = [
             'status' => true,
-            'msg' => '生成海报',
-            'data' => ''
+            'msg'    => '生成海报',
+            'data'   => ''
         ];
 
-        $user_id = $data['user_id']; //用户ID
-        $type = $data['type']; //分享类型 1=商品海报 2=邀请海报
-        $id = $data['id']; //类型值 1商品海报就是商品ID 2邀请海报无需填
-        $source = $data['source']; //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
-        $return_url = $data['return_url']; //返回URL地址
-        $path = '../public/static/poster/'.$type.'/'.$source.'-'.md5($type.'-'.$id.'-'.$return_url.'-'.$user_id).'.jpg';
-        $paths = '/static/poster/'.$type.'/'.$source.'-'.md5($type.'-'.$id.'-'.$return_url.'-'.$user_id).'.jpg';
-        $return['data'] = request()->domain().str_replace("\\", "/", $paths);
+
+        if (!is_dir(ROOT_PATH . 'public/static/poster/1/')) {
+            mkdirs(ROOT_PATH . 'public/static/poster/1/');
+        }
+        if (!is_dir(ROOT_PATH . 'public/static/poster/2/')) {
+            mkdirs(ROOT_PATH . 'public/static/poster/2/');
+        }
+        if (!is_dir(ROOT_PATH . 'public/static/qrcode/h5/')) {
+            mkdirs(ROOT_PATH . 'public/static/qrcode/h5/');
+        }
+
+        $user_id        = $data['user_id']; //用户ID
+        $type           = $data['type']; //分享类型 1=商品海报 2=邀请海报
+        $id             = $data['id']; //类型值 1商品海报就是商品ID 2邀请海报无需填
+        $source         = $data['source']; //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
+        $return_url     = $data['return_url']; //返回URL地址
+        $path           = ROOT_PATH . 'public/static/poster/' . $type . '/' . $source . '-' . md5($type . '-' . $id . '-' . $return_url . '-' . $user_id) . '.jpg';
+        $paths          = '/static/poster/' . $type . '/' . $source . '-' . md5($type . '-' . $id . '-' . $return_url . '-' . $user_id) . '.jpg';
+        $return['data'] = request()->domain() . str_replace("\\", "/", $paths);
 
         //判断来源和类型准备生成的材料
         //判断来源和分享类型和用户ID和返回URL生成所需的二维码
         include_once '../extend/org/phpqrcode.php';
         $qrc_text = '扫描或长按识别二维码';
-        switch($source)
-        {
+        switch ($source) {
             case 1:
                 //普通H5页面 普通二维码
-                if($user_id)
-                {
-                    $qrc_name = md5($return_url.$id.$user_id);
+                if ($user_id) {
+                    $qrc_name = md5($return_url . $id . $user_id);
+                } else {
+                    $qrc_name = md5($return_url . $id);
                 }
-                else
-                {
-                    $qrc_name = md5($return_url.$id);
-                }
-                $qrc_uri = '../public/static/qrcode/h5/'.$qrc_name.'.png';
-                $qrc = $qrc_uri;
-                if($type == 1)
-                {
+                $qrc_uri = '../public/static/qrcode/h5/' . $qrc_name . '.png';
+                $qrc     = $qrc_uri;
+                if ($type == 1) {
                     //商品
-                    if($user_id)
-                    {
-                        $code = $this->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url.'?scene=id%253D'.$id.'invite%253D'.$code;
+                    if ($user_id) {
+                        $code     = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url . '?scene=id%253D' . $id . 'invite%253D' . $code;
+                    } else {
+                        $qrc_data = $return_url . '?scene=id%253D' . $id;
                     }
-                    else
-                    {
-                        $qrc_data = $return_url.'?scene=id%253D'.$id;
-                    }
-                }
-                else if($type == 2)
-                {
+                } else if ($type == 2) {
                     //邀请
-                    if($user_id)
-                    {
-                        $code = $this->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url.'?scene=invite%253D'.$code;
-                    }
-                    else
-                    {
+                    if ($user_id) {
+                        $code     = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url . '?scene=invite%253D' . $code;
+                    } else {
                         $qrc_data = $return_url;
                     }
-                }
-                else
-                {
+                } else {
                     $qrc_data = $return_url;
                 }
-                QRcode::png($qrc_data, $qrc_uri , 'L', 10, 2);
+                QRcode::png($qrc_data, $qrc_uri, 'L', 10, 2);
                 break;
             case 2:
                 //微信小程序 小程序码
                 $qrc_text = '扫描或长按识别小程序码';
-                if($type == 1)
-                {
+                if ($type == 1) {
                     //商品
-                    $code = $this->getShareCodeByUserId($user_id);
-                    $page = 'pages/goods/index/index';
-                    $page = 'pages/goods/detail/detail';
-                    $wx = new Wx();
-                    $wx_appid = getSetting('wx_appid');
+                    $code          = $this->getShareCodeByUserId($user_id);
+                    $page          = 'pages/goods/index/index';
+                    $page          = 'pages/goods/detail/detail';
+                    $wx            = new Wx();
+                    $wx_appid      = getSetting('wx_appid');
                     $wx_app_secret = getSetting('wx_app_secret');
-                    $accessToken = $wx->getAccessToken($wx_appid, $wx_app_secret);
-                    if($accessToken)
-                    {
+                    $accessToken   = $wx->getAccessToken($wx_appid, $wx_app_secret);
+                    if ($accessToken) {
                         $style['width'] = 300;
-                        $wxImg = $wx->getParameterQRCode($accessToken, $page, $code, $id, $style, $wx_appid);
-                        if($wxImg['status'])
-                        {
+                        $wxImg          = $wx->getParameterQRCode($accessToken, $page, $code, $id, $style, $wx_appid);
+                        if ($wxImg['status']) {
                             $qrc = $wxImg['data'];
-                        }
-                        else
-                        {
+                        } else {
                             return $wxImg;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         return $return = [
                             'status' => false,
-                            'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
-                            'data' => ''
+                            'msg'    => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
+                            'data'   => ''
                         ];
                     }
-                }
-                else if($type == 2)
-                {
+                } else if ($type == 2) {
                     //邀请
-                    $code = $this->getShareCodeByUserId($user_id);
-                    $page = 'pages/index/index';
-                    $wx = new Wx();
-                    $wx_appid = getSetting('wx_appid');
+                    $code          = $this->getShareCodeByUserId($user_id);
+                    $page          = 'pages/index/index';
+                    $wx            = new Wx();
+                    $wx_appid      = getSetting('wx_appid');
                     $wx_app_secret = getSetting('wx_app_secret');
-                    $accessToken = $wx->getAccessToken($wx_appid, $wx_app_secret);
-                    if($accessToken)
-                    {
+                    $accessToken   = $wx->getAccessToken($wx_appid, $wx_app_secret);
+                    if ($accessToken) {
                         $style['width'] = 500;
-                        $wxImg = $wx->getParameterQRCode($accessToken, $page, $code, $id, $style, $wx_appid);
-                        if($wxImg['status'])
-                        {
+                        $wxImg          = $wx->getParameterQRCode($accessToken, $page, $code, $id, $style, $wx_appid);
+                        if ($wxImg['status']) {
                             $qrc = $wxImg['data'];
-                        }
-                        else
-                        {
+                        } else {
                             return $wxImg;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         return $return = [
                             'status' => false,
-                            'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
-                            'data' => ''
+                            'msg'    => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
+                            'data'   => ''
                         ];
                     }
                 }
                 break;
             default:
                 //其他全部生成普通二维码
-                if($user_id)
-                {
-                    $qrc_name = md5($return_url.$id.$user_id);
+                if ($user_id) {
+                    $qrc_name = md5($return_url . $id . $user_id);
+                } else {
+                    $qrc_name = md5($return_url . $id);
                 }
-                else
-                {
-                    $qrc_name = md5($return_url.$id);
-                }
-                $qrc_uri = '../public/static/qrcode/h5/'.$qrc_name.'.png';
-                $qrc = $qrc_uri;
-                if($type == 1)
-                {
+                $qrc_uri = ROOT_PATH . 'public/static/qrcode/h5/' . $qrc_name . '.png';
+                $qrc     = $qrc_uri;
+                if ($type == 1) {
                     //商品
-                    if($user_id)
-                    {
-                        $code = $this->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url.'?scene=id%253D'.$id.'invite%253D'.$code;
+                    if ($user_id) {
+                        $code     = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url . '?scene=id%253D' . $id . 'invite%253D' . $code;
+                    } else {
+                        $qrc_data = $return_url . '?scene=id%253D' . $id;
                     }
-                    else
-                    {
-                        $qrc_data = $return_url.'?scene=id%253D'.$id;
-                    }
-                }
-                else if($type == 2)
-                {
+                } else if ($type == 2) {
                     //邀请
-                    if($user_id)
-                    {
-                        $code = $this->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url.'?scene=invite%253D'.$code;
-                    }
-                    else
-                    {
+                    if ($user_id) {
+                        $code     = $this->getShareCodeByUserId($user_id);
+                        $qrc_data = $return_url . '?scene=invite%253D' . $code;
+                    } else {
                         $qrc_data = $return_url;
                     }
-                }
-                else
-                {
+                } else {
                     $qrc_data = $return_url;
                 }
-                QRcode::png($qrc_data, $qrc_uri , 'L', 10, 2);
+                QRcode::png($qrc_data, $qrc_uri, 'L', 10, 2);
                 break;
         }
 
         //判断类型得到所需要的背景图和素材图
-        if($type == 1)
-        {
+        if ($type == 1) {
             //商品海报
             //商品信息查询获取商品图片、商品名称、什么价格
-            $goodsModel = new Goods();
-            $goods_info = $goodsModel->getGoodsDetial($id, 'id,name,image_id,price,spes_desc');
-            $new_data['goods_img'] = $goods_info['data']['image_url'];
-            $new_data['qrc_img'] = $qrc;
-            $new_data['goods_name'] = $goods_info['data']['name'];
+            $goodsModel              = new Goods();
+            $goods_info              = $goodsModel->getGoodsDetial($id, 'id,name,image_id,price,spes_desc');
+            $new_data['goods_img']   = $goods_info['data']['image_url'];
+            $new_data['qrc_img']     = $qrc;
+            $new_data['goods_name']  = $goods_info['data']['name'];
             $new_data['goods_price'] = getMoney($goods_info['data']['price']);
-            $new_data['qrc_text'] = $qrc_text;
+            $new_data['qrc_text']    = $qrc_text;
 
             //开始生成
             $config = $this->goodsPosterConfig($new_data);
             createPoster($config, $path);
-        }
-        else if($type == 2)
-        {
+        } else if ($type == 2) {
             //邀请海报
             //通过用户ID获取用户头像、昵称
-            $code = $this->getShareCodeByUserId($user_id);
+            $code     = $this->getShareCodeByUserId($user_id);
             $nickname = $this->getUserNickname($user_id);
-            $avatar = $this->field('avatar')->where('id', 'eq', $user_id)->find();
+            $avatar   = $this->field('avatar')->where('id', 'eq', $user_id)->find();
             $shopname = getSetting('shop_name');
 
             $data['avatar_img'] = _sImage($avatar['avatar']);
-            $data['qrc_img'] = $qrc;
-            $data['nickname'] = $nickname;
-            $data['shop_name'] = $shopname;
+            $data['qrc_img']    = $qrc;
+            $data['nickname']   = $nickname;
+            $data['shop_name']  = $shopname;
             $data['share_code'] = $code;
-            $data['qrc_text'] = $qrc_text;
+            $data['qrc_text']   = $qrc_text;
 
             //开始生成
             $config = $this->indexPosterConfig($data);

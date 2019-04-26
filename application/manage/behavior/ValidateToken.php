@@ -48,7 +48,6 @@ class ValidateToken
             'user@editpoint',
             'user@gradeadd',
             'role@add',
-            'role@saveperm',
             'administrator@add',
             'administrator@edit',
             'article@add',

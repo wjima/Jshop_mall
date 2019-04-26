@@ -220,6 +220,7 @@ class User extends Api
             ->find();
         if($userInfo !== false)
         {
+			$userInfo['avatar'] = _sImage($userInfo['avatar']);
             $result['data'] = $userInfo;
             $result['status'] = true;
         }

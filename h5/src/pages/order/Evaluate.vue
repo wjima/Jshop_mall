@@ -30,7 +30,7 @@
             </div>
         </div>
         <yd-button-group>
-            <yd-button size="large" bgcolor="#ff3b44" color="#fff" @click.native="sendEvaluate">提交评价</yd-button>
+            <yd-button size="large" bgcolor="#ff3b44" color="#fff" @click.native="sendEvaluate" style="max-width:750px">提交评价</yd-button>
         </yd-button-group>
     </div>
 </template>

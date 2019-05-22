@@ -339,7 +339,7 @@ trait RelationShip
      * @param  string $localKey   当前主键
      * @return HasOne
      */
-    public function hasOne($model, $foreignKey = '', $localKey = '')
+    public function  hasOne($model, $foreignKey = '', $localKey = '')
     {
         // 记录当前关联信息
         $model      = $this->parseModel($model);

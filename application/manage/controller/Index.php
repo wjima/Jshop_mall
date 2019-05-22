@@ -3,8 +3,10 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\BillAftersales;
+use app\common\model\Notice;
 use app\common\model\Operation;
 use app\common\model\Order;
+use app\common\model\Promotion;
 use think\facade\Cache;
 use app\common\model\WeixinAuthor;
 use app\common\model\Goods;
@@ -82,4 +84,37 @@ class Index extends Manage
         Cache::clear();
         $this->success('清除缓存成功','index/welcome');
     }
+
+    /**
+     * 供tag标签选择公告的时候用
+     */
+    public function tagSelectNotice()
+    {
+        $this->view->engine->layout(false);
+        if(input('param.type') != 'show'){
+            $request = input('param.');
+            $noticeModel = new Notice();
+            return $noticeModel->tableData($request);
+        }else{
+            return $this->fetch('tagSelectNotice');
+        }
+    }
+
+    /**
+     * 供tag标签选择团购秒杀的时候使用
+     */
+    public function tagSelectGroup()
+    {
+        $this->view->engine->layout(false);
+        if(input('param.type') != 'show'){
+            $request = input('param.');
+            $promotionModel = new Promotion();
+            $request['type'] = [$promotionModel::TYPE_GROUP,$promotionModel::TYPE_SKILL];
+            return $promotionModel->tableData($request);
+        }else{
+            return $this->fetch('tagSelectGroup');
+        }
+    }
+
+
 }

@@ -24,7 +24,22 @@
 <div id="spec_form">
 <div id="spec_select" {if condition="$items"}{else/}style="display:none;"{/if}>
     <div id="spec_form_item"  >
-        {volist name="spec" id="vo"}
+        {if condition="$customSpec"}
+            {volist name="spec" id="vo"}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">{$vo.name}</label>
+                <div class="layui-input-block">
+                    {volist name="vo.specValue" id="v"}
+                    <div class="spec-item layui-input-inline">
+                        <input type="checkbox" name="spec[{$vo.name}][{$v.id}]" value="{$v.value}" lay-skin="primary"  lay-filter="spec_select" class="spec-select" {if condition="$v['isSelected'] eq 'true'"} checked="true"{/if} >
+                        <input type="text" value="{$v.value}" name="goods[new_spec][{$v.id}][]" class="layui-input new-spec">
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+            {/volist}
+        {else}
+            {volist name="spec" id="vo"}
             <div class="layui-form-item" pane>
                 <label class="layui-form-label">{$vo.name}</label>
                 <div class="layui-input-block">
@@ -33,7 +48,9 @@
                     {/volist}
                 </div>
             </div>
-        {/volist}
+            {/volist}
+        {/if}
+
     </div>
     <div class="layui-form-item">
         <div class="layui-input-inline">
@@ -56,7 +73,7 @@
                 <th>货号</th>
                 <th>规格</th>
                 <th>库存</th>
-                <th>销售价</th>
+                <th><i class="required-color">*</i>销售价</th>
                 <th>成本价</th>
                 <th>市场价</th>
                 <th>操作</th>
@@ -87,8 +104,10 @@
                 <td>
                     {$vo.spec_name}
                 </td>
-                <td>
-                    <input type="text" name="product[{$vo.spec_name}][stock]" value="{$vo.stock}"  placeholder="库存" autocomplete="off" class="layui-input">
+                <td class="have-add-td">
+                    <input type="text" name="product[{$vo.spec_name}][stock]" value="0"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
+                    <input type="checkbox" name="product[{$vo.spec_name}][stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
+                    <a href="javascript:;" class="help-tip" data-tip="总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}"><i class="iconfont icon-wenhao"></i></a>
                 </td>
                 <td>
                     <input type="text" name="product[{$vo.spec_name}][price]" value="{$vo.price}"  placeholder="销售价" autocomplete="off" class="layui-input">
@@ -138,10 +157,12 @@
         </div>
     </div>
 
-    <div class="layui-form-item">
+    <div class="layui-form-item have-add">
         <label class="layui-form-label">库存：</label>
         <div class="layui-input-inline">
-            <input type="text" name="goods[stock]" value="{$product.stock}"   autocomplete="off" placeholder="请输入商品库存" class="layui-input">
+            <input type="text" name="goods[stock]" value="0"   autocomplete="off" placeholder="" class="layui-input goods-stock">
+            <input type="checkbox" name="goods[stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
+            <a href="javascript:;" class="help-tip" data-tip="总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}"><i class="iconfont icon-wenhao"></i></a>
         </div>
     </div>
 </div>
@@ -212,10 +233,17 @@
                 });
                 $(data.othis).addClass("layui-form-checked");
             }else{
-                $(dom).attr("checked",false);
-                $(dom).attr("value","0");
-                $("#more_spec .layui-form-checkbox").removeClass('layui-form-checked');
+                $("#more_spec .layui-form-checkbox").first().addClass('layui-form-checked');
+                $(".isdefalut").first().attr("checked",true);
+                $(".isdefalut").first().attr("value","1");
             }
         });
+
+        $("body").on("input propertychange",'.new-spec',function(){
+            var value = $(this).val();
+            var specCheckbox = $(this).parent('.spec-item').find(".spec-select");
+            specCheckbox.val(value);
+        });
+
     });
 </script>

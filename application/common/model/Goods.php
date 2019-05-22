@@ -44,36 +44,36 @@ class Goods extends Common
 
     //商品禁止输出字段
     private $goodsForbidFields = [
-        'costprice','freeze_stock'
+        'costprice', 'freeze_stock'
     ];
     //货品禁止输出字段
     private $productForbidFields = [
-        'costprice','freeze_stock'
+        'costprice', 'freeze_stock'
     ];
 
 
-    public function tableData($post,$isPage=true)
+    public function tableData($post, $isPage = true)
     {
-        if(isset($post['limit'])){
+        if (isset($post['limit'])) {
             $limit = $post['limit'];
-        }else{
+        } else {
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $query = $this::with('defaultImage,brand,goodsCat,goodsType')
+        $query      = $this::with('defaultImage,brand,goodsCat,goodsType')
             ->field($tableWhere['field'])->where($tableWhere['where'])->whereOr($tableWhere['whereOr'])->order($tableWhere['order']);
 
-        if($isPage){
-            $list = $query->paginate($limit);
-            $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        if ($isPage) {
+            $list        = $query->paginate($limit);
+            $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
-        }else{
-            $list = $query->select();
-            $data = $this->tableFormat($list);         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        } else {
+            $list        = $query->select();
+            $data        = $this->tableFormat($list);         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = count($list);
         }
         $re['code'] = 0;
-        $re['msg'] = '';
+        $re['msg']  = '';
         $re['data'] = $data;
         return $re;
     }
@@ -102,30 +102,30 @@ class Goods extends Common
             $where[] = ['id', 'in', $post['id']];
         }
         if (isset($post['warn']) && $post['warn'] == "true") {
-            $SettingModel = new Setting();
+            $SettingModel      = new Setting();
             $goods_stocks_warn = $SettingModel->getValue('goods_stocks_warn');
-            $goods_stocks_warn = $goods_stocks_warn?$goods_stocks_warn:'10';
-            $productModel = new Products();
+            $goods_stocks_warn = $goods_stocks_warn ? $goods_stocks_warn : '10';
+            $productModel      = new Products();
             //$baseFilter[] = ['(stock - freeze_stock)', 'lt', $goods_stocks_warn];
-            $goodsIds    = $productModel->field('goods_id')->where("(stock - freeze_stock) < ".$goods_stocks_warn)->group('goods_id')->select();
-            if(!$goodsIds->isEmpty()){
-                $goodsIds = array_column($goodsIds->toArray(),'goods_id');
-                $where[] = ['id', 'in', $goodsIds];
-            }else{
+            $goodsIds = $productModel->field('goods_id')->where("(stock - freeze_stock) < " . $goods_stocks_warn)->group('goods_id')->select();
+            if (!$goodsIds->isEmpty()) {
+                $goodsIds = array_column($goodsIds->toArray(), 'goods_id');
+                $where[]  = ['id', 'in', $goodsIds];
+            } else {
                 $where[] = ['id', 'in', 0];
             }
         }
-        if(isset($post['goods_type_id'])&& $post['goods_type_id'] != ""){
+        if (isset($post['goods_type_id']) && $post['goods_type_id'] != "") {
             $where[] = ['goods_type_id', 'eq', $post['goods_type_id']];
         }
-        if(isset($post['brand_id'])&& $post['brand_id'] != ""){
+        if (isset($post['brand_id']) && $post['brand_id'] != "") {
             $where[] = ['brand_id', 'eq', $post['brand_id']];
         }
-        if(isset($post['bn'])&& $post['bn'] != ""){
-            $where[] = ['bn', 'like', '%'.$post['bn'].'%'];
+        if (isset($post['bn']) && $post['bn'] != "") {
+            $where[] = ['bn', 'like', '%' . $post['bn'] . '%'];
         }
 
-        if(isset($post['last_cat_id'])&& $post['last_cat_id'] != ""){
+        if (isset($post['last_cat_id']) && $post['last_cat_id'] != "") {
             $where[] = ['goods_cat_id', 'eq', $post['last_cat_id']];
         }
         if (isset($post['goods_cat_id']) && $post['goods_cat_id'] != "" && !$post['last_cat_id']) {//取出来所有子分类进行查询
@@ -139,7 +139,7 @@ class Goods extends Common
             }
         }
 
-        $result['where'] = $where;
+        $result['where']   = $where;
         $result['whereOr'] = $whereOr;
 
         $result['field'] = "*";
@@ -156,17 +156,17 @@ class Goods extends Common
      */
     public function doAdd($data = [])
     {
+        unset($data['stock'], $data['stock_type']);
         $goodsid = $this->allowField(true)->insertGetId($data);
-
         return $goodsid ? $goodsid : 0;
     }
 
     protected function tableFormat($list)
     {
 
-        foreach($list as $key => $val){
+        foreach ($list as $key => $val) {
             $list[$key]['image'] = _sImage($val['image_id']);
-            if($val['label_ids']){
+            if ($val['label_ids']) {
                 $list[$key]['label_ids'] = getLabel($val['label_ids']);
             }
         }
@@ -182,9 +182,9 @@ class Goods extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-23 19:37
      */
-    public function updateGoods($goods_id,$data=[])
+    public function updateGoods($goods_id, $data = [])
     {
-        return $this->save($data,['id'=>$goods_id]);
+        return $this->allowField(true)->update($data, ['id' => $goods_id]);
     }
 
     /**
@@ -218,11 +218,14 @@ class Goods extends Common
             }
             $fields = implode(',', $tmpData);
         }
+        if ($order) {
+            $order = explode(' ', trim($order));
+        }
         $list  = $this
             ->alias('g')
             ->field($fields)
             ->where($where)
-            ->order($order)
+            ->order($order[0], $order[1])
             ->page($page, $limit)
             ->select();
         $total = $this
@@ -291,7 +294,8 @@ class Goods extends Common
 //                $image_url = _sImage($value['image_id']);
 //                $list[$key]['image_url'] = $image_url;
 //                $list[$key]['label_ids'] = getLabel($value['label_ids']);
-                $list[$key]['comments_count'] = $gcModel->getCommentCount($value['id']);
+                $comments_count               = $gcModel->getCommentCount($value['id']);
+                $list[$key]['comments_count'] = $comments_count;
             }
 
             $result['data'] = $list->toArray();
@@ -310,7 +314,7 @@ class Goods extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getGoodsDetial($gid,$fields = '*',$token = '')
+    public function getGoodsDetial($gid, $fields = '*', $token = '')
     {
 
         $result        = [
@@ -384,14 +388,14 @@ class Goods extends Common
 
             //获取当前登录是否收藏
 
-            $list['isfav']  = $this->getFav($list['id'], $user_id);
+            $list['isfav'] = $this->getFav($list['id'], $user_id);
 
             //图片处理
             if (isset($list['intro'])) {
                 $list['intro'] = clearHtml($list['intro'], ['width', 'height']);
                 $list['intro'] = str_replace("<img", "<img style='max-width: 100%'", $list['intro']);
             }
-            $list = $this->filterFields($list,'goods');
+            $list           = $this->filterFields($list, 'goods');
             $result['data'] = $list;
         }
         return $result;
@@ -408,11 +412,11 @@ class Goods extends Common
      * Email:1457529125@qq.com
      * Date: 2018-01-31 11:32
      */
-    private function getDefaultSpec($specDefault,$specKey,$specValue)
+    private function getDefaultSpec($specDefault, $specKey, $specValue)
     {
         $isDefault = '2';
-        foreach((array)$specDefault as $key => $val) {
-            if($val['sku_name'] == $specKey && $val['sku_value'] == $specValue) {
+        foreach ((array)$specDefault as $key => $val) {
+            if ($val['sku_name'] == $specKey && $val['sku_value'] == $specValue) {
                 $isDefault = '1';
             }
         }
@@ -428,7 +432,7 @@ class Goods extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function products($goods_id, $isPromotion=true)
+    public function products($goods_id, $isPromotion = true)
     {
         $productModel = new Products();
         $pids         = $productModel->field('id')->where(['goods_id' => $goods_id])->select();
@@ -436,7 +440,7 @@ class Goods extends Common
 
         if (!$pids->isEmpty()) {
             foreach ($pids as $key => $val) {
-                $productInfo = $productModel->getProductInfo($val['id'],$isPromotion);
+                $productInfo = $productModel->getProductInfo($val['id'], $isPromotion);
                 if ($productInfo['status']) {
                     $products[$key] = $productInfo['data'];
                 } else {
@@ -456,7 +460,7 @@ class Goods extends Common
      */
     public function defaultImage()
     {
-        return $this->hasOne('Images','id','image_id')->field('id,url')->bind([ 'image_url' => 'url' ]);
+        return $this->hasOne('Images', 'id', 'image_id')->field('id,url')->bind(['image_url' => 'url']);
     }
 
     /**
@@ -468,7 +472,7 @@ class Goods extends Common
      */
     public function brand()
     {
-        return $this->hasOne('Brand','id','brand_id')->field('id,name,logo')->bind([ 'brand_name' => 'name' ]);
+        return $this->hasOne('Brand', 'id', 'brand_id')->field('id,name,logo')->bind(['brand_name' => 'name']);
     }
 
     /**
@@ -480,7 +484,7 @@ class Goods extends Common
      */
     public function goodsCat()
     {
-        return $this->hasOne('GoodsCat','id','goods_cat_id')->field('id,name')->bind([ 'cat_name' => 'name' ]);
+        return $this->hasOne('GoodsCat', 'id', 'goods_cat_id')->field('id,name')->bind(['cat_name' => 'name']);
     }
 
     /**
@@ -492,7 +496,7 @@ class Goods extends Common
      */
     public function goodsType()
     {
-        return $this->hasOne('GoodsType','id','goods_type_id')->field('id,name')->bind([ 'type_name' => 'name' ]);
+        return $this->hasOne('GoodsType', 'id', 'goods_type_id')->field('id,name')->bind(['type_name' => 'name']);
     }
 
     /**
@@ -567,12 +571,15 @@ class Goods extends Common
             $result['msg'] = '货品ID不能为空';
             return $result;
         }
+
         $productModel = new Products();
         $where        = [];
         $where[]      = ['id', 'eq', $product_id];
+        $product      = $productModel->where($where)->field('goods_id')->find();
         $where[]      = [0, 'exp', Db::raw('(stock-freeze_stock)-' . $num . ' >= 0')];
         switch ($type) {
             case 'order': //下单
+                $this->where(['id' => $product['goods_id']])->setInc('buy_count', $num);
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
             case 'send': //发货
@@ -585,12 +592,15 @@ class Goods extends Common
                 }
                 break;
             case 'refund': //退款
+                $this->where(['id' => $product['goods_id']])->setDec('buy_count', $num);
                 $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 break;
             case 'return': //退货
+                $this->where(['id' => $product['goods_id']])->setDec('buy_count', $num);
                 $res = $productModel->where($where)->setInc('stock', $num);
                 break;
             case 'cancel': //取消订单
+                $this->where(['id' => $product['goods_id']])->setDec('buy_count', $num);
                 $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 break;
             default:
@@ -617,39 +627,39 @@ class Goods extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getOne($goods_id,$fields='*')
+    public function getOne($goods_id, $fields = '*')
     {
         $result = [
             'status' => false,
-            'data'   => [ ],
+            'data'   => [],
             'msg'    => '商品不存在'
         ];
-        $data   = $this->where([ 'id' => $goods_id ])->field($fields)->find();
-        if($data) {
+        $data   = $this->where(['id' => $goods_id])->field($fields)->find();
+        if ($data) {
             $goodsImagesModel = new goodsImages();
             $images           = $goodsImagesModel->getAllImages($data->id);
-            $tmp_image = [];
-            if($images['status']) {
-                foreach((array)$images['data'] as $key => $val) {
+            $tmp_image        = [];
+            if ($images['status']) {
+                foreach ((array)$images['data'] as $key => $val) {
                     $images['data'][$key]['image_path'] = _sImage($val['image_id']);
                 }
-                $tmp_image[] = [
-                    'goods_id' => $data['id'],
-                    'image_id' => $data['image_id'],
+                $tmp_image[]    = [
+                    'goods_id'   => $data['id'],
+                    'image_id'   => $data['image_id'],
                     'image_path' => _sImage($data['image_id']),
                 ];
                 $images['data'] = array_merge((array)$images['data'], (array)$tmp_image);
                 $images['data'] = array_reverse($images['data']);
-            }else{
+            } else {
                 //单图
-                $tmp_image[]   = [
+                $tmp_image[]    = [
                     'goods_id'   => $data['id'],
                     'image_id'   => $data['image_id'],
                     'image_path' => _sImage($data['image_id']),
                 ];
                 $images['data'] = $tmp_image;
             }
-            $data['products'] = $this->products($goods_id,false);
+            $data['products'] = $this->products($goods_id, false);
 
             $data['images']   = $images['data'];
             $result['data']   = $data;
@@ -661,20 +671,20 @@ class Goods extends Common
 
     /**
      * 判断是否收藏过
-     * @param int    $goods_id
+     * @param int $goods_id
      * @param string $user_id
      * @return string
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-03 8:36
      */
-    public function getFav($goods_id = 0,$user_id = '')
+    public function getFav($goods_id = 0, $user_id = '')
     {
         $favRes = 'false';
-        if($user_id) {
+        if ($user_id) {
             $goodsCollectionModel = new GoodsCollection();
-            $isfav                = $goodsCollectionModel->check($user_id,$goods_id);
-            if($isfav) {
+            $isfav                = $goodsCollectionModel->check($user_id, $goods_id);
+            if ($isfav) {
                 $favRes = 'true';
             }
         }
@@ -692,29 +702,29 @@ class Goods extends Common
     {
         $result = [
             'status' => false,
-            'data' => [],
-            'msg' => '商品不存在'
+            'data'   => [],
+            'msg'    => '商品不存在'
         ];
-        $goods = $this::get($goods_id);
+        $goods  = $this::get($goods_id);
         if (!$goods) {
             return $result;
         }
 
         $this->startTrans();
 
-        $res = $this->where(['id'=>$goods_id])->delete();
+        $res = $this->where(['id' => $goods_id])->delete();
         if (!$res) {
             $this->rollback();
             $result['msg'] = '商品删除失败';
             return $result;
         }
         $productsModel = new Products();
-        $delProduct = $productsModel->where(['goods_id' => $goods_id])->delete(true);
+        $delProduct    = $productsModel->where(['goods_id' => $goods_id])->delete(true);
         $this->commit();
         hook('deletegoodsafter', $goods);//删除商品后增加钩子
 
         $result['status'] = true;
-        $result['msg'] = '删除成功';
+        $result['msg']    = '删除成功';
         return $result;
     }
 
@@ -724,18 +734,19 @@ class Goods extends Common
      * @param string $type
      * @return static
      */
-    public function batchMarketable($ids,$type='up'){
+    public function batchMarketable($ids, $type = 'up')
+    {
 
-        if($type=='up'){
+        if ($type == 'up') {
             $marketable = self::MARKETABLE_UP;
-        }elseif($type=='down'){
+        } elseif ($type == 'down') {
             $marketable = self::MARKETABLE_DOWN;
         }
         $data = [
-            'marketable' => $marketable,
-            $type.'time' => time(),
+            'marketable'   => $marketable,
+            $type . 'time' => time(),
         ];
-        return $this::where('id','in',$ids)->update($data);
+        return $this::where('id', 'in', $ids)->update($data);
     }
 
     /**
@@ -748,35 +759,35 @@ class Goods extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
+        $result    = [
             'status' => false,
-            'data' => [],
-            'msg' => '无可导出商品'
+            'data'   => [],
+            'msg'    => '无可导出商品'
         ];
-        $header = $this->csvHeader();
+        $header    = $this->csvHeader();
         $goodsData = $this->tableData($post, false);
         if ($goodsData['count'] > 0) {
             $tempBody = $goodsData['data'];
-            $body = [];
-            $i = 0;
+            $body     = [];
+            $i        = 0;
             foreach ($tempBody as $key => $val) {
                 //$product = $val->products;
-                $product = $this->products($val['id'],false);
-                if($val['spes_desc']){ //规格数据处理
-                    $tempSpec = unserialize($val['spes_desc']);
+                $product = $this->products($val['id'], false);
+                if ($val['spes_desc']) { //规格数据处理
+                    $tempSpec  = unserialize($val['spes_desc']);
                     $spes_desc = '';
-                    foreach($tempSpec as $tsKey=>$tsVal){
-                        $spes_desc = $spes_desc.'|'.$tsKey.':';
-                        if(is_array($tsVal)){
-                            foreach($tsVal as $sk=>$sv){
-                                $spes_desc=$spes_desc.$sv.',';
+                    foreach ($tempSpec as $tsKey => $tsVal) {
+                        $spes_desc = $spes_desc . '|' . $tsKey . ':';
+                        if (is_array($tsVal)) {
+                            foreach ($tsVal as $sk => $sv) {
+                                $spes_desc = $spes_desc . $sv . ',';
                             }
-                            $spes_desc = substr($spes_desc,0,-1);
-                        }else{
-                            $spes_desc = $spes_desc.$tsVal;
+                            $spes_desc = substr($spes_desc, 0, -1);
+                        } else {
+                            $spes_desc = $spes_desc . $tsVal;
                         }
                     }
-                    $spes_desc = substr($spes_desc,1);
+                    $spes_desc        = substr($spes_desc, 1);
                     $val['spes_desc'] = $spes_desc;
 
                 }
@@ -786,14 +797,14 @@ class Goods extends Common
                         if ($productKey != 0) {
                             unset($val);
                         }
-                        $val['sn'] = $productVal['sn'];
-                        $val['price'] = $productVal['price'];
-                        $val['costprice'] = $productVal['costprice'];
-                        $val['mktprice'] = $productVal['mktprice'];
-                        $val['stock'] = $productVal['stock'];
+                        $val['sn']                = $productVal['sn'];
+                        $val['price']             = $productVal['price'];
+                        $val['costprice']         = $productVal['costprice'];
+                        $val['mktprice']          = $productVal['mktprice'];
+                        $val['stock']             = $productVal['stock'];
                         $val['product_spes_desc'] = $productVal['spes_desc'];
-                        $val['is_defalut'] = $productVal['is_defalut'];
-                        $val['is_spec'] = '1';//多规格
+                        $val['is_defalut']        = $productVal['is_defalut'];
+                        $val['is_spec']           = '1';//多规格
                         foreach ($header as $hk => $hv) {
                             if ($val[$hv['id']] && isset($hv['modify'])) {
                                 if (function_exists($hv['modify'])) {
@@ -810,13 +821,13 @@ class Goods extends Common
                 } else {//单规格
                     $val['is_spec'] = '2';
                     $i++;
-                    $val['sn'] = $product[0]['sn'];
-                    $val['price'] = $product[0]['price'];
-                    $val['costprice'] = $product[0]['costprice'];
-                    $val['mktprice'] = $product[0]['mktprice'];
-                    $val['stock'] = $product[0]['stock'];
+                    $val['sn']                = $product[0]['sn'];
+                    $val['price']             = $product[0]['price'];
+                    $val['costprice']         = $product[0]['costprice'];
+                    $val['mktprice']          = $product[0]['mktprice'];
+                    $val['stock']             = $product[0]['stock'];
                     $val['product_spes_desc'] = $product[0]['spes_desc'];
-                    $val['is_defalut'] = $product[0]['is_defalut'];
+                    $val['is_defalut']        = $product[0]['is_defalut'];
                     foreach ($header as $hk => $hv) {
                         if ($val[$hv['id']] && isset($hv['modify'])) {
                             if (function_exists($hv['modify'])) {
@@ -831,8 +842,8 @@ class Goods extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = '导出成功';
-            $result['data'] = $body;
+            $result['msg']    = '导出成功';
+            $result['data']   = $body;
             return $result;
         } else {
             //失败，导出失败
@@ -848,130 +859,130 @@ class Goods extends Common
     {
         return [
             [
-                'id' => 'name',
+                'id'   => 'name',
                 'desc' => '商品名称',
             ],
             [
-                'id' => 'bn',
-                'desc' => '商品编号',
-                'modify'=>'convertString'
+                'id'     => 'bn',
+                'desc'   => '商品编号',
+                'modify' => 'convertString'
             ],
             [
-                'id' => 'brief',
+                'id'   => 'brief',
                 'desc' => '商品简介',
             ],
             [
-                'id' => 'image_id',
+                'id'   => 'image_id',
                 'desc' => '商品主图',
             ],
             [
-                'id' => 'cat_name',
+                'id'   => 'cat_name',
                 'desc' => '商品分类',
             ],
             [
-                'id' => 'type_name',
+                'id'   => 'type_name',
                 'desc' => '商品类型',
             ],
             [
-                'id' => 'brand_name',
+                'id'   => 'brand_name',
                 'desc' => '品牌名称',
             ],
             [
-                'id' => 'is_nomal_virtual',
-                'desc' => '是否实物',
-                'modify'=>'getBool'
+                'id'     => 'is_nomal_virtual',
+                'desc'   => '是否实物',
+                'modify' => 'getBool'
             ],
             [
-                'id' => 'marketable',
-                'desc' => '是否上架',
-                'modify'=>'getMarketable',
+                'id'     => 'marketable',
+                'desc'   => '是否上架',
+                'modify' => 'getMarketable',
             ],
             [
-                'id' => 'weight',
+                'id'   => 'weight',
                 'desc' => '商品重量',
             ],
             [
-                'id' => 'unit',
+                'id'   => 'unit',
                 'desc' => '商品单位',
             ],
             [
-                'id' => 'intro',
+                'id'   => 'intro',
                 'desc' => '商品详情',
             ],
             [
-                'id' => 'spes_desc',
+                'id'   => 'spes_desc',
                 'desc' => '商品规格',
             ],
             [
-                'id' => 'params',
+                'id'   => 'params',
                 'desc' => '商品参数',
                 //'modify'=>'getParams', //todo 格式化商品参数
 
             ],
             [
-                'id' => 'sort',
+                'id'   => 'sort',
                 'desc' => '商品排序',
             ],
             [
-                'id' => 'is_recommend',
-                'desc' => '是否推荐',
-                'modify'=>'getBool'
+                'id'     => 'is_recommend',
+                'desc'   => '是否推荐',
+                'modify' => 'getBool'
             ],
             [
-                'id' => 'is_hot',
-                'desc' => '是否热门',
-                'modify'=>'getBool'
+                'id'     => 'is_hot',
+                'desc'   => '是否热门',
+                'modify' => 'getBool'
 
             ],
             [
-                'id' => 'is_spec',
-                'desc' => '是否多规格',
-                'modify'=>'getBool'
+                'id'     => 'is_spec',
+                'desc'   => '是否多规格',
+                'modify' => 'getBool'
             ],
             [
-                'id' => 'label_ids',
-                'desc' => '商品标签',
-                'modify'=>'getExportLabel'
+                'id'     => 'label_ids',
+                'desc'   => '商品标签',
+                'modify' => 'getExportLabel'
             ],
             [
-                'id' => 'ctime',
-                'desc' => '创建时间',
-                'modify'=>'getTime'
+                'id'     => 'ctime',
+                'desc'   => '创建时间',
+                'modify' => 'getTime'
             ],
             [
-                'id' => 'utime',
-                'desc' => '更新时间',
-                'modify'=>'getTime'
+                'id'     => 'utime',
+                'desc'   => '更新时间',
+                'modify' => 'getTime'
             ],
             [
-                'id' => 'product_spes_desc',
+                'id'   => 'product_spes_desc',
                 'desc' => '货品规格',
             ],
             [
-                'id' => 'sn',
-                'desc' => '货品编码',
-                'modify'=>'convertString'
+                'id'     => 'sn',
+                'desc'   => '货品编码',
+                'modify' => 'convertString'
             ],
             [
-                'id' => 'price',
+                'id'   => 'price',
                 'desc' => '货品价格',
             ],
             [
-                'id' => 'costprice',
+                'id'   => 'costprice',
                 'desc' => '成本价',
             ],
             [
-                'id' => 'mktprice',
+                'id'   => 'mktprice',
                 'desc' => '市场价',
             ],
             [
-                'id' => 'stock',
+                'id'   => 'stock',
                 'desc' => '货品库存',
             ],
             [
-                'id' => 'is_defalut',
-                'desc' => '是否默认货品',
-                'modify'=>'getBool'
+                'id'     => 'is_defalut',
+                'desc'   => '是否默认货品',
+                'modify' => 'getBool'
             ]
         ];
     }
@@ -981,14 +992,15 @@ class Goods extends Common
      * @param array $baseFilter
      * @return array
      */
-    public function staticGoods($baseFilter=[]){
+    public function staticGoods($baseFilter = [])
+    {
 
-        $total = $this->where($baseFilter)->count('id');
-        $baseFilter[]=['marketable', 'eq',self::MARKETABLE_UP];
+        $total        = $this->where($baseFilter)->count('id');
+        $baseFilter[] = ['marketable', 'eq', self::MARKETABLE_UP];
 
 
-        $totalMarketableUp = $this->where($baseFilter)->count('id');
-        $baseFilter1[]=['marketable', 'eq',self::MARKETABLE_DOWN];
+        $totalMarketableUp   = $this->where($baseFilter)->count('id');
+        $baseFilter1[]       = ['marketable', 'eq', self::MARKETABLE_DOWN];
         $totalMarketableDown = $this->where($baseFilter1)->count('id');
         //警戒库存
         $SettingModel = new Setting();
@@ -997,12 +1009,12 @@ class Goods extends Common
         $goods_stocks_warn = $goods_stocks_warn ? $goods_stocks_warn : '10';
         unset($baseFilter['marketable']);
         $productModel = new Products();
-        $totalWarn    = $productModel->where("(stock - freeze_stock) < ".$goods_stocks_warn)->group('goods_id')->count('id');
+        $totalWarn    = $productModel->where("(stock - freeze_stock) < " . $goods_stocks_warn)->group('goods_id')->count('id');
         return [
-            'totalGoods'=>$total,
-            'totalMarketableUp'=>$totalMarketableUp,
-            'totalMarketableDown'=>$totalMarketableDown,
-            'totalWarn'=>$totalWarn,
+            'totalGoods'          => $total,
+            'totalMarketableUp'   => $totalMarketableUp,
+            'totalMarketableDown' => $totalMarketableDown,
+            'totalWarn'           => $totalWarn,
         ];
     }
 
@@ -1017,21 +1029,19 @@ class Goods extends Common
     public function getWeight($product_id)
     {
         $where[] = ['id', 'eq', $product_id];
-        $goods = model('common/Products')->field('goods_id')
+        $goods   = model('common/Products')->field('goods_id')
             ->where($where)
             ->find();
-        if($goods['goods_id'] != 0){
+        if ($goods['goods_id'] != 0) {
             $wh[] = ['id', 'eq', $goods['goods_id']];
 
             $weight = $this->field('weight')
                 ->where($wh)
                 ->find();
-        }
-        else
-        {
+        } else {
             $weight['weight'] = 0;
         }
-        return $weight['weight']?$weight['weight']:0;
+        return $weight['weight'] ? $weight['weight'] : 0;
     }
 
     /**
@@ -1060,35 +1070,32 @@ class Goods extends Common
      */
     public function getGoodsCatHotGoods($cat_id, $limit = 6)
     {
-        $return = [
+        $return                 = [
             'status' => false,
-            'msg' => '获取失败',
-            'data' => []
+            'msg'    => '获取失败',
+            'data'   => []
         ];
-        $where[] = ['is_hot', 'eq', self::HOT_YES];
-        $where[] = ['marketable', 'eq', self::MARKETABLE_UP];
-        $where[] = ['goods_cat_id', 'eq', $cat_id];
+        $where[]                = ['is_hot', 'eq', self::HOT_YES];
+        $where[]                = ['marketable', 'eq', self::MARKETABLE_UP];
+        $where[]                = ['goods_cat_id', 'eq', $cat_id];
         $return['data']['list'] = $this->field('id,name,image_id,price,brief')
             ->where($where)
             ->limit(0, $limit)
             ->order('ctime DESC')
             ->select();
 
-        $catModel = new GoodsCat();
-        $catName = $catModel->getNameById($cat_id);
+        $catModel               = new GoodsCat();
+        $catName                = $catModel->getNameById($cat_id);
         $return['data']['name'] = $catName['data'];
 
-        if($return['data']['list'] !== false)
-        {
-            if(count($return['data']['list']) > 0)
-            {
-                foreach($return['data']['list'] as $k => &$v)
-                {
+        if ($return['data']['list'] !== false) {
+            if (count($return['data']['list']) > 0) {
+                foreach ($return['data']['list'] as $k => &$v) {
                     $v['image_url'] = _sImage($v['image_id']);
                 }
             }
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg']    = '获取成功';
         }
         return $return;
     }
@@ -1115,7 +1122,7 @@ class Goods extends Common
                             unset($data[$key]);
                         }
                     }
-                } elseif($type == 'product') {
+                } elseif ($type == 'product') {
                     if (in_array($key, $this->productForbidFields)) {
                         unset($data[$key]);
                     }
@@ -1133,7 +1140,7 @@ class Goods extends Common
     private function checkWhere($where = [])
     {
         $noFilter = [
-            'g.brand_id', 'g.price', 'g.label_id','g.goods_cat_id'
+            'g.brand_id', 'g.price', 'g.label_id', 'g.goods_cat_id'
         ];
         foreach ((array)$where as $key => $val) {
             if (in_array($val[0], $noFilter) || $val[0] == '') {

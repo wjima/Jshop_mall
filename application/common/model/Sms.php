@@ -32,14 +32,12 @@ class Sms extends Common
         if(!$mobile){
             return error_code(11051);
         }
-
-
         //如果是登陆注册等的短信，增加校验
         if($code == 'reg' || $code == 'login' || $code== 'veri'){
             $where[] = ['mobile', 'eq', $mobile];
             $where[] = ['code', 'eq', $code];
             $where[] = ['ctime', 'gt', time()-60*10];
-            $where[] = ['ip', 'eq', get_client_ip()];
+            //$where[] = ['ip', 'eq', get_client_ip()];  //先暂时注释，不做ip检查
             $where[] = ['status', 'eq', self::STATUS_UNUSED];
 
             $smsInfo = $this->where($where)->order('id desc')->find();
@@ -76,14 +74,14 @@ class Sms extends Common
         return $re;
     }
 
-    public function check($phone,$ver_code,$code,$platform = 'normal'){
+    public function check($phone,$ver_code,$code){
 
         $where[] = ['mobile', 'eq', $phone];
         $where[] = ['code', 'eq', $code];
         $where[] = ['ctime', 'gt', time()-60*10];
-        if ($platform == 'normal') {
-            $where[] = ['ip', 'eq', get_client_ip()]; //todo 支付宝真机无法获取固定客户端ip地址
-        }
+
+        //$where[] = ['ip', 'eq', get_client_ip()]; #先屏蔽ip检查，避免增加cdn或代理ip时出现问题
+
         $where[] = ['status', 'eq', self::STATUS_UNUSED];
         $sms_info = $this->where($where)->order('id desc')->find();
         if($sms_info){
@@ -149,7 +147,8 @@ class Sms extends Common
      * @param $params
      * @return array
      */
-    private function send_sms($mobile,$content,$code,$params){
+    private function send_sms($mobile, $content, $code, $params)
+    {
 
         $re = hook('sendsms', ['params' => [
             'mobile'  => $mobile,
@@ -157,11 +156,11 @@ class Sms extends Common
             'code'    => $code,
             'params'  => $params,
         ]]);
-
-        if ($re) {
+        if (isset($re[0]['status']) && $re[0]['status']) {
             return ['status' => true, 'msg' => '发送成功！'];
         } else {
-            return ['status' => false, 'msg' => '发送失败！'];
+            $msg = isset($re[0]['msg']) ? $re[0]['msg'] : '发送失败';
+            return ['status' => false, 'msg' => $msg];
         }
     }
 

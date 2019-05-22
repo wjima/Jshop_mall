@@ -43,12 +43,18 @@ class Mms1086 extends Addons
      */
     public function sendsms($params)
     {
+        $result     = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '发送失败'
+        ];
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
         if ($params['params']['code'] == 'seller_order_notice') {
             $params['params']['mobile'] = getSetting('shop_mobile');
             if (!$params['params']['mobile']) {
-                return false;
+                $result['msg'] = '商户手机号不存在';
+                return $result;
             }
         }
         $sms_password = $setting['sms_password'];     //为了演示效果，此密码从配置文件中取，如果正式使用，请删除此行，并在后台店铺设置里配置密码即可。
@@ -57,7 +63,14 @@ class Mms1086 extends Addons
         $content = urlencode($content);      //内容
         $str     = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=" . $setting['sms_user_id'] . "&account=" . $setting['sms_account'] . "&password=" . $sms_password . "&mobile=" . $params['params']['mobile'] . "&content=" . $content . "&sendTime=&extno=";
         $re      = file_get_contents($str);
-        return true;
+        $data    = xmlToArray($re);
+        if (isset($data['returnstatus']) && $data['returnstatus'] == 'Faild') {
+            $result['msg'] = $data['message'];
+            return $result;
+        }
+        $result['msg']    = '发送成功';
+        $result['status'] = true;
+        return $result;
     }
 
     public function config($params = [])

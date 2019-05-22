@@ -161,7 +161,7 @@
 <!-- 统一底部 -->
 <view class='detail-footer'>
   <view class='detail-footer-left'>
-    <button class="contact" hover-class="none" open-type="contact" bindcontact="customerService">
+    <button class="contact" hover-class="none" open-type="contact" bindcontact="customerService" session-from="{{kefupara}}">
       <image src='../../image/customservice.png'></image>
       <text>客服</text> 
     </button>

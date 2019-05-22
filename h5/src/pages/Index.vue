@@ -51,4 +51,7 @@ export default {
 </script>
 
 <style>
+.index{
+	padding-bottom: 60px;
+}
 </style>

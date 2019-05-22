@@ -16,7 +16,9 @@
     background-color: #fff;
     display: block;
 }
-
+.layui-fluid .layui-breadcrumb{
+	visibility: inherit;
+}
 .layui-breadcrumb a {
     color: #444 !important;
 }
@@ -505,4 +507,20 @@
         height: 380px!important;
         overflow: hidden!important;
     }
+}
+
+.have-add .layui-form-switch,.have-add-td .layui-form-switch{
+	margin-top: 0;
+}
+.help-tip{
+	float: right;
+}
+.icon-wenhao{
+	color: #9e9e9e;
+	font-size: 16px !important;
+	position: relative;
+	top: 11px;
+}
+.layui-layer layui-layer-tips{
+	
 }

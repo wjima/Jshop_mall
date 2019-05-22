@@ -48,10 +48,12 @@
                     if (data.install == 1) {
                         var html = '<a  class="layui-btn layui-btn-xs setting-class" data-title="' + data.title + '" data-name="' + data.name + '">配置</a>';
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs uninstall-class" data-name="' + data.name + '" data-title="' + data.title + '">卸载</a>';
+                        html += '<a class="layui-btn layui-btn-danger layui-btn-xs refresh-class" data-name="' + data.name + '" data-title="' + data.title + '">刷新</a>';
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs stop-class" data-name="' + data.name + '" data-title="' + data.title + '">停用</a>';
                     } else if (data.install == 2) {
                         var html = '<a  class="layui-btn layui-btn-xs setting-class" data-title="' + data.title + '" data-name="' + data.name + '">配置</a>';
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs uninstall-class" data-name="' + data.name + '" data-title="' + data.title + '">卸载</a>';
+                        html += '<a class="layui-btn layui-btn-danger layui-btn-xs refresh-class" data-name="' + data.name + '" data-title="' + data.title + '">刷新</a>';
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs stop-class" data-name="' + data.name + '" data-title="' + data.title + '">启用</a>';
                     } else {
                         html = '<a  class="layui-btn layui-btn-xs install-class" data-name="' + data.name + '" data-title="' + data.title + '">安装</a>';
@@ -126,6 +128,23 @@
                 changeStatus(name);
             });
         });
+        //刷新插件
+        $(document).on('click', '.refresh-class', function(){
+            var title = $(this).attr('data-title');
+            var name = $(this).attr('data-name');
+            var type = $(this).html();
+            layer.confirm('确认'+type+'插件：'+title+' 吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function(){
+                JsPost('{:url("Addons/refresh")}',{name:name},function(e){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        table.reload('typeTable');
+                    });
+                });
+            });
+        });
+
+
 
         function changeStatus(name){
             JsPost('{:url("Addons/changeStatus")}',{name:name},function (e) {

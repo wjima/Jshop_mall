@@ -142,13 +142,23 @@
             cols: [[
                 {type:'checkbox'},
                 {type:'numbers'},
+                {field:'operating',width:180,title:'操作', align: 'center',templet:function(data){
+                    var html = '';
+                    html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
+                    html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
+                    html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'goods/commentList\')}?goods_id=' + data.id + '">查看评价</a>';
+                    return html;
+                }},
                 {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
                 {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
                         return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
                 {field:'name', width:250,title:'名称', align: 'center'},
-                {field:'sort', edit: 'text', width:80,title:'排序', align: 'center'},
+                {field:'sort', edit: 'text', width:80,title:'排序', align: 'center',templet: function (data) {
+                    var html = '<a class="link-hot option-show sort" data-id="' + data.sort + '">' + data.sort + '</a>';
+                    return html;
+                }},
                 {field:'label_ids', width:120,title:'标签', align: 'center',templet:function (data) {
                     return getLabel(data.label_ids);
                 }},
@@ -165,14 +175,8 @@
                         return '<a href="javascript:void(0);">下架</a>';
                     }
                 }},
-                {field:'stock', width:100,title:'库存', align: 'center'},
-                {field:'operating',width:250,title:'操作', align: 'center',templet:function(data){
-                    var html = '';
-                    html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'goods/commentList\')}?goods_id=' + data.id + '">查看评价</a>';
-                    html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
-                    html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
-                    return html;
-                }}
+                {field:'stock', width:100,title:'库存', align: 'center'}
+
             ]]
         });
 

@@ -50,6 +50,10 @@ class Order extends Common
     const ALL_COMPLETED = 6;                //已完成
     const ALL_CANCEL = 7;                   //已取消
 
+    const ORDER_TYPE_COMMON = 1;            //订单类型，1普通订单，严格按照cart模型里的type_common字段来设置，是一一对应的
+    const ORDER_TYPE_PINTUAN = 2;           //订单类型，2拼团订单
+
+
     /**
      * 订单明细表关联
      * @return \think\model\relation\HasMany
@@ -1154,116 +1158,59 @@ class Order extends Common
     }
 
     /**
-     * 生成订单方法
-     * @param $user_id
-     * @param $cart_ids
-     * @param $uship_id
-     * @param $memo
-     * @param $area_id
-     * @param int $point
-     * @param bool $coupon_code
-     * @param bool $formId
-     * @param int $receipt_type
-     * @param bool $store_id
-     * @param bool $lading_name
-     * @param bool $lading_mobile
-     * @param int $source //来源平台，1 pc，2 h5，3微信小程序
-     * @param array $tax
+     * 生成订单
+     * @param $user_id              用户id
+     * @param $order_type                 订单类型，1是普通订单，2是拼团订单
+     * @param $cart_ids             购物车id
+     * @param $delivery             物流信息
+     *      当type为1的时候是普通下单，有以下几个值
+     *          uship_id                用户的收货地址id
+     *      当type为2的时候，是门店自提，有以下几个值
+     *          store_id                提货门店id
+     *          lading_name             提货人名称
+     *          lading_mobile           提货人手机号码
+     *
+     *
+     * @param $memo                 订单备注
+     * @param int $point 使用积分
+     * @param bool $coupon_code 使用优惠券
+     * @param bool $formId 微信小程序下单的时候表单id
+     * @param int $source 来源id
+     * @param array $tax 发票信息
+     * @param array $params 订单参数，，主要跟type有关系，不同的type，可能保存不同的信息
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
-    public function toAdd($user_id, $cart_ids, $uship_id, $memo, $area_id, $point = 0, $coupon_code = false, $formId = false, $receipt_type = 1, $store_id = false, $lading_name = false, $lading_mobile = false, $source = 2, $tax = [])
+
+    public function toAdd($user_id, $order_type, $cart_ids, $delivery, $memo, $point = 0, $coupon_code = false, $formId = false, $source = 2, $tax = [], $params = [])
     {
-        $result = [
+
+        $result              = [
             'status' => false,
             'data'   => array(),
             'msg'    => ''
         ];
-        if ($receipt_type == 1) {
-            //快递邮寄
-            $ushopModel = new UserShip();
-            $ushopInfo  = $ushopModel->getShipById($uship_id, $user_id);
-            if (!$ushopInfo) {
-                return error_code(11050);
-            }
+        $order['order_id']   = get_sn(1);
+        $order['user_id']    = $user_id;
+        $order['order_type'] = $order_type;
+
+        //生成收货信息
+        $delivery_re = $this->formatOrderDelivery($order, $delivery);
+        if (!$delivery_re['status']) {
+            return $delivery_re;
         } else {
-            //门店自提
-            $storeModel = new Store();
-            $storeInfo  = $storeModel->get($store_id);
-            if (!$storeInfo) {
-                return error_code(11055);
-            }
+            $area_id = $delivery_re['data'];        //下单的省市区地址，算运费用。
         }
 
-        $orderInfo = $this->formatOrderItems($user_id, $cart_ids, $area_id, $point, $coupon_code, $receipt_type);
-
-        if (!$orderInfo['status']) {
-            return $orderInfo;
-        }
-        if (!isset($orderInfo['data']['items']) || count($orderInfo['data']['items']) <= 0) {
-            return error_code(11100);
-        }
-
-        $order['order_id']     = get_sn(1);
-        $order['goods_amount'] = $orderInfo['data']['goods_amount'];
-        $order['order_amount'] = $orderInfo['data']['amount'];
-        if ($order['order_amount'] <= 0) {
-            $order['pay_status']   = 2;
-            $order['payment_time'] = time();
-        }
-        $order['cost_freight'] = $orderInfo['data']['cost_freight'];
-        $order['user_id']      = $user_id;
-
-        //收货地址信息
-        if ($receipt_type == 1) {
-            //快递邮寄
-            $order['ship_area_id']   = $ushopInfo['area_id'];
-            $order['ship_address']   = $ushopInfo['address'];
-            $order['ship_name']      = $ushopInfo['name'];
-            $order['ship_mobile']    = $ushopInfo['mobile'];
-            $shipInfo                = model('common/Ship')->getShip($ushopInfo['area_id']);
-            $order['logistics_id']   = $shipInfo['id'];
-            $order['logistics_name'] = $shipInfo['name'];
-            $order['cost_freight']   = model('common/Ship')->getShipCost($ushopInfo['area_id'], $orderInfo['data']['weight'], $order['goods_amount']);
-            $order['store_id']       = 0;
+        //通过购物车生成订单信息和订单明细信息
+        $order_re = $this->formatOrder($order, $user_id, $cart_ids, $area_id, $point, $coupon_code);
+        if (!$order_re['status']) {
+            return $order_re;
         } else {
-            //门店自提
-            $order['ship_area_id'] = $storeInfo['area_id'];
-            $order['ship_address'] = $storeInfo['address'];
-            $order['ship_name']    = $lading_name;
-            $order['ship_mobile']  = $lading_mobile;
-            $order['store_id']     = $store_id;
-            $order['logistics_id'] = 0;
-            $order['cost_freight'] = 0;
+            $items = $order_re['data'];        //订单明细
         }
 
-        //优惠信息存储
-        $promotion_list = [];
-        foreach ($orderInfo['data']['promotion_list'] as $k => $v) {
-            if ($v['type'] == 2) {
-                $promotion_list[] = $v;
-            }
-        }
-        $order['promotion_list'] = json_encode($promotion_list);
 
-        //积分使用情况
-        $order['point']       = $orderInfo['data']['point'];
-        $order['point_money'] = $orderInfo['data']['point_money'];
-
-        $order['weight'] = $orderInfo['data']['weight'];;
-        $order['order_pmt']  = isset($orderInfo['data']['order_pmt']) ? $orderInfo['data']['order_pmt'] : 0;
-        $order['goods_pmt']  = isset($orderInfo['data']['goods_pmt']) ? $orderInfo['data']['goods_pmt'] : 0;
-        $order['coupon_pmt'] = $orderInfo['data']['coupon_pmt'];
-        $order['coupon']     = json_encode($orderInfo['data']['coupon']);
-        if (isset($orderInfo['promotion_list'])) {
-            $promotion_list = [];
-            foreach ($orderInfo['promotion_list'] as $k => $v) {
-                $promotion_list[$k] = $v['name'];
-            }
-            $item['promotion_list'] = json_encode($promotion_list);
-        }
+        //以下值不是通过购物车得来的，是直接赋值的，就写这里吧，不写formatOrder里了。
         $order['memo']        = $memo;
         $order['source']      = $source;
         $order['tax_type']    = $tax['tax_type'];
@@ -1271,15 +1218,13 @@ class Order extends Common
         $order['tax_code']    = $tax['tax_code'];
         $order['tax_content'] = '商品明细';
 
-        $order['ip'] = get_client_ip();
         Db::startTrans();
         try {
             $this->save($order);
             //上面保存好订单表，下面保存订单的其他信息
             //更改库存
             $goodsModel = new Goods();
-            foreach ($orderInfo['data']['items'] as $k => $v) {
-                $orderInfo['data']['items'][$k]['order_id'] = $order['order_id'];
+            foreach ($items as $k => $v) {
                 //更改库存
                 $sflag = $goodsModel->changeStock($v['product_id'], 'order', $v['nums']);
                 if (!$sflag['status']) {
@@ -1288,7 +1233,7 @@ class Order extends Common
                 }
             }
             $orderItemsModel = new OrderItems();
-            $orderItemsModel->saveAll($orderInfo['data']['items']);
+            $orderItemsModel->saveAll($items);
 
             //优惠券核销
             if ($coupon_code) {
@@ -1310,19 +1255,37 @@ class Order extends Common
                 }
             }
 
+            //不同的订单类型会有不同的操作
+            switch ($order_type) {
+                case self::ORDER_TYPE_COMMON:
+                    //标准模式不需要修改订单数据和商品数据
+                    break;
+                case self::ORDER_TYPE_PINTUAN;
+                    //拼团模式去校验拼团是否存在，并添加拼团记录
+                    $pt_re = $this->pOrderCreate($order, $items, $params);
+                    if (!$pt_re['status']) {
+                        Db::rollback();
+                        return $pt_re;
+                    }
+                    break;
+                default:
+                    Db::rollback();
+                    return error_code(10000);
+            }
+
+
             //提交数据库
             Db::commit();
 
             //清除购物车信息
             $cartModel = new Cart();
-            $cartModel->del($user_id, $cart_ids);
+            $cartModel->del($user_id, $cart_ids, $order_type);
 
             //订单记录
             $orderLog = new OrderLog();
             $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_CREATE, '订单创建', $order);
             //0元订单记录支付成功
-            if($order['order_amount'] <= 0)
-            {
+            if ($order['order_amount'] <= 0) {
                 $orderLog->addLog($order['order_id'], $user_id, $orderLog::LOG_TYPE_PAY, '0元订单直接支付成功', $order);
             }
 
@@ -1353,27 +1316,76 @@ class Order extends Common
         }
     }
 
+
     /**
-     * 订单前执行
-     * @param $user_id
-     * @param $cart_ids
-     * @param $area_id
-     * @param $point
-     * @param $coupon_code
-     * @param int $receipt_type
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * 生成订单的时候，根据购物车信息生成订单信息及明细信息
+     * @param $order                订单数组，应用方式
+     * @param $user_id              用户id
+     * @param $cart_ids             购物车信息
+     * @param $area_id              收货地区
+     * @param $point                使用积分
+     * @param $coupon_code          使用优惠券
+     * @param bool $free_freight 是否包邮
+     * @return array                返回订单明细信息
      */
-    public function formatOrderItems($user_id, $cart_ids, $area_id, $point, $coupon_code, $receipt_type = 1)
+    private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false)
     {
         $cartModel = new Cart();
-        $cartList  = $cartModel->info($user_id, $cart_ids, '', $area_id, $point, $coupon_code, $receipt_type);
-        if (!$cartList['status']) {
-            return $cartList;
+        $cartInfo  = $cartModel->info($user_id, $cart_ids, $order['order_type'], $area_id, $point, $coupon_code, $free_freight);
+        if (!$cartInfo['status']) {
+            return $cartInfo;
         }
-        foreach ($cartList['data']['list'] as $v) {
+        $order['goods_amount'] = $cartInfo['data']['goods_amount'];
+        $order['order_amount'] = $cartInfo['data']['amount'];
+        if ($order['order_amount'] == 0) {
+            $order['pay_status']   = self::PAY_STATUS_YES;
+            $order['payment_time'] = time();
+        }
+        $order['cost_freight'] = $cartInfo['data']['cost_freight'];
+
+        //优惠信息存储
+        $promotion_list = [];
+        foreach ($cartInfo['data']['promotion_list'] as $k => $v) {
+            if ($v['type'] == 2) {
+                $promotion_list[] = $v;
+            }
+        }
+        $order['promotion_list'] = json_encode($promotion_list);
+
+        //积分使用情况
+        $order['point']       = $cartInfo['data']['point'];
+        $order['point_money'] = $cartInfo['data']['point_money'];
+
+        $order['weight'] = $cartInfo['data']['weight'];;
+        $order['order_pmt']  = isset($orderInfo['data']['order_pmt']) ? $orderInfo['data']['order_pmt'] : 0;
+        $order['goods_pmt']  = isset($orderInfo['data']['goods_pmt']) ? $orderInfo['data']['goods_pmt'] : 0;
+        $order['coupon_pmt'] = $orderInfo['data']['coupon_pmt'];
+        $order['coupon']     = json_encode($orderInfo['data']['coupon']);
+        $order['ip']         = get_client_ip();
+
+        //以上保存了订单主体表信息，以下生成订单明细表
+        $items = $this->formatOrderItems($cartInfo['data']['list'], $order['order_id']);
+        return [
+            'status' => true,
+            'data'   => $items,           //订单主体表通过引用直接返回值，订单明细通过这里返回值
+            'msg'    => ''
+        ];
+    }
+
+    /**
+     * 根据购物车的明细生成订单明细
+     * @param $list             购物车明细
+     * @param $order_id         订单id，为了生成订单明细上的订单号
+     * @return array            订单明细数组
+     */
+    private function formatOrderItems($list, $order_id)
+    {
+        $items = [];
+        foreach ($list as $v) {
+            if (!$v['is_select']) {
+                continue;
+            }
+            $item['order_id']         = $order_id;
             $item['goods_id']         = $v['products']['goods_id'];
             $item['product_id']       = $v['products']['id'];
             $item['sn']               = $v['products']['sn'];
@@ -1396,11 +1408,59 @@ class Order extends Common
                 }
                 $item['promotion_list'] = json_encode($promotion_list);
             }
-            $cartList['data']['items'][] = $item;
+            $items[] = $item;
         }
-        //unset($cartList['data']['list']);
-        return $cartList;
+        return $items;
     }
+
+    //生成订单的收货信息
+    private function formatOrderDelivery(&$order, $delivery)
+    {
+        if ($delivery['type'] == 1) {
+            //快递邮寄
+            $ushopModel = new UserShip();
+            $ushopInfo  = $ushopModel->getShipById($delivery['uship_id'], $order['user_id']);
+            if (!$ushopInfo) {
+                return error_code(11050);
+            }
+            $area_id = $ushopInfo['area_id'];
+
+            //快递邮寄
+            $order['ship_area_id']   = $ushopInfo['area_id'];
+            $order['ship_address']   = $ushopInfo['address'];
+            $order['ship_name']      = $ushopInfo['name'];
+            $order['ship_mobile']    = $ushopInfo['mobile'];
+            $shipInfo                = model('common/Ship')->getShip($ushopInfo['area_id']);
+            $order['logistics_id']   = $shipInfo['id'];
+            $order['logistics_name'] = $shipInfo['name'];
+            $order['store_id']       = 0;
+
+        } else {
+            //门店自提
+            $storeModel = new Store();
+            $storeInfo  = $storeModel->get($delivery['store_id']);
+            if (!$storeInfo) {
+                return error_code(11055);
+            }
+            $area_id = $storeInfo['area_id'];
+
+            //门店自提
+            $order['ship_area_id'] = $storeInfo['area_id'];
+            $order['ship_address'] = $storeInfo['address'];
+            $order['ship_name']    = $delivery['lading_name'];
+            $order['ship_mobile']  = $delivery['lading_mobile'];
+            $order['store_id']     = $delivery['store_id'];
+            $order['logistics_id'] = 0;
+        }
+
+        return [
+            'status' => true,
+            'data'   => $area_id,
+            'msg'    => ''
+        ];
+
+    }
+
 
     /**
      * 判断订单是否可以评价
@@ -1903,4 +1963,18 @@ class Order extends Common
 
         return $return;
     }
+
+    //添加拼团信息
+    private function pOrderCreate($order, $items, $params)
+    {
+        //一定要先安装拼团插件
+        if (checkAddons('Pintuan')) {
+            $result['msg'] = "请安装拼团插件";
+            return false;
+        }
+
+        $ptlib = new \addons\Pintuan\lib\ptlib();
+        return $ptlib->orderCreate($order, $items, $params);
+    }
+
 }

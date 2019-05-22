@@ -9,6 +9,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\Custom;
 use app\common\model\WeixinMediaMessage;
 use app\common\model\WeixinMenu;
 use app\common\model\WeixinMessage;
@@ -234,7 +235,13 @@ class Wechat extends Manage
         //创建微信菜单
         $weixinMenu = new WeixinMenu();
         $menuData   = $weixinMenu->weixinMenu();
-        $result     = $menu->createMenu($menuData);
+
+        if(!$menuData['button']){
+            $result     = $menu->deleteMenu();//删除菜单
+        }else{
+            $result     = $menu->createMenu($menuData);
+        }
+
         try {
             // 处理创建结果
             if ($result === FALSE) {

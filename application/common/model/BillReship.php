@@ -56,8 +56,9 @@ class BillReship extends Common
                 $row['image_url'] = $v['image_url'];
                 $row['nums'] = $v['nums'];
                 $row['addon'] = $v['addon'];
+
+                $itemsData[] = $row;
             }
-            $itemsData[] = $row;
             $billReshipItemsModel = new BillReshipItems();
             if(!$billReshipItemsModel->saveAll($itemsData)){
                 return error_code(10000);

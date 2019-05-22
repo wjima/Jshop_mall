@@ -20,7 +20,7 @@
                 </yd-cell-item>
                 <yd-cell-item v-if="items[1].checked">
                     <span slot="left">税号</span>
-                    <span slot="right" class="input-right"><input type="number" v-model="code" placeholder="纳税人识别号"></span>
+                    <span slot="right" class="input-right"><input type="text" v-model="code" placeholder="纳税人识别号"></span>
                 </yd-cell-item>
             </yd-cell-group>
     	</div>

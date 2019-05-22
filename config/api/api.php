@@ -228,7 +228,7 @@ return [
             'getposter' => [
                 'code' => 'getPoster',
                 'is_login' => false
-            ]
+            ],
         ]
     ],
 
@@ -464,7 +464,7 @@ return [
                 'is_login' => false
             ],
             'getdetial' => [
-                'code' => 'getDetail',
+                'code' => 'getDetial',
                 'is_login' => false
             ],
             'appgetdetial' => [
@@ -494,6 +494,10 @@ return [
             'getgoodscathotgoods' => [
                 'code' => 'getGoodsCatHotGoods',
                 'is_login' => false
+            ],
+            'getpickgoods'=>[
+                'code'=>'getPickGoods',
+                'is_login'=>false
             ]
         ]
     ],
@@ -616,6 +620,20 @@ return [
         'method' => [
             'checkversion' => [
                 'code' => 'checkVersion',
+                'is_login' => false
+            ]
+        ]
+    ],
+    'pages' => [//首页布局可视化接口
+        'code'   => 'Pages',
+        'method' => [
+            'getpageconfig' => [
+                'code'     => 'getPageConfig',
+                'is_login' => false
+            ],
+            //获取购买记录，非当前会员，首页滚动提示用的。
+            'getrecod'=>[
+                'code' => 'getRecod',
                 'is_login' => false
             ]
         ]

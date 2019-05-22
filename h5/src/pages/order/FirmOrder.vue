@@ -1,7 +1,7 @@
 <template>
     <div class="firmorder">
         <openstore
-            v-if="isOpenStore === 1"
+            v-if="isOpenStore === 1 && storeInfo"
             :storeTab="storeTab"
             :store="storeInfo"
             :ship="shipInfo"
@@ -45,7 +45,7 @@
                         </div>
                     </yd-tab-panel>
                 </yd-tab>
-                <yd-button type="button" style="margin: 30px;" @click.native="couponShow=false">关闭</yd-button>
+                <yd-button type="danger" style="margin: 30px;" @click.native="couponShow=false">关闭</yd-button>
             </yd-popup>
         </div>
         <ordercell

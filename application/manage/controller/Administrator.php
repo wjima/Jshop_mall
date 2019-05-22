@@ -43,7 +43,7 @@ class Administrator extends ManageController
             if(!input('?param.mobile') || input('param.mobile') == ""){
                 return error_code(11080);
             }
-            if(!input('?param.password') || strlen(input('param.password')) < 6 || strlen(input('param.password')) > 12){
+            if(!input('?param.password') || strlen(input('param.password')) < 6 || strlen(input('param.password')) > 16){
                 return error_code(11009);
             }
             return $manageModel->toAdd(input('param.'));

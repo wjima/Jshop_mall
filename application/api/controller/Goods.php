@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use app\common\controller\Api;
+use app\common\model\GoodsBrowsing;
 use app\common\model\GoodsCat;
 use app\common\model\GoodsComment;
 use think\Db;
@@ -119,6 +120,9 @@ class Goods extends Api
     /**
      * 获取商品列表
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-23 19:46
@@ -135,6 +139,7 @@ class Goods extends Api
         $limit       = input('limit/d');
         $order       = input('order', 'sort asc');
         $filter      = [];//过滤条件
+        $class_name['data']  = '';
         if (input('?param.where')) {
             $postWhere = json_decode(input('param.where'), true);
             //判断商品搜索,
@@ -155,6 +160,7 @@ class Goods extends Api
                 $catIds   = array_column($childCats->toArray(), 'id');
                 $catIds[] = $postWhere['cat_id'];
                 $where[]  = ['g.goods_cat_id', 'in', $catIds];
+                $class_name = $goodsCatModel->getNameById($postWhere['cat_id']);
             }
             //价格区间
             if (isset($postWhere['price_f']) && $postWhere['price_f']) {
@@ -206,17 +212,21 @@ class Goods extends Api
         $return_data['data']['limit'] = $limit;
         $return_data['data']['where'] = $postWhere;
         $return_data['data']['order'] = $order;
+        $return_data['data']['class_name'] = $class_name['data']?$class_name['data']:'';
         return $return_data;
     }
 
     /**
      * 获取商品明细
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-23 19:47
      */
-    public function getDetail()
+    public function getDetial()
     {
         $return_data = [
             'status' => false,
@@ -475,4 +485,112 @@ class Goods extends Api
         return $res;
     }
 
+    /**
+     * 获取推荐商品
+     */
+    public function getPickGoods(){
+        $return_data = [
+            'status' => false,
+            'msg'    => '查询失败',
+            'data'   => []
+        ];
+        $field       = input('field', 'id,bn,name,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,stock,unit,spes_desc,view_count,buy_count,label_ids');
+        $page        = input('page/d', 1);
+        $limit       = input('limit/d',10);
+        $order       = input('order', 'buy_count desc');
+        $token       = input('token/s','');
+        $user_id     = getUserIdByToken($token);//获取user_id
+        $lastLimit = 0;
+        if ($user_id != 0) {
+            //取浏览记录
+            $goodsBrowsing = new GoodsBrowsing();
+            $browsing      = $goodsBrowsing->getList($user_id, 1, $limit);
+            if ($browsing['status'] && $browsing['data']['count'] > 0) {
+                if (count($browsing['data']['list']) < $limit) {
+                    $lastLimit = $limit - count($browsing['data']['list']);
+                }
+                $goodsIds = array_column($browsing['data']['list'], 'goods_id');
+                $where[]  = ['g.id', 'in', $goodsIds];
+            }
+        }
+        $filter      = [];//过滤条件
+        $class_name['data']  = '';
+        if (input('?param.where')) {
+            $postWhere = json_decode(input('param.where'), true);
+            //判断商品搜索,
+            if (isset($postWhere['search_name']) && $postWhere['search_name']) {
+                $where[] = ['g.name|g.bn|g.brief', 'LIKE', '%' . $postWhere['search_name'] . '%'];
+            }
+            if (isset($postWhere['bn']) && $postWhere['bn']) {
+                $where[] = ['g.bn', '=', $postWhere['bn']];
+            }
+            //商品分类,同时取所有子分类 todo 无限极分类时要注意
+            if (isset($postWhere['cat_id']) && $postWhere['cat_id']) {
+                $goodsCatModel = new GoodsCat();
+                $catIds        = [];
+                $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
+                if (!$childCats->isEmpty()) {
+                    $filter['child_cats'] = $childCats;
+                }
+                $catIds   = array_column($childCats->toArray(), 'id');
+                $catIds[] = $postWhere['cat_id'];
+                $where[]  = ['g.goods_cat_id', 'in', $catIds];
+                $class_name = $goodsCatModel->getNameById($postWhere['cat_id']);
+            }
+            //价格区间
+            if (isset($postWhere['price_f']) && $postWhere['price_f']) {
+                $where[] = ['g.price', '>=', $postWhere['price_f']];
+            }
+            if (isset($postWhere['price_t']) && $postWhere['price_t']) {
+                $where[] = ['g.price', '<', $postWhere['price_t']];
+            }
+            if (isset($postWhere['recommend'])) {
+                $where[] = ['g.is_recommend', 'eq', '1'];
+            }
+            if (isset($postWhere['hot'])) {
+                $where[] = ['g.is_hot', 'eq', '1'];
+            }
+            //品牌筛选
+            if (isset($postWhere['brand_id']) && $postWhere['brand_id']) {
+                $where[] = ['g.brand_id', 'in', $postWhere['brand_id']];
+            }
+            //标签筛选
+            if (isset($postWhere['label_id']) && $postWhere['label_id']) {
+                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . $postWhere['label_id'] . ',g.label_ids)')];
+            }
+        }
+
+        $goodsModel = new GoodsModel();
+        $where[]    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
+
+        $return_data = $this->allowedField($field);
+        if (!$return_data['status']) {
+            return $return_data;
+        }
+        $return_data = $this->allowedOrder($order);
+        if (!$return_data['status']) {
+            return $return_data;
+        }
+
+        $page_limit = config('jshop.page_limit');
+        $limit      = $limit ? $limit : $page_limit;
+        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit);
+        if($lastLimit>0){
+            $where[]    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
+            $otherGoods = $goodsModel->getList($field, $where, $order, $page, $lastLimit);
+            $returnGoods['data'] = array_merge( $returnGoods['data'],$otherGoods['data']);
+        }
+        if ($returnGoods['status']) {
+            $return_data ['msg']                = '查询成功';
+            $return_data ['data']['list']       = $returnGoods['data'];
+            $return_data ['data']['total_page'] = $returnGoods['total'];
+            $return_data['data']['filter']      = isset($returnGoods['filter']) ? array_merge($returnGoods['filter'], $filter) : [];
+        }
+        $return_data['data']['page']  = $page;
+        $return_data['data']['limit'] = $limit;
+        $return_data['data']['where'] = $postWhere;
+        $return_data['data']['order'] = $order;
+        $return_data['data']['class_name'] = $class_name['data']?$class_name['data']:'';
+        return $return_data;
+    }
 }

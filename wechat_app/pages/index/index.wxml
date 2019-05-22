@@ -10,7 +10,7 @@
   </view>
 
   <!-- 客服按钮 -->
-  <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" >
+  <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" session-from="{{kefupara}}">
     <image src='../image/img.png'></image>
   </button>
 </view>

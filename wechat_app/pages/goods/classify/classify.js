@@ -8,11 +8,13 @@ Page({
         all_cat: [],
         on_class: 0,
         content_height: 0,
-        cate_style: app.config.cate_style
+        cate_style: app.config.cate_style,
+        kefupara: [],//客服信息
     },
 
     //加载执行
     onShow: function (options) {
+      this.serviceInfo();
         var page = this;
 
         //获取全部数据
@@ -132,7 +134,26 @@ Page({
             url: '../search/search'
         });
     },
-
+  //客服信息
+  serviceInfo: function () {
+    var that = this;
+    wx.getUserInfo({
+      success(res) {
+        var userInfo = res.userInfo;
+        userInfo.source = 'jshop云商';
+        that.setData({
+          kefupara: JSON.stringify(userInfo)
+        });
+      },
+      fail: function (res) {
+        var userInfo ={};
+        userInfo['source'] = "jshop云商";
+        that.setData({
+          kefupara: JSON.stringify(userInfo)
+        });
+      }
+    })
+  },
     //页面隐藏执行
     onHide: function () {
         this.setData({

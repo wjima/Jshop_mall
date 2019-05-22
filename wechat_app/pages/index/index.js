@@ -22,7 +22,8 @@ Page({
     hotPage: 1,
     hotLimit: 8,
     ajaxStatus: true,
-    loadingComplete: false
+    loadingComplete: false,
+    kefupara: [] //客服信息参数
   },
 
   //页面加载处理
@@ -49,8 +50,29 @@ Page({
     this.getMyShareCode(); //获取我的推荐码
     this.groupList(); //获取精品团购数据
     this.seckillList(); //获取限时秒杀数据
+    this.serviceInfo(); //客服信息
   },
-
+  //客服信息
+  serviceInfo: function () {
+    let userToken = app.db.get('userToken');
+    if (userToken){
+      var that = this;
+      wx.getUserInfo({
+        success(res) {
+          var userInfo = res.userInfo;
+          that.setData({
+            kefupara: JSON.stringify(userInfo)
+          });
+        },
+        fail: function (res) {
+          var userInfo = {};
+          that.setData({
+            kefupara: JSON.stringify(userInfo)
+          });
+        }
+      })
+    }
+  },
   //获取我的推荐码
   getMyShareCode: function () {
     app.api.sharecode(function (e) {

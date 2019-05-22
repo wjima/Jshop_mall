@@ -44,6 +44,17 @@
         display: inline;
         width: 190px;;
     }
+    .goods-stock{
+        width: 80px;
+        display: inline;
+    }
+    .spec-item .layui-form-checkbox{
+        margin-top: 0 !important;
+    }
+    .new-spec{
+        display: inline-block;
+        width: 100px;
+    }
 </style>
 <form class="layui-form seller-alone-form" action="{:url('goods/doAdd')}" method="post"  lay-filter="goodsForm">
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>基础信息</legend></fieldset>
@@ -124,7 +135,7 @@
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"><legend>销售信息</legend></fieldset>
     <div id="product-info">
         <div class="layui-form-item">
-            <label class="layui-form-label">销售价：</label>
+            <label class="layui-form-label"><i class="required-color">*</i>销售价：</label>
             <div class="layui-input-inline">
                 <input type="text" name="goods[price]" placeholder="￥" autocomplete="off" class="layui-input">
             </div>
@@ -149,10 +160,14 @@
             </div>
         </div>
 
-        <div class="layui-form-item">
+        <div class="layui-form-item have-add">
             <label class="layui-form-label">库存：</label>
             <div class="layui-input-inline">
-                <input type="text" name="goods[stock]" lay-verify="required|number" autocomplete="off" placeholder="请输入商品库存" class="layui-input">
+                <input type="text" name="goods[stock]" lay-verify="required|number" autocomplete="off"  class="layui-input goods-stock" >
+                <input type="checkbox" name="goods[stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
+            </div>
+            <div class="layui-form-mid layui-word-aux" >
+               选择增加时增加库存，选择减少时减少库存
             </div>
         </div>
     </div>

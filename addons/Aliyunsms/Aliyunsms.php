@@ -51,6 +51,11 @@ class Aliyunsms extends Addons
      */
     public function sendsms($data)
     {
+        $result     = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '发送失败'
+        ];
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
         $params     = array();
@@ -62,10 +67,11 @@ class Aliyunsms extends Addons
         $accessKeyId     = $setting['accessKeyId'];
         $accessKeySecret = $setting['accessKeySecret'];
 
-		if ($data['params']['code'] == 'seller_order_notice') {
+        if ($data['params']['code'] == 'seller_order_notice') {
             $data['params']['mobile'] = getSetting('shop_mobile');
             if (!$data['params']['mobile']) {
-                return false;
+                $result['msg'] = '商户手机号不存在';
+                return $result;
             }
         }
 
@@ -76,8 +82,9 @@ class Aliyunsms extends Addons
         $params["SignName"] = $setting['aliyunPrefix'];
 
         // fixme 必填: 短信模板Code，应严格按"模板CODE"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template
-        if(!isset($setting[$data['params']['code']]['data']['title']['value'])){
-            return false;
+        if (!isset($setting[$data['params']['code']]['data']['title']['value'])) {
+            $result['msg'] = '请先配置后台短信接口';
+            return $result;
         }
         $params["TemplateCode"] = $setting[$data['params']['code']]['data']['title']['value'];
 
@@ -88,7 +95,7 @@ class Aliyunsms extends Addons
         if (!empty($params["TemplateParam"]) && is_array($params["TemplateParam"])) {
             $params["TemplateParam"] = json_encode($params["TemplateParam"], JSON_UNESCAPED_UNICODE);
         }
-        Log::info('aliyunsms:'.json_encode($params));
+        Log::info('aliyunsms:' . json_encode($params));
         try {
             $content = $this->request(
                 $accessKeyId,
@@ -103,11 +110,18 @@ class Aliyunsms extends Addons
             );
             if ($content->Code != 'OK') {
                 Log::error($content->Message);
+                $result['msg'] = $content->Message;
+                return $result;
+
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $result['msg'] = $e->getMessage();
+            return $result;
         }
-        return true;
+        $result['status'] = true;
+        $result['msg']    = '发送成功';
+        return $result;
     }
 
     /**

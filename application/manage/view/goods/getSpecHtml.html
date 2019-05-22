@@ -34,13 +34,14 @@
         <th>货号</th>
         <th>规格</th>
         <th>库存</th>
-        <th>销售价</th>
+        <th><i class="required-color">*</i>销售价</th>
         <th>成本价</th>
         <th>市场价</th>
         <th>操作</th>
     </tr>
     </thead>
     <tbody>
+
     {volist name="items" id="vo" key="key"}
     {if condition="$vo.id"}
     <tr>
@@ -66,8 +67,10 @@
         <td>
             {$vo.spec_name}
         </td>
-        <td>
-            <input type="text" name="product[{$vo.spec_name}][stock]" value="{$vo.stock}"   placeholder="库存" autocomplete="off" class="layui-input">
+        <td class="have-add-td">
+            <input type="text" name="product[{$vo.spec_name}][stock]" value="0"   placeholder="库存" autocomplete="off" class="layui-input goods-stock">
+            <input type="checkbox" name="product[{$vo.spec_name}][stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
+            <a href="javascript:;" class="help-tip" data-tip="总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}"><i class="iconfont icon-wenhao"></i></a>
         </td>
         <td>
             <input type="text" name="product[{$vo.spec_name}][price]" value="{$vo.price}"   placeholder="销售价" autocomplete="off" class="layui-input">
@@ -85,7 +88,7 @@
     {else}
         <tr>
             <td>
-                <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" {if condition="$key eq 1 "} checked="true"   {/if}value="1" class="isdefalut" lay-filter="isdefalut">
+                <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" {if condition="$key == 1 "} checked="true"   {/if}value="1" class="isdefalut" lay-filter="isdefalut">
             </td>
             <td class="spec-td">
                 <a class="upSpecImage" href="javascript:;">选择图片</a>
@@ -105,8 +108,11 @@
             <td>
                 {$vo.spec_name}
             </td>
-            <td>
-                <input type="text" name="product[{$vo.spec_name}][stock]"   value="{$vo.stock}"  placeholder="库存" autocomplete="off" class="layui-input">
+            <td class="have-add-td">
+                <input type="text" name="product[{$vo.spec_name}][stock]"   value="0"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
+                <input type="checkbox" name="product[{$vo.spec_name}][stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
+                <a href="javascript:;" class="help-tip" data-tip="总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}"><i class="iconfont icon-wenhao"></i></a>
+
             </td>
             <td>
                 <input type="text" name="product[{$vo.spec_name}][price]"  value="{$vo.price}"  placeholder="销售价" autocomplete="off" class="layui-input">
@@ -130,7 +136,6 @@
     layui.use('form', function(){
         var form = layui.form;
         form.render();
-
         form.on('checkbox(isdefalut)', function(data){
             if(data.elem.checked){
                 var checkedName = $(data.elem).attr("name");
@@ -147,9 +152,9 @@
                 });
                 $(data.othis).addClass("layui-form-checked");
             }else{
-                $(dom).attr("checked",false);
-                $(dom).attr("value","0");
-                $("#more_spec .layui-form-checkbox").removeClass('layui-form-checked');
+                $("#more_spec .layui-form-checkbox").first().addClass('layui-form-checked');
+                $(".isdefalut").first().attr("checked",true);
+                $(".isdefalut").first().attr("value","1");
             }
         });
     });

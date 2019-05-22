@@ -40,11 +40,9 @@ class GoodsCat extends Common
      */
     public function getList()
     {
-
         $data = $this->field('id, parent_id, name, type_id, sort, image_id')
             ->order([ 'sort' => 'asc'])
             ->select();
-
         $return_data = $this->getTree($data);
         return $return_data;
     }
@@ -432,9 +430,11 @@ class GoodsCat extends Common
      * 删除商品分类
      * @param $id
      * @return bool|int
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function del($id)
     {

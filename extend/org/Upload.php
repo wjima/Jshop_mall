@@ -59,6 +59,8 @@ class Upload
      */
     private $uploader;
 
+    private $isLocal = false;//是否本地直接上传，而不是POST上传
+
     /**
      * 构造方法，用于构造上传实例
      * @param array  $config 配置
@@ -142,6 +144,9 @@ class Upload
     {
         if ('' === $files) {
             $files = $_FILES;
+        }else{
+            //传值的时候，说明是本地上传
+            $this->isLocal = true;
         }
         if (empty($files)) {
             $this->error = '没有上传的文件！';
@@ -305,7 +310,7 @@ class Upload
         }
 
         /* 检查是否合法上传 */
-        if (!is_uploaded_file($file['tmp_name'])) {
+        if (!is_uploaded_file($file['tmp_name']) && !$this->isLocal) {
             $this->error = '非法上传文件！';
             return false;
         }
@@ -426,7 +431,6 @@ class Upload
         $rule    = $this->subName;
         if ($this->autoSub && !empty($rule)) {
             $subpath = $this->getName($rule, $filename) . '/';
-
             if (!empty($subpath) && !$this->uploader->mkdir($this->savePath . $subpath)) {
                 $this->error = $this->uploader->getError();
                 return false;

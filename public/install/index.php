@@ -3,7 +3,7 @@ header('Content-type:text/html;charset=utf-8');
 session_start();
 //配置信息
 $config = array(
-    'version'     => 'v2.0.3',        //版本号
+    'version'     => 'v2.0.4',        //版本号
     'indexPage'   => 'step1',         //用户协议
     'checkPage'   => 'step2',         //环境检测
     'createPage'  => 'step3',         //数据库配置
@@ -266,7 +266,7 @@ return [
     // 数据库连接参数
     'params'          => [],
     // 数据库编码默认采用utf8
-    'charset'         => 'utf8',
+    'charset'         => 'utf8mb4',
     // 数据库表前缀
     'prefix'          => '{$db['DB_PREFIX']}',
     // 数据库调试模式
@@ -282,7 +282,7 @@ return [
     // 是否严格检查字段是否存在
     'fields_strict'   => true,
     // 数据集返回类型
-    'resultset_type'  => 'array',
+    'resultset_type'  => 'collection',
     // 自动写入时间戳字段
     'auto_timestamp'  => false,
     // 时间字段取出后的默认时间格式

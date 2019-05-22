@@ -86,7 +86,7 @@ class Manage extends Common
                 return error_code(11010);
             }
 
-            if(isset($data['password'])){
+            if(!(!isset($data['password'][5]) || isset($data['password'][16]))){
                 if($data['password'] == ""){
                     unset($data['password']);
                 }else{
@@ -107,7 +107,7 @@ class Manage extends Common
             }
             $data['ctime'] = time();
 
-            if(!isset($data['password']) && $data['password'] == ""){
+            if(!isset($data['password'][5]) || isset($data['password'][16])){
                 return error_code(11009);
             }
             $data['password'] = $this->enPassword($data['password'], $data['ctime']);

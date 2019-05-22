@@ -27,7 +27,7 @@ page{
  transform: translateX(0);
 } 
 .cart-content{
-  margin-bottom: 20rpx;
+  margin-bottom: 200rpx;
   min-height:760rpx;
 }
 .list-body{  
@@ -356,15 +356,16 @@ label{
   float: right;
 }
 .order-promotion{
-    /* position:fixed;
-    bottom:100rpx; */
+    position:fixed;
+    bottom:100rpx;
     overflow: hidden;
     width: 100%;
     background-color:#fff;
     line-height:84rpx;
+    border-bottom: 4rpx solid #f8f8f8;
     /* box-shadow:0 0 20rpx #ccc;
     border-bottom: 1px solid #e8e8e8 */
-    margin-bottom: 120rpx;
+    /* margin-bottom: 120rpx; */
 }
 .order-promotion-title{
     float:left;

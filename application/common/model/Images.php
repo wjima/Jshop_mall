@@ -18,22 +18,22 @@ class Images extends Common
      */
     public function tableData($post)
     {
-        if(isset($post['limit'])){
+        if (isset($post['limit'])) {
             $limit = $post['limit'];
-        }else{
+        } else {
             $limit = config('paginate.list_rows');
         }
-        $tableWhere = $this->tableWhere($post);
-        $config['page'] = $post['page'];
+        $tableWhere          = $this->tableWhere($post);
+        $config['page']      = $post['page'];
         $config['list_rows'] = $post['limit'];
-        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit,false,$config);
-        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        $list                = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit, false, $config);
+        $data                = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
-        $re['code'] = 0;
-        $re['msg'] = '';
+        $re['code']  = 0;
+        $re['msg']   = '';
         $re['count'] = $list->total();
-        $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+        $re['data']  = $data;
+        $re['sql']   = $this->getLastSql();
 
         return $re;
     }
@@ -42,7 +42,7 @@ class Images extends Common
     {
         $where = [];
         if (isset($post['name']) && $post['name'] != "") {
-            $where[] = ['name', 'like', '%'.$post['name'].'%'];
+            $where[] = ['name', 'like', '%' . $post['name'] . '%'];
         }
         if (isset($post['id']) && $post['id'] != "") {
             $where[] = ['id', 'eq', $post['id']];
@@ -61,36 +61,41 @@ class Images extends Common
      */
     protected function tableFormat($list)
     {
-        if(!$list->isEmpty()){
+        if (!$list->isEmpty()) {
             $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
 
-            foreach($list as $key=>$val){
-                $list[$key]['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
+            foreach ($list as $key => $val) {
+                $list[$key]['ctime'] = date('Y-m-d H:i:s', $val['ctime']);
             }
         }
         return $list;
     }
 
-
-    /**
-     * 保存远程图片到本地
+    /***
+     * 保存图片
      * @param string $url
+     * @param bool|false $remote
      * @return array
      */
-    public function saveRemoteImage($url = '')
+    public function saveImage($url = '', $remote = false)
     {
         $return_data = [
             'status' => false,
             'msg'    => '保存失败',
             'data'   => ''
         ];
-        $savepath    = '/static/uploads/images' . get_hash_dir();
-        $filename    = md5(time()) . '.png';
-        $data        = $this->getImage($url, $savepath, $filename);
-        if($data['error']!=0){
-            $return_data['msg'] = '图片保存失败';
-            return $return_data;
+        if (!is_dir(ROOT_PATH . 'public/static/uploads/images/')) {
+            @mkdirs(ROOT_PATH . 'public/static/uploads/images/');
         }
+        //上传处理类
+        $config        = [
+            'rootPath' => ROOT_PATH . 'public',
+            'savePath' => '/static/uploads/images',
+            'subName'  => ['get_date_dir'],
+            'maxSize'  => config('jshop.upload_filesize'),
+            'exts'     => 'jpg,jpeg,png,gif,bmp4',
+            'saveName' => ['uniqid', time()],
+        ];
         $image_storage = config('jshop.image_storage');
         if (!$image_storage) {
             $image_storage = [
@@ -101,56 +106,61 @@ class Images extends Common
         if (getSetting('image_storage_params')) {
             $image_storage = array_merge(['type' => getSetting('image_storage_type')], getSetting('image_storage_params'));
         }
-        if($image_storage['type'] == 'Local'){
-
-        }else{
-            $upload_max_filesize = config('jshop.upload_filesize');
-            $upload_max_filesize = empty($upload_max_filesize) ? 5242880 : $upload_max_filesize;//默认5M
-            //上传处理类
-            $config = array(
-                'rootPath' => ROOT_PATH . DIRECTORY_SEPARATOR . 'public',
-                'savePath' => $savepath,
-                'maxSize'  => $upload_max_filesize,
-                'saveName' => array(
-                    'uniqid',
-                    ''
-                ),
-                'autoSub'  => false,
-            );
-            $upload = new \org\Upload($config,$image_storage['type'],$image_storage);
-            $info = $upload->upload($data['save_path']);
-            if(!$info){
-                return [
-                    'data'   => '',
-                    'status' => false,
-                    'msg'    => $upload->getError()
+        if ($remote) {
+            $savepath = '/static/uploads/images' . get_date_dir() . '/';
+            $filename = md5(time()) . '.png';
+            $data     = $this->getImage($url, $savepath, $filename);
+            if ($data['error'] != 0) {
+                $return_data['msg'] = '图片保存失败';
+                return $return_data;
+            }
+            if(isset($data['save_dir']) && $data['save_dir']){
+                $savepath = $data['save_dir'];
+            }
+            if(isset($data['file_name']) && $data['file_name']){
+                $filename = $data['file_name'];
+            }
+            $raw = [
+                'upfile' => [
+                    'name'     => $data['file_name'],
+                    'tmp_name' => $data['save_path'],
+                ]
+            ];
+            if ($image_storage['type'] != 'Local') {
+                $upload = new \org\Upload($config, $image_storage['type'], $image_storage);
+                $info   = $upload->upload($raw);
+            } else {
+                $info['upfile'] = [
+                    'name'     => $data['file_name'],
+                    'savename' => $filename,
+                    'savepath' => $savepath,
+                    'key'      => 'upfile',
                 ];
             }
-            $first         = array_shift($info);
-            $filename = $first['name'];
+        } else {
+            $upload = new \org\Upload($config, $image_storage['type'], $image_storage);
+            $info   = $upload->upload();
         }
-        $url           = getRealUrl($savepath . $filename);
-        $iData['id']   = md5(get_hash($filename));
-        $iData['type'] = $image_storage['type'];
-        $iData['name'] = $filename;
-        $iData['url']  = $url;
-        $iData['ctime']  = time();
-        $iData['path'] = ROOT_PATH .'public'.$savepath . $filename;
-
-        if(!$this->save($iData)) {
-            return [
-                'data'   => '',
-                'status' => false,
-                'msg'    => "保存失败"
-            ];
+        if ($info) {
+            $first          = array_shift($info);
+            $url            = getRealUrl($first['savepath'] . $first['savename']);
+            $iData['id']    = md5(get_hash($first['name']));
+            $iData['type']  = $image_storage['type'];
+            $iData['name']  = $first['name'];
+            $iData['url']   = $url;
+            $iData['ctime'] = time();
+            $iData['path']  = ROOT_PATH . 'public' . $first['savepath'] . $first['savename'];
+            if (!$this->save($iData)) {
+                $return_data['msg'] = '保存失败';
+                return $return_data;
+            }
+            $return_data['status'] = true;
+            $return_data['data']   = $iData;
+            $return_data['msg']    = '保存成功';
+        } else {
+            $return_data['msg'] = $upload->getError();
+            return $return_data;
         }
-        $return_data['msg'] = '保存成功';
-        $return_data['status'] = true;
-        $return_data['data'] = [
-            'url'        => $url,
-            'image_id'   => $iData['id'],
-            'image_name' => $iData['name'],
-        ];
         return $return_data;
     }
 
@@ -169,11 +179,25 @@ class Images extends Common
      */
     public function getImage($url, $save_dir = '', $filename = '', $type = 1)
     {
+
         if (trim($url) == '') {
             return array(
                 'file_name' => '',
                 'save_path' => '',
                 'error'     => 1
+            );
+        }
+        if (stripos($url, request()->domain()) !== false) {
+            $save_path = ROOT_PATH . str_replace(request()->domain() . '/', 'public/', $url);
+            $filename  = basename($save_path);
+            $save_dir  = str_replace(request()->domain(), '', $url);
+            $save_dir  = str_replace($filename, '', $save_dir);
+
+            return array(
+                'file_name' => $filename,
+                'save_path' => $save_path,
+                'save_dir'  => $save_dir,
+                'error'     => 0
             );
         }
         if (trim($save_dir) == '') {
@@ -193,8 +217,8 @@ class Images extends Common
         if (substr($save_dir, -1) != '/') {
             $save_dir .= '/';
         }
-        if(stripos($save_dir,ROOT_PATH) === false){
-            $save_dir = ROOT_PATH.'public'.$save_dir;
+        if (stripos($save_dir, ROOT_PATH) === false) {
+            $save_dir = ROOT_PATH . 'public' . $save_dir;
         }
         //创建保存目录
         if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true)) {
@@ -210,7 +234,12 @@ class Images extends Common
             $timeout = 5;
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')) {
+                curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+            }
+            curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
             $img = curl_exec($ch);
             curl_close($ch);
         } else {

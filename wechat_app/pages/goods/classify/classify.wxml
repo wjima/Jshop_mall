@@ -5,7 +5,7 @@
         <text class='search-key'>搜索商品</text>
     </view>
     <!-- 客服按钮 -->
-    <button class="message" hover-class="none" open-type="contact" bindcontact="customerService">
+    <button class="message" hover-class="none" open-type="contact" bindcontact="customerService" session-from="{{kefupara}}">
         <image src='../../image/message3.png'></image>
     </button>
 </view>

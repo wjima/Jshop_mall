@@ -1,14 +1,15 @@
 <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-    <li data-name="home"  class="layui-nav-item layui-nav-itemed">
-        <a class="" lay-href="{:url('index/welcome')}" href="javascript:;" lay-tips="首页" lay-direction="2" ><i class="iconfont icon-shouyeshouye"></i>首页</a>
+    <li data-name="home" class="layui-nav-item layui-nav-itemed">
+        <a class="" lay-href="{:url('index/welcome')}" href="javascript:;" lay-tips="首页" lay-direction="2" ><i class="iconfont">&#xe651;</i>首页</a>
     </li>
     {if $menu }
     {foreach $menu as $k=>$v}
     <li data-name="{:strtolower($v['code'])}" class="layui-nav-item">
         {if isset($v['children']) && !empty($v['children'])}
             <a class="menu-icon-{:strtolower($v['code'])}" href="javascript:;" lay-tips="{$v.name}"  lay-direction="2">
-                <i class="iconfont icon-{:strtolower($v['code'])}"></i>{$v.name}
+                <i class="iconfont icon-none icon-{:strtolower($v['code'])}"></i>{$v.name}
             </a>
+
             <dl class="layui-nav-child">
                 {foreach $v['children'] as $x=>$y}
                 <dd data-name="{:strtolower($v['code'])}">
@@ -29,7 +30,7 @@
             </dl>
         {else /}
             <a class="menu-icon-{:strtolower($v['code'])}" lay-href="{$v.url}" lay-tips="{$v.name}"  lay-direction="2">
-                <i class="iconfont icon-{:strtolower($v['code'])}"></i>{$v.name}
+                <i class="iconfont icon-none icon-{:strtolower($v['code'])}"></i>{$v.name}
             </a>
         {/if}
 

@@ -36,7 +36,13 @@ class Store extends Manage
         if(Request::isAjax())
         {
             $storeModel = new storeModel();
-            return $storeModel->addData(input('param.'));
+            $data =  input('param.');
+            if($data['coordinate']){
+                $coordinate = explode(',',$data['coordinate']);
+                $data['latitude'] = $coordinate[0];
+                $data['longitude'] = $coordinate[1];
+            }
+            return $storeModel->addData($data);
         }
         return $this->fetch();
     }
@@ -54,7 +60,13 @@ class Store extends Manage
         $storeModel = new storeModel();
         if(Request::isAjax())
         {
-            return $storeModel->editData(input('param.'));
+            $data =  input('param.');
+            if($data['coordinate']){
+                $coordinate = explode(',',$data['coordinate']);
+                $data['latitude'] = $coordinate[0];
+                $data['longitude'] = $coordinate[1];
+            }
+            return $storeModel->editData($data);
         }
         $info = $storeModel->where('id',input('param.id/d'))->find();
         if(!$info)

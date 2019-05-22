@@ -1,5 +1,6 @@
 <?php
 namespace app\common\model;
+use think\Db;
 use think\Validate;
 
 /**
@@ -17,7 +18,9 @@ class Store extends Common
         'mobile'        =>  'mobile',
         'linkman'       =>  'require|max:25',
         'address'       =>  'require',
-        'coordinate'    =>  'require'
+        'coordinate'    =>  'require',
+        'longitude'     =>  'require',
+        'latitude'     =>   'require',
     ];
 
     protected $msg  =   [
@@ -26,7 +29,9 @@ class Store extends Common
         'mobile.mobile'          => '手机号格式错误',
         'logo.require'          =>  '请上传门店logo',
         'address.require'       =>  '请输入门店详细地址',
-        'coordinate.require'    =>  '请选择门店坐标位置'
+        'coordinate.require'    =>  '请选择门店坐标位置',
+        'longitude'             => '经度必须',
+        'latitude'              => '纬度必须'
     ];
 
 
@@ -234,8 +239,8 @@ class Store extends Common
     public function getDefaultStore()
     {
         $return = [
-            'status' => false,
-            'msg' => '获取失败',
+            'status' => true,
+            'msg' => '获取成功',
             'data' => []
         ];
         $return['data'] = $this->order('ctime desc')->find();
@@ -269,19 +274,45 @@ class Store extends Common
             'latitude' => $latitude
         ];
 
-        $where = [];
-        if($key)
-        {
-            $where[] = ['store_name', 'like', '%'.$key.'%'];
+        if($longitude && $latitude){
+            //距离计算
+            $sqrt = 'SQRT(POW(SIN(('.$latitude.'*PI()/180-`latitude`*PI()/180)/2),2)+COS('.$latitude.'*PI()/180)*COS(`latitude`*PI()/180)*POW(SIN(('.$longitude.'*PI()/180-`longitude`*PI()/180)/2),2))';
+            //查询结果排序
+            if($key)
+            {
+                $where =  "'%".$key."%'" ;
+                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from jshop_store where store_name like ".  $where ."  order by distance,id) as a ";
+            }else{
+                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from  jshop_store  order by distance,id) as a ";
+            }
 
+            $return['data']= Db::query($sql);
+        }else{
+            $where = [];
+            if($key){
+                $where[] = ['store_name','like','%'.$key.'%'];
+            }
+            $return['data'] = $this->where($where)->select();
         }
 
-        $return['data'] = $this->where($where)->select();
+
         if($return['data'])
         {
             foreach($return['data'] as &$v)
             {
                 $v['all_address'] = get_area($v['area_id']).$v['address'];
+                if($longitude && $latitude){
+                    if($v['distance']){
+                        if($v['distance'] >= 1000){
+                            $v['distance'] = bcdiv($v['distance'],1000,2) . 'km';
+                        }else{
+                            $v['distance'] =  $v['distance'] . 'm';
+                        }
+                    }else{
+                        $v['distance'] ='未知';
+                    }
+                }
+
             }
             $return['status'] = true;
             $return['msg'] = '获取成功';

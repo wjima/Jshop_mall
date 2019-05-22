@@ -187,7 +187,7 @@ class Carousel extends Manage
         return $articleType->field('id,type_name')->where('id',input('param.id'))->find();
     }
 
-
+ 
     /**
      *  加载表单列表模板
      * User:mark

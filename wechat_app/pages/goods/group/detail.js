@@ -34,6 +34,7 @@ Page({
     commentLoadingComplete: false, //加载全部
     commentNodata: false,
     mode: 'aspectFit',
+    kefupara: '',//客服信息
   },
 
   //商品减一
@@ -135,6 +136,7 @@ Page({
         });
     }
     this.getMyShareCode(); //获取我的推荐码
+    this.getUserInfo(); //获取个人信息
   },
 
     //获取我的推荐码
@@ -490,7 +492,25 @@ Page({
     }
     return product.default_spes_desc;
   },
-  
+  //获取用户信息
+  getUserInfo: function () {
+    let page = this;
+    let userToken = app.db.get('userToken');
+    if (userToken) {
+      app.api.userInfo(function (res) {
+        let kefupara = {};
+        kefupara.nickName = res.data.nickname;
+        kefupara.tel = res.data.mobile;
+
+        page.setData({
+          nickname: res.data.nickname,
+          avatar: res.data.avatar,
+          kefupara: JSON.stringify(kefupara) //传递客服信息
+        });
+      });
+    }
+  },
+
   //客服功能
   customerService: function (e) {}
 });

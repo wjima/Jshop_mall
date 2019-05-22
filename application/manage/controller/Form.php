@@ -109,7 +109,7 @@ class Form extends Manage
         $id   = input('id/d', 0);
         $form = new FormModel();
         if (Request::isPost()) {
-            $result = [
+            $result               = [
                 'status' => false,
                 'msg'    => '',
                 'data'   => '',
@@ -208,24 +208,19 @@ class Form extends Manage
             'data'   => ''
         ];
         if (!$id) {
-            echo $result['msg'];return ;
+            echo $result['msg'];
+            return;
         }
-        $form = new FormModel();
-        $info = $form->where(['id' => $id])->field('qrcode')->find();
-        if (isset($info['qrcode']) && $info['qrcode']) {
-            $qrcode = $info['qrcode'];
-        } else {
-            $wx     = new Wx();
-            $data = $wx->getFormWxcode($id);
-            if(!$data['status']){
-               echo $data['msg'];return ;
-            }
-            $form->save(['qrcode' => $data['data']], ['id' => $id]);
-            $qrcode = $data['data'];
-        }
+        $this->assign('id', $id);
         $this->view->engine->layout(false);
-        $this->assign('qrcode', $qrcode);
         return $this->fetch('qrcode');
+    }
+
+    public function qrcode()
+    {
+        $id = input('id/d', 0);
+        $wx = new Wx();
+        $wx->getFormWxcode($id);
     }
 
     /**

@@ -114,7 +114,7 @@
                     btnAlign:'c',
                     yes: function(index, layero){
                         var iframeWin = window[layero.find('iframe')[0]['name']];
-                        imgDownLoad(iframeWin.getImage());
+                        iframeWin.downloadQrcode();
                     },
                     cancel: function(){
                         layer.closeAll();

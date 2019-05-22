@@ -1,0 +1,48 @@
+<div class="table-body">
+    <table id="pagesTable" lay-filter="pagesTable"></table>
+</div>
+<script>
+    layui.use(['table','form','layer','laydate'],function(){
+        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+        //执行渲染
+        table.render({
+            elem: '#pagesTable', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-60',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            id:'pagesTable',
+            url: "{:url('Pages/index')}",
+            cols: [[ //标题栏
+                {type:'numbers'},
+                {field: 'name', title: '名称', align:'center'},
+                {field: 'code', title: '编码',align:'center'},
+                {field: 'desc',sort: true, title: '描述' ,align:'center'},
+                {field: 'layout', sort: true, title: '布局样式',align:'center'},
+                {field: 'type', sort: true, title: '布局类型',align:'center'},
+                {title:'操作', toolbar:'#pagesBar'}
+            ]]
+        });
+
+        form.on('submit(brand-search)', function(data){
+            layui.table.reload('pagesTable', {
+                where: data.field
+                ,page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+        //监听工具条
+        table.on('tool(pagesTable)', function (obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+            if (layEvent === 'edit') {
+                window.location.href = "{:url('Pages/custom')}?page_code=" + data.code;
+            }
+        });
+    })
+</script>
+<script type="text/html" id="pagesBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>

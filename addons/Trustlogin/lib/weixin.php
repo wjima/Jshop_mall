@@ -45,20 +45,31 @@ class weixin{
      */
     public function getUserInfo($params)
     {
-        if (!$this->checkState($params['state'],$params['uuid'])) {
-            return false;
+        $data = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => []
+        ];
+        if (!$this->checkState($params['state'], $params['uuid'])) {
+            $data['msg'] = 'state错误';
+            return $data;
         }
         $accessToken = $this->oauth->getOauthAccessToken($params);
         if (!$accessToken) {
-            return false;
+            $data['msg'] = '获取授权失败';
+            return $data;
         }
         $userInfo = $this->oauth->getOauthUserInfo($accessToken['access_token'], $accessToken['openid']);
         Log::info("用户信息：" . json_encode($userInfo));
         $user = [];
-        if(!$userInfo) {
-            return false;
+        if (!$userInfo) {
+            $data['msg'] = '获取用户信息失败';
+            return $data;
         }
-        return $this->getUserData($userInfo);
+        $data['status'] = true;
+        $data['msg']    = '获取成功';
+        $data['data']   = $this->getUserData($userInfo);
+        return $data;
     }
 
     /**

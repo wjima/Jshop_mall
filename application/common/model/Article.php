@@ -185,7 +185,7 @@ class Article extends Common
             $where[] = ['type_id', 'eq', $type_id];
         }
         $list = $this->where($where)
-            ->order('ctime DESC')
+            ->order('sort asc,ctime DESC')
             ->page($page, $limit)
             ->select();
 
@@ -198,6 +198,7 @@ class Article extends Common
             foreach ($list as &$v)
             {
                 $v['cover'] = _sImage($v['cover']);
+                $v['ctime'] = getTime($v['ctime']);
             }
         }
         $result['data'] = [

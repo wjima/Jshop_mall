@@ -48,6 +48,16 @@ class Jshop extends TagLib
             'attr' => 'id,name,value',
             'close' => 0
         ],
+        //公告列表
+        'noticelist'=> [
+            'attr' => 'id,name,value',
+            'close' => 0
+        ],
+        //团购秒杀列表
+        'group'=>[
+            'attr' => 'name,value,num,key',
+            'close' => 0
+        ]
     ];
 
     /**
@@ -175,12 +185,20 @@ class Jshop extends TagLib
         }
         $full     = !empty($tag['full']) ? $tag['full'] : '1';      //传1或者2，如果是1就说明是省市区必须得输入到最后一个节点才有值，否则就是任意点都有值
         
+		if (config('?rename_manage') && config('rename_manage')) {
+            $areaUrl = '/Api/common/area';
+			$areaChildren = '/Api/common/areaChildren';
+        } else {
+            $areaUrl = url('/Api/common/area');
+			$areaChildren = url('api/common/areaChildren');
+        }
+
         $parse .= '
             <script>
                 $(function(){
                     $.ajax({
                         type: "POST",
-                        url: "'.url('api/common/area').'",
+                        url: "'.$areaUrl.'",
                         data: "'.$js_val.'",
                         success:function(data) {
                             var str = "";
@@ -219,7 +237,7 @@ class Jshop extends TagLib
                             //取子节点数据，然后显示下一级
                             $.ajax({
                                 type: "POST",
-                                url: "'.url('api/common/areaChildren').'",
+                                url: "'.$areaChildren.'",
                                 data: "id="+val,
                                 success:function(data) {
                                     if(data.length > 0){
@@ -535,4 +553,238 @@ goodscat' . $id . '();
 </script>';
         return $parseStr;
     }
+
+
+
+
+    /**
+     * 选择公告标签
+     * @param $tag
+     * @return string
+     */
+    public function tagNoticelist($tag)
+    {
+        if(isset($tag['value'])){
+            $tag['value'] = $this->autoBuildVar($tag['value']);
+        }else{
+            $tag['value'] = "";
+        }
+
+        if(isset($tag['num'])){
+            $tag['num'] = $this->autoBuildVar($tag['num']);
+            $num = "<?php echo (" . $tag['num'] . ");?>";
+        }else{
+            $num = "1";
+        }
+        $time = "n".time().rand(1,4);
+        if($tag['value']){
+            $parse = '
+            <div id="'.$time.'_box" class="select_seller_notice_box">
+                <div>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择公告</a>
+                </div>
+                <?php
+                    $list = model("Notice")->where("id","IN",'. $tag['value'] .')->select()->toArray();
+                ?>
+                <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="<?php echo implode(",",array_column($list,"id")) ?>" />
+                <ul id="'.$time.'_list" class="sellect_seller_brands_list">
+                    <?php
+                        foreach($list as $k => $v){
+                            echo \'<li><span id="\'.$v["id"].\'"  >×</span>\'.$v["name"].\'</li>\';
+                        }
+                    ?>
+                </ul>
+            </div>
+        ';
+        }else{
+            $parse = '
+            <div id="'.$time.'_box" class="select_seller_notice_box">
+                <div>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择公告</a>
+                </div>
+                 <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="" />
+                <ul id="'.$time.'_list" class="sellect_seller_brands_list">
+                </ul>
+            </div>
+        ';
+        }
+        $parse .= '
+            <script>
+                var obj_'.$time.'_ids = {};
+                var num_'.$time.' = "'.$num.'";
+                function '.$time.'_show(){
+                    layui.use([\'form\', \'table\'], function(){
+                        $.ajax({
+                            type:"get",
+                            url:"<?php echo url("index/tagSelectNotice",array("type"=>"show"));  ?>",
+                            data:"",
+                            success:function(e){
+                                layui.layer.open({
+                                    type: 1,
+                                    content: e,
+                                    area: ["800px", "600px"],
+                                    title:"选择公告",
+                                    btn: ["完成","取消"],
+                                    yes: function(index, layero){
+                                        //判断个数是否满足
+                                        if(Object.getOwnPropertyNames(ids).length > num_'.$time.'){
+                                            layer.msg("最多只能选择"+num_'.$time.'+"个");
+                                            return false;
+                                        }
+
+
+                                        $("#'.$time.'_list").empty();
+                                        var the_val = "";
+                                        for(var key in ids){
+                                            $("#'.$time.'_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].title+\'</li>\');
+                                            the_val += "," + key;
+                                        }
+                                        $("#'.$time.'").val(the_val.slice(1));
+                                        layer.close(index);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                $("#'.$time.'_list").delegate("span","click",function(){
+                    var ids_array = $("#'.$time.'").val().split(",");
+                    for (var i=0;i<ids_array.length ;i++ )
+                    {
+                        if(ids_array[i] == $(this).attr("id")){
+                            ids_array.splice(i,1);
+                        }
+                    }
+                    $("#'.$time.'").val(ids_array.join(","));
+                    $(this).parent().remove();
+                });
+            </script>
+        ';
+        return $parse;
+    }
+
+
+
+    /**
+     * 商户平台的选择商品标签，总后台不能用，总后台会做另外一个tab标签
+     * @param $tag
+     * @return string
+     */
+    public function tagGroup($tag)
+    {
+        if(isset($tag['value'])){
+            $tag['value'] = $this->autoBuildVar($tag['value']);
+        }else{
+            $tag['value'] = "";
+        }
+
+
+        if(isset($tag['num'])){
+            $tag['num'] = $this->autoBuildVar($tag['num']);
+            $num = "<?php echo (" . $tag['num'] . ");?>";
+        }else{
+            $num = "1";
+        }
+        $time = "g".time().rand(1,4);
+
+        //增加变量key，解决同时存在多个选择商品时的问题
+        if (isset($tag['key']) && $tag['key']) {
+            $tag['key']  = $this->autoBuildVar($tag['key']);
+            $tag['key']  = "<?php echo (" . $tag['key'] . ");?>";
+            $tag['name'] = $tag['name'] . '[' . $tag['key'] . ']';
+            $time        = $time . '_' . $tag['key'];
+        } else {
+            $tag['key'] = "";
+        }
+
+        if($tag['value']){
+            $parse = '
+            <div id="'.$time.'_box" class="select_group_box">
+                <div>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择团购秒杀商品</a>
+                </div>
+                <?php
+                    $where[] = ["id","in",'.$tag['value'].'];
+                    $where[] = ["type","in","3,4"];
+                    $list = model("promotion")->where($where)->select()->toArray();
+                ?>
+                <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="<?php echo implode(",",array_column($list,"id")) ?>" />
+                <ul id="'.$time.'_list" class="select_grout_list">
+                    <?php
+                        foreach($list as $k => $v){
+                            echo \'<li><span id="\'.$v["id"].\'"  >×</span>\'.$v["name"].\'</li>\';
+                        }
+                    ?>
+                </ul>
+            </div>
+        ';
+        }else{
+            $parse = '
+            <div id="'.$time.'_box" class="select_group_box">
+                <div>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择团购秒杀商品</a>
+                </div>
+                 <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="" />
+                <ul id="'.$time.'_list" class="select_grout_list">
+                </ul>
+            </div>
+        ';
+        }
+
+        $parse .= '
+            <script>
+                var obj_'.$time.'_ids = {};
+                var num_'.$time.' = "'.$num.'";
+                function '.$time.'_show(){
+                    layui.use([\'form\', \'table\'], function(){
+                        $.ajax({
+                            type:"get",
+                            url:"<?php echo url("index/tagSelectGroup",array("type"=>"show"));  ?>",
+                            data:"",
+                            success:function(e){
+                                layui.layer.open({
+                                    type: 1,
+                                    content: e,
+                                    area: ["800px", "635px"],
+                                    title:"选择商品",
+                                    btn: ["完成","取消"],
+                                    yes: function(index, layero){
+                                       //判断个数是否满足
+                                        if(Object.getOwnPropertyNames(ids).length > num_'.$time.'){
+                                            layer.msg("最多只能选择"+num_'.$time.'+"个");
+                                            return false;
+                                        }
+
+
+                                        $("#'.$time.'_list").empty();
+                                        var the_val = "";
+                                        for(var key in ids){
+                                            $("#'.$time.'_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name+\'</li>\');
+                                            the_val += "," + key;
+                                        }
+                                        $("#'.$time.'").val(the_val.slice(1));
+                                        layer.close(index);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                $("#'.$time.'_list").delegate("span","click",function(){
+                    var ids_array = $("#'.$time.'").val().split(",");
+                    for (var i=0;i<ids_array.length ;i++ )
+                    {
+                        if(ids_array[i] == $(this).attr("id")){
+                            ids_array.splice(i,1);
+                        }
+                    }
+                    $("#'.$time.'").val(ids_array.join(","));
+                    $(this).parent().remove();
+                });
+            </script>
+        ';
+        return $parse;
+    }
+
+
 }

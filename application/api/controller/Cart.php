@@ -2,7 +2,7 @@
 namespace app\api\controller;
 use app\common\controller\Api;
 use think\facade\Request;
-use app\common\model\Cart as Model;
+use app\common\model\Cart as CartModel;
 
 /**
  * 购物车
@@ -12,6 +12,14 @@ use app\common\model\Cart as Model;
  */
 class Cart extends Api
 {
+    private $cartModel = null;
+
+    protected function initialize()
+    {
+        parent::initialize();
+        $this->cartModel = new CartModel();
+    }
+
     /**
      * 单个加入购物车
      * @return array
@@ -32,14 +40,10 @@ class Cart extends Api
             $result['msg'] = '请输入货品数量';
             return $result;
         }
-
-
         $type = input('param.type',1);          //1是累加，2是覆盖
+        $cart_type = input('param.cart_type',1);        //购物车类型，1是普通流程，2是平图案，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
 
-
-
-
-        return model('common/Cart')->add($this->userId,input('product_id'),input('nums'),$type);
+        return $this->cartModel->add($this->userId,input('product_id'),input('nums'),$type,$cart_type);
 
     }
 
@@ -53,8 +57,9 @@ class Cart extends Api
     {
         $ids = input('param.ids',"");
         $user_id = $this->userId;
+        $type = input('param.type',1);
 
-        $result = model('common/Cart')->del($user_id,$ids);
+        $result = $this->cartModel->del($user_id,$ids,$type);
         if($result)
         {
             $return_data = array(
@@ -84,14 +89,19 @@ class Cart extends Api
      */
     public function getList()
     {
-        $model = new Model();
         $ids = Request::param('ids', '');
-        $display = Request::param('display', '');
+        //$display = Request::param('display', '');
+        $type = input('param.type',1);
         $area_id = Request::param('area_id', false);
         $point = Request::param('point', 0);
         $coupon_code = Request::param('coupon_code', '');
-        $receipt_type = Request::param('receipt_type', 1);
-        $result = $model->info($this->userId, $ids, $display, $area_id, $point, $coupon_code, $receipt_type);
+        $receipt_type = Request::param('receipt_type', 1);      //配送方式是否包邮   1=快递配送（要去算运费）生成订单记录快递方式  2=门店自提（不需要计算运费）生成订单记录门店自提信息
+        if($receipt_type == 1){
+            $free_freight = false;
+        }else{
+            $free_freight = true;
+        }
+        $result = $this->cartModel->info($this->userId, $ids, $type, $area_id, $point, $coupon_code, $free_freight);
         return $result;
     }
 
@@ -102,18 +112,27 @@ class Cart extends Api
      */
     public function setNums()
     {
-        $input['user_id'] = $this->userId;
-        $input['id'] = input('id');
-        $input['nums'] = input('nums', 1);
-        if($input['nums'] <= 0)
-        {
-            $input['nums'] = 1;
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => ''
+        ];
+        if(input('?param.id')){
+            $result['msg'] = '请输入货品id';
+            return $result;
+        }else{
+            $id = input('param.id');
         }
-        $result = model('common/Cart')->setNums($input);
+        $nums = input('nums', 1);
+        if($nums <= 0)
+        {
+            $nums = 1;
+        }
+        $result = $this->cartModel->setNums($this->userId, $id, $nums, input('param.type',1));
         if(!$result['status']){
             return $result;
         }
-        return model('common/Cart')->info($this->userId,  input('param.ids',""));
+        return $this->cartModel->info($this->userId,  input('param.ids',""));
 
     }
 
@@ -131,7 +150,6 @@ class Cart extends Api
             'data' => []
         ];
 
-        $model = new Model();
         $where[] = ['user_id', 'eq', $this->userId];
         $vclass = getSetting('virtual_card_class');
         if($vclass)
@@ -139,7 +157,7 @@ class Cart extends Api
             $where[] = ['g.goods_cat_id', 'neq', $vclass];
         }
 
-        $cartNums = $model->alias('c')
+        $cartNums = $this->cartModel->alias('c')
             ->where($where)
             ->join('products p', 'p.id = c.product_id')
             ->join('goods g', 'g.id = p.goods_id')

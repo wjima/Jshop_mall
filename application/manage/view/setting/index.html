@@ -443,18 +443,16 @@
                                 <div class="layui-input-inline seller-inline-5">
                                     <input type="text" name="image_storage_params[endpoint]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['endpoint']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                                 </div>
-                                <div class="layui-form-mid layui-word-aux">阿里云OSS的 endpoint</div>
+                                <div class="layui-form-mid layui-word-aux">阿里云OSS的 endpoint，例如：oss-cn-beijing.aliyuncs.com</div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">空间名称：</label>
                                 <div class="layui-input-inline seller-inline-5">
                                     <input type="text" name="image_storage_params[bucket]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['bucket']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                                 </div>
-                                <div class="layui-form-mid layui-word-aux">阿里云OSS的 bucket</div>
+                                <div class="layui-form-mid layui-word-aux">阿里云OSS的 bucket，例如：jshop-jihainet</div>
                             </div>
-
                         </div>
-
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>统计代码</legend></fieldset>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['statistics_code']['name']}：</label>

@@ -257,13 +257,9 @@ class Wx
      */
     public function getFormWxcode($form_id = 0)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '获取失败',
-            'data'   => ''
-        ];
         if (!$form_id) {
-            return $return;
+            echo '关键参数丢失';
+            exit();
         }
         $appid       = getSetting('wx_appid');
         $secret      = getSetting('wx_app_secret');
@@ -280,22 +276,13 @@ class Wx
         $data        = json_encode($data, JSON_UNESCAPED_SLASHES);
         $res         = $curl->post($url, $data);
         Log::info('生成小程序码消息返回：' . $res);
-        if(isjson($res)){
+        if (isjson($res)) {
             $res = json_decode($res, true);
-            echo $res['errmsg'];exit;//输出错误信息
-        }else{
-            $filePath = ROOT_PATH . '/public/qrcode';
-            if (!is_dir($filePath)) {
-                @mkdir($filePath);
-            }
-            $filename =  md5($path) . ".jpg";
-            $file     = fopen($filePath.'/'.$filename, "w");//打开文件准备写入
-            fwrite($file, $res);//写入
-            fclose($file);//关闭
-            $return['data']   = getRealUrl('/qrcode/'.$filename);
-            $return['status'] = true;
-            $return['msg']    = '获取成功';
-            return $return;
+            echo $res['errmsg'];
+            exit;//输出错误信息
+        } else {
+            echo $res;
+            exit();
         }
     }
 

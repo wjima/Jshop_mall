@@ -1,18 +1,36 @@
 <form id="spec_form">
 
 <div id="spec_select" style="display: none">
-{volist name="spec" id="vo"}
-    <div class="layui-form-item" pane>
-        <label class="layui-form-label">{$vo.name}</label>
-        <div class="layui-input-block">
-            {volist name="vo.specValue" id="v"}
-                <input type="checkbox" name="spec[{$vo.name}][]" value="{$v.value}" lay-skin="primary" title="{$v.value}" lay-filter="spec_select">
-            {/volist}
-        </div>
-    </div>
-{/volist}
+    {if condition="$customSpec"}
+        {volist name="spec" id="vo"}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">{$vo.name}</label>
+                <div class="layui-input-block">
+                    {volist name="vo.specValue" id="v"}
+                    <div class="spec-item layui-input-inline">
+                        <input type="checkbox" name="spec[{$vo.name}][{$v.id}]" value="{$v.value}" lay-skin="primary"  lay-filter="spec_select" class="spec-select">
+                        <input type="text" value="{$v.value}" name="goods[new_spec][{$v.id}][]" class="layui-input new-spec ">
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+        {/volist}
+    {else}
+        {volist name="spec" id="vo"}
+            <div class="layui-form-item" pane>
+                <label class="layui-form-label">{$vo.name}</label>
+                <div class="layui-input-block">
+                    {volist name="vo.specValue" id="v"}
+                    <input type="checkbox" name="spec[{$vo.name}][]" value="{$v.value}" lay-skin="primary" title="{$v.value}" lay-filter="spec_select">
+                    {/volist}
+                </div>
+            </div>
+        {/volist}
+    {/if}
+
     <div class="layui-form-item">
         <div class="layui-input-inline">
+            <input type="hidden" value="{$typeInfo.id}" name="type_id">
             <button class="layui-btn layui-btn-sm generate-spec">生成规格</button>
         </div>
     </div>
@@ -24,7 +42,7 @@
 </div>
 <div id="no_spec">
 <div class="layui-form-item">
-    <label class="layui-form-label">销售价：</label>
+    <label class="layui-form-label"><i class="required-color">*</i>销售价：</label>
     <div class="layui-input-inline">
         <input type="text" name="goods[price]" placeholder="￥" autocomplete="off" class="layui-input">
     </div>
@@ -52,7 +70,11 @@
 <div class="layui-form-item">
     <label class="layui-form-label">库存：</label>
     <div class="layui-input-inline">
-        <input type="text" name="goods[stock]" lay-verify="title" autocomplete="off" placeholder="请输入商品库存" class="layui-input">
+        <input type="text" name="goods[stock]" lay-verify="title" autocomplete="off"  class="layui-input goods-stock">
+        <input type="checkbox" name="goods[stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
+    </div>
+    <div class="layui-form-mid layui-word-aux" >
+        选择增加时增加库存，选择减少时减少库存
     </div>
 </div>
 </div>
@@ -90,5 +112,10 @@
 <script>
     layui.use('form', function(){
         layui.form.render();
+        $("body").on("input propertychange",'.new-spec',function(){
+            var value = $(this).val();
+            var specCheckbox = $(this).parent('.spec-item').find(".spec-select");
+            specCheckbox.val(value);
+        });
     });
 </script>

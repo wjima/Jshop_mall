@@ -1,8 +1,39 @@
 <div style="text-align: center">
-    <img src="{$qrcode}"  id="saveImg" >
+    <canvas  id="cavasimg" width="300" height="300" ></canvas>
 </div>
 <script>
-    function getImage(){
-        return document.getElementById("saveImg").src;
+    var cvs = document.getElementById("cavasimg");
+    //创建image对象
+    var imgObj = new Image();
+    imgObj.src = "{:url('Form/qrcode',['id'=>$id])}";
+    imgObj.setAttribute("crossOrigin", 'Anonymous')
+    imgObj.onload = function () {
+        var ctx = cvs.getContext('2d');
+        ctx.drawImage(this, 0, 0);
+    };
+    /**
+     * 下载小程序码
+     */
+    function downloadQrcode() {
+        var type = 'png';
+        var image = document.getElementById("cavasimg");
+        var imgdata = image.toDataURL(type);
+        var fixtype = function (type) {
+            type = type.toLocaleLowerCase().replace(/jpg/i, 'jpeg');
+            var r = type.match(/png|jpeg|bmp|gif/)[0];
+            return 'image/' + r;
+        };
+        imgdata = imgdata.replace(fixtype(type), 'image/octet-stream');
+        var savaFile = function (data, filename) {
+            var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+            save_link.href = data;
+            save_link.download = filename;
+            var event = document.createEvent('MouseEvents');
+            event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            save_link.dispatchEvent(event);
+        };
+        var filename = '' + new Date().getSeconds() + '.' + type;
+        //我想用当前秒是可以解决重名的问题了 不行你就换成毫秒
+        savaFile(imgdata, filename);
     }
 </script>

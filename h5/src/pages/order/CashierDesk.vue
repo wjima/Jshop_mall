@@ -117,15 +117,12 @@ export default {
                 // 过滤非线上支付方式
                 if (this.GLOBAL.isWeiXinBrowser()) {
                     // h5支付并且是在微信浏览器内 过滤支付宝支付
-                    data = data.filter(item => item.is_online === 1 || item.code !== 'alipay')
-                } else {
-                    // 其他浏览器内
-                    data = data.filter(item => item.is_online === 1)
+                    data = data.filter(item => item.code !== 'alipay')
                 }
 
-                // 如果是充值订单 过滤余额支付
+                // 如果是充值订单 过滤余额支付及线下支付
                 if (this.type == 2) {
-                    data = data.filter(item => item.code !== 'balancepay')
+                    data = data.filter(item => item.code !== 'balancepay' && item.is_online === 1)
                 }
 
                 data.forEach(item => {

@@ -138,8 +138,7 @@
 <div class="table-body">
     <div class="layui-tab layui-tab-card" lay-filter="order-tab">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="all">全部订单<span
-                    class="layui-badge layui-bg-gray">{$count.all|default=0}</span></li>
+            <li class="layui-this" lay-id="all">全部订单<span class="layui-badge layui-bg-gray">{$count.all|default=0}</span></li>
             <li lay-id="payment">待支付<span class="layui-badge layui-bg-green">{$count.payment|default=0}</span></li>
             <li lay-id="delivered">待发货<span class="layui-badge layui-bg-black">{$count.delivered|default=0}</span></li>
             <li lay-id="receive">待收货<span class="layui-badge layui-bg-blue">{$count.receive|default=0}</span></li>
@@ -204,6 +203,7 @@
             },
             cols: [[
                 { type: 'checkbox' },
+				{ field: 'operating', title: '操作', width: 200, align: 'center' },
                 { field: 'order_id_k', title: '订单号', width: 140, align: 'center' },
                 {
                     field: 'order_id', title: '打印', align: 'center', width: 100, templet: function (data) {
@@ -228,7 +228,7 @@
                 { field: 'ship_status', title: '发货状态', width: 90, align: 'center' },
                 { field: 'order_amount', title: '订单总额', width: 100, align: 'center', templet: function (data) { return '￥' + data.order_amount } },
                 { field: 'source', title: '订单来源', width: 130, align: 'center' },
-                { field: 'operating', title: '操作', width: 200, align: 'center' }
+                
             ]]
         });
 
@@ -669,7 +669,7 @@
                 return false;
             }
             JsGet('{:url("order/print_form")}?order_id=' + order_id, function (e) {
-                if (e.hasOwnProperty('status') && !e.status) {
+                if ((e.hasOwnProperty('status') && !e.status) || (e.hasOwnProperty('code') && e.code == 0)) {
                     layer.msg(e.msg); return false;
                 }
                 window_box = layer.open({

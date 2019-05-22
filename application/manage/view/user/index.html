@@ -135,7 +135,7 @@
     layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         table = layui.table.render({
             elem: '#userTable',
-            height: 'full-220',
+            height: 'full-150',
             cellMinWidth: '80',
             page: 'true',
             limit: '20',
@@ -223,27 +223,24 @@
             var user_id = $("#user_id").val();
             var point = $("#point").val();
             var memo = $("#memo").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
             if ($.trim(point) == '') {
                 layer.msg('积分变更不能为空');
             }
-            $.ajax({
-                url: "{:url('manage/user/editPoint')}",
-                type: 'post',
-                data: {
-                    'user_id': user_id,
-                    'flag': 'true',
-                    'point': point,
-                    'memo': memo
-                },
-                success: function (e) {
-                    if (e.status) {
-                        layer.msg(e.msg, { time: 1500 }, function () {
-                            layer.closeAll();
-                            layui.table.reload('userTable');
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
+            JsPost("{:url('manage/user/editPoint')}", {
+                'user_id': user_id,
+                'flag': 'true',
+                'point': point,
+                'memo': memo,
+                '__Jshop_Token__': __Jshop_Token__
+            }, function (e) {
+                if (e.status) {
+                    layer.msg(e.msg, {time: 1500}, function () {
+                        layer.closeAll();
+                        layui.table.reload('userTable');
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
         });

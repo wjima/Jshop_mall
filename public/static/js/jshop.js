@@ -280,3 +280,29 @@ function saveAsOther(src) {
     evObj.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, true, false, 0, null);
     $a.dispatchEvent(evObj);
 }
+
+$(function(){
+    //帮助tips
+    $("body").on("click",".help-tip", function () {
+        var msg = $(this).attr('data-tip');
+		var node = $(this);
+        layer.tips(msg, node,{
+            tips: [2, '#FF7159'],
+			offset:'100px'
+        });
+    });
+
+    //页面跳转
+    $('body').on('click', '*[lay-href]', function () {
+        var othis = $(this)
+            , href = othis.attr('lay-href')
+            , text = othis.attr('lay-text')
+            , router = parent.window.layui.router();
+        parent.window.layui.admin.tabsPage.elem = othis;
+        //执行跳转
+        var topLayui = parent === self ? parent.window.layui : top.parent.window.layui;
+        topLayui.index.openTabsPage(href, text || othis.text());
+    });
+});
+
+

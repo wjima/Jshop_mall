@@ -20,7 +20,7 @@ class Images extends Manage
     {
         $imageModel = new imageModel();
 
-        if(Request::isAjax()) {
+        if (Request::isAjax()) {
             $filter = input('request.');
             return $imageModel->tableData($filter);
         }
@@ -34,149 +34,75 @@ class Images extends Manage
      */
     function uploadImage()
     {
-        $filetypes = [
-            'image' => [
-                'title'      => 'Image files',
-                'extensions' => 'jpg,jpeg,png,gif,bmp4'
-            ],
-        ];
-
-        $image_extensions = explode(',','jpg,jpeg,png,gif,bmp4');
-        if(Request::isPost()) {
-            $all_allowed_exts = array();
-            foreach($filetypes as $mfiletype) {
-                array_push($all_allowed_exts,$mfiletype['extensions']);
-            }
-
-            $all_allowed_exts = implode(',',$all_allowed_exts);
-            $all_allowed_exts = explode(',',$all_allowed_exts);
-            $all_allowed_exts = array_unique($all_allowed_exts);
-            $upload_max_filesize = config('jshop.upload_filesize');
-            $upload_max_filesize = empty($upload_max_filesize) ? 5242880 : $upload_max_filesize;//默认5M
-
-            if(isset($_FILES['upfile']))
-            {
-                $file_extension = get_file_extension($_FILES['upfile']['name']);
-                $savepath =  '/static/uploads/images' . get_hash_dir($_FILES['upfile']['name']);
-            }
-            else
-            {
-                $file_extension = get_file_extension($_FILES['file']['name']);
-                $savepath =  '/static/uploads/images' . get_hash_dir($_FILES['file']['name']);
-            }
-
-            //上传处理类
-            $config = array(
-                'rootPath' => ROOT_PATH . DIRECTORY_SEPARATOR . 'public',
-                'savePath' => $savepath,
-                'maxSize'  => $upload_max_filesize,
-                'saveName' => array(
-                    'uniqid',
-                    ''
-                ),
-                'exts'     => $all_allowed_exts,
-                'autoSub'  => false,
-            );
-
-            $image_storage = config('jshop.image_storage');
-            if (!$image_storage) {
-                $image_storage = [
-                    'type' => 'Local',
-                ];
-            }
-            //增加后台设置，如果设置则用后台设置的
-            if (getSetting('image_storage_params')) {
-                $image_storage = array_merge(['type' => getSetting('image_storage_type')], getSetting('image_storage_params'));
-            }
-            $upload = new \org\Upload($config,$image_storage['type'],$image_storage);
-            $info = $upload->upload();
-
-            if($info) {
-                $first         = array_shift($info);
-                $url           = getRealUrl($savepath . $first['savename']);
-                $preview_url   = $url;
-                $iData['id']   = md5(get_hash($first['name']));
-                $iData['type'] = $image_storage['type'];
-                $iData['name'] = $first['name'];
-                $iData['url']  = $url;
-                $iData['ctime']  = time();
-                $iData['path'] = ROOT_PATH .DIRECTORY_SEPARATOR.'public'.$savepath . $first['savename'];
-                $image_model   = new imageModel();
-                if($image_model->save($iData)) {
-
-                    if(isset($_FILES['upfile'])){
-                        $callback = input('callback','');
-                        $editInfo = [
-                            'originalName' => $iData['name'],
-                            'name' => $first['savename'],
-                            'url' => $url,
-                            'size' => $first['size'],
-                            'type' => $iData['type'],
-                            'state' => 'SUCCESS',
-                            'image_id' => $iData['id'],
-                        ];
-
-                        if($callback) {
-                            echo '<script>'.$callback.'('.json_encode($editInfo).')</script>';exit;
-                        } else {
-                            echo json_encode($editInfo);exit;
-                        }
-                    }else{
-                        $data = [
-                            'url'        => $preview_url,
-                            'image_id'   => $iData['id'],
-                            'image_name' => $iData['name'],
-                        ];
-                        $response = [
-                            'data'   => $data,
-                            'status' => true,
-                            'msg'    => $upload->getError()
-                        ];
-                        echo json_encode($response);exit;
-
-                    }
-                }else {
-                    $response =  [
-                        'data'   => '',
-                        'status' => false,
-                        'msg'    => "保存失败"
+        if (Request::isPost()) {
+            $imageModel = new \app\common\model\Images();
+            $result     = $imageModel->saveImage();
+            if ($result['status']) {
+                if (isset($_FILES['upfile'])) {
+                    $callback = input('callback', '');
+                    $editInfo = [
+                        'originalName' => $result['data']['name'],
+                        'name'         => $result['data']['name'],
+                        'url'          => $result['data']['url'],
+                        'size'         => '',
+                        'type'         => '',
+                        'state'        => 'SUCCESS',
+                        'image_id'     => $result['data']['id'],
                     ];
-                    echo json_encode($response);exit;
+                    if ($callback) {
+                        echo '<script>' . $callback . '(' . json_encode($editInfo) . ')</script>';
+                        exit;
+                    } else {
+                        echo json_encode($editInfo);
+                        exit;
+                    }
+                } else {
+                    $data     = [
+                        'url'        => $result['data']['url'],
+                        'image_id'   => $result['data']['id'],
+                        'image_name' => $result['data']['name'],
+                    ];
+                    $response = [
+                        'data'   => $data,
+                        'status' => true,
+                        'msg'    => $result['msg']
+                    ];
+                    echo json_encode($response);
+                    exit;
                 }
-            }else {
-
+            } else {
                 $response = [
                     'data'   => '',
                     'status' => false,
-                    'msg'    => $upload->getError()
+                    'msg'    => "保存失败"
                 ];
-                echo json_encode($response);exit;
-
+                echo json_encode($response);
+                exit;
             }
         }
     }
 
     public function listimage()
     {
-        $imageModel = new imageModel();
-        $filter = input('request.');
+        $imageModel      = new imageModel();
+        $filter          = input('request.');
         $filter['limit'] = input('size', '20');
         $filter['start'] = input('start', '0');
-        $filter['page'] = ($filter['start'] / $filter['limit']) + 1;
-        $data = $imageModel->tableData($filter);
-        $imageData = [];
+        $filter['page']  = ($filter['start'] / $filter['limit']) + 1;
+        $data            = $imageModel->tableData($filter);
+        $imageData       = [];
         foreach ($data['data'] as $key => $val) {
-            if($val['type']=='local'){
+            if ($val['type'] == 'local') {
                 $val['url'] = getRealUrl($val['url']);
             }
-            $imageData[$key]['url'] = $val['url'];
+            $imageData[$key]['url']      = $val['url'];
             $imageData[$key]['image_id'] = $val['id'];
-            $imageData[$key]['name'] = $val['name'];
-            $imageData[$key]['ctime'] = $val['ctime'];
+            $imageData[$key]['name']     = $val['name'];
+            $imageData[$key]['ctime']    = $val['ctime'];
         }
         $iData['start'] = $filter['start'];
         $iData['state'] = 'SUCCESS';
-        $iData['list'] = $imageData;
+        $iData['list']  = $imageData;
         $iData['total'] = $data['count'];
         echo json_encode($iData);
         exit();
@@ -233,35 +159,36 @@ class Images extends Manage
     public function cropper()
     {
         $response = [
-            'data' => '',
+            'data'   => '',
             'status' => 'fail',
-            'msg' => "裁剪失败"
+            'msg'    => "裁剪失败"
         ];
 
-        if(!Request::isPost()) {
+        if (!Request::isPost()) {
             return $response;
         }
         $image_model = new imageModel();
-        $imgUrl = $_POST['imgUrl'];
-        $imgInitW = $_POST['imgInitW'];
-        $imgInitH = $_POST['imgInitH'];
-        $imgW = $_POST['imgW'];
-        $imgH = $_POST['imgH'];
-        $imgY1 = $_POST['imgY1'];
-        $imgX1 = $_POST['imgX1'];
-        $cropW = $_POST['cropW'];
-        $cropH = $_POST['cropH'];
-        $angle = $_POST['rotation'];
+        $imgUrl      = $_POST['imgUrl'];
+        $imgInitW    = $_POST['imgInitW'];
+        $imgInitH    = $_POST['imgInitH'];
+        $imgW        = $_POST['imgW'];
+        $imgH        = $_POST['imgH'];
+        $imgY1       = $_POST['imgY1'];
+        $imgX1       = $_POST['imgX1'];
+        $cropW       = $_POST['cropW'];
+        $cropH       = $_POST['cropH'];
+        $angle       = $_POST['rotation'];
 
         $jpeg_quality = 100;
         //todo 判断文件是否是图片
-        $output_file_path =  '/static/uploads/images' . get_hash_dir();
-        $relpath = ROOT_PATH . DS . 'public' . $output_file_path;
+        $output_file_path = '/static/uploads/images' . get_date_dir();
+        $relpath          = ROOT_PATH . DS . 'public' . $output_file_path;
 
 
         if (!is_dir($relpath)) {
             mkdirs($relpath);
         }
+
 
         $imgUrl = $this->getRealPath($imgUrl);
 
@@ -269,32 +196,34 @@ class Images extends Manage
             $tmp_img = $image_model->getImage($imgUrl, $relpath);
             if ($tmp_img['error'] > 0) {
                 $response = Array(
-                    "status" => 'error',
+                    "status"  => 'error',
                     "message" => '裁剪失败'
                 );
             }
             $imgUrl = $tmp_img['save_path'];
         }
-        $tempFileName = "croppedImg_" . rand();
+
+        $tempFileName    = "croppedImg_" . rand();
         $output_filename = $relpath . $tempFileName;
-        $what = getimagesize($imgUrl);
-        $file_name = $this->retrieve($imgUrl);
+        $what            = getimagesize($imgUrl);
+        $file_name       = $this->retrieve($imgUrl);
+
         switch (strtolower($what['mime'])) {
             case 'image/png':
-                $img_r = imagecreatefrompng($imgUrl);
+                $img_r        = imagecreatefrompng($imgUrl);
                 $source_image = imagecreatefrompng($imgUrl);
-                $type = '.png';
+                $type         = '.png';
                 break;
             case 'image/jpeg':
-                $img_r = imagecreatefromjpeg($imgUrl);
+                $img_r        = imagecreatefromjpeg($imgUrl);
                 $source_image = imagecreatefromjpeg($imgUrl);
                 error_log("jpg");
                 $type = '.jpeg';
                 break;
             case 'image/gif':
-                $img_r = imagecreatefromgif($imgUrl);
+                $img_r        = imagecreatefromgif($imgUrl);
                 $source_image = imagecreatefromgif($imgUrl);
-                $type = '.gif';
+                $type         = '.gif';
                 break;
             default:
                 die('image type not supported');
@@ -308,11 +237,11 @@ class Images extends Manage
         } else {
             $resizedImage = imagecreatetruecolor($imgW, $imgH);
             imagecopyresampled($resizedImage, $source_image, 0, 0, 0, 0, $imgW, $imgH, $imgInitW, $imgInitH);
-            $rotated_image = imagerotate($resizedImage, -$angle, 0);
-            $rotated_width = imagesx($rotated_image);
-            $rotated_height = imagesy($rotated_image);
-            $dx = $rotated_width - $imgW;
-            $dy = $rotated_height - $imgH;
+            $rotated_image         = imagerotate($resizedImage, -$angle, 0);
+            $rotated_width         = imagesx($rotated_image);
+            $rotated_height        = imagesy($rotated_image);
+            $dx                    = $rotated_width - $imgW;
+            $dy                    = $rotated_height - $imgH;
             $cropped_rotated_image = imagecreatetruecolor($imgW, $imgH);
             imagecolortransparent($cropped_rotated_image, imagecolorallocate($cropped_rotated_image, 0, 0, 0));
             imagecopyresampled($cropped_rotated_image, $rotated_image, 0, 0, $dx / 2, $dy / 2, $imgW, $imgH, $imgW, $imgH);
@@ -323,22 +252,22 @@ class Images extends Manage
             imagejpeg($final_image, $output_filename . $type, $jpeg_quality);
 
             //保存到image里面，删除之前文件
-            $url = $output_file_path . $tempFileName . $type;//todo 带上域名
-            $iData['id'] = md5(get_hash($file_name));
-            $iData['type'] = 'local';
-            $iData['name'] = $file_name;
-            $iData['url'] = $url;
+            $url            = $output_file_path . $tempFileName . $type;//todo 带上域名
+            $iData['id']    = md5(get_hash($file_name));
+            $iData['type']  = 'local';
+            $iData['name']  = $file_name;
+            $iData['url']   = $url;
             $iData['ctime'] = time();
-            $iData['path'] = $output_filename . $type;
+            $iData['path']  = $output_filename . $type;
 
             if ($image_model->save($iData)) {
                 $response = [
-                    "status" => 'success',
-                    "url" => $url,
-                    "src" => $url,
+                    "status"   => 'success',
+                    "url"      => $url,
+                    "src"      => $url,
                     'image_id' => $iData['id'],
                 ];
-                $this->assign('data',$response);
+                $this->assign('data', $response);
                 $this->view->engine->layout(false);
                 $response['image_html'] = $this->fetch('gimage');
             }
@@ -355,20 +284,20 @@ class Images extends Manage
      * Email:1457529125@qq.com
      * Date: 2017-11-28 16:11
      */
-    private function getRealPath($image_path){
-        $host =  $_SERVER['HTTP_HOST'];
+    private function getRealPath($image_path)
+    {
+        $host = $_SERVER['HTTP_HOST'];
         //增加图片裁剪功能
-        if(!defined('APP_STATICS_HOST')&&strpos($image_path,'http://')!==false){
-            $image_path = ROOT_PATH.'public'.str_replace('http://'.$host,'',$image_path);
-        }else if(!defined('APP_STATICS_HOST')&&strpos($image_path,'https://')!==false){
-            $image_path = ROOT_PATH.'public'.str_replace('https://'.$host,'',$image_path);
-        }else if(strpos($image_path,'http://')===false&&strpos($image_path,'http://')===false){
-            $tmp_url = explode('?',$image_path);
-            $image_path = ROOT_PATH.'public'.$tmp_url[0];
+        if (!defined('APP_STATICS_HOST') && strpos($image_path, 'http://') !== false) {
+            $image_path = ROOT_PATH . 'public' . str_replace('http://' . $host, '', $image_path);
+        } else if (!defined('APP_STATICS_HOST') && strpos($image_path, 'https://') !== false) {
+            $image_path = ROOT_PATH . 'public' . str_replace('https://' . $host, '', $image_path);
+        } else if (strpos($image_path, 'http://') === false && strpos($image_path, 'http://') === false) {
+            $tmp_url    = explode('?', $image_path);
+            $image_path = ROOT_PATH . 'public' . $tmp_url[0];
         }
         return $image_path;
     }
-
 
 
     /**
@@ -379,8 +308,9 @@ class Images extends Manage
      * Email:1457529125@qq.com
      * Date: 2017-11-28 17:39
      */
-    private function retrieve($url) {
-        preg_match('/\/([^\/]+\.[a-z]+)[^\/]*$/',$url,$match);
+    private function retrieve($url)
+    {
+        preg_match('/\/([^\/]+\.[a-z]+)[^\/]*$/', $url, $match);
         return $match[1];
     }
 
@@ -402,7 +332,6 @@ class Images extends Manage
         }
         return $return_data;
     }
-
 
 
 }

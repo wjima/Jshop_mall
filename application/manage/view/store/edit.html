@@ -38,21 +38,18 @@
             {Jshop:area name='area_id' class="select-address" lay-verify="required" value="$info.area_id" }
         </div>
     </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>详细地址：</label>
-        <div class="layui-input-inline seller-inline-6">
-            <input type="text" name="address" value="{$info.address}" lay-verify="required" placeholder="请输入门店详细地址" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>门店坐标：</label>
         <div class="layui-input-inline seller-inline-6">
             <input type="text" id="coordinate" name="coordinate" value="{$info.coordinate}" readonly="readonly" onclick="show_map();" lay-verify="required" placeholder="请选择坐标" autocomplete="off" class="layui-input">
         </div>
     </div>
-
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>详细地址：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input type="text" name="address" id="address" value="{$info.address}" lay-verify="required" placeholder="请输入门店详细地址" autocomplete="off" class="layui-input">
+        </div>
+    </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
             {:jshopToken()}

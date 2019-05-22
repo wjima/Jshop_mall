@@ -960,6 +960,7 @@
                                 _this.scale(image, image.parentNode.offsetWidth, image.parentNode.offsetHeight);
                             }
                         })(img));
+						
                         img.width = 113;
                         img.setAttribute('src', urlPrefix + list[i].url + (list[i].url.indexOf('?') == -1 ? '?noCache=' : '&noCache=') + (+new Date()).toString(36));
                         img.setAttribute('_src', urlPrefix + list[i].url);

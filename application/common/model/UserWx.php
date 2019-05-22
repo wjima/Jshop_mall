@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use org\Alipay;
 use think\Db;
 use app\common\model\Images;
 
@@ -78,11 +79,13 @@ class UserWx extends Common
                 $data['user_id'] = $wxUserInfo['user_id'];
             }
         }
-        //更新微信信息
+        //有会员的情况下不更新头像
 
-        $imageModel = new Images();
-        $image      = $imageModel->saveRemoteImage($result['data']['avatarUrl']);//头像都按统一方法保存到本地或者远程图片服务器
-        $result['data']['avatarUrl']  = isset($image['data']['image_id'])?$image['data']['image_id']:_sImage();
+        if (isset($info['avatar']) && !$info['avatar']) {
+            $imageModel                  = new Images();
+            $image                       = $imageModel->saveImage($result['data']['avatarUrl'], true);//头像都按统一方法保存到本地或者远程图片服务器
+            $result['data']['avatarUrl'] = isset($image['data']['id']) ? $image['data']['id'] : _sImage();
+        }
 
         $data['type']     = self::TYPE_MINIPROGRAM;
         $data['avatar']   = $result['data']['avatarUrl'];
@@ -118,12 +121,13 @@ class UserWx extends Common
             if (isset($params['unionId'])) {
                 $data['unionid'] = $params['unionId'];
             }
-            if (isset($params['user_id'])) {
+            if (isset($params['user_id']) && $params['user_id']) {
                 $data['user_id'] = $params['user_id'];
+            } else {
+                $imageModel     = new Images();
+                $image          = $imageModel->saveImage($params['avatar'], true);//头像都按统一方法保存到本地或者远程图片服务器
+                $data['avatar'] = isset($image['data']['id']) ? $image['data']['id'] : _sImage();
             }
-            $imageModel = new Images();
-            $image      = $imageModel->saveRemoteImage($params['avatar']);//头像都按统一方法保存到本地或者远程图片服务器
-            $data['avatar']   = isset($image['data']['image_id'])?$image['data']['image_id']:_sImage();
             $data['openid']   = $params['openid'];
             $data['nickname'] = $params['nickName'];
             $data['gender']   = $params['gender'];
@@ -148,14 +152,14 @@ class UserWx extends Common
      */
     public function alipayCodeToInfo($code)
     {
-        $result = [
+        $result     = [
             'status' => false,
-            'data' => [],
-            'msg' => ''
+            'data'   => [],
+            'msg'    => ''
         ];
-        $alipay = new Alipay();
+        $alipay     = new Alipay();
         $alipayInfo = getAddonsConfig('MPAlipay');
-        if(!$alipayInfo){
+        if (!$alipayInfo) {
             $result['msg'] = '请先安装支付宝小程序插件';
             return $result;
         }

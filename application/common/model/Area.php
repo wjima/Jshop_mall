@@ -349,9 +349,9 @@ class Area extends Common
      */
     public function getParentArea($id)
     {
-        $data['info'] = $this->field('id,name,parent_id')->where(array('id' => $id))->find();
+        $data['info'] = $this->field('id,name,parent_id,postal_code')->where(array('id' => $id))->find();
         if ($data['info']) {
-            $data['list'] = $this->field('id,name,parent_id')->where(array('parent_id' => $data['info']['parent_id']))->select();
+            $data['list'] = $this->field('id,name,parent_id,postal_code')->where(array('parent_id' => $data['info']['parent_id']))->select();
             if ($data['info']['parent_id'] != self::PROVINCE_PARENT_ID) {
                 //上面还有节点
                 $pdata = $this->getParentArea($data['info']['parent_id']);
@@ -503,6 +503,31 @@ class Area extends Common
             }
         }
         return $data;
+    }
+
+    /**
+     * 获取完整路径
+     * @param int $area_id
+     * @return array
+     */
+    public function getFullPathArea($area_id = 0)
+    {
+        $data['info'] = $this->field('id,name,parent_id,postal_code')->where(array('id' => $area_id))->find();
+        if ($data['info']) {
+            $parent = $this->field('id,name,parent_id,postal_code')->where(array('parent_id' => $data['info']['parent_id']))->find();
+            if ($data['info']['parent_id'] != self::PROVINCE_PARENT_ID) {
+                //上面还有节点
+                $pdata = $this->getFullPathArea($data['info']['parent_id']);
+                if ($pdata) {
+                    $pdata[] = $data;
+                }
+            } else {
+                $pdata[] = $data;
+            }
+        } else {
+            return [];
+        }
+        return $pdata;
     }
 
 

@@ -33,9 +33,9 @@ class Addons extends Manage
     public function index()
     {
         if (Request::isAjax()) {
-            $addonsModel           = new addonsModel();
-            $filter                = input('request.');
-            $addons = $addonsModel->getList($filter);
+            $addonsModel = new addonsModel();
+            $filter      = input('request.');
+            $addons      = $addonsModel->getList($filter);
             return $addons;
         }
         return $this->fetch('index');
@@ -75,7 +75,7 @@ class Addons extends Manage
 
         $addonsModel = new addonsModel();
         $res         = $addonsModel->add($info);
-        $res = true;
+        $res         = true;
         if (!$res) {
             $result['msg'] = '插件安装失败';
             return $result;
@@ -84,10 +84,10 @@ class Addons extends Manage
             $config    = [
                 'config' => json_encode($addons->getConfig())
             ];
-            $addonsModel->save($config,['name'=>$addon_name]);//更新配置
+            $addonsModel->save($config, ['name' => $addon_name]);//更新配置
             $hooks_update = $hookModel->updateHooks($addon_name);//更新钩子
             if ($hooks_update) {
-                Cache::set('hooks',null);
+                Cache::set('hooks', null);
                 $result['msg']    = '安装成功';
                 $result['status'] = true;
                 return $result;
@@ -124,7 +124,7 @@ class Addons extends Manage
             $result['msg'] = '插件不存在';
             return $result;
         }
-        $addon_class         = new $class;
+        $addon_class    = new $class;
         $uninstall_flag = $addon_class->uninstall();
         if (!$uninstall_flag) {
             $result['msg'] = '插件预卸载失败';
@@ -149,8 +149,6 @@ class Addons extends Manage
     }
 
 
-
-
     public function setting()
     {
         $result = [
@@ -159,7 +157,7 @@ class Addons extends Manage
             'data'   => '',
             'dialog' => [],
         ];
-        $name     = input('name/s', '');
+        $name   = input('name/s', '');
         if (!$name) {
             return $result;
         }
@@ -168,7 +166,7 @@ class Addons extends Manage
         $addonsModel = new addonsModel();
 
         $addon      = $addonsModel->getAddonInfo($name);
-        $setting = $addonsModel->getSetting($name);
+        $setting    = $addonsModel->getSetting($name);
         $class_name = '\\addons\\' . $addon['name'] . '\\' . ucfirst($addon['name']);
         if (!class_exists($class_name)) {
             $result['status'] = false;
@@ -188,17 +186,17 @@ class Addons extends Manage
      */
     public function doSetting()
     {
-        $result = [
+        $result      = [
             'status' => false,
             'msg'    => '配置信息保存失败',
             'data'   => '',
         ];
-        $data = input('post.');
+        $data        = input('post.');
         $addonsModel = new addonsModel();
 
-        if($addonsModel->doSetting($data)){
+        if ($addonsModel->doSetting($data)) {
             $result['status'] = true;
-            $result['msg'] = '配置信息保存成功';
+            $result['msg']    = '配置信息保存成功';
         }
         return $result;
     }
@@ -207,17 +205,77 @@ class Addons extends Manage
      * 停用插件
      * @return array
      */
-    public function changeStatus(){
-        $result = [
+    public function changeStatus()
+    {
+        $result      = [
             'status' => false,
             'msg'    => '操作失败',
             'data'   => '',
         ];
-        $name = input('post.name/s','');
+        $name        = input('post.name/s', '');
         $addonsModel = new addonsModel();
-        if($addonsModel->changeStatus($name)){
+        if ($addonsModel->changeStatus($name)) {
             $result['status'] = true;
-            $result['msg'] = '操作成功';
+            $result['msg']    = '操作成功';
+        }
+        return $result;
+    }
+
+    /**
+     * 刷新插件
+     * @return array
+     */
+    public function refresh()
+    {
+        $result     = [
+            'status' => false,
+            'msg'    => '刷新失败',
+            'data'   => '',
+        ];
+        $addon_name = input('name/s', '');
+        if (!$addon_name) {
+            return $result;
+        }
+        $class = get_addon_class($addon_name);
+        if (!class_exists($class)) {
+            $result['msg'] = '插件不存在';
+            return $result;
+        }
+        $addons = new $class;
+        $info   = $addons->info;
+        if (!$info) {
+            $result['msg'] = '插件信息缺失';
+            return $result;
+        }
+        $addonsModel = new addonsModel();
+        $data        = $addonsModel->where(['name' => $addon_name])->find();
+        if ($data) {
+            $hookModel = new Hooks();
+            $config    = $addons->getConfig();
+            $oldConfig = json_decode($data['config'], true);
+            $config    = array_merge($config, $oldConfig);
+            $iData     = [
+                'title'       => $info['title'],
+                'description' => $info['description'],
+                'author'      => $info['author'],
+                'version'     => $info['version'],
+                'config'      => json_encode($config),
+            ];
+            //合并插件配置
+            $addonsModel->save($iData, ['name' => $addon_name]);//更新配置
+            $hooks_update = $hookModel->updateHooks($addon_name);//更新钩子
+            if ($hooks_update) {
+                Cache::set('hooks', null);
+                $result['msg']    = '刷新成功';
+                $result['status'] = true;
+                return $result;
+            } else {
+                $result['msg']    = '刷新失败，请重试';
+                $result['status'] = true;
+                return $result;
+            }
+        } else {
+            $result['msg'] = '请先安装插件';
         }
         return $result;
     }

@@ -5,7 +5,7 @@
         <afterserviceimg @images="images"></afterserviceimg>
         <afterservicetext @reason="reason"></afterservicetext>
         <yd-button-group>
-            <yd-button size="large" bgcolor="#ff3b44" color="#fff" @click.native="formSubmit">提交</yd-button>
+            <yd-button size="large" bgcolor="#ff3b44" color="#fff" @click.native="formSubmit" style="max-width:750px">提交</yd-button>
         </yd-button-group>
     </div>
 </template>

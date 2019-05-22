@@ -1,7 +1,7 @@
 <template>
     <div class="orderlist">
         <yd-list theme="4">
-            <yd-list-item v-for="(item, index) in products" :key="index" @click.native="showDetail(item.products.goods_id)">
+            <yd-list-item v-if="item.is_select == true" v-for="(item, index) in products" :key="index" @click.native="showDetail(item.products.goods_id)">
                 <img slot="img" :src="item.products.image_path">
                 <h3 class="goodsname" slot="title">{{ item.products.name }}</h3>
                 <p class="goods" slot="title">{{ item.products.spes_desc }}</p>

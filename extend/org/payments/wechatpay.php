@@ -467,7 +467,9 @@ class wechatpay implements Payment
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         //要求结果为字符串且输出到屏幕上
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-
+        if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')) {
+            curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        }
         if($useCert == true){
             $cert_dir = ROOT_PATH.DS."config".DS."payment_cert".DS."wechatpay".DS;
             if(

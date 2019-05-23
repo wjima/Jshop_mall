@@ -7,20 +7,20 @@
 <script src="__STATIC__lib/custom/element/index.js"></script>
 
 <script>
-var linkType = {$linkType|raw};//跳转类型
-var pageCode = "{$page_code}";//页面编码
-var pageConfig = {$page_config|raw};//页面默认数据
-var brandList = {$brandList|raw};//品牌数据
-var catList = {$catList|raw};//分类数据
-var default_banner = "__STATIC__images/empty-banner.png";
-var default_img = "__STATIC__images/empty.png";
-var saveUrl="{:url('Pages/saveCustom')}";
-var imgWindowArr=[
-"__STATIC__images/image-one-column.png",
-"__STATIC__images/image-three-column.png",
-"__STATIC__images/image-four-column.png",
-"__STATIC__images/image-one-left.png"
-]
+	var linkType = {$linkType|raw};//跳转类型
+	var pageCode = "{$page_code}";//页面编码
+	var pageConfig = {$page_config|raw};//页面默认数据
+	var brandList = {$brandList|raw};//品牌数据
+	var catList = {$catList|raw};//分类数据
+	var default_banner = "__STATIC__images/empty-banner.png";
+	var default_img = "__STATIC__images/empty.png";
+	var saveUrl = "{:url('Pages/saveCustom')}";
+	var imgWindowArr = [
+		"__STATIC__images/image-one-column.png",
+		"__STATIC__images/image-three-column.png",
+		"__STATIC__images/image-four-column.png",
+		"__STATIC__images/image-one-left.png"
+	]
 </script>
 <div id="app">
 	<home></home>
@@ -45,7 +45,7 @@ var imgWindowArr=[
 							</div>
 						</draggable>
 					</div>
-					
+
 					<div class="components-list">
 						<div class="component-item">
 							<div class="component-item-title">媒体组件</div>
@@ -108,12 +108,12 @@ var imgWindowArr=[
 </template>
 <template id="layout">
 	<div class="layout-container">
-		<draggable v-model="pageData"  :options="{group: { name: 'widget'},sort: true,ghostClass: 'ghost',dragClass:'dragItem',
+		<draggable v-model="pageData" :options="{group: { name: 'widget'},sort: true,ghostClass: 'ghost',dragClass:'dragItem',
 				filter:'.lay-record',
 				scroll: true,
 				scrollSensitivity:100,
 				scrollSpeed:1000,
-				animation: 100}"  @add="handleWidgetAdd" class="layout-list" :class="{ 'widget-empty': pageData.length === 0 }"
+				animation: 100}" @add="handleWidgetAdd" class="layout-list" :class="{ 'widget-empty': pageData.length === 0 }"
 			@update="datadragEnd" @remove="handleDragRemove">
 			<template v-for="(item, index) in pageData">
 				<div class="layout-main" :key="item.key" :class="{ active: selectWg.key === item.key,npr:item.type=='record'}"
@@ -121,8 +121,7 @@ var imgWindowArr=[
 					<!-- 搜索框 -->
 					<div v-if="item.type === 'search'" class="drag lay-item lay-search">
 						<div class="lay-search-c">
-							<input v-model="item.value.keywords" class="lay-search-input"
-								:class="item.value.style" />
+							<input v-model="item.value.keywords" class="lay-search-input" :class="item.value.style" />
 							<i class="iconfont icon-sousuokuang"></i>
 						</div>
 					</div>
@@ -191,7 +190,8 @@ var imgWindowArr=[
 						</div>
 					</div>
 					<!-- 图片橱窗 -->
-					<div v-if="item.type==='imgWindow'" class="drag lay-imgWindow clearfix" :class="'row'+item.value.style" :style="{}">
+					<div v-if="item.type==='imgWindow'" class="drag lay-imgWindow clearfix" :class="'row'+item.value.style"
+						:style="{}">
 						<template v-if="item.value.style==0">
 							<div class="display">
 								<div class="display-left">
@@ -213,7 +213,8 @@ var imgWindowArr=[
 							</div>
 						</template>
 						<template v-else>
-							<div class="img-wrap" v-for="(img,key) in item.value.list" :key="key" :style="{padding:item.value.margin+'px'}">
+							<div class="img-wrap" v-for="(img,key) in item.value.list" :key="key"
+								:style="{padding:item.value.margin+'px'}">
 								<img :src="img.image" alt="">
 							</div>
 						</template>
@@ -350,17 +351,18 @@ var imgWindowArr=[
 				<template v-if="selectWg.type=='coupon'">
 					<div>
 						<div class="content-item">
-						<span class="item-label">显示数量：</span>
-						<div class="number-content ml20">
-							<input type="number" v-model.number="selectWg.value.limit" min="0" class="number-input">
+							<span class="item-label">显示数量：</span>
+							<div class="number-content ml20">
+								<input type="number" v-model.number="selectWg.value.limit" min="0" class="number-input">
+							</div>
+						</div>
+						<div class="pl25">
+							<p class="layout-tip">优惠券数据请到 促销管理 - <a href="javascript:;"
+									lay-href="{:url('promotion/coupon')}">优惠券列表</a>中管理
+							</p>
 						</div>
 					</div>
-					<div class="pl25">	
-							<p class="layout-tip">优惠券数据请到 促销管理 - <a href="javascript:;" lay-href="{:url('promotion/coupon')}">优惠券列表</a>中管理
-								</p>
-					</div>
-					</div>
-					
+
 
 				</template>
 				<!-- 辅助空白 -->
@@ -389,11 +391,8 @@ var imgWindowArr=[
 									<template v-for="item in catList">
 										<el-option :value="item.id" :label="item.name"></el-option>
 										<template v-if="item.child">
-											<el-option
-												v-for="second in item.child"
-												:key="second.id"
-												:label="second.name"
-												:value="second.id" class="second">
+											<el-option v-for="second in item.child" :key="second.id" :label="second.name" :value="second.id"
+												class="second">
 											</el-option>
 										</template>
 									</template>
@@ -451,9 +450,9 @@ var imgWindowArr=[
 								<el-radio label="false">否</el-radio>
 							</el-radio-group>
 						</el-form-item>
-						<div class="pl25">	
-								<p class="layout-tip">商品数据请到 商品管理 - <a href="javascript:;" lay-href="{:url('goods/index')}">商品列表</a> 中管理
-									</p>
+						<div class="pl25">
+							<p class="layout-tip">商品数据请到 商品管理 - <a href="javascript:;" lay-href="{:url('goods/index')}">商品列表</a> 中管理
+							</p>
 						</div>
 					</div>
 				</template>
@@ -476,16 +475,18 @@ var imgWindowArr=[
 								<span>选择商品</span>
 							</div>
 						</div>
-						<hr class="divider"></hr>
+						<hr class="divider">
+						</hr>
 						<el-form-item label="商品组名称">
 							<input type="text" v-model="selectWg.value.title" class="selectLinkVal">
 						</el-form-item>
 						<el-form-item label="显示数量">
 							<input type="number" v-model.number="selectWg.value.limit" min="1" class="number-input">
 						</el-form-item>
-						<div class="pl25">	
-								<p class="layout-tip">团购秒杀数据请到 促销管理 - <a href="javascript:;" lay-href="{:url('promotion/group')}">团购秒杀列表</a>中管理
-									</p>
+						<div class="pl25">
+							<p class="layout-tip">团购秒杀数据请到 促销管理 - <a href="javascript:;"
+									lay-href="{:url('promotion/group')}">团购秒杀列表</a>中管理
+							</p>
 						</div>
 					</div>
 				</template>
@@ -500,9 +501,10 @@ var imgWindowArr=[
 							</div>
 						</div>
 						<div class="pl25">
-							<p class="layout-tip">文章数据请到 运营管理 - <a href="javascript:;" lay-href="{:url('article/index')}">文章列表</a> 中管理</p>
+							<p class="layout-tip">文章数据请到 运营管理 - <a href="javascript:;" lay-href="{:url('article/index')}">文章列表</a> 中管理
+							</p>
 						</div>
-						
+
 					</div>
 				</template>
 				<!-- 文章分类 -->
@@ -524,7 +526,8 @@ var imgWindowArr=[
 							</div>
 						</div>
 						<div class="pl25">
-							<p class="layout-tip">文章数据请到 运营管理 - <a href="javascript:;" lay-href="{:url('article/index')}">文章列表</a> 中管理</p>
+							<p class="layout-tip">文章数据请到 运营管理 - <a href="javascript:;" lay-href="{:url('article/index')}">文章列表</a> 中管理
+							</p>
 						</div>
 					</div>
 				</template>
@@ -573,7 +576,7 @@ var imgWindowArr=[
 											<upload-img @upload-img="upImage(index,item)" :index="index" :item="item"></upload-img>
 
 										</el-form-item>
-										
+
 									</div>
 									<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"
 										:id.sync="item.linkValue"></select-link>
@@ -605,7 +608,8 @@ var imgWindowArr=[
 						<div class="content-item">
 							<span class="item-label">布局方式:</span>
 							<div class="tpl-block">
-								<div class="tpl-item" v-for="(item,i) in imgWindowStyle" :key="i" @click="slectTplStyle(item)" :class="{active:selectWg.value.style==item.value}">
+								<div class="tpl-item" v-for="(item,i) in imgWindowStyle" :key="i" @click="slectTplStyle(item)"
+									:class="{active:selectWg.value.style==item.value}">
 									<div class="tpl-item-image">
 										<img :src="item.image" alt="">
 									</div>
@@ -618,10 +622,11 @@ var imgWindowArr=[
 						</div>
 						<div class="content-item">
 							<el-form-item label="图片间距：">
-								<el-slider v-model="selectWg.value.margin" :min="0" :max="30" >
+								<el-slider v-model="selectWg.value.margin" :min="0" :max="30">
 								</el-slider>
 							</el-form-item>
-							<span style="display:inline-block;height:30px;line-height:30px;font-size:12px;margin-left:10px;">{{selectWg.value.margin}}px</span>
+							<span
+								style="display:inline-block;height:30px;line-height:30px;font-size:12px;margin-left:10px;">{{selectWg.value.margin}}px</span>
 						</div>
 						<draggable element="ul" :list="selectWg.value.list"
 							:options="{group:{ name:'slideList'}, ghostClass: 'ghost',animation: 150,handle:'.drag-block'}">
@@ -644,8 +649,8 @@ var imgWindowArr=[
 
 						</draggable>
 						<div class="addImg" @click="handleAddSlide">
-								<i class="iconfont icon-icon-test"></i>
-								<span>添加一个图片</span>
+							<i class="iconfont icon-icon-test"></i>
+							<span>添加一个图片</span>
 						</div>
 					</div>
 				</template>
@@ -675,9 +680,9 @@ var imgWindowArr=[
 									class="iconfont icon-choose1"></i>选择公告</a>
 						</div>
 					</div>
-					<div class="pl25">	
-							<p class="layout-tip">公告数据请到 运营管理 -  <a href="javascript:;" lay-href="{:url('notice/index')}">公告列表</a> 中管理
-								</p>
+					<div class="pl25">
+						<p class="layout-tip">公告数据请到 运营管理 - <a href="javascript:;" lay-href="{:url('notice/index')}">公告列表</a> 中管理
+						</p>
 					</div>
 				</template>
 				<!-- 导航组-->
@@ -735,7 +740,8 @@ var imgWindowArr=[
 	<div>
 		<button type="button" class="layui-btn layui-btn-sm" @click="upload">上传图片</button>
 		<div class="layui-upload-list">
-			<img class="layui-upload-img" :src="item.image" id="image_src_cover" style="width:auto;max-width:200px;height:90px;">
+			<img class="layui-upload-img" :src="item.image" id="image_src_cover"
+				style="width:auto;max-width:200px;height:90px;">
 		</div>
 		<input class="layui-upload-file" type="hidden" name="image" id="image_value_cover" value="">
 	</div>
@@ -744,11 +750,7 @@ var imgWindowArr=[
 	<div>
 		<el-form-item label="链接类型：">
 			<el-select v-model="selectType" placeholder="请选择" @change="changeSelect">
-				<el-option
-					v-for="(val,key,i) in linkType"
-					:key="i"
-					:label="val"
-					:value="key">
+				<el-option v-for="(val,key,i) in linkType" :key="i" :label="val" :value="key">
 				</el-option>
 			</el-select>
 		</el-form-item>
@@ -758,9 +760,9 @@ var imgWindowArr=[
 					@change="updateLinkValue"></el-input>
 			</div>
 			<div v-else>
-				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @focus="selectLink">
+				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @focus="selectLink" placeholder="请选择">
 			</div>
-			
+
 		</el-form-item>
 	</div>
 </template>

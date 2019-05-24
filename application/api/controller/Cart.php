@@ -117,7 +117,7 @@ class Cart extends Api
             'data' => [],
             'msg' => ''
         ];
-        if(input('?param.id')){
+        if(!input('?param.id')){
             $result['msg'] = '请输入货品id';
             return $result;
         }else{

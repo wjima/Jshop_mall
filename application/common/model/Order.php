@@ -1357,10 +1357,10 @@ class Order extends Common
         $order['point_money'] = $cartInfo['data']['point_money'];
 
         $order['weight'] = $cartInfo['data']['weight'];;
-        $order['order_pmt']  = isset($orderInfo['data']['order_pmt']) ? $orderInfo['data']['order_pmt'] : 0;
-        $order['goods_pmt']  = isset($orderInfo['data']['goods_pmt']) ? $orderInfo['data']['goods_pmt'] : 0;
-        $order['coupon_pmt'] = $orderInfo['data']['coupon_pmt'];
-        $order['coupon']     = json_encode($orderInfo['data']['coupon']);
+        $order['order_pmt']  = isset($cartInfo['data']['order_pmt']) ? $cartInfo['data']['order_pmt'] : 0;
+        $order['goods_pmt']  = isset($cartInfo['data']['goods_pmt']) ? $cartInfo['data']['goods_pmt'] : 0;
+        $order['coupon_pmt'] = $cartInfo['data']['coupon_pmt'];
+        $order['coupon']     = json_encode($cartInfo['data']['coupon']);
         $order['ip']         = get_client_ip();
 
         //以上保存了订单主体表信息，以下生成订单明细表

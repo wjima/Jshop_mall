@@ -235,12 +235,12 @@ class Ship extends Common
      */
     static function calculate_fee($ship, $weight, $totalmoney = 0)
     {
-
+		//满多少免运费
+		if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
+			return 0;
+		}
         if ($weight > $ship['firstunit']) {
-            //满多少免运费
-            if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
-                return 0;
-            }
+           
             $shipmoney = 0;
             $tmp_exp   = trim(str_replace('w', $weight, $ship['exp']));
             eval("\$shipmoney = $tmp_exp;");

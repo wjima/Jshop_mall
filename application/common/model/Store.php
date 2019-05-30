@@ -281,9 +281,9 @@ class Store extends Common
             if($key)
             {
                 $where =  "'%".$key."%'" ;
-                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from jshop_store where store_name like ".  $where ."  order by distance,id) as a ";
+                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from ".config('database.prefix')."store where store_name like ".  $where ."  order by distance,id) as a ";
             }else{
-                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from  jshop_store  order by distance,id) as a ";
+                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from  ".config('database.prefix')."store  order by distance,id) as a ";
             }
 
             $return['data']= Db::query($sql);

@@ -760,7 +760,7 @@ class User extends Common
         }
 
         $flag = $this->isInvited($user_id, $superior_id);
-        if (!$flag) {
+        if ($flag) {
             $return['msg'] = '不允许填写下级的邀请码';
             return $return;
         }
@@ -778,7 +778,7 @@ class User extends Common
 
 
     /**
-     * 判断pid是否是user_id的父节点或者祖父节点
+     * 判断user_id是否是pid的父节点或者祖父节点,如果是，就返回true，如果不是就返回false
      * @param $user_id      下级节点
      * @param $pid          父节点
      * @return bool
@@ -788,10 +788,10 @@ class User extends Common
         $where[] = ['id', 'eq', $pid];
         $info    = $this->field('pid')->where($where)->find();
         if (!$info || $info['pid'] == 0) {
-            return true;
+            return false;
         } else {
             if ($info['pid'] == $user_id) {
-                return false;
+                return true;
             } else {
                 return $this->isInvited($user_id, $info['pid']);
             }
@@ -852,8 +852,8 @@ class User extends Common
             return $return;
         }
 
-        $isInvited = $this->isInvited($inviteInfo['id'], $id);
-        if (!$isInvited) {
+        $isInvited = $this->isInvited($id,$inviteInfo['id']);
+        if ($isInvited) {
             $return['msg'] = '不能关联这个邀请人，因为他是你的下级或者下下级';
             return $return;
         }

@@ -173,6 +173,7 @@ class Goods extends Manage
                 $tmp_product['goods']['mktprice']     = isset($val['mktprice']) ? $val['mktprice'] : 0;
                 $tmp_product['goods']['marketable']   = isset($val['marketable']) ? $val['marketable'] : $productsModel::MARKETABLE_DOWN;
                 $tmp_product['goods']['stock']        = isset($val['stock']) ? $val['stock'] : 0;
+				$tmp_product['goods']['stock_type']   = isset($val['stock_type']) ? $val['stock_type'] : '';
                 $sn                                   = get_sn(4);
                 $tmp_product['goods']['sn']           = isset($val['sn']) ? $val['sn'] : $sn;
                 $tmp_product['goods']['product_spes'] = $key;

@@ -576,15 +576,17 @@ class Goods extends Common
         $where        = [];
         $where[]      = ['id', 'eq', $product_id];
         $product      = $productModel->where($where)->field('goods_id')->find();
-        $where[]      = [0, 'exp', Db::raw('(stock-freeze_stock)-' . $num . ' >= 0')];
         switch ($type) {
             case 'order': //下单
+                $exp = Db::raw('IF(stock < freeze_stock, 0, stock - freeze_stock)-'.$num.'>=0');
+                $where[]      = [0, 'exp', $exp];
                 $this->where(['id' => $product['goods_id']])->setInc('buy_count', $num);
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
             case 'send': //发货
+                $where[]      = ['freeze_stock', '>=', $num];
                 $res = $productModel->where($where)->setDec('stock', $num);
-                if ($res != false) {
+                if ($res !== false) {
                     $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 } else {
                     $result['msg'] = '库存更新失败';
@@ -607,7 +609,7 @@ class Goods extends Common
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
         }
-        if ($res != false) {
+        if ($res !== false) {
             $result['msg']    = '库存更新成功';
             $result['status'] = true;
             return $result;
@@ -1009,7 +1011,7 @@ class Goods extends Common
         $goods_stocks_warn = $goods_stocks_warn ? $goods_stocks_warn : '10';
         unset($baseFilter['marketable']);
         $productModel = new Products();
-        $totalWarn    = $productModel->where("(stock - freeze_stock) < " . $goods_stocks_warn)->group('goods_id')->count('id');
+        $totalWarn    = $productModel->where(Db::raw('IF(stock < freeze_stock, 0, stock - freeze_stock)<'.$goods_stocks_warn))->group('goods_id')->count('id');
         return [
             'totalGoods'          => $total,
             'totalMarketableUp'   => $totalMarketableUp,

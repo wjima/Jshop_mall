@@ -83,6 +83,7 @@ class Pages extends Common
         }
         $data = $data->toArray();
         foreach ($data as $key => $value) {
+            $where = [];
             $data[$key]['params'] = json_decode($value['params'], true);
             if ($value['widget_code'] == 'notice') {
                 if ($data[$key]['params']['type'] == 'auto') {
@@ -129,7 +130,7 @@ class Pages extends Common
                 $promotion      = new Promotion();
                 $conditionModel = new PromotionCondition();
                 $token          = '';//todo 会员登录后
-                foreach ($data[$key]['params']['list'] as $k => $v) {
+                foreach ((array)$data[$key]['params']['list'] as $k => $v) {
                     if (!isset($v['id'])) {
                         unset($data[$key]['params']['list'][$k]);
                     }

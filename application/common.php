@@ -279,13 +279,18 @@ function format_mobile($mobile)
  * 如果没有登陆的情况下，记录来源url，并跳转到登陆页面
  * @return mixed|string
  */
-function redirect_url()
+function redirect_url($url = "")
 {
     if (cookie('?redirect_url')) {
         $str = cookie('redirect_url');
         cookie('redirect_url', null);
     } else {
-        $str = '/';
+        if($url){
+            $str = $url;
+        }else{
+            $str = '/';
+        }
+
     }
     return $str;
 }
@@ -1437,7 +1442,7 @@ function time_ago($posttime)
 
     //进行时间转换
     if ($counttime <= 60) {
-        return $counttime . '秒前';
+        return '刚刚';
     } else if ($counttime > 60 && $counttime <= 120) {
         return '1分钟前';
     } else if ($counttime > 120 && $counttime <= 180) {
@@ -1450,9 +1455,13 @@ function time_ago($posttime)
         return '昨天';
     } else if ($counttime >= 3600 * 24 * 2 && $counttime < 3600 * 24 * 3) {
         return '前天';
-    } else if ($counttime >= 3600 * 24 * 3 && $counttime <= 3600 * 24 * 20) {
+    } else if ($counttime >= 3600 * 24 * 3 && $counttime <= 3600 * 24 * 7) {
         return intval(($counttime / (3600 * 24))) . '天前';
-    } else {
-        return $posttime;
+    } else if ($counttime >= 3600 * 24 * 7 && $counttime <= 3600 * 24 * 30) {
+        return intval(($counttime / (3600 * 24 * 7))) . '周前';
+    } else if ($counttime >= 3600 * 24 * 30 && $counttime <= 3600 * 24 * 365){
+        return intval(($counttime / (3600 * 24 * 30))) . '个月前';
+    } else if ($counttime >= 3600 * 24 * 365) {
+        return intval(($counttime / (3600 * 24 * 365))). '年前';
     }
 }

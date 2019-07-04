@@ -26,17 +26,17 @@ class Common extends Base
         $shop_name = getSetting('shop_name');
         $this->assign('shop_name',$shop_name);
         if (session('?manage')) {
-            $this->success('已经登录成功，跳转中...',redirect_url());
+            $this->success('已经登录成功，跳转中...',redirect_url(url('Index/index')));
         }
         if(Request::isPost()){
             $manageModel = new Manage();
             $result = $manageModel->toLogin(input('param.'));
             if($result['status']){
                 if(Request::isAjax()){
-                    $result['data'] = redirect_url();
+                    $result['data'] = redirect_url(url('Index/index'));
                     return $result;
                 }else{
-                    $this->redirect(redirect_url());
+                    $this->redirect(redirect_url(url('Index/index')));
                 }
             }else{
                 return $result;
@@ -57,6 +57,6 @@ class Common extends Base
             $userLogModel->setLog(session('manage.id'),$userLogModel::USER_LOGOUT);
         }
         session('manage', null);
-        $this->success('退出成功',url('common/login'));
+        $this->success('退出成功',url('Index/index'));
     }
 }

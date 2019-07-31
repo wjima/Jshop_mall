@@ -1,12 +1,19 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2019 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: keinx <keinx@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use app\common\model\Area;
 use app\common\model\Balance;
 use app\common\model\GoodsComment;
 use app\common\model\Setting;
 use app\common\model\UserBankcards;
+use app\common\model\UserGrade;
 use app\common\model\UserPointLog;
 use app\common\model\UserShip;
 use app\common\model\UserTocash;
@@ -16,16 +23,23 @@ use app\common\model\GoodsBrowsing;
 use app\common\model\GoodsCollection;
 use app\common\model\UserWx;
 use app\common\model\BillPayments;
-use org\Curl;
-use think\facade\Cache;
+use org\login\Alipayapp;
+use org\login\Uniapp;
+use org\login\Wxapp;
+use org\login\Wxofficial;
+use org\Poster;
 use think\facade\Request;
-use think\Container;
 
+/**
+ * 用户
+ * Class User
+ * @package app\api\controller
+ */
 class User extends Api
 {
     /**
      * 登陆
-     * @return array
+     * @return array|mixed
      */
     public function login()
     {
@@ -43,7 +57,6 @@ class User extends Api
      * invitecode   邀请码，推荐人的邀请码 选填
      * password     注册的时候，可以传密码 选填
      * user_wx_id   第三方登录，微信公众号里的登陆，微信小程序登陆等需要绑定账户的时候，要传这个参数，这是第一次的时候需要这样绑定，以后就不需要了  选填
-     *
      * @return array
      */
     public function smsLogin()
@@ -61,29 +74,21 @@ class User extends Api
      */
     public function wxappLogin1()
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => ''
-        ];
-
         if (!input("?param.code")) {
             $result['msg'] = 'code参数缺失';
             return $result;
         }
-        $type        = input('type', 'weixin');
-        $userWxModel = new UserWx();
-        if ($type == 'weixin') {
-            return $userWxModel->codeToInfo(input('param.code'));
-        } elseif ($type == 'alipay') {
-            return $userWxModel->alipayCodeToInfo(input('param.code'));
-        }
+        $wxapp = new Wxapp();
+        return $wxapp->codeToInfo(input('param.code'));
     }
 
 
     /**
      * 微信小程序传过来了手机号码，那么取他的手机号码
-     * @return array
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function wxappLogin2()
     {
@@ -106,28 +111,46 @@ class User extends Api
             $result['msg'] = '加密参数缺失';
             return $result;
         }
-        //$pid = input('param.pid',0);
-        $userWxModel = new UserWx();
-
-        $re = $userWxModel->updateWxInfo(input('param.open_id'), input('param.edata'), input('param.iv'));
-
-        if (!$re['status']) {
-            return $re;
-        }
-        if ($re['data']['user_id'] == 0) {
-            //未绑定用户，需要先绑定手机号码
-            $result['status'] = true;
-            $result['data']   = ['user_wx_id' => $re['data']['id']];
-            return $result;
-        } else {
-            //绑定好手机号码了，去登陆,去取user_token
-            $userTokenModel = new UserToken();
-            $re             = $userTokenModel->setToken($re['data']['user_id'], 2);
-            if ($re['status']) {
-                $re['data'] = ['token' => $re['data']];
+        //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
+        if (input('?param.invitecode')) {
+            $userModel = new \app\common\model\User();
+            $pid   = $userModel->getUserIdByShareCode(input('param.invitecode'));
+            $pinfo = $userModel->where(['id' => $pid])->find();
+            if ($pinfo) {
+                $pid = $pinfo['id'];
+            } else {
+                error_code(10014);
             }
-            return $re;
+        }else{
+            $pid = 0;
         }
+        $wxapp = new Wxapp();
+
+        return $wxapp->updateWxInfo(input('param.open_id'), input('param.edata'), input('param.iv'),$pid);
+    }
+
+
+    /**
+     * 支付宝小程序创建用户，不登陆，只是保存登录态
+     * @return array
+     */
+    public function alipayappLogin1()
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => ''
+        ];
+
+        if (!input("?param.code")) {
+            $result['msg'] = 'code参数缺失';
+            return $result;
+        }
+        $userWxModel = new UserWx();
+        $alipayapp = new Alipayapp();
+
+        return $alipayapp->codeToInfo(input('param.code'));
+
     }
 
 
@@ -181,15 +204,50 @@ class User extends Api
     }
 
 
+//    /**
+//     * 注册，此接口迟早要废弃，建议直接使用smsLogin接口
+//     * @return array
+//     */
+//    public function reg()
+//    {
+//        $userModel = new UserModel();
+//        $data      = input('post.');
+//        return $userModel->smsLogin($data, 2);
+//    }
+
+
     /**
-     * 注册，此接口迟早要废弃，建议直接使用smsLogin接口
-     * @return array
+     * 微信公众号登陆，根据code，返回openid
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function reg()
+    public function officialLogin()
     {
-        $userModel = new UserModel();
-        $data      = input('post.');
-        return $userModel->smsLogin($data, 2);
+        if(!input('?param.code')){
+            return error_code(10068);
+        }
+        $scope = input('param.scope',1);        //公众号登陆类型，1是snsapi_userinfo，2是snsapi_base
+
+        //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
+        if(input('?param.invitecode'))
+        {
+            $userModel = new \app\common\model\User();
+            $pid   = $userModel->getUserIdByShareCode(input('param.invitecode'));
+            $pinfo = $userModel->where(['id' => $pid])->find();
+            if ($pinfo) {
+                $pid = $pinfo['id'];
+            } else {
+                error_code(10014);
+            }
+        }
+        else
+        {
+            $pid = 0;
+        }
+        $wx = new Wxofficial();
+        return $wx->codeToInfo(input('param.code'),input('param.state'),$scope,$pid);
     }
 
 
@@ -208,12 +266,20 @@ class User extends Api
             'msg'    => ''
         ];
         $userModel = new UserModel();
-        $userInfo  = $userModel
-            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,status')
+        $userInfo  = $userModel::with("grade")
+            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,grade,status')
             ->where(array('id' => $this->userId))
             ->find();
         if ($userInfo !== false) {
             $userInfo['avatar'] = _sImage($userInfo['avatar']);
+            $userGradeModel = new UserGrade();
+            $gradeinfo = $userGradeModel->where(['id'=>$userInfo['grade']])->find();
+            if($gradeinfo){
+               $userInfo['grade_name'] = $gradeinfo['name'];
+            }else{
+                $userInfo['grade_name'] = "";
+            }
+
             $result['data']     = $userInfo;
             $result['status']   = true;
         } else {
@@ -378,9 +444,11 @@ class User extends Api
     /**
      * 存储用户收货地址接口
      * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function saveUserShip()
     {
@@ -422,9 +490,11 @@ class User extends Api
     /**
      * H5 添加收货地址
      * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function vueSaveUserShip()
     {
@@ -489,9 +559,11 @@ class User extends Api
     /**
      * 收货地址编辑
      * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function editShip()
     {
@@ -510,6 +582,7 @@ class User extends Api
     /**
      * 删除收货地址
      * @return array|mixed
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -575,6 +648,9 @@ class User extends Api
     /**
      * 获取收货地址全部名称
      * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getAllName()
     {
@@ -631,6 +707,9 @@ class User extends Api
             return error_code(10051);
         }
 
+        $token       = input('token', '');//token值 会员登录后传
+        $user_id      = getUserIdByToken($token);//获取user_id
+
         //支付的时候，有一些特殊的参数需要传递到支付里面，这里就是干这个事情的,key=>value格式的一维数组
         $data = input('param.');
         if (!isset($data['params'])) {
@@ -641,7 +720,7 @@ class User extends Api
 
         $billPaymentsModel = new BillPayments();
         //生成支付单,并发起支付
-        return $billPaymentsModel->pay(input('param.ids'), input('param.payment_code'), $this->userId, input('param.payment_type'), $params);
+        return $billPaymentsModel->pay(input('param.ids'), input('param.payment_code'), $user_id, input('param.payment_type'), $params);
     }
 
 
@@ -995,154 +1074,165 @@ class User extends Api
 
     /**
      * 获取信任登录内容，标题，图标，名称，跳转地址
-     * @return array
+     * @return array|mixed
      */
     public function getTrustLogin()
     {
-        $data               = [
+        $data = [
             'status' => true,
-            'msg'    => '获取成功',
-            'data'   => []
+            'data'   => [],
+            'msg'    => ''
         ];
-        $params['url']      = input('url/s', Container::get('request')->domain());//前台地址
-        $params['uuid']     = input('uuid/s', '');//前台用户信息，记录是同一个用户
-        $params['platform'] = input('platform/s', 'official');//信任登录位置
-        if (!$params['url'] || !$params['uuid']) {
-            $data['status'] = false;
-            $data['msg']    = '获取失败';
-            return $data;
+        if(!input('?param.url')){
+            return error_code(10000);
         }
-        if (checkAddons('trustlogin')) {
-            $data['data'] = Hook('trustlogin', $params);
-        }
+        $wx = new Wxofficial();
+
+        $data['data'] = [
+            'Wxofficial' => $wx->geturl(input('param.url')."?type=Wxofficial")
+        ];
+
         return $data;
     }
 
 
-    /**
-     * 根据code 获取用户信息
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function trustCallBack()
-    {
-        $returnData      = [
-            'status' => false,
-            'msg'    => '',
-            'data'   => []
-        ];
-        $params['code']  = input('code');
-        $params['type']  = input('type');
-        $params['state'] = input('state');
-        $params['uuid']  = input('uuid/s', '');
-        if (!$params['code'] || !$params['type'] || !$params['state']) {
-            $returnData['msg'] = '关键参数丢失';
-            return $returnData;
-        }
-        $data = [];
-        //此处钩子只能取第一个插件的返回值
-        if (checkAddons('trustcallback')) {
-            $data = Hook('trustcallback', $params);
-        }
+//    /**
+//     * 根据code 获取用户信息,废弃，走officialLogin方法
+//     * @return array
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function trustCallBack()
+//    {
+//        $returnData      = [
+//            'status' => false,
+//            'msg'    => '',
+//            'data'   => []
+//        ];
+//        $params['code']  = input('code');
+//        $params['type']  = input('type');
+//        $params['state'] = input('state');
+//        $params['uuid']  = input('uuid/s', '');
+//        if (!$params['code'] || !$params['type'] || !$params['state']) {
+//            $returnData['msg'] = '关键参数丢失';
+//            return $returnData;
+//        }
+//        $data = [];
+//        //此处钩子只能取第一个插件的返回值
+//        if (checkAddons('trustcallback')) {
+//            $data = Hook('trustcallback', $params);
+//        }
+//
+//        if (isset($data[0]['status']) && !$data[0]['status']) {
+//            return $data[0];
+//        }
+//
+//        $user        = $data[0]['data'];
+//        $userWxModel = new UserWx();
+//        if (isset($user['unionId']) && $user['unionId']) {
+//            //有这个unionid的时候，用这个判断
+//            $where['unionid'] = $user['unionId'];
+//        } elseif (isset($user['openid']) && $user['openid']) {
+//            //有这个openid的时候，先用unionid，再用这个判断
+//            $where['openid'] = $user['openid'];
+//        }
+//        $wxInfo = $userWxModel->where($where)->find();
+//        if ($wxInfo) {
+//            //存在第三方账号，检查是否存在会员，存在的话，直接登录，不存在则绑定手机号
+//            if ($wxInfo['user_id']) {
+//                $where['type'] = $userWxModel::TYPE_OFFICIAL;
+//                $h5WxInfo      = $userWxModel->where($where)->find();
+//                if (!$h5WxInfo) {
+//                    //插入公众号授权信息
+//                    $user['user_id'] = $wxInfo['user_id'];
+//                    $user['type']    = $userWxModel::TYPE_OFFICIAL;
+//                    $res             = $userWxModel->toAddWx($user);
+//                    if (!$res['status']) {
+//                        $returnData['msg'] = $res['msg'];
+//                        return $returnData;
+//                    }
+//                }
+//                //直接登录
+//                $userModel = new UserModel();
+//                $userInfo  = $userModel->where(array('id' => $wxInfo['user_id']))->find();
+//                if (!$userInfo) {
+//                    $result['msg'] = '没有找到此账号';
+//                    return $result;
+//                }
+//                return $userModel->setSession($userInfo, 2, 1);
+//            } else {
+//                Cache::set('user_wx_' . $params['uuid'], json_encode($wxInfo));
+//                $returnData['msg']    = '请绑定手机号';
+//                $returnData['status'] = true;
+//                $returnData['data']   = [
+//                    'is_new' => true
+//                ];
+//                return $returnData;
+//            }
+//        } else {
+//            //不存在第三方账号,先插入第三方账号，然后跳转绑定手机号页面
+//            $res = $userWxModel->toAddWx($user);
+//            if (!$res['status']) {
+//                $returnData['msg'] = $res['msg'];
+//                return $returnData;
+//            }
+//
+//            if ($res['data']['user_id'] == 0) {
+//                Cache::set('user_wx_' . $params['uuid'], json_encode($res['data']));
+//                $returnData['msg']    = '保存成功，请绑定手机号';
+//                $returnData['status'] = true;
+//                $returnData['data']   = [
+//                    'is_new' => true
+//                ];
+//                return $returnData;
+//
+//            } else {
+//                //绑定好手机号码了，去登陆,去取user_token
+//                $userTokenModel = new UserToken();
+//                return $userTokenModel->setToken($res['data']['user_id'], 1);
+//                return $re;
+//            }
+//
+//
+//
+//
+//
+//        }
+//        return $returnData;
+//    }
 
-        if (isset($data[0]['status']) && !$data[0]['status']) {
-            return $data[0];
-        }
 
-        $user        = $data[0]['data'];
-        $userWxModel = new UserWx();
-        if (isset($user['unionId']) && $user['unionId']) {
-            //有这个unionid的时候，用这个判断
-            $where['unionid'] = $user['unionId'];
-        } elseif (isset($user['openid']) && $user['openid']) {
-            //有这个openid的时候，先用unionid，再用这个判断
-            $where['openid'] = $user['openid'];
-        }
-        $wxInfo = $userWxModel->where($where)->find();
-        if ($wxInfo) {
-            //存在第三方账号，检查是否存在会员，存在的话，直接登录，不存在则绑定手机号
-            if ($wxInfo['user_id']) {
-                $where['type'] = $userWxModel::TYPE_OFFICIAL;
-                $h5WxInfo      = $userWxModel->where($where)->find();
-                if (!$h5WxInfo) {
-                    //插入公众号授权信息
-                    $user['user_id'] = $wxInfo['user_id'];
-                    $user['type']    = $userWxModel::TYPE_OFFICIAL;
-                    $res             = $userWxModel->toAddWx($user);
-                    if (!$res['status']) {
-                        $returnData['msg'] = $res['msg'];
-                        return $returnData;
-                    }
-                }
-                //直接登录
-                $userModel = new UserModel();
-                $userInfo  = $userModel->where(array('id' => $wxInfo['user_id']))->find();
-                if (!$userInfo) {
-                    $result['msg'] = '没有找到此账号';
-                    return $result;
-                }
-                return $userModel->setSession($userInfo, 2, 1);
-            } else {
-                Cache::set('user_wx_' . $params['uuid'], json_encode($wxInfo));
-                $returnData['msg']    = '请绑定手机号';
-                $returnData['status'] = true;
-                $returnData['data']   = [
-                    'is_new' => true
-                ];
-                return $returnData;
-            }
-        } else {
-            //不存在第三方账号,先插入第三方账号，然后跳转绑定手机号页面
-            $res = $userWxModel->toAddWx($user);
-            if (!$res['status']) {
-                $returnData['msg'] = $res['msg'];
-                return $returnData;
-            }
-            Cache::set('user_wx_' . $params['uuid'], json_encode($res['data']));
-
-            $returnData['msg']    = '保存成功，请绑定手机号';
-            $returnData['status'] = true;
-            $returnData['data']   = [
-                'is_new' => true
-            ];
-            return $returnData;
-        }
-        return $returnData;
-    }
-
-
-    /**
-     * 用户手机号绑定,然后调用登录，返回登录信息
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function trustBind()
-    {
-        $returnData = [
-            'status' => false,
-            'msg'    => '绑定失败',
-            'data'   => []
-        ];
-        $data       = input('param.');
-        if (!$data['uuid']) {
-            return $returnData;
-        }
-        $wxinfo             = Cache::get('user_wx_' . $data['uuid']);
-        $wxinfo             = json_decode($wxinfo, true);
-        $data['user_wx_id'] = $wxinfo['id'];
-        $userModel          = new UserModel();
-        $userWxModel        = new UserWx();
-        $wxInfo             = $userWxModel->where(['id' => $data['user_wx_id']])->find();
-        if (isset($wxInfo['user_id']) && $wxInfo['user_id']) {
-            $returnData['msg'] = '请勿重复绑定';
-            return $returnData;
-        }
-        return $userModel->smsLogin($data, 2);
-    }
+//    /**
+//     * 用户手机号绑定,然后调用登录，返回登录信息,废弃
+//     * @return array
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function trustBind()
+//    {
+//        $returnData = [
+//            'status' => false,
+//            'msg'    => '绑定失败',
+//            'data'   => []
+//        ];
+//        $data       = input('param.');
+//        if (!$data['uuid']) {
+//            return $returnData;
+//        }
+//        $wxinfo             = Cache::get('user_wx_' . $data['uuid']);
+//        $wxinfo             = json_decode($wxinfo, true);
+//        $data['user_wx_id'] = $wxinfo['id'];
+//        $userModel          = new UserModel();
+//        $userWxModel        = new UserWx();
+//        $wxInfo             = $userWxModel->where(['id' => $data['user_wx_id']])->find();
+//        if (isset($wxInfo['user_id']) && $wxInfo['user_id']) {
+//            $returnData['msg'] = '请勿重复绑定';
+//            return $returnData;
+//        }
+//        return $userModel->smsLogin($data, 2);
+//    }
 
 
     /**
@@ -1165,7 +1255,6 @@ class User extends Api
     /**
      * 获取我的要求相关信息
      * @return array
-     * @throws \think\exception\DbException
      */
     public function myInvite()
     {
@@ -1230,8 +1319,10 @@ class User extends Api
         return $res;
     }
 
+
     /**
      * 获取省市区信息
+     * @return array
      */
     public function getAreaList()
     {
@@ -1262,18 +1353,63 @@ class User extends Api
     public function getPoster()
     {
         $token = Request::param('token', false);
-        if ($token) {
+        if($token)
+        {
             $data['user_id'] = getUserIdByToken($token);
-        } else {
+        }
+        else
+        {
             $data['user_id'] = 0;
         }
-        $data['type']       = Request::param('type', 1); //分享类型 1=商品海报 2=邀请海报 3=拼团海报
-        $data['id']         = Request::param('id', 0); //类型值 1商品海报就是商品ID 2邀请海报无需填 3拼团海报的时候就是商品ID
-        $data['group_id']   = Request::param('group_id', 0); //拼团海报的时候是拼团的团ID
+        $data['type']       = Request::param('type', 1); //分享类型 1=商品海报 2=邀请海报 3=拼团海报 4=店铺首页
+        $data['id']         = Request::param('id', 0); //类型值 1商品海报就是商品ID 2邀请海报无需填 3拼团海报的时候就是商品ID 4店铺code
+        $data['group_id']   = Request::param('group_id', 0); //拼团海报的时候是拼团规则的ID
+        $data['team_id']    = Request::param('team_id', 0); //拼团海报的时候是拼团的团队ID
         $data['source']     = Request::param('source', 1); //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
         $data['return_url'] = Request::param('return_url', ''); //返回URL地址
 
-        $model = new UserModel();
-        return $model->posterGenerate($data);
+        $poster = new Poster();
+        return $poster->posterGenerate($data);
+    }
+
+
+    /**
+     * APP信任登录
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function uniAppLogin()
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => ''
+        ];
+
+        if (!input("?param.type")) {
+            $result['msg'] = 'type参数缺失';
+            return $result;
+        }
+        $data = input('param.');
+        $userWxModel = new UserWx();
+        $uniapp = new Uniapp();
+
+        //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
+        if (input('?param.invitecode')) {
+            $userModel = new \app\common\model\User();
+            $pid   = $userModel->getUserIdByShareCode(input('param.invitecode'));
+            $pinfo = $userModel->where(['id' => $pid])->find();
+            if ($pinfo) {
+                $data['pid'] = $pinfo['id'];
+            } else {
+                error_code(10014);
+            }
+        }else{
+            $data['pid'] = 0;
+        }
+
+        return $uniapp->login($data);
     }
 }

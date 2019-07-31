@@ -81,10 +81,12 @@
 </form>
 <script>
     layui.use(['form', 'table'], function () {
+        console.log(htmlDecodeByRegExp('{$items}'));
         layui.form.render();
         layui.table.render({
             elem: '#formItem'
             , size: 'sm'
+            ,limit:'20000000'
             , cols: [[ //标题栏
                 {field: 'name', title: '字段名', width: 200}
                 , {

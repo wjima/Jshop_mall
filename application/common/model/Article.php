@@ -240,6 +240,7 @@ class Article extends Common
             $data['content'] = str_replace("<img", "<img style='max-width: 100%'", $data['content']);
             $typeModel = new ArticleType();
             $data['article_type'] = $typeModel->getArticleTypeFather($data['type_id']);
+            $data['ctime'] = time_ago($data['ctime']);
 
             $result['status'] = true;
             $result['msg'] = '获取成功';

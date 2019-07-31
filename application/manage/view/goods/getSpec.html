@@ -32,7 +32,9 @@
         <div class="layui-input-inline">
             <input type="hidden" value="{$typeInfo.id}" name="type_id">
             <button class="layui-btn layui-btn-sm generate-spec">生成规格</button>
+
         </div>
+
     </div>
 
     <div id="more_spec">
@@ -66,17 +68,14 @@
         <input type="text" name="goods[sn]" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
     </div>
 </div>
-
+    {if !$erp_syn_on}
 <div class="layui-form-item">
     <label class="layui-form-label">库存：</label>
     <div class="layui-input-inline">
-        <input type="text" name="goods[stock]" lay-verify="title" autocomplete="off"  class="layui-input goods-stock">
-        <input type="checkbox" name="goods[stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
-    </div>
-    <div class="layui-form-mid layui-word-aux" >
-        选择增加时增加库存，选择减少时减少库存
+        <input type="text" name="goods[stock]" placeholder="数量" lay-verify="title" autocomplete="off"  class="layui-input goods-stock">
     </div>
 </div>
+    {/if}
 </div>
 </form>
 
@@ -85,6 +84,9 @@
     <label class="layui-form-label" >开启规格：</label>
     <div class="layui-input-inline">
         <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="false" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">开启</button>
+    </div>
+    <div class="layui-form-mid layui-word-aux">
+        规格值中不可以含有, 和:
     </div>
 </div>
 {/if}

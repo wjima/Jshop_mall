@@ -18,4 +18,6 @@ return [
     'default_return_type'    => 'json',
     // API运行模式 formal=正式 review=审核
     'operating_mode' => 'formal',
+    // 安全过滤，接口获取数据请使用input()和request::
+    'default_filter' => '', //'htmlspecialchars'
 ];

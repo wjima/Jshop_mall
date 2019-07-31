@@ -11,13 +11,25 @@
       <view class='top-mid'>
         <!-- <open-data class='head-sculpture' type="userAvatarUrl"></open-data> -->
         <!-- <open-data class='username' type="userNickName"></open-data> -->
-        <image mode='aspectFill' class='head-sculpture' bindtap='chooseAvatar' src='{{avatar}}'></image>
-        <text class='username'>{{nickname}} </text>
+        <block wx:if="{{hasLogin}}">
+          <image mode='aspectFill' class='head-sculpture' bindtap='chooseAvatar' src='{{avatar}}'></image>
+          <text class='username'>{{nickname}}</text>
+        </block>
+        <block wx:else>
+          <view class="head-sculpture">
+            <open-data type="userAvatarUrl"></open-data>
+          </view>
+          <view>
+            <view class="login-btn">
+              <navigator url="../login/level1/level1" hover-class="navigator-hover">登录/注册</navigator>
+            </view>
+          </view>
+        </block>
       </view>
-       <view class='top-right'>
+      <view class='top-right'>
         <text class='accumulate-points' wx:if="{{isPoint == 1}}">积分</text>
         <text class='accumulatepoints-num' wx:if="{{isPoint == 1}}">{{point}}</text>
-       </view>
+      </view>
       <!-- <image bindtap='setting' class='user-setting' src='../../image/chilun.png'></image> -->
     </view>
     <image class='bg' src='../../image/bg.png'></image>
@@ -31,7 +43,6 @@
     </view>
   </view>
 </view>
-
 <!-- 订单信息 -->
 <view class='content-order content-body'>
   <!-- 订单标题 -->
@@ -72,7 +83,6 @@
     </view>
   </view>
 </view>
-
 <!-- 功能模块第一部分 -->
 <view class='content-one content-body'>
   <!-- 我的优惠券 -->
@@ -80,20 +90,17 @@
     <image class='member-icon' src='../../image/coupon.png'></image>
     <text class='member-text'>我的优惠券</text>
   </view>
-  
   <!-- 余额提现 -->
-   <view class='content-view' bindtap='withdrawCash'>
+  <view class='content-view' bindtap='withdrawCash'>
     <image class='member-icon' src='../../image/remainingsum.png'></image>
     <text class='member-text'>我的余额</text>
   </view>
-
   <!-- 积分签到 -->
   <view class='sign-in content-view' bindtap='myPoint' wx:if="{{isPoint == 1}}">
     <image class='member-icon' src='../../image/signin.png'></image>
     <text class='member-text'>我的积分</text>
   </view>
 </view>
-
 <!-- 功能模块第二部分 -->
 <view class='content-two content-body'>
   <!-- 我的关注 -->
@@ -101,14 +108,12 @@
     <image class='member-icon' src='../../image/heart.png'></image>
     <text class='member-text'>我的关注</text>
   </view>
-  
   <!-- 我的足迹 -->
   <view class='content-view' bindtap='browsingHistory'>
     <image class='member-icon' src='../../image/footer.png'></image>
     <text class='member-text'>我的足迹</text>
   </view>
 </view>
-
 <view class='content-two content-body'>
   <!-- 邀请好友 -->
   <view class='content-view' bindtap='invite'>
@@ -116,38 +121,33 @@
     <text class='member-text'>邀请好友</text>
   </view>
 </view>
-
 <!-- 功能模块第三部分 -->
-  <!-- <view class='content-three content-body'>   -->
-  <!-- 余额明细  -->
-   <!-- <view class='content-view' bindtap='details'>
+<!-- <view class='content-three content-body'> -->
+<!-- 余额明细 -->
+<!-- <view class='content-view' bindtap='details'>
     <image class='member-icon' src='../../image/remainingsum-member.png'></image>
     <text class='member-text'>余额明细</text>
   </view> 
- </view>   -->
-
-<view class='content-four content-body' wx:if="{{isClerk}}"> 
+ </view> -->
+<view class='content-four content-body' wx:if="{{isClerk}}">
   <view class='content-view' bindtap='ladingList'>
-      <image class='member-icon' src='../../image/me-ic-list.png'></image>
-      <text class='member-text'>提货单列表</text>
+    <image class='member-icon' src='../../image/me-ic-list.png'></image>
+    <text class='member-text'>提货单列表</text>
   </view>
   <view class='content-view' bindtap='ladingWrite'>
-      <image class='member-icon' src='../../image/me-ic-hx.png'></image>
-      <text class='member-text'>提货单核销</text>
+    <image class='member-icon' src='../../image/me-ic-hx.png'></image>
+    <text class='member-text'>提货单核销</text>
   </view>
 </view>
-
 <!-- 功能模块第四部分 -->
-<view class='content-three content-body'> 
+<view class='content-three content-body'>
   <!-- 收货地址管理 -->
   <view class='content-view' bindtap='addressList'>
     <image class='member-icon' src='../../image/me-ic-site.png'></image>
     <text class='member-text'>收货地址</text>
   </view>
-  
   <view class='content-view' bindtap='setting'>
     <image class='member-icon' src='../../image/set.png'></image>
     <text class='member-text'>设置</text>
   </view>
-   
 </view>

@@ -35,30 +35,21 @@
         });
         //监听操作
         layui.form.on('switch(smsDemo)', function(obj){
-            console.log(this.name);
-            console.log(this.value);
             var data = {
                 code:this.value
-            }
+            };
             if(obj.elem.checked){
                 data[this.name] = 1;
             }else{
                 data[this.name] = 2;
             }
-            $.ajax({
-                type:'post',
-                url: "{:url('MessageCenter/edit')}",
-                data:data,
-                success:function(e){
-                    if(e.status){
-                       layer.msg('修改成功');
-                    }else{
-                        layer.msg(e.msg);
-                    }
-
+            JsPost("{:url('MessageCenter/edit')}", data, function(e){
+                if(e.status){
+                    layer.msg('修改成功');
+                }else{
+                    layer.msg(e.msg);
                 }
             });
         });
-
     });
 </script>

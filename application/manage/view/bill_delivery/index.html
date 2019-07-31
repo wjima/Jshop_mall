@@ -136,22 +136,16 @@
 
         //查看操作
         $(document).on('click', '.option-view', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('billDelivery/view')}",
-                data: 'delivery_id=' + $(this).attr('data-id'),
-                success: function (e) {
-                    if (e.status) {
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,
-                            area: ['600px', '600px'],
-                            title: '发货单查看'
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
-
+            JsGet("{:url('billDelivery/view')}?delivery_id="+$(this).attr('data-id'), function(e){
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['600px', '600px'],
+                        title: '发货单查看'
+                    });
+                }else{
+                    layer.msg(e.msg);
                 }
             });
         });

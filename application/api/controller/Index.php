@@ -1,12 +1,13 @@
 <?php
-/**
- * 接口路由
- */
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use app\common\model\UserToken;
 
+/**
+ * 接口路由
+ * Class Index
+ * @package app\api\controller
+ */
 class Index extends Api
 {
     protected $loginAction = [];

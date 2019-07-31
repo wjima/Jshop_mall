@@ -74,37 +74,25 @@
 
         //查看操作
         $(document).on('click', '.option-view', function(){
-            $.ajax({
-                type:'get',
-                url: "{:url('MessageCenter/messageView')}",
-                data:'id='+$(this).attr('data-id'),
-                success:function(e){
-                    if(e.status){
-                        layer.open({
-                            type: 1,
-                            skin: 'layui-layer-rim', //加上边框
-                            area: ['420px', '240px'], //宽高
-                            content: "<div style='padding:20px;'>" +e.data.content+ "</div>"
-                        });
-                    }else{
-                        layer.msg(e.msg);
-                    }
-
+            JsGet("{:url('MessageCenter/messageView')}?id="+$(this).attr('data-id'), function(e){
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['420px', '240px'], //宽高
+                        content: "<div style='padding:20px;'>" +e.data.content+ "</div>"
+                    });
+                }else{
+                    layer.msg(e.msg);
                 }
             });
         });
         //删除操作
         $(document).on('click', '.option-del', function(){
-            $.ajax({
-                type:'get',
-                url: "{:url('MessageCenter/messageDel')}",
-                data:'id='+$(this).attr('data-id'),
-                success:function(e){
-                    layer.msg(e.msg);
-                    if(e.status){
-                        layui.table.reload('message');
-                    }
-
+            JsGet("{:url('MessageCenter/messageDel')}?id="+$(this).attr('data-id'), function(e){
+                layer.msg(e.msg);
+                if(e.status){
+                    layui.table.reload('message');
                 }
             });
         });

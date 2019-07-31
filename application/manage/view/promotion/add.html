@@ -45,9 +45,7 @@
 
 <script>
     layui.use(['form', 'layedit', 'laydate'], function(){
-        var form = layui.form
-                ,layer = layui.layer
-                ,laydate = layui.laydate;
+        var form = layui.form, layer = layui.layer, laydate = layui.laydate;
         //时间插件
         laydate.render({
             elem: '#date',
@@ -55,25 +53,17 @@
             type: 'datetime'
         });
 
-
         //提交
         form.on('submit(promotion)', function(data){
-            $.ajax({
-                url:"{:url('promotion/add')}",
-                type:'post',
-                data:data.field,
-                success:function(res){
-                    if(res.status == true){
-                        layer.msg('添加成功');
-                        window.location.href=res.data;
-                    }else{
-                        layer.msg(res.msg);
-                    }
+            JsPost("{:url('promotion/add')}", data.field, function(res){
+                if(res.status == true){
+                    layer.msg('添加成功');
+                    window.location.href=res.data;
+                }else{
+                    layer.msg(res.msg);
                 }
-            },"json");
+            });
             return false;
         });
-
-
     });
 </script>

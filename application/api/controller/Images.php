@@ -1,16 +1,19 @@
 <?php
 namespace app\api\controller;
-
 use app\common\model\Images as imageModel;
 use app\common\controller\Api;
 use Request;
-use think\Container;
 
+/**
+ * 图片
+ * Class Images
+ * @package app\api\controller
+ */
 class Images extends Api
 {
     public function upload()
     {
-        $imageModel = new \app\common\model\Images();
+        $imageModel = new imageModel();
         $result     = $imageModel->saveImage();
         if ($result['status']) {
             $data = [

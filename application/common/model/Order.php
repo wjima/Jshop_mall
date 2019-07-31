@@ -193,14 +193,16 @@ class Order extends Common
         if (!empty($input['order_unified_status'])) {
             $where = array_merge($where, $this->getReverseStatus($input['order_unified_status'], 'o.'));
         }
-
+        if (!empty($input['type'])) {
+            $where[] = array('o.order_type', 'eq', $input['type']);
+        }
         $page  = $input['page'] ? $input['page'] : 1;
         $limit = $input['limit'] ? $input['limit'] : 20;
 
         if ($isPage) {
 
             $data = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark,o.order_type')
                 ->join(config('database.prefix') . 'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->order('ctime desc')
@@ -209,19 +211,19 @@ class Order extends Common
 
 
             $count = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark,o.order_type')
                 ->join(config('database.prefix') . 'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->count();
         } else {
             $data  = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark,o.order_type')
                 ->join(config('database.prefix') . 'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->order('ctime desc')
                 ->select();
             $count = $this->alias('o')
-                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark')
+                ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark,o.order_type')
                 ->join(config('database.prefix') . 'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
                 ->count();
@@ -254,6 +256,7 @@ class Order extends Common
                 $v['pay_status']  = config('params.order')['pay_status'][$v['pay_status']];
                 $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
                 $v['source']      = config('params.order')['source'][$v['source']];
+                $v['type']        =  config('params.order')['type'][$v['order_type']];
                 //订单售后状态
                 $v['after_sale_status'] = $as->getOrderAfterSaleStatus($v['order_id']);
 
@@ -844,6 +847,7 @@ class Order extends Common
             $userPointLog = new UserPointLog();
             $userPointLog->orderComplete($info['user_id'], $money, $info['order_id']);
 
+            Hook('orderFinish', $id);//订单完成钩子
             //订单记录
             $orderLog = new OrderLog();
             $orderLog->addLog($info['order_id'], $info['user_id'], $orderLog::LOG_TYPE_COMPLETE, '后台订单完成操作', $where);
@@ -1039,7 +1043,6 @@ class Order extends Common
         //发货
         $where[] = ['order_id', 'eq', $order_id];
         $result  = $this->save($order_data, $where);
-
         if ($result) {
             //判断生成门店自提单
             $order_info = $this->get($order_id);
@@ -1200,9 +1203,8 @@ class Order extends Common
         } else {
             $area_id = $delivery_re['data'];        //下单的省市区地址，算运费用。
         }
-
         //通过购物车生成订单信息和订单明细信息
-        $order_re = $this->formatOrder($order, $user_id, $cart_ids, $area_id, $point, $coupon_code);
+        $order_re = $this->formatOrder($order, $user_id, $cart_ids, $area_id, $point, $coupon_code,false,$delivery['type']);
         if (!$order_re['status']) {
             return $order_re;
         } else {
@@ -1262,7 +1264,8 @@ class Order extends Common
                     break;
                 case self::ORDER_TYPE_PINTUAN;
                     //拼团模式去校验拼团是否存在，并添加拼团记录
-                    $pt_re = $this->pOrderCreate($order, $items, $params);
+                    $pintuanRecordModel = new PintuanRecord();
+                    $pt_re = $pintuanRecordModel->orderAdd($order, $items, $params);
                     if (!$pt_re['status']) {
                         Db::rollback();
                         return $pt_re;
@@ -1328,10 +1331,11 @@ class Order extends Common
      * @param bool $free_freight 是否包邮
      * @return array                返回订单明细信息
      */
-    private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false)
+
+    private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false,$delivery_type='1')
     {
         $cartModel = new Cart();
-        $cartInfo  = $cartModel->info($user_id, $cart_ids, $order['order_type'], $area_id, $point, $coupon_code, $free_freight);
+        $cartInfo  = $cartModel->info($user_id, $cart_ids, $order['order_type'], $area_id, $point, $coupon_code, $free_freight,$delivery_type);
         if (!$cartInfo['status']) {
             return $cartInfo;
         }
@@ -1516,6 +1520,7 @@ class Order extends Common
         $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $where[] = ['ctime', '<=', time() - $setting * 86400];
+        $where[] = ['order_type', 'eq', self::ORDER_TYPE_COMMON];
 
         $order_info = $this->where($where)
             ->select();
@@ -1963,18 +1968,4 @@ class Order extends Common
 
         return $return;
     }
-
-    //添加拼团信息
-    private function pOrderCreate($order, $items, $params)
-    {
-        //一定要先安装拼团插件
-        if (checkAddons('Pintuan')) {
-            $result['msg'] = "请安装拼团插件";
-            return false;
-        }
-
-        $ptlib = new \addons\Pintuan\lib\ptlib();
-        return $ptlib->orderCreate($order, $items, $params);
-    }
-
 }

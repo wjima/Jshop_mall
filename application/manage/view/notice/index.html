@@ -68,12 +68,14 @@
         //添加弹出层
         $(document).on('click','.add-notice',function(){
             JsGet("{:url('Notice/add')}", function (e) {
-                window.box = layer.open({
-                    type: 1,
-                    content: e,
-                    area: ['400px', '400px'],
-                    title:'添加公告'
-                });
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['400px', '400px'],
+                        title: '添加公告'
+                    });
+                }
             })
         });
 
@@ -125,12 +127,14 @@
                 });
             } else if(layEvent === 'edit'){ //编辑
                 JsGet("{:url('Notice/edit')}?id=" + data.id, function(e){
-                    window.box = layer.open({
-                        type:1,
-                        content:e,
-                        area:['400px','400px'],
-                        title:'修改公告'
-                    })
+                    if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['400px', '400px'],
+                            title: '修改公告'
+                        })
+                    }
                 })
             }
         });

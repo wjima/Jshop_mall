@@ -25,7 +25,7 @@ class Goods extends Validate
         'brand_id' => 'number',
         'is_nomal_virtual' => 'in:1,2',
         'marketable' => 'in:1,2',
-        'stock' => 'number|max:8|egt:0',
+        'stock' => 'regex:/^-?[0-9]\d*$/',
         'weight' => 'float|max:10',
         'sort' => 'number|max:5',
         'bn'=>'unique:goods',
@@ -50,15 +50,13 @@ class Goods extends Validate
         'brand_id.number' => '商品品牌非法',
         'is_nomal_virtual.in' => '是否虚拟商品超出范围',
         'marketable.in' => '上下架状态超出范围',
-        'stock.integer' => '库存非法',
-        'stock.max' => '库存最多只能输入8位数字',
+        'stock.regex' => '库存非法',
         'weight.number' => '商品重量只能输入数字',
         'weight.float' => '商品重量只能输入数字',
         'weight.max' => '商品重量最多只能输入10位数字',
         'sort.number' => '商品排序非法',
         'sort.max' => '商品排序最多只能输入5位数字',
         'bn.unique' => '商品编号不能重复',
-        'stock.egt' => '库存不能小于0',
     ];
 
 }

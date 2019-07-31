@@ -141,12 +141,15 @@ class Wx
      * @param $access_token
      * @param string $page
      * @param string $invite
-     * @param string $goods
+     * @param int $type
+     * @param string $id
+     * @param string $group_id
+     * @param string $team_id
      * @param array $style
      * @param string $wx_appid
      * @return array
      */
-    public function getParameterQRCode($access_token, $page = 'pages/index/index', $invite = '', $goods = '', $style = [], $wx_appid = '')
+    public function getParameterQRCode($access_token, $page = 'pages/share/jump', $invite = '', $type = 1, $id = '', $group_id = '', $team_id = '', $style = [], $wx_appid = '')
     {
         $return = [
             'status' => false,
@@ -155,7 +158,7 @@ class Wx
         ];
 
         $styles = implode("-", $style);
-        $filename = "static/qrcode/wechat/".md5($page.$invite.$goods.$wx_appid.$styles).".jpg";
+        $filename = "static/qrcode/wechat/".md5($page.$invite.$type.$id.$group_id.$team_id.$wx_appid.$styles).".jpg";
 
         if(file_exists($filename))
         {
@@ -169,7 +172,28 @@ class Wx
             //没有去官方请求生成
             $curl = new Curl();
             $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$access_token;
-            $scene = 'invite='.$invite.'&id='.$goods;
+            if($type == 1)
+            {
+                $scene = 'type%3d'.$type.'%26invite%3d'.$invite.'%26id%3d'.$id;
+            }
+            else if($type == 2)
+            {
+                $scene = 'type%3d'.$type.'%26invite%3d'.$invite;
+            }
+            else if($type == 3)
+            {
+                $scene = 'type%3d'.$type.'%26invite%3d'.$invite.'%26id%3d'.$id.'%26tid%3d'.$team_id;
+            }
+            else if($type == 4)
+            {
+                $scene = 'type%3d'.$type.'%26invite%3d'.$invite.'%26id%3d'.$id;
+            }
+            else
+            {
+                //默认首页
+                $scene = 'type%3d'.$type.'%26invite%3d'.$invite;
+            }
+
             $data = [
                 'scene' => $scene,
                 'page' => $page

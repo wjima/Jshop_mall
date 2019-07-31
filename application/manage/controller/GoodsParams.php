@@ -28,90 +28,114 @@ class GoodsParams extends Manage
      */
     public function index()
     {
-        if (Request::isAjax()) {
-            $goodsParamsModel       = new GPmodel();
-            $filter              = input('request.');
+        if(Request::isAjax())
+        {
+            $goodsParamsModel = new GPmodel();
+            $filter = input('request.');
             return $goodsParamsModel->tableData($filter);
         }
         return $this->fetch('index');
     }
+
 
     /**
      * 添加参数
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-01-09 20:47
+     * @return array
      */
     public function add()
     {
+        $return_data = [
+            'status' => false,
+            'msg' => '添加失败',
+            'data' => '',
+        ];
         $this->view->engine->layout(false);
-        if (Request::isPost()) {
-            $return_data = [
-                'status' => false,
-                'msg'    => '添加失败',
-                'data'   => '',
-            ];
+        if (Request::isPost())
+        {
             //存储添加内容
-            $data             = [
-                'name'      => input('post.name'),
-                'type'      => input('post.type'),
-                'value'     => input('post.value'),
+            $data = [
+                'name' => input('post.name'),
+                'type' => input('post.type'),
+                'value' => input('post.value'),
             ];
             $goodsParamsModel = new GPmodel();
-            $result           = $goodsParamsModel->doAdd($data);
-            if ($result !== false) {
+            $result = $goodsParamsModel->doAdd($data);
+            if($result !== false)
+            {
                 $return_data = [
                     'status' => true,
-                    'msg'    => '保存成功',
-                    'data'   => $result,
+                    'msg' => '保存成功',
+                    'data' => $result,
                 ];
             }
             return $return_data;
         }
         //获取添加页面
-        return $this->fetch('add');
+        $return_data['status'] = true;
+        $return_data['msg'] = '失败';
+        $return_data['data'] = $this->fetch('add');
+        return $return_data;
     }
 
+
+    /**
+     * 编辑
+     * @return array|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function edit()
     {
+        $return_data = [
+            'status' => false,
+            'msg' => '添加失败',
+            'data' => '',
+        ];
         $goodsParamsModel = new GPmodel();
         $id = input('id/d','0');
-        if(!$id){
-            return '参数错误';
+        if(!$id)
+        {
+            $return_data['msg'] = '参数错误';
+            return $return_data;
         }
         $this->view->engine->layout(false);
-        if (Request::isPost()) {
-            $return_data = [
-                'status' => false,
-                'msg'    => '添加失败',
-                'data'   => '',
-            ];
+        if(Request::isPost())
+        {
             //存储添加内容
-            $data             = [
-                'name'      => input('post.name'),
-                'type'      => input('post.type'),
-                'value'     => input('post.value'),
+            $data = [
+                'name' => input('post.name'),
+                'type' => input('post.type'),
+                'value' => input('post.value'),
             ];
-            $result           = $goodsParamsModel->doAdd($data,$id);
-            if ($result !== false) {
+            $result = $goodsParamsModel->doAdd($data,$id);
+            if($result !== false)
+            {
                 $return_data = [
                     'status' => true,
-                    'msg'    => '保存成功',
-                    'data'   => $result,
+                    'msg' => '保存成功',
+                    'data' => $result,
                 ];
             }
             return $return_data;
         }
-
         $data = $goodsParamsModel->where(['id'=>$id])->find();
         if(!$data)
         {
-            return '无数据';
+            $return_data['msg'] = '无数据';
+            return $return_data;
         }
         $this->assign($data->toArray());
         //获取添加页面
-        return $this->fetch('edit');
+        $return_data['status'] = true;
+        $return_data['msg'] = '成功';
+        $return_data['data'] = $this->fetch('edit');
+        return $return_data;
     }
+
 
     /**
      * 删除参数
@@ -121,28 +145,40 @@ class GoodsParams extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '删除失败',
-            'data'   => '',
+            'msg' => '删除失败',
+            'data' => ''
         ];
-        $id     = input('post.id', 0);
-        if ($id) {
-            $goodsParamsModel    = new GPmodel();
-            $filter['id']        = $id;
-            $res                 = $goodsParamsModel->doDel($filter);
-            if ($res) {
-                $result['msg']    = '删除成功';
+        $id = input('post.id', 0);
+        if($id)
+        {
+            $goodsParamsModel = new GPmodel();
+            $filter['id'] = $id;
+            $res = $goodsParamsModel->doDel($filter);
+            if($res)
+            {
+                $result['msg'] = '删除成功';
                 $result['status'] = true;
             }
         }
         return $result;
     }
 
+
     /**
      * 弹窗参数列表
+     * @return array
      */
-    public function getlist(){
+    public function getlist()
+    {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
-        return $this->fetch('getlist');
+        $return['status'] = true;
+        $return['msg'] = '成功';
+        $return['data'] = $this->fetch('getlist');
+        return $return;
     }
-
 }

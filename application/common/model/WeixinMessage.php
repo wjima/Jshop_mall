@@ -144,6 +144,8 @@ class WeixinMessage extends Common
         }
         if ($data) {
             $data = $data->toArray();
+
+
             if ($data['type'] == self::TYPE_TEXT || $data['type'] == self::TYPE_IMAGE) {
                 $data['params'] = json_decode($data['params'], true);
                 return $wechat->text($data['params']['content'])->reply();
@@ -157,6 +159,12 @@ class WeixinMessage extends Common
                     }
                     $newsdata = [];
                     foreach ($data['media'] as $key => $val) {
+                        //未填写url时，自动输出前台页面当前站点地址
+                        if(!$val['url']){
+                            $host = \request()->host();
+                            $host = (\request()->isSsl() ? 'https://' : 'http://') . $host; //增加洗衣判断
+                            $val['url'] = $host.'/wap/#/pages/article/index?id='.$val['id'].'&id_type=3';
+                        }
                         $newsdata[] = [
                             'Title'       => $val['title'],
                             'Description' => $val['brief'],
@@ -180,4 +188,6 @@ class WeixinMessage extends Common
     {
         return $this->get($id);
     }
+
+
 }

@@ -106,7 +106,7 @@ const sendPost = (url, data, config = {}, callback) => {
         // _this.$dialog.loading.close()
         if (!response.data.status) {
             // 输出错误显示
-            common.errorToBack(response.data.msg)
+            common.errorToShow(response.data.msg)
             if (response.data.data === 14007 || response.data.data === 14006) {
                 // 用户未登录或者token过期 清空本地user_token
                 common.removeStorage('user_token')
@@ -155,7 +155,7 @@ const sendPost = (url, data, config = {}, callback) => {
                     break
             }
             _this.$dialog.loading.close()
-            common.errorToBack(err.message)
+            common.errorToShow(err.message)
         }
     })
 }
@@ -416,8 +416,10 @@ export const getTrustLogin = (data, callback) => post('user.gettrustlogin', data
 export const trustBind = (data, callback) => post('user.trustbind', data, callback)
 
 // 获取用户信息
-export const trustLogin = (data, callback) => post('user.trustcallback', data, callback)
+// export const trustLogin = (data, callback) => post('user.trustcallback', data, callback)
 
+//公众号授权获取openid
+export const getOpenId = (data, callback) => post('user.officiallogin', data, callback); 
 // 判断用户下单可以使用多少积分
 export const usablePoint = (data, callback) => post('user.getuserpoint', data, callback)
 

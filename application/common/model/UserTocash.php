@@ -27,6 +27,16 @@ class UserTocash extends Common
             $result['msg'] = "提现最低不能少于".getSetting('tocash_money_low')."元";
             return $result;
         }
+        //判断历史提现金额
+        $where[] = ['ctime','>=',strtotime(date('Y-m-d').' 00:00:00')];
+        $where[] = ['ctime','<=',strtotime(date('Y-m-d').' 23:59:59')];
+        $todayMoney = $this->where($where)->sum('money');
+        $todayMoney = $todayMoney + $money;//历史今天提现加上本次提现
+        $tocash_money_limit = getSetting('tocash_money_limit');
+        if($tocash_money_limit && $todayMoney > $tocash_money_limit){
+            $result['msg'] = "每日提现不能超过".getSetting('tocash_money_limit')."元";
+            return $result;
+        }
 
         $userModel = new User();
         $userInfo = $userModel->getUserInfo($user_id);

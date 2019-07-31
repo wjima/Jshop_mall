@@ -7,9 +7,7 @@
 </form>
 
 <div class="table-body">
-    <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url">
-
-</span>
+    <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
     <table id="operationTable" lay-filter="operation"></table>
 </div>
 
@@ -25,7 +23,7 @@
             url: "{:url('Operation/index')}?_ajax=1",
             id:'operationTable',
             cols: [[
-                {type:'numbers'},
+                {field:'id',title:'ID',width:60},
                 {field:'code', title:'编码'},
                 { title:'名称',templet:function(data){
                     var html = '';
@@ -65,7 +63,7 @@
                     area: ['600px', '500px'],
                     data:'',
                     title: '添加',
-                    content: tpl,
+                    content: tpl.data,
                     btn:['保存','关闭'],
                     yes:function (index,layero) {
                         var thedata = $('.operationForm').serialize();
@@ -136,7 +134,7 @@
                     area: ['600px', '500px'],
                     data:'',
                     title: '编辑',
-                    content: tpl,
+                    content: tpl.data,
                     btn:['保存','关闭'],
                     yes:function (index,layero) {
                         var thedata = $('.operationForm').serialize();

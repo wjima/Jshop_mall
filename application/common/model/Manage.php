@@ -58,10 +58,16 @@ class Manage extends Common
         return $re;
     }
 
+
     /**
      * 注册添加用户
-     * @param array $data 新建用户的数据数组
-     *
+     * @param $data //新建用户的数据数组
+     * @return array|mixed
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function toAdd($data)
     {
@@ -80,20 +86,28 @@ class Manage extends Common
 
 
         //判断是新增还是修改
-        if(isset($data['id'])){
+        if(isset($data['id']))
+        {
             $manageInfo = $this->where(['id'=>$data['id']])->find();
-            if(!$manageInfo){
+            if(!$manageInfo)
+            {
                 return error_code(11010);
             }
 
-            if(!(!isset($data['password'][5]) || isset($data['password'][16]))){
-                if($data['password'] == ""){
-                    unset($data['password']);
-                }else{
+            if(isset($data['password']) && !empty($data['password']))
+            {
+                if(strlen($data['password']) <= 5 || strlen($data['password']) > 16)
+                {
+                    return error_code(11009);
+                }
+                else
+                {
                     $data['password'] = $this->enPassword($data['password'], $manageInfo['ctime']);
                 }
-            }else{
-                return error_code(11009);
+            }
+            else
+            {
+                unset($data['password']);
             }
 
             unset($data['username']);       //不允许修改用户名

@@ -103,20 +103,13 @@
         });
         $(document).on('click','.edit-table-area',function(){
             action_id = $(this).attr('data-id');
-            $.ajax({
-                url: '{:url("area/edit")}',
-                type: 'get',
-                data: {
-                    "id": action_id
-                },
-                dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        window_box = layer.open({
-                            type: 1,
-                            title: '编辑',
-                            area: ['420px', '250px'],
-                            content: '<div style="padding:20px;">\n' +
+            JsGet('{:url("area/edit")}?id='+action_id, function(e){
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑',
+                        area: ['420px', '250px'],
+                        content: '<div style="padding:20px;">\n' +
                             '    <div class="layui-form-item">\n' +
                             '        <label class="layui-form-label">地区名称：</label>\n' +
                             '        <div class="layui-input-block">\n' +
@@ -133,12 +126,11 @@
                             '        <span class="layui-btn layui-btn-fluid edit-save">修改</span>\n' +
                             '    </div>\n' +
                             '</div>'
-                        });
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
-                    }
+                    });
+                }else{
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
                 }
             });
         });
@@ -147,24 +139,13 @@
             layer.confirm('确认删除？', {
                 btn: ['删除', '取消']
             }, function(){
-                $.ajax({
-                    url: '{:url("area/del")}',
-                    type: 'get',
-                    data: {
-                        "id": id
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            table.reload();
-                        });
-                    }
-                })
+                JsGet('{:url("area/del")}?id='+id, function(e){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        table.reload();
+                    });
+                });
             });
         });
-
-
-
 
         function getIndent(depth) {
             var indent = '';
@@ -174,129 +155,92 @@
             return indent;
         }
 
-
         province();
         //省份
         function province(){
-            $.ajax({
-                url: '{:url("area/index")}',
-                type: 'post',
-                data: {
-                    'type': 'province',
-                    'id': 0
-                },
-                dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        for(var i = 0; i < e.data.length; i ++){
-                            var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
-                            $("#province").append(html);
-                            form.render();
-                        }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
+            JsPost('{:url("area/index")}', {'type': 'province', 'id': 0}, function(e){
+                if(e.status){
+                    for(var i = 0; i < e.data.length; i ++){
+                        var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                        $("#province").append(html);
+                        form.render();
                     }
+                }else{
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
                 }
             });
         }
         //城市
         function city(id){
-            $.ajax({
-                url: '{:url("area/index")}',
-                type: 'post',
-                data: {
-                    'type': 'city',
-                    'id': id
-                },
-                dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        if(e.data.length > 0){
-                            var a = '<div class="layui-input-inline" id="city_box">' +
-                                '<select name="city" lay-filter="city" id="city">' +
-                                '<option value="0">请选择市</option>' +
-                                '</select>' +
-                                '</div>';
-                            $("#province_box").after(a);
-                            for(var i = 0; i < e.data.length; i ++){
-                                var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
-                                $("#city").append(html);
-                                form.render();
-                            }
+            JsPost('{:url("area/index")}', {'type': 'city', 'id': id}, function(e){
+                if(e.status){
+                    if(e.data.length > 0){
+                        var a = '<div class="layui-input-inline" id="city_box">' +
+                            '<select name="city" lay-filter="city" id="city">' +
+                            '<option value="0">请选择市</option>' +
+                            '</select>' +
+                            '</div>';
+                        $("#province_box").after(a);
+                        for(var i = 0; i < e.data.length; i ++){
+                            var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                            $("#city").append(html);
+                            form.render();
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
                     }
+                }else{
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
                 }
             });
         }
         //地区
         function area(id){
-            $.ajax({
-                url: '{:url("area/index")}',
-                type: 'post',
-                data: {
-                    'type': 'area',
-                    'id': id
-                },
-                dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        if(e.data.length > 0){
-                            var a = '<div class="layui-input-inline" id="area_box">' +
-                                '<select name="area" lay-filter="area" id="area">' +
-                                '<option value="0">请选择县/区</option>' +
-                                '</select>' +
-                                '</div>';
-                            $("#city_box").after(a);
-                            for(var i = 0; i < e.data.length; i ++){
-                                var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
-                                $("#area").append(html);
-                                form.render();
-                            }
+            JsPost('{:url("area/index")}', {'type': 'area', 'id': id}, function(e){
+                if(e.status){
+                    if(e.data.length > 0){
+                        var a = '<div class="layui-input-inline" id="area_box">' +
+                            '<select name="area" lay-filter="area" id="area">' +
+                            '<option value="0">请选择县/区</option>' +
+                            '</select>' +
+                            '</div>';
+                        $("#city_box").after(a);
+                        for(var i = 0; i < e.data.length; i ++){
+                            var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                            $("#area").append(html);
+                            form.render();
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
                     }
+                }else{
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
                 }
             });
         }
         //第四级
         function four(id){
-            $.ajax({
-                url: '{:url("area/index")}',
-                type: 'post',
-                data: {
-                    'type': 'four',
-                    'id': id
-                },
-                dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        if(e.data.length > 0){
-                            var a = '<div class="layui-input-inline" id="four_box">' +
-                                '<select name="four" lay-filter="four" id="four">' +
-                                '<option value="0">请选择地区</option>' +
-                                '</select>' +
-                                '</div>';
-                            $("#area_box").after(a);
-                            for(var i = 0; i < e.data.length; i ++){
-                                var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
-                                $("#four").append(html);
-                                form.render();
-                            }
+            JsPost('{:url("area/index")}', {'type': 'four', 'id': id}, function(e){
+                if(e.status){
+                    if(e.data.length > 0){
+                        var a = '<div class="layui-input-inline" id="four_box">' +
+                            '<select name="four" lay-filter="four" id="four">' +
+                            '<option value="0">请选择地区</option>' +
+                            '</select>' +
+                            '</div>';
+                        $("#area_box").after(a);
+                        for(var i = 0; i < e.data.length; i ++){
+                            var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                            $("#four").append(html);
+                            form.render();
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
                     }
+                }else{
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
                 }
             });
         }
@@ -430,20 +374,13 @@
                 return false;
             }
 
-            $.ajax({
-                url: '{:url("area/edit")}',
-                type: 'get',
-                data: {
-                    "id": action_id
-                },
-                dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        window_box = layer.open({
-                            type: 1,
-                            title: '编辑',
-                            area: ['420px', '250px'],
-                            content: '<div style="padding:20px;">\n' +
+            JsGet('{:url("area/edit")}?id='+action_id, function(e){
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑',
+                        area: ['420px', '250px'],
+                        content: '<div style="padding:20px;">\n' +
                             '    <div class="layui-form-item">\n' +
                             '        <label class="layui-form-label">地区名称：</label>\n' +
                             '        <div class="layui-input-block">\n' +
@@ -460,33 +397,22 @@
                             '        <span class="layui-btn layui-btn-fluid edit-save">修改</span>\n' +
                             '    </div>\n' +
                             '</div>'
-                        });
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
-                    }
+                    });
+                }else{
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
                 }
             });
         });
         $(document).on('click', '.edit-save', function(){
             if($("#area_name").val().length > 0){
-                $.ajax({
-                    url: '{:url("area/edit")}',
-                    type: 'post',
-                    data: {
-                        'name': $("#area_name").val(),
-                        'id': action_id,
-                        'sort': $("#area_sort").val()
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        layer.close(window_box);
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
-                    }
-                })
+                JsPost('{:url("area/edit")}', {'name': $("#area_name").val(), 'id': action_id, 'sort': $("#area_sort").val()}, function(e){
+                    layer.close(window_box);
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        location.reload();
+                    });
+                });
             }else{
                 layer.msg('请填写地区名称');
             }
@@ -515,19 +441,11 @@
             layer.confirm('确认删除？', {
                 btn: ['删除', '取消']
             }, function(){
-                $.ajax({
-                    url: '{:url("area/del")}',
-                    type: 'get',
-                    data: {
-                        "id": action_id
-                    },
-                    dataType: 'json',
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            table.reload();
-                        });
-                    }
-                })
+                JsGet('{:url("area/del")}?id='+action_id, function(e){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        table.reload();
+                    });
+                });
             });
         });
         //生成地区缓存文件
@@ -536,7 +454,6 @@
                layer.msg(res.msg);
            });
         });
-
     });
 </script>
 <style>

@@ -171,7 +171,9 @@ Page({
 
   //查询价格区间
   searchPrice: function (event) {
-
+    this.data.minPrice = parseFloat(this.data.minPrice);
+    this.data.maxPrice = parseFloat(this.data.maxPrice);
+    
     if (this.data.minPrice > 0 && this.data.maxPrice>0&&this.data.minPrice > this.data.maxPrice){
       app.common.errorToShow('价格区间有误');
       return false;
@@ -232,6 +234,7 @@ Page({
       app.common.errorToBack('暂时没有数据了', 0);
       return false;
     }
+
     app.api.goodsList(this.data.searchData,function(res){
       if(res.status){
         //判是否没有数据了，只要返回的记录条数小于总记录条数，那就说明到底了，因为后面没有数据了 
@@ -244,6 +247,10 @@ Page({
         if (page.data.searchData.page == 1 && res.data.list.length == 0){
           isEmpty = true;
         }
+		page.setSearchData({
+			page: page.data.searchData.page + 1
+		});
+
         page.setData({
           goodsList: page.data.goodsList.concat(res.data.list),
           ajaxStatus: false,
@@ -263,9 +270,7 @@ Page({
       toView: 'loading'
     });
     if (!page.data.loadingComplete){
-      page.setSearchData({
-        page: page.data.searchData.page + 1
-      });
+
       page.getGoods();
     }
   },

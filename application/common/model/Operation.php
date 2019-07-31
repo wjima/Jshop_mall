@@ -16,17 +16,18 @@ class Operation extends Common
     //不需要权限判断的控制器和方法,前台传过来的都是小写，这里就不采用驼峰法写了。
     private $noPerm = [
         self::MENU_MANAGE => [
-            'Index'=> ['index','tagselectbrands','tagselectgoods','clearcache','welcome'],
-            'Order' => ['statistics'],
-            'Images' => ['uploadimage','listimage','manage','cropper'],
-            'Files' => ['uploadVideo'],
-            'User' => ['userloglist','statistics'],
-            'MessageCenter' => ['message','messageview','messagedel'],
-            'Promotion' => ['conditionlist','conditionadd','conditionedit','conditiondel','resultlist','resultadd','resultedit','resultdel'],
-            'Worksheet'=>['worklist','sheetlist','sheetlist1','sheetlist2','sheetlist3','add','addwork','wsdetail','adddetail','updata','del','inquiries'],
-            'Administrator' => ['information','editpwd','getversion'],
-            'OperationLog' => ['getlastlog'],
-            'Report' => ['getdatetype']
+            'Index'         => ['index', 'tagselectbrands', 'tagselectgoods', 'clearcache', 'welcome','tagselectnotice','tagselectgroup','tagpintuan'],
+            'Order'         => ['statistics'],
+            'Images'        => ['uploadimage', 'listimage', 'manage', 'cropper'],
+            'Files'         => ['uploadvideo'],
+            'User'          => ['userloglist', 'statistics'],
+            'MessageCenter' => ['message', 'messageview', 'messagedel'],
+            'Promotion'     => ['conditionlist', 'conditionadd', 'conditionedit', 'conditiondel', 'resultlist', 'resultadd', 'resultedit', 'resultdel'],
+            'Worksheet'     => ['worklist', 'sheetlist', 'sheetlist1', 'sheetlist2', 'sheetlist3', 'add', 'addwork', 'wsdetail', 'adddetail', 'updata', 'del', 'inquiries'],
+            'Administrator' => ['information', 'editpwd', 'getversion'],
+            'OperationLog'  => ['getlastlog'],
+            'Report'        => ['getdatetype'],
+            'Categories'    => ['getinfo']
         ],
     ];
 
@@ -454,8 +455,6 @@ class Operation extends Common
             $re['parents'] = [];
         }
 
-        $re['sql'] = $this->getLastSql();
-
         return $re;
     }
 
@@ -585,9 +584,10 @@ class Operation extends Common
                 return error_code(10000);
             }
             //如果是控制器，父菜单节点必须和父节点保持一致，
-            if($data['type'] == 'c' && ($data['parent_id'] != $data['parent_menu_id'])){
-                return error_code(11099);
-            }
+            //此判断outl了
+//            if($data['type'] == 'c' && ($data['parent_id'] != $data['parent_menu_id'])){
+//                return error_code(11099);
+//            }
         }
 
         if($data['id'] != ""){

@@ -1,0 +1,81 @@
+<form class="layui-form seller-alone-form" id="pintuanAdd" action="">
+        {if $info.id}
+
+    <input type="hidden" name="id" value="{$info.id}" />
+    {/if}
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>活动名称：</label>
+            <div class="layui-input-inline seller-inline-7">
+                <input type="text" name="name" value="{$info.name}"  required placeholder="请输入活动名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">商品id：</label>
+            <div class="layui-input-block">
+                {Jshop:sellergoods value="$goods" num="100" name="goods" /}
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">启用状态：</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="status" lay-skin="switch" {if $info['status'] == 1} checked {/if} value="1" lay-text="启用|禁用">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">起止时间：</label>
+            <div class="layui-input-inline seller-inline-6">
+                <input  type="text" name="date" value="{$info.date}" id="date1" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">权重：</label>
+            <div class="layui-input-inline seller-inline-2">
+                {php}
+                if($info){
+                $sort = $info['sort'];
+                }else{
+                $sort = 100;
+                }
+                {/php}
+                <input type="text" name="sort" required  lay-verify="required" value="{$sort}" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">数字越小，权重越大</div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>拼团人数：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <input type="text" name="people_number" value="{$info.people_number}"  required placeholder="几人成团" autocomplete="off" class="layui-input" >
+            </div>
+            <div class="layui-form-mid layui-word-aux">2-8人</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>有效时长：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <input type="text" name="significant_interval" value="{$info.significant_interval}"  required  autocomplete="off" class="layui-input" >
+            </div>
+            <div class="layui-form-mid layui-word-aux">单位 小时</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>优惠金额：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <input type="text" name="discount_amount" value="{$info.discount_amount}"  required  autocomplete="off" class="layui-input" >
+            </div>
+            <div class="layui-form-mid layui-word-aux">元</div>
+        </div>
+    </form>
+    
+    <script>
+        layui.use(['form', 'layedit', 'laydate','table'], function() {
+            layui.form.render();
+            //时间插件
+            layui.laydate.render({
+                elem: '#date1',
+                range: '到',
+                type: 'datetime'
+            });
+        });
+    </script>
+    

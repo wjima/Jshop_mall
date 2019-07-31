@@ -19,6 +19,9 @@
     .layui-margin-10{
         margin:10px ;
     }
+	.layui-layer-page .layui-layer-content{
+		overflow: initial;
+	}
 </style>
 <script src="__STATIC_JS__jquery.form.js" type="text/javascript" charset="utf-8"></script>
 
@@ -55,8 +58,10 @@
             <div class="layui-input-inline seller-inline-2">
                 <select name="batchOperate" id="batchOperate" lay-filter="batchOperate">
                     <option value=""></option>
-                    <option value="marketable_up">上架</option>
-                    <option value="marketable_down">下架</option>
+                    <option value="modify_price">修改价格</option>
+                    <option value="modify_stock">调整库存</option>
+                    <option value="marketable_up">批量上架</option>
+                    <option value="marketable_down">批量下架</option>
                     <option value="label">打标签</option>
                     <option value="dellabel">去标签</option>
                     <option value="del">删除</option>
@@ -160,7 +165,11 @@
                     return html;
                 }},
                 {field:'label_ids', width:120,title:'标签', align: 'center',templet:function (data) {
-                    return getLabel(data.label_ids);
+                    if(data.hasOwnProperty('label_ids') && data.label_ids){
+                        return getLabel(data.label_ids);
+                    }else{
+                        return '';
+                    }
                 }},
                 {field:'price', width:100,title:'销售价', align: 'center', templet:function(data){return '￥'+data.price}},
                 {field:'costprice', width:100,title:'成本价', align: 'center', templet:function(data){return '￥'+data.costprice}},
@@ -318,7 +327,7 @@
                     title:'高级筛选',
                     maxmin: false,
                     shade: 0,
-                    content:html,
+                    content:html.data,
                     btn: ['确定', '取消'],
                     yes: function(index, layero){
                         var searchData = getFormData();
@@ -375,6 +384,11 @@
                 case 'dellabel':
                     dellabel(ids);
                     break;
+                case 'modify_price':
+                    modifyPrice(ids);
+                    break;
+                case 'modify_stock':
+                    modifyStock(ids);
                 default :
                     layer.msg('请选择操作类型');
                     return false;
@@ -468,6 +482,78 @@
                         table.reload();
                     }
                 );
+            });
+        }
+
+        /**
+         * 修改价格
+         */
+        function modifyPrice(data){
+            JsPost('{:url("Goods/batchModifyPrice")}',{'ids':data},function (res) {
+                if(res.status){
+                    layer.open({
+                        type: 1,
+                        area: ['700px', '450px'],
+                        fixed: false, //不固定
+                        title:'价格设置',
+                        shade: 0,
+                        content: res.data,
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero){
+                            //do something
+                            var formData = getFormData();
+                            JsPost('{:url("Goods/doBatchModifyPrice")}',formData,function(e){
+                                layer.msg(e.msg);
+                                if(e.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+
+                            });
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
+            });
+        }
+
+        /**
+         * 修改库存
+         */
+        function modifyStock(data){
+            JsPost('{:url("Goods/batchModifyStock")}',{'ids':data},function (res) {
+                if(res.status){
+                    layer.open({
+                        type: 1,
+                        area: ['700px', '450px'],
+                        fixed: false, //不固定
+                        title:'库存设置',
+                        shade: 0,
+                        content: res.data,
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero){
+                            //do something
+                            var formData = getFormData();
+                            JsPost('{:url("Goods/doBatchModifyStock")}',formData,function(e){
+                                layer.msg(e.msg);
+                                if(e.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+
+                            });
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
             });
         }
 

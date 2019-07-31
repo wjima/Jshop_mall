@@ -11,6 +11,7 @@ use app\common\controller\Manage;
 use Request;
 use app\common\model\GoodsCat;
 
+
 /**
  * 商品分类
  * Class Categories
@@ -21,219 +22,183 @@ class Categories extends Manage
 {
     /**
      * 商品分类列表
-     * @return array|mixed
+     * @return mixed
      */
     public function index()
     {
-        if(!Request::isAjax())
+        if(Request::isAjax())
         {
-            //打开主页
-            return $this->fetch('index');
-        }
-        else
-        {
-            $data = model('common/GoodsCat')->getList();
-            if(count($data) > 0)
+            $goodsCatModel = new GoodsCat();
+            $data = input('param.');
+            if(isset($data['parent_id']) && $data['parent_id'] != "")
             {
-                $return_data = array(
-                    'status' => 1,
-                    'msg' => "数据获取成功",
-                    'count' => count($data),
-                    'data' => $data
-                );
+                //此处不需要做任何操作
             }
             else
             {
-                $return_data = array(
-                    'status' => 0,
-                    'msg' => "没有分类快去添加一个吧",
-                    'count' => count($data),
-                    'data' => $data
-                );
+                $data['parent_id'] = $goodsCatModel::TOP_CLASS_PARENT_ID;
             }
-            return $return_data;
+            return $goodsCatModel->tableData($data);
         }
+        return $this->fetch('index');
     }
 
 
     /**
-     * 添加商品分类
-     * @param int $parent_id
+     * 添加&编辑商品分类
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function add($parent_id = GoodsCat::TOP_CLASS_PARENT_ID)
+    public function edit()
     {
+        $result = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
-        if(!Request::isPost())
-        {
-            //获取添加页面
-            $this->assign('parent_id', $parent_id); //父级ID
-            $parent = model('common/GoodsCat')->getAllCat();
-            $this->assign('parent', $parent); //顶级分类
-            $type = model('common/GoodsType')->getList();
-            $this->assign('type', $type['data']);
-            return $this->fetch('add');
-        }
-        else
-        {
-            //存储添加内容
-            $data = array(
-                'parent_id' => input('parent_id'),
-                'type_id' => input('type_id'),
-                'name' => input('name'),
-                'image_id' => input('image_id'),
-                'sort' => input('sort')
-            );
-            $result = model('common/GoodsCat')->add($data);
-            if($result !== false)
-            {
-                $return_data = array(
-                    'status' => true,
-                    'msg' => '添加成功',
-                    'data' => $result,
-                    'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
-                );
-            }
-            else
-            {
-                $return_data = array(
-                    'status' => false,
-                    'msg' => '添加失败',
-                    'data' => $result,
-                    'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
-                );
-            }
-            return $return_data;
-        }
-    }
+        $goodsCatModel = new GoodsCat();
 
+        if(Request::isPost())
+        {
+            return $goodsCatModel->edit(input('param.'));
+        }
+        //获取编辑页面
+        //取全树
+        $list = $goodsCatModel->order('sort asc')->select()->toArray();
+        $tree = $goodsCatModel->createTree($list,$goodsCatModel::TOP_CLASS_PARENT_ID);
+        $this->assign('tree',$tree);
 
-    /**
-     * 编辑商品分类
-     * @param $id
-     * @return array|mixed
-     */
-    public function edit($id)
-    {
-        $this->view->engine->layout(false);
-        if(!Request::isPost())
+        $type = model('common/GoodsType')->getList();
+        $this->assign('type', $type['data']);
+
+        if(input("?param.id"))
         {
-            //获取编辑页面
-            $parent = model('common/GoodsCat')->getAllCat($id);
-            $this->assign('parent', $parent); //父级分类
-            $type = model('common/GoodsType')->getList();
-            $this->assign('type', $type['data']);
-            $data = model('common/GoodsCat')->getCatInfo($id);
-            $this->assign('data', $data); //分类信息
-            return $this->fetch('edit');
+            $info = $goodsCatModel->where(['id'=>input('param.id')])->find();
+            if(!$info)
+            {
+                return error_code(10000);
+            }
+            $this->assign('data',$info);
         }
-        else
-        {
-            //存储编辑内容
-            $data = array(
-                'id' => input('id'),
-                'parent_id' => input('parent_id'),
-                'type_id' => input('type_id'),
-                'name' => input('name'),
-                'image_id' => input('image_id'),
-                'sort' => input('sort')
-            );
-            $result = model('common/GoodsCat')->edit($data);
-            return $result;
-        }
+        $result['status'] = true;
+        $result['msg'] = '成功';
+        $result['data'] = $this->fetch('edit');
+        return $result;
     }
 
 
     /**
      * 删除商品分类
      * @param $id
-     * @return array
+     * @return bool|int
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function del($id)
     {
-        if(!Request::isPost())
-        {
-            //查询是否可以删除
-            $result = model('common/GoodsCat')->getIsDel($id);
-            if($result['is'])
-            {
-                $return_data = array(
-                    'status' => true,
-                    'msg' => '可以删除',
-                    'data' => $result
-                );
-            }
-            else
-            {
-                $return_data = array(
-                    'status' => false,
-                    'msg' => '该分类下存在子分类无法删除，请先删除子分类',
-                    'data' => $result
-                );
-            }
-            return $return_data;
-        }
-        else
-        {
-            //删除
-            $result = model('common/GoodsCat')->del($id);
-            if($result)
-            {
-                $return_data = array(
-                    'status' => true,
-                    'msg' => '删除成功',
-                    'data' => $result
-                );
-            }
-            else
-            {
-                $return_data = array(
-                    'status' => false,
-                    'msg' => '删除失败',
-                    'data' => $result
-                );
-            }
-            return $return_data;
-        }
+        $goodsCatModel = new GoodsCat();
+        //删除
+        return $goodsCatModel->del($id);
     }
+
 
     /**
      * 获取所有一级分类
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getAll()
     {
-        $result        = [
+        $result = [
             'status' => false,
-            'msg'    => '获取失败',
-            'data'   => [],
+            'msg' => '获取失败',
+            'data' => [],
         ];
         $goodsCatModel = new GoodsCat();
-        $catList     = $goodsCatModel->field('id,name,sort')->where([['parent_id','=','0']])->order('sort asc')->select();
-        if (!$catList->isEmpty()) {
-            $result['data']   = $catList->toArray();
+        $catList = $goodsCatModel->field('id,name,sort')->where([['parent_id','=','0']])->order('sort asc')->select();
+        if(!$catList->isEmpty())
+        {
+            $result['data'] = $catList->toArray();
             $result['status'] = true;
-            $result['msg']    = '获取成功';
+            $result['msg'] = '获取成功';
         }
         return $result;
     }
 
+
+    /**
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function getInfo()
     {
-        $result        = [
+        $result = [
             'status' => false,
-            'msg'    => '获取失败',
-            'data'   => [],
+            'msg' => '获取失败',
+            'data' => [],
         ];
         $id = input('id/d','0');
-
         $goodsCatModel = new GoodsCat();
-        $cat     = $goodsCatModel->field('id,name,sort,type_id')->where([['id','=',$id]])->find();
-        if ($cat) {
-            $result['data']   = $cat->toArray();
+        $cat = $goodsCatModel->field('id,name,sort,type_id')->where([['id','=',$id]])->find();
+        if($cat)
+        {
+            $result['data'] = $cat->toArray();
             $result['status'] = true;
-            $result['msg']    = '获取成功';
+            $result['msg'] = '获取成功';
         }
         return $result;
     }
 
+
+    /**
+     * 改变分类是否显示状态
+     * @return array
+     */
+    public function changeState()
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '参数丢失',
+        ];
+        $id = input('post.id/d', 0);
+        $state = input('post.status/s', 'false');
+
+        if(!$id)
+        {
+            return $result;
+        }
+        $iData = [];
+        if($state == 'true')
+        {
+            $state = '1';
+        }
+        else
+        {
+            $state = '2';
+        }
+        $iData['status'] = $state;
+        $model = new GoodsCat();
+        if($model->save($iData, ['id' => $id]) !== false)
+        {
+            $result['msg'] = '设置成功';
+            $result['status'] = true;
+        }
+        else
+        {
+            $result['msg'] = '设置失败';
+            $result['status'] = false;
+        }
+        return $result;
+    }
 }

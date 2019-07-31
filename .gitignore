@@ -10,3 +10,4 @@ public/static/file
 public/install/install.lock
 wechat_app/sitemap.json
 public/qrcode/
+*.bak

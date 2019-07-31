@@ -9,15 +9,13 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
-use org\Curl;
 use Request;
 use app\common\model\Area as AreaModel;
-use think\Db;
 
 /**
  * 地区管理
  * Class Area
- * @package app\seller\controller
+ * @package app\Manage\controller
  */
 class Area extends Manage
 {

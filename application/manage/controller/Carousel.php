@@ -76,11 +76,11 @@ class Carousel extends Manage
             return error_code(10002);
         }
         $carouselSeatModel = new CarouselSeat();
-        $position = $carouselSeatModel->where('id',$info['position_id'])->find();
+        $positionList = $carouselSeatModel->select();
         return $this->fetch('edit',[
-                'position'=>$position,
-                'info'=>$info,
-                'type'=>config('params.carousel')['type']
+                'positionList' => $positionList,
+                'info' => $info,
+                'type' => config('params.carousel')['type']
             ]);
     }
 

@@ -43,11 +43,13 @@ class Pages extends Manage
         $result = $pageModel->getDetails($page_code);
         $pageConfig = [];
         if ($result['data']) {
-            foreach ($result['data'] as $key => $value) {
+            foreach ($result['data']['items'] as $key => $value) {
                 $pageConfig[$key]['type']  = $value['widget_code'];
                 $pageConfig[$key]['value'] = $value['params'];
             }
         }
+        $pageConfig = str_replace('"true','true',$pageConfig);
+        $pageConfig = str_replace('true"','true',$pageConfig);
         $this->assign('page_config',json_encode($pageConfig,320));
 
         //取出所有品牌
@@ -73,12 +75,50 @@ class Pages extends Manage
             'data'   => [],
         ];
         $data            = input('post.data/a', []);
-        $code            = input('post.page_code/s', 'mobile_home');
+        $code            = input('post.pageCode/s', 'mobile_home');
         $pagesItemsModel = new PagesItems();
         $res             = $pagesItemsModel->saveItems($data, $code);
         if (!$res['status']) {
             return $res;
         }
         return $result;
+    }
+
+
+
+
+    public function add ()
+    {
+
+        $this->view->engine->layout(false);
+
+        if (\think\facade\Request::isPost())
+        {
+            $pagesModel = new \app\common\model\Pages();
+
+            return $pagesModel->addData(input('param.'));
+        }
+
+        $this->assign('list', config('pages.list'));
+        return $this->fetch();
+    }
+
+
+
+    public function del ()
+    {
+
+        $id = input('param.id/d', '');
+        if (!$id) return error_code(10051);
+
+
+        $info = \app\common\model\Pages::get($id, 'items');
+        $info->together('items')->delete();
+
+        return $result = [
+            'status' => true,
+            'msg' => '删除成功',
+            'data' => []
+        ];
     }
 }

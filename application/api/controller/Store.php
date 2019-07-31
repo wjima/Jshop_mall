@@ -1,4 +1,11 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2019 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: keinx <keinx@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\BillLading;
@@ -9,6 +16,7 @@ use org\Wx;
 use think\facade\Request;
 
 /**
+ * 门店
  * Class Store
  * @package app\api\controller
  */
@@ -25,7 +33,6 @@ class Store extends Api
             'msg' => '获取成功',
             'data' => 2
         ];
-
         $settingModel = new Setting();
         $return['data'] = $settingModel->getValue('store_switch');
         return $return;
@@ -112,9 +119,9 @@ class Store extends Api
      */
     public function lading()
     {
-        $lading_id = Request::param('lading_id');
+        $lading_ids = Request::param('lading_ids');
         $model = new BillLading();
-        return $model->ladingOperating($lading_id, $this->userId);
+        return $model->ladingOperating($lading_ids, $this->userId);
     }
 
 
@@ -135,6 +142,7 @@ class Store extends Api
 
     /**
      * 获取邀请小程序码
+     * @return array
      */
     public function getInviteQRCode()
     {
@@ -146,7 +154,6 @@ class Store extends Api
         {
             $page = 'pages/goods/detail/detail';
         }
-
         $wx = new Wx();
         $wx_appid = getSetting('wx_appid');
         $wx_app_secret = getSetting('wx_app_secret');
@@ -167,6 +174,10 @@ class Store extends Api
     }
 
 
+    /**
+     * 获取推荐关键词
+     * @return array
+     */
     public function getRecommendKeys()
     {
         $recommend_keys = getSetting('recommend_keys');

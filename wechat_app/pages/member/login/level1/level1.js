@@ -1,85 +1,72 @@
-var app = getApp(); //全局APP
+var app = getApp() //全局APP
 Page({
   data: {
-    logo:app.config.shop_logo,
-    open_id:""
+    logo: app.config.shop_logo,
+    open_id: ''
   },
   //页面加载处理
-  onLoad: function () {
-    var page = this;
-    this.getWxCode(function(code){
+  onLoad: function() {
+    var page = this
+    this.getWxCode(function(code) {
       var data = {
         code: code
-      };
-      app.api.login1(data, function (res) {
-        if(!res.status){
-            app.common.successToShow(res.msg, function () {
-                wx.navigateBack({
-                    delta: 1
-                });
-            });
-        }else{
+      }
+      app.api.login1(data, function(res) {
+        if (!res.status) {
+          app.common.successToShow(res.msg, function() {
+            wx.navigateBack({
+              delta: 1
+            })
+          })
+        } else {
           page.setData({
             open_id: res.data,
             logo: app.config.shop_logo
-          });
+          })
         }
-      });
-    });
+      })
+    })
   },
-  //微信授权用户取得信息
-  // getWxInfo: function (callback) {
-  //   this.getWxCode(function(code){
-  //     wx.getUserInfo({
-  //       withCredentials: true,
-  //       success: function (res1) {
-  //         callback({
-  //           code: code,
-  //           iv: res1.iv,
-  //           edata: res1.encryptedData
-  //         });
-  //       },
-  //       fail: function (res) {
-  //         //如果没有获取到用户信息，打开设置页面
-  //         wx.openSetting({
-  //           success: function (res) {
-
-  //           }
-  //         })
-  //       }
-  //     })
-  //   });
-  // },
+  handleRefuse() {
+    wx.showToast({
+      title: '未授权',
+      icon: 'none',
+      duration: 1000
+    })
+    setTimeout(() => {
+      wx.navigateBack(-1)
+    }, 1000)
+  },
 
   //单纯的取得微信的code
-  getWxCode: function(callback){
+  getWxCode: function(callback) {
     wx.login({
-      success: function (res) {
+      success: function(res) {
         if (res.code) {
-          callback(res.code);
-          return res.code;
+          callback(res.code)
+          return res.code
         } else {
           //wx.login成功，但是没有取到code
-          app.common.errorToBack('未取得code', 0);
+          app.common.errorToBack('未取得code', 0)
         }
       },
-      fail: function (res) {
+      fail: function(res) {
         //wx.login的fail
-        app.common.errorToBack('用户授权失败wx.login', 0);
+        app.common.errorToBack('用户授权失败wx.login', 0)
       }
-    });
+    })
   },
   //提交按钮
   // mobileLogin: function () {
   // },
-  getUserInfo: function (e) {
-    var page = this;
+  getUserInfo: function(e) {
+    var page = this
     if (e.detail.errMsg == 'getUserInfo:fail auth deny') {
       wx.showModal({
         title: '提示',
         showCancel: false,
         content: '未授权',
-        success: function (res) { }
+        success: function(res) {}
       })
     } else {
       var data = {
@@ -87,8 +74,8 @@ Page({
         iv: e.detail.iv,
         edata: e.detail.encryptedData,
         signature: e.detail.signature
-      };
-      page.toLogin(data);
+      }
+      page.toLogin(data)
       //注意，这里不检查登陆态了，默认一直有效，这是个隐含的问题,因为wx.checkSession永远都是fail，不知道为啥，以后再来处理吧。
       // wx.checkSession({
       //   success: function () {
@@ -107,31 +94,29 @@ Page({
     }
   },
   //实际的去登陆
-  toLogin: function (data) {
-    app.api.login2(data, function (res) {
-      if(res.status){
+  toLogin: function(data) {
+    app.api.login2(data, function(res) {
+      if (res.status) {
         //判断是否返回了token，如果没有，就说明没有绑定账号，跳转到绑定页面
-        if (typeof res.data.token == 'undefined'){
+        if (typeof res.data.token == 'undefined') {
           wx.redirectTo({
             url: '../level2/level2?user_wx_id=' + res.data.user_wx_id
           })
-        }else{
+        } else {
           //登陆成功，设置token，并返回上一页
-          app.db.set('userToken', res.data.token);
-          wx.navigateBack({
-            delta: 1
-          })
+          app.db.set('userToken', res.data.token)
+          wx.switchTab({
+            url: '/pages/member/index/index'
+          });
         }
-      }else{
+      } else {
         wx.showModal({
           title: '提示',
           showCancel: false,
           content: '登陆失败，请重试',
-          success: function (res) { }
+          success: function(res) {}
         })
       }
-    });
-  },
-
-
-});
+    })
+  }
+})

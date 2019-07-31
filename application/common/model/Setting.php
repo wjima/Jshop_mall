@@ -35,7 +35,7 @@ class Setting extends Common
             'value' => '',
         ],
         'shop_mobile' => [
-            'name' => '联系手机号',
+            'name' => '商家手机号',
             'value' => ''
         ],
         'store_switch' => [
@@ -74,10 +74,6 @@ class Setting extends Common
             'name' => '库存警报数量',
             'value' => '10'
         ],
-//        'is_author'           =>  [         //此字段不显示到前台，在控制器中直接进行操作的，对商户不可见
-//            'name' => '是否授权',
-//            'value' => ''
-//        ],
         'reship_name' => [
             'name' => '退货联系人',
             'value' => ''
@@ -180,27 +176,6 @@ class Setting extends Common
             'name'=>'简介',
             'value' => 'Jshop小程序是一款标准B2C商城小程序',
         ],
-        //小程序logo,暂时注释掉了。
-//        'wx_head_img'=>[
-//            'name'=>'Logo',
-//            'value'=>''
-//        ],
-//        'sms_user_id' => [
-//            'name' => '短信通道用户ID',
-//            'value' => ''
-//        ],
-//        'sms_account' => [
-//            'name' => '短信通道用户名',
-//            'value' => ''
-//        ],
-//        'sms_password' => [
-//            'name' => '短信通道用户密码',
-//            'value' => ''
-//        ],
-//        'sms_prefix' => [
-//            'name' => '短信前缀',
-//            'value' => 'Jshop'
-//        ],
         //公众号设置
         'wx_official_name'=>[
             'name'=>'公众号名称',
@@ -237,10 +212,14 @@ class Setting extends Common
         // 提现设置
         'tocash_money_low'=>[
             'name'=>'最低提现金额',
-            'value'=>'0'
+            'value'=>'0.01'
         ],
         'tocash_money_rate' => [
             'name' => '提现服务费率',
+            'value' => '0'
+        ],
+        'tocash_money_limit' => [
+            'name' => '每日提现上限',
             'value' => '0'
         ],
         //其他设置
@@ -279,11 +258,40 @@ class Setting extends Common
             'name' => '发票功能',
             'value' => 1
         ],
-        //APP设置
-        'wx_app_appid' => [             //微信支付在app上的appid
-            'name' => '微信APP支付appid',
+        //第三方的登陆的时候，是否需要绑定手机号码，强烈建议用户开启，除非只在微信小程序内使用
+        'is_bind_mobile' => [
+            'name' => '绑定手机号码',
+            'value' => '1'                      //1绑定，2不绑定
+        ],
+        //支付宝小程序appid
+        'mp_alipay_appid' => [
+            'name' => '支付宝小程序appid',
             'value' => ''
         ],
+        'share_image' => [
+            'name' => '分享图片',
+            'value' => ''
+        ],
+        'share_title' => [
+            'name' => '分享标题',
+            'value' => '优质好店邀您共享'
+        ],
+        'share_desc' => [
+            'name' => '分享描述',
+            'value' => ''
+        ],
+        'about_article_id' => [
+            'name' => '关于我们文章',
+            'value' => '1'
+        ],
+        'about_article' => [
+            'name' => '关于我们文章',
+            'value' => ''
+        ],
+        'ent_id' => [
+            'name' => '客服ID',
+            'value' => ''
+        ]
     ];
 
 
@@ -332,6 +340,45 @@ class Setting extends Common
                 return "";
             }
         }
+    }
+
+
+    /**
+     * 一次查询获取多个配置信息
+     * @param $skeys
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getMultipleValue($skeys)
+    {
+        $skeys = explode(',', $skeys);
+        $newList = [];
+        //默认赋值
+        foreach($skeys as $v)
+        {
+            $val = '';
+            if(isset($this->skeys[$v]['value']))
+            {
+                $val = $this->skeys[$v]['value'];
+            }
+            $newList[$v] = $val;
+        }
+
+        //存储赋值
+        $where[] = ['skey', 'in', $skeys];
+        $list = $this->where($where)->cache(true)->select();
+        foreach($list as $v)
+        {
+            if(isjson($v['value']))
+            {
+                $v['value'] = json_decode($v['value'],true);
+            }
+            $newList[$v['skey']] = $v['value'];
+        }
+
+        return $newList;
     }
 
 

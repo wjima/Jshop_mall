@@ -63,7 +63,7 @@
                     type: 1,
                     title: '添加属性',
                     area: ['420px', '420px'], //宽高
-                    content: e
+                    content: e.data
                 });
             });
             return false;
@@ -72,24 +72,16 @@
         //编辑属性
         $(document).on('click', '.edit-class', function(){
             var id = $(this).attr('data-id');
-            $.ajax({
-                url: '{:url("GoodsTypeSpec/edit")}',
-                type: 'get',
-                data: {
-                    'id': id
-                },
-                success: function(e){
-                    window_box = layer.open({
-                        type: 1,
-                        title: '编辑属性',
-                        area: ['420px', '550px'], //宽高
-                        content: e
-                    });
-                }
-            });
+            JsGet('{:url("GoodsTypeSpec/edit")}?id='+id, function(e){
+				window_box = layer.open({
+					type: 1,
+					title: '编辑属性',
+					area: ['440px', '550px'], //宽高
+					content: e.data
+				});
+			});
             return false;
         });
-
 
         //删除分类
         $(document).on('click', '.del-class', function(){
@@ -104,20 +96,12 @@
 
         //删除操作
         function delClass(id){
-            $.ajax({
-                url: '{:url("GoodsTypeSpec/del")}',
-                type: 'post',
-                data: {
-                    'id': id
-                },
-                success: function(e){
-                    layer.msg(e.msg, {time: 1300}, function(){
-                        table.reload('typeTable');
-                    });
-                }
-            });
+        	JsPost('{:url("GoodsTypeSpec/del")}', {'id': id}, function(e){
+				layer.msg(e.msg, {time: 1300}, function(){
+					table.reload('typeTable');
+				});
+			});
         }
-
     });
 
     function saveSpec(data){
@@ -125,22 +109,16 @@
             layer.msg('请先完善数据', {time: 1300});
             return false;
         }
-        $.ajax({
-            url: '{:url("GoodsTypeSpec/add")}',
-            type: 'post',
-            data: data,
-            dataType: 'json',
-            success: function(e){
-                if(e.status === true){
-                    layer.close(window_box);
-                    layer.msg(e.msg, {time: 1300}, function(){
-                        table.reload('typeTable');
-                    });
-                }else{
-                    layer.msg(e.msg, {time: 1300});
-                }
-            }
-        })
+        JsPost('{:url("GoodsTypeSpec/add")}', data, function(e){
+			if(e.status === true){
+				layer.close(window_box);
+				layer.msg(e.msg, {time: 1300}, function(){
+					table.reload('typeTable');
+				});
+			}else{
+				layer.msg(e.msg, {time: 1300});
+			}
+		});
     }
 
     function editSpec(data){
@@ -148,21 +126,15 @@
             layer.msg('请先完善数据', {time: 1300});
             return false;
         }
-        $.ajax({
-            url: '{:url("GoodsTypeSpec/edit")}',
-            type: 'post',
-            data: data,
-            dataType: 'json',
-            success: function(e){
-                if(e.status === true){
-                    layer.close(window_box);
-                    layer.msg(e.msg, {time: 1300}, function(){
-                        table.reload('typeTable');
-                    });
-                }else{
-                    layer.msg(e.msg, {time: 1300});
-                }
-            }
-        })
+        JsPost('{:url("GoodsTypeSpec/edit")}', data, function(e){
+			if(e.status === true){
+				layer.close(window_box);
+				layer.msg(e.msg, {time: 1300}, function(){
+					table.reload('typeTable');
+				});
+			}else{
+				layer.msg(e.msg, {time: 1300});
+			}
+		});
     }
 </script>

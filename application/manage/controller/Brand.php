@@ -43,7 +43,12 @@ class Brand extends Manage
             $brandModel = new BrandsModel();
             return $brandModel->addData(input('param.'));
         }
-        return $this->fetch();
+
+        return [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => $this->fetch()
+        ];
     }
 
 
@@ -66,7 +71,12 @@ class Brand extends Manage
         if (!$data) {
             return error_code(10002);
         }
-        return $this->fetch('edit',['data' => $data]);
+
+        return [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => $this->fetch('edit',['data' => $data])
+        ];
     }
 
 

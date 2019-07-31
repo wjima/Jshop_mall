@@ -16,7 +16,7 @@
             <div class="we-body-c">
             	<div class="we-body-bot">
             		<ul class="we-body-ul">
-                        {empty name="$menu"}
+                        {empty name="$weixin_menu"}
                             <li class="we-body-li addfirst">+</li>
                         {else/}
                         {volist name="weixin_menu" id="item"}
@@ -129,7 +129,7 @@
                 $("#edit-menu").attr("data-pid", pid);
 
                 JsPost("{:url('Wechat/editMenu')}", {id: id, pid: pid}, function (res) {
-                    $("#edit-menu-content").html(res);
+                    $("#edit-menu-content").html(res.data);
                     form.render();
                 });
                 $(this).parent().prepend("<li class='we-body-list active ' id='item-li-" + id + "-" + pid + "' data-id='" + id + "' data-pid='" + pid + "' >二级菜单</li>");
@@ -152,7 +152,7 @@
                 $("#edit-menu").attr("data-id", id);
                 $("#edit-menu").attr("data-pid", 0);
                 JsPost("{:url('Wechat/editMenu')}", {id: id, pid: 0}, function (res) {
-                    $("#edit-menu-content").html(res);
+                    $("#edit-menu-content").html(res.data);
                     form.render();
                 });
                 $(this).before("<li id='li-first-" + id + "' class='active' data-id='" + id + "' data-pid='0'><span>一级菜单</span><div class='li-menu'><ul><li class='we-body-list addchild'>+</li></ul></div></li>");
@@ -170,7 +170,7 @@
             $(this).addClass('active');
             if (typeof id != "undefined") {
                 JsPost("{:url('Wechat/editMenu')}", {id: id, pid: pid}, function (res) {
-                    $("#edit-menu-content").html(res);
+                    $("#edit-menu-content").html(res.data);
                     form.render();
                 });
             }

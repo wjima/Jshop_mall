@@ -146,22 +146,16 @@
         });
         //查看操作
         $(document).on('click', '.option-view', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('billPayments/view')}",
-                data: 'payment_id=' + $(this).attr('data-id'),
-                success: function (e) {
-                    if (e.status) {
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,
-                            area: ['600px', '600px'],
-                            title: '支付单查看'
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
-
+            JsGet("{:url('billPayments/view')}?payment_id="+$(this).attr('data-id'), function(e){
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['600px', '600px'],
+                        title: '支付单查看'
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
         });

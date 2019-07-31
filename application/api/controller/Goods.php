@@ -1,11 +1,10 @@
 <?php
-
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use app\common\model\GoodsBrowsing;
 use app\common\model\GoodsCat;
 use app\common\model\GoodsComment;
+use app\common\model\GoodsExtendCat;
 use think\Db;
 use think\facade\Request;
 use app\common\model\Goods as GoodsModel;
@@ -22,7 +21,6 @@ use app\common\model\Brand;
  */
 class Goods extends Api
 {
-
     //商品允许出现字段，允许出现的字段跟查询的字段不太一样，允许查询的只能不能有：album、isfav、product、image_url
     private $goodsAllowedFields = [
         'id', 'bn', 'name', 'brief', 'price', 'mktprice', 'image_id', 'goods_cat_id', 'goods_type_id', 'brand_id', 'label_ids'
@@ -137,9 +135,10 @@ class Goods extends Api
         $field       = input('field', '*');
         $page        = input('page/d', 1);
         $limit       = input('limit/d');
-        $order       = input('order', 'sort asc');
+        $order       = input('order', 'sort asc,id desc');
         $filter      = [];//过滤条件
         $class_name['data']  = '';
+        $where = $whereOr = [];
         if (input('?param.where')) {
             $postWhere = json_decode(input('param.where'), true);
             //判断商品搜索,
@@ -161,6 +160,13 @@ class Goods extends Api
                 $catIds[] = $postWhere['cat_id'];
                 $where[]  = ['g.goods_cat_id', 'in', $catIds];
                 $class_name = $goodsCatModel->getNameById($postWhere['cat_id']);
+
+
+                $goodsExtendCat = new GoodsExtendCat();
+                $gids = $goodsExtendCat->getGoodsIdByCat($catIds);
+                if($gids){
+                    $whereOr[] = ['g.id','in',$gids];
+                }
             }
             //价格区间
             if (isset($postWhere['price_f']) && $postWhere['price_f']) {
@@ -201,7 +207,7 @@ class Goods extends Api
         $page_limit = config('jshop.page_limit');
         $limit      = $limit ? $limit : $page_limit;
 
-        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit);
+        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit,$whereOr);
         if ($returnGoods['status']) {
             $return_data ['msg']                = '查询成功';
             $return_data ['data']['list']       = $returnGoods['data'];
@@ -255,7 +261,7 @@ class Goods extends Api
     //app版的获取商品明细接口，因为多规格的传值问题，导致java解析不了多规格数据，在此做了转化
     public function appGetDetail()
     {
-        $re = $this->getDetail();
+        $re = $this->getDetial();
         if ($re['data']['product']['default_spes_desc']) {
             $arr                                        = $re['data']['product']['default_spes_desc'];
             $re['data']['product']['default_spes_desc'] = [];
@@ -350,14 +356,6 @@ class Goods extends Api
         if ($returnGoods['status']) {
             $params = [];
             $data   = $returnGoods['data'];
-            if (isset($data['brand_id'])) {
-                $brand    = $brandModel::get($data['brand_id']);
-                $params[] = [
-                    'name'  => '品牌',
-                    'value' => $brand['name'],
-                ];
-
-            }
             if ($data['params']) {
                 $goodsParams = unserialize($data['params']);
                 $goodsParams = array_filter($goodsParams);
@@ -367,15 +365,14 @@ class Goods extends Api
                             $val      = implode('、', $val);
                             $params[] = [
                                 'name'  => $key,
-                                'value' => $val
+                                'value' => $val ? $val : ''
                             ];
                         } else {
                             $params[] = [
                                 'name'  => $key,
-                                'value' => $val
+                                'value' => $val ? $val : ''
                             ];
                         }
-
                     }
                 }
             }

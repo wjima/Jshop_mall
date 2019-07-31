@@ -33,17 +33,16 @@ class Products extends Common
     public function doAdd($data = [])
     {
         $stock      = isset($data['stock']) ? $data['stock'] : 0;
-        $stock_type = isset($data['stock_type']) ? $data['stock_type'] : '';
-        unset($data['stock'], $data['stock_type']);
+        unset($data['stock']);
         $product_id = $this->allowField(true)->insertGetId($data);
 
         $where[] = ['id', '=', $product_id];
-        if ($stock && $stock_type && $stock_type == 'on') {//增加库存
+        if ($stock != 0) {//增加库存
+            $exp = Db::raw('cast(stock as signed) + '.$stock.'>= 0');
+            $where[]      = [0, 'exp', $exp];
             $this->where($where)->setInc('stock', $stock);
-        } elseif ($stock) {
-            $stockData = ['stock' => Db::raw('IF(stock < ' . $stock . ', 0, stock -' . $stock . ')')];//库存约束，不能小于0
-            $this->where($where)->update($stockData);
         }
+
         return $product_id ? $product_id : 0;
     }
 
@@ -97,7 +96,7 @@ class Products extends Common
 
         $priceData = $goodsModel->getPrice($product, $user_id);
 
-        $product['price']       = $priceData['price'];
+        $product['price']       = bcadd($priceData['price'], 0, 2);
         $product['grade_price'] = $priceData['grade_price'];
         $product['grade_info']  = $priceData['grade_info'];
         //如果是多规格商品，算多规格
@@ -215,11 +214,15 @@ class Products extends Common
         unset($data['stock']);
         $res     = $this->allowField(true)->update($data, ['id' => $product_id]);
         $where[] = ['id', '=', $product_id];
-        if ($stock && isset($data['stock_type']) && $data['stock_type'] == 'on') {//增加库存
-            $this->where($where)->setInc('stock', $stock);
-        } elseif ($stock) {
-            $stockData = ['stock' => Db::raw('IF(stock < ' . $stock . ', 0, stock -' . $stock . ')')];//库存约束，不能小于0
-            $this->where($where)->update($stockData);
+        if($stock != 0){
+            //$this->where($where)->setInc('stock', $stock);
+            $exp = Db::raw('cast(stock as signed) + '.$stock.'>= 0');
+            $where[]      = [0, 'exp', $exp];
+            $re = $this->where($where)->setInc('stock', $stock);
+            if(!$re){
+                $res = false;
+            }
+
         }
         return $res;
     }

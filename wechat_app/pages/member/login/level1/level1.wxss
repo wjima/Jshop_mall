@@ -1,22 +1,67 @@
-.top{
-  text-align: center;
-  margin: 100rpx auto;
+.content {
+  background-color: #fff;
+  height: 100vh;
+  padding: 100rpx 60rpx 0;
 }
-.top>image{
-  width: 200rpx;
-  height: 200rpx;
+
+.login-item {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 40rpx;
+  border-bottom: 1rpx solid #dddddd;
+}
+
+.logo {
+  display: block;
+  width: 180rpx;
+  height: 180rpx;
   border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #fff;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
 }
-.mid{
-  width: 650rpx;
-  margin: 0 auto;
+
+.login-tip {
+  padding: 60rpx 0;
 }
-.weui-btn{
-  font-size: 32rpx;
-}
-.bot{
-  text-align: center;
+
+.login-tip-big {
   font-size: 28rpx;
-  color: #666;
-  margin-top: 30rpx;
+  line-height: 80rpx;
+}
+
+.login-tip-small {
+  font-size: 12px;
+  color: #9e9e9e;
+}
+
+.app-name {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.login-b .btn-g {
+  margin-top: 40rpx;
+}
+
+.auth-btn {
+  flex: 1;
+  display: block;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 12px;
+  color: #FFF;
+  background: #1aad19;
+  border-radius: 40rpx;
+}
+
+.refuse {
+  background: #999;
+  margin-right: 40rpx;
+}
+.flc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

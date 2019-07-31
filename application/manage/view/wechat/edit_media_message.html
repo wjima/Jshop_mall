@@ -270,7 +270,7 @@
                 <div class="layui-form-item layui-form-image">
                     <label class="layui-form-label">原文链接：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="url" id="url" required lay-verify="url" autocomplete="off"
+                        <input type="text" name="url" id="url"   autocomplete="off"
                                placeholder="输入后打开直接跳转，不输入则跳当前内容文章页" class="layui-input ">
                     </div>
                 </div>
@@ -291,9 +291,11 @@
 
     <script>
         var ue = UE.getEditor('container');
+        var contentData = '';
+
+
         var messageData =  eval('({$mediaData|raw})');
         var last_id = 0;
-        console.log(Object.getOwnPropertyNames(messageData).length);
         if(Object.getOwnPropertyNames(messageData).length){
             last_id = Object.getOwnPropertyNames(messageData).length;
         }else{
@@ -320,6 +322,10 @@
 
         $(function () {
             setInfo();
+            ue.addListener("contentChange",function(){
+                contentData = ue.getContent();
+                updateMessageData();
+            });
             $("#add-content").mouseover(function () {
                 $(".add-tools").show();
             }).mouseout(function () {
@@ -409,6 +415,7 @@
          */
         function setInfo() {
             var current_edit = $("#current_message_id").val();
+
             if (messageData[current_edit]) {
                 $('#message_title').val(messageData[current_edit].title);
                 $('#media_id').val(messageData[current_edit].id);

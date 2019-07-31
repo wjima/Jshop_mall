@@ -5,12 +5,10 @@
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1500px !important;
             box-sizing: border-box;
         }
-
     }
 </style>
 <form class="layui-form seller-form" action="">
@@ -69,8 +67,7 @@
             },
             cols: [[
                 { type: 'numbers' },
-                {
-                    field: 'nickname', width: 210, title: '用户', align: 'center', templet: function (data) {
+                { field: 'nickname',  title: '用户', align: 'center', templet: function (data) {
                         if (data.user) {
                             return data.user.nickname ? data.user.nickname : data.user.mobile;
                         }
@@ -79,8 +76,7 @@
                         }
                     }
                 },
-                {
-                    field: 'evaluate', width: 150, sort: true, title: '评价星数', align: 'center', templet: function (data) {
+                { field: 'evaluate', width: 150, sort: true, title: '评价星数', align: 'center', templet: function (data) {
                         // if (data.score == 1) {
                         //     return '好评';
                         // } else if (data.score == 0) {
@@ -91,16 +87,26 @@
                         return data.score + '星';
                     }
                 },
-                {
-                    field: 'goods_name', width: 250, sort: true, title: '商品名称', align: 'center', templet: function (data) {
+                { field: 'goods_name', title: '商品名称', align: 'center', templet: function (data) {
                         return data.goods.name;
                     }
                 },
                 { field: 'content', title: '评价内容', align: 'center' },
-                { field: 'order_id', width: 190, title: '订单号', align: 'center' },
-                { field: 'ctime', width: 230, sort: true, title: '评价时间', align: 'center' },
-                {
-                    field: 'display', width: 150, sort: true, title: '前台显示', align: 'center', templet: function (data) {
+                { field: 'content', title: '评价图片', align: 'center', templet: function (d) {
+                        if (d.images_url) {
+                            var html = '';
+                            for (var i = 0; i < d.images_url.length; i++) {
+                                html += '<a href="javascript:void(0);" onclick=viewImage("' + d.images_url[i] + '")><image style="max-width:30px;max-height:30px;" src="' + d.images_url[i] + '"/></a>';
+                            }
+                            return html;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                { field: 'order_id', title: '订单号', align: 'center' },
+                { field: 'ctime', sort: true, title: '评价时间', align: 'center' },
+                { field: 'display', sort: true, title: '前台显示', align: 'center', templet: function (data) {
                         if (data.display === 1) {
                             return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">隐藏</a>';
                         } else {
@@ -108,8 +114,7 @@
                         }
                     }
                 },
-                {
-                    field: 'operating', width: 200, title: '操作', align: 'center', templet: function (data) {
+                { field: 'operating', title: '操作', align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
                         return html;

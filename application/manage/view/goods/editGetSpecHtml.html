@@ -106,8 +106,7 @@
                 </td>
                 <td class="have-add-td">
                     <input type="text" name="product[{$vo.spec_name}][stock]" value="0"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
-                    <input type="checkbox" name="product[{$vo.spec_name}][stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
-                    <a href="javascript:;" class="help-tip" data-tip="总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}"><i class="iconfont icon-wenhao"></i></a>
+                    总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}
                 </td>
                 <td>
                     <input type="text" name="product[{$vo.spec_name}][price]" value="{$vo.price}"  placeholder="销售价" autocomplete="off" class="layui-input">
@@ -156,15 +155,18 @@
             <input type="text" name="goods[sn]" value="{$product.sn}" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
         </div>
     </div>
-
+    {if !$erp_syn_on}
     <div class="layui-form-item have-add">
         <label class="layui-form-label">库存：</label>
         <div class="layui-input-inline">
             <input type="text" name="goods[stock]" value="0"   autocomplete="off" placeholder="" class="layui-input goods-stock">
-            <input type="checkbox" name="goods[stock_type]" lay-skin="switch" lay-text="增加|减少" checked>
-            <a href="javascript:;" class="help-tip" data-tip="总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}"><i class="iconfont icon-wenhao"></i></a>
+
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}
         </div>
     </div>
+    {/if}
 </div>
 </div>
 
@@ -178,6 +180,9 @@
         {else/}
         <button type="button" class="layui-btn layui-btn-sm" id="open_spec" is_open="false" lay-filter="open_spec" data-id="{$typeInfo.id}" style="margin-top:5px;">开启</button>
         {/if}
+    </div>
+    <div class="layui-form-mid layui-word-aux">
+        规格值中不可以含有, 和:
     </div>
 </div>
 {/if}

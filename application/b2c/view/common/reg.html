@@ -60,17 +60,12 @@
 			layui.use(['element', 'form'], function() {
 				//手机号码登陆
 				layui.form.on('submit(reg)', function(data) {
-					$.ajax({
-						type: "POST",
-						url: "{:url('b2c/common/reg')}",
-						data: data.field,
-						success: function(data) {
-							if(data.status) {
-								layer.msg('注册成功，跳转中...');
-								setTimeout("window.location.href='" + data.data + "'; ", 1500);
-							} else {
-								layer.msg(data.msg);
-							}
+					JsPost("{:url('b2c/common/reg')}", data.field, function(data){
+						if(data.status) {
+							layer.msg('注册成功，跳转中...');
+							setTimeout("window.location.href='" + data.data + "'; ", 1500);
+						} else {
+							layer.msg(data.msg);
 						}
 					});
 					return false;
@@ -78,16 +73,11 @@
 			});
 			//发送短信验证码
 			function setSms(obj) {
-				$.ajax({
-					type: "POST",
-					url: "{:url('b2c/common/sms')}",
-					data: "mobile=" + $('#mobile').val() + "&code=reg",
-					success: function(data) {
-						if(data.status) {
-							sms_btn_time($(obj));
-						}
-						layer.msg(data.msg);
+				JsPost("{:url('b2c/common/sms')}", {mobile: $('#mobile').val(), code: "reg"}, function(data){
+					if(data.status) {
+						sms_btn_time($(obj));
 					}
+					layer.msg(data.msg);
 				});
 			}
 		</script>

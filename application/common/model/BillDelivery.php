@@ -159,11 +159,17 @@ class BillDelivery extends Common
             $eventData = $order->toArray();
             sendMessage($bull_delivery['user_id'], 'delivery_notice',$eventData );
         }catch(\Exception $e){
+            $error_data = [
+                'status' => false,
+                'msg' => '发货失败',
+                'data' => $e->getMessage()
+            ];
             Db::rollback();
         }
         if(!$return)
         {
-            return error_code(13305);
+            return $error_data;
+            //return error_code(13305);
         }
         $return_data = [
             'status' => true,

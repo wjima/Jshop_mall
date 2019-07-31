@@ -1,3 +1,15 @@
+<form class="layui-form seller-form"  action="" >
+
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-sm add"><i class="layui-icon">&#xe608;</i> 添加</button>
+        </div>
+
+    </div>
+
+</form>
+
 <div class="table-body">
     <table id="pagesTable" lay-filter="pagesTable"></table>
 </div>
@@ -40,9 +52,50 @@
             if (layEvent === 'edit') {
                 window.location.href = "{:url('Pages/custom')}?page_code=" + data.code;
             }
+            if (layEvent === 'del') {
+                layer.confirm('真的要删除么',{icon: 3}, function(index){
+                    JsGet("{:url('Pages/del')}?id=" + data.id, function (res) {
+                        if(res.status){
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                        }
+                        layer.msg(res.msg);
+                    });
+                });
+            }
         });
+
+
+        $(document).on('click', '.add', function () {
+            JsGet("{:url('Pages/add')}", function(e){
+                window.box = layer.open({
+                    type: 1,
+                    content: e,
+                    area: ['400px', '450px'],
+                    title:'添加'
+                });
+            })
+        })
+
+
+
+        form.on('submit(add_submit)', function (data) {
+            JsPost("{:url('Pages/add')}", data.field, function (res) {
+                if (res.status) {
+                    layer.close(window.box)
+                    layer.msg(res.msg, {time: 1300}, function () {
+                        table.reload('pagesTable')
+                    })
+                } else {
+                    layer.msg(res.msg)
+                }
+            })
+        })
     })
 </script>
 <script type="text/html" id="pagesBar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    {{# if (d.code != 'mobile_home') { }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# }; }}
 </script>

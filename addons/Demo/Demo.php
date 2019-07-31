@@ -48,7 +48,7 @@ class Demo extends Addons
         if(isset($setting['menu'])){
             return $setting['menu'];
         }
-        return false;
+        return true;
     }
 
     public function config($params = [])

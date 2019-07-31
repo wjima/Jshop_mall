@@ -1,0 +1,61 @@
+<div class="layui-tab-item layui-show" style="padding: 20px;">
+    <div class="">
+        <div class="warning-msg">
+            <div class="warning-msg-content">
+                <p>当前选中{$total_goods}条数据</p>
+                <p>使用说明：<br/>
+                价格类型：是指具体要修改某一种类型的价格，包含会员价，调整类型：是在原有的基础上对价格进行修改。调整值是价格类型通过调整类型和调整值计算得到。<br/>
+                例如：调整销售价统一设置为10，则价格类型选择销售价，调整类型选择=，调整值输入10即可。
+                如想调整销售价上浮10%，则价格选择销售价，调整类型选择x，调整值输入1.1即可。</p>
+
+                注：会员等级价格调整时，是商品实际价格为商品价格减去会员价
+            </div>
+        </div>
+        <div id="layui-card">
+            <form id="priceform">
+
+            <input type="hidden" name="ids" value="{$ids}">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">价格类型：</label>
+                    <div class="layui-input-inline">
+                        <select name="price_type">
+                            {foreach $price_type as $key=>$vo }
+                            <option value="{$key}">{$vo}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">调整类型：</label>
+                    <div class="layui-input-inline">
+                        <select name="modify_type">
+                            <option value="=">=</option>
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                            <option value="*">x</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">调整值：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" value="" name="price_value" placeholder="请输入调整值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    //渲染表单
+    layui.use('form', function () {
+        var form = layui.form;
+        form.render();
+    });
+    function getFormData() {
+        var formData = $("#priceform").serialize();
+        return formData;
+    }
+</script>

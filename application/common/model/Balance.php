@@ -153,6 +153,8 @@ class Balance extends Common
      * 返回layui的table所需要的格式
      * @param $post
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function tableData($post)
@@ -181,6 +183,9 @@ class Balance extends Common
     /**
      * @param $post
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function tableWhere($post)
     {
@@ -209,7 +214,7 @@ class Balance extends Common
         }
         if(isset($post['datetime']) && $post['datetime'] != "")
         {
-            $datetime = explode(' - ', $post['datetime']);
+            $datetime = explode(' 到 ', $post['datetime']);
             $sd = strtotime($datetime[0].' 00:00:00');
             $ed = strtotime($datetime[1].' 23:59:59');
             $where[] = ['ctime', 'BETWEEN', [$sd, $ed]];
@@ -324,5 +329,193 @@ class Balance extends Common
         }
 
         return $return;
+    }
+
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'id',
+                'desc' => '编号'
+            ],
+            [
+                'id' => 'user_id',
+                'desc' => '用户',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'type',
+                'desc' => '类型'
+            ],
+            [
+                'id' => 'money',
+                'desc' => '金额'
+            ],
+            [
+                'id' => 'source_id',
+                'desc' => '外部ID',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'memo',
+                'desc' => '备注'
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '变更时间'
+            ]
+        ];
+    }
+
+
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出数据',
+
+        ];
+        $header = $this->csvHeader();
+        $data = $this->getExportList($post);
+
+        if ($data['count'] > 0) {
+            $tempBody = $data['data'];
+            $body = [];
+            $i = 0;
+
+            foreach($tempBody as $key => $val)
+            {
+                $i++;
+                foreach($header as $hk => $hv)
+                {
+                    if(isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify']))
+                    {
+                        if(function_exists($hv['modify']))
+                        {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    }
+                    elseif(isset($val[$hv['id']]) &&!empty($val[$hv['id']]))
+                    {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    }
+                    else
+                    {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        }
+        else
+        {
+            //失败，导出失败
+            return $result;
+        }
+    }
+
+
+    /**
+     * 导出格式
+     * @param array $post
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getExportList($post = [])
+    {
+        $return_data = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => '',
+            'count' => 0
+        ];
+
+        $where = [];
+        if(isset($post['user_id']) && $post['user_id'] != "" )
+        {
+            $where[] = ['user_id', 'eq', $post['user_id']];
+        }
+        else
+        {
+            if(isset($post['mobile']) && $post['mobile'] != "")
+            {
+                if($user_id = get_user_id($post['mobile']))
+                {
+                    $where[] = ['user_id', 'eq', $user_id];
+                }
+                else
+                {
+                    $where[] = ['user_id', 'eq', '99999999'];   //如果没有此用户，那么就赋值个数值，让他查不出数据
+                }
+            }
+        }
+        if(isset($post['type']) && $post['type'] != "")
+        {
+            $where[] = ['type', 'eq', $post['type']];
+        }
+        if(isset($post['datetime']) && $post['datetime'] != "")
+        {
+            $post['datetime'] = urldecode($post['datetime']);
+            $datetime = explode(' 到 ', $post['datetime']);
+            $sd = strtotime($datetime[0].' 00:00:00');
+            $ed = strtotime($datetime[1].' 23:59:59');
+            $where[] = ['ctime', 'BETWEEN', [$sd, $ed]];
+        }
+
+        $list = $this->where($where)
+            ->order('ctime desc')
+            ->select();
+
+        if($list)
+        {
+            $count = $this->where($where)->count();
+            foreach($list as $k => $v)
+            {
+                if($v['user_id'])
+                {
+                    $list[$k]['user_id'] = get_user_info($v['user_id']);
+                }
+
+                if($v['type'])
+                {
+                    $list[$k]['type'] = config('params.balance')['type'][$v['type']];
+                }
+                if(isset($v['ctime']) && $v['ctime'])
+                {
+                    $list[$k]['ctime'] = date('Y-m-d H:i:s',$v['ctime']);
+                }
+                else
+                {
+                    $list[$k]['ctime'] = '';
+                }
+            }
+
+            $return_data = [
+                'status' => true,
+                'msg' => '获取成功',
+                'data' => $list,
+                'count' => $count
+            ];
+        }
+        return $return_data;
     }
 }

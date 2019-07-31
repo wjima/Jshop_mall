@@ -1,12 +1,14 @@
 <?php
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use app\common\model\Order;
 use app\common\model\User;
-use think\facade\Request;
 
-
+/**
+ * 自定义布局
+ * Class Pages
+ * @package app\api\controller
+ */
 class Pages extends Api
 {
     public function getPageConfig()

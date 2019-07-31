@@ -37,7 +37,6 @@
 
         //搜索
         form.on('submit(article_search)', function(data){
-            console.log(data.field);
             layui.table.reload('articleTable', {
                 where: data.field
                 ,page: {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
+ * jshop-https://www.jihainet.com
  * User: wjima
  * Email:1457529125@qq.com
  * Date: 2018-01-08
@@ -10,6 +10,7 @@ namespace app\common\taglib;
 
 use app\common\model\GoodsCat;
 use think\template\TagLib;
+use app\common\model\Goods;
 
 
 class Jshop extends TagLib
@@ -56,6 +57,11 @@ class Jshop extends TagLib
         //团购秒杀列表
         'group'=>[
             'attr' => 'name,value,num,key',
+            'close' => 0
+        ],
+        //拼团列表
+        'pintuan' => [
+            'attr' => 'id,name,value',
             'close' => 0
         ]
     ];
@@ -419,7 +425,8 @@ class Jshop extends TagLib
                     <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择商品</a>
                 </div>
                 <?php
-                    $list = model("Goods")->where("id","IN",'. $tag['value'] .')->select()->toArray();
+                    $goodsModel = new app\common\model\Goods();
+                    $list = $goodsModel->where("id","IN",'. $tag['value'] .')->select()->toArray();
                 ?>
                 <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="<?php echo implode(",",array_column($list,"id")) ?>" />
                 <ul id="'.$time.'_list" class="sellect_seller_goods_list">
@@ -440,7 +447,7 @@ class Jshop extends TagLib
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("index/tagSelectGoods",array("type"=>"show"));  ?>",
+                            url:"<?php echo url("manage/index/tagSelectGoods",array("type"=>"show"));  ?>",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -508,16 +515,15 @@ class Jshop extends TagLib
         $value         = !empty($tag['value']) ? $tag['value'] : 0; //todo 默认值
 
         $goodsCatModel = new GoodsCat();
-        $cat           = $goodsCatModel->getAllCat();
         $parseStr      = '<div id="' . $id . '"></div>';
         $selected      = ',selected: []';
         if ($value) {
             $selected = ',selected: [<?php echo ' . $value . ' ?>] ';
         }
         if (config('?rename_manage') && config('rename_manage')) {
-            $catUrl = '/Api/Categories/getAllCat';
+            $catUrl = '/Api/Categories/getAllCat?backstage=1';
         } else {
-            $catUrl = url('/Api/Categories/getAllCat');
+            $catUrl = url('/Api/Categories/getAllCat','backstage=1');
         }
         $parseStr .= '<script>
   layui.config({
@@ -760,6 +766,114 @@ goodscat' . $id . '();
                                         var the_val = "";
                                         for(var key in ids){
                                             $("#'.$time.'_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name+\'</li>\');
+                                            the_val += "," + key;
+                                        }
+                                        $("#'.$time.'").val(the_val.slice(1));
+                                        layer.close(index);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                $("#'.$time.'_list").delegate("span","click",function(){
+                    var ids_array = $("#'.$time.'").val().split(",");
+                    for (var i=0;i<ids_array.length ;i++ )
+                    {
+                        if(ids_array[i] == $(this).attr("id")){
+                            ids_array.splice(i,1);
+                        }
+                    }
+                    $("#'.$time.'").val(ids_array.join(","));
+                    $(this).parent().remove();
+                });
+            </script>
+        ';
+        return $parse;
+    }
+
+    /**
+     * 选择拼团商品
+     * @param $tag
+     * @return string
+     */
+    public function tagPintuan($tag)
+    {
+        if(isset($tag['value'])){
+            $tag['value'] = $this->autoBuildVar($tag['value']);
+        }else{
+            $tag['value'] = "";
+        }
+
+
+
+        $time = "g".time().rand(1,4);
+
+        //增加变量key，解决同时存在多个选择商品时的问题
+        if (isset($tag['key']) && $tag['key']) {
+            $tag['key']  = $this->autoBuildVar($tag['key']);
+            $tag['key']  = "<?php echo (" . $tag['key'] . ");?>";
+            $tag['name'] = $tag['name'] . '[' . $tag['key'] . ']';
+            $time        = $time . '_' . $tag['key'];
+        } else {
+            $tag['key'] = "";
+        }
+
+        $parse = '
+            <div id="'.$time.'_box" class="pintuan_box">
+                <div>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择拼团商品</a>
+                </div>
+                <?php
+                    $pintuanGoodsModel = new app\common\model\PintuanGoods();
+                    $where[] = ["pg.goods_id", "in", '. $tag['value'] .'];
+                    $where[] = ["g.marketable","eq", 1];
+                    $where[] = ["pr.status", "eq", 1];
+                    $list = $pintuanGoodsModel
+                        ->alias("pg")
+                        ->field("pr.*,pg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                        ->join("pintuan_rule pr","pg.rule_id = pr.id")
+                        ->join("goods g", "g.id = pg.goods_id")
+                        ->where($where)
+                        ->select();
+                    if(!$list->isEmpty()){
+                        $list = $list->toArray();
+                    }
+                ?>
+                <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="'.$tag['value'].'" />
+                <ul id="'.$time.'_list" class="pintuan_list">
+                    <?php
+                        foreach($list as $k => $v){
+                            echo \'<li><span id="\'.$v["goods_id"].\'"  >×</span>\'.$v["goods_name"].\'</li>\';
+                        }
+                    ?>
+                </ul>
+            </div>
+        ';
+
+        $parse .= '
+            <script>
+                var obj_'.$time.'_ids = {};
+                function '.$time.'_show(){
+                    layui.use([\'form\', \'table\'], function(){
+                        $.ajax({
+                            type:"get",
+                            url:"<?php echo url("manage/index/tagPintuan",array("type"=>"show"));  ?>",
+                            data:"",
+                            success:function(e){
+                                layui.layer.open({
+                                    type: 1,
+                                    content: e,
+                                    area: ["800px", "600px"],
+                                    title:"选择拼团商品",
+                                    btn: ["完成","取消"],
+                                    yes: function(index, layero){
+                                        console.log(index);
+                                        console.log(ids);
+                                        $("#'.$time.'_list").empty();
+                                        var the_val = "";
+                                        for(var key in ids){
+                                            $("#'.$time.'_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].goods_name+\'</li>\');
                                             the_val += "," + key;
                                         }
                                         $("#'.$time.'").val(the_val.slice(1));

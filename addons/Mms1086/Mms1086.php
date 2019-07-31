@@ -3,6 +3,7 @@ namespace addons\Mms1086;	// 注意命名空间规范
 
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
+use org\Curl;
 
 /**
  * mms1086短信通道
@@ -61,8 +62,11 @@ class Mms1086 extends Addons
         $content      = $params['params']['content'] . '【' . $setting['sms_prefix'] . '】';
         //$content = iconv("utf-8","gb2312",$content);
         $content = urlencode($content);      //内容
+        $curl = new Curl();
+
         $str     = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=" . $setting['sms_user_id'] . "&account=" . $setting['sms_account'] . "&password=" . $sms_password . "&mobile=" . $params['params']['mobile'] . "&content=" . $content . "&sendTime=&extno=";
-        $re      = file_get_contents($str);
+        //$re      = file_get_contents($str);
+        $re      = $curl->get($str);
         $data    = xmlToArray($re);
         if (isset($data['returnstatus']) && $data['returnstatus'] == 'Faild') {
             $result['msg'] = $data['message'];

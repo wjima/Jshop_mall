@@ -1,28 +1,22 @@
 <form class="layui-form seller-form"  action="" >
-
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">消息名称：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="name" lay-verify="title" placeholder="请输入品牌名称关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">消息类型：</label>
             <div class="layui-input-inline">
                 <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择更新时间" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="brand-search"><i class="iconfont icon-chaxun"></i>筛选</button>
             <button type="button" class="layui-btn layui-btn-sm add-message"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
-
 </form>
 
 <div class="table-body">
@@ -79,7 +73,7 @@
             JsGet("{:url('Wechat/addMessage')}", function(e){
                 window.box = layer.open({
                     type: 1,
-                    content: e,
+                    content: e.data,
                     area: ['450px', '550px'],
                     title:'添加消息'
                 });
@@ -147,7 +141,7 @@
                 JsGet("{:url('Wechat/editMessage')}?id=" + data.id, function(e){
                     window.box = layer.open({
                         type:1,
-                        content:e,
+                        content:e.data,
                         area: ['450px', '550px'],
                         title:'编辑消息'
                     })

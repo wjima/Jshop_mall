@@ -278,12 +278,13 @@ class Store extends Common
             //距离计算
             $sqrt = 'SQRT(POW(SIN(('.$latitude.'*PI()/180-`latitude`*PI()/180)/2),2)+COS('.$latitude.'*PI()/180)*COS(`latitude`*PI()/180)*POW(SIN(('.$longitude.'*PI()/180-`longitude`*PI()/180)/2),2))';
             //查询结果排序
+            $prefix = config('database.prefix');
             if($key)
             {
                 $where =  "'%".$key."%'" ;
-                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from ".config('database.prefix')."store where store_name like ".  $where ."  order by distance,id) as a ";
+                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from  " .$prefix ."store". "  where store_name like ".  $where ."  order by distance,id) as a ";
             }else{
-                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from  ".config('database.prefix')."store  order by distance,id) as a ";
+                $sql = "select * from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS distance from  " .$prefix ."store"."   order by distance,id) as a ";
             }
 
             $return['data']= Db::query($sql);

@@ -15,8 +15,10 @@ use Request;
 
 class Logistics extends Manage
 {
-
-
+    /**
+     * 列表
+     * @return mixed
+     */
     public function index()
     {
         if(Request::isAjax()) {
@@ -28,17 +30,20 @@ class Logistics extends Manage
     }
 
 
-
+    /**
+     * 添加
+     * @return array
+     */
     public function add()
     {
+        $return_data = [
+            'status' => false,
+            'msg'    => '添加失败',
+            'data'   => ''
+        ];
         $this->view->engine->layout(false);
         if(Request::isPost())
         {
-            $return_data = [
-                'status' => false,
-                'msg'    => '添加失败',
-                'data'   => ''
-            ];
             //存储添加内容
             $data = [
                 'logi_name' => input('post.logi_name'),
@@ -57,48 +62,63 @@ class Logistics extends Manage
             }
             return $return_data;
         }
-        return $this->fetch('add');
-
+        $return_data['status'] = true;
+        $return_data['msg'] = '成功';
+        $return_data['data'] = $this->fetch('add');
+        return $return_data;
     }
 
 
-
+    /**
+     * 编辑
+     * @return array
+     */
     public function edit()
     {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
         $logModel = new LogisticsModel();
         if(Request::isPost())
         {
             return $logModel->saveData(input('param.'));
-
         }
         $data = $logModel->getInfo(input('param.id/d'));
         $this->assign('data',$data);
-        return $this->fetch('edit');
+        $return['status'] = true;
+        $return['msg'] = '成功';
+        $return['data'] = $this->fetch('edit');
+        return $return;
     }
+
 
     /**
      * 删除物流公司
      * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function del()
     {
         $return_data = [
             'status' => false,
-            'msg'    => '删除失败',
-            'data'   => ''
+            'msg' => '删除失败',
+            'data' => ''
         ];
         $logModel = new LogisticsModel();
         $id = input('post.id/d',0);
-        if(!$id){
+        if(!$id)
+        {
             return $return_data;
         }
-        if($logModel->where(['id'=>$id])->delete()){
+        if($logModel->where(['id'=>$id])->delete())
+        {
             $return_data['msg'] = '删除成功';
             $return_data['status'] = true;
         }
         return $return_data;
     }
-
-
 }

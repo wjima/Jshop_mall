@@ -12,12 +12,17 @@ use app\common\model\CarouselSeat;
 use app\common\model\Carousel as CarouselModel;
 use think\facade\Request;
 
+/**
+ * 广告
+ * Class Carousel
+ * @package app\api\controller
+ */
 class Carousel extends Api
 {
     /**
-     *  获取广告位列表
+     * 获取广告位列表
      * User:tianyu
-     * @return mixed
+     * @return array
      */
     public function carouselSeatList()
     {
@@ -27,9 +32,8 @@ class Carousel extends Api
 
 
     /**
-     *
-     *  获取广告列表
-     * @return array
+     * 获取广告列表
+     * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -60,5 +64,4 @@ class Carousel extends Api
         $carouselModel = new CarouselModel();
         return $carouselModel->getCarouselLists($codes);
     }
-
 }

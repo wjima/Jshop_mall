@@ -41,7 +41,6 @@
 <script>
     layui.use(['form', 'table'], function(){
         layui.form.render();
-        console.log(stringToJson(htmlDecodeByRegExp('{$info.items_json}')));
         layui.table.render({
             elem: '#billAftersalesItems'
             ,size: 'sm'

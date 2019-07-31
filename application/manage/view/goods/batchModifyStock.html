@@ -1,0 +1,45 @@
+<div class="layui-tab-item layui-show" style="padding: 20px;">
+    <div class="">
+        <div class="warning-msg">
+            <div class="warning-msg-content">
+                <p>当前选中{$total_goods}条数据</p>
+            </div>
+        </div>
+        <div id="layui-card">
+            <form id="stockform">
+
+            <input type="hidden" name="ids" value="{$ids}">
+            <div class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">调整类型：</label>
+                    <div class="layui-input-inline">
+                        <select name="modify_type">
+                            <option value="=">=</option>
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                            <option value="*">x</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">调整值：</label>
+                    <div class="layui-input-inline">
+                        <input type="text" value="" name="stock_value" placeholder="请输入调整值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    //渲染表单
+    layui.use('form', function () {
+        var form = layui.form;
+        form.render();
+    });
+    function getFormData() {
+        var formData = $("#stockform").serialize();
+        return formData;
+    }
+</script>

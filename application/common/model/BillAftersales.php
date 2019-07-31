@@ -28,18 +28,24 @@ class BillAftersales extends Common
      * 订单售后状态，返回退款的金额和退货的明细
      * @param $order_id
      * @param bool $user_id
-     * @return Order|bool|null
+     * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function orderAftersalesSatatus($order_id, $user_id = false)
     {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => ''
+        ];
+
         //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
         $orderModel = new Order();
         $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
         if (!$orderInfo) {
-            return false;
+            return error_code(13101);
         }
 
         //算已经退过款的金额，取已经完成的售后单的金额汇总
@@ -59,8 +65,10 @@ class BillAftersales extends Common
                 ])
                 ->sum('asi.nums');
         }
+        $result['data'] = $orderInfo;
+        $result['status'] = true;
 
-        return $orderInfo;
+        return $result;
     }
 
 
@@ -96,9 +104,10 @@ class BillAftersales extends Common
         }
 
         $orderInfo = $this->orderAftersalesSatatus($order_id, $user_id);
-        if (!$orderInfo) {
-            return error_code(13101);
+        if (!$orderInfo['status']) {
+            return $orderInfo;
         }
+        $orderInfo = $orderInfo['data'];
         $data['aftersales_id'] = get_sn(5);
 
         //如果是退款，退款金额用已支付的金额
@@ -209,9 +218,10 @@ class BillAftersales extends Common
 
         $orderInfo = $this->orderAftersalesSatatus($info['order_id'], $info['user_id']);
 
-        if (!$orderInfo) {
-            return error_code(13101);
+        if (!$orderInfo['status']) {
+            return $orderInfo;
         }
+        $orderInfo = $orderInfo['data'];
 
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
         $verify = $this->verify($info['type'], $orderInfo, $refund);
@@ -298,6 +308,13 @@ class BillAftersales extends Common
             }
 
             Db::commit();
+
+            //审核通过的售后单锚点
+            if($status == self::STATUS_SUCCESS)
+            {
+                hook('aftersalesreview', $aftersales_id);//添加商品后增加钩子
+            }
+
             //发送售后审核消息
             $eventData                      = $orderInfo->toArray();
             $eventData['aftersales_status'] = ($status == self::STATUS_SUCCESS) ? '审核通过' : '审核拒绝';
@@ -542,7 +559,7 @@ class BillAftersales extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getInfo($aftersales_id, $user_id)
+    public function getInfo($aftersales_id, $user_id = false)
     {
         $result                 = [
             'status' => false,
@@ -550,7 +567,10 @@ class BillAftersales extends Common
             'msg'    => ''
         ];
         $where['aftersales_id'] = $aftersales_id;
-        $where['user_id']       = $user_id;
+        if($user_id)
+        {
+            $where['user_id']       = $user_id;
+        }
         $info                   = $this::with(['billReship' => ['items'], 'items', 'images', 'billRefund'])
             ->where($where)
             ->find();

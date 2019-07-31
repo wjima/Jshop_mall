@@ -10,6 +10,10 @@ namespace app\b2c\controller;
 
 use app\common\controller\Base;
 use app\common\model\Payments;
+use app\common\model\User;
+use app\common\model\UserWx;
+use org\login\Wxofficial;
+use think\Hook;
 
 
 class Index extends Base

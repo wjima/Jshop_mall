@@ -1,9 +1,14 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2019 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: keinx <keinx@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use app\common\model\BillAftersales;
-use app\common\model\BillPayments;
 use app\common\model\BillDelivery;
 use app\common\model\BillReship;
 use app\common\model\InvoiceRecord;
@@ -32,13 +37,16 @@ class Order extends Api
         $user_id   = $this->userId;
         $model     = new orderModel();
         $result    = $model->cancel($order_ids, $user_id);
-        if ($result !== false) {
+        if($result !== false)
+        {
             $return_data = array(
                 'status' => true,
                 'msg'    => '取消订单成功',
                 'data'   => $order_ids
             );
-        } else {
+        }
+        else
+        {
             $return_data = array(
                 'status' => false,
                 'msg'    => '取消订单失败',
@@ -52,6 +60,8 @@ class Order extends Api
     /**
      * 删除订单接口
      * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function del()
     {
@@ -59,13 +69,16 @@ class Order extends Api
         $user_id   = $this->userId;
         $model     = new orderModel();
         $result    = $model->del($order_ids, $user_id);
-        if ($result) {
+        if($result)
+        {
             $return_data = array(
                 'status' => true,
                 'msg'    => '删除成功',
                 'data'   => $order_ids
             );
-        } else {
+        }
+        else
+        {
             $return_data = array(
                 'status' => false,
                 'msg'    => '删除失败',
@@ -79,6 +92,8 @@ class Order extends Api
     /**
      * 获取订单详情
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function details()
@@ -87,13 +102,16 @@ class Order extends Api
         $user_id  = $this->userId;
         $model    = new orderModel();
         $result   = $model->getOrderInfoByOrderID($order_id, $user_id);
-        if ($result) {
+        if($result)
+        {
             $return_data = array(
                 'status' => true,
                 'msg'    => '获取成功',
                 'data'   => $result
             );
-        } else {
+        }
+        else
+        {
             $return_data = array(
                 'status' => false,
                 'msg'    => '获取失败',
@@ -114,13 +132,16 @@ class Order extends Api
         $user_id  = $this->userId;
         $model    = new orderModel();
         $result   = $model->confirm($order_id, $user_id);
-        if ($result) {
+        if($result)
+        {
             $return_data = array(
                 'status' => true,
                 'msg'    => '确认收货成功',
                 'data'   => $order_id
             );
-        } else {
+        }
+        else
+        {
             $return_data = array(
                 'status' => false,
                 'msg'    => '确认收货失败',
@@ -153,8 +174,8 @@ class Order extends Api
         );
         $model = new orderModel();
         $data  = $model->getListFromApi($input);
-
-        if (count($data['data']) > 0) {
+        if(count($data['data']) > 0)
+        {
             $return_data = array(
                 'status' => true,
                 'msg'    => '获取成功',
@@ -163,7 +184,9 @@ class Order extends Api
                     'count' => $data['count'],
                 )
             );
-        } else {
+        }
+        else
+        {
             $return_data = array(
                 'status' => false,
                 'msg'    => '没有符合的订单',
@@ -179,58 +202,71 @@ class Order extends Api
 
     /**
      * 创建订单
-     * @return array
+     * @return array|mixed
      */
     public function create()
     {
         $delivery['type'] = input('param.receipt_type', 1);          //收货方式,1普通收货地址，2门店自提
-        if ($delivery['type'] == 1) {
+        if($delivery['type'] == 1)
+        {
             //收货地址id
-            if (input('?param.uship_id')) {
+            if(input('?param.uship_id'))
+            {
                 $delivery['uship_id'] = input('param.uship_id');
-            } else {
-                return error_code(13001);
             }
-        } else {
-            //提货门店
-            if (input('?param.store_id')) {
-                $delivery['store_id'] = input('param.store_id');
-            } else {
-                return error_code(13001);
-            }
-            //提货人姓名
-            if (input('?param.lading_name')) {
-                $delivery['lading_name'] = input('param.lading_name');
-            } else {
-                return error_code(13001);
-            }
-            //提货人电话
-            if (input('?param.lading_mobile')) {
-                $delivery['lading_mobile'] = input('param.lading_mobile');
-            } else {
+            else
+            {
                 return error_code(13001);
             }
         }
-
+        else
+        {
+            //提货门店
+            if(input('?param.store_id'))
+            {
+                $delivery['store_id'] = input('param.store_id');
+            }
+            else
+            {
+                return error_code(13001);
+            }
+            //提货人姓名
+            if(input('?param.lading_name'))
+            {
+                $delivery['lading_name'] = input('param.lading_name');
+            }
+            else
+            {
+                return error_code(13001);
+            }
+            //提货人电话
+            if(input('?param.lading_mobile'))
+            {
+                $delivery['lading_mobile'] = input('param.lading_mobile');
+            }
+            else
+            {
+                return error_code(13001);
+            }
+        }
         $source = input('param.source', '2');        //来源平台
         $memo   = input('param.memo', '');         //订单备注
-
-        if (!input('?param.cart_ids') || input('param.cart_ids') == "") {
+        if(!input('?param.cart_ids') || input('param.cart_ids') == "")
+        {
             return error_code(10000);
-        } else {
+        }
+        else
+        {
             $cart_ids = input('param.cart_ids');     //必须得传
         }
         $point       = input('param.point', 0);                //使用多少积分
         $coupon_code = input('param.coupon_code', '');       //使用优惠券
         $formId      = input('param.formId', false);                  //仅供微信小程序使用，表单id，用于推送消息
-
         $tax['tax_type'] = input('param.tax_type', 1);           //发票信息
         $tax['tax_name'] = input('param.tax_name', '');
         $tax['tax_code'] = input('param.tax_code', '');
-
         $order_type = input('param.order_type', '1');                        //订单类型，1是普通订单，2是拼团订单
         $params     = json_decode(input('param.params', ""), true);               //订单参数，跟type有关系，json格式。`
-
         $model = new orderModel();
         return $model->toAdd($this->userId, $order_type, $cart_ids, $delivery, $memo, $point, $coupon_code, $formId, $source, $tax, $params);
     }
@@ -253,7 +289,8 @@ class Order extends Api
         ];
         $model       = new Ship();
         $ship        = $model->getShip($area_id);
-        if ($ship) {
+        if($ship)
+        {
             $return_data['status'] = true;
             $return_data['data']   = $ship;
         }
@@ -278,7 +315,6 @@ class Order extends Api
         );
         $model = new orderModel();
         $data  = $model->getListFromWxApi($input);
-
         $return_data = array(
             'status' => true,
             'msg'    => '获取成功',
@@ -290,7 +326,6 @@ class Order extends Api
                 'status' => $input['status']
             )
         );
-
         return $return_data;
     }
 
@@ -308,14 +343,16 @@ class Order extends Api
         );
         $model = new orderModel();
         $data  = $model->getOrderStatusNum($input);
-
-        if ($data) {
+        if($data)
+        {
             $return_data = [
                 'status' => true,
                 'msg'    => '获取成功',
                 'data'   => $data
             ];
-        } else {
+        }
+        else
+        {
             $return_data = [
                 'status' => false,
                 'msg'    => '没有符合的数据',
@@ -335,7 +372,7 @@ class Order extends Api
      */
     public function aftersalesList()
     {
-        $data    = [
+        $data = [
             'page'    => input('page/d', 1),
             'limit'   => input('limit/d', config('jshop.page_limit')),
             'user_id' => $this->userId,
@@ -359,23 +396,22 @@ class Order extends Api
             'data'   => [],
             'msg'    => ''
         ];
-
-        if (!input("?param.aftersales_id")) {
+        if(!input("?param.aftersales_id"))
+        {
             return error_code(13222);
         }
         $asModel = new BillAftersales();
         $info    = $asModel->getInfo(input('param.aftersales_id'), $this->userId);
-        if (!$info['status']) {
+        if(!$info['status'])
+        {
             return $info;
         }
-
         $reship = [
             'reship_name'    => getSetting('reship_name'),
             'reship_mobile'  => getSetting('reship_mobile'),
             'reship_area'    => get_area(getSetting('reship_area_id')),
             'reship_address' => getSetting('reship_address'),
         ];
-
         //获取订单状态
         $orderModel                   = new orderModel();
         $owhere[]                     = ['order_id', 'eq', $info['data']['order_id']];
@@ -397,22 +433,12 @@ class Order extends Api
      */
     public function aftersalesStatus()
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => ''
-        ];
-
-        if (!input("?param.order_id")) {
+        if(!input("?param.order_id"))
+        {
             return error_code(13100);
         }
         $asModel   = new BillAftersales();
-        $orderInfo = $asModel->orderAftersalesSatatus(input('param.order_id'), $this->userId);
-        if ($orderInfo) {
-            $result['status'] = true;
-            $result['data']   = $orderInfo;
-        }
-        return $result;
+        return $asModel->orderAftersalesSatatus(input('param.order_id'), $this->userId);
     }
 
 
@@ -425,31 +451,32 @@ class Order extends Api
      */
     public function addAftersales()
     {
-        if (!input("?param.order_id")) {
+        if(!input("?param.order_id"))
+        {
             return error_code(13100);
         }
-        if (!input("?param.type")) {
+        if(!input("?param.type"))
+        {
             return error_code(10051);
         }
-
         $items = [];
-        $post  = input('param.');
-        if (isset($post['items'])) {
-            foreach ($post['items'] as $v) {
+        $post = input('param.');
+        if(isset($post['items']))
+        {
+            foreach($post['items'] as $v)
+            {
                 $items[$v['id']] = $v['nums'];
             }
         }
         //图片
         $images = [];
-        if (isset($post['images'])) {
+        if(isset($post['images']))
+        {
             $images = $post['images'];
         }
-
         $refund = input('param.refund/f', 0);        //退款金额，如果type是退款，这个值无所谓，
-
         //formId
         $formId = input('param.formId', "");
-
         $billAftersalesModel = new BillAftersales();
         return $billAftersalesModel->toAdd($this->userId, input('param.order_id'), input('param.type'), $items, $images, input('param.reason', ''), $refund, $formId);
     }
@@ -458,24 +485,26 @@ class Order extends Api
     /**
      * 退货单，用户发送退货包裹
      * @return array|mixed
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function sendReship()
     {
-        if (!input("?param.reship_id")) {
+        if(!input("?param.reship_id"))
+        {
             return error_code(13212);
         }
-
-        if (!input("?param.logi_code")) {
+        if(!input("?param.logi_code"))
+        {
             return error_code(13213);
         }
-
-        if (!input("?param.logi_no")) {
+        if(!input("?param.logi_no"))
+        {
             return error_code(13214);
         }
-
         $billReshipModel = new BillReship();
         return $billReshipModel->sendReship($this->userId, input('param.reship_id'), input('param.logi_code'), input('param.logi_no'));
     }
@@ -507,7 +536,8 @@ class Order extends Api
      */
     public function logistics()
     {
-        if (!input("?param.order_id")) {
+        if(!input("?param.order_id"))
+        {
             return error_code(13100);
         }
         $billDeliveryModel = new BillDelivery();
@@ -523,11 +553,10 @@ class Order extends Api
     {
         $logistic_code = input('param.code');
         $logistic_no   = input('param.no');
-
-        if (!$logistic_code || !$logistic_no) {
+        if(!$logistic_code || !$logistic_no)
+        {
             return error_code(13225);
         }
-
         $billDeliveryModel = new BillDelivery();
         return $billDeliveryModel->getLogistic($logistic_code, $logistic_no);
     }

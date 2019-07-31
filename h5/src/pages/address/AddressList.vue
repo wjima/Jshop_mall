@@ -88,3 +88,9 @@ export default {
     }
 }
 </script>
+
+<style>
+    .addresslist{
+        padding-bottom: 1rem;
+    }
+</style>

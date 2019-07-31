@@ -9,7 +9,6 @@
 
 namespace app\common\model;
 
-use Illuminate\Support\Debug\Dumper;
 
 /**
  * 商品分类
@@ -19,12 +18,15 @@ use Illuminate\Support\Debug\Dumper;
  */
 class GoodsCat extends Common
 {
-    const PLATFORM_ID = 0;                  //平台ID
+    //const PLATFORM_ID = 0;                  //平台ID
     const TOP_CLASS_PARENT_ID = 0;          //顶级分类父类ID
     const TOP_CLASS = 1;                    //顶级分类
     const SUB_CLASS = 2;                    //子分类
     const DEFAULT_TYPE = 0;                 //默认类型
     const DEFAULT_TYPE_NAME = '通用类型';   //默认类型名称
+
+    const STATUS_YES = 1;  //显示
+    const STATUS_NO = 2; //不显示
 
     protected $autoWriteTimestamp = true;
     protected $createTime = 'utime';
@@ -48,73 +50,80 @@ class GoodsCat extends Common
     }
 
 
-    /**
-     * 转换成树状
-     * @param $data
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    protected function getTree($data)
-    {
-        $new_data = array();
-        foreach($data as $v)
-        {
-            if($v['parent_id'] == self::TOP_CLASS_PARENT_ID)
-            {
-                $new_data[$v['id']]['id'] = $v['id'];
-                $new_data[$v['id']]['name_1'] = $v['name'];
-                $new_data[$v['id']]['name_2'] = '';
-                $new_data[$v['id']]['type_id'] = $v['type_id'];
-                $new_data[$v['id']]['image_id'] = $v['image_id'];
-                $new_data[$v['id']]['sort'] = $v['sort'];
-                $new_data[$v['id']]['operating'] = $this->getOperating($v['id'], self::TOP_CLASS);
-            }
-            else
-            {
-                $new_data[$v['parent_id']]['subclass'][] = array(
-                    'id' => $v['id'],
-                    'name_1' => '',
-                    'name_2' => $v['name'],
-                    'type_id' => $v['type_id'],
-                    'image_id' => $v['image_id'],
-                    'sort' => $v['sort'],
-                    'operating' => $this->getOperating($v['id'], self::SUB_CLASS)
-                );
-            }
-        }
-
-        $return_data = array();
-        foreach($new_data as $v)
-        {
-            $return_data[] = array(
-                'id' => $v['id'],
-                'name_1' => $v['name_1'],
-                'name_2' => $v['name_2'],
-                'type_id' => $this->getTypeName($v['type_id']),
-                'image_id' => $this->getImage($v['image_id']),
-                'sort' => $v['sort'],
-                'operating' => $v['operating']
-            );
-            if(isset($v['subclass']) && count($v['subclass']) > 0)
-            {
-                foreach($v['subclass'] as $vv)
-                {
-                    $return_data[] = array(
-                        'id' => $vv['id'],
-                        'name_1' => $vv['name_1'],
-                        'name_2' => $vv['name_2'],
-                        'type_id' => $this->getTypeName($vv['type_id']),
-                        'image_id' => $this->getImage($vv['image_id']),
-                        'sort' => $vv['sort'],
-                        'operating' => $vv['operating']
-                    );
-                }
-            }
-        }
-        return $return_data;
-    }
+//    /**
+//     * 转换成树状
+//     * @param $data
+//     * @return array
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    protected function getTree($data)
+//    {
+//        $new_data = array();
+//        foreach($data as $v)
+//        {
+//            if($v['parent_id'] == self::TOP_CLASS_PARENT_ID)
+//            {
+//                $new_data[$v['id']]['id'] = $v['id'];
+//                $new_data[$v['id']]['name_1'] = $v['name'];
+//                $new_data[$v['id']]['name_2'] = '';
+//                $new_data[$v['id']]['type_id'] = $v['type_id'];
+//                $new_data[$v['id']]['image_id'] = $v['image_id'];
+//                $new_data[$v['id']]['sort'] = $v['sort'];
+//                $new_data[$v['id']]['operating'] = $this->getOperating($v['id'], self::TOP_CLASS);
+//            }
+//            else
+//            {
+//                $new_data[$v['parent_id']]['subclass'][] = array(
+//                    'id' => $v['id'],
+//                    'name_1' => '',
+//                    'name_2' => $v['name'],
+//                    'type_id' => $v['type_id'],
+//                    'image_id' => $v['image_id'],
+//                    'sort' => $v['sort'],
+//                    'operating' => $this->getOperating($v['id'], self::SUB_CLASS)
+//                );
+//            }
+//        }
+//
+//        $edition = [];
+//        foreach ((array)$new_data as $key => $val)
+//        {
+//            $edition[] = $val['sort'];
+//        }
+//        array_multisort($edition, SORT_ASC, $new_data);
+//
+//        $return_data = array();
+//        foreach($new_data as $v)
+//        {
+//            $return_data[] = array(
+//                'id' => $v['id'],
+//                'name_1' => $v['name_1'],
+//                'name_2' => $v['name_2'],
+//                'type_id' => $this->getTypeName($v['type_id']),
+//                'image_id' => $this->getImage($v['image_id']),
+//                'sort' => $v['sort'],
+//                'operating' => $v['operating']
+//            );
+//            if(isset($v['subclass']) && count($v['subclass']) > 0)
+//            {
+//                foreach($v['subclass'] as $vv)
+//                {
+//                    $return_data[] = array(
+//                        'id' => $vv['id'],
+//                        'name_1' => $vv['name_1'],
+//                        'name_2' => $vv['name_2'],
+//                        'type_id' => $this->getTypeName($vv['type_id']),
+//                        'image_id' => $this->getImage($vv['image_id']),
+//                        'sort' => $vv['sort'],
+//                        'operating' => $vv['operating']
+//                    );
+//                }
+//            }
+//        }
+//        return $return_data;
+//    }
 
 
     /**
@@ -125,7 +134,7 @@ class GoodsCat extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getAllCat($id = false)
+    public function getAllCat($id = false,$show = false)
     {
         if($id)
         {
@@ -135,6 +144,9 @@ class GoodsCat extends Common
         else
         {
             $where = [];
+        }
+        if(!$show){
+            $where[] = array('status', 'eq', self::STATUS_YES);
         }
         $data = $this->field('id, parent_id, name, sort, image_id')
             ->where($where)
@@ -180,23 +192,13 @@ class GoodsCat extends Common
         {
             if($v['parent_id'] != self::TOP_CLASS_PARENT_ID)
             {
-                if ($v['image_id'])
+                if(isset($new_data[$v['parent_id']]))
                 {
                     $new_data[$v['parent_id']]['child'][] = array(
                         'id' => $v['id'],
                         'name' => $v['name'],
                         'image_id' => $v['image_id'],
                         'image_url' => _sImage($v['image_id']),
-                        'sort' => $v['sort']
-                    );
-                }
-                else
-                {
-                    $new_data[$v['parent_id']]['child'][] = array(
-                        'id' => $v['id'],
-                        'name' => $v['name'],
-                        'image_id' => $v['image_id'],
-                        'image_url' => '',
                         'sort' => $v['sort']
                     );
                 }
@@ -317,28 +319,29 @@ class GoodsCat extends Common
 
 
     /**
-     * 获取一个分类信息
+     * 废弃，这样写真的真的没有必要。
+     * 获取一个分类信息,
      * @param $id
      * @return array|null|\PDOStatement|string|\think\Model
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getCatInfo($id)
-    {
-        $where[] = ['id', 'eq', $id];
-        $data = $this->field('id, name, parent_id, type_id, sort, image_id')
-            ->where($where)
-            ->find();
-        if($data)
-        {
-            return $data;
-        }
-        else
-        {
-            return false;
-        }
-    }
+//    public function getCatInfo($id)
+//    {
+//        $where[] = ['id', 'eq', $id];
+//        $data = $this->field('id, name, parent_id, type_id, sort, image_id')
+//            ->where($where)
+//            ->find();
+//        if($data)
+//        {
+//            return $data;
+//        }
+//        else
+//        {
+//            return false;
+//        }
+//    }
 
 
     /**
@@ -351,37 +354,32 @@ class GoodsCat extends Common
      */
     public function edit($data)
     {
-        $return = [
+        $status = [
             'status' => false,
             'msg' => '',
             'data' => []
         ];
 
-        //判断是否要变成二级分类
-        if($data['parent_id'] != self::TOP_CLASS_PARENT_ID)
-        {
-            //判断是否有子类
-            $result = $this->where('parent_id', 'eq', $data['id'])
-                ->select();
-            if(count($result) > 0)
-            {
-                $return['msg'] = '该分类下有二级分类，无法转移分类';
-                return $return;
-            }
+        if($data['id'] != ""){
+            //当前是修改，就需要判断是否会陷入死循环
+//            if(!$this->checkDie($data['id'],$data['parent_id'],'parent_id')){
+//                return error_code(11097);
+//            }
+//            if(!$this->checkDie($data['id'],$data['parent_menu_id'],'parent_menu_id')){
+//                return error_code(11098);
+//            }
+            $id = $data['id'];
+            unset($data['id']);
+            $re = $this->save($data,['id'=>$id]);
+        }else{
+            $re = $this->save($data);
         }
 
-        $res = $this->update($data);
-        $return['data'] = $res;
-        if($res)
-        {
-            $return['status'] = true;
-            $return['msg'] = '修改成功';
+
+        if($re){
+            $status['status'] = true;
         }
-        else
-        {
-            $return['msg'] = '修改失败';
-        }
-        return $return;
+        return $status;
     }
 
 
@@ -393,36 +391,27 @@ class GoodsCat extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getIsDel($id)
+    private function getIsDel($id)
     {
-        $info = $this->getCatInfo($id);
-        if($info)
-        {
-            if($info['parent_id'] != self::TOP_CLASS_PARENT_ID)
-            {
-                //子类可以删除
-                $return_data = array('is' => true, 'name'=> $info['name']);
+        $status = [
+            'status' => false,
+            'msg' => '',
+            'data' => []
+        ];
+        $info = $this->where(['id'=>$id])->find();
+        if($info){
+            //父类判断是否有子类
+            $result = $this->where('parent_id', 'eq', $id)->count();
+            if($result>0){
+                $status['msg'] = "存在下级分类，不允许删除";
+            }else{
+                $status['status'] = true;
             }
-            else
-            {
-                //父类判断是否有子类
-                $result = $this->where('parent_id', 'eq', $id)
-                    ->select();
-                if(count($result) > 0)
-                {
-                    $return_data = array('is' => false, 'name'=> $info['name']);
-                }
-                else
-                {
-                    $return_data = array('is' => true, 'name'=> $info['name']);
-                }
-            }
+            return $status;
+        }else{
+            $status['msg'] = "没有找到此商品分类";
+            return $status;
         }
-        else
-        {
-            $return_data = array('is' => false, 'name'=> $info['name']);
-        }
-        return $return_data;
     }
 
 
@@ -439,17 +428,12 @@ class GoodsCat extends Common
     public function del($id)
     {
         $is_del = $this->getIsDel($id);
-        if($is_del['is'])
-        {
-            $where[] = ['id', 'eq', $id];
-            $return_data = $this->where($where)
-                ->delete();
+        if(!$is_del['status']){
+            return $is_del;
         }
-        else
-        {
-            $return_data = false;
-        }
-        return $return_data;
+        $where[] = ['id', 'eq', $id];
+        $this->where($where)->delete();
+        return $is_del;
     }
 
 
@@ -601,4 +585,118 @@ class GoodsCat extends Common
             return $id;
         }
     }
+
+    /**
+     * 根据输入的查询条件，返回所需要的where
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    protected function tableWhere($post)
+    {
+        $where = [];
+        if(isset($post['parent_id'])){
+            $where[] = ['parent_id', 'eq', $post['parent_id']];
+        }
+
+
+        $result['where'] = $where;
+        $result['field'] = "*";
+        $result['order'] = "sort asc";
+        return $result;
+    }
+
+    public function tableData($post)
+    {
+        if(isset($post['limit'])){
+            $limit = $post['limit'];
+        }else{
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = $this::With('goodsType')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $list->total();
+        $re['data'] = $data;
+        //取所有的父节点，构建路径
+        if(isset($post['parent_id'])){
+            $re['parents'] = $this->getParents($post['parent_id']);
+        }else{
+            $re['parents'] = [];
+        }
+
+
+        return $re;
+    }
+
+    /**
+     * 根据查询结果，格式化数据
+     * @author sin
+     * @param $list
+     * @return mixed
+     */
+    protected function tableFormat($list)
+    {
+        foreach ($list as $k => $v) {
+            if ($v['utime']) {
+                $list[$k]['utime'] = getTime($v['utime']);
+            }
+            if (isset($v['image_id']) && $v['image_id']) {
+                $list[$k]['image_id'] = _sImage($v['image_id']);
+            }
+        }
+        return $list;
+    }
+
+    /**
+     * 把数组构建成 一维的有缩进的树
+     * @param $list
+     * @param int $parent_menu_id
+     * @return array
+     */
+    public function createTree($list,$parent_menu_id=0,$level=1)
+    {
+        $data = [];
+        $str = "";
+        for($i=0;$i<$level;$i++){
+            $str .= "|--";
+        }
+        foreach($list as $k => $v){
+            if($v["parent_id"] == $parent_menu_id){
+                $v['name'] = $str.$v['name'];
+                $data[] = $v;
+                $ch = $this->createTree($list,$v['id'],$level+1);
+                $data = array_merge($data,$ch);
+            }
+        }
+
+        return $data;
+    }
+
+//递归取得所有的父节点
+    public function getParents($id){
+        $data = [];
+        $info = $this->where(['id' => $id])->find();
+        if(!$info){
+            return $data;
+        }
+        //判断是否还有父节点，如果有，就取父节点，如果没有，就返回了
+        if($info['parent_id'] !=self::TOP_CLASS_PARENT_ID){
+            $data = $this->getParents($info['parent_id']);      //返回空数组或者二维数组
+        }
+        array_push($data,$info->toArray());
+        return $data;
+    }
+
+    //商品分类
+    public function goodsType()
+    {
+        return $this->hasOne('GoodsType','id', 'type_id')->bind([
+            'type_name' => 'name'
+        ]);
+    }
+
 }

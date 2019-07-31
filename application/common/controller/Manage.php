@@ -10,8 +10,6 @@
 namespace app\common\controller;
 
 use app\common\model\ManageRoleOperationRel;
-use app\common\model\SellerManage;
-use app\common\model\SellerRoleOperationRel;
 use think\Container;
 use app\common\model\Operation;
 use Request;

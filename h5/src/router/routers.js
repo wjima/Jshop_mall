@@ -33,6 +33,17 @@ const routers = [{
         }
     },
     {
+        path: '/auth',
+        component: resolve => require(['../pages/order/Auth'], resolve),
+        name: 'auth',
+        meta: {
+            navShow: false,
+            tabShow: false,
+            title: '微信支付',
+            keepAlive: false
+        }
+    },
+    {
         path: '/index',
         component: resolve => require(['../pages/Index'], resolve),
         name: 'Index',

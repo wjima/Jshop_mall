@@ -1,15 +1,13 @@
 <?php
-
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use Request;
-use app\common\model\Goods as GoodsModel;
-use app\common\model\Products;
 use app\common\model\Promotion;
 
-/***
+/**
  * 团购秒杀活动接口
+ * Class Group
+ * @package app\api\controller
  */
 class Group extends Api
 {

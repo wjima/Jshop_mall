@@ -119,78 +119,56 @@
         });
         //审核操作
         $(document).on('click', '.option-audit', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('billRefund/refund')}",
-                data: 'refund_id=' + $(this).attr('data-id'),
-                success: function (e) {
-                    if (e.status) {
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,
-                            area: ['600px', '400px'],
-                            title: '退款单审核',
-                            btn: ['确认', '取消'],
-                            yes: function (index, layero) {
-                                $.ajax({
-                                    type: 'post',
-                                    url: "{:url('billRefund/refund')}",
-                                    data: $('#refund_form').serialize(),
-                                    success: function (res) {
-                                        if (res.status) {
-                                            layer.msg('退款成功');
-                                        } else {
-                                            layer.msg(res.msg);
-                                        }
-                                        layer.close(index);
-                                        layui.table.reload('billRefund');
-                                        return false;
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
-
+            JsGet("{:url('billRefund/refund')}?refund_id="+$(this).attr('data-id'), function(e){
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['600px', '400px'],
+                        title: '退款单审核',
+                        btn: ['确认', '取消'],
+                        yes: function (index, layero) {
+                            JsPost("{:url('billRefund/refund')}", $('#refund_form').serialize(), function(res){
+                                if (res.status) {
+                                    layer.msg('退款成功');
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                                layer.close(index);
+                                layui.table.reload('billRefund');
+                                return false;
+                            });
+                        }
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
         });
         //退款失败后，再次退款
         $(document).on('click', '.option-reaudit', function () {
-            $.ajax({
-                type: 'post',
-                url: "{:url('billRefund/reaudit')}",
-                data: 'refund_id=' + $(this).attr('data-id'),
-                success: function (res) {
-                    if (res.status) {
-                        layer.msg('保存成功');
-                    } else {
-                        layer.msg(res.msg);
-                    }
-                    layui.table.reload('billRefund');;
-                    return false;
+            JsPost("{:url('billRefund/reaudit')}", {refund_id: $(this).attr('data-id')}, function(res){
+                if (res.status) {
+                    layer.msg('保存成功');
+                } else {
+                    layer.msg(res.msg);
                 }
+                layui.table.reload('billRefund');;
+                return false;
             });
         });
         //查看操作
         $(document).on('click', '.option-view', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('billRefund/view')}",
-                data: 'refund_id=' + $(this).attr('data-id'),
-                success: function (e) {
-                    if (e.status) {
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,
-                            area: ['600px', '400px'],
-                            title: '退款单查看'
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
-
+            JsGet("{:url('billRefund/view')}?refund_id="+$(this).attr('data-id'), function(e){
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['600px', '400px'],
+                        title: '退款单查看'
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
         });

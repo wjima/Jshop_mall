@@ -295,7 +295,14 @@
             <div class="layui-form-mid layui-word-aux">订单和付款码类型请一定要选择登录哦~</div>
 
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">可提交次数：</label>
 
+            <div class="layui-input-inline">
+                <input type="text" name="times" id="times" value="{$form.times}" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">为0时不限制用户提交次数，不为0时，请选择需要登录</div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">排序：</label>
 
@@ -436,7 +443,6 @@
 
                 $(data.elem).parent().next('.field_value').html(goodsHtml);
                 var title = $("#"+newid+"_list").html();
-                console.log(title);
                 form.render();
             }
         });
@@ -490,7 +496,11 @@
 
 
         $(".layui-table").on('click', '.del-class', function(e) {
-            $(this).parent().parent().remove();
+            if($(".del-class").length>1){
+                $(this).parent().parent().remove();
+            }else{
+                layer.msg("至少保留1个表单字段");
+            }
         })
 
 
@@ -502,21 +512,15 @@
                 layer.msg('请先完善数据', {time: 1300});
                 return false;
             }
-            $.ajax({
-                url: '{:url("Form/edit")}',
-                type: 'post',
-                data: formData,
-                dataType: 'json',
-                success: function(e){
-                    if(e.status === true){
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            window.location.href='{:url("Form/index")}';
-                        });
-                    }else{
-                        layer.msg(e.msg, {time: 1300});
-                    }
+            JsPost('{:url("Form/edit")}',formData,function(e){
+                if(e.status === true){
+                    layer.msg(e.msg, {time: 1300}, function(){
+                        window.location.href='{:url("Form/index")}';
+                    });
+                }else{
+                    layer.msg(e.msg, {time: 1300});
                 }
-            })
+            });
             return false;
         });
     });

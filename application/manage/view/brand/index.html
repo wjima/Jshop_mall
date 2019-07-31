@@ -72,12 +72,14 @@
 
         $(document).on('click','.add-brand',function(){
             JsGet("{:url('Brand/add')}", function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e,
-                    area: ['400px', '450px'],
-                    title:'添加品牌'
-                });
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['400px', '450px'],
+                        title: '添加品牌'
+                    });
+                }
             })
         });
 
@@ -124,12 +126,14 @@
                 });
             } else if(layEvent === 'edit'){ //编辑
                 JsGet("{:url('Brand/edit')}?id=" + data.id, function(e){
-                    window.box = layer.open({
-                        type:1,
-                        content:e,
-                        area:['400px','450px'],
-                        title:'编辑品牌'
-                    })
+                    if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['400px', '450px'],
+                            title: '编辑品牌'
+                        })
+                    }
                 })
             }
         });

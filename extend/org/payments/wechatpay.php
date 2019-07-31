@@ -59,18 +59,19 @@ class wechatpay implements Payment
         //当时JSAPI的时候，也就是小程序的时候，openid必传
         if($trade_type == 'JSAPI'){
             //取open_id
-            $openid_re = $this->getOpenId($paymentInfo['user_id'],$params['trade_type']);
-            if(!$openid_re['status']){
-                return $openid_re;
+            if($params['trade_type'] == 'JSAPI_OFFICIAL' && isset($params['openid'])){      //如果是公众号，并且前台传过来了openid就用前台的。
+                $data['openid'] = $params['openid'];
+            }else{
+                $openid_re = $this->getOpenId($paymentInfo['user_id'],$params['trade_type']);
+                $data['openid'] = $openid_re['data'];
             }
-            $data['openid'] = $openid_re['data'];
         }
         if($trade_type == 'MWEB'){
             $data['scene_info'] = [
                 'h5_info' => [
                     'type' => 'Wap',
-                    'wap_url' => $params['return_url'],
-                    'wap_name' => 'mysite',//$params['wap_name'],
+                    'wap_url' => $params['return_url']."?id=".$paymentInfo['payment_id'],
+                    'wap_name' => 'jshop',//$params['wap_name'],
                 ]
             ];
             $data['scene_info'] = json_encode($data['scene_info']);

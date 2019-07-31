@@ -49,4 +49,11 @@ class Crontab extends Base
         $setting = getSetting('order_cancel_time');
         model('common/Order')->remind_order_pay($setting);
     }
+
+    /**
+     * 拼团自动取消到期团，每分钟执行一次
+     */
+    public function pintuanCancle(){
+        model('common/PintuanRecord')->autoCancle();
+    }
 }

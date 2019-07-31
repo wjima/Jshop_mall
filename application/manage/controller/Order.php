@@ -4,7 +4,6 @@ use app\common\controller\Manage;
 use app\common\model\BillDelivery;
 use app\common\model\BillPayments;
 use app\common\model\Order as Model;
-use app\common\model\OrderItems;
 use app\common\model\OrderLog;
 use app\common\model\Ship;
 use app\common\model\Logistics;
@@ -14,12 +13,11 @@ use think\facade\Request;
 /**
  * 订单模块
  * Class Order
- * @package app\seller\controller
+ * @package app\Manage\controller
  * @author keinx
  */
 class Order extends Manage
 {
-
     const SHOPPING = 1;//购物清单
     const DISTRIBUTION = 2;//配货单
     const UNION = 3;//联合打印
@@ -71,7 +69,8 @@ class Order extends Manage
                 'date' => Request::param('date'),
                 'source' => Request::param('source'),
                 'page' => Request::param('page'),
-                'limit' => Request::param('limit')
+                'limit' => Request::param('limit'),
+                'order_type' => Request::param('type'),
             );
             $model = new Model();
             $data = $model->getListFromAdmin($input);
@@ -106,13 +105,18 @@ class Order extends Manage
     /**
      * 查看订单详情
      * @param $id
-     * @return mixed
+     * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function view($id)
     {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
         $orderModel = new Model();
         $order_info = $orderModel->getOrderInfoByOrderID($id, false, false);
@@ -129,19 +133,29 @@ class Order extends Manage
             $this->assign('order_log', []);
         }
 
-        return $this->fetch('view');
+        $return['status'] = true;
+        $return['msg'] = '成功';
+        $return['data'] = $this->fetch('view');
+        return $return;
     }
 
 
     /**
      * 编辑订单
-     * @return array|mixed
+     * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function edit()
     {
+        $return_data = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
         $orderModel = new Model();
         if(!Request::isPost())
@@ -157,8 +171,10 @@ class Order extends Manage
             $storeModel = new Store();
             $store_list = $storeModel->getAllList();
             $this->assign('store_list', $store_list);
-
-            return $this->fetch('edit');
+            $return_data['status'] = true;
+            $return_data['msg'] = '成功';
+            $return_data['data'] = $this->fetch('edit');
+            return $return_data;
         }
         else
         {
@@ -194,6 +210,11 @@ class Order extends Manage
      */
     public function ship()
     {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
         if(!Request::isPost())
         {
@@ -212,8 +233,10 @@ class Order extends Manage
             $logisticsModel = new Logistics();
             $logi_info = $logisticsModel->getAll();
             $this->assign('logi', $logi_info);
-
-            return $this->fetch('ship');
+            $return['status'] = true;
+            $return['msg'] = '成功';
+            $return['data'] = $this->fetch('ship');
+            return $return;
         }
         else
         {
@@ -267,9 +290,11 @@ class Order extends Manage
     /**
      * 完成订单
      * @return array
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function complete()
     {
@@ -328,17 +353,25 @@ class Order extends Manage
     /**
      * 根据条件从数据库查询数据或者api请求获取快递信息
      * User:tianyu
-     * @return mixed
+     * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function logistics()
     {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
         $billDeliveryModel = new BillDelivery();
         $data = $billDeliveryModel->getLogisticsInformation(input('param.order_id',''));
-        return $this->fetch('logistics',[ 'data' => $data ]);
+        $return['status'] = true;
+        $return['msg'] = '成功';
+        $return['data'] = $this->fetch('logistics',[ 'data' => $data ]);
+        return $return;
     }
 
 
@@ -450,11 +483,12 @@ class Order extends Manage
     public function print_form()
     {
         $return = [
-            'msg'    => '关键参数错误',
-            'data'   => '',
+            'msg' => '关键参数错误',
+            'data' => '',
             'status' => false
         ];
-        if (!Request::isPost()) {
+        if(!Request::isPost())
+        {
             $this->view->engine->layout(false);
             $order_id = input('order_id');
             $this->assign('order_id', $order_id);
@@ -467,20 +501,25 @@ class Order extends Manage
             $ship['logi_code'] = $order_info['logistics']['logi_code'];
             $ship['logi_no']   = '';
             //获取是否获取电子面板
-            if (!checkAddons('getPrintExpressInfo')) {
+            if(!checkAddons('getPrintExpressInfo'))
+            {
                 $this->error("请先安装快递打印插件");return;
             }
             $print_express = hook('getPrintExpressInfo', ['order_id' => $order_id]);
-            if ($print_express[0]['status']) {
+            if($print_express[0]['status'])
+            {
                 $ship['logi_code'] = $print_express[0]['data']['shipper_code'];
-                $ship['logi_no']   = $print_express[0]['data']['logistic_code'];
+                $ship['logi_no'] = $print_express[0]['data']['logistic_code'];
             }
             $this->assign('ship', $ship);
 
             //获取物流公司
             $logi_info = model('common/Logistics')->getAll();
             $this->assign('logi', $logi_info);
-            return $this->fetch('print_form');
+            $return['status'] = true;
+            $return['msg'] = '成功';
+            $return['data'] = $this->fetch('print_form');
+            return $return;
         }
     }
 

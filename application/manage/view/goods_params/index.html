@@ -2,19 +2,16 @@
     .layui-btn .layui-icon {
         margin-right: 0;
     }
-
     @media screen and (max-width: 500px) {
         .layui-table-view {
             width: 100% !important;
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 600px !important;
             box-sizing: border-box;
         }
-
     }
 </style>
 <form class="layui-form seller-form" action="">
@@ -75,7 +72,6 @@
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
-
         //添加分类
         $(document).on('click', '.add-class', function () {
             JsGet('{:url("GoodsParams/add")}', function (e) {
@@ -84,7 +80,7 @@
                     title: '添加参数',
                     btn: ['保存', '取消'],
                     area: ['450px', '350px'], //宽高
-                    content: e,
+                    content: e.data,
                     yes: function () {
                         var name = $("#name").val();
                         var type = $("#type").val();
@@ -134,7 +130,7 @@
                     type: 1,
                     title: '编辑参数',
                     area: ['450px', '350px'], //宽高
-                    content: e,
+                    content: e.data,
                     btn: ['保存', '取消'],
                     yes: function (d) {
                         var name = $("#name").val();
@@ -154,28 +150,22 @@
                             return false;
                         }
                         if (!error) {
-                            $.ajax({
-                                url: '{:url("GoodsParams/edit")}',
-                                type: 'post',
-                                data: {
-                                    'name': name,
-                                    'type': type,
-                                    'value': value,
-                                    'id':id,
-                                    __Jshop_Token__:__Jshop_Token__
-                                },
-                                dataType: 'json',
-                                success: function (e) {
-                                    if (e.status === true) {
-                                        layer.close(window_box);
-                                        layer.msg(e.msg, { time: 1300 }, function () {
-                                            table.reload('typeTable');
-                                        });
-                                    } else {
-                                        layer.msg(e.msg, { time: 1300 });
-                                    }
+                            JsPost('{:url("GoodsParams/edit")}', {
+                                'name': name,
+                                'type': type,
+                                'value': value,
+                                'id':id,
+                                __Jshop_Token__:__Jshop_Token__
+                            }, function(e){
+                                if (e.status === true) {
+                                    layer.close(window_box);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        table.reload('typeTable');
+                                    });
+                                } else {
+                                    layer.msg(e.msg, { time: 1300 });
                                 }
-                            })
+                            });
                         }
                     }
                 });
@@ -195,19 +185,11 @@
 
         //删除操作
         function delClass(id) {
-            $.ajax({
-                url: '{:url("GoodsParams/del")}',
-                type: 'post',
-                data: {
-                    'id': id
-                },
-                success: function (e) {
-                    layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload('typeTable');
-                    });
-                }
+            JsPost('{:url("GoodsParams/del")}', {'id': id}, function(e){
+                layer.msg(e.msg, { time: 1300 }, function () {
+                    table.reload('typeTable');
+                });
             });
         }
-
     });
 </script>

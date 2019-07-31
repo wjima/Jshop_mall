@@ -54,26 +54,17 @@
             type: 'datetime'
         });
 
-
         //提交
         form.on('submit(promotion)', function(data){
-            console.log(data);
-            $.ajax({
-                url:"{:url('promotion/couponAdd')}",
-                type:'post',
-                data:data.field,
-                success:function(res){
-                    if(res.status == true){
-                        layer.msg('添加成功');
-                        window.location.href=res.data;
-                    }else{
-                        layer.msg(res.msg);
-                    }
+            JsPost("{:url('promotion/couponAdd')}", data.field, function(res){
+                if(res.status == true){
+                    layer.msg('添加成功');
+                    window.location.href=res.data;
+                }else{
+                    layer.msg(res.msg);
                 }
-            },"json");
+            });
             return false;
         });
-
-
     });
 </script>

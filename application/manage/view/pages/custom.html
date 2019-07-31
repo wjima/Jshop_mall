@@ -36,7 +36,7 @@
 					</div>
 					<div class="recycle">
 						<draggable element="ul" :options="{
-							group: 'widget',ghostClass: 'ghost'}">
+							group: 'widget',ghostClass: 'ghost',filter:'.recycle-content',}">
 							<div class="recycle-content">
 								<p>
 									<i class="iconfont icon-huishouzhan"></i>
@@ -89,7 +89,10 @@
 				</div>
 				<div class="custom-tip">
 					<p>1.设计完成后点击"保存页面"，在前端端页面下拉刷新即可看到效果。</p>
-					<p>2.当前可视化操作只支持uniapp简约模板</p>
+					<p>2.当前可视化操作只支持uniapp简约模板,下载地址：<a href="https://gitee.com/hnjihai/uniapp" target="_blank">点击下载</a></p>
+					<p>3.站内URL地址获取方法：浏览器打开H5，复制#后面的即可。</p>
+					<p>4.自定义页面的地址为：/pages/index/custom?page_code=themes，其中themes为新增页面时的编码</p>
+
 				</div>
 			</div>
 			<div class="center-container">
@@ -175,6 +178,28 @@
 							</div>
 						</div>
 					</div>
+					<!-- 拼团 -->
+					<div v-if="item.type === 'pintuan'" class="drag clearfix lay-goods slide group">
+						<div class="goods-head">
+							<div>{{item.value.title}}</div>
+						</div>
+						<div class="group-item" v-for="(goods,key) in item.value.list" :key="key">
+							<div class="group-image">
+								<img src="__STATIC__images/empty-banner.png" alt="">
+							</div>
+							<div class="group-detail">
+								<p class="group-name twolist-hidden">
+									{{goods.name||'此处显示商品名称'}}
+								</p>
+								<p class="group-price">{{goods.price||'￥99.00'}}</p>
+								<p class="group-time"><span>剩余：</span><span class="time">21</span>:<span class="time">30</span>:<span
+										class="time">45</span></p>
+								<span class="buy-icon">
+									<img src="__STATIC__images/ic-car.png" alt="">
+								</span>
+							</div>
+						</div>
+					</div>
 					<!-- 图片轮播 -->
 					<div v-if="item.type==='imgSlide'" class="drag lay-item lay-imgSlide">
 						<el-carousel :interval="item.value.duration" arrow="never" :autoplay="false">
@@ -187,6 +212,7 @@
 					<div v-if="item.type==='imgSingle'" class="drag lay-imgSingle">
 						<div class="img-wrap" v-for="(img,key) in item.value.list" :key="key">
 							<img :src="img.image" alt="">
+							<div class="img-btn" :style="{backgroundColor:img.buttonColor,color:img.textColor}" v-show="img.buttonShow">{{img.buttonText}}</div>
 						</div>
 					</div>
 					<!-- 图片橱窗 -->
@@ -412,9 +438,9 @@
 							<div class="select_seller_goods_box">
 								<input type="hidden" name="params[goods_id]" value="">
 								<ul id="selectGoods" class="sellect_seller_goods_list clearfix">
-									<draggable element="ul" :list="hasChooseGoods"
+									<draggable element="ul" :list="selectWg.value.list"
 										:options="{group:{ name:'selectGoodsList'}, ghostClass: 'ghost',animation: 150}">
-										<li v-for="(goods,key) in hasChooseGoods" :key="key">
+										<li v-for="(goods,key) in selectWg.value.list" :key="key">
 											<i class="layui-icon layui-icon-close-fill icon-delete" @click="handleDeleteGoods(key)"></i>
 											<img :src="goods.image" alt="">
 										</li>
@@ -471,6 +497,40 @@
 								</draggable>
 							</ul>
 							<div class="addImg" @click="selectGroupGoods">
+								<i class="iconfont icon-icon-test"></i>
+								<span>选择商品</span>
+							</div>
+						</div>
+						<hr class="divider">
+						</hr>
+						<el-form-item label="商品组名称">
+							<input type="text" v-model="selectWg.value.title" class="selectLinkVal">
+						</el-form-item>
+						<el-form-item label="显示数量">
+							<input type="number" v-model.number="selectWg.value.limit" min="1" class="number-input">
+						</el-form-item>
+						<div class="pl25">
+							<p class="layout-tip">团购秒杀数据请到 促销管理 - <a href="javascript:;"
+									lay-href="{:url('promotion/group')}">团购秒杀列表</a>中管理
+							</p>
+						</div>
+					</div>
+				</template>
+				<!-- 拼团 -->
+				<template v-if="selectWg.type=='pintuan'">
+					<div>
+						<div class="select_seller_goods_box">
+							<input type="hidden" name="params[goods_id]" value="">
+							<ul id="selectGoods" class="sellect_seller_goods_list clearfix">
+								<draggable element="ul" :list="selectWg.value.list"
+									:options="{group:{ name:'selectGoodsList'}, ghostClass: 'ghost',animation: 150}">
+									<li v-for="(goods,key) in selectWg.value.list" :key="key">
+										<i class="layui-icon layui-icon-close-fill icon-delete" @click="handleDeleteGoods(key)"></i>
+										<img :src="goods.goods_image" alt="">
+									</li>
+								</draggable>
+							</ul>
+							<div class="addImg" @click="selectPintuanGoods">
 								<i class="iconfont icon-icon-test"></i>
 								<span>选择商品</span>
 							</div>
@@ -599,6 +659,29 @@
 							</div>
 							<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"
 								:id.sync="item.linkValue"></select-link>
+							<div class="content-item">
+								<el-form-item label="添加按钮：">
+									<el-switch
+										v-model="item.buttonShow"
+										active-color="#13ce66">
+									</el-switch>	
+								</el-form-item>
+							</div>
+							<div class="content-item" v-show="item.buttonShow">
+								<el-form-item label="按钮颜色：">
+									<el-color-picker v-model="item.buttonColor"></el-color-picker>
+								</el-form-item>
+							</div>
+							<div class="content-item" v-show="item.buttonShow">
+								<el-form-item label="按钮文字：">
+									<input type="text" class="selectLinkVal" v-model="item.buttonText">
+								</el-form-item>
+							</div>
+							<div class="content-item" v-show="item.buttonShow">
+								<el-form-item label="文字颜色：">
+									<el-color-picker v-model="item.textColor"></el-color-picker>
+								</el-form-item>
+							</div>
 						</div>
 					</li>
 				</template>
@@ -762,8 +845,7 @@
 			<div v-else>
 				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @focus="selectLink" placeholder="请选择">
 			</div>
-
 		</el-form-item>
 	</div>
 </template>
-<script src="__STATIC__lib/custom/js/main.min.js"></script>
+<script src="__STATIC__lib/custom/js/main.js"></script>

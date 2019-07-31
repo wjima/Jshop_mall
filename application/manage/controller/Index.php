@@ -6,6 +6,7 @@ use app\common\model\BillAftersales;
 use app\common\model\Notice;
 use app\common\model\Operation;
 use app\common\model\Order;
+use app\common\model\PintuanGoods;
 use app\common\model\Promotion;
 use think\facade\Cache;
 use app\common\model\WeixinAuthor;
@@ -113,6 +114,22 @@ class Index extends Manage
             return $promotionModel->tableData($request);
         }else{
             return $this->fetch('tagSelectGroup');
+        }
+    }
+    /**
+     * 供tag标签选择拼团商品的时候使用
+     */
+    public function tagPintuan()
+    {
+        $this->view->engine->layout(false);
+        if(input('param.type') != 'show'){
+            $request = input('param.');
+            $goodModel = new PintuanGoods();
+            //$request['marketable'] = $goodModel::MARKETABLE_UP;     //必须是上架的商品
+            return $goodModel->tableData([]);
+
+        }else{
+            return $this->fetch('tagPintuan');
         }
     }
 

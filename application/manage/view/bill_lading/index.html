@@ -155,20 +155,13 @@
 
             if (layEvent === 'info') {
                 //获取详情
-                $.ajax({
-                    url: "{:url('manage/billLading/info')}",
-                    type: 'get',
-                    data: {
-                        'id': data.id
-                    },
-                    success: function (e) {
-                        layer.open({
-                            type: 1,
-                            title: '详情',
-                            area: ['650px', '310px'], //宽高
-                            content: e
-                        });
-                    }
+                JsGet("{:url('manage/billLading/info')}?id="+data.id, function(e){
+                    layer.open({
+                        type: 1,
+                        title: '详情',
+                        area: ['650px', '310px'], //宽高
+                        content: e
+                    });
                 });
             } else if (layEvent === 'write') {
                 //核销提货单
@@ -178,18 +171,10 @@
                     layer.confirm('确认核销该提货单吗？', {
                         btn: ['确认', '取消'] //按钮
                     }, function () {
-                        $.ajax({
-                            url: "{:url('manage/BillLading/write')}",
-                            data: {
-                                'id': data.id
-                            },
-                            type: 'post',
-                            dataType: 'json',
-                            success: function (e) {
-                                layer.msg(e.msg, { time: 1500 }, function () {
-                                    table.reload('ladingTable');
-                                });
-                            }
+                        JsPost("{:url('manage/BillLading/write')}", {'id': data.id}, function(e){
+                            layer.msg(e.msg, { time: 1500 }, function () {
+                                table.reload('ladingTable');
+                            });
                         });
                     }, function () {
 
@@ -212,20 +197,14 @@
         //修改保存
         $(document).on('click', '.editBtn', function () {
             var data = $('#edit-form').serialize();
-            $.ajax({
-                url: '{:url("manage/BillLading/info")}',
-                data: data,
-                type: 'post',
-                dataType: 'json',
-                success: function (e) {
-                    if (e.status) {
-                        layer.msg(e.msg, { time: 1500 }, function () {
-                            layer.closeAll();
-                            table.reload('ladingTable');
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
+            JsPost('{:url("manage/BillLading/info")}', data, function(e){
+                if (e.status) {
+                    layer.msg(e.msg, { time: 1500 }, function () {
+                        layer.closeAll();
+                        table.reload('ladingTable');
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
             return false;

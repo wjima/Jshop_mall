@@ -1,17 +1,14 @@
 <style>
     @media screen and (max-width: 500px) {
-
         .layui-layer.layui-layer-page {
             width: 100% !important;
             overflow:hidden!important;
             left: 0 !important;
         }
-
         .layui-layer-title {
             width: 100% !important;
             box-sizing: border-box;
         }
-
         .layui-layer-content {
             width: 100% !important;
         }
@@ -62,7 +59,7 @@
                     area: ['600px', '400px'],
                     data: '',
                     title: '添加用户等级',
-                    content: tpl,
+                    content: tpl.data,
                     btn: ['保存', '关闭'],
                     yes: function (index, layero) {
                         var thedata = $('#edit_form').serialize();
@@ -80,7 +77,6 @@
             });
             return false;
         });
-
         //角色删除
         $(document).on('click', '.option-del', function () {
             var id = $(this).attr('data-id');
@@ -95,13 +91,11 @@
                     } else {
                         layer.msg(res.msg);
                     }
-
                 });
             }, function () {
                 layer.close(1);
             });
         });
-
         //编辑
         $(document).on('click', '.option-edit', function () {
             var id = $(this).attr('data-id');
@@ -111,7 +105,7 @@
                     area: ['600px', '400px'],
                     data: '',
                     title: '编辑会员等级',
-                    content: tpl,
+                    content: tpl.data,
                     btn: ['保存', '关闭'],
                     yes: function (index, layero) {
                         var thedata = $('#edit_form').serialize();

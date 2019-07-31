@@ -146,6 +146,8 @@ class Ship extends Common
      */
     public function getShipCost($area_id = 0, $weight = 0, $totalmoney = 0)
     {
+
+
         $postfee = '0.00';
         //先判断是否子地区满足条件
         $def = $this->where([
@@ -162,6 +164,7 @@ class Ship extends Common
                 return $postfee;
             }
         }
+
         if ($def['free_postage'] == self::FREE_POSTAGE_YES) {
             return $postfee;
         }
@@ -235,17 +238,17 @@ class Ship extends Common
      */
     static function calculate_fee($ship, $weight, $totalmoney = 0)
     {
-		//满多少免运费
-		if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
-			return 0;
-		}
+        //满多少免运费
+        if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
+            return 0;
+        }
         if ($weight > $ship['firstunit']) {
-           
             $shipmoney = 0;
             $tmp_exp   = trim(str_replace('w', $weight, $ship['exp']));
             eval("\$shipmoney = $tmp_exp;");
             return $shipmoney;
         } else {
+
             if (isset($ship['firstunit_price'])) {
                 return $ship['firstunit_price'];
             } else {

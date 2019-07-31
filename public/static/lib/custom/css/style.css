@@ -1032,11 +1032,22 @@ template {
   margin: 0;
   height: auto;
   flex: 1;
+  position: relative;
 }
 
 .layout-list .layout-main .lay-imgSingle .img-wrap img {
   display: block;
   width: 100%;
+}
+.layout-list .layout-main .lay-imgSingle .img-wrap .img-btn{
+  display: block;
+  position: absolute;
+  bottom:25px;
+  left:40px;
+  width: 80px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
 }
 
 .lay-service {
@@ -1134,6 +1145,9 @@ template {
   border-radius: 2px;
 }
 
+.lay-imgWindow{
+  min-height: 100px;
+}
 .lay-imgWindow.row0 .display {
   height: 0;
   width: 100%;
@@ -1434,7 +1448,7 @@ template {
 }
 .main-body .el-form-item__label{
   font-size: 12px!important;
-  line-height: 30px!important;
+  line-height: 40px!important;
 }
 .main-body .el-slider__runway{
   margin:12px 0!important;

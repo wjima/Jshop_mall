@@ -127,8 +127,8 @@ Page({
       if (res.status) {
         app.db.set('userToken', res.data);
           app.common.successToShow('登陆成功', function () {
-              wx.navigateBack({
-                  delta: 1
+              wx.switchTab({
+                url: '/pages/member/index/index'
               });
           });
       } else {

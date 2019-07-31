@@ -1,13 +1,21 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2019 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: keinx <keinx@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\GoodsCat;
 use think\facade\Request;
 
+
 /**
  * 商品分类
  * Class Categories
- * @package app\seller\controller
+ * @package app\api\controller
  * @author keinx
  */
 class Categories extends Api
@@ -41,7 +49,6 @@ class Categories extends Api
         {
             $return['msg'] = '获取顶级分类失败';
         }
-
         return $return;
     }
 
@@ -63,7 +70,6 @@ class Categories extends Api
             'msg' => '',
             'data' => array(),
         );
-
         if($data)
         {
             $return['status'] = true;
@@ -73,7 +79,6 @@ class Categories extends Api
         {
             $return['msg'] = '获取顶级分类失败';
         }
-
         return $return;
     }
 
@@ -87,24 +92,24 @@ class Categories extends Api
      */
     public function getAllCat()
     {
-        $model = new GoodsCat();
-        $data = $model->getAllCat();
-        $return = array(
+        $backstage = input('backstage', '2');
+        $show      = ($backstage == '2') ? false : true;
+        $model     = new GoodsCat();
+        $data      = $model->getAllCat(false, $show);
+        $return    = array(
             'status' => false,
-            'msg' => '',
-            'data' => array(),
+            'msg'    => '',
+            'data'   => array(),
         );
-
         if($data)
         {
             $return['status'] = true;
-            $return['data'] = $data;
+            $return['data']   = $data;
         }
         else
         {
             $return['msg'] = '获取顶级分类失败';
         }
-
         return $return;
     }
 

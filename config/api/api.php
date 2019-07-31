@@ -37,6 +37,10 @@ return [
                 'code' => 'reg',
                 'is_login' => false
             ],
+            'officiallogin' => [
+                'code' => 'officialLogin',
+                'is_login' => false
+            ],
             'info' => [
                 'code' => 'info',
                 'is_login' => true
@@ -107,7 +111,7 @@ return [
             ],
             'pay' => [
                 'code' => 'pay',
-                'is_login' => true,
+                'is_login' => false,
             ],
             'orderevaluate' => [
                 'code' => 'orderEvaluate',
@@ -229,6 +233,10 @@ return [
                 'code' => 'getPoster',
                 'is_login' => false
             ],
+            'uniapplogin'=>[
+                'code' => 'uniAppLogin',
+                'is_login' => false
+            ]
         ]
     ],
 
@@ -263,6 +271,10 @@ return [
             ],
             'getArticleDetail' => [
                 'code' => 'getArticleDetail',
+                'is_login' => false
+            ],
+            'getweixinmessage'=>[
+                'code'=>'getWeixinMessage',
                 'is_login' => false
             ]
         ]
@@ -344,6 +356,10 @@ return [
             ],
             'getnumber' => [
                 'code' => 'getNumber',
+                'is_login' => true
+            ],
+            'batchsetcart' => [
+                'code' => 'batchSetCart',
                 'is_login' => true
             ]
         ]
@@ -637,5 +653,31 @@ return [
                 'is_login' => false
             ]
         ]
-    ]
+    ],
+    'pintuan' => [
+        'code' => 'Pintuan',
+        'method' => [
+            'list' => [
+                'code' => 'getList',
+                'is_login' => false
+            ],
+            'goodsinfo' => [
+                'code' => 'getGoodsInfo',
+                'is_login' => false
+            ],
+            'productinfo' => [
+                'code' => 'getProductInfo',
+                'is_login' => false
+            ],
+            'pintuanrecord' => [
+                'code' => 'pintuanRecord',
+                'is_login' => false,
+            ],
+            'pintuanteam' => [
+                'code' => 'pintuanTeam',
+                'is_login' => false
+            ]
+
+        ]
+    ],
 ];

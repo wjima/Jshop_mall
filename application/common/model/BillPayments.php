@@ -146,13 +146,19 @@ class BillPayments extends Common
      * @param $params           支付的时候用到的参数，如果是微信支付的话，这里可以传trade_type=>'JSAPI'(小程序支付),或者'MWEB'(h5支付),当是JSPI的时候，可以不传其他参数了，默认就可以，默认的这个值就是JSAPI，如果是MWEB的话，需要传wap_url(网站url地址)参数和wap_name（网站名称）参数，其他支付方式需要传什么参数这个以后再说
      * @return mixed
      */
-    public function pay($source_str, $payment_code, $user_id = '', $type = self::TYPE_ORDER,$params = []){
+    public function pay($source_str, $payment_code, $user_id = 0, $type = self::TYPE_ORDER,$params = []){
 
         //判断支付方式是否开启
         $paymentsModel = new Payments();
         $paymentInfo = $paymentsModel->getPayment($payment_code, $paymentsModel::PAYMENT_STATUS_YES);
         if(!$paymentInfo){
             return error_code(10050);
+        }
+
+        //如果是公众号支付，并且没有登陆或者没有open_id的话，报错
+        $re = $this->checkOpenId($payment_code,$user_id,$params);
+        if(!$re['status']){
+            return $re;
         }
 
         $result = $this->toAdd($source_str, $payment_code, $user_id, $type,$params);
@@ -187,7 +193,7 @@ class BillPayments extends Common
      * @param int $type             支付类型
      * @return array
      */
-    public function toAdd($source_str, $payment_code, $user_id = '', $type = self::TYPE_ORDER, $params = [])
+    public function toAdd($source_str, $payment_code, $user_id = 0, $type = self::TYPE_ORDER, $params = [])
     {
         $result = [
             'status' => false,
@@ -210,11 +216,7 @@ class BillPayments extends Common
         try {
             $data['payment_id'] = get_sn(2);
             $data['money']      = $paymentRel['data']['money'];
-            if ($user_id == '') {
-                $data['user_id'] = $paymentRel['data']['user_id'];
-            } else {
-                $data['user_id'] = $user_id;
-            }
+            $data['user_id'] = $user_id;
             $data['type']         = $type;//保存类型
             $data['payment_code'] = $payment_code;
             $data['ip']           = get_client_ip();
@@ -656,4 +658,42 @@ class BillPayments extends Common
         }
         return $return_data;
     }
+
+    private function checkOpenId($payment_code,$user_id,$params){
+        $result = [
+            'status' => true,
+            'data' => '',
+            'msg' => ''
+        ];
+
+        //当只有微信支付的时候，才判断
+        if($payment_code != "wechatpay"){
+            return $result;
+        }
+
+        //当只有公众号支付的时候，才判断
+        if(!(isset($params['trade_type']) && $params['trade_type'] == 'JSAPI_OFFICIAL')){
+            return $result;
+        }
+        if(isset($params['openid']) && $params['openid'] != ""){
+            return $result;
+        }
+
+        $userWxModel = new UserWx();
+//        if($user_id != 0){        //这里强制注释掉之后，所有的公众号支付都得走无感登陆
+//            $where[] = ['user_id','eq',$user_id];
+//            $where[] = ['type', 'eq', $userWxModel::TYPE_OFFICIAL];
+//            $info = $userWxModel->where($where)->find();
+//            if($info){
+//                return $result;
+//            }
+//        }
+        //到这里基本上就说明
+        if(!isset($params['url'])){
+            return error_code(10067);
+        }
+        return $userWxModel->officialMiniLogin($params['url']);
+    }
+
+
 }

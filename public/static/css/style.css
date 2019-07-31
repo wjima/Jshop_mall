@@ -222,7 +222,9 @@
     padding: 8px 13px;
 }
 
-.warning-msg {}
+.warning-msg {
+    font-size: 12px;
+}
 
 .warning-msg-content {
     background-color: #FFFFCC;

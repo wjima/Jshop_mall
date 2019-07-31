@@ -1,17 +1,14 @@
 <style>
     @media screen and (max-width: 500px) {
-        
         .layui-layer.layui-layer-page {
             width: 100% !important;
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-layer-title {
             width: 100% !important;
             box-sizing: border-box;
         }
-
         .layui-layer-content {
             width: 100% !important;
         }
@@ -70,7 +67,7 @@
         </div>
         <div class="layui-inline">
             <!--<div class="layui-input-block">-->
-            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="user-search"><i
                     class="iconfont icon-chaxun"></i>筛选</button>
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="user-add"><i
                     class="layui-icon">&#xe608;</i>添加</button>
@@ -84,13 +81,15 @@
             <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="import-user"><i
                     class="layui-icon"></i>导入</button>
         </div>
+        <div class="layui-inline">
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-danger " lay-submit lay-filter="delete-user">删除</button>
+        </div>
     </div>
 </form>
 
 <div class="table-body">
     <table id="userTable" lay-filter="test"></table>
 </div>
-
 
 <div id="exportUser" style="display: none;">
     <form class="layui-form export-form" action="">
@@ -109,7 +108,6 @@
         </div>
     </form>
 </div>
-
 
 <div id="importUser" style="display: none;">
     <form class="layui-form import-form" method="post" action="{:url('ietask/import')}" enctype="multipart/form-data">
@@ -142,8 +140,18 @@
             url: "{:url('user/index')}?_ajax=1",
             id: 'userTable',
             cols: [[
-                { type: 'numbers' },
-                //                {field:'username', width:100,title:'账号'},
+                {type:'checkbox'},
+                {
+                    field: 'option', title: '操作', templet: function (d) {
+                        var html = '<a class="layui-btn layui-btn-xs edit" data-id="' + d.id + '">修改</a>';
+                        html += '<a class="layui-btn layui-btn-xs editMoney" data-id="' + d.id + '">修改余额</a>';
+                        html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="' + d.id + '">积分修改</span>';
+                        return html;
+
+
+                    }, align: 'center', width: 200
+                },
+                { field: 'id', title: 'ID', width:80 },
                 { field: 'mobile', title: '手机号码', width: 150 },
                 { field: 'grade_name', title: '等级', width: 150 },
                 { field: 'sex', title: '性别' },
@@ -171,24 +179,13 @@
                         return html;
                     }
                 },
-
                 { field: 'status', title: '状态' },
                 { field: 'pid_name', title: '邀请人' },
-                { field: 'ctime', title: '创建时间', width: 200 },
-                {
-                    field: 'option', title: '操作', templet: function (d) {
-                        var html = '<a class="layui-btn layui-btn-xs edit" data-id="' + d.id + '">修改</a>';
-                        html += '<a class="layui-btn layui-btn-xs editMoney" data-id="' + d.id + '">修改余额</a>';
-                        html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="' + d.id + '">积分修改</span>';
-                        return html;
-
-
-                    }, align: 'center', width: 200
-                }
+                { field: 'ctime', title: '创建时间', width: 200 }
             ]]
         });
         //搜索
-        layui.form.on('submit(*)', function (data) {
+        layui.form.on('submit(user-search)', function (data) {
             layui.table.reload('userTable', {
                 where: data.field
                 , page: {
@@ -197,25 +194,46 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
+        //删除用户
+        layui.form.on('submit(delete-user)', function (data) {
+            var checkStatus = layui.table.checkStatus('userTable');
+            var checkData = checkStatus.data;
+            var operate = data.value;
+            var length = checkStatus.data.length;
+            if (length <= 0) {
+                layer.msg("请先选要操作的数据");
+                return false;
+            }
+            var ids = [];
+            $.each(checkData, function (i, obj) {
+                ids.push(obj.id);
+            });
+            layer.confirm('确认删除选中商品吗？', {
+                title: '提示', btn: ['确认', '取消'] //按钮
+            }, function () {
+                JsPost("{:url('User/delUser')}", {'ids': ids}, function (res) {
+                        if (res.status) {
+                            layer.msg(res.msg);
+                            layui.table.reload('userTable');
+                        } else {
+                            layer.msg(res.msg);
+                        }
 
+                    }
+                );
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
         //积分编辑
         $(document).on('click', '.pointEdit', function () {
             var id = $(this).attr('data-id');
-            $.ajax({
-                url: "{:url('manage/user/editPoint')}",
-                type: 'get',
-                data: {
-                    'user_id': id,
-                    'flag': 'false'
-                },
-                success: function (e) {
-                    layer.open({
-                        type: 1,
-                        title: '修改用户积分',
-                        area: ['450px', '300px'], //宽高
-                        content: e
-                    });
-                }
+            JsGet("{:url('manage/user/editPoint')}?user_id="+id+"&flag=false", function(e){
+                layer.open({
+                    type: 1,
+                    title: '修改用户积分',
+                    area: ['450px', '300px'], //宽高
+                    content: e.data
+                });
             });
         });
         //保存积分
@@ -247,120 +265,79 @@
         //积分记录
         $(document).on('click', '.point', function () {
             var id = $(this).attr('data-id');
-            $.ajax({
-                url: "{:url('manage/user/pointLog')}",
-                type: 'get',
-                data: {
-                    'user_id': id,
-                    'flag': 'false'
-                },
-                success: function (e) {
-                    layer.open({
-                        type: 1,
-                        title: '用户积分记录',
-                        area: ['800px', '535px'], //宽高
-                        content: e
-                    });
-                }
+            JsGet("{:url('manage/user/pointLog')}?user_id="+id+"&flag=false", function(e){
+                layer.open({
+                    type: 1,
+                    title: '用户积分记录',
+                    area: ['800px', '535px'], //宽高
+                    content: e.data
+                });
             });
         });
-
         //添加
         layui.form.on('submit(user-add)', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('User/addUser')}",
-                success: function (e) {
-                    window.box = layer.open({
-                        type: 1,
-                        content: e,
-                        area: ['700px', '550px'],
-                        title: '添加用户',
-                        btn: ['确定', '取消'],
-                        zIndex: 1800,
-                        yes: function () {
-                            var data = $("#userAdd").serializeArray();
-                            $.ajax({
-                                type: 'post',
-                                url: '{:url("User/addUser")}',
-                                data: data,
-                                dataType: 'json',
-                                success: function (e) {
-                                    if (e.status) {
-                                        layer.close(window.box);
-                                        layer.msg(e.msg, { time: 1300 }, function () {
-                                            layui.table.reload('userTable');
-                                        });
-                                    } else {
-                                        layer.msg(e.msg);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
+            JsGet("{:url('User/addUser')}", function(e){
+                window.box = layer.open({
+                    type: 1,
+                    content: e.data,
+                    area: ['700px', '550px'],
+                    title: '添加用户',
+                    btn: ['确定', '取消'],
+                    zIndex: 1800,
+                    yes: function () {
+                        var data = $("#userAdd").serializeArray();
+                        JsPost('{:url("User/addUser")}', data, function(e){
+                            if (e.status) {
+                                layer.close(window.box);
+                                layer.msg(e.msg, { time: 1300 }, function () {
+                                    layui.table.reload('userTable');
+                                });
+                            } else {
+                                layer.msg(e.msg);
+                            }
+                        });
+                    }
+                });
             });
             return false;
         });
         //编辑
         $(document).on('click', '.edit', function () {
             var user_id = $(this).attr('data-id');
-            $.ajax({
-                url: '{:url("User/editUser")}',
-                data: {
-                    user_id: user_id
-                },
-                type: 'get',
-                success: function (e) {
-                    window.box = layer.open({
-                        type: 1,
-                        content: e,
-                        area: ['700px', '550px'],
-                        title: '编辑用户',
-                        btn: ['确定', '取消'],
-                        zIndex: 1800,
-                        yes: function () {
-                            var data = $("#userEdit").serializeArray();
-                            $.ajax({
-                                type: 'post',
-                                url: '{:url("User/editUser")}',
-                                data: data,
-                                dataType: 'json',
-                                success: function (e) {
-                                    if (e.status) {
-                                        layer.close(window.box);
-                                        layer.msg(e.msg, { time: 1300 }, function () {
-                                            layui.table.reload('userTable');
-                                        });
-                                    } else {
-                                        layer.msg(e.msg);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
+            JsGet('{:url("User/editUser")}?user_id='+user_id, function(e){
+                window.box = layer.open({
+                    type: 1,
+                    content: e.data,
+                    area: ['700px', '570px'],
+                    title: '编辑用户',
+                    btn: ['确定', '取消'],
+                    zIndex: 1800,
+                    yes: function () {
+                        var data = $("#userEdit").serializeArray();
+                        JsPost('{:url("User/editUser")}', data, function(e){
+                            if (e.status) {
+                                layer.close(window.box);
+                                layer.msg(e.msg, { time: 1300 }, function () {
+                                    layui.table.reload('userTable');
+                                });
+                            } else {
+                                layer.msg(e.msg);
+                            }
+                        });
+                    }
+                });
             });
         });
-
         //余额编辑
         $(document).on('click', '.editMoney', function () {
             var id = $(this).attr('data-id');
-            $.ajax({
-                url: "{:url('manage/user/editMoney')}",
-                type: 'get',
-                data: {
-                    'user_id': id,
-                    'flag': 'false'
-                },
-                success: function (e) {
-                    layer.open({
-                        type: 1,
-                        title: '修改用户余额',
-                        area: ['450px', '300px'], //宽高
-                        content: e
-                    });
-                }
+            JsGet("{:url('manage/user/editMoney')}?user_id="+id+"&flag=false", function(e){
+                layer.open({
+                    type: 1,
+                    title: '修改用户余额',
+                    area: ['450px', '300px'], //宽高
+                    content: e.data
+                });
             });
         });
         //保存余额
@@ -385,12 +362,9 @@
         });
         //余额明细
         $(document).on('click', '.balance', function () {
-
             var id = $(this).attr('data-id');
             window.location.href = "{:url('manage/balance/index')}" + '?user_id=' + id;
         });
-
-
         //会员导出
         layui.form.on('submit(export-user)', function (data) {
 

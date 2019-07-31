@@ -7,10 +7,14 @@
 // | Author: tianyu <tianyu@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\api\controller;
-
 use app\common\model\Notice as NoticeModel;
 use app\common\controller\Api;
 
+/**
+ * 公告
+ * Class Notice
+ * @package app\api\controller
+ */
 class Notice extends Api
 {
     /**

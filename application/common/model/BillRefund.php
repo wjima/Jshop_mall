@@ -111,6 +111,8 @@ class BillRefund extends Common
                 $eventData              = $info->toArray();
                 sendMessage($info['user_id'], 'refund_success', $eventData);
             }
+            //退款完成后的钩子
+            Hook('refund', $refund_id);
             return $result;
         }elseif($status == self::STATUS_REFUSE){
             //退款拒绝

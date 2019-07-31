@@ -6,7 +6,9 @@
         <label class="layui-form-label"><i class="required-color">*</i>广告位：</label>
         <div class="layui-input-inline seller-inline-3">
             <select name="position_id">
-                <option value="{$position.id}">{$position.name}</option>
+                {foreach $positionList as $v}
+                <option value="{$v.id}" {if $v.id == $info.position_id}selected{/if}>{$v.name}</option>
+                {/foreach}
             </select>
         </div>
     </div>

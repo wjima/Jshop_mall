@@ -1,10 +1,13 @@
 <?php
-
 namespace app\api\controller;
-
 use app\common\controller\Api;
 use org\Curl;
 
+/**
+ * 微信分享
+ * Class WeiXinShare
+ * @package app\api\controller
+ */
 class WeiXinShare extends Api
 {
     private $accessTokenUrl = 'https://api.weixin.qq.com/cgi-bin/token';

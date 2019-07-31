@@ -24,12 +24,11 @@ class Article extends Manage
     public function index()
     {
         $article = new articleModel();
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             return $article->tableData(input('param.'));
         }
         $articleTypeModel = new articleTypeModel();
-        $list = $articleTypeModel->select();
+        $list             = $articleTypeModel->select();
         return $this->fetch('', ['list' => $list]);
     }
 
@@ -37,24 +36,25 @@ class Article extends Manage
     /**
      *  文章添加
      * User:tianyu
+     *
      * @return array|mixed
      */
     public function add()
     {
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $article = new articleModel();
             return $article->addData(input('param.'));
         }
         $articleTypeModel = new articleTypeModel();
-        $list = $articleTypeModel->select();
-        return $this->fetch('add',['list'=> $articleTypeModel->getTree($list)]);
+        $list             = $articleTypeModel->select();
+        return $this->fetch('add', ['list' => $articleTypeModel->getTree($list)]);
     }
 
 
     /**
      *
      *  文章编辑
+     *
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -63,31 +63,36 @@ class Article extends Manage
     public function edit()
     {
         $articleModel = new articleModel();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $articleModel->saveData(input('param.'));
         }
-        $info = $articleModel->with('articleType')->where('id',input('param.id/d'))->find();
-        if (!$info)
-        {
+        $info = $articleModel->with('articleType')->where('id', input('param.id/d'))->find();
+        if (!$info) {
             return error_code(10002);
         }
-        return $this->fetch('edit',['info'=>$info]);
+        $articleTypeModel = new articleTypeModel();
+        $list             = $articleTypeModel->select();
+        return $this->fetch('edit', ['info' => $info, 'list' => $list]);
     }
 
 
     /**
      *
      * User:tianyu
+     *
      * @return array
      */
     public function del()
     {
         $article = new articleModel();
-        $result = ['status' => true,'msg' => '删除成功','data'=>''];
+        $result  = [
+            'status' => true,
+            'msg'    => '删除成功',
+            'data'   => ''
+        ];
         if (!$article->destroy(input('param.id/d'))) {
             $result['status'] = false;
-            $result['msg'] = '删除失败';
+            $result['msg']    = '删除失败';
         }
         return $result;
     }

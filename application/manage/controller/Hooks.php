@@ -17,6 +17,7 @@ use think\facade\Cache;
 /**
  * 钩子列表
  * Class Addons
+ *
  * @package app\Manage\controller
  * User: wjima
  * Email:1457529125@qq.com
@@ -26,36 +27,42 @@ class Hooks extends Manage
 {
     /**
      * 插件列表
+     *
      * @return mixed
      */
     public function index()
     {
         if (Request::isAjax()) {
-            $hooksModel           = new hooksModel();
+            $hooksModel = new hooksModel();
             return $hooksModel->tableData(input('param.'));
         }
         return $this->fetch('index');
     }
 
-    
+
     /**
      * 钩子添加
+     *
      * @return array|mixed
      */
     public function add()
     {
         $this->view->engine->layout(false);
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $hooksModel = new hooksModel();
             return $hooksModel->addData(input('param.'));
         }
-        return $this->fetch();
+        return [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => $this->fetch()
+        ];
     }
 
 
     /**
      * 钩子修改
+     *
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -65,34 +72,38 @@ class Hooks extends Manage
     {
         $this->view->engine->layout(false);
         $hooksModel = new hooksModel();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $hooksModel->saveData(input('param.'));
         }
-        $data = $hooksModel->where('id',input('param.id/d'))->find();
+        $data = $hooksModel->where('id', input('param.id/d'))->find();
         if (!$data) {
             return error_code(10002);
         }
-        return $this->fetch('edit',['data' => $data]);
+        return [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => $this->fetch('edit', ['data' => $data])
+        ];
     }
 
 
     /**
      * 钩子软删除
      * User:mark
+     *
      * @return array
      */
     public function del()
     {
-        $result = [
+        $result     = [
             'status' => false,
-            'msg' => '删除失败',
-            'data' => []
+            'msg'    => '删除失败',
+            'data'   => []
         ];
         $hooksModel = new hooksModel();
         if ($hooksModel::destroy(input('param.id/d'))) {
             $result['status'] = true;
-            $result['msg'] = '删除成功';
+            $result['msg']    = '删除成功';
         }
         return $result;
     }

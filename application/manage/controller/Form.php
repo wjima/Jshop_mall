@@ -62,6 +62,7 @@ class Form extends Manage
             $data['sort']         = input('sort/d', '100');
             $data['return_msg']   = input('return_msg/s', '保存成功');
             $data['end_date']     = input('end_date', '0');
+            $data['times']        = input('times', '0');
             if ($data['end_date'] != '0') {
                 $data['end_date'] = strtotime($data['end_date']);
             }
@@ -129,6 +130,7 @@ class Form extends Manage
             $data['sort']         = input('sort/d', '100');
             $data['return_msg']   = input('return_msg/s', '保存成功');
             $data['end_date']     = input('end_date', '0');
+            $data['times']        = input('times', '0');
             if ($data['end_date'] != '0') {
                 $data['end_date'] = strtotime($data['end_date']);
             }

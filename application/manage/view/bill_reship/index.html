@@ -160,44 +160,33 @@
         });
         //确认收货操作
         $(document).on('click', '.option-audit', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('billReship/confirmReship')}",
-                data: 'reship_id=' + $(this).attr('data-id'),
-                success: function (e) {
-                    if (e.status) {
-                        layer.msg('确认收货成功', { time: 1500 }, function () {
-                            layui.table.reload('billReship');
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
+            JsGet("{:url('billReship/confirmReship')}?reship_id=" + $(this).attr('data-id'), function(e){
+                if (e.status) {
+                    layer.msg('确认收货成功', { time: 1500 }, function () {
+                        layui.table.reload('billReship');
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
         });
         //查看操作
         $(document).on('click', '.option-view', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('billReship/view')}",
-                data: 'reship_id=' + $(this).attr('data-id'),
-                success: function (e) {
-                    if (e.status) {
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,
-                            area: ['600px', '400px'],
-                            title: '退货单查看'
-                        });
-                    } else {
-                        layer.msg(e.msg);
-                    }
+            JsGet("{:url('billReship/view')}?reship_id=" + $(this).attr('data-id'), function(e){
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['600px', '400px'],
+                        title: '退货单查看'
+                    });
+                } else {
+                    layer.msg(e.msg);
                 }
             });
         });
         //退货单导出
         layui.form.on('submit(export-reship)', function (data) {
-
             layer.open({
                 type: 1,
                 title: '退货单导出',

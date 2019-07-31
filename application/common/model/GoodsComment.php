@@ -303,7 +303,7 @@ class GoodsComment extends Common
         Db::startTrans();
         try{
             //插入商品评价
-            $goods_data = [];
+            $goods_data = $gid = [];
             foreach($items as $k => $v)
             {
                 //判断此条记录是否是此订单下面的
@@ -335,8 +335,12 @@ class GoodsComment extends Common
                     'content' => htmlentities($v['textarea']),
                     'addon' => $item_info['addon']
                 ];
+                $gid[] = $item_info['goods_id'];
             }
             $this->saveAll($goods_data);
+            //商品表更新评论数量
+            $goodsModel = new Goods();
+            $goodsModel->where([['id', 'in', $gid]])->setInc('comments_count');
             //修改评价状态
             $order_data['is_comment'] = 2;
             $orderModel->save($order_data, ['order_id' => $order_id]);

@@ -180,6 +180,9 @@ export default {
 </script>
 
 <style>
+    .user{
+        padding-bottom: 1rem;
+    }
     .user .yd-btn-block{
         height: .8rem;
     }

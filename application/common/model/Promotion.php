@@ -341,12 +341,11 @@ class Promotion extends Common
         if (!$goods_id) {
             return $result;
         }
-        $where       = [];
-        if(!isInGroup($goods_id,$group_id))
-        {
+        $where = [];
+        if (!isInGroup($goods_id, $group_id)) {
             return $result;
         }
-        $where['id']     = $group_id;
+        $where['id'] = $group_id;
 
         $where['status'] = self::STATUS_OPEN;
         $promotion       = $this->where($where)->find();
@@ -354,10 +353,13 @@ class Promotion extends Common
             $result['msg'] = '无此活动';
             return $result;
         }
+
         $goodsModel = new Goods();
         $goods      = $goodsModel->getGoodsDetial($goods_id, '*', $token);
-        if (!$goods['status']) {
-            return $goods;
+
+        if (!$goods['data']) {
+            $result['msg'] = '商品不存在';
+            return $result;
         }
         $extendParams                = json_decode($promotion['params'], true);
         $goods['data']['group_id']   = $promotion['id'];
@@ -366,7 +368,7 @@ class Promotion extends Common
         $goods['data']['time']       = time();
         $goods['data']['stime']      = $promotion['stime'];
         $goods['data']['etime']      = $promotion['etime'];
-        $goods['data']['lasttime']   = secondConversionArray($promotion['etime']-time());
+        $goods['data']['lasttime']   = secondConversionArray($promotion['etime'] - time());
         return $goods;
     }
 

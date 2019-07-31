@@ -188,6 +188,7 @@ class FormSubmit extends common{
                 $where[] = ['form_id', '=', $formSubmitInfo['form_id']];
                 $where[] = ['form_item_id', '=', $val['id']];
                 $detail  = $submitDetail->where($where)->find();
+
                 if ($detail) {
                     if ($val['type'] == 'area') {
                         $formInfo['data']['items'][$key]['svalue'] = get_area($detail['form_item_value']);

@@ -1,7 +1,6 @@
 <form class="layui-form  seller-alone-form" id="userEdit" style="padding: 20px;">
     <div class="layui-form-item">
         <input type="hidden" name="id" value="{$info.id}">
-
         <div class="layui-inline">
             <label class="layui-form-label">手机号：</label>
 
@@ -95,10 +94,9 @@
 <script>
     layui.use(['form', 'laydate'], function () {
         var form = layui.form, laydate = layui.laydate;
-        form.render();
-
         laydate.render({
             elem: '#birthday'
         });
+        form.render();
     });
 </script>

@@ -6,46 +6,79 @@ use app\common\model\Operation as OperationModel;
 
 use Request;
 
-
+/**
+ * Class Operation
+ * @package app\Manage\controller
+ */
 class Operation extends Manage
 {
+    /**
+     * 列表
+     * @return mixed
+     */
     public function index()
     {
-        if(Request::isAjax()){
+        if(Request::isAjax())
+        {
             $operationModel = new OperationModel();
             $data = input('param.');
-            if(isset($data['parent_id']) && $data['parent_id'] != ""){
+            if(isset($data['parent_id']) && $data['parent_id'] != "")
+            {
                 //此处不需要做任何操作
-            }else{
+            }
+            else
+            {
                 $data['parent_id'] = $operationModel::MENU_MANAGE;
             }
             return $operationModel->tableData($data);
-        }else{
-            return $this->fetch('index');
         }
+        return $this->fetch('index');
     }
 
+
+    /**
+     * 删除
+     * @return array|mixed
+     */
     public function del()
     {
-        if(!input('?param.id')){
+        if(!input('?param.id'))
+        {
             return error_code(10000);
         }
         $operationModel = new OperationModel();
         return $operationModel->toDel(input('param.id'));
-
     }
-    //x新增和编辑
+
+
+    /**
+     * 新增和编辑
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function add()
     {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
         $this->view->engine->layout(false);
         $operationModel = new OperationModel();
-        if(Request::isPost()){
+        if(Request::isPost())
+        {
             return $operationModel->toAdd(input('param.'));
-        }else{
+        }
+        else
+        {
             //如果是编辑，取数据
-            if(input("?param.id")){
+            if(input("?param.id"))
+            {
                 $info = $operationModel->where(['id'=>input('param.id')])->find();
-                if(!$info){
+                if(!$info)
+                {
                     return error_code(10000);
                 }
                 $this->assign('info',$info);
@@ -61,10 +94,10 @@ class Operation extends Manage
             $menuTree = $operationModel->createTree($menuList,$operationModel::MENU_START,'parent_menu_id');
             $this->assign('menuTree',$menuTree);
 
-            return $this->fetch('add');
+            $return['status'] = true;
+            $return['msg'] = '成功';
+            $return['data'] = $this->fetch('add');
+            return $return;
         }
     }
-
-
-
 }

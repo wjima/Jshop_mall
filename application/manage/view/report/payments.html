@@ -97,7 +97,6 @@
                 section:$('#section').val()
             };
             JsPost("", data, function(res){
-                console.log(res);
                 if(res.status){
                     //刷新折线图
                     var myChart = echarts.init(document.getElementById('main'));

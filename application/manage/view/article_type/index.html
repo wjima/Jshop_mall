@@ -1,32 +1,32 @@
 <div class="layui-form seller-form">
 
-	<div class="layui-form-item">
-		<div class="layui-inline">
-			<div class="layui-input-inline">
-				<button class="layui-btn layui-btn-sm add-article-type"><i class="layui-icon">&#xe608;</i> 添加</button>
-			</div>
-		</div>
-	</div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <button class="layui-btn layui-btn-sm add-article-type"><i class="layui-icon">&#xe608;</i> 添加</button>
+            </div>
+        </div>
+    </div>
 
 </div>
 
 <div class="table-body">
-	<table id="articleTypeTable" lay-filter="articleTypeTable"></table>
+    <table id="articleTypeTable" lay-filter="articleTypeTable"></table>
 </div>
 
 <script>
-	layui.config({
-		base: '__STATIC_LIB__layuiadmin/layui/'
-	}).extend({
-		treetable: 'treetable-lay/treetable'
-	}).use(['layer', 'table', 'treetable', 'form', 'jquery'], function() {
-		var $ = layui.jquery,
-				layer = layui.layer,
-				table = layui.table,
-				form = layui.form,
-				treeTable = layui.treetable;
+    layui.config({
+        base: '__STATIC_LIB__layuiadmin/layui/'
+    }).extend({
+        treetable: 'treetable-lay/treetable'
+    }).use(['layer', 'table', 'treetable', 'form', 'jquery'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            table = layui.table,
+            form = layui.form,
+            treeTable = layui.treetable;
         //执行渲染
-		// treeTable.render({
+        // treeTable.render({
         //     elem: '#articleTypeTable', //指定原始表格元素选择器（推荐id选择器）
         //     height: 'full-220',
         //     cellMinWidth: '80',
@@ -40,132 +40,138 @@
         //     //,…… //更多参数参考右侧目录：基本参数选项
         // });
 
-		/**
-		 *
-		 * 树形表格	treetable
-		 *
-		 * treeColIndex	int	是				树形图标显示在第几列
-		 * treeSpid	object	是				最上级的父级id
-		 * treeIdName	string	否			id字段的名称
-		 * treePidName	string	否			pid字段的名称
-		 * treeDefaultClose	boolean	否		是否默认折叠
-		 * treeLinkage	boolean	否			父级展开时是否自动展开所有子级
-		 *
-		 */
+        /**
+         *
+         * 树形表格    treetable
+         *
+         * treeColIndex    int    是                树形图标显示在第几列
+         * treeSpid    object    是                最上级的父级id
+         * treeIdName    string    否            id字段的名称
+         * treePidName    string    否            pid字段的名称
+         * treeDefaultClose    boolean    否        是否默认折叠
+         * treeLinkage    boolean    否            父级展开时是否自动展开所有子级
+         *
+         */
 
-		var renderTable = function() {
-			treeTable.render({
-				treeColIndex: 1,
-				treeSpid: 0,
-				treeIdName: 'id',
-				treePidName: 'pid',
-				treeDefaultClose: false,
-				treeLinkage: false,
-				elem: '#articleTypeTable',
-				url: "{:url('ArticleType/index')}",
-				// toolbar:'#deploy',
-				page: true,
-				cols: [
-					[{
-						type: 'numbers'
-					}, {
-						field: 'type_name',
-						minWidth: 200,
-						title: '分类名称',
-						width: 400
-					}, {
-						align: 'center',
-						title: '操作',
-						toolbar: '#articleTypeBar'
-					}]
-				],
-				done: function() {
-					layer.closeAll('loading');
-				}
-			});
-		};
+        var renderTable = function () {
+            treeTable.render({
+                treeColIndex: 1,
+                treeSpid: 0,
+                treeIdName: 'id',
+                treePidName: 'pid',
+                treeDefaultClose: false,
+                treeLinkage: false,
+                elem: '#articleTypeTable',
+                url: "{:url('ArticleType/index')}",
+                // toolbar:'#deploy',
+                page: true,
+                cols: [
+                    [{
+                        type: 'numbers'
+                    }, {
+                        field: 'type_name',
+                        minWidth: 200,
+                        title: '分类名称',
+                        width: 400
+                    }, {
+                        align: 'center',
+                        title: '操作',
+                        toolbar: '#articleTypeBar'
+                    }]
+                ],
+                done: function () {
+                    layer.closeAll('loading');
+                }
+            });
+        };
 
-		renderTable();
+        renderTable();
 
-        $(document).on('click','.add-article-type',function(){
-            JsGet("{:url('ArticleType/add')}", function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e,
-                    area: ['400px', '300px'],
-                    title:'添加文章分类'
-                });
-			})
+        $(document).on('click', '.add-article-type', function () {
+            JsGet("{:url('ArticleType/add')}", function (e) {
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['400px', '300px'],
+                        title: '添加文章分类'
+                    });
+                }
+            })
         });
 
         //ajax提交 添加
-        form.on('submit(submit_article_type)', function(data){
-            JsPost("{:url('ArticleType/add')}", data.field, function(res){
-                if(res.status){
+        form.on('submit(submit_article_type)', function (data) {
+            JsPost("{:url('ArticleType/add')}", data.field, function (res) {
+                if (res.status) {
                     layer.close(window.box);
-                    layer.msg(res.msg, {time:1300},function(){
-						renderTable();
+                    layer.msg(res.msg, {time: 1300}, function () {
+                        renderTable();
                     });
-                }else{
+                } else {
                     layer.msg(res.msg);
                 }
-			})
+            })
         });
 
         //修改   edit
-        form.on('submit(edit_article_type)',function(data){
-            JsPost("{:url('ArticleType/edit')}", data.field, function(res){
-                if(res.status){
+        form.on('submit(edit_article_type)', function (data) {
+            JsPost("{:url('ArticleType/edit')}", data.field, function (res) {
+                if (res.status) {
                     layer.close(window.box);
-                    layer.msg(res.msg, {time: 1300},function(){
-						renderTable();
+                    layer.msg(res.msg, {time: 1300}, function () {
+                        renderTable();
                     });
-                }else{
+                } else {
                     layer.msg(res.msg);
                 }
-			})
+            })
         });
 
         //监听工具条
-        table.on('tool(articleTypeTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(articleTypeTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 
-            if(layEvent === 'del'){ //删除
-                layer.confirm('真的要删除么',{icon: 3}, function(index){
-                    JsGet("{:url('ArticleType/del')}?id=" + data.id, function(res){
-                        if(res.status){
+            if (layEvent === 'del') { //删除
+                layer.confirm('真的要删除么', {icon: 3}, function (index) {
+                    JsGet("{:url('ArticleType/del')}?id=" + data.id, function (res) {
+                        if (res.status) {
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
-							renderTable();
+                            renderTable();
                         }
                         layer.msg(res.msg);
-					})
+                    })
                 });
-            } else if(layEvent === 'edit'){ //编辑
-                JsGet("{:url('ArticleType/edit')}?id=" + data.id, function(e){
-                    window.box = layer.open({
-                        type:1,
-                        content:e,
-                        area:['400px','300px'],
-                        title:'修改文章分类'
-                    })
-				})
-            }else if(layEvent === 'add_type'){   //添加子分类
-                JsGet("{:url('ArticleType/addSon')}?id=" + data.id, function(e){
-                    window.box = layer.open({
-                        type:1,
-                        content:e,
-                        area:['400px','300px'],
-                        title:'添加子分类'
-                    })
-				})
+            } else if (layEvent === 'edit') { //编辑
+                JsGet("{:url('ArticleType/edit')}?id=" + data.id, function (e) {
+                    if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['400px', '300px'],
+                            title: '修改文章分类'
+                        })
+                    }
+                })
+            } else if (layEvent === 'add_type') {   //添加子分类
+                JsGet("{:url('ArticleType/addSon')}?id=" + data.id, function (e) {
+                    if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['400px', '300px'],
+                            title: '添加子分类'
+                        })
+                    }
+                })
             }
         });
     })
 </script>
 
-<script type="text/html" id="articleTypeBar">
+<script id="articleTypeBar" type="text/html">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add_type">添加子分类</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>

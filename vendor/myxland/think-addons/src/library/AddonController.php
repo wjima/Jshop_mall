@@ -3,8 +3,10 @@
 namespace myxland\addons\library;
 
 use think\Container;
+use think\facade\Request;
 use think\Loader;
 use think\Controller;
+use think\response\Json;
 
 /**
  * 插件基类控制器
@@ -35,6 +37,8 @@ class AddonController extends Controller
         'tpl_end'      => '}',
         'taglib_begin' => '{',
         'taglib_end'   => '}',
+        'taglib_pre_load' => 'app\\common\\taglib\\Jshop',
+
     ];
 
     /**
@@ -65,6 +69,29 @@ class AddonController extends Controller
         $this->controller = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $this->addon      = $convert ? strtolower(array_pop($param)) : array_pop($param);
         $addonName        = Loader::parseName($this->addon, 1);
+		
+        if (!get_addons_status($addonName)) {
+            if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+                header("Access-Control-Allow-Origin: *");
+                header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+                header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
+                exit;
+            }
+            if(Request::isPost()||Request::isAjax()){
+                header("Access-Control-Allow-Origin: *");
+                header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+                header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
+                $error = [
+                    'status' => false,
+                    'msg'    => '该插件未安装或未启用，请安装后使用',
+                    'data'   => []
+                ];
+                echo json_encode($error, 320);exit;
+            }else{
+                $this->error('该插件未安装或未启用，请安装后使用');
+            }
+        }
+		
         // 生成view_path
         $view_path = $this->config['view_path'] ? 'view' : 'view';
 

@@ -132,7 +132,6 @@
     function setName(lat,lng) {
         geocoder = new qq.maps.Geocoder({
             complete:function(result){
-                console.log(result.detail.address);
                 parent.$("#address").val(result.detail.address);
             }
         });

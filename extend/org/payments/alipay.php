@@ -24,7 +24,7 @@ class alipay implements Payment
         if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
             $params = json_decode($paymentInfo['params'],true);
         }else{
-            $params['trade_type'] = "WAP";
+            $params = [];
         }
         if(!isset($params['trade_type'])){
             $params['trade_type'] = "WAP";
@@ -66,11 +66,8 @@ class alipay implements Payment
 
         if($params['trade_type'] == "PC" || $params['trade_type'] == "WAP"){
             $return_url = "";
-            if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
-                $params = json_decode($paymentInfo['params'],true);
-                if(isset($params['return_url'])){
-                    $return_url = $params['return_url'];
-                }
+            if(isset($params['return_url'])){
+                $return_url = $params['return_url']."?id=".$paymentInfo['payment_id'];
             }
             $data["return_url"] = $return_url;
         }

@@ -21,7 +21,7 @@ class Products extends Validate
         'price'      => 'float',
         'is_defalut' => 'in:1,2',
         'marketable' => 'in:1,2',
-        'stock'      => 'number|max:8|egt:0',
+        'stock'      => 'regex:/^-?[0-9]\d*$/',
         'sn'         => 'unique:products',
     ];
 
@@ -37,10 +37,8 @@ class Products extends Validate
         'price'            => '请输入正确的销售价',
         'is_defalut.in'    => '是否默认商品超出范围',
         'marketable.in'    => '上下架状态超出范围',
-        'stock.number'     => '库存非法',
-        'stock.max'        => '库存最多只能输入8位数字',
+        'stock.regex'     => '库存非法',
         'sn.unique'        => '货品编号不能重复',
-        'stock.egt'        => '库存不能小于0',
     ];
 
 }

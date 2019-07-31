@@ -177,48 +177,65 @@ class BillLading extends Common
     public function getInfo($key, $user_id = false)
     {
         $return = [
-            'status' => false,
-            'msg' => '获取失败',
+            'status' => true,
+            'msg' => '获取成功',
             'data' => []
         ];
         $where[] = ['id|order_id|mobile', 'eq', $key];
-        $return['data'] = $this->with('orderInfo,storeInfo')
+
+        // 获取订单详情 可能包含多个提货单
+        $data = $this->with('orderInfo,storeInfo')
             ->where($where)
-            ->find();
-        if($user_id)
-        {
-            $clerkModel = new Clerk();
-            $store_ids = $clerkModel->getClerkStoreIds($user_id);
-            if(!in_array($return['data']['store_id'], $store_ids))
-            {
-                $return['data'] = [];
-                $return['msg'] = '你无权查看该提货单';
-                return $return;
-            }
-        }
+            ->select();
 
-        if($return['data'] !== false)
-        {
-            $return['data']['status_name'] = config('params.bill_lading.status')[$return['data']['status']];
-            $return['data']['ptime'] = $return['data']['ptime']?getTime($return['data']['ptime']):'';
-            if($return['data']['clerk_id'])
+        if (!$data->isEmpty()) {
+
+            $data = $data->toArray();
+            // 判断店员是否有权限查看该提货单信息
+            if($user_id)
             {
-                $userModel = new User();
-                $userInfo = $userModel->get($return['data']['clerk_id']);
-                $return['data']['clerk'] = $userInfo['nickname']?$userInfo['nickname'].'('.$userInfo['mobile'].')':format_mobile($userInfo['mobile']).'('.$userInfo['mobile'].')';
-            }
-            else
-            {
-                $return['data']['clerk'] = '后台管理员';
+                $clerkModel = new Clerk();
+                $store_ids = $clerkModel->getClerkStoreIds($user_id);
+                foreach ($data as $k => $v) {
+                    if (!in_array($v['store_id'], $store_ids)) {
+                        unset($data[$k]);
+                    }
+                }
+
+                $data = array_values($data);
             }
 
-            //获取订单商品详情
-            $orderItemsModel = new OrderItems();
-            $wheres[] = ['order_id', 'eq', $return['data']['order_id']];
-            $return['data']['goods'] = $orderItemsModel->where($wheres)->select();
 
-            $return['status'] = true;
-            $return['msg'] = '获取成功';
+            foreach ($data as &$v)
+            {
+                $v['status_name'] = config('params.bill_lading.status')[$v['status']];
+                $v['ptime'] = $v['ptime'] ? getTime($v['ptime']) : '';
+                if($v['clerk_id'])
+                {
+                    $userModel = new User();
+                    $userInfo = $userModel->get($v['clerk_id']);
+                    $v['clerk'] = $userInfo['nickname']
+                        ? $userInfo['nickname'].'('.$userInfo['mobile'].')'
+                        : format_mobile($userInfo['mobile']).'('.$userInfo['mobile'].')';
+                }
+                else
+                {
+                    $v['clerk'] = '(后台管理员)';
+                }
+
+                //获取订单商品详情
+                $orderItemsModel = new OrderItems();
+                $wheres = [];
+                $wheres[] = ['order_id', 'eq', $v['order_id']];
+                $v['goods'] = $orderItemsModel->where($wheres)->select();
+
+            }
+
+            $return['data'] = $data;
+
+        } else {
+            $return['msg'] = '提货单不存在';
+            $return['status'] = false;
         }
 
         return $return;
@@ -368,11 +385,11 @@ class BillLading extends Common
 
     /**
      * 提货操作
-     * @param $id
+     * @param $ids
      * @param $user_id
      * @return array
      */
-    public function ladingOperating($id, $user_id)
+    public function ladingOperating($ids, $user_id)
     {
         $return = [
             'status' => false,
@@ -380,17 +397,30 @@ class BillLading extends Common
             'data' => ''
         ];
 
-        $data['clerk_id'] = $user_id;
-        $data['ptime'] = time();
-        $data['status'] = self::STATUS_YES;
-        $where[] = ['id', 'eq', $id];
-        $return['data'] = $this->save($data, $where);
+        $where[] = ['id', 'in', $ids];
 
-        if($return['data'] !== false)
+        $lists = $this->where($where)->select();
+
+        $data = [];
+        foreach ($lists as $key => $val)
         {
-            $return['status'] = true;
-            $return['msg'] = '操作成功';
+            $data[$key]['id'] = $val['id'];
+            $data[$key]['clerk_id'] = $user_id;
+            $data[$key]['ptime'] = time();
+            $data[$key]['status'] = self::STATUS_YES;
         }
+
+        if (count($data) > 0) {
+            $res = $this->saveAll($data);
+            if($res !== false)
+            {
+                $return['status'] = true;
+                $return['msg'] = '操作成功';
+            }
+        } else {
+            $return['msg'] = '没有可提货的订单';
+        }
+
         return $return;
     }
 

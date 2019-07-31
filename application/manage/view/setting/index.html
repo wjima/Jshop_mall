@@ -28,6 +28,8 @@
     <div class="layui-tab" lay-filter="setting">
         <ul class="layui-tab-title">
             <li lay-id="platform" class="layui-this">平台设置</li>
+            <li lay-id="share">分享设置</li>
+            <li lay-id="users">会员设置</li>
             <li lay-id="goods">商品设置</li>
             <li lay-id="order">订单管理</li>
             <li lay-id="points">积分设置</li>
@@ -47,22 +49,25 @@
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['shop_desc']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-5">
+                        <div class="layui-input-inline seller-inline-5" style="margin-bottom: 10px">
                             <textarea name="shop_desc" class="layui-textarea">{$data['shop_desc']['value']}</textarea>
                         </div>
                     </div>
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['shop_beian']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5">
-                            <textarea name="shop_beian" class="layui-textarea">{$data['shop_beian']['value']}</textarea>
+                            <input type="text" name="shop_beian" value="{$data['shop_beian']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入ICP备案号" class="layui-input">
                         </div>
+                        <div class="layui-form-mid layui-word-aux">如：京ICP备19000000号-1</div>
                     </div>
-                    <div class="layui-form-item" style="margin-top: 20px;">
-                        <label class="layui-form-label">{$data['shop_mobile']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-5">
-                            <input type="text" name="shop_mobile" value="{$data['shop_mobile']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入接收通知手机号" class="layui-input">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['about_article_id']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5" style="margin-bottom: 10px">
+                            <input type="text" id="about_article" name="about_article" readonly="readonly" value="{$data['about_article']['value']}" required placeholder="请选择广告文章" autocomplete="off" class="layui-input" onclick="article_list()">
+                            <input type="hidden" id="article_id" name="about_article_id" value="{$data['about_article_id']['value']}">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">前台下单时发送短信通知</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -148,6 +153,68 @@
                                 2、此功能只在 "分类样式" 为 "二级小图" 的时候生效,小程序请忽略<br/>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="layui-tab-item">
+                <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['share_title']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="share_title" value="{$data['share_title']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入分享的标题" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">微信小程序首页分享的标题</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['share_desc']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-7">
+                            <input type="text" name="share_desc" value="{$data['share_desc']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入分享的描述" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">只在支付宝小程序分享中显示</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['share_image']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            {Jshop:image id='share_image' value="$data['share_image']['value']" name="share_image"/}
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">微信小程序首页分享的图片</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="layui-tab-item">
+                <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['is_bind_mobile']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-4">
+                            <input type="radio" lay-filter="is_bind_mobile" name="is_bind_mobile" value="1" title="绑定" {eq name="$data['is_bind_mobile']['value']" value="1" }checked{/eq}>
+                            <input type="radio" lay-filter="is_bind_mobile" name="is_bind_mobile" value="2" title="不绑定" {eq name="$data['is_bind_mobile']['value']" value="2" }checked{/eq}>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">第三方登录的时候是否需要绑定手机号码，强烈建议绑定手机号码。</div>
+                    </div>
+                    <div class="layui-form-item" style="margin-top: 20px;">
+                        <label class="layui-form-label">{$data['shop_mobile']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="shop_mobile" value="{$data['shop_mobile']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入接收通知手机号" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">前台下单时给商家发送短信通知</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -366,6 +433,13 @@
                         </div>
                         <div class="layui-form-mid layui-word-aux">提现费率，默认0% 没有费率</div>
                     </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['tocash_money_limit']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-2">
+                            <input type="text" name="tocash_money_limit" value="{$data['tocash_money_limit']['value']}" lay-verify="title" autocomplete="off" placeholder="%" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">每日提现上限，默认0不限制</div>
+                    </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
@@ -378,6 +452,14 @@
 
             <div class="layui-tab-item">
                 <form class="layui-form seller-alone-form" action="" method="post">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>客服</legend></fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['ent_id']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5">
+                            <input type="text" name="ent_id" value="{$data['ent_id']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">客服ID，在 <a href="https://www.jihainet.com/" target="_blank">www.jihainet.com</a> 中找客服开通</div>
+                    </div>
 
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>腾讯地图</legend></fieldset>
                     <div class="layui-form-item">
@@ -475,8 +557,8 @@
 </div>
 
 <script>
-    layui.use(['form', 'element'], function() {
-        var form = layui.form, element = layui.element;
+    layui.use(['form', 'element', 'table'], function() {
+        var form = layui.form, element = layui.element, table = layui.table;
 
         //显示当前tab
         if (location.hash) {
@@ -534,5 +616,28 @@
             $("."+data.value).show(10);
         });
 
+        //监听文章列表页工具条
+        table.on('tool(articleTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if(layEvent === 'selectArticle'){ //选择
+                $("#about_article").val(data.title);
+                $("#article_id").val(data.id);
+                layer.close(window.box);
+            }
+        });
     });
+
+    function article_list()
+    {
+        JsGet("{:url('Carousel/getArticle')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'文章列表'
+            });
+        });
+    }
 </script>

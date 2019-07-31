@@ -24,6 +24,9 @@ class UserShip extends Common
      */
     public function saveShip($data)
     {
+        $character = ["\r\n", "\n", "\r"];
+        $data['address'] = str_replace($character, '', $data['address']);
+
         $where[] = ['user_id', 'eq', $data['user_id']];
         $where[] = ['area_id', 'eq', $data['area_id']];
         $where[] = ['address', 'eq', $data['address']];
@@ -93,6 +96,9 @@ class UserShip extends Common
         {
             return $checkStatus;
         }
+
+        $character = ["\r\n", "\n", "\r"];
+        $data['address'] = str_replace($character, '', $data['address']);
 
         $where = [];
         $where[] = ['user_id', 'eq', $data['user_id']];
@@ -232,6 +238,13 @@ class UserShip extends Common
                     $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
                 }
             }
+
+            if($data['address'])
+            {
+                $character = ["\r\n", "\n", "\r"];
+                $data['address'] = str_replace($character, '', $data['address']);
+            }
+
             if($this->allowField(true)->save($data,['id'=>$data['id'],'user_id'=>$user_id]))
             {
                 $result['status'] = true;

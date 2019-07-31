@@ -20,8 +20,6 @@ use app\common\model\Template;
 use app\common\model\Setting;
 
 
-
-
 class Wechat extends Manage
 {
 
@@ -31,30 +29,36 @@ class Wechat extends Manage
 
     /**
      * 自助绑定小程序
+     * @return mixed
      */
     public function edit()
     {
         $host = \request()->host();
-        $this->assign('weixin_host',$host);
+        $host = (\request()->isSsl() ? 'https://' : 'http://') . $host; //增加洗衣判断
+        $this->assign('weixin_host', $host);
         $settingModel = new Setting();
-        $data = $settingModel->getAll();
+        $data         = $settingModel->getAll();
         $this->assign('data', $data);
         $wechat = config('thirdwx.');
         $this->assign('wechat', $wechat);
         return $this->fetch('edit');
     }
 
+
+    /**
+     * @return array|mixed
+     */
     public function doEdit()
     {
-        $result            = [
+        $result       = [
             'status' => false,
             'data'   => '',
             'msg'    => '保存失败',
         ];
         $settingModel = new Setting();
 
-        if(Request::isAjax()){
-            foreach(input('param.') as $k => $v) {
+        if (Request::isAjax()) {
+            foreach (input('param.') as $k => $v) {
                 $result = $settingModel->setValue($k, $v);
                 //如果出错，就返回，如果是没有此参数，就默认跳过
                 if (!$result['status'] && $result['data'] != 10008) {
@@ -70,23 +74,26 @@ class Wechat extends Manage
 
 
     /**
-     *展示授权信息
+     * 展示授权信息
+     * @return mixed
      */
     public function info()
     {
         $settingModel = new Setting();
-        $data = $settingModel->getAll();
+        $data         = $settingModel->getAll();
         $this->assign('data', $data);
         $wechat = config('thirdwx.');
         $this->assign('wechat', $wechat);
 
         $host = \request()->host();
-        $this->assign('weixin_host',$host);
+        $this->assign('weixin_host', $host);
         return $this->fetch('edit');
     }
 
+
     /**
      * 获取模板信息
+     * @return mixed
      */
     public function template()
     {
@@ -96,68 +103,84 @@ class Wechat extends Manage
         return $this->fetch('template');
     }
 
+
     /**
      * 公众号配置
      * @return mixed
      */
-    public function official(){
+    public function official()
+    {
         $host = \request()->host();
-        $this->assign('weixin_host',$host);
+        $host = (\request()->isSsl() ? 'https://' : 'http://') . $host; //增加洗衣判断
+        $this->assign('weixin_host', $host);
         $settingModel = new Setting();
-        $data = $settingModel->getAll();
+        $data         = $settingModel->getAll();
         $this->assign('data', $data);
         return $this->fetch('official');
     }
 
-    public function officialMenu(){
 
-        $weixinMenu  = new WeixinMenu();
-        $menu = $weixinMenu->getMenu();
-        $this->assign('weixin_menu',$menu);
+    /**
+     * @return mixed
+     */
+    public function officialMenu()
+    {
+        $weixinMenu = new WeixinMenu();
+        $menu       = $weixinMenu->getMenu();
+        $this->assign('weixin_menu', $menu);
         return $this->fetch('official_menu');
     }
 
+
     /**
      * 编辑菜单项
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function editMenu(){
-        $result            = [
+    public function editMenu()
+    {
+        $result = [
             'status' => false,
             'data'   => '',
             'msg'    => '参数错误',
         ];
         $this->view->engine->layout(false);
-        $id = input('id/d');
+        $id  = input('id/d');
         $pid = input('pid/d');
-        if(!$id)
-        {
+        if (!$id) {
             return $result;
         }
-        $weixinMenu  = new WeixinMenu();
-        $menu = $weixinMenu->where(['menu_id'=>$id,'pid'=>$pid])->find();
-        if($menu){
-            $menu['params'] = json_decode($menu['params'],true);
-            if($menu['params'] && $menu['type'] == 'miniprogram' && isset($menu['params']['appid'])){
+        $weixinMenu = new WeixinMenu();
+        $menu       = $weixinMenu->where(['menu_id' => $id, 'pid' => $pid])->find();
+        if ($menu) {
+            $menu['params'] = json_decode($menu['params'], true);
+            if ($menu['params'] && $menu['type'] == 'miniprogram' && isset($menu['params']['appid'])) {
                 $wx_appid = $menu['params']['appid'];
-            }else{
+            } else {
                 $wx_appid = getSetting('wx_appid');
             }
-        }else{
+        } else {
             $wx_appid = getSetting('wx_appid');
         }
         $site_url = \request()->domain();//站点地址
 
-        $this->assign('id',$id);
-        $this->assign('pid',$pid);//父级菜单ID
-        $this->assign('menu',$menu);
-        $this->assign('site_url',$site_url);
-        $this->assign('wx_appid',$wx_appid);
-        return $this->fetch('edit_menu');
-
+        $this->assign('id', $id);
+        $this->assign('pid', $pid);//父级菜单ID
+        $this->assign('menu', $menu);
+        $this->assign('site_url', $site_url);
+        $this->assign('wx_appid', $wx_appid);
+        $result['status'] = true;
+        $result['msg']    = '成功';
+        $result['data']   = $this->fetch('edit_menu');
+        return $result;
     }
+
 
     /**
      * 保存菜单
+     * @return array
      */
     public function doEditMenu()
     {
@@ -177,9 +200,15 @@ class Wechat extends Manage
         return $res;
     }
 
+
     /**
      * 删除菜单
      * @return array
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function deleteMenu()
     {
@@ -219,6 +248,7 @@ class Wechat extends Manage
         return $result;
     }
 
+
     /**
      * 创建微信菜单
      * @return array
@@ -236,10 +266,10 @@ class Wechat extends Manage
         $weixinMenu = new WeixinMenu();
         $menuData   = $weixinMenu->weixinMenu();
 
-        if(!$menuData['button']){
-            $result     = $menu->deleteMenu();//删除菜单
-        }else{
-            $result     = $menu->createMenu($menuData);
+        if (!$menuData['button']) {
+            $result = $menu->deleteMenu();//删除菜单
+        } else {
+            $result = $menu->createMenu($menuData);
         }
 
         try {
@@ -261,36 +291,50 @@ class Wechat extends Manage
 
     }
 
+
     /**
      * 微信消息管理
      * @return mixed
      */
-    public function message(){
+    public function message()
+    {
         if (Request::isAjax()) {
-            $messageModel        = new WeixinMessage();
-            $filter              = input('request.');
+            $messageModel = new WeixinMessage();
+            $filter       = input('request.');
             return $messageModel->tableData($filter);
         }
         return $this->fetch();
     }
 
+
     /**
      * 添加微信消息
      * @return array|mixed
      */
-    public function addMessage(){
+    public function addMessage()
+    {
+        $return = [
+            'status' => false,
+            'msg'    => '失败',
+            'data'   => ''
+        ];
         $this->view->engine->layout(false);
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $messageModel = new WeixinMessage();
             return $messageModel->addData(input('param.'));
         }
-        return $this->fetch('add_message');
+        $return['status'] = true;
+        $return['msg']    = '成功';
+        $return['data']   = $this->fetch('add_message');
+        return $return;
     }
+
 
     /**
      * 删除消息
      * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function delMessage()
     {
@@ -311,55 +355,71 @@ class Wechat extends Manage
         return $result;
     }
 
+
     /**
      * 编辑消息
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function editMessage(){
+    public function editMessage()
+    {
+        $return = [
+            'status' => false,
+            'msg'    => '失败',
+            'data'   => ''
+        ];
         $this->view->engine->layout(false);
         $messageModel = new WeixinMessage();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $messageModel->addData(input('param.'));
         }
-        $data = $messageModel->where('id',input('param.id/d'))->find();
+        $data = $messageModel->where('id', input('param.id/d'))->find();
         if (!$data) {
             return error_code(10002);
         }
-        $data['params'] = json_decode($data['params'],true);
-        return $this->fetch('edit_message',['data' => $data]);
+        $data['params']   = json_decode($data['params'], true);
+        $return['status'] = true;
+        $return['msg']    = '成功';
+        $return['data']   = $this->fetch('edit_message', ['data' => $data]);
+        return $return;
     }
+
 
     /**
      * 编辑图文消息
+     * @return mixed
      */
-    public function editMediaMessage(){
-        $id = input('id/d',0);
-        if(!$id){
+    public function editMediaMessage()
+    {
+        $id = input('id/d', 0);
+        if (!$id) {
             $this->error("关键参数丢失");
         }
-        $weixinMessage      = new WeixinMessage();
-        $message = $weixinMessage->getInfo($id);
-        $params = json_decode( $message['params'],true);
-        $mediaData = [];
+        $weixinMessage = new WeixinMessage();
+        $message       = $weixinMessage->getInfo($id);
+        $params        = json_decode($message['params'], true);
+        $mediaData     = [];
 
-        if(isset($params['media_id']) && $params['media_id']){
+        if (isset($params['media_id']) && $params['media_id']) {
             $weixinMedia = new WeixinMediaMessage();
-            $i = 1;
-            foreach($params['media_id'] as $key=>$val){
-                if($val){
+            $i           = 1;
+            foreach ($params['media_id'] as $key => $val) {
+                if ($val) {
                     $mediaData[$i] = $weixinMedia->getInfo($val);
                     $i++;
                 }
             }
         }
-        $this->assign('id',$id);
-        $this->assign('mediaData',json_encode($mediaData));
-        $this->assign('mediaList',$mediaData);
+        $this->assign('id', $id);
+        $this->assign('mediaData', json_encode($mediaData));
+        $this->assign('mediaList', $mediaData);
         return $this->fetch('edit_media_message');
     }
 
-    /***
+
+    /**
      * 保存图文消息
      * @return array
      */
@@ -384,13 +444,14 @@ class Wechat extends Manage
                     'image'   => $val['image'],
                     'content' => $val['content'],
                     'url'     => $val['url'],
+                    'ctime'   => time(),
+                    'utime'   => time(),
                 ];
             }
         }
         if (!$mediaData) {
             error_code(16002);
         }
-
 
         $weixinMedia = new WeixinMediaMessage();
         $res         = $weixinMedia->addData($mediaData);
@@ -402,6 +463,4 @@ class Wechat extends Manage
         }
         return $res;
     }
-
-
 }

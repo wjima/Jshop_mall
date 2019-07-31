@@ -3,8 +3,8 @@ let apiUrl = ''
 
 if (process.env.NODE_ENV === 'development') {
     // 开发环境
-    host = 'https://b2c.jihainet.com'
-    host = 'http://www.b2c.com'
+    // host = 'https://b2c.jihainet.com'
+    host = 'https://demo.jihainet.com'
     apiUrl = host + '/api.html'
 
     // apiUrl = 'http://wjima.ngrok.jihainet.com/api.html'

@@ -22,8 +22,7 @@ class CarouselSeat extends Manage
     public function index()
     {
         $position = new positionModel();
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             return $position->tableData(input('param.'));
         }
         return $this->fetch();
@@ -32,6 +31,7 @@ class CarouselSeat extends Manage
 
     /**
      *  添加广告位
+     *
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -41,16 +41,23 @@ class CarouselSeat extends Manage
     {
         $this->view->engine->layout(false);
         $position = new positionModel();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $position->addData(input('param.'));
         }
-        return $this->fetch('add',['list'=>config('carousel_seat.list')]);
+        return [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => $this->fetch('add', [
+                    'list' => config('carousel_seat.list')
+                ]
+            )
+        ];
     }
 
 
     /**
      *  广告位编辑
+     *
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -60,20 +67,24 @@ class CarouselSeat extends Manage
     {
         $this->view->engine->layout(false);
         $positionModel = new positionModel();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $positionModel->saveData(input('param.'));
         }
-        $info = $positionModel->where('id',input('param.id/d'))->find();
+        $info = $positionModel->where('id', input('param.id/d'))->find();
         if (!$info) {
             return error_code(10002);
         }
 
-        return $this->fetch('',['info'=>$info]);
+        return [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => $this->fetch('', ['info' => $info])
+        ];
     }
 
     /**
      *  广告位删除
+     *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException

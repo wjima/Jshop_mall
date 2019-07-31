@@ -116,15 +116,10 @@
             layer.confirm('确定要删除此消息吗？', {
                 btn: ['确定', '取消'] //按钮
             }, function () {
-                $.ajax({
-                    type: 'get',
-                    url: "{:url('Sms/del')}",
-                    data: 'id=' + id,
-                    success: function (e) {
-                        layer.msg(e.msg);
-                        if (e.status) {
-                            layui.table.reload('message');
-                        }
+                JsGet("{:url('Sms/del')}?id="+id, function(e){
+                    layer.msg(e.msg);
+                    if (e.status) {
+                        layui.table.reload('message');
                     }
                 });
             }, function () {

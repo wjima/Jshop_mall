@@ -81,8 +81,8 @@ class Form extends Api
         $token       = input('token', '');
         $data        = input('param.');
 
-        $formModel   = new FormModel();
-        $form        = $formModel->getFormInfo($id);
+        $formModel = new FormModel();
+        $form      = $formModel->getFormInfo($id);
         if (!$form['status']) {
             return $return_data;
         }
@@ -125,6 +125,14 @@ class Form extends Api
                 $user_id = $result['data']['user_id'];
             }
         }
+        //判断提交次数
+        if ($form['data']['times'] && $token) {
+            $count = $formSubmit->where([['user_id', '=', $user_id],['form_id','=',$id]])->count();
+            if ($count >= $form['data']['times']) {
+                $return_data['msg'] = '您已达到最大提交次数，请忽继续提交。';
+                return $return_data;
+            }
+        }
         $formData = [
             'form_id'    => $id,
             'form_name'  => $form['data']['name'],
@@ -134,6 +142,7 @@ class Form extends Api
             'status'     => $formSubmit::FORM_STATUS_UNTREATED,
             'ip'         => get_client_ip(0)
         ];
+
         Db::startTrans();
         if ($formSubmit->add($formData) === false) {
             $return_data['msg'] = '提交失败，请重试';
@@ -167,8 +176,10 @@ class Form extends Api
                     return $return_data;
                 }
                 //地区
-                if ($formitem['type'] == 'area') {
-
+                if ($formitem['type'] == 'area' && $value) {
+                    if (!is_array($value)) {
+                        $value = explode(' ', $value);
+                    }
                     $county_name   = $value[2];
                     $city_name     = $value[1];
                     $province_name = $value[0];
@@ -176,21 +187,22 @@ class Form extends Api
                     unset($value);
                     $area_id = $areaModel->getThreeAreaId($county_name, $city_name, $province_name, '0');
                     $value   = $area_id;
-                } elseif ($formitem['type'] == 'image') { //处理图片
+
+                } elseif ($formitem['type'] == 'image' && $value) { //处理图片
                     $value = implode(',', (array)$value);
-                } elseif ($formitem['type'] == 'checbox') { //处理复选
+                } elseif ($formitem['type'] == 'checbox' && $value) { //处理复选
                     $value = implode(',', (array)$value);
                 }
-                if($formitem['type'] == 'goods'){
-                    foreach($value as $k=>$v){
+                if ($formitem['type'] == 'goods' && $value) {
+                    foreach ($value as $k => $v) {
                         $productData = $productModel->getProductInfo($v['productId']);
-                        if(!$productData['status']){
+                        if (!$productData['status']) {
                             $return_data['msg'] = '货品不存在';
                             Db::rollback();
                             return $return_data;
                         }
-                        $product = $productData['data'];
-                        $form_item_name = ($product['spes_desc'])?$product['spes_desc'].':'.$product['sn']:$product['sn'];
+                        $product        = $productData['data'];
+                        $form_item_name = ($product['spes_desc']) ? $product['spes_desc'] . ':' . $product['sn'] : $product['sn'];
 
                         $item[] = [
                             'submit_id'       => $formSubmitId,
@@ -199,9 +211,9 @@ class Form extends Api
                             'form_item_name'  => $form_item_name,
                             'form_item_value' => $v['nums'],
                         ];
-                        $money += $product['price']*$v['nums'];
+                        $money += $product['price'] * $v['nums'];
                     }
-                }else{
+                } else {
                     $item[] = [
                         'submit_id'       => $formSubmitId,
                         'form_id'         => $id,
@@ -219,14 +231,14 @@ class Form extends Api
         }
         //支付类型
         if ($form['data']['type'] == $formModel::FORM_TYPE_ORDER) {//订单类型时，更新提交表单金额
-            $res=$formSubmit->save(['money'=>$money],['id'=>$formSubmitId]);
+            $res = $formSubmit->save(['money' => $money], ['id' => $formSubmitId]);
         }
         $return_data['data']['id']    = $formSubmitId;
         $return_data['data']['money'] = $money;
 
         Db::commit();
 
-        $return_data['msg']    =  $form['data']['return_msg']? $form['data']['return_msg']:$form['data']['button_name'] . '成功';
+        $return_data['msg']    = $form['data']['return_msg'] ? $form['data']['return_msg'] : $form['data']['button_name'] . '成功';
         $return_data['status'] = true;
         return $return_data;
     }
@@ -234,14 +246,16 @@ class Form extends Api
     /**
      * 获取用户提交表单
      */
-    public function getUserFormSubmit(){
+    public function getUserFormSubmit()
+    {
 
     }
 
     /**
      * 获取用户提交订单详情
      */
-    public function getUserFormSubmitDetial(){
+    public function getUserFormSubmitDetial()
+    {
 
     }
 

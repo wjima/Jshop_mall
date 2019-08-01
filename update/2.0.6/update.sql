@@ -400,10 +400,10 @@ INSERT INTO `jshop_operation` VALUES (585, 572, '拼团记录', 'record', 'a', 5
 
 
 
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10006, 'appupdate', 'APP相关钩子', 1, NULL, 1564537798, 1564537798);
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10007, 'aftersalesreview', '售后审核通过后', 1, NULL, 1564537798, 1564537798);
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10008, 'addUserAfter', '创建会员后', 1, NULL, 1564537798, 1564537798);
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10009, 'orderpayed', '订单付款后', 1, NULL, 1564537798, 1564537798);
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10010, 'orderFinish', '订单完成后', 1, NULL, 1564537798, 1564537798);
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10011, 'loginAfter', '登录后事件', 1, NULL, NULL, 0);
-INSERT INTO `clean_b2c`.`jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10012, 'loginAfter', '登录后事件', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10006, 'appupdate', 'APP相关钩子', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10007, 'aftersalesreview', '售后审核通过后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10008, 'addUserAfter', '创建会员后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10009, 'orderpayed', '订单付款后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10010, 'orderFinish', '订单完成后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10011, 'loginAfter', '登录后事件', 1, NULL, NULL, 0);
+INSERT INTO `jshop_hooks`(`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (10012, 'loginAfter', '登录后事件', 1, NULL, 1564537798, 1564537798);

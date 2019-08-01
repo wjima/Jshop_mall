@@ -101,11 +101,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d2%26id%3d' . $id . '%26invite%3d' . $code;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=2&invite='.$code.'&id='.$id);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d2%26id%3d' . $id;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=2&id='.$id);
                     }
                 }
                 else if($type == 2)
@@ -114,11 +114,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d3%26invite%3d' . $code;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=3&invite='.$code);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d3';
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=3');
                     }
                 }
                 else if($type == 3)
@@ -127,11 +127,25 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d5%26id%3d' . $id . '%26tid%3d' . $team_id . '%26invite%3d' . $code;
+                        if($team_id)
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&invite='.$code.'&id='.$id.'&team_id='.$team_id);
+                        }
+                        else
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&invite='.$code.'&id='.$id);
+                        }
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d5%26id%3d' . $id ;
+                        if($team_id)
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&id='.$id.'&team_id='.$team_id);
+                        }
+                        else
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&id='.$id);
+                        }
                     }
                 }
                 else if($type == 4)
@@ -140,11 +154,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d9%26invite%3d' . $code . '%26id%3d' . $id;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=9&invite='.$code.'&id='.$id);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d9%26id%3d' . $id;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=9&id='.$id);
                     }
                 }
                 else
@@ -153,11 +167,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d3%26invite%3d' . $code;
+                        $qrc_data = $return_url.'?scene='.urlencode('type=3&invite='.$code);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d3';
+                        $qrc_data = $return_url.'?scene='.urlencode('type=3');
                     }
                 }
                 QRcode::png($qrc_data, $qrc_uri, 'L', 10, 2);
@@ -229,7 +243,7 @@ class Poster
                 else if($type == 3)
                 {
                     //拼团
-                    $code = $team_id;
+                    $code = $userModel->getShareCodeByUserId($user_id);
                     //商品
                     $wx            = new Wx();
                     $wx_appid      = getSetting('wx_appid');
@@ -336,11 +350,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d2%26id%3d' . $id . '%26invite%3d' . $code;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=2&invite='.$code.'&id='.$id);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d2%26id%3d' . $id;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=2&id='.$id);
                     }
                 }
                 else if($type == 2)
@@ -349,11 +363,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d3%26invite%3d' . $code;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=3&invite='.$code);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d3';
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=3');
                     }
                 }
                 else if($type == 3)
@@ -362,11 +376,25 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d5%26id%3d' . $id . '%26tid%3d' . $team_id . '%26invite%3d' . $code;
+                        if($team_id)
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&invite='.$code.'&id='.$id.'&team_id='.$team_id);
+                        }
+                        else
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&invite='.$code.'&id='.$id);
+                        }
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d5%26id%3d' . $id. '%26tid%3d' . $team_id;
+                        if($team_id)
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&id='.$id.'&team_id='.$team_id);
+                        }
+                        else
+                        {
+                            $qrc_data = $return_url.'?scene='.share_parameter_encode('type=5&id='.$id);
+                        }
                     }
                 }
                 else if($type == 4)
@@ -375,11 +403,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d9%26invite%3d' . $code . '%26id%3d' . $id;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=9&invite='.$code.'&id='.$id);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d9%26id%3d' . $id;
+                        $qrc_data = $return_url.'?scene='.share_parameter_encode('type=9&id='.$id);
                     }
                 }
                 else
@@ -388,11 +416,11 @@ class Poster
                     if($user_id)
                     {
                         $code     = $userModel->getShareCodeByUserId($user_id);
-                        $qrc_data = $return_url . '?scene=type%3d3%26invite%3d' . $code;
+                        $qrc_data = $return_url.'?scene='.urlencode('type=3&invite='.$code);
                     }
                     else
                     {
-                        $qrc_data = $return_url . '?scene=type%3d3';
+                        $qrc_data = $return_url.'?scene='.urlencode('type=3');
                     }
                 }
                 QRcode::png($qrc_data, $qrc_uri, 'L', 10, 2);

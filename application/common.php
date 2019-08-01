@@ -1438,3 +1438,40 @@ function decrypt($txt, $ttl = 0){
     }
     return $tmp;
 }
+
+
+/**
+ * 分享URL压缩
+ * @param $url
+ * @return string // type-invite-id-team_id  type=场景类型  invite=邀请码  id=场景ID值  team_id=拼团ID
+ */
+function share_parameter_encode($url)
+{
+    $urlArray = explode('&', $url);
+    $allParameter = [
+        'type' => '',
+        'invite' => '',
+        'id' => '',
+        'team_id' => ''
+    ];
+    foreach($urlArray as $v)
+    {
+        $parameter = explode('=', $v);
+        $allParameter[$parameter[0]] = $parameter[1];
+    }
+    $newUrl = $allParameter['type'].'-'.$allParameter['invite'].'-'.$allParameter['id'].'-'.$allParameter['team_id'];
+    return $newUrl;
+}
+
+
+/**
+ * 分享URL解压缩
+ * @param $url
+ * @return string
+ */
+function share_parameter_decode($url)
+{
+    $urlArray = explode('-', $url);
+    $newUrl = 'type='.$urlArray[0].'&invite='.$urlArray[1].'&id='.$urlArray[2].'&team_id='.$urlArray[3];
+    return $newUrl;
+}

@@ -174,24 +174,77 @@ class Wx
             $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$access_token;
             if($type == 1)
             {
-                $scene = 'type%3d'.$type.'%26invite%3d'.$invite.'%26id%3d'.$id;
+                //商品详情页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=2&invite='.$invite.'&id='.$id);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=2&id='.$id);
+                }
             }
             else if($type == 2)
             {
-                $scene = 'type%3d'.$type.'%26invite%3d'.$invite;
+                //首页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=3&invite='.$invite);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=3');
+                }
             }
             else if($type == 3)
             {
-                $scene = 'type%3d'.$type.'%26invite%3d'.$invite.'%26id%3d'.$id.'%26tid%3d'.$team_id;
+                //拼团
+                if($invite)
+                {
+                    if($team_id)
+                    {
+                        $scene = share_parameter_encode('type=5&invite='.$invite.'&id='.$id.'&team_id='.$team_id);
+                    }
+                    else
+                    {
+                        $scene = share_parameter_encode('type=5&invite='.$invite.'&id='.$id);
+                    }
+                }
+                else
+                {
+                    if($team_id)
+                    {
+                        $scene = share_parameter_encode('type=5&id='.$id.'&team_id='.$team_id);
+                    }
+                    else
+                    {
+                        $scene = share_parameter_encode('type=5&id='.$id);
+                    }
+                }
             }
             else if($type == 4)
             {
-                $scene = 'type%3d'.$type.'%26invite%3d'.$invite.'%26id%3d'.$id;
+                //店铺首页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=9&invite='.$invite.'&id='.$id);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=9&id='.$id);
+                }
             }
             else
             {
                 //默认首页
-                $scene = 'type%3d'.$type.'%26invite%3d'.$invite;
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=3&invite='.$invite);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=3');
+                }
             }
 
             $data = [

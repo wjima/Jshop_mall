@@ -82,7 +82,7 @@ class Form extends common
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort'=>'ASC','id'=>'desc'];
+        $result['order'] = ['sort ASC,id desc'];
         return $result;
     }
 

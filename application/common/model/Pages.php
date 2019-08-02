@@ -69,7 +69,7 @@ class Pages extends Common
      * @param string $token
      * @return array
      */
-    public function getDetails($page_code,$token = '')
+    public function getDetails($page_code, $token = '')
     {
         $result          = [
             'status' => true,
@@ -100,7 +100,7 @@ class Pages extends Common
                 $list                       = $promotionModel->receiveCouponList($data[$i]['params']['limit']);
                 $data[$i]['params']['list'] = $list;
             } elseif ($value['widget_code'] == 'goods') {
-                $list = $where = $whereOr = [];
+                $list       = $where = $whereOr = [];
                 $goodsModel = new Goods();
                 if ($data[$i]['params']['type'] == 'auto') {
                     //商品分类,同时取所有子分类 todo 无限极分类时要注意
@@ -113,9 +113,9 @@ class Pages extends Common
                         $where[]       = ['g.goods_cat_id', 'in', $catIds];
                         //扩展分类
                         $goodsExtendCat = new GoodsExtendCat();
-                        $gids = $goodsExtendCat->getGoodsIdByCat($catIds);
-                        if($gids){
-                            $whereOr[] = ['g.id','in',$gids];
+                        $gids           = $goodsExtendCat->getGoodsIdByCat($catIds);
+                        if ($gids) {
+                            $whereOr[] = ['g.id', 'in', $gids];
                         }
                     }
                     //品牌筛选
@@ -124,11 +124,11 @@ class Pages extends Common
                     }
                     $where[]                    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
                     $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
-                    $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit,$whereOr);
+                    $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
                     $data[$i]['params']['list'] = $returnGoods['data'];
-                }else{
-                    foreach((array)$data[$i]['params']['list'] as $gk=>$gv){
-                        $goods = $goodsModel->getGoodsDetial($gv['id'],'*',$token);
+                } else {
+                    foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
+                        $goods                           = $goodsModel->getGoodsDetial($gv['id'], '*', $token);
                         $data[$i]['params']['list'][$gk] = $goods['data'];
                     }
                 }
@@ -143,11 +143,11 @@ class Pages extends Common
                 $promotion      = new Promotion();
                 $conditionModel = new PromotionCondition();
 
-                if($data[$i]['params']['list']){
+                if ($data[$i]['params']['list']) {
 
                     foreach ((array)$data[$i]['params']['list'] as $k => $v) {
                         if (!isset($v['id'])) {
-                            $data[$i]['params']['list'][$k]= [];
+                            $data[$i]['params']['list'][$k] = [];
                         }
                         $filter['promotion_id'] = $v['id'];
                         $condition              = $conditionModel->field('*')->where($filter)->find();
@@ -157,19 +157,22 @@ class Pages extends Common
                             if ($goods['status']) {
                                 $data[$i]['params']['list'][$k]['goods'] = $goods['data'];
                             } else {
-                                $data[$i]['params']['list'][$k]= [];
+                                $data[$i]['params']['list'][$k] = [];
                             }
                         }
                     }
                     $data[$i]['params']['list'] = array_filter($data[$i]['params']['list']);
 
                 }
-            }elseif($value['widget_code'] == 'pintuan'){
+            } elseif ($value['widget_code'] == 'pintuan') {
                 $goodsModel = new Goods();
-                foreach((array)$data[$i]['params']['list'] as $k=>$v){
-                    $goodsinfo = $goodsModel->getGoodsDetial($v['goods_id'],'*',$token);
-                    $data[$i]['params']['list'][$k]['pintuan_price']  = bcsub(floatval($goodsinfo['data']['price']),floatval($v['discount_amount']),2);
-                    $data[$i]['params']['list'][$k]['lasttime'] = secondConversionArray($v['etime']-time());
+                $pintuanModel = new PintuanRule();
+
+                foreach ((array)$data[$i]['params']['list'] as $k => $v) {
+                    $goodsinfo = $pintuanModel->getPintuanInfo($v['goods_id']);
+                    $pintuan_price                                   = bcsub(floatval($goodsinfo['price']), floatval($goodsinfo['discount_amount']), 2);
+                    $data[$i]['params']['list'][$k]['pintuan_price'] = ($pintuan_price > 0) ? $pintuan_price : 0;
+                    $data[$i]['params']['list'][$k]['lasttime']      = secondConversionArray($goodsinfo['etime'] - time());
                 }
             } elseif ($value['widget_code'] == 'textarea') {
                 $data[$i]['params'] = clearHtml($data[$i]['params'], ['width', 'height']);//清除文章中宽高

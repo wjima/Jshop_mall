@@ -142,21 +142,27 @@ class Pages extends Common
                 $filter         = [];
                 $promotion      = new Promotion();
                 $conditionModel = new PromotionCondition();
-                foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                    if (!isset($v['id'])) {
-                        unset($data[$i]['params']['list'][$k]);
-                    }
-                    $filter['promotion_id'] = $v['id'];
-                    $condition              = $conditionModel->field('*')->where($filter)->find();
-                    $condition['params']    = json_decode($condition['params'], true);
-                    if (isset($condition['params']['goods_id']) && $condition['params']['goods_id']) {
-                        $goods = $promotion->getGroupDetial($condition['params']['goods_id'], $token);
-                        if ($goods['status']) {
-                            $data[$i]['params']['list'][$k]['goods'] = $goods['data'];
-                        } else {
-                            unset($data[$key]);
+
+                if($data[$i]['params']['list']){
+
+                    foreach ((array)$data[$i]['params']['list'] as $k => $v) {
+                        if (!isset($v['id'])) {
+                            $data[$i]['params']['list'][$k]= [];
+                        }
+                        $filter['promotion_id'] = $v['id'];
+                        $condition              = $conditionModel->field('*')->where($filter)->find();
+                        $condition['params']    = json_decode($condition['params'], true);
+                        if (isset($condition['params']['goods_id']) && $condition['params']['goods_id']) {
+                            $goods = $promotion->getGroupDetial($condition['params']['goods_id'], $token);
+                            if ($goods['status']) {
+                                $data[$i]['params']['list'][$k]['goods'] = $goods['data'];
+                            } else {
+                                $data[$i]['params']['list'][$k]= [];
+                            }
                         }
                     }
+                    $data[$i]['params']['list'] = array_filter($data[$i]['params']['list']);
+
                 }
             }elseif($value['widget_code'] == 'pintuan'){
                 $goodsModel = new Goods();

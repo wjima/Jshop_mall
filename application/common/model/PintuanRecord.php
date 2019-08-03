@@ -137,7 +137,7 @@ class PintuanRecord extends Model{
             if(isset($params['people_number'])){
                 $team_where[] = ['team_id','eq',$info['team_id']];
                 $team_count = $this->where($team_where)->count();
-                if($team_count >= $team_count){
+                if($team_count >= $params['people_number']){
                     $team_data['status'] = self::STATUS_FINISH;
                     $this->save($team_data,$team_where);
                 }
@@ -259,23 +259,30 @@ class PintuanRecord extends Model{
     }
 
     //获取拼团团队人数
-    public function getTeamList($order_id){
+    public function getTeamList($team_id=0,$order_id=0){
         $result = [
             'status' => false,
             'data' => [],
             'msg' => '',
         ];
-
-        //根据订单id取teamid
-        $where_order[] = ['order_id','eq', $order_id];
-        $info = $this->where($where_order)->find();
-        if(!$info){
-            $result['msg'] = "没有找到拼团记录";
-            return $result;
+        if($team_id == 0 && $order_id == 0){
+            return error_code(15606);
         }
 
+        if($team_id == 0){
+            //根据订单id取teamid
+            $where_order[] = ['order_id','eq', $order_id];
+            $info = $this->where($where_order)->find();
+            if(!$info){
+                $result['msg'] = "没有找到拼团记录";
+                return $result;
+            }
+            $team_id = $info['team_id'];
+        }
+
+
         //根据team_id取发起团的信息
-        $first_team = $this->where('id',$info['team_id'])->find();
+        $first_team = $this->where('id',$team_id)->find();
         if(!$first_team){
             return error_code(15609);
         }
@@ -283,7 +290,7 @@ class PintuanRecord extends Model{
         $first_team['user_avatar'] = _sImage(get_user_info($first_team['user_id'],'avatar'));
         $first_team['nickname'] = get_user_info($first_team['user_id'],'nickname');
         //获取拼团团队记录
-        $where1[] = ['team_id', 'eq', $info['team_id']];
+        $where1[] = ['team_id', 'eq', $team_id];
         $first_team['teams'] = $this->where($where1)->select();
         foreach($first_team['teams'] as $i => $j){
             $first_team['teams'][$i]['user_avatar'] = _sImage(get_user_info($j['user_id'],'avatar'));
@@ -322,7 +329,7 @@ class PintuanRecord extends Model{
                 $team_list = $this->where('team_id',$v['id'])->select();
                 //更新拼团状态为失败
                 $data['status'] = self::STATUS_FAIL;
-                //$this->save($data,['team_id'=>$v['id']]);
+                $this->save($data,['team_id'=>$v['id']]);
 
                 if(!$team_list->isEmpty()){
                     foreach($team_list as $j){
@@ -344,15 +351,35 @@ class PintuanRecord extends Model{
         $order_info = $orderModel->getOrderInfoByOrderID($order_id);
         if($order_info['ship_status'] != $orderModel::SHIP_STATUS_NO){
             //如果已经发货了，就不管了，手动退款吧
-            return true;
+            return error_code(10000);
         }
         if($order_info['pay_status'] == $orderModel::PAY_STATUS_NO){
             //未支付
-
+            $orderModel->cancel($order_id);
         }else{
-            //已支付
+            //已支付，生成退款单，并直接退款，之后，更改订单状态
+            $billRefundModel = new BillRefund();
+            $re = $billRefundModel->toAdd($order_info['user_id'],$order_info['order_id'],1,$order_info['payed'],"");
+            if(!$re['status']){
+                return $re;
+            }
+            $where[] = ['source_id', 'eq', $order_info['order_id']];
+            $where[] = ['status', 'eq',1];
+            $where[] = ['type', 'eq',1];
+            $refundInfo = $billRefundModel->where($where)->find();
+            if(!$refundInfo){
+                //没有找到退款单
+                return error_code(10000);
+            }
+            //去退款
+            $billRefundModel->toRefund($refundInfo['refund_id'],2);
 
+            //更新订单状态为已退款已完成
+            $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
+            $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
+            $orderModel->save($order_data,['order_id'=>$order_info['order_id']]);
         }
+        return true;
     }
 
 }

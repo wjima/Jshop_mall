@@ -11,3 +11,5 @@ public/install/install.lock
 wechat_app/sitemap.json
 public/qrcode/
 *.bak
+public/static/poster/*
+public/static/qrcode/*

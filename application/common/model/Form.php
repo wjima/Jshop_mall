@@ -62,6 +62,7 @@ class Form extends common
             }
 
             $formItem = new FormItem();
+
             $res      = $formItem->saveAll($field);
             if (!$res) {
                 Db::rollback();
@@ -82,7 +83,7 @@ class Form extends common
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort ASC,id desc'];
+        $result['order'] = ['sort'=>'ASC','id'=>'desc'];
         return $result;
     }
 
@@ -267,9 +268,10 @@ class Form extends common
                     'sort'            => $data['field']['sort'][$key],
                 ];
             }
-            $formItem = new FormItem();
+
             $ids = [];
             foreach ((array)$field as $key => $val) {
+                $formItem = new FormItem();
                 if ($val['id']) {
                     $ids[] = $val['id'];
                     $res = $formItem->update($val, ['id' => $val['id']]);
@@ -284,6 +286,7 @@ class Form extends common
             }
             //删除不匹配的
             if ($ids) {
+                $formItem = new FormItem();
                 $where   = [];
                 $where[] = ['id', 'not in', $ids];
                 $where[] = ['form_id', '=', $formid];

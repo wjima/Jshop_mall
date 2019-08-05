@@ -214,6 +214,9 @@ class PintuanRecord extends Model{
 
         if($status != 0){
             $where[] = ['status', 'eq', $status];
+            if($status == 1){       //如果取的是当前正在进行的团的话，这里取还没有结束的团记录，
+                $where[] = ['close_time','>',time()];
+            }
         }
         $where[] = ['rule_id', 'eq', $rule_id];
         $where[] = ['goods_id', 'eq', $goods_id];
@@ -241,8 +244,6 @@ class PintuanRecord extends Model{
                 }else{
                     unset($data[$k]);
                 }
-                //计算拼团结束时间
-                $data[$k]['close_time'] = $v['ctime'] + $pinfo['significant_interval'] * 3600;
 
 
             }

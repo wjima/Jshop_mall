@@ -23,7 +23,6 @@
                     </div>
                 </form>
             </div>
-
             <div class="layui-tab-item">
                 <form class="layui-form" action="" style="padding-top: 20px;" id="editForm">
                     <div class="layui-form-item">
@@ -56,14 +55,13 @@
 </div>
 
 <script>
-    layui.use(['form','layer','laydate','element'],function(){
-        var $ = layui.$, form = layui.form, layer = layui.layer,laydate = layui.laydate;
-        var element = layui.element;
-
+    layui.use(['form','layer','element'],function(){
+        var $ = layui.$, form = layui.form,element = layui.element, layer = layui.layer;
+        form.render();
         //修改密码
         form.on('submit(editPwd)',function(data){
-            JsPost("{:url('administrator/editPwd')}",data.field,function(res){
-                if ( res.status ) {
+            JsPost("{:url('administrator/editPwd')}", data.field, function(res){
+                if(res.status){
                     $("#editForm")[0].reset();
                 }
                 layer.msg(res.msg);

@@ -2,6 +2,7 @@
 
 namespace org\login;
 
+use app\common\model\Images;
 use app\common\model\UserWx;
 
 class Wxapp

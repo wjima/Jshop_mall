@@ -291,7 +291,7 @@ class PintuanRule extends Common{
         //取得规则id
         $where[] = ['status','eq',$this::STATUS_ON];
         $where[] = ['goods_id', 'eq', $goods_id];
-
+        $where[] = ['etime','>',time()];
         $pintuanGoodsModel = new PintuanGoods();
         $pinfo = $pintuanGoodsModel
             ->alias('pg')

@@ -4,6 +4,7 @@ namespace org\login;
 
 use app\common\model\UserWx;
 use org\Curl;
+use app\common\model\Images;
 
 class Wxofficial
 {

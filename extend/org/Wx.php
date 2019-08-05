@@ -141,12 +141,15 @@ class Wx
      * @param $access_token
      * @param string $page
      * @param string $invite
-     * @param string $goods
+     * @param int $type
+     * @param string $id
+     * @param string $group_id
+     * @param string $team_id
      * @param array $style
      * @param string $wx_appid
      * @return array
      */
-    public function getParameterQRCode($access_token, $page = 'pages/index/index', $invite = '', $goods = '', $style = [], $wx_appid = '')
+    public function getParameterQRCode($access_token, $page = 'pages/share/jump', $invite = '', $type = 1, $id = '', $group_id = '', $team_id = '', $style = [], $wx_appid = '')
     {
         $return = [
             'status' => false,
@@ -155,7 +158,7 @@ class Wx
         ];
 
         $styles = implode("-", $style);
-        $filename = "static/qrcode/wechat/".md5($page.$invite.$goods.$wx_appid.$styles).".jpg";
+        $filename = "static/qrcode/wechat/".md5($page.$invite.$type.$id.$group_id.$team_id.$wx_appid.$styles).".jpg";
 
         if(file_exists($filename))
         {
@@ -169,7 +172,81 @@ class Wx
             //没有去官方请求生成
             $curl = new Curl();
             $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$access_token;
-            $scene = 'invite='.$invite.'&id='.$goods;
+            if($type == 1)
+            {
+                //商品详情页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=2&invite='.$invite.'&id='.$id);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=2&id='.$id);
+                }
+            }
+            else if($type == 2)
+            {
+                //首页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=3&invite='.$invite);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=3');
+                }
+            }
+            else if($type == 3)
+            {
+                //拼团
+                if($invite)
+                {
+                    if($team_id)
+                    {
+                        $scene = share_parameter_encode('type=5&invite='.$invite.'&id='.$id.'&team_id='.$team_id);
+                    }
+                    else
+                    {
+                        $scene = share_parameter_encode('type=5&invite='.$invite.'&id='.$id);
+                    }
+                }
+                else
+                {
+                    if($team_id)
+                    {
+                        $scene = share_parameter_encode('type=5&id='.$id.'&team_id='.$team_id);
+                    }
+                    else
+                    {
+                        $scene = share_parameter_encode('type=5&id='.$id);
+                    }
+                }
+            }
+            else if($type == 4)
+            {
+                //店铺首页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=9&invite='.$invite.'&id='.$id);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=9&id='.$id);
+                }
+            }
+            else
+            {
+                //默认首页
+                if($invite)
+                {
+                    $scene = share_parameter_encode('type=3&invite='.$invite);
+                }
+                else
+                {
+                    $scene = share_parameter_encode('type=3');
+                }
+            }
+
             $data = [
                 'scene' => $scene,
                 'page' => $page

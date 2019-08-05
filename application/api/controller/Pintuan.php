@@ -86,12 +86,12 @@ class Pintuan extends Api
      * @return array|mixed
      */
     public function pintuanTeam(){
-        if(!input('?param.order_id')){
+        if(!input('?param.order_id') && !input('?param.team_id')){
             return error_code(15606);
         }
 
         $recordModel = new PintuanRecord();
-        return $recordModel->getTeamList(input('param.order_id'));
+        return $recordModel->getTeamList(input('param.team_id',0),input('param.order_id',0));
     }
 
 }

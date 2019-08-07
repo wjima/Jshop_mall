@@ -277,7 +277,7 @@ class BillRefund extends Common
                 $list[$k]['status_name'] = config('params.bill_refund')['status'][$v['status']];
             }
             if($v['user_id']) {
-                $list[$k]['user_id'] = get_user_info($v['user_id']);
+                $list[$k]['user_id'] = get_user_info($v['user_id'], 'nickname');
             }
 
             if($v['ctime']) {

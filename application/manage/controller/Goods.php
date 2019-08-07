@@ -982,11 +982,11 @@ class Goods extends Manage
          */
         $temp_new_spec = unserialize($goods['new_spec']);
 
-        if ($temp_new_spec && $spes_desc == '') {
+        if (is_array($temp_new_spec) && $spes_desc == '') {
             //先重新定义new_spec
             $spec = $res['data']['spec']->toArray();
             foreach ((array)$spec as $key => $val) {
-                foreach ($temp_new_spec as $tkey => $tval) {
+                foreach ((array)$temp_new_spec as $tkey => $tval) {
                     $first = array_shift($val['spec']['getSpecValue']);
                     unset($temp_new_spec[$tkey]);
                     $temp_new_spec[$first['id']] = $tval;
@@ -1021,7 +1021,7 @@ class Goods extends Manage
                     $temp_new_spec = unserialize($goods['new_spec']);
                     $spec          = $res['data']['spec']->toArray();
                     foreach ((array)$spec as $key => $val) {
-                        foreach ($temp_new_spec as $tkey => $tval) {
+                        foreach ((array)$temp_new_spec as $tkey => $tval) {
                             $first = array_shift($val['spec']['getSpecValue']);
                             if ($first) {
                                 unset($temp_new_spec[$tkey]);

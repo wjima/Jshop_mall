@@ -272,7 +272,7 @@ class UserTocash extends Common
     public function userInfo()
     {
         return $this->hasOne('User','id','user_id')->bind([
-            'mobile'
+            'nickname'
         ]);
     }
 }

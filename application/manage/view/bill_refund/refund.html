@@ -13,7 +13,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">用户：</label>
         <div class="layui-input-inline seller-inline-2">
-            <div class="layui-form-mid">{:format_mobile(get_user_info($info.user_id))}</div>
+            <div class="layui-form-mid">{:get_user_info($info.user_id, 'nickname')}</div>
         </div>
         <label class="layui-form-label">状态：</label>
         <div class="layui-input-inline seller-inline-2">

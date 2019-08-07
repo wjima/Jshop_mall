@@ -1,6 +1,12 @@
 <?php
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2019 https://www.jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: keinx <keinx@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\common\model;
-
 use think\model\concern\SoftDelete;
 use think\Db;
 
@@ -162,6 +168,9 @@ class Order extends Common
         }
         if (!empty($input['ship_status'])) {
             $where[] = array('o.ship_status', 'eq', $input['ship_status']);
+        }
+        if (isset($input['order_type']) && !empty($input['order_type'])) {
+            $where[] = array('o.order_type', 'eq', $input['order_type']);
         }
 
         if (!empty($input['date'])) {
@@ -811,33 +820,47 @@ class Order extends Common
     public function complete($id)
     {
         //等待售后审核的订单，不自动操作完成。
-        $baModel             = new BillAftersales();
-        $bawhere[]           = ['order_id', 'eq', $id];
-        $bawhere[]           = ['status', 'eq', $baModel::STATUS_WAITAUDIT];
+        unset($bawhere);
+        $baModel = new BillAftersales();
+        $bawhere[] = ['order_id', 'eq', $id];
+        $bawhere[] = ['status', 'eq', $baModel::STATUS_WAITAUDIT];
+        unset($billAftersalesCount);
         $billAftersalesCount = $baModel->where($bawhere)->count();
-        if ($billAftersalesCount > 0) {
+        if($billAftersalesCount > 0)
+        {
             return true;
         }
+        unset($where);
         $where[] = ['order_id', 'eq', $id];
         $where[] = ['pay_status', 'neq', self::PAY_STATUS_NO];
 
+        unset($data);
         $data['status'] = self::ORDER_STATUS_COMPLETE;
-        $data['utime']  = time();
+        $data['utime'] = time();
 
+        unset($info);
         $info = $this->where($where)
             ->find();
-        if ($info) {
+
+        if($info)
+        {
+            unset($result);
             $result = $this->where($where)
                 ->update($data);
             //计算订单实际支付金额（要减去售后退款的金额）
-            $money     = $info['payed'];
-            $bawhere   = [];
+            unset($money);
+            unset($bawhere);
+            unset($baList);
+            $money = $info['payed'];
+            $bawhere = [];
             $bawhere[] = ['order_id', 'eq', $id];
             $bawhere[] = ['status', 'eq', $baModel::STATUS_SUCCESS];
-            $baList    = $baModel->where($bawhere)->select();
-            if ($baList && count($baList) > 0) {
+            $baList = $baModel->where($bawhere)->select();
+            if($baList && count($baList) > 0)
+            {
                 $refundMoney = 0;
-                foreach ($baList as $k => $v) {
+                foreach($baList as $k => $v)
+                {
                     $refundMoney = bcadd($refundMoney, $v['refund'], 2);
                 }
                 $money = bcsub($money, $refundMoney, 2);
@@ -851,10 +874,11 @@ class Order extends Common
             //订单记录
             $orderLog = new OrderLog();
             $orderLog->addLog($info['order_id'], $info['user_id'], $orderLog::LOG_TYPE_COMPLETE, '后台订单完成操作', $where);
-        } else {
+        }
+        else
+        {
             $result = false;
         }
-
         return $result;
     }
 
@@ -862,55 +886,71 @@ class Order extends Common
      * 取消订单操作
      * @param $id
      * @param bool $user_id
-     * @return bool|static
+     * @return bool
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function cancel($id, $user_id = false)
     {
+        unset($where);
         $where[] = array('order_id', 'in', $id);
         $where[] = array('pay_status', 'eq', self::PAY_STATUS_NO);
         $where[] = array('status', 'eq', self::ORDER_STATUS_NORMAL);
         $where[] = array('ship_status', 'eq', self::SHIP_STATUS_NO);
 
-        if ($user_id) {
+        $msg = '后台订单取消操作';
+        if($user_id)
+        {
             $where[] = array('user_id', 'eq', $user_id);
+            $msg = '订单取消操作';
         }
 
+        unset($order_info);
         $order_info = $this->where($where)
             ->select();
 
-        if ($order_info) {
+        unset($result);
+        if($order_info)
+        {
             Db::startTrans();
             try {
                 //更改状态和库存
+                unset($order_ids);
                 $order_ids = [];
-                $orderLog  = new OrderLog();
-                foreach ($order_info as $k => $v) {
+                $orderLog = new OrderLog();
+                foreach($order_info as $k => $v)
+                {
                     $order_ids[] = $v['order_id'];
                     //订单记录
-                    $orderLog->addLog($v['order_id'], $v['user_id'], $orderLog::LOG_TYPE_CANCEL, '订单取消操作', $where);
+                    $orderLog->addLog($v['order_id'], $v['user_id'], $orderLog::LOG_TYPE_CANCEL, $msg, $where);
                     //变更积分
-                    if ($v['point'] > 0) {
+                    if($v['point'] > 0)
+                    {
                         $pointLogMode = new UserPointLog();
-                        $res          = $pointLogMode->setPoint($v['user_id'], $v['point'], $pointLogMode::POINT_TYPE_ADMIN_EDIT, '取消订单返还积分');
-                        if (!$res['status']) {
+                        unset($res);
+                        $res = $pointLogMode->setPoint($v['user_id'], $v['point'], $pointLogMode::POINT_TYPE_ADMIN_EDIT, '取消订单返还积分');
+                        if(!$res['status'])
+                        {
                             Db::rollback();
                             return false;
                         }
                     }
                 }
                 //状态修改
-                $w[]         = ['order_id', 'in', $order_ids];
+                unset($w);
+                unset($d);
+                $w[] = ['order_id', 'in', $order_ids];
                 $d['status'] = self::ORDER_STATUS_CANCEL;
-                $d['utime']  = time();
+                $d['utime'] = time();
                 $this->where($w)
                     ->update($d);
-                $itemModel  = new OrderItems();
-                $goods      = $itemModel->field('product_id, nums')->where($w)->select();
+                $itemModel = new OrderItems();
+                unset($goods);
+                $goods = $itemModel->field('product_id, nums')->where($w)->select();
                 $goodsModel = new Goods();
-                foreach ($goods as $v) {
+                foreach($goods as $v)
+                {
                     $goodsModel->changeStock($v['product_id'], 'cancel', $v['nums']);
                 }
 
@@ -921,10 +961,11 @@ class Order extends Common
                 $result = false;
                 Db::rollback();
             }
-        } else {
+        }
+        else
+        {
             $result = false;
         }
-
         return $result;
     }
 
@@ -949,7 +990,7 @@ class Order extends Common
     /**
      * 获取支付订单信息
      * @param $id
-     * @return array|null|\PDOStatement|string|\think\Model
+     * @return array|\PDOStatement|string|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -1004,7 +1045,7 @@ class Order extends Common
     /**
      * 获取需要发货的信息
      * @param $id
-     * @return array|null|\PDOStatement|string|\think\Model
+     * @return array|\PDOStatement|string|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
@@ -1029,6 +1070,9 @@ class Order extends Common
      * 发货改状态
      * @param $order_id
      * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function ship($order_id)
     {
@@ -1121,21 +1165,29 @@ class Order extends Common
     /**
      * 确认签收
      * @param $order_id
-     * @param $user_id
-     * @return false|int
+     * @param bool $user_id
+     * @return bool
      */
-    public function confirm($order_id, $user_id)
+    public function confirm($order_id, $user_id = false)
     {
+        unset($where);
         $where[] = array('order_id', 'eq', $order_id);
         $where[] = array('pay_status', 'neq', self::PAY_STATUS_NO);
         $where[] = array('ship_status', 'neq', self::SHIP_STATUS_NO);
         $where[] = array('status', 'eq', self::ORDER_STATUS_NORMAL);
         $where[] = array('confirm', 'neq', self::CONFIRM_RECEIPT);
-        $where[] = array('user_id', 'eq', $user_id);
+        $msg = '后台确认签收操作';
+        if($user_id)
+        {
+            $where[] = array('user_id', 'eq', $user_id);
+            $msg = '确认签收操作';
+        }
 
+        unset($data);
         $data['confirm']      = self::CONFIRM_RECEIPT;
         $data['confirm_time'] = time();
 
+        unset($return);
         Db::startTrans();
         try {
             //修改订单
@@ -1145,11 +1197,13 @@ class Order extends Common
             model('common/BillDelivery')->confirm($order_id);
 
             //订单记录
+            unset($w);
+            unset($info);
             $orderLog = new OrderLog();
-            $w[]      = ['order_id', 'eq', $order_id];
-            $info     = $this->where($w)
+            $w[] = ['order_id', 'eq', $order_id];
+            $info = $this->where($w)
                 ->find();
-            $orderLog->addLog($order_id, $info['user_id'], $orderLog::LOG_TYPE_SIGN, '确认签收操作', $where);
+            $orderLog->addLog($order_id, $info['user_id'], $orderLog::LOG_TYPE_SIGN, $msg, $where);
 
             $return = true;
             Db::commit();
@@ -1162,28 +1216,28 @@ class Order extends Common
 
     /**
      * 生成订单
-     * @param $user_id              用户id
-     * @param $order_type                 订单类型，1是普通订单，2是拼团订单
-     * @param $cart_ids             购物车id
-     * @param $delivery             物流信息
-     *      当type为1的时候是普通下单，有以下几个值
-     *          uship_id                用户的收货地址id
-     *      当type为2的时候，是门店自提，有以下几个值
+     * @param $user_id //用户id
+     * @param $order_type //订单类型，1是普通订单，2是拼团订单
+     * @param $cart_ids //购物车id
+     * @param $delivery //物流信息
+     *      当type为1的时候是普通下单，有以下几个值:
+     *          uship_id 用户的收货地址id
+     *      当type为2的时候，是门店自提，有以下几个值:
      *          store_id                提货门店id
      *          lading_name             提货人名称
      *          lading_mobile           提货人手机号码
-     *
-     *
-     * @param $memo                 订单备注
-     * @param int $point 使用积分
-     * @param bool $coupon_code 使用优惠券
-     * @param bool $formId 微信小程序下单的时候表单id
-     * @param int $source 来源id
-     * @param array $tax 发票信息
-     * @param array $params 订单参数，，主要跟type有关系，不同的type，可能保存不同的信息
-     * @return array
+     * @param $memo //订单备注
+     * @param int $point //使用积分
+     * @param bool $coupon_code //使用优惠券
+     * @param bool $formId //微信小程序下单的时候表单id
+     * @param int $source //来源id
+     * @param array $tax //发票信息
+     * @param array $params //订单参数，，主要跟type有关系，不同的type，可能保存不同的信息
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-
     public function toAdd($user_id, $order_type, $cart_ids, $delivery, $memo, $point = 0, $coupon_code = false, $formId = false, $source = 2, $tax = [], $params = [])
     {
 
@@ -1319,19 +1373,21 @@ class Order extends Common
         }
     }
 
-
     /**
      * 生成订单的时候，根据购物车信息生成订单信息及明细信息
-     * @param $order                订单数组，应用方式
-     * @param $user_id              用户id
-     * @param $cart_ids             购物车信息
-     * @param $area_id              收货地区
-     * @param $point                使用积分
-     * @param $coupon_code          使用优惠券
-     * @param bool $free_freight 是否包邮
-     * @return array                返回订单明细信息
+     * @param $order //订单数组，应用方式
+     * @param $user_id //用户id
+     * @param $cart_ids //购物车信息
+     * @param $area_id //收货地区
+     * @param $point //使用积分
+     * @param $coupon_code //使用优惠券
+     * @param bool $free_freight //是否包邮
+     * @param string $delivery_type
+     * @return array|mixed //返回订单明细信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-
     private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false,$delivery_type='1')
     {
         $cartModel = new Cart();
@@ -1378,9 +1434,12 @@ class Order extends Common
 
     /**
      * 根据购物车的明细生成订单明细
-     * @param $list             购物车明细
-     * @param $order_id         订单id，为了生成订单明细上的订单号
-     * @return array            订单明细数组
+     * @param $list //购物车明细
+     * @param $order_id //订单id，为了生成订单明细上的订单号
+     * @return array //订单明细数组
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     private function formatOrderItems($list, $order_id)
     {
@@ -1417,7 +1476,15 @@ class Order extends Common
         return $items;
     }
 
-    //生成订单的收货信息
+    /**
+     * 生成订单的收货信息
+     * @param $order
+     * @param $delivery
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     private function formatOrderDelivery(&$order, $delivery)
     {
         if ($delivery['type'] == 1) {
@@ -1465,7 +1532,6 @@ class Order extends Common
 
     }
 
-
     /**
      * 判断订单是否可以评价
      * @param $order_id
@@ -1509,93 +1575,66 @@ class Order extends Common
     /**
      * 自动取消订单
      * @param $setting
+     * @return Order|bool
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function autoCancel($setting)
     {
-        $orderLog = new OrderLog();
         unset($where);
+        unset($order_info);
+        unset($order_ids);
+        unset($result);
         $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $where[] = ['ctime', '<=', time() - $setting * 86400];
         $where[] = ['order_type', 'eq', self::ORDER_TYPE_COMMON];
 
-        $order_info = $this->where($where)
+        $order_info = $this->field('order_id,pay_status,status,ctime,order_type')
+            ->where($where)
             ->select();
 
-        if (count($order_info) > 0) {
-            Db::startTrans();
-            try {
-                //更改状态和库存
-                unset($order_ids);
-                $order_ids = [];
-                foreach ($order_info as $kk => $vv) {
-                    $order_ids[] = $vv['order_id'];
-
-                    //订单记录
-                    $orderLog->addLog($vv['order_id'], $vv['user_id'], $orderLog::LOG_TYPE_AUTO_CANCEL, '订单后台自动取消', $vv);
-                }
-                //状态修改
-                unset($w);
-                $w[]         = ['order_id', 'in', $order_ids];
-                $d['status'] = self::ORDER_STATUS_CANCEL;
-                $d['utime']  = time();
-                $this->where($w)
-                    ->update($d);
-
-                //修改库存
-                $itemModel  = new OrderItems();
-                $goods      = $itemModel->field('product_id, nums')->where($w)->select();
-                $goodsModel = new Goods();
-                foreach ($goods as $vv) {
-                    $goodsModel->changeStock($vv['product_id'], 'cancel', $vv['nums']);
-                }
-                Db::commit();
-            } catch (\Exception $e) {
-                Db::rollback();
+        $result = true;
+        if(count($order_info) > 0)
+        {
+            $order_ids = [];
+            foreach($order_info as $v)
+            {
+                $order_ids[] = $v['order_id'];
             }
+            $result = $this->cancel($order_ids);
         }
-
+        return $result;
     }
 
     /**
      * 自动签收订单
      * @param $setting
-     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
      */
     public function autoSign($setting)
     {
-        $orderLog = new OrderLog();
-
+        unset($where);
         $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
         $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $where[] = ['utime', '<=', time() - $setting * 86400];
 
-        $order_list = $this->field('order_id, user_id')->where($where)->select();
-        if (count($order_list) > 0) {
-            unset($order_ids);
-            unset($wh);
-            $order_ids = [];
-            foreach ($order_list as $vv) {
-                $order_ids[] = $vv['order_id'];
+        unset($order_list);
+        $order_list = $this->field('order_id,user_id,pay_status,ship_status,status,utime')
+            ->where($where)
+            ->select();
+
+        if(count($order_list) > 0)
+        {
+            foreach($order_list as $v)
+            {
+                $this->confirm($v['order_id']);
             }
-            $wh[]                 = ['order_id', 'in', $order_ids];
-            $data['confirm']      = self::CONFIRM_RECEIPT;
-            $data['confirm_time'] = time();
-            $data['utime']        = time();
-            $this->where($wh)->update($data);
-
-            //订单记录
-            $orderLog->addLogs($order_list, $orderLog::LOG_TYPE_AUTO_SIGN, '订单后台自动签收', $where);
         }
-
     }
 
     /**
@@ -1658,7 +1697,6 @@ class Order extends Common
             ];
         }
         model('common/GoodsComment')->insertAll($goods_comment);
-
     }
 
     /**
@@ -1679,22 +1717,16 @@ class Order extends Common
         $where[] = ['confirm', 'eq', self::CONFIRM_RECEIPT];//已确认收货
         $where[] = ['payment_time', '<=', time() - $setting * 86400];
 
-        $order_list = $this->field('order_id, user_id')
+        unset($order_list);
+        $order_list = $this->field('order_id,user_id,pay_status,status,ship_status,confirm,payment_time')
             ->where($where)
             ->select();
 
-        if (count($order_list) > 0) {
-            foreach ($order_list as $k => $v) {
-
-                $where[]    = ['ctime', '<=', time() - $setting * 86400];
-                $order_list = $this->field('order_id, user_id')
-                    ->where($where)
-                    ->select();
-                if (count($order_list) > 0) {
-                    foreach ($order_list as $k => $v) {
-                        $this->complete($v['order_id']);
-                    }
-                }
+        if(count($order_list) > 0)
+        {
+            foreach($order_list as $v)
+            {
+                $this->complete($v['order_id']);
             }
         }
     }

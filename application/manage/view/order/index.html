@@ -219,7 +219,7 @@
                 { type: 'checkbox' },
 				{ field: 'operating', title: '操作', width: 200, align: 'center' },
                 { field: 'order_id_k', title: '订单号', width: 140, align: 'center' },
-                { field: 'type', title: '订单类型', align: 'center' },
+                { field: 'type', title: '订单类型', width: 90, align: 'center' },
                 {
                     field: 'order_id', title: '打印', align: 'center', width: 100, templet: function (data) {
                         var html = '<a href="{:url("order/print_tpl")}?order_id=' + data.order_id + '&type=1" target="_blank">购</a>&nbsp;';
@@ -236,7 +236,7 @@
                 { field: 'ctime', title: '下单时间', width: 160, align: 'center' },
                 { field: 'status_text', title: '订单状态', width: 90, align: 'center' },
                 { field: 'after_sale_status', title: '售后状态', width: 150, align: 'center' },
-                { field: 'username', title: '用户名', width: 120, align: 'center' },
+                { field: 'username', title: '用户', width: 120, align: 'center' },
                 { field: 'ship_mobile', title: '收货人手机号', width: 120, align: 'center' },
                 { field: 'area_name', title: '收货地址', width: 110, align: 'center' },
                 { field: 'pay_status', title: '支付状态', width: 90, align: 'center' },

@@ -168,28 +168,29 @@ class Pages extends Common
                 $pi      = 0;
                 $pintuan = [];
                 foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                    $goodsinfo = $pintuanModel->getPintuanInfo($v['goods_id']);
-                    if ($goodsinfo) {
-                        $pintuan[$pi] = $v;
-
-                        $pintuan[$pi]['pintuan_start_status'] = 1;
-                        //判断拼团状态
-                        $nowtime = time();
-                        if ($goodsinfo['stime'] > $nowtime) {
-                            $pintuan[$pi]['pintuan_start_status'] = 2;//未开始
-                            $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['stime'] - time());
-                        } elseif ($goodsinfo['stime'] <= $nowtime && $goodsinfo['etime'] > $nowtime) {
-                            $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['etime'] - time());
-                            $pintuan[$pi]['pintuan_start_status'] = 1;//已开始
+                    if ($v['goods_id']) {
+                        $goodsinfo = $pintuanModel->getPintuanInfo($v['goods_id']);
+                        if($goodsinfo){
+                            $pintuan[$pi] = $v;
+                            $pintuan[$pi]['pintuan_start_status'] = 1;
+                            //判断拼团状态
+                            $nowtime = time();
+                            if ($goodsinfo['stime'] > $nowtime) {
+                                $pintuan[$pi]['pintuan_start_status'] = 2;//未开始
+                                $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['stime'] - time());
+                            } elseif ($goodsinfo['stime'] <= $nowtime && $goodsinfo['etime'] > $nowtime) {
+                                $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['etime'] - time());
+                                $pintuan[$pi]['pintuan_start_status'] = 1;//已开始
+                            } else {
+                                $pintuan[$pi]['pintuan_start_status'] = 3;//已过期
+                            }
+                            $pintuan_price                 = bcsub(floatval($goodsinfo['price']), floatval($goodsinfo['discount_amount']), 2);
+                            $pintuan[$pi]['pintuan_price'] = ($pintuan_price > 0) ? $pintuan_price : 0;
                         } else {
-                            $pintuan[$pi]['pintuan_start_status'] = 3;//已过期
+                            $pintuan[$pi] = [];
                         }
-                        $pintuan_price                 = bcsub(floatval($goodsinfo['price']), floatval($goodsinfo['discount_amount']), 2);
-                        $pintuan[$pi]['pintuan_price'] = ($pintuan_price > 0) ? $pintuan_price : 0;
-                    } else {
-                        $pintuan[$pi] = [];
+                        $pi++;
                     }
-                    $pi++;
                 }
                 $data[$i]['params']['list'] = array_values(array_filter($pintuan));
 

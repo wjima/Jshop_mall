@@ -210,7 +210,7 @@ export default {
     getAuth() {
       this.$api.getTrustLogin(
         {
-          url: host + '/#/author'
+          url: host + '/wap/#/author'
           // url:  'http://wjima.ngrok.jihainet.com/#/author'
         },
         res => {

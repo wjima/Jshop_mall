@@ -180,26 +180,28 @@ function getLabel(labels) {
     var html = '';
     if (labels && labels != null && typeof labels != 'undefined') {
         var label_style = '';
-        $.each(labels, function (i, obj) {
-            label_style = '';
-            switch (obj.style) {
-                case 'red':
-                    label_style = "";
-                    break;
-                case 'green':
-                    label_style = "layui-bg-green";
-                    break;
-                case 'orange':
-                    label_style = "layui-bg-orange";
-                    break;
-                case 'blue':
-                    label_style = "layui-bg-blue";
-                    break;
-                default :
-                    label_style = '';
-            }
-            html += '<span class="layui-badge ' + label_style + '">' + obj.name + '</span>&nbsp;';
-        });
+        if(typeof labels == 'object'){
+            $.each(labels, function (i, obj) {
+                label_style = '';
+                switch (obj.style) {
+                    case 'red':
+                        label_style = "";
+                        break;
+                    case 'green':
+                        label_style = "layui-bg-green";
+                        break;
+                    case 'orange':
+                        label_style = "layui-bg-orange";
+                        break;
+                    case 'blue':
+                        label_style = "layui-bg-blue";
+                        break;
+                    default :
+                        label_style = '';
+                }
+                html += '<span class="layui-badge ' + label_style + '">' + obj.name + '</span>&nbsp;';
+            });
+        }
     }
     return html;
 }

@@ -14,14 +14,14 @@ class Manage extends Common
 
     protected $rule = [
         'username' => 'length:3,20|alphaDash',
-        'mobile' => ['regex' => '^1[3|4|5|6|7|8][0-9]\d{4,8}$'],
+        'mobile'   => ['regex' => '^1[3|4|5|6|7|8][0-9]\d{4,8}$'],
         'nickname' => 'length:2,50',
     ];
     protected $msg = [
-        'username.length' => '用户名长度6~20位',
+        'username.length'    => '用户名长度6~20位',
         'username.alphaDash' => '用户名只能是字母、数字或下划线组成',
-        'mobile' => '请输入一个合法的手机号码',
-        'nickname' => '昵称长度为2-50个字符',
+        'mobile'             => '请输入一个合法的手机号码',
+        'nickname'           => '昵称长度为2-50个字符',
     ];
 
 
@@ -33,27 +33,26 @@ class Manage extends Common
      */
     public function tableData($post)
     {
-        if(isset($post['limit'])){
+        if (isset($post['limit'])) {
             $limit = $post['limit'];
-        }else{
+        } else {
             $limit = config('paginate.list_rows');
         }
 
         $list = $this
             ->field('m.*,group_concat(mr.name) as role_name')
             ->alias('m')
-            ->leftJoin('manage_role_rel mrr','mrr.manage_id = m.id')
-            ->leftJoin('manage_role mr','mr.id = mrr.role_id')
-            ->where('m.id','neq',$this::TYPE_SUPER_ID)
+            ->leftJoin('manage_role_rel mrr', 'mrr.manage_id = m.id')
+            ->leftJoin('manage_role mr', 'mr.id = mrr.role_id')
+            ->where('m.id', 'neq', $this::TYPE_SUPER_ID)
             ->group("m.id")
             ->paginate($limit);
         $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
-        $re['code'] = 0;
-        $re['msg'] = '';
+        $re['code']  = 0;
+        $re['msg']   = '';
         $re['count'] = $list->total();
-        $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+        $re['data']  = $data;
 
         return $re;
     }
@@ -73,55 +72,47 @@ class Manage extends Common
     {
         $result = array(
             'status' => false,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         );
 
         //校验数据
         $validate = new Validate($this->rule, $this->msg);
-        if(!$validate->check($data)){
+        if (!$validate->check($data)) {
             $result['msg'] = $validate->getError();
             return $result;
         }
 
 
         //判断是新增还是修改
-        if(isset($data['id']))
-        {
-            $manageInfo = $this->where(['id'=>$data['id']])->find();
-            if(!$manageInfo)
-            {
+        if (isset($data['id'])) {
+            $manageInfo = $this->where(['id' => $data['id']])->find();
+            if (!$manageInfo) {
                 return error_code(11010);
             }
 
-            if(isset($data['password']) && !empty($data['password']))
-            {
-                if(strlen($data['password']) <= 5 || strlen($data['password']) > 16)
-                {
+            if (isset($data['password']) && !empty($data['password'])) {
+                if (strlen($data['password']) <= 5 || strlen($data['password']) > 16) {
                     return error_code(11009);
-                }
-                else
-                {
+                } else {
                     $data['password'] = $this->enPassword($data['password'], $manageInfo['ctime']);
                 }
-            }
-            else
-            {
+            } else {
                 unset($data['password']);
             }
 
             unset($data['username']);       //不允许修改用户名
             //更新数据库
-            $this->allowField(true)->save($data,['id'=>$data['id']]);
-        }else{
+            $this->allowField(true)->save($data, ['id' => $data['id']]);
+        } else {
             //判断用户名是否重复
-            $manageInfo = $this->where(['username'=>$data['username']])->find();
-            if($manageInfo){
+            $manageInfo = $this->where(['username' => $data['username']])->find();
+            if ($manageInfo) {
                 return error_code(11011);
             }
             $data['ctime'] = time();
 
-            if(!isset($data['password'][5]) || isset($data['password'][16])){
+            if (!isset($data['password'][5]) || isset($data['password'][16])) {
                 return error_code(11009);
             }
             $data['password'] = $this->enPassword($data['password'], $data['ctime']);
@@ -132,14 +123,14 @@ class Manage extends Common
         //设置角色
         $manageRoleRelModel = new ManageRoleRel();
         //清空所有的旧角色
-        $manageRoleRelModel->where(['manage_id'=>$data['id']])->delete();
+        $manageRoleRelModel->where(['manage_id' => $data['id']])->delete();
 
-        if(isset($data['role_id'])){
+        if (isset($data['role_id'])) {
             $data1 = [];
-            foreach($data['role_id'] as $k => $v){
+            foreach ($data['role_id'] as $k => $v) {
                 $row['manage_id'] = $data['id'];
-                $row['role_id'] = $k;
-                $data1[] = $row;
+                $row['role_id']   = $k;
+                $data1[]          = $row;
             }
             $manageRoleRelModel->saveAll($data1);
         }
@@ -148,6 +139,7 @@ class Manage extends Common
         $result['status'] = true;
         return $result;
     }
+
     /**
      * 管理员登陆
      * @param array $data 用户登陆信息
@@ -157,50 +149,49 @@ class Manage extends Common
     {
         $result = array(
             'status' => false,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         );
-        if(!isset($data['mobile']) || !isset($data['password'])) {
+        if (!isset($data['mobile']) || !isset($data['password'])) {
             $result['msg'] = '请输入手机号码或者密码';
             return $result;
         }
 
         //校验验证码
-        if(session('?manage_login_fail_num')){
-            if(session('manage_login_fail_num') >= config('jshop.manage_login_fail_num')){
-                if(!isset($data['captcha']) || $data['captcha'] == ''){
+        if (session('?manage_login_fail_num')) {
+            if (session('manage_login_fail_num') >= config('jshop.manage_login_fail_num')) {
+                if (!isset($data['captcha']) || $data['captcha'] == '') {
                     return error_code(10013);
                 }
-                if(!captcha_check($data['captcha'])){
+                if (!captcha_check($data['captcha'])) {
                     return error_code(10012);
                 };
             }
         }
 
-        $userInfo = $this->where(array('username'=>$data['mobile']))->whereOr(array('mobile'=>$data['mobile']))->find();
-        if(!$userInfo){
+        $userInfo = $this->where(array('username' => $data['mobile']))->whereOr(array('mobile' => $data['mobile']))->find();
+        if (!$userInfo) {
             $result['msg'] = '没有找到此账号';
             return $result;
         }
 
 
-
         //判断账号状态
-        if($userInfo->status != self::STATUS_NORMAL) {
+        if ($userInfo->status != self::STATUS_NORMAL) {
             $result['msg'] = '此账号已停用';
             return $result;
         }
 
         //判断是否是用户名登陆
-        $userInfo = $this->where(array('username|mobile'=>$data['mobile'],'password'=>$this->enPassword($data['password'], $userInfo->ctime)))->find();
-        if($userInfo){
+        $userInfo = $this->where(array('username|mobile' => $data['mobile'], 'password' => $this->enPassword($data['password'], $userInfo->ctime)))->find();
+        if ($userInfo) {
             $result = $this->setSession($userInfo);
-        }else{
+        } else {
             //写失败次数到session里
-            if(session('?manage_login_fail_num')){
-                session('manage_login_fail_num',session('manage_login_fail_num')+1);
-            }else{
-                session('manage_login_fail_num',1);
+            if (session('?manage_login_fail_num')) {
+                session('manage_login_fail_num', session('manage_login_fail_num') + 1);
+            } else {
+                session('manage_login_fail_num', 1);
             }
             $result['msg'] = '密码错误，请重试';
         }
@@ -215,33 +206,33 @@ class Manage extends Common
      * @param $newPassword
      * @return array|string
      */
-    public function chengePwd($manage_id,$oldPassword,$newPassword)
+    public function chengePwd($manage_id, $oldPassword, $newPassword)
     {
         $result = [
             'status' => false,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         ];
-        $info = $this->where(['id' => $manage_id])->find();
-        if(!$info){
+        $info   = $this->where(['id' => $manage_id])->find();
+        if (!$info) {
             $result['msg'] = "没有找到此账号";
             return $result;
         }
-        if($oldPassword  == $newPassword){
+        if ($oldPassword == $newPassword) {
             $result['msg'] = "新密码和旧密码一致";
             return $result;
         }
 
-        if($info['password'] != $this->enPassword($oldPassword,$info['ctime'])){
+        if ($info['password'] != $this->enPassword($oldPassword, $info['ctime'])) {
             $result['msg'] = "旧密码不正确";
             return $result;
         }
 
-        $re = $this->save(['password'=>$this->enPassword($newPassword,$info['ctime'])], ['id'=> $info['id']]);
-        if($re){
+        $re = $this->save(['password' => $this->enPassword($newPassword, $info['ctime'])], ['id' => $info['id']]);
+        if ($re) {
             $result['status'] = true;
-            $result['msg'] = "修改成功";
-        }else{
+            $result['msg']    = "修改成功";
+        } else {
             return $result['msg'] = "更新失败";
         }
         return $result;
@@ -253,13 +244,13 @@ class Manage extends Common
     {
         $result = [
             'status' => false,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         ];
-        session('manage',$userInfo->toArray());
+        session('manage', $userInfo->toArray());
 
         $userLogModel = new UserLog();//添加登录日志
-        $userLogModel->setLog($userInfo->id,$userLogModel::USER_LOGIN);
+        $userLogModel->setLog($userInfo->id, $userLogModel::USER_LOGIN);
 
         $result['status'] = true;
         return $result;
@@ -270,9 +261,10 @@ class Manage extends Common
      * @param string $pw 要加密的字符串
      * @return string
      */
-    private function enPassword($password,$ctime){
+    private function enPassword($password, $ctime)
+    {
 
-        return md5(md5($password).$ctime);
+        return md5(md5($password) . $ctime);
     }
 
 }

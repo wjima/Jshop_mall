@@ -41,9 +41,11 @@ class Cart extends Common
      * @param $num_type //数量类型，1是直接增加，2是赋值
      * @param int $type
      * @return array|mixed
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function add($user_id, $product_id, $nums, $num_type, $type = 1)
     {
@@ -54,8 +56,16 @@ class Cart extends Common
         ];
         $productsModel = new Products();
         $productInfo = $productsModel->getProductInfo($product_id,false);           //第二个参数是不算促销信息,否则促销信息就算重复了
-        if(!$productInfo['status']){
+        if(!$productInfo['status'])
+        {
             return $productInfo;
+        }
+
+        //判断货品是否已经下架
+        $flag = $productsModel->getShelfStatus($product_id);
+        if(!$flag['status'])
+        {
+            return $flag;
         }
 
         switch ($type){
@@ -169,13 +179,11 @@ class Cart extends Common
             'msg' => ''
         );
         $where[] = ['user_id', 'eq', $userId];
-
         $where[] = ['type', 'eq' , $type];
-
         $list = $this->where($where)->select();
 
-
-        if(!$list->isEmpty()){
+        if(!$list->isEmpty())
+        {
             $list = $list->toArray();
         }
 
@@ -183,12 +191,22 @@ class Cart extends Common
         $goodsModel = new Goods();
         foreach($list as $k => $v){
             //如果没有此商品，就在购物车里删掉
-            $productInfo = $productsModel->getProductInfo($v['product_id'],false,$userId);           //第二个参数是不算促销信息,否则促销信息就算重复了
-            if(!$productInfo['status']){
+            $productInfo = $productsModel->getProductInfo($v['product_id'], false, $userId);           //第二个参数是不算促销信息,否则促销信息就算重复了
+            if(!$productInfo['status'])
+            {
                 unset($list[$k]);
                 $this::destroy($v['id']);
                 continue;
             }
+            //商品下架，就从购物车里面删除
+            $ps = $productsModel->getShelfStatus($v['product_id']);
+            if(!$ps['status'])
+            {
+                unset($list[$k]);
+                $this::destroy($v['id']);
+                continue;
+            }
+
             $goodsWeight = $goodsModel->getWeight($v['product_id']);
             $list[$k]['weight'] = $goodsWeight;
 
@@ -337,34 +355,33 @@ class Cart extends Common
      * @param $id
      * @param $nums
      * @param int $type
-     * @return array
+     * @return array|mixed
      * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
     public function setNums($user_id, $id, $nums, $type = 1)
     {
         $result = [
             'status' => false,
-            'msg' => '',
+            'msg' => '失败',
             'data' => ''
         ];
 
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
         $where[] = ['type', 'eq', $type];
-        $res = $this->where($where)
-            ->update(['nums'=>$nums]);
+        $info = $this->field('product_id')
+            ->where($where)
+            ->find();
 
-        $result['data'] = $res;
-        if($res !== false)
+        if(isset($info['product_id']) && !empty($info['product_id']))
         {
-            $result['status'] = true;
-            $result['msg'] = '设置成功';
+            $result = $this->add($user_id, $info['product_id'], $nums, 2, $type);
         }
-        else
-        {
-            $result['msg'] = '设置失败';
-        }
+
         return $result;
     }
 

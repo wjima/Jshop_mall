@@ -385,7 +385,7 @@ class Coupon extends Common
     /**
      * 批量生成优惠券
      * @param $promotion_id
-     * @param $nums     数量
+     * @param $nums
      * @return array
      * @throws \Exception
      */

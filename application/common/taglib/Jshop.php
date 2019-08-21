@@ -520,11 +520,13 @@ class Jshop extends TagLib
         if ($value) {
             $selected = ',selected: [<?php echo ' . $value . ' ?>] ';
         }
+        ///Api/Categories/getAllCat?backstage=1
         if (config('?rename_manage') && config('rename_manage')) {
-            $catUrl = '/Api/Categories/getAllCat?backstage=1';
+            $catUrl = '/api.html?method=categories.getallcat&backstage=1';
         } else {
-            $catUrl = url('/Api/Categories/getAllCat','backstage=1');
+            $catUrl = url('/Api/index/index','method=categories.getallcat&backstage=1');
         }
+
         $parseStr .= '<script>
   layui.config({
     base : " __STATIC_LIB__layuiadmin/layui/"

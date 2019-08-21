@@ -557,7 +557,7 @@
 							<label class="layui-form-label">添加文章：</label>
 							<div class="layui-input-inline seller-inline-5">
 								<input type="text" v-model="selectWg.value.list[0].title" placeholder="请选择广告文章" readonly="readonly"
-									class="layui-input" @focus="article_list">
+									class="layui-input" @click="article_list">
 							</div>
 						</div>
 						<div class="pl25">
@@ -575,7 +575,7 @@
 							<div class="layui-input-inline seller-inline-5">
 
 								<input type="text" v-model="selectWg.value.articleClassifyId" placeholder="请选择文章分类" readonly="readonly"
-									class="layui-input" @focus="article_type_list">
+									class="layui-input" @click="article_type_list">
 							</div>
 
 						</div>
@@ -843,7 +843,7 @@
 					@change="updateLinkValue"></el-input>
 			</div>
 			<div v-else>
-				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @focus="selectLink" placeholder="请选择">
+				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @click="selectLink" placeholder="请选择">
 			</div>
 		</el-form-item>
 	</div>

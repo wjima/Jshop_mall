@@ -320,37 +320,39 @@
 
         layui.form.on('submit(advance-goods-search)', function(data){
             JsGet("{:url('goods/goodsSearch')}",function (html) {
-                layer.open({
-                    type: 1,
-                    area: ['500px', '450px'],
-                    fixed: false,
-                    title:'高级筛选',
-                    maxmin: false,
-                    shade: 0,
-                    content:html.data,
-                    btn: ['确定', '取消'],
-                    yes: function(index, layero){
-                        var searchData = getFormData();
-                        var advance = $(".advance-goods-search").serializeArray();
-                        $.each(advance,function (i,obj) {
-                            $(".seller-form").append('<input type="hidden" name="'+obj.name+'" value="'+obj.value+'">');
-                        })
+                if(html.status){
+                    layer.open({
+                        type: 1,
+                        area: ['500px', '450px'],
+                        fixed: false,
+                        title:'高级筛选',
+                        maxmin: false,
+                        shade: 0,
+                        content:html.data,
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero){
+                            var searchData = getFormData();
+                            var advance = $(".advance-goods-search").serializeArray();
+                            $.each(advance,function (i,obj) {
+                                $(".seller-form").append('<input type="hidden" name="'+obj.name+'" value="'+obj.value+'">');
+                            })
 
-                        table.reload({
-                            where: searchData
-                            , page: {
-                                curr: 1 //重新从第 1 页开始
-                            }
-                        });
-                        layer.close(index);
-                    }
-                    ,btn2: function(){
-                        layer.closeAll();
-                    }
-                });
+                            table.reload({
+                                where: searchData
+                                , page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                            });
+                            layer.close(index);
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                    });
+                }else{
+                    layer.msg(html.msg);
+                }
             });
-
-
             return false;
         });
         //批量操作
@@ -414,31 +416,35 @@
         //设置标签
         function setLabel(data) {
             JsPost('{:url("label/setLabel")}',{'ids':data,'model':'Goods'},function (res) {
-                layer.open({
-                    type: 1,
-                    area: ['700px', '450px'],
-                    fixed: false, //不固定
-                    title:'标签设置',
-                    shade: 0,
-                    content: res.data,
-                    btn: ['确定', '取消'],
-                    yes: function(index, layero){
-                        //do something
-                        var selectedData = getSelected();
-                        if(selectedData){
-                            JsPost("{:url('Label/doSetLabel')}",{'ids':data,'label':selectedData,'model':'Goods'},function(res){
-                                    layer.msg(res.msg);
-                                    table.reload();
-                                    layer.close(index);
-                                }
-                            );
-                        }
+                if(res.status){
+                    layer.open({
+                        type: 1,
+                        area: ['700px', '450px'],
+                        fixed: false, //不固定
+                        title:'标签设置',
+                        shade: 0,
+                        content: res.data,
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero){
+                            //do something
+                            var selectedData = getSelected();
+                            if(selectedData){
+                                JsPost("{:url('Label/doSetLabel')}",{'ids':data,'label':selectedData,'model':'Goods'},function(res){
+                                        layer.msg(res.msg);
+                                        table.reload();
+                                        layer.close(index);
+                                    }
+                                );
+                            }
 
-                    }
-                    ,btn2: function(){
-                        layer.closeAll();
-                    }
-                });
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
             });
         }
 
@@ -448,27 +454,31 @@
          */
         function dellabel(data) {
             JsPost('{:url("label/delLabel")}',{'ids':data,'model':'Goods'},function (res) {
-                layer.open({
-                    type: 1,
-                    area: ['500px', '350px'],
-                    fixed: false, //不固定
-                    title:'取消标签',
-                    shade: 0,
-                    content: res.data,
-                    btn: ['确定', '取消'],
-                    yes: function(index, layero){
-                        var selectedData = getSelected();
-                        JsPost("{:url('Label/doDelLabel')}",{'ids':data,'label':selectedData,'model':'Goods'},function(res){
-                                layer.msg(res.msg);
-                                table.reload();
-                                layer.close(index);
-                            }
-                        );
-                    }
-                    ,btn2: function(){
-                        layer.closeAll();
-                    }
-                });
+                if(res.status){
+                    layer.open({
+                        type: 1,
+                        area: ['500px', '350px'],
+                        fixed: false, //不固定
+                        title:'取消标签',
+                        shade: 0,
+                        content: res.data,
+                        btn: ['确定', '取消'],
+                        yes: function(index, layero){
+                            var selectedData = getSelected();
+                            JsPost("{:url('Label/doDelLabel')}",{'ids':data,'label':selectedData,'model':'Goods'},function(res){
+                                    layer.msg(res.msg);
+                                    table.reload();
+                                    layer.close(index);
+                                }
+                            );
+                        }
+                        ,btn2: function(){
+                            layer.closeAll();
+                        }
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
             });
         }
 

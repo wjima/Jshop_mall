@@ -96,18 +96,7 @@ class BillRefund extends Common
         }
 
         if($status == self::STATUS_REFUND){
-            //退款同意
-            //如果前端传过来的退款方式和退款单上的退款方式一样的话，就说明是原路返回，试着调用支付方式的退款方法,如果不一样的话，就直接做退款单的退款状态为已退款就可以了
-            if($payment_code == $info['payment_code'] && $payment_code!='offline'){//修复线下退款bug
-                $result = $this->paymentRefund($refund_id);
-                $result['status'] = true;       //如果在线退款失败，但是在业务里也算退款成功，走后面的钩子和消息等方法，随后再在退款单里进行再次退款。
-            }else{
-                //只修改状态，不做实际退款，实际退款线下去退。
-                $data['status'] = self::STATUS_REFUND;
-                $data['payment_code'] = $payment_code;
-                $this->save($data,$where);
-                $result['status'] = true;
-            }
+            //退款同意，先发退款消息和钩子，下面原路返回可能失败，但是在业务上相当于退款已经退过了，只是实际的款项可能还没到账
             //发送退款消息
             $eventData              = $info->toArray();
             sendMessage($info['user_id'], 'refund_success', $eventData);
@@ -115,6 +104,17 @@ class BillRefund extends Common
             //退款完成后的钩子
             Hook('refund', $refund_id);
             $result['msg'] = '退款单退款成功';
+
+            //如果前端传过来的退款方式和退款单上的退款方式一样的话，就说明是原路返回，试着调用支付方式的退款方法,如果不一样的话，就直接做退款单的退款状态为已退款就可以了
+            if($payment_code == $info['payment_code'] && $payment_code!='offline'){//修复线下退款bug
+                $result = $this->paymentRefund($refund_id);
+            }else{
+                //只修改状态，不做实际退款，实际退款线下去退。
+                $data['status'] = self::STATUS_REFUND;
+                $data['payment_code'] = $payment_code;
+                $this->save($data,$where);
+                $result['status'] = true;
+            }
 
             return $result;
         }elseif($status == self::STATUS_REFUSE){

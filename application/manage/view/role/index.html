@@ -64,30 +64,34 @@
         //监听form提交  (add)
         layui.form.on('submit(role-add)',function(data){
             JsGet("{:url('role/add')}", function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['400px', '300px'],
-                    title:'添加角色',
-                    btn: ['确定','取消'],
-                    yes: function(index, layero){
-                        if($('#edit_name').val() != ''){
-                            //保存支付方式
-                            JsPost("{:url('role/add')}", $('#edit_form').serialize(), function(res){
-                                if(res.status){
-                                    layer.close(index);
-                                    layer.msg(res.msg,{time:1300},function(){
-                                        userTables.reload();
-                                    });
-                                }else{
-                                    layer.msg(res.msg);
-                                }
-                            });
-                        }else{
-                            layer.msg('请输入角色名称');
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['400px', '300px'],
+                        title:'添加角色',
+                        btn: ['确定','取消'],
+                        yes: function(index, layero){
+                            if($('#edit_name').val() != ''){
+                                //保存支付方式
+                                JsPost("{:url('role/add')}", $('#edit_form').serialize(), function(res){
+                                    if(res.status){
+                                        layer.close(index);
+                                        layer.msg(res.msg,{time:1300},function(){
+                                            userTables.reload();
+                                        });
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                });
+                            }else{
+                                layer.msg('请输入角色名称');
+                            }
                         }
-                    }
-                });
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
             return false;
         });

@@ -83,8 +83,8 @@ class ValidateToken
 
     public function run($params)
     {
-
-        if (Request::isPost()) {
+        $validateToken = config('app.validate_token');
+        if (Request::isPost() && $validateToken) {
             $validateMethod = $this->getConf();
             $ctl          = strtolower(Request::controller());
             $act          = strtolower(Request::action());

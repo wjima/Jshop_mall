@@ -372,4 +372,54 @@ class Promotion extends Common
         return $goods;
     }
 
+
+    /**
+     * 获取名称
+     * @param $promotion_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getCouponName($promotion_id)
+    {
+        $where[] = ['id', 'eq', $promotion_id];
+        $info = $this->field('name')
+            ->where($where)
+            ->find();
+        return $info['name'] ? $info['name'] : '';
+    }
+
+
+    /**
+     * 优惠券列表
+     * @param $field
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getCouponList($field)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => []
+        ];
+
+        $where[] = ['status', 'eq', self::STATUS_OPEN];
+        $where[] = ['type', 'eq', self::TYPE_COUPON];
+        $return['data'] = $this->field($field)
+            ->where($where)
+            ->order('sort DESC')
+            ->select();
+
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '成功';
+        }
+
+        return $return;
+    }
 }

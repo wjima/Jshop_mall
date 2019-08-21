@@ -1185,4 +1185,56 @@ class Goods extends Common
         }
         return false;
     }
+
+
+    /**
+     * 获取商品名称
+     * @param $goods_id
+     * @return mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getGoodsName($goods_id)
+    {
+        $where[] = ['id', 'eq', $goods_id];
+        $info = $this->field('name')
+            ->where($where)
+            ->find();
+        return $info['name'] ? $info['name'] : '';
+    }
+
+
+    /**
+     * 获取单规格商品列表
+     * @param $field
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getSingleGoodsList($field)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => []
+        ];
+
+        $where[] = ['marketable', 'eq', self::MARKETABLE_UP];
+        $where[] = ['spes_desc', 'eq', ''];
+
+        $return['data'] = $this->field($field)
+            ->where($where)
+            ->order('sort ASC')
+            ->select();
+
+        if($return['data'] !== false)
+        {
+            $return['status'] = true;
+            $return['msg'] = '成功';
+        }
+
+        return $return;
+    }
 }

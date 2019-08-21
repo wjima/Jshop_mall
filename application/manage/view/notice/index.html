@@ -75,6 +75,8 @@
                         area: ['400px', '400px'],
                         title: '添加公告'
                     });
+                }else{
+                    layer.msg(e.msg);
                 }
             })
         });
@@ -134,6 +136,8 @@
                             area: ['400px', '400px'],
                             title: '修改公告'
                         })
+                    }else{
+                        layer.msg(e.msg);
                     }
                 })
             }

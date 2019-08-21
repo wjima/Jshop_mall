@@ -83,32 +83,36 @@
         $(document).on('click', '.add-class', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("GoodsType/add")}', function(e){
-				window_box = layer.open({
-					type: 1,
-					title: '添加类型',
-					area: ['750px', '440px'], //宽高
-					content: e.data,
-					btn:['保存','关闭'],
-					success:function (layero,index) {
-						layero.addClass('layui-form');//添加form标识
-						layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');
-						form.render();
-					},
-					yes:function () {
-						form.on('submit(fromContent)', function (data) {
-							JsPost("{:url('GoodsType/add')}", data.field, function(res){
-								if(res.status){
-									layer.close(window_box);
-									layer.msg(res.msg, {time: 1300}, function(){
-										table.reload('typeTable');
-									});
-								}else{
-									layer.msg(res.msg);
-								}
-							})
-						});
-					}
-				});
+				if(e.status){
+					window_box = layer.open({
+						type: 1,
+						title: '添加类型',
+						area: ['750px', '440px'], //宽高
+						content: e.data,
+						btn:['保存','关闭'],
+						success:function (layero,index) {
+							layero.addClass('layui-form');//添加form标识
+							layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');
+							form.render();
+						},
+						yes:function () {
+							form.on('submit(fromContent)', function (data) {
+								JsPost("{:url('GoodsType/add')}", data.field, function(res){
+									if(res.status){
+										layer.close(window_box);
+										layer.msg(res.msg, {time: 1300}, function(){
+											table.reload('typeTable');
+										});
+									}else{
+										layer.msg(res.msg);
+									}
+								})
+							});
+						}
+					});
+				}else{
+					layer.msg(e.msg);
+				}
 			});
             return false;
         });
@@ -118,12 +122,16 @@
         $(document).on('click', '.edit-class', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("GoodsType/edit")}?id='+id, function(e){
-				window_box = layer.open({
-					type: 1,
-					title: '编辑类型',
-					area: ['400px', '240px'], //宽高
-					content: e.data
-				});
+				if(e.status){
+					window_box = layer.open({
+						type: 1,
+						title: '编辑类型',
+						area: ['400px', '240px'], //宽高
+						content: e.data
+					});
+				}else{
+					layer.msg(e.msg);
+				}
 			});
         });
         //编辑保存数据
@@ -185,26 +193,30 @@
      */
     function addRel(id){
         JsGet('{:url("GoodsType/addRel")}?id='+id,function (e) {
-            window_box = layer.open({
-                type: 1,
-                title: '关联属性',
-                area: ['400px', '340px'], //宽高
-                btn:['保存','取消'],
-                content: e.data,
-                yes:function (e) {
-                    var data = $("#specForm").serializeArray();
-                    JsPost('{:url("GoodsType/addRel")}',data,function (e) {
-                        if(e.status === true){
-                            layer.close(window_box);
-                            layer.msg(e.msg, {time: 1300}, function(){
-                                table.reload('typeTable');
-                            });
-                        }else{
-                            layer.msg(e.msg, {time: 1300});
-                        }
-                    });
-                }
-            });
+			if(e.status){
+				window_box = layer.open({
+					type: 1,
+					title: '关联属性',
+					area: ['400px', '340px'], //宽高
+					btn:['保存','取消'],
+					content: e.data,
+					yes:function (e) {
+						var data = $("#specForm").serializeArray();
+						JsPost('{:url("GoodsType/addRel")}',data,function (e) {
+							if(e.status === true){
+								layer.close(window_box);
+								layer.msg(e.msg, {time: 1300}, function(){
+									table.reload('typeTable');
+								});
+							}else{
+								layer.msg(e.msg, {time: 1300});
+							}
+						});
+					}
+				});
+			}else{
+				layer.msg(e.msg);
+			}
         });
     }
 
@@ -214,26 +226,30 @@
      */
     function addParams(id) {
         JsGet('{:url("GoodsType/addParams")}?id='+id,function (e) {
-            window_box = layer.open({
-                type: 1,
-                title: '关联属性',
-                area: ['400px', '340px'], //宽高
-                content: e.data,
-				btn:['保存','取消'],
-				yes:function (e) {
-                    var data = $("#paramsForm").serializeArray();
-                    JsPost('{:url("GoodsType/addParams")}',data,function (e) {
-                        if(e.status === true){
-                            layer.close(window_box);
-                            layer.msg(e.msg, {time: 1300}, function(){
-                                table.reload('typeTable');
-                            });
-                        }else{
-                            layer.msg(e.msg, {time: 1300});
-                        }
-                    });
-                }
-            });
+			if(e.status){
+				window_box = layer.open({
+					type: 1,
+					title: '关联属性',
+					area: ['400px', '340px'], //宽高
+					content: e.data,
+					btn:['保存','取消'],
+					yes:function (e) {
+						var data = $("#paramsForm").serializeArray();
+						JsPost('{:url("GoodsType/addParams")}',data,function (e) {
+							if(e.status === true){
+								layer.close(window_box);
+								layer.msg(e.msg, {time: 1300}, function(){
+									table.reload('typeTable');
+								});
+							}else{
+								layer.msg(e.msg, {time: 1300});
+							}
+						});
+					}
+				});
+			}else{
+				layer.msg(e.msg);
+			}
         });
     }
 </script>

@@ -228,12 +228,16 @@
         $(document).on('click', '.pointEdit', function () {
             var id = $(this).attr('data-id');
             JsGet("{:url('manage/user/editPoint')}?user_id="+id+"&flag=false", function(e){
-                layer.open({
-                    type: 1,
-                    title: '修改用户积分',
-                    area: ['450px', '300px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        title: '修改用户积分',
+                        area: ['450px', '300px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //保存积分
@@ -266,38 +270,46 @@
         $(document).on('click', '.point', function () {
             var id = $(this).attr('data-id');
             JsGet("{:url('manage/user/pointLog')}?user_id="+id+"&flag=false", function(e){
-                layer.open({
-                    type: 1,
-                    title: '用户积分记录',
-                    area: ['800px', '535px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        title: '用户积分记录',
+                        area: ['800px', '535px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //添加
         layui.form.on('submit(user-add)', function () {
             JsGet("{:url('User/addUser')}", function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['700px', '550px'],
-                    title: '添加用户',
-                    btn: ['确定', '取消'],
-                    zIndex: 1800,
-                    yes: function () {
-                        var data = $("#userAdd").serializeArray();
-                        JsPost('{:url("User/addUser")}', data, function(e){
-                            if (e.status) {
-                                layer.close(window.box);
-                                layer.msg(e.msg, { time: 1300 }, function () {
-                                    layui.table.reload('userTable');
-                                });
-                            } else {
-                                layer.msg(e.msg);
-                            }
-                        });
-                    }
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['700px', '550px'],
+                        title: '添加用户',
+                        btn: ['确定', '取消'],
+                        zIndex: 1800,
+                        yes: function () {
+                            var data = $("#userAdd").serializeArray();
+                            JsPost('{:url("User/addUser")}', data, function(e){
+                                if (e.status) {
+                                    layer.close(window.box);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        layui.table.reload('userTable');
+                                    });
+                                } else {
+                                    layer.msg(e.msg);
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
             return false;
         });
@@ -305,39 +317,47 @@
         $(document).on('click', '.edit', function () {
             var user_id = $(this).attr('data-id');
             JsGet('{:url("User/editUser")}?user_id='+user_id, function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['700px', '570px'],
-                    title: '编辑用户',
-                    btn: ['确定', '取消'],
-                    zIndex: 1800,
-                    yes: function () {
-                        var data = $("#userEdit").serializeArray();
-                        JsPost('{:url("User/editUser")}', data, function(e){
-                            if (e.status) {
-                                layer.close(window.box);
-                                layer.msg(e.msg, { time: 1300 }, function () {
-                                    layui.table.reload('userTable');
-                                });
-                            } else {
-                                layer.msg(e.msg);
-                            }
-                        });
-                    }
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['700px', '570px'],
+                        title: '编辑用户',
+                        btn: ['确定', '取消'],
+                        zIndex: 1800,
+                        yes: function () {
+                            var data = $("#userEdit").serializeArray();
+                            JsPost('{:url("User/editUser")}', data, function(e){
+                                if (e.status) {
+                                    layer.close(window.box);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        layui.table.reload('userTable');
+                                    });
+                                } else {
+                                    layer.msg(e.msg);
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //余额编辑
         $(document).on('click', '.editMoney', function () {
             var id = $(this).attr('data-id');
             JsGet("{:url('manage/user/editMoney')}?user_id="+id+"&flag=false", function(e){
-                layer.open({
-                    type: 1,
-                    title: '修改用户余额',
-                    area: ['450px', '300px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        title: '修改用户余额',
+                        area: ['450px', '300px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //保存余额

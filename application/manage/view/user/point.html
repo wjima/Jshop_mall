@@ -110,24 +110,32 @@
         $(document).on('click', '.show-log', function(){
             var user_id = $(this).attr('data-user_id');
             JsPost("{:url('User/pointLog')}", {user_id: user_id}, function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['700px', '450px'],
-                    title:'积分记录'
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['700px', '450px'],
+                        title:'积分记录'
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //编辑积分
         $(document).on('click', '.edit-point', function(){
             var user_id = $(this).attr('data-user_id');
             JsPost("{:url('User/editPoint')}", {user_id: user_id}, function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['480px', '300px'],
-                    title:'积分编辑'
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['480px', '300px'],
+                        title:'积分编辑'
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //编辑保存积分

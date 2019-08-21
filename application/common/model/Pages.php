@@ -84,121 +84,126 @@ class Pages extends Common
             $result['msg'] = '请先配置该页面';
             return $result;
         }
-        $data = $data->toArray();
-        $i    = 0;
-        foreach ($data as $key => $value) {
+        try {
+            $data = $data->toArray();
+            $i    = 0;
+            foreach ($data as $key => $value) {
 
-            $data[$i]['params'] = json_decode($value['params'], true);
-            if ($value['widget_code'] == 'notice') {
-                if ($data[$i]['params']['type'] == 'auto') {
-                    $noticeModel                = new Notice();
-                    $list                       = $noticeModel->getNoticeList();
+                $data[$i]['params'] = json_decode($value['params'], true);
+                if ($value['widget_code'] == 'notice') {
+                    if ($data[$i]['params']['type'] == 'auto') {
+                        $noticeModel                = new Notice();
+                        $list                       = $noticeModel->getNoticeList();
+                        $data[$i]['params']['list'] = $list;
+                    }
+                } elseif ($value['widget_code'] == 'coupon') {
+                    $promotionModel             = new Promotion();
+                    $list                       = $promotionModel->receiveCouponList($data[$i]['params']['limit']);
                     $data[$i]['params']['list'] = $list;
-                }
-            } elseif ($value['widget_code'] == 'coupon') {
-                $promotionModel             = new Promotion();
-                $list                       = $promotionModel->receiveCouponList($data[$i]['params']['limit']);
-                $data[$i]['params']['list'] = $list;
-            } elseif ($value['widget_code'] == 'goods') {
-                $list       = $where = $whereOr = [];
-                $goodsModel = new Goods();
-                if ($data[$i]['params']['type'] == 'auto') {
-                    //商品分类,同时取所有子分类 todo 无限极分类时要注意
-                    if (isset($data[$i]['params']['classifyId']) && $data[$i]['params']['classifyId']) {
-                        $goodsCatModel = new GoodsCat();
-                        $catIds        = [];
-                        $childCats     = $goodsCatModel->getCatByParentId($data[$i]['params']['classifyId']);
-                        $catIds        = array_column($childCats->toArray(), 'id');
-                        $catIds[]      = $data[$i]['params']['classifyId'];
-                        $where[]       = ['g.goods_cat_id', 'in', $catIds];
-                        //扩展分类
-                        $goodsExtendCat = new GoodsExtendCat();
-                        $gids           = $goodsExtendCat->getGoodsIdByCat($catIds);
-                        if ($gids) {
-                            $whereOr[] = ['g.id', 'in', $gids];
+                } elseif ($value['widget_code'] == 'goods') {
+                    $list       = $where = $whereOr = [];
+                    $goodsModel = new Goods();
+                    if ($data[$i]['params']['type'] == 'auto') {
+                        //商品分类,同时取所有子分类 todo 无限极分类时要注意
+                        if (isset($data[$i]['params']['classifyId']) && $data[$i]['params']['classifyId']) {
+                            $goodsCatModel = new GoodsCat();
+                            $catIds        = [];
+                            $childCats     = $goodsCatModel->getCatByParentId($data[$i]['params']['classifyId']);
+                            $catIds        = array_column($childCats->toArray(), 'id');
+                            $catIds[]      = $data[$i]['params']['classifyId'];
+                            $where[]       = ['g.goods_cat_id', 'in', $catIds];
+                            //扩展分类
+                            $goodsExtendCat = new GoodsExtendCat();
+                            $gids           = $goodsExtendCat->getGoodsIdByCat($catIds);
+                            if ($gids) {
+                                $whereOr[] = ['g.id', 'in', $gids];
+                            }
+                        }
+                        //品牌筛选
+                        if (isset($data[$i]['params']['brandId']) && $data[$i]['params']['brandId']) {
+                            $where[] = ['g.brand_id', 'in', $data[$key]['params']['brandId']];
+                        }
+                        $where[]                    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
+                        $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
+                        $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
+                        $data[$i]['params']['list'] = $returnGoods['data'];
+                    } else {
+                        foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
+                            $goods                           = $goodsModel->getGoodsDetial($gv['id'], '*', $token);
+                            $data[$i]['params']['list'][$gk] = $goods['data'];
                         }
                     }
-                    //品牌筛选
-                    if (isset($data[$i]['params']['brandId']) && $data[$i]['params']['brandId']) {
-                        $where[] = ['g.brand_id', 'in', $data[$key]['params']['brandId']];
-                    }
-                    $where[]                    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
-                    $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
-                    $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
-                    $data[$i]['params']['list'] = $returnGoods['data'];
-                } else {
-                    foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
-                        $goods                           = $goodsModel->getGoodsDetial($gv['id'], '*', $token);
-                        $data[$i]['params']['list'][$gk] = $goods['data'];
-                    }
-                }
-            } elseif ($value['widget_code'] == 'articleClassify') {
-                $article                    = new Article();
-                $type_id                    = $data[$i]['params']['articleClassifyId'];
-                $limit                      = $data[$i]['params']['limit'];
-                $res                        = $article->articleList($type_id, 1, $limit);
-                $data[$i]['params']['list'] = $res['data']['list'];
-            } elseif ($value['widget_code'] == 'groupPurchase') {
-                $filter         = [];
-                $promotion      = new Promotion();
-                $conditionModel = new PromotionCondition();
-                if ($data[$i]['params']['list']) {
-                    foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                        if (!isset($v['id'])) {
-                            $data[$i]['params']['list'][$k] = [];
-                        }
-                        $filter['promotion_id'] = $v['id'];
-                        $condition              = $conditionModel->field('*')->where($filter)->find();
-                        $condition['params']    = json_decode($condition['params'], true);
-                        if (isset($condition['params']['goods_id']) && $condition['params']['goods_id']) {
-                            $goods = $promotion->getGroupDetial($condition['params']['goods_id'], $token);
-                            if ($goods['status']) {
-                                $data[$i]['params']['list'][$k]['goods'] = $goods['data'];
-                            } else {
+                } elseif ($value['widget_code'] == 'articleClassify') {
+                    $article                    = new Article();
+                    $type_id                    = $data[$i]['params']['articleClassifyId'];
+                    $limit                      = $data[$i]['params']['limit'];
+                    $res                        = $article->articleList($type_id, 1, $limit);
+                    $data[$i]['params']['list'] = $res['data']['list'];
+                } elseif ($value['widget_code'] == 'groupPurchase') {
+                    $filter         = [];
+                    $promotion      = new Promotion();
+                    $conditionModel = new PromotionCondition();
+                    if ($data[$i]['params']['list']) {
+                        foreach ((array)$data[$i]['params']['list'] as $k => $v) {
+                            if (!isset($v['id'])) {
                                 $data[$i]['params']['list'][$k] = [];
                             }
-                        }
-                    }
-                    $data[$i]['params']['list'] = array_values(array_filter($data[$i]['params']['list']));
-                }
-            } elseif ($value['widget_code'] == 'pintuan') {
-                $goodsModel   = new Goods();
-                $pintuanModel = new PintuanRule();
-
-                $pi      = 0;
-                $pintuan = [];
-                foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                    if ($v['goods_id']) {
-                        $goodsinfo = $pintuanModel->getPintuanInfo($v['goods_id']);
-                        if($goodsinfo){
-                            $pintuan[$pi] = $v;
-                            $pintuan[$pi]['pintuan_start_status'] = 1;
-                            //判断拼团状态
-                            $nowtime = time();
-                            if ($goodsinfo['stime'] > $nowtime) {
-                                $pintuan[$pi]['pintuan_start_status'] = 2;//未开始
-                                $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['stime'] - time());
-                            } elseif ($goodsinfo['stime'] <= $nowtime && $goodsinfo['etime'] > $nowtime) {
-                                $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['etime'] - time());
-                                $pintuan[$pi]['pintuan_start_status'] = 1;//已开始
-                            } else {
-                                $pintuan[$pi]['pintuan_start_status'] = 3;//已过期
+                            $filter['promotion_id'] = $v['id'];
+                            $condition              = $conditionModel->field('*')->where($filter)->find();
+                            $condition['params']    = json_decode($condition['params'], true);
+                            if (isset($condition['params']['goods_id']) && $condition['params']['goods_id']) {
+                                $goods = $promotion->getGroupDetial($condition['params']['goods_id'], $token);
+                                if ($goods['status']) {
+                                    $data[$i]['params']['list'][$k]['goods'] = $goods['data'];
+                                } else {
+                                    $data[$i]['params']['list'][$k] = [];
+                                }
                             }
-                            $pintuan_price                 = bcsub(floatval($goodsinfo['price']), floatval($goodsinfo['discount_amount']), 2);
-                            $pintuan[$pi]['pintuan_price'] = ($pintuan_price > 0) ? $pintuan_price : 0;
-                        } else {
-                            $pintuan[$pi] = [];
                         }
-                        $pi++;
+                        $data[$i]['params']['list'] = array_values(array_filter((array)$data[$i]['params']['list']));
                     }
-                }
-                $data[$i]['params']['list'] = array_values(array_filter($pintuan));
+                } elseif ($value['widget_code'] == 'pintuan') {
+                    $goodsModel   = new Goods();
+                    $pintuanModel = new PintuanRule();
+                    $pi           = 0;
+                    $pintuan      = [];
+                    foreach ((array)$data[$i]['params']['list'] as $k => $v) {
+                        if ($v['goods_id']) {
+                            $goodsinfo = $pintuanModel->getPintuanInfo($v['goods_id']);
+                            if ($goodsinfo) {
+                                $pintuan[$pi]                         = $v;
+                                $pintuan[$pi]['pintuan_start_status'] = 1;
+                                //判断拼团状态
+                                $nowtime = time();
+                                if ($goodsinfo['stime'] > $nowtime) {
+                                    $pintuan[$pi]['pintuan_start_status'] = 2;//未开始
+                                    $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['stime'] - time());
+                                } elseif ($goodsinfo['stime'] <= $nowtime && $goodsinfo['etime'] > $nowtime) {
+                                    $pintuan[$pi]['lasttime']             = secondConversionArray($goodsinfo['etime'] - time());
+                                    $pintuan[$pi]['pintuan_start_status'] = 1;//已开始
+                                } else {
+                                    $pintuan[$pi]['pintuan_start_status'] = 3;//已过期
+                                }
+                                $pintuan_price                 = bcsub(floatval($goodsinfo['price']), floatval($goodsinfo['discount_amount']), 2);
+                                $pintuan[$pi]['pintuan_price'] = ($pintuan_price > 0) ? $pintuan_price : 0;
+                            } else {
+                                $pintuan[$pi] = [];
+                            }
+                            $pi++;
+                        }
+                    }
+                    $data[$i]['params']['list'] = array_values(array_filter((array)$pintuan));
 
-            } elseif ($value['widget_code'] == 'textarea') {
-                $data[$i]['params'] = clearHtml($data[$i]['params'], ['width', 'height']);//清除文章中宽高
-                $data[$i]['params'] = str_replace("<img", "<img style='max-width: 100%'", $data[$i]['params']);
+                } elseif ($value['widget_code'] == 'textarea') {
+                    $data[$i]['params'] = clearHtml($data[$i]['params'], ['width', 'height']);//清除文章中宽高
+                    $data[$i]['params'] = str_replace("<img", "<img style='max-width: 100%'", $data[$i]['params']);
+                }
+                $i++;
             }
-            $i++;
+        } catch (Exception $e) {
+            $result['status'] = false;
+            $result['msg'] = $e->getMessage();
+            return $result;
         }
         $pageinfo['items'] = $data;
         $result['data']    = $pageinfo;

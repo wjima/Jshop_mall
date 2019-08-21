@@ -173,8 +173,60 @@ class alipay implements Payment
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => ''
+            'msg' => '出错了'
         ];
+        //取appid,如果是支付宝小程序的话，单独取appid
+        if(isset($paymentInfo['params']) && $paymentInfo['params'] != ""){
+            $params = json_decode($paymentInfo['params'],true);
+            if(isset($params['trade_type']) && $params['trade_type'] == "JSAPI"){
+                $app_id = getAddonsConfigVal("MPAlipay","mp_alipay_appid");
+            }else{
+                $app_id = $this->config['appid'];
+            }
+        }else{
+            $app_id = $this->config['appid'];
+        }
+
+        $url = 'https://openapi.alipay.com/gateway.do';
+
+
+
+        $url = "https://openapi.alipay.com/gateway.do";
+        $data = [
+            'app_id' => $app_id,
+            'method' => "alipay.trade.refund",
+            'format' => "JSON",
+            'charset' => "utf-8",
+            'sign_type' => "RSA2",
+            'timestamp' => date('Y-m-d H:i:s'),
+            'version' => "1.0",
+            'biz_content' => [
+                'out_trade_no' => $paymentInfo['payment_id'],
+                'refund_amount' => $refundInfo['money']
+            ]
+        ];
+
+        $data["biz_content"] = json_encode($data["biz_content"],JSON_UNESCAPED_UNICODE);
+
+        //待签名字符串
+        $preSignStr = $this->getSignContent($data);
+        $sign = $this->sign($preSignStr,$data['sign_type']);
+        $data['sign'] = $sign;
+
+        $curl = new Curl();
+        $re = $curl->post($url,$data);
+        // 判断是否退款成功
+        $re = json_decode($re,true);
+
+        if(isset($re['alipay_trade_refund_response']['code']) && $re['alipay_trade_refund_response']['code'] == '10000'){
+            $result['msg'] = $re['alipay_trade_refund_response']['msg'];
+
+            if($re['alipay_trade_refund_response']['msg'] == "Success" && $re['alipay_trade_refund_response']['fund_change'] == 'Y'){
+                $result['status'] = true;
+            }
+        }
+        return $result;
+
     }
 
     //支付宝统一下单接口

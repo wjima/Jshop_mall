@@ -96,6 +96,8 @@
                         area: ['400px', '300px'],
                         title: '添加文章分类'
                     });
+                }else{
+                    layer.msg(e.msg);
                 }
             })
         });
@@ -153,6 +155,8 @@
                             area: ['400px', '300px'],
                             title: '修改文章分类'
                         })
+                    }else{
+                        layer.msg(e.msg);
                     }
                 })
             } else if (layEvent === 'add_type') {   //添加子分类
@@ -164,6 +168,8 @@
                             area: ['400px', '300px'],
                             title: '添加子分类'
                         })
+                    }else{
+                        layer.msg(e.msg);
                     }
                 })
             }

@@ -64,12 +64,16 @@
         //layui弹出层
         $(document).on('click','.add-logistics',function(){
             JsGet("{:url('logistics/add')}", function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['400px', '300px'],
-                    title:'添加物流公司'
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['400px', '300px'],
+                        title:'添加物流公司'
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
 
@@ -120,13 +124,17 @@
             } else if(layEvent === 'edit'){ //编辑
                 //do something
                 JsGet("{:url('logistics/edit')}?id="+data.id, function(e){
-                    window.box = layer.open({
-                        type:1,
-                        content:e.data,
-                        area:['400px','300px'],
-                        title:'修改物流公司',
-                        maxmin:true
-                    })
+                    if(e.status){
+                        window.box = layer.open({
+                            type:1,
+                            content:e.data,
+                            area:['400px','300px'],
+                            title:'修改物流公司',
+                            maxmin:true
+                        })
+                    }else{
+                        layer.msg(e.msg);
+                    }
                 });
             }
         });

@@ -40,7 +40,7 @@
                 {field: 'is_login', title: '需要登录',align:'center'},
                 {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
                 {field: 'sort', sort: true, title: '排序',align:'center'},
-                {title:'操作',align:'center', toolbar:'#formBar'}
+                {title:'操作',align:'center',width:240, toolbar:'#formBar'}
             ]]
         });
         //search
@@ -122,20 +122,24 @@
                 });
             }else if(layEvent == 'report'){
                 JsGet("{:url('Form/report')}?id="+data.id, function(res) {
-                    window.box = layer.open({
-                        type: 1,
-                        content: res.data,
-                        area: ['620px', '520px'],
-                        title:'报表',
-                        btn:['关闭'],
-                        btnAlign:'c',
-                        yes: function(index, layero){
-                            layer.close(index);
-                        },
-                        cancel: function(){
-                            layer.close();
-                        }
-                    });
+                    if(res.status){
+                        window.box = layer.open({
+                            type: 1,
+                            content: res.data,
+                            area: ['620px', '520px'],
+                            title:'报表',
+                            btn:['关闭'],
+                            btnAlign:'c',
+                            yes: function(index, layero){
+                                layer.close(index);
+                            },
+                            cancel: function(){
+                                layer.close();
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                    }
                 });
             }
         });

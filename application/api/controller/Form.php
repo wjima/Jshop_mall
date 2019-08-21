@@ -79,8 +79,7 @@ class Form extends Api
         ];
         $id          = input('id/d', 0);
         $token       = input('token', '');
-        $data        = input('param.');
-
+        $data        = input('param.',[],'remove_xss');
         $formModel = new FormModel();
         $form      = $formModel->getFormInfo($id);
         if (!$form['status']) {

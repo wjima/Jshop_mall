@@ -25,6 +25,10 @@ return [
                 'code' => 'wxappLogin2',
                 'is_login' => false
             ],
+            'alipayapplogin1' => [
+                'code' => 'alipayappLogin1',
+                'is_login' => false
+            ],
             'sms' => [
                 'code' => 'sms',
                 'is_login' => false

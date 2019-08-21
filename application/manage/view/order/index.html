@@ -289,13 +289,17 @@
         $(document).on('click', '.view-order', function () {
             var id = $(this).attr('data-id');
             JsGet('{:url("order/view")}?id='+id, function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '订单详情',
-                    area: ['800px', '445px'], //宽高
-                    content: e.data,
-                    moveOut: true
-                });
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '订单详情',
+                        area: ['800px', '445px'], //宽高
+                        content: e.data,
+                        moveOut: true
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
 
@@ -303,12 +307,16 @@
         $(document).on('click', '.edit-order', function () {
             var id = $(this).attr('data-id');
             JsGet('{:url("order/edit")}?id='+id+"&order_type="+$(this).attr('data-type'), function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '编辑订单',
-                    area: ['660px', '280px'], //宽高
-                    content: e.data
-                });
+                if(e.status) {
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑订单',
+                        area: ['660px', '280px'], //宽高
+                        content: e.data
+                    });
+                } else {
+                    layer.msg(e.msg);
+                }
             });
         });
 
@@ -416,12 +424,16 @@
         $(document).on('click', '.ship-order', function () {
             var id = $(this).attr('data-id');
             JsGet('{:url("order/ship")}?order_id='+id, function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '订单发货',
-                    area: ['800px', '500px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '订单发货',
+                        area: ['800px', '500px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
             return false;
         });
@@ -538,12 +550,16 @@
         $(document).on('click', '.order-logistics', function () {
             var id = $(this).attr('data-id');
             JsGet("{:url('order/logistics')}?order_id=" + id, function (res) {
-                window_box = layer.open({
-                    type: 1,
-                    title: '物流信息',
-                    area: ['700px', '400px'], //宽高
-                    content: res.data
-                });
+                if(res.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '物流信息',
+                        area: ['700px', '400px'], //宽高
+                        content: res.data
+                    });
+                }else{
+                    layer.msg(res.msg);
+                }
             })
         });
 
@@ -604,42 +620,46 @@
                 if ((e.hasOwnProperty('status') && !e.status) || (e.hasOwnProperty('code') && e.code == 0)) {
                     layer.msg(e.msg); return false;
                 }
-                window_box = layer.open({
-                    type: 1,
-                    title: '选择快递',
-                    area: ['450px', '305px'], //宽高
-                    content: e.data,
-                    btnAlign: 'c',
-                    btn: ['直接打单', '只获取单号', '只打单', '关闭'],
-                    yes: function (index, layero) {
-                        var data = getFormData();
-                        if (data) {
-                            var url = "{:url('order/print_tpl')}?type=4&bt=1&" + data;
-                            window.open(url, "_blank");
-                        }
-                    },
-                    btn2: function (index, layero) {
-                        var data = getFormData();
-                        if (data) {
-                            var url = "{:url('order/print_tpl')}?type=4&bt=2&" + data;
-                            JsGet(url, function (res) {
-                                layer.msg(res.msg, { time: 1500 }, function () {
-                                    if (res.status) {
-                                        table.reload();
-                                        layer.closeAll();
-                                    }
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '选择快递',
+                        area: ['450px', '305px'], //宽高
+                        content: e.data,
+                        btnAlign: 'c',
+                        btn: ['直接打单', '只获取单号', '只打单', '关闭'],
+                        yes: function (index, layero) {
+                            var data = getFormData();
+                            if (data) {
+                                var url = "{:url('order/print_tpl')}?type=4&bt=1&" + data;
+                                window.open(url, "_blank");
+                            }
+                        },
+                        btn2: function (index, layero) {
+                            var data = getFormData();
+                            if (data) {
+                                var url = "{:url('order/print_tpl')}?type=4&bt=2&" + data;
+                                JsGet(url, function (res) {
+                                    layer.msg(res.msg, { time: 1500 }, function () {
+                                        if (res.status) {
+                                            table.reload();
+                                            layer.closeAll();
+                                        }
+                                    });
                                 });
-                            });
+                            }
+                        },
+                        btn3: function (index, layero) {
+                            var data = getFormData();
+                            if (data) {
+                                var url = "{:url('order/print_tpl')}?type=4&bt=3&" + data;
+                                window.open(url, "_blank");
+                            }
                         }
-                    },
-                    btn3: function (index, layero) {
-                        var data = getFormData();
-                        if (data) {
-                            var url = "{:url('order/print_tpl')}?type=4&bt=3&" + data;
-                            window.open(url, "_blank");
-                        }
-                    }
-                });
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         };
         {:hook('orderExtJs') }

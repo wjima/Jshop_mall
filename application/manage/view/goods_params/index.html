@@ -75,49 +75,53 @@
         //添加分类
         $(document).on('click', '.add-class', function () {
             JsGet('{:url("GoodsParams/add")}', function (e) {
-                window_box = layer.open({
-                    type: 1,
-                    title: '添加参数',
-                    btn: ['保存', '取消'],
-                    area: ['450px', '350px'], //宽高
-                    content: e.data,
-                    yes: function () {
-                        var name = $("#name").val();
-                        var type = $("#type").val();
-                        var value = $("#value").val();
-                        var __Jshop_Token__ = $(".Jshop_Token:last").val();
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '添加参数',
+                        btn: ['保存', '取消'],
+                        area: ['450px', '350px'], //宽高
+                        content: e.data,
+                        yes: function () {
+                            var name = $("#name").val();
+                            var type = $("#type").val();
+                            var value = $("#value").val();
+                            var __Jshop_Token__ = $(".Jshop_Token:last").val();
 
-                        var error = false;
-                        if (name.length > 6 || name.length < 1) {
-                            error = true;
-                            layer.msg('参数名称在1-6个字符之间', { time: 1300 });
-                            return false;
-                        }
+                            var error = false;
+                            if (name.length > 6 || name.length < 1) {
+                                error = true;
+                                layer.msg('参数名称在1-6个字符之间', { time: 1300 });
+                                return false;
+                            }
 
-                        if (type != 'text' && Trim(value) == '') {
-                            error = true;
-                            layer.msg('请填写参数选项', { time: 1300 });
-                            return false;
+                            if (type != 'text' && Trim(value) == '') {
+                                error = true;
+                                layer.msg('请填写参数选项', { time: 1300 });
+                                return false;
+                            }
+                            if (!error) {
+                                JsPost('{:url("GoodsParams/add")}', {
+                                    'name': name,
+                                    'type': type,
+                                    'value': value,
+                                    __Jshop_Token__:__Jshop_Token__
+                                }, function (e) {
+                                    if (e.status === true) {
+                                        layer.close(window_box);
+                                        layer.msg(e.msg, { time: 1300 }, function () {
+                                            table.reload('typeTable');
+                                        });
+                                    } else {
+                                        layer.msg(e.msg, { time: 1300 });
+                                    }
+                                });
+                            }
                         }
-                        if (!error) {
-                            JsPost('{:url("GoodsParams/add")}', {
-                                'name': name,
-                                'type': type,
-                                'value': value,
-                                __Jshop_Token__:__Jshop_Token__
-                            }, function (e) {
-                                if (e.status === true) {
-                                    layer.close(window_box);
-                                    layer.msg(e.msg, { time: 1300 }, function () {
-                                        table.reload('typeTable');
-                                    });
-                                } else {
-                                    layer.msg(e.msg, { time: 1300 });
-                                }
-                            });
-                        }
-                    }
-                });
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
             return false;
         });
@@ -126,49 +130,53 @@
         $(document).on('click', '.edit-class', function () {
             var id = $(this).attr('data-id');
             JsGet('{:url("GoodsParams/edit")}?id=' + id, function (e) {
-                window_box = layer.open({
-                    type: 1,
-                    title: '编辑参数',
-                    area: ['450px', '350px'], //宽高
-                    content: e.data,
-                    btn: ['保存', '取消'],
-                    yes: function (d) {
-                        var name = $("#name").val();
-                        var type = $("#type").val();
-                        var value = $("#value").val();
-                        var id = $("#params_id").val();
-                        var __Jshop_Token__ = $(".Jshop_Token:last").val();
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑参数',
+                        area: ['450px', '350px'], //宽高
+                        content: e.data,
+                        btn: ['保存', '取消'],
+                        yes: function (d) {
+                            var name = $("#name").val();
+                            var type = $("#type").val();
+                            var value = $("#value").val();
+                            var id = $("#params_id").val();
+                            var __Jshop_Token__ = $(".Jshop_Token:last").val();
 
-                        var error = false;
-                        if (name.length > 6 || name.length < 1) {
-                            error = true;
-                            layer.msg('参数名称在1-6个字符之间', { time: 1300 });
-                            return false;
+                            var error = false;
+                            if (name.length > 6 || name.length < 1) {
+                                error = true;
+                                layer.msg('参数名称在1-6个字符之间', { time: 1300 });
+                                return false;
+                            }
+                            if (!id || id == '') {
+                                layer.msg('关键参数丢失', { time: 1300 });
+                                return false;
+                            }
+                            if (!error) {
+                                JsPost('{:url("GoodsParams/edit")}', {
+                                    'name': name,
+                                    'type': type,
+                                    'value': value,
+                                    'id':id,
+                                    __Jshop_Token__:__Jshop_Token__
+                                }, function(e){
+                                    if (e.status === true) {
+                                        layer.close(window_box);
+                                        layer.msg(e.msg, { time: 1300 }, function () {
+                                            table.reload('typeTable');
+                                        });
+                                    } else {
+                                        layer.msg(e.msg, { time: 1300 });
+                                    }
+                                });
+                            }
                         }
-                        if (!id || id == '') {
-                            layer.msg('关键参数丢失', { time: 1300 });
-                            return false;
-                        }
-                        if (!error) {
-                            JsPost('{:url("GoodsParams/edit")}', {
-                                'name': name,
-                                'type': type,
-                                'value': value,
-                                'id':id,
-                                __Jshop_Token__:__Jshop_Token__
-                            }, function(e){
-                                if (e.status === true) {
-                                    layer.close(window_box);
-                                    layer.msg(e.msg, { time: 1300 }, function () {
-                                        table.reload('typeTable');
-                                    });
-                                } else {
-                                    layer.msg(e.msg, { time: 1300 });
-                                }
-                            });
-                        }
-                    }
-                });
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
 

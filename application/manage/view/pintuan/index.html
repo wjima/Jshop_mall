@@ -102,33 +102,33 @@
                 success: function (e) {
                     if(e.status){
                         window.box = layer.open({
-                        type: 1,
-                        content: e.data,
-                        area: ['600px', '550px'],
-                        title: '添加',
-                        btn: ['确定', '取消'],
-                        zIndex: 1800,
-                        yes: function () {
-                            var data = $("#pintuanAdd").serializeArray();
-                            console.log(data);
-                            $.ajax({
-                                type: 'post',
-                                url: '{:url("edit")}',
-                                data: data,
-                                dataType: 'json',
-                                success: function (e) {
-                                    if (e.status) {
-                                        layer.close(window.box);
-                                        layer.msg(e.msg, { time: 1300 }, function () {
-                                            layui.table.reload('pintuan');
-                                        });
-                                    } else {
-                                        layer.msg(e.msg);
+                            type: 1,
+                            content: e.data,
+                            area: ['600px', '550px'],
+                            title: '添加',
+                            btn: ['确定', '取消'],
+                            zIndex: 1800,
+                            yes: function () {
+                                var data = $("#pintuanAdd").serializeArray();
+                                console.log(data);
+                                $.ajax({
+                                    type: 'post',
+                                    url: '{:url("edit")}',
+                                    data: data,
+                                    dataType: 'json',
+                                    success: function (e) {
+                                        if (e.status) {
+                                            layer.close(window.box);
+                                            layer.msg(e.msg, { time: 1300 }, function () {
+                                                layui.table.reload('pintuan');
+                                            });
+                                        } else {
+                                            layer.msg(e.msg);
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        });
                     }else{
                         layer.msg(e.msg);
                     }
@@ -173,7 +173,6 @@
                     layer.msg(e.msg);
                 }
             });
-
         });
 
         //删除

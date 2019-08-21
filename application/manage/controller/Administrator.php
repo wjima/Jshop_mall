@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 
 namespace app\manage\controller;
+
 use app\common\controller\Manage as ManageController;
 use app\common\model\ManageRole;
 use app\common\model\Manage as ManageModel;
@@ -29,10 +30,9 @@ class Administrator extends ManageController
      */
     public function index()
     {
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $manageModel = new ManageModel();
-            return $manageModel->tableData([]);
+            return $manageModel->tableData(input('param.'));
         }
         return $this->fetch('index');
     }
@@ -51,33 +51,29 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'msg'    => '失败',
+            'data'   => ''
         ];
         $this->view->engine->layout(false);
-        $manageModel = new ManageModel();
+        $manageModel     = new ManageModel();
         $manageRoleModel = new ManageRole();
-        $manageRoleList = $manageRoleModel->select();
-        if(Request::isPost())
-        {
-            if(!input('?param.username') || input('param.username') == "")
-            {
+        $manageRoleList  = $manageRoleModel->select();
+        if (Request::isPost()) {
+            if (!input('?param.username') || input('param.username') == "") {
                 return error_code(11008);
             }
-            if(!input('?param.mobile') || input('param.mobile') == "")
-            {
+            if (!input('?param.mobile') || input('param.mobile') == "") {
                 return error_code(11080);
             }
-            if(!input('?param.password') || strlen(input('param.password')) < 6 || strlen(input('param.password')) > 16)
-            {
+            if (!input('?param.password') || strlen(input('param.password')) < 6 || strlen(input('param.password')) > 16) {
                 return error_code(11009);
             }
             return $manageModel->toAdd(input('param.'));
         }
-        $this->assign('roleList',$manageRoleList);
+        $this->assign('roleList', $manageRoleList);
         $result['status'] = true;
-        $result['msg'] = '成功';
-        $result['data'] = $this->fetch('edit');
+        $result['msg']    = '成功';
+        $result['data']   = $this->fetch('edit');
         return $result;
     }
 
@@ -95,53 +91,46 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'msg'    => '失败',
+            'data'   => ''
         ];
         $this->view->engine->layout(false);
-        if(!input('?param.id'))
-        {
+        if (!input('?param.id')) {
             return error_code(10000);
         }
 
         $manageModel = new ManageModel();
-        if(input('param.id') == $manageModel::TYPE_SUPER_ID)
-        {
+        if (input('param.id') == $manageModel::TYPE_SUPER_ID) {
             return error_code(11023);
         }
-        $manageInfo = $manageModel->where(['id'=>input('param.id')])->find();
-        if(!$manageInfo)
-        {
+        $manageInfo = $manageModel->where(['id' => input('param.id')])->find();
+        if (!$manageInfo) {
             return error_code(11004);
         }
 
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $manageModel->toAdd(input('param.'));
         }
 
-        $manageRoleModel = new ManageRole();
-        $manageRoleList = $manageRoleModel->select();
+        $manageRoleModel    = new ManageRole();
+        $manageRoleList     = $manageRoleModel->select();
         $manageRoleRelModel = new ManageRoleRel();
-        $smList = $manageRoleRelModel->where(['manage_id'=>input('param.id')])->select();
-        foreach($manageRoleList as $k => $v)
-        {
+        $smList             = $manageRoleRelModel->where(['manage_id' => input('param.id')])->select();
+        foreach ($manageRoleList as $k => $v) {
             $checked = false;
-            foreach($smList as $i => $j)
-            {
-                if($j['role_id'] == $v['id'])
-                {
+            foreach ($smList as $i => $j) {
+                if ($j['role_id'] == $v['id']) {
                     $checked = true;
                     break;
                 }
             }
             $manageRoleList[$k]['checked'] = $checked;
         }
-        $this->assign('roleList',$manageRoleList);
-        $this->assign('manageInfo',$manageInfo);
+        $this->assign('roleList', $manageRoleList);
+        $this->assign('manageInfo', $manageInfo);
         $result['status'] = true;
-        $result['msg'] = '成功';
-        $result['data'] = $this->fetch('edit');
+        $result['msg']    = '成功';
+        $result['data']   = $this->fetch('edit');
         return $result;
     }
 
@@ -156,29 +145,24 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'msg'    => '失败',
+            'data'   => ''
         ];
-        if(!input('?param.id'))
-        {
+        if (!input('?param.id')) {
             return error_code(10000);
         }
 
         $manageModel = new manageModel();
-        if(input('param.id') == $manageModel::TYPE_SUPER_ID)
-        {
+        if (input('param.id') == $manageModel::TYPE_SUPER_ID) {
             return error_code(11024);
         }
 
         $where['id'] = input('param.id');
-        $re = $manageModel->where($where)->delete();
-        if($re)
-        {
+        $re          = $manageModel->where($where)->delete();
+        if ($re) {
             $result['status'] = true;
-            $result['msg'] = '删除成功';
-        }
-        else
-        {
+            $result['msg']    = '删除成功';
+        } else {
             $result['msg'] = '删除失败，请重试';
         }
 
@@ -195,15 +179,15 @@ class Administrator extends ManageController
      */
     public function information()
     {
-        $result = [
+        $result      = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'msg'    => '失败',
+            'data'   => ''
         ];
         $manageModel = new ManageModel();
-        $manageInfo = $manageModel->where(['id'=>session('manage.id')])->find();
-        $this->assign('manage_info',$manageInfo);
-        return  $this->fetch();
+        $manageInfo  = $manageModel->where(['id' => session('manage.id')])->find();
+        $this->assign('manage_info', $manageInfo);
+        return $this->fetch();
     }
 
 
@@ -213,20 +197,18 @@ class Administrator extends ManageController
      */
     public function editPwd()
     {
-        $result = [
+        $result      = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'msg'    => '失败',
+            'data'   => ''
         ];
         $manageModel = new ManageModel();
 
-        if(!input('?param.newPwd') || !input('?param.password') || !input('?param.rePwd'))
-        {
+        if (!input('?param.newPwd') || !input('?param.password') || !input('?param.rePwd')) {
             $result['msg'] = "密码不能为空";
             return $result;
         }
-        if(input('param.newPwd') != input('param.rePwd'))
-        {
+        if (input('param.newPwd') != input('param.rePwd')) {
             $result['msg'] = "两次密码不一致";
             return $result;
         }
@@ -241,38 +223,37 @@ class Administrator extends ManageController
      */
     public function getVersion()
     {
-        $return = [
+        $return  = [
             'status' => false,
-            'msg' => '授权查询失败',
-            'data' => []
+            'msg'    => '授权查询失败',
+            'data'   => []
         ];
         $product = config('jshop.product');
         $version = config('jshop.version');
-        $url = config('jshop.authorization_url') . '/b2c/Authorization/verification';
-        $domain = $_SERVER['SERVER_NAME'];
-        $curl = new Curl();
-        $params = [
-            'domain' => $domain,
+        $url     = config('jshop.authorization_url') . '/b2c/Authorization/verification';
+        $domain  = $_SERVER['SERVER_NAME'];
+        $curl    = new Curl();
+        $params  = [
+            'domain'  => $domain,
             'product' => $product,
             'version' => $version,
-            'time' => time(),
+            'time'    => time(),
         ];
-        $data = $curl::post($url, $params);
-        $data = json_decode($data,true);
-        if($data['status'])
-        {
+        $data    = $curl::post($url, $params);
+        $data    = json_decode($data, true);
+        if ($data['status']) {
             $return['data']['is_authorization'] = $data['data']['is_authorization'];
-            $return['data']['version'] = $version;
-            $return['data']['product'] = $product;
-            $return['data']['changeLog'] = $data['data']['changeLog'];
-            $return['msg'] = '授权查询成功';
-            $return['status'] = true;
+            $return['data']['version']          = $version;
+            $return['data']['product']          = $product;
+            $return['data']['changeLog']        = $data['data']['changeLog'];
+            $return['msg']                      = '授权查询成功';
+            $return['status']                   = true;
             return $return;
         }
         //未授权
-        $return['data']['product'] = $product;
-        $return['data']['version'] = $version;
-        $return['data']['changeLog'] = '未查询到授权信息';
+        $return['data']['product']          = $product;
+        $return['data']['version']          = $version;
+        $return['data']['changeLog']        = '未查询到授权信息';
         $return['data']['is_authorization'] = false;
         return $return;
     }

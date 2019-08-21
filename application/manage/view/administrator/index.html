@@ -103,26 +103,30 @@
         $(document).on('click', '.option-edit', function () {
             var id = $(this).attr('data-id');
             JsGet('{:url("administrator/edit")}?id=' + id, function (tpl) {
-                layer.open({
-                    type: 1,
-                    area: ['800px', '600px'],
-                    data: '',
-                    title: '编辑管理员',
-                    content: tpl.data,
-                    btn: ['保存', '关闭'],
-                    yes: function (index, layero) {
-                        var thedata = $('#edit_form').serialize();
-                        JsPost('{:url("administrator/edit")}', thedata, function (re) {
-                            if (re.status) {
-                                layer.msg('保存成功');
-                                layer.close(index);
-                                userTables.reload();
-                            } else {
-                                layer.msg(re.msg);
-                            }
-                        });
-                    }
-                });
+                if(tpl.status){
+                    layer.open({
+                        type: 1,
+                        area: ['800px', '600px'],
+                        data: '',
+                        title: '编辑管理员',
+                        content: tpl.data,
+                        btn: ['保存', '关闭'],
+                        yes: function (index, layero) {
+                            var thedata = $('#edit_form').serialize();
+                            JsPost('{:url("administrator/edit")}', thedata, function (re) {
+                                if (re.status) {
+                                    layer.msg('保存成功');
+                                    layer.close(index);
+                                    userTables.reload();
+                                } else {
+                                    layer.msg(re.msg);
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(tpl.msg);
+                }
             });
         });
     });

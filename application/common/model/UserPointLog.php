@@ -13,6 +13,8 @@ class UserPointLog extends Common
     const POINT_TYPE_REBATE = 2; //购物返积分
     const POINT_TYPE_DISCOUNT = 3; //购物使用积分
     const POINT_TYPE_ADMIN_EDIT = 4; //后台编辑
+    const POINT_TYPE_PRIZE = 5; //奖励积分
+    const POINT_TYPE_EXCHANGE = 6; //积分兑换
     const SIGN_FIXED_POINT = 1; //签到固定积分
     const SIGN_RANDOM_POINT = 2; //签到随机积分
 
@@ -366,7 +368,7 @@ class UserPointLog extends Common
     {
         $orders_reward_proportion = getSetting('orders_reward_proportion');
         $point = floor($money / $orders_reward_proportion);
-        $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单:'.$order_id.'的积分奖励');
+        $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单：'.$order_id.' 积分奖励');
     }
 
 
@@ -400,6 +402,9 @@ class UserPointLog extends Common
     /**
      * @param $post
      * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     protected function tableWhere($post)
     {

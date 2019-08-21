@@ -48,9 +48,10 @@ class Pages extends Manage
                 $pageConfig[$key]['value'] = $value['params'];
             }
         }
+        $pageConfig = json_encode($pageConfig,320);
         $pageConfig = str_replace('"true','true',$pageConfig);
         $pageConfig = str_replace('true"','true',$pageConfig);
-        $this->assign('page_config',json_encode($pageConfig,320));
+        $this->assign('page_config',$pageConfig);
 
         //取出所有品牌
         $brandModel = new Brand();

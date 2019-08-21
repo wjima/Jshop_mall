@@ -437,42 +437,45 @@
         //添加分类
         $(document).on('click', '.add-class', function(){
             JsGet('{:url("Categories/edit")}',function (tpl) {
-                layer.open({
-                    type: 1,
-                    area: ['450', '550px'],
-                    data:'',
-                    title: '添加',
-                    content: tpl.data,
-                    btn:['保存','关闭'],
-                    yes:function (index,layero) {
-                        var name = $("#name").val();
-                        var sort = $("#sort").val();
-                        var error = false;
-                        if(name.length > 50 || name.length < 1){
-                            error = true;
-                            layer.msg('分类名称在1-50个字符之间', {time: 1300});
-                            return false;
-                        }
-                        if(sort < 1 || sort > 100){
-                            error = true;
-                            layer.msg('请填写1-100的排序值，越小越靠前', {time: 1300});
-                            return false;
-                        }
-                        var thedata = $('.goodsCatForm').serialize();
-                        JsPost('{:url("Categories/edit")}',thedata,function (re) {
-                            if(re.status){
-                                layer.msg('保存成功');
-                                layer.close(index);
-                                goodscatgoods_cat_id();//刷新获取分类方法
-                                form.render();
-                            }else{
-                                layer.msg(re.msg);
+                if(tpl.status){
+                    layer.open({
+                        type: 1,
+                        area: ['450', '550px'],
+                        data:'',
+                        title: '添加',
+                        content: tpl.data,
+                        btn:['保存','关闭'],
+                        yes:function (index,layero) {
+                            var name = $("#name").val();
+                            var sort = $("#sort").val();
+                            var error = false;
+                            if(name.length > 50 || name.length < 1){
+                                error = true;
+                                layer.msg('分类名称在1-50个字符之间', {time: 1300});
+                                return false;
                             }
-                        });
-                    }
-                });
+                            if(sort < 1 || sort > 100){
+                                error = true;
+                                layer.msg('请填写1-100的排序值，越小越靠前', {time: 1300});
+                                return false;
+                            }
+                            var thedata = $('.goodsCatForm').serialize();
+                            JsPost('{:url("Categories/edit")}',thedata,function (re) {
+                                if(re.status){
+                                    layer.msg('保存成功');
+                                    layer.close(index);
+                                    goodscatgoods_cat_id();//刷新获取分类方法
+                                    form.render();
+                                }else{
+                                    layer.msg(re.msg);
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(tpl.msg);
+                }
             });
-
             return false;
         });
 
@@ -480,43 +483,47 @@
         //添加类型
         $(document).on('click', '.add-type', function(){
             JsGet('{:url("GoodsType/add")}',function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '添加类型',
-                    area: ['750px', '440px'], //宽高
-                    content: e.data,
-                    btn:['保存','关闭'],
-                    success:function (layero,index) {
-                        layero.addClass('layui-form');//添加form标识
-                        layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');
-                        form.render();
-                    },
-                    yes:function () {
-                        form.on('submit(fromContent)', function (data) {
-                            JsPost("{:url('GoodsType/add')}", data.field, function(res){
-                                if(res.status){
-                                    layer.close(window_box);
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '添加类型',
+                        area: ['750px', '440px'], //宽高
+                        content: e.data,
+                        btn:['保存','关闭'],
+                        success:function (layero,index) {
+                            layero.addClass('layui-form');//添加form标识
+                            layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');
+                            form.render();
+                        },
+                        yes:function () {
+                            form.on('submit(fromContent)', function (data) {
+                                JsPost("{:url('GoodsType/add')}", data.field, function(res){
+                                    if(res.status){
+                                        layer.close(window_box);
 
-                                    JsGet("{:url('GoodsType/getAll')}", function(e){
-                                        if(e.data.length>0){
-                                            var getTpl = type_tpl.innerHTML
+                                        JsGet("{:url('GoodsType/getAll')}", function(e){
+                                            if(e.data.length>0){
+                                                var getTpl = type_tpl.innerHTML
                                                     ,view = document.getElementById('goods_type_view');
-                                            var tmpData = {};
-                                            tmpData.list = e.data;
-                                            laytpl(getTpl).render(tmpData, function(html){
-                                                view.innerHTML = html;
-                                            });
-                                            form.render();
-                                        }
-                                    })
+                                                var tmpData = {};
+                                                tmpData.list = e.data;
+                                                laytpl(getTpl).render(tmpData, function(html){
+                                                    view.innerHTML = html;
+                                                });
+                                                form.render();
+                                            }
+                                        })
 
-                                }else{
-                                    layer.msg(res.msg);
-                                }
-                            })
-                        });
-                    }
-                });
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                })
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
             return false;
         });
@@ -695,12 +702,16 @@
 
     function addBrand() {
         JsGet("{:url('Brand/add')}", function(e){
-            window.box = layer.open({
-                type: 1,
-                content: e.data,
-                area: ['400px', '480px'],
-                title:'添加品牌'
-            });
+            if(e.status){
+                window.box = layer.open({
+                    type: 1,
+                    content: e.data,
+                    area: ['400px', '480px'],
+                    title:'添加品牌'
+                });
+            }else{
+                layer.msg(e.msg);
+            }
         })
     }
 

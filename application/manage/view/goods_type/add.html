@@ -232,12 +232,16 @@
             selectParamsId = $(this).parent().parent().attr('data-id');
 
             JsGet("{:url('GoodsParams/getlist')}", function (e) {
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['700px', '450px'],
-                    title: '参数列表'
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['700px', '450px'],
+                        title: '参数列表'
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //监听商品列表页工具条
@@ -259,12 +263,16 @@
         $(".layui-tab").on('click', '.select-type-class', function (e) {
             selectTypeId = $(this).parent().parent().attr('data-id');
             JsGet("{:url('GoodsTypeSpec/getlist')}", function (e) {
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['700px', '450px'],
-                    title: '属性列表'
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['700px', '450px'],
+                        title: '属性列表'
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
         //监听商品列表页工具条

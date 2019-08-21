@@ -59,12 +59,16 @@
         $(document).on('click', '.add-class', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("GoodsTypeSpec/add")}',function (e) {
-                window_box = layer.open({
-                    type: 1,
-                    title: '添加属性',
-                    area: ['420px', '420px'], //宽高
-                    content: e.data
-                });
+				if(e.status){
+					window_box = layer.open({
+						type: 1,
+						title: '添加属性',
+						area: ['420px', '420px'], //宽高
+						content: e.data
+					});
+				}else{
+					layer.msg(e.msg);
+				}
             });
             return false;
         });
@@ -73,12 +77,16 @@
         $(document).on('click', '.edit-class', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("GoodsTypeSpec/edit")}?id='+id, function(e){
-				window_box = layer.open({
-					type: 1,
-					title: '编辑属性',
-					area: ['440px', '550px'], //宽高
-					content: e.data
-				});
+				if(e.status){
+					window_box = layer.open({
+						type: 1,
+						title: '编辑属性',
+						area: ['440px', '550px'], //宽高
+						content: e.data
+					});
+				}else{
+					layer.msg(e.msg);
+				}
 			});
             return false;
         });

@@ -77,7 +77,7 @@ class Record
                         'method'     => $act,
                         'desc'       => $decs,
                         'content'    => json_encode($postData),
-                        'ip'         => get_client_ip(),
+                        'ip'         => get_client_ip(0,true),
                     ];
                     $logModel = new OperationLog();
                     $logModel->doAdd($log);

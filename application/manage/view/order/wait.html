@@ -106,12 +106,16 @@
         $(document).on('click', '.view-order', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("order/view")}?id='+id, function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '订单详情',
-                    area: ['800px', '445px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '订单详情',
+                        area: ['800px', '445px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
 
@@ -119,12 +123,16 @@
         $(document).on('click', '.edit-order', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("order/edit")}?id='+id, function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '编辑订单',
-                    area: ['770px', '350px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑订单',
+                        area: ['770px', '350px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
 
@@ -213,12 +221,16 @@
         $(document).on('click', '.ship-order', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("order/ship")}?order_id='+id, function(e){
-                window_box = layer.open({
-                    type: 1,
-                    title: '支付订单',
-                    area: ['800px', '800px'], //宽高
-                    content: e.data
-                });
+                if(e.status){
+                    window_box = layer.open({
+                        type: 1,
+                        title: '支付订单',
+                        area: ['800px', '800px'], //宽高
+                        content: e.data
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             });
         });
 

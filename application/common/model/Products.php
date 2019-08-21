@@ -28,7 +28,8 @@ class Products extends Common
      * User:wjima
      * Email:1457529125@qq.com
      * @param array $data
-     * @return mixed
+     * @return int|string
+     * @throws \think\Exception
      */
     public function doAdd($data = [])
     {
@@ -46,13 +47,20 @@ class Products extends Common
         return $product_id ? $product_id : 0;
     }
 
+
+    /**
+     * @return \think\model\relation\HasOne
+     */
     public function goods()
     {
         return $this->hasOne('Goods', 'id', 'goods_id');
     }
 
+
     /**
      * 根据货品ID获取货品信息
+     * @param $id
+     * @param int $user_id
      * @param array $where
      * @param bool $isPromotion 默认是true，如果为true的时候，就去算此商品的促销信息，否则，就不算
      * @param string $token 默认空，传后取会员等级优惠价
@@ -60,6 +68,9 @@ class Products extends Common
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getProductInfo($id, $isPromotion = true, $user_id = 0)
     {
@@ -92,7 +103,6 @@ class Products extends Common
         }
         $product['total_stock'] = $product['stock'];//原始总库存
         $product['stock']       = $goodsModel->getStock($product);
-
 
         $priceData = $goodsModel->getPrice($product, $user_id);
 
@@ -232,4 +242,36 @@ class Products extends Common
         return $this->where('id', 'in', $ids)->delete(true);
     }
 
+
+    /**
+     * 判断货品是否上下架状态
+     * @param $products_id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getShelfStatus($products_id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '商品已下架',
+            'data' => ''
+        ];
+
+        $where[] = ['p.id', 'eq', $products_id];
+        $return['data'] = $this->alias('p')
+            ->field('p.id,g.marketable')
+            ->join('goods g', 'g.id = p.goods_id')
+            ->where($where)
+            ->find();
+
+        if($return['data'] && $return['data']['marketable'] == 1)
+        {
+            $return['status'] = true;
+            $return['msg'] = '上架';
+        }
+
+        return $return;
+    }
 }

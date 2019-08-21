@@ -929,7 +929,7 @@ class Order extends Common
                     {
                         $pointLogMode = new UserPointLog();
                         unset($res);
-                        $res = $pointLogMode->setPoint($v['user_id'], $v['point'], $pointLogMode::POINT_TYPE_ADMIN_EDIT, '取消订单返还积分');
+                        $res = $pointLogMode->setPoint($v['user_id'], $v['point'], $pointLogMode::POINT_TYPE_ADMIN_EDIT, '取消订单：'.$v['order_id'].' 返还积分');
                         if(!$res['status'])
                         {
                             Db::rollback();
@@ -1304,7 +1304,7 @@ class Order extends Common
             //积分核销
             if ($order['point'] > 0) {
                 $userPointLog = new UserPointLog();
-                $pflag        = $userPointLog->setPoint($user_id, 0 - $order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '');
+                $pflag        = $userPointLog->setPoint($user_id, 0 - $order['point'], $userPointLog::POINT_TYPE_DISCOUNT, $remarks = '订单：'.$order['order_id'].' 使用积分');
                 if (!$pflag['status']) {
                     Db::rollback();
                     return $pflag;

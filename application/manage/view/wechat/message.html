@@ -71,12 +71,16 @@
 
         $(document).on('click','.add-message',function(){
             JsGet("{:url('Wechat/addMessage')}", function(e){
-                window.box = layer.open({
-                    type: 1,
-                    content: e.data,
-                    area: ['450px', '550px'],
-                    title:'添加消息'
-                });
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['450px', '550px'],
+                        title:'添加消息'
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
             })
         });
         form.on('select(message-type)', function (data) {
@@ -139,12 +143,16 @@
                 });
             } else if(layEvent === 'edit'){ //编辑
                 JsGet("{:url('Wechat/editMessage')}?id=" + data.id, function(e){
-                    window.box = layer.open({
-                        type:1,
-                        content:e.data,
-                        area: ['450px', '550px'],
-                        title:'编辑消息'
-                    })
+                    if(e.status){
+                        window.box = layer.open({
+                            type:1,
+                            content:e.data,
+                            area: ['450px', '550px'],
+                            title:'编辑消息'
+                        })
+                    }else{
+                        layer.msg(e.msg);
+                    }
                 })
             }else if(layEvent==='edit-media'){
                 window.location.href = "{:url('Wechat/editMediaMessage')}?id=" + data.id;

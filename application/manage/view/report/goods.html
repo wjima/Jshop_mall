@@ -83,7 +83,10 @@
         layui.form.on('submit(*)', function(data){
             type = data.elem.getAttribute('val');
             if(type != ""){
-                getTime(type,function(){
+                getTime(type, function(date){
+                    if(date){
+                        data.field.date = date;
+                    }
                     table.reload('table', {
                         where: data.field
                         ,page: {
@@ -123,7 +126,7 @@
                 if(res.status){
                     //设置时间，回调
                     $('#date').val(res.data.start  + " 到 " + res.data.end);
-                    calback();
+                    calback($('#date').val());
                 }else{
                     layer.msg(res.msg);
                 }

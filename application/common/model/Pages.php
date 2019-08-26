@@ -160,8 +160,9 @@ class Pages extends Common
                                 }
                             }
                         }
-                        $data[$i]['params']['list'] = array_values(array_filter((array)$data[$i]['params']['list']));
+
                     }
+                    $data[$i]['params']['list'] = array_values(array_filter((array)$data[$i]['params']['list']));
                 } elseif ($value['widget_code'] == 'pintuan') {
                     $goodsModel   = new Goods();
                     $pintuanModel = new PintuanRule();

@@ -1,6 +1,7 @@
 <?php
 namespace addons\KdniaoExpress\lib;
 
+use app\common\model\BillDelivery;
 use org\Curl;
 
 class kdniao
@@ -218,6 +219,14 @@ class kdniao
             'ShipperCode'  => trim($shipperCode),
             'logisticCode' => trim($logisticCode),
         ];
+        if ($requestData['ShipperCode'] == 'SF') {
+            //查询订单收货人手机号后四位
+            $billDeliveryModel = new BillDelivery();
+            $deliveryInfo      = $billDeliveryModel->where([['logi_no', '=', $requestData['logisticCode']], ['logi_code', '=', 'SF']])->field('ship_mobile,order_id')->find();
+            if ($deliveryInfo && isset($deliveryInfo['ship_mobile'])) {
+                $requestData['CustomerName'] = substr($deliveryInfo['ship_mobile'], -4);
+            }
+        }
         $requestData = json_encode($requestData, JSON_UNESCAPED_UNICODE);
         $datas       = array(
             'EBusinessID' => $this->ebusinessid,

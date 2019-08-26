@@ -480,4 +480,20 @@ class Coupon extends Common
         }
         return $return;
     }
+
+    /**
+     * 用户绑定优惠卷
+     * @param $user_id
+     * @param $coupon_code
+     * @return array
+     */
+    public function bindUser($user_id, $coupon_code)
+    {
+        $result = ['status' => false, 'msg' => '绑定失败', 'data' => ''];
+        if ($this->where('coupon_code', $coupon_code)->update(['user_id' => $user_id]) !== false) {
+            $result['status'] = true;
+            $result['msg']    = '绑定成功';
+        }
+        return $result;
+    }
 }

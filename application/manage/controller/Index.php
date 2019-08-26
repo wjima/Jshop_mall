@@ -8,6 +8,7 @@ use app\common\model\Operation;
 use app\common\model\Order;
 use app\common\model\PintuanGoods;
 use app\common\model\Promotion;
+use app\common\model\User;
 use think\facade\Cache;
 use app\common\model\WeixinAuthor;
 use app\common\model\Goods;
@@ -132,6 +133,22 @@ class Index extends Manage
             return $this->fetch('tagPintuan');
         }
     }
+
+    /**
+     * 供tag标签选择会员的时候使用
+     */
+    public function tagSelectUser()
+    {
+        $this->view->engine->layout(false);
+        if (input('param.type') != 'show') {
+            $request   = input('param.');
+            $userModel = new User();
+            return $userModel->tableData($request);
+        } else {
+            return $this->fetch('tagSelectUser');
+        }
+    }
+
 
 
 }

@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { host } from '../../common/serviceUrl'
 import payment from '../../components/Payment.vue'
 export default {
   components: {
@@ -182,7 +183,7 @@ export default {
         let isWeiXin = this.GLOBAL.isWeiXinBrowser()
         if (isWeiXin) {
           var transitUrl =
-            baseUrl + '/#/auth?order_id=' + this.ids + '&type=' + this.type
+            host + '/wap/#/auth?order_id=' + this.ids + '&type=' + this.type
 
           // 公众号支付参数
           if (this.type == 1 && this.ids) {

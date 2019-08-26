@@ -40,4 +40,11 @@ class Coupon extends Manage
         $couponModel = new couponModel();
         return $couponModel->del(input('param.coupon_code'));
     }
+
+
+    public function bindUser()
+    {
+        $couponModel = new couponModel();
+        return $couponModel->bindUser(input('param.user_id'), input('param.coupon_code'));
+    }
 }

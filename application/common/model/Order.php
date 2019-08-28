@@ -1425,6 +1425,9 @@ class Order extends Common
 
         //以上保存了订单主体表信息，以下生成订单明细表
         $items = $this->formatOrderItems($cartInfo['data']['list'], $order['order_id']);
+        if(!$items){
+            return error_code(10000);       //判断订单明细为空的不能下单
+        }
         return [
             'status' => true,
             'data'   => $items,           //订单主体表通过引用直接返回值，订单明细通过这里返回值

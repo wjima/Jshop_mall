@@ -38,7 +38,7 @@ class Hooks extends Common
             $hooks  = $hooks->toArray();
             $hooks  = array_column($hooks, 'name');
             $common = array_intersect($hooks, $methods);
-            if (!empty($common)) {
+            if($common){
                 foreach ($common as $hook) {
                     $flag = $this->updateAddons($hook, array($addons_name));
                     if (false === $flag) {
@@ -46,8 +46,6 @@ class Hooks extends Common
                         return false;
                     }
                 }
-            } else {
-                return false;
             }
             return true;
         } else {
@@ -117,15 +115,13 @@ class Hooks extends Common
      */
     public function removeAddons($hook_name, $addons_name)
     {
-        $o_addons = $this->where(['name' => $hook_name])->field('addons')->select()->toArray();
-        $o_addons = array_column($o_addons, 'addons');
-
+        $o_addons = $this->where(['name' => $hook_name])->field('addons')->find()->toArray();
+        $o_addons = explode(',', $o_addons['addons']);
         if ($o_addons) {
             $addons = array_diff($o_addons, $addons_name);
         } else {
             return true;
         }
-
         $flag = $this->where(['name' => $hook_name])
             ->setField('addons', implode(',', $addons));
         if (false === $flag) {
@@ -147,13 +143,12 @@ class Hooks extends Common
     {
         $result = [
             'status' => true,
-            'msg' => '保存成功',
-            'data'=> []
+            'msg'    => '保存成功',
+            'data'   => []
         ];
-        if (!$this->allowField(true)->save($data))
-        {
+        if (!$this->allowField(true)->save($data)) {
             $result['status'] = false;
-            $result['msg'] = '保存失败';
+            $result['msg']    = '保存失败';
         }
         return $result;
     }
@@ -168,13 +163,12 @@ class Hooks extends Common
     {
         $result = [
             'status' => true,
-            'msg' => '保存成功',
-            'data' => []
+            'msg'    => '保存成功',
+            'data'   => []
         ];
-        if (!$this->allowField(true)->save($data,['id'=>$data['id']]))
-        {
+        if (!$this->allowField(true)->save($data, ['id' => $data['id']])) {
             $result['status'] = false;
-            $result['msg'] = '保存失败';
+            $result['msg']    = '保存失败';
         }
         return $result;
     }

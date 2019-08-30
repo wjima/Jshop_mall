@@ -70,18 +70,19 @@
                 ,elem: '#table'
                 ,page: false //开启分页
                 ,limit:'1000'
+                ,totalRow:true
                 ,cols: [[ //表头
                     {field: 'x', title: '日期', width:150}
-                    ,{field: 'payments_all_val', title: '收款单金额'}
-                    ,{field: 'payments_all_num', title: '收款单笔数'}
-                    ,{field: 'payments_order_val', title: '订单收款金额'}
-                    ,{field: 'payments_order_num', title: '订单收款笔数'}
-                    ,{field: 'payments_order_refund_val', title: '订单退款金额'}
-                    ,{field: 'payments_order_refund_num', title: '订单退款笔数'}
-                    ,{field: 'payments_recharge_val', title: '充值金额'}
-                    ,{field: 'payments_recharge_num', title: '充值笔数'}
-                    ,{field: 'payments_tocash_val', title: '提现金额'}
-                    ,{field: 'payments_tocash_num', title: '提现笔数'}
+                    ,{field: 'payments_all_val', title: '收款单金额',totalRow:true}
+                    ,{field: 'payments_all_num', title: '收款单笔数',totalRow:true}
+                    ,{field: 'payments_order_val', title: '订单收款金额',totalRow:true}
+                    ,{field: 'payments_order_num', title: '订单收款笔数',totalRow:true}
+                    ,{field: 'payments_order_refund_val', title: '订单退款金额',totalRow:true}
+                    ,{field: 'payments_order_refund_num', title: '订单退款笔数',totalRow:true}
+                    ,{field: 'payments_recharge_val', title: '充值金额',totalRow:true}
+                    ,{field: 'payments_recharge_num', title: '充值笔数',totalRow:true}
+                    ,{field: 'payments_tocash_val', title: '提现金额',totalRow:true}
+                    ,{field: 'payments_tocash_num', title: '提现笔数',totalRow:true}
                 ]]
             });
 

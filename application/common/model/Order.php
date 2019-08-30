@@ -151,7 +151,7 @@ class Order extends Common
         $where = [];
         //单个订单模糊搜索时
         if (!empty($input['order_id'])) {
-            $where[] = array('o.order_id', 'LIKE', '%' . $input['order_id'] . '%');
+            $where[] = array('o.order_id', 'LIKE', '%' . trim($input['order_id']) . '%');
         }
         //多个订单时
         if (isset($input['order_ids']) && $input['order_ids'] != "") {
@@ -175,7 +175,7 @@ class Order extends Common
 
         if (!empty($input['date'])) {
             $date_string = $input['date'];
-            $date_array  = explode(' 到 ', $date_string);
+            $date_array  = explode(' 到 ', urldecode($date_string));
             $sdate       = strtotime($date_array[0] . ' 00:00:00');
             $edate       = strtotime($date_array[1] . ' 23:59:59');
             $where[]     = array('o.ctime', ['>=', $sdate], ['<=', $edate], 'and');

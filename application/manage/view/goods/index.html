@@ -81,7 +81,7 @@
 </form>
 
 <div class="layui-card-body">
-	<div class="layui-tab layui-tab-card" lay-filter="goods-tab">
+	<div class="layui-tab layui-tab-card" lay-filter="goods-tab" style="margin:0;">
 		<ul class="layui-tab-title">
             <li class="layui-this" lay-id="all">全部商品<span class="layui-badge layui-bg-gray">{$statics.totalGoods|default=0}</span></li>
             <li lay-id="up">上架商品<span class="layui-badge layui-bg-green">{$statics.totalMarketableUp|default=0}</span></li>
@@ -138,7 +138,7 @@
 
         table = layui.table.render({
             elem: '#goodsTable',
-            height: 'full-180',
+            height: 'full-181',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
@@ -391,6 +391,7 @@
                     break;
                 case 'modify_stock':
                     modifyStock(ids);
+                    break;
                 default :
                     layer.msg('请选择操作类型');
                     return false;

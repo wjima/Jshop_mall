@@ -85,6 +85,7 @@ class Addons extends Manage
                 'config' => json_encode($addons->getConfig())
             ];
             $addonsModel->save($config, ['name' => $addon_name]);//更新配置
+
             $hooks_update = $hookModel->updateHooks($addon_name);//更新钩子
             if ($hooks_update) {
                 Cache::set('hooks', null);

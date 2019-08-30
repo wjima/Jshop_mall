@@ -32,7 +32,7 @@
         //执行渲染
         table.render({
             elem: '#hooksTable', //指定原始表格元素选择器（推荐id选择器）
-            height: 'full-220',
+            height: 'full-99',
             cellMinWidth: '80',
             page: 'true',
             limit: '20',
@@ -49,9 +49,9 @@
                         } else {
                             return '视图';
                         }
-                    }
+                    }, width: 150
                 },
-                {field: 'addons', sort: true, title: '挂载插件', align: 'center', width: 150},
+                {field: 'addons', sort: true, title: '挂载插件', align: 'center'},
                 {width: 150, title: '操作', align: 'center', toolbar: '#hooksBar'}
             ]]
         });

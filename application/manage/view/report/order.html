@@ -70,14 +70,15 @@
                 ,elem: '#table'
                 ,page: false //开启分页
                 ,limit:'1000'
+                ,totalRow:true
                 ,cols: [[ //表头
                     {field: 'x', title: '日期', width:150}
-                    ,{field: 'order_all_val', title: '全部金额'}
-                    ,{field: 'order_all_num', title: '全部数量'}
-                    ,{field: 'order_nopay_val', title: '待支付金额'}
-                    ,{field: 'order_nopay_num', title: '待支付数量'}
-                    ,{field: 'order_payed_val', title: '已付款金额'}
-                    ,{field: 'order_payed_num', title: '已付款数量'}
+                    ,{field: 'order_all_val', title: '全部金额',totalRow:true}
+                    ,{field: 'order_all_num', title: '全部数量',totalRow:true}
+                    ,{field: 'order_nopay_val', title: '待支付金额',totalRow:true}
+                    ,{field: 'order_nopay_num', title: '待支付数量',totalRow:true}
+                    ,{field: 'order_payed_val', title: '已付款金额',totalRow:true}
+                    ,{field: 'order_payed_num', title: '已付款数量',totalRow:true}
                 ]]
             });
 

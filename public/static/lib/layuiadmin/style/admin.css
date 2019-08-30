@@ -4,9 +4,9 @@
  @Author：贤心
  @Site：http://www.layui.com/admin/
  @License：LPPL
- 
+
  */
- 
+
 html #layuicss-layuiAdmin{display: none; position: absolute; width: 1989px;}
 
 
@@ -35,7 +35,7 @@ html{background-color: #f2f2f2; color: #666;}
 *[layadmin-event]{cursor: pointer;}
 
 /* 重置布局结构 */
-.layui-layout-admin .layui-header{position: fixed; top: 0; left: 0; width: 100%; height: 50px;} 
+.layui-layout-admin .layui-header{position: fixed; top: 0; left: 0; width: 100%; height: 50px;}
 
 /*
 .layui-layout-admin .layui-header .layui-layout-right .layui-nav-item a{color: #fff;}
@@ -78,21 +78,21 @@ html{background-color: #f2f2f2; color: #666;}
 
 /* 重置表格风格 */
 /*
-.layui-table th, 
-.layui-table td, 
+.layui-table th,
+.layui-table td,
 .layui-table[lay-skin="line"],
-.layui-table[lay-skin="row"], 
-.layui-table-view, 
+.layui-table[lay-skin="row"],
+.layui-table-view,
 .layui-table-header,
 .layui-table-tool,
 .layui-table-page,
 .layui-table-fixed-r,
 .layui-table-tips-main{border-color: #f6f6f6;}
 
-.layui-table thead tr, 
-.layui-table-header, 
+.layui-table thead tr,
+.layui-table-header,
 .layui-table-tool,
-.layui-table-patch, 
+.layui-table-patch,
 .layui-table-mend{background-color: #fff;}
 
 .layui-table[lay-even] tr:nth-child(even),
@@ -238,7 +238,7 @@ html{background-color: #f2f2f2; color: #666;}
 .layui-layout-admin .layui-header a:hover{color: #000;}
 .layui-layout-admin .layui-header .layui-nav .layui-nav-more{border-top-color: #666}
 .layui-layout-admin .layui-header .layui-nav .layui-nav-mored{border-color: transparent; border-bottom-color: #666;}
-.layui-layout-admin .layui-header .layui-nav .layui-this:after, 
+.layui-layout-admin .layui-header .layui-nav .layui-this:after,
 .layui-layout-admin .layui-header .layui-nav-bar{height: 2px; background-color: #20222A}
 .layui-layout-admin .layui-logo{background-color: #20222A; box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);}
 .layui-layout-admin .layui-logo,
@@ -255,12 +255,12 @@ html{background-color: #f2f2f2; color: #666;}
 
 
 /*
- 
+
  格局
- 
+
 */
 
-.layui-fluid{padding: 15px;}
+.layui-fluid{padding: 10px 10px 5px;}
 .layadmin-header{display: none; height: 50px; line-height: 50px; margin-bottom: 0; border-radius: 0;}
 .layadmin-header .layui-breadcrumb{padding: 0 15px;}
 .layui-card-header{position: relative;}
@@ -269,9 +269,9 @@ html{background-color: #f2f2f2; color: #666;}
 
 
 /*
- 
+
  控制台
- 
+
 */
 
 
@@ -340,9 +340,9 @@ html{background-color: #f2f2f2; color: #666;}
 
 
 /********************************
- 
+
   其它主页开始 By star1029
- 
+
 *******************************/
 
 /* 主页示例一 by star1029 */
@@ -414,7 +414,7 @@ html{background-color: #f2f2f2; color: #666;}
 /*
 
  应用
- 
+
 */
 
 
@@ -435,9 +435,9 @@ html{background-color: #f2f2f2; color: #666;}
 
 
 /*
- 
+
  系统
- 
+
 */
 
 
@@ -511,13 +511,13 @@ html{background-color: #f2f2f2; color: #666;}
 */
 
 @media screen and (max-width: 768px) {
-  
+
   /* 产品清单模板 */
   .layadmin-panel-selection{margin: 0; width: auto;}
-  
+
   /* 导航 */
   .layui-body .layui-nav .layui-nav-item{display: block;}
-  
+
   /* 主体容器 */
   .layui-layout-admin .layui-body .layadmin-tabsbody-item{-webkit-overflow-scrolling: touch; overflow: auto;}
 }

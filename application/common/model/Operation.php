@@ -659,7 +659,7 @@ class Operation extends Common
     }
     //把某一个插件的菜单加到树上
     private function addonsMenuAdd($conf,&$tree){
-        foreach($conf as $v){
+        foreach((array)$conf as $v){
             $this->addonsMenuAdd2($v,$tree);
         }
     }

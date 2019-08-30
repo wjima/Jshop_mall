@@ -474,56 +474,55 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '关键参数丢失',
+            'msg'    => '',
             'data'   => '',
         ];
         $this->view->engine->layout(false);
         $type_id = input('post.type_id');
-        if (!$type_id) {
-            return $result;
-        }
-        $goodsTypeModel = new GoodsType();
-        $res            = $goodsTypeModel->getTypeValue($type_id);
+        if ($type_id) {
+            $goodsTypeModel = new GoodsType();
+            $res            = $goodsTypeModel->getTypeValue($type_id);
 
-        $html       = '';
-        $customSpec = false;//是否可以使用自定义规格
-        if ($res['status'] == true) {
-            $this->assign('typeInfo', $res['data']);
-            if (!$res['data']['spec']->isEmpty()) {
-                $spec = [];
-                foreach ($res['data']['spec']->toArray() as $key => $val) {
-                    $spec[$key]['name']      = $val['spec']['name'];
-                    $spec[$key]['specValue'] = $val['spec']['getSpecValue'];
+            $html       = '';
+            $customSpec = false;//是否可以使用自定义规格
+            if ($res['status'] == true) {
+                $this->assign('typeInfo', $res['data']);
+                if (!$res['data']['spec']->isEmpty()) {
+                    $spec = [];
+                    foreach ($res['data']['spec']->toArray() as $key => $val) {
+                        $spec[$key]['name']      = $val['spec']['name'];
+                        $spec[$key]['specValue'] = $val['spec']['getSpecValue'];
+                    }
+                    $this->assign('spec', $spec);
+                    if (count($spec) <= 2) {//规格超过2种的，不允许自定义
+                        $customSpec = true;
+                    }
                 }
-                $this->assign('spec', $spec);
-                if (count($spec) <= 2) {//规格超过2种的，不允许自定义
-                    $customSpec = true;
-                }
-            }
-            $this->assign('customSpec', $customSpec);
+                $this->assign('customSpec', $customSpec);
 
-            if ($res['data']['spec']->isEmpty()) {
-                $this->assign('canOpenSpec', 'false');
-            } else {
-                $this->assign('canOpenSpec', 'true');
+                if ($res['data']['spec']->isEmpty()) {
+                    $this->assign('canOpenSpec', 'false');
+                } else {
+                    $this->assign('canOpenSpec', 'true');
+                }
+                //erp同步插件是否开启
+                $addonsModel = new \app\common\model\Addons();
+                $addons      = $addonsModel->where('name', 'eq', 'ErpSyn')->find();
+                if ($addons) {
+                    $erp_syn_on = true;
+                } else {
+                    $erp_syn_on = false;
+                }
+                $this->assign('erp_syn_on', $erp_syn_on);
+                //获取参数信息
+                $goodsTypeParamsModel = new GoodsTypeParams();
+                $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
+                $this->assign('typeParams', $typeParams);
+                $html             = $this->fetch('getSpec');
+                $result['status'] = true;
+                $result['msg']    = '获取成功';
+                $result['data']   = $html;
             }
-            //erp同步插件是否开启
-            $addonsModel = new \app\common\model\Addons();
-            $addons      = $addonsModel->where('name', 'eq', 'ErpSyn')->find();
-            if ($addons) {
-                $erp_syn_on = true;
-            } else {
-                $erp_syn_on = false;
-            }
-            $this->assign('erp_syn_on', $erp_syn_on);
-            //获取参数信息
-            $goodsTypeParamsModel = new GoodsTypeParams();
-            $typeParams           = $goodsTypeParamsModel->getRelParams($type_id);
-            $this->assign('typeParams', $typeParams);
-            $html             = $this->fetch('getSpec');
-            $result['status'] = true;
-            $result['msg']    = '获取成功';
-            $result['data']   = $html;
         }
         return $result;
     }
@@ -1178,6 +1177,7 @@ class Goods extends Manage
     {
         $id  = input('id');
         $res = model('common/GoodsComment')->setDisplay($id);
+        dump($res);die;
         return $res;
     }
 

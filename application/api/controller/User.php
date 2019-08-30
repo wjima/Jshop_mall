@@ -133,6 +133,9 @@ class User extends Api
     /**
      * 支付宝小程序创建用户，不登陆，只是保存登录态
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function alipayappLogin1()
     {
@@ -142,15 +145,16 @@ class User extends Api
             'msg'    => ''
         ];
 
-        if (!input("?param.code")) {
+        $code = Request::param('code', false);
+        $user_info = Request::param('user_info', false);
+
+        if(!$code)
+        {
             $result['msg'] = 'code参数缺失';
             return $result;
         }
-        $userWxModel = new UserWx();
-        $alipayapp = new Alipayapp();
-
-        return $alipayapp->codeToInfo(input('param.code'));
-
+        $aliPayApp = new Alipayapp();
+        return $aliPayApp->codeToInfo($code, $user_info);
     }
 
 

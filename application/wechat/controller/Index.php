@@ -76,15 +76,15 @@ class Index extends Wechat
             // 粉丝关注事件
             case 'subscribe':
                 $weixinMessage = new WeixinMessage();
-                $weixinMessage->weixinReply('subscribe');
+                return $weixinMessage->weixinReply('subscribe');
             // 粉丝取消关注
             case 'unsubscribe':
                 exit("success");
             // 点击微信菜单的链接
             case 'click':
-                $event = $wechat->getRevEvent();
+                $event         = $wechat->getRevEvent();
                 $weixinMessage = new WeixinMessage();
-                $weixinMessage->weixinReply('keyword', $event['key']);
+                return $weixinMessage->weixinReply('keyword', $event['key']);
             // 微信扫码推事件
             case 'scancode_push':
             case 'scancode_waitmsg':
@@ -102,8 +102,9 @@ class Index extends Wechat
         return $wechat->text('您发送了一张图片过来')->reply();
     }
 
-    private function _default(){
-        $wechat  = &load_wechat('Receive');
+    private function _default()
+    {
+        $wechat = &load_wechat('Receive');
         $wechat->text('欢迎光临')->reply();//没有默认的时候返回这个
     }
 

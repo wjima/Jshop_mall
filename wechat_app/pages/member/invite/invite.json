@@ -1,6 +1,0 @@
-{
-    "navigationBarTitleText": "邀请好友",
-    "usingComponents": {
-        "canvasdrawer": "/component/canvasdrawer/canvasdrawer"
-    }
-}

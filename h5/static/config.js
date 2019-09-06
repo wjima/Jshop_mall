@@ -1,2 +1,0 @@
-window.host = '';
-window.entId = '';

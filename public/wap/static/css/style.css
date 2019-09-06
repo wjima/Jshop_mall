@@ -1,0 +1,777 @@
+body{
+  background-color: #f8f8f8;
+  font-size: 28upx;
+}
+view{
+  box-sizing: border-box;
+}
+/* #ifdef MP-ALIPAY */
+image{
+	background-size: 100% 100%;
+}
+button{
+	height: auto;
+	border: none;
+	line-height: 2.55555556;
+	padding: 0 28upx;
+}
+input{
+	background: none;
+	padding: 0;
+}
+shared-checkbox{
+	border-radius: 50%;
+}
+shared-checkbox{
+    border-radius: 50%;
+    height: 36rpx;
+    width: 36rpx;
+    margin-top: -4rpx;
+    border: 1rpx solid #d1d1d1;
+	color: #FF7159;
+}
+shared-checkbox:checked {
+  /* width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 28rpx;
+  color: #fff;
+  background: transparent;
+  transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1);
+  background-color: #FF7159;
+  border: 1rpx solid #FF7159; */
+  background-color: #000;
+  color: #000;
+}
+._radio{
+   border-radius: 50%;/* 圆角 */
+   width: 36rpx;
+   height: 36rpx;
+   margin-top: -4rpx;
+   border: 1rpx solid #d1d1d1;
+}
+/* 选中后的 背景样式 （红色背景 无边框 可根据UI需求自己修改） */
+._radio:checked{
+   border: 1rpx solid #FF7159;
+   background: #FF7159;
+}
+/* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
+._radio:checked::before{
+   border-radius: 50%;/* 圆角 */
+   width: 36rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   height: 36rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   line-height: 36rpx;
+   text-align: center;
+   font-size:28rpx; /* 对勾大小 30rpx */
+   color:#fff; /* 对勾颜色 白色 */
+   background: transparent;
+   transform:translate(-50%, -50%) scale(1);
+   -webkit-transform:translate(-50%, -50%) scale(1);
+}
+/* #endif */
+uni-toast .uni-toast{
+	/* width: 6em; */
+	font-size: 24upx;
+	border-radius: 10px;
+	background: rgba(17,17,17,.5);
+}
+uni-input div, uni-input div div,uni-input, uni-input input{
+	/* min-height: 1rem !important; */
+}
+uni-input{
+	/* height: 1rem; */
+}
+uni-input div div.input-placeholder{
+	/* padding: 8upx 0; */
+}
+.content-top{
+	margin-bottom: 116upx;
+}
+.have-none{
+  background-color: #f3f3f3;
+}
+.color-o{
+	color: #FF7159 !important;
+}
+.color-f{
+	color: #fff !important;
+}
+.color-d{
+	color: #ddd !important;
+}
+.color-3{
+	color: #333 !important;
+}
+.color-6{
+	color: #666 !important;
+}
+.color-9{
+	color: #999 !important;
+}
+.fsz24{
+	font-size: 24upx !important;
+}
+.fsz26{
+	font-size: 26upx !important;
+}
+.fsz28{
+	font-size: 28upx !important;
+}
+.fsz30{
+	font-size: 30upx !important;
+}
+.fsz32{
+	font-size: 32upx !important;
+}
+.fsz34{
+	font-size: 34upx !important;
+}
+.fsz36{
+	font-size: 36upx !important;
+}
+.fsz38{
+	font-size: 38upx !important;
+}
+.fsz50{
+	font-size: 50upx !important;
+}
+.search{
+  width: 100%;
+  height: 104upx;
+  padding: 16upx 26upx;
+  background-color: rgba(255,255,255,1);
+	z-index: 999;
+	transition: all .5s;
+}
+.search-c{
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.search-input{
+  background-color: #E9E9E9;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  line-height: 52upx;
+  padding: 10upx 90upx 10upx 40upx;
+  border-radius: 50upx;
+  font-size: 24upx;
+	transition: all .5s;  
+}
+.search-input-p{
+  color: #999;
+  width: 100%;
+  height: 100%;
+}
+.search-input-p-c{
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+}
+.search-icon{
+  position: absolute;
+  top: 50%;
+  right: 30upx;
+  transform: translateY(-50%);
+	z-index: 99;
+}
+.swiper-c{
+  height: 100%;
+}
+.swiper-c image{
+  height: 100%;
+  width: 100%;
+}
+.btn{
+  display: inline-block;
+  box-sizing: border-box;
+  border-radius: 0;
+  font-size: 28upx;
+	transform: scale(1);
+	transition: all .5s;
+}
+/*按钮按下缩小变色*/
+.btn-hover{
+	transform: scale(.90);
+	transition: all .5s;
+	opacity: .8;
+}
+/*按钮按下只变色*/
+.btn-hover2{
+/* 	transform: scale(.95); */
+	transition: all .1s;
+	opacity: .6;
+}
+.btn::after{
+  border: none;
+}
+.btn-circle{
+  padding: 0upx 20upx;
+  height: 60upx;
+  line-height: 60upx;
+  min-width: 140upx;
+/*  border-radius: 6upx; */
+  font-size: 22upx;
+}
+.btn-square{
+  padding: 0upx 40upx;
+  height: 90upx;
+  line-height: 90upx;
+  min-width: 150upx;
+  border: none !important;
+}
+.btn-fillet{
+	border-radius: 50upx;
+}
+.btn-c{
+	background-color: #f7f7f7;
+}
+.btn-w{
+  border: 2upx solid #333;
+  color: #333;
+	background-color: #fff;
+}
+.btn-g{
+  border: 2upx solid #E0E0E0;
+  color: #999;
+	background-color: #fff;
+}
+.btn-b{
+  border: 2upx solid #333;
+  background-color: #333;
+  color: #fff;
+}
+.btn-o{
+  border: 2upx solid #FF7159;
+  background-color: #FF7159;
+  color: #fff;
+}
+.btn-half{
+	width: 50%;
+}
+.btn-all{
+	width: 100%;
+}
+.img-grids{
+  overflow: hidden;
+	/* padding-bottom: 26upx; */
+}
+.img-grids .goods-name{
+	height: 72upx;
+}
+.column3.img-grids .goods-name{
+	height: 68upx;
+}
+.img-grids-item{
+  width: 336upx;
+  margin: 26upx;
+  display: inline-block;
+  background-color: #fff;
+  float: left;
+  min-height: 130upx;
+  /* #ifdef MP-ALIPAY */
+  width: 330rpx;
+  margin: 25rpx;
+  min-height: 130rpx;
+  /* #endif */
+}
+.img-grids-item:nth-child(2n-1){
+  margin-right: 0;
+}
+.img-grids-item-t{
+  width: 336upx;
+  height: 336upx;
+   /* #ifdef MP-ALIPAY */
+  width: 330rpx;
+  height: 330rpx;
+  /* #endif */
+}
+.img-grids-item-b{
+  padding: 0 10upx 10upx;
+}
+.goods-name{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: #333;  
+  width: 100%; 
+  /* height: 72upx; */
+  /* #ifdef MP-ALIPAY */
+  min-height: 20px;
+  /* #endif */
+}
+.grids-goods-name{
+  font-size: 26upx;
+}
+.goods-item-c{
+  overflow: hidden;
+  margin-top: 10upx;
+}
+.goods-price{
+  min-width: 120upx;
+  min-height: 40upx;
+  color: #333;
+  font-size: 28upx;
+  display: inline-block;
+  float: left;
+}
+.red-price{
+  color: #FF7159 !important;
+}
+.img-list{
+
+}
+.img-list .goods-name{
+	min-height: 74upx;
+}
+.img-list-item{
+  padding: 30upx 26upx;
+  background-color: #fff;
+  margin-bottom: 2upx;
+  overflow: hidden;
+}
+.img-list-item-l{
+  width: 250upx;
+  height: 250upx;
+  display: inline-block;
+  float: left;
+}
+.img-list-item-r{
+  width: 410upx;
+  min-height: 250upx;
+  display: inline-block;
+  margin-left: 26upx;
+  float: left;
+  padding: 10upx 0;
+  position: relative;
+}
+.list-goods-name{
+  font-size: 28upx;
+}
+.img-list-item .goods-item-c{
+  /* position: absolute; */
+  /* bottom: 0; */
+  width: 100%;
+	margin-top: 0;
+}
+.img-list-item .goods-price{
+  min-width: 150upx;
+  min-height: 50upx;
+  font-size: 38upx;
+  float: none;
+}
+.goods-buy{
+  overflow: hidden;
+}
+.goods-salesvolume{
+  min-width: 100upx;
+  height: 30upx;
+  font-size: 20upx;
+  color: #999;
+  display: inline-block;
+}
+.goods-cart{
+  width: 40upx;
+  height: 40upx;
+  float: right;
+}
+.medium-img{
+	width: 196upx;
+	height: 196upx;
+}
+.little-img{
+  width: 140upx;
+  height: 140upx;
+}
+.small-img{
+  width: 120upx;
+  height: 120upx;
+}
+.medium-right{
+	width: 340upx;
+	min-height: 140upx;
+}
+.little-right{
+  width: 520upx;
+  min-height: 140upx;
+  padding: 0;
+}
+.small-right{
+  width: 540upx;
+  height: 120upx;
+  padding: 0;
+	min-height: 60upx;
+}
+.little-right-t{
+  overflow: hidden;
+}
+.little-right .list-goods-name{
+  float: left;
+  width: 360upx;
+	margin-bottom: 6upx;
+}
+.small-right .list-goods-name{
+  width: 100%;
+}
+.little-right .goods-price{
+  float: right;
+  font-size: 28upx;
+  text-align: right;
+  min-width: 120upx;
+	max-width: 150upx;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+  min-height: 40upx;
+}
+.goods-num{
+  float: right;
+  color: #999;
+  font-size: 24upx;
+  height: 30upx;
+  min-width: 50upx;
+}
+.goods-numbox{
+	float: right;
+}
+.little-right .goods-salesvolume{
+  font-size: 24upx;
+  /* float: left; */
+}
+.cell-group{
+  background-color: #fff;
+}
+.cell-item{
+  padding: 20upx 26upx 20upx 0;
+  width: 724upx;
+  margin-left: 26upx;
+  border-bottom: 2upx solid #f3f3f3;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+	color: #333;
+  display: table;
+	min-height: 90upx;
+}
+.cell-item:last-child{
+  border: none;
+}
+.cell-item-hd{
+  display: table-cell;
+  vertical-align: middle;
+  min-width: 160upx;
+  max-width: 180upx;
+  font-size: 28upx;
+	position: relative;
+}
+.cell-hd-icon{
+  width: 40upx;
+  height: 40upx;
+  display: inline-block;
+  float: left;
+	margin-right: 8upx;
+}
+.cell-hd-title{
+  float: left;
+  display: inline-block;
+  position: relative;
+  /* #ifdef MP-ALIPAY */
+  top: 4upx;
+  /* #endif */
+}
+.cell-item-bd{
+  display: table-cell;
+  vertical-align: middle;
+  margin-left: 20upx;
+  min-height: 30upx;
+  overflow: hidden;
+  min-width: 440upx;
+  max-width: 480upx;
+	padding-right: 50upx;
+}
+.cell-bd-view {
+	position: relative;
+	overflow: hidden;
+}
+.cell-bd-text{
+  float: left;
+  position: relative;
+  font-size: 24upx;
+}
+.cell-bd-text-right{
+	float: right;
+}
+.cell-bd-input{
+  display: inline-block;
+  float: left;
+	font-size: 26upx;
+}
+.cell-item-ft{
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  right: 26upx;
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+.right-img .cell-item-ft{
+	right: 8upx;
+	height: 50upx;
+}
+.cell-ft-view{
+	position: relative;
+	overflow: hidden;
+	color: #666;
+	font-size: 28upx;
+	text-align: right;
+}
+.cell-ft-p{
+	font-size: 24upx;
+	color: #666;
+}
+.cell-ft-text{
+  font-size: 28upx;
+  float: right;
+  position: relative;
+  /* top: 8upx; */
+  line-height: 50upx;
+}
+.cell-ft-next{
+  float: right;  
+}
+.margin-cell-group{
+	margin: 20upx 0;
+}
+.bottom-cell-group{
+	margin-bottom: 20upx;
+}
+.min-cell-group{
+	margin-bottom: 1px;
+	padding: 20upx 0;
+}
+.min-cell-group .cell-item{
+	border-bottom: none;
+	min-height: 50upx;
+	padding: 0 26upx 0 0;
+}
+.icon{
+  width: 50upx;
+  height: 50upx;
+  /* #ifdef MP-ALIPAY */
+  background-size: 100% 100%;
+  /* #endif */
+}
+.swiper-grids .swiper-list{
+  white-space:nowrap;
+  width:100%;
+  min-height: 200upx;
+}
+.swiper-grids .img-grids-item{
+  float: none;
+  margin-right: 0;
+  width: 255upx;
+  margin-top: 0;
+}
+.swiper-grids .img-grids-item:last-child{
+  margin-right: 26upx;
+}
+.swiper-grids .img-grids-item-t{
+  width: 255upx;
+  height: 255upx;
+}
+.swiper-grids .goods-name{
+  white-space: normal;
+}
+.member-grid{
+  padding: 20upx 26upx;
+  /* overflow: hidden; */
+  width: 100%;
+  display: flex;
+}
+.member-item{
+  /* width: 20%; */
+  flex: 1;
+  /* float: left; */
+  /* display: inline-block; */
+  text-align: center;
+  position: relative;
+}
+/*会员中心图标按下事件*/
+.member-item:active{
+	transform: scale(.90);
+	transition: all .5s;
+	opacity: .8;
+}
+.member-item-icon{
+  width: 50upx;
+  height: 50upx;
+  display: block;
+  margin: 0 auto;
+}
+.member-item-text{
+  font-size: 24upx;
+  color: #666;
+  display: block;
+}
+.cart-list{
+	
+}
+.cart-checkbox{
+	position: relative;
+	height: 100%;
+}
+.cart-checkbox-c{
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	left: 26upx;
+	transform: translateY(-50%);
+	z-index: 99;
+}
+.cart-list .img-list-item{
+	padding-left: 90upx;
+}
+.cart-list .little-right{
+	width: 468upx;
+}
+.cart-list .little-right .list-goods-name{
+	width: 300upx;
+}
+.uni-checkbox-input{
+	border-radius: 50% !important;
+	color: #fff !important;
+}
+uni-radio .uni-radio-input,uni-checkbox .uni-checkbox-input{
+	width: 36upx;
+	height: 36upx;
+}
+uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked,.uni-radio-input.uni-radio-input-checked{
+	background-color: #FF7159 !important;
+	border-color: #FF7159 !important;
+	width: 36upx;
+	height: 36upx;
+}
+uni-checkbox.checkboxNo .uni-checkbox-input{
+	background-color: #e1e1e1 !important;
+	border-color: #e1e1e1 !important;
+}
+uni-radio.radioNo .uni-radio-input{
+	background-color: #e1e1e1 !important;
+	border-color: #e1e1e1 !important;
+}
+uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked:before{
+	font-size: 36rpx;
+}
+.login-item-i-p{
+	color: #999;
+}
+.two-line{
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+.badge{
+	display: inline-block;
+	position: absolute;
+	min-width:13px;
+	height:13px;
+	line-height:13px;
+	background-color:#FF7159;
+	color:#fff;
+	font-size:12px;
+	border-radius:50upx;
+	padding:0 3px;
+	z-index: 99;
+}
+.button-bottom{
+	background-color: #fff;
+	position: fixed;
+	bottom: 0;
+	height: 90upx;
+	width: 100%;
+	display: flex;
+	z-index: 66;
+	box-shadow: 0 0 10px #ccc;
+}
+.button-bottom .btn{
+	flex: 1;
+}
+.romotion-tip{
+	/* display: inline-block; */
+	overflow: hidden;
+}
+.romotion-tip-item{
+	display: inline-block;
+	float: left;
+	margin-right: 10upx;
+	margin-bottom: 4upx;
+	background-color: #FF7159;
+	color: #fff;
+	height: 34upx;
+	font-size: 24upx;
+	line-height: 34upx;
+	padding: 0 10upx;
+}
+.bg-gray{
+	background-color: #D0D0D0;
+}
+
+
+
+/*  #ifdef MP */
+checkbox .wx-checkbox-input{
+    border-radius: 50%;
+    height: 36rpx;
+    width: 36rpx;
+    margin-top: -4rpx;
+    border: 1rpx solid #d1d1d1;
+	
+}
+checkbox .wx-checkbox-input.wx-checkbox-input-checked::before {
+  width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 28rpx;
+  color: #fff;
+  background: transparent;
+  transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1);
+  background-color: #FF7159;
+  border: 1rpx solid #FF7159;
+}
+radio .wx-radio-input{
+   border-radius: 50%;/* 圆角 */
+   width: 36rpx;
+   height: 36rpx;
+   margin-top: -4rpx;
+   border: 1rpx solid #d1d1d1;
+}
+/* 选中后的 背景样式 （红色背景 无边框 可根据UI需求自己修改） */
+radio .wx-radio-input.wx-radio-input-checked{
+   border: 1rpx solid #FF7159;
+   background: #FF7159;
+}
+/* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
+radio .wx-radio-input.wx-radio-input-checked::before{
+   border-radius: 50%;/* 圆角 */
+   width: 36rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   height: 36rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   line-height: 36rpx;
+   text-align: center;
+   font-size:28rpx; /* 对勾大小 30rpx */
+   color:#fff; /* 对勾颜色 白色 */
+   background: transparent;
+   transform:translate(-50%, -50%) scale(1);
+   -webkit-transform:translate(-50%, -50%) scale(1);
+}
+
+/*  #endif  */
+

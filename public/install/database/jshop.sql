@@ -748,9 +748,31 @@ CREATE TABLE `jshop_hooks` (
 -- ----------------------------
 --  Records of `jshop_hooks`
 -- ----------------------------
-BEGIN;
-INSERT INTO `jshop_hooks` VALUES ('1', 'testhook', '测试钩子', '1', '', '1538029316', '1540173219'), ('2', 'sendwxmessage', '发送微信消息', '1', '', '1538029328', '1538029328'), ('3', 'kefu', '在线客服', '1', '', '1538029339', '1538029339'), ('4', 'sendsms', '发送短信', '1', '', '1540891064', '1540891064'), ('5', 'goodscommon', '商品编辑、添加时', '1', '', '1541072382', '1541072415'), ('6', 'deletegoodsafter', '删除商品后', '1', '', '1541072393', '1541072393'), ('7', 'editgoodsafter', '编辑商品后', '1', '', '1541072405', '1541072405'), ('8', 'addgoodsafter', '添加商品后', '1', '', '1541072425', '1541072425'), ('9', 'addgoodsview', '添加商品页面', '2', '', '1541072442', '1541072451'), ('10', 'editgoodsview', '编辑商品页面', '2', '', '1541072464', '1541072464'), ('11', 'trustlogin', '信任登录', '1', '', '1541771962', '1541771962'), ('12', 'trustcallback', '信任登录返回', '1', '', '1541771974', '1541771974'), ('14', 'orderpayed', '订单支付', '1', '', '1542349293', '1542349507'), ('10000', 'printOrder', '打印订单埋点', '1', '', '1552448691', '1552448691'), ('10001', 'getPrintExpressInfo', '获取打印信息', '1', '', '1552557472', '1552557472'), ('10002', 'orderExtJs', '订单扩展js', '2', '', '1552558689', '1552559645'), ('10003', 'orderExtBtn', '订单扩展按钮', '2', '', '1552558705', '1552559662'), ('10004', 'logisticsQuery', '快递查询', '1', '', '1552704811', '1552704811'), ('10005', 'menu', '后台菜单', '1', '', '1554199143', '1554199143'), ('10006', 'appupdate', 'APP相关钩子', '1', null, '1564537798', '1564537798'), ('10007', 'aftersalesreview', '售后审核通过后', '1', null, '1564537798', '1564537798'), ('10008', 'addUserAfter', '创建会员后', '1', null, '1564537798', '1564537798'), ('10009', 'orderpayed', '订单付款后', '1', null, '1564537798', '1564537798'), ('10010', 'orderFinish', '订单完成后', '1', null, '1564537798', '1564537798'), ('10011', 'loginAfter', '登录后事件', '1', null, null, '0'), ('10012', 'loginAfter', '登录后事件', '1', null, '1564537798', '1564537798');
-COMMIT;
+INSERT INTO `jshop_hooks` VALUES (1, 'testhook', '测试钩子', 1, '', 1538029316, 1540173219);
+INSERT INTO `jshop_hooks` VALUES (2, 'sendwxmessage', '发送微信消息', 1, '', 1538029328, 1538029328);
+INSERT INTO `jshop_hooks` VALUES (3, 'kefu', '在线客服', 1, '', 1538029339, 1538029339);
+INSERT INTO `jshop_hooks` VALUES (4, 'sendsms', '发送短信', 1, '', 1540891064, 1540891064);
+INSERT INTO `jshop_hooks` VALUES (5, 'goodscommon', '商品编辑、添加时', 1, '', 1541072382, 1541072415);
+INSERT INTO `jshop_hooks` VALUES (6, 'deletegoodsafter', '删除商品后', 1, '', 1541072393, 1541072393);
+INSERT INTO `jshop_hooks` VALUES (7, 'editgoodsafter', '编辑商品后', 1, '', 1541072405, 1541072405);
+INSERT INTO `jshop_hooks` VALUES (8, 'addgoodsafter', '添加商品后', 1, '', 1541072425, 1541072425);
+INSERT INTO `jshop_hooks` VALUES (9, 'addgoodsview', '添加商品页面', 2, '', 1541072442, 1541072451);
+INSERT INTO `jshop_hooks` VALUES (10, 'editgoodsview', '编辑商品页面', 2, '', 1541072464, 1541072464);
+INSERT INTO `jshop_hooks` VALUES (11, 'trustlogin', '信任登录', 1, '', 1541771962, 1541771962);
+INSERT INTO `jshop_hooks` VALUES (12, 'trustcallback', '信任登录返回', 1, '', 1541771974, 1541771974);
+INSERT INTO `jshop_hooks` VALUES (14, 'orderpayed', '订单支付', 1, '', 1542349293, 1542349507);
+INSERT INTO `jshop_hooks` VALUES (10000, 'printOrder', '打印订单埋点', 1, '', 1552448691, 1552448691);
+INSERT INTO `jshop_hooks` VALUES (10001, 'getPrintExpressInfo', '获取打印信息', 1, '', 1552557472, 1552557472);
+INSERT INTO `jshop_hooks` VALUES (10002, 'orderExtJs', '订单扩展js', 2, '', 1552558689, 1552559645);
+INSERT INTO `jshop_hooks` VALUES (10003, 'orderExtBtn', '订单扩展按钮', 2, '', 1552558705, 1552559662);
+INSERT INTO `jshop_hooks` VALUES (10004, 'logisticsQuery', '快递查询', 1, '', 1552704811, 1552704811);
+INSERT INTO `jshop_hooks` VALUES (10005, 'menu', '后台菜单', 1, '', 1554199143, 1554199143);
+INSERT INTO `jshop_hooks` VALUES (10006, 'appupdate', 'APP相关钩子', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks` VALUES (10007, 'aftersalesreview', '售后审核通过后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks` VALUES (10008, 'addUserAfter', '创建会员后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks` VALUES (10010, 'orderFinish', '订单完成后', 1, NULL, 1564537798, 1564537798);
+INSERT INTO `jshop_hooks` VALUES (10012, 'loginAfter', '登录后事件', 1, NULL, 1564537798, 1564537798);
+
 
 -- ----------------------------
 --  Table structure for `jshop_ietask`

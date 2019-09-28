@@ -261,7 +261,9 @@ class Form extends Manage
         $this->assign('total_submit', $total_submit);
         $this->assign('total_sum', getMoney($total_sum));
         $this->assign('id', $id);
-        $result['data'] = $this->fetch('report');
+        $result['data']   = $this->fetch('report');
+        $result['status'] = true;
+        $result['msg']    = '参数错误';
         return $result;
 
     }

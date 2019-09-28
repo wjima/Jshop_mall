@@ -821,7 +821,6 @@ class Poster
     }
 
 
-
     /**
      * 生成海报
      * @param $config
@@ -998,5 +997,111 @@ class Poster
             imagejpeg($imageRes);     //在浏览器上显示
             imagedestroy($imageRes);
         }
+    }
+
+
+    /**
+     * 分享URL生成
+     * @param $data
+     * @return array
+     */
+    public function urlGenerate($data)
+    {
+        $return = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => ''
+        ];
+
+        $user_id        = $data['user_id'];     //用户ID
+        $type           = $data['type'];        //分享类型 1=商品海报 2=邀请海报 3=拼团海报 4=店铺分享
+        $id             = $data['id'];          //类型值 1商品海报就是商品ID 2邀请海报无需填 3拼团的商品ID
+        $team_id        = $data['team_id'];     //拼团的团ID，拼团海报可用
+        $return_url     = $data['return_url'];  //返回URL地址
+
+        $userModel = new User();
+        //普通H5页面 微信公众号H5
+        if($type == 1)
+        {
+            //商品
+            if($user_id)
+            {
+                $code     = $userModel->getShareCodeByUserId($user_id);
+                $url = $return_url.'?scene='.share_parameter_encode('type=2&invite='.$code.'&id='.$id);
+            }
+            else
+            {
+                $url = $return_url.'?scene='.share_parameter_encode('type=2&id='.$id);
+            }
+        }
+        else if($type == 2)
+        {
+            //邀请
+            if($user_id)
+            {
+                $code     = $userModel->getShareCodeByUserId($user_id);
+                $url = $return_url.'?scene='.share_parameter_encode('type=3&invite='.$code);
+            }
+            else
+            {
+                $url = $return_url.'?scene='.share_parameter_encode('type=3');
+            }
+        }
+        else if($type == 3)
+        {
+            //拼团
+            if($user_id)
+            {
+                $code     = $userModel->getShareCodeByUserId($user_id);
+                if($team_id)
+                {
+                    $url = $return_url.'?scene='.share_parameter_encode('type=5&invite='.$code.'&id='.$id.'&team_id='.$team_id);
+                }
+                else
+                {
+                    $url = $return_url.'?scene='.share_parameter_encode('type=5&invite='.$code.'&id='.$id);
+                }
+            }
+            else
+            {
+                if($team_id)
+                {
+                    $url = $return_url.'?scene='.share_parameter_encode('type=5&id='.$id.'&team_id='.$team_id);
+                }
+                else
+                {
+                    $url = $return_url.'?scene='.share_parameter_encode('type=5&id='.$id);
+                }
+            }
+        }
+        else if($type == 4)
+        {
+            //店铺首页
+            if($user_id)
+            {
+                $code     = $userModel->getShareCodeByUserId($user_id);
+                $url = $return_url.'?scene='.share_parameter_encode('type=9&invite='.$code.'&id='.$id);
+            }
+            else
+            {
+                $url = $return_url.'?scene='.share_parameter_encode('type=9&id='.$id);
+            }
+        }
+        else
+        {
+            //默认首页
+            if($user_id)
+            {
+                $code     = $userModel->getShareCodeByUserId($user_id);
+                $url = $return_url.'?scene='.urlencode('type=3&invite='.$code);
+            }
+            else
+            {
+                $url = $return_url.'?scene='.urlencode('type=3');
+            }
+        }
+
+        $return['data'] = $url;
+        return $return;
     }
 }

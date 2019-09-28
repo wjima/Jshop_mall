@@ -24,7 +24,6 @@ class Promotion extends Manage
             $promotionModel = new PromotionModel();
             $request = input('param.');
             $request['type'] = $promotionModel::TYPE_PROMOTION;
-
             return $promotionModel->tableData($request);
         }
         return $this->fetch();
@@ -273,6 +272,7 @@ class Promotion extends Manage
     {
         $this->view->engine->layout(false);
 
+
         if(!(input('?param.condition_code')&& input('?param.promotion_id')) && !input('?param.id')){
             return error_code(15003);
         }
@@ -295,20 +295,18 @@ class Promotion extends Manage
         //如果是修改，就取数据，否则就是新增，直接渲染模板
         if(input('?param.id')){
             $info = $conditionModel->getInfo(input('param.id'));
+
             if(!$info){
                 return error_code(15004);
             }
             $code = $info['code'];
             if($code == 'GOODS_CATS'){
                 if(isset($info['params']['cat_id']) && $info['params']['cat_id']){
-
                     $goodsCatModel = new GoodsCat();
                     $catids = $goodsCatModel->getCatIdsByLastId($info['params']['cat_id']);
                     $this->assign('catids', $catids);
-
                 }
             }
-
             $this->assign($info->toArray());
         }else{
             $code = input('param.condition_code');
@@ -330,7 +328,6 @@ class Promotion extends Manage
                 $this->assign('gradeList',$gradeList);
                 break;
         }
-
 
         return [
             'status' => true,
@@ -392,20 +389,21 @@ class Promotion extends Manage
             'msg' => ''
         ];
     }
+
     //添加促销条件
     public function resultEdit()
     {
         $this->view->engine->layout(false);
 
-        if(!(input('?param.result_code')&& input('?param.promotion_id')) && !input('?param.id')){
+        if (!(input('?param.result_code') && input('?param.promotion_id')) && !input('?param.id')) {
             return error_code(15003);
         }
 
         //校验是否有此权限
         $promotionModel = new PromotionModel();
-        $pwhere['id'] = input('param.promotion_id');
-        $info = $promotionModel->where($pwhere)->find();
-        if(!$info){
+        $pwhere['id']   = input('param.promotion_id');
+        $info           = $promotionModel->where($pwhere)->find();
+        if (!$info) {
             return error_code(10002);
         }
 
@@ -413,36 +411,39 @@ class Promotion extends Manage
         $resultModel = new PromotionResult();
 
         //团购和秒杀时，限制一个促销结果
-        if($info['type'] == $promotionModel::TYPE_GROUP ||$info['type'] == $promotionModel::TYPE_SKILL){
-            $result = $resultModel->where(['promotion_id'=>$pwhere['id']])->count();
-            if($result>1){
+        if ($info['type'] == $promotionModel::TYPE_GROUP || $info['type'] == $promotionModel::TYPE_SKILL) {
+            $result = $resultModel->where(['promotion_id' => $pwhere['id']])->count();
+            if ($result >= 1) {
                 return error_code(15016);
             }
         }
 
-        if(Request::isPOST()){$data = input('param.');
+        if (Request::isPOST()) {
+            $data = input('param.');
             return $resultModel->addData($data);
         }
 
         //如果是修改，就取数据，否则就是新增，直接渲染模板
-        if(input('?param.id')){
+        if (input('?param.id')) {
             $info = $resultModel->getInfo(input('param.id'));
-            if(!$info){
+            if (!$info) {
                 return error_code(15004);
             }
             $code = $info['code'];
             $this->assign($info->toArray());
-        }else{
+            dump($info);
+            die;
+        } else {
             $code = input('param.result_code');
-            $this->assign('promotion_id',input('param.promotion_id/d'));
-            $this->assign('code',$code);
+            $this->assign('promotion_id', input('param.promotion_id/d'));
+            $this->assign('code', $code);
         }
 
 
         return [
             'status' => true,
-            'data' => $this->fetch('promotion/result/'.$code),
-            'msg' => ''
+            'data'   => $this->fetch('promotion/result/' . $code),
+            'msg'    => ''
         ];
     }
     //促销条件删除

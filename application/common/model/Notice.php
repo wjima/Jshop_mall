@@ -126,7 +126,7 @@ class Notice extends Common
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort ASC'];
+        $result['order'] = ['id'=>'desc','sort'=>'ASC'];
         return $result;
     }
 

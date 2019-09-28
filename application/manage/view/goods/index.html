@@ -156,36 +156,25 @@
                 }},
                 {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
                 {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},
+                {field:'marketable', width:100,title:'上下架', align: 'center',templet: "#is_able", unresize: true},
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
-                        return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
+                    return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
                 {field:'name', width:250,title:'名称', align: 'center'},
+                {field:'brand_name', width:100,title:'品牌', align: 'center'},
+                {field:'stock', width:100,title:'库存', align: 'center'},
                 {field:'sort', edit: 'text', width:80,title:'排序', align: 'center',templet: function (data) {
                     var html = '<a class="link-hot option-show sort" data-id="' + data.sort + '">' + data.sort + '</a>';
                     return html;
                 }},
                 {field:'label_ids', width:120,title:'标签', align: 'center',templet:function (data) {
-                    if(data.hasOwnProperty('label_ids') && data.label_ids){
-                        return getLabel(data.label_ids);
-                    }else{
-                        return '';
-                    }
+                    return getLabel(data.label_ids);
                 }},
                 {field:'price', width:100,title:'销售价', align: 'center', templet:function(data){return '￥'+data.price}},
                 {field:'costprice', width:100,title:'成本价', align: 'center', templet:function(data){return '￥'+data.costprice}},
                 {field:'mktprice', width:100,title:'市场价', align: 'center', templet:function(data){return '￥'+data.mktprice}},
                 {field:'cat_name', width:150,title:'分类', align: 'center'},
-                {field:'type_name', width:150,title:'类型', align: 'center'},
-                {field:'brand_name', width:100,title:'品牌', align: 'center'},
-                {field:'marketable', width:100,title:'上下架', align: 'center',templet:function(data){
-                    if(data.marketable == '1'){
-                        return '<a href="javascript:void(0);">上架</a>';
-                    }else{
-                        return '<a href="javascript:void(0);">下架</a>';
-                    }
-                }},
-                {field:'stock', width:100,title:'库存', align: 'center'}
-
+                {field:'type_name', width:150,title:'类型', align: 'center'}
             ]]
         });
 
@@ -579,6 +568,12 @@
                 layer.msg(res.msg);
             });
         });
+        // 上下架操作
+        layui.form.on('switch(is_able)', function (obj) {
+            JsPost("{:url('Goods/changeState')}", {id: this.value, type: 'able', state: obj.elem.checked}, function (res) {
+                layer.msg(res.msg)
+            })
+        })
     });
 
     //编辑商品
@@ -620,4 +615,8 @@
 
 <script type="text/html" id="rec">
     <input type="checkbox" name="is_recommend" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="is_recommend" {{ d.is_recommend == 1 ? 'checked' : '' }}>
+</script>
+
+<script type="text/html" id="is_able">
+    <input type="checkbox" name="is_able" value="{{d.id}}" lay-skin="switch" lay-text="上架|下架" lay-filter="is_able" {{ d.marketable == 1 ? 'checked' : '' }}>
 </script>

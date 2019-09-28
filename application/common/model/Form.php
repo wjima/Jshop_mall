@@ -63,7 +63,7 @@ class Form extends common
 
             $formItem = new FormItem();
 
-            $res      = $formItem->saveAll($field);
+            $res = $formItem->saveAll($field);
             if (!$res) {
                 Db::rollback();
                 return false;
@@ -77,13 +77,13 @@ class Form extends common
     //where搜索条件
     protected function tableWhere($post)
     {
-        $where           = [];
-        if(isset($post['name']) && $post['name']){
-            $where[] = ['name','=',$post['name']];
+        $where = [];
+        if (isset($post['name']) && $post['name']) {
+            $where[] = ['name', '=', $post['name']];
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort'=>'ASC','id'=>'desc'];
+        $result['order'] = ['sort' => 'ASC', 'id' => 'desc'];
         return $result;
     }
 
@@ -157,7 +157,7 @@ class Form extends common
             $goodsModel = new Goods();
             foreach ($items as $key => $val) {
                 if ($val['type'] == 'goods') {
-                    $detial               = $goodsModel->getGoodsDetial($val['value'],'id,bn,name,price,costprice,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,freeze_stock,weight,spes_desc');
+                    $detial               = $goodsModel->getGoodsDetial($val['value'], 'id,bn,name,price,costprice,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,freeze_stock,weight,spes_desc');
                     $items[$key]['goods'] = $detial['data'];
                 } elseif ($val['type'] == 'radio') {
                     $items[$key]['radio_value'] = explode(' ', $val['value']);
@@ -274,9 +274,9 @@ class Form extends common
                 $formItem = new FormItem();
                 if ($val['id']) {
                     $ids[] = $val['id'];
-                    $res = $formItem->update($val, ['id' => $val['id']]);
+                    $res   = $formItem->update($val, ['id' => $val['id']]);
                 } else {
-                    $res = $formItem->add($val);
+                    $res   = $formItem->add($val);
                     $ids[] = $formItem->getLastInsID();
                 }
                 if ($res === false) {
@@ -287,9 +287,9 @@ class Form extends common
             //删除不匹配的
             if ($ids) {
                 $formItem = new FormItem();
-                $where   = [];
-                $where[] = ['id', 'not in', $ids];
-                $where[] = ['form_id', '=', $formid];
+                $where    = [];
+                $where[]  = ['id', 'not in', $ids];
+                $where[]  = ['form_id', '=', $formid];
                 $formItem->where($where)->delete();
             }
         }
@@ -309,6 +309,132 @@ class Form extends common
             return $list->toArray();
         } else {
             return [];
+        }
+    }
+
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader($filter)
+    {
+        $result = [
+            'status' => false,
+            'msg'    => '导出失败',
+            'data'   => []
+        ];
+
+        $formItem = new FormItem();
+        $where    = [];
+        $where[]  = ['form_id', '=', $filter['id'][0]];
+        $items    = $formItem->where($where)->select();
+        if ($items->isEmpty()) {
+            $result['msg'] = '请先添加表单项';
+            return $result;
+        }
+        $header = [];
+        foreach ($items->toArray() as $key => $val) {
+            $field = [
+                'id'   => $val['id'],
+                'desc' => $val['name'],
+            ];
+            if ($val['type'] == 'image') {
+                $field['modify'] = '_sImage';
+            }
+            if ($val['type'] == 'area') {
+                $field['modify'] = 'get_area';
+            } else {
+                $field['modify'] = 'convertString';
+            }
+            $header[] = $field;
+        }
+        $header[]          = [
+            'id'     => 'user_id',
+            'desc'   => '会员',
+            'modify' => 'mobile_string',
+        ];
+        $header[]          = [
+            'id'     => 'user_id',
+            'desc'   => '微信昵称',
+            'modify' => 'nickname_string',
+        ];
+        $header[]          = [
+            'id'     => 'ctime',
+            'desc'   => '提交时间',
+            'modify' => 'getTime',
+        ];
+        $header[]          = [
+            'id'   => 'ip',
+            'desc' => '提交ip'
+        ];
+        $result ['status'] = true;
+        $result ['msg']    = '获取成功';
+        $result ['data']   = $header;
+        return $result;
+    }
+
+    /**
+     * 获取表单数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '无可导出表单项'
+        ];
+        $header = $this->csvHeader($post);
+        if (!isset($post['id']) || (isset($post['id']) && !$post['id'][0])) {
+            $result['msg'] = '关键参数丢失';
+            return $result;
+        }
+        $formSubmit = new FormSubmit();
+        $formData   = $formSubmit->where('form_id', '=', $post['id'][0])->select();
+        if ($formData->isEmpty()) {
+            return $result;
+        }
+        $formSubmitDetail = new FormSubmitDetail();
+        $details          = $formSubmitDetail->where('form_id', '=', $post['id'][0])->select();
+        $itemData         = [];
+        foreach ($formData->toArray() as $key => $val) {
+            $itemData[$val['id']] = [
+                'ip'      => $val['ip'],
+                'ctime'   => $val['ctime'],
+                'user_id' => $val['user_id'],
+            ];
+            foreach ($details as $skey => $sval) {
+                if ($sval['submit_id'] == $val['id']) {
+                    $itemData[$val['id']][$sval['form_item_id']] = $sval['form_item_value'];
+                }
+            }
+        }
+        if ($itemData) {
+            $body = [];
+            $i    = 0;
+            foreach ($itemData as $key => $val) {
+                $i++;
+                foreach ($header['data'] as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg']    = '导出成功';
+            $result['data']   = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
         }
     }
 

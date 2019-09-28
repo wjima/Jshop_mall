@@ -119,7 +119,10 @@ class PintuanGoods extends Common
             return error_code(10000);
         }
         $goodsInfo['data']['pintuan_rule'] = $info;
-        //$goodsInfo['data']['pintuan_price'] = $goodsInfo['data']['price'] - $info['discount_amount'];
+        $goodsInfo['data']['pintuan_price'] = $goodsInfo['data']['price'] - $info['discount_amount'];
+        if($goodsInfo['data']['pintuan_price'] < 0){
+            $goodsInfo['data']['pintuan_price'] = 0;
+        }
         //取拼团记录
         $recordModel = new PintuanRecord();
         //多少人在拼

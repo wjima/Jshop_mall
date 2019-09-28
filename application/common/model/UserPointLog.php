@@ -1,5 +1,6 @@
 <?php
 namespace app\common\model;
+
 use think\Db;
 
 /**
@@ -41,19 +42,17 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => false,
-            'msg' => ''
+            'msg'    => ''
         ];
 
-        if($num != 0)
-        {
+        if ($num != 0) {
             //获取积分账号信息
             $user_model = new User();
-            $user_info = $user_model->where(['id'=>$user_id])->find();
+            $user_info  = $user_model->where(['id' => $user_id])->find();
 
             $new_point = $user_info['point'] + $num;
             //积分余额判断
-            if($new_point < 0)
-            {
+            if ($new_point < 0) {
                 $return['msg'] = '积分余额不足';
                 return $return;
             }
@@ -61,11 +60,11 @@ class UserPointLog extends Common
             //插入记录
             $data = [
                 'user_id' => $user_id,
-                'type' => $type,
-                'num' => $num,
+                'type'    => $type,
+                'num'     => $num,
                 'balance' => $new_point,
                 'remarks' => $remarks,
-                'ctime' => time()
+                'ctime'   => time()
             ];
             $this->insert($data);
 
@@ -76,7 +75,7 @@ class UserPointLog extends Common
         }
 
         $return['status'] = true;
-        $return['msg'] = '积分更改成功';
+        $return['msg']    = '积分更改成功';
 
         return $return;
     }
@@ -97,39 +96,34 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '',
-            'data' => 0
+            'msg'    => '',
+            'data'   => 0
         ];
 
         //判断是否已经签到
         $res = $this->isSign($user_id);
-        if($res['status'])
-        {
+        if ($res['status']) {
             $return['msg'] = '今天已经签到，无需重复签到';
             return $return;
         }
 
         //获取店铺签到积分设置
-        $sign_point_type = getSetting( 'sign_point_type'); //签到积分奖励类型
+        $sign_point_type = getSetting('sign_point_type'); //签到积分奖励类型
 
         //判断是固定积分计算还是随机积分计算
-        if($sign_point_type == self::SIGN_RANDOM_POINT)
-        {
+        if ($sign_point_type == self::SIGN_RANDOM_POINT) {
             //随机计算
             $point = $this->signRandomPointCalculation();
-        }
-        else
-        {
+        } else {
             //固定计算
             $point = $this->signFixedPointCalculation($user_id);
         }
         $return['data'] = $point;
 
         //插入数据库
-        $result = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得'.$point.'个积分');
+        $result        = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得' . $point . '个积分');
         $return['msg'] = $result['msg'];
-        if($result['status'])
-        {
+        if ($result['status']) {
             $return['status'] = true;
         }
 
@@ -149,23 +143,22 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '今天还没有签到'
+            'msg'    => '今天还没有签到'
         ];
 
-        $where[] = ['user_id', 'eq', $user_id];
-        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
-        $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
-        $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
-        $where[] = ['ctime', 'BETWEEN', [$beginToday,$endToday]];
+        $where[]    = ['user_id', 'eq', $user_id];
+        $where[]    = ['type', 'eq', self::POINT_TYPE_SIGN];
+        $beginToday = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+        $endToday   = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
+        $where[]    = ['ctime', 'BETWEEN', [$beginToday, $endToday]];
         //$where[] = ['DATE_FORMAT(from_unixtime(ctime), "%Y-%m-%d")', 'eq', date('Y-m-d', time())];
         //兼容问题
         $day = $this->where($where)
             ->find();
 
-        if($day)
-        {
+        if ($day) {
             $return['status'] = true;
-            $return['msg'] = '今天已经签到了';
+            $return['msg']    = '今天已经签到了';
         }
 
         return $return;
@@ -178,9 +171,9 @@ class UserPointLog extends Common
      */
     protected function signRandomPointCalculation()
     {
-        $sign_random_min = getSetting( 'sign_random_min'); //最小随机
-        $sign_random_max = getSetting( 'sign_random_max'); //最大随机
-        $point = mt_rand($sign_random_min, $sign_random_max); //随机积分
+        $sign_random_min = getSetting('sign_random_min'); //最小随机
+        $sign_random_max = getSetting('sign_random_max'); //最大随机
+        $point           = mt_rand($sign_random_min, $sign_random_max); //随机积分
         //$point = $this->signAppointDatePointCalculation( $point); //判断计算指定日期
         return $point;
     }
@@ -196,47 +189,39 @@ class UserPointLog extends Common
      */
     protected function signFixedPointCalculation($user_id)
     {
-        $first_sign_point = getSetting('first_sign_point'); //首次签到积分
+        $first_sign_point           = getSetting('first_sign_point'); //首次签到积分
         $continuity_sign_additional = getSetting('continuity_sign_additional'); //连续签到追加
-        $sign_most_point = getSetting('sign_most_point'); //签到最多积分
+        $sign_most_point            = getSetting('sign_most_point'); //签到最多积分
 
         //获取连续签到天数
-        if($continuity_sign_additional > 0)
-        {
+        if ($continuity_sign_additional > 0) {
             $max_continuity_day = ceil(($sign_most_point - $first_sign_point) / $continuity_sign_additional); //最大连续签到天数
-        }
-        else
-        {
+        } else {
             //连续追加0的话说明每天签到积分都一样多，那么最大连续签到天数就是1天
             $max_continuity_day = 1; //最大连续签到天数
         }
 
-        $day = date('Y-m-d', strtotime('-'.$max_continuity_day.' day'));
+        $day = date('Y-m-d', strtotime('-' . $max_continuity_day . ' day'));
 
         //兼容问题
         $where[] = ['user_id', 'eq', $user_id];
         $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
         $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
-        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d") as day')
+        $res     = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d") as day')
             ->where($where)
             ->group('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d")')
             ->select();
 
         $new_res = [];
-        foreach($res as $k => $v)
-        {
+        foreach ($res as $k => $v) {
             $new_res[] = $v['day'];
         }
         $int = 0; //连续签到天数
-        for($i = 1; $i <= $max_continuity_day; $i++)
-        {
-            $now = date('Y-m-d', strtotime('-'.$i.' day'));
-            if(in_array($now, $new_res))
-            {
+        for ($i = 1; $i <= $max_continuity_day; $i++) {
+            $now = date('Y-m-d', strtotime('-' . $i . ' day'));
+            if (in_array($now, $new_res)) {
                 $int++;
-            }
-            else
-            {
+            } else {
                 break;
             }
         }
@@ -258,37 +243,28 @@ class UserPointLog extends Common
     protected function signAppointDatePointCalculation($old_point)
     {
         $sign_appoint_date_status = '';//getShopSetting( 'sign_appoint_date_status'); //指定日期
-        $nowDate = date('Y-m-d', time());
-        if($sign_appoint_date_status)
-        {
+        $nowDate                  = date('Y-m-d', time());
+        if ($sign_appoint_date_status) {
             //开启指定日期
             $sign_appoint_date = '';//getShopSetting('sign_appoint_date'); //特殊指定日期
             $sign_appoint_date = json_decode($sign_appoint_date, true);
-            if(in_array($nowDate, $sign_appoint_date))
-            {
+            if (in_array($nowDate, $sign_appoint_date)) {
                 //当前是指定日期
                 $sign_appoint_data_type = '';//getShopSetting('sign_appoint_data_type'); //特殊指定日期奖励类型
-                if($sign_appoint_data_type == self::SIGN_APPOINT_DATE_RATE)
-                {
+                if ($sign_appoint_data_type == self::SIGN_APPOINT_DATE_RATE) {
                     //倍率
                     $sign_appoint_date_rate = 2;//getShopSetting('sign_appoint_date_rate'); //特殊指定日期倍数
-                    $point = $old_point * $sign_appoint_date_rate;
-                }
-                else
-                {
+                    $point                  = $old_point * $sign_appoint_date_rate;
+                } else {
                     //追加
                     $sign_appoint_date_additional = 1;//getShopSetting( 'sign_appoint_date_additional'); //特殊指定日期追加数量
-                    $point = $old_point + $sign_appoint_date_additional;
+                    $point                        = $old_point + $sign_appoint_date_additional;
                 }
-            }
-            else
-            {
+            } else {
                 //不是指定日期
                 $point = $old_point;
             }
-        }
-        else
-        {
+        } else {
             //没有开启指定日期
             $point = $old_point;
         }
@@ -311,13 +287,12 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
-            'data' => [],
-            'total' => 0,
-            'count' => 0
+            'msg'    => '获取失败',
+            'data'   => [],
+            'total'  => 0,
+            'count'  => 0
         ];
-        if($type)
-        {
+        if ($type) {
             $where[] = ['type', 'eq', $type];
         }
         $where[] = ['user_id', 'eq', $user_id];
@@ -330,23 +305,18 @@ class UserPointLog extends Common
 
         $count = $this->where($where)->count();
 
-        $return['data'] = $res;
+        $return['data']  = $res;
         $return['count'] = $count;
-        $return['total'] = ceil($count/$limit);
-        if($res)
-        {
+        $return['total'] = ceil($count / $limit);
+        if ($res) {
             $return['status'] = true;
-            if(count($res)>=1)
-            {
+            if (count($res) >= 1) {
                 $return['msg'] = '积分记录获取成功';
-                foreach($return['data'] as &$v)
-                {
-                    $v['type'] = config('params.user_point_log')['type'][$v['type']];
+                foreach ($return['data'] as &$v) {
+                    $v['type']  = config('params.user_point_log')['type'][$v['type']];
                     $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
                 }
-            }
-            else
-            {
+            } else {
                 $return['msg'] = '暂无积分记录';
             }
         }
@@ -367,8 +337,8 @@ class UserPointLog extends Common
     public function orderComplete($user_id, $money, $order_id)
     {
         $orders_reward_proportion = getSetting('orders_reward_proportion');
-        $point = floor($money / $orders_reward_proportion);
-        $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单：'.$order_id.' 积分奖励');
+        $point                    = floor($money / $orders_reward_proportion);
+        $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单：' . $order_id . ' 积分奖励');
     }
 
 
@@ -380,20 +350,20 @@ class UserPointLog extends Common
      */
     public function tableData($post)
     {
-        if(isset($post['limit'])){
+        if (isset($post['limit'])) {
             $limit = $post['limit'];
-        }else{
+        } else {
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
-        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        $list       = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $data       = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
-        $re['code'] = 0;
-        $re['msg'] = '';
+        $re['code']  = 0;
+        $re['msg']   = '';
         $re['count'] = $list->total();
-        $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+        $re['data']  = $data;
+        $re['sql']   = $this->getLastSql();
 
         return $re;
     }
@@ -409,14 +379,14 @@ class UserPointLog extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['mobile']) && $post['mobile'] != ""){
-            if($user_id = get_user_id($post['mobile'])){
+        if (isset($post['mobile']) && $post['mobile'] != "") {
+            if ($user_id = get_user_id($post['mobile'])) {
                 $where[] = ['user_id', 'eq', $user_id];
-            }else{
+            } else {
                 $where[] = ['user_id', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
         }
-        if(isset($post['type']) && $post['type'] != ""){
+        if (isset($post['type']) && $post['type'] != "") {
             $where[] = ['type', 'eq', $post['type']];
         }
         $result['where'] = $where;
@@ -429,20 +399,20 @@ class UserPointLog extends Common
     /**
      * 根据查询结果，格式化数据
      * @author sin
-     * @param $list  //array格式的collection
+     * @param $list //array格式的collection
      * @return mixed
      */
     protected function tableFormat($list)
     {
-        foreach($list as $k => $v) {
-            if($v['type']) {
+        foreach ($list as $k => $v) {
+            if ($v['type']) {
                 $list[$k]['type'] = config('params.user_point_log')['type'][$v['type']];
             }
-            if($v['user_id']) {
+            if ($v['user_id']) {
                 $list[$k]['user_id'] = get_user_info($v['user_id']);
             }
 
-            if($v['ctime']) {
+            if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);
             }
         }
@@ -462,51 +432,48 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
-            'data' => [
-                'isSign' => true, //今日是否已经签到
-                'asi' => [], //签到的日期
-                'total' => 0, //累计签到
+            'msg'    => '获取成功',
+            'data'   => [
+                'isSign'     => true, //今日是否已经签到
+                'asi'        => [], //签到的日期
+                'total'      => 0, //累计签到
                 'continuous' => 0, //连续签到
-                'next' => 0, //下次签到奖励积分
-                'rule' => [] //签到规则
+                'next'       => 0, //下次签到奖励积分
+                'rule'       => [] //签到规则
             ]
         ];
 
         $where[] = ['user_id', 'eq', $user_id];
         $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
-        $date = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as `date`')
+        $date    = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as `date`')
             ->where($where)
             ->group('DATE_FORMAT(FROM_UNIXTIME(ctime), "%Y-%m-%d")')
             ->select();
 
-        $asi = [];
-        $total = 0;
+        $asi    = [];
+        $total  = 0;
         $isSign = false;
-        if($date !== false)
-        {
-            foreach($date as $k => $v)
-            {
+        if ($date !== false) {
+            foreach ($date as $k => $v) {
                 $_date = explode("-", $v['date']);
                 array_push($asi, $_date);
                 $total++;
-                if($v['date'] == date('Y-m-d', time()))
-                {
+                if ($v['date'] == date('Y-m-d', time())) {
                     $isSign = true;
                 }
             }
         }
-        $fasi = array_reverse($asi);
+        $fasi       = array_reverse($asi);
         $continuous = $this->continuousSignCalculation($fasi);
-        $next = $this->nextSignCalculation($fasi);
-        $rule = $this->getSignRule();
+        $next       = $this->nextSignCalculation($fasi);
+        $rule       = $this->getSignRule();
 
-        $return['data']['isSign'] = $isSign;
-        $return['data']['asi'] = $asi;
-        $return['data']['total'] = $total;
+        $return['data']['isSign']     = $isSign;
+        $return['data']['asi']        = $asi;
+        $return['data']['total']      = $total;
         $return['data']['continuous'] = $continuous;
-        $return['data']['next'] = $next;
-        $return['data']['rule'] = $rule;
+        $return['data']['next']       = $next;
+        $return['data']['rule']       = $rule;
         return $return;
     }
 
@@ -541,27 +508,24 @@ class UserPointLog extends Common
     public function getSignRule()
     {
         $point_discounted_proportion = getSetting('point_discounted_proportion');
-        $orders_point_proportion = getSetting('orders_point_proportion');
-        $orders_reward_proportion = getSetting('orders_reward_proportion');
-        $sign_point_type = getSetting('sign_point_type');
-        $first_sign_point = getSetting('first_sign_point');
-        $continuity_sign_additional = getSetting('continuity_sign_additional');
-        $sign_most_point = getSetting('sign_most_point');
-        $sign_random_min = getSetting('sign_random_min');
-        $sign_random_max = getSetting('sign_random_max');
+        $orders_point_proportion     = getSetting('orders_point_proportion');
+        $orders_reward_proportion    = getSetting('orders_reward_proportion');
+        $sign_point_type             = getSetting('sign_point_type');
+        $first_sign_point            = getSetting('first_sign_point');
+        $continuity_sign_additional  = getSetting('continuity_sign_additional');
+        $sign_most_point             = getSetting('sign_most_point');
+        $sign_random_min             = getSetting('sign_random_min');
+        $sign_random_max             = getSetting('sign_random_max');
 
-        $rule[] = '下单时'.$point_discounted_proportion.'积分可抵扣1元人民币。';
-        $rule[] = '下单使用积分抵扣时，最多可以抵扣订单额的'.$orders_point_proportion.'%。';
-        $rule[] = '订单额每满'.$orders_reward_proportion.'元，奖励1积分。';
-        if($sign_point_type == self::SIGN_FIXED_POINT)
-        {
+        $rule[] = '下单时' . $point_discounted_proportion . '积分可抵扣1元人民币。';
+        $rule[] = '下单使用积分抵扣时，最多可以抵扣订单额的' . $orders_point_proportion . '%。';
+        $rule[] = '订单额每满' . $orders_reward_proportion . '元，奖励1积分。';
+        if ($sign_point_type == self::SIGN_FIXED_POINT) {
             //固定积分奖励
-            $rule[] = '连续签到首次奖励'.$first_sign_point.'积分，之后每日多奖励'.$continuity_sign_additional.'积分，单日最多可获得签到奖励'.$sign_most_point.'积分。';
-        }
-        else
-        {
+            $rule[] = '连续签到首次奖励' . $first_sign_point . '积分，之后每日多奖励' . $continuity_sign_additional . '积分，单日最多可获得签到奖励' . $sign_most_point . '积分。';
+        } else {
             //随机积分奖励
-            $rule[] = '每日随机签到奖励积分，最少'.$sign_random_min.'积分，最多'.$sign_random_max.'积分。';
+            $rule[] = '每日随机签到奖励积分，最少' . $sign_random_min . '积分，最多' . $sign_random_max . '积分。';
         }
 
         return $rule;

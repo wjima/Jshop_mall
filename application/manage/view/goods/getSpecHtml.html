@@ -44,12 +44,12 @@
     </thead>
     <tbody>
 
-    {volist name="items" id="vo" key="key"}
+    {volist name="items" id="vo"}
     {if condition="$vo.id"}
     <tr>
         <td>
             <input type="hidden" name="product[{$vo.spec_name}][id]" value="{$vo.product_id}">
-            <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" value="1" {if condition="$vo['is_defalut'] eq 1"} checked="true"  {elseif condition="$key eq 1 "/}checked="true"{/if} class="isdefalut" lay-filter="isdefalut">
+            <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" value="1" {if condition="$vo['is_defalut'] eq 1"} checked="true"  {elseif condition="$i eq 1 "/}checked="true"{/if} class="isdefalut" lay-filter="isdefalut">
         </td>
         <td class="spec-td">
             <a class="upSpecImage" href="javascript:void(0);">选择图片</a>
@@ -58,7 +58,7 @@
                     <div class="del-img">
                     	x
                     </div>
-                    <img src="{$vo.image_id|_sImage}" id="image-{$key}" style="width:60px;height:60px">
+                    <img src="{$vo.image_id|_sImage}" id="image-{$i}" style="width:60px;height:60px">
                 </div>
                 <input type="hidden" name="product[{$vo.spec_name}][image_id]"  value="{$vo.image_id}"  >
             </div>
@@ -91,7 +91,7 @@
     {else}
         <tr>
             <td>
-                <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" {if condition="$key == 1 "} checked="true"   {/if}value="1" class="isdefalut" lay-filter="isdefalut">
+                <input type="checkbox" name="product[{$vo.spec_name}][is_defalut]" title="是否默认" {if condition="$i == 1 "} checked="true"   {/if}value="1" class="isdefalut" lay-filter="isdefalut">
             </td>
             <td class="spec-td">
                 <a class="upSpecImage" href="javascript:;">选择图片</a>
@@ -100,7 +100,7 @@
                         <div  class="del-img">
                             x
                         </div>
-                        <img src="{$vo.image_id|_sImage}" id="image-{$key}" style="width:60px;height:60px">
+                        <img src="{$vo.image_id|_sImage}" id="image-{$i}" style="width:60px;height:60px">
                     </div>
                     <input type="hidden" name="product[{$vo.spec_name}][image_id]"  value="{$vo.image_id}" >
                 </div>
@@ -113,9 +113,8 @@
             </td>
             {if !$erp_syn_on}
             <td class="have-add-td">
-                <input type="text" name="product[{$vo.spec_name}][stock]"   value="0"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
+                <input type="text" name="product[{$vo.spec_name}][stock]"   value="{$vo.stock}"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
                 总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}
-
             </td>
             {/if}
             <td>

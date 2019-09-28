@@ -8,7 +8,7 @@ class Setting extends Common
     public $skeys = [
         'shop_name' => [
             'name' => '平台名称',
-            'value' => '我的平台'
+            'value' => 'jshop商城系统'
         ],
         'shop_desc' => [
             'name' => '平台描述',

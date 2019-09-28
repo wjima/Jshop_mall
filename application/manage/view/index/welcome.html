@@ -180,6 +180,7 @@
                 <table class="layui-table">
                     <thead>
                         <tr>
+                            <th>登录账号</th>
                             <th>状态</th>
                             <th>记录时间</th>
                             <th>登录IP</th>
@@ -188,6 +189,7 @@
                     <tbody>
                         {{# layui.each(d, function(index, item){ }}
                         <tr>
+                            <td>{{ item.username }}</td>
                             <td>{{ item.state }}</td>
                             <td>{{ item.ctime }}</td>
                             <td>{{ item.ip }}</td>

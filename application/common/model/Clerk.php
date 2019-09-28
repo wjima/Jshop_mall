@@ -239,18 +239,16 @@ class Clerk extends Common
 
     /**
      * 获取店员名称
-     * @param $id
+     * @param $user_id
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getClerkName($id)
+    public function getClerkName($user_id)
     {
-        $where[] = ['id', 'eq', $id];
-        $info = $this->field('user_id')->where($where)->find();
         $userModel = new User();
-        $whereu[] = ['id', 'eq', $info['user_id']];
+        $whereu[] = ['id', 'eq', $user_id];
         $data = $userModel->field('mobile,nickname')->where($whereu)->find();
         return $data['nickname']?$data['nickname']:$data['mobile'];
     }

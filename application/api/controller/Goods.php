@@ -590,4 +590,42 @@ class Goods extends Api
         $return_data['data']['class_name'] = $class_name['data']?$class_name['data']:'';
         return $return_data;
     }
+
+
+    /*
+     * 全部商品
+     * */
+    public function goodsall(){
+        $page       = input('page', 1);
+        $limit      = input('limit',10);
+        $order      = input('order',10);
+        $goodsModel = new GoodsModel();
+        return $goodsModel->goods_all($page, $limit, $order);
+    }
+
+
+    /*
+     * 上新商品
+     * */
+    public function newgoods(){
+        $page       = input('page', 1);
+        $limit      = input('limit',10);
+        $order      = input('order',10);
+        $goodsModel = new GoodsModel();
+        return $goodsModel->newgoods($page, $limit, $order);
+    }
+
+
+    /*
+     * 促销数据
+     * */
+    public function promotiongoods(){
+        $page       = input('page', 1);
+        $limit      = input('limit',10);
+        $order      = input('order',10);
+        $goodsModel = new GoodsModel();
+        return $goodsModel->promotiongoods($page,$limit,$order);
+    }
+
+
 }

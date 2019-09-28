@@ -1416,4 +1416,29 @@ class User extends Api
 
         return $uniapp->login($data);
     }
+
+
+    /**
+     * 分享URL生成
+     * @return array
+     */
+    public function shareUrl()
+    {
+        $token = Request::param('token', false);
+        if($token)
+        {
+            $data['user_id'] = getUserIdByToken($token);
+        }
+        else
+        {
+            $data['user_id'] = 0;
+        }
+        $data['type']       = Request::param('type', 1); //分享类型 1=商品海报 2=邀请海报 3=拼团海报 4=店铺首页
+        $data['id']         = Request::param('id', 0); //类型值 1商品海报就是商品ID 2邀请海报无需填 3拼团海报的时候就是商品ID 4店铺code
+        $data['team_id']    = Request::param('team_id', 0); //拼团海报的时候是拼团的团队ID
+        $data['return_url'] = Request::param('return_url', ''); //返回URL地址
+
+        $poster = new Poster();
+        return $poster->urlGenerate($data);
+    }
 }

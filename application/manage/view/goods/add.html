@@ -100,7 +100,15 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>商品分类：</label>
-        {Jshop:goodscat id='goods_cat_id' name="goods_cat_id"/}
+
+        <div class="layui-input-inline">
+            <select name="goods_cat_id">
+                <option>请选择</option>
+                {volist name="goodsCatTree" id="vo"}
+                <option value="{$vo.id}">{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
         <div class="layui-form-mid layui-word-aux">
             <a  href="javascript:void(0);" class="add-class">添加分类</a>
         </div>
@@ -222,7 +230,7 @@
             {/volist}
         </div>
         <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">
-            会员价为0时，使用默认价格。大于0时，商品实际价格为商品价格减去会员价
+            会员价为0时，使用默认价格。大于0时，商品实际价格=商品销售价-会员价
         </div>
     </div>
     <div class="layui-form-item">

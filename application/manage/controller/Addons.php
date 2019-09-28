@@ -77,7 +77,7 @@ class Addons extends Manage
         $res         = $addonsModel->add($info);
         $res         = true;
         if (!$res) {
-            $result['msg'] = '插件安装失败';
+            $result['msg'] = '插件数据库安装失败';
             return $result;
         } else {
             $hookModel = new Hooks();
@@ -194,8 +194,8 @@ class Addons extends Manage
         ];
         $data        = input('post.');
         $addonsModel = new addonsModel();
-        $setting    = $addonsModel->getSetting($data['name']);
-        if(isset($setting['menu']) && $setting['menu']){
+        $setting     = $addonsModel->getSetting($data['name']);
+        if (isset($setting['menu']) && $setting['menu']) {
             $data['setting']['menu'] = $setting['menu'];
         }
         if ($addonsModel->doSetting($data)) {

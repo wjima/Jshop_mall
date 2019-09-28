@@ -2,6 +2,8 @@
 namespace app\b2c\controller;
 
 use app\common\controller\Base;
+use app\common\model\OperationLog;
+use think\response\Json;
 
 class Crontab extends Base
 {
@@ -56,4 +58,16 @@ class Crontab extends Base
     public function pintuanCancle(){
         model('common/PintuanRecord')->autoCancle();
     }
+
+    /**
+     * 定期清理7天前操作日志
+     */
+    public function removeOpLog(){
+        $operateLog = new OperationLog();
+        $where[] = ['ctime','<=',time()-86400*7];
+        $operateLog->where($where)->delete();
+        return json_encode(['status'=>true,'msg'=>'清理完成']);
+    }
+
+
 }

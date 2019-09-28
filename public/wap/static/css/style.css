@@ -483,6 +483,7 @@ uni-input div div.input-placeholder{
   /* #ifdef MP-ALIPAY */
   top: 4upx;
   /* #endif */
+  /* word-wrap: break-word; */
 }
 .cell-item-bd{
   display: table-cell;
@@ -775,3 +776,14 @@ radio .wx-radio-input.wx-radio-input-checked::before{
 
 /*  #endif  */
 
+.goods-bottom{
+	z-index: 97;
+}
+
+.btn-small{
+ padding: 0 10rpx;
+  height: 36rpx;
+  line-height: 32rpx;
+  font-size: 24rpx;
+  margin: 0 10rpx;
+}

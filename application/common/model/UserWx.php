@@ -162,15 +162,15 @@ class UserWx extends Common
             $data['country']  = $params['country'];
 
             //如果是新用户，并且不需要绑定手机号码的话，就创建用户
-            if(getSetting('is_bind_mobile') == '2'){
+            if (getSetting('is_bind_mobile') == '2') {
                 $user['nickname'] = $data['nickname'];
-                $user['avatar'] = $data['avatar'];
-                $user['sex'] = $data['gender'];
+                $user['avatar']   = $data['avatar'];
+                $user['sex']      = $data['gender'];
                 //$user['pid'] = $pid;
 
                 $userModel = new \app\common\model\User();
-                $user_re = $userModel->manageAdd($user);
-                if(!$user_re['status']){
+                $user_re   = $userModel->manageAdd($user);
+                if (!$user_re['status']) {
                     return $user_re;
                 }
                 //这时候还需要把新的user_id绑定到user_wx表上，否则就每次登陆都用新用户了
@@ -180,7 +180,7 @@ class UserWx extends Common
             $this->save($data);
             $result['status'] = true;
             $result['data']   = [
-                'id' => $this->id,
+                'id'      => $this->id,
                 'user_id' => $this->user_id
             ];
 
@@ -258,47 +258,42 @@ class UserWx extends Common
     }
 
     //第三方登录保存&创建记录，并判断是否手机号码绑定，并返回前端最终状态
-    public  function toAdd($data,$pid){
+    public function toAdd($data, $pid)
+    {
         $result = [
             'status' => false,
-            'data' => [],
-            'msg' => ''
+            'data'   => [],
+            'msg'    => ''
         ];
 
-        if(isset($data['id'])){
+        if (isset($data['id'])) {
             $this->save($data, ['id' => $data['id']]);
             $id = $data['id'];
-        }else{
+        } else {
             //如果是新用户，并且外面没有传进来user_id的话，这里就赋个初始值
-            if(!isset($data['user_id'])){
+            if (!isset($data['user_id'])) {
                 $data['user_id'] = 0;
             }
             $this->save($data);
             $id = $this->id;
         }
         $info = self::get($id);
-
-
+        $user['pid'] = $pid;
         //如果是新用户，并且不需要绑定手机号码的话，就创建用户
-        if($info->user_id == 0 && getSetting('is_bind_mobile') == '2'){
+        if ($info->user_id == 0 && getSetting('is_bind_mobile') == '2') {
             $user['nickname'] = $data['nickname'];
-            $user['avatar'] = $data['avatar'];
-            $user['sex'] = $data['gender'];
-            $user['pid'] = $pid;
-
-            $userModel = new \app\common\model\User();
-            $user_re = $userModel->manageAdd($user);
-            if(!$user_re['status']){
+            $user['avatar']   = $data['avatar'];
+            $user['sex']      = $data['gender'];
+            $userModel        = new \app\common\model\User();
+            $user_re          = $userModel->manageAdd($user);
+            if (!$user_re['status']) {
                 return $user_re;
             }
-
             $info->user_id = $user_re['data'];
             $info->save();
-
         }
 
         //到这里，如果没有用户id，就需要去绑定手机号码了。
-
         if ($info->user_id == 0) {
             //未绑定用户，需要先绑定手机号码
             $result['status'] = true;
@@ -314,7 +309,7 @@ class UserWx extends Common
                 return $re;
             }
             $result['status'] = true;
-            $result['data'] = [
+            $result['data']   = [
                 'token' => $re['data']
             ];
         }
@@ -323,27 +318,30 @@ class UserWx extends Common
 
 
     //公众号无感登陆
-    public function officialMiniLogin($url){
-        $result     = [
+    public function officialMiniLogin($url)
+    {
+        $result        = [
             'status' => false,
             'data'   => 10066,
             'msg'    => ''
         ];
-        $url = urlencode($url);
-        $result['msg'] =  "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".getSetting('wx_official_appid')."&redirect_uri=".$url."&response_type=code&scope=snsapi_base&state=jshop#wechat_redirect";
+        $url           = urlencode($url);
+        $result['msg'] = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . getSetting('wx_official_appid') . "&redirect_uri=" . $url . "&response_type=code&scope=snsapi_base&state=jshop#wechat_redirect";
         return $result;
     }
-    public function officialMiniLogin2($code){
-        $result     = [
+
+    public function officialMiniLogin2($code)
+    {
+        $result = [
             'status' => true,
             'data'   => '',
             'msg'    => ''
         ];
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".getSetting('wx_official_appid')."&secret=".getSetting('wx_official_app_secret')."&code=".$code."&grant_type=authorization_code";
-        $curl = new Curl();
-        $re = $curl->get($url);
-        $data = json_decode($re,true);
-        if(!isset($data['openid'])){
+        $url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . getSetting('wx_official_appid') . "&secret=" . getSetting('wx_official_app_secret') . "&code=" . $code . "&grant_type=authorization_code";
+        $curl   = new Curl();
+        $re     = $curl->get($url);
+        $data   = json_decode($re, true);
+        if (!isset($data['openid'])) {
             return error_code(10000);
         }
         $result['data'] = $data['openid'];

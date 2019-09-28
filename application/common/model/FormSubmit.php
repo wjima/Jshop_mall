@@ -10,7 +10,8 @@ namespace app\common\model;
 
 use think\Db;
 
-class FormSubmit extends common{
+class FormSubmit extends common
+{
 
     protected $autoWriteTimestamp = true;
     protected $updateTime = 'utime';
@@ -25,7 +26,8 @@ class FormSubmit extends common{
     const FORM_STATUS_PROCESSED = 1;//未处理
 
 
-    public function add($data){
+    public function add($data)
+    {
         return $this->save($data);
     }
 
@@ -63,7 +65,7 @@ class FormSubmit extends common{
             $return_data['msg'] = '支付失败';
             return $return_data;
         }
-        $this->update(['pay_status' => self::FORM_PAY_STATUS_YES],['id' => $id,'pay_status'=>self::FORM_PAY_STATUS_NO]);
+        $this->update(['pay_status' => self::FORM_PAY_STATUS_YES], ['id' => $id, 'pay_status' => self::FORM_PAY_STATUS_NO]);
         $return_data['status'] = true;
         $return_data['msg']    = '支付成功';
         return $return_data;
@@ -80,14 +82,15 @@ class FormSubmit extends common{
      */
     public function statisticsByFormid($id = 0)
     {
-        $num  = 7;
-        $day  = date('Y-m-d', strtotime('-' . $num . ' day'));
+        $num = 7;
+        $day = date('Y-m-d', strtotime('-' . $num . ' day'));
 
-        $where[] = ['FROM_UNIXTIME(ctime)', '>=', $day];
         $where[] = ['form_id', 'eq', $id];
-        $res = $this->field('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
+
+        $res = $this->fieldRaw('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d") as day, count(*) as nums')
             ->where($where)
-            ->group('DATE_FORMAT(FROM_UNIXTIME(ctime),"%Y-%m-%d")')
+            ->whereRaw('FROM_UNIXTIME(ctime) >=' . $day)
+            ->group('day')
             ->select();
 
         $data = get_lately_days($num, $res);
@@ -99,11 +102,12 @@ class FormSubmit extends common{
      * @param $id
      * @return array|bool
      */
-    public function deleteFormSubmit($id){
+    public function deleteFormSubmit($id)
+    {
         $result = [
             'status' => false,
-            'msg' => '删除失败',
-            'data' => ''
+            'msg'    => '删除失败',
+            'data'   => ''
         ];
         if (!$id) {
             $result['msg'] = '关键参数丢失';
@@ -117,8 +121,8 @@ class FormSubmit extends common{
             Db::rollback();
             return false;
         }
-        $res = $this->where(['id'=>$id])->delete();
-        if(!$res){
+        $res = $this->where(['id' => $id])->delete();
+        if (!$res) {
             Db::rollback();
             return false;
         }
@@ -133,8 +137,8 @@ class FormSubmit extends common{
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['form_id']) && $post['form_id']){
-            $where[] = ['form_id','=',$post['form_id']];
+        if (isset($post['form_id']) && $post['form_id']) {
+            $where[] = ['form_id', '=', $post['form_id']];
         }
         $result['where'] = $where;
         $result['field'] = "*";
@@ -172,14 +176,14 @@ class FormSubmit extends common{
             $result['msg']    = $formInfo['msg'];
             return $result;
         }
-        $formInfo['data']['user_id'] = $formSubmitInfo['user_id'];
+        $formInfo['data']['user_id']    = $formSubmitInfo['user_id'];
         $formInfo['data']['pay_status'] = $formSubmitInfo['pay_status'];
-        $formInfo['data']['money'] = $formSubmitInfo['money'];
-        $formInfo['data']['status'] = $formSubmitInfo['status'];
-        $formInfo['data']['feedback'] = $formSubmitInfo['feedback'];
-        $formInfo['data']['ctime'] = $formSubmitInfo['ctime'];
-        $formInfo['data']['utime'] = $formSubmitInfo['utime'];
-        $submitDetail = new FormSubmitDetail();
+        $formInfo['data']['money']      = $formSubmitInfo['money'];
+        $formInfo['data']['status']     = $formSubmitInfo['status'];
+        $formInfo['data']['feedback']   = $formSubmitInfo['feedback'];
+        $formInfo['data']['ctime']      = $formSubmitInfo['ctime'];
+        $formInfo['data']['utime']      = $formSubmitInfo['utime'];
+        $submitDetail                   = new FormSubmitDetail();
 
         if (isset($formInfo['data']['items']) && $formInfo['data']['items']) {
             foreach ($formInfo['data']['items'] as $key => $val) {
@@ -198,12 +202,12 @@ class FormSubmit extends common{
                         foreach ($image as $k => $v) {
                             $formInfo['data']['items'][$key]['svalue'][$k] = _sImage($v);
                         }
-                    }elseif ($val['type'] == 'goods') {
-                        $details  = $submitDetail->where($where)->select();
-                        $svalue = [];
-                        if(!$details->isEmpty()){
-                            foreach((array)$details->toArray() as $k=>$v){
-                                $svalue[]=$v['form_item_name'].'x'.$v['form_item_value'];
+                    } elseif ($val['type'] == 'goods') {
+                        $details = $submitDetail->where($where)->select();
+                        $svalue  = [];
+                        if (!$details->isEmpty()) {
+                            foreach ((array)$details->toArray() as $k => $v) {
+                                $svalue[] = $v['form_item_name'] . 'x' . $v['form_item_value'];
                             }
                         }
                         $formInfo['data']['items'][$key]['svalue'] = $svalue;//todo 字段是商品时处理
@@ -215,8 +219,8 @@ class FormSubmit extends common{
                 }
             }
         }
-        $result['data'] = $formInfo['data'];
-        $result['msg'] = '获取成功';
+        $result['data']   = $formInfo['data'];
+        $result['msg']    = '获取成功';
         $result['status'] = true;
         return $result;
     }

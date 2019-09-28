@@ -194,4 +194,28 @@ class Cart extends Api
         $input = Request::param('cart/a');
         return $model->batchSetCart($this->userId, $input);
     }
+
+    /**
+     * 获取全部购物车列表
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getListSelectAll()
+    {
+        $where[] = ['user_id', 'eq', $this->userId];
+        $where[] = ['type', 'eq', 1];
+        $list    = $this->cartModel->where($where)->select();
+        $ids     = '';
+        if (!$list->isEmpty()) {
+            $list = $list->toArray();
+            $ids  = array_column($list, 'id');
+            $ids  = implode(',',$ids);
+        }
+        $result = $this->cartModel->info($this->userId, $ids, 1, false, 0, '', false);
+        return $result;
+    }
+
+
 }

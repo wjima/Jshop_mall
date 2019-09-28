@@ -156,33 +156,32 @@ class Promotion extends Common
     {
 
         $where = [];
-        if(is_array($post['type'])){
+        if (is_array($post['type'])) {
             $where[] = ['type', 'in', $post['type']];
 
-        }else{
+        } else {
             $where[] = ['type', 'eq', $post['type']];
         }
 
-        if(isset($post['name']) && $post['name'] != ""){
-            $where[] = ['name', 'like', '%'.$post['name'].'%'];
+        if (isset($post['name']) && $post['name'] != "") {
+            $where[] = ['name', 'like', '%' . $post['name'] . '%'];
         }
-        if(isset($post['status']) && $post['status'] != ""){
+        if (isset($post['status']) && $post['status'] != "") {
             $where[] = ['status', 'eq', $post['status']];
         }
-        if(isset($post['exclusive']) && $post['exclusive'] != ""){
+        if (isset($post['exclusive']) && $post['exclusive'] != "") {
             $where[] = ['exclusive', 'eq', $post['exclusive']];
         }
-        if(input('?param.date')){
-            $theDate = explode(' 到 ',input('param.date'));
-            if(count($theDate) == 2){
+        if (input('?param.date')) {
+            $theDate = explode(' 到 ', input('param.date'));
+            if (count($theDate) == 2) {
                 $where[] = ['stime', '<', strtotime($theDate[1])];
                 $where[] = ['etime', '>', strtotime($theDate[0])];
             }
         }
-
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = ['id' => 'desc', 'sort' => 'asc']; //默认最新添加靠前，排序越小越靠前
         return $result;
     }
     /**

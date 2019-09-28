@@ -7,6 +7,7 @@
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\Manage\controller;
+
 use app\common\controller\Manage;
 use app\common\model\GoodsExtendCat;
 use app\common\model\GoodsGrade;
@@ -1177,7 +1178,6 @@ class Goods extends Manage
     {
         $id  = input('id');
         $res = model('common/GoodsComment')->setDisplay($id);
-        dump($res);die;
         return $res;
     }
 
@@ -1283,6 +1283,8 @@ class Goods extends Manage
             $iData['is_hot'] = $state;
         } elseif ($type == 'rec') {
             $iData['is_recommend'] = $state;
+        } else if ($type == 'able') {
+            $iData['marketable'] = $state;
         }
         if (!$iData) {
             return $result;
@@ -1297,7 +1299,6 @@ class Goods extends Manage
         }
         return $result;
     }
-
     /**
      * 更新排序
      * @return array

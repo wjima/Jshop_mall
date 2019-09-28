@@ -6,11 +6,9 @@
 <div class="layui-form seller-alone-form" style="margin-top: 20px;">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">账户余额：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <input type="text" id="money_old" class="layui-input" value="{$money}" disabled="disabled">
-                <input type="hidden" id="user_id" value="{$user_id}">
-            </div>
+            <label class="layui-form-label">当前余额：</label>
+            <div class="layui-form-mid">{$money}</div>
+            <input type="hidden" id="user_id" value="{$user_id}">
         </div>
     </div>
     <div class="layui-form-item">

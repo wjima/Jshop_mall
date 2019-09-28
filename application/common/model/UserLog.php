@@ -25,6 +25,7 @@ class UserLog extends Common
             ->paginate($limit);
         foreach( $data as $key => $val )
         {
+            $data[$key]['username'] = get_manage_info($val['user_id']);
             $data[$key]['state'] = config('params.user')['state'][$val['state']];
             $data[$key]['ctime'] = getTime($val['ctime']);
         }
@@ -72,7 +73,7 @@ class UserLog extends Common
             'state' => $state,
             'ctime' => time(),
             'params' => json_encode($data),
-            'ip' => get_client_ip()
+            'ip' => get_client_ip(0,true)
         ];
         $this->allowField(true)->save($data);
 

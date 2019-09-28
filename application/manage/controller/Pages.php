@@ -32,15 +32,16 @@ class Pages extends Manage
     /**
      * 页面编辑
      */
-    public function custom(){
-        $page_code = input('page_code/s','mobile_home');
-        $linkType = config('params.carousel')['type'];
+    public function custom()
+    {
+        $page_code = input('page_code/s', 'mobile_home');
+        $linkType  = config('params.carousel')['type'];
 
-        $this->assign('linkType',json_encode($linkType,JSON_UNESCAPED_UNICODE));
-        $this->assign('page_code',$page_code);
+        $this->assign('linkType', json_encode($linkType, JSON_UNESCAPED_UNICODE));
+        $this->assign('page_code', $page_code);
         //取出页面配置信息
-        $pageModel = new \app\common\model\Pages();
-        $result = $pageModel->getDetails($page_code);
+        $pageModel  = new \app\common\model\Pages();
+        $result     = $pageModel->getDetails($page_code);
         $pageConfig = [];
         if ($result['data']) {
             foreach ($result['data']['items'] as $key => $value) {
@@ -48,20 +49,20 @@ class Pages extends Manage
                 $pageConfig[$key]['value'] = $value['params'];
             }
         }
-        $pageConfig = json_encode($pageConfig,320);
-        $pageConfig = str_replace('"true','true',$pageConfig);
-        $pageConfig = str_replace('true"','true',$pageConfig);
-        $this->assign('page_config',$pageConfig);
+        $pageConfig = json_encode($pageConfig, 320);
+        $pageConfig = str_replace('"true', 'true', $pageConfig);
+        $pageConfig = str_replace('true"', 'true', $pageConfig);
+        $this->assign('page_config', $pageConfig);
 
         //取出所有品牌
         $brandModel = new Brand();
         $brandList  = $brandModel->getAllBrand();
-        $this->assign('brandList', json_encode($brandList,JSON_UNESCAPED_UNICODE));
+        $this->assign('brandList', json_encode($brandList, JSON_UNESCAPED_UNICODE));
         //取出所有分类
         $goodsCatModel = new GoodsCat();
-        $catList = $goodsCatModel->getAllCat();
-        $this->assign('catList', json_encode($catList,JSON_UNESCAPED_UNICODE));
-        
+        $catList       = $goodsCatModel->getAllCat();
+        $this->assign('catList', json_encode($catList, JSON_UNESCAPED_UNICODE));
+
         return $this->fetch('custom');
     }
 
@@ -86,15 +87,12 @@ class Pages extends Manage
     }
 
 
-
-
-    public function add ()
+    public function add()
     {
 
         $this->view->engine->layout(false);
 
-        if (\think\facade\Request::isPost())
-        {
+        if (\think\facade\Request::isPost()) {
             $pagesModel = new \app\common\model\Pages();
 
             return $pagesModel->addData(input('param.'));
@@ -105,8 +103,7 @@ class Pages extends Manage
     }
 
 
-
-    public function del ()
+    public function del()
     {
 
         $id = input('param.id/d', '');
@@ -118,8 +115,8 @@ class Pages extends Manage
 
         return $result = [
             'status' => true,
-            'msg' => '删除成功',
-            'data' => []
+            'msg'    => '删除成功',
+            'data'   => []
         ];
     }
 }

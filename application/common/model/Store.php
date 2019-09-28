@@ -313,6 +313,7 @@ class Store extends Common
                         $v['distance'] ='未知';
                     }
                 }
+                $v['logo'] = _sImage($v['logo']);
 
             }
             $return['status'] = true;

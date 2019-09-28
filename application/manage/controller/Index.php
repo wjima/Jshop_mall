@@ -74,6 +74,7 @@ class Index extends Manage
             $request               = input('param.');
             $goodModel             = new Goods();
             $request['marketable'] = $goodModel::MARKETABLE_UP;     //必须是上架的商品
+            $request['field'] = 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids';
             return $goodModel->tableData($request);
 
         } else {
@@ -87,7 +88,7 @@ class Index extends Manage
      */
     public function clearCache()
     {
-        Cache::clear();
+        Cache::clear();//TODO 如果开启其他缓存，记得这里要配置缓存配置信息
         Console::call('clear', ['--cache', '--dir']);//清除缓存文件
         Console::call('clear', ['--path', ROOT_PATH . '\\runtime\\temp\\']); //清除模板缓存
         $this->success('清除缓存成功', 'index/welcome');

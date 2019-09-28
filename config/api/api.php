@@ -240,6 +240,10 @@ return [
             'uniapplogin'=>[
                 'code' => 'uniAppLogin',
                 'is_login' => false
+            ],
+            'shareurl' => [
+                'code' => 'shareUrl',
+                'is_login' => false
             ]
         ]
     ],
@@ -365,6 +369,10 @@ return [
             'batchsetcart' => [
                 'code' => 'batchSetCart',
                 'is_login' => true
+            ],
+            'getlistselectall' => [
+                'code'     => 'getListSelectAll',
+                'is_login' => true
             ]
         ]
     ],
@@ -464,10 +472,6 @@ return [
                 'code' => 'logisticsByApi',
                 'is_login' => false
             ],
-            'getcashpooling' => [
-                'code' => 'getCashPooling',
-                'is_login' => false
-            ],
             'gettaxcode' => [
                 'code' => 'getTaxCode',
                 'is_login' => false
@@ -517,6 +521,19 @@ return [
             ],
             'getpickgoods'=>[
                 'code'=>'getPickGoods',
+                'is_login'=>false
+            ],
+            'goodsall' => [
+                'code' => 'goodsall',
+                'is_login'=>false
+            ],
+            'newgoods' => [
+                'code' => 'newgoods',
+                'is_login'=>false
+            ]
+            ,
+            'promotiongoods' => [
+                'code' => 'promotiongoods',
                 'is_login'=>false
             ]
         ]

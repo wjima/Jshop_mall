@@ -448,6 +448,12 @@ class User extends Manage
             $result['msg'] = '删除成功';
             $result['status'] = true;
         }
+        $c = [];
+        foreach($c as $item){
+            $le[$item['id']] = $item['name'];
+        }
+
+
         return $result;
     }
 }

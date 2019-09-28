@@ -24,6 +24,14 @@
     background: #FFF;
     border: 1px solid #d7d7d7;
 }
+#videoPosterUrl {
+    width: 490px;
+    height: 21px;
+    line-height: 21px;
+    margin: 8px 5px;
+    background: #FFF;
+    border: 1px solid #d7d7d7;
+}
 #videoSearchTxt{margin-left:15px;background: #FFF;width:200px;height:21px;line-height:21px;border: 1px solid #d7d7d7;}
 #searchList{width: 570px;overflow: auto;zoom:1;height: 270px;}
 #searchList div{float: left;width: 120px;height: 135px;margin: 5px 15px;}

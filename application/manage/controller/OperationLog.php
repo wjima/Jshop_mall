@@ -31,4 +31,32 @@ class OperationLog extends Manage
         return $logModel->tableData($request);
     }
 
+
+    /**
+     * 删除日志
+     * @return array
+     */
+    public function delLog()
+    {
+        $result = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
+
+        $ids = input('ids/a', []);
+        if(!$ids)
+        {
+            return $result;
+        }
+        $logModel = new LogModel();
+        $res = $logModel->where([['id','in',$ids]])->delete();
+        if($res !== false)
+        {
+            $result['msg'] = '删除成功';
+            $result['status'] = true;
+        }
+        return $result;
+    }
+
 }

@@ -129,7 +129,7 @@ class Pages extends Common
                         $data[$i]['params']['list'] = $returnGoods['data'];
                     } else {
                         foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
-                            $goods                           = $goodsModel->getGoodsDetial($gv['id'], '*', $token);
+                            $goods                           = $goodsModel->getGoodsDetial($gv['id'], 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $token);
                             $data[$i]['params']['list'][$gk] = $goods['data'];
                         }
                     }

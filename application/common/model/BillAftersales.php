@@ -275,6 +275,13 @@ class BillAftersales extends Common
                     //如果是退款，订单付款类型变成已退款状态，并且订单类型变成已完成
                     $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
                     $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
+                    //商品库存调整,未发货，只申请退款
+                    if ($orderInfo['pay_status'] == $orderModel::PAY_STATUS_YES && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
+                        $goodsModel = new Goods();
+                        foreach ($orderInfo['items'] as $key => $val) {
+                            $goodsModel->changeStock($val['product_id'], 'refund', $val['nums']);
+                        }
+                    }
                 } else {
                     //如果是退货状态，如果有退款，订单付款类型变成部分付款状态，如果款退完了，或者订单明细退完了，订单类型做已完成
                     //如果款退完了，订单就已完成
@@ -847,7 +854,9 @@ class BillAftersales extends Common
     public function getOrderAfterSaleStatus($order_id)
     {
         $where[] = ['order_id', 'eq', $order_id];
-        $info    = $this->where($where)->find();
+        $info    = $this->where($where)
+            ->order('aftersales_id DESC')
+            ->find();
         if ($info) {
             if ($info['status'] == self::STATUS_WAITAUDIT) {
                 $text = '<span style="color:#ff7159;">待审核</span>';

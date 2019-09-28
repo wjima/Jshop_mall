@@ -117,11 +117,17 @@
         var width = $G("videoWidth"),
             height = $G("videoHeight"),
             url=$G('videoUrl').value,
+            posterUrl=$G('videoPosterUrl').value,
             align = findFocus("videoFloat","name");
+
         if(!url) return false;
+        if(!posterUrl){
+            alert("请输入视频封面"); return false;
+        }
         if ( !checkNum( [width, height] ) ) return false;
         editor.execCommand('insertvideo', {
             url: convert_url(url),
+            posterUrl: posterUrl,
             width: width.value,
             height: height.value,
             align: align
@@ -267,18 +273,15 @@
      */
     function createPreviewVideo(url){
         if ( !url )return;
-
         var conUrl = convert_url(url);
-
         conUrl = utils.unhtmlForUrl(conUrl);
-
-        $G("preview").innerHTML = '<div class="previewMsg"><span>'+lang.urlError+'</span></div>'+
-        '<embed class="previewVideo" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
+        $G("preview").innerHTML = ''+
+            '<video' +
             ' src="' + conUrl + '"' +
             ' width="' + 420  + '"' +
             ' height="' + 280  + '"' +
-            ' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >' +
-        '</embed>';
+            ' autoplay controls="controls">' +
+            '</video>';
     }
 
 

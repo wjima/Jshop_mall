@@ -209,17 +209,20 @@ class UserTocash extends Common
      *
      * @return mixed
      */
-    protected function tableFormat( $list )
+    protected function tableFormat($list)
     {
-        foreach ( $list as $k => $v ) {
-            if ( $v[ 'ctime' ] ) {
-                $list[ $k ][ 'ctime' ] = getTime($v[ 'ctime' ]);
+        foreach ($list as $k => $v) {
+            if ($v['ctime']) {
+                $list[$k]['ctime'] = getTime($v['ctime']);
             }
-            if ( $v[ 'utime' ] ) {
-                $list[ $k ][ 'utime' ] = getTime($v[ 'utime' ]);
+            if ($v['utime']) {
+                $list[$k]['utime'] = getTime($v['utime']);
             }
-            if ( $v[ 'type' ] ) {
-                $list[ $k ][ 'type' ] = config('params.user_tocash')[ 'type' ][ $v[ 'type' ] ];
+            if ($v['type']) {
+                $list[$k]['type'] = config('params.user_tocash')['type'][$v['type']];
+            }
+            if ($v['user_id']) {
+                $list[$k]['mobile'] = get_user_info($v['user_id']);
             }
 //            if($v['card_number']){
 //                $list[$k]['card_number'] = bankCardNoFormat($v['card_number']);

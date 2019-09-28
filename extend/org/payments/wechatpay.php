@@ -22,7 +22,7 @@ class wechatpay implements Payment
 
         $data['mch_id'] = $this->config['mch_id'];//商户号
         $data['nonce_str'] = self::getNonceStr();//$this->config['nonce_str'];//32位随机数
-        $data['body'] = "商品详情";
+        $data['body'] = mb_substr($paymentInfo['pay_title'], 0, 42, 'utf-8');       //商品描述，不能超过128个字符，所以这里要截取，防止超过
         $data['out_trade_no'] = $paymentInfo['payment_id'];                    //商户订单号
         $data['total_fee'] = $paymentInfo['money']*100;                        //总金额
         $data['spbill_create_ip'] = $paymentInfo['ip'];                 //终端ip
@@ -348,7 +348,7 @@ class wechatpay implements Payment
         }
 
 
-        $userWxInfo = $userWxModel->where(['type'=>$type,'user_id'=>$user_id])->find();
+        $userWxInfo = $userWxModel->where(['type'=>$type,'user_id'=>$user_id])->order('id desc')->find();
         if(!$userWxInfo){
             return error_code(10062);
         }

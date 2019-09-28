@@ -208,7 +208,7 @@
             $.each(checkData, function (i, obj) {
                 ids.push(obj.id);
             });
-            layer.confirm('确认删除选中商品吗？', {
+            layer.confirm('确认删除选中会员吗？', {
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
                 JsPost("{:url('User/delUser')}", {'ids': ids}, function (res) {

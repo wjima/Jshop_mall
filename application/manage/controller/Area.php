@@ -9,13 +9,15 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use org\Curl;
 use Request;
 use app\common\model\Area as AreaModel;
+use think\Db;
 
 /**
  * 地区管理
  * Class Area
- * @package app\Manage\controller
+ * @package app\seller\controller
  */
 class Area extends Manage
 {
@@ -58,6 +60,7 @@ class Area extends Manage
     {
         $areaModel         = new AreaModel();
         $data['name']      = input('name');
+        $data['postal_code']= trim(input('postal_code'));
         $id                = $areaModel->max('id');
         $data['id']        = $id + 1;
         $data['parent_id'] = input('parent_id');
@@ -94,6 +97,7 @@ class Area extends Manage
         if (Request::isPost()) {
             $id           = input('id');
             $data['name'] = input('name');
+            $data['postal_code']= trim(input('postal_code'));
             $data['sort'] = input('sort');
             $result       = model('common/Area')->edit($id, $data);
             if ($result !== false) {

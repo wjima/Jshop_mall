@@ -563,17 +563,6 @@ class Order extends Api
 
 
     /**
-     * 获取当月的资金池
-     * @return array
-     */
-    public function getCashPooling()
-    {
-        $orderModel = new orderModel();
-        return $orderModel->cashPooling();
-    }
-
-
-    /**
      * 获取税号
      * @return array
      * @throws \think\db\exception\DataNotFoundException

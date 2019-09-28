@@ -10,6 +10,7 @@
 namespace app\common\model;
 
 use app\common\model\GoodsParams;
+
 /**
  * 商品参数
  * Class GoodsParams
@@ -26,26 +27,26 @@ class GoodsTypeParams extends Common
      * @param array $params_id
      * @return bool|\think\Collection
      */
-    public function updateTypeParams($type_id=0,$params_id=[])
+    public function updateTypeParams($type_id = 0, $params_id = [])
     {
-        if(!$type_id||!$params_id)
-        {
+        if (!$type_id) {
             return false;
         }
         $typeParamsModel = $this->where(['type_id' => $type_id])->field('type_id');
-        if($typeParamsModel->select()){
+        if ($typeParamsModel->select()) {
             $typeParamsModel->delete();
         }
-        $iData = [];
-        foreach($params_id as $key=>$val)
-        {
-            $iData[] = [
-                'type_id'=>$type_id,
-                'params_id'=>$val
-            ];
+        if ($params_id) {
+            $iData = [];
+            foreach ($params_id as $key => $val) {
+                $iData[] = [
+                    'type_id'   => $type_id,
+                    'params_id' => $val
+                ];
+            }
+            return $this->saveAll($iData);
         }
-        return $this->saveAll($iData);
-
+        return true;
     }
 
     /**
@@ -53,21 +54,20 @@ class GoodsTypeParams extends Common
      * @param int $type_id
      * @return array|bool
      */
-    public function getRelParams($type_id=0)
+    public function getRelParams($type_id = 0)
     {
-        if(!$type_id){
+        if (!$type_id) {
             return false;
         }
-        $data = [];
+        $data        = [];
         $paramsModel = new GoodsParams();
-        $typeParams = $this->where(['type_id' => $type_id])->select();
+        $typeParams  = $this->where(['type_id' => $type_id])->select();
 
-        if(!$typeParams->isEmpty()){
-            foreach ((array)$typeParams->toArray() as $k=>$v)
-            {
-                $data[$k]['type_id'] = $v['type_id'];
+        if (!$typeParams->isEmpty()) {
+            foreach ((array)$typeParams->toArray() as $k => $v) {
+                $data[$k]['type_id']   = $v['type_id'];
                 $data[$k]['params_id'] = $v['params_id'];
-                $data[$k]['params'] = $paramsModel->getParamsInfo($v['params_id']);
+                $data[$k]['params']    = $paramsModel->getParamsInfo($v['params_id']);
             }
         }
         return $data;

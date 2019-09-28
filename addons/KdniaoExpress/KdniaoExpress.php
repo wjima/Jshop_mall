@@ -348,7 +348,7 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
                         type: 1,
                         title: '选择快递',
                         area: ['450px', '305px'], //宽高
-                        content: e,
+                        content: e.data,
                         btnAlign: 'c',
                         btn: ['开始打印'],
                         yes: function (index, layero) {

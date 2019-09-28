@@ -20,6 +20,6 @@ class Index extends Base
 {
     public function index()
     {
-        $this->redirect('/wap/index','302');
+        $this->redirect('/wap/','302');
     }
 }

@@ -1,15 +1,16 @@
 <form style="padding:30px;" class="layui-form seller-alone-form" id="edit_form">
     <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>用户名：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>账号：</label>
         {if $manageInfo}
         <div class="layui-form-mid">
             <input type="hidden" name="id" value="{$manageInfo.id}" />
             {$manageInfo.username}({$manageInfo.username})
         </div>
         {else /}
-            <div class="layui-input-inline">
-                <input name="username" value="{$data.username}" lay-verify="required" placeholder="请输入用户名" class="layui-input" type="text">
+            <div class="layui-input-inline seller-inline-3">
+                <input name="username" value="{$data.username}" lay-verify="required" placeholder="请输入登陆账号" class="layui-input" type="text">
             </div>
+        <div class="layui-form-mid layui-word-aux">字母数字或下划线,6-20位</div>
         {/if}
     </div>
     <div class="layui-form-item">
@@ -25,12 +26,6 @@
         </div>
         <div class="layui-form-mid layui-word-aux">请填写6到16位密码</div>
     </div>
-    {if $manageInfo}
-    <div class="layui-form-item">
-        <label class="layui-form-label"></label>
-        <div class="layui-form-mid layui-word-aux">编辑账号的时候，如果密码为空则是不修改密码，否则，就是修改密码</div>
-    </div>
-    {/if}
     <div class="layui-form-item">
         <label class="layui-form-label">角色：</label>
         <div class="layui-input-inline">
@@ -39,6 +34,12 @@
             {/volist}
         </div>
     </div>
+    {if $manageInfo}
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-form-mid layui-word-aux"><span style="color:red;">注意：</span>编辑账号的时候，如果密码为空则是不修改密码，否则，就是修改密码</div>
+    </div>
+    {/if}
     {:jshopToken()}
 </form>
 <script>

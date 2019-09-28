@@ -105,9 +105,9 @@ class Common extends Base
         $conf['open_distribution']  = get_addons_status('DistributionCenter');   //是否开启分销
         if ($conf['open_distribution']) {
             $distributionSetting            = getAddonsConfigVal('DistributionCenter', 'setting');
-            $conf['distribution_notes']     = $distributionSetting['notes'];    //用户须知
-            $conf['distribution_agreement'] = $distributionSetting['agreement'];    //分销协议
-            $conf['distribution_store']     = $distributionSetting['distribution_store'];    //是否开启店铺
+            $conf['distribution_notes']     = isset($distributionSetting['notes'])?$distributionSetting['notes']:'';    //用户须知
+            $conf['distribution_agreement'] = isset($distributionSetting['agreement'])?$distributionSetting['agreement']:'';    //分销协议
+            $conf['distribution_store']     = isset($distributionSetting['distribution_store'])?$distributionSetting['distribution_store']:'';    //是否开启店铺
         }
         $conf['show_inviter']     = $config['show_inviter'];    //是否显示邀请人信息
         $conf['share_title']      = $config['share_title'];  //分享标题

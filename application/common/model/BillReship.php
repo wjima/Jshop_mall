@@ -128,25 +128,47 @@ class BillReship extends Common
     {
         $result = [
             'status' => false,
-            'data' => [],
-            'msg' => ''
+            'data'   => [],
+            'msg'    => ''
         ];
 
         $where = [
             'reship_id' => $reship_id,
-            'status' => self::STATUS_SHIPPED
+            'status'    => self::STATUS_SHIPPED
         ];
-        $info = $this->where($where)->find();
-        if(!$info){
+        $info  = $this->where($where)->find();
+
+
+        if (!$info) {
             return error_code(13211);
         }
+        Db::startTrans();
+
         $data['status'] = self::STATUS_SUCCESS;
 
         $this->where($where)->data($data)->update();
+
+        //退货
+        $orderItems = new OrderItems();
+        $items      = $orderItems->where([[
+            'order_id', '=', $info['order_id']
+        ]])->select();
+        if (!$items->isEmpty()) {
+            $goodsModel = new Goods();
+            foreach ($items as $key => $val) {
+                $goodsRes = $goodsModel->changeStock($val['product_id'], 'return', $val['nums']);
+                if (!$goodsRes['status']) {
+                    return $goodsRes;
+                    Db::rollback();
+                }
+            }
+        }
+        Db::commit();
         $result['status'] = true;
-        $result['msg'] = '收货成功';
+        $result['msg']    = '收货成功';
         return $result;
     }
+
 
 
     /**

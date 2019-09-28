@@ -20,8 +20,8 @@ class GoodsCat extends Common
 {
     //const PLATFORM_ID = 0;                  //平台ID
     const TOP_CLASS_PARENT_ID = 0;          //顶级分类父类ID
-    const TOP_CLASS = 1;                    //顶级分类
-    const SUB_CLASS = 2;                    //子分类
+    //const TOP_CLASS = 1;                    //顶级分类
+    //const SUB_CLASS = 2;                    //子分类
     const DEFAULT_TYPE = 0;                 //默认类型
     const DEFAULT_TYPE_NAME = '通用类型';   //默认类型名称
 
@@ -255,28 +255,28 @@ class GoodsCat extends Common
     }
 
 
-    /**
-     * 生成操作按钮
-     * @param $id
-     * @param int $type
-     * @return string
-     */
-    protected function getOperating($id, $type = self::TOP_CLASS)
-    {
-        $html = '';
-        if($type == self::TOP_CLASS)
-        {
-            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs add-class" data-id="'.$id.'">添加</a>';
-            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
-            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
-        }
-        elseif($type == self::SUB_CLASS)
-        {
-            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
-            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
-        }
-        return $html;
-    }
+//    /**
+//     * 生成操作按钮
+//     * @param $id
+//     * @param int $type
+//     * @return string
+//     */
+//    protected function getOperating($id, $type = self::TOP_CLASS)
+//    {
+//        $html = '';
+//        if($type == self::TOP_CLASS)
+//        {
+//            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs add-class" data-id="'.$id.'">添加</a>';
+//            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
+//            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
+//        }
+//        elseif($type == self::SUB_CLASS)
+//        {
+//            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
+//            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
+//        }
+//        return $html;
+//    }
 
 
     /**
@@ -362,12 +362,9 @@ class GoodsCat extends Common
 
         if($data['id'] != ""){
             //当前是修改，就需要判断是否会陷入死循环
-//            if(!$this->checkDie($data['id'],$data['parent_id'],'parent_id')){
-//                return error_code(11097);
-//            }
-//            if(!$this->checkDie($data['id'],$data['parent_menu_id'],'parent_menu_id')){
-//                return error_code(11098);
-//            }
+            if(!$this->checkDie($data['id'],$data['parent_id'])){
+                return error_code(11101);
+            }
             $id = $data['id'];
             unset($data['id']);
             $re = $this->save($data,['id'=>$id]);
@@ -662,7 +659,7 @@ class GoodsCat extends Common
         $data = [];
         $str = "";
         for($i=0;$i<$level;$i++){
-            $str .= "|--";
+            $str .= "|----";
         }
         foreach($list as $k => $v){
             if($v["parent_id"] == $parent_menu_id){
@@ -697,6 +694,36 @@ class GoodsCat extends Common
         return $this->hasOne('GoodsType','id', 'type_id')->bind([
             'type_name' => 'name'
         ]);
+    }
+
+    /**
+     * 预先判断死循环
+     * @param $id       当前id
+     * @param $p_id     预挂载的父id
+     * @param int $n    循环次数
+     * @return bool     如果为true就是通过了，否则就是未通过
+     */
+    private function checkDie($id,$p_id,$n=10)
+    {
+        //设置计数器，防止极端情况下陷入死循环了（其他地方如果设置的有问题死循环的话，这里就报错了）
+        if($n <= 0){
+            return false;
+        }
+        if($id == $p_id){
+            return false;
+        }
+        if($p_id == self::TOP_CLASS_PARENT_ID){
+            return true;
+        }
+        $pinfo = $this->where(['id'=>$p_id])->find();
+        if(!$pinfo){
+            return false;
+        }
+        if($pinfo['parent_id'] == $id){
+            return false;
+        }
+        $n--;
+        return $this->checkDie($id,$pinfo['parent_id'],$n);
     }
 
 }

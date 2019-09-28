@@ -1191,6 +1191,26 @@ function convertString($value = '')
 }
 
 
+/***
+ * 导出时字符串太长不显示时，处理
+ */
+function mobile_string($user_id = 0)
+{
+    $mobile = get_user_info($user_id);
+    return $mobile . "\t";
+}
+
+
+/***
+ * 导出时字符串太长不显示时，处理
+ */
+function nickname_string($user_id = 0)
+{
+    $nickname = get_user_info($user_id, 'nickname');
+    return $nickname . "\t";
+}
+
+
 /**
  * 根据token获取userid
  * @param string $token

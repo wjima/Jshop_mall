@@ -72,12 +72,11 @@ class Wxofficial
             $data['id'] = $info['id'];
         }
 
-        if (isset($data['headimgurl']) && !$data['headimgurl']) {
+        if (isset($data['headimgurl']) &&!$info['avatar']) {
             $imageModel                  = new Images();
             $image                       = $imageModel->saveImage($data['headimgurl'], true);//头像都按统一方法保存到本地或者远程图片服务器
             $data['headimgurl'] = isset($image['data']['id']) ? $image['data']['id'] : _sImage();
         }
-
 
         $data['type']     = $userWxModel::TYPE_OFFICIAL;
         $data['openid']   = $data['openid'];
@@ -88,7 +87,6 @@ class Wxofficial
         $data['city']     = $data['city'];
         $data['province'] = $data['province'];
         $data['country']  = $data['country'];
-
         return $userWxModel->toAdd($data,$pid);
     }
 

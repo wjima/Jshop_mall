@@ -59,7 +59,7 @@ class Article extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->with('articleType')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->with('articleType')->field('id,title,cover,type_id,ctime,utime,sort,is_pub')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         foreach($list as $key => $val)
         {
             $list[$key]['cover'] = _sImage($val['cover']);
@@ -185,6 +185,7 @@ class Article extends Common
             $where[] = ['type_id', 'eq', $type_id];
         }
         $list = $this->where($where)
+            ->field('id,title,cover,type_id,ctime,utime,sort,is_pub')
             ->order('sort asc,ctime DESC')
             ->page($page, $limit)
             ->select();

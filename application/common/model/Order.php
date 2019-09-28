@@ -1421,7 +1421,7 @@ class Order extends Common
         $order['goods_pmt']  = isset($cartInfo['data']['goods_pmt']) ? $cartInfo['data']['goods_pmt'] : 0;
         $order['coupon_pmt'] = $cartInfo['data']['coupon_pmt'];
         $order['coupon']     = json_encode($cartInfo['data']['coupon']);
-        $order['ip']         = get_client_ip();
+        $order['ip']         = get_client_ip(0,true);
 
         //以上保存了订单主体表信息，以下生成订单明细表
         $items = $this->formatOrderItems($cartInfo['data']['list'], $order['order_id']);
@@ -1732,50 +1732,6 @@ class Order extends Common
                 $this->complete($v['order_id']);
             }
         }
-    }
-
-    /**
-     * 获取当月的资金池
-     * @return array
-     */
-    public function cashPooling()
-    {
-        $monthTimeStamp = $this->specifiedTimeStamp();
-        $where[]        = ['utime', 'egt', $monthTimeStamp['start_time']];
-        $where[]        = ['utime', 'elt', $monthTimeStamp['end_time']];
-        $where[]        = ['pay_status', 'eq', self::PAY_STATUS_YES];
-        $order_amount   = $this->where($where)->sum('order_amount');
-        $result['data'] = $order_amount / 10;
-        $result         = [
-            'status' => true,
-            'msg'    => '获取成功',
-            'data'   => $result
-        ];
-        return $result;
-    }
-
-    /**
-     * 获取指定年月的第一天开始和最后一天结束的时间戳
-     * @param string $year 年份
-     * @param string $month 月份
-     * @return array (本月开始时间，本月结束时间)
-     */
-    public function specifiedTimeStamp($year = "", $month = "")
-    {
-        if ($year == "") $year = date("Y");
-        if ($month == "") $month = date("m");
-        $month = sprintf("%02d", intval($month));
-        //填充字符串长度
-        $y = str_pad(intval($year), 4, "0", STR_PAD_RIGHT);
-        $month > 12 || $month < 1 ? $m = 1 : $m = $month;
-        $firstDay    = strtotime($y . $m . "01000000");
-        $firstDayStr = date("Y-m-01", $firstDay);
-        $lastDay     = strtotime(date('Y-m-d 23:59:59', strtotime("$firstDayStr +1 month -1 day")));
-
-        return [
-            "start_time" => $firstDay,
-            "end_time"   => $lastDay
-        ];
     }
 
     /**

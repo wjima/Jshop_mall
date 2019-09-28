@@ -219,7 +219,7 @@ class BillPayments extends Common
             $data['user_id'] = $user_id;
             $data['type']         = $type;//保存类型
             $data['payment_code'] = $payment_code;
-            $data['ip']           = get_client_ip();
+            $data['ip']           = get_client_ip(0,true);
             $data['params']       = json_encode($params);         //支付的时候，用到的参数
             $this->save($data);
             //上面保存好收款单表，下面保存收款单明细表
@@ -244,6 +244,11 @@ class BillPayments extends Common
             $this->toUpdate($data['payment_id'], SELF::STATUS_PAYED, $data['payment_code'],$data['money'], '金额为0，自动支付成功', '');
             return error_code(10059);
         }
+
+        //取支付标题，就不往数据库里存了吧
+        $data['pay_title'] = $this->payTitle($data,$rel_arr);
+
+
         $result['status'] = true;
         $result['data']   = $data;
         return $result;
@@ -693,6 +698,36 @@ class BillPayments extends Common
             return error_code(10067);
         }
         return $userWxModel->officialMiniLogin($params['url']);
+    }
+
+    private function payTitle($data,$rel){
+        $re = "";
+        switch($data['type']){
+            case self::TYPE_ORDER:
+                if($rel){
+                    $orderItemModel = new OrderItems();
+                    $where[] = ['order_id', 'eq',$rel[0]['source_id']];
+                    $info = $orderItemModel->where($where)->find();                         //只取第一个订单的第一个商品的名称吧，其他就不取了
+                    if($info){
+                        $re = $info['name'];
+                    }
+                }
+                break;
+            case self::TYPE_RECHARGE:
+                    $re = "账户充值";
+                break;
+            case self::TYPE_FORM_PAY:
+                break;
+            case self::TYPE_FORM_ORDER:
+                break;
+            default:
+        }
+
+        if($re == ""){
+            $re = getSetting('shop_name');
+        }
+        return $re;
+
     }
 
 

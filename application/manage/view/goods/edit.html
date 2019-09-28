@@ -96,7 +96,14 @@
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>基础信息</legend></fieldset>
     <div class="layui-form-item">
         <label class="layui-form-label"> <i class="required-color">*</i>商品分类：</label>
-        {Jshop:goodscat id='goods_cat_id' name="goods_cat_id" value="$catids"/}
+        <div class="layui-input-inline">
+            <select name="goods_cat_id">
+                <option>请选择</option>
+                {volist name="goodsCatTree" id="vo"}
+                <option value="{$vo.id}" {if condition="$data.goods_cat_id eq $vo.id"}selected {/if} >{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
     </div>
 
     <div class="layui-form-item">

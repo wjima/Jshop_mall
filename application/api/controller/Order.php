@@ -425,7 +425,8 @@ class Order extends Api
 
 
     /**
-     * 查看订单售后状态
+     * 废弃方法，建议直接用order.details接口
+     * 查看订单售后状态,
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -433,12 +434,7 @@ class Order extends Api
      */
     public function aftersalesStatus()
     {
-        if(!input("?param.order_id"))
-        {
-            return error_code(13100);
-        }
-        $asModel   = new BillAftersales();
-        return $asModel->orderAftersalesSatatus(input('param.order_id'), $this->userId);
+        return $this->details();
     }
 
 

@@ -661,7 +661,7 @@ class Order extends Common
             }
         }
 
-        //售后单
+        //售后单取当前活动的收货单
         $order_info['bill_aftersales_id'] = false;
         if (count($order_info['aftersalesItem']) > 0) {
             $billAftersalesModel = new BillAftersales();
@@ -673,6 +673,8 @@ class Order extends Common
                 }
             }
         }
+        //把退款金额和退货商品查出来
+        $this->aftersalesVal($order_info);
 
         //促销信息
         if ($order_info['promotion_list']) {
@@ -680,6 +682,25 @@ class Order extends Common
         }
 
         return $order_info;
+    }
+    //把退款的金额和退货的商品数量保存起来
+    private function aftersalesVal(&$orderInfo){
+        $billAftersalesModel = new BillAftersales();
+        $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id']);
+
+        //已经退过款的金额
+        $orderInfo['refunded'] = $re['data']['refund_money'];
+
+        //算退货商品数量
+        foreach ($orderInfo['items'] as $k => $v) {
+            if(isset($re['data']['reship_goods'][$v['id']])){
+                $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']];
+            }else{
+                $orderInfo['items'][$k]['reship_nums'] = 0;
+            }
+            $orderInfo['items'][$k]['reship_nums'] = 0;
+        }
+        return true;
     }
 
     /**

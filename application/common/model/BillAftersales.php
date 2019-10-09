@@ -24,49 +24,95 @@ class BillAftersales extends Common
     protected $deleteTime = 'isdel';
 
 
+//    废弃的方法，建议用orderToAftersales方法吧。
+//    /**
+//     * 订单售后状态，返回退款的金额和退货的明细
+//     * @param $order_id
+//     * @param bool $user_id
+//     * @return array|mixed
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function orderAftersalesSatatus($order_id, $user_id = false)
+//    {
+//        $result = [
+//            'status' => false,
+//            'data'   => [],
+//            'msg'    => ''
+//        ];
+//
+//        //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
+//        $orderModel = new Order();
+//        $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
+//        if (!$orderInfo) {
+//            return error_code(13101);
+//        }
+//
+//        //算已经退过款的金额，取已经完成的售后单的金额汇总
+//        $where[]               = ['order_id', 'eq', $order_id];
+//        $where[]               = ['status', 'eq', self::STATUS_SUCCESS];
+//        $orderInfo['refunded'] = $this->where($where)->sum('refund');   //已经退过款的金额
+//
+//        //算已经退过的订单里的商品的数量
+//        $afterSalesItemsModel = new BillAftersalesItems();
+//        foreach ($orderInfo['items'] as $k => $v) {
+//            $orderInfo['items'][$k]['reship_nums'] = $afterSalesItemsModel
+//                ->alias('asi')
+//                ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
+//                ->where([
+//                    ['asi.order_items_id', 'eq', $v['id']],
+//                    ['a.status', 'eq', self::STATUS_SUCCESS]
+//                ])
+//                ->sum('asi.nums');
+//        }
+//        $result['data'] = $orderInfo;
+//        $result['status'] = true;
+//
+//        return $result;
+//    }
+
     /**
-     * 订单售后状态，返回退款的金额和退货的明细
+     * 根据订单号查询已经售后的内容
      * @param $order_id
      * @param bool $user_id
-     * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * @return array
      */
-    public function orderAftersalesSatatus($order_id, $user_id = false)
-    {
+    public function orderToAftersales($order_id,$user_id = false){
         $result = [
             'status' => false,
-            'data'   => [],
+            'data'   => [
+                'refund_money' => 0,        //退款金额
+                'reship_goods' => [],       //退货商品
+                'bill_aftersales' => []     //关联的售后单
+            ],
             'msg'    => ''
         ];
-
-        //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
-        $orderModel = new Order();
-        $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
-        if (!$orderInfo) {
-            return error_code(13101);
-        }
-
         //算已经退过款的金额，取已经完成的售后单的金额汇总
-        $where[]               = ['order_id', 'eq', $order_id];
-        $where[]               = ['status', 'eq', self::STATUS_SUCCESS];
-        $orderInfo['refunded'] = $this->where($where)->sum('refund');   //已经退过款的金额
-
-        //算已经退过的订单里的商品的数量
-        $afterSalesItemsModel = new BillAftersalesItems();
-        foreach ($orderInfo['items'] as $k => $v) {
-            $orderInfo['items'][$k]['reship_nums'] = $afterSalesItemsModel
-                ->alias('asi')
-                ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
-                ->where([
-                    ['asi.order_items_id', 'eq', $v['id']],
-                    ['a.status', 'eq', self::STATUS_SUCCESS]
-                ])
-                ->sum('asi.nums');
+        $where[] = ['order_id', 'eq', $order_id];
+        $where[] = ['status', 'eq', self::STATUS_SUCCESS];
+        if($user_id){
+            $where[] = ['user_id', 'eq', $user_id];
         }
-        $result['data'] = $orderInfo;
-        $result['status'] = true;
+
+        $result['data']['refund_money'] = $this->where($where)->sum('refund');   //已经退过款的金额
+
+        //算退货商品明细
+        $afterSalesItemsModel = new BillAftersalesItems();
+        $list = $afterSalesItemsModel
+            ->alias('asi')
+            ->field('asi.order_items_id,sum(asi.nums) as nums')
+            ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
+            ->where($where)
+            ->group('asi.order_items_id')
+            ->select();
+        if(!$list->isEmpty()){
+            $result['data']['reship_goods'] = array_column($list->toArray(),'nums', 'order_items_id');     //采用order_items_id=>nums的一维数组形式，好查
+        }
+
+        //把订单有关的所有售后单也都查出来吧
+        $result['data']['bill_aftersales'] = $this->field('aftersales_id,status')->where($where)->select();
+
 
         return $result;
     }

@@ -1,0 +1,1 @@
+ALTER TABLE `jshop_bill_aftersales` ADD `received` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '是否收到商品，1未收到，2已收到' AFTER `type`;

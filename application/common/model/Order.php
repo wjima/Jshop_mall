@@ -698,7 +698,6 @@ class Order extends Common
             }else{
                 $orderInfo['items'][$k]['reship_nums'] = 0;
             }
-            $orderInfo['items'][$k]['reship_nums'] = 0;
         }
         return true;
     }

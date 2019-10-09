@@ -455,6 +455,10 @@ class Order extends Api
         {
             return error_code(10051);
         }
+        if(!input("?param.refund"))
+        {
+            return error_code(10051);
+        }
         $items = [];
         $post = input('param.');
         if(isset($post['items']))
@@ -470,7 +474,7 @@ class Order extends Api
         {
             $images = $post['images'];
         }
-        $refund = input('param.refund/f', 0);        //退款金额，如果type是退款，这个值无所谓，
+        $refund = input('param.refund/f');
         //formId
         $formId = input('param.formId', "");
         $billAftersalesModel = new BillAftersales();

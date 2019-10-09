@@ -9,8 +9,8 @@ class BillAftersales extends Common
 {
     protected $pk = 'aftersales_id';
 
-    const TYPE_REFUND = 1;        //售后类型 退款
-    const TYPE_RESHIP = 2;       //售后类型 退货
+    const TYPE_REFUND = 1;        //售后类型 未收到货
+    const TYPE_RESHIP = 2;       //售后类型 已收到货
 
     const STATUS_WAITAUDIT = 1;       //状态 等待审核
     const STATUS_SUCCESS = 2;       //状态 审核通过
@@ -81,16 +81,16 @@ class BillAftersales extends Common
     public function orderToAftersales($order_id,$user_id = false){
         $result = [
             'status' => false,
-            'data'   => [
+            'data' => [
                 'refund_money' => 0,        //退款金额
                 'reship_goods' => [],       //退货商品
                 'bill_aftersales' => []     //关联的售后单
             ],
-            'msg'    => ''
+            'msg' => ''
         ];
         //算已经退过款的金额，取已经完成的售后单的金额汇总
         $where[] = ['order_id', 'eq', $order_id];
-        $where[] = ['status', 'eq', self::STATUS_SUCCESS];
+        $where[] = ['status', 'in', [self::STATUS_SUCCESS,self::STATUS_WAITAUDIT]];     //加上待审核状态，这样申请过售后的商品和金额不会再重复申请了
         if($user_id){
             $where[] = ['user_id', 'eq', $user_id];
         }
@@ -122,7 +122,7 @@ class BillAftersales extends Common
      * 创建售后单
      * @param $user_id
      * @param $order_id //发起售后的订单
-     * @param $type //售后类型，1退款，2退款退货，如果是退款
+     * @param $type //是否收到退货，1未收到退货，不会创建退货单，2收到退货，会创建退货单
      * @param array $items //如果是退款退货，退货的明细 以 [[order_item_id=>nums]]的二维数组形式传值
      * @param array $images
      * @param string $reason //售后理由
@@ -141,35 +141,27 @@ class BillAftersales extends Common
             'msg'    => ''
         ];
 
-        $awhere[] = ['order_id', 'eq', $order_id];
-        $awhere[] = ['user_id', 'eq', $user_id];
-        $awhere[] = ['status', 'eq', self::STATUS_WAITAUDIT];
-        $flag     = $this->where($awhere)->find();
-        if ($flag) {
-            return error_code(13102);
+//        $awhere[] = ['order_id', 'eq', $order_id];
+//        $awhere[] = ['user_id', 'eq', $user_id];
+//        $awhere[] = ['status', 'eq', self::STATUS_WAITAUDIT];
+//        $flag     = $this->where($awhere)->find();
+//        if ($flag) {
+//            return error_code(13102);
+//        }
+
+        //取和订单有关系的所有信息
+        $orderModel = new Order();
+        $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
+        if (!$orderInfo) {
+            return error_code(13101);
         }
 
-        $orderInfo = $this->orderAftersalesSatatus($order_id, $user_id);
-        if (!$orderInfo['status']) {
-            return $orderInfo;
-        }
-        $orderInfo = $orderInfo['data'];
         $data['aftersales_id'] = get_sn(5);
 
-        //如果是退款，退款金额用已支付的金额
-        if ($type == self::TYPE_REFUND) {
-            $refund = $orderInfo['payed'];
-        }
-
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
-        $verify = $this->verify($type, $orderInfo, $refund);
+        $verify = $this->verify($type, $orderInfo, $refund,$items);
         if (!$verify['status']) {
             return $verify;
-        }
-
-        //如果是退货，必须选择退货明细
-        if ($type == self::TYPE_RESHIP && !$items) {
-            return error_code(13205);
         }
 
 
@@ -184,6 +176,12 @@ class BillAftersales extends Common
             return $aftersalesItems;
         }
 
+        //做个简单校验，防止乱传值
+        if($type != self::TYPE_REFUND && $type != self::TYPE_RESHIP){
+            return error_code(10000);
+        }
+
+
         Db::startTrans();
         try {
             $data['order_id'] = $order_id;
@@ -194,7 +192,7 @@ class BillAftersales extends Common
 
             $this->save($data);
             //上面保存好售后单表，下面保存售后单明细表
-            if ($type == self::TYPE_RESHIP) {
+            if ($aftersalesItems['data']) {
                 $afterSalesItemsModel = new BillAftersalesItems();
                 $afterSalesItemsModel->saveAll($aftersalesItems['data']);
             }
@@ -208,7 +206,7 @@ class BillAftersales extends Common
                 $afterSalesImagesModel = new BillAftersalesImages();
                 $afterSalesImagesModel->saveAll($rel_arr);
             }
-
+            Db::commit();
             //微信消息模板
             if ($formId) {
                 $templateMessageModel = new TemplateMessage();
@@ -220,7 +218,6 @@ class BillAftersales extends Common
                 ];
                 $templateMessageModel->addSend($message);
             }
-            Db::commit();
 
         } catch (\Exception $e) {
             Db::rollback();
@@ -387,39 +384,49 @@ class BillAftersales extends Common
     }
 
 
-    //校验是否可以进行售后
-    private function verify($type, $orderInfo, $refund)
+    /**
+     * 校验是否可以进行售后
+     * @param $type
+     * @param $orderInfo
+     * @param $refund
+     * @param $items
+     * @return array|mixed
+     */
+    private function verify($type, $orderInfo, $refund = 0,$items = [])
     {
         //判断订单是否是可以售后
         $orderModel = new Order();
-        if ($type == self::TYPE_REFUND) {
-            //只有是已付款或部分付款并且是活动订单的才能退款
-            if (
-            !(($orderInfo['pay_status'] == $orderModel::PAY_STATUS_YES || $orderInfo['pay_status'] == $orderModel::PAY_STATUS_PARTIAL_YES) && $orderInfo['status'] == $orderModel::ORDER_STATUS_NORMAL)
-            ) {
-                return error_code(13203);
-            }
 
-
-        } elseif ($type == self::TYPE_RESHIP) {
-            //不是未发货状态和已退货状态，并且订单是活动订单的才能退货
-            if (
-            !($orderInfo['ship_status'] != $orderModel::SHIP_STATUS_NO && $orderInfo['ship_status'] != $orderModel::SHIP_STATUS_RETURNED && $orderInfo['status'] == $orderModel::ORDER_STATUS_NORMAL)
-            ) {
-                return error_code(13204);
-            }
-            //判断此次退的金额加上已退的金额，不能超过已支付的金额
-
-
-            if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
-                return error_code(13206);
-            }
-
-
-        } else {
-            //售后类型不正确
-            return error_code(10003);
+        //只有活动订单才能售后
+        if($orderInfo['status'] != $orderModel::ORDER_STATUS_NORMAL){
+            return error_code(13200);
         }
+
+        //未付款订单和已退款订单不能售后
+        if ($orderInfo['pay_status'] == $orderModel::PAY_STATUS_NO || $orderInfo['pay_status'] == $orderModel::PAY_STATUS_REFUNDED){
+            return error_code(13203);
+        }
+
+
+        //如果订单未发货，那么用户不能选择已收到货
+        if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
+            return error_code(13204);
+        }
+
+        //判断退款金额不能超
+        if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
+            return error_code(13206);
+        }
+
+//        //判断退货商品数量不能超，前端判断的话，没有items，售后提交过来的话，在formatAftersalesItems里校验，那么这个就注释掉吧。
+//        foreach ($orderInfo['items'] as $k => $v) {
+//            if(isset($items[$v['id']])){
+//                if($v['reship_nums'] + $items[$v['id']] > $v['nums']){
+//                    return error_code(13201);
+//                }
+//            }
+//        }
+
         return [
             'status' => true,
             'data'   => [],
@@ -444,7 +451,7 @@ class BillAftersales extends Common
             }
             foreach ($orderInfo['items'] as $v) {
                 if ($v['id'] == $oi_id) {
-                    //判断已经推过的加上本次退的，是否超过了购买的数量,具体取nums（购买数量）还是取sendnums(已发货数量),以后再说吧。要取购买数量，因为未发货的，也可以退的
+                    //判断已经退过的加上本次退的，是否超过了购买的数量,具体取nums（购买数量）还是取sendnums(已发货数量),以后再说吧。要取购买数量，因为未发货的，也可以退的
                     if ($num + $v['reship_nums'] > $v['nums']) {
                         return error_code(13201);
                     }

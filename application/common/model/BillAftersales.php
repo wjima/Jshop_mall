@@ -235,6 +235,7 @@ class BillAftersales extends Common
      * 如果审核通过了，是退款单的话，自动生成退款单，并做订单完成状态，如果是退货的话，自动生成退款单和退货单，如果
      * @param $aftersales_id
      * @param $status
+     *
      * @param int $refund
      * @param string $mark
      * @param array $items
@@ -243,7 +244,7 @@ class BillAftersales extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function audit($aftersales_id, $status, $refund = 0, $mark = "", $items = [])
+    public function audit($aftersales_id, $status,$type, $refund = 0, $mark = "", $items = [])
     {
         $result = [
             'status' => false,
@@ -259,10 +260,11 @@ class BillAftersales extends Common
             return error_code(13207);
         }
 
-        $orderInfo = $this->orderAftersalesSatatus($info['order_id'], $info['user_id']);
-
-        if (!$orderInfo['status']) {
-            return $orderInfo;
+        //取订单的信息
+        $orderModel = new Order();
+        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'],$info['user_id']);
+        if(!$orderInfo){
+            return error_code(10000);
         }
         $orderInfo = $orderInfo['data'];
 
@@ -380,7 +382,46 @@ class BillAftersales extends Common
         }
 
         return $result;
+    }
 
+    //后端进行审核的时候，前置操作，1取出页面的数据，2在提交过来的表单的时候，进行校验
+    public function preAudit($aftersales_id){
+        $result = [
+            'status' => true,
+            'data'   => [],
+            'msg'    => ''
+        ];
+
+        $where['aftersales_id'] = $aftersales_id;
+        $where['status'] = self::STATUS_WAITAUDIT;
+        $info = $this::with('images,items')->where($where)->find();
+        if(!$info){
+            return error_code(13207);
+        }
+
+        //取订单的信息
+        $orderModel = new Order();
+        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'],$info['user_id']);
+        if(!$orderInfo){
+            return error_code(10000);
+        }
+
+        //订单上的退款金额和退货数量包含当次的，要减掉
+        $orderInfo['refunded'] -= $info['refund'];
+        foreach ($orderInfo['items'] as $k => $v) {
+            unset($orderInfo['items'][$k]['promotion_list']);       //此字段会影响前端表格显示，所以删掉
+            $orderInfo['items'][$k]['the_reship_nums'] = 0;
+            foreach($info['items'] as $i => $j){
+                if($v['id'] == $j['order_items_id']){
+                    $orderInfo['items'][$k]['reship_nums'] -= $j['nums'];
+                    $orderInfo['items'][$k]['the_reship_nums'] = $j['nums'];
+                }
+            }
+        }
+
+        $result['data']['info'] = $info;            //数据库中保存的售后单信息
+        $result['data']['orderInfo'] = $orderInfo;  //订单信息，减掉了当次售后单中的退款金额和订单明细中的退货数量
+        return $result;
     }
 
 
@@ -678,12 +719,13 @@ class BillAftersales extends Common
 
 
     /**
+     * 和模型的order属性冲突
      * @return \think\db\Query|\think\model\relation\HasOne
      */
-    public function order()
-    {
-        return $this->hasOne('Order', 'order_id', 'order_id');
-    }
+//    public function order()
+//    {
+//        return $this->hasOne('Order', 'order_id', 'order_id');
+//    }
 
 
     /**

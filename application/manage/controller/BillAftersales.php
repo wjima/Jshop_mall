@@ -3,6 +3,7 @@ namespace app\Manage\controller;
 
 use app\common\controller\Manage;
 use app\common\model\BillAftersales as BillAfterSalesModel;
+use app\common\model\Order;
 use app\common\model\Payments;
 use Request;
 
@@ -42,29 +43,30 @@ class BillAftersales extends Manage
             if(!input('?param.status')){
                 return error_code(10000);
             }
+            if(!input('?param.type')){
+                return error_code(10000);
+            }
             if(!input('?param.refund')){
                 return error_code(13216);
             }else{
                 $refund = input('param.refund/f');
             }
             $mark = input('param.mark','');
-
-            return $billAftersalesModel->audit(input('param.aftersales_id'), input('param.status'),$refund,$mark,$items );
+            die();
+            return $billAftersalesModel->audit(input('param.aftersales_id'), input('param.status'),input('param.type'),$refund,$mark,$items );
         }
 
 
-        $where['aftersales_id'] = input('param.aftersales_id');
-        $where['status'] = $billAftersalesModel::STATUS_WAITAUDIT;
-        $info = $billAftersalesModel::with('images,items')->where($where)->find();
-        if(!$info){
-            return error_code(13207);
+        $re = $billAftersalesModel->preAudit(input('param.aftersales_id'));
+        if(!$re['status']){
+            return $re;
         }
 
-        if($info->items){
-            $info['items_json'] = json_encode($info->items);
-        }
+        $re['data']['orderInfo']['items'] = json_encode($re['data']['orderInfo']['items']);
 
-        $this->assign('info',$info);
+        $this->assign('info',$re['data']['info']);
+        $this->assign('order_info',$re['data']['orderInfo']);
+
         return [
             'status' => true,
             'data' => $this->fetch('audit'),

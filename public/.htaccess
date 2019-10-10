@@ -4,8 +4,8 @@ RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^wap/(.*) /wap/index.html [QSA,PT,L]
-RewriteCond $1 !^(wap)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond $1 !^(wap)
 RewriteRule ^(.*)$ index.php?s=/$1 [QSA,PT,L]
 </IfModule>

@@ -335,6 +335,21 @@ wwwroot  WEB部署目录（或者子目录）
     }
 ~~~
 
+#### Apache 伪静态配置
+~~~
+    <IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^wap/(.*) /wap/index.html [QSA,PT,L]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond $1 !^(wap)
+    RewriteRule ^(.*)$ index.php?s=/$1 [QSA,PT,L]
+    </IfModule>
+~~~
+
 #### 安全&缺陷
 如果你发现了一个安全漏洞或缺陷，请发送邮件到 jima@jihainet.com。所有的安全漏洞都将及时得到解决。
 

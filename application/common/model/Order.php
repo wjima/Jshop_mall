@@ -50,6 +50,7 @@ class Order extends Common
 
     const ALL_PENDING_PAYMENT = 1;          //总订单类型 待付款
     const ALL_PENDING_DELIVERY = 2;         //待发货
+    const ALL_PARTIAL_DELIVERY = 8;         //部分发货
     const ALL_PENDING_RECEIPT = 3;          //待收货
     const ALL_PENDING_EVALUATE = 4;         //待评价
     const ALL_COMPLETED_EVALUATE = 5;       //已评价
@@ -76,15 +77,6 @@ class Order extends Common
     public function user()
     {
         return $this->hasOne('User', 'id', 'user_id');
-    }
-
-    /**
-     * 发货信息关联
-     * @return \think\model\relation\HasMany
-     */
-    public function delivery()
-    {
-        return $this->hasMany('BillDelivery');
     }
 
     /**
@@ -258,6 +250,7 @@ class Order extends Common
             $as = new BillAftersales();
 
             foreach ($result['data'] as $k => &$v) {
+                $v['s'] = $this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment']);
                 $v['status_text'] = config('params.order')['status_text'][$this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment'])];
                 $v['username']    = get_user_info($v['user_id'], 'nickname');
                 $v['operating']   = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status']);
@@ -512,10 +505,15 @@ class Order extends Common
         $order_info->user; //用户信息
         $order_info->paymentRelItem; //支付单
         $order_info->refundItem; //退款单
-        $order_info->delivery; //发货信息
         $order_info->ladingItem; //提货单
         $order_info->returnItem; //退货单
         $order_info->aftersalesItem; //售后单
+        //发货单
+        $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
+        $delivery_ids = $billDeliveryOrderRelModel->getDeliveryListByOrderId($id);
+        $billDeliveryModel = new BillDelivery();
+        $deliveryResult = $billDeliveryModel->getDeliveryList($delivery_ids);
+        $order_info['delivery'] = $deliveryResult['data'];
 
         //获取提货门店
         $order_info['store'] = false;
@@ -587,7 +585,6 @@ class Order extends Common
         if (isset($order_info['delivery'][0]) && $order_info['delivery'][0] && $logistics) {
             $logi_code         = $order_info['delivery'][0]['logi_code'];
             $logi_no           = $order_info['delivery'][0]['logi_no'];
-            $billDeliveryModel = new BillDelivery();
             $express_delivery  = $billDeliveryModel->getLogistic($logi_code, $logi_no);
             if ($express_delivery['status']) {
                 $order_info['express_delivery'] = $express_delivery['data']['info']['data'][0];
@@ -744,6 +741,9 @@ class Order extends Common
         } elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status == self::PAY_STATUS_YES && $ship_status == self::SHIP_STATUS_NO) {
             //待发货
             return self::ALL_PENDING_DELIVERY;
+        } else if ($status == self::ORDER_STATUS_NORMAL && $pay_status == self::PAY_STATUS_YES && $ship_status == self::SHIP_STATUS_PARTIAL_YES) {
+            //部分发货
+            return self::ALL_PARTIAL_DELIVERY;
         } elseif ($status == self::ORDER_STATUS_NORMAL && $ship_status == self::SHIP_STATUS_YES && $confirm == self::RECEIPT_NOT_CONFIRMED) {
             //待收货
             return self::ALL_PENDING_RECEIPT;

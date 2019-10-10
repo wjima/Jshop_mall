@@ -571,4 +571,34 @@ class BillDelivery extends Common
         }
         return $return_data;
     }
+
+
+    /**
+     * 获取发货单列表
+     * @param $delivery_ids
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getDeliveryList($delivery_ids)
+    {
+        $return_data = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => []
+        ];
+
+        $where[] = ['delivery_id', 'in', $delivery_ids];
+        $return_data['data'] = $this::with('items')
+            ->where($where)
+            ->select();
+
+        if($return_data['data']) {
+            $return_data['status'] = true;
+            $return_data['msg'] = '获取成功';
+        }
+
+        return $return_data;
+    }
 }

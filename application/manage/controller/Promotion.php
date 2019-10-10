@@ -431,8 +431,6 @@ class Promotion extends Manage
             }
             $code = $info['code'];
             $this->assign($info->toArray());
-            dump($info);
-            die;
         } else {
             $code = input('param.result_code');
             $this->assign('promotion_id', input('param.promotion_id/d'));

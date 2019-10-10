@@ -582,8 +582,8 @@ class Order extends Common
         }
 
         //物流信息查询
+        $express_delivery = [];
         if (isset($order_info['delivery'][0]) && $order_info['delivery'][0] && $logistics) {
-            $express_delivery = [];
             foreach ($order_info['delivery'] as $v) {
                 $express  = $billDeliveryModel->getLogistic($v['logi_code'], $v['logi_no']);
                 if ($express['status']) {

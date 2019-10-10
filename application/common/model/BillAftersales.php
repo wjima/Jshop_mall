@@ -251,22 +251,13 @@ class BillAftersales extends Common
             'data'   => [],
             'msg'    => ''
         ];
-        $where  = [
-            'aftersales_id' => $aftersales_id,
-            'status'        => self::STATUS_WAITAUDIT
-        ];
-        $info   = $this->where($where)->find();
-        if (!$info) {
-            return error_code(13207);
+        $re = $this->preAudit($aftersales_id);
+        if(!$re['status']){
+            return $re;
         }
+        $info = $re['data']['info'];
+        $orderInfo = $re['data']['orderInfo'];
 
-        //取订单的信息
-        $orderModel = new Order();
-        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'],$info['user_id']);
-        if(!$orderInfo){
-            return error_code(10000);
-        }
-        $orderInfo = $orderInfo['data'];
 
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
         $verify = $this->verify($info['type'], $orderInfo, $refund);
@@ -274,25 +265,49 @@ class BillAftersales extends Common
             return $verify;
         }
 
+        $orderModel = new Order();
+        //如果订单未发货，那么用户不能选择已收到货
+        if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
+            return error_code(13227);
+        }
+
         //如果是退货单，必须选择退货明细
         if ($info['type'] == self::TYPE_RESHIP && !$items) {
             return error_code(13205);
         }
-
         //如果是退货，判断退货明细，数量是否超出可退的数量
-        if ($info['type'] == self::TYPE_RESHIP) {
+        if ($items) {
             $aftersalesItems = $this->formatAftersalesItems($orderInfo, $items, $info['aftersales_id']);
             if (!$aftersalesItems['status']) {
                 return $aftersalesItems;
             }
         }
 
+        //判断退款金额不能超了
+        if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
+            return error_code(13206);
+        }
+
+
+
         Db::startTrans();
         try {
+            $where['aftersales_id'] = $aftersales_id;
+            $where['status'] = self::STATUS_WAITAUDIT;
+
             $data['status'] = $status;
             $data['mark']   = $mark;
             $data['refund'] = $refund;    //审核售后单的时候，可以修改退款金额，可以退款金额为0，只退货所以，这里要覆盖此字段
+            $data['type'] = $type;
             $this->where($where)->data($data)->update();
+
+            //更新售后单明细表，先删除，然后全新插入
+            $afterSalesItemsModel = new BillAftersalesItems();
+            $afterSalesItemsModel->where('aftersales_id',$aftersales_id)->delete();
+            if ($aftersalesItems['data']) {
+                $afterSalesItemsModel = new BillAftersalesItems();
+                $afterSalesItemsModel->saveAll($aftersalesItems['data']);
+            }
 
             //审核通过的话，有退款的，生成退款单，根据最新的items生成退货单,并做订单的状态更改
             if ($status == self::STATUS_SUCCESS) {
@@ -305,8 +320,8 @@ class BillAftersales extends Common
                         return $refund_re;
                     }
                 }
-                //如果有退货，生成退货单
-                if ($info['type'] == self::TYPE_RESHIP && $items) {
+                //如果已经发货了，要退货，生成退货单，让用户吧商品邮回来。
+                if ($info['type'] == self::TYPE_RESHIP && $aftersalesItems['data']) {
                     $billReship = new BillReship();
                     $reship_re  = $billReship->toAdd($info['user_id'], $info['order_id'], $info['aftersales_id'], $aftersalesItems['data']);
                     if (!$reship_re['status']) {
@@ -315,36 +330,39 @@ class BillAftersales extends Common
                     }
                 }
                 //更新订单状态
-                $orderModel = new Order();
-                if ($info['type'] == self::TYPE_REFUND) {
-                    //如果是退款，订单付款类型变成已退款状态，并且订单类型变成已完成
+
+                //如果是退款，退完了就变成已退款并且订单类型变成已完成，如果未退完，就是部分退款
+                if (($refund + $orderInfo['refunded']) == $orderInfo['payed']) {
                     $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
                     $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
-                    //商品库存调整,未发货，只申请退款
-                    if ($orderInfo['pay_status'] == $orderModel::PAY_STATUS_YES && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
-                        $goodsModel = new Goods();
-                        foreach ($orderInfo['items'] as $key => $val) {
-                            $goodsModel->changeStock($val['product_id'], 'refund', $val['nums']);
-                        }
+                }else{
+                    $order_data['pay_status'] = $orderModel::PAY_STATUS_PARTIAL_NO;
+                }
+
+                //未发货的商品库存调整,如果订单未发货或者部分发货，并且用户未收到商品的情况下，需要解冻冻结库存
+                if (
+                    ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
+                    $type = self::TYPE_REFUND
+                ){
+                    $goodsModel = new Goods();
+                    foreach ($orderInfo['items'] as $key => $val) {
+                        $goodsModel->changeStock($val['product_id'], 'refund', $val['nums']);
                     }
-                } else {
-                    //如果是退货状态，如果有退款，订单付款类型变成部分付款状态，如果款退完了，或者订单明细退完了，订单类型做已完成
-                    //如果款退完了，订单就已完成
-                    if (($refund + $orderInfo['refunded']) >= $orderInfo['payed']) {
-                        $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
-                        $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
-                    } else {
-                        $order_data['pay_status'] = $orderModel::PAY_STATUS_PARTIAL_NO;
-                    }
-                    //判断货物发完了没有，如果货已发完了，订单就已完成
+                }
+
+
+                //已发货的商品库存调整，如果是订单已发货或部分发货的时候，并且用户收到商品的情况下的处理
+                if (
+                    ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_YES || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
+                    $type = self::TYPE_RESHIP
+                ){
+                    //判断货物退完了没有，如果货已发完了，订单就已完成
                     $all_sened = true;
                     foreach ($orderInfo['items'] as $k => $v) {
                         if (isset($items[$v['id']])) {
-                            $v['all_reship_nums'] = $v['reship_nums'] + $items[$v['id']];      //把本次退货数量加上去，然后再判断是否已经退完货了
-                        } else {
-                            $v['all_reship_nums'] = $v['reship_nums'];
+                            $v['reship_nums'] += $items[$v['id']];      //把本次退货数量加上去，然后再判断是否已经退完货了
                         }
-                        if ($v['all_reship_nums'] < $v['nums']) {
+                        if ($v['reship_nums'] < $v['nums']) {
                             //说明未退完商品
                             $all_sened = false;
                             break;
@@ -355,16 +373,15 @@ class BillAftersales extends Common
                     }
                 }
                 $orderModel->where(['order_id' => $orderInfo['order_id'], 'status' => $orderModel::ORDER_STATUS_NORMAL])->data($order_data)->update();
-                // 售后审核通过后操作
-                hook('aftersalesSuccess', $info);
             }
 
             Db::commit();
 
-            //审核通过的售后单锚点
+
+            //售后单审核过后的锚点
             if($status == self::STATUS_SUCCESS)
             {
-                hook('aftersalesreview', $aftersales_id);//添加商品后增加钩子
+                hook('aftersalesreview', $aftersales_id);           //此钩子名称不妥，会修改掉。
             }
 
             //发送售后审核消息
@@ -451,22 +468,13 @@ class BillAftersales extends Common
 
         //如果订单未发货，那么用户不能选择已收到货
         if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
-            return error_code(13204);
+            return error_code(13227);
         }
 
         //判断退款金额不能超
         if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
             return error_code(13206);
         }
-
-//        //判断退货商品数量不能超，前端判断的话，没有items，售后提交过来的话，在formatAftersalesItems里校验，那么这个就注释掉吧。
-//        foreach ($orderInfo['items'] as $k => $v) {
-//            if(isset($items[$v['id']])){
-//                if($v['reship_nums'] + $items[$v['id']] > $v['nums']){
-//                    return error_code(13201);
-//                }
-//            }
-//        }
 
         return [
             'status' => true,

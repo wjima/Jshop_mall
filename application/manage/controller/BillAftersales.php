@@ -52,7 +52,7 @@ class BillAftersales extends Manage
                 $refund = input('param.refund/f');
             }
             $mark = input('param.mark','');
-            die();
+
             return $billAftersalesModel->audit(input('param.aftersales_id'), input('param.status'),input('param.type'),$refund,$mark,$items );
         }
 

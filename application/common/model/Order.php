@@ -582,19 +582,21 @@ class Order extends Common
         }
 
         //物流信息查询
+        $express_delivery = [];
         if (isset($order_info['delivery'][0]) && $order_info['delivery'][0] && $logistics) {
-            $logi_code         = $order_info['delivery'][0]['logi_code'];
-            $logi_no           = $order_info['delivery'][0]['logi_no'];
-            $express_delivery  = $billDeliveryModel->getLogistic($logi_code, $logi_no);
-            if ($express_delivery['status']) {
-                $order_info['express_delivery'] = $express_delivery['data']['info']['data'][0];
-            } else {
-                $order_info['express_delivery'] = [
-                    'context' => '已为你发货，请注意查收',
-                    'time'    => date('Y-m-d H:i:s', $order_info['delivery'][0]['ctime'])
-                ];
+            foreach ($order_info['delivery'] as $v) {
+                $express  = $billDeliveryModel->getLogistic($v['logi_code'], $v['logi_no']);
+                if ($express['status']) {
+                    $express_delivery[] = $express['data']['info']['data'][0];
+                } else {
+                    $express_delivery[] = [
+                        'context' => '已为你发货，请注意查收',
+                        'time'    => date('Y-m-d H:i:s', $v['ctime'])
+                    ];
+                }
             }
         }
+        $order_info['express_delivery'] = $express_delivery;
 
         //支付单
         if (count($order_info['paymentRelItem']) > 0) {
@@ -782,7 +784,7 @@ class Order extends Common
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
                     [$table_name . 'pay_status', 'eq', self::PAY_STATUS_YES],
-                    [$table_name . 'ship_status', 'eq', self::SHIP_STATUS_NO]
+                    [$table_name . 'ship_status', 'in', self::SHIP_STATUS_NO.','.self::SHIP_STATUS_PARTIAL_YES]
                 ];
                 break;
             case self::ALL_PENDING_RECEIPT: //待收货

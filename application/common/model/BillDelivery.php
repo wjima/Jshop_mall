@@ -45,12 +45,12 @@ class BillDelivery extends Common
      * @param $memo
      * @param $ship_data
      * @return array|mixed
-     * @throws \think\exception\DbException
      */
     public function ship($order_id, $logi_code, $logi_no, $memo, $ship_data)
     {
         //获取订单详情
-        $order = model('common/Order')->get($order_id);
+        $orderModel = new Order();
+        $order = $orderModel->get($order_id);
         $order->items;
         //$logistics = model('common/Ship')->get($order['logistics_id']);
         //订单验证
@@ -90,10 +90,8 @@ class BillDelivery extends Common
         }
         //组装发货总单需要的信息
         $delivery_id = get_sn(8);
-        $bull_delivery = array(
+        $bull_delivery = [
             'delivery_id' => $delivery_id,
-            'order_id' => $order['order_id'],
-            'user_id' => $order['user_id'],
             'logi_code' => $logi_code,
             'logi_no' => $logi_no,
             'ship_area_id' => $order['ship_area_id'],
@@ -104,7 +102,12 @@ class BillDelivery extends Common
             'memo' => $memo,
             'ctime' => time(),
             'utime' => time()
-        );
+        ];
+
+        $bill_rel = [
+            'order_id' => $order['order_id'],
+            'delivery_id' => $delivery_id
+        ];
 
         $return = false;
         Db::startTrans();
@@ -112,9 +115,13 @@ class BillDelivery extends Common
             //插入发货总单
             $this->insert($bull_delivery);
 
+            //插入发货单订单关联表
+            $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
+            $billDeliveryOrderRelModel->insert($bill_rel);
+
             //订单记录
             $orderLog = new OrderLog();
-            $orderLog->addLog($bull_delivery['order_id'], $bull_delivery['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+            $orderLog->addLog($order_id, $order['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：'.$delivery_id, [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
 
             //插入发货详单，修改库存
             $goodsModel = new Goods();
@@ -122,28 +129,32 @@ class BillDelivery extends Common
             $item_data = [];
             foreach($ship_item as $k => $v)
             {
-                $item_data[] = [
-                    'delivery_id' => $delivery_id,
-                    'order_items_id' => $k,
-                    'nums' => $v
-                ];
+                if($v > 0){
+                    $item_data[] = [
+                        'delivery_id' => $delivery_id,
+                        'order_items_id' => $k,
+                        'nums' => $v
+                    ];
 
-                $product = $orderItem->field('product_id')->where('id', 'eq', $k)->find();
-                if(!$product)
-                {
-                    return error_code(13306);
-                }
-                $re = $goodsModel->changeStock($product['product_id'], 'send', $v);
-                if(!$re['status'])
-                {
-                    return error_code(13307);
+                    $product = $orderItem->field('product_id')->where('id', 'eq', $k)->find();
+                    if(!$product)
+                    {
+                        return error_code(13306);
+                    }
+                    $re = $goodsModel->changeStock($product['product_id'], 'send', $v);
+                    if(!$re['status'])
+                    {
+                        return error_code(13307);
+                    }
                 }
             }
-            model('common/BillDeliveryItems')->insertAll($item_data);
+            $billDeliveryItemsModel = new BillDeliveryItems();
+            $billDeliveryItemsModel->insertAll($item_data);
             //修改订单详细表
-            model('common/OrderItems')->ship($order['order_id'], $ship_data);
+            $orderItemsModel = new OrderItems();
+            $orderItemsModel->ship($order['order_id'], $ship_data);
             //修改订单主表
-            $orderModel = new \app\common\model\Order();
+            $orderModel = new Order();
             $orderModel->ship($order['order_id']);
             $return = true;
             Db::commit();
@@ -239,6 +250,9 @@ class BillDelivery extends Common
      * @param $code
      * @param $no
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getLogistic ($code, $no)
     {
@@ -300,30 +314,35 @@ class BillDelivery extends Common
         $where = [];
         if($input['delivery_id'])
         {
-            $where[] = ['delivery_id', 'like', '%'.$input['delivery_id'].'%'];
+            $where[] = ['d.delivery_id', 'like', '%'.$input['delivery_id'].'%'];
         }
         if($input['order_id'])
         {
-            $where[] = ['order_id', 'like', '%'.$input['order_id'].'%'];
+            $where[] = ['r.order_id', 'like', '%'.$input['order_id'].'%'];
         }
         if($input['logi_no'])
         {
-            $where[] = ['logi_no', 'like', '%'.$input['logi_no'].'%'];
+            $where[] = ['d.logi_no', 'like', '%'.$input['logi_no'].'%'];
         }
         if($input['mobile'])
         {
-            $where[] = ['ship_mobile', 'like', '%'.$input['mobile'].'%'];
+            $where[] = ['d.ship_mobile', 'like', '%'.$input['mobile'].'%'];
         }
         if($input['date'])
         {
             $date = explode(' 到 ', $input['date']);
-            $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
+            $where[] = ['d.ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
         }
-        $res = $this->where($where)
+        $res = $this->alias('d')
+            ->field('d.*')
+            ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id', 'left')
+            ->where($where)
             ->order('ctime desc')
             ->page($page, $limit)
             ->select();
-        $count = $this->where($where)
+        $count = $this->alias('d')
+            ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id', 'left')
+            ->where($where)
             ->count();
         if($res)
         {

@@ -98,25 +98,25 @@ class Order extends Api
      */
     public function details()
     {
-        $order_id = input('order_id');
+        $order_id = Request::param('order_id');
         $user_id  = $this->userId;
         $model    = new orderModel();
         $result   = $model->getOrderInfoByOrderID($order_id, $user_id);
         if($result)
         {
-            $return_data = array(
+            $return_data = [
                 'status' => true,
                 'msg'    => '获取成功',
                 'data'   => $result
-            );
+            ];
         }
         else
         {
-            $return_data = array(
+            $return_data = [
                 'status' => false,
                 'msg'    => '获取失败',
                 'data'   => $result
-            );
+            ];
         }
         return $return_data;
     }
@@ -307,12 +307,12 @@ class Order extends Api
      */
     public function getOrderList()
     {
-        $input = array(
-            'status'  => input('status'),
-            'page'    => input('page'),
-            'limit'   => input('limit'),
+        $input = [
+            'status'  => Request::param('status'),
+            'page'    => Request::param('page'),
+            'limit'   => Request::param('limit'),
             'user_id' => $this->userId
-        );
+        ];
         $model = new orderModel();
         $data  = $model->getListFromWxApi($input);
         $return_data = array(

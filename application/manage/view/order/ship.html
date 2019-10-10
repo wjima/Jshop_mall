@@ -78,7 +78,7 @@
             <td>{$vo.sn}</td>
             <td>{$vo.nums}</td>
             <td>{if $vo.sendnums}{$vo.sendnums}{else /}0{/if}</td>
-            <td>{$vo.nums-$vo.sendnums}<input type="hidden" data-id="{$vo.id}" class="order-ship-nums" max="{$vo.nums-$vo.sendnums}" value="{$vo.nums-$vo.sendnums}" min="0"></td>
+            <td><input type="number" data-id="{$vo.id}" class="order-ship-nums" max="{$vo.nums-$vo.sendnums}" value="{$vo.nums-$vo.sendnums}" min="0"></td>
         </tbody>
         {/foreach}
     </table>

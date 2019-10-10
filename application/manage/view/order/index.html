@@ -125,6 +125,8 @@
                     class="iconfont icon-chaxun"></i>筛选</button>
             <button class="layui-btn layui-btn-sm" id="pay-order-array"><i
                     class="iconfont icon-zhifu-01"></i>批量支付</button>
+            <button class="layui-btn layui-btn-sm" id="ship-order-array"><i
+                    class="layui-icon layui-icon-cart"></i>合并发货</button>
             <button class="layui-btn layui-btn-sm" id="cancel-order-array"><i
                     class="iconfont icon-cancel"></i>取消</button>
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-order"><i
@@ -398,6 +400,38 @@
         };
         $('#pay-order-array').on('click', function () {
             pay_order_array ? pay_order_array.call(this) : '';
+            return false;
+        });
+
+        var ship_order_array = function () { //获取选中数据
+            var checkStatus = tables.checkStatus('order'), data = checkStatus.data;
+            var ids = '';
+            $.each(data, function () {
+                ids += this.order_id + ',';
+            });
+            ids = ids.substring(0, ids.length - 1);
+            if (ids) {
+                JsGet('{:url("bill_payments/pay")}?order_id='+ids+"&type=1", function(e){
+                    if (e.status) {
+                        window_box = layer.open({
+                            type: 1,
+                            title: '支付订单',
+                            area: ['530px', '520px'], //宽高
+                            content: e.data.tpl
+                        });
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
+                            table.reload();
+                        });
+                    }
+                });
+            } else {
+                layer.msg('请勾选需要支付的订单');
+            }
+            return false;
+        };
+        $('#ship-order-array').on('click', function () {
+            ship_order_array ? ship_order_array.call(this) : '';
             return false;
         });
 

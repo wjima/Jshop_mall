@@ -121,7 +121,7 @@ class BillDelivery extends Common
 
             //订单记录
             $orderLog = new OrderLog();
-            $orderLog->addLog($bull_delivery['order_id'], $bull_delivery['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作', [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+            $orderLog->addLog($order_id, $order['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：'.$delivery_id, [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
 
             //插入发货详单，修改库存
             $goodsModel = new Goods();
@@ -129,21 +129,23 @@ class BillDelivery extends Common
             $item_data = [];
             foreach($ship_item as $k => $v)
             {
-                $item_data[] = [
-                    'delivery_id' => $delivery_id,
-                    'order_items_id' => $k,
-                    'nums' => $v
-                ];
+                if($v > 0){
+                    $item_data[] = [
+                        'delivery_id' => $delivery_id,
+                        'order_items_id' => $k,
+                        'nums' => $v
+                    ];
 
-                $product = $orderItem->field('product_id')->where('id', 'eq', $k)->find();
-                if(!$product)
-                {
-                    return error_code(13306);
-                }
-                $re = $goodsModel->changeStock($product['product_id'], 'send', $v);
-                if(!$re['status'])
-                {
-                    return error_code(13307);
+                    $product = $orderItem->field('product_id')->where('id', 'eq', $k)->find();
+                    if(!$product)
+                    {
+                        return error_code(13306);
+                    }
+                    $re = $goodsModel->changeStock($product['product_id'], 'send', $v);
+                    if(!$re['status'])
+                    {
+                        return error_code(13307);
+                    }
                 }
             }
             $billDeliveryItemsModel = new BillDeliveryItems();
@@ -248,6 +250,9 @@ class BillDelivery extends Common
      * @param $code
      * @param $no
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function getLogistic ($code, $no)
     {

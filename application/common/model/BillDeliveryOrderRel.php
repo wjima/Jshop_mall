@@ -41,7 +41,8 @@ class BillDeliveryOrderRel extends Common
     {
         $order_id_list = $this->field('order_id')
             ->where('delivery_id', 'eq', $delivery_id)
-            ->select();
+            ->select()
+            ->toArray();
 
         $order_id_list = array_column($order_id_list, 'order_id');
         return $order_id_list;

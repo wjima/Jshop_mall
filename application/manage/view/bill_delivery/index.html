@@ -106,10 +106,9 @@
             cols: [[
                 { type: 'checkbox' },
                 { field: 'delivery_id', width: 140, title: '发货单号', align: 'center' },
-                { field: 'order_id', width: 140, title: '订单号', align: 'center' },
-                { field: 'username', width: 130, title: '用户', align: 'center' },
                 { field: 'logi_name', width: 120, title: '快递公司', align: 'center' },
                 { field: 'logi_no', width: 150, title: '快递单号', align: 'center' },
+                { field: 'ship_name', width: 130, title: '收货人', align: 'center' },
                 { field: 'ship_address', title: '收货地址', align: 'center' },
                 { field: 'ship_mobile', title: '收货电话', align: 'center' },
                 { field: 'ctime', title: '创建时间', align: 'center' },
@@ -141,7 +140,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['600px', '600px'],
+                        area: ['800px', '450px'],
                         title: '发货单查看'
                     });
                 }else{

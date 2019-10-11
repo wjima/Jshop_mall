@@ -214,7 +214,7 @@ class Order extends Common
 
         if ($isPage) {
 
-            $data = $this->alias('o')
+            $data = $this::with('aftersales')->alias('o')
                 ->field('o.order_id, o.user_id, o.ctime, o.ship_mobile, o.ship_address, o.status, o.pay_status, o.ship_status, o.confirm, o.is_comment, o.order_amount, o.source, o.ship_area_id,o.ship_name, o.mark,o.order_type')
                 ->join(config('database.prefix') . 'user u', 'o.user_id = u.id', 'left')
                 ->where($where)
@@ -273,7 +273,10 @@ class Order extends Common
                 $v['source'] = config('params.order')['source'][$v['source']];
                 $v['type'] = config('params.order')['type'][$v['order_type']];
                 //订单售后状态
-                $v['after_sale_status'] = $as->getOrderAfterSaleStatus($v['order_id']);
+                $v['after_sale_status'] = "";
+                foreach($v['aftersales'] as $j){
+                    $v['after_sale_status'] = $v['after_sale_status'] . config('params.bill_aftersales.status')[$j['status']]." ";
+                }
 
                 //获取订单打印状态
                 $print_express = hook('getPrintExpressInfo', ['order_id' => $v['order_id']]);

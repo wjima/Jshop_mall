@@ -945,46 +945,4 @@ class BillAftersales extends Common
         $where[] = ['status', 'in', $status];
         return $this->where($where)->count();
     }
-
-
-    /**
-     * @param $order_id
-     * @return string
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getOrderAfterSaleStatus($order_id)
-    {
-        $where[] = ['order_id', 'eq', $order_id];
-        $info    = $this->where($where)
-            ->order('aftersales_id DESC')
-            ->find();
-        if ($info) {
-            if ($info['status'] == self::STATUS_WAITAUDIT) {
-                $text = '<span style="color:#ff7159;">待审核</span>';
-            } else if ($info['status'] == self::STATUS_SUCCESS) {
-                if ($info['type'] == self::TYPE_REFUND) {
-                    $refundModel = new BillRefund();
-                    $text        = '<span style="color:#ff7159;">' . $refundModel->getAftersalesStatus($info['aftersales_id']) . '</span>';
-                } else if ($info['type'] == self::TYPE_RESHIP) {
-                    $refundModel = new BillRefund();
-                    $refund      = $refundModel->getAftersalesStatus($info['aftersales_id']);
-                    $reshipModel = new BillReship();
-                    $reship      = $reshipModel->getAftersalesStatus($info['aftersales_id']);
-                    $text        = '<span style="color:#ff7159;">' . $reship . ',' . $refund . '</span>';
-                } else {
-                    $text = '<span style="color:#ff7159;">状态异常</span>';
-                }
-            } else if ($info['status'] == self::STATUS_REFUSE) {
-                $text = '<span style="color:#ff7159;">审核拒绝</span>';
-            } else {
-                $text = '<span style="color:#ff7159;">状态异常</span>';
-            }
-        } else {
-            $text = '';
-        }
-
-        return $text;
-    }
 }

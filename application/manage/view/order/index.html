@@ -411,22 +411,44 @@
             });
             ids = ids.substring(0, ids.length - 1);
             if (ids) {
-                JsGet('{:url("bill_payments/pay")}?order_id='+ids+"&type=1", function(e){
+                JsGet('{:url("order/ship")}?order_id='+ids, function(e){
                     if (e.status) {
-                        window_box = layer.open({
-                            type: 1,
-                            title: '支付订单',
-                            area: ['530px', '520px'], //宽高
-                            content: e.data.tpl
-                        });
+                        if(e.msg != ''){
+                            layer.confirm(e.msg, {
+                                title: '请注意！',
+                                btn: ['确定', '取消'],
+                                area: '480px'
+                            }, function(){
+                                layer.closeAll();
+                                window_box = layer.open({
+                                    type: 1,
+                                    title: '合并发货',
+                                    area: ['820px', '600px'],
+                                    content: e.data
+                                });
+                            }, function(){
+                                layer.closeAll();
+                            });
+                        }else{
+                            window_box = layer.open({
+                                type: 1,
+                                title: '合并发货',
+                                area: ['800px', '500px'],
+                                content: e.data
+                            });
+                        }
                     } else {
-                        layer.msg(e.msg, { time: 1300 }, function () {
-                            table.reload();
+                        layer.alert(e.msg, {
+                            closeBtn: 0,
+                            title: '无法合并发货',
+                            area: '480px'
+                        }, function(){
+                            layer.closeAll();
                         });
                     }
                 });
             } else {
-                layer.msg('请勾选需要支付的订单');
+                layer.msg('请勾选需要发货的订单');
             }
             return false;
         };
@@ -462,7 +484,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '订单发货',
-                        area: ['800px', '500px'], //宽高
+                        area: ['820px', '600px'], //宽高
                         content: e.data
                     });
                 }else{
@@ -479,6 +501,8 @@
             var logi_no = $("#logi_no").val();
             var logi_code = $("#logi_code").val();
             var memo = $("#memo").val();
+            var ship_info = $("#ship_info").val();
+            var number = $("#number").val();
             var flag = true;
             $(".order-ship-nums").each(function () {
                 var ship_num = $(this).val();
@@ -499,6 +523,8 @@
                     'logi_no': logi_no,
                     'memo': memo,
                     'logi_code': logi_code,
+                    'ship_info': ship_info,
+                    'number': number,
                     'ship_data': ship_data
                 }, function(e){
                     layer.close(window_box);
@@ -716,5 +742,4 @@
             }
         });
     });
-
 </script>

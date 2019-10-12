@@ -413,42 +413,7 @@
             });
             ids = ids.substring(0, ids.length - 1);
             if (ids) {
-                JsGet('{:url("order/ship")}?order_id='+ids, function(e){
-                    if (e.status) {
-                        if(e.msg != ''){
-                            layer.confirm(e.msg, {
-                                title: '请注意！',
-                                btn: ['确定', '取消'],
-                                area: '480px'
-                            }, function(){
-                                layer.closeAll();
-                                window_box = layer.open({
-                                    type: 1,
-                                    title: '合并发货',
-                                    area: ['820px', '600px'],
-                                    content: e.data
-                                });
-                            }, function(){
-                                layer.closeAll();
-                            });
-                        }else{
-                            window_box = layer.open({
-                                type: 1,
-                                title: '合并发货',
-                                area: ['800px', '500px'],
-                                content: e.data
-                            });
-                        }
-                    } else {
-                        layer.alert(e.msg, {
-                            closeBtn: 0,
-                            title: '无法合并发货',
-                            area: '480px'
-                        }, function(){
-                            layer.closeAll();
-                        });
-                    }
-                });
+                order_ship(ids);
             } else {
                 layer.msg('请勾选需要发货的订单');
             }
@@ -458,6 +423,46 @@
             ship_order_array ? ship_order_array.call(this) : '';
             return false;
         });
+
+        //发货请求
+        var order_ship = function (ids) {
+            JsGet('{:url("order/ship")}?order_id='+ids, function(e){
+                if (e.status) {
+                    if(e.msg != ''){
+                        layer.confirm(e.msg, {
+                            title: '请注意！',
+                            btn: ['确定', '取消'],
+                            area: '480px'
+                        }, function(){
+                            layer.closeAll();
+                            window_box = layer.open({
+                                type: 1,
+                                title: '合并发货',
+                                area: ['820px', '600px'],
+                                content: e.data
+                            });
+                        }, function(){
+                            layer.closeAll();
+                        });
+                    }else{
+                        window_box = layer.open({
+                            type: 1,
+                            title: '合并发货',
+                            area: ['800px', '500px'],
+                            content: e.data
+                        });
+                    }
+                } else {
+                    layer.alert(e.msg, {
+                        closeBtn: 0,
+                        title: '无法合并发货',
+                        area: '480px'
+                    }, function(){
+                        layer.closeAll();
+                    });
+                }
+            });
+        };
 
         //去支付
         $(document).on('click', '.goto-pay', function () {
@@ -481,18 +486,7 @@
         //发货页面
         $(document).on('click', '.ship-order', function () {
             var id = $(this).attr('data-id');
-            JsGet('{:url("order/ship")}?order_id='+id, function(e){
-                if(e.status){
-                    window_box = layer.open({
-                        type: 1,
-                        title: '订单发货',
-                        area: ['820px', '600px'], //宽高
-                        content: e.data
-                    });
-                }else{
-                    layer.msg(e.msg);
-                }
-            });
+            order_ship(id);
             return false;
         });
 

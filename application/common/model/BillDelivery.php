@@ -70,20 +70,10 @@ class BillDelivery extends Common
 
         //获取订单详情
         $orderModel = new Order();
+        $isOrderShip = $orderModel->isOrderShipInfo($order_id);
+        $order = $isOrderShip['data'];
 
-        $where[] = ['order_id', 'in', $order_id];
-
-        $order = $orderModel::with('items')
-            ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
-            ->where($where)
-            ->select()
-            ->toArray();
-
-        $isOrderShip = $orderModel->isOrderShipInfo($order);
-        $msg = $isOrderShip['msg'];
-        $status = $isOrderShip['status'];
-
-        if ($status) {
+        if ($isOrderShip['status']) {
             $resOrder = $orderModel->combinedOrderProcessing($order);
 
             //数量验证
@@ -193,7 +183,7 @@ class BillDelivery extends Common
                     if ($order_flag['status']) {
                         //订单记录
                         foreach ($order as $one) {
-                            if($one['order_id'] == $id){
+                            if ($one['order_id'] == $id) {
                                 //添加记录
                                 $orderLog->addLog($one['order_id'], $one['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $delivery_id, [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
                                 //添加要发送消息的
@@ -228,7 +218,7 @@ class BillDelivery extends Common
                 Db::rollback();
             }
         } else {
-            $return['msg'] = $msg;
+            $return['msg'] = $isOrderShip['msg'];
         }
 
         return $return;

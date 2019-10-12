@@ -22,9 +22,10 @@ class BillDeliveryItems extends Common
     {
         $where[] = ['d.delivery_id', 'eq', $delivery_id];
         $res = $this->alias('d')
-            ->field('d.nums as nums, o.name, o.sn, o.bn, o.nums as total, o.addon')
+            ->field('d.nums as nums2, sum(d.nums) as nums, o.name, o.sn, o.bn, o.nums as total2, sum(o.nums) as total, o.addon, o.product_id')
             ->join('order_items o', 'd.order_items_id = o.id', 'left')
             ->where($where)
+            ->group('product_id')
             ->select();
 
         if($res)

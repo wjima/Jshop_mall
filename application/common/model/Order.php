@@ -1106,26 +1106,15 @@ class Order extends Common
             'data' => []
         ];
 
-        $where[] = ['order_id', 'in', $id];
+        $isOrderShip = $this->isOrderShipInfo($id);
 
-        $order = $this::with('items')
-            ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
-            ->where($where)
-            ->select()
-            ->toArray();
-
-        $isOrderShip = $this->isOrderShipInfo($order);
-        $msg = $isOrderShip['msg'];
-        $status = $isOrderShip['status'];
-
-        if ($status) {
-            $resOrder = $this->combinedOrderProcessing($order);
-
+        if ($isOrderShip['status']) {
+            $resOrder = $this->combinedOrderProcessing($isOrderShip['data']);
             $return['status'] = true;
             $return['data'] = $resOrder['data'];
             $return['msg'] = $resOrder['msg'];
         } else {
-            $return['msg'] = $msg;
+            $return['msg'] = $isOrderShip['msg'];
         }
 
         return $return;
@@ -1134,29 +1123,44 @@ class Order extends Common
 
     /**
      * 判断是否可以合并发货
-     * @param $order
+     * @param $ids
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function isOrderShipInfo($order)
+    public function isOrderShipInfo($ids)
     {
-        $msg = '';
-        $status = true;
-        if ($order && count($order) > 0) {
+        $return = [
+            'status' => true,
+            'msg' => '',
+            'data' => []
+        ];
+
+        $where[] = ['order_id', 'in', $ids];
+        $order = $this::with('items')
+            ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
+            ->where($where)
+            ->select()
+            ->toArray();
+
+        if ($order && is_array($order) && count($order) > 0) {
             foreach ($order as $v) {
                 if ($v['status'] != self::ORDER_STATUS_NORMAL) {
-                    $status = false;
-                    $msg .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
+                    $return['status'] = false;
+                    $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
                 } elseif ($v['pay_status'] == self::PAY_STATUS_NO) {
-                    $status = false;
-                    $msg .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
+                    $return['status'] = false;
+                    $return['msg'] .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
                 } elseif (!in_array($v['ship_status'], [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_YES])) {
-                    $status = false;
-                    $msg .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
+                    $return['status'] = false;
+                    $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
                 }
             }
         }
+        $return['data'] = $order;
 
-        return ['status' => $status, 'msg' => $msg];
+        return $return;
     }
 
 
@@ -1170,8 +1174,14 @@ class Order extends Common
      */
     public function combinedOrderProcessing($order)
     {
-        if ($order && count($order) > 0) {
-            $okMsg = '';
+        $return = [
+            'status' => false,
+            'msg' => '',
+            'data' => []
+        ];
+
+        if ($order && is_array($order) && count($order) > 0) {
+            $return['status'] = true;
             $items = [];
             $newOrder = [
                 'order_id' => '',
@@ -1242,28 +1252,30 @@ class Order extends Common
 
             //判断用户
             if (count($newOrder['user_id']) > 1) {
-                $okMsg .= '多个用户订单，';
+                $return['msg'] .= '多个用户订单，';
             }
             //判断门店
             if (count($newOrder['store_id']) > 1) {
                 if (in_array(0, $newOrder['store_id'])) {
-                    $okMsg .= '门店自提和快递配送订单，';
+                    $return['msg'] .= '门店自提和快递配送订单，';
                 } else {
-                    $okMsg .= '门店自提订单，';
+                    $return['msg'] .= '门店自提订单，';
                 }
             }
             //判断收货地址|收货人|收货电话
             if (count($newOrder['ship_info']) > 1) {
-                $okMsg .= '多个收货信息，';
+                $return['msg'] .= '多个收货信息，';
             }
             //是否有警告
-            if ($okMsg != '') {
-                $okMsg = rtrim($okMsg, '，');
-                $okMsg = '请注意！合并发货订单中存在：' . $okMsg . '。确定本次合并发货吗？';
+            if ($return['msg'] != '') {
+                $return['msg'] = rtrim($return['msg'], '，');
+                $return['msg'] = '请注意！合并发货订单中存在：' . $return['msg'] . '。确定本次合并发货吗？';
             }
 
-            return ['data' => $newOrder, 'msg' => $okMsg];
+            $return['data'] = $newOrder;
         }
+
+        return $return;
     }
 
 

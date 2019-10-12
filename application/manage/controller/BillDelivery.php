@@ -1,4 +1,5 @@
 <?php
+
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
@@ -21,8 +22,7 @@ class BillDelivery extends Manage
      */
     public function index()
     {
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $page = Request::param('page', 1);
             $limit = Request::param('limit', 20);
             $input['delivery_id'] = Request::param('delivery_id');
@@ -32,12 +32,10 @@ class BillDelivery extends Manage
             $input['date'] = Request::param('date');
             $billDeliveryModel = new \app\common\model\BillDelivery();
             $res = $billDeliveryModel->getList($page, $limit, $input);
-            if($res['status'])
-            {
-                foreach($res['data'] as $k => &$v)
-                {
+            if ($res['status']) {
+                foreach ($res['data'] as $k => &$v) {
                     $v['logi_name'] = get_logi_info($v['logi_code']);
-                    $v['ship_address'] = get_area($v['ship_area_id']).'- '.$v['ship_address'];
+                    $v['ship_address'] = get_area($v['ship_area_id']) . '- ' . $v['ship_address'];
                     $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
                 }
             }
@@ -61,11 +59,10 @@ class BillDelivery extends Manage
         $delivery_id = Request::param('delivery_id');
         $billDeliveryModel = new \app\common\model\BillDelivery();
         $res = $billDeliveryModel->getDeliveryInfo($delivery_id);
-        if($res['status'])
-        {
+        if ($res['status']) {
             //主信息
             $res['data']['logi_name'] = get_logi_info($res['data']['logi_code']);
-            $res['data']['ship_address'] = get_area($res['data']['ship_area_id']).'- '.$res['data']['ship_address'];
+            $res['data']['ship_address'] = get_area($res['data']['ship_area_id']) . '- ' . $res['data']['ship_address'];
             $res['data']['ctime'] = date('Y-m-d H:i:s', $res['data']['ctime']);
             $this->assign('data', $res['data']);
 
@@ -87,9 +84,7 @@ class BillDelivery extends Manage
                 'msg' => '获取成功',
                 'data' => $temp
             ];
-        }
-        else
-        {
+        } else {
             $return_data = [
                 'status' => false,
                 'msg' => '获取失败',

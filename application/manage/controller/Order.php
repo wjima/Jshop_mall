@@ -227,7 +227,7 @@ class Order extends Manage
             $return['data'] = $this->fetch('ship');
             return $return;
         } else {
-            $data = input('param.');
+            $data = Request::param();
             $billDeliveryModel = new BillDelivery();
             $result = $billDeliveryModel->ship($data['order_id'], $data['logi_code'], $data['logi_no'], $data['memo'], $data['ship_data'], $data['number'], $data['ship_info']);
             return $result;
@@ -244,7 +244,7 @@ class Order extends Manage
      */
     public function cancel()
     {
-        $id = input('post.id');
+        $id = Request::param('id');
         if (!$id) {
             return [
                 'status' => false,
@@ -345,7 +345,8 @@ class Order extends Manage
         ];
         $this->view->engine->layout(false);
         $billDeliveryModel = new BillDelivery();
-        $data = $billDeliveryModel->getLogisticsInformation(input('param.order_id', ''));
+        $id = Request::param('order_id', '');
+        $data = $billDeliveryModel->getLogisticsInformation($id);
         $return['status'] = true;
         $return['msg'] = '成功';
         $return['data'] = $this->fetch('logistics', ['data' => $data]);
@@ -403,8 +404,8 @@ class Order extends Manage
      */
     public function print_tpl()
     {
-        $order_id = input('order_id/s', '');
-        $type = input('type/d', self::SHOPPING);
+        $order_id = Request::param('order_id/s', '');
+        $type = Request::param('type/d', self::SHOPPING);
 
         if (!$order_id) {
             $this->error("关键参数丢失");
@@ -430,9 +431,9 @@ class Order extends Manage
                 'data' => '',
                 'status' => false
             ];
-            $logi_code = input('logi_code/s', '');
-            $logi_no = input('logi_no/s', '');
-            $bt = input('bt/s', '1');//按钮类型
+            $logi_code = Request::param('logi_code/s', '');
+            $logi_no = Request::param('logi_no/s', '');
+            $bt = Request::param('bt/s', '1'); //按钮类型
             if (!$logi_code) {
                 $return['msg'] = '快递公司编码不能为空';
                 return $return;
@@ -467,7 +468,7 @@ class Order extends Manage
         ];
         if (!Request::isPost()) {
             $this->view->engine->layout(false);
-            $order_id = input('order_id');
+            $order_id = Request::param('order_id');
             $this->assign('order_id', $order_id);
 
             //默认快递公司

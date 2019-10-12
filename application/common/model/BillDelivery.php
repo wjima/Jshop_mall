@@ -101,7 +101,7 @@ class BillDelivery extends Common
                 $ship_name = $resOrder['data']['ship_info'][$ship_info]['ship_name'];
                 $ship_mobile = $resOrder['data']['ship_info'][$ship_info]['ship_mobile'];
             }
-            $bull_delivery = [
+            $bill_delivery = [
                 'delivery_id' => $delivery_id,
                 'logi_code' => $logi_code,
                 'logi_no' => $logi_no,
@@ -124,7 +124,7 @@ class BillDelivery extends Common
             Db::startTrans();
             try {
                 //插入发货总单
-                $this->insert($bull_delivery);
+                $this->insert($bill_delivery);
 
                 //插入发货详单，修改库存
                 $goodsModel = new Goods();
@@ -208,7 +208,7 @@ class BillDelivery extends Common
                 $ship = $shipModel->getInfo(['id' => $order[0]['logistics_id']]);
                 foreach ($msg_order as $msg_info) {
                     $msg_info['ship_id'] = $ship['name'];
-                    $msg_info['ship_addr'] = get_area($bull_delivery['ship_area_id']) . $bull_delivery['ship_address'];
+                    $msg_info['ship_addr'] = get_area($bill_delivery['ship_area_id']) . $bill_delivery['ship_address'];
                     $msg_info['logistics_name'] = get_logi_info($logi_code);
                     $msg_info['ship_no'] = $logi_no;
                     sendMessage($msg_info['user_id'], 'delivery_notice', $msg_info);

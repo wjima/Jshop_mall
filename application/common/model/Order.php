@@ -1270,10 +1270,12 @@ class Order extends Common
     /**
      * 发货改状态
      * @param $order_id
-     * @return bool
+     * @return int|string
+     * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function ship($order_id)
     {

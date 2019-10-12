@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 /**
@@ -23,8 +24,7 @@ class OrderItems extends Common
      */
     public function ship($order_id, $ship_data)
     {
-        foreach($ship_data as $k=>$v)
-        {
+        foreach ($ship_data as $k => $v) {
             $this->where('order_id', 'eq', $order_id)
                 ->where('id', $v[0])
                 ->setInc('sendnums', $v[1]);
@@ -44,17 +44,24 @@ class OrderItems extends Common
     public function isAllShip($order_id)
     {
         $return = 'all';
-        $data = $this->where('order_id', 'eq', $order_id)->select();
-        foreach($data as $k=>$v)
-        {
-            if($v['nums'] != $v['sendnums'])
-            {
-                $return = 'section';
+        $orderModel = new Order();
+        $orderInfo = $orderModel::with('items')
+            ->field('order_id,user_id')
+            ->where('order_id', 'eq', $order_id)
+            ->find();
+        $orderModel->aftersalesVal($orderInfo);
+
+        if (isset($orderInfo['items']) && count($orderInfo['items']) > 0) {
+            foreach ($orderInfo['items'] as $p) {
+                $remainingNum = $p['nums'] - $p['sendnums'] - $p['reship_nums'];
+                if ($remainingNum > 0) {
+                    $return = 'section';
+                }
             }
         }
+
         return $return;
     }
-
 
 
 }

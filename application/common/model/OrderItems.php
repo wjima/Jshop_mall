@@ -51,17 +51,24 @@ class OrderItems extends Common
             ->find();
         $orderModel->aftersalesVal($orderInfo);
 
+        //是否部分发货和没有发货
+        $no_send_ship = true;
         if (isset($orderInfo['items']) && count($orderInfo['items']) > 0) {
             foreach ($orderInfo['items'] as $p) {
                 $remainingNum = $p['nums'] - $p['sendnums'] - $p['reship_nums'];
                 if ($remainingNum > 0) {
                     $return = 'section';
                 }
+                if ($p['sendnums'] > 0) {
+                    $no_send_ship = false;
+                }
             }
+        }
+
+        if ($no_send_ship) {
+            $return = 'no';
         }
 
         return $return;
     }
-
-
 }

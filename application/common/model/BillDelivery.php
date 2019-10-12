@@ -124,15 +124,7 @@ class BillDelivery extends Common
                 'ctime' => time(),
                 'utime' => time()
             ];
-
             $order_ids = explode(',', $resOrder['data']['order_id']);
-            $bill_rel = [];
-            foreach ($order_ids as $v) {
-                $bill_rel[] = [
-                    'order_id' => $v,
-                    'delivery_id' => $delivery_id
-                ];
-            }
 
             //售后信息
             foreach ($order as &$v) {
@@ -143,16 +135,6 @@ class BillDelivery extends Common
             try {
                 //插入发货总单
                 $this->insert($bull_delivery);
-
-                //插入发货单订单关联表
-                $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
-                $billDeliveryOrderRelModel->insertAll($bill_rel);
-
-                //订单记录
-                $orderLog = new OrderLog();
-                foreach ($order as $one) {
-                    $orderLog->addLog($one['order_id'], $one['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $delivery_id, [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
-                }
 
                 //插入发货详单，修改库存
                 $goodsModel = new Goods();
@@ -168,18 +150,18 @@ class BillDelivery extends Common
                                     $nowGoodsShipNum = $vvv['nums'] - $vvv['sendnums'] - $vvv['reship_nums'];
                                     if ($nowGoodsShipNum > 0) {
                                         $nums = $nowGoodsShipNum >= $s[1] ? $s[1] : $nowGoodsShipNum;
-                                        if($nums > 0){
+                                        if ($nums > 0) {
                                             $item_data[] = [
                                                 'delivery_id' => $delivery_id,
                                                 'order_items_id' => $vvv['id'],
                                                 'nums' => $nums
                                             ];
-                                            $s[1] = $s[1]-$nums;
+                                            $s[1] = $s[1] - $nums;
 
                                             $orderItems = $orderItemsModel->field('product_id')
                                                 ->where('id', 'eq', $vvv['id'])
                                                 ->find();
-                                            if(!$orderItems){
+                                            if (!$orderItems) {
                                                 return error_code(13306);
                                             }
                                             //库存更改失败直接跳过
@@ -201,10 +183,31 @@ class BillDelivery extends Common
                 $billDeliveryItemsModel = new BillDeliveryItems();
                 $billDeliveryItemsModel->insertAll($item_data);
 
-                //修改订单主表
+                //修改订单主表和发货单订单关联表
+                $orderLog = new OrderLog();
+                $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
+                $bill_rel = [];
+                $msg_order = [];
                 foreach ($order_ids as $id) {
-                    $orderModel->ship($id);
+                    $order_flag = $orderModel->ship($id);
+                    if ($order_flag['status']) {
+                        //订单记录
+                        foreach ($order as $one) {
+                            if($one['order_id'] == $id){
+                                //添加记录
+                                $orderLog->addLog($one['order_id'], $one['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $delivery_id, [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
+                                //添加要发送消息的
+                                $msg_order[] = $one;
+                            }
+                        }
+                        //插入发货单订单关联表
+                        $bill_rel[] = [
+                            'order_id' => $id,
+                            'delivery_id' => $delivery_id
+                        ];
+                    }
                 }
+                $billDeliveryOrderRelModel->insertAll($bill_rel);
 
                 $return['status'] = true;
                 $return['msg'] = '发货成功';
@@ -213,13 +216,12 @@ class BillDelivery extends Common
                 //发送发货成功信息
                 $shipModel = new Ship();
                 $ship = $shipModel->getInfo(['id' => $order[0]['logistics_id']]);
-                foreach($order as $order_info)
-                {
-                    $order_info['ship_id'] = $ship['name'];
-                    $order_info['ship_addr'] = get_area($bull_delivery['ship_area_id']) . $bull_delivery['ship_address'];
-                    $order_info['logistics_name'] = get_logi_info($logi_code);
-                    $order_info['ship_no'] = $logi_no;
-                    sendMessage($order_info['user_id'], 'delivery_notice', $order_info);
+                foreach ($msg_order as $msg_info) {
+                    $msg_info['ship_id'] = $ship['name'];
+                    $msg_info['ship_addr'] = get_area($bull_delivery['ship_area_id']) . $bull_delivery['ship_address'];
+                    $msg_info['logistics_name'] = get_logi_info($logi_code);
+                    $msg_info['ship_no'] = $logi_no;
+                    sendMessage($msg_info['user_id'], 'delivery_notice', $msg_info);
                 }
             } catch (\Exception $e) {
                 $return['data'] = $e->getMessage();

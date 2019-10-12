@@ -506,6 +506,7 @@
             var ship_info = $("#ship_info").val();
             var number = $("#number").val();
             var flag = true;
+            var totle_num = 0;
             $(".order-ship-nums").each(function () {
                 var ship_num = $(this).val();
                 var max = $(this).attr('max');
@@ -517,8 +518,14 @@
                 } else {
                     var item = [id, ship_num];
                     ship_data.push(item);
+                    totle_num += ship_num;
                 }
             });
+            if (totle_num < 1) {
+                flag = false;
+                layer.msg('请至少选择发送一件商品');
+                return false;
+            }
             if (flag) {
                 JsPost('{:url("order/ship")}', {
                     'order_id': order_id,

@@ -274,8 +274,8 @@ class Order extends Common
                 $v['type'] = config('params.order')['type'][$v['order_type']];
                 //订单售后状态
                 $v['after_sale_status'] = "";
-                foreach($v['aftersales'] as $j){
-                    $v['after_sale_status'] = $v['after_sale_status'] . config('params.bill_aftersales.status')[$j['status']]." ";
+                foreach ($v['aftersales'] as $j) {
+                    $v['after_sale_status'] = $v['after_sale_status'] . config('params.bill_aftersales.status')[$j['status']] . " ";
                 }
 
                 //获取订单打印状态
@@ -1210,7 +1210,7 @@ class Order extends Common
                         'ship_mobile' => $v['ship_mobile']
                     ];
                 } else {
-                    $ship_info_md5 = md5($v['ship_area_id'].$v['ship_address'].$v['ship_name'].$v['ship_mobile']);
+                    $ship_info_md5 = md5($v['ship_area_id'] . $v['ship_address'] . $v['ship_name'] . $v['ship_mobile']);
                     if (!isset($newOrder['ship_info'][$ship_info_md5])) {
                         $newOrder['ship_info'][$ship_info_md5] = [
                             'ship_area_id' => $v['ship_area_id'],
@@ -1270,7 +1270,7 @@ class Order extends Common
     /**
      * 发货改状态
      * @param $order_id
-     * @return int|string
+     * @return array
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -1283,25 +1283,30 @@ class Order extends Common
         $orderItemsModel = new OrderItems();
         $ship_status = $orderItemsModel->isAllShip($order_id);
         //判断发货状态
-        if ($ship_status == 'all') {
-            $order_data['ship_status'] = self::SHIP_STATUS_YES;
-        } else {
-            $order_data['ship_status'] = self::SHIP_STATUS_PARTIAL_YES;
-        }
-        $order_data['utime'] = time();
-        //发货
-        $where[] = ['order_id', 'eq', $order_id];
-        $result = $this->where($where)
-            ->update($order_data);
-        if ($result) {
-            //判断生成门店自提单
-            $order_info = $this->get($order_id);
-            if ($order_info['store_id'] != 0) {
-                $ladingModel = new BillLading();
-                $ladingModel->addData($order_id, $order_info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
+        if ($ship_status != 'no') {
+            if ($ship_status == 'all') {
+                $order_data['ship_status'] = self::SHIP_STATUS_YES;
+            } else {
+                $order_data['ship_status'] = self::SHIP_STATUS_PARTIAL_YES;
             }
+            $order_data['utime'] = time();
+            //发货
+            $where[] = ['order_id', 'eq', $order_id];
+            $result = $this->where($where)
+                ->update($order_data);
+            if ($result) {
+                //判断生成门店自提单
+                $order_info = $this->get($order_id);
+                if ($order_info['store_id'] != 0) {
+                    $ladingModel = new BillLading();
+                    $ladingModel->addData($order_id, $order_info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
+                }
+            }
+            $return = ['status' => true, 'data' => $result];
+        } else {
+            $return = ['status' => false, 'data' => ''];
         }
-        return $result;
+        return $return;
     }
 
 

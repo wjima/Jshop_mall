@@ -5,7 +5,7 @@ namespace app\Manage\controller;
 use app\common\controller\Manage;
 use app\common\model\BillDelivery;
 use app\common\model\BillPayments;
-use app\common\model\Order as Model;
+use app\common\model\Order as OrderModel;
 use app\common\model\OrderLog;
 use app\common\model\Ship;
 use app\common\model\Logistics;
@@ -44,7 +44,7 @@ class Order extends Manage
                 'ids' => '0,1,2,3,4,5,6,7'
             ];
 
-            $model = new Model();
+            $model = new OrderModel();
             $count = $model->getOrderStatusNum($input);
             $counts = [
                 'all' => $count[0],
@@ -71,7 +71,7 @@ class Order extends Manage
                 'limit' => Request::param('limit'),
                 'order_type' => Request::param('type'),
             );
-            $model = new Model();
+            $model = new OrderModel();
             $data = $model->getListFromAdmin($input);
 
             if (count($data['data']) > 0) {
@@ -113,7 +113,7 @@ class Order extends Manage
             'data' => ''
         ];
         $this->view->engine->layout(false);
-        $orderModel = new Model();
+        $orderModel = new OrderModel();
         $order_info = $orderModel->getOrderInfoByOrderID($id, false, false);
         $this->assign('order', $order_info);
 
@@ -149,7 +149,7 @@ class Order extends Manage
             'data' => ''
         ];
         $this->view->engine->layout(false);
-        $orderModel = new Model();
+        $orderModel = new OrderModel();
         if (!Request::isPost()) {
             //订单信息
             $id = Request::param('id');
@@ -205,7 +205,7 @@ class Order extends Manage
         if (!Request::isPost()) {
             //订单发货信息
             $id = Request::param('order_id');
-            $model = new Model();
+            $model = new OrderModel();
             $order_info = $model->getOrderShipInfo($id);
             $return['msg'] = $order_info['msg'];
             if ($order_info['status']) {
@@ -252,7 +252,7 @@ class Order extends Manage
                 'data' => ''
             ];
         }
-        $model = new Model();
+        $model = new OrderModel();
         $result = $model->cancel($id);
         if ($result) {
             $return_data = [
@@ -283,7 +283,7 @@ class Order extends Manage
     public function complete()
     {
         $id = Request::param('id');
-        $model = new Model();
+        $model = new OrderModel();
         $result = $model->complete($id);
         if ($result) {
             $return_data = array(
@@ -309,7 +309,7 @@ class Order extends Manage
     public function del()
     {
         $id = Request::param('id');
-        $model = new Model();
+        $model = new OrderModel();
         $result = $model->destroy($id);
         if ($result) {
             $return_data = array(
@@ -410,7 +410,7 @@ class Order extends Manage
         if (!$order_id) {
             $this->error("关键参数丢失");
         }
-        $orderModel = new Model();
+        $orderModel = new OrderModel();
         $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
         $this->assign('order', $order_info);
         $this->view->engine->layout(false);
@@ -472,7 +472,7 @@ class Order extends Manage
             $this->assign('order_id', $order_id);
 
             //默认快递公司
-            $orderModel = new Model();
+            $orderModel = new OrderModel();
             $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
             $this->assign('order_info', $order_info);
 
@@ -491,7 +491,8 @@ class Order extends Manage
             $this->assign('ship', $ship);
 
             //获取物流公司
-            $logi_info = model('common/Logistics')->getAll();
+            $logisticsModel = new Logistics();
+            $logi_info = $logisticsModel->getAll();
             $this->assign('logi', $logi_info);
             $return['status'] = true;
             $return['msg'] = '成功';
@@ -507,7 +508,7 @@ class Order extends Manage
      */
     public function saveMark()
     {
-        $orderModel = new Model();
+        $orderModel = new OrderModel();
         $order_id = Request::param('id');
         $mark = Request::param('mark', '');
         return $orderModel->saveMark($order_id, $mark);

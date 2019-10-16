@@ -37,7 +37,7 @@ class ArticleType extends Common
         if (isset($post['limit'])) {
             $limit = $post['limit'];
         } else {
-            $limit = 50; // 后台列表分页数量默认50条
+            $limit = 5000; // 后台列表分页数量默认50条
         }
         $tableWhere = $this->tableWhere($post);
         $list       = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);

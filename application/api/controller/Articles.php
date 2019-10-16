@@ -45,7 +45,7 @@ class Articles extends Api
     public function getArticleList()
     {
         $article = new Article();
-        $type_id = Request::param('type_id', false);
+        $type_id = Request::param('type_id', 0);
         $page = Request::param('page', 1);
         $limit = Request::param('limit', 10);
 

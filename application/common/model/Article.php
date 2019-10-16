@@ -202,11 +202,17 @@ class Article extends Common
                 $v['ctime'] = getTime($v['ctime']);
             }
         }
+
+        //子商品分类
+        $articleTypeModel = new ArticleType();
+        $articleTypeList = $articleTypeModel->where('pid', $type_id)->select();
+
         $result['data'] = [
             'list' => $list,
             'count' => $count,
             'page' => $page,
-            'limit' => $limit
+            'limit' => $limit,
+            'article_type' => $articleTypeList
         ];
 
         return $result;

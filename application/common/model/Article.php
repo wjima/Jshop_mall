@@ -179,7 +179,7 @@ class Article extends Common
 
         $type_name = "文章分类";
         if($type_id != 0){
-            $info = $articleTypeModel->where()->find();
+            $info = $articleTypeModel->where('id',$type_id)->find();
             if($info){
                 $type_name = $info['type_name'];
             }

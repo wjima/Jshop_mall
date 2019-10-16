@@ -94,7 +94,26 @@
                         type: 1,
                         content: e.data,
                         area: ['400px', '300px'],
-                        title: '添加文章分类'
+                        title: '添加文章分类',
+                        btn: ['确定', '取消'],
+                        zIndex: 1800,
+                        yes: function () {
+                            var data = $("#articleTypeAdd").serializeArray();
+                            $.ajax({
+                                type: 'post',
+                                url: '{:url("ArticleType/add")}',
+                                data: data,
+                                dataType: 'json',
+                                success: function (e) {
+                                    if (e.status) {
+                                        layer.close(window.box);
+                                        renderTable();
+                                    } else {
+                                        layer.msg(e.msg);
+                                    }
+                                }
+                            });
+                        }
                     });
                 }else{
                     layer.msg(e.msg);
@@ -153,7 +172,27 @@
                             type: 1,
                             content: e.data,
                             area: ['400px', '300px'],
-                            title: '修改文章分类'
+                            title: '修改文章分类',
+                            btn: ['确定', '取消'],
+                            zIndex: 1800,
+                            yes: function () {
+                                var data = $("#articleTypeEdit").serializeArray();
+                                $.ajax({
+                                    type: 'post',
+                                    url: '{:url("ArticleType/edit")}',
+                                    data: data,
+                                    dataType: 'json',
+                                    success: function (e) {
+                                        if (e.status) {
+                                            layer.msg(e.msg);
+                                            layer.close(window.box);
+                                            renderTable();
+                                        } else {
+                                            layer.msg(e.msg);
+                                        }
+                                    }
+                                });
+                            }
                         })
                     }else{
                         layer.msg(e.msg);
@@ -166,7 +205,27 @@
                             type: 1,
                             content: e.data,
                             area: ['400px', '300px'],
-                            title: '添加子分类'
+                            title: '添加子分类',
+                            btn: ['确定', '取消'],
+                            zIndex: 1800,
+                            yes: function () {
+                                var data = $("#articleTypeAddson").serializeArray();
+                                $.ajax({
+                                    type: 'post',
+                                    url: '{:url("ArticleType/add")}',
+                                    data: data,
+                                    dataType: 'json',
+                                    success: function (e) {
+                                        if (e.status) {
+                                            layer.msg(e.msg);
+                                            layer.close(window.box);
+                                            renderTable();
+                                        } else {
+                                            layer.msg(e.msg);
+                                        }
+                                    }
+                                });
+                            }
                         })
                     }else{
                         layer.msg(e.msg);

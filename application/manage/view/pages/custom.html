@@ -12,6 +12,7 @@
 	var pageConfig = {$page_config|raw};//页面默认数据
 	var brandList = {$brandList|raw};//品牌数据
 	var catList = {$catList|raw};//分类数据
+	var articleTypeList = {$articleTypeList|raw};//文章分类数据
 	var default_banner = "__STATIC__images/empty-banner.png";
 	var default_img = "__STATIC__images/empty.png";
 	var saveUrl = "{:url('Pages/saveCustom')}";
@@ -573,9 +574,11 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label">文章分类：</label>
 							<div class="layui-input-inline seller-inline-5">
-
-								<input type="text" v-model="selectWg.value.articleClassifyId" placeholder="请选择文章分类" readonly="readonly"
-									class="layui-input" @click="article_type_list">
+								<el-select v-model="selectWg.value.articleClassifyId" placeholder="请选择分类">
+									<template v-for="item in articleTypeList">
+										<el-option :value="item.id" :label="item.type_name"></el-option>
+									</template>
+								</el-select>
 							</div>
 
 						</div>
@@ -842,7 +845,20 @@
 				<el-input type="textarea" autosize placeholder="http开头为webview跳转，其他为站内页面跳转" v-model="linkUrl"
 					@change="updateLinkValue"></el-input>
 			</div>
-			<div v-else>
+			<div v-if="selectType==2">
+				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @click="selectLink" placeholder="请选择">
+			</div>
+			<div v-if="selectType==3">
+				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @click="selectLink" placeholder="请选择">
+			</div>
+			<div v-if="selectType==4">
+				<el-select v-model="id" placeholder="请选择分类">
+					<template v-for="item in articleTypeList">
+						<el-option :value="item.id" :label="item.type_name"></el-option>
+					</template>
+				</el-select>
+			</div>
+			<div v-if="selectType==5">
 				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @click="selectLink" placeholder="请选择">
 			</div>
 		</el-form-item>

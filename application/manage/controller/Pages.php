@@ -13,6 +13,7 @@ use app\common\model\GoodsCat;
 use app\common\model\PagesItems;
 use Request;
 use app\common\controller\Manage;
+use app\common\model\ArticleType as articleTypeModel;
 use app\common\model\Pages as pagesModel;
 
 
@@ -62,7 +63,10 @@ class Pages extends Manage
         $goodsCatModel = new GoodsCat();
         $catList       = $goodsCatModel->getAllCat();
         $this->assign('catList', json_encode($catList, JSON_UNESCAPED_UNICODE));
-
+        //文章分类
+        $articleTypeModel = new articleTypeModel();
+        $list             = $articleTypeModel->select();
+        $this->assign('articleTypeList', json_encode($articleTypeModel->getTree($list), JSON_UNESCAPED_UNICODE));
         return $this->fetch('custom');
     }
 

@@ -168,22 +168,28 @@ class Article extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function articleList($type_id = false, $page = 1, $limit = 10)
+    public function articleList($type_id = 0, $page = 1, $limit = 10)
     {
         $result = [
             'status' =>  true,
             'msg'    =>  '获取成功',
             'data'   =>  []
         ];
+        $articleTypeModel = new ArticleType();
+
+        $type_name = "文章分类";
+        if($type_id != 0){
+            $info = $articleTypeModel->where()->find();
+            if($info){
+                $type_name = $info['type_name'];
+            }
+        }
+
 
         // 发布状态
         $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
+        $where[] = ['type_id', 'eq', $type_id];
 
-        // 分类id
-        if($type_id)
-        {
-            $where[] = ['type_id', 'eq', $type_id];
-        }
         $list = $this->where($where)
             ->field('id,title,cover,type_id,ctime,utime,sort,is_pub')
             ->order('sort asc,ctime DESC')
@@ -203,7 +209,7 @@ class Article extends Common
             }
         }
 
-        //子商品分类
+        //子文章分类
         $articleTypeModel = new ArticleType();
         $articleTypeList = $articleTypeModel->where('pid', $type_id)->select();
 
@@ -212,7 +218,8 @@ class Article extends Common
             'count' => $count,
             'page' => $page,
             'limit' => $limit,
-            'article_type' => $articleTypeList
+            'article_type' => $articleTypeList,
+            'type_name' => $type_name
         ];
 
         return $result;

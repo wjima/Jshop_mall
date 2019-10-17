@@ -51,6 +51,14 @@ class ArticleType extends Common
         return $re;
     }
 
+    protected function tableWhere($post)
+    {
+        $result['where'] = [];
+        $result['field'] = "*";
+        $result['order'] = 'sort asc';
+        return $result;
+    }
+
 
     /**
      *  分类添加

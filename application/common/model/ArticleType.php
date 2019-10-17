@@ -17,11 +17,13 @@ class ArticleType extends Common
 
     protected $rule = [
         'type_name' => 'require|max:25',
+        'sort'      => 'number',
     ];
 
     protected $msg = [
         'type_name.require' => '分类名称必须',
         'type_name.max'     => '名称最多不能超过25个字符',
+        'sort'              => '排序必须是数字',
     ];
 
 

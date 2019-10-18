@@ -635,7 +635,7 @@ CREATE TABLE `jshop_goods_extend_cat` (
   `goods_id` int(10) unsigned DEFAULT NULL COMMENT '商品id',
   `goods_cat_id` int(10) unsigned DEFAULT NULL COMMENT '商品分类id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=FIXED COMMENT='商品分类扩展表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='商品分类扩展表';
 
 -- ----------------------------
 --  Table structure for `jshop_goods_grade`

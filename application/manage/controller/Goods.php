@@ -28,6 +28,7 @@ use app\common\validate\Products as ProductsValidate;
 /**
  * 商品
  * Class Goods
+ *
  * @package app\Manage\controller
  * User: wjima
  * Email:1457529125@qq.com
@@ -44,6 +45,7 @@ class Goods extends Manage
 
     /**
      * 商品列表
+     *
      * @return mixed
      */
     public function index()
@@ -115,6 +117,7 @@ class Goods extends Manage
 
     /**
      * 获取子分类信息
+     *
      * @return array
      * User: wjima
      * Email:1457529125@qq.com
@@ -147,6 +150,7 @@ class Goods extends Manage
      * 保存商品
      * User:wjima
      * Email:1457529125@qq.com
+     *
      * @return array
      */
     public function doAdd()
@@ -315,6 +319,7 @@ class Goods extends Manage
      * 校检并返回商品信息
      * User:wjima
      * Email:1457529125@qq.com
+     *
      * @return mixed
      */
     private function checkGoodsInfo($isEdit = false)
@@ -375,7 +380,7 @@ class Goods extends Manage
                     foreach ($val as $vk => $vv) {
                         $params[$key][] = $vk;
                     }
-                } elseif ($val !== '') {
+                } else if ($val !== '') {
                     $params[$key] = $val;
                 }
             }
@@ -416,6 +421,7 @@ class Goods extends Manage
      * 检查并组装货品数据
      * User:wjima
      * Email:1457529125@qq.com
+     *
      * @return bool
      */
     private function checkProductInfo($data, $goods_id = 0, $isEdit = false)
@@ -530,6 +536,7 @@ class Goods extends Manage
 
     /***
      * 生成多规格html
+     *
      * @return array
      * User: wjima
      * Email:1457529125@qq.com
@@ -1106,6 +1113,7 @@ class Goods extends Manage
 
     /**
      * 评论列表
+     *
      * @return array|mixed
      */
     public function commentList()
@@ -1147,6 +1155,7 @@ class Goods extends Manage
 
     /**
      * 获取单条评价
+     *
      * @return mixed
      */
     public function getCommentInfo()
@@ -1159,6 +1168,7 @@ class Goods extends Manage
 
     /**
      * 商家回复
+     *
      * @return mixed
      */
     public function sellerContent()
@@ -1172,6 +1182,7 @@ class Goods extends Manage
 
     /**
      * 显示不显示
+     *
      * @return mixed
      */
     public function setDisplay()
@@ -1183,6 +1194,7 @@ class Goods extends Manage
 
     /**
      * 批量上下架
+     *
      * @return array
      */
     public function batchMarketable()
@@ -1210,6 +1222,7 @@ class Goods extends Manage
 
     /**
      * 批量删除商品
+     *
      * @return array
      */
     public function batchDel()
@@ -1238,6 +1251,7 @@ class Goods extends Manage
 
     /**
      * 商品搜索
+     *
      * @return mixed
      */
     public function goodsSearch()
@@ -1257,6 +1271,7 @@ class Goods extends Manage
 
     /**
      * 更改状态
+     *
      * @return array
      */
     public function changeState()
@@ -1281,7 +1296,7 @@ class Goods extends Manage
         }
         if ($type == 'hot') {
             $iData['is_hot'] = $state;
-        } elseif ($type == 'rec') {
+        } else if ($type == 'rec') {
             $iData['is_recommend'] = $state;
         } else if ($type == 'able') {
             $iData['marketable'] = $state;
@@ -1299,8 +1314,10 @@ class Goods extends Manage
         }
         return $result;
     }
+
     /**
      * 更新排序
+     *
      * @return array
      */
     public function updateSort()
@@ -1330,6 +1347,7 @@ class Goods extends Manage
 
     /**
      * 批量修改价格
+     *
      * @return array
      */
     public function batchModifyPrice()
@@ -1365,6 +1383,7 @@ class Goods extends Manage
 
     /**
      * 保存批量操作价格
+     *
      * @return array
      */
     public function doBatchModifyPrice()
@@ -1453,6 +1472,7 @@ class Goods extends Manage
 
     /**
      * 批量修改价格
+     *
      * @return array
      */
     public function batchModifyStock()
@@ -1477,6 +1497,7 @@ class Goods extends Manage
 
     /**
      * 保存批量操作价格
+     *
      * @return array
      */
     public function doBatchModifyStock()
@@ -1521,9 +1542,11 @@ class Goods extends Manage
 
     /**
      * 获取新的spec
+     *
      * @param array $data
      * @param array $spes_desc
      * @param array $new_spec
+     *
      * @return array
      */
     public function getSpecData($data = [], $spes_desc = [], $new_spec = [])

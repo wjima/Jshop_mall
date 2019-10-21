@@ -211,7 +211,7 @@ class Article extends Common
 
         //子文章分类
         $articleTypeModel = new ArticleType();
-        $articleTypeList = $articleTypeModel->where('pid', $type_id)->select();
+        $articleTypeList = $articleTypeModel->where('pid', $type_id)->order('sort asc')->select();
 
         $result['data'] = [
             'list' => $list,

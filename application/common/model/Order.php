@@ -1098,26 +1098,129 @@ class Order extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getOrderShipInfo($id)
+    public function getOrderShipInfo($ids)
     {
+//        $isOrderShip = $this->isOrderShipInfo($ids);
+//        if (!$isOrderShip['status']) {
+//            return $isOrderShip;
+//        }
+//        return $this->combinedOrderProcessing($isOrderShip['data']);
         $return = [
-            'status' => false,
-            'msg' => '没有需要发货的订单',
+            'status' => true,
+            'msg' => '',
             'data' => []
         ];
 
-        $isOrderShip = $this->isOrderShipInfo($id);
+        $where[] = ['order_id', 'in', $ids];
+        $order = $this::with('items')
+            ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
+            ->where($where)
+            ->select();
+        if($order->isEmpty()){
+            $return['status'] = false;
+            $return['msg'] = "请选择订单";
+            return $return;
+        }
+        $order = $order->toArray();
 
-        if ($isOrderShip['status']) {
-            $resOrder = $this->combinedOrderProcessing($isOrderShip['data']);
-            $return['status'] = true;
-            $return['data'] = $resOrder['data'];
-            $return['msg'] = $resOrder['msg'];
-        } else {
-            $return['msg'] = $isOrderShip['msg'];
+        foreach ($order as $v) {
+            if ($v['status'] != self::ORDER_STATUS_NORMAL) {
+                $return['status'] = false;
+                $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
+            } elseif ($v['pay_status'] == self::PAY_STATUS_NO) {
+                $return['status'] = false;
+                $return['msg'] .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
+            } elseif (!in_array($v['ship_status'], [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_YES])) {
+                $return['status'] = false;
+                $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
+            }
+        }
+        if(!$return['status']){
+            return $return;
+        }
+        //------------------------------------------------
+
+        $msg_arr = [
+            'user_id' => true,
+            'ship_info' => true
+        ];
+
+        $newOrder = [
+            'order_id' => $ids,
+            'weight' => 0,
+            'memo' => [],
+            'cost_freight' => 0,
+            'ship_area_id' => $order[0]['ship_area_id'],
+            'ship_address' => $order[0]['ship_address'],
+            'ship_name' => $order[0]['ship_name'],
+            'ship_mobile' => $order[0]['ship_mobile'],
+            'logistics_id' => $order[0]['logistics_id'],
+            'items' => []
+        ];
+        foreach ($order as $v) {
+            //组合总重量
+            $newOrder['weight'] = $newOrder['weight'] + $v['weight'];
+            $newOrder['cost_freight'] = $newOrder['cost_freight'] + $v['cost_freight'];
+            //组合备注信息
+            if ($v['memo'] && $v['memo'] != '') {
+                $newOrder['memo'][$v['order_id']] = $v['memo'];
+            }
+
+            //组合明细
+            $this->aftersalesVal($v); //获取售后数量
+            foreach ($v['items'] as $vv) {
+                if (!isset($newOrder['items'][$vv['product_id']])) {
+                    $newOrder['items'][$vv['product_id']] = $vv;
+                } else {
+                    $newOrder['items'][$vv['product_id']]['nums'] = $newOrder['items'][$vv['product_id']]['nums'] + $vv['nums']; //总数量
+//                    $newOrder['items'][$vv['product_id']]['amount'] = $newOrder['items'][$vv['product_id']]['amount'] + $vv['amount']; //总价
+//                    $newOrder['items'][$vv['product_id']]['promotion_amount'] = $newOrder['items'][$vv['product_id']]['promotion_amount'] + $vv['promotion_amount']; //总优惠金额
+                    $newOrder['items'][$vv['product_id']]['weight'] = $newOrder['items'][$vv['product_id']]['weight'] + $vv['weight']; //总重量
+                    $newOrder['items'][$vv['product_id']]['sendnums'] = $newOrder['items'][$vv['product_id']]['sendnums'] + $vv['sendnums']; //已发送数量
+                    $newOrder['items'][$vv['product_id']]['reship_nums'] = $newOrder['items'][$vv['product_id']]['reship_nums'] + $vv['reship_nums']; //退货数量
+                }
+            }
+
+            //判断是否有多个用户的订单
+            if($msg_arr['user_id']){
+                if($msg_arr['user_id'] === true){
+                    $msg_arr['user_id'] = $v['user_id'];
+                }else{
+                    if($msg_arr['user_id'] != $v['user_id']){
+                        $msg_arr['user_id'] = false;
+                    }
+                }
+            }
+
+            //判断是否是多个收货地址
+            if($msg_arr['ship_info']){
+                if($msg_arr['ship_info'] === true){
+                    $msg_arr['ship_info'] = $v['ship_area_id'].$v['ship_address'];
+                }else{
+                    if($msg_arr['ship_info'] != $v['ship_area_id'].$v['ship_address']){
+                        $msg_arr['ship_info'] = false;
+                    }
+                }
+            }
         }
 
+        //判断用户
+        if (!$msg_arr['user_id']) {
+            $return['msg'] .= '多个用户订单，';
+        }
+        //判断多个收货地址
+        if (!$msg_arr['ship_info']) {
+            $return['msg'] .= '多个用户订单，';
+        }
+        //是否有警告
+        if ($return['msg'] != '') {
+            $return['msg'] = rtrim($return['msg'], '，');
+            $return['msg'] = '请注意！合并发货订单中存在：' . $return['msg'] . '。确定发货吗？';
+        }
+
+        $return['data'] = $newOrder;
         return $return;
+
     }
 
 
@@ -1141,23 +1244,28 @@ class Order extends Common
         $order = $this::with('items')
             ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
             ->where($where)
-            ->select()
-            ->toArray();
+            ->select();
+        if($order->isEmpty()){
+            $return['status'] = false;
+           $return['msg'] = "请选择订单";
+           return $return;
+        }
+        $order = $order->toArray();
 
-        if ($order && is_array($order) && count($order) > 0) {
-            foreach ($order as $v) {
-                if ($v['status'] != self::ORDER_STATUS_NORMAL) {
-                    $return['status'] = false;
-                    $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
-                } elseif ($v['pay_status'] == self::PAY_STATUS_NO) {
-                    $return['status'] = false;
-                    $return['msg'] .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
-                } elseif (!in_array($v['ship_status'], [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_YES])) {
-                    $return['status'] = false;
-                    $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
-                }
+
+        foreach ($order as $v) {
+            if ($v['status'] != self::ORDER_STATUS_NORMAL) {
+                $return['status'] = false;
+                $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
+            } elseif ($v['pay_status'] == self::PAY_STATUS_NO) {
+                $return['status'] = false;
+                $return['msg'] .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
+            } elseif (!in_array($v['ship_status'], [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_YES])) {
+                $return['status'] = false;
+                $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
             }
         }
+
         $return['data'] = $order;
 
         return $return;

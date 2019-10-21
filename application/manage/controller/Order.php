@@ -198,26 +198,36 @@ class Order extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'msg' => '',
+            'data' => []
         ];
         $this->view->engine->layout(false);
         if (!Request::isPost()) {
             //订单发货信息
-            $id = Request::param('order_id');
-            $model = new OrderModel();
-            $order_info = $model->getOrderShipInfo($id);
-            $return['msg'] = $order_info['msg'];
-            if ($order_info['status']) {
-                $this->assign('order', $order_info['data']);
-            } else {
-                return $return;
+            if(!input('?param.order_id')){
+                return error_code(10000);
+            }else{
+                $id = input('param.order_id');
             }
+            $orderModel = new OrderModel();
+            $order_info = $orderModel->getOrderShipInfo($id);
+            if (!$order_info['status']) {
+                return $order_info;
+            }
+            $this->assign('order', $order_info['data']);
 
-            //获取默认快递公司
+            //获取默认配送方式,为了on物流公司
             $shipModel = new Ship();
-            $ship = $shipModel->get($order_info['logistics_id']);
-            $this->assign('ship', $ship);
+            $ship = $shipModel->where('id',$order_info['data']['logistics_id'])->find();
+            if($ship){
+               $ship_name = $ship['name'];
+               $logi_code = $ship['logi_code'];
+            }else{
+                $ship_name = "";
+                $logi_code = "";
+            }
+            $this->assign('ship_name', $ship_name);
+            $this->assign('logi_code', $logi_code);
 
             //获取物流公司
             $logisticsModel = new Logistics();

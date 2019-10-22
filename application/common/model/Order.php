@@ -710,6 +710,12 @@ class Order extends Common
         $invoiceInfo = $invoiceModel->getOrderInvoiceInfo($id);
         if ($invoiceInfo['status']) {
             $order_info['invoice'] = $invoiceInfo['data'];
+        } else {
+            $order_info['invoice'] = [
+                'type' => $order_info['tax_type'],
+                'title' => $order_info['tax_title'],
+                'tax_number' => $order_info['tax_code'],
+            ];
         }
 
         return $order_info;
@@ -1374,6 +1380,22 @@ class Order extends Common
                 $return_data['status'] = true;
                 $return_data['msg'] = '订单支付成功';
 
+                //发票存储
+                $invoiceModel = new Invoice();
+                if ($order['tax_type'] != $invoiceModel::TAX_TYPE_NO) {
+                    //组装发票信息
+                    $taxInfo = [
+                        'class' => $invoiceModel::TAX_CLASS_ORDER,
+                        'source_id' => $order['order_id'],
+                        'type' => $order['tax_type'],
+                        'title' => $order['tax_title'],
+                        'tax_number' => $order['tax_code'],
+                        'amount' => $order['order_amount'],
+                        'status' => $invoiceModel::TAX_STATUS_NO
+                    ];
+                    $invoiceModel->add($taxInfo);
+                }
+
                 //发送支付成功信息,增加发送内容
                 $order['pay_time'] = date('Y-m-d H:i:s', $data['payment_time']);
                 $order['money'] = $order['order_amount'];
@@ -1500,6 +1522,9 @@ class Order extends Common
         //以下值不是通过购物车得来的，是直接赋值的，就写这里吧，不写formatOrder里了。
         $order['memo'] = $memo;
         $order['source'] = $source;
+        $order['tax_type'] = $tax['tax_type'];
+        $order['tax_title'] = $tax['tax_name'];
+        $order['tax_code'] = $tax['tax_code'];
 
         Db::startTrans();
         try {
@@ -1555,22 +1580,6 @@ class Order extends Common
                 default:
                     Db::rollback();
                     return error_code(10000);
-            }
-
-            //发票存储
-            $invoiceModel = new Invoice();
-            if ($tax['tax_type'] != $invoiceModel::TAX_TYPE_NO) {
-                //组装发票信息
-                $taxInfo = [
-                    'class' => $invoiceModel::TAX_CLASS_ORDER,
-                    'source_id' => $order['order_id'],
-                    'type' => $tax['tax_type'],
-                    'title' => $tax['tax_name'],
-                    'tax_number' => $tax['tax_code'],
-                    'amount' => $order['order_amount'],
-                    'status' => $invoiceModel::TAX_STATUS_NO
-                ];
-                $invoiceModel->add($taxInfo);
             }
 
             //提交数据库

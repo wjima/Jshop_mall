@@ -1,5 +1,11 @@
 <?php
-
+// +----------------------------------------------------------------------
+// | JSHOP [ 小程序商城 ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2019 http://jihainet.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Author: keinx <keinx@jihainet.com>
+// +----------------------------------------------------------------------
 namespace app\common\model;
 
 /**
@@ -35,10 +41,22 @@ class Invoice extends Common
      * 处理发票
      * @param $id
      * @param $data
+     * @return array
      */
     public function process($id, $data)
     {
-        $this->save($data, ['id', 'eq', $id]);
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => []
+        ];
+        $where[] = ['id', 'eq', $id];
+        $return['data'] = $this->save($data, $where);
+        if ($return['data']) {
+            $return['status'] = true;
+            $return['msg'] = '成功';
+        }
+        return $return;
     }
 
 
@@ -118,5 +136,64 @@ class Invoice extends Common
             $v['ctime'] = getTime($v['ctime']);
         }
         return $list;
+    }
+
+
+    /**
+     * 获取发票信息
+     * @param $id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getInfo($id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => []
+        ];
+
+        if (!$id) {
+            $return['msg'] = '缺少参数';
+            return $return;
+        }
+
+        $where[] = ['id', 'eq', $id];
+        $return['data'] = $this->where($where)->find();
+
+        if ($return['data']) {
+            $return['status'] = true;
+            $return['msg'] = '成功';
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * 删除发票
+     * @param $id
+     * @return array
+     * @throws \Exception
+     */
+    public function del($id)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
+
+        $where[] = ['id', 'eq', $id];
+        $return['data'] = $this->where($where)
+            ->delete();
+        if ($return['data'] !== false) {
+            $return['status'] = true;
+            $return['msg'] = '成功';
+        }
+
+        return $return;
     }
 }

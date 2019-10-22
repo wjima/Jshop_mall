@@ -99,14 +99,14 @@
 
 
         //监听工具条
-        table.on('tool(noticeTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(invoiceTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
 
             if(layEvent === 'del'){ //删除
                 layer.confirm('真的要删除吗?', function(index){
-                    JsPost("{:url('Notice/del')}",{id:data.id},function(res){
+                    JsPost("{:url('Invoice/del')}",{id:data.id},function(res){
                         if(res.status){
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
@@ -115,13 +115,13 @@
                     });
                 });
             } else if(layEvent === 'edit'){ //编辑
-                JsGet("{:url('Notice/edit')}?id=" + data.id, function(e){
+                JsGet("{:url('Invoice/edit')}?id=" + data.id, function(e){
                     if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['400px', '400px'],
-                            title: '修改公告'
+                            area: ['700px', '430px'],
+                            title: '发票信息'
                         })
                     }else{
                         layer.msg(e.msg);
@@ -129,7 +129,32 @@
                 })
             }
         });
-    })
+
+        $(document).on('click', '.invoice-edit-btn', function () {
+            var id = $("#invoice_id").val();
+            var type = $("#tax_type").val();
+            var title = $("#tax_title").val();
+            var amount = $("#amount").val();
+            var tax_number = $("#edit_tax_number").val();
+            var status = $("#tax_status").val();
+            var remarks = $("#remarks").val();
+
+            JsPost('{:url("invoice/edit")}', {
+                id: id,
+                type: type,
+                title: title,
+                amount: amount,
+                tax_number: tax_number,
+                status: status,
+                remarks: remarks
+            }, function(e){
+                layer.close(window_box);
+                layer.msg(e.msg, { time: 1300 }, function () {
+                    table.reload();
+                });
+            });
+        });
+    });
 </script>
 <script type="text/html" id="invoice">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>

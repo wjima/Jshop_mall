@@ -1091,7 +1091,7 @@ class Order extends Common
 
 
     /**
-     * 获取需要发货的信息
+     * 构建需要发货的数据，和发货单密切关联
      * @param $id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -1100,11 +1100,6 @@ class Order extends Common
      */
     public function getOrderShipInfo($ids)
     {
-//        $isOrderShip = $this->isOrderShipInfo($ids);
-//        if (!$isOrderShip['status']) {
-//            return $isOrderShip;
-//        }
-//        return $this->combinedOrderProcessing($isOrderShip['data']);
         $return = [
             'status' => true,
             'msg' => '',
@@ -1123,7 +1118,7 @@ class Order extends Common
         }
         $order = $order->toArray();
 
-        foreach ($order as $v) {
+        foreach ($order as $k => $v) {
             if ($v['status'] != self::ORDER_STATUS_NORMAL) {
                 $return['status'] = false;
                 $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
@@ -1134,6 +1129,9 @@ class Order extends Common
                 $return['status'] = false;
                 $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
             }
+
+            //组合明细
+            $this->aftersalesVal($order[$k]); //获取售后数量
         }
         if(!$return['status']){
             return $return;
@@ -1155,7 +1153,8 @@ class Order extends Common
             'ship_name' => $order[0]['ship_name'],
             'ship_mobile' => $order[0]['ship_mobile'],
             'logistics_id' => $order[0]['logistics_id'],
-            'items' => []
+            'items' => [],
+            'orders' => $order                                  //把订单信息冗余上去
         ];
         foreach ($order as $v) {
             //组合总重量
@@ -1167,7 +1166,8 @@ class Order extends Common
             }
 
             //组合明细
-            $this->aftersalesVal($v); //获取售后数量
+            //$this->aftersalesVal($v); //获取售后数量,在上面怼
+
             foreach ($v['items'] as $vv) {
                 if (!isset($newOrder['items'][$vv['product_id']])) {
                     $newOrder['items'][$vv['product_id']] = $vv;
@@ -1223,170 +1223,6 @@ class Order extends Common
 
     }
 
-
-    /**
-     * 判断是否可以合并发货
-     * @param $ids
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function isOrderShipInfo($ids)
-    {
-        $return = [
-            'status' => true,
-            'msg' => '',
-            'data' => []
-        ];
-
-        $where[] = ['order_id', 'in', $ids];
-        $order = $this::with('items')
-            ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
-            ->where($where)
-            ->select();
-        if($order->isEmpty()){
-            $return['status'] = false;
-           $return['msg'] = "请选择订单";
-           return $return;
-        }
-        $order = $order->toArray();
-
-
-        foreach ($order as $v) {
-            if ($v['status'] != self::ORDER_STATUS_NORMAL) {
-                $return['status'] = false;
-                $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
-            } elseif ($v['pay_status'] == self::PAY_STATUS_NO) {
-                $return['status'] = false;
-                $return['msg'] .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
-            } elseif (!in_array($v['ship_status'], [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_YES])) {
-                $return['status'] = false;
-                $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
-            }
-        }
-
-        $return['data'] = $order;
-
-        return $return;
-    }
-
-
-    /**
-     * 处理合并订单发货
-     * @param $order
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function combinedOrderProcessing($order)
-    {
-        $return = [
-            'status' => false,
-            'msg' => '',
-            'data' => []
-        ];
-
-        if ($order && is_array($order) && count($order) > 0) {
-            $return['status'] = true;
-            $items = [];
-            $newOrder = [
-                'order_id' => '',
-                'weight' => 0,
-                'memo' => '',
-                'cost_freight' => $order[0]['cost_freight'],
-                'store_id' => [],
-                'user_id' => [],
-                'ship_info' => [],
-                'number' => count($order)
-            ];
-            foreach ($order as $v) {
-                //组合订单号
-                $newOrder['order_id'] .= $v['order_id'] . ',';
-                //组合总重量
-                $newOrder['weight'] = $newOrder['weight'] + $v['weight'];
-                //组合备注信息
-                if ($v['memo'] && $v['memo'] != '') {
-                    $newOrder['memo'] .= '订单号：' . $v['order_id'] . '：' . $v['memo'] . '；';
-                }
-                //组合店铺
-                if (!in_array($v['store_id'], $newOrder['store_id'])) {
-                    $newOrder['store_id'][] = $v['store_id'];
-                }
-                //组合用户
-                if (!in_array($v['user_id'], $newOrder['user_id'])) {
-                    $newOrder['user_id'][] = $v['user_id'];
-                }
-                //组合收货信息
-                if ($newOrder['number'] == 1) {
-                    $newOrder['ship_info'][] = [
-                        'ship_area_id' => $v['ship_area_id'],
-                        'ship_area_name' => get_area($v['ship_area_id']),
-                        'ship_address' => $v['ship_address'],
-                        'ship_name' => $v['ship_name'],
-                        'ship_mobile' => $v['ship_mobile']
-                    ];
-                } else {
-                    $ship_info_md5 = md5($v['ship_area_id'] . $v['ship_address'] . $v['ship_name'] . $v['ship_mobile']);
-                    if (!isset($newOrder['ship_info'][$ship_info_md5])) {
-                        $newOrder['ship_info'][$ship_info_md5] = [
-                            'ship_area_id' => $v['ship_area_id'],
-                            'ship_area_name' => get_area($v['ship_area_id']),
-                            'ship_address' => $v['ship_address'],
-                            'ship_name' => $v['ship_name'],
-                            'ship_mobile' => $v['ship_mobile']
-                        ];
-                    }
-                }
-                //组合明细
-                $this->aftersalesVal($v); //获取售后数量
-                foreach ($v['items'] as $vv) {
-                    if (!isset($items[$vv['product_id']])) {
-                        $items[$vv['product_id']] = $vv;
-                    } else {
-                        $items[$vv['product_id']]['nums'] = $items[$vv['product_id']]['nums'] + $vv['nums']; //总数量
-                        $items[$vv['product_id']]['amount'] = $items[$vv['product_id']]['amount'] + $vv['amount']; //总价
-                        $items[$vv['product_id']]['promotion_amount'] = $items[$vv['product_id']]['promotion_amount'] + $vv['promotion_amount']; //总优惠金额
-                        $items[$vv['product_id']]['weight'] = $items[$vv['product_id']]['weight'] + $vv['weight']; //总重量
-                        $items[$vv['product_id']]['sendnums'] = $items[$vv['product_id']]['sendnums'] + $vv['sendnums']; //已发送数量
-                        $items[$vv['product_id']]['reship_nums'] = $items[$vv['product_id']]['reship_nums'] + $vv['reship_nums']; //退货数量
-                    }
-                }
-            }
-            $newOrder['order_id'] = rtrim($newOrder['order_id'], ',');
-            $newOrder['memo'] = rtrim($newOrder['memo'], '；');
-            $newOrder['items'] = $items;
-
-            //判断用户
-            if (count($newOrder['user_id']) > 1) {
-                $return['msg'] .= '多个用户订单，';
-            }
-            //判断门店
-            if (count($newOrder['store_id']) > 1) {
-                if (in_array(0, $newOrder['store_id'])) {
-                    $return['msg'] .= '门店自提和快递配送订单，';
-                } else {
-                    $return['msg'] .= '门店自提订单，';
-                }
-            }
-            //判断收货地址|收货人|收货电话
-            if (count($newOrder['ship_info']) > 1) {
-                $return['msg'] .= '多个收货信息，';
-            }
-            //是否有警告
-            if ($return['msg'] != '') {
-                $return['msg'] = rtrim($return['msg'], '，');
-                $return['msg'] = '请注意！合并发货订单中存在：' . $return['msg'] . '。确定本次合并发货吗？';
-            }
-
-            $return['data'] = $newOrder;
-        }
-
-        return $return;
-    }
-
-
     /**
      * 发货改状态
      * @param $order_id
@@ -1397,36 +1233,36 @@ class Order extends Common
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
-    public function ship($order_id)
+    public function ship($order_id,$item)
     {
-        //查询发货数量和是否全部发货
-        $orderItemsModel = new OrderItems();
-        $ship_status = $orderItemsModel->isAllShip($order_id);
-        //判断发货状态
-        if ($ship_status != 'no') {
-            if ($ship_status == 'all') {
-                $order_data['ship_status'] = self::SHIP_STATUS_YES;
-            } else {
-                $order_data['ship_status'] = self::SHIP_STATUS_PARTIAL_YES;
-            }
-            $order_data['utime'] = time();
-            //发货
-            $where[] = ['order_id', 'eq', $order_id];
-            $result = $this->where($where)
-                ->update($order_data);
-            if ($result) {
-                //判断生成门店自提单
-                $order_info = $this->get($order_id);
-                if ($order_info['store_id'] != 0) {
-                    $ladingModel = new BillLading();
-                    $ladingModel->addData($order_id, $order_info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
-                }
-            }
-            $return = ['status' => true, 'data' => $result];
-        } else {
-            $return = ['status' => false, 'data' => ''];
+        $where[] = ['order_id', 'eq', $order_id];
+        $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
+        $where[] = ['ship_status', 'IN', [self::SHIP_STATUS_NO,self::SHIP_STATUS_PARTIAL_NO,self::SHIP_STATUS_PARTIAL_YES]];        //未发货，部分发货，部分退货状态(怕部分发货中的部分退货这种业务场景，所以加这个字段)
+        $info = $this->where($where)->find();
+        if(!$info){
+            return error_code(10000);
         }
-        return $return;
+        //更新订单明细发货数量，并校验是否发完
+        $orderItemsModel = new OrderItems();
+        $isOver = $orderItemsModel->ship($order_id,$item);
+        if($isOver){
+            $info->ship_status = self::SHIP_STATUS_YES;
+        }else{
+            $info->ship_status = self::SHIP_STATUS_PARTIAL_YES;
+        }
+        $info->save();
+
+        //如果是门店自提，生成提货单
+//        if ($info['store_id'] != 0) {
+//            $ladingModel = new BillLading();
+//            $ladingModel->addData($order_id, $info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
+//        }
+
+        return [
+            'status' => true,
+            'data' => '',
+            'msg' => ''
+        ];
     }
 
 

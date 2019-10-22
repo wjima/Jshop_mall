@@ -9,7 +9,7 @@
         <div class="layui-input-inline" style="width:620px;word-wrap:break-word;word-break:break-all;overflow:hidden;">
             <div class="layui-form-mid">{$order.order_id}</div>
         </div>
-        <input type="hidden" id="order_id" value="{$order.order_id}">
+        <input type="hidden" name="order_id" value="{$order.order_id}">
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">配送方式</label>
@@ -89,7 +89,7 @@
             <td>{$vo.nums}</td>
             <td>{if $vo.reship_nums}{$vo.reship_nums}{else /}0{/if}</td>
             <td>{if $vo.sendnums}{$vo.sendnums}{else /}0{/if}</td>
-            <td><input type="number" data-id="{$vo.product_id}" class="layui-input order-ship-nums no-margin-bottom" max="{$vo.nums-$vo.sendnums-$vo.reship_nums}" value="{$vo.nums-$vo.sendnums-$vo.reship_nums}" min="0"></td>
+            <td><input type="number" data-id="{$vo.product_id}" name="items[{$vo.product_id}]" class="layui-input order-ship-nums no-margin-bottom" max="{$vo.nums-$vo.sendnums-$vo.reship_nums}" value="{$vo.nums-$vo.sendnums-$vo.reship_nums}" min="0"></td>
             </tbody>
             {/foreach}
         </table>
@@ -110,17 +110,16 @@
         <div class="layui-inline">
             <label class="layui-form-label">物流单号</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" id="logi_no" value="" class="layui-input">
+                <input type="text" name="logi_no" value="" class="layui-input">
             </div>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">发货备注</label>
         <div class="layui-input-block">
-            <input type="text" id="memo" value="" class="layui-input">
+            <input type="text" name="memo" value="" class="layui-input">
         </div>
     </div>
-    <button class="layui-btn layui-btn-fluid order-ship-btn">发货</button>
 </form>
 <script>
     //渲染表单

@@ -202,46 +202,45 @@ class Order extends Manage
             'data' => []
         ];
         $this->view->engine->layout(false);
-        if (!Request::isPost()) {
-            //订单发货信息
-            if(!input('?param.order_id')){
-                return error_code(10000);
-            }else{
-                $id = input('param.order_id');
-            }
-            $orderModel = new OrderModel();
-            $order_info = $orderModel->getOrderShipInfo($id);
-            if (!$order_info['status']) {
-                return $order_info;
-            }
-            $this->assign('order', $order_info['data']);
-
-            //获取默认配送方式,为了on物流公司
-            $shipModel = new Ship();
-            $ship = $shipModel->where('id',$order_info['data']['logistics_id'])->find();
-            if($ship){
-               $ship_name = $ship['name'];
-               $logi_code = $ship['logi_code'];
-            }else{
-                $ship_name = "";
-                $logi_code = "";
-            }
-            $this->assign('ship_name', $ship_name);
-            $this->assign('logi_code', $logi_code);
-
-            //获取物流公司
-            $logisticsModel = new Logistics();
-            $logi_info = $logisticsModel->getAll();
-            $this->assign('logi', $logi_info);
-            $return['status'] = true;
-            $return['data'] = $this->fetch('ship');
-            return $return;
-        } else {
-            $data = Request::param();
+        if (Request::isPost()) {
+            $data = input('param.');
             $billDeliveryModel = new BillDelivery();
-            $result = $billDeliveryModel->ship($data['order_id'], $data['logi_code'], $data['logi_no'], $data['memo'], $data['ship_data'], $data['number'], $data['ship_info']);
+            $result = $billDeliveryModel->ship($data['order_id'], $data['logi_code'], $data['logi_no'], $data['items'],$data['ship_name'], $data['ship_mobile'], $data['ship_area_id'],$data['ship_address'], $data['memo']);
             return $result;
         }
+        //订单发货信息
+        if(!input('?param.order_id')){
+            return error_code(10000);
+        }else{
+            $id = input('param.order_id');
+        }
+        $orderModel = new OrderModel();
+        $order_info = $orderModel->getOrderShipInfo($id);
+        if (!$order_info['status']) {
+            return $order_info;
+        }
+        $this->assign('order', $order_info['data']);
+
+        //获取默认配送方式,为了on物流公司
+        $shipModel = new Ship();
+        $ship = $shipModel->where('id',$order_info['data']['logistics_id'])->find();
+        if($ship){
+            $ship_name = $ship['name'];
+            $logi_code = $ship['logi_code'];
+        }else{
+            $ship_name = "";
+            $logi_code = "";
+        }
+        $this->assign('ship_name', $ship_name);
+        $this->assign('logi_code', $logi_code);
+
+        //获取物流公司
+        $logisticsModel = new Logistics();
+        $logi_info = $logisticsModel->getAll();
+        $this->assign('logi', $logi_info);
+        $return['status'] = true;
+        $return['data'] = $this->fetch('ship');
+        return $return;
     }
 
 

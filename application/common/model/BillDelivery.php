@@ -24,17 +24,17 @@ class BillDelivery extends Common
     const STATUS_ALREADY = 2;               //已发货
     const STATUS_CONFIRM = 3;               //已确认
     const STATUS_OTHER = 4;                 //其他
-    const ORDER_STATUS_NORMAL = 1;          //订单状态正常
-    const ORDER_STATUS_COMPLETE = 2;        //订单状态完成
-    const ORDER_STATUS_CANCEL = 3;          //订单状态取消
-    const PAY_STATUS_NO = 1;                //未付款
-    const PAY_STATUS_YES = 2;               //已付款
-    const PAY_STATUS_PARTIAL_YES = 3;       //部分付款
-    const PAY_STATUS_PARTIAL_NO = 4;        //部分退款
-    const PAY_STATUS_REFUNDED = 5;          //已退款
-    const SHIP_STATUS_NO = 1;               //未发货
-    const SHIP_STATUS_PARTIAL_YES = 2;      //部分发货
-    const SHIP_STATUS_YES = 3;              //已发货
+//    const ORDER_STATUS_NORMAL = 1;          //订单状态正常
+//    const ORDER_STATUS_COMPLETE = 2;        //订单状态完成
+//    const ORDER_STATUS_CANCEL = 3;          //订单状态取消
+//    const PAY_STATUS_NO = 1;                //未付款
+//    const PAY_STATUS_YES = 2;               //已付款
+//    const PAY_STATUS_PARTIAL_YES = 3;       //部分付款
+//    const PAY_STATUS_PARTIAL_NO = 4;        //部分退款
+//    const PAY_STATUS_REFUNDED = 5;          //已退款
+//    const SHIP_STATUS_NO = 1;               //未发货
+//    const SHIP_STATUS_PARTIAL_YES = 2;      //部分发货
+//    const SHIP_STATUS_YES = 3;              //已发货
 
     /**
      * 发货详情关联
@@ -47,181 +47,101 @@ class BillDelivery extends Common
 
 
     /**
-     * 发货
-     * @param $order_id
-     * @param $logi_code
-     * @param $logi_no
-     * @param $memo
-     * @param $ship_data
-     * @param int $number
-     * @param string $ship_info
-     * @return array|bool|mixed
+     * 批量发货，可以支持多个订单合并发货，单个订单拆分发货等。
+     * @param $order_id     英文逗号分隔的订单号
+     * @param $logi_code    物流公司编码
+     * @param $logi_no      物流单号
+     * @param $items        发货明细
+     * @param $ship_name    收货人姓名
+     * @param $ship_mobile  收货人电话
+     * @param $ship_area_id 省市区id
+     * @param $shop_address 收货地址
+     * @param string $memo  发货描述
+     * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function ship($order_id, $logi_code, $logi_no, $memo, $ship_data, $number = 1, $ship_info = '')
+    public function ship($order_id, $logi_code, $logi_no,$items, $ship_name, $ship_mobile,$ship_area_id,$ship_address,$memo="")
     {
-        $return = [
+        $result = [
             'status' => false,
-            'msg' => '发货失败',
+            'msg' => '',
             'data' => ''
         ];
 
         //获取订单详情
         $orderModel = new Order();
-        $isOrderShip = $orderModel->isOrderShipInfo($order_id);
-        $order = $isOrderShip['data'];
+        $dinfo = $orderModel->getOrderShipInfo($order_id);
 
-        if ($isOrderShip['status']) {
-            $resOrder = $orderModel->combinedOrderProcessing($order);
+        if (!$dinfo['status']) {
+            return $dinfo;
+        }
+        $dinfo = $dinfo['data'];
+        $orders = $dinfo['orders'];
 
-            //数量验证
-            foreach ($ship_data as $v) {
-                if (!isset($resOrder['data']['items'][$v[0]])) {
-                    return error_code(13303);
-                }
-                $orderData = $resOrder['data']['items'][$v[0]];
-                $max_ship_nums = $orderData['nums'] - $orderData['sendnums'] - $orderData['reship_nums'];
-                if ($max_ship_nums < $v[1]) {
-                    return error_code(13304);
-                }
+        $bill_delivery = [
+            'delivery_id' => get_sn(8),
+            'logi_code' => $logi_code,
+            'logi_no' => $logi_no,
+            'ship_area_id' => $ship_area_id,
+            'ship_address' => $ship_address,
+            'ship_name' => $ship_name,
+            'ship_mobile' => $ship_mobile,
+            'status' => self::STATUS_ALREADY,
+            'memo' => $memo,
+        ];
+
+        //校验发货内容
+        foreach($items as $product_id => $num){
+            if(!isset($dinfo['items'][$product_id])){
+                return error_code(10000);       //发货的商品不在发货明细里，肯定有问题
             }
-
-            //组装发货总单需要的信息
-            $delivery_id = get_sn(8);
-            if ($number == 1) {
-                $ship_area_id = $order[0]['ship_area_id'];
-                $ship_address = $order[0]['ship_address'];
-                $ship_name = $order[0]['ship_name'];
-                $ship_mobile = $order[0]['ship_mobile'];
-            } else {
-                $ship_area_id = $resOrder['data']['ship_info'][$ship_info]['ship_area_id'];
-                $ship_address = $resOrder['data']['ship_info'][$ship_info]['ship_address'];
-                $ship_name = $resOrder['data']['ship_info'][$ship_info]['ship_name'];
-                $ship_mobile = $resOrder['data']['ship_info'][$ship_info]['ship_mobile'];
+            //判断是否超发
+            if(($dinfo['items'][$product_id]['nums'] - $dinfo['items']['$product_id']['sendnums'] - $dinfo['items'][$product_id]['reship_nums']) < $num){
+                $result['msg'] = $dinfo['items'][$product_id]['name']." 发超了";
+                return $result;
             }
-            $bill_delivery = [
-                'delivery_id' => $delivery_id,
-                'logi_code' => $logi_code,
-                'logi_no' => $logi_no,
-                'ship_area_id' => $ship_area_id,
-                'ship_address' => $ship_address,
-                'ship_name' => $ship_name,
-                'ship_mobile' => $ship_mobile,
-                'status' => self::STATUS_READY,
-                'memo' => $memo,
-                'ctime' => time(),
-                'utime' => time()
+            //构建发货单明细
+            $bdRel[] = [
+                'delivery_id' => $bill_delivery['delivery_id'],
+                'product_id' => $dinfo['items'][$product_id]['product_id'],
+                'goods_id' => $dinfo['items'][$product_id]['goods_id'],
+                'bn' => $dinfo['items'][$product_id]['bn'],
+                'sn' => $dinfo['items'][$product_id]['sn'],
+                'weight' => $dinfo['items'][$product_id]['weight'],
+                'name' => $dinfo['items'][$product_id]['name'],
+                'addon' => $dinfo['items'][$product_id]['addon'],
+                'nums' => $num
             ];
-            $order_ids = explode(',', $resOrder['data']['order_id']);
-
-            //售后信息
-            foreach ($order as &$v) {
-                $orderModel->aftersalesVal($v);
-            }
-
-            Db::startTrans();
-            try {
-                //插入发货总单
-                $this->insert($bill_delivery);
-
-                //插入发货详单，修改库存
-                $goodsModel = new Goods();
-                $orderItemsModel = new OrderItems();
-                $item_data = [];
-                foreach ($ship_data as $s) {
-                    if ($s[1] > 0) {
-                        foreach ($order as $vv) {
-                            $order_ship_items = [];
-                            foreach ($vv['items'] as $vvv) {
-                                if ($vvv['product_id'] == $s[0]) {
-                                    //发货处理
-                                    $nowGoodsShipNum = $vvv['nums'] - $vvv['sendnums'] - $vvv['reship_nums'];
-                                    if ($nowGoodsShipNum > 0) {
-                                        $nums = $nowGoodsShipNum >= $s[1] ? $s[1] : $nowGoodsShipNum;
-                                        if ($nums > 0) {
-                                            $item_data[] = [
-                                                'delivery_id' => $delivery_id,
-                                                'order_items_id' => $vvv['id'],
-                                                'nums' => $nums
-                                            ];
-                                            $s[1] = $s[1] - $nums;
-
-                                            $orderItems = $orderItemsModel->field('product_id')
-                                                ->where('id', 'eq', $vvv['id'])
-                                                ->find();
-                                            if (!$orderItems) {
-                                                return error_code(13306);
-                                            }
-                                            //库存更改失败直接跳过
-                                            $goodsModel->changeStock($orderItems['product_id'], 'send', $nums);
-
-                                            $order_ship_items[] = [
-                                                $vvv['id'],
-                                                $nums
-                                            ];
-                                        }
-                                    }
-                                }
-                            }
-                            //修改订单详细表
-                            $orderItemsModel->ship($vv['order_id'], $order_ship_items);
-                        }
-                    }
-                }
-                $billDeliveryItemsModel = new BillDeliveryItems();
-                $billDeliveryItemsModel->insertAll($item_data);
-
-                //修改订单主表和发货单订单关联表
-                $orderLog = new OrderLog();
-                $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
-                $bill_rel = [];
-                $msg_order = [];
-                foreach ($order_ids as $id) {
-                    $order_flag = $orderModel->ship($id);
-                    if ($order_flag['status']) {
-                        //订单记录
-                        foreach ($order as $one) {
-                            if ($one['order_id'] == $id) {
-                                //添加记录
-                                $orderLog->addLog($one['order_id'], $one['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $delivery_id, [$order_id, $logi_code, $logi_no, $memo, $ship_data]);
-                                //添加要发送消息的
-                                $msg_order[] = $one;
-                            }
-                        }
-                        //插入发货单订单关联表
-                        $bill_rel[] = [
-                            'order_id' => $id,
-                            'delivery_id' => $delivery_id
-                        ];
-                    }
-                }
-                $billDeliveryOrderRelModel->insertAll($bill_rel);
-
-                $return['status'] = true;
-                $return['msg'] = '发货成功';
-                Db::commit();
-
-                //发送发货成功信息
-                $shipModel = new Ship();
-                $ship = $shipModel->getInfo(['id' => $order[0]['logistics_id']]);
-                foreach ($msg_order as $msg_info) {
-                    $msg_info['ship_id'] = $ship['name'];
-                    $msg_info['ship_addr'] = get_area($bill_delivery['ship_area_id']) . $bill_delivery['ship_address'];
-                    $msg_info['logistics_name'] = get_logi_info($logi_code);
-                    $msg_info['ship_no'] = $logi_no;
-                    sendMessage($msg_info['user_id'], 'delivery_notice', $msg_info);
-                }
-            } catch (\Exception $e) {
-                $return['data'] = $e->getMessage();
-                Db::rollback();
-            }
-        } else {
-            $return['msg'] = $isOrderShip['msg'];
         }
 
-        return $return;
+        Db::startTrans();
+        try {
+            //插入发货单主体表
+            $this->save($bill_delivery);
+            //插入发货单明细表
+            $billDeliveryItemsModel = new BillDeliveryItems();
+            $billDeliveryItemsModel->saveAll($bdRel);
+
+            //订单更新发货状态，发送各种消息
+            foreach($orders as $v){
+                $this->orderShip($v,$items,$bill_delivery);
+                $doRel[] = [
+                    'order_id' => $v['order_id'],
+                    'delivery_id' => $bill_delivery['delivery_id']
+                ];
+            }
+            $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
+            $billDeliveryOrderRelModel->saveAll($doRel);
+
+            Db::commit();
+            $result['status'] = true;
+        } catch (\Exception $e) {
+            $result['msg'] = $e->getMessage();
+            Db::rollback();
+        }
+        return $result;
     }
 
     /**
@@ -640,4 +560,48 @@ class BillDelivery extends Common
 
         return $return_data;
     }
+
+    /**
+     * 给订单发货
+     * @param $orderinfo        订单信息
+     * @param $items            总的发货包裹内容
+     */
+    private function orderShip($orderInfo,&$items,$deliveryInfo){
+        $item = [];
+        foreach($orderInfo['items'] as $k => $v){
+            if(isset($items[$v['product_id']])){
+                $max_num = $v['nums'] - $v['reship_num'] - $v['sendnums'];
+                if($max_num > 0){       //如果此条订单明细需要发货的话
+                    if($items[$v['product_id']] > $max_num){
+                        //足够发此条记录的话
+                        $item[$v['product_id']] = $max_num;
+                        $items[$v['product_id']] -= $max_num;
+                    }else{
+                        //此条订单都发不满的情况下
+                        $item[$v['product_id']] = $items[$v['product_id']];
+                        unset($items[$v['product_id']]);
+                    }
+                }
+            }
+        }
+        //如果有发货信息，就去给订单更新发货状态
+
+        if(!$item){
+            return false;
+        }
+        $orderModel = new Order();
+        $re = $orderModel->ship($orderInfo['order_id'],$item);
+        if($re['status']){
+            //订单日志
+            $orderLog = new OrderLog();
+            $orderLog->addLog($orderInfo['order_id'], $orderInfo['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $deliveryInfo['delivery_id'], $deliveryInfo);
+
+            //发送消息
+            $deliveryInfo['ship_name'] = get_logi_info($deliveryInfo['logi_code']);
+            sendMessage($orderInfo['user_id'], 'delivery_notice', $deliveryInfo);
+
+        }
+        return true;
+    }
+
 }

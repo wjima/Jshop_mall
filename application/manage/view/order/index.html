@@ -405,7 +405,14 @@
             return false;
         });
 
-        var ship_order_array = function () { //获取选中数据
+        //单条记录去发货
+        $(document).on('click', '.ship-order', function () {
+            var id = $(this).attr('data-id');
+            order_ship(id);
+            return false;
+        });
+        //批量去发货
+        $('#ship-order-array').on('click', function () {
             var checkStatus = tables.checkStatus('order'), data = checkStatus.data;
             var ids = '';
             $.each(data, function () {
@@ -418,11 +425,6 @@
                 layer.msg('请勾选需要发货的订单');
             }
             return false;
-        };
-        //批量发货按钮事件
-        $('#ship-order-array').on('click', function () {
-            ship_order_array ? ship_order_array.call(this) : '';
-            return false;
         });
 
         //发货请求
@@ -433,37 +435,49 @@
                         layer.confirm(e.msg, {
                             title: '请注意！',
                             btn: ['确定', '取消'],
-                            area: '480px'
                         }, function(){
                             layer.closeAll();
-                            window_box = layer.open({
-                                type: 1,
-                                title: '合并发货',
-                                area: ['820px', '600px'],
-                                content: e.data
-                            });
+                            to_ship(e.data);
                         }, function(){
                             layer.closeAll();
                         });
                     }else{
-                        window_box = layer.open({
-                            type: 1,
-                            title: '合并发货',
-                            area: ['800px', '500px'],
-                            content: e.data
-                        });
+                        to_ship(e.data);
                     }
                 } else {
                     layer.alert(e.msg, {
                         closeBtn: 0,
-                        title: '无法合并发货',
-                        area: '480px'
+                        title: '发货失败',
                     }, function(){
                         layer.closeAll();
                     });
                 }
             });
         };
+
+        //发货提交保存
+        function to_ship(tpl){
+            window.box = layer.open({
+                type: 1,
+                content: tpl,
+                area: ['800px', '650px'],
+                title: '订单发货',
+                btn: ['确认', '取消'],
+                yes: function (index, layero) {
+                    JsPost('{:url("order/ship")}', $('#all_ship_form').serialize(), function(res){
+                        if (res.status) {
+                            layer.msg('发货成功', { time: 1300 }, function () {
+                                layer.close(index);
+                                table.reload();
+                            });
+
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    });
+                }
+            });
+        }
 
         //去支付
         $(document).on('click', '.goto-pay', function () {
@@ -484,60 +498,55 @@
             return false;
         });
 
-        //发货页面
-        $(document).on('click', '.ship-order', function () {
-            var id = $(this).attr('data-id');
-            order_ship(id);
-            return false;
-        });
+
 
         //发货生成
-        $(document).on('click', '.order-ship-btn', function () {
-            var ship_data = [];
-            var order_id = $("#order_id").val();
-            var logi_no = $("#logi_no").val();
-            var logi_code = $("#logi_code").val();
-            var memo = $("#memo").val();
-            var ship_info = $("#ship_info").val();
-            var number = $("#number").val();
-            var flag = true;
-            var totle_num = 0;
-            $(".order-ship-nums").each(function () {
-                var ship_num = $(this).val();
-                var max = $(this).attr('max');
-                var id = $(this).attr('data-id');
-                if (ship_num > max || ship_num < 0) {
-                    flag = false;
-                    layer.msg('发货数量不符合真实情况');
-                    return false;
-                } else {
-                    var item = [id, ship_num];
-                    ship_data.push(item);
-                    totle_num += ship_num;
-                }
-            });
-            if (totle_num < 1) {
-                flag = false;
-                layer.msg('请至少选择发送一件商品');
-                return false;
-            }
-            if (flag) {
-                JsPost('{:url("order/ship")}', {
-                    'order_id': order_id,
-                    'logi_no': logi_no,
-                    'memo': memo,
-                    'logi_code': logi_code,
-                    'ship_info': ship_info,
-                    'number': number,
-                    'ship_data': ship_data
-                }, function(e){
-                    layer.close(window_box);
-                    layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload();
-                    });
-                });
-            }
-        });
+        // $(document).on('click', '.order-ship-btn', function () {
+        //     var ship_data = [];
+        //     var order_id = $("#order_id").val();
+        //     var logi_no = $("#logi_no").val();
+        //     var logi_code = $("#logi_code").val();
+        //     var memo = $("#memo").val();
+        //     var ship_info = $("#ship_info").val();
+        //     var number = $("#number").val();
+        //     var flag = true;
+        //     var totle_num = 0;
+        //     $(".order-ship-nums").each(function () {
+        //         var ship_num = $(this).val();
+        //         var max = $(this).attr('max');
+        //         var id = $(this).attr('data-id');
+        //         if (ship_num > max || ship_num < 0) {
+        //             flag = false;
+        //             layer.msg('发货数量不符合真实情况');
+        //             return false;
+        //         } else {
+        //             var item = [id, ship_num];
+        //             ship_data.push(item);
+        //             totle_num += ship_num;
+        //         }
+        //     });
+        //     if (totle_num < 1) {
+        //         flag = false;
+        //         layer.msg('请至少选择发送一件商品');
+        //         return false;
+        //     }
+        //     if (flag) {
+        //         JsPost('{:url("order/ship")}', {
+        //             'order_id': order_id,
+        //             'logi_no': logi_no,
+        //             'memo': memo,
+        //             'logi_code': logi_code,
+        //             'ship_info': ship_info,
+        //             'number': number,
+        //             'ship_data': ship_data
+        //         }, function(e){
+        //             layer.close(window_box);
+        //             layer.msg(e.msg, { time: 1300 }, function () {
+        //                 table.reload();
+        //             });
+        //         });
+        //     }
+        // });
 
         //取消订单
         $(document).on('click', '.cancel-order', function () {

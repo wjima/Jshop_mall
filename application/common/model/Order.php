@@ -705,6 +705,19 @@ class Order extends Common
             $order_info['promotion_list'] = json_decode($order_info['promotion_list'], true);
         }
 
+        //发票信息
+        $invoiceModel = new Invoice();
+        $invoiceInfo = $invoiceModel->getOrderInvoiceInfo($id);
+        if ($invoiceInfo['status']) {
+            $order_info['invoice'] = $invoiceInfo['data'];
+        } else {
+            $order_info['invoice'] = [
+                'type' => $order_info['tax_type'],
+                'title' => $order_info['tax_title'],
+                'tax_number' => $order_info['tax_code'],
+            ];
+        }
+
         return $order_info;
     }
 
@@ -1311,6 +1324,22 @@ class Order extends Common
                 $return_data['status'] = true;
                 $return_data['msg'] = '订单支付成功';
 
+                //发票存储
+                $invoiceModel = new Invoice();
+                if ($order['tax_type'] != $invoiceModel::TAX_TYPE_NO) {
+                    //组装发票信息
+                    $taxInfo = [
+                        'class' => $invoiceModel::TAX_CLASS_ORDER,
+                        'source_id' => $order['order_id'],
+                        'type' => $order['tax_type'],
+                        'title' => $order['tax_title'],
+                        'tax_number' => $order['tax_code'],
+                        'amount' => $order['order_amount'],
+                        'status' => $invoiceModel::TAX_STATUS_NO
+                    ];
+                    $invoiceModel->add($taxInfo);
+                }
+
                 //发送支付成功信息,增加发送内容
                 $order['pay_time'] = date('Y-m-d H:i:s', $data['payment_time']);
                 $order['money'] = $order['order_amount'];
@@ -1440,7 +1469,6 @@ class Order extends Common
         $order['tax_type'] = $tax['tax_type'];
         $order['tax_title'] = $tax['tax_name'];
         $order['tax_code'] = $tax['tax_code'];
-        $order['tax_content'] = '商品明细';
 
         Db::startTrans();
         try {

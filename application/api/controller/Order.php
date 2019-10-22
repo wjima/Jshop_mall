@@ -203,6 +203,9 @@ class Order extends Api
     /**
      * 创建订单
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function create()
     {

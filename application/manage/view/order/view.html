@@ -57,17 +57,17 @@
 					<div class="layui-form-mid seller-inline-2">{if $order.logistics}{$order.logistics['logi_name']}{/if}</div>
 
 					<label class="layui-form-label">发票类型：</label>
-					<div class="layui-form-mid seller-inline-2">{:config('params.order.tax_type')[$order.tax_type]}</div>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.tax_type')[$order.invoice.type]}</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">发票内容：</label>
-					<div class="layui-form-mid seller-inline-2">{$order.tax_content}</div>
+					<div class="layui-form-mid seller-inline-2">{if $order.invoice.type != 1}商品明细{/if}</div>
 
 					<label class="layui-form-label">税号：</label>
-					<div class="layui-form-mid seller-inline-2">{$order.tax_code}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.invoice.tax_number}</div>
 
 					<label class="layui-form-label">发票抬头：</label>
-					<div class="layui-form-mid seller-inline-2">{$order.tax_title}</div>
+					<div class="layui-form-mid seller-inline-2">{$order.invoice.title}</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">订单优惠金额：</label>

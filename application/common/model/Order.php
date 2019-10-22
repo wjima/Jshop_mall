@@ -705,6 +705,13 @@ class Order extends Common
             $order_info['promotion_list'] = json_decode($order_info['promotion_list'], true);
         }
 
+        //发票信息
+        $invoiceModel = new Invoice();
+        $invoiceInfo = $invoiceModel->getOrderInvoiceInfo($id);
+        if ($invoiceInfo['status']) {
+            $order_info['invoice'] = $invoiceInfo['data'];
+        }
+
         return $order_info;
     }
 
@@ -1493,10 +1500,6 @@ class Order extends Common
         //以下值不是通过购物车得来的，是直接赋值的，就写这里吧，不写formatOrder里了。
         $order['memo'] = $memo;
         $order['source'] = $source;
-        $order['tax_type'] = $tax['tax_type'];
-        $order['tax_title'] = $tax['tax_name'];
-        $order['tax_code'] = $tax['tax_code'];
-        $order['tax_content'] = '商品明细';
 
         Db::startTrans();
         try {
@@ -1552,6 +1555,22 @@ class Order extends Common
                 default:
                     Db::rollback();
                     return error_code(10000);
+            }
+
+            //发票存储
+            $invoiceModel = new Invoice();
+            if ($tax['tax_type'] != $invoiceModel::TAX_TYPE_NO) {
+                //组装发票信息
+                $taxInfo = [
+                    'class' => $invoiceModel::TAX_CLASS_ORDER,
+                    'source_id' => $order['order_id'],
+                    'type' => $tax['tax_type'],
+                    'title' => $tax['tax_name'],
+                    'tax_number' => $tax['tax_code'],
+                    'amount' => $order['order_amount'],
+                    'status' => $invoiceModel::TAX_STATUS_NO
+                ];
+                $invoiceModel->add($taxInfo);
             }
 
             //提交数据库

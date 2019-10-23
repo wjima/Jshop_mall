@@ -244,6 +244,10 @@ return [
             'shareurl' => [
                 'code' => 'shareUrl',
                 'is_login' => false
+            ],
+            'myinvoicelist' => [
+                'code' => 'myInvoiceList',
+                'is_login' => true
             ]
         ]
     ],

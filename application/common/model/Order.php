@@ -1124,7 +1124,7 @@ class Order extends Common
             ->field('order_id,user_id,pay_status,ship_status,status,logistics_id,logistics_name,cost_freight,ship_area_id,ship_address,ship_name,ship_mobile,weight,memo,store_id')
             ->where($where)
             ->select();
-        if($order->isEmpty()){
+        if ($order->isEmpty()) {
             $return['status'] = false;
             $return['msg'] = "请选择订单";
             return $return;
@@ -1146,7 +1146,7 @@ class Order extends Common
             //组合明细
             $this->aftersalesVal($order[$k]); //获取售后数量
         }
-        if(!$return['status']){
+        if (!$return['status']) {
             return $return;
         }
         //------------------------------------------------
@@ -1195,22 +1195,22 @@ class Order extends Common
             }
 
             //判断是否有多个用户的订单
-            if($msg_arr['user_id']){
-                if($msg_arr['user_id'] === true){
+            if ($msg_arr['user_id']) {
+                if ($msg_arr['user_id'] === true) {
                     $msg_arr['user_id'] = $v['user_id'];
-                }else{
-                    if($msg_arr['user_id'] != $v['user_id']){
+                } else {
+                    if ($msg_arr['user_id'] != $v['user_id']) {
                         $msg_arr['user_id'] = false;
                     }
                 }
             }
 
             //判断是否是多个收货地址
-            if($msg_arr['ship_info']){
-                if($msg_arr['ship_info'] === true){
-                    $msg_arr['ship_info'] = $v['ship_area_id'].$v['ship_address'];
-                }else{
-                    if($msg_arr['ship_info'] != $v['ship_area_id'].$v['ship_address']){
+            if ($msg_arr['ship_info']) {
+                if ($msg_arr['ship_info'] === true) {
+                    $msg_arr['ship_info'] = $v['ship_area_id'] . $v['ship_address'];
+                } else {
+                    if ($msg_arr['ship_info'] != $v['ship_area_id'] . $v['ship_address']) {
                         $msg_arr['ship_info'] = false;
                     }
                 }
@@ -1246,21 +1246,21 @@ class Order extends Common
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
-    public function ship($order_id,$item)
+    public function ship($order_id, $item)
     {
         $where[] = ['order_id', 'eq', $order_id];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
-        $where[] = ['ship_status', 'IN', [self::SHIP_STATUS_NO,self::SHIP_STATUS_PARTIAL_NO,self::SHIP_STATUS_PARTIAL_YES]];        //未发货，部分发货，部分退货状态(怕部分发货中的部分退货这种业务场景，所以加这个字段)
+        $where[] = ['ship_status', 'IN', [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_NO, self::SHIP_STATUS_PARTIAL_YES]];        //未发货，部分发货，部分退货状态(怕部分发货中的部分退货这种业务场景，所以加这个字段)
         $info = $this->where($where)->find();
-        if(!$info){
+        if (!$info) {
             return error_code(10000);
         }
         //更新订单明细发货数量，并校验是否发完
         $orderItemsModel = new OrderItems();
-        $isOver = $orderItemsModel->ship($order_id,$item);
-        if($isOver){
+        $isOver = $orderItemsModel->ship($order_id, $item);
+        if ($isOver) {
             $info->ship_status = self::SHIP_STATUS_YES;
-        }else{
+        } else {
             $info->ship_status = self::SHIP_STATUS_PARTIAL_YES;
         }
         $info->save();
@@ -1331,6 +1331,7 @@ class Order extends Common
                     $taxInfo = [
                         'class' => $invoiceModel::TAX_CLASS_ORDER,
                         'source_id' => $order['order_id'],
+                        'user_id' => $order['user_id'],
                         'type' => $order['tax_type'],
                         'title' => $order['tax_title'],
                         'tax_number' => $order['tax_code'],

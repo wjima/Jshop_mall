@@ -196,4 +196,41 @@ class Invoice extends Common
 
         return $return;
     }
+
+
+    /**
+     * 获取我的发票列表
+     * @param $user_id
+     * @param $page
+     * @param $limit
+     * @param bool $status
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function myInvoiceList($user_id, $page, $limit, $status = false)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '获取失败',
+            'data' => []
+        ];
+
+        $where[] = ['user_id', 'eq', $user_id];
+        if ($status) {
+            $where[] = ['status', 'eq', $status];
+        }
+        $return['data'] = $this->where($where)
+            ->order('id DESC')
+            ->page($page, $limit)
+            ->select()
+            ->toArray();
+        if ($return['data']) {
+            $return['status'] = true;
+            $return['msg'] = '获取成功';
+        }
+
+        return $return;
+    }
 }

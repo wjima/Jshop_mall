@@ -229,6 +229,12 @@ class Invoice extends Common
         if ($return['data']) {
             $return['status'] = true;
             $return['msg'] = '获取成功';
+            foreach ($return['data'] as &$v) {
+                $v['class_text'] = config('params.order')['tax_class'][$v['class']];
+                $v['type_text'] = config('params.order')['tax_type'][$v['type']];
+                $v['status_text'] = config('params.order')['tax_status'][$v['status']];
+                $v['ctime_text'] = getTime($v['ctime']);
+            }
         }
 
         return $return;

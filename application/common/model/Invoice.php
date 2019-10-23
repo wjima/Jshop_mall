@@ -214,22 +214,31 @@ class Invoice extends Common
         $return = [
             'status' => false,
             'msg' => '获取失败',
-            'data' => []
+            'data' => [
+                'list' => [],
+                'count' => 0,
+                'page' => $page,
+                'limit' => $limit
+            ]
         ];
 
         $where[] = ['user_id', 'eq', $user_id];
         if ($status) {
             $where[] = ['status', 'eq', $status];
         }
-        $return['data'] = $this->where($where)
+        $return['data']['list'] = $this->where($where)
             ->order('id DESC')
             ->page($page, $limit)
             ->select()
             ->toArray();
-        if ($return['data']) {
+
+        $return['data']['count'] = $this->where($where)
+            ->count();
+
+        if ($return['data']['list'] !== false) {
             $return['status'] = true;
             $return['msg'] = '获取成功';
-            foreach ($return['data'] as &$v) {
+            foreach ($return['data']['list'] as &$v) {
                 $v['class_text'] = config('params.order')['tax_class'][$v['class']];
                 $v['type_text'] = config('params.order')['tax_type'][$v['type']];
                 $v['status_text'] = config('params.order')['tax_status'][$v['status']];

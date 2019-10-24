@@ -72,7 +72,7 @@ class Cart extends Common
             case self::TYPE_COMMON:
                 //标准模式不需要做什么判断
                 break;
-            case self::TYPE_PINTUAN;
+            case self::TYPE_PINTUAN:
                 $num_type = 2;
                 //拼团模式去判断是否开启拼团，是否存在
                 $pintuanRuleModel = new PintuanRule();

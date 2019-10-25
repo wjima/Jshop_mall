@@ -201,4 +201,24 @@ class Categories extends Manage
         }
         return $result;
     }
+
+
+    /**
+     * 获取全部分类树
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getCatTree()
+    {
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => []
+        ];
+        $goodsCatModel = new GoodsCat();
+        $list = $goodsCatModel->order('sort asc')->select()->toArray();
+        $result['data'] = $goodsCatModel->createTree($list, $goodsCatModel::TOP_CLASS_PARENT_ID);
+        return $result;
+    }
 }

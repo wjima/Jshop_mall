@@ -101,7 +101,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>商品分类：</label>
 
-        <div class="layui-input-inline">
+        <div class="layui-input-inline" id="cat_view">
             <select name="goods_cat_id">
                 <option>请选择</option>
                 {volist name="goodsCatTree" id="vo"}
@@ -329,6 +329,15 @@
     </select>
 </script>
 
+<script id="cat_tpl" type="text/html">
+    <select name="goods_cat_id">
+        <option>请选择</option>
+        {{#  layui.each(d.list, function(index, item){ }}
+        <option value="{{item.id}}">{{item.name}}</option>
+        {{#  }); }}
+    </select>
+</script>
+
 <script type="text/javascript">
     var ue = UE.getEditor('container');
 </script>
@@ -468,8 +477,17 @@
                                 if(re.status){
                                     layer.msg('保存成功');
                                     layer.close(index);
-                                    goodscatgoods_cat_id();//刷新获取分类方法
-                                    form.render();
+                                    //刷新获取分类方法
+                                    JsGet('{:url("Categories/getCatTree")}', function(res){
+                                        var getTpl = cat_tpl.innerHTML
+                                            ,view = document.getElementById('cat_view');
+                                        var tmpData = {};
+                                        tmpData.list = res.data;
+                                        laytpl(getTpl).render(tmpData, function(html){
+                                            view.innerHTML = html;
+                                        });
+                                        form.render();
+                                    });
                                 }else{
                                     layer.msg(re.msg);
                                 }

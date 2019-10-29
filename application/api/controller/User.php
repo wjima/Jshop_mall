@@ -114,9 +114,10 @@ class User extends Api
             return $result;
         }
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
-        if (input('?param.invitecode')) {
-            $userModel = new \app\common\model\User();
-            $pid = $userModel->getUserIdByShareCode(input('param.invitecode'));
+        $invitecode = Request::param('invitecode', false);
+        if ($invitecode && $invitecode != '') {
+            $userModel = new UserModel();
+            $pid = $userModel->getUserIdByShareCode($invitecode);
             $pinfo = $userModel->where(['id' => $pid])->find();
             if ($pinfo) {
                 $pid = $pinfo['id'];
@@ -236,9 +237,10 @@ class User extends Api
         $scope = input('param.scope', 1);        //公众号登陆类型，1是snsapi_userinfo，2是snsapi_base
 
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
-        if (input('?param.invitecode')) {
-            $userModel = new \app\common\model\User();
-            $pid = $userModel->getUserIdByShareCode(input('param.invitecode'));
+        $invitecode = Request::param('invitecode', false);
+        if($invitecode && $invitecode != '') {
+            $userModel = new UserModel();
+            $pid = $userModel->getUserIdByShareCode($invitecode);
             $pinfo = $userModel->where(['id' => $pid])->find();
             if ($pinfo) {
                 $pid = $pinfo['id'];

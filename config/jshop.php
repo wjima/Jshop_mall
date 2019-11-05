@@ -3,8 +3,8 @@
 return [
     'default_image'         => 'https://b2c.jihainet.com/static/images/default.png',
     'upload_path'           => ROOT_PATH . 'public' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'uploads',
-    //上传文件限制5M
-    'upload_filesize'       => 5242880,
+    //上传文件限制500M
+    'upload_filesize'       => 524288000,
     //分页默认数量
     'page_limit'            => 10,
     //售后，评论等上传图片数量限制
@@ -27,6 +27,6 @@ return [
     'image_storage'         => [
         'type' => 'Local'
     ],
-    'file_size'             => '104857600',//100M
+    'file_size'             => '1048576000',//1000M
     'area_list'             => ROOT_PATH . 'public/static/area.json',//地址库信息地址
 ];

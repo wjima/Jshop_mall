@@ -1,0 +1,77 @@
+<form class="layui-form seller-alone-form" id="settingAdd" action="" method="post">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>视频标题：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="name" required  lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>视频封面图：</label>
+        <div class="layui-input-inline seller-inline-5">
+            {Jshop:image id='video_cover' name="video_cover"/}
+        </div>
+    </div>
+
+    <div class="layui-form-item video" >
+        <label class="layui-form-label"><i class="required-color">*</i>视频：</label>
+        <div class="layui-input-inline" style="width:300px;">
+            <div class="layui-progress" lay-showPercent="true" lay-filter="upload" style="margin-bottom:2px;">
+                <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"  ></div>
+            </div>
+            <button type="button" class="layui-btn" id="video" style="margin-bottom:10px;"><i class="layui-icon"></i>上传视频</button>
+            <br />
+            <i class="required-color">*目前只能上传mp4格式的视频 最大上传文件为 2G </i>
+
+            <video class="edui-faked video-js"  controls src="" id="toVideo" style="width:300px;height:200px;" poster="">
+            </video>
+        </div>
+        <input type="text" style="display: none" name="video_url" class="video" />
+        <input type="text" style="display: none" name="path" class="path" />
+        <div id="fileName">
+        </div>
+    </div>
+
+</form>
+
+<script>
+    $('#toVideo').hide();
+    $('.layui-progress').hide();
+    //渲染表单
+    layui.use(['form','upload','element'], function() {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , element = layui.element;
+
+
+        /***
+         * 上传视频
+         * */
+        upload.render({
+            elem: '#video'
+            , url: "{:url('Files/uploadVideo')}"
+            , accept: 'video' //视频
+            ,progress: function(n){
+                var percent = n + '%';//获取进度百分比
+                element.progress('upload', percent); //可配合 layui 进度条元素使用
+                $('.layui-progress').show();
+            }
+            , done: function (res) {
+                layer.msg(res.msg);
+                if (res.status) {
+                    $('#toVideo').attr('src',res.data.url);
+                    $('.video').attr('value',res.data.url);
+                    $('.path').attr('value',res.data.path);
+                    $('#toVideo').show();
+                    $('.layui-progress').hide();
+                }
+            }
+            , error: function (res) {
+                layer.closeAll('loading');
+                layer.msg("上传失败，请重新上传");
+            }
+        });
+
+    });
+</script>

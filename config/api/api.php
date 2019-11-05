@@ -555,6 +555,10 @@ return [
                 'code' => 'getInfo',
                 'is_login' => true
             ],
+            'checkpay' => [
+                'code' => 'checkPay',
+                'is_login' => false
+            ]
         ]
     ],
 

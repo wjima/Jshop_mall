@@ -185,6 +185,8 @@ class User extends Common
                     return error_code(11009);
                 }
                 $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
+            }else{
+                $userData['password'] = "";
             }
 
             //取默认的用户等级
@@ -855,7 +857,7 @@ class User extends Common
         $time                = time();
         $newData['username'] = null;
         $newData['mobile']   = isset($data['mobile']) ? $data['mobile'] : "";
-        $newData['password'] = isset($data['password']) ? $this->enPassword($data['password'], $time) : "";;
+        $newData['password'] = isset($data['password']) ? $this->enPassword($data['password'], $time) : "";
         $newData['sex']      = isset($data['sex']) ? $data['sex'] : 3;
         $newData['birthday'] = $data['birthday'] ? $data['birthday'] : null;
         $newData['avatar']   = isset($data['avatar']) ? $data['avatar'] : '';

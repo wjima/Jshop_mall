@@ -20,6 +20,12 @@ use think\Db;
  */
 class BillDelivery extends Common
 {
+
+    //时间自动存储
+    protected $autoWriteTimestamp = true;
+    protected $createTime = 'ctime';
+    protected $updateTime = 'utime';
+
     const STATUS_READY = 1;                 //准备发货
     const STATUS_ALREADY = 2;               //已发货
     const STATUS_CONFIRM = 3;               //已确认

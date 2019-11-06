@@ -4,6 +4,8 @@
 namespace app\common\model;
 
 
+use app\common\model\User as UserModel;
+
 class UserLog extends Common
 {
 
@@ -20,12 +22,15 @@ class UserLog extends Common
         if($user_id){
             $where[] = ['user_id','eq',$user_id];
         }
+        $where[] = ['state','eq',1];
         $data = $this->where($where)
             ->order('ctime DESC')
             ->paginate($limit);
         foreach( $data as $key => $val )
         {
-            $data[$key]['username'] = get_manage_info($val['user_id']);
+            $userModel              = new UserModel();
+            $userInfo               = $userModel->field('id,username,nickname,mobile')->where(['id' => $val['user_id']])->select();
+            $data[$key]['username'] = $userInfo[0]['mobile'];
             $data[$key]['state'] = config('params.user')['state'][$val['state']];
             $data[$key]['ctime'] = getTime($val['ctime']);
         }
@@ -76,7 +81,6 @@ class UserLog extends Common
             'ip' => get_client_ip(0,true)
         ];
         $this->allowField(true)->save($data);
-
     }
 
     /**

@@ -175,7 +175,7 @@ return [
             ],
             'forgotpwd' => [
                 'code' => 'forgotPwd',
-                'is_login' => true
+                'is_login' => false
             ],
             'balancelist' => [
                 'code' => 'userBalance',

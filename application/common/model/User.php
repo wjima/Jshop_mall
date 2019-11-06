@@ -438,58 +438,101 @@ class User extends Common
      * 获取用户的信息
      * @return array|null|\PDOStatement|string|\think\Model
      */
-    public function getUserInfo($user_id)
-    {
-        $data = $this->where('id', $user_id)->find();
-        if ($data) {
-            $data['state']    = $data['status'];
-            $data['status']   = config('params.user')['status'][$data['status']];
-            $data['p_mobile'] = $this->getUserMobile($data['pid']);
-            return $data;
+//    public function getUserInfo($user_id)
+//    {
+//        $data = $this->where('id', $user_id)->find();
+//        if ($data) {
+//            $data['state']    = $data['status'];
+//            $data['status']   = config('params.user')['status'][$data['status']];
+//            $data['p_mobile'] = $this->getUserMobile($data['pid']);
+//            return $data;
+//        } else {
+//            return "";
+//        }
+//    }
+
+    public function getUserInfo($user_id){
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => ''
+        ];
+        $userInfo = $this::with("grade")
+            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,grade,status,pid,password,ctime')
+            ->where(array('id' => $user_id))
+            ->find();
+        if ($userInfo !== false) {
+            $userInfo['avatar'] = _sImage($userInfo['avatar']);
+            $userGradeModel = new UserGrade();
+            $gradeinfo = $userGradeModel->where(['id' => $userInfo['grade']])->find();
+            if ($gradeinfo) {
+                $userInfo['grade_name'] = $gradeinfo['name'];
+            } else {
+                $userInfo['grade_name'] = "";
+            }
+            //判断是否有密码，如果有就是true，没有就是false
+            if($userInfo['password']){
+                $userInfo['password'] = true;
+            }else{
+                $userInfo['password'] = false;
+            }
+
+            $result['data'] = $userInfo;
+            $result['status'] = true;
         } else {
-            return "";
+            $result['msg'] = '未找到此用户';
         }
+        return $result;
     }
 
-    /**
-     * 更新密码验证/找回密码验证
-     * @param $data
-     * @return array
-     */
-    public function checkCode($data)
+    //忘记密码，找回密码
+    public function forgotPassword($mobile,$code,$newPwd)
     {
-        $result = ['status' => false, 'msg' => '', 'data' => ''];
+        $result = [
+            'status' => false,
+            'msg' => '',
+            'data' => ''
+        ];
+
+        if(empty($code)){
+            return error_code(10013);
+        }
+        $smsModel = new Sms();
+        if (!$smsModel->check($mobile, $code, 'veri')) {
+            return error_code(10012);
+        }
+        $userInfo = $this->where(['mobile'=>$mobile])->find();
+        if(!$userInfo){
+            $result['msg'] = '没有此手机号码';
+            return $result;
+        }
+        return $this->editPwd($userInfo['id'], $newPwd,$userInfo['ctime']);
+    }
+
+    //修改用户密码，如果用户之前没有密码，那么就不校验原密码
+    public function changePassword($user_id,$newPwd,$password = ""){
+        $result = [
+            'status' => false,
+            'msg' => '',
+            'data' => ''
+        ];
         //修改密码验证原密码
-        if (isset($data['password']) && !empty($data['password'])) {
-            $user = $this->getUserInfo($data['user_id']);
-            if ($user['password'] !== $this->enPassword($data['password'], $user['ctime'])) {
-                $result['status'] = false;
+        $user = $this->get($user_id);
+        if(!$user){
+            return error_code(10000);
+        }
+
+        if($user['password']){
+            if(!$password){
+                $result['msg'] = "请输入原密码";
+                return $result;
+            }
+            if ($user['password'] !== $this->enPassword($password, $user['ctime'])) {
                 $result['msg']    = '原密码不正确!';
                 return $result;
             }
         }
-
-        if (strval($data['newPwd']) !== strval($data['rePwd'])) {
-            $result['msg'] = '两次密码不一致,请重新输入';
-            return $result;
-        }
-
-        if (strlen($data['newPwd']) < 6) {
-            $result['msg'] = '密码不能小于6位数';
-            return $result;
-        }
-
-        //找回密码验证手机验证码
-        if (isset($data['code']) && !empty($data['code'])) {
-            $smsModel = new Sms();
-            if (!$smsModel->check($data['mobile'], $data['code'], 'veri')) {
-                $result['msg'] = '手机验证码错误!';
-                return $result;
-            }
-        }
-
-        return $this->editPwd($data['user_id'], $data['newPwd']);
-
+        return $this->editPwd($user_id, $newPwd,$user['ctime']);
     }
 
 
@@ -499,7 +542,7 @@ class User extends Common
      * @param $pwd
      * @return array
      */
-    private function editPwd($user_id, $newPwd)
+    private function editPwd($user_id, $newPwd,$ctime)
     {
         $result = [
             'status' => true,
@@ -507,13 +550,17 @@ class User extends Common
             'data'   => ''
         ];
 
+        if ($newPwd == '' || strlen($newPwd) < 6 || strlen($newPwd) > 16) {
+            return error_code(11009);
+        }
+
         $res_pwd = $this->save([
-            'password' => $this->enPassword($newPwd, $this->where('id', $user_id)->value('ctime'))
+            'password' => $this->enPassword($newPwd, $ctime)
         ], ['id' => $user_id]);
 
         if (!$res_pwd) {
             $result['status'] = false;
-            $result['msg']    = '修改失败请重试!';
+            $result['msg']    = '原密码和新密码一样!';
             return $result;
         }
 

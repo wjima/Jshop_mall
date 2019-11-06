@@ -264,32 +264,8 @@ class User extends Api
      */
     public function info()
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => ''
-        ];
         $userModel = new UserModel();
-        $userInfo = $userModel::with("grade")
-            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,grade,status')
-            ->where(array('id' => $this->userId))
-            ->find();
-        if ($userInfo !== false) {
-            $userInfo['avatar'] = _sImage($userInfo['avatar']);
-            $userGradeModel = new UserGrade();
-            $gradeinfo = $userGradeModel->where(['id' => $userInfo['grade']])->find();
-            if ($gradeinfo) {
-                $userInfo['grade_name'] = $gradeinfo['name'];
-            } else {
-                $userInfo['grade_name'] = "";
-            }
-
-            $result['data'] = $userInfo;
-            $result['status'] = true;
-        } else {
-            $result['msg'] = '未找到此用户';
-        }
-        return $result;
+        return $userModel->getUserInfo($this->userId);
     }
 
 
@@ -959,17 +935,19 @@ class User extends Api
      */
     public function editPwd()
     {
-        if (!input("?param.pwd")) return error_code(11012);
-        if (!input('param.newpwd')) return error_code(11013);
-        if (!input('param.repwd')) return error_code(11014);
-        $data = [
-            'password' => input('param.pwd'),
-            'newPwd' => input('param.newpwd'),
-            'rePwd' => input('param.repwd'),
-            'user_id' => $this->userId
-        ];
+        if(!input('?param.newpwd')){
+            return error_code(111013);
+        }
+        if(!input('?param.repwd')){
+            return error_code(11014);
+        }
+
+        if(input('param.newpwd') != input('param.repwd')){
+            return error_code(11025);
+        }
+
         $userModel = new userModel();
-        return $userModel->checkCode($data);
+        return $userModel->changePassword($this->userId,input('param.newpwd'),input('param.pwd',""));
     }
 
 
@@ -979,19 +957,25 @@ class User extends Api
      */
     public function forgotPwd()
     {
-        if (!input('param.mobile')) return error_code(11051);
-        if (!input('param.code')) return error_code(10013);
-        if (!input('param.newpwd')) return error_code(11013);
-        if (!input('param.repwd')) return error_code(11014);
-        $data = [
-            'mobile' => input('param.mobile'),
-            'code' => input('param.code'),
-            'newPwd' => input('param.newpwd'),
-            'rePwd' => input('param.repwd'),
-            'user_id' => $this->userId
-        ];
+        if(!input('?param.mobile')){
+            return error_code(11051);
+        }
+        if(!input('?param.code')){
+            return error_code(10013);
+        }
+        if(!input('?param.newpwd')){
+            return error_code(111013);
+        }
+        if(!input('?param.repwd')){
+            return error_code(11014);
+        }
+
+        if(input('param.newpwd') != input('param.repwd')){
+            return error_code(11025);
+        }
+
         $userModel = new userModel();
-        return $userModel->checkCode($data);
+        return $userModel->forgotPassword(input('param.mobile'),input('param.code'),input('param.newpwd'));
     }
 
 

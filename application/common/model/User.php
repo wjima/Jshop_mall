@@ -1047,7 +1047,6 @@ class User extends Common
         }
         $re['code'] = 0;
         $re['msg']  = '';
-
         $re['data'] = $data;
 
         return $re;
@@ -1055,10 +1054,10 @@ class User extends Common
 
 
     /**
-     * 获取csv数据
-     * @param $post
-     * @return array
-     */
+ * 获取csv数据
+ * @param $post
+ * @return array
+ */
     public function getCsvData($post)
     {
         $result   = [

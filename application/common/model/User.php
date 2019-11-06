@@ -299,11 +299,10 @@ class User extends Common
         }
 
         if ($type == 1) {
-            //$userLogModel = new UserLog();        //添加登录日志
-            //$userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
+            $userLogModel = new UserLog();        //添加登录日志
+            $userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
         }
         return $result;
-
     }
 
     public function editInfo($id, $sex = '', $birthday = '', $nickname = '', $avatar = '')

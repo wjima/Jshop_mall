@@ -173,9 +173,9 @@ return [
                 'code' => 'editPwd',
                 'is_login' => true
             ],
-            'forgotpwd' => [
-                'code' => 'forgotPwd',
-                'is_login' => true
+            'forgetpwd' => [
+                'code' => 'forgetPwd',
+                'is_login' => false
             ],
             'balancelist' => [
                 'code' => 'userBalance',

@@ -40,8 +40,10 @@ class UserTocash extends Common
 
         $userModel = new User();
         $userInfo = $userModel->getUserInfo($user_id);
-        if(!$userInfo){
+        if(!$userInfo['status']){
             return error_code(11004);
+        }else{
+            $userInfo = $userInfo['data'];
         }
         if($money > $userInfo['balance']){
             return error_code(11015);

@@ -379,7 +379,11 @@ class Order extends Api
             'page'    => input('page/d', 1),
             'limit'   => input('limit/d', config('jshop.page_limit')),
             'user_id' => $this->userId,
+            'order_id' => ''
         ];
+        if(input('?param.order_id')){
+            $data['order_id'] = input('param.order_id');
+        }
         $asModel = new BillAftersales();
         return $asModel->getListApi($data);
     }

@@ -65,8 +65,8 @@
 
             <div class="layui-input-inline">
                 <select name="status" id="status">
-                    <option value="1" {if $info.state=='1' }selected="selected" {/if}>正常 </option>
-                    <option value="2" {if $info.state=='2' }selected="selected" {/if}>停用 </option>
+                    <option value="1" {if $info.status=='1' }selected="selected" {/if}>正常 </option>
+                    <option value="2" {if $info.status=='2' }selected="selected" {/if}>停用 </option>
                 </select></div>
         </div>
     </div>
@@ -84,7 +84,7 @@
             <label class="layui-form-label">邀请人修改：</label>
 
             <div class="layui-input-inline">
-                <input type="text" name="p_mobile" class="layui-input" value="{$info.p_mobile}"
+                <input type="text" name="p_mobile" class="layui-input" value="{$info.pid|get_user_info}"
                        placeholder="请输入邀请人的手机号码">
             </div>
         </div>

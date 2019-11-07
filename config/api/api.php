@@ -288,6 +288,10 @@ return [
             'getweixinmessage'=>[
                 'code'=>'getWeixinMessage',
                 'is_login' => false
+            ],
+            'leftarticletype' => [
+                'code' => 'leftArticleType',
+                'is_login' => false
             ]
         ]
     ],

@@ -306,7 +306,7 @@ class ArticleType extends Common
         //取热销文章
         $articleModel = new Article();
         $hot = $articleModel
-            ->field('title,cover,ctime,pv')
+            ->field('id,title,cover,ctime,pv')
             ->where(['is_pub'=>$articleModel::IS_PUB_YES])
             ->order("pv desc")
             ->limit(5)

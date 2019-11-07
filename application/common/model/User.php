@@ -519,7 +519,7 @@ class User extends Common
     }
 
     //忘记密码，找回密码
-    public function forgotPassword($mobile,$code,$newPwd)
+    public function forgetPassword($mobile,$code,$newPwd)
     {
         $result = [
             'status' => false,

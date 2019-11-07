@@ -173,8 +173,8 @@ return [
                 'code' => 'editPwd',
                 'is_login' => true
             ],
-            'forgotpwd' => [
-                'code' => 'forgotPwd',
+            'forgetpwd' => [
+                'code' => 'forgetPwd',
                 'is_login' => false
             ],
             'balancelist' => [

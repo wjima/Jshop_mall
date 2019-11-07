@@ -955,7 +955,7 @@ class User extends Api
      * 用户找回密码
      * @return array|mixed
      */
-    public function forgotPwd()
+    public function forgetPwd()
     {
         if(!input('?param.mobile')){
             return error_code(11051);
@@ -975,7 +975,7 @@ class User extends Api
         }
 
         $userModel = new userModel();
-        return $userModel->forgotPassword(input('param.mobile'),input('param.code'),input('param.newpwd'));
+        return $userModel->forgetPassword(input('param.mobile'),input('param.code'),input('param.newpwd'));
     }
 
 

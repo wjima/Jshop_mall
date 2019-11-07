@@ -104,7 +104,7 @@
                     $(".export-form:last").append("<input type='hidden' name='filter' value='"+filter+"'>");
                     var data = $(".export-form:last").serializeArray();
 
-                    data.push({'name':'model','value':'OperationLog'});
+                    data.push({'name':'model','value':'UserLog'});
 
                     JsPost("{:url('Ietask/export')}",data,function(res){
                             layer.msg(res.msg, {time:1500}, function(){

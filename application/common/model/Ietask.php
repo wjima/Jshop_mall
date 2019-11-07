@@ -41,7 +41,6 @@ class Ietask extends Common
      */
     public function addExportTask($data, $job = 'Goods')
     {
-
         if ($this->save($data)) {
             $exportData['task_id'] = $this->id;
             $exportData['params'] = $data['params'];
@@ -51,7 +50,6 @@ class Ietask extends Common
         } else {
             return false;
         }
-
     }
 
     /**

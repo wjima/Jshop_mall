@@ -14,7 +14,9 @@
 <div class="table-body">
     <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
 	<table id="categories" lay-data="{id: 'categories'}"></table>
+	<div style="margin:0 0 10px;">点击商品分类名称可进入下级商品分类列表</div>
 </div>
+
 <script type="text/html" id="status">
     <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="status" {{ d.status == 1 ? 'checked' : '' }}>
 </script>

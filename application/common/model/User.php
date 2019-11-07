@@ -420,6 +420,40 @@ class User extends Common
         return $list;
     }
 
+    /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post, $isPage = true)
+    {
+        if (isset($post['limit'])) {
+            $limit = $post['limit'];
+        } else {
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+
+        if ($isPage) {
+            $list        = $this->with(['grade','userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $re['count'] = $list->total();
+        } else {
+            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->select();
+            if (!$list->isEmpty()) {
+                $data = $this->tableFormat($list->toArray());
+            }
+            $re['count'] = count($list);
+        }
+        $re['code'] = 0;
+        $re['msg']  = '';
+
+        $re['data'] = $data;
+
+        return $re;
+    }
+
 
     public function changeAvatar($id, $image_url)
     {
@@ -1068,40 +1102,6 @@ class User extends Common
     }
 
 
-    /**
-     * 返回layui的table所需要的格式
-     * @author sin
-     * @param $post
-     * @return mixed
-     */
-    public function tableData($post, $isPage = true)
-    {
-        if (isset($post['limit'])) {
-            $limit = $post['limit'];
-        } else {
-            $limit = config('paginate.list_rows');
-        }
-        $tableWhere = $this->tableWhere($post);
-        $list       = [];
-        if ($isPage) {
-            $list        = $this->with('grade')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
-            $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
-            $re['count'] = $list->total();
-        } else {
-            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->select();
-            if (!$list->isEmpty()) {
-                $data = $this->tableFormat($list->toArray());
-            }
-            $re['count'] = count($list);
-        }
-        $re['code'] = 0;
-        $re['msg']  = '';
-
-        $re['data'] = $data;
-
-        return $re;
-    }
-
 
     /**
      * 获取csv数据
@@ -1160,5 +1160,9 @@ class User extends Common
     public function grade()
     {
         return $this->hasOne("UserGrade", 'id', 'grade')->bind(['grade_name' => 'name']);
+    }
+    public function userWx()
+    {
+        return $this->hasMany("UserWx", 'user_id', 'id');
     }
 }

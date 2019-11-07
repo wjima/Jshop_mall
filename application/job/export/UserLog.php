@@ -13,7 +13,6 @@ use think\queue\Job;
 use app\common\model\UserLog as UserLogModel;
 use app\common\model\Ietask;
 
-
 class UserLog
 {
     //执行导出任务

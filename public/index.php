@@ -17,7 +17,7 @@ define('DS',DIRECTORY_SEPARATOR);
 define('ADDON_PATH', ROOT_PATH . 'addons'   . DIRECTORY_SEPARATOR);
 
 if(!file_exists(ROOT_PATH.'/public/install/install.lock')&&!file_exists(ROOT_PATH.'/config/install.lock')){
-    header('Location:/install');exit;
+    header('Location:/install/');exit;
 }
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';

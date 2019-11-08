@@ -139,15 +139,21 @@ class ArticleType extends Common
      *
      * @return array
      */
-    public function getTree($arr, $pid = 0, $step = 0)
+    public function getTree($arr = [], $pid = 0, $step = 0)
     {
-        global $tree;
+        if(!$arr){
+            $arr = $this->order('sort asc')->select();
+            if(!$arr->isEmpty()){
+                $arr = $arr->toArray();
+            }
+        }
+        $tree = [];
         foreach ($arr as $key => $val) {
             if ($val['pid'] == $pid) {
                 $flg              = str_repeat('└─', $step);
                 $val['type_name'] = $flg . $val['type_name'];
                 $tree[]           = $val;
-                $this->getTree($arr, $val['id'], $step + 1);
+                $tree = array_merge($tree,$this->getTree($arr, $val['id'], $step + 1));
             }
         }
         return $tree;
@@ -281,4 +287,51 @@ class ArticleType extends Common
     {
         return $this->hasMany('Article');
     }
+
+    /**
+     * pc端文章列表页和文章详情页左侧使用，取当前文章分类的兄弟节点和子节点，并且把热门文章怼出来
+     *
+     * @param $type_id
+     */
+    public function leftInfo($type_id){
+        if($type_id != self::TOP_CLASS_PARENT_ID){
+            $info = $this->where(['id'=>$type_id])->find();
+            if($info){
+                $pid = $info['pid'];
+            }else{
+                $pid = self::TOP_CLASS_PARENT_ID;
+            }
+        }else{
+            $pid = self::TOP_CLASS_PARENT_ID;
+        }
+        $type = $this->where(['pid'=>$pid])->order('sort asc')->select();
+        foreach($type as $k => $v){
+            $type[$k]['child'] = $this->where(['pid'=>$v['id']])->order('sort asc')->select();
+        }
+
+        //取热销文章
+        $articleModel = new Article();
+        $hot = $articleModel
+            ->field('id,title,cover,ctime,pv')
+            ->where(['is_pub'=>$articleModel::IS_PUB_YES])
+            ->order("pv desc")
+            ->limit(5)
+            ->select();
+        foreach ($hot as $k => $v)
+        {
+            $hot[$k]['cover'] = _sImage($v['cover']);
+            $hot[$k]['ctime'] = getTime($v['ctime']);
+        }
+
+        $result = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [
+                'list' => $type,
+                'hot' => $hot
+            ]
+        ];
+        return $result;
+    }
+
 }

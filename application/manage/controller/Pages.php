@@ -65,8 +65,7 @@ class Pages extends Manage
         $this->assign('catList', json_encode($catList, JSON_UNESCAPED_UNICODE));
         //文章分类
         $articleTypeModel = new articleTypeModel();
-        $list             = $articleTypeModel->select();
-        $this->assign('articleTypeList', json_encode($articleTypeModel->getTree($list), JSON_UNESCAPED_UNICODE));
+        $this->assign('articleTypeList', json_encode($articleTypeModel->getTree(), JSON_UNESCAPED_UNICODE));
         return $this->fetch('custom');
     }
 

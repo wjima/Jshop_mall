@@ -4,6 +4,8 @@
 namespace app\common\model;
 
 
+use app\common\model\User as UserModel;
+
 class UserLog extends Common
 {
 
@@ -20,12 +22,15 @@ class UserLog extends Common
         if($user_id){
             $where[] = ['user_id','eq',$user_id];
         }
+        $where[] = ['state','eq',1];
         $data = $this->where($where)
             ->order('ctime DESC')
             ->paginate($limit);
         foreach( $data as $key => $val )
         {
-            $data[$key]['username'] = get_manage_info($val['user_id']);
+            $userModel              = new UserModel();
+            $userInfo               = $userModel->field('id,username,nickname,mobile')->where(['id' => $val['user_id']])->select();
+            $data[$key]['username'] = $userInfo[0]['mobile'];
             $data[$key]['state'] = config('params.user')['state'][$val['state']];
             $data[$key]['ctime'] = getTime($val['ctime']);
         }
@@ -37,6 +42,17 @@ class UserLog extends Common
         $where = [];
         if(isset($post['user_id']) && $post['user_id'] != ""){
             $where[] = ['user_id', 'eq', $post['user_id']];
+        }
+        if (isset($post['id']) && $post['id'] != "") {
+            $where[] = ['id', 'eq', $post['id']];
+        }
+        if(!empty($post['date']))
+        {
+            $date_string = $post['date'];
+            $date_array = explode(' 到 ', $date_string);
+            $sdate = strtotime($date_array[0].' 00:00:00');
+            $edate = strtotime($date_array[1].' 23:59:59');
+            $where[] = array('ctime', ['>=', $sdate], ['<', $edate], 'and');
         }
         $result['where'] = $where;
         $result['field'] = "*";
@@ -76,7 +92,6 @@ class UserLog extends Common
             'ip' => get_client_ip(0,true)
         ];
         $this->allowField(true)->save($data);
-
     }
 
     /**
@@ -95,6 +110,125 @@ class UserLog extends Common
 
     }
 
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id'   => 'username',
+                'desc' => '登录用户',
+            ],
+            [
+                'id'   => 'ctime',
+                'desc' => '登录时间',
+            ],
+            [
+                'id'   => 'ip',
+                'desc' => '登录ip',
+            ]
+        ];
+    }
+
+
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result   = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '无可导出数据'
+        ];
+        $header   = $this->csvHeader();
+        $userData = $this->tableDatas($post, false);
+
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body     = [];
+            $i        = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg']    = '导出成功';
+            $result['data']   = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+
+    /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableDatas($post, $isPage = true)
+    {
+        if (isset($post['limit'])) {
+            $limit = $post['limit'];
+        } else {
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWheres($post);
+        $list       = [];
+        if ($isPage) {
+            $list        = $this->with('grade')->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $re['count'] = $list->total();
+        } else {
+            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->select();
+            if (!$list->isEmpty()) {
+                $data = $this->tableFormat($list->toArray());
+            }
+            $re['count'] = count($list);
+        }
+        $userModel = new User();
+        foreach ($data as &$v)
+        {
+            $userInfo = $userModel->field('id,username,nickname,mobile')->where(['id' => $v['user_id']])->select();
+            $v['username'] = $userInfo[0]['mobile'];
+        }
+        $re['code'] = 0;
+        $re['msg']  = '';
+
+        $re['data'] = $data;
+
+        return $re;
+    }
+
+
+    protected function tableWheres($post)
+    {
+        $where = [];
+        if (isset($post['id']) && $post['id'] != "") {
+            $where[] = ['id', 'in', $post['id']];
+        }
+        $result['where'] = $where;
+        $result['field'] = "*";
+        $result['order'] = "id desc";
+        return $result;
+    }
 
 
 

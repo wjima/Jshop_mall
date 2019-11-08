@@ -173,9 +173,9 @@ return [
                 'code' => 'editPwd',
                 'is_login' => true
             ],
-            'forgotpwd' => [
-                'code' => 'forgotPwd',
-                'is_login' => true
+            'forgetpwd' => [
+                'code' => 'forgetPwd',
+                'is_login' => false
             ],
             'balancelist' => [
                 'code' => 'userBalance',
@@ -287,6 +287,10 @@ return [
             ],
             'getweixinmessage'=>[
                 'code'=>'getWeixinMessage',
+                'is_login' => false
+            ],
+            'leftarticletype' => [
+                'code' => 'leftArticleType',
                 'is_login' => false
             ]
         ]

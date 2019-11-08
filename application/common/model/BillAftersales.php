@@ -643,15 +643,20 @@ class BillAftersales extends Common
         ];
 
         $where['user_id']             = $data['user_id'];
-        $result['data']['list']       = $this::with(['order' => ['items']])
+        if(isset($data['order_id']) && $data['order_id'] != ""){
+            $where['order_id'] = $data['order_id'];
+        }
+
+
+        $list = $this::with(['items','images'])
             ->where($where)
             ->order('utime desc')
             ->page($data['page'], $data['limit'])
-            ->select()->hidden(['order' => ['isdel']]);
-        $total                        = $this
+            ->select();
+        $total = $this
             ->where($where)
-            ->order('utime desc')
             ->count();
+        $result['data']['list']       = $list;
         $result['data']['page']       = $data['page'];
         $result['data']['limit']      = $data['limit'];
         $result['data']['total_page'] = ceil($total / $data['limit']);
@@ -670,7 +675,7 @@ class BillAftersales extends Common
      */
     public function getInfo($aftersales_id, $user_id = false)
     {
-        $result                 = [
+        $result = [
             'status' => false,
             'data'   => [],
             'msg'    => ''
@@ -680,7 +685,7 @@ class BillAftersales extends Common
         {
             $where['user_id']       = $user_id;
         }
-        $info                   = $this::with(['billReship' => ['items'], 'items', 'images', 'billRefund'])
+        $info = $this::with(['billReship' => ['items'], 'items', 'images', 'billRefund'])
             ->where($where)
             ->find();
         if (!$info) {
@@ -724,16 +729,6 @@ class BillAftersales extends Common
     {
         return $this->hasMany('BillAftersalesItems', 'aftersales_id', 'aftersales_id');
     }
-
-
-    /**
-     * 和模型的order属性冲突
-     * @return \think\db\Query|\think\model\relation\HasOne
-     */
-//    public function order()
-//    {
-//        return $this->hasOne('Order', 'order_id', 'order_id');
-//    }
 
 
     /**

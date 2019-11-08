@@ -251,7 +251,10 @@ class User extends Manage
 
         $user_id = Request::param('user_id');
         $info = $userModel->getUserInfo($user_id);
-        $this->assign('info', $info);
+        if(!$info['status']){
+            return error_code(10000);
+        }
+        $this->assign('info', $info['data']);
         $gradeModel = new UserGrade();
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
@@ -262,27 +265,30 @@ class User extends Manage
     }
 
 
-    /**
-     * 用户详情
-     * @return mixed
-     */
-    public function details()
-    {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
-        $this->view->engine->layout(false);
-        $user_id = Request::param('user_id');
-        $model = new UserModel();
-        $info = $model->getUserInfo($user_id);
-        $this->assign('info', $info);
-        $result['status'] = true;
-        $result['msg'] = '获取成功';
-        $result['data'] = $this->fetch('details');
-        return $result;
-    }
+//    /**
+//     * 用户详情
+//     * @return mixed
+//     */
+//    public function details()
+//    {
+//        $result = [
+//            'status' => false,
+//            'msg' => '失败',
+//            'data' => ''
+//        ];
+//        $this->view->engine->layout(false);
+//        $user_id = Request::param('user_id');
+//        $model = new UserModel();
+//        $info = $model->getUserInfo($user_id);
+//        if(!$info['status']){
+//            return error_code(10000);
+//        }
+//        $this->assign('info', $info);
+//        $result['status'] = true;
+//        $result['msg'] = '获取成功';
+//        $result['data'] = $this->fetch('details');
+//        return $result;
+//    }
 
 
     /**

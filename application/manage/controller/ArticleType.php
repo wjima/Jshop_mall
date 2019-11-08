@@ -47,11 +47,10 @@ class  ArticleType extends Manage
         if (Request::isPost()) {
             return $articleTypeModel->addData(input('param.'));
         }
-        $list = $articleTypeModel->select();
         return [
             'status' => true,
             'msg'    => '获取成功',
-            'data'   => $this->fetch('', ['list' => $articleTypeModel->getTree($list)])
+            'data'   => $this->fetch('', ['list' => $articleTypeModel->getTree()])
         ];
     }
 
@@ -95,13 +94,12 @@ class  ArticleType extends Manage
         if (Request::isPost()) {
             return $articleTypeModel->editData(input('param.'));
         }
-        $list = $articleTypeModel->select();
         $typeInfo = $articleTypeModel->where('id', input('param.id/d'))->find();
         if (!$typeInfo) return error_code(10002);
         return [
             'status' => true,
             'msg'    => '获取成功',
-            'data'   => $this->fetch('', ['typeInfo' => $typeInfo,'list' => $articleTypeModel->getTree($list)])
+            'data'   => $this->fetch('', ['typeInfo' => $typeInfo,'list' => $articleTypeModel->getTree()])
         ];
     }
 

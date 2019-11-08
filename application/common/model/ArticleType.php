@@ -139,15 +139,21 @@ class ArticleType extends Common
      *
      * @return array
      */
-    public function getTree($arr, $pid = 0, $step = 0)
+    public function getTree($arr = [], $pid = 0, $step = 0)
     {
-        global $tree;
+        if(!$arr){
+            $arr = $this->order('sort asc')->select();
+            if(!$arr->isEmpty()){
+                $arr = $arr->toArray();
+            }
+        }
+        $tree = [];
         foreach ($arr as $key => $val) {
             if ($val['pid'] == $pid) {
                 $flg              = str_repeat('└─', $step);
                 $val['type_name'] = $flg . $val['type_name'];
                 $tree[]           = $val;
-                $this->getTree($arr, $val['id'], $step + 1);
+                $tree = array_merge($tree,$this->getTree($arr, $val['id'], $step + 1));
             }
         }
         return $tree;

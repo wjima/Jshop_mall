@@ -86,9 +86,12 @@ class UserToken extends Common
         }
 
         $where[] = ['token', 'eq', $token];
-        $where[] = ['ctime', 'gt', time()-60*60*24*180];     //有效期180天
-        $tokenInfo = $this->where($where)->find();
+        $tokenInfo = $this->where($where)->cache(true)->find();
         if($tokenInfo){
+            //密码有效期半年
+            if($tokenInfo['ctime'] < time() - 60*60*24*180){
+                return error_code(11026);
+            }
             $userModel = new User();
             $where1[] = ['id','eq', $tokenInfo['user_id']];
             $userInfo = $userModel->where($where1)->find();

@@ -1,0 +1,61 @@
+<style>
+    .layui-form-label{
+        width: 100px;
+    }
+    .order-edit-btn{
+        margin: 0 auto;
+        display: block;
+        margin-top: 25px;
+    }
+</style>
+<form class="layui-form seller-alone-form" id="showinfo">
+    <div class="layui-form-item" lay-size="sm">
+        <input type="hidden" id="invoice_id" value="{$info.id}">
+        <label class="layui-form-label">资源类型：</label>
+        <div class="layui-form-mid seller-inline-3">{$info.class}</div>
+
+        <label class="layui-form-label">资源ID：</label>
+        <div class="layui-form-mid seller-inline-4">{$info.source_id}</div>
+    </div>
+    <div class="layui-form-item" lay-size="sm">
+        <label class="layui-form-label">发票类型：</label>
+        <div class="layui-form-mid seller-inline-3">
+            {if $info.type == 2}个人发票{/if}{if $info.type == 3}企业发票{/if}
+        </div>
+
+        <label class="layui-form-label">发票抬头：</label>
+        <div class="layui-form-mid seller-inline-4">
+            {$info.title}
+        </div>
+    </div>
+    <div class="layui-form-item" lay-size="sm">
+        <label class="layui-form-label">发票金额：</label>
+        <div class="layui-form-mid seller-inline-3">
+            {$info.amount}
+        </div>
+
+        <label class="layui-form-label">发票税号：</label>
+        <div class="layui-form-mid seller-inline-4">
+            {$info.tax_number}
+        </div>
+    </div>
+    <div class="layui-form-item" lay-size="sm">
+        <label class="layui-form-label">开票状态：</label>
+        <div class="layui-form-mid seller-inline-3">
+            {if $info.status == 1}未开票{/if}{if $info.status == 2}已开票{/if}
+        </div>
+    </div>
+    <div class="layui-form-item" lay-size="sm">
+        <label class="layui-form-label">发票备注：</label>
+        <div class="layui-form-mid" style="width: 490px;">
+            {$info.remarks}
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+</script>

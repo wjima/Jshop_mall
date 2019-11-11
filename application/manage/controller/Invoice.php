@@ -80,6 +80,38 @@ class Invoice extends Manage
 
 
     /**
+     * 获取信息
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function show()
+    {
+        $return = [
+            'status' => false,
+            'msg' => '失败',
+            'data' => ''
+        ];
+
+        $this->view->engine->layout(false);
+        $invoiceModel = new InvoiceModel();
+        $id = Request::param('id');
+        $info = $invoiceModel->getInfo($id);
+        if ($info['status']) {
+            $this->assign('info', $info['data']);
+            $return['data'] = $this->fetch();
+            $return['status'] = true;
+            $return['msg'] = '成功';
+        } else {
+            $return['msg'] = $info['msg'];
+        }
+
+        return $return;
+    }
+
+
+    /**
      * 删除发票
      * @return array
      * @throws \Exception

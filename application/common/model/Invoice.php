@@ -164,6 +164,7 @@ class Invoice extends Common
         $return['data'] = $this->where($where)->find();
 
         if ($return['data']) {
+            $return['data']['class'] = config('params.order')['tax_class'][$return['data']['class']];
             $return['status'] = true;
             $return['msg'] = '成功';
         }

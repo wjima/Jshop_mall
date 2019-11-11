@@ -83,7 +83,7 @@
                 {field: 'amount', title: '发票金额', width: 160},
                 {field: 'status', title: '开票状态', width: 90},
                 {field: 'ctime', title: '创建时间', width: 165},
-                {field: 'right', title:'操作', width: 150,align:'center', toolbar:'#invoice'}
+                {field: 'right', title:'操作', width: 150, align:'center', toolbar:'#invoice'}
             ]]
         });
 
@@ -121,6 +121,19 @@
                             type: 1,
                             content: e.data,
                             area: ['700px', '430px'],
+                            title: '发票编辑'
+                        })
+                    }else{
+                        layer.msg(e.msg);
+                    }
+                })
+            } else if(layEvent === 'show'){ //编辑
+                JsGet("{:url('Invoice/show')}?id=" + data.id, function(e){
+                    if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: ['660px', '300px'],
                             title: '发票信息'
                         })
                     }else{
@@ -157,6 +170,11 @@
     });
 </script>
 <script type="text/html" id="invoice">
+    {{#  if(d.status !== '已开票'){ }}
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    {{#  } }}
+    {{#  if(d.status === '已开票'){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="show">查看</a>
+    {{#  } }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>

@@ -130,7 +130,6 @@ class Setting extends Common
             'name' => '订单积分奖励比例',
             'value' => 1
         ],
-
         'sign_appoint_date_status' => [
             'name' => '指定特殊日期状态',
             'value' => false
@@ -290,6 +289,22 @@ class Setting extends Common
         ],
         'ent_id' => [
             'name' => '客服ID',
+            'value' => ''
+        ],
+        'user_agreement_id' => [
+            'name' => '用户协议',
+            'value' => '2'
+        ],
+        'user_agreement' => [
+            'name' => '用户协议',
+            'value' => ''
+        ],
+        'privacy_policy_id' => [
+            'name' => '隐私政策',
+            'value' => '3'
+        ],
+        'privacy_policy' => [
+            'name' => '隐私政策',
             'value' => ''
         ]
     ];

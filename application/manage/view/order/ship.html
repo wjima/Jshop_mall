@@ -27,6 +27,7 @@
         </div>
     </div>
 
+    {if $order.store_id == 0}
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">收货人姓名</label>
@@ -48,6 +49,19 @@
             <input type="text" name="ship_address" value="{$order.ship_address}"  placeholder="详细地址" autocomplete="off" class="layui-input" style="width:200px;display:inline;">
         </div>
     </div>
+    {else /}
+    <div class="layui-form-item">
+        <label class="layui-form-label">收货门店</label>
+        <div class="layui-input-block">
+            <select name="store_id">
+                {foreach $stores as $vo}
+                <option value="{$vo.id}" {if $store_id == $vo['id']}selected=""{/if}>{$vo.store_name} {$vo.mobile}  {$vo.area_id|get_area} {$vo.address}</option>
+                {/foreach}
+
+            </select>
+        </div>
+    </div>
+    {/if}
 
     <div class="layui-form-item">
         <label class="layui-form-label">买家备注</label>

@@ -205,7 +205,18 @@ class Order extends Manage
         if (Request::isPost()) {
             $data = input('param.');
             $billDeliveryModel = new BillDelivery();
-            $result = $billDeliveryModel->ship($data['order_id'], $data['logi_code'], $data['logi_no'], $data['items'],$data['ship_name'], $data['ship_mobile'], $data['ship_area_id'],$data['ship_address'], $data['memo']);
+            $result = $billDeliveryModel->ship(
+                input('param.order_id'),
+                input('param.logi_code'),
+                input('param.logi_no'),
+                input('param.items'),
+                input('param.store_id',0),
+                input('param.ship_name',""),
+                input('param.ship_mobile',""),
+                input('param.ship_area_id',""),
+                input('param.ship_address',""),
+                input('param.memo')
+            );
             return $result;
         }
         //订单发货信息
@@ -220,6 +231,16 @@ class Order extends Manage
             return $order_info;
         }
         $this->assign('order', $order_info['data']);
+
+        //如果是门店自提的话，取门店列表信息
+        if($order_info['data']['store_id'] != 0){
+            $storeModel = new Store();
+            $stores = $storeModel->select();
+        }else{
+            $stores = [];
+        }
+        $this->assign('stores',$stores);
+
 
         //获取默认配送方式,为了on物流公司
         $shipModel = new Ship();

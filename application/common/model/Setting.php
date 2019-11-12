@@ -46,7 +46,7 @@ class Setting extends Common
             'name' => '分类样式',
             'value' => 3
         ],
-        'cate_type' => [
+        'cate_type' => [        //此配置已废弃
             'name' => 'H5分类样式',
             'value' => 1
         ],

@@ -58,6 +58,7 @@ class BillDelivery extends Common
      * @param $logi_code    物流公司编码
      * @param $logi_no      物流单号
      * @param $items        发货明细
+     * @param $store_id     收货地址
      * @param $ship_name    收货人姓名
      * @param $ship_mobile  收货人电话
      * @param $ship_area_id 省市区id
@@ -68,7 +69,7 @@ class BillDelivery extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function ship($order_id, $logi_code, $logi_no,$items, $ship_name, $ship_mobile,$ship_area_id,$ship_address,$memo="")
+    public function ship($order_id, $logi_code, $logi_no,$items,$store_id=0 ,$ship_name="", $ship_mobile="",$ship_area_id=0,$ship_address="",$memo="")
     {
         $result = [
             'status' => false,
@@ -85,6 +86,23 @@ class BillDelivery extends Common
         }
         $dinfo = $dinfo['data'];
         $orders = $dinfo['orders'];
+
+        //校验门店自提和普通订单收货地址是否填写
+        if($store_id != 0){
+            $storeModel = new Store();
+            $info = $storeModel->where('id',$store_id)->find();
+            if(!$info){
+                return error_code(10000);
+            }
+            $ship_name = $info['store_name'];
+            $ship_mobile = $info['mobile'];
+            $ship_area_id = $info['area_id'];
+            $ship_address = $info['address'];
+        }
+        if(!$ship_name || !$ship_mobile || !$ship_area_id || !$ship_address){
+            $result['msg'] = "收货地址信息不全";
+            return $result;
+        }
 
         $bill_delivery = [
             'delivery_id' => get_sn(8),
@@ -132,7 +150,7 @@ class BillDelivery extends Common
 
             //订单更新发货状态，发送各种消息
             foreach($orders as $v){
-                $this->orderShip($v,$items,$bill_delivery);
+                $this->orderShip($v,$items,$bill_delivery,$store_id);
                 $doRel[] = [
                     'order_id' => $v['order_id'],
                     'delivery_id' => $bill_delivery['delivery_id']
@@ -571,8 +589,10 @@ class BillDelivery extends Common
      * 给订单发货
      * @param $orderinfo        订单信息
      * @param $items            总的发货包裹内容
+     * @param $deliveryInfo     发货单信息
+     * @param $store_id         门店自提还是普通订单，0是普通订单，其他是门店自提
      */
-    private function orderShip($orderInfo,&$items,$deliveryInfo){
+    private function orderShip($orderInfo,&$items,$deliveryInfo,$store_id = 0){
         $item = [];
         foreach($orderInfo['items'] as $k => $v){
             if(isset($items[$v['product_id']])){
@@ -597,6 +617,13 @@ class BillDelivery extends Common
         }
         $orderModel = new Order();
         $re = $orderModel->ship($orderInfo['order_id'],$item);
+
+        //如果是门店自提，生成提货单
+        if ($store_id != 0) {
+            $ladingModel = new BillLading();
+            $ladingModel->addData($orderInfo['order_id'], $store_id, $orderInfo['ship_name'], $orderInfo['ship_mobile']);
+        }
+
         if($re['status']){
             //订单日志
             $orderLog = new OrderLog();

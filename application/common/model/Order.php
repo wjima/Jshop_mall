@@ -1130,7 +1130,7 @@ class Order extends Common
             return $return;
         }
         $order = $order->toArray();
-
+        $store_id = false;          //校验是普通快递收货，还是门店自提，这两种收货方式不能混着发
         foreach ($order as $k => $v) {
             if ($v['status'] != self::ORDER_STATUS_NORMAL) {
                 $return['status'] = false;
@@ -1142,8 +1142,18 @@ class Order extends Common
                 $return['status'] = false;
                 $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
             }
+            //校验，不能普通快递和门店自提，不能混发
+            if($store_id !== false){
+                if($store_id != $v['store_id']){
+                    $return['status'] = false;
+                    $return['msg'] = '门店自提订单和普通订单不能混合发货。';
+                    return $return;
+                }
+            }else{
+                $store_id = $v['store_id'];
+            }
 
-            //组合明细
+
             $this->aftersalesVal($order[$k]); //获取售后数量
         }
         if (!$return['status']) {
@@ -1161,6 +1171,7 @@ class Order extends Common
             'weight' => 0,
             'memo' => [],
             'cost_freight' => 0,
+            'store_id' => $order[0]['store_id'],
             'ship_area_id' => $order[0]['ship_area_id'],
             'ship_address' => $order[0]['ship_address'],
             'ship_name' => $order[0]['ship_name'],
@@ -1223,7 +1234,7 @@ class Order extends Common
         }
         //判断多个收货地址
         if (!$msg_arr['ship_info']) {
-            $return['msg'] .= '多个用户订单，';
+            $return['msg'] .= '多个收货地址，';
         }
         //是否有警告
         if ($return['msg'] != '') {
@@ -1264,13 +1275,6 @@ class Order extends Common
             $info->ship_status = self::SHIP_STATUS_PARTIAL_YES;
         }
         $info->save();
-
-        //如果是门店自提，生成提货单
-//        if ($info['store_id'] != 0) {
-//            $ladingModel = new BillLading();
-//            $ladingModel->addData($order_id, $info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
-//        }
-
         return [
             'status' => true,
             'data' => '',

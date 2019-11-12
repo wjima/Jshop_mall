@@ -83,7 +83,7 @@ class Common extends Base
      */
     public function jshopConf()
     {
-        $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id');
+        $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id,user_agreement_id,privacy_policy_id');
 
         $conf['shop_logo']          = _sImage($config['shop_logo']); //店铺logo
         $conf['shop_name']          = $config['shop_name'];  //店铺名称
@@ -115,6 +115,8 @@ class Common extends Base
         $conf['share_image']      = _sImage($config['share_image']); //分享图片
         $conf['about_article_id'] = $config['about_article_id'];    //关于我们文章
         $conf['ent_id']           = $config['ent_id'];    //客服ID
+        $conf['user_agreement_id'] = $config['user_agreement_id']; //用户协议
+        $conf['privacy_policy_id'] = $config['privacy_policy_id']; //隐私政策
         return $conf;
     }
 }

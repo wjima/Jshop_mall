@@ -65,8 +65,24 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['about_article_id']['name']}：</label>
                         <div class="layui-input-inline seller-inline-5" style="margin-bottom: 10px">
-                            <input type="text" id="about_article" name="about_article" readonly="readonly" value="{$data['about_article']['value']}" required placeholder="请选择广告文章" autocomplete="off" class="layui-input" onclick="article_list()">
+                            <input type="text" id="about_article" name="about_article" readonly="readonly" value="{$data['about_article']['value']}" required placeholder="请选择广告文章" autocomplete="off" class="layui-input" onclick="article_list('article_id', 'about_article')">
                             <input type="hidden" id="article_id" name="about_article_id" value="{$data['about_article_id']['value']}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['user_agreement_id']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5" style="margin-bottom: 10px">
+                            <input type="text" id="user_agreement" name="user_agreement" readonly="readonly" value="{$data['user_agreement']['value']}" required placeholder="请选择广告文章" autocomplete="off" class="layui-input" onclick="article_list('user_agreement_id', 'user_agreement')">
+                            <input type="hidden" id="user_agreement_id" name="user_agreement_id" value="{$data['user_agreement_id']['value']}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['privacy_policy_id']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-5" style="margin-bottom: 10px">
+                            <input type="text" id="privacy_policy" name="privacy_policy" readonly="readonly" value="{$data['privacy_policy']['value']}" required placeholder="请选择广告文章" autocomplete="off" class="layui-input" onclick="article_list('privacy_policy_id', 'privacy_policy')">
+                            <input type="hidden" id="privacy_policy_id" name="privacy_policy_id" value="{$data['privacy_policy_id']['value']}">
                         </div>
                     </div>
 
@@ -602,16 +618,18 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
             if(layEvent === 'selectArticle'){ //选择
-                $("#about_article").val(data.title);
-                $("#article_id").val(data.id);
+                var article_id_key = $("#article_id_key").val();
+                var article_name_key = $("#article_name_key").val();
+                $("#"+article_id_key).val(data.id);
+                $("#"+article_name_key).val(data.title);
                 layer.close(window.box);
             }
         });
     });
 
-    function article_list()
+    function article_list(id, name)
     {
-        JsGet("{:url('Carousel/getArticle')}",function(e){
+        JsGet("{:url('Carousel/getArticle')}?article_id_key="+id+"&article_name_key="+name,function(e){
             window.box = layer.open({
                 type: 1,
                 content: e,

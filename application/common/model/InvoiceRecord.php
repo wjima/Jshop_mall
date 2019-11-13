@@ -56,7 +56,7 @@ class InvoiceRecord extends Common
         $info = $this->field('name,code,frequency')->where($where)->find();
         if($info)
         {
-            $return['data'] = $info['code'];
+            $return['data'] = $info;
         }
 
         return $return;

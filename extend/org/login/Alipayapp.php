@@ -2,6 +2,7 @@
 
 namespace org\login;
 
+use app\common\model\User;
 use app\common\model\UserToken;
 use org\Alipay;
 use app\common\model\UserWx;
@@ -50,9 +51,9 @@ class Alipayapp
             if ($info['user_id']) {
                 //绑定好手机号码了，去登陆,去取user_token
                 $userTokenModel = new UserToken();
-                $re             = $userTokenModel->setToken($info['user_id'], 3);
-                if ($re['status']) {
-                    $result['data'] = ['token' => $re['data']];
+                $token_res = $userTokenModel->setToken($info['user_id'], 3);
+                if ($token_res['status']) {
+                    $result['data']['token'] = $token_res['data'];
                 }
             }
         } else {
@@ -69,6 +70,26 @@ class Alipayapp
                 'province'    => $userInfo['province'] ? $userInfo['province'] : '',
                 'country'     => $userInfo['country'] ? $userInfo['country'] : ''
             ];
+
+            if (getSetting('is_bind_mobile') == '2') {
+                $user['nickname'] = $data['nickname'];
+                $user['avatar'] = $data['avatar'];
+                $user['sex'] = $data['gender'];
+
+                $userModel = new User();
+                $user_res = $userModel->manageAdd($user);
+                if (!$user_res['status']) {
+                    return $user_res;
+                }
+                //这时候还需要把新的user_id绑定到user_wx表上，否则就每次登陆都用新用户了
+                $data['user_id'] = $user_res['data'];
+
+                $userTokenModel = new UserToken();
+                $token_res = $userTokenModel->setToken($data['user_id'], 3);
+                if ($token_res['status']) {
+                    $result['data']['token'] = $token_res['data'];
+                }
+            }
 
             $userWxModel->save($data);
             $user_alipay_id = $userWxModel->id;

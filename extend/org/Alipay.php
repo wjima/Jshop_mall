@@ -1,17 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2019/4/17/0017
- * Time: 下午 19:50
- */
-
 namespace org;
 
-use app\common\model\Images;
 use app\common\model\Payments;
-use think\facade\Cache;
-use think\facade\Log;
 
 class Alipay
 {

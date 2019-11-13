@@ -729,6 +729,8 @@ class Order extends Common
      */
     public function aftersalesVal(&$orderInfo)
     {
+        $add_aftersales_status = false;     //是否可以提交售后,只要没退完就可以进行售后
+
         $billAftersalesModel = new BillAftersales();
         $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id']);
 
@@ -739,10 +741,25 @@ class Order extends Common
         foreach ($orderInfo['items'] as $k => $v) {
             if (isset($re['data']['reship_goods'][$v['id']])) {
                 $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']];
+
+                if(!$add_aftersales_status && $orderInfo['items'][$k]['nums'] > $orderInfo['items'][$k]['reship_nums']){            //如果没退完，就可以再次发起售后
+                    $add_aftersales_status = true;
+                }
             } else {
                 $orderInfo['items'][$k]['reship_nums'] = 0;
+
+                if(!$add_aftersales_status){            //没退货，就能发起售后
+                    $add_aftersales_status = true;
+                }
             }
         }
+        //商品没退完或没退，可以发起售后，但是订单状态不对的话，也不能发起售后
+        if($orderInfo['pay_status'] == self::PAY_STATUS_NO || $orderInfo['status'] != self::ORDER_STATUS_NORMAL){
+            $add_aftersales_status = false;
+        }
+        $orderInfo['add_aftersales_status'] = $add_aftersales_status;
+
+
         return true;
     }
 
@@ -1130,7 +1147,7 @@ class Order extends Common
             return $return;
         }
         $order = $order->toArray();
-
+        $store_id = false;          //校验是普通快递收货，还是门店自提，这两种收货方式不能混着发
         foreach ($order as $k => $v) {
             if ($v['status'] != self::ORDER_STATUS_NORMAL) {
                 $return['status'] = false;
@@ -1142,8 +1159,18 @@ class Order extends Common
                 $return['status'] = false;
                 $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
             }
+            //校验，不能普通快递和门店自提，不能混发
+            if($store_id !== false){
+                if($store_id != $v['store_id']){
+                    $return['status'] = false;
+                    $return['msg'] = '门店自提订单和普通订单不能混合发货。';
+                    return $return;
+                }
+            }else{
+                $store_id = $v['store_id'];
+            }
 
-            //组合明细
+
             $this->aftersalesVal($order[$k]); //获取售后数量
         }
         if (!$return['status']) {
@@ -1161,6 +1188,7 @@ class Order extends Common
             'weight' => 0,
             'memo' => [],
             'cost_freight' => 0,
+            'store_id' => $order[0]['store_id'],
             'ship_area_id' => $order[0]['ship_area_id'],
             'ship_address' => $order[0]['ship_address'],
             'ship_name' => $order[0]['ship_name'],
@@ -1223,7 +1251,7 @@ class Order extends Common
         }
         //判断多个收货地址
         if (!$msg_arr['ship_info']) {
-            $return['msg'] .= '多个用户订单，';
+            $return['msg'] .= '多个收货地址，';
         }
         //是否有警告
         if ($return['msg'] != '') {
@@ -1264,13 +1292,6 @@ class Order extends Common
             $info->ship_status = self::SHIP_STATUS_PARTIAL_YES;
         }
         $info->save();
-
-        //如果是门店自提，生成提货单
-//        if ($info['store_id'] != 0) {
-//            $ladingModel = new BillLading();
-//            $ladingModel->addData($order_id, $info['store_id'], $order_info['ship_name'], $order_info['ship_mobile']);
-//        }
-
         return [
             'status' => true,
             'data' => '',

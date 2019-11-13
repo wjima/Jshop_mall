@@ -431,18 +431,18 @@ class Order extends Api
     }
 
 
-    /**
-     * 废弃方法，建议直接用order.details接口
-     * 查看订单售后状态,
-     * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function aftersalesStatus()
-    {
-        return $this->details();
-    }
+//    /**
+//     * 废弃方法，建议直接用order.details接口
+//     * 查看订单售后状态,
+//     * @return array|mixed
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function aftersalesStatus()
+//    {
+//        return $this->details();
+//    }
 
 
     /**

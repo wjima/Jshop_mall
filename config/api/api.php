@@ -248,6 +248,10 @@ return [
             'myinvoicelist' => [
                 'code' => 'myInvoiceList',
                 'is_login' => true
+            ],
+            'ttlogin' => [
+                'code' => 'ttLogin',
+                'is_login' => false
             ]
         ]
     ],

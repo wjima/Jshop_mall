@@ -15,7 +15,6 @@ use app\common\model\GoodsComment;
 use app\common\model\Invoice;
 use app\common\model\Setting;
 use app\common\model\UserBankcards;
-use app\common\model\UserGrade;
 use app\common\model\UserPointLog;
 use app\common\model\UserShip;
 use app\common\model\UserTocash;
@@ -26,6 +25,7 @@ use app\common\model\GoodsCollection;
 use app\common\model\UserWx;
 use app\common\model\BillPayments;
 use org\login\Alipayapp;
+use org\login\Ttapp;
 use org\login\Uniapp;
 use org\login\Wxapp;
 use org\login\Wxofficial;
@@ -1435,5 +1435,32 @@ class User extends Api
         $status = Request::param('status', false);
         $invoiceModel = new Invoice();
         return $invoiceModel->myInvoiceList($this->userId, $page, $limit, $status);
+    }
+
+
+    /**
+     * 头条系小程序登录
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function ttLogin()
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => ''
+        ];
+
+        $code = Request::param('code', false);
+        $user_info = Request::param('user_info', false);
+
+        if (!$code) {
+            $result['msg'] = 'code参数缺失';
+            return $result;
+        }
+        $ttApp = new Ttapp();
+        return $ttApp->codeToInfo($code, $user_info);
     }
 }

@@ -17,6 +17,7 @@ class UserWx extends Common
     const TYPE_ALIPAY = 3;            //类型3，支付宝小程序
     const TYPE_UNIAPP_WEIXIN = 4;            //类型3，app微信快捷登录
     const TYPE_UNIAPP_QQ = 5;            //类型3，appQQ快捷登录
+    const TYPE_TOUTIAO = 6;             //头条小程序
 
 
     //微信小程序登陆第一步，需要现在后台微信配置 小程序配置里面配置好参数

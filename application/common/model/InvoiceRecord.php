@@ -56,6 +56,7 @@ class InvoiceRecord extends Common
         $info = $this->field('name,code,frequency')
             ->where($where)
             ->order('frequency', 'DESC')
+            ->page(1, 4)
             ->select();
         if($info)
         {

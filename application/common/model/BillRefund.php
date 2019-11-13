@@ -273,6 +273,7 @@ class BillRefund extends Common
     {
 
         foreach($list as $k => $v) {
+            $list[$k]['new_memo'] = $this->new_memo($v);        //查看退款单的一些依赖关系
             if($v['status']) {
                 $list[$k]['status_name'] = config('params.bill_refund')['status'][$v['status']];
             }
@@ -292,6 +293,27 @@ class BillRefund extends Common
 
         }
         return $list;
+    }
+
+
+    //看退款单的依赖关系，如果有的话，显示出来，这样退款的时候，有据可查。
+    private function new_memo($info){
+        $str = "";
+        if(!isset($info['type'])){
+            return $str;
+        }
+        switch ($info['type']){
+            case self::TYPE_ORDER:
+                $billReshipModel = new BillReship();
+                $reship = $billReshipModel->where('aftersales_id',$info['aftersales_id'])->find();
+                if($reship){
+                    $str = "退货单：".config('params.bill_reship.status')[$reship['status']];
+                }
+
+                break;
+        }
+        return $str;
+
     }
 
 

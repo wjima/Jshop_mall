@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">订单号：</label>
+            <label class="layui-form-label">单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="source_id" lay-verify="title" placeholder="" autocomplete="off"
                     class="layui-input">
@@ -50,6 +50,15 @@
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
                     class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">类型：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <select name="type" lay-verify="">
+                    <option value=""></option>
+                    <option value="1">订单</option>
+                </select>
             </div>
         </div>
         <div class="layui-inline">
@@ -86,12 +95,15 @@
             id: 'billRefund',
             cols: [[
                 { field: 'refund_id', width: 140, sort: true, title: '退款单号' },
+                { field: 'source_id', sort: true, title: '单号' },
+                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
                 { field: 'money', width: 100, title: '退款金额' },
+                { field: 'new_memo', title: '说明', align: 'center',templet: function(data){
+                        return '<span style="color:red">'+data.new_memo+'</span>';
+                    }},
                 { field: 'payment_code', width: 140, sort: true, title: '退款方式' },
                 { field: 'status_name', width: 100, title: '状态' },
                 { field: 'type', width: 100, title: '类型' },
-                { field: 'source_id', sort: true, title: '单号' },
-                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
                 { field: 'ctime', width: 170, title: '创建时间' },
                 {
                     field: 'operating', title: '操作', width: 120, align: 'center', templet: function (data) {

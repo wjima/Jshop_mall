@@ -1294,8 +1294,9 @@ class User extends Api
         $page = Request::param('page', 1);
         $limit = Request::param('limit', config('jshop.page_limit'));
         $status = Request::param('status', false);
+        $id = Request::param('id', 0);
         $invoiceModel = new Invoice();
-        return $invoiceModel->myInvoiceList($this->userId, $page, $limit, $status);
+        return $invoiceModel->myInvoiceList($this->userId, $page, $limit, $status, $id);
     }
 
 

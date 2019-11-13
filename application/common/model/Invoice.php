@@ -205,12 +205,13 @@ class Invoice extends Common
      * @param $page
      * @param $limit
      * @param bool $status
+     * @param int $id
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function myInvoiceList($user_id, $page, $limit, $status = false)
+    public function myInvoiceList($user_id, $page, $limit, $status = false, $id = 0)
     {
         $return = [
             'status' => false,
@@ -226,6 +227,9 @@ class Invoice extends Common
         $where[] = ['user_id', 'eq', $user_id];
         if ($status) {
             $where[] = ['status', 'eq', $status];
+        }
+        if ($id != 0) {
+            $where[] = ['id', 'eq', $id];
         }
         $return['data']['list'] = $this->where($where)
             ->order('id DESC')

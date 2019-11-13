@@ -141,19 +141,15 @@ class BillAftersales extends Common
             'msg'    => ''
         ];
 
-//        $awhere[] = ['order_id', 'eq', $order_id];
-//        $awhere[] = ['user_id', 'eq', $user_id];
-//        $awhere[] = ['status', 'eq', self::STATUS_WAITAUDIT];
-//        $flag     = $this->where($awhere)->find();
-//        if ($flag) {
-//            return error_code(13102);
-//        }
-
         //取和订单有关系的所有信息
         $orderModel = new Order();
         $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
         if (!$orderInfo) {
             return error_code(13101);
+        }
+
+        if(!$orderInfo['add_aftersales_status']){
+            return error_code(13200);
         }
 
         $data['aftersales_id'] = get_sn(5);

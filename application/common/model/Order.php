@@ -729,6 +729,8 @@ class Order extends Common
      */
     public function aftersalesVal(&$orderInfo)
     {
+        $add_aftersales_status = false;     //是否可以提交售后,只要没退完就可以进行售后
+
         $billAftersalesModel = new BillAftersales();
         $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id']);
 
@@ -739,10 +741,25 @@ class Order extends Common
         foreach ($orderInfo['items'] as $k => $v) {
             if (isset($re['data']['reship_goods'][$v['id']])) {
                 $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']];
+
+                if(!$add_aftersales_status && $orderInfo['items'][$k]['nums'] > $orderInfo['items'][$k]['reship_nums']){            //如果没退完，就可以再次发起售后
+                    $add_aftersales_status = true;
+                }
             } else {
                 $orderInfo['items'][$k]['reship_nums'] = 0;
+
+                if(!$add_aftersales_status){            //没退货，就能发起售后
+                    $add_aftersales_status = true;
+                }
             }
         }
+        //商品没退完或没退，可以发起售后，但是订单状态不对的话，也不能发起售后
+        if($orderInfo['pay_status'] == self::PAY_STATUS_NO || $orderInfo['status'] != self::ORDER_STATUS_NORMAL){
+            $add_aftersales_status = false;
+        }
+        $orderInfo['add_aftersales_status'] = $add_aftersales_status;
+
+
         return true;
     }
 

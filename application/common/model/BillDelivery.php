@@ -169,7 +169,7 @@ class BillDelivery extends Common
     }
 
     /**
-     * 确认签收
+     * 确认签收,随着订单确认收货的来，包裹再一一签收也没啥意思。
      * @param $order_id
      * @return false|int
      */

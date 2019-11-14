@@ -1388,48 +1388,47 @@ class Order extends Common
      */
     public function confirm($order_id, $user_id = false)
     {
-        unset($where);
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => ''
+        ];
+
         $where[] = ['order_id', 'eq', $order_id];
         $where[] = ['pay_status', 'neq', self::PAY_STATUS_NO];
         $where[] = ['ship_status', 'neq', self::SHIP_STATUS_NO];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $where[] = ['confirm', 'neq', self::CONFIRM_RECEIPT];
-        $msg = '后台确认签收操作';
+
         if ($user_id) {
             $where[] = ['user_id', 'eq', $user_id];
-            $msg = '确认签收操作';
         }
 
-        unset($data);
         $data['confirm'] = self::CONFIRM_RECEIPT;
         $data['confirm_time'] = time();
 
-        unset($return);
         Db::startTrans();
         try {
             //修改订单
-            $this->save($data, $where);
+            $re = $this->save($data, $where);
+            if(!$re){
+                $result['msg'] = "确认收货失败";
+            }
 
-            //修改发货单
+            //修改发货单,如果有为确认收货的发货单，那么给他们回传上去确认收货时间
             $billDeliveryModel = new BillDelivery();
             $billDeliveryModel->confirm($order_id);
 
             //订单记录
-            unset($w);
-            unset($info);
             $orderLog = new OrderLog();
-            $w[] = ['order_id', 'eq', $order_id];
-            $info = $this->where($w)
-                ->find();
-            $orderLog->addLog($order_id, $info['user_id'], $orderLog::LOG_TYPE_SIGN, $msg, $where);
-
-            $return = true;
+            $orderLog->addLog($order_id, $user_id, $orderLog::LOG_TYPE_SIGN, "确认收货成功", $where);
+            $result['status'] = true;
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
-            $return = false;
+            $result['msg'] = $e->getMessage();
         }
-        return $return;
+        return $result;
     }
 
 

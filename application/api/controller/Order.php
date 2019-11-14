@@ -123,32 +123,18 @@ class Order extends Api
 
 
     /**
-     * 确认收货
+     * 确认收货,单纯的只是订单确认收货，代表订单的货收到了，可能有多个包裹，和包裹没关系
      * @return array
      */
     public function confirm()
     {
-        $order_id = input('order_id');
-        $user_id  = $this->userId;
+        if(!input('?param.order_id')){
+            return error_code(13309);
+        }
+
         $model    = new orderModel();
-        $result   = $model->confirm($order_id, $user_id);
-        if($result)
-        {
-            $return_data = array(
-                'status' => true,
-                'msg'    => '确认收货成功',
-                'data'   => $order_id
-            );
-        }
-        else
-        {
-            $return_data = array(
-                'status' => false,
-                'msg'    => '确认收货失败',
-                'data'   => $order_id
-            );
-        }
-        return $return_data;
+        return  $model->confirm(input('param.order_id'), $this->userId);
+
     }
 
 

@@ -533,10 +533,8 @@ class Order extends Common
         $order_info->returnItem; //退货单
         $order_info->aftersalesItem; //售后单
         //发货单
-        $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
-        $delivery_ids = $billDeliveryOrderRelModel->getDeliveryListByOrderId($id);
         $billDeliveryModel = new BillDelivery();
-        $deliveryResult = $billDeliveryModel->getDeliveryList($delivery_ids);
+        $deliveryResult = $billDeliveryModel->getDeliveryList($id);
         $order_info['delivery'] = $deliveryResult['data'];
 
         //获取提货门店
@@ -606,22 +604,22 @@ class Order extends Common
                 break;
         }
 
-        //物流信息查询
-        $express_delivery = [];
-        if (isset($order_info['delivery'][0]) && $order_info['delivery'][0] && $logistics) {
-            foreach ($order_info['delivery'] as $v) {
-                $express = $billDeliveryModel->getLogistic($v['logi_code'], $v['logi_no']);
-                if ($express['status']) {
-                    $express_delivery[] = $express['data']['info']['data'][0];
-                } else {
-                    $express_delivery[] = [
-                        'context' => '已为你发货，请注意查收',
-                        'time' => date('Y-m-d H:i:s', $v['ctime'])
-                    ];
-                }
-            }
-        }
-        $order_info['express_delivery'] = $express_delivery;
+//        //物流信息查询
+//        $express_delivery = [];
+//        if (isset($order_info['delivery'][0]) && $order_info['delivery'][0] && $logistics) {
+//            foreach ($order_info['delivery'] as $v) {
+//                $express = $billDeliveryModel->getLogistic($v['logi_code'], $v['logi_no']);
+//                if ($express['status']) {
+//                    $express_delivery[] = $express['data']['info']['data'][0];
+//                } else {
+//                    $express_delivery[] = [
+//                        'context' => '已为你发货，请注意查收',
+//                        'time' => date('Y-m-d H:i:s', $v['ctime'])
+//                    ];
+//                }
+//            }
+//        }
+//        $order_info['express_delivery'] = $express_delivery;
 
         //支付单
         if (count($order_info['paymentRelItem']) > 0) {

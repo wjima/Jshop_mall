@@ -564,23 +564,22 @@ class BillDelivery extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getDeliveryList($delivery_ids)
+    public function getDeliveryList($order_id)
     {
         $return_data = [
-            'status' => false,
-            'msg' => '获取失败',
+            'status' => true,
+            'msg' => '',
             'data' => []
         ];
+        $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
 
-        $where[] = ['delivery_id', 'in', $delivery_ids];
-        $return_data['data'] = $this::with('items')
+        $where[] = ['dor.order_id', 'eq', $order_id];
+        $return_data['data'] = $billDeliveryOrderRelModel
+            ->alias('dor')
+            ->field('d.*')
+            ->join('bill_delivery d','d.delivery_id = dor.delivery_id')
             ->where($where)
             ->select();
-
-        if ($return_data['data']) {
-            $return_data['status'] = true;
-            $return_data['msg'] = '获取成功';
-        }
 
         return $return_data;
     }

@@ -10,26 +10,6 @@ namespace app\common\model;
 class BillDeliveryOrderRel extends Common
 {
     /**
-     * 获取发货单号列表
-     * @param $order_id
-     * @return array|\PDOStatement|string|\think\Collection
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getDeliveryListByOrderId($order_id)
-    {
-        $delivery_id_list = $this->field('delivery_id')
-            ->where('order_id', 'eq', $order_id)
-            ->select()
-            ->toArray();
-
-        $delivery_id_list = array_column($delivery_id_list, 'delivery_id');
-        return $delivery_id_list;
-    }
-
-
-    /**
      * 获取订单号列表
      * @param $delivery_id
      * @return array|\PDOStatement|string|\think\Collection

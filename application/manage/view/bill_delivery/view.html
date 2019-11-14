@@ -1,8 +1,7 @@
-<div class="layui-form seller-alone-form" style="padding:20px;">
+<div class="layui-form seller-alone-form">
     <div class="layui-tab">
         <ul class="layui-tab-title">
             <li class="layui-this">发货信息</li>
-            <li>订单信息</li>
             <li>发货明细</li>
         </ul>
         <div class="layui-tab-content">
@@ -15,6 +14,12 @@
                     <label class="layui-form-label">收货人：</label>
                     <div class="layui-input-inline seller-inline-2">
                         <div class="layui-form-mid">{$data.ship_name}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单号：</label>
+                    <div class="layui-input-inline seller-inline-10">
+                        <div class="layui-form-mid">{$data.orders}</div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -52,25 +57,7 @@
             </div>
             <div class="layui-tab-item">
                 <div class="layui-form-item">
-                    <table class="layui-table">
-                        <thead>
-                            <tr>
-                                <th>订单号</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {foreach $orders as $v}
-                            <tr>
-                                <td>{$v}</td>
-                            </tr>
-                            {/foreach}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="layui-tab-item">
-                <div class="layui-form-item">
-                    <table class="layui-table">
+                    <table class="layui-table" lay-size="sm">
                         <colgroup>
                             <col>
                             <col width="100">
@@ -83,17 +70,15 @@
                                 <th>商品名称</th>
                                 <th>商品编码</th>
                                 <th>货品编码</th>
-                                <th>购买总数</th>
                                 <th>发货数量</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {foreach $items as $v}
+                        {foreach $data.items as $v}
                             <tr>
                                 <td>{$v.name} - {$v.addon}</td>
                                 <td>{$v.bn}</td>
                                 <td>{$v.sn}</td>
-                                <td>{$v.total}</td>
                                 <td>{$v.nums}</td>
                             </tr>
                         {/foreach}

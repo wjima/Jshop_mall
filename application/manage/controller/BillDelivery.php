@@ -59,38 +59,21 @@ class BillDelivery extends Manage
         $delivery_id = Request::param('delivery_id');
         $billDeliveryModel = new \app\common\model\BillDelivery();
         $res = $billDeliveryModel->getDeliveryInfo($delivery_id);
-        if ($res['status']) {
-            //主信息
-            $res['data']['logi_name'] = get_logi_info($res['data']['logi_code']);
-            $res['data']['ship_address'] = get_area($res['data']['ship_area_id']) . '- ' . $res['data']['ship_address'];
-            $res['data']['ctime'] = date('Y-m-d H:i:s', $res['data']['ctime']);
-            $this->assign('data', $res['data']);
-
-            //发货明细
-            $delivery_id = Request::param('delivery_id');
-            $billDeliveryItemsModel = new BillDeliveryItems();
-            $items = $billDeliveryItemsModel->getList($delivery_id);
-            $this->assign('items', $items['data']);
-
-            //订单信息
-            $delivery_id = Request::param('delivery_id');
-            $billDeliveryOrderRelModel = new BillDeliveryOrderRel();
-            $orders = $billDeliveryOrderRelModel->getOrderListByDeliveryId($delivery_id);
-            $this->assign('orders', $orders);
-
-            $temp = $this->fetch('view');
-            $return_data = [
-                'status' => true,
-                'msg' => '获取成功',
-                'data' => $temp
-            ];
-        } else {
-            $return_data = [
-                'status' => false,
-                'msg' => '获取失败',
-                'data' => ''
-            ];
+        if (!$res['status']) {
+            return $res;
         }
-        return $return_data;
+        //主信息
+        $res['data']['logi_name'] = get_logi_info($res['data']['logi_code']);
+        $res['data']['ship_address'] = get_area($res['data']['ship_area_id']) . '- ' . $res['data']['ship_address'];
+        $res['data']['ctime'] = getTime($res['data']['ctime']);
+        $this->assign('data', $res['data']);
+        $temp = $this->fetch('view');
+        $result = [
+            'status' => true,
+            'msg' => '获取成功',
+            'data' => $temp
+        ];
+
+        return $result;
     }
 }

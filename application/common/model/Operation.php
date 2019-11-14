@@ -17,7 +17,7 @@ class Operation extends Common
     private $noPerm = [
         self::MENU_MANAGE => [
             'Index'         => ['index', 'tagselectbrands', 'tagselectgoods', 'clearcache', 'welcome','tagselectnotice','tagselectgroup','tagpintuan','tagselectuser'],
-            'Order'         => ['statistics'],
+            //'Order'         => ['statistics'],
             'Images'        => ['uploadimage', 'listimage', 'manage', 'cropper'],
             'Files'         => ['uploadvideo'],
             'User'          => ['userloglist', 'statistics'],

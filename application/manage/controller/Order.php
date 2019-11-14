@@ -358,30 +358,30 @@ class Order extends Manage
     }
 
 
-    /**
-     * 根据条件从数据库查询数据或者api请求获取快递信息
-     * User:tianyu
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function logistics()
-    {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
-        $this->view->engine->layout(false);
-        $billDeliveryModel = new BillDelivery();
-        $id = Request::param('order_id', '');
-        $data = $billDeliveryModel->getLogisticsInformation($id);
-        $return['status'] = true;
-        $return['msg'] = '成功';
-        $return['data'] = $this->fetch('logistics', ['data' => $data]);
-        return $return;
-    }
+//    /**
+//     * 根据条件从数据库查询数据或者api请求获取快递信息
+//     * User:tianyu
+//     * @return array
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function logistics()
+//    {
+//        $return = [
+//            'status' => false,
+//            'msg' => '失败',
+//            'data' => ''
+//        ];
+//        $this->view->engine->layout(false);
+//        $billDeliveryModel = new BillDelivery();
+//        $id = Request::param('order_id', '');
+//        $data = $billDeliveryModel->getLogisticsInformation($id);
+//        $return['status'] = true;
+//        $return['msg'] = '成功';
+//        $return['data'] = $this->fetch('logistics', ['data' => $data]);
+//        return $return;
+//    }
 
 
     /**

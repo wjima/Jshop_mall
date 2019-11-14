@@ -1416,8 +1416,8 @@ class Order extends Common
             }
 
             //修改发货单,如果有为确认收货的发货单，那么给他们回传上去确认收货时间
-            $billDeliveryModel = new BillDelivery();
-            $billDeliveryModel->confirm($order_id);
+//            $billDeliveryModel = new BillDelivery();
+//            $billDeliveryModel->confirm($order_id);
 
             //订单记录
             $orderLog = new OrderLog();

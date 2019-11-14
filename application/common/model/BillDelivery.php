@@ -30,17 +30,6 @@ class BillDelivery extends Common
     const STATUS_ALREADY = 2;               //已发货
     const STATUS_CONFIRM = 3;               //已确认
     const STATUS_OTHER = 4;                 //其他
-//    const ORDER_STATUS_NORMAL = 1;          //订单状态正常
-//    const ORDER_STATUS_COMPLETE = 2;        //订单状态完成
-//    const ORDER_STATUS_CANCEL = 3;          //订单状态取消
-//    const PAY_STATUS_NO = 1;                //未付款
-//    const PAY_STATUS_YES = 2;               //已付款
-//    const PAY_STATUS_PARTIAL_YES = 3;       //部分付款
-//    const PAY_STATUS_PARTIAL_NO = 4;        //部分退款
-//    const PAY_STATUS_REFUNDED = 5;          //已退款
-//    const SHIP_STATUS_NO = 1;               //未发货
-//    const SHIP_STATUS_PARTIAL_YES = 2;      //部分发货
-//    const SHIP_STATUS_YES = 3;              //已发货
 
     /**
      * 发货详情关联
@@ -49,6 +38,11 @@ class BillDelivery extends Common
     public function items()
     {
         return $this->hasMany('BillDeliveryItems', 'delivery_id', 'delivery_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany('BillDeliveryOrderRel', 'delivery_id', 'delivery_id');
     }
 
 
@@ -175,50 +169,50 @@ class BillDelivery extends Common
      */
     public function confirm($order_id)
     {
-        $where[] = ['order_id', 'eq', $order_id];
-        $data['confirm_time'] = time();
-        $res = $this->save($data, $where);
-        return $res;
+//        $where[] = ['order_id', 'eq', $order_id];
+//        $data['confirm_time'] = time();
+//        $res = $this->save($data, $where);
+        return true;
     }
 
-    /**
-     * 获取物流信息接口
-     * 根据订单号查询
-     * User:tianyu
-     * @param string $order_id
-     * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getLogisticsInformation($order_id)
-    {
-        $result = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => []
-        ];
-        $deliveryInfo = $this->where('order_id', $order_id)->find();
-        if ($deliveryInfo) {
-            // 获取发货单物流公司编码和单号
-            if (!$deliveryInfo['logi_code'] && !$deliveryInfo['logi_no']) {
-                return error_code(10051);
-            }
-
-            $logistics = $this->logistics_query($deliveryInfo['logi_code'], $deliveryInfo['logi_no']);
-            if ($logistics['status'] === '200') {
-                $result['status'] = true;
-                $result['msg'] = '获取成功';
-                $result['data'] = [
-                    'list' => $logistics['data'],
-                    'state' => config('params.order')['logistics_state'][$logistics['state']]
-                ];
-            } else {
-                $result['msg'] = $logistics['message'];
-            }
-        }
-        return $result;
-    }
+//    /**
+//     * 获取物流信息接口
+//     * 根据订单号查询
+//     * User:tianyu
+//     * @param string $order_id
+//     * @return mixed
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function getLogisticsInformation($order_id)
+//    {
+//        $result = [
+//            'status' => false,
+//            'msg' => '获取失败',
+//            'data' => []
+//        ];
+//        $deliveryInfo = $this->where('order_id', $order_id)->find();
+//        if ($deliveryInfo) {
+//            // 获取发货单物流公司编码和单号
+//            if (!$deliveryInfo['logi_code'] && !$deliveryInfo['logi_no']) {
+//                return error_code(10051);
+//            }
+//
+//            $logistics = $this->logistics_query($deliveryInfo['logi_code'], $deliveryInfo['logi_no']);
+//            if ($logistics['status'] === '200') {
+//                $result['status'] = true;
+//                $result['msg'] = '获取成功';
+//                $result['data'] = [
+//                    'list' => $logistics['data'],
+//                    'state' => config('params.order')['logistics_state'][$logistics['state']]
+//                ];
+//            } else {
+//                $result['msg'] = $logistics['message'];
+//            }
+//        }
+//        return $result;
+//    }
 
 
     /**
@@ -344,24 +338,26 @@ class BillDelivery extends Common
      */
     public function getDeliveryInfo($delivery_id)
     {
-        $where[] = ['delivery_id', 'eq', $delivery_id];
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => ''
+        ];
 
-        $res = $this::with('items')->where($where)
-            ->find();
-        if ($res) {
-            $return_data = [
-                'status' => true,
-                'msg' => '获取成功',
-                'data' => $res
-            ];
-        } else {
-            $return_data = [
-                'status' => false,
-                'msg' => '获取失败',
-                'data' => $res
-            ];
+        $where[] = ['delivery_id', 'eq', $delivery_id];
+        $info = $this::with(['items','orders'])->where($where)->find();
+        if(!$info){
+            $result['msg'] = "无此记录";
+            return $result;
         }
-        return $return_data;
+        $info = $info->toArray();
+
+        $info['orders'] = implode(',',array_column($info['orders'],'order_id'));
+
+        $result['status'] = true;
+        $result['data'] = $info;
+
+        return $result;
     }
 
     /**

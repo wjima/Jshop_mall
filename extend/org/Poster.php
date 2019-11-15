@@ -46,6 +46,10 @@ class Poster
         {
             mkdirs(ROOT_PATH . 'public/static/qrcode/wechat/');
         }
+        if(!is_dir(ROOT_PATH . 'public/static/qrcode/toutiao/'))
+        {
+            mkdirs(ROOT_PATH . 'public/static/qrcode/toutiao/');
+        }
     }
 
 
@@ -70,8 +74,9 @@ class Poster
         $id             = $data['id'];          //类型值 1商品海报就是商品ID 2邀请海报无需填 3拼团的商品ID
         $group_id       = $data['group_id'];    //拼团的规则ID，拼团海报可用
         $team_id        = $data['team_id'];     //拼团的团ID，拼团海报可用
-        $source         = $data['source'];      //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
+        $source         = $data['source'];      //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5 4=头条系小程序
         $return_url     = $data['return_url'];  //返回URL地址
+        $tt_platform    = $data['tt_platform']; //头条系小程序对应的具体平台
         $path           = ROOT_PATH . 'public/static/poster/' . $type . '/' . $source . '-' . md5($type . '-' . $id . '-' . $return_url . '-' . $user_id) . '.jpg';
         $paths          = '/static/poster/' . $type . '/' . $source . '-' . md5($type . '-' . $id . '-' . $return_url . '-' . $user_id) . '.jpg';
         $return['data'] = request()->domain() . str_replace("\\", "/", $paths);
@@ -330,6 +335,105 @@ class Poster
                             'data'   => ''
                         ];
                     }
+                }
+                break;
+            case 4:
+                //头条系小程序
+                $tt = new Tt();
+                $accessToken = $tt->getAccessToken();
+                if(!$accessToken['status']){
+                    return $accessToken;
+                }
+                $width = 300;
+                $set_icon = true;
+                $code = $userModel->getShareCodeByUserId($user_id);
+
+                $qrc_text = '扫描或长按识别小程序码';
+                $page = 'pages/share/jump';
+
+                if($type == 1)
+                {
+                    //商品详情页
+                    if($code)
+                    {
+                        $parameter = share_parameter_encode('type=2&invite='.$code.'&id='.$id);
+                    }
+                    else
+                    {
+                        $parameter = share_parameter_encode('type=2&id='.$id);
+                    }
+                }
+                else if($type == 2)
+                {
+                    //首页
+                    if($code)
+                    {
+                        $parameter = share_parameter_encode('type=3&invite='.$code);
+                    }
+                    else
+                    {
+                        $parameter = share_parameter_encode('type=3');
+                    }
+                }
+                else if($type == 3)
+                {
+                    //拼团
+                    if($code)
+                    {
+                        if($team_id)
+                        {
+                            $parameter = share_parameter_encode('type=5&invite='.$code.'&id='.$id.'&team_id='.$team_id);
+                        }
+                        else
+                        {
+                            $parameter = share_parameter_encode('type=5&invite='.$code.'&id='.$id);
+                        }
+                    }
+                    else
+                    {
+                        if($team_id)
+                        {
+                            $parameter = share_parameter_encode('type=5&id='.$id.'&team_id='.$team_id);
+                        }
+                        else
+                        {
+                            $parameter = share_parameter_encode('type=5&id='.$id);
+                        }
+                    }
+                }
+                else if($type == 4)
+                {
+                    //店铺首页
+                    if($code)
+                    {
+                        $parameter = share_parameter_encode('type=9&invite='.$code.'&id='.$id);
+                    }
+                    else
+                    {
+                        $parameter = share_parameter_encode('type=9&id='.$id);
+                    }
+                }
+                else
+                {
+                    //默认首页
+                    if($code)
+                    {
+                        $parameter = share_parameter_encode('type=3&invite='.$code);
+                    }
+                    else
+                    {
+                        $parameter = share_parameter_encode('type=3');
+                    }
+                }
+
+                $wxImg = $tt->getParameterQRCode($accessToken['data'], $tt_platform, $page, $parameter, $width, $set_icon);
+                if($wxImg['status'])
+                {
+                    $qrc = $wxImg['data'];
+                }
+                else
+                {
+                    return $wxImg;
                 }
                 break;
             default:

@@ -42,7 +42,7 @@ class BillAftersales extends Manage
             }
 
             if(!input('?param.status')){
-                return error_code(10000);
+                return error_code(13228);
             }
             if(!input('?param.type')){
                 return error_code(10000);

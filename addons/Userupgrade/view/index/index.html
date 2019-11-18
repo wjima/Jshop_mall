@@ -1,0 +1,29 @@
+<div class="table-body">
+    <table id="userTable" lay-filter="userTable"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var userTables = layui.table.render({
+            elem: '#userTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: false,
+            limit: '2000',
+            url: "{:url('manage/user/grade')}?_ajax=1",
+            id: 'userTable',
+            cols: [[
+                { field: 'id', width: 100, title: '编号' },
+                { field: 'name', width: 100, title: '等级名称' },
+                { field: 'is_def', title: '是否默认' },
+                { field: 'money',edit:'text',title:'升级金额'}
+            ]]
+        });
+        layui.table.on('edit(userTable)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+        });
+    });
+</script>

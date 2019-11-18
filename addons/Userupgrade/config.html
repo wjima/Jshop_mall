@@ -1,0 +1,48 @@
+
+<div style="margin:10px;">
+    <div class="table-body">
+        <table id="userTable" lay-filter="userTable"></table>
+    </div>
+    <div>
+    说明：<br />
+    1.点击金额字段修改即可，焦点离开自动保存。<br />
+    2.用户(订单付款金额-订单退款金额)满足用户等级要求即可自动升级到此用户等级。<br />
+    3.用户只会升级用户等级，不会降等级。<br />
+    4.金额为0则不会自动升级到此等级。<br />
+    </div>
+    </div>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var userTables = layui.table.render({
+            elem: '#userTable',
+            cellMinWidth: '80',
+            page: false,
+            limit: '2000',
+            url: "{:url('manage/user/grade')}?_ajax=1",
+            id: 'userTable',
+            cols: [[
+                { field: 'id', width: 100, title: '编号' },
+                { field: 'name', width: 100, title: '等级名称' },
+                { field: 'is_def', title: '是否默认' },
+                { field: 'money',edit:'text',title:'升级金额'}
+            ]]
+        });
+        layui.table.on('edit(userTable)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            if(!value){
+                layer.msg('请输入一个数字');
+            }
+            $.ajax({
+                url: "{:get_addon_url('Userupgrade://index/index')}",
+                data: "id="+data.id+"&money=" + value,
+                success: function(res){
+                    if(!res.status){
+                        layer.msg(res.msg);
+                    }
+
+                }});
+        });
+    });
+</script>

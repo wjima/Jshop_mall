@@ -1211,8 +1211,9 @@ class User extends Api
         $data['id'] = Request::param('id', 0); //类型值 1商品海报就是商品ID 2邀请海报无需填 3拼团海报的时候就是商品ID 4店铺code
         $data['group_id'] = Request::param('group_id', 0); //拼团海报的时候是拼团规则的ID
         $data['team_id'] = Request::param('team_id', 0); //拼团海报的时候是拼团的团队ID
-        $data['source'] = Request::param('source', 1); //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5
+        $data['source'] = Request::param('source', 1); //来源 1=普通H5页面 2=微信小程序 3=微信公众号H5 4=头条系小程序
         $data['return_url'] = Request::param('return_url', ''); //返回URL地址
+        $data['tt_platform'] = Request::param('tt_platform', false); //头条系小程序对应的具体平台
 
         $poster = new Poster();
         return $poster->posterGenerate($data);

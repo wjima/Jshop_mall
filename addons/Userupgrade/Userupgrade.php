@@ -31,7 +31,7 @@ class Userupgrade extends Addons
     public function install()
     {
         $db = new Db();
-        $sql = "ALTER TABLE `" . config('database.prefix') . "user_grade` ADD `money` DECIMAL(8,2) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单升级金额' ;";
+        $sql = "ALTER TABLE `" . config('database.prefix') . "user_grade` ADD `money` DECIMAL(10,2) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单升级金额' ;";
         $db::execute($sql);
         return true;
     }

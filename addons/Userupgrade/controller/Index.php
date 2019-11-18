@@ -40,7 +40,7 @@ class Index extends AddonController
         }
 
 
-        $pattern = '/^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/';
+        $pattern = '/^(([1-9][0-9]*)|0|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/';
         preg_match($pattern,input('param.money'),$match);
         if(!$match){
             $result['msg'] = "请输入正确金额";

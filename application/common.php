@@ -1357,7 +1357,7 @@ function time_ago($posttime)
 /**
  * 获取插件状态 todo 缓存插件
  * @param $name
- * @return array|bool|mixed
+ * @return 1：已安装，false：未安装
  */
 function get_addons_status($name)
 {

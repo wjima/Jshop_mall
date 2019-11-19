@@ -260,15 +260,16 @@ uni-input div div.input-placeholder{
   overflow: hidden;
 	/* padding-bottom: 26upx; */
 }
-.img-grids .goods-name{
-	height: 72upx;
+/* .img-grids .goods-name{
+	min-height: 60upx;
 }
 .column3.img-grids .goods-name{
 	height: 68upx;
-}
+} */
 .img-grids-item{
-  width: 336upx;
-  margin: 26upx;
+  width: 336rpx;
+  height: 476rpx;
+  margin: 26rpx;
   display: inline-block;
   background-color: #fff;
   float: left;
@@ -323,12 +324,9 @@ uni-input div div.input-placeholder{
 .red-price{
   color: #FF7159 !important;
 }
-.img-list{
-
-}
-.img-list .goods-name{
-	min-height: 74upx;
-}
+/* .img-list .goods-name{
+	min-height: 68rpx;
+} */
 .img-list-item{
   padding: 30upx 26upx;
   background-color: #fff;

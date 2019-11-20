@@ -47,11 +47,10 @@ class  ArticleType extends Manage
         if (Request::isPost()) {
             return $articleTypeModel->addData(input('param.'));
         }
-        $list = $articleTypeModel->select();
         return [
             'status' => true,
             'msg'    => '获取成功',
-            'data'   => $this->fetch('', ['list' => $articleTypeModel->getTree($list)])
+            'data'   => $this->fetch('', ['list' => $articleTypeModel->getTree()])
         ];
     }
 
@@ -100,7 +99,7 @@ class  ArticleType extends Manage
         return [
             'status' => true,
             'msg'    => '获取成功',
-            'data'   => $this->fetch('', ['typeInfo' => $typeInfo])
+            'data'   => $this->fetch('', ['typeInfo' => $typeInfo,'list' => $articleTypeModel->getTree()])
         ];
     }
 

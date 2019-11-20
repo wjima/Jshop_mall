@@ -46,8 +46,7 @@ class Article extends Manage
             return $article->addData(input('param.'));
         }
         $articleTypeModel = new articleTypeModel();
-        $list             = $articleTypeModel->select();
-        return $this->fetch('add', ['list' => $articleTypeModel->getTree($list)]);
+        return $this->fetch('add', ['list' => $articleTypeModel->getTree()]);
     }
 
 
@@ -71,8 +70,7 @@ class Article extends Manage
             return error_code(10002);
         }
         $articleTypeModel = new articleTypeModel();
-        $list             = $articleTypeModel->select();
-        return $this->fetch('edit', ['info' => $info, 'list' => $list]);
+        return $this->fetch('edit', ['info' => $info, 'list' => $articleTypeModel->getTree()]);
     }
 
 

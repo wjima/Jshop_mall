@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 /**
@@ -17,44 +18,31 @@ class OrderItems extends Common
     /**
      * 更改发货数量
      * @param $order_id
-     * @param $ship_data
+     * @param $item         发货明细
      * @return string
      * @throws \think\Exception
      */
-    public function ship($order_id, $ship_data)
+    public function ship($order_id, $item)
     {
-        foreach($ship_data as $k=>$v)
-        {
-            $this->where('order_id', 'eq', $order_id)
-                ->where('id', $v[0])
-                ->setInc('sendnums', $v[1]);
-        }
-        return '';
-    }
-
-
-    /**
-     * 查询订单是否部分发货
-     * @param $order_id
-     * @return string
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function isAllShip($order_id)
-    {
-        $return = 'all';
-        $data = $this->where('order_id', 'eq', $order_id)->select();
-        foreach($data as $k=>$v)
-        {
-            if($v['nums'] != $v['sendnums'])
-            {
-                $return = 'section';
+        $isOver = true;     //是否发完了，true发完了，false未发完
+        $list = $this->where('order_id',$order_id)->select();
+        foreach ($list as $k => $v) {
+            if(isset($item[$v['product_id']])){
+                $max_num = $v['nums'] - $v['sendnums'];     //还需要减掉收货数量
+                if($item[$v['product_id']] > $max_num){     //如果发超了怎么办
+                    exception($order_id."的".$v['product_id']."发超了",10000);
+                }
+                if($isOver && $item[$v['product_id']] < $max_num){          //判断是否订单发完了，有一个没发完，就是未发完
+                    $isOver = false;
+                }
+                $v->setInc('sendnums',$item[$v['product_id']]);
+                unset($item[$v['product_id']]);
             }
         }
-        return $return;
+        //如果没发完，也报错
+        if($item){
+            exception('发货明细里包含订单之外的商品',13008);
+        }
+        return $isOver;
     }
-
-
-
 }

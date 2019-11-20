@@ -45,7 +45,7 @@ class Articles extends Api
     public function getArticleList()
     {
         $article = new Article();
-        $type_id = Request::param('type_id', false);
+        $type_id = Request::param('type_id', 0);
         $page = Request::param('page', 1);
         $limit = Request::param('limit', 10);
 
@@ -89,4 +89,26 @@ class Articles extends Api
         $result['data']['ctime'] = time_ago($result['data']['ctime']);
         return $result;
     }
+
+    //pc端文章列表页左侧，取当前兄弟文章分类和子分类，加上热门推荐文章
+    public function leftArticleType(){
+        $articleType = new ArticleType();
+        $type_id = $articleType::TOP_CLASS_PARENT_ID;
+
+        if(!input('?param.type_id')){
+            if(input('?param.article_id')){
+                $article = new Article();
+                $info = $article->where(['id'=>input('param.article_id')])->find();
+                if($info){
+                    $type_id = $info['type_id'];
+                }
+            }
+        }else{
+            $type_id = input('param.type_id');
+        }
+
+        return $articleType->leftInfo($type_id);
+
+    }
+
 }

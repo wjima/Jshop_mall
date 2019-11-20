@@ -1,0 +1,131 @@
+<div class="layui-form seller-form" action="">
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label seller-inline-2">视频名称：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="name" lay-verify="name" placeholder="请输入视频名称关键字" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="search"><i class="iconfont icon-chaxun"></i>筛选
+            </button>
+            <button type="button" class="layui-btn layui-btn-sm add"><i class="layui-icon">&#xe608;</i> 添加</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="table-body">
+    <table id="setting" lay-filter="setting"></table>
+</div>
+
+<script>
+    layui.use(['table', 'form', 'laydate', 'rate', 'upload', 'layer'], function () {
+        var table = layui.table, form = layui.form, date = layui.laydate, upload = layui.upload, rate = layui.rate, layer = layui.layer;
+
+        table.render({
+            elem: '#setting',
+            height: 'full-220',
+            cellMinWidth: '80',
+            url: "{:url('setting/videos')}", //数据接口
+            id: "setting",
+            page: true,//开启分页
+            limit: '20',
+            cols: [[ //标题栏
+                {type: 'numbers'},
+                {width:150, title:'操作',align:'center', toolbar:'#settingBar'},
+                {field: 'video_cover', title: '封面图',align:'center',width:120, templet: function(data){
+                        return '<a href="javascript:void(0);" onclick=viewImage("'+data.video_cover+'")><image style="max-width:30px;max-height:30px;" src="'+data.video_cover+'"/></a>';
+                    }
+                },
+                {field: 'name', title: '视频名称'},
+                {field: 'video_url', title: '视频路径'},
+                {field: 'ctime', title: '添加时间',align:'center',sort:true}
+            ]] //设置表头
+        });
+
+        date.render({
+            elem: '#date',
+            range: '~'
+        });
+
+        form.on('submit(search)', function (data) {
+            layui.table.reload('setting', {
+                where: data.field
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //添加弹出层
+        $(document).on('click', '.add', function () {
+            JsGet("{:url('setting/videoAdd')}", function (e) {
+                layer.open({
+                    type: 1,
+                    content: e,
+                    area: ['600px', '500px'],
+                    title: '添加',
+                    btn: ['确定', '取消'],
+                    zIndex: 1800,
+                    yes: function () {
+                        var data = $("#settingAdd").serializeArray();
+                        $.ajax({
+                            type: 'post',
+                            url: '{:url("setting/videoAdd")}',
+                            data: data,
+                            dataType: 'json',
+                            success: function (e) {
+                                if (e.status) {
+                                    layer.closeAll();
+                                    layer.msg(e.msg, {time: 1300}, function () {
+                                        layui.table.reload('setting');
+                                    });
+                                } else {
+                                    layer.msg(e.msg);
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+
+        //监听工具条
+        table.on('tool(setting)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+            if (layEvent === 'del') { //删除
+                layer.confirm('真的要删除吗?', function (index) {
+                    JsPost("{:url('setting/videoDel')}", {id: data.id,path: data.path}, function (res) {
+                        if (res.status) {
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                            layui.table.reload('setting');
+                        }
+                        layer.msg(res.msg);
+                    });
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                layer.open({
+                    type: 1
+                    ,title: false //不显示标题栏
+                    ,closeBtn: true
+                    ,area: ['610px', '410px']
+                    ,content: '<video class="edui-faked video-js"  controls src="'+data.video_url+'" id="toVideo" style="width:600px;height:400px;" poster="'+data.video_cover+'">'
+                });
+            }
+        });
+
+    })
+</script>
+<script type="text/html" id="settingBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">播放</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>

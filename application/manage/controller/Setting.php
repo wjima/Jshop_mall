@@ -2,6 +2,7 @@
 namespace app\Manage\controller;
 use app\common\controller\Manage;
 use app\common\model\Setting as SettingModel;
+use app\common\model\Videos as VideosModel;
 use Request;
 use think\Console;
 use think\facade\Cache;
@@ -36,4 +37,54 @@ class Setting extends Manage
             return $this->fetch();
         }
     }
+
+
+    /*
+        * 弹出层视频列表
+        * */
+    public function videos(){
+        $videosModel = new VideosModel();
+
+        if (\think\facade\Request::isAjax()) {
+            $filter = input('request.');
+            return $videosModel->tableData($filter);
+        }
+        return $this->fetch();
+    }
+
+
+    /*
+     * 视频添加
+     * */
+    public function videoAdd(){
+        $this->view->engine->layout(false);
+
+        if (Request::isPost()) {
+            $videosModel = new VideosModel();
+            return $videosModel->addData(input('param.'));
+        }
+        return $this->fetch('setting/video_add');
+    }
+
+
+    /*
+     * 视频删除
+     * */
+    public function videoDel(){
+        $videosModel = new VideosModel();
+        $result  = [
+            'status' => true,
+            'msg'    => '删除成功'
+        ];
+        $id = input('param.id/d');
+        $url = input('param.path');
+        $res = $videosModel->destroy($id);
+        if (!unlink($url) && !$res) { // 删除视频文件
+            $result['status'] = false;
+            $result['msg']    = '删除失败';
+        }
+        return $result;
+    }
+
+
 }

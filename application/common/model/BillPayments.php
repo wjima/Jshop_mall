@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use org\login\Wxofficial;
 use think\Validate;
 use think\Db;
 use think\model\concern\SoftDelete;
@@ -684,20 +685,18 @@ class BillPayments extends Common
             return $result;
         }
 
-        $userWxModel = new UserWx();
-//        if($user_id != 0){        //这里强制注释掉之后，所有的公众号支付都得走无感登陆
-//            $where[] = ['user_id','eq',$user_id];
-//            $where[] = ['type', 'eq', $userWxModel::TYPE_OFFICIAL];
-//            $info = $userWxModel->where($where)->find();
-//            if($info){
-//                return $result;
-//            }
-//        }
+
+
         //到这里基本上就说明
         if(!isset($params['url'])){
             return error_code(10067);
         }
-        return $userWxModel->officialMiniLogin($params['url']);
+
+        $m = new Wxofficial();
+        $result['msg'] = $m->geturl($params['url'],2);
+        $result['status'] = false;
+        $result['data'] = 10066;
+        return $result;
     }
 
     private function payTitle($data,$rel){

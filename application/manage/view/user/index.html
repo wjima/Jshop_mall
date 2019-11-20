@@ -155,16 +155,32 @@
                 { field: 'mobile', title: '手机号码', width: 150 },
                 { field: 'grade_name', title: '等级', width: 150 },
                 { field: 'sex', title: '性别' },
-                { field: 'birthday', title: '生日', width: 150 },
                 {
                     field: 'avatar', title: '头像',
                     templet: function (d) {
                         if (d.avatar) {
-                            return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:30px;max-height:30px;" src="' + d.avatar + '"/></a>';
+                            return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:28px;max-height:28px;" src="' + d.avatar + '"/></a>';
                         } else {
                             return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
                         }
                     }, width: 80
+                },
+                {
+                    field: 'userWx', title: '第三方账号',
+                    templet: function (d) {
+                        var the_name = new Array(5)
+                        the_name[1] = "微信公众号"
+                        the_name[2] = "微信小程序"
+                        the_name[3] = "支付宝小程序"
+                        the_name[4] = "微信APP快捷登陆"
+                        the_name[5] = "QQ在APP中快捷登陆"
+                        var html = "";
+                        console.log(d.user_wx);
+                        for(wx in d.user_wx){
+                            html = html + "<img src='/static/images/userwx_"+d.user_wx[wx].type+".jpg' style='width:28px;' title='" +the_name[d.user_wx[wx].type]+"' />";
+                        }
+                        return html;
+                    }, width: 100
                 },
                 { field: 'nickname', title: '昵称' },
                 {
@@ -173,6 +189,7 @@
                         return html;
                     }
                 },
+                { field: 'birthday', title: '生日', width: 150 },
                 {
                     title: '积分', templet: function (data) {
                         var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';

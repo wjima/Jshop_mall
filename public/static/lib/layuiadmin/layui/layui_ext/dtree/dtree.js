@@ -2180,16 +2180,15 @@ layui.define(['jquery','layer','form'], function(exports) {
 		}
 	};
 
-
-	//实现复选框点击，父选框选中，子选框选中，子选框去掉，父选框不去掉
+	//实现复选框点击，父选框选中，子选框选中，子选框去掉，父选框不去掉,也就是半选  add by www.jihainet.com@19.11.20
 	DTree.prototype.checkAllOrSelf =  function($i) {
 		var _this = this;
 		//$i 当前点击的checkbox
 		var dataPar = $i.attr("data-par"),
-				dataType = $i.attr("data-type"),
-				$li = $i.closest(dataPar),		//当前checkbox的上级li节点
-				$parent_li = $i.parents(dataPar),		//当前checkbox的所有父级li节点
-				$child_li = $li.find(dataPar);	//当前checkbox的上级li节点下的所有子级li节点
+			dataType = $i.attr("data-type"),
+			$li = $i.closest(dataPar),		//当前checkbox的上级li节点
+			$parent_li = $i.parents(dataPar),		//当前checkbox的所有父级li节点
+			$child_li = $li.find(dataPar);	//当前checkbox的上级li节点下的所有子级li节点
 
 		if ($i.attr("data-checked") == "1") {
 			// 处理当前节点的选中状态

@@ -25,7 +25,6 @@ class Addons extends Common
     protected $updateTime = 'utime';
 
     const INSTALL_STATUS = 1;//已安装
-    const UNINSTALL_STATUS = 0;//未安装
     const STATUS_DISENABLE = 2; //禁用
 
     /**

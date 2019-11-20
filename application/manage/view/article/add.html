@@ -19,13 +19,20 @@
         </div>
     </div>
 
-
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>文章标题：</label>
         <div class="layui-input-inline seller-inline-5">
             <input type="text" name="title" required  lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
         </div>
     </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>简介：</label>
+        <div class="layui-input-inline">
+            <textarea name="brief" required lay-verify="required" placeholder="请输入简介" class="layui-textarea" style="width:500px;"></textarea>
+        </div>
+    </div>
+    <br>
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>封面图：</label>
@@ -44,8 +51,8 @@
     <div class="layui-form-item" style="margin: 20px;">
         <label class="layui-form-label">是否发布：</label>
         <div class="layui-input-block">
-            <input type="radio" name="is_pub" value="1" title="立即发布">
-            <input type="radio" name="is_pub" value="2" title="暂不发布" checked>
+            <input type="radio" name="is_pub" value="1" title="立即发布" checked>
+            <input type="radio" name="is_pub" value="2" title="暂不发布">
         </div>
     </div>
 

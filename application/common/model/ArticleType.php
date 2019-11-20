@@ -13,14 +13,17 @@ use think\Validate;
 
 class ArticleType extends Common
 {
+    const TOP_CLASS_PARENT_ID = 0;          //顶级分类父类ID
 
     protected $rule = [
         'type_name' => 'require|max:25',
+        'sort'      => 'number',
     ];
 
     protected $msg = [
         'type_name.require' => '分类名称必须',
         'type_name.max'     => '名称最多不能超过25个字符',
+        'sort'              => '排序必须是数字',
     ];
 
 
@@ -37,7 +40,7 @@ class ArticleType extends Common
         if (isset($post['limit'])) {
             $limit = $post['limit'];
         } else {
-            $limit = 50; // 后台列表分页数量默认50条
+            $limit = 5000; // 后台列表分页数量默认50条
         }
         $tableWhere = $this->tableWhere($post);
         $list       = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
@@ -48,6 +51,14 @@ class ArticleType extends Common
         $re['count'] = $list->total();
         $re['data']  = $data;
         return $re;
+    }
+
+    protected function tableWhere($post)
+    {
+        $result['where'] = [];
+        $result['field'] = "*";
+        $result['order'] = 'sort asc';
+        return $result;
     }
 
 
@@ -97,13 +108,19 @@ class ArticleType extends Common
             'msg'    => '保存成功',
             'data'   => []
         ];
-
+        $where = [
+                'id' => $data['id']
+            ];
+        if(!$this->checkDie($data['id'],$data['pid'])){
+            $result['msg']    = '无法选择自己和自己的子级为父级';
+            return $result;
+        }
         $validate = new Validate($this->rule, $this->msg);
         if (!$validate->check($data)) {
             $result['status'] = false;
             $result['msg']    = $validate->getError();
         } else {
-            if ($this->allowField(true)->save($data, ['id' => $data['id']]) === false) {
+            if ($this->allowField(true)->save($data, $where) === false) {
                 $result['status'] = false;
                 $result['msg']    = '保存失败';
             }
@@ -122,18 +139,55 @@ class ArticleType extends Common
      *
      * @return array
      */
-    public function getTree($arr, $pid = 0, $step = 0)
+    public function getTree($arr = [], $pid = 0, $step = 0)
     {
-        global $tree;
+        if(!$arr){
+            $arr = $this->order('sort asc')->select();
+            if(!$arr->isEmpty()){
+                $arr = $arr->toArray();
+            }
+        }
+        $tree = [];
         foreach ($arr as $key => $val) {
             if ($val['pid'] == $pid) {
                 $flg              = str_repeat('└─', $step);
                 $val['type_name'] = $flg . $val['type_name'];
                 $tree[]           = $val;
-                $this->getTree($arr, $val['id'], $step + 1);
+                $tree = array_merge($tree,$this->getTree($arr, $val['id'], $step + 1));
             }
         }
         return $tree;
+    }
+
+
+    /**
+     * 预先判断死循环
+     * @param $id       当前id
+     * @param $p_id     预挂载的父id
+     * @param int $n    循环次数
+     * @return bool     如果为true就是通过了，否则就是未通过
+     */
+    private function checkDie($id,$pid,$n=10)
+    {
+        //设置计数器，防止极端情况下陷入死循环了（其他地方如果设置的有问题死循环的话，这里就报错了）
+        if($n <= 0){
+            return false;
+        }
+        if($id == $pid){
+            return false;
+        }
+        if($pid == self::TOP_CLASS_PARENT_ID){
+            return true;
+        }
+        $pinfo = $this->where(['id'=>$pid])->find();
+        if(!$pinfo){
+            return false;
+        }
+        if($pinfo['pid'] == $id){
+            return false;
+        }
+        $n--;
+        return $this->checkDie($id,$pinfo['pid'],$n);
     }
 
 
@@ -233,4 +287,51 @@ class ArticleType extends Common
     {
         return $this->hasMany('Article');
     }
+
+    /**
+     * pc端文章列表页和文章详情页左侧使用，取当前文章分类的兄弟节点和子节点，并且把热门文章怼出来
+     *
+     * @param $type_id
+     */
+    public function leftInfo($type_id){
+        if($type_id != self::TOP_CLASS_PARENT_ID){
+            $info = $this->where(['id'=>$type_id])->find();
+            if($info){
+                $pid = $info['pid'];
+            }else{
+                $pid = self::TOP_CLASS_PARENT_ID;
+            }
+        }else{
+            $pid = self::TOP_CLASS_PARENT_ID;
+        }
+        $type = $this->where(['pid'=>$pid])->order('sort asc')->select();
+        foreach($type as $k => $v){
+            $type[$k]['child'] = $this->where(['pid'=>$v['id']])->order('sort asc')->select();
+        }
+
+        //取热销文章
+        $articleModel = new Article();
+        $hot = $articleModel
+            ->field('id,title,cover,ctime,pv')
+            ->where(['is_pub'=>$articleModel::IS_PUB_YES])
+            ->order("pv desc")
+            ->limit(5)
+            ->select();
+        foreach ($hot as $k => $v)
+        {
+            $hot[$k]['cover'] = _sImage($v['cover']);
+            $hot[$k]['ctime'] = getTime($v['ctime']);
+        }
+
+        $result = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [
+                'list' => $type,
+                'hot' => $hot
+            ]
+        ];
+        return $result;
+    }
+
 }

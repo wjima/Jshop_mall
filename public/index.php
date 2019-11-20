@@ -1,12 +1,10 @@
 <?php
 // +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// | JSHOP [ 小程序商城 ]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2006-2016 http://thinkphp.cn All rights reserved.
+// | Copyright (c) 2019 https://www.jihainet.com All rights reserved.
 // +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
+// | Author: sin <sin@jihainet.com>
 // +----------------------------------------------------------------------
 
 // [ 应用入口文件 ]
@@ -17,7 +15,7 @@ define('DS',DIRECTORY_SEPARATOR);
 define('ADDON_PATH', ROOT_PATH . 'addons'   . DIRECTORY_SEPARATOR);
 
 if(!file_exists(ROOT_PATH.'/public/install/install.lock')&&!file_exists(ROOT_PATH.'/config/install.lock')){
-    header('Location:/install');exit;
+    header('Location:/install/');exit;
 }
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';

@@ -250,19 +250,27 @@ class Sms extends Common
      */
     private function send_sms($mobile, $content, $code, $params)
     {
-
+        $result = [
+            'status' => true,
+            'data' => '',
+            'msg' => '发送成功'
+        ];
         $re = hook('sendsms', ['params' => [
             'mobile'  => $mobile,
             'content' => $content,
             'code'    => $code,
             'params'  => $params,
         ]]);
-        if (isset($re[0]['status']) && $re[0]['status']) {
-            return ['status' => true, 'msg' => '发送成功！'];
-        } else {
-            $msg = isset($re[0]['msg']) ? $re[0]['msg'] : '发送失败';
-            return ['status' => false, 'msg' => $msg];
+        if($re && is_array($re)){
+            if (isset($re[0]['status']) && $re[0]['status']) {
+//                $result['status'] = true;
+//                $result['msg'] = '发送成功';
+            } else {
+                $result['status'] = false;
+                $result['msg'] = isset($re[0]['msg']) ? $re[0]['msg'] : '发送失败';
+            }
         }
+        return $result;
     }
 
 

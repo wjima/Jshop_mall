@@ -139,6 +139,10 @@ class Carousel extends Manage
     public function getArticle()
     {
         $this->view->engine->layout(false);
+        $article_id_key = Request::param('article_id_key');
+        $this->assign('article_id_key', $article_id_key);
+        $article_name_key = Request::param('article_name_key');
+        $this->assign('article_name_key', $article_name_key);
         return $this->fetch('getArticle');
     }
 

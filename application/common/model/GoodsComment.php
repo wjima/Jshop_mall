@@ -77,6 +77,9 @@ class GoodsComment extends Common
                     $res[$k]['images_url'] = $imagesArr;
                 }
             }
+            if(!$v['addon']){       //nullb变成空,否则前端显示有偶问题。
+                $res[$k]['addon'] = "";
+            }
         }
         $count = $this->where($where)
             ->count();

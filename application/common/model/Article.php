@@ -31,6 +31,7 @@ class Article extends Common
         'cover'         =>  'require',
         'title'         =>  'require|max:200',
         'content'       =>  'require',
+        'brief'         =>  'max:100',
         'type_id'       =>  'require',
         'sort'          =>  'number',
     ];
@@ -39,6 +40,7 @@ class Article extends Common
         'cover.require'     =>  '请上传文章封面图',
         'title.require'     =>  '文章标题必须填写',
         'title.max'         =>  '标题名称最多不能超过200个字符',
+        'brief.max'         =>  '文章简介最多不能超过100个字符',
         'content.require'   =>  '文章内容必须填写',
         'type_id.require'   =>  '请选择文章分类',
         'sort.number'       =>  '排序必须是数字类型',
@@ -59,7 +61,7 @@ class Article extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list = $this->with('articleType')->field('id,title,cover,type_id,ctime,utime,sort,is_pub')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $list = $this->with('articleType')->field('id,title,cover,type_id,ctime,utime,sort,is_pub,pv')->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         foreach($list as $key => $val)
         {
             $list[$key]['cover'] = _sImage($val['cover']);
@@ -84,6 +86,7 @@ class Article extends Common
      */
     public function addData($data)
     {
+
         $validate = new Validate($this->rule,$this->msg);
         $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
         if(!$validate->check($data))
@@ -168,25 +171,31 @@ class Article extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function articleList($type_id = false, $page = 1, $limit = 10)
+    public function articleList($type_id = 0, $page = 1, $limit = 10)
     {
         $result = [
             'status' =>  true,
             'msg'    =>  '获取成功',
             'data'   =>  []
         ];
+        $articleTypeModel = new ArticleType();
+
+        $type_name = "文章分类";
+        if($type_id != 0){
+            $info = $articleTypeModel->where('id',$type_id)->find();
+            if($info){
+                $type_name = $info['type_name'];
+            }
+        }
+
 
         // 发布状态
         $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
+        $where[] = ['type_id', 'eq', $type_id];
 
-        // 分类id
-        if($type_id)
-        {
-            $where[] = ['type_id', 'eq', $type_id];
-        }
         $list = $this->where($where)
-            ->field('id,title,cover,type_id,ctime,utime,sort,is_pub')
-            ->order('sort asc,ctime DESC')
+            ->field('id,title,cover,type_id,ctime,utime,sort,is_pub,pv,brief')
+            ->order('sort desc')
             ->page($page, $limit)
             ->select();
 
@@ -202,11 +211,22 @@ class Article extends Common
                 $v['ctime'] = getTime($v['ctime']);
             }
         }
+
+        //子文章分类
+        $articleTypeModel = new ArticleType();
+        foreach ($list as &$v){
+            $res = $articleTypeModel->where(['id'=>$v['type_id']])->find();
+            $v['type_name'] = $res['type_name'];
+        }
+        $articleTypeList = $articleTypeModel->where('pid', $type_id)->order('sort asc')->select();
+
         $result['data'] = [
             'list' => $list,
             'count' => $count,
             'page' => $page,
-            'limit' => $limit
+            'limit' => $limit,
+            'article_type' => $articleTypeList,
+            'type_name' => $type_name
         ];
 
         return $result;
@@ -231,7 +251,7 @@ class Article extends Common
 
         $where[] = ['id', 'eq', $article_id];
         $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
-        $data = $this->field('id,title,content,type_id,ctime,utime')
+        $data = $this->field('id,title,content,type_id,ctime,utime,pv,brief')
             ->where($where)
             ->find();
 
@@ -242,7 +262,11 @@ class Article extends Common
             $typeModel = new ArticleType();
             $data['article_type'] = $typeModel->getArticleTypeFather($data['type_id']);
             $data['ctime'] = time_ago($data['ctime']);
-
+            $add_pv = $this->where(['id'=>$article_id])->update(['pv'=>$data['pv']+1]);
+            if(!$add_pv){
+                $result['msg'] = '失败';
+                return $result;
+            }
             $result['status'] = true;
             $result['msg'] = '获取成功';
             $result['data'] = $data;

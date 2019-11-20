@@ -46,7 +46,7 @@
             <label class="layui-form-label w100">订单号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="order_id" lay-verify="title" placeholder="请输入订单号" autocomplete="off"
-                    class="layui-input">
+                    class="layui-input" value="{$search.order_id}">
             </div>
         </div>
         <div class="layui-inline">
@@ -64,12 +64,12 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label w100">售后类型：</label>
+            <label class="layui-form-label w100">商品状态：</label>
             <div class="layui-input-inline seller-inline-3">
                 <select name="type" lay-verify="">
                     <option value=""></option>
-                    <option value="1">只退款</option>
-                    <option value="2">退款退货</option>
+                    <option value="1">未收到货</option>
+                    <option value="2">已收到货</option>
                 </select>
             </div>
         </div>
@@ -135,7 +135,7 @@
                 { field: 'aftersales_id', width: 140, sort: true, title: '售后单号' },
                 { field: 'order_id', width: 140, sort: true, title: '订单号' },
                 { field: 'status_name', width: 100, title: '状态' },
-                { field: 'type', width: 100, title: '售后类型' },
+                { field: 'type', width: 100, title: '商品状态' },
                 { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
                 { field: 'refund', width: 100, title: '退款金额' },
                 { field: 'reason', title: '原因' },

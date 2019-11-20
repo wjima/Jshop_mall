@@ -142,8 +142,9 @@
 
             <div class="layui-col-md6">
                 <div class="layui-card">
-                    <div class="layui-card-header">
-                        <i class="iconfont icon-dingdan1"></i>最近登录
+                    <div class="layui-card-header loading-more">
+                        <div><i class="iconfont icon-dingdan1"></i>最近登录</div>
+                        <a href="{:url('OperationLog/userLog')}">查看更多>></a>
                     </div>
 
                     <div class="layui-card-body" id="loginLog"></div>
@@ -174,31 +175,31 @@
             </script>
 
 
-            <script id="log" type="text/html">
+        <script id="log" type="text/html">
 
-                {{# if(d.length === 0){ }} 没有历史记录 {{# }else{ }}
-                <table class="layui-table">
-                    <thead>
-                        <tr>
-                            <th>登录账号</th>
-                            <th>状态</th>
-                            <th>记录时间</th>
-                            <th>登录IP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{# layui.each(d, function(index, item){ }}
-                        <tr>
-                            <td>{{ item.username }}</td>
-                            <td>{{ item.state }}</td>
-                            <td>{{ item.ctime }}</td>
-                            <td>{{ item.ip }}</td>
-                        </tr>
-                        {{# }); }}
-                    </tbody>
-                </table>
-                {{# } }}
-            </script>
+            {{# if(d.length === 0){ }} 没有历史记录 {{# }else{ }}
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>状态</th>
+                    <th>登录用户</th>
+                    <th>记录时间</th>
+                    <th>登录IP</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{# layui.each(d, function(index, item){ }}
+                <tr>
+                    <td>{{ item.state }}</td>
+                    <td>{{ item.username }}</td>
+                    <td>{{ item.ctime }}</td>
+                    <td>{{ item.ip }}</td>
+                </tr>
+                {{# }); }}
+                </tbody>
+            </table>
+            {{# } }}
+        </script>
 
             <script id="version" type="text/html">
                 <table class="layui-table">

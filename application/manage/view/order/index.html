@@ -125,6 +125,8 @@
                     class="iconfont icon-chaxun"></i>筛选</button>
             <button class="layui-btn layui-btn-sm" id="pay-order-array"><i
                     class="iconfont icon-zhifu-01"></i>批量支付</button>
+            <button class="layui-btn layui-btn-sm" id="ship-order-array"><i
+                    class="layui-icon layui-icon-cart"></i>合并发货</button>
             <button class="layui-btn layui-btn-sm" id="cancel-order-array"><i
                     class="iconfont icon-cancel"></i>取消</button>
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="export-order"><i
@@ -235,7 +237,9 @@
                 },
                 { field: 'ctime', title: '下单时间', width: 160, align: 'center' },
                 { field: 'status_text', title: '订单状态', width: 90, align: 'center' },
-                { field: 'after_sale_status', title: '售后状态', width: 150, align: 'center' },
+                { field: 'after_sale_status', title: '售后状态', width: 150, align: 'center',templet: function(data){
+                    return '<a href="{:url('/manage/bill_aftersales/index')}?order_id=' + data.order_id + '" style="color:red">'+data.after_sale_status+'</a>';
+                }},
                 { field: 'username', title: '用户', width: 120, align: 'center' },
                 { field: 'ship_mobile', title: '收货人手机号', width: 120, align: 'center' },
                 { field: 'area_name', title: '收货地址', width: 110, align: 'center' },
@@ -386,9 +390,7 @@
                             content: e.data.tpl
                         });
                     } else {
-                        layer.msg(e.msg, { time: 1300 }, function () {
-                            table.reload();
-                        });
+                        layer.msg(e.msg, { time: 1300 });
                     }
                 });
             } else {
@@ -400,6 +402,80 @@
             pay_order_array ? pay_order_array.call(this) : '';
             return false;
         });
+
+        //单条记录去发货
+        $(document).on('click', '.ship-order', function () {
+            var id = $(this).attr('data-id');
+            order_ship(id);
+            return false;
+        });
+        //批量去发货
+        $('#ship-order-array').on('click', function () {
+            var checkStatus = tables.checkStatus('order'), data = checkStatus.data;
+            var ids = '';
+            $.each(data, function () {
+                ids += this.order_id + ',';
+            });
+            ids = ids.substring(0, ids.length - 1);
+            if (ids) {
+                order_ship(ids);
+            } else {
+                layer.msg('请勾选需要发货的订单');
+            }
+            return false;
+        });
+
+        //发货请求
+        var order_ship = function (ids) {
+            JsGet('{:url("order/ship")}?order_id='+ids, function(e){
+                if (e.status) {
+                    if(e.msg != ''){
+                        layer.confirm(e.msg, {
+                            title: '请注意！',
+                            btn: ['确定', '取消'],
+                        }, function(){
+                            layer.closeAll();
+                            to_ship(e.data);
+                        }, function(){
+                            layer.closeAll();
+                        });
+                    }else{
+                        to_ship(e.data);
+                    }
+                } else {
+                    layer.alert(e.msg, {
+                        closeBtn: 0,
+                        title: '发货失败',
+                    }, function(){
+                        layer.closeAll();
+                    });
+                }
+            });
+        };
+
+        //发货提交保存
+        function to_ship(tpl){
+            window.box = layer.open({
+                type: 1,
+                content: tpl,
+                area: ['800px', '650px'],
+                title: '订单发货',
+                btn: ['确认', '取消'],
+                yes: function (index, layero) {
+                    JsPost('{:url("order/ship")}', $('#all_ship_form').serialize(), function(res){
+                        if (res.status) {
+                            layer.msg('发货成功', { time: 1300 }, function () {
+                                layer.close(index);
+                                table.reload();
+                            });
+
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    });
+                }
+            });
+        }
 
         //去支付
         $(document).on('click', '.goto-pay', function () {
@@ -420,60 +496,55 @@
             return false;
         });
 
-        //发货页面
-        $(document).on('click', '.ship-order', function () {
-            var id = $(this).attr('data-id');
-            JsGet('{:url("order/ship")}?order_id='+id, function(e){
-                if(e.status){
-                    window_box = layer.open({
-                        type: 1,
-                        title: '订单发货',
-                        area: ['800px', '500px'], //宽高
-                        content: e.data
-                    });
-                }else{
-                    layer.msg(e.msg);
-                }
-            });
-            return false;
-        });
+
 
         //发货生成
-        $(document).on('click', '.order-ship-btn', function () {
-            var ship_data = [];
-            var order_id = $("#order_id").val();
-            var logi_no = $("#logi_no").val();
-            var logi_code = $("#logi_code").val();
-            var memo = $("#memo").val();
-            var flag = true;
-            $(".order-ship-nums").each(function () {
-                var ship_num = $(this).val();
-                var max = $(this).attr('max');
-                var id = $(this).attr('data-id');
-                if (ship_num > max || ship_num < 0) {
-                    flag = false;
-                    layer.msg('发货数量不符合真实情况');
-                    return false;
-                } else {
-                    var item = [id, ship_num];
-                    ship_data.push(item);
-                }
-            });
-            if (flag) {
-                JsPost('{:url("order/ship")}', {
-                    'order_id': order_id,
-                    'logi_no': logi_no,
-                    'memo': memo,
-                    'logi_code': logi_code,
-                    'ship_data': ship_data
-                }, function(e){
-                    layer.close(window_box);
-                    layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload();
-                    });
-                });
-            }
-        });
+        // $(document).on('click', '.order-ship-btn', function () {
+        //     var ship_data = [];
+        //     var order_id = $("#order_id").val();
+        //     var logi_no = $("#logi_no").val();
+        //     var logi_code = $("#logi_code").val();
+        //     var memo = $("#memo").val();
+        //     var ship_info = $("#ship_info").val();
+        //     var number = $("#number").val();
+        //     var flag = true;
+        //     var totle_num = 0;
+        //     $(".order-ship-nums").each(function () {
+        //         var ship_num = $(this).val();
+        //         var max = $(this).attr('max');
+        //         var id = $(this).attr('data-id');
+        //         if (ship_num > max || ship_num < 0) {
+        //             flag = false;
+        //             layer.msg('发货数量不符合真实情况');
+        //             return false;
+        //         } else {
+        //             var item = [id, ship_num];
+        //             ship_data.push(item);
+        //             totle_num += ship_num;
+        //         }
+        //     });
+        //     if (totle_num < 1) {
+        //         flag = false;
+        //         layer.msg('请至少选择发送一件商品');
+        //         return false;
+        //     }
+        //     if (flag) {
+        //         JsPost('{:url("order/ship")}', {
+        //             'order_id': order_id,
+        //             'logi_no': logi_no,
+        //             'memo': memo,
+        //             'logi_code': logi_code,
+        //             'ship_info': ship_info,
+        //             'number': number,
+        //             'ship_data': ship_data
+        //         }, function(e){
+        //             layer.close(window_box);
+        //             layer.msg(e.msg, { time: 1300 }, function () {
+        //                 table.reload();
+        //             });
+        //         });
+        //     }
+        // });
 
         //取消订单
         $(document).on('click', '.cancel-order', function () {
@@ -682,5 +753,4 @@
             }
         });
     });
-
 </script>

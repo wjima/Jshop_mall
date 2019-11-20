@@ -173,9 +173,9 @@ return [
                 'code' => 'editPwd',
                 'is_login' => true
             ],
-            'forgotpwd' => [
-                'code' => 'forgotPwd',
-                'is_login' => true
+            'forgetpwd' => [
+                'code' => 'forgetPwd',
+                'is_login' => false
             ],
             'balancelist' => [
                 'code' => 'userBalance',
@@ -244,6 +244,14 @@ return [
             'shareurl' => [
                 'code' => 'shareUrl',
                 'is_login' => false
+            ],
+            'myinvoicelist' => [
+                'code' => 'myInvoiceList',
+                'is_login' => true
+            ],
+            'ttlogin' => [
+                'code' => 'ttLogin',
+                'is_login' => false
             ]
         ]
     ],
@@ -283,6 +291,10 @@ return [
             ],
             'getweixinmessage'=>[
                 'code'=>'getWeixinMessage',
+                'is_login' => false
+            ],
+            'leftarticletype' => [
+                'code' => 'leftArticleType',
                 'is_login' => false
             ]
         ]
@@ -551,6 +563,10 @@ return [
                 'code' => 'getInfo',
                 'is_login' => true
             ],
+            'checkpay' => [
+                'code' => 'checkPay',
+                'is_login' => false
+            ]
         ]
     ],
 

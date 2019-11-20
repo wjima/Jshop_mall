@@ -51,12 +51,16 @@ class InvoiceRecord extends Common
             'msg' => '',
             'data' => ''
         ];
-        $where[] = ['name', 'eq', $name];
-        $where[] = ['frequency', '>=', 2];
-        $info = $this->field('code')->where($where)->find();
+        $where[] = ['name', 'like', '%'.$name.'%'];
+        //$where[] = ['frequency', '>=', 2];
+        $info = $this->field('name,code,frequency')
+            ->where($where)
+            ->order('frequency', 'DESC')
+            ->page(1, 4)
+            ->select();
         if($info)
         {
-            $return['data'] = $info['code'];
+            $return['data'] = $info;
         }
 
         return $return;

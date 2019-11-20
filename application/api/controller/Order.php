@@ -98,57 +98,43 @@ class Order extends Api
      */
     public function details()
     {
-        $order_id = input('order_id');
+        $order_id = Request::param('order_id');
         $user_id  = $this->userId;
         $model    = new orderModel();
         $result   = $model->getOrderInfoByOrderID($order_id, $user_id);
         if($result)
         {
-            $return_data = array(
+            $return_data = [
                 'status' => true,
                 'msg'    => '获取成功',
                 'data'   => $result
-            );
+            ];
         }
         else
         {
-            $return_data = array(
+            $return_data = [
                 'status' => false,
                 'msg'    => '获取失败',
                 'data'   => $result
-            );
+            ];
         }
         return $return_data;
     }
 
 
     /**
-     * 确认收货
+     * 确认收货,单纯的只是订单确认收货，代表订单的货收到了，可能有多个包裹，和包裹没关系
      * @return array
      */
     public function confirm()
     {
-        $order_id = input('order_id');
-        $user_id  = $this->userId;
+        if(!input('?param.order_id')){
+            return error_code(13309);
+        }
+
         $model    = new orderModel();
-        $result   = $model->confirm($order_id, $user_id);
-        if($result)
-        {
-            $return_data = array(
-                'status' => true,
-                'msg'    => '确认收货成功',
-                'data'   => $order_id
-            );
-        }
-        else
-        {
-            $return_data = array(
-                'status' => false,
-                'msg'    => '确认收货失败',
-                'data'   => $order_id
-            );
-        }
-        return $return_data;
+        return  $model->confirm(input('param.order_id'), $this->userId);
+
     }
 
 
@@ -203,6 +189,9 @@ class Order extends Api
     /**
      * 创建订单
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function create()
     {
@@ -307,12 +296,12 @@ class Order extends Api
      */
     public function getOrderList()
     {
-        $input = array(
-            'status'  => input('status'),
-            'page'    => input('page'),
-            'limit'   => input('limit'),
+        $input = [
+            'status'  => Request::param('status'),
+            'page'    => Request::param('page'),
+            'limit'   => Request::param('limit'),
             'user_id' => $this->userId
-        );
+        ];
         $model = new orderModel();
         $data  = $model->getListFromWxApi($input);
         $return_data = array(
@@ -376,7 +365,11 @@ class Order extends Api
             'page'    => input('page/d', 1),
             'limit'   => input('limit/d', config('jshop.page_limit')),
             'user_id' => $this->userId,
+            'order_id' => ''
         ];
+        if(input('?param.order_id')){
+            $data['order_id'] = input('param.order_id');
+        }
         $asModel = new BillAftersales();
         return $asModel->getListApi($data);
     }
@@ -424,22 +417,18 @@ class Order extends Api
     }
 
 
-    /**
-     * 查看订单售后状态
-     * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function aftersalesStatus()
-    {
-        if(!input("?param.order_id"))
-        {
-            return error_code(13100);
-        }
-        $asModel   = new BillAftersales();
-        return $asModel->orderAftersalesSatatus(input('param.order_id'), $this->userId);
-    }
+//    /**
+//     * 废弃方法，建议直接用order.details接口
+//     * 查看订单售后状态,
+//     * @return array|mixed
+//     * @throws \think\db\exception\DataNotFoundException
+//     * @throws \think\db\exception\ModelNotFoundException
+//     * @throws \think\exception\DbException
+//     */
+//    public function aftersalesStatus()
+//    {
+//        return $this->details();
+//    }
 
 
     /**
@@ -459,6 +448,10 @@ class Order extends Api
         {
             return error_code(10051);
         }
+        if(!input("?param.refund"))
+        {
+            return error_code(10051);
+        }
         $items = [];
         $post = input('param.');
         if(isset($post['items']))
@@ -474,7 +467,7 @@ class Order extends Api
         {
             $images = $post['images'];
         }
-        $refund = input('param.refund/f', 0);        //退款金额，如果type是退款，这个值无所谓，
+        $refund = input('param.refund/f');
         //formId
         $formId = input('param.formId', "");
         $billAftersalesModel = new BillAftersales();

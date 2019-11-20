@@ -1,0 +1,490 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+		// #ifdef H5
+		"titleNView": false,
+		// #endif
+        "enablePullDownRefresh": true
+      }
+    },
+	{
+	  "path": "pages/index/custom",
+	  "style": {
+	    "navigationBarTitleText": "页面",
+		// #ifdef H5
+		"titleNView": false,
+		// #endif
+	    "enablePullDownRefresh": true
+	  }
+	},
+    {
+      "path": "pages/index/search",
+      "style": {
+        "navigationBarTitleText": "搜索"
+      }
+    },
+    {
+      "path": "pages/classify/classify",
+      "style": {
+        "navigationBarTitleText": "分类"
+      }
+    },
+    {
+      "path": "pages/classify/index",
+      "style": {
+        "navigationBarTitleText": "商品列表"
+      }
+    },
+    {
+      "path": "pages/cart/index/index",
+      "style": {
+        "navigationBarTitleText": "购物车"
+      }
+    },
+    {
+      "path": "pages/member/index/index",
+      "style": {
+		// #ifdef H5
+		"titleNView": false,
+		// #endif
+		"navigationBarTitleText": "个人中心"
+      }
+    },
+    {
+      "path": "pages/member/coupon/index",
+      "style": {
+        "navigationBarTitleText": "我的优惠券"
+      }
+    },
+    {
+      "path": "pages/member/balance/index",
+      "style": {
+        "navigationBarTitleText": "我的余额"
+      }
+    },
+    {
+      "path": "pages/member/balance/recharge",
+      "style": {
+        "navigationBarTitleText": "充值"
+      }
+    },
+    {
+      "path": "pages/member/balance/withdraw_cash",
+      "style": {
+        "navigationBarTitleText": "提现"
+      }
+    },
+    {
+      "path": "pages/member/balance/details",
+      "style": {
+        "navigationBarTitleText": "余额明细"
+      }
+    },
+    {
+      "path": "pages/member/balance/cashlist",
+      "style": {
+        "navigationBarTitleText": "提现记录"
+      }
+    },
+    {
+      "path": "pages/member/balance/bankcard",
+      "style": {
+        "navigationBarTitleText": "我的银行卡"
+      }
+    },
+    {
+      "path": "pages/member/balance/add_bankcard",
+      "style": {
+        "navigationBarTitleText": "添加银行卡"
+      }
+    },
+    {
+      "path": "pages/member/collection/index",
+      "style": {
+        "navigationBarTitleText": "我的收藏"
+      }
+    },
+    {
+      "path": "pages/member/history/index",
+      "style": {
+        "navigationBarTitleText": "我的足迹"
+      }
+    },
+    {
+      "path": "pages/member/address/list",
+      "style": {
+        "navigationBarTitleText": "地址管理"
+      }
+    },
+    {
+      "path": "pages/member/address/index",
+      "style": {
+        "navigationBarTitleText": "修改地址"
+      }
+    },
+    {
+      "path": "pages/member/setting/index",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "pages/member/setting/user_info/index",
+      "style": {
+        "navigationBarTitleText": "个人信息"
+      }
+    },
+	{
+	  "path": "pages/member/setting/user_info/password",
+	  "style": {
+	    "navigationBarTitleText": "修改密码"
+	  }
+	},
+    {
+      "path": "pages/member/integral/index",
+      "style": {
+        "navigationBarTitleText": "我的积分"
+      }
+    },
+    {
+      "path": "pages/member/invite/index",
+      "style": {
+        "navigationBarTitleText": "邀请好友"
+      }
+    },
+    {
+      "path": "pages/member/invite/list",
+      "style": {
+        "navigationBarTitleText": "邀请列表"
+      }
+    },
+	{
+	  "path": "pages/member/invoice/index",
+	  "style": {
+	    "navigationBarTitleText": "我的发票"
+	  }
+	},
+    {
+      "path": "pages/member/take_delivery/index",
+      "style": {
+        "navigationBarTitleText": "提货单核销"
+      }
+    },
+    {
+      "path": "pages/member/take_delivery/list",
+      "style": {
+        "navigationBarTitleText": "提货单列表"
+      }
+    },
+    {
+      "path": "pages/goods/index/index",
+      "style": {
+		// #ifdef H5
+		"titleNView": false,
+		// #endif
+        "navigationBarTitleText": "商品详情",
+		"navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/goods/index/group",
+      "style": {
+        "navigationBarTitleText": "促销详情",
+		"navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/goods/place-order/index",
+      "style": {
+        "navigationBarTitleText": "提交订单"
+      }
+    },
+    {
+      "path": "pages/goods/place-order/invoice",
+      "style": {
+        "navigationBarTitleText": "发票"
+      }
+    },
+    {
+      "path": "pages/goods/place-order/storelist",
+      "style": {
+        "navigationBarTitleText": "门店列表"
+      }
+    },
+    {
+      "path": "pages/goods/payment/index",
+      "style": {
+        "navigationBarTitleText": "支付"
+      }
+    },
+    {
+      "path": "pages/goods/payment/auth",
+      "style": {
+        "navigationBarTitleText": "等待支付"
+      }
+    },
+    {
+      "path": "pages/goods/payment/result",
+      "style": {
+        "navigationBarTitleText": "支付结果"
+      }
+    },
+    {
+      "path": "pages/member/order/orderlist",
+      "style": {
+        "navigationBarTitleText": "订单列表"
+      }
+    },
+    {
+      "path": "pages/member/order/orderdetail",
+      "style": {
+        "navigationBarTitleText": "订单详情"
+      }
+    },
+    {
+      "path": "pages/member/order/invitation_group",
+      "style": {
+        "navigationBarTitleText": "邀请拼单"
+      }
+    },
+    {
+      "path": "pages/member/after_sale/index",
+      "style": {
+        "navigationBarTitleText": "申请售后"
+      }
+    },
+    {
+      "path": "pages/member/after_sale/list",
+      "style": {
+        "navigationBarTitleText": "售后列表"
+      }
+    },
+    {
+      "path": "pages/member/after_sale/detail",
+      "style": {
+        "navigationBarTitleText": "售后详情"
+      }
+    },
+    {
+      "path": "pages/member/order/evaluate",
+      "style": {
+        "navigationBarTitleText": "订单评价"
+      }
+    },
+    {
+      "path": "pages/member/order/express_delivery",
+      "style": {
+        "navigationBarTitleText": "物流信息"
+      }
+    },
+    {
+      "path": "pages/article/index",
+      "style": {
+        "navigationBarTitleText": "文章详情"
+      }
+    },
+    {
+      "path": "pages/article/list",
+      "style": {
+        "navigationBarTitleText": "文章列表",
+				"navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/login/choose/index",
+      "style": {
+        "navigationBarTitleText": "授权登录"
+      }
+    },
+    {
+      "path": "pages/login/login/index",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/login/login/index1",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+	{
+	  "path": "pages/login/forget/forget",
+	  "style": {
+	    "navigationBarTitleText": "忘记密码"
+	  }
+	},
+    {
+      "path": "pages/share",
+      "style": {
+        "navigationBarTitleText": "分享"
+      }
+    },
+    {
+      "path": "pages/author",
+      "style": {
+	    // #ifdef H5
+	    "titleNView": false,
+	    // #endif
+        "navigationBarTitleText": "获取授权中"
+      }
+    },
+    {
+      "path": "pages/login/register/index",
+      "style": {
+        "navigationBarTitleText": "注册"
+      }
+    },
+	{
+	  "path": "pages/classify/pintuan_list",
+	  "style": {
+	    "navigationBarTitleText": "拼团列表"
+	  }
+	},
+    {
+      "path": "pages/goods/index/pintuan",
+      "style": {
+        "navigationBarTitleText": "拼团详情",
+		"navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/form/detail/form",
+      "style": {
+        "navigationBarTitleText": "万能表单"
+      }
+    },
+	{
+	  "path": "pages/member/distribution/index",
+	  "style": {
+	    "navigationBarTitleText": "分销中心"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/apply",
+	  "style": {
+	    "navigationBarTitleText": "申请成为分销"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/apply_state",
+	  "style": {
+	    "navigationBarTitleText": "审核状态"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/user",
+	  "style": {
+	    "navigationBarTitleText": "分销中心"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/agreement",
+	  "style": {
+	    "navigationBarTitleText": "分销协议"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/order",
+	  "style": {
+	    "navigationBarTitleText": "推广订单"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/popularize",
+	  "style": {
+	    "navigationBarTitleText": "我要推广"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/my_store",
+	  "style": {
+	    "navigationBarTitleText": "我的店铺"
+	  }
+	},
+	{
+	  "path": "pages/member/distribution/store_setting",
+	  "style": {
+	    "navigationBarTitleText": "店铺设置"
+	  }
+	},
+    {
+      "path": "pages/activity/index",
+      "style": {
+        "navigationBarTitleText": "转盘抽奖"
+      }
+    },
+    {
+      "path": "pages/share/jump",
+      "style": {
+		// #ifdef H5
+		"titleNView": false,
+		// #endif
+        "navigationBarTitleText": "加载中..."
+      }
+    },
+	{
+	  "path": "pages/store_map/index",
+	  "style": {
+	    "navigationBarTitleText": "门店列表"
+	  }
+	},
+	{
+		"path" : "pages/member/customer_service/index",
+		"style": {
+			"navigationBarTitleText": "在线咨询"
+		}
+	}
+    ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "新模板",
+    "navigationBarBackgroundColor": "#fff",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#333",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/image/index_gray.png",
+        "selectedIconPath": "static/image/index_black.png"
+      },
+      {
+        "pagePath": "pages/classify/classify",
+        "text": "分类",
+        "iconPath": "static/image/classify_gray.png",
+        "selectedIconPath": "static/image/classify_black.png"
+      },
+      {
+        "pagePath": "pages/cart/index/index",
+        "text": "购物车",
+        "iconPath": "static/image/cart_gray.png",
+        "selectedIconPath": "static/image/cart_black.png"
+      },
+      {
+        "pagePath": "pages/member/index/index",
+        "text": "我的",
+        "iconPath": "static/image/user_gray.png",
+        "selectedIconPath": "static/image/user_black.png"
+      }
+    ]
+  },
+  "condition": {
+    //模式配置，仅开发期间生效
+    "current": 0, //当前激活的模式(list 的索引项)
+    "list": [
+      {
+        "name": "", //模式名称
+        "path": "", //启动页面，必选
+        "query": "" //启动参数，在页面的onLoad函数里面得到
+      }
+    ]
+  }
+}

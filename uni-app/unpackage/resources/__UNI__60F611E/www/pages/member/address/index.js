@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"user-head{ height: ",[0,100],"; }\n.",[1],"user-head-img{ height: ",[0,90],"; width: ",[0,90],"; -webkit-border-radius: 50%; border-radius: 50%; }\n.",[1],"cell-hd-title{ color: #333; }\n.",[1],"cell-item-bd{ color: #666; font-size: ",[0,26],"; }\n.",[1],"button-bottom .",[1],"btn { width: 50%; }\n.",[1],"cell-bd-input{ width: 100%; }\n",],undefined,{path:"./pages/member/address/index.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/member/address/index.wxml') } }));

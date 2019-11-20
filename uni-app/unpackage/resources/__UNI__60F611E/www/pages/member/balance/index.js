@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"withdrawcash-top{ padding: ",[0,40]," ",[0,26],"; background-color: #FF7159; color: #fff; }\n.",[1],"withdrawcash-title{ font-size: ",[0,28],"; display: block }\n.",[1],"withdrawcash-num{ font-size: ",[0,70],"; display: block; margin-top: ",[0,20],"; margin-left: ",[0,50],"; }\n.",[1],"margin-cell-group { margin: ",[0,20]," 0; color: #666666; }\n",],undefined,{path:"./pages/member/balance/index.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/member/balance/index.wxml') } }));

@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"search { }\n.",[1],"cell-item { border: none; }\n.",[1],"cell-ft-text { font-size: ",[0,22],"; color: #999; }\n",],undefined,{path:"./pages/index/index.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/index/index.wxml') } }));

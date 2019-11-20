@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"share-top { margin-bottom: ",[0,50],"; padding-top: ",[0,50],"; text-align: center; }\n.",[1],"share-img { -webkit-box-shadow: 0 0 ",[0,20]," #ccc; box-shadow: 0 0 ",[0,20]," #ccc; width: 80%; }\n.",[1],"share-bot { width: 80%; margin: 0 auto; }\n.",[1],"share-bot .",[1],"btn { width: 100%; margin: ",[0,20]," 0; }\n",],undefined,{path:"./pages/share.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/share.wxml') } }));

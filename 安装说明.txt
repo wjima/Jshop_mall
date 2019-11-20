@@ -1,7 +1,7 @@
 吉海科技Jshop（https://www.jihainet.com）
 =========================================================================================
 欢迎使用吉海科技Jshop系列产品。
-本产品采用前后端分离技术，后端采用tp5.1框架，前端h5端采用uniapp框架，源码在/h5,编译后的目录放在/public/wap下面，h5端的源码在/h5_source,小程序上线需要用微信开发者工具上传
+本产品采用前后端分离技术，后端采用tp5.1框架，前端h5端采用uniapp框架，源码在/uni-app,编译后的目录放在/public/wap下面,小程序上线需要用微信开发者工具上传
 安装方法如下，或参考https://gitee.com/hnjihai/jshop_mall/wikis/%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2?sort_id=881805
 1. 配置tp5.1的伪静态,参考https://www.jihainet.com/index/article/index/id/106.html
 2. 配置网站根目录到public目录下

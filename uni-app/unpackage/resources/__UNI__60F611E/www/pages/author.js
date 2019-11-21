@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"content { position: relative; height: 80vh; }\n.",[1],"content-c { position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); text-align: center; }\n.",[1],"load-img { width: ",[0,100],"; height: ",[0,100],"; }\n.",[1],"load-text { font-size: ",[0,26],"; }\n",],undefined,{path:"./pages/author.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/author.wxml') } }));

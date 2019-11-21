@@ -2179,6 +2179,50 @@ layui.define(['jquery','layer','form'], function(exports) {
 			_this.checkStatus($i).check();
 		}
 	};
+
+	//实现复选框点击，父选框选中，子选框选中，子选框去掉，父选框不去掉,也就是半选  add by www.jihainet.com@19.11.20
+	DTree.prototype.checkAllOrSelf =  function($i) {
+		var _this = this;
+		//$i 当前点击的checkbox
+		var dataPar = $i.attr("data-par"),
+			dataType = $i.attr("data-type"),
+			$li = $i.closest(dataPar),		//当前checkbox的上级li节点
+			$parent_li = $i.parents(dataPar),		//当前checkbox的所有父级li节点
+			$child_li = $li.find(dataPar);	//当前checkbox的上级li节点下的所有子级li节点
+
+		if ($i.attr("data-checked") == "1") {
+			// 处理当前节点的选中状态
+			_this.checkStatus($i).noCheck();
+
+			// 处理子级节点的选中状态
+			var $child_li_i = $child_li.find(">."+LI_DIV_ITEM+">."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"']");
+			_this.checkStatus($child_li_i).noCheck();
+
+			// 处理父级节点的选中状态
+			for (var i = 1, item = $parent_li; i < item.length; i++) {
+				var flag = item.eq(i).find(">."+LI_NAV_CHILD+" ."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"'][data-checked='1']").length;
+				if (flag == 0) {
+					//把父级去掉选中
+					//var $item_i = item.eq(i).find(">."+LI_DIV_ITEM+">."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"']");
+					//_this.checkStatus($item_i).noCheck();
+				}
+			}
+		} else {
+			// 处理当前节点的选中状态
+			_this.checkStatus($i).check();
+
+			// 处理子级节点的选中状态
+			var $child_li_i = $child_li.find(">."+LI_DIV_ITEM+">."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"']");
+			_this.checkStatus($child_li_i).check();
+
+			// 处理父级节点的选中状态
+			for (var i = 1, item = $parent_li; i < item.length; i++) {
+				var $item_i = item.eq(i).find(">."+LI_DIV_ITEM+">."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"']");
+				//把父级选中
+				_this.checkStatus($item_i).check();
+			}
+		}
+	};
 	
 	//实现复选框点击
 	DTree.prototype.changeCheck = function() {
@@ -2196,6 +2240,8 @@ layui.define(['jquery','layer','form'], function(exports) {
 			_this.checkOrNot($i);
 		} else if(_this.checkbarType == "only") {
 			_this.checkOnly($i);
+		} else if(_this.checkbarType == "all-self"){
+			_this.checkAllOrSelf($i);
 		} else {
 			_this.checkAllOrNot($i);
 		}

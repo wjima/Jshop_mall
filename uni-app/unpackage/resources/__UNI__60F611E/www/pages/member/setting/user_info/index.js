@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"user-head{ height: ",[0,100],"; }\n.",[1],"user-head-img{ height: ",[0,90],"; width: ",[0,90],"; -webkit-border-radius: 50%; border-radius: 50%; }\n.",[1],"cell-hd-title{ color: #333; }\n.",[1],"cell-item-bd{ color: #666; font-size: ",[0,26],"; }\n",],undefined,{path:"./pages/member/setting/user_info/index.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/member/setting/user_info/index.wxml') } }));

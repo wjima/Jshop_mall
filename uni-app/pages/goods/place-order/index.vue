@@ -5,7 +5,7 @@
 			<view class="content">
 				<view v-show="type_current === 0">
 					<!-- 收货地址信息 -->
-					<view class='cell-group margin-cell-group' v-if="userShip.id"  @click="showAddressList">
+					<view class='cell-group margin-cell-group' v-if="userShip && userShip.id"  @click="showAddressList">
 						<view class='cell-item add-title-item right-img'>
 							<view class='cell-item-hd'>
 								<image class='cell-hd-icon' src='/static/image/location.png'></image>
@@ -32,7 +32,7 @@
 				</view>
 				<view v-show="type_current === 1">
 					<!-- 门店信息 -->
-					<view v-if="store.id != 0" class='cell-group margin-cell-group' @click="goStorelist()">
+					<view v-if="store && store.id && store.id != 0" class='cell-group margin-cell-group' @click="goStorelist()">
 						<view class='cell-item add-title-item right-img'>
 							<view class='cell-item-hd'>
 								<image class='cell-hd-icon' src='/static/image/homepage.png'></image>
@@ -167,6 +167,9 @@
 				<view class="cell-textarea ">
 					<!-- #ifdef MP-WEIXIN -->
 					<input v-model="memo" placeholder="50字以内(选填)"/>
+					<!-- #endif -->
+					<!-- #ifndef MP-WEIXIN -->
+					<textarea v-model="memo" placeholder="50字以内(选填)" maxlength="50"/>
 					<!-- #endif -->
 				</view>
 			</view>
@@ -355,7 +358,6 @@
                 this.team_id = options.team_id;
             }
 			
-
             this.params.ids = JSON.parse(cartIds)
             if (!this.params.ids) {
                 this.$common.successToShow('获取失败', function(){
@@ -373,6 +375,21 @@
             //获取默认门店信息
             this.getDefaultStore();
         },
+		onShow() {
+			// #ifdef MP-ALIPAY || MP-TOUTIAO
+			let user_ship = this.$db.get('address_user_ship', true);
+			if (user_ship) {
+				this.userShip = user_ship;
+				this.params.area_id = user_ship.area_id;
+				this.$db.del('address_user_ship', true);
+			}
+			let user_invoice = this.$db.get('user_invoice', true);
+			if (user_invoice) {
+				this.invoice = user_invoice;
+				this.$db.del('user_invoice', true);
+			}
+			// #endif
+		},
         methods: {
             // 切换门店
             onTypeItem(index) {
@@ -652,6 +669,9 @@
                 // #ifdef APP-PLUS || APP-PLUS-NVUE
                 data['source'] = 5;
                 // #endif
+				// #ifdef MP-TOUTIAO
+				data['source'] = 6;
+				// #endif
 
                 data = Object.assign(data, delivery)
 
@@ -686,13 +706,17 @@
             getDefaultStore(){
                 this.$api.defaultStore({}, res => {
                     if(res.status){
-                        let store = {
-                            id: res.data.id,
-                            name: res.data.store_name,
-                            mobile: res.data.store_mobile,
-                            address: res.data.all_address
-                        }
-                        this.store = store;
+						if (res.data && res.data.id) {
+							let store = {
+							    id: res.data.id || 0,
+							    name: res.data.store_name || '',
+							    mobile: res.data.store_mobile || '',
+							    address: res.data.all_address || ''
+							}
+							this.store = store;
+						}else{
+							this.$common.errorToShow('商家未配置默认自提店铺！');
+						}
                     }
                 });
             }

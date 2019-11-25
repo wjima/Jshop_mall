@@ -18,23 +18,25 @@
 						<input class='cell-bd-input' placeholder='' v-model="nickname" ></input>
 					</view>
 				</view>
-				<view class='cell-item right-img'>
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>性别</view>
-					</view>
-					<view class='cell-item-bd'>
-						<view class="uni-list">
-							<view class="uni-list-cell-db">
-								<picker @change="bindPickerChange" :value="index" :range="objectSex">
-									<view class="uni-input">{{objectSex[sex]}}</view>
-								</picker>
+				<!-- #ifndef MP-TOUTIAO || MP-ALIPAY -->
+					<view class='cell-item right-img'>
+						<view class='cell-item-hd'>
+							<view class='cell-hd-title'>性别</view>
+						</view>
+						<view class='cell-item-bd'>
+							<view class="uni-list">
+								<view class="uni-list-cell-db">
+									<picker mode="selector" @change="bindPickerChange" :value="index" :range="objectSex">
+										<view class="uni-input">{{objectSex[sex]}}</view>
+									</picker>
+								</view>
 							</view>
 						</view>
+						<view class='cell-item-ft'>
+							<image class='cell-ft-next icon' src='/static/image/ic-pull-down.png'></image>
+						</view>
 					</view>
-					<view class='cell-item-ft'>
-						<image class='cell-ft-next icon' src='/static/image/ic-pull-down.png'></image>
-					</view>
-				</view>
+				<!-- #endif -->
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>生日</view>

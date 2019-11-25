@@ -59,14 +59,32 @@ class GoodsExtendCat extends Common
     /**
      * 获取商品id
      * @param $catid
+     * @param bool $status //上架状态 true = 上架的商品  false = 全部商品
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function getGoodsIdByCat($catid)
+    public function getGoodsIdByCat($catid, $status = false)
     {
+        $where = [];
+        if($status){
+            $goodsModel = new Goods();
+            $where[] = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
+        }
+
         if(is_array($catid)){
-            $data = $this->where([['goods_cat_id', 'in', $catid]])->select();
+            $where[] = ['e.goods_cat_id', 'in', $catid];
+            $data = $this->alias('e')->field('e.*')
+                ->join('goods g', 'g.id = e.goods_id')
+                ->where($where)
+                ->select();
         }else{
-            $data = $this->where([['goods_cat_id', '=', $catid]])->select();
+            $where[] = ['goods_cat_id', '=', $catid];
+            $data = $this->alias('e')->field('e.*')
+                ->join('goods g', 'g.id = e.goods_id')
+                ->where($where)
+                ->select();
         }
         if(!$data->isEmpty()){
             $goods = $data->toArray();
@@ -76,5 +94,4 @@ class GoodsExtendCat extends Common
             return [];
         }
     }
-
 }

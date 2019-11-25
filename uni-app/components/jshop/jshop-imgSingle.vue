@@ -2,7 +2,14 @@
 	<!-- 单图 -->
 	<view class="ad jshop-imgsingle" v-if="jdata.params.list && jdata.params.list.length > 0">
 		<view class="" v-for="item in jdata.params.list" :key="item.id">
-			<image class="ad-img" :src="item.image" mode="widthFix" @click="showSliderInfo(item.linkType, item.linkValue)"></image>
+			<!-- #ifdef MP-WEIXIN -->
+			<view @click="showSliderInfo2" :data-type="item.linkType" :data-val="item.linkValue">
+				<image class="ad-img" :src="item.image" mode="widthFix" ></image>
+			</view>
+			<!-- #endif -->
+			<!-- #ifndef MP-WEIXIN -->
+			<image class="ad-img" :src="item.image" mode="widthFix" @click="showSliderInfo(item.id)"></image>
+			<!-- #endif -->
 			<view class="imgup-btn" v-if="item.buttonText != ''" @click="showSliderInfo(item.linkType, item.linkValue)">
 				<button class="btn btn-fillet" :style="{background:item.buttonColor,color:item.textColor}">{{item.buttonText}}</button>
 			</view>
@@ -28,6 +35,7 @@
 		},
 		methods: {
 			showSliderInfo(type, val) {
+				console.log(type);
 				if (!val) {
 					return;
 				}
@@ -69,6 +77,49 @@
 				let url = '/pages/goods/index/index?id=' + id;
 				this.$common.navigateTo(url);
 			},
+			// #ifdef MP-WEIXIN
+			showSliderInfo2:function(e){
+				let type = e.currentTarget.dataset.type;
+				let val = e.currentTarget.dataset.val;
+				console.log(type);
+				console.log(val)
+				console.log(type);
+				if (!val) {
+					return;
+				}
+				if (type == 1) {
+					if (val.indexOf('http') != -1) {
+						// #ifdef H5 
+						window.location.href = val
+						// #endif
+					} else {
+						// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP
+						if (val == '/pages/index/index' || val == '/pages/classify/classify' || val == '/pages/cart/index/index' || val == '/pages/member/index/index') {
+							uni.switchTab({
+								url: val
+							});
+							return;
+						} else {
+							this.$common.navigateTo(val);
+							return;
+						}
+						// #endif
+					}
+				} else if (type == 2) {
+					// 商品详情
+					this.goodsDetail(val)
+				} else if (type == 3) {
+					// 文章详情
+					this.$common.navigateTo('/pages/article/index?id=' + val + '&id_type=1')
+				} else if (type == 4) {
+					// 文章列表
+					this.$common.navigateTo('/pages/article/list?cid=' + val)
+				} else if (type == 5) {
+					//智能表单 
+					this.$common.navigateTo('/pages/form/detail/form?id=' + val)
+				}
+			}
+			// #endif
 		},
 	}
 </script>

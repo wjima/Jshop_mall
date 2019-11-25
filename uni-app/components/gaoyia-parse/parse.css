@@ -19,13 +19,12 @@
 	line-height: 1.5;
 	font-size: 1em;
 	text-align:justify;/* //左右两端对齐 */
-	word-wrap: break-word;/*超出自动换行*/
 }
 .wxParse view ,.wxParse uni-view{
 	word-break: break-word;
 }
 .wxParse .p {
-	padding-bottom: 1em;
+	padding-bottom: 0.5em;
 	clear: both;
 	/* letter-spacing: 0;//字间距 */
 }
@@ -84,7 +83,9 @@
 .wxParse .address {
   font-style: italic;
 }
-
+.wxParse .spaceshow{
+	  white-space: pre;
+}
 .wxParse .pre,
 .wxParse .tt,
 .wxParse .code,
@@ -98,10 +99,15 @@
   padding: 16upx;
   white-space: pre;
   margin: 1em 0upx;
+  font-size: 24upx;
 }
 .wxParse .code {
-  display: inline;
-  background: #f5f5f5;
+	overflow: auto;
+	padding: 16upx;
+	white-space: pre;
+	margin: 1em 0upx;
+	background: #f5f5f5;
+	font-size: 24upx;
 }
 
 .wxParse .big {
@@ -150,7 +156,7 @@
 .wxParse .img {
   display: block;
   max-width: 100%;
-  margin-bottom: -1em;/* //与p标签底部padding同时修改 */
+  margin-bottom: 0em;/* //与p标签底部padding同时修改 */
   overflow: hidden;
 }
 
@@ -205,7 +211,7 @@
 .wxParse .figure {
   overflow: hidden;
 }
-.wxParse .table {
+.wxParse .table .table{
 	border-collapse:collapse;
 	box-sizing: border-box;
 	/* 内边框 */
@@ -239,7 +245,4 @@
 }
 .wxParse .audio, .wxParse .uni-audio-default{
 	display: block;
-}
-.textarea ._div{
-	background-color:#fff !important;
 }

@@ -1,15 +1,14 @@
 .idea/*
 runtime/*
 config/database.php
-h5/node_modules/*
 public/static/uploads
 config/install.lock
 *.log
 vendor/zoujingli/wechat-php-sdk/Wechat/Cache/
 public/static/file
 public/install/install.lock
-wechat_app/sitemap.json
 public/qrcode/
 *.bak
 public/static/poster/*
 public/static/qrcode/*
+uni-app/unpackage/

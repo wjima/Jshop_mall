@@ -81,8 +81,8 @@
 				store['mobile'] = mobile;
 				store['address'] = address;
 				
-				// #ifdef MP-ALIPAY
-				pre.data.store = store;
+				// #ifdef MP-ALIPAY || MP-TOUTIAO
+				this.$db.set('user_store', store, true);
 				// #endif
 
 				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE

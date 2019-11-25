@@ -388,6 +388,11 @@
 				this.invoice = user_invoice;
 				this.$db.del('user_invoice', true);
 			}
+			let user_store = this.$db.get('user_store', true);
+			if (user_store) {
+				this.store = user_store;
+				this.$db.del('user_store', true);
+			}
 			// #endif
 		},
         methods: {

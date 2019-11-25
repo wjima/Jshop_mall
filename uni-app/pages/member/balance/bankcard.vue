@@ -126,7 +126,7 @@ export default {
 			let pages = getCurrentPages();//当前页
 			let beforePage = pages[pages.length - 2];//上个页面
 			
-			// #ifdef H5
+			// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 			beforePage.cardInfo = this.cards[index]
 			// #endif
 			
@@ -134,8 +134,8 @@ export default {
 			beforePage.$vm.cardInfo = this.cards[index]
 			// #endif
 			
-			// #ifdef MP-ALIPAY
-			beforePage.data.cardInfo = this.cards[index]
+			// #ifdef MP-ALIPAY || MP-TOUTIAO
+			this.$db.set('user_card_info', this.cards[index], true);
 			// #endif
 			
 			uni.navigateBack({
@@ -218,11 +218,30 @@ export default {
 	right: 140upx;
 	bottom: 0upx;
 }
+/* #ifdef MP-TOUTIAO */
+.mr-card{
+	position: absolute;
+	right: 140upx;
+	bottom: 12upx;
+}
+.del-card{
+	position: absolute;
+	right: 30upx;
+	bottom: 12upx;
+}
+/* #endif */
+/* #ifndef MP-TOUTIAO */
+.mr-card{
+	position: absolute;
+	right: 140upx;
+	bottom: 0upx;
+}
 .del-card{
 	position: absolute;
 	right: 30upx;
 	bottom: 0upx;
 }
+/* #endif */
 .del-card .btn,.mr-card .btn{
 	font-size: 24upx;
 	height: 48upx;

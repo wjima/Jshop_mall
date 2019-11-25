@@ -80,6 +80,15 @@ export default {
 		this.userBankCard()
 		this.userInfo()
 	},
+	onShow() {
+		// #ifdef MP-ALIPAY || MP-TOUTIAO
+		let user_card_info = this.$db.get('user_card_info', true);
+		if (user_card_info) {
+			this.cardInfo = user_card_info;
+			this.$db.del('user_card_info', true);
+		}
+		// #endif
+	},
 	computed: {
 		userbankCard () {
 			if (Object.keys(this.cardInfo).length) {

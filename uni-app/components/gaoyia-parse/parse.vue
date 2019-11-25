@@ -9,6 +9,7 @@
  */-->
 
 <template>
+	
 	<!--基础元素-->
 	<div class="wxParse" :class="className" :style="'user-select:' + userSelect">
 		<block v-for="(node, index) of nodes" :key="index" v-if="!loading">
@@ -116,6 +117,9 @@
 		},
 		methods: {
 			setHtml() {
+				// this.getWidth().then((data) => {
+				// 	this.wxParseWidth.value = data;
+				// })
 				let {
 					content,
 					noData,
@@ -132,27 +136,29 @@
 				};
 				let results = HtmlToJson(parseData, customHandler, imageProp, this);
 				this.imageUrls = results.imageUrls;
-				this.nodes = results.nodes;
+				// this.nodes = results.nodes;
+				this.nodes = [];
+				results.nodes.forEach((item) => {
+					setTimeout(() => {
+						this.nodes.push(item)
+					}, 0);
+				})
+				console.log(this.nodes);
 			},
 			getWidth() {
 				return new Promise((res, rej) => {
 					// #ifndef MP-ALIPAY || MP-BAIDU
-					var view = uni.createSelectorQuery().in(this).select(".content");
-					view.boundingClientRect(data => {
-						if(data && data.width){
-							res(data.width);
-						}else{
-							res('100%');
-						}
-					}).exec();
-					/* uni.createSelectorQuery()
+					uni.createSelectorQuery()
 						.in(this)
 						.select('.wxParse')
-						.fields({size: true,scrollOffset: true},data => {
-								//console.log(data);
-								//res(data.width);
+						.fields({
+								size: true,
+								scrollOffset: true
+							},
+							data => {
+								res(data.width);
 							}
-						).exec(); */
+						).exec();
 					// #endif
 					// #ifdef MP-BAIDU
 					swan.createSelectorQuery().select('.wxParse').boundingClientRect(function(rect) {
@@ -168,7 +174,8 @@
 					// #endif
 				});
 			},
-			navigate(href, $event) {
+			navigate(href, $event, attr) {
+				console.log(href, attr);
 				this.$emit('navigate', href, $event);
 			},
 			preview(src, $event) {
@@ -195,14 +202,23 @@
 		// 父组件中提供
 		provide() {
 			return {
-				parseWidth: this.wxParseWidth
+				parseWidth: this.wxParseWidth,
+				parseSelect: this.userSelect
 				// 提示：provide 和 inject 绑定并不是可响应的。这是刻意为之的。然而，如果你传入了一个可监听的对象，那么其对象的属性还是可响应的。
 			};
 		},
 		watch: {
-			content() {
+			content(){
 				this.setHtml()
 			}
+			// content: {
+			// 	handler: function(newVal, oldVal) {
+			// 		if (newVal !== oldVal) {
+			// 			
+			// 		}
+			// 	},
+			// 	deep: true
+			// }
 		}
 	};
 </script>

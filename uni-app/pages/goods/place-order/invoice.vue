@@ -118,7 +118,7 @@
 				invoice = pre.$vm.invoice
 				// #endif
 
-				// #ifdef MP-ALIPAY
+				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				invoice = pre.data.invoice;
 				// #endif
 
@@ -179,8 +179,8 @@
 				let pages = getCurrentPages(); //当前页
 				let beforePage = pages[pages.length - 2]; //上个页面
 				if (beforePage != undefined) {
-					// #ifdef MP-ALIPAY
-					beforePage.data.invoice = data;
+					// #ifdef MP-ALIPAY || MP-TOUTIAO
+					this.$db.set('user_invoice', data, true);
 					// #endif
 
 					// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE

@@ -91,9 +91,8 @@ export default {
 				let pages = getCurrentPages();//当前页
 				let beforePage = pages[pages.length - 2];//上个页面
 				
-				// #ifdef MP-ALIPAY
-				beforePage.data.userShip = data;
-				beforePage.data.params.area_id = data.area_id;
+				// #ifdef MP-ALIPAY || MP-TOUTIAO
+				this.$db.set('address_user_ship', data, true);
 				// #endif
 				
 				// #ifdef H5
@@ -104,7 +103,7 @@ export default {
 				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
 				beforePage.$vm.userShip = data;
 				beforePage.$vm.params.area_id = data.area_id;
-				// #endif 
+				// #endif
 				
 				uni.navigateBack({
 					delta: 1

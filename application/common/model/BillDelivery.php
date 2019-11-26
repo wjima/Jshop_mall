@@ -129,7 +129,7 @@ class BillDelivery extends Common
                 'sn' => $dinfo['items'][$product_id]['sn'],
                 'weight' => $dinfo['items'][$product_id]['weight'],
                 'name' => $dinfo['items'][$product_id]['name'],
-                'addon' => $dinfo['items'][$product_id]['addon'],
+                'addon' => $dinfo['items'][$product_id]['addon'] ? $dinfo['items'][$product_id]['addon'] : '',
                 'nums' => $num
             ];
         }

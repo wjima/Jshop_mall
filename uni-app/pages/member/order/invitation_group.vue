@@ -185,12 +185,12 @@
 			let pages = getCurrentPages()
 			let pre = pages[pages.length - 2]
 			if(typeof pre!='undefined'){
-				// #ifdef H5
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				teamInfo = pre.teamInfo
 				orderInfo = pre.orderInfo
 				// #endif
 				
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				teamInfo = pre.$vm.teamInfo
 				orderInfo = pre.$vm.orderInfo
 				// #endif

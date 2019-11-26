@@ -416,18 +416,17 @@
 								// 更改订单列表页的订单状态
 								let pages = getCurrentPages(); // 当前页
 								let beforePage = pages[pages.length - 2]; // 上个页面
-
 								if (beforePage !== undefined && beforePage.route === 'pages/member/order/orderlist') {
 									// #ifdef MP-WEIXIN
 									beforePage.$vm.isReload = true
 									// #endif
 
-									// #ifdef H5
+									// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 									beforePage.isReload = true
 									// #endif
 
-									// #ifdef MP-ALIPAY
-									beforePage.data.isReload = true
+									// #ifdef MP-ALIPAY || MP-TOUTIAO
+									this.$db.set('order_user_ship', true, true);
 									// #endif
 								}
 

@@ -146,6 +146,18 @@ export default {
 		this.initData()
 	},
 	onShow () {
+		// #ifdef MP-ALIPAY || MP-TOUTIAO
+		let order_user_ship = this.$db.get('order_user_ship', true);
+		if (order_user_ship) {
+			this.isReload = order_user_ship;
+			this.$db.del('order_user_ship', true);
+		}
+		let order_user_evaluate = this.$db.get('order_user_evaluate', true);
+		if (order_user_evaluate) {
+			this.isReload = order_user_evaluate;
+			this.$db.del('order_user_evaluate', true);
+		}
+		// #endif
 		if (this.isReload) {
 			this.initData()
 		}

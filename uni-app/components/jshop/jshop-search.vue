@@ -78,7 +78,7 @@
 		},
 		onPageScroll(){
 			var _this = this;
-			// #ifdef MP-WEIXIN || APP-PLUS
+			// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
 			const query = uni.createSelectorQuery().in(this)
 			  query.select('.search').boundingClientRect(function(res){
 				if(res.top<0){

@@ -45,6 +45,12 @@
 			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
 			 @close="closeShare()"></shareByAli>
 			<!-- #endif -->
+			
+			<!-- #ifdef MP-TOUTIAO -->
+			<shareByTt :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByTt>
+			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
@@ -103,6 +109,9 @@
 	// #ifdef MP-ALIPAY
 	import shareByAli from '@/components/share/shareByAli.vue'
 	// #endif
+	// #ifdef MP-TOUTIAO
+	import shareByTt from '@/components/share/shareByTt.vue'
+	// #endif
 	// #ifdef APP-PLUS || APP-PLUS-NVUE
 	import shareByApp from '@/components/share/shareByApp.vue'
 	// #endif
@@ -116,15 +125,15 @@
 			// #ifdef H5
 			shareByH5,
 			// #endif
-
 			// #ifdef MP-WEIXIN
 			shareByWx,
 			// #endif
-
 			// #ifdef MP-ALIPAY
 			shareByAli,
 			// #endif
-
+			// #ifdef MP-TOUTIAO
+			shareByTt,
+			// #endif
 			// #ifdef APP-PLUS || APP-PLUS-NVUE
 			shareByApp,
 			// #endif
@@ -195,7 +204,7 @@
 				orderInfo = pre.$vm.orderInfo
 				// #endif
 				
-				// #ifdef MP-ALIPAY
+				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				teamInfo = pre.data.teamInfo;
 				orderInfo = pre.data.orderInfo
 				// #endif
@@ -217,7 +226,7 @@
 			shareHref() {
 				let pages = getCurrentPages()
 				let page = pages[pages.length - 1]
-				// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE || MP-TOUTIAO
 				return apiBaseUrl + 'wap/' + page.route + '?scene=' + this.query;
 				// #endif
 
@@ -225,7 +234,6 @@
 				return apiBaseUrl + 'wap/' + page.__proto__.route + '?scene=' + this.query;
 				// #endif
 			}
-
 		},
 		onReachBottom() {
 			if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -350,18 +358,15 @@
 		background-color: #fff;
 		padding: 20upx 26upx;
 	}
-
 	.ig-top-t,
 	.ig-top-m {
 		margin-bottom: 20upx;
 	}
-
 	.ig-top-t>view {
 		display: inline-block;
 		padding: 0 10upx;
 		color: #999;
 	}
-
 	.user-head-img-c {
 		position: relative;
 		width: 80upx;
@@ -373,7 +378,6 @@
 		/* float: left; */
 		border: 1px solid #f3f3f3;
 	}
-
 	.user-head-img-tip {
 		position: absolute;
 		top: -6upx;
@@ -387,17 +391,14 @@
 		border-radius: 10upx;
 		transform: scale(.8);
 	}
-
 	.user-head-img-c .user-head-img {
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
 	}
-
 	.user-head-img-c:first-child {
 		border: 1px solid #FF7159;
 	}
-
 	.uhihn {
 		width: 80upx;
 		height: 80upx;
@@ -410,42 +411,35 @@
 		box-sizing: border-box;
 		position: relative;
 	}
-
 	.uhihn>text {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
 	}
-
 	.igtb-top {
 		font-size: 32upx;
 		color: #333;
 		margin-bottom: 16upx;
 	}
-
 	.igtb-mid {
 		margin-bottom: 16upx;
 	}
-
 	.igtb-mid .btn {
 		width: 100%;
 		background-color: #FF7159;
 		color: #fff;
 	}
-
 	.igtb-bot {
 		font-size: 24upx;
 		color: #666;
 	}
-
 	.cell-ft-text {
 		max-width: 520upx;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-
 	.group-notice .cell-ft-text {
 		color: #999;
 		margin-left: 20upx;

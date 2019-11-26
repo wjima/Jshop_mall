@@ -541,7 +541,7 @@ export default {
 		goSearch() {
 			let pages = getCurrentPages();
 			let prevPage = pages[pages.length - 2];
-			// #ifdef H5 || MP-WEIXIN
+			// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE || MP-TOUTIAO
 			if(prevPage && prevPage.route){
 				let search_flag = prevPage.route;
 				if (search_flag == 'pages/index/search') {

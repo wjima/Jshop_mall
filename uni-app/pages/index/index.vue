@@ -15,6 +15,9 @@
 		<!-- #ifdef MP-ALIPAY -->
 		<contact-button class="service icon" icon="/static/image/seller-content.png" size="80rpx*80rpx" tnt-inst-id="WKPKUZXG" scene="SCE00040186" hover-class="none" />
 		<!-- #endif -->
+		<!-- #ifdef MP-TOUTIAO -->
+		<!-- 头条客服 -->
+		<!-- #endif -->
 		<red-bag v-if="redBagShow" @click="handleGet"></red-bag>
 	</view>
 </template>

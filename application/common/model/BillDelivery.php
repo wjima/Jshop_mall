@@ -238,6 +238,7 @@ class BillDelivery extends Common
         } else {
             $logisticsInfo = $this->logistics_query($code, $no);
         }
+
         if ($logisticsInfo['status'] === '200') {
             $result['data']['info'] = [
                 'no' => $logisticsInfo['nu'],

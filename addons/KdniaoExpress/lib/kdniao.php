@@ -222,7 +222,7 @@ class kdniao
         if ($requestData['ShipperCode'] == 'SF') {
             //查询订单收货人手机号后四位
             $billDeliveryModel = new BillDelivery();
-            $deliveryInfo      = $billDeliveryModel->where([['logi_no', '=', $requestData['logisticCode']], ['logi_code', '=', 'SF']])->field('ship_mobile,order_id')->find();
+            $deliveryInfo      = $billDeliveryModel->where([['logi_no', '=', $requestData['logisticCode']], ['logi_code', '=', 'SF']])->field('ship_mobile')->find();
             if ($deliveryInfo && isset($deliveryInfo['ship_mobile'])) {
                 $requestData['CustomerName'] = substr($deliveryInfo['ship_mobile'], -4);
             }

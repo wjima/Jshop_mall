@@ -95,12 +95,12 @@ export default {
 				this.$db.set('address_user_ship', data, true);
 				// #endif
 				
-				// #ifdef H5
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				beforePage.userShip = data;
 				beforePage.params.area_id = data.area_id;
 				// #endif
 
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				beforePage.$vm.userShip = data;
 				beforePage.$vm.params.area_id = data.area_id;
 				// #endif

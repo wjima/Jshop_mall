@@ -541,6 +541,9 @@ class Order extends Api
     /**
      * 前台物流查询接口
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function logisticsByApi()
     {

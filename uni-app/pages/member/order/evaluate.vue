@@ -193,14 +193,30 @@ export default {
 							beforePage.isReload = true
 							// #endif
 							
-							// #ifdef MP-ALIPAY
-							beforePage.data.isReload = true
+							// #ifdef MP-ALIPAY || MP-TOUTIAO
+							this.$db.set('order_user_evaluate', true, true);
 							// #endif
 						}
+						
+						let before = pages[pages.length - 3]; // 上个页面
+						if (before !== undefined && before.route === 'pages/member/order/orderlist') {
+							// #ifdef MP-WEIXIN
+							before.$vm.isReload = true
+							// #endif
+							
+							// #ifdef H5
+							before.isReload = true
+							// #endif
+							
+							// #ifdef MP-ALIPAY || MP-TOUTIAO
+							this.$db.set('order_user_evaluate', true, true);
+							// #endif
+						}
+						
 						// this.submitStatus = false;
 						uni.navigateBack({
 							delta: 1
-						})
+						});
 					})
                 } else {
 					this.$common.errorToShow(res.msg)

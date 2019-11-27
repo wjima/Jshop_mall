@@ -85,11 +85,11 @@
 				this.$db.set('user_store', store, true);
 				// #endif
 
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				pre.$vm.store = store
 				// #endif
 				
-				// #ifdef H5 
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				pre.store = store
 				// #endif
 				

@@ -128,12 +128,12 @@ const post = (method, data, callback,complete) => {
 						complete: function() {
 							setTimeout(function() {
 								uni.hideToast();
-								// #ifdef H5 || APP-PLUS
+								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
 									url: '/pages/login/login/index1'
 								})
 								// #endif
-								// #ifdef MP-WEIXIN || MP-ALIPAY	
+								// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 								uni.navigateTo({
 									url: '/pages/login/choose/index',
 									animationType: 'pop-in',
@@ -211,12 +211,12 @@ const pluginsPost = (method, data, callback) => {
 						complete: function() {
 							setTimeout(function() {
 								uni.hideToast();
-								// #ifdef H5 || APP-PLUS
+								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
 									url: '/pages/login/login/index1'
 								})
 								// #endif
-								// #ifdef MP-WEIXIN || MP-ALIPAY	
+								// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 								uni.navigateTo({
 									url: '/pages/login/choose/index',
 									animationType: 'pop-in',

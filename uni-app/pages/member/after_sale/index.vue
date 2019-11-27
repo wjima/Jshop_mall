@@ -456,4 +456,12 @@ export default {
 /* #ifdef MP-ALIPAY */
 
 /* #endif */
+/* #ifdef MP-TOUTIAO */
+.goods-item-c{
+	height: 1.5rem;
+}
+.goods-buy{
+	height: 100%;
+}
+/* #endif */
 </style>

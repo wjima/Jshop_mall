@@ -110,11 +110,11 @@
 			let pages = getCurrentPages()
 			let pre = pages[pages.length - 2]
 			if (pre != undefined) {
-				// #ifdef H5
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				invoice = pre.invoice
 				// #endif
 
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				invoice = pre.$vm.invoice
 				// #endif
 
@@ -183,11 +183,11 @@
 					this.$db.set('user_invoice', data, true);
 					// #endif
 
-					// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+					// #ifdef MP-WEIXIN
 					beforePage.$vm.invoice = data;
 					// #endif
 
-					// #ifdef H5 
+					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 					beforePage.invoice = data;
 					// #endif
 

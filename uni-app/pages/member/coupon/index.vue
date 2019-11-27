@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<uni-segmented-control :current="current" :values="items" @clickItem="onClickItem" style-type="text" active-color="#333"></uni-segmented-control>
-		<view class="">
+		<view class="" v-if="listData.length > 0">
 			<view class="coupon-c-item" v-for="(item, key) in listData" :key="key">
 				<view class="cci-l">
 					<view class="cci-l-c color-f" v-if="current == 0">
@@ -33,6 +33,9 @@
 				</view>
 			</view>
 			<uni-load-more :status="loadStatus"></uni-load-more>
+		</view>
+		<view class="coupon-none" v-else>
+			<image class="coupon-none-img" src="/static/image/order.png" mode=""></image>
 		</view>
 	</view>
 </template>
@@ -208,5 +211,13 @@
 	border-bottom-right-radius: 12upx;
 	border-bottom-left-radius: 12upx;
 	color: #fff;
+}
+.coupon-none{
+	text-align: center;
+	padding: 200upx 0;
+}
+.coupon-none-img{
+	width: 274upx;
+	height: 274upx;
 }
 </style>

@@ -125,6 +125,7 @@ import { goods } from '@/config/mixins.js'
 				//记录滑块的初始位置
 				this.start_slide_x = this.list[index].slide_x;
 				// 按钮宽度
+				// #ifndef MP-TOUTIAO
 				uni.createSelectorQuery()
 					.in(this)
 					.selectAll('.group-btn')
@@ -134,6 +135,18 @@ import { goods } from '@/config/mixins.js'
 							this.btnWidth = res[0][index].width * -1;
 						}
 					});
+				// #endif
+
+				// #ifdef MP-TOUTIAO
+				tt.createSelectorQuery()
+					.selectAll(".group-btn")
+					.boundingClientRect(rects => {
+						rects.forEach(rect => {
+							this.btnWidth = rect.width * -1;
+						});
+					})
+					.exec();
+				// #endif 
 				// 记录上一次开始时手指所处位置
 				this.startX = e.touches[0].pageX;
 				// 记录上一次手指位置

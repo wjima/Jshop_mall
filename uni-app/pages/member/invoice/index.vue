@@ -1,17 +1,22 @@
 <template>
 	<view class="content">
-		<view class="invoice-item" v-for="(item, index) in listData" :key="index">
-			<view class="invoice-left">
-				<image src="/static/image/invoice.png" class="left-ico"></image>
+		<view v-if="listData.length > 0">
+			<view class="invoice-item" v-for="(item, index) in listData" :key="index">
+				<view class="invoice-left">
+					<image src="/static/image/invoice.png" class="left-ico"></image>
+				</view>
+				<view class="invoice-right">
+					<view class="invoice-amount">￥{{item.amount}} <text :class="item.status == 1?'status_no':'status_yes'">{{item.status_text}}</text></view>
+					<view class="invoice-title">{{item.title}}</view>
+					<view class="invoice-tax_number" v-if="item.tax_number">{{item.tax_number}}</view>
+					<view class="invoice-time">{{item.ctime_text}}</view>
+				</view>
 			</view>
-			<view class="invoice-right">
-				<view class="invoice-amount">￥{{item.amount}} <text :class="item.status == 1?'status_no':'status_yes'">{{item.status_text}}</text></view>
-				<view class="invoice-title">{{item.title}}</view>
-				<view class="invoice-tax_number" v-if="item.tax_number">{{item.tax_number}}</view>
-				<view class="invoice-time">{{item.ctime_text}}</view>
-			</view>
+			<uni-load-more :status="loadStatus"></uni-load-more>
 		</view>
-		<uni-load-more :status="loadStatus"></uni-load-more>
+		<view class="invoice-none" v-else>
+			<image class="invoice-none-img" src="/static/image/order.png" mode=""></image>
+		</view>
 	</view>
 </template>
 
@@ -125,5 +130,13 @@
 	margin-left: 20upx;
 	font-size: 24upx;
 	color: #0d9e13;
+}
+.invoice-none{
+	text-align: center;
+	padding: 200upx 0;
+}
+.invoice-none-img{
+	width: 274upx;
+	height: 274upx;
 }
 </style>

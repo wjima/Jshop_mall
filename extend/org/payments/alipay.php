@@ -31,7 +31,7 @@ class alipay implements Payment
         }
         //if($params['trade_type'] == 'MWEB'){$params['trade_type'] = "WAP";}        //兼容h5端，其实这一行是不需要的
 
-        if($params['trade_type'] != "PC" && $params['trade_type'] != "WAP" && $params['trade_type'] != "APP" && $params['trade_type'] != "JSAPI"){
+        if($params['trade_type'] != "PC" && $params['trade_type'] != "WAP" && $params['trade_type'] != "APP" && $params['trade_type'] != "JSAPI" && $params['trade_type'] != 'TT'){
             $result['msg'] = "不支持的支付模式";
             return $result;
         }
@@ -44,6 +44,9 @@ class alipay implements Payment
         }elseif($params['trade_type'] == "JSAPI"){//支付宝小程序支付，调用统一下单接口
             $method = "alipay.trade.create";
             $product_code = "";
+        }elseif($params['trade_type'] == "TT"){ //头条小程序的收银台模式
+            $method = "alipay.trade.app.pay";
+            $product_code = "QUICK_MSECURITY_PAY";
         }else{
             $method = "alipay.trade.page.pay";
             $product_code = "FAST_INSTANT_TRADE_PAY";
@@ -115,15 +118,48 @@ class alipay implements Payment
             $re['data']['payment_id'] = $paymentInfo['payment_id'];
             return $re;
             //组装数据。
+        }elseif($params['trade_type'] == "TT"){
+            $data = $preSignStr . "&sign=" . urlencode($sign);
         }else{
             $data['sign'] = $sign;      //wap和pc传所有值，在前端模拟表单提交吧
         }
 
+        $ttOrderInfo = [];
+        if($params['trade_type'] == "TT"){
+            //头条小程序再签名
+            $ttConfig = getAddonsConfig('MPToutiao');
+            $ttOrderInfo = [
+                'merchant_id' => $ttConfig['mp_toutiao_paymid'],
+                'app_id' => $ttConfig['mp_toutiao_payappid'],
+                'sign_type' => 'MD5',
+                'timestamp' => time(),
+                'version' => '2.0',
+                'trade_type' => 'H5',
+                'product_code' => 'pay',
+                'payment_type' => 'direct',
+                'out_order_no' => $paymentInfo['payment_id'],
+                'uid' => $paymentInfo['user_id'],
+                'total_amount' => ceil($paymentInfo['money'] * 100),
+                'currency' => 'CNY',
+                'subject' => $paymentInfo['pay_title'],
+                'body' => $paymentInfo['pay_title'],
+                'trade_time' => time(),
+                'valid_time' => 3600,
+                'notify_url' => 'https://www.jihainet.com/',
+                'alipay_url' => $data,
+                'wx_url' => '',
+            ];
+
+            $ttOrderInfopreSignStr = $this->getSignContent($ttOrderInfo);
+            $ttSign = md5($ttOrderInfopreSignStr.$ttConfig['mp_toutiao_paysecret']);
+            $ttOrderInfo['sign'] = $ttSign;
+        }
 
         $result['data'] = [
             'payment_id' => $paymentInfo['payment_id'],
             'url' => $url,
-            'data' => $data
+            'data' => $data,
+            'tt_order_info' => $ttOrderInfo?$ttOrderInfo:[]
         ];
         $result['status'] = true;
         return $result;

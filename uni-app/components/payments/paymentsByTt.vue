@@ -117,13 +117,9 @@
 
 				// 判断订单支付类型
 				if (this.type == 2 && this.recharge) {
-					data['params'] = {
-						money: this.recharge
-					}
+					data['params']['money'] = this.recharge;
 				} else if ((this.type == 5 || this.type == 6) && this.recharge) {
-					data['params'] = {
-						formid: this.orderId
-					}
+					data['params']['formid'] = this.orderId;
 				}
 				let _this = this
 				switch (code) {

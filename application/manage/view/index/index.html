@@ -16,7 +16,7 @@
 
 </head>
 <body class="layui-layout-body">
-
+<div class="index-tip">请按住Ctrl+鼠标滚轮调整缩放至80%以获得更好的体验。</div>
 <div id="LAY_app">
     <div class="layui-layout layui-layout-admin">
         <div class="layui-header">
@@ -128,6 +128,36 @@
         index: 'lib/index' //主入口模块
     }).use('index');
 </script>
+<script>
+
+    if (window.screen.width <= 1600) {
+        $('.index-tip').css('display', 'block')
+    }
+    window.onresize = function () {
+
+        var screenWidth = window.screen.width;
+        var windowWidth = $(window).width();
+        if (screenWidth > windowWidth * 0.8) {
+            $('.index-tip').css('display', 'block')
+
+        } else {
+            $('.index-tip').css('display', 'none')
+        }
+    }
+</script>
+<style>
+    .index-tip {
+        position: fixed;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        background-color: #fff;
+        box-shadow: 0 0 10px #ccc;
+        padding: 10px 20px;
+        display: none;
+    }
+</style>
 </body>
 </html>
 

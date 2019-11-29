@@ -936,8 +936,8 @@ new Vue({
       methods: {
         savePage: function () {
           var data = {
-            data: this.$refs.layout.pageData,
-            pageCode: pageCode
+            pageCode: pageCode,
+            data: this.$refs.layout.pageData
           }
           JsPost(this.saveUrl, data, function (res) {
             if (res.status) {

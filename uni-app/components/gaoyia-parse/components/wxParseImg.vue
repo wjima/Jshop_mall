@@ -1,13 +1,12 @@
 <template>
 	<image
-		:mode="node.attr.mode"
+		mode="widthFix"
 		:lazy-load="node.attr.lazyLoad"
-		:class="node.classStr"
-		:style="newStyleStr || node.styleStr"
+		class="nodeclassStr"
+		:style="newStyleStr"
 		:data-src="node.attr.src"
 		:src="node.attr.src"
 		@tap="wxParseImgTap"
-		@load="wxParseImgLoad"
 	/>
 </template>
 
@@ -56,10 +55,12 @@ export default {
 			// const { mode } = this.node.attr;
 
 			const { styleStr } = this.node;
+			// console.log(this.node)
 			const imageHeightStyle = mode === 'widthFix' ? '' : `height: ${imageheight}px;`;
 
 			this.newStyleStr = `${styleStr}; ${imageHeightStyle}; width: ${imageWidth}px; padding: 0 ${+padding}px;`;//删除padding
 			// this.newStyleStr = `${styleStr}; ${imageHeightStyle}; width: ${imageWidth}px;`;
+			console.log(this.newStyleStr);
 		},
 		// 计算视觉优先的图片宽高
 		wxAutoImageCal(originalWidth, originalHeight) {
@@ -92,3 +93,9 @@ export default {
 	}
 };
 </script>
+<style>
+	.nodeclassStr{
+		width: 100%;
+		padding: 0;
+	}
+</style>

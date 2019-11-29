@@ -1,4 +1,4 @@
-export const apiBaseUrl = 'https://b2c.jihainet.com/'
+export const apiBaseUrl = 'https://demo.jihainet.com/'
 // export const apiBaseUrl = 'http://www.jshopmall.com/'
 
 // #ifdef H5

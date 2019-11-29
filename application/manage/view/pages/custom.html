@@ -852,7 +852,7 @@
 				<input type="text" v-model="id" class="selectLinkVal" :readonly="true" @click="selectLink" placeholder="请选择">
 			</div>
 			<div v-if="selectType==4">
-				<el-select v-model="id" placeholder="请选择分类">
+				<el-select v-model="id" placeholder="请选择分类" class="updateSelect" @change="updateSelect"  >
 					<template v-for="item in articleTypeList">
 						<el-option :value="item.id" :label="item.type_name"></el-option>
 					</template>

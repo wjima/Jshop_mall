@@ -126,145 +126,81 @@ class Operation extends Common
      * @param $parent_menu_id
      * @return array
      */
-    public function manageMenu($manage_id, $controllerName="", $actionName="")
+    public function manageMenu($manage_id,$type = self::PERM_TYPE_SUB)
     {
         $parent_menu_id = self::MENU_MANAGE;
 
-        //根据菜单取菜单on的样式
-        $onMenu = [];//$this->getMenuNode($parent_menu_id, $controllerName, $actionName);       采用iframe架构后，不需要有菜单on的状态了，故此这里先注释掉。
-
-        if(cache('?manage_operation_'.$manage_id)){
-            $list = cache('manage_operation_'.$manage_id);
+        if(cache('?manage_operation_'.$manage_id) && $type == self::PERM_TYPE_SUB){         //如果有缓存，并且类型是1的话，就取缓存，因为类型是1主要是后台菜单上用，类型是2的话，主要是给别人分配权限的时候会用到
+            $menuTree = cache('manage_operation_'.$manage_id);
         }else{
-            $manageModel = new Manage();
-            $manageRoleRel = new ManageRoleRel();
+            $list = $this->manageOperation($manage_id,$type);
 
-            //如果是超级管理员，直接返回所有
-            if($manage_id == $manageModel::TYPE_SUPER_ID){
-                //直接取所有数据，然后返回
-                $list = $this->where(['perm_type'=>self::PERM_TYPE_SUB])->order('sort asc')->select();
-            }else{
-                //取此管理员的所有角色
-                $roles = $manageRoleRel->where('manage_id',$manage_id)->select();
-                if(!$roles->isEmpty()){
-                    $roles = $roles->toArray();
-                    $roles = array_column($roles,'role_id');
-                }else{
-                    $roles = [];
-                }
-                //到这里就说明用户是店铺的普通管理员，那么就取所有的角色所对应的权限
-                $list = $this
-                    ->distinct(true)
-                    ->field('o.*')
-                    ->alias('o')
-                    ->join(config('database.prefix').'manage_role_operation_rel mror', 'o.id = mror.operation_id')
-                    ->where('mror.manage_role_id','IN',$roles)
-                    ->where('o.perm_type',self::PERM_TYPE_SUB)
-                    ->order('o.sort asc')
-                    ->select();
-            }
-            if($list->isEmpty()){
-                $list = [];     //啥权限都没有
-            }else{
-                $list = $list->toArray();
-            }
+            $menuTree = $this->createTree($list,$parent_menu_id);        //构建菜单树
+            //把插件的菜单也增加上去
+            $this->addonsMenu($menuTree,$type);
+
             //存储
-            cache('manage_operation_'.$manage_id,$list,3600);
-
-        }
-
-        $re = $this->createTree($list,$parent_menu_id,"parent_menu_id",$onMenu);        //构建菜单树
-        //把插件的菜单也增加上去
-        $this->addonsMenu($re);
-
-        return  $re;
-    }
-
-    /**
-     * 根据实际的控制器名称和方法名称，去算出在菜单上对应的控制器id和方法id..
-     * @param $parent_menu_id
-     * @param $controllerName
-     * @param $actionName
-     */
-    public function getMenuNode($parent_menu_id, $controllerName, $actionName)
-    {
-        $data = [];
-        //取当前操作的控制器的信息，用于下面取当前操作数据
-        $controllerInfo = $this->where(array('code'=>$controllerName, 'type'=>'c','parent_id'=>$parent_menu_id))->find();
-        if(!$controllerInfo){
-            return $data;
-        }
-        //取当前操作的数据
-        $actionInfo = $this->where(array('code'=>$actionName, 'type'=>'a','parent_id'=>$controllerInfo['id']))->find();
-        if(!$actionInfo){
-            return $data;
-        }
-        //判断是否是关联权限或者是半关联权限，如果是，就取他们的主体权限，这样才能在菜单上显示
-        if($actionInfo['perm_type'] == self::PERM_TYPE_REL || $actionInfo['perm_type'] == self::PERM_TYPE_HALFSUB){
-            //取关联记录,就不判断关联记录的权限类型了，顶多就是在分配的权限里找不到
-            $actionInfo = $this->where('id',$actionInfo['parent_menu_id'])->find();
-            if(!$actionInfo){
-                return $data;
+            if($type == self::PERM_TYPE_SUB){
+                cache('manage_operation_'.$manage_id,$menuTree,3600);    //当为1时最常用
             }
         }
-        //到这里，actionInfo就是实际的操作记录，如果此条记录是c（控制器），就直接返回，如果是a，就取它的c，然后返回俩，（为啥可能是c呢，因为关联权限可能指定到了一条控制器上面）
-        if($actionInfo['type'] == 'c'){
-            $data[$actionInfo['id']] = $actionInfo['id'];
+
+        return  $menuTree;
+    }
+
+    //取管理员所对应的所有角色的所有节点信息
+    public function manageOperation($manage_id,$type = self::PERM_TYPE_HALFSUB){
+        $manageModel = new Manage();
+        //如果是超级管理员，直接返回所有
+        if($manage_id == $manageModel::TYPE_SUPER_ID){
+            //直接取所有数据，然后返回
+            $list = $this->where('perm_type','<=',$type)->order('sort asc')->select();
         }else{
-            if($actionInfo['type'] == 'a'){
-                //先存起来，然后再去找他的c
-                $data[$actionInfo['id']] = $actionInfo['id'];
-                $cInfo = $this->where('id',$actionInfo['parent_menu_id'])->find();
-                if($cInfo){
-                    $data[$cInfo['id']] = $cInfo['id'];
-                }
+            $manageRoleRel = new ManageRoleRel();
+            //取此管理员的所有角色
+            $roles = $manageRoleRel->where('manage_id',$manage_id)->select();
+            if(!$roles->isEmpty()){
+                $roles = $roles->toArray();
+                $roles = array_column($roles,'role_id');
+            }else{
+                $roles = [];
             }
+            //到这里就说明用户是店铺的普通管理员，那么就取所有的角色所对应的权限
+            $list = $this
+                ->distinct(true)
+                ->field('o.*')
+                ->alias('o')
+                ->join(config('database.prefix').'manage_role_operation_rel mror', 'o.id = mror.operation_id')
+                ->where('mror.manage_role_id','IN',$roles)
+                ->where('o.perm_type','<=',$type)
+                ->order('o.sort asc')
+                ->select();
         }
-        return $data;
+        if($list->isEmpty()){
+            $list = [];     //啥权限都没有
+        }else{
+            $list = $list->toArray();
+        }
+        return $list;
     }
 
 
     /**
-     * 根据传过来的数组，构建以p_id为父节点的树..
+     * 根据传过来的数组，构建以parent_menu_id为父节点的菜单树..
      * @param $list 构建树所需要的节点，此值是根据权限节点算出来的
      * @param $parent_menu_id   构建树的根节点
-     * @param $p_str        根据物理节点（parent_id）还是逻辑节点(parent_menu_id)来构建树,只能选择这两个值
-     * @param array $onMenu 当前url的节点信息
-     * @param array $allOperation   所有的节点树，外面不用传进来，里面会自动判断没有了，就全部取出来，方便生成各个节点的url
      * @return array
      */
-    public function createTree($list,$parent_menu_id,$p_str,$onMenu=[],$allOperation=[])
+    public function createTree($list,$parent_menu_id)
     {
         $data = [];
-
-        //判断所有节点的值是否有，没有了，全部取出来，省的一个一个的查
-        if(!$allOperation){
-            $allOperation = $this->select();
-            if(!$allOperation->isEmpty()){
-                $allOperation = $allOperation->toArray();
-            }else{
-                $allOperation = [];
-            }
-            $nallOperation = [];
-            foreach($allOperation as $v){
-                $nallOperation[$v['id']] = $v;
-            }
-            $allOperation = $nallOperation;
-        }
-
         foreach($list as $k => $v){
-            if($v[$p_str] == $parent_menu_id){
+            if($v['parent_menu_id'] == $parent_menu_id){
                 $row = $v;
-                //判断是否是选中状态
-                if(isset($onMenu[$v['id']])){
-                    $row['selected'] = true;
-                }else{
-                    $row['selected'] = false;
-                }
                 //取当前节点的url
-                $row['url'] = $this->getUrl($v['id'],$allOperation);
+                $row['url'] = $this->getUrl($v['id']);
 
-                $row['children'] = $this->createTree($list,$v['id'],$p_str,$onMenu,$allOperation);
+                $row['children'] = $this->createTree($list,$v['id']);
 
                 $data[] = $row;
             }
@@ -278,7 +214,20 @@ class Operation extends Common
      * @param $operation_id
      * @param $list
      */
-    private function getUrl($operation_id,$list){
+    private function getUrl($operation_id){
+        static $list = [];
+        if(!$list){
+            $all = $this->select();
+            if(!$all->isEmpty()){
+                $all = $all->toArray();
+            }else{
+                $all = [];
+            }
+            foreach($all as $v){
+                $list[$v['id']] = $v;
+            }
+        }
+
         if(!isset($list[$operation_id])){
             return "";
         }
@@ -365,50 +314,94 @@ class Operation extends Common
     }
 
     /**
+     * 旧有的方法，新方法用setRoleMangeMenu来代替
      * 递归取得节点下面的所有操作，按照菜单的展示来取
      * @param $pid
      * @param array $defaultNode   这些是默认选中的
      * @param int $level 层级深度
      * @return array
      */
-    public function menuTree($pid, $defaultNode = [], $level = 1)
-    {
-        $area_tree = [];
-        $where[]   = ['parent_menu_id', 'eq', $pid];
-        $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
-        $list      = $this->where($where)->order('sort asc')->select()->toArray();
+//    public function menuTree($pid, $defaultNode = [], $level = 1)
+//    {
+//        $area_tree = [];
+//        $where[]   = ['parent_menu_id', 'eq', $pid];
+//        $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
+//        $list      = $this->where($where)->order('sort asc')->select()->toArray();
+//
+//        foreach ($list as $key => $val) {
+//            $isChecked = '0';
+//            //判断是否选中的数据
+//            if ($defaultNode[$val['id']]) {
+//                $isChecked = '1';
+//            }
+//            $isLast = false;
+//            unset($where);
+//            $where[]   = ['parent_menu_id', 'eq', $val['id']];
+//            $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
+//            $chid   = $this->where($where)->count();
+//            if (!$chid) {
+//                $isLast = true;
+//            }
+//            $area_tree[$key] = [
+//                'id'       => $val['id'],
+//                'title'    => $val['name'],
+//                'isLast'   => $isLast,
+//                'level'    => $level,
+//                'parentId' => $val['parent_id'],
+//                "checkArr" => [
+//                    'type'      => '0',
+//                    'isChecked' => $isChecked,
+//                ]
+//            ];
+//            if ($chid) {
+//                $level                       = $level + 1;
+//                $area_tree[$key]['children'] = $this->menuTree($val['id'], $defaultNode, $level);
+//            }
+//        }
+//        return $area_tree;
+//    }
 
-        foreach ($list as $key => $val) {
-            $isChecked = '0';
-            //判断是否选中的数据
-            if ($defaultNode[$val['id']]) {
+    /**
+     * 根据传过来的字段构建设置角色的权限树，结构主要是适配Dtree的数据结构
+     * @param $manageMenu       当前登陆者的权限树，
+     * @param $nodeList         当前角色的on的权限
+     * @param int $level        层级
+     * @param int $parentId     父id
+     * @return array
+     */
+    public function setRoleManageMenu($manageMenu,$nodeList,$level=1,$parentId=0){
+        $dtreeData = [];
+        foreach($manageMenu as $v){
+            $v['title'] = $v['name'];
+
+            $v['level'] = $level;
+            $v['parentId'] = $parentId;
+            if(in_array($v['id'],$nodeList)){
                 $isChecked = '1';
+            }else{
+                $isChecked = '0';
             }
-            $isLast = false;
-            unset($where);
-            $where[]   = ['parent_menu_id', 'eq', $val['id']];
-            $where[]   = ['perm_type', 'neq', self::PERM_TYPE_REL];     //不是附属权限的查出来就可以
-            $chid   = $this->where($where)->count();
-            if (!$chid) {
+            if(isset($v['children']) && $v['children']){
+                $isLast = false;
+                $children = $this->setRoleManageMenu($v['children'],$nodeList,$level+1,$v['id']);
+            }else{
                 $isLast = true;
+                $children = [];
             }
-            $area_tree[$key] = [
-                'id'       => $val['id'],
-                'title'    => $val['name'],
-                'isLast'   => $isLast,
-                'level'    => $level,
-                'parentId' => $val['parent_id'],
-                "checkArr" => [
-                    'type'      => '0',
-                    'isChecked' => $isChecked,
-                ]
+            $dtreeData[] = [
+                'id' => $v['id'],
+                'title' => $v['name'],
+                'isLast' => $isLast,
+                'level' => $level,
+                'parentId' => $parentId,
+                'checkArr' => [
+                    'type' => '0',
+                    'isChecked' => $isChecked
+                ],
+                'children' => $children
             ];
-            if ($chid) {
-                $level                       = $level + 1;
-                $area_tree[$key]['children'] = $this->menuTree($val['id'], $defaultNode, $level);
-            }
         }
-        return $area_tree;
+        return $dtreeData;
     }
 
     /**
@@ -646,30 +639,58 @@ class Operation extends Common
         return $this->checkDie($id,$pinfo[$p_str],$p_str,--$n);
     }
 
-    //通过钩子，把插件里的菜单都吸出来，然后增加到树上
-    private function addonsMenu(&$tree){
+    //通过钩子，把插件里的菜单都吸出来
+    public function addonsOperations(){
         $list = hook('menu', []);
         if($list){
-            foreach($list as $v){
-                if($v){
-                    $this->addonsMenuAdd($v,$tree);
+            $list = $this->getAddonsMenus($list);
+        }else{
+            $list = [];
+        }
+        return $list;
+    }
+
+    //把插件的菜单增加到树上
+    private function addonsMenu(&$tree,$type){
+        $list = $this->addonsOperations();
+        foreach($list as $v){
+            if($v){
+                if(!is_array($v)){
+                    continue;
+                }
+                if(!isset($v['perm_type'])){
+                    $v['perm_type'] = self::PERM_TYPE_SUB;          //如果节点没有维护权限的话，默认在菜单上显示
+                }
+                if($type >= $v['perm_type']){
+                    $this->addonsMenuAdd2($v,$tree);
                 }
             }
         }
     }
-    //把某一个插件的菜单加到树上
-    private function addonsMenuAdd($conf,&$tree){
-        foreach((array)$conf as $v){
-            $this->addonsMenuAdd2($v,$tree);
+
+    //获得所有插件的所有所有菜单，组合成一个二维数组供调用
+    private function getAddonsMenus($list){
+        $re = [];
+        foreach($list as $v){
+            if(!is_array($v)){
+                continue;
+            }
+            foreach($v as $k){
+                array_push($re,$k);
+            }
         }
+        return $re;
     }
-    //把某一个插件的某一个菜单节点加到树上
+
+    //把某一个插件的某一个菜单节点加到树上（递归加，往树下面找，知道找到挂载的点为止）
     private function addonsMenuAdd2($opt,&$tree){
         //查找树
-        if($opt['parent_menu_id'] != '0'){
+        if(!isset($opt['parent_menu_id'])){
+            return false;
+        }
+        if($opt['parent_menu_id'] != '0' && $opt['parent_menu_id'] != '2'){
             foreach($tree as &$v){
                 if($v['id'] == $opt['parent_menu_id']){
-                    //todo
                     if(!isset($v['children'])){
                         $v['children'] = [];
                     }

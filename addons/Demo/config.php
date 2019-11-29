@@ -10,7 +10,7 @@ return [
             'demo_1' =>[
                 'id' => 'demo_1',
                 'parent_menu_id' => '238',
-                'name' => 'askdf',
+                'name' => '演示插件',
                 'type' => 'c',
                 'perm_type' => 1,
                 'url' => get_addon_url('Demo://index/index'),

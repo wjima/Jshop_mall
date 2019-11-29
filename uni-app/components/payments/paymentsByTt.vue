@@ -101,7 +101,6 @@
 			},
 			// 用户点击支付方式处理
 			toPayHandler(e) {
-				console.log(e);
 				this.popShow = true;
 				let code = e.target.value.code;
 				let formId = e.target.formId;
@@ -110,59 +109,74 @@
 					payment_code: code,
 					payment_type: this.type,
 					params: {
-						formid: formId
+						formid: formId,
+						trade_type: 'TT'
 					}
 				}
 				data['ids'] = (this.type == 1 || this.type == 5 || this.type == 6) ? this.orderId : this.uid
 
 				// 判断订单支付类型
 				if (this.type == 2 && this.recharge) {
-					data['params'] = {
-						money: this.recharge
-					}
+					data['params']['money'] = this.recharge;
 				} else if ((this.type == 5 || this.type == 6) && this.recharge) {
-					data['params'] = {
-						formid: this.orderId
-					}
+					data['params']['formid'] = this.orderId;
 				}
-				console.log(data);
 				let _this = this
 				switch (code) {
 					case 'wechatpay':
 						this.$api.pay(data, res => {
-							console.log(res);
-							// if (res.status) {
-							// 	uni.requestPayment({
-							// 		provider: 'wxpay',
-							// 		timeStamp: res.data.timeStamp,
-							// 		nonceStr: res.data.nonceStr,
-							// 		package: res.data.package,
-							// 		signType: res.data.signType,
-							// 		paySign: res.data.paySign,
-							// 		success: function(e) {
-							// 			if (e.errMsg === 'requestPayment:ok') {
-							// 				_this.$common.successToShow(res.msg, () => {
-							// 					_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id)
-							// 				})
-							// 			}
-							// 		}
-							// 	});
-							// } else {
-							// 	this.$common.errorToShow(res.msg)
-							// }
+							if (res.status) {
+								uni.pay({
+									provider: 'wxpay',
+									orderInfo: res.data.tt_order_info,
+									service: 1,
+									getOrderStatus: function (es) {
+										
+									},
+									success: function(e) {
+										if(e.code == 0){
+											_this.$common.successToShow('支付成功', () => {
+												_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id);
+											});
+										}else if(e.code == 1){
+											_this.$common.errorToShow('支付超时');
+										}else if(e.code == 2){
+											_this.$common.errorToShow('支付失败');
+										}else if(e.code == 3){
+											_this.$common.errorToShow('支付关闭');
+										}else if(e.code == 9){
+											_this.$common.errorToShow('支付异常，请联系客服处理。');
+										}
+									}
+								});
+							} else {
+								this.$common.errorToShow(res.msg);
+							}
 						})
 						break
 					case 'alipay':
 						this.$api.pay(data, res => {
 							if (res.status) {
-								uni.requestPayment({
+								uni.pay({
 									provider: 'alipay',
-									tradeNO: res.data.trade_no,
+									orderInfo: res.data.tt_order_info,
+									service: 1,
+									getOrderStatus: function (es) {
+										
+									},
 									success: function(e) {
-										if (e.errMsg === 'requestPayment:ok') {
-											_this.$common.successToShow(res.msg, () => {
+										if(e.code == 0){
+											_this.$common.successToShow('支付成功', () => {
 												_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id);
 											});
+										}else if(e.code == 1){
+											_this.$common.errorToShow('支付超时');
+										}else if(e.code == 2){
+											_this.$common.errorToShow('支付失败');
+										}else if(e.code == 3){
+											_this.$common.errorToShow('支付关闭');
+										}else if(e.code == 9){
+											_this.$common.errorToShow('支付异常，请联系客服处理。');
 										}
 									}
 								});

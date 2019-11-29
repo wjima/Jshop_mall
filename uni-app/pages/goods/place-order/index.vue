@@ -709,21 +709,23 @@
             },
             // 获取默认店铺
             getDefaultStore(){
-                this.$api.defaultStore({}, res => {
-                    if(res.status){
-						if (res.data && res.data.id) {
-							let store = {
-							    id: res.data.id || 0,
-							    name: res.data.store_name || '',
-							    mobile: res.data.store_mobile || '',
-							    address: res.data.all_address || ''
+				if (this.storeSwitch == 1) {
+					this.$api.defaultStore({}, res => {
+					    if(res.status){
+							if (res.data && res.data.id) {
+								let store = {
+								    id: res.data.id || 0,
+								    name: res.data.store_name || '',
+								    mobile: res.data.store_mobile || '',
+								    address: res.data.all_address || ''
+								}
+								this.store = store;
+							}else{
+								this.$common.errorToShow('商家未配置默认自提店铺！');
 							}
-							this.store = store;
-						}else{
-							this.$common.errorToShow('商家未配置默认自提店铺！');
-						}
-                    }
-                });
+					    }
+					});
+				}
             }
             //扫码
 // 		scanCode() {

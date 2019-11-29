@@ -111,10 +111,13 @@ class BillDelivery extends Common
         ];
 
         //校验发货内容
+        $tNum = 0;
         foreach($items as $product_id => $num){
             if(!isset($dinfo['items'][$product_id])){
                 return error_code(10000);       //发货的商品不在发货明细里，肯定有问题
             }
+            //判断总发货数量
+            $tNum = $tNum + $num;
             //判断是否超发
             if(($dinfo['items'][$product_id]['nums'] - $dinfo['items']['$product_id']['sendnums'] - $dinfo['items'][$product_id]['reship_nums']) < $num){
                 $result['msg'] = $dinfo['items'][$product_id]['name']." 发超了";
@@ -132,6 +135,11 @@ class BillDelivery extends Common
                 'addon' => $dinfo['items'][$product_id]['addon'] ? $dinfo['items'][$product_id]['addon'] : '',
                 'nums' => $num
             ];
+        }
+
+        if ($tNum < 1) {
+            $result['msg'] = '请至少发生一件商品！';
+            return $result;
         }
 
         Db::startTrans();

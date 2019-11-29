@@ -5,7 +5,7 @@
 			<text class='withdrawcash-num'>{{ userInfo.balance }}</text>
 		</view>
 		<view class='cell-group margin-cell-group right-img'>
-			<view class='cell-item'>
+			<view class='cell-item' v-if="platform != 'ios'">
 				<view class='cell-item-hd' @click="navigateToHandle('./recharge')">
 					<image class='cell-hd-icon' src='/static/image/topup.png'></image>
 					<view class='cell-hd-title'>账户充值</view>
@@ -58,15 +58,23 @@
 export default {
 	data () {
 		return {
-			userInfo: {}
+			userInfo: {},
+			platform: 'ios'
 		}
 	},
 	onShow () {
-		this.getUserInfo()
+		this.getUserInfo();
 	},
 	methods: {
 		// 获取用户信息
 		getUserInfo () {
+			let _this = this;
+			uni.getSystemInfo({
+				success: function (res) {
+					_this.platform = res.platform;
+				}
+			});
+			
 			this.$api.userInfo({}, res => {
 				if (res.status) {
 					this.userInfo = res.data

@@ -16,7 +16,7 @@ class Demo extends Addons
         'description' => '仅供Demo演示插件功能使用，一些插件的用法会写到这里供大家参考',	// 插件简介
         'status' => 0,	// 状态
         'author' => 'sin',
-        'version' => '1.0'
+        'version' => '1.1'
     ];
 
     /**

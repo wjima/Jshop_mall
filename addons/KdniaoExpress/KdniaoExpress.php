@@ -2,6 +2,7 @@
 namespace addons\KdniaoExpress;    // 注意命名空间规范
 
 use addons\KdniaoExpress\lib\kdniao;
+use app\common\model\BillDelivery;
 use app\common\model\OrderItems;
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
@@ -20,7 +21,7 @@ class KdniaoExpress extends Addons
         'description'  => '快递鸟快递查询以及订单打印插件，请勿和其它打印插件一起使用。',    // 插件简介
         'status'       => 0,    // 状态
         'author'       => 'mark',
-        'version'      => '0.1',
+        'version'      => '0.2',
         'dialog_width' => '600px',
     ];
 
@@ -299,7 +300,10 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
      * @param string $order_id
      * @param string $logi_code
      * @param string $logi_no
-     * @return array
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function autoSend($order_id = '', $logi_code = '', $logi_no = '')
     {
@@ -311,7 +315,8 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
                 $val['id'], $val['nums']
             ];
         }
-        $result = model('common/BillDelivery')->ship($order_id, $logi_code, $logi_no, '打单自动发货', $ship_data);
+        $billDeliveryModel = new BillDelivery();
+        $billDeliveryModel->ship($order_id, $logi_code, $logi_no, $ship_data, 0, "", "", 0, "", '打单自动发货');
         return true;
     }
 

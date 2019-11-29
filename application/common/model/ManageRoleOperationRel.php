@@ -10,17 +10,38 @@ class ManageRoleOperationRel extends Common
 
     public function savePerm($role_id,$operations)
     {
+        $operationModel = new Operation();
+        $mrarModel = new ManageRoleAddonsRel();
+        $addonsOperations = $operationModel->addonsOperations();
+        $addonsOperations = array_column($addonsOperations,'name','id');
+
+
         //先删除此角色的所有权限
         $this->where(['manage_role_id' => $role_id])->delete();
+        $mrarModel->where(['manage_role_id' => $role_id])->delete();
 
-        if($operations != 'false'){
-            $row['manage_role_id'] = $role_id;
-            foreach($operations as $k => $v){
+        $data = [];     //manage_role_operation_rel表
+        $data1 = [];    //manage_role_addons_rel表
+
+
+        foreach($operations as $k => $v){
+            $row = [
+                'manage_role_id' => $role_id
+            ];
+            //判断id是否在节点管理里，如果是，那么就加到manage_role_operation_rel表
+            $info = $operationModel->where('id',$v['id'])->find();
+            if($info){
                 $row['operation_id'] = $v['id'];
                 $data[] = $row;
+            }else{
+                if(isset($addonsOperations[$v['id']])){
+                    $row['menu_id'] = $v['id'];
+                    $data1[] = $row;
+                }
             }
-            $this->saveAll($data);
         }
+        $this->saveAll($data);
+        $mrarModel->saveAll($data1);
 
         return true;
 
@@ -73,8 +94,40 @@ class ManageRoleOperationRel extends Common
      * @param $cont_name
      * @param $act_name
      */
-    public function checkPerm($manage_id,$p_id,$cont_name,$act_name)
+    public function checkPerm($manage_id,$p_id,$cont_name,$act_name,$addon_name="")
     {
+        $result = [
+            'status'=> false,
+            'data' => '',
+            'msg' => ''
+        ];
+
+        $manageModel = new Manage();
+        //如果是超级管理员，直接返回
+        if($manage_id == $manageModel::TYPE_SUPER_ID){
+            $result['status'] = true;
+            return $result;
+        }
+        if($addon_name == ""){
+            return $this->checkOperationPerm($manage_id,$p_id,$cont_name,$act_name);
+        }else{
+            return $this->checkAddonsPerm($manage_id,$cont_name,$act_name,$addon_name);
+        }
+
+    }
+
+    /**
+     * 实际校验管理员是否有当前操作（系统级节点）权限
+     * @param $manage_id
+     * @param $p_id
+     * @param $cont_name
+     * @param $act_name
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    private function checkOperationPerm($manage_id,$p_id,$cont_name,$act_name){
         $result = [
             'status'=> false,
             'data' => '',
@@ -88,34 +141,12 @@ class ManageRoleOperationRel extends Common
             $result['status'] = true;
             return $result;
         }
-        $manageModel = new Manage();
-
-        //如果是超级管理员，直接返回
-        if($manage_id == $manageModel::TYPE_SUPER_ID){
-            //判断当前控制器和方法是否在operation总保存，养成一个好习惯,说白了，就是假如operation表配置的不对，超级管理员也能使用
-//            $reinfo = $operationModel->getOperationInfo($cont_name,$act_name,$p_id);
-//            if(!$reinfo['status']){
-//                return $reinfo;
-//            }
-
-            $result['status'] = true;
-            return $result;
-        }
-        //取当前管理员所对应的角色
-
-        //到这里就说明是普通的管理员，那么就取所有的角色所对应的权限
-        $list = $this
-            ->distinct(true)
-            ->field('o.*')
-            ->alias('mror')
-            ->join(config('database.prefix').'operation o', 'o.id = mror.operation_id')
-            ->join(config('database.prefix').'manage_role_rel mrr', 'mror.manage_role_id = mrr.role_id')
-            ->where('mrr.manage_id','EQ',$manage_id)
-            ->select();
-        if($list->isEmpty()){
+        //到这里就说明是普通的管理员，那么就取所有的角色所对应的节点
+        $list = $operationModel->manageOperation($manage_id);
+        if(!$list){
             return error_code(10010);       //可怜的，一个权限都没有
         }
-        $newList = array_column($list->toArray(),'name','id');
+        $newList = array_column($list,'name','id');
 
         //查控制器所对应的操作记录
         $contWhere['type'] = 'c';
@@ -148,7 +179,25 @@ class ManageRoleOperationRel extends Common
         }else{
             return error_code(10010);
         }
+    }
 
+    /**
+     * 实际校验管理员是否有当前操作（插件级节点）权限
+     * @param $manage_id
+     * @param $cont_name
+     * @param $act_name
+     * @param $addon_name
+     */
+    private function checkAddonsPerm($manage_id,$cont_name,$act_name,$addon_name){
+        $result = [
+            'status'=> false,
+            'data' => '',
+            'msg' => ''
+        ];
+
+        //::todo  去校验是否有权限
+        $result['status'] = true;
+        return $result;
     }
 
 

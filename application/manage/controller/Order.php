@@ -203,7 +203,6 @@ class Order extends Manage
         ];
         $this->view->engine->layout(false);
         if (Request::isPost()) {
-            $data = input('param.');
             $billDeliveryModel = new BillDelivery();
             $result = $billDeliveryModel->ship(
                 input('param.order_id'),
@@ -213,9 +212,9 @@ class Order extends Manage
                 input('param.store_id',0),
                 input('param.ship_name',""),
                 input('param.ship_mobile',""),
-                input('param.ship_area_id',""),
+                input('param.ship_area_id',0),
                 input('param.ship_address',""),
-                input('param.memo')
+                input('param.memo', "")
             );
             return $result;
         }

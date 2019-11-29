@@ -73,7 +73,7 @@ class ManageRole extends Common
      * @param $id
      * @return array|\think\Config
      */
-    public function getRoleOperation($id)
+    public function getRoleOperation($role_id,$manage_id)
     {
         $result = [
             'status' => true,
@@ -81,21 +81,30 @@ class ManageRole extends Common
             'msg'    => ''
         ];
 
-        $where['id']    = $id;
-        $sellerRoleInfo = $this->where($where)->find();
-        if (!$sellerRoleInfo) {
+        $where['id']    = $role_id;
+        $info = $this->where($where)->find();
+        if (!$info) {
             return error_code(11071);
         }
         $mrorModel = new ManageRoleOperationRel();
-        $permList  = $mrorModel->where(['manage_role_id' => $id])->select();
+        $permList  = $mrorModel->where(['manage_role_id' => $role_id])->select();
         if (!$permList->isEmpty()) {
-            $nodeList = array_column($permList->toArray(), 'manage_role_id', 'operation_id');
+            $nodeList = array_column($permList->toArray(), 'operation_id');
         } else {
             $nodeList = [];
         }
+        //把插件权限也合进来
+        $mrarModel = new ManageRoleAddonsRel();
+        $list = $mrarModel->where(['manage_role_id' => $role_id])->select();
+        if(!$list->isEmpty()){
+            $list = array_column($list->toArray(),'menu_id');
+            $nodeList = array_merge($nodeList,$list);
+        }
 
         $operationModel = new Operation();
-        $result['data'] = $operationModel->menuTree($operationModel::MENU_MANAGE, $nodeList);
+        $manageMenu = $operationModel->manageMenu($manage_id,$operationModel::PERM_TYPE_HALFSUB);           //当前登陆者的后台菜单树
+        $result['data'] = $operationModel->setRoleManageMenu($manageMenu,$nodeList);
+
         return $result;
     }
 

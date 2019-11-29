@@ -48,22 +48,22 @@ class BillDelivery extends Common
 
     /**
      * 批量发货，可以支持多个订单合并发货，单个订单拆分发货等。
-     * @param $order_id     英文逗号分隔的订单号
-     * @param $logi_code    物流公司编码
-     * @param $logi_no      物流单号
-     * @param $items        发货明细
-     * @param $store_id     收货地址
-     * @param $ship_name    收货人姓名
-     * @param $ship_mobile  收货人电话
-     * @param $ship_area_id 省市区id
-     * @param $shop_address 收货地址
-     * @param string $memo  发货描述
+     * @param $order_id //英文逗号分隔的订单号
+     * @param $logi_code //物流公司编码
+     * @param $logi_no //物流单号
+     * @param $items //发货明细
+     * @param int $store_id //店铺收货地址
+     * @param string $ship_name //收货人姓名
+     * @param string $ship_mobile //收货人电话
+     * @param int $ship_area_id //省市区id
+     * @param string $ship_address //收货地址
+     * @param string $memo 、、发货描述
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function ship($order_id, $logi_code, $logi_no,$items,$store_id=0 ,$ship_name="", $ship_mobile="",$ship_area_id=0,$ship_address="",$memo="")
+    public function ship($order_id, $logi_code, $logi_no, $items, $store_id = 0, $ship_name = "", $ship_mobile = "", $ship_area_id = 0, $ship_address = "", $memo = "")
     {
         $result = [
             'status' => false,

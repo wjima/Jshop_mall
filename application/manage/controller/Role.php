@@ -90,7 +90,7 @@ class Role extends Manage
             return error_code(10000);
         }
         $manageRoleModel = new ManageRole();
-        $re = $manageRoleModel->getRoleOperation(input('param.id/d'));
+        $re = $manageRoleModel->getRoleOperation(input('param.id/d'),session('manage')['id']);
         if(!$re['status'])
         {
             return $re;
@@ -115,7 +115,7 @@ class Role extends Manage
         }
         if(!isset($post['data']))
         {
-            return error_code(10000);
+            return error_code(11072);
         }
         //保存角色信息
         $manageRoleModel = new ManageRole();

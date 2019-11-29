@@ -440,6 +440,9 @@ Vue.component('select-link', {
     },
     updateLinkValue: function () {
       this.$emit("update:id", this.linkUrl)
+    },
+    updateSelect: function (){
+      this.$emit("update:id",this.id)
     }
   }
 })
@@ -933,8 +936,8 @@ new Vue({
       methods: {
         savePage: function () {
           var data = {
-            data: this.$refs.layout.pageData,
-            pageCode: pageCode
+            pageCode: pageCode,
+            data: this.$refs.layout.pageData
           }
           JsPost(this.saveUrl, data, function (res) {
             if (res.status) {

@@ -163,7 +163,7 @@ class Goods extends Api
 
 
                 $goodsExtendCat = new GoodsExtendCat();
-                $gids = $goodsExtendCat->getGoodsIdByCat($catIds);
+                $gids = $goodsExtendCat->getGoodsIdByCat($catIds, true);
                 if($gids){
                     $whereOr[] = ['g.id','in',$gids];
                 }

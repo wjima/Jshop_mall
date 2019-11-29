@@ -440,6 +440,9 @@ Vue.component('select-link', {
     },
     updateLinkValue: function () {
       this.$emit("update:id", this.linkUrl)
+    },
+    updateSelect: function (){
+      this.$emit("update:id",this.id)
     }
   }
 })

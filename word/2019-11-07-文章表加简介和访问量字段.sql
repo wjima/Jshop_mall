@@ -1,1 +1,0 @@
-ALTER TABLE `jshop_article` ADD `pv` int(10) NULL DEFAULT 0 COMMENT '访问量', ADD `brief` char(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '简介'

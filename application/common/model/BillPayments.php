@@ -148,6 +148,10 @@ class BillPayments extends Common
      * @return mixed
      */
     public function pay($source_str, $payment_code, $user_id = 0, $type = self::TYPE_ORDER,$params = []){
+        //如果支付类型为余额充值，那么资源ID就是用户ID
+        if($type == self::TYPE_RECHARGE) {
+            $source_str = $user_id;
+        }
 
         //判断支付方式是否开启
         $paymentsModel = new Payments();

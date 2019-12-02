@@ -280,13 +280,16 @@ uni-input div div.input-placeholder{
   min-height: 130rpx;
   /* #endif */
 }
+.swiper-list .img-grids-item{
+	height: 350rpx !important;
+}
 .img-grids-item:nth-child(2n-1){
   margin-right: 0;
 }
 .img-grids-item-t{
   width: 336upx;
   height: 336upx;
-   /* #ifdef MP-ALIPAY */
+  /* #ifdef MP-ALIPAY */
   width: 330rpx;
   height: 330rpx;
   /* #endif */

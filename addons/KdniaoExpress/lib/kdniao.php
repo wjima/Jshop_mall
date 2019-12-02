@@ -81,14 +81,29 @@ class kdniao
         $receiver["ExpAreaName"]  = $area;
         $receiver["Address"]      = $order['ship_address'];
 
-        $commodityOne              = [];
-        $commodityOne["GoodsName"] = "物品";
+        //取发货明细
         $commodity                 = [];
-        $commodity[]               = $commodityOne;
+        if(isset($order['items'])){
+            $items = $order['items'];
+            foreach($items->toArray() as $key=>$item){
+                $commodityOne              = [];
+                $commodityOne["GoodsName"] = $item['name'];
+                $commodityOne["GoodsCode"] = $item['bn'];
+                $commodityOne["Goodsquantity"] = $item['nums'];
+                $commodity[]   = $commodityOne;
+            }
+        }
 
         $eorder["Sender"]    = $sender;
         $eorder["Receiver"]  = $receiver;
         $eorder["Commodity"] = $commodity;
+
+        if ($order['logi_code'] == 'HTKY') {//快递公司编码，例如HTKY
+            $eorder["CustomerName"] = "";//快递公司账号
+            $eorder["CustomerPwd"] = "";//快递公司密码
+            $eorder["SendSite"] = "";//快递公司网点地址
+            $eorder['TemplateSize'] = '';//快递单模板
+        }
 
         $jsonParam = json_encode($eorder, JSON_UNESCAPED_UNICODE);
 

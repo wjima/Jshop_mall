@@ -49,6 +49,9 @@ class PintuanRule extends Common{
         if(isset($post['status']) && $post['status'] != ""){
             $where[] = ['status', 'eq', $post['status']];
         }
+        if(isset($post['name']) && $post['name'] != ''){
+            $where[] = ['name', 'like', '%'.$post['name'].'%'];
+        }
 
         if(input('?param.date')){
             $theDate = explode(' 到 ',input('param.date'));

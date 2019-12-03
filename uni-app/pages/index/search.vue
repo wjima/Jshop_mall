@@ -119,12 +119,6 @@ export default {
 	width: 80%;
 	margin-right: 2%;
 }
-.search-icon{
-	left: 30upx;	
-}
-.search-input {
-	padding: 10upx 30upx 10upx 90upx;
-}
 .search-input-p{
 	padding: 0 !important;
 }
@@ -138,7 +132,6 @@ export default {
 	line-height: 72upx;
 }
 .history-c{
-	/* background-color: #fff; */
 	padding: 20upx 26upx;
 }
 .history-title{

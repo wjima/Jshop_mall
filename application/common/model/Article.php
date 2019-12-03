@@ -28,20 +28,16 @@ class Article extends Common
 
     //验证规则
     protected $rule     =   [
-        'cover'         =>  'require',
         'title'         =>  'require|max:200',
-        'content'       =>  'require',
         'brief'         =>  'max:100',
         'type_id'       =>  'require',
         'sort'          =>  'number',
     ];
 
     protected $msg          =   [
-        'cover.require'     =>  '请上传文章封面图',
         'title.require'     =>  '文章标题必须填写',
         'title.max'         =>  '标题名称最多不能超过200个字符',
         'brief.max'         =>  '文章简介最多不能超过100个字符',
-        'content.require'   =>  '文章内容必须填写',
         'type_id.require'   =>  '请选择文章分类',
         'sort.number'       =>  '排序必须是数字类型',
     ];

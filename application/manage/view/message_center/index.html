@@ -10,7 +10,6 @@
 <script type="text/html" id="wxTpl">
     <input type="checkbox" name="wx_tpl_message" value="{{d.code}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.wx_tpl_message == 1 ? 'checked' : '' }}>
 </script>
-
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         layui.table.render({
@@ -27,10 +26,10 @@
                     var html = '';
                     html += data.name + '('+data.code+')';
                     return html;
-                }},
-                {field:'sms', title:'短信', width:200, templet: '#smsTpl', unresize: true},
-                {field:'message', title:'站内消息', width:200, templet: '#messageTpl', unresize: true},
-                {field:'wx_tpl_message', title:'微信消息', width:200, templet: '#wxTpl', unresize: true}
+                }, align: 'center'},
+                {field:'sms', title:'短信', width:110, templet: '#smsTpl', unresize: true, align: 'center'},
+                {field:'message', title:'站内消息', width:110, templet: '#messageTpl', unresize: true, align: 'center'},
+                {field:'wx_tpl_message', title:'微信消息', width:110, templet: '#wxTpl', unresize: true, align: 'center'}
             ]]
         });
         //监听操作

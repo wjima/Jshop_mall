@@ -7,7 +7,6 @@
                 <input type="text" name="name" lay-verify="title" placeholder="请输入表单名称关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="form-search"><i class="iconfont icon-chaxun"></i>筛选</button>
             <button type="button" class="layui-btn layui-btn-sm add-form"><i class="layui-icon">&#xe608;</i> 添加</button>
@@ -18,11 +17,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="formTable" lay-filter="formTable"></table>
 </div>
-
 <div id="exportForm" style="display: none;">
     <form class="layui-form export-form" action="">
         <div class="layui-form-item">
@@ -31,7 +28,6 @@
                     请先筛选要导出的表单，默认导出全部
                 </blockquote>
             </div>
-
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
                 <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
@@ -40,7 +36,6 @@
         </div>
     </form>
 </div>
-
 <script>
     layui.use(['table','form','layer','laydate'],function(){
         var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
@@ -55,13 +50,13 @@
             url: "{:url('form/index')}",
             cols: [[ //标题栏
                 {type:'checkbox'},
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field: 'name', title: '表单名称',align:'center'},
                 {field: 'desc', title: '表单描述',align:'center'},
-                {field: 'type', title: '类型',align:'center'},
-                {field: 'is_login', title: '需要登录',align:'center'},
-                {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
-                {field: 'sort', sort: true, title: '排序',align:'center'},
+                {field: 'type', title: '类型',align:'center', width: 110},
+                {field: 'is_login', title: '需要登录',align:'center', width: 100},
+                {field: 'utime',sort: true, title: '更新时间' ,align:'center', width: 170},
+                {field: 'sort', sort: true, title: '排序',align:'center', width: 80},
                 {title:'操作',align:'center',width:240, toolbar:'#formBar'}
             ]]
         });

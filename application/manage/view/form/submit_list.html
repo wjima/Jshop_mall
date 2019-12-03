@@ -15,13 +15,10 @@
             <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="form-search"><i class="iconfont icon-chaxun"></i>筛选</button>
         </div>
     </div>
-
 </form>
-
 <div class="table-body">
     <table id="formTable" lay-filter="formTable"></table>
 </div>
-
 <script>
     layui.use(['table','form','layer','laydate'],function(){
         var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
@@ -35,17 +32,17 @@
             id:'formTable',
             url: "{:url('form/formSubmit')}",
             cols: [[ //标题栏
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field: 'form_name', title: '表单名称',align:'center'},
                 {field: 'user_name', title: '用户',align:'center'},
-                {field: 'ip', title: '用户IP',align:'center'},
-                {field: 'status', title: '状态',align:'center'},
+                {field: 'ip', title: '用户IP',align:'center', width: 150},
+                {field: 'status', title: '状态',align:'center', width:110},
                 {field: 'feedback', title: '反馈',align:'center'},
                 {field: 'money', title: '支付金额',align:'center'},
-                {field: 'pay_status', title: '支付状态',align:'center'},
-                {field: 'ctime',sort: true, title: '提交时间' ,align:'center'},
-                {field: 'utime', sort: true, title: '更新时间',align:'center'},
-                {width:150, title:'操作',align:'center', toolbar:'#formBar'}
+                {field: 'pay_status', title: '支付状态', width:110, align:'center'},
+                {field: 'ctime',sort: true, width:170, title: '提交时间' ,align:'center'},
+                {field: 'utime', sort: true, width:170, title: '更新时间',align:'center'},
+                {width:170, title:'操作',align:'center', toolbar:'#formBar'}
             ]]
         });
         //search

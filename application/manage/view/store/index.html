@@ -5,7 +5,6 @@
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1400px !important;
             box-sizing: border-box;
@@ -14,18 +13,14 @@
 </style>
 <form class="layui-form seller-form">
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm add-store"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
 </form>
-
 <div class="table-body">
     <table class="" id="storeTable" lay-filter="storeTable"></table>
 </div>
-
 <script>
     layui.use(['table','form'], function(){
         var table = layui.table,form = layui.form;
@@ -39,17 +34,17 @@
             id:'storeTable',
             url: "{:url('Store/index')}",
             cols: [[ //标题栏
-                {type: 'numbers'},
-                {field: 'store_name', width:200, title: '门店名称'},
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'store_name', width:200, title: '门店名称', align: 'center'},
                 {field: 'logo', title: 'LOGO' ,align:'center',width:100, templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.logo+'")><image style="max-width:30px;max-height:30px;" src="'+data.logo+'"/></a>';
                 }},
                 {field: 'mobile', title: '门店电话',align:'center',width:120},
                 {field: 'linkman',title: '联系人',align:'center',width:100},
-                {field: 'area', title: '门店地区'},
-                {field: 'address', title:  '详细地址'},
-                {field: 'ctime', sort: true, width:200, title: '创建时间',align:'center'},
-                {field: 'utime', sort: true, width:200, title: '更新时间',align:'center'},
+                {field: 'area', title: '门店地区', align: 'center'},
+                {field: 'address', title:  '详细地址', align: 'center'},
+                {field: 'ctime', sort: true, width:170, title: '创建时间',align:'center'},
+                {field: 'utime', sort: true, width:170, title: '更新时间',align:'center'},
                 {title:'操作',align:'center',toolbar:'#storeBar',width: 190}
             ]] //设置表头
         });

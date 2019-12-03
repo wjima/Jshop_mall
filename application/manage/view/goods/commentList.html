@@ -39,8 +39,8 @@
                         statusCode: true
                     },
                     cols: [[
-                        { type: 'numbers' },
-                        { field: 'nickname',  title: '用户', align: 'center', templet: function (data) {
+                        {field:'id', width:90, title:'ID', align: 'center'},
+                        { field: 'nickname', width: 150,  title: '用户', align: 'center', templet: function (data) {
                                 if (data.user) {
                                     return data.user.nickname ? data.user.nickname : data.user.mobile;
                                 }
@@ -49,7 +49,7 @@
                                 }
                             }
                         },
-                        { field: 'evaluate', width: 150, sort: true, title: '评价星数', align: 'center', templet: function (data) {
+                        { field: 'evaluate', width: 110, sort: true, title: '评价星数', align: 'center', templet: function (data) {
                                 // if (data.score == 1) {
                                 //     return '好评';
                                 // } else if (data.score == 0) {
@@ -60,8 +60,8 @@
                                 return data.score + '星';
                             }
                         },
-                        { field: 'content', title: '评价内容', align: 'center' },
-                        { field: 'content', title: '评价图片', align: 'center', templet: function (d) {
+                        { field: 'content', title: '评价内容', minWidth: 150, align: 'center' },
+                        { field: 'content', title: '评价图片', width: 150, align: 'center', templet: function (d) {
                                 if (d.images_url) {
                                     var html = '';
                                     for (var i = 0; i < d.images_url.length; i++) {
@@ -73,9 +73,9 @@
                                 }
                             }
                         },
-                        { field: 'order_id', title: '订单号', align: 'center' },
-                        { field: 'ctime', sort: true, title: '评价时间', align: 'center' },
-                        { field: 'display', sort: true, title: '前台显示', align: 'center', templet: function (data) {
+                        { field: 'order_id', title: '订单号', align: 'center', width: 160 },
+                        { field: 'ctime', sort: true, title: '评价时间', width:170, align: 'center' },
+                        { field: 'display', sort: true, title: '前台显示', width: 110, align: 'center', templet: function (data) {
                                 if (data.display === 1) {
                                     return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">隐藏</a>';
                                 } else {
@@ -83,7 +83,7 @@
                                 }
                             }
                         },
-                        { field: 'operating', title: '操作', align: 'center', templet: function (data) {
+                        { field: 'operating', title: '操作', align: 'center', width: 110, templet: function (data) {
                                 var html = '';
                                 html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
                                 return html;

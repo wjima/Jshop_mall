@@ -2,7 +2,6 @@
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">操作时间：</label>
-
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
                        class="layui-input">
@@ -16,9 +15,7 @@
             </div>
         </div>
     </div>
-
 </form>
-
 <div class="table-body">
     <table id="operationTable" lay-filter="operation"></table>
 </div>
@@ -30,7 +27,6 @@
                     请先选中或筛选要导出的数据
                 </blockquote>
             </div>
-
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
                 <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
@@ -42,7 +38,6 @@
 <script>
     var pid = 1;
     layui.use(['form', 'layedit', 'laydate', 'table'], function () {
-
         var layer = layui.layer,
                 $ = layui.jquery,
                 form = layui.form,
@@ -53,7 +48,6 @@
             range: '到',
             format: 'yyyy-MM-dd'
         });
-
         var operationTables = layui.table.render({
             elem: '#operationTable',
             height: 'full-99',
@@ -64,12 +58,12 @@
             id: 'operationTable',
             cols: [[
                 {type:'checkbox'},
-                {type: 'numbers'},
-                {field: 'username', title: '操作员'},
-                {field: 'ctime', title: '操作时间'},
-                {field: 'desc', title: '操作描述'},
-                {field: 'content', title: '操作内容'},
-                {field: 'ip', title: '操作IP'}
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'username', title: '操作员', width: 130, align: 'center'},
+                {field: 'ctime', title: '操作时间', width: 170, align: 'center'},
+                {field: 'desc', title: '操作描述', align: 'center'},
+                {field: 'content', title: '操作内容', align: 'center'},
+                {field: 'ip', title: '操作IP', width: 150, align: 'center'}
             ]]
         });
 

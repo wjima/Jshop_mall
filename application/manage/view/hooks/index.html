@@ -1,7 +1,5 @@
 <form class="layui-form seller-form" action="">
-
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">钩子名称：</label>
             <div class="layui-input-inline seller-inline-4">
@@ -9,7 +7,6 @@
                        class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="hooks-search"><i
                     class="iconfont icon-chaxun"></i>筛选
@@ -17,15 +14,11 @@
             <button type="button" class="layui-btn layui-btn-sm add-hooks"><i class="layui-icon">&#xe608;</i> 添加
             </button>
         </div>
-
     </div>
-
 </form>
-
 <div class="table-body">
     <table id="hooksTable" lay-filter="hooksTable"></table>
 </div>
-
 <script>
     layui.use(['table', 'form', 'layer', 'laydate'], function () {
         var layer = layui.layer, table = layui.table, form = layui.form, date = layui.laydate;
@@ -39,9 +32,9 @@
             id: 'hooksTable',
             url: "{:url('hooks/index')}",
             cols: [[ //标题栏
-                {type: 'numbers'},
-                {field: 'name', title: '编码', align: 'center', width: 150},
-                {field: 'description', title: '钩子描述', width: 200},
+                {field:'id', width:90, title:'ID', align:'center'},
+                {field: 'name', title: '编码', align: 'center', width: 160},
+                {field: 'description', title: '钩子描述', width: 220, align:'center'},
                 {
                     field: 'type', sort: true, title: '类型', align: 'center', templet: function (data) {
                         if (data.type == '1') {
@@ -49,10 +42,10 @@
                         } else {
                             return '视图';
                         }
-                    }, width: 150
+                    }, width: 110
                 },
                 {field: 'addons', sort: true, title: '挂载插件', align: 'center'},
-                {width: 150, title: '操作', align: 'center', toolbar: '#hooksBar'}
+                {width: 140, title: '操作', align: 'center', toolbar: '#hooksBar'}
             ]]
         });
 

@@ -36,19 +36,19 @@
             page: false,
             limit:'2000',
             cols: [[
-                {type: 'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 { title:'名称',templet:function(data){
                     var html = '';
                     html += '<a class="link-hot option-show" data-id="' + data.id + '">'+data.name+'</a>';
                     return html;
-                }},
-                {field: 'type_name', title: '商品类型', width:150, align: 'center'},
+                }, minWidth:150, align: 'center'},
+                {field: 'type_name', title: '商品类型', minWidth:150, align: 'center'},
                 {field: 'image_id', title: '图标', width:65, align: 'center', templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.image_id+'")><image style="max-width:30px;max-height:30px;" src="'+data.image_id+'"/></a>';
                 }},
                 {field: 'sort', title: '排序', width:100, align: 'center'},
                 {field:'status',title:'前台显示',width:100,align:'center',templet: '#status'},
-                {field: 'operating', title: '操作', width:250, align: 'center',templet:function(data){
+                {field: 'operating', title: '操作', width:140, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';

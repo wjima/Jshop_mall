@@ -38,8 +38,8 @@
             url: "{:url('GoodsParams/index')}?_ajax=1",
             id: 'typeTable',
             cols: [[
-                { type: 'numbers' },
-                { field: 'name', width: 150, title: '名称' },
+                {field:'id', width:90, title:'ID', align: 'center'},
+                { field: 'name', width: 150, title: '名称', align: 'center'},
                 {
                     field: 'type', width: 150, title: '类型', templet: function (data) {
                         if (data.type == 'text') {
@@ -49,16 +49,16 @@
                         } else if (data.type == 'checkbox') {
                             return '复选框';
                         }
-                    }
+                    }, align: 'center'
                 },
-                { field: 'value', width: 150, title: '参数' },
+                { field: 'value', minWidth: 150, title: '参数', align: 'center' },
                 {
                     field: 'operating', title: '操作', templet: function (data) {
                         var html = '';
                         var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="' + data.name + '" data-id="' + data.id + '">删除</a>';
                         return html;
-                    }
+                    }, align: 'center', width: 140
                 }
             ]]
         });

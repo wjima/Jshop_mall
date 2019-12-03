@@ -82,12 +82,12 @@
             id: 'message',
             method: 'post',
             cols: [[
-                { type: 'numbers' },
-                { field: 'mobile', width: 140, title: '手机号码' },
-                { field: 'code', width: 150, title: '类型' },
-                { field: 'content', title: '内容' },
-                { field: 'ip', width: 140, title: 'IP' },
-                { field: 'status', width: 80, title: '状态' },
+                {field:'id', width:90, title:'ID', align:'center'},
+                { field: 'mobile', width: 140, title: '手机号码', align:'center' },
+                { field: 'code', width: 150, title: '类型', align:'center' },
+                { field: 'content', title: '内容', align:'center' },
+                { field: 'ip', width: 140, title: 'IP', align:'center' },
+                { field: 'status', width: 80, title: '状态', align:'center' },
                 { field: 'ctime', width: 180, title: '时间', align: 'center' },
                 {
                     field: 'operating', title: '操作', width: 90, align: 'center', templet: function (data) {

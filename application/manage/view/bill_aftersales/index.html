@@ -1,32 +1,26 @@
 <style>
     @media screen and (max-width: 500px) {
-
         .layui-table-view {
             width: 100% !important;
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1200px !important;
             box-sizing: border-box;
         }
-
         .layui-layer.layui-layer-page {
             width: 100% !important;
             overflow: hidden !important;
             left: 0 !important;
         }
-
         .layui-layer-title {
             width: 100% !important;
             box-sizing: border-box;
         }
-
         .layui-layer-content {
             width: 100% !important;
         }
-
     }
 
     .w100 {
@@ -122,26 +116,25 @@
             format: 'yyyy-MM-dd'
         });
         layui.table.render({
-
             elem: '#billAftersales',
             height: 'full-139',
             cellMinWidth: '80',
             page: 'true',
-            limit: '{:config('jshop.page_limit')}',
+            limit: "{:config('jshop.page_limit')}",
             url: "{:url('billAftersales/index')}?_ajax=1",
             id: 'billAftersales',
             cols: [[
                 { type: 'checkbox' },
-                { field: 'aftersales_id', width: 140, sort: true, title: '售后单号' },
-                { field: 'order_id', width: 140, sort: true, title: '订单号' },
-                { field: 'status_name', width: 100, title: '状态' },
-                { field: 'type', width: 100, title: '商品状态' },
-                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
-                { field: 'refund', width: 100, title: '退款金额' },
-                { field: 'reason', title: '原因' },
-                { field: 'ctime', width: 170, title: '申请时间' },
+                { field: 'aftersales_id', width: 140, sort: true, title: '售后单号', align: 'center' },
+                { field: 'order_id', width: 140, sort: true, title: '订单号', align: 'center' },
+                { field: 'status_name', width: 100, title: '状态', align: 'center' },
+                { field: 'type', width: 100, title: '商品状态', align: 'center' },
+                { field: 'user_id', width: 130, title: '用户', align: 'center' },
+                { field: 'refund', width: 100, title: '退款金额', align: 'center' },
+                { field: 'reason', title: '原因', align: 'center' },
+                { field: 'ctime', width: 170, title: '申请时间', align: 'center' },
                 {
-                    field: 'operating', title: '操作', width: 120, align: 'center', templet: function (data) {
+                    field: 'operating', title: '操作', width: 140, align: 'center', templet: function (data) {
                         var html = '';
                         if (data.status == 1) {
                             html += '<a  class="layui-btn layui-btn-xs option-audit" data-id="' + data.aftersales_id + '">操作</a>';

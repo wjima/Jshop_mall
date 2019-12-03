@@ -5,29 +5,23 @@
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1200px !important;
             box-sizing: border-box;
         }
-
         .layui-layer.layui-layer-page {
             width: 100% !important;
             overflow: hidden !important;
             left: 0 !important;
         }
-
         .layui-layer-title {
             width: 100% !important;
             box-sizing: border-box;
         }
-
         .layui-layer-content {
             width: 100% !important;
         }
-
     }
-
     .w100 {
         width: 100px !important;
     }
@@ -129,16 +123,16 @@
             id: 'billReship',
             cols: [[
                 { type: 'checkbox' },
-                { field: 'reship_id', width: 140, sort: true, title: '退货单号' },
-                { field: 'order_id', width: 140, title: '订单号' },
-                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
-                { field: 'status_name', width: 100, title: '状态' },
-                { field: 'logi_code', title: '物流公司' },
-                { field: 'logi_no', title: '物流单号' },
-                { field: 'ctime', width: 170, title: '创建时间' },
-                { field: 'utime', width: 170, title: '更新时间' },
+                { field: 'reship_id', width: 140, sort: true, title: '退货单号', align: 'center' },
+                { field: 'order_id', width: 140, title: '订单号', align: 'center' },
+                { field: 'user_id', width: 130, title: '用户', align: 'center' },
+                { field: 'status_name', width: 100, title: '状态', align: 'center' },
+                { field: 'logi_code', title: '物流公司', align: 'center' },
+                { field: 'logi_no', title: '物流单号', align: 'center' },
+                { field: 'ctime', width: 170, title: '创建时间', align: 'center' },
+                { field: 'utime', width: 170, title: '更新时间', align: 'center' },
                 {
-                    field: 'operating', title: '操作', width: 200, align: 'center', templet: function (data) {
+                    field: 'operating', title: '操作', width: 90, align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
                         if (data.status === 2) {

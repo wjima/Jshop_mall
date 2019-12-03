@@ -18,11 +18,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="messageTable" lay-filter="messageTable"></table>
 </div>
-
 <script>
     layui.use(['table','form','layer','laydate'],function(){
         var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
@@ -36,13 +34,13 @@
             id:'messageTable',
             url: "{:url('wechat/message')}",
             cols: [[ //标题栏
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field: 'name', title: '消息名称',align:'center'},
-                {field: 'type_name', title: '消息类型',align:'center'},
-                {field: 'is_attention', title: '关注回复',align:'center'},
-                {field: 'is_default', title: '默认回复',align:'center'},
-                {field: 'enable', title: '禁用',align:'center'},
-                {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
+                {field: 'type_name', title: '消息类型',align:'center', width: 100},
+                {field: 'is_attention', title: '关注回复',align:'center', width: 100},
+                {field: 'is_default', title: '默认回复',align:'center', width: 100},
+                {field: 'enable', title: '禁用',align:'center', width: 100},
+                {field: 'utime',sort: true, title: '更新时间' ,align:'center', width: 170},
                 {width:180, title:'操作',align:'center',templet:function(data){
                     var html = '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>'
                                 +'<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';

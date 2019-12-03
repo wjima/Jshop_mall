@@ -8,16 +8,13 @@
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-layer-title {
             width: 600px !important;
             box-sizing: border-box;
         }
-
         .layui-layer-content {
             width:600px !important;
         }
-
     }
 </style>
 <div class="layui-form seller-form" style="padding-bottom:10px;">
@@ -26,7 +23,6 @@
 <div class="table-body">
 	<table id="typeTable" lay-filter="test"></table>
 </div>
-
 <script>
     var table;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
@@ -40,12 +36,12 @@
             url: "{:url('Addons/index')}?_ajax=1",
             id:'typeTable',
             cols: [[
-                {field:'title', width:200,title:'插件名称'},
-                {field:'name', width:150,title:'编码'},
-                {field:'description', width:300,title:'插件描述'},
-                {field:'author', width:100,title:'作者'},
-                {field:'version', width:150,title:'版本号'},
-                {field:'operating',title:'操作',templet:function(data){
+                {field:'title', width:200,title:'插件名称', align:'center'},
+                {field:'name', width:150,title:'编码', align:'center'},
+                {field:'description', title:'插件描述', align:'center'},
+                {field:'author', width:100,title:'作者', align:'center'},
+                {field:'version', width:100,title:'版本号', align:'center'},
+                {field:'operating',title:'操作', width: 220, align:'center',templet:function(data){
                     var html = '';
                     if (data.install == 1) {
                         var html = '<a  class="layui-btn layui-btn-xs setting-class" data-title="' + data.title + '" data-name="' + data.name + '">配置</a>';

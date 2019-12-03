@@ -267,6 +267,28 @@ class Article extends Common
                 $result['msg'] = '失败';
                 return $result;
             }
+            //上一篇，下一篇
+            $data['up'] = [];
+            $data['down'] = [];
+
+            $uwhere['is_pub'] = ['is_pub', 'eq', self::IS_PUB_YES];
+            $uwhere['type_id'] = ['type_id', 'eq', $data['type_id']];
+            $list = $this->field('id,title')->where($uwhere)->select();
+            foreach($list as $k => $v){
+                if($v['id'] == $data['id']){
+                    if($k == 0 || $k == count($list)-1){
+                        if($k == 0){
+                            $data['down'] = $list[$k+1];
+                        }else{
+                            $data['up'] = $list[$k-1];
+                        }
+                    }else{
+                        $data['up'] = $list[$k-1];
+                        $data['down'] = $list[$k+1];
+                    }
+                }
+            }
+
             $result['status'] = true;
             $result['msg'] = '获取成功';
             $result['data'] = $data;

@@ -42,6 +42,7 @@
             height: 'full-220',
             url: '{:url("Coupon/index")}?promotion_id={$promotion_id}', //数据接口
             page: true, //开启分页
+            limit:'{:config("jshop.page_limit")}',
             cols: [[ //表头
                 {type:'numbers'},
                 {field: 'name', title: '优惠券名称',align:'center'},

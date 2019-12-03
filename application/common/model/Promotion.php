@@ -274,7 +274,21 @@ class Promotion extends Common
         $where[] = ['type','eq',self::TYPE_COUPON];     //促销 类型
         $where[] = ['auto_receive','eq',self::AUTO_RECEIVE_YES];    //自动领取状态
         $where[] = ['id','eq',$promotion_id];
-        return $this->field('id,name,status,exclusive,stime,etime')->where($where)->find();
+        $info = $this->field('id,name,status,exclusive,stime,etime,params')->where($where)->find();
+        $info['params'] = json_decode($info['params'],true);
+        if($info['params']){
+            //判断最大领取数量
+            if(isset($info['params']['max_nums'])){
+                $couponModel = new Coupon();
+                $receive_count = $couponModel->where([['promotion_id','=',$promotion_id]])->count();
+                if($info['params']['max_nums']>$receive_count){
+                    return $info;
+                }else{
+                    return false;
+                }
+            }
+        }
+        return $info;
     }
 
     /**

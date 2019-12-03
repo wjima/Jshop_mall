@@ -1,9 +1,9 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label" style="width:120px;">商品名称：</label>
+            <label class="layui-form-label" style="width:120px;">拼团名称：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="goods_name" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+                <input type="text" name="name" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
@@ -29,11 +29,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="pintuan" lay-filter="pintuan"></table>
 </div>
-
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         var table = layui.table;
@@ -54,21 +52,21 @@
             url: "{:url('index')}",
             id:'pintuan',
             cols: [[
-                {type:'numbers'},
-                {field:'name',title:'活动名称'},
-                {field:'sort', edit: 'text',title:'权重', align: 'center'},
-                {field:'status',title:'启用状态', templet: '#status'},
-                {field:'stime',title:'开始时间'},
-                {field:'etime',title:'结束时间'},
-                {field:'people_number', align: ' center',title:'开团人数',templet:function(data){return data.people_number + "人"}},
-                {field:'discount_amount',title:'优惠金额',templet:function(data){return '￥'+data.discount_amount}},
-                {field:'ctime',title:'创建时间'},
-                {field: 'operating', width:220,title: '操作',  align: 'center',templet:function(data){
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field:'name',title:'活动名称', align: 'center'},
+                {field:'sort', edit: 'text',title:'权重', width: 80, align: 'center'},
+                {field:'status',title:'启用状态', width: 110, templet: '#status', align: 'center'},
+                {field:'stime',title:'开始时间', align: 'center', width: 170},
+                {field:'etime',title:'结束时间', align: 'center', width: 170},
+                {field:'people_number', align: ' center', width:110,title:'开团人数',templet:function(data){return data.people_number + "人"}},
+                {field:'discount_amount',title:'优惠金额',width: 120, templet:function(data){return '￥'+data.discount_amount}, align: 'center'},
+                {field:'ctime',title:'创建时间', align: 'center', width: 170},
+                {field: 'operating', width:140,title: '操作',  align: 'center',templet:function(data){
                         var html = '';
                         html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
                         html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';
                         return html;
-                    }}
+                }}
             ]]
         });
         //排序

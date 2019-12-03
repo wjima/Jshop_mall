@@ -509,8 +509,9 @@ class Coupon extends Common
         ];
         $filter[]       = ['id', 'eq', $where['id']];
         $promotionModel = new Promotion();
-        $info           = $promotionModel->field('id,name,status,exclusive,stime,etime,params')->where($filter)->find();
+        $info           = $promotionModel->field('id,params')->where($filter)->find();
 
+        $receive_count = $this->where([['promotion_id', '=', $where['id']]])->count();
         if (!$info) {
             $result['msg'] = '优惠券不存在';
             return $result;
@@ -518,8 +519,8 @@ class Coupon extends Common
         $info['params'] = json_decode($info['params'], true);
         if ($info['params']) {
             //判断最大领取数量
-            if (isset($info['params']['max_nums'])) {
-                if ($info['params']['max_nums'] < $where['nums']) {
+            if (isset($info['params']['max_nums']) && $info['params']['max_nums'] != 0) {
+                if ($info['params']['max_nums'] < ($where['nums'] + $receive_count)) {
                     $result['msg'] = '优惠券超过最大领取数量';
                     return $result;
                 }

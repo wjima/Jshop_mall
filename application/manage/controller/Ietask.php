@@ -51,14 +51,7 @@ class Ietask extends Manage
         $taskname   = input('taskname/s', '');
         $filter     = input('filter/s', '');
         $job        = input('model/s', '');
-        $filter_res = strstr ($filter,'ids=');
 
-        $filter_res = str_replace("ids=","",$filter_res);
-        if(empty($filter_res)){
-            $result['status'] = false;
-            $result['msg']    = '请选择要导出的数据';
-            return $result;
-        }
         if(empty($taskname)){
             $result['status'] = false;
             $result['msg']    = '请输入任务名称,防止混淆';

@@ -1,33 +1,27 @@
 <div class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">公告标题：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="title" lay-verify="title" placeholder="请输入标题关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">更新时间：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" id="date" name="ctime" lay-verify="title" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="notice-search"><i class="iconfont icon-chaxun"></i>筛选</button>
 
             <button type="button" class="layui-btn layui-btn-sm add-notice"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
 </div>
-
 <div class="table-body">
 	<table id="noticeTable" lay-filter="noticeTable"></table>
 </div>
-
 <script>
     layui.use(['table','form','laydate'],function(){
         var table = layui.table,form = layui.form,date = layui.laydate;
@@ -40,12 +34,12 @@
             page: true ,//开启分页
             limit:'20',
             cols: [[ //表头
-                {type: 'numbers'},
-                {field: 'title', title: '公告标题'},
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'title', title: '公告标题', align: 'center'},
                 {field: 'content', title: '公告描述内容',align:'center'},
-                {field: 'ctime', title: '更新时间', width: 200, sort: true,align:'center'},
+                {field: 'ctime', title: '更新时间', width: 170, sort: true,align:'center'},
                 {field: 'sort', title: '排序', width: 80, sort: true,align:'center'},
-                {field: 'right', title:'操作', width: 150,align:'center', toolbar:'#notice'}
+                {field: 'right', title:'操作', width: 140,align:'center', toolbar:'#notice'}
             ]]
         });
 

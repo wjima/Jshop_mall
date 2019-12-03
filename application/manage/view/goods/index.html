@@ -153,7 +153,7 @@
             id:'goodsTable',
             cols: [[
                 {type:'checkbox'},
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field:'operating',width:180,title:'操作', align: 'center',templet:function(data){
                     var html = '';
                     html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
@@ -167,7 +167,7 @@
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
-                {field:'name', width:250,title:'名称', align: 'center'},
+                {field:'name', minWidth:250,title:'名称', align: 'center'},
                 {field:'brand_name', width:100,title:'品牌', align: 'center'},
                 {field:'stock', width:100,title:'库存', align: 'center'},
                 {field:'sort', edit: 'text', width:80,title:'排序', align: 'center',templet: function (data) {

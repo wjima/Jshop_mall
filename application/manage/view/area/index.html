@@ -22,7 +22,6 @@
     <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
     <table id="areaTable" lay-filter="areaTable"></table>
 </div>
-
 <script>
     var table = '';
     layui.use(['form','table'], function(){
@@ -39,6 +38,7 @@
             id:'areaTable',
             url: "{:url('area/getlist')}",
             cols: [[
+                {field:'id', width:90, title:'ID', align:'center'},
                 {field: 'name', title: '地区名称',align:'center',templet:function (data) {
                     var indent = getIndent(data.depth);
                     if(data.child=='true'){
@@ -48,13 +48,13 @@
                     }
                 }},
                 {field: 'postal_code', title: '邮编',align:'center'},
-                {field: 'type', title: '添加子地区',align:'center',templet:function (data) {
+                {field: 'type', title: '添加子地区', width: 110,align:'center',templet:function (data) {
                     return '<button class="layui-btn  layui-btn-xs add-table-area" data-id="' + data.id + '"><i class="layui-icon"></i>添加</button>';
                 }},
-                {field: 'file_name', title: '编辑',align:'center',templet:function (data) {
+                {field: 'file_name', title: '编辑', width: 90,align:'center',templet:function (data) {
                     return '<button class="layui-btn layui-btn-xs edit-table-area" data-id="' + data.id + '">编辑</button>';
                 }},
-                {field: 'status', title: '删除',align:'center',templet:function (data) {
+                {field: 'status', title: '删除', width: 90, align:'center',templet:function (data) {
                     return '<button class="layui-btn layui-btn-sm layui-btn-danger layui-btn-xs delete-area"  data-id="' + data.id + '">删除</button>';
                 }}
             ]],

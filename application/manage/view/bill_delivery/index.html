@@ -1,17 +1,14 @@
 <style>
     @media screen and (max-width: 500px) {
-
         .layui-table-view {
             width: 100% !important;
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1200px !important;
             box-sizing: border-box;
         }
-
     }
 </style>
 <form class="layui-form seller-form" action="">
@@ -71,7 +68,6 @@
                     请先选中或筛选要导出的订单
                 </blockquote>
             </div>
-
             <div class="layui-inline">
                 <label class="layui-form-label">任务名称：</label>
                 <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称"
@@ -110,14 +106,14 @@
                 { field: 'logi_no', width: 150, title: '快递单号', align: 'center' },
                 { field: 'ship_name', width: 130, title: '收货人', align: 'center' },
                 { field: 'ship_address', title: '收货地址', align: 'center' },
-                { field: 'ship_mobile', title: '收货电话', align: 'center' },
-                { field: 'ctime', title: '创建时间', align: 'center' },
+                { field: 'ship_mobile', title: '收货电话', width:120, align: 'center' },
+                { field: 'ctime', title: '创建时间', width: 160, align: 'center' },
                 {
                     field: 'operating', title: '操作', align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a  class="layui-btn layui-btn-xs option-view layui-btn-delivery" data-id="' + data.delivery_id + '">明细</a>';
                         return html;
-                    }
+                    }, width: 90
                 }
             ]]
         });

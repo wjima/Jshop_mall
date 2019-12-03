@@ -5,7 +5,6 @@
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1600px !important;
             box-sizing: border-box;
@@ -32,7 +31,6 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
 	        <div class="layui-input-block">
 	            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
@@ -40,11 +38,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="balanceTable" lay-filter="balanceTable"></table>
 </div>
-
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         var tocashTable = layui.table.render({
@@ -56,25 +52,25 @@
             url: "{:url('balance/tocash')}?_ajax=1",
             id:'balanceTable',
             cols: [[
-                {type:'numbers'},
-                {field:'nickname',width:150, title: '用户', align: 'center'},
-                {field:'mobile',width:150, title: '手机号', align: 'center'},
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'operating', title: '操作', width:140, align: 'center',templet:function(data){
+                        var html = '';
+                        if(data.type == "待审核"){
+                            html += '<a  class="layui-btn layui-btn-xs option-yes" data-type="2" data-id="' + data.id + '">通过</a>';
+                            html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-no" data-type="3" data-id="' + data.id + '" >驳回</a>';
+                        }
+                        return html;
+                }},
+                {field:'nickname',width:130, title: '用户', align: 'center'},
+                {field:'mobile',width:120, title: '手机号', align: 'center'},
                 {field:'money', width:100,align: 'center', title:'金额'},
                 {field:'withdrawals',width: 100, align: 'center', title:'手续费'},
                 {field:'account_bank', width: 200, align: 'center', title:'开户行'},
                 {field:'account_name', width: 150, align: 'center', title:'账户名'},
                 {field:'card_number',width: 180, align: 'center', title:'卡号'},
-                {field:'type', align: 'center', title:'类型', templet: '#type'},
-                {field:'ctime',width:160, align: 'center', title:'创建时间'},
-                {field:'ctime',width:160, align: 'center', title:'更新时间'},
-                {field: 'operating', title: '操作', width:180, align: 'center',templet:function(data){
-                    var html = '';
-                    if(data.type == "待审核"){
-                        html += '<a  class="layui-btn layui-btn-xs option-yes" data-type="2" data-id="' + data.id + '">通过</a>';
-                        html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-no" data-type="3" data-id="' + data.id + '" >驳回</a>';
-                    }
-                    return html;
-                }}
+                {field:'type', align: 'center', width:100, title:'类型', templet: '#type'},
+                {field:'ctime',width:170, align: 'center', title:'创建时间'},
+                {field:'ctime',width:170, align: 'center', title:'更新时间'}
             ]]
         });
         layui.form.on('submit(*)', function(data){

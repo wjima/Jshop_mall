@@ -41,10 +41,10 @@
             url: "{:url('role/index')}?_ajax=1",
             id:'userTable',
             cols: [[
-                {type:'numbers'},
-                {field:'name',title:'角色名称'},
-                {field:'utime',title:'创建时间'},
-                {field: 'operating', title: '操作', width:250, align: 'center', templet:function(data){
+                {field:'id', width:90, title:'ID', align:'center'},
+                {field:'name',title:'角色名称', align:'center'},
+                {field:'utime',title:'创建时间', width:200, align:'center'},
+                {field: 'operating', title: '操作', width:140, align: 'center', templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-perm" data-id="' + data.id + '">权限</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-danger" data-id="' + data.id + '">删除</a>';

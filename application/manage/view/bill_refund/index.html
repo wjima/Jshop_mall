@@ -5,27 +5,22 @@
             overflow-x: scroll !important;
             left: 0 !important;
         }
-
         .layui-table-box {
             width: 1200px !important;
             box-sizing: border-box;
         }
-
         .layui-layer.layui-layer-page {
             width: 100% !important;
             overflow: hidden !important;
             left: 0 !important;
         }
-
         .layui-layer-title {
             width: 100% !important;
             box-sizing: border-box;
         }
-
         .layui-layer-content {
             width: 100% !important;
         }
-
     }
 </style>
 <form class="layui-form seller-form" action="">
@@ -44,7 +39,6 @@
                     class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label" style="width:120px;">用户手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
@@ -78,11 +72,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="billRefund" lay-filter="test"></table>
 </div>
-
 <script>
     layui.use(['form', 'layedit', 'laydate', 'table'], function () {
         layui.table.render({
@@ -94,19 +86,19 @@
             url: "{:url('billRefund/index')}?_ajax=1",
             id: 'billRefund',
             cols: [[
-                { field: 'refund_id', width: 140, sort: true, title: '退款单号' },
-                { field: 'source_id', sort: true, title: '单号' },
-                { field: 'user_id', width: 150, minWidth: 50, title: '用户' },
-                { field: 'money', width: 100, title: '退款金额' },
+                { field: 'refund_id', width: 150, sort: true, title: '退款单号', align: 'center' },
+                { field: 'source_id', sort: true, width:150, title: '单号', align: 'center' },
+                { field: 'user_id', width: 130, title: '用户', align: 'center' },
+                { field: 'money', width: 120, title: '退款金额', align: 'center' },
                 { field: 'new_memo', title: '说明', align: 'center',templet: function(data){
                         return '<span style="color:red">'+data.new_memo+'</span>';
-                    }},
-                { field: 'payment_code', width: 140, sort: true, title: '退款方式' },
-                { field: 'status_name', width: 100, title: '状态' },
-                { field: 'type', width: 100, title: '类型' },
-                { field: 'ctime', width: 170, title: '创建时间' },
+                }},
+                { field: 'payment_code', width: 120, sort: true, title: '退款方式', align: 'center' },
+                { field: 'status_name', width: 100, title: '状态', align: 'center' },
+                { field: 'type', width: 100, title: '类型', align: 'center' },
+                { field: 'ctime', width: 170, title: '创建时间', align: 'center' },
                 {
-                    field: 'operating', title: '操作', width: 120, align: 'center', templet: function (data) {
+                    field: 'operating', title: '操作', width: 140, align: 'center', templet: function (data) {
                         var html = '';
                         if (data.status == 1) {
                             html += '<a  class="layui-btn layui-btn-xs option-audit" data-id="' + data.refund_id + '">退款</a>';

@@ -30,11 +30,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="promotion" lay-filter="test"></table>
 </div>
-
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         //时间插件
@@ -54,13 +52,13 @@
             url: "{:url('promotion/coupon')}?_ajax=1",
             id:'promotion',
             cols: [[
-                {type:'numbers'},
-                {field:'name',title:'优惠券名称'},
-                {field:'sort', width:140, sort: true,title:'权重'},
-                {field:'status', width:100,title:'启用状态', templet: '#status'},
-                {field:'stime',width:170,title:'开始时间'},
-                {field:'etime',width:170,title:'结束时间'},
-                {field: 'operating', title: '操作', width:220, align: 'center',templet:function(data){
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field:'name',title:'优惠券名称', align: 'center'},
+                {field:'sort', width:100, sort: true,title:'权重', align: 'center'},
+                {field:'status', width:100,title:'启用状态', templet: '#status', align: 'center'},
+                {field:'stime',width:170,title:'开始时间', align: 'center'},
+                {field:'etime',width:170,title:'结束时间', align: 'center'},
+                {field: 'operating', title: '操作', width:230, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a href="{:url(\'Coupon/index\')}?id=' + data.id +'" class="layui-btn layui-btn-xs layui-btn-primary">券码列表</a>'
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/couponEdit')}?id=' + data.id + '">编辑</a>';

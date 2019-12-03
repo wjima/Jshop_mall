@@ -94,9 +94,9 @@
             url: "{:url('balance/index')}?_ajax=1&user_id=" + $('#user_id').val(),
             id: 'balanceTable',
             cols: [[
-                { type: 'numbers'},
+                {field:'id', width:90, title:'ID', align:'center'},
                 {
-                    field: 'nickname', width: 140, title: '用户', align: 'center', templet: function (data) {
+                    field: 'nickname', width: 130, title: '用户', align: 'center', templet: function (data) {
                         var html = '';
                         html += data.nickname;
                         return html;
@@ -106,7 +106,7 @@
                 { field: 'money', align: 'center', width: 160, title: '金额', totalRow: true},
                 { field: 'balance', align: 'center', width: 160, title: '余额' },
                 { field: 'memo', align: 'center', title: '描述' },
-                { field: 'ctime', align: 'center', width: 200, title: '时间' }
+                { field: 'ctime', align: 'center', width: 170, title: '时间' }
             ]]
         });
         layui.form.on('submit(*)', function (data) {

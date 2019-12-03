@@ -67,12 +67,14 @@
                 page: true,
                 cols: [
                     [{
-                        type: 'numbers'
-                    }, {
+                        field:'id',
+                        width:90,
+                        title:'ID',
+                        align: 'center'
+                    },{
                         field: 'type_name',
                         minWidth: 200,
-                        title: '分类名称',
-                        width: 400
+                        title: '分类名称'
                     },{
                         field: 'sort',
                         title: '排序',
@@ -81,7 +83,8 @@
                     }, {
                         align: 'center',
                         title: '操作',
-                        toolbar: '#articleTypeBar'
+                        toolbar: '#articleTypeBar',
+                        width: 230,
                     }]
                 ],
                 done: function () {

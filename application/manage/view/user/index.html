@@ -147,14 +147,12 @@
                         html += '<a class="layui-btn layui-btn-xs editMoney" data-id="' + d.id + '">修改余额</a>';
                         html += '<span class="layui-btn layui-btn-xs pointEdit" data-id="' + d.id + '">积分修改</span>';
                         return html;
-
-
                     }, align: 'center', width: 200
                 },
-                { field: 'id', title: 'ID', width:80 },
-                { field: 'mobile', title: '手机号码', width: 150 },
-                { field: 'grade_name', title: '等级', width: 150 },
-                { field: 'sex', title: '性别' },
+                { field: 'id', title: 'ID', width:90, align: 'center' },
+                { field: 'mobile', title: '手机号码', width: 150, align: 'center'},
+                { field: 'grade_name', title: '等级', width: 150, align: 'center'},
+                { field: 'sex', title: '性别', align: 'center' },
                 {
                     field: 'avatar', title: '头像',
                     templet: function (d) {
@@ -163,7 +161,7 @@
                         } else {
                             return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
                         }
-                    }, width: 80
+                    }, width: 80, align: 'center'
                 },
                 {
                     field: 'userWx', title: '第三方账号',
@@ -181,25 +179,25 @@
                             html = html + "<img src='/static/images/userwx_"+d.user_wx[wx].type+".jpg' style='width:28px;' title='" +the_name[d.user_wx[wx].type]+"' />";
                         }
                         return html;
-                    }, width: 100
+                    }, width: 120, align: 'center'
                 },
-                { field: 'nickname', title: '昵称' },
+                { field: 'nickname', title: '昵称', minWidth: 120, align: 'center' },
                 {
                     title: '余额', templet: function (data) {
                         var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
                         return html;
-                    }
+                    }, minWidth:100, align: 'center'
                 },
-                { field: 'birthday', title: '生日', width: 150 },
+                { field: 'birthday', title: '生日', width: 115, align: 'center' },
                 {
                     title: '积分', templet: function (data) {
                         var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';
                         return html;
-                    }
+                    }, align: 'center'
                 },
-                { field: 'status', title: '状态' },
-                { field: 'pid_name', title: '邀请人' },
-                { field: 'ctime', title: '创建时间', width: 200 }
+                { field: 'status', title: '状态', align: 'center' },
+                { field: 'pid_name', title: '邀请人', width: 125, align: 'center' },
+                { field: 'ctime', title: '创建时间', width: 180, align: 'center' }
             ]]
         });
         //搜索

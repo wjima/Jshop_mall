@@ -68,9 +68,28 @@ class Cart extends Common
             return $flag;
         }
 
+
         switch ($type){
             case self::TYPE_COMMON:
                 //标准模式不需要做什么判断
+                //判断商品是否做团购秒杀
+                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion)) {
+                    $params      = json_decode($promotion['params'], true);
+                    $orderModel  = new Order();
+                    $check_order = $orderModel->findGroupOrder($product_id, $user_id, $promotion);
+                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
+                        if ($params['max_goods_nums'] < $check_order['data']['total_orders']) {
+                            $result['msg'] = '该商品已超过当前活动最大购买量';
+                            return $result;
+                        }
+                    }
+                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
+                        if ($params['max_nums'] < $check_order['data']['total_user_orders']) {
+                            $result['msg'] = '您已超过该活动最大购买量';
+                            return $result;
+                        }
+                    }
+                }
                 break;
             case self::TYPE_PINTUAN:
                 $num_type = 2;

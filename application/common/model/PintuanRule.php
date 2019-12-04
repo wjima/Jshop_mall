@@ -206,41 +206,56 @@ class PintuanRule extends Common{
      * @param $product_id
      * @return array
      */
-    public function addCart($product_id){
+    public function addCart($product_id, $user_id = 0)
+    {
         $result = [
             'status' => false,
-            'data' => [],
-            'msg' => ''
+            'data'   => [],
+            'msg'    => ''
         ];
 
         $productModel = new Products();
-        $info = $productModel->where(['id'=>$product_id])->find();
-        if(!$info){
+        $info         = $productModel->where(['id' => $product_id])->find();
+        if (!$info) {
             return error_code(10000);
         }
         $pintuanGoodsModel = new PintuanGoods();
-        $where[] = ['status','eq',self::STATUS_ON];
+        $where[]           = ['status', 'eq', self::STATUS_ON];
         //$where[] = ['stime','lt',time()];
         //$where[] = ['etime','gt',time()];
         $where[] = ['goods_id', 'eq', $info['goods_id']];
 
-
         $pinfo = $pintuanGoodsModel
             ->alias('pg')
-            ->join('pintuan_rule pr','pr.id = pg.rule_id')
+            ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
             ->where($where)
             ->order('sort asc')
             ->find();
-        if(!$pinfo){
+        if (!$pinfo) {
             return error_code(10000);
         }
-        if($pinfo['stime']>time()){
+        if ($pinfo['stime'] > time()) {
             return error_code(15601);
         }
-        if($pinfo['etime'] < time()){
+        if ($pinfo['etime'] < time()) {
             return error_code(15602);
         }
+        //参与数量
+        $orderModel         = new Order();
+        $condition['stime'] = $pinfo['stime'];
+        $condition['etime'] = $pinfo['etime'];
+        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $condition, $orderModel::ORDER_TYPE_PINTUAN);
 
+        if (isset($pinfo['max_goods_nums']) && $pinfo['max_goods_nums'] != 0) {
+            if ($pinfo['max_goods_nums'] <= $check_order['data']['total_orders']) {
+                return error_code(15610);
+            }
+        }
+        if (isset($pinfo['max_nums']) && $pinfo['max_nums'] != 0) {
+            if ($pinfo['max_nums'] <= $check_order['data']['total_user_orders']) {
+                return error_code(15611);
+            }
+        }
         $result['status'] = true;
         return $result;
     }

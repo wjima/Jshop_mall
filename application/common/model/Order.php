@@ -2186,9 +2186,10 @@ class Order extends Common
      * @param int $product_id
      * @param int $user_id
      * @param array $condition
+     * @param int $order_type 订单类型
      * @return array
      */
-    public function findGroupOrder($product_id = 0, $user_id = 0, $condition = [])
+    public function findLimitOrder($product_id = 0, $user_id = 0, $condition = [], $order_type = 0)
     {
         $return = [
             'status' => true,
@@ -2205,7 +2206,10 @@ class Order extends Common
         //在活动时间范围内
         $where[] = ['o.ctime', '>=', $condition['stime']];
         $where[] = ['o.ctime', '<', $condition['etime']];
-
+        //订单类型
+        if ($order_type) {
+            $where[] = ['o.order_type', '=', $order_type];
+        }
         $total_orders = $this->alias('o')
             ->join('order_items oi', 'oi.order_id = o.order_id')
             ->where($where)
@@ -2218,6 +2222,7 @@ class Order extends Common
             ->where($where)
             ->sum('oi.nums');
 
+        $return['msg']  = '查询成功';
         $return['data'] = [
             'total_orders'      => $total_orders,
             'total_user_orders' => $total_user_orders,

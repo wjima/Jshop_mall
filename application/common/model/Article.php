@@ -191,7 +191,7 @@ class Article extends Common
 
         $list = $this->where($where)
             ->field('id,title,cover,type_id,ctime,utime,sort,is_pub,pv,brief')
-            ->order('sort desc')
+            ->order('sort asc')
             ->page($page, $limit)
             ->select();
 

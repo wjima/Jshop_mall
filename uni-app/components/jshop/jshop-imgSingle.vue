@@ -51,6 +51,9 @@
 								url: val
 							});
 							return;
+						} else if(val.indexOf('/pages/coupon/coupon')>-1){
+							var id = val.replace('/pages/coupon/coupon?id=',"");
+							this.receiveCoupon(id)
 						} else {
 							this.$common.navigateTo(val);
 							return;
@@ -77,6 +80,19 @@
 				let url = '/pages/goods/index/index?id=' + id;
 				this.$common.navigateTo(url);
 			},
+			// 用户领取优惠券
+			receiveCoupon(couponId) {
+				let data = {
+					promotion_id: couponId
+				}
+				this.$api.getCoupon(data, res => {
+					if (res.status) {
+						this.$common.successToShow(res.msg)
+					} else {
+						this.$common.errorToShow(res.msg)
+					}
+				})
+			},
 			// #ifdef MP-WEIXIN
 			showSliderInfo2:function(e){
 				let type = e.currentTarget.dataset.type;
@@ -99,6 +115,9 @@
 								url: val
 							});
 							return;
+						} else if(val.indexOf('/pages/coupon/coupon')>-1){
+							var id = val.replace('/pages/coupon/coupon?id=',"");
+							this.receiveCoupon(id)
 						} else {
 							this.$common.navigateTo(val);
 							return;

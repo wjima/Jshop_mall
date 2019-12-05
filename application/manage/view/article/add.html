@@ -21,34 +21,34 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>文章标题：</label>
-        <div class="layui-input-inline seller-inline-5">
-            <input type="text" name="title" required  lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+        <div class="layui-input-inline seller-inline-5" style="width:92%;">
+            <input type="text" name="title" required  lay-verify="required" style="width:101.5%;" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>简介：</label>
-        <div class="layui-input-inline">
-            <textarea name="brief" placeholder="请输入简介" class="layui-textarea" style="width:500px;"></textarea>
+        <label class="layui-form-label">简介：</label>
+        <div class="layui-input-inline" style="width:92%;">
+            <textarea name="brief" placeholder="请输入简介" class="layui-textarea" style="width:101.5%;"></textarea>
         </div>
     </div>
     <br>
 
     <div class="layui-form-item">
-        <label class="layui-form-label"><i class="required-color">*</i>封面图：</label>
+        <label class="layui-form-label">封面图：</label>
         <div class="layui-input-inline seller-inline-5">
             {Jshop:image id='img' name='cover'/}
         </div>
     </div>
 
     <div class="layui-form-item layui-form-text" >
-        <label class="layui-form-label"><i class="required-color">*</i>文章内容：</label>
+        <label class="layui-form-label">文章内容：</label>
         <div class="layui-input-block" style="z-index: 1">
             <textarea id="container" name="content" style="width:100%;height:300px;" type="text/plain" class="layui-textarea"></textarea>
         </div>
     </div>
 
-    <div class="layui-form-item" style="margin: 20px;">
+    <div class="layui-form-item" style="margin: 20px 0 20px 0;">
         <label class="layui-form-label">是否发布：</label>
         <div class="layui-input-block">
             <input type="radio" name="is_pub" value="1" title="立即发布" checked>

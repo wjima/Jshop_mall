@@ -1048,7 +1048,7 @@ function checkAddons($hookname = '')
  * @throws \think\db\exception\ModelNotFoundException
  * @throws \think\exception\DbException
  */
-function isInGroup($gid = 0, &$promotion_id = 0)
+function isInGroup($gid = 0, &$promotion_id = 0,&$condition = [])
 {
     if (!$gid) {
         return false;
@@ -1061,7 +1061,7 @@ function isInGroup($gid = 0, &$promotion_id = 0)
     $where[]   = ['p.etime', 'gt', time()];
     $where[]   = ['pc.params', 'like', '%"' . $gid . '"%'];
     $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
-    $condition = $promotion->field('p.id as id')
+    $condition = $promotion->field('p.id as id,p.params as params,p.stime as stime,p.etime as etime')
         ->alias('p')
         ->join('promotion_condition pc', 'pc.promotion_id = p.id')
         ->where($where)

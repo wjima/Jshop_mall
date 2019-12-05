@@ -2180,4 +2180,53 @@ class Order extends Common
 
         return $return;
     }
+
+    /**
+     * 查询团购秒杀下单数量
+     * @param int $product_id
+     * @param int $user_id
+     * @param array $condition
+     * @param int $order_type 订单类型
+     * @return array
+     */
+    public function findLimitOrder($product_id = 0, $user_id = 0, $condition = [], $order_type = 0)
+    {
+        $return = [
+            'status' => true,
+            'msg'    => '查无订单',
+            'data'   => [
+                'total_orders'      => 0,
+                'total_user_orders' => 0,
+            ]
+        ];
+        //计算订单总量
+        $where   = [];
+        $where[] = ['oi.product_id', '=', $product_id];
+        $where[] = ['o.status', 'in', [self::ORDER_STATUS_NORMAL, self::ORDER_STATUS_COMPLETE]];//正常订单和已完成订单
+        //在活动时间范围内
+        $where[] = ['o.ctime', '>=', $condition['stime']];
+        $where[] = ['o.ctime', '<', $condition['etime']];
+        //订单类型
+        if ($order_type) {
+            $where[] = ['o.order_type', '=', $order_type];
+        }
+        $total_orders = $this->alias('o')
+            ->join('order_items oi', 'oi.order_id = o.order_id')
+            ->where($where)
+            ->sum('oi.nums');
+
+        //该会员已下多少订单
+        $where[]           = ['o.user_id', '=', $user_id];
+        $total_user_orders = $this->alias('o')
+            ->join('order_items oi', 'oi.order_id = o.order_id')
+            ->where($where)
+            ->sum('oi.nums');
+
+        $return['msg']  = '查询成功';
+        $return['data'] = [
+            'total_orders'      => $total_orders,
+            'total_user_orders' => $total_user_orders,
+        ];
+        return $return;
+    }
 }

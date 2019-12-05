@@ -404,6 +404,8 @@ class Coupon extends Common
             return $result;
         }
 
+
+        //优惠券最大数量判断
         $data = [];
         for($i = 0 ;$i<$nums;$i++){
             $data[] = [
@@ -494,6 +496,38 @@ class Coupon extends Common
             $result['status'] = true;
             $result['msg']    = '绑定成功';
         }
+        return $result;
+    }
+
+    //导出优惠券验证
+    public function exportValidate($where = [])
+    {
+        $result         = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '参数丢失',
+        ];
+        $filter[]       = ['id', 'eq', $where['id']];
+        $promotionModel = new Promotion();
+        $info           = $promotionModel->field('id,params')->where($filter)->find();
+
+        $receive_count = $this->where([['promotion_id', '=', $where['id']]])->count();
+        if (!$info) {
+            $result['msg'] = '优惠券不存在';
+            return $result;
+        }
+        $info['params'] = json_decode($info['params'], true);
+        if ($info['params']) {
+            //判断最大领取数量
+            if (isset($info['params']['max_nums']) && $info['params']['max_nums'] != 0) {
+                if ($info['params']['max_nums'] < ($where['nums'] + $receive_count)) {
+                    $result['msg'] = '优惠券超过最大领取数量';
+                    return $result;
+                }
+            }
+        }
+        $result['status'] = true;
+        $result['msg']    = '检查通过';
         return $result;
     }
 }

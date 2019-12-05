@@ -255,6 +255,7 @@
             var type = this.getAttribute('lay-id');
             if (type === 'all') {
                 filter = {};
+                filter.order_unified_status = 0;
             } else if (type === 'payment') {
                 filter.order_unified_status = 1;
             } else if (type === 'delivered') {

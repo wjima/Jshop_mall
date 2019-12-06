@@ -5,6 +5,7 @@
 			<text class='withdrawcash-num'>{{ userInfo.balance }}</text>
 		</view>
 		<view class='cell-group margin-cell-group right-img'>
+			<!-- #ifndef MP-WEIXIN -->
 			<view class='cell-item' v-if="platform != 'ios'">
 				<view class='cell-item-hd' @click="navigateToHandle('./recharge')">
 					<image class='cell-hd-icon' src='/static/image/topup.png'></image>
@@ -14,6 +15,7 @@
 					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
+			<!-- #endif -->
 			<view class='cell-item'>
 				<view class='cell-item-hd' @click="navigateToHandle('./withdraw_cash')">
 					<image class='cell-hd-icon' src='/static/image/withdraw.png'></image>

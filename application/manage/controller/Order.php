@@ -64,7 +64,7 @@ class Order extends Manage
                 'order_id' => Request::param('order_id'),
                 'username' => Request::param('username'),
                 'ship_mobile' => Request::param('ship_mobile'),
-                'order_unified_status' => Request::param('order_unified_status'),
+                'order_unified_status' => Request::param('order_unified_status',0),
                 'date' => Request::param('date'),
                 'source' => Request::param('source'),
                 'page' => Request::param('page'),

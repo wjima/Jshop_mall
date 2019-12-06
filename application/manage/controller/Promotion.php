@@ -172,8 +172,8 @@ class Promotion extends Manage
             $this->error('没有找到此优惠券记录');
         }
         //优惠券条件
-        $info['params'] = json_decode($info['params'],true);
-        if(!isset($info['params']['max_nums'])){
+        $info['params'] = json_decode($info['params'], true);
+        if (!isset($info['params']['max_nums'])) {
             $info['params']['max_nums'] = 0;
         }
 
@@ -200,8 +200,8 @@ class Promotion extends Manage
             $parmas['max_nums'] = input('param.max_nums', 0);
             $data['params']     = json_encode($parmas);
 
-            $promotionModel       = new PromotionModel();
-            $id                   = $promotionModel->where($where)->update($data);
+            $promotionModel = new PromotionModel();
+            $id             = $promotionModel->where($where)->update($data);
             return [
                 'status' => true,
                 'data'   => url('promotion/edit', ['id' => $id]),
@@ -521,7 +521,11 @@ class Promotion extends Manage
             $data['sort']      = input('param.sort/d', 100);
             $data['type']      = input('param.type/d', 3);
             $data['exclusive'] = input('param.exclusive/d', 2);
-            $params            = input('param.params/a', []);
+
+            $params                   = input('param.params/a', []);
+            $params['max_nums']       = input('param.max_nums/d', 0);//每人限购
+            $params['max_goods_nums'] = input('param.max_goods_nums/d', 0);//总量
+
             if (isset($params['salesnum']) && !$params['salesnum']) {
                 $params['salesnum'] = rand(1, 10);
             }
@@ -529,7 +533,6 @@ class Promotion extends Manage
             if (isInGroup($params['goods_id'])) {
                 return error_code(15017);
             }
-
             $data['params'] = json_encode($params);
             $id             = $promotionModel->insertGetId($data);
             return [
@@ -550,7 +553,6 @@ class Promotion extends Manage
 
         $where[] = ['type', 'in', [$promotionModel::TYPE_GROUP, $promotionModel::TYPE_SKILL]];
         $info    = $promotionModel->where($where)->find();
-
         if (!$info) {
             $this->error('没有找到此促销记录');
         }
@@ -588,6 +590,10 @@ class Promotion extends Manage
             $data['sort']      = input('param.sort/d', 100);
             $data['exclusive'] = input('param.exclusive/d', 2);
             $params            = input('param.params/a', []);
+
+            $params['max_nums']       = input('param.max_nums/d', 0);//每人限购
+            $params['max_goods_nums'] = input('param.max_goods_nums/d', 0);//总量
+
             if (isset($params['salesnum']) && !$params['salesnum']) {
                 $params['salesnum'] = rand(1, 10);
             }

@@ -113,7 +113,7 @@ export default {
 	.nodeclassStr{
 		max-width: 100%;
 		float:left;
-		width: 375px; 
+		width: 750rpx; 
 		padding: 0 0px;
 	}
 </style>

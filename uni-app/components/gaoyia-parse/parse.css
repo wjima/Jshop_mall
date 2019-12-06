@@ -24,7 +24,7 @@
 	word-break: break-word;
 }
 .wxParse .p {
-	padding-bottom: 0.5em;
+	padding-bottom: 0;
 	clear: both;
 	/* letter-spacing: 0;//字间距 */
 }

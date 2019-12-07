@@ -126,7 +126,9 @@
 					<view class='img-grids-item' v-for="item in jdata.params.list" :key="item.id" @click="goodsDetail(item.id)">
 						<image class='img-grids-item-t have-none' :src='item.image_url' mode='aspectFill'></image>
 						<view class='img-grids-item-b'>
-							<view class='goods-name grids-goods-name'>{{ item.name }}</view>
+							<view class='goods-name grids-goods-name' >
+								{{ item.name|substr }}
+							</view>
 							<view class='goods-item-c'>
 								<view class='goods-price red-price'>￥{{ item.price }}</view>
 							</view>
@@ -175,6 +177,17 @@
 <script>
 import {goods} from '@/config/mixins.js'
 export default {
+	filters:{
+		substr(val) {
+			if (val.length == 0 || val == undefined) {
+				return false;
+			} else if (val.length > 13) {
+				return val.substring(0, 13) + "...";
+			} else {
+				return val;
+			}
+		}
+	},
 	mixins: [goods],
 	name: "jshopgoods",
 	props: {
@@ -194,6 +207,7 @@ export default {
 			let url = '/pages/goods/index/index?id=' + id;
 			this.$common.navigateTo(url);
 		},
+		
 	},
 }
 </script>
@@ -250,7 +264,8 @@ export default {
 	height: 200upx;
 }
 .slide3 .grids-goods-name{
-	font-size: 24upx;
+	font-size: 24rpx;
+	height: 66rpx;
 }
 .index-goods .img-grids-item{
 	display: inline-block;

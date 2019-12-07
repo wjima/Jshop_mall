@@ -296,6 +296,10 @@ return [
             'leftarticletype' => [
                 'code' => 'leftArticleType',
                 'is_login' => false
+            ],
+            'search' => [
+                'code' => 'search',
+                'is_login' => false
             ]
         ]
     ],

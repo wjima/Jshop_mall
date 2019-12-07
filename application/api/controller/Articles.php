@@ -111,4 +111,15 @@ class Articles extends Api
 
     }
 
+    //文章搜索，只搜索标题和描述
+    public function search(){
+        $page        = input('page/d', 1);
+        $limit       = input('limit/d');
+        if(!input('?param.search_name')){
+            return error_code('10000');
+        }
+        $article = new Article();
+        return $article->search(input('param.search_name'));
+    }
+
 }

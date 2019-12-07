@@ -264,6 +264,7 @@
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
             if ($.trim(point) == '') {
                 layer.msg('积分变更不能为空');
+                return false;
             }
             JsPost("{:url('manage/user/editPoint')}", {
                 'user_id': user_id,
@@ -380,6 +381,10 @@
         $(document).on('click', '.edit-money-save', function () {
             var user_id = $("#user_id").val();
             var money = $("#money").val();
+            if ($.trim(money) == '') {
+                layer.msg('余额变更不能为空');
+                return false;
+            }
             JsPost("{:url('manage/user/editMoney')}",{
                 'user_id': user_id,
                 'flag': 'true',
@@ -403,7 +408,6 @@
         });
         //会员导出
         layui.form.on('submit(export-user)', function (data) {
-
             layer.open({
                 type: 1,
                 title: '会员导出',

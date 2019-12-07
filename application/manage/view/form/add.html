@@ -349,7 +349,8 @@
                 ,laydate = layui.laydate;
         //日期
         laydate.render({
-            elem: '#date'
+            elem: '#date',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         var form = layui.form;

@@ -111,7 +111,8 @@
         layui.laydate.render({
             elem: '#date',
             range: '到',
-            format: 'yyyy-MM-dd'
+            format: 'yyyy-MM-dd',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         layui.table.render({
             elem: '#billReship',

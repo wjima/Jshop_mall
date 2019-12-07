@@ -59,7 +59,8 @@
         date.render({
             elem:'#date',
             type: 'datetime',
-            range: '到' //或 range: '~' 来自定义分割字符
+            range: '到', //或 range: '~' 来自定义分割字符
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(coupon-search)', function(data){

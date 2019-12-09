@@ -69,7 +69,8 @@
         layui.laydate.render({
             elem: '#date',
             range: '到',
-            type: 'datetime'
+            type: 'datetime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         //获取列表数据
         layui.table.render({

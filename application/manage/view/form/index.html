@@ -62,7 +62,8 @@
         });
         //search
         date.render({
-            elem:'#utime'
+            elem:'#utime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         form.on('submit(form-search)', function(data){
             layui.table.reload('formTable', {

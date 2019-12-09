@@ -42,7 +42,8 @@
 
         date.render({
             elem: '#date',
-            range: '到'
+            range: '到',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(search)', function(data){

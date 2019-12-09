@@ -22,15 +22,15 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>文章标题：</label>
-        <div class="layui-input-inline seller-inline-5" style="width:92%;">
-            <input type="text" name="title" value="{$info.title}" required style="width:101.5%;" lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+        <div class="layui-input-block">
+            <input type="text" name="title" value="{$info.title}" required lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">简介：</label>
-        <div class="layui-input-inline" style="width:92%;">
-            <textarea name="brief" placeholder="简介信息" class="layui-textarea" style="width:101.5%;">{$info.brief}</textarea>
+        <div class="layui-input-block">
+            <textarea name="brief" placeholder="简介信息" class="layui-textarea">{$info.brief}</textarea>
         </div>
     </div>
     <br>

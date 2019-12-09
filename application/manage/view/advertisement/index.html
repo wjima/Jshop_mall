@@ -59,7 +59,8 @@
 
         date.render({
             elem:'#utime',
-            range: '~'
+            range: '~',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(advertisement-search)', function(data){

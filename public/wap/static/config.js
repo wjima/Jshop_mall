@@ -1,2 +1,1 @@
-window.host = 'http://sales.com';
-window.entId = '';
+window.host = 'http://www.b2c.com';

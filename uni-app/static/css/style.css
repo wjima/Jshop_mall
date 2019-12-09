@@ -300,10 +300,11 @@ uni-input div div.input-placeholder{
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  text-overflow:ellipsis;
+  word-wrap: break-word;
   overflow: hidden;
   color: #333;  
   width: 100%; 
-  /* height: 72upx; */
   /* #ifdef MP-ALIPAY */
   min-height: 20px;
   /* #endif */

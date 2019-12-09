@@ -2,8 +2,8 @@
 	<view class="" >
 		<!-- 搜索框 -->
 		<view class="search" ref="searchBar" id="search">
-			<view class='search-c' @click='goSearch()'>
-				<view class='search-input search-input-p' v-bind:class="jdata.params.style">
+			<view class='search-c' @click='goSearch()' v-bind:class="jdata.params.style">
+				<view class='search-input search-input-p'>
 					<view class="search-input-p-c">
 						{{jdata.params.keywords}}
 					</view>
@@ -13,8 +13,8 @@
 		</view>
 		<!-- 搜索框 -->
 		<view class="search search-fixed" v-show="searchFixed">
-			<view class='search-c' @click='goSearch()'>
-				<view class='search-input search-input-p' v-bind:class="jdata.params.style">
+			<view class='search-c' @click='goSearch()' v-bind:class="jdata.params.style">
+				<view class='search-input search-input-p'>
 					<view class="search-input-p-c">
 						{{jdata.params.keywords}}
 					</view>

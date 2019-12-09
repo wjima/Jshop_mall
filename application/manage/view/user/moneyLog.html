@@ -37,7 +37,8 @@
 
         layui.laydate.render({
             elem: '#test6',
-            range: true
+            range: true,
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         layui.form.on('submit(d)', function(data){

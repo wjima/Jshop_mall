@@ -78,7 +78,8 @@ layui.use(['form', 'table', 'laydate'], function(){
     laydate.render({
         elem: '#date',
         range: '到',
-        type: 'datetime'
+        type: 'datetime',
+				trigger: 'click' //自动弹出控件的事件，采用click弹出
     });
 
     //提交

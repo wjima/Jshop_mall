@@ -53,6 +53,7 @@
 </form>
 
 <div class="table-body">
+    <a class="layui-btn layui-btn-sm" style="margin-top: 10px;" href="{:url('manage/user/index')}">返回</a>
     <table id="balanceTable" lay-filter="balanceTable"></table>
 </div>
 
@@ -80,7 +81,8 @@
         laydate.render({
             elem: '#datetime',
             range: '到',
-            format: 'yyyy-MM-dd'
+            format: 'yyyy-MM-dd',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         layui.table.render({

@@ -230,6 +230,57 @@ class Article extends Common
 
 
     /**
+     * 文章搜索
+     * @param $search_name
+     * @param int $page
+     * @param int $limit
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function search($search_name, $page = 1, $limit = 10){
+
+        $result = [
+            'status' =>  true,
+            'msg'    =>  '获取成功',
+            'data'   =>  []
+        ];
+        // 发布状态
+        $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
+        $where[] = ['title|brief', 'like', '%'.$search_name.'%'];
+
+        $list = $this->where($where)
+            ->field('id,title,cover,type_id,ctime,utime,sort,is_pub,pv,brief')
+            ->order('sort asc')
+            ->page($page, $limit)
+            ->select();
+
+        $count = $this->where($where)->count();
+
+        if(!$list->isEmpty())
+        {
+            $list = $list->hidden(['is_pub', 'isdel']);
+            foreach ($list as &$v)
+            {
+                $v['cover'] = _sImage($v['cover']);
+                $v['ctime'] = getTime($v['ctime']);
+            }
+        }
+
+        $result['data'] = [
+            'list' => $list,
+            'count' => $count,
+            'page' => $page,
+            'limit' => $limit,
+        ];
+
+        return $result;
+
+    }
+
+
+    /**
      * 获取指定id 的文章详情
      * @param $article_id
      * @return array

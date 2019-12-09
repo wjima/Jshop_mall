@@ -8,7 +8,7 @@
 			</view>
 			<!-- #endif -->
 			<!-- #ifndef MP-WEIXIN -->
-			<image class="ad-img" :src="item.image" mode="widthFix" @click="showSliderInfo(item.id)"></image>
+			<image class="ad-img" :src="item.image" mode="widthFix" @click="showSliderInfo(item.linkType, item.linkValue)"></image>
 			<!-- #endif -->
 			<view class="imgup-btn" v-if="item.buttonText != ''" @click="showSliderInfo(item.linkType, item.linkValue)">
 				<button class="btn btn-fillet" :style="{background:item.buttonColor,color:item.textColor}">{{item.buttonText}}</button>

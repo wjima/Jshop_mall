@@ -126,7 +126,7 @@
                 window.box = layer.open({
                     type: 2,
                     content: "{:url('Form/generate')}?id="+data.id,
-                    area: ['380px', '420px'],
+                    area: setpage(380,420),
                     title:'二维码',
                     btn:['下载','关闭'],
                     btnAlign:'c',
@@ -144,7 +144,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: res.data,
-                            area: ['620px', '520px'],
+                            area: setpage(620,520),
                             title:'报表',
                             btn:['关闭'],
                             btnAlign:'c',
@@ -180,7 +180,7 @@
             layer.open({
                 type: 1,
                 title: '表单导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn: ['确定', '取消'],
                 content: $("#exportForm").html(),
                 yes: function () {

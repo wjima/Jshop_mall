@@ -299,7 +299,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '订单详情',
-                        area: ['800px', '445px'], //宽高
+                        area: setpage(800,450), //宽高
                         content: e.data,
                         moveOut: true
                     });
@@ -317,7 +317,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '编辑订单',
-                        area: ['660px', '280px'], //宽高
+                        area: setpage(660,280), //宽高
                         content: e.data
                     });
                 } else {
@@ -364,7 +364,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '支付订单',
-                        area: ['500px', '420px'], //宽高
+                        area: setpage(500,420), //宽高
                         content: e.data.tpl
                     });
                 } else {
@@ -388,7 +388,7 @@
                         window_box = layer.open({
                             type: 1,
                             title: '支付订单',
-                            area: ['530px', '520px'], //宽高
+                            area: setpage(530,520), //宽高
                             content: e.data.tpl
                         });
                     } else {
@@ -460,7 +460,7 @@
             window.box = layer.open({
                 type: 1,
                 content: tpl,
-                area: ['800px', '650px'],
+                area: setpage(800,650),
                 title: '订单发货',
                 btn: ['确认', '取消'],
                 yes: function (index, layero) {
@@ -627,7 +627,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '物流信息',
-                        area: ['700px', '400px'], //宽高
+                        area: setpage(700,400), //宽高
                         content: res.data
                     });
                 }else{
@@ -642,7 +642,7 @@
             layer.open({
                 type: 1,
                 title: '订单导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn: ['确定', '取消'],
                 content: $("#exportOrder").html(),
                 yes: function () {
@@ -697,7 +697,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '选择快递',
-                        area: ['450px', '305px'], //宽高
+                        area: setpage(450,305), //宽高
                         content: e.data,
                         btnAlign: 'c',
                         btn: ['直接打单', '只获取单号', '只打单', '关闭'],

@@ -133,7 +133,7 @@
                 { field: 'ctime', width: 170, title: '创建时间', align: 'center' },
                 { field: 'utime', width: 170, title: '更新时间', align: 'center' },
                 {
-                    field: 'operating', title: '操作', width: 90, align: 'center', templet: function (data) {
+                    field: 'operating', title: '操作', width: 140, align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
                         if (data.status === 2) {

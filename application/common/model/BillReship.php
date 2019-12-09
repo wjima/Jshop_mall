@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use think\Db;
 use think\model\concern\SoftDelete;
 
 class BillReship extends Common

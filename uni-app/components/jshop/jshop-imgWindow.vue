@@ -1,5 +1,5 @@
 <template>
-	<view class="imgwindow bottom-cell-group">
+	<view class="imgwindow">
 		<view class="imgwindow-list" v-if="jdata.params.style == '2' ||jdata.params.style == '3' ||jdata.params.style == '4'"
 		 v-bind:class="'row'+jdata.params.style" :style="{margin:-jdata.params.margin+'px'}">
 			<view class="imgwindow-item" ref="imgwitem" :style="{height:height+'px',padding:jdata.params.margin+'px'}" v-for="(item, index) in jdata.params.list"
@@ -63,7 +63,7 @@
 
 			// #ifdef MP-WEIXIN
 
-			var view = uni.createSelectorQuery().in(this).select(".content");
+			var view = uni.createSelectorQuery().select(".content");
 
 			view.boundingClientRect(jdata => {
 

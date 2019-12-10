@@ -85,7 +85,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['620px', '600px'],
+                            area: setpage(620,600),
                             title:'明细',
                             btn:['打印','关闭'],
                             btnAlign:'c',
@@ -107,7 +107,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['500px', '300px'],
+                            area: setpage(500,300),
                             title:'编辑反馈',
                             btn: ['确定','取消'],
                             yes: function(){

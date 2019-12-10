@@ -162,7 +162,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['800px', '650px'],
+                        area: setpage(800,650),
                         title: '售后单审核',
                         btn: ['确认', '取消'],
                         yes: function (index, layero) {
@@ -188,7 +188,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['600px', '600px'],
+                        area: setpage(600,600),
                         title: '售后单查看'
                     });
                 } else {
@@ -202,7 +202,7 @@
             layer.open({
                 type: 1,
                 title: '售后单导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn: ['确定', '取消'],
                 content: $("#exportAftersales").html(),
                 yes: function () {

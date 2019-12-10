@@ -137,7 +137,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['800px', '450px'],
+                        area: setpage(800,450),
                         title: '发货单查看'
                     });
                 }else{
@@ -151,7 +151,7 @@
             layer.open({
                 type: 1,
                 title: '发货单导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn: ['确定', '取消'],
                 content: $("#exportDelivery").html(),
                 yes: function () {

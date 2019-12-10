@@ -57,7 +57,7 @@
             JsGet('{:url("administrator/add")}', function (tpl) {
                 layer.open({
                     type: 1,
-                    area: ['500px', '350px'],
+                    area: setpage(500,350),
                     data: '',
                     title: '添加管理员',
                     content: tpl.data,
@@ -106,7 +106,7 @@
                 if(tpl.status){
                     layer.open({
                         type: 1,
-                        area: ['500px', '400px'],
+                        area: setpage(500,400),
                         data: '',
                         title: '编辑管理员',
                         content: tpl.data,

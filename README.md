@@ -239,6 +239,34 @@ wwwroot  WEB部署目录（或者子目录）
     </IfModule>
 ~~~
 
+#### 定时任务配置
+- Linux执行Shell命令
+```
+# 定时取消未支付订单
+php think jshop cancle
+
+# 定时催付即将被取消的订单
+php think jshop remind
+
+# 定时签收已发货订单
+php think jshop sign
+
+# 定时评价已签收订单
+php think jshop evaluate
+
+# 定时完成已评价订单
+php think jshop complete
+
+# 定时取消拼团失败的订单
+php think jshop pintuan_cancle
+
+# 定时清理后台操作日志
+php think jshop remove_op_log
+```
+注意1： **think** 必须指定到项目根目录下的 **think** 文件。  
+注意2： Shell命令下的php确保版本在7.0.* ~ 7.3.*之间，其他php版本可能会出现未知错误。  
+
+
 #### 安全&缺陷
 如果你发现了一个安全漏洞或缺陷，请发送邮件到 jima@jihainet.com。所有的安全漏洞都将及时得到解决。
 

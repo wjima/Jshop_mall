@@ -260,8 +260,7 @@ class Order extends Common
         $result = $this->getListByWhere($input, $isPage);
 
         if (count($result['data']) > 0) {
-            $as = new BillAftersales();
-
+            //$as = new BillAftersales();
             foreach ($result['data'] as $k => &$v) {
                 $v['s']           = $this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment']);
                 $v['status_text'] = config('params.order')['status_text'][$this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment'])];

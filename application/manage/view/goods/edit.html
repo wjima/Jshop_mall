@@ -114,7 +114,7 @@
                 {if condition="count($extendsCat)>0"}
                 {volist name="extendsCat" id="cat"}
                     <select name="goods_cat_extend_id[]">
-                        <option>请选择</option>
+                        <option value="0">请选择</option>
                         {volist name="goodsCatTree" id="vo"}
                         <option value="{$vo.id}" {if condition="$cat.goods_cat_id eq $vo.id"}selected {/if} >{$vo.name}</option>
                         {/volist}
@@ -261,7 +261,7 @@
 
 <div style="display: none">
     <select name="goods_cat_extend_id[]" id="goods_cat_extend_id">
-        <option>请选择</option>
+        <option value="0">请选择</option>
         {volist name="goodsCatTree" id="vo"}
         <option value="{$vo.id}">{$vo.name}</option>
         {/volist}

@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="navigationBar">
+		<!-- <view class="navigationBar">
 			<view class="navigationIcon" @click="redirect">
 				<i class="uni-btn-icon"></i>
 			</view>
@@ -9,8 +9,8 @@
 			</view>
 			<view class="navigationIcon">
 			</view>
-		</view>
-		<view class='cell-group margin-cell-group list'>
+		</view> -->
+		<view class='cell-group list'>
 			<view class="flc" v-if="articleType.length!=0">
 				<view class="buttonStyle" v-for="item in articleType" :key="item.id" @click="selectType(item.id)">
 					{{item.type_name}}
@@ -86,7 +86,9 @@
 					if (res.status) {
 						//console.log(res);
 						this.articleType = res.data.article_type
-						this.typeName = res.data.type_name
+						uni.setNavigationBarTitle({
+						    title: res.data.type_name
+						});
 						const _list = res.data.list
 						this.list = [...this.list, ..._list]
 						if (res.data.count > this.list.length) {
@@ -104,7 +106,7 @@
 			},
 			selectType(id) {
 				this.cid = id;
-				this.list=[];
+				// this.list=[];
 				//console.log(id);
 				// this.articleList();
 				this.$common.navigateTo('/pages/article/list?cid=' + id)
@@ -171,7 +173,7 @@
 	}
 
 	.list {
-		margin: 44px 0 20rpx 0;
+		margin-bottom: 20rpx;
 	}
 
 	.navigationBar {

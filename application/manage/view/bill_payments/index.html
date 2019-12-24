@@ -144,7 +144,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['600px', '600px'],
+                        setpage(600,600),
                         title: '支付单查看'
                     });
                 } else {
@@ -158,7 +158,7 @@
             layer.open({
                 type: 1,
                 title: '支付单导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn: ['确定', '取消'],
                 content: $("#exportPayments").html(),
                 yes: function () {

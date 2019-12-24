@@ -299,7 +299,7 @@
 
 <div style="display: none">
 	<select name="goods_cat_extend_id[]" id="goods_cat_extend_id">
-		<option>请选择</option>
+		<option value="0">请选择</option>
 		{volist name="goodsCatTree" id="vo"}
 		<option value="{$vo.id}">{$vo.name}</option>
 		{/volist}
@@ -482,7 +482,7 @@
 				if (tpl.status) {
 					layer.open({
 						type: 1,
-						area: ['450', '550px'],
+						area: setpage(450,550),
 						data: '',
 						title: '添加',
 						content: tpl.data,
@@ -542,7 +542,7 @@
 					window_box = layer.open({
 						type: 1,
 						title: '添加类型',
-						area: ['750px', '440px'], //宽高
+						area: setpage(750,440), //宽高
 						content: e.data,
 						btn: ['保存', '关闭'],
 						success: function(layero, index) {
@@ -582,7 +582,6 @@
 			});
 			return false;
 		});
-
 		/*//添加保存数据
 		$(document).on('click', '.add-save-btn', function(){
 		    var name = $("#name").val();
@@ -761,7 +760,7 @@
 				window.box = layer.open({
 					type: 1,
 					content: e.data,
-					area: ['400px', '480px'],
+					area: setpage(400,480),
 					title: '添加品牌'
 				});
 			} else {

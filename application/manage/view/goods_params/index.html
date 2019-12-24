@@ -80,7 +80,7 @@
                         type: 1,
                         title: '添加参数',
                         btn: ['保存', '取消'],
-                        area: ['450px', '350px'], //宽高
+                        area: setpage(450,350), //宽高
                         content: e.data,
                         yes: function () {
                             var name = $("#name").val();
@@ -134,7 +134,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '编辑参数',
-                        area: ['450px', '350px'], //宽高
+                        area: setpage(450,350), //宽高
                         content: e.data,
                         btn: ['保存', '取消'],
                         yes: function (d) {

@@ -68,7 +68,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['400px', '300px'],
+                        area: setpage(400,300),
                         title:'添加角色',
                         btn: ['确定','取消'],
                         yes: function(index, layero){
@@ -122,7 +122,7 @@
             var id = $(this).attr('data-id');
             layer.open({
                 type: 1,
-                area: ['400px', '600px'],
+                area: setpage(400,600),
                 content:'<ul id="areaTree" class="dtree" data-id="0"></ul>',
                 title: '配置权限',
                 btn:['保存','关闭'],

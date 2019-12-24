@@ -83,7 +83,7 @@
         layer.open({
             type: 2,
             title: '选择门店位置',
-            area: ['800px', '650px'],
+            area: setpage(800,650),
             content: "{:url('Store/showMap')}?coordinate={$info.coordinate}"
         });
     }

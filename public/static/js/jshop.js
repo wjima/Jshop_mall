@@ -306,27 +306,10 @@ $(function() {
 	});
 });
 
-// $("#doupload").click(function() {
-// 	layer.open({
-// 		title: "上传文件",
-// 		scrollbar: false,
-// 		type: 2, //弹出层
-// 		content: "/views/upload",
-// 		area: setpage(),
-// 		skin: "layui-layer-molv",
-// 		btn: ['确定', '关闭'],
-// 		yes: function(index, layero) {
-// 			layer.close(index);
-// 			parent.location.reload();
-// 		}
-// 	});
-
-// });
-// console.log($(window).width());
-// function setpage() {
-// 	if ($(window).width() <= 1280) {
-// 		return ['100%', '100%'];
-// 	} else {
-// 		return ['70%', '70%'];
-// 	}
-// }
+function setpage(width,height) {
+	if ($(window).width() <= 1280) {
+		return [ width+'px','70%'];
+	} else {
+		return [width+'px',height+'px' ];
+	}
+}

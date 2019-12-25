@@ -4273,7 +4273,7 @@ CREATE TABLE IF NOT EXISTS `jshop_goods_extend_cat` (
   `id` int(10) unsigned NOT NULL,
   `goods_id` int(10) unsigned DEFAULT NULL COMMENT '商品id',
   `goods_cat_id` int(10) unsigned DEFAULT NULL COMMENT '商品分类id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=FIXED COMMENT='商品分类扩展表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='商品分类扩展表';
 
 -- --------------------------------------------------------
 

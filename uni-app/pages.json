@@ -289,8 +289,7 @@
     {
       "path": "pages/article/list",
       "style": {
-        "navigationBarTitleText": "文章列表",
-				"navigationStyle": "custom"
+        "navigationBarTitleText": "文章列表"
       }
     },
     {

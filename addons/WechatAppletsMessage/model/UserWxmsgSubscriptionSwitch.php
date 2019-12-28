@@ -31,7 +31,8 @@ class UserWxmsgSubscriptionSwitch extends Model
         $return = [
             'status' => false,
             'msg' => '获取失败',
-            'data' => true
+            'data' => true,
+            'switch' => false
         ];
 
         $addonModel = new addonsModel();
@@ -40,6 +41,7 @@ class UserWxmsgSubscriptionSwitch extends Model
         foreach ($con as $v) {
             if ($v['template_id'] != '') {
                 $flag = true;
+                $return['switch'] = true;
                 break;
             }
         }

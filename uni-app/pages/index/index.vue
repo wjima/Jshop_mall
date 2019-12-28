@@ -1,5 +1,17 @@
 <template>
 	<view class="content" style="padding-top: 0upx;">
+        <!-- #ifdef MP-WEIXIN -->
+        <view class="subscription-notice" v-if="suTip">
+            <view>
+                <image class="icon" src="/static/image/subscription-tip.png" mode=""></image>
+                <text>订阅及时获取订单最新动态</text>
+            </view>
+            <view>
+                <text class="subscription-notice-btn" @click="toSubscription()">消息订阅</text>
+                <text class="subscription-notice-btn-close" @click="toClose()">×</text>
+            </view>
+        </view>
+        <!-- #endif -->
 		<jshop :jdata="pageData"></jshop>
 		<jihaiCopyright v-if="copy"></jihaiCopyright>
 		<!-- #ifdef H5 || APP-PLUS-NVUE || APP-PLUS -->
@@ -51,7 +63,8 @@
 				config:'',//配置信息
 				userInfo: {}, // 用户信息
 				kefupara: '', //客服传递资料
-				copy: false
+				copy: false,
+                suTipStatus: false
 			}
 		},
 		updated() {
@@ -64,7 +77,10 @@
 			// 获取店铺联系人手机号
 			shopMobile(){
 				return this.$store.state.config.shop_mobile || 0;
-			}
+			},
+            suTip () {
+                return this.suTipStatus;
+            }
 		},
 		onLoad(e) {
 			this.initData()
@@ -124,6 +140,10 @@
 						}
 					})
 				}
+                
+                // #ifdef MP-WEIXIN
+                this.userIsSubscription();
+                // #endif
 			},
 			getMyShareCode() {
 				let userToken = this.$db.get("userToken");
@@ -179,7 +199,41 @@
 					_this.$common.errorToShow('暂无设置客服电话');
 				}
 				// #endif
-			}
+			},
+            //前往订阅
+            toSubscription() {
+                this.$common.navigateTo('/pages/member/setting/subscription/index');
+            },
+            //查询用户订阅
+            userIsSubscription() {
+                let userToken = this.$db.get("userToken");
+                if (userToken && userToken != '') {
+                	this.$api.subscriptionIsTip(res => {
+                        if (res.status) {
+                            if (res.data) {
+                                this.suTipStatus = true;
+                            } else {
+                                this.suTipStatus = false;
+                            }
+                        } else {
+                            this.suTipStatus = true;
+                        }
+                	});
+                } else {
+                    this.suTipStatus = true;
+                }
+            },
+            //关闭订阅
+            toClose() {
+                let userToken = this.$db.get("userToken");
+                if (userToken && userToken != '') {
+                	this.$api.subscriptionCloseTip(res => {
+                	    this.suTipStatus = false;
+                	});
+                } else {
+                    this.suTipStatus = false;
+                }
+            }
 		},
 		onPullDownRefresh() {
 			this.initData()
@@ -242,4 +296,35 @@
 		width: 60rpx;
 		height: 60rpx;
 	}
+    .subscription-notice{
+        background-color: #ffffff;
+        box-shadow: 0 2rpx 18rpx #eeeeee;
+        position: relative;
+        z-index: 99;
+        height: 66rpx;
+        line-height: 66rpx;
+        padding: 0 20rpx;
+        font-size: 28rpx;
+        color: #333333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .subscription-notice>view{
+        display: flex;
+        align-items: center;
+    }
+    .subscription-notice .icon{
+        width: 32rpx;
+        height: 32rpx;
+        margin-right: 10rpx;
+    }
+    .subscription-notice-btn{
+        color: #4285f4;
+    }
+    .subscription-notice-btn-close{
+        color: #888888;
+        padding-left: 10px;
+        font-size: 30rpx;
+    }
 </style>

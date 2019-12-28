@@ -213,6 +213,19 @@
 					</view>
 				</view>
 				<view class="flc sale-list">
+                    <!-- 微信小程序消息订阅 -->
+                    <!-- #ifdef MP-WEIXIN -->
+                    <view class="item tc">
+                    	<view class="" @click="navigateToHandle('../setting/subscription/index')">
+                    		<view class="">
+                    			<image class='cell-hd-icon' src='/static/image/subscription.png'></image>
+                    		</view>
+                    		<view class="text">
+                    			<text class="">消息订阅</text>
+                    		</view>
+                    	</view>
+                    </view>
+                    <!-- #endif -->
 					<view class="item tc" v-for="(item,i) in order" :key="i" v-if="!item.unshowItem">
 						<!-- <navigator :url="item.route"> -->
 						<view class="" @click="navigateToHandle(item.router)">

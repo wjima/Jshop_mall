@@ -436,7 +436,13 @@
 		"style": {
 			"navigationBarTitleText": "在线咨询"
 		}
-	}
+	},
+    {
+    	"path" : "pages/member/setting/subscription/index",
+    	"style": {
+    		"navigationBarTitleText": "消息订阅"
+    	}
+    }
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

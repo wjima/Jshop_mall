@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace addons\WechatAppletsMessage\model;
 
+use app\common\model\Addons as addonsModel;
 use think\Model;
 
 
@@ -33,19 +34,32 @@ class UserWxmsgSubscriptionSwitch extends Model
             'data' => true
         ];
 
-        $res = $this->where('user_id', '=', $user_id)
-            ->find();
-        if ($res) {
-            if($res['switch'] == 1) {
-                $return['data'] = false;
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+        $flag = false;
+        foreach ($con as $v) {
+            if ($v['template_id'] != '') {
+                $flag = true;
+                break;
             }
+        }
 
-        } else {
-            $suModel = new UserWxmsgSubscription();
-            $count = $suModel->where('user_id', '=', $user_id)->count();
-            if ($count > 0) {
-                $return['data'] = false;
+        if ($flag) {
+            $res = $this->where('user_id', '=', $user_id)
+                ->find();
+            if ($res) {
+                if ($res['switch'] == 1) {
+                    $return['data'] = false;
+                }
+            } else {
+                $suModel = new UserWxmsgSubscription();
+                $count = $suModel->where('user_id', '=', $user_id)->count();
+                if ($count > 0) {
+                    $return['data'] = false;
+                }
             }
+        } else {
+            $return['data'] = false;
         }
         $return['status'] = true;
         $return['msg'] = '获取成功';

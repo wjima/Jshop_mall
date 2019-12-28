@@ -90,6 +90,11 @@
 				});
 			}
 		},
+        onShow() {
+            // #ifdef MP-WEIXIN
+            this.userIsSubscription();
+            // #endif
+        },
 		methods: {
 			//领取红包
 			handleGet() {},
@@ -236,9 +241,9 @@
             }
 		},
 		onPullDownRefresh() {
-			this.initData()
+			this.initData();
 			//this.$db.del('all_cat');
-			uni.stopPullDownRefresh()
+			uni.stopPullDownRefresh();
 		},
 		//分享
 		onShareAppMessage() {

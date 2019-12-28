@@ -74,8 +74,8 @@ export default {
         getSubscriptionTmplIds: function () {
             this.$api.getSubscriptionTmplIds(res => {
                 if (res.status) {
-                    for (var i; i < this.msgList.length; i++) {
-                        this.msgList[i].tmpl = res.data[this.msgList[i].func];
+                    for (let i = 0; i < this.msgList.length; i++) {
+                        this.msgList[i].tmpl = res.data[this.msgList[i].func].template_id;
                         if (this.msgList[i].tmpl != '') {
                             this.msgList[i].status = true;
                         }

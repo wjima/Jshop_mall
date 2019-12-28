@@ -7,6 +7,7 @@
 // | Author: keinx <keinx@jihainet.com>
 // +----------------------------------------------------------------------
 namespace addons\WechatAppletsMessage\controller;
+use addons\WechatAppletsMessage\model\UserWxmsgSubscription;
 use addons\WechatAppletsMessage\model\UserWxmsgSubscriptionSwitch;
 use app\common\model\UserToken;
 use myxland\addons\library\AddonController;
@@ -89,11 +90,13 @@ class Api extends AddonController
 
 
     /**
-     * 订阅模板
+     * 获取订阅模板
+     * @return \think\response\Json
      */
     public function tmpl()
     {
-
+        $suModel = new UserWxmsgSubscription();
+        return json($suModel->tmpl());
     }
 
 

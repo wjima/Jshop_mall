@@ -8,8 +8,9 @@
                         <view class='cell-hd-desc'>{{item.desc}}</view>
 					</view>
 					<view class='cell-item-ft'>
-						<view class='subscription-btn' @click="subscription(item.func)">添加通知</view>
-					</view>
+						<view v-if="!item.is" class='subscription-btn' @click="subscription(item.func, item.tmpl)">添加通知</view>
+                        <view v-if="item.is" class='subscription-btn isTrue' @click="subscription(item.func, item.tmpl)">已加通知</view>
+                    </view>
 				</view>
 			</view>
 		</view>
@@ -26,47 +27,53 @@ export default {
                     desc: '商城下单成功后通知我',
     				func: 'order',
                     tmpl: '',
-                    status: false
+                    status: false,
+                    is: false
     			},
     			{
     				name: '支付通知',
                     desc: '订单支付后通知我',
     				func: 'pay',
                     tmpl: '',
-                    status: false
+                    status: false,
+                    is: false
     			},
                 {
                 	name: '待付通知',
                     desc: '未支付订单取消前通知我',
                 	func: 'cancel',
                     tmpl: '',
-                    status: false
+                    status: false,
+                    is: false
                 },
                 {
                 	name: '发货通知',
                 	desc: '订单发货后通知我',
                     func: 'ship',
                     tmpl: '',
-                    status: false
+                    status: false,
+                    is: false
                 },
                 {
                 	name: '售后通知',
                 	desc: '订单售后结果通知我',
                     func: 'after_sale',
                     tmpl: '',
-                    status: false
+                    status: false,
+                    is: false
                 },
                 {
                 	name: '退款通知',
                 	desc: '售后退款结果通知我',
                     func: 'refund',
                     tmpl: '',
-                    status: false
+                    status: false,
+                    is: false
                 },
     		]
     	}
     },
-    onLoad(){
+    onShow(){
         this.getSubscriptionTmplIds();
     },
     methods: {
@@ -76,6 +83,7 @@ export default {
                 if (res.status) {
                     for (let i = 0; i < this.msgList.length; i++) {
                         this.msgList[i].tmpl = res.data[this.msgList[i].func].template_id;
+                        this.msgList[i].is = res.data[this.msgList[i].func].is;
                         if (this.msgList[i].tmpl != '') {
                             this.msgList[i].status = true;
                         }
@@ -86,32 +94,24 @@ export default {
             });
         },
         //发起订阅
-        subscription: function(func){
-            var tmplIds = ['TT7opZ2JmxkynB7363sCq1J38pP2kaD0TIsuaxHI5fg', 'dR_j3i31KJREAJk-3gKz0BXO903M0AdXzMWRcsw9QRM'];
-            switch(func){
-                case 'order':
-                    
-                    break;
-                case 'pay':
-                
-                    break;
-                case 'cancel':
-                    tmplIds = ['dR_j3i31KJREAJk-3gKz0BXO903M0AdXzMWRcsw9QRM'];
-                    break;
-                case 'ship':
-                    tmplIds = ['TT7opZ2JmxkynB7363sCq1J38pP2kaD0TIsuaxHI5fg'];
-                    break;
-                case 'after_sale':
-                
-                    break;
-                case 'refund':
-                
-                    break;
-            }
+        subscription: function(func, tmpl){
+            let _this = this;
             uni.requestSubscribeMessage({
-                tmplIds: tmplIds,
+                tmplIds: [tmpl],
                 success (res) {
-                    //console.log(res);
+                    if (res.errMsg == "requestSubscribeMessage:ok") {
+                        let data = {
+                            'template_id': tmpl,
+                            'status': res[tmpl]
+                        }
+                        _this.$api.setSubscriptionStatus(data, e => {
+                            _this.getSubscriptionTmplIds();
+                        });
+                    } else {
+                        _this.$common.errorToShow('操作失败，请稍候重试！', r => {
+                            _this.getSubscriptionTmplIds();
+                        });
+                    }
                 }
             });
         }
@@ -146,7 +146,14 @@ export default {
     background-color: #333333;
     color: #ffffff;
     padding: 0 20rpx;
-    line-height: 50rpx;
+    line-height: 46rpx;
     margin-right: 20rpx;
+    border: 1px solid #333333;
+}
+.isTrue{
+    background-color: #ffffff;
+    border: 1px solid #333333;
+    color: #333333;
+    line-height: 46rpx;
 }
 </style>

@@ -7,6 +7,7 @@
 // | Author: keinx <keinx@jihainet.com>
 // +----------------------------------------------------------------------
 namespace addons\WechatAppletsMessage\model;
+
 use app\common\model\Addons as addonsModel;
 use think\Model;
 
@@ -19,9 +20,13 @@ class UserWxmsgSubscription extends Model
 {
     /**
      * 获取模板信息
+     * @param $user_id
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function tmpl()
+    public function tmpl($user_id)
     {
         $return = [
             'status' => false,
@@ -31,10 +36,64 @@ class UserWxmsgSubscription extends Model
 
         $addonModel = new addonsModel();
         $return['data'] = $addonModel->getSetting('WechatAppletsMessage');
-        if($return['data']) {
+        if ($return['data']) {
+            $userArr = $this->where('user_id', '=', $user_id)
+                ->select();
+            foreach ($return['data'] as &$v) {
+                $v['is'] = false;
+                if ($v['template_id'] != "") {
+                    foreach ($userArr as $vv) {
+                        if ($v['template_id'] == $vv['template_id']) {
+                            $v['is'] = true;
+                        }
+                    }
+                }
+            }
+
             $return['status'] = true;
             $return['msg'] = '获取成功';
         }
+        return $return;
+    }
+
+
+    /**
+     * 设置订阅状态
+     * @param $user_id
+     * @param $template_id
+     * @param $status
+     * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function setTip($user_id, $template_id, $status)
+    {
+        $return = [
+            'status' => false,
+            'msg' => '操作失败',
+            'data' => ''
+        ];
+
+        $where[] = ['user_id', '=', $user_id];
+        $where[] = ['template_id', '=', $template_id];
+        $count = $this->where($where)
+            ->count();
+
+        if ($status == 'accept') {
+            if ($count < 1) {
+                $data['user_id'] = $user_id;
+                $data['template_id'] = $template_id;
+                $this->insert($data);
+            }
+        } else {
+            if ($count > 0) {
+                $this->where($where)
+                    ->delete();
+            }
+        }
+
+        $return['status'] = true;
+        $return['msg'] = '操作成功';
         return $return;
     }
 }

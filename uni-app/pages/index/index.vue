@@ -4,7 +4,7 @@
         <view class="subscription-notice" v-if="suTip">
             <view>
                 <image class="icon" src="/static/image/subscription-tip.png" mode=""></image>
-                <text>订阅及时获取订单最新动态</text>
+                <text>订阅消息，及时获取订单最新动态</text>
             </view>
             <view>
                 <text class="subscription-notice-btn" @click="toSubscription()">消息订阅</text>

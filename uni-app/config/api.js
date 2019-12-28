@@ -832,11 +832,10 @@ export const getTaxInfo = (data, callback) => post('order.gettaxcode', data, cal
 export const getSubscriptionTmplIds = callback => pluginsPost('wechat_applets_message-api-tmpl', {}, callback);
 
 //订阅状态修改
-export const setSubscriptionStatus = callback => pluginsPost('wechat_applets_message-api-settip', {}, callback);
+export const setSubscriptionStatus = (data, callback) => pluginsPost('wechat_applets_message-api-settip', data, callback);
 
 //用户关闭订阅提醒
 export const subscriptionCloseTip = callback => pluginsPost('wechat_applets_message-api-closetip', {}, callback);
 
 //判断用户是否需要显示订阅提醒
 export const subscriptionIsTip = callback => pluginsPost('wechat_applets_message-api-istip', {}, callback);
-

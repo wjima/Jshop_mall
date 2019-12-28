@@ -92,19 +92,28 @@ class Api extends AddonController
     /**
      * 获取订阅模板
      * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function tmpl()
     {
         $suModel = new UserWxmsgSubscription();
-        return json($suModel->tmpl());
+        return json($suModel->tmpl($this->userId));
     }
 
 
     /**
      * 设置订阅状态
+     * @return \think\response\Json
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function settip()
     {
-
+        $suModel = new UserWxmsgSubscription();
+        $template_id = Request::param('template_id');
+        $status = Request::param('status');
+        return json($suModel->setTip($this->userId, $template_id, $status));
     }
 }

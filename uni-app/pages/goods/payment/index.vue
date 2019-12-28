@@ -158,6 +158,7 @@
 			//this.getOrderInfo ()
            if (this.orderId && this.type == 1) {
                 // 商品订单
+				
                 this.getOrderInfo()
             } else if (this.recharge && this.type == 2) {
                 // 充值订单 获取用户id
@@ -181,14 +182,15 @@
                     payment_type: this.type
                 }
                 this.$api.paymentsCheckpay(data, res => {
+					
                     if (res.status) {
                         this.orderInfo = res.data;
-						//console.log(this.orderInfo)
-						// if(this.orderInfo.pay_status == 2){
-						// 	this.$common.redirectTo(
-						// 		'/pages/goods/payment/result?order_id=' + this.orderInfo.order_id
-						// 	)
-						// }
+						/* console.log(this.orderInfo)
+						if(this.orderInfo.pay_status == 2){
+							this.$common.redirectTo(
+								'/pages/goods/payment/result?order_id=' + this.orderInfo.order_id
+							)
+						} */
                     }
                 })
             },

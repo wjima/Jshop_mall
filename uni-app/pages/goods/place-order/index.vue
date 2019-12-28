@@ -677,14 +677,19 @@
 				// #ifdef MP-TOUTIAO
 				data['source'] = 6;
 				// #endif
-
                 data = Object.assign(data, delivery)
-
                 this.$api.createOrder(data, res => {
                     if (res.status) {
                         // 创建订单成功 去支付
 						// this.submitStatus = false;
-                        this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType)
+						// 判断是否为0元订单,如果是0元订单直接支付成功
+						if(res.data.pay_status=='2'){
+							this.$common.redirectTo(
+								'/pages/goods/payment/result?order_id=' + res.data.order_id
+							)
+						}else{
+							this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType)
+						}
                     }else{
                         this.$common.errorToShow(res.msg);
 						// this.submitStatus = false;

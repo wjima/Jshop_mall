@@ -15,7 +15,7 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">{$d.title}：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="setting[{$template_key}][{$d.code}]" required lay-verify="required" placeholder="请填写{$d.title}" autocomplete="off" class="layui-input">
+                                    <input type="text" name="setting[{$template_key}][{$d.code}]" required lay-verify="required" placeholder="请输入{$d.title}，例如：{{character_string1.DATA}}" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                         {/volist}
@@ -41,7 +41,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">{$d.title}：</label>
                             <div class="layui-input-block">
-                                <input type="text" name="setting[{$template_key}][{$d.code}]" required lay-verify="required" value="{$template_params[$template_key][$d.code]}" placeholder="请输入{$d.title}" autocomplete="off" class="layui-input">
+                                <input type="text" name="setting[{$template_key}][{$d.code}]" required lay-verify="required" value="{$template_params[$template_key][$d.code]}" placeholder="请输入{$d.title}，例如：{{character_string1.DATA}}" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         {/volist}

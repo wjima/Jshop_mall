@@ -15,6 +15,7 @@ use app\common\model\Addons as addonsModel;
 use org\Curl;
 use org\Wx;
 use think\Db;
+use think\facade\Log;
 
 /**
  * 微信小程序订阅消息插件
@@ -32,7 +33,7 @@ class WechatAppletsMessage extends Addons
         'author' => 'keinx',
         'version' => '1.0',
         'dialog_width' => '640px',
-        'dialog_height' => '480px'
+        'dialog_height' => '570px'
     ];
 
 
@@ -168,24 +169,36 @@ class WechatAppletsMessage extends Addons
         $user_id = $params['params']['user_id'];
         $info = $params['params']['params'];
         $data = [
-            'id' => [
+            'order_id' => [
                 'value' => $info['order_id']
             ],
-            'amount' => [
+            'order_amount' => [
                 'value' => $info['order_amount']
             ],
-            'name' => [
+            'ship_name' => [
                 'value' => $info['ship_name']
             ],
-            'mobile' => [
+            'ship_mobile' => [
                 'value' => $info['ship_mobile']
             ],
-            'address' => [
+            'ship_addr' => [
                 'value' => $info['ship_addr']
             ]
         ];
 
-        $this->send($user_id, $template_id, $data);
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['order'][$k] && $con['order'][$k] != ''){
+                $con['order'][$k] = ltrim($con['order'][$k], "{{");
+                $con['order'][$k] = rtrim($con['order'][$k], ".DATA}}");
+                $newData[$con['order'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
     }
 
 
@@ -202,10 +215,10 @@ class WechatAppletsMessage extends Addons
         $user_id = $params['params']['user_id'];
         $info = $params['params']['params'];
         $data = [
-            'id' => [
+            'order_id' => [
                 'value' => $info['order_id']
             ],
-            'amount' => [
+            'order_amount' => [
                 'value' => $info['order_amount']
             ],
             'ctime' => [
@@ -216,7 +229,19 @@ class WechatAppletsMessage extends Addons
             ]
         ];
 
-        $this->send($user_id, $template_id, $data);
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['cancel'][$k] && $con['cancel'][$k] != ''){
+                $con['cancel'][$k] = ltrim($con['cancel'][$k], "{{");
+                $con['cancel'][$k] = rtrim($con['cancel'][$k], ".DATA}}");
+                $newData[$con['cancel'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
     }
 
 
@@ -233,7 +258,7 @@ class WechatAppletsMessage extends Addons
         $user_id = $params['params']['user_id'];
         $info = $params['params']['params'];
         $data = [
-            'id' => [
+            'order_id' => [
                 'value' => $info['order_id']
             ],
             'money' => [
@@ -244,7 +269,19 @@ class WechatAppletsMessage extends Addons
             ]
         ];
 
-        $this->send($user_id, $template_id, $data);
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['pay'][$k] && $con['pay'][$k] != ''){
+                $con['pay'][$k] = ltrim($con['pay'][$k], "{{");
+                $con['pay'][$k] = rtrim($con['pay'][$k], ".DATA}}");
+                $newData[$con['pay'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
     }
 
 
@@ -269,7 +306,19 @@ class WechatAppletsMessage extends Addons
             ]
         ];
 
-        $this->send($user_id, $template_id, $data);
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['ship'][$k] && $con['ship'][$k] != ''){
+                $con['ship'][$k] = ltrim($con['ship'][$k], "{{");
+                $con['ship'][$k] = rtrim($con['ship'][$k], ".DATA}}");
+                $newData[$con['ship'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
     }
 
 
@@ -300,7 +349,19 @@ class WechatAppletsMessage extends Addons
             ]
         ];
 
-        $this->send($user_id, $template_id, $data);
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['after_sale'][$k] && $con['after_sale'][$k] != ''){
+                $con['after_sale'][$k] = ltrim($con['after_sale'][$k], "{{");
+                $con['after_sale'][$k] = rtrim($con['after_sale'][$k], ".DATA}}");
+                $newData[$con['after_sale'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
     }
 
 
@@ -334,7 +395,19 @@ class WechatAppletsMessage extends Addons
             ]
         ];
 
-        $this->send($user_id, $template_id, $data);
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['refund'][$k] && $con['refund'][$k] != ''){
+                $con['refund'][$k] = ltrim($con['refund'][$k], "{{");
+                $con['refund'][$k] = rtrim($con['refund'][$k], ".DATA}}");
+                $newData[$con['refund'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
     }
 
 
@@ -401,7 +474,7 @@ class WechatAppletsMessage extends Addons
         $url = 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' . $accessToken;
 
         $userWxModel = new UserWx();
-        $useropenid = $userWxModel->where('id', '=', $user_id)->find();
+        $useropenid = $userWxModel->where('user_id', '=', $user_id)->find();
         $sendData = [
             'touser' => $useropenid['openid'],
             'template_id' => $template_id,
@@ -410,8 +483,9 @@ class WechatAppletsMessage extends Addons
         ];
 
         $sendData = json_encode($sendData);
+        Log::info('订阅模板消息发送：' . $sendData);
         $res = $curl->post($url, $sendData);
-
+        Log::info('订阅模板消息返回：' . $res);
         $res = json_decode($res, true);
         if (isset($res['errcode']) && $res['errcode'] == 0) {
             return true;

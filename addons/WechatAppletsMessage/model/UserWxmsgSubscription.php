@@ -74,8 +74,18 @@ class UserWxmsgSubscription extends Model
             'data' => ''
         ];
 
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+        $type = '';
+        foreach ($con as $k => $v) {
+            if ($v['template_id'] == $template_id) {
+                $type = $k;
+                break;
+            }
+        }
+
         $where[] = ['user_id', '=', $user_id];
-        $where[] = ['template_id', '=', $template_id];
+        $where[] = ['type', '=', $type];
         $count = $this->where($where)
             ->count();
 
@@ -83,7 +93,12 @@ class UserWxmsgSubscription extends Model
             if ($count < 1) {
                 $data['user_id'] = $user_id;
                 $data['template_id'] = $template_id;
+                $data['type'] = $type;
                 $this->insert($data);
+            } else {
+                $data['template_id'] = $template_id;
+                $this->where($where)
+                    ->update($data);
             }
         } else {
             if ($count > 0) {

@@ -192,6 +192,7 @@ class WechatAppletsMessage extends Addons
         $newData = [];
         foreach($data as $k => $v) {
             if($con['order'][$k] && $con['order'][$k] != ''){
+                $con['order'][$k] = trim($con['order'][$k]);
                 $con['order'][$k] = ltrim($con['order'][$k], "{{");
                 $con['order'][$k] = rtrim($con['order'][$k], ".DATA}}");
                 $newData[$con['order'][$k]] = $v;
@@ -235,6 +236,7 @@ class WechatAppletsMessage extends Addons
         $newData = [];
         foreach($data as $k => $v) {
             if($con['cancel'][$k] && $con['cancel'][$k] != ''){
+                $con['cancel'][$k] = trim($con['cancel'][$k]);
                 $con['cancel'][$k] = ltrim($con['cancel'][$k], "{{");
                 $con['cancel'][$k] = rtrim($con['cancel'][$k], ".DATA}}");
                 $newData[$con['cancel'][$k]] = $v;
@@ -275,6 +277,7 @@ class WechatAppletsMessage extends Addons
         $newData = [];
         foreach($data as $k => $v) {
             if($con['pay'][$k] && $con['pay'][$k] != ''){
+                $con['pay'][$k] = trim($con['pay'][$k]);
                 $con['pay'][$k] = ltrim($con['pay'][$k], "{{");
                 $con['pay'][$k] = rtrim($con['pay'][$k], ".DATA}}");
                 $newData[$con['pay'][$k]] = $v;
@@ -312,6 +315,7 @@ class WechatAppletsMessage extends Addons
         $newData = [];
         foreach($data as $k => $v) {
             if($con['ship'][$k] && $con['ship'][$k] != ''){
+                $con['ship'][$k] = trim($con['ship'][$k]);
                 $con['ship'][$k] = ltrim($con['ship'][$k], "{{");
                 $con['ship'][$k] = rtrim($con['ship'][$k], ".DATA}}");
                 $newData[$con['ship'][$k]] = $v;
@@ -355,6 +359,7 @@ class WechatAppletsMessage extends Addons
         $newData = [];
         foreach($data as $k => $v) {
             if($con['after_sale'][$k] && $con['after_sale'][$k] != ''){
+                $con['after_sale'][$k] = trim($con['after_sale'][$k]);
                 $con['after_sale'][$k] = ltrim($con['after_sale'][$k], "{{");
                 $con['after_sale'][$k] = rtrim($con['after_sale'][$k], ".DATA}}");
                 $newData[$con['after_sale'][$k]] = $v;
@@ -401,6 +406,7 @@ class WechatAppletsMessage extends Addons
         $newData = [];
         foreach($data as $k => $v) {
             if($con['refund'][$k] && $con['refund'][$k] != ''){
+                $con['refund'][$k] = trim($con['refund'][$k]);
                 $con['refund'][$k] = ltrim($con['refund'][$k], "{{");
                 $con['refund'][$k] = rtrim($con['refund'][$k], ".DATA}}");
                 $newData[$con['refund'][$k]] = $v;
@@ -443,7 +449,7 @@ class WechatAppletsMessage extends Addons
             foreach ($con as $k => $v) {
                 if ($k == $newCode[$code]) {
                     if ($info['template_id'] == $v['template_id']) {
-                        $flag = $v['template_id'];
+                        $flag = trim($v['template_id']);
                         break;
                     }
                 }

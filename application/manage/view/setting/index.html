@@ -33,7 +33,7 @@
             <li lay-id="goods">商品设置</li>
             <li lay-id="order">订单管理</li>
             <li lay-id="points">积分设置</li>
-            <li lay-id="cash">提现设置</li>
+            <li lay-id="cash">财务设置</li>
             <li lay-id="other">其他设置</li>
         </ul>
         <div class="layui-tab-content">
@@ -336,21 +336,21 @@
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="point_discounted_proportion" value="{$data['point_discounted_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">多少积分可以折现1元人民币</div>
+                        <div class="layui-form-mid layui-word-aux">个；多少积分可以折现1元人民币</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['orders_point_proportion']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="orders_point_proportion" value="{$data['orders_point_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" max="100" min="0">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">（%）单个订单积分折现最大百分比</div>
+                        <div class="layui-form-mid layui-word-aux">%；单个订单积分折现最大百分比</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['orders_reward_proportion']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="orders_reward_proportion" value="{$data['orders_reward_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">订单多少人民币奖励1个积分</div>
+                        <div class="layui-form-mid layui-word-aux">元；订单多少元人民币奖励1个积分</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -368,14 +368,14 @@
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="sign_random_min" value="{$data['sign_random_min']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">签到随机最小奖励积分</div>
+                            <div class="layui-form-mid layui-word-aux">个；签到随机最小奖励积分</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{$data['sign_random_max']['name']}：</label>
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="sign_random_max" value="{$data['sign_random_max']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">签到随机最大奖励积分</div>
+                            <div class="layui-form-mid layui-word-aux">个；签到随机最大奖励积分</div>
                         </div>
                     </div>
 
@@ -419,22 +419,22 @@
                         <div class="layui-input-inline seller-inline-2">
                             <input type="text" name="tocash_money_low" value="{$data['tocash_money_low']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">最低提现标准，默认0不限制</div>
+                        <div class="layui-form-mid layui-word-aux">元；最低提现标准，默认0元不限制</div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['tocash_money_rate']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
-                            <input type="text" name="tocash_money_rate" value="{$data['tocash_money_rate']['value']}" lay-verify="title" autocomplete="off" placeholder="%" class="layui-input">
+                            <input type="text" name="tocash_money_rate" value="{$data['tocash_money_rate']['value']}" lay-verify="title" autocomplete="off" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">提现费率，默认0% 没有费率</div>
+                        <div class="layui-form-mid layui-word-aux">%；提现费率，默认0% 没有费率</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['tocash_money_limit']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
-                            <input type="text" name="tocash_money_limit" value="{$data['tocash_money_limit']['value']}" lay-verify="title" autocomplete="off" placeholder="%" class="layui-input">
+                            <input type="text" name="tocash_money_limit" value="{$data['tocash_money_limit']['value']}" lay-verify="title" autocomplete="off" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">每日提现上限，默认0不限制</div>
+                        <div class="layui-form-mid layui-word-aux">元；每日提现上限，默认0元不限制</div>
                     </div>
 
                     <div class="layui-form-item">

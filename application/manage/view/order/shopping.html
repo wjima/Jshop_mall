@@ -29,6 +29,7 @@
             <th>商品名称</th>
             <th>货号</th>
             <th>单价</th>
+            {:hook('orderviewinfo', ['type'=>'title'])}
             <th>重量</th>
             <th>数量</th>
             <th>小计</th>
@@ -40,6 +41,7 @@
             </td>
             <td>{$vo.bn}</td>
             <td>￥{$vo.price}</td>
+            {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
             <td>{$vo.weight*$vo.nums}g</td>
             <td>{$vo.nums}</td>
             <td>￥{$vo.amount}</td>

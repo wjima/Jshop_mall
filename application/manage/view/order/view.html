@@ -167,6 +167,7 @@
 						<th>商品总价</th>
 						<th>货品编码</th>
 						<th>商品编码</th>
+						{:hook('orderviewinfo', ['type'=>'title'])}
 						<th>商品总重量</th>
                         <th width="24">发货<br />数量</th>
                         <th width="24">退货<br />数量</th>
@@ -181,6 +182,7 @@
 						<td>{$vo.amount}</td>
 						<td>{$vo.sn}</td>
 						<td>{$vo.bn}</td>
+						{:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
 						<td>{$vo.weight}</td>
 						<td>{if $vo.sendnums}{$vo.sendnums}{else /}0{/if}</td>
                         <td>{$vo.reship_nums}</td>

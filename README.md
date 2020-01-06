@@ -277,7 +277,7 @@ Jshop小程序商城遵循JPPL（吉海科技Jshop系列付费产品许可）协
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2019 by 吉海科技 (https://www.jihainet.com)
+版权所有Copyright © 2020 by 吉海科技 (https://www.jihainet.com)
 
 All rights reserved。
 

@@ -527,9 +527,9 @@ class BillLading extends Common
     public function exportValidate(&$params = [])
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '验证成功',
         ];
         return $result;
     }

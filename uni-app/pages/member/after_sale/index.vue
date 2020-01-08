@@ -38,9 +38,9 @@
 												<view class="goods-salesvolume mr5" v-show="item.reship_nums!=0">
 													已退数量:{{item.reship_nums}}
 												</view>
-												<view class="goods-salesvolume" v-show="item.returnStatus">
+												<view class="goods-salesvolume" >
 													<label>可退数：</label>
-													<input type="text" v-model="item.returnNums" class="inputStyle" ref="input" @click.stop />
+													<input type="number" v-model="item.returnNums"  @blur="updateNum(item,key)" class="inputStyle" ref="input" @click.stop />
 												</view>
 											</view>
 										</view>
@@ -160,6 +160,8 @@ export default {
 			refund_input_noedit: true,
 			mode: 'aspectFill',
 			submitStatus: false,
+			checkedItems:[],//当前选中的商品
+			isFlag: true,
         }
     },
 	components: { jhlable },
@@ -171,7 +173,7 @@ export default {
 			}else{
 				return false;
 			}
-		}
+		},
 	},
     methods: {
 		// 单选框点击切换
@@ -212,7 +214,7 @@ export default {
 						let returnNums={}
 						let returnStatus
 						for(var i=0;i<res.data.items.length;i++){
-							 if(res.data.items[i].nums > res.data.items[i].reship_nums){
+							 if(res.data.items[i].nums >= res.data.items[i].reship_nums){
 							  returnNums = res.data.items[i].nums - res.data.items[i].reship_nums;
 							 }
 							 if(returnNums>0){
@@ -222,7 +224,7 @@ export default {
 							// nums = res.data.items[i].nums;
 							// res.data.items[i].checked = true;
 							// this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: nums });
-							this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: returnNums });	
+							this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: returnNums });
 							res.data.items[i].returnNums=returnNums			
 							res.data.items[i].returnStatus=returnStatus			
 						}		
@@ -241,16 +243,45 @@ export default {
 		
 		//退货商品选择
 		checkboxChange (e) {
+			this.checkedItems = e.detail.value;
+			this.getReturnData();
+		},
+		//数量改变事件
+		updateNum(updateNum,key){
+			let nums = 0;
+			nums = this.items[key].nums - this.items[key].reship_nums;
+			if(nums<updateNum.returnNums){
+				this.isFlag = false;
+				this.$common.errorToShow("您填写的数量不对！")
+				return false;
+			} 
+			this.isFlag = true;
+			this.items[key].returnNums = updateNum.returnNums;
+			this.getReturnData();
+			//console.log(this.items);
+	
+		},
+		
+		//计算要退货的商品数量
+		getReturnData(){
 			let nums = 0;
 			this.item_ids = [];
-			for (var i = 0; i < e.detail.value.length; i++) {
-				let k = e.detail.value[i];
+			//console.log(this.items);
+			for (var i = 0; i < this.checkedItems; i++) {
+				let k = this.checkedItems[i];
 				for(var j = 0; j < this.items.length; j++){
 					if(this.items[j].id == k) {
-						if(this.items[j].nums > this.items[j].reship_nums) {
-							// nums = this.items[j].sendnums - this.items[j].reship_nums;
-							nums=this.$refs.input[i].value
-							this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+						if(this.items[j].nums >= this.items[j].reship_nums) {
+							nums = this.items[j].nums - this.items[j].reship_nums;
+							if (nums>=this.items[j].returnNums) {
+								nums = this.items[j].returnNums
+								this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+							} else {
+								console.log("111")
+								this.$common.errorToShow("您填写的数量不对！")
+								return ;
+							}
+
 						}
 					}
 				}
@@ -278,7 +309,17 @@ export default {
 					return false;
 				} 
 			}
-
+			if(!this.isFlag) {
+				this.$common.errorToShow('您填写的数量不对！');
+				this.submitStatus = false;
+				return false;
+			}
+			
+			if(this.item_ids.length<=0){
+				this.$common.errorToShow('请处理要售后的商品');
+				this.submitStatus = false;
+				return false;
+			}
 			//组装数据，提交数据
 			let data = {
 				order_id:this.order_id,
@@ -291,7 +332,7 @@ export default {
 			// #ifdef MP-WEIXIN
 			data['formId'] = e.detail.formId;
 			// #endif
-			//console.log(data);
+			// console.log(data);
 			this.$api.addAfterSales(data, res => {
 				if(res.status){
 					this.$common.successToShow('提交成功', ress => {

@@ -321,17 +321,19 @@ class Article extends Common
             $uwhere['is_pub'] = ['is_pub', 'eq', self::IS_PUB_YES];
             $uwhere['type_id'] = ['type_id', 'eq', $data['type_id']];
             $list = $this->field('id,title')->where($uwhere)->select();
-            foreach($list as $k => $v){
-                if($v['id'] == $data['id']){
-                    if($k == 0 || $k == count($list)-1){
-                        if($k == 0){
-                            $data['down'] = $list[$k+1];
+            if(count($list)>1){
+                foreach($list as $k => $v){
+                    if($v['id'] == $data['id']){
+                        if($k == 0 || $k == count($list)-1){
+                            if($k == 0){
+                                $data['down'] = $list[$k+1];
+                            }else{
+                                $data['up'] = $list[$k-1];
+                            }
                         }else{
                             $data['up'] = $list[$k-1];
+                            $data['down'] = $list[$k+1];
                         }
-                    }else{
-                        $data['up'] = $list[$k-1];
-                        $data['down'] = $list[$k+1];
                     }
                 }
             }

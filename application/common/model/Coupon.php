@@ -502,10 +502,10 @@ class Coupon extends Common
     //导出优惠券验证
     public function exportValidate($where = [])
     {
-        $result         = [
-            'status' => false,
+        $result = [
+            'status' => true,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '验证成功',
         ];
         $filter[]       = ['id', 'eq', $where['id']];
         $promotionModel = new Promotion();

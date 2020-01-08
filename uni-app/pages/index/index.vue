@@ -259,6 +259,24 @@
 				path: path
 			}
 		}
+		// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+		,
+		onPageScroll(){
+			var _this = this;
+			const query = uni.createSelectorQuery();
+			  query.select('.content >>> .search').boundingClientRect(function(res){
+				if(res){
+					if(res.top<0){
+						_this.$store.commit('searchFixed', true)
+					}else{
+						_this.$store.commit('searchFixed', false)
+					}
+				}
+				
+			  }).exec()
+		
+		}
+		//#endif
 	}
 </script>
 

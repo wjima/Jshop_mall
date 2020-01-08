@@ -1,0 +1,101 @@
+<form class="layui-form seller-alone-form" action="#" method="post">
+    <div>
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
+                <label class="layui-form-label seller-inline-2">AppID：</label>
+                <div class="layui-input-inline seller-inline-5">
+                    <input type="text" name="setting[AppID]" value="{$config_params.AppID}" required lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
+                <label class="layui-form-label seller-inline-2">AppKey：</label>
+                <div class="layui-input-inline seller-inline-5">
+                    <input type="text" name="setting[AppKey]" value="{$config_params.AppKey}" required lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
+                <label class="layui-form-label seller-inline-2">短信签名：</label>
+                <div class="layui-input-inline seller-inline-5">
+                    <input type="text" name="setting[SignName]" value="{$config_params.SignName}" placeholder="请填写通过审核的短信签名" required lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
+                <label class="layui-form-label seller-inline-2">腾讯云短信：</label>
+                <div class="layui-form-mid">
+                    <a class="layui-btn layui-btn-xs layui-btn-danger" target="_blank" href="https://cloud.tencent.com/act/cps/redirect?redirect=10068&cps_key=8a73689cc896ff2edad20f769451c361">申请注册地址</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" target="_blank" href="https://cloud.tencent.com/act/cps/redirect?redirect=10041&cps_key=8a73689cc896ff2edad20f769451c361">100条免费短信领取</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="padding:10px 30px 0;" class="layui-form layui-form-pane">
+        <div class="layui-tab layui-tab-brief" overflow>
+            <ul class="layui-tab-title">
+                {volist name="config.template" id="vo" key=key}
+                    <li {if condition='$key eq "login" ' }class="layui-this " {/if} >{$vo.title}</li>
+                {/volist}
+            </ul>
+            <div class="layui-tab-content">
+                {volist name="config.template" id="vo" }
+                    {assign name="template_key" value="$key" /}
+                    <div {if condition='$template_key eq "login" ' }class=" layui-tab-item layui-show " {else/} class=" layui-tab-item " {/if}>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label seller-inline-2">{$vo.data.title.title}：</label>
+                            <div class="layui-input-inline seller-inline-5">
+                                <input type="text" name="setting[{$template_key}][data][title][value]" required lay-verify="required" value="{$config_params[$key]['data']['title']['value']}" placeholder="通过认证的短信正文ID" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label seller-inline-2">帮助文档：</label>
+                            <div class="layui-form-mid">
+                                <a class="layui-btn layui-btn-xs layui-btn-danger" target="_blank" href="https://github.com/keinx/tencent-sms-for-jshop/blob/master/help.md">前往Github查看</a>
+                                <a class="layui-btn layui-btn-xs layui-btn-danger" target="_blank" href="https://gitee.com/keinx/tencent-sms-for-jshop/blob/master/help.md">前往码云Gitee查看</a>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label seller-inline-2">{$vo.data.template.title}：</label>
+                            <div class="layui-input-block" style="margin-left:100px;">
+                                <table class="layui-table" lay-size="sm">
+                                    <colgroup>
+                                        <col width="80">
+                                        <col width="80">
+                                        <col width="80">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>模板次序</th>
+                                            <th>参数变量</th>
+                                            <th>参数说明</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {foreach $vo['data']['template']['variable'] as $kk => $vv}
+                                            <tr>
+                                                <td><input name="setting[{$template_key}][data][template][variable][{$kk}][order]" type="number" min="1" value="{$config_params[$key]['data']['template']['variable'][$kk]['order']}" autocomplete="off" class="layui-input" style="margin-bottom:0;height:26px;line-height:26px;padding-left:5px;"></td>
+                                                <td>${{$vo['data']['template']['variable'][$kk]['name']}}</td>
+                                                <td>{$vo['data']['template']['variable'][$kk]['description']}</td>
+                                            </tr>
+                                        {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {/volist}
+            </div>
+        </div>
+    </div>
+    <script>
+        layui.use('element', function () {
+            //监听提交
+            var $ = layui.jquery, element = layui.element;
+            element.render();
+        });
+    </script>
+</form>

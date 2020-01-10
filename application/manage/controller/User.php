@@ -8,6 +8,7 @@ use app\common\model\UserGrade;
 use app\common\model\UserLog;
 use app\common\model\User as UserModel;
 use app\common\model\UserPointLog;
+use app\common\model\UserWx;
 use think\facade\Request;
 
 class User extends Manage
@@ -451,6 +452,10 @@ class User extends Manage
         $res = $userModel::destroy($ids);
         if($res !== false)
         {
+            //同步删除user_wx
+            $userWxModel = new UserWx();
+            $userWxModel->where([['user_id','in', $ids]])->delete();
+            hook('deleteUserAfter',$ids);
             $result['msg'] = '删除成功';
             $result['status'] = true;
         }

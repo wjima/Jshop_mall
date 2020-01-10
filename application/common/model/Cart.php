@@ -67,7 +67,12 @@ class Cart extends Common
             return $flag;
         }
 
+        $canBuyNum = $productInfo['data']['stock'];
 
+        $where[] = array('product_id', 'eq', $product_id);
+        $where[] = array('user_id', 'eq', $user_id);
+        $where[] = ['type', 'eq', $type];
+        $cat_info = $this->where($where)->find();
         switch ($type) {
             case self::TYPE_COMMON:
                 //标准模式不需要做什么判断
@@ -77,15 +82,29 @@ class Cart extends Common
                     $orderModel  = new Order();
                     $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion);
                     if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
-                        if ($params['max_goods_nums'] <= $check_order['data']['total_orders']) {
-                            $result['msg'] = '该商品已超过当前活动最大购买量';
-                            return $result;
+                        if ($cat_info) {
+                            if (($check_order['data']['total_orders'] + $cat_info['nums'] + $nums) > $params['max_goods_nums']) {
+                                $result['msg'] = '您添加的数量已超过当前活动最大购买量';
+                                return $result;
+                            }
+                        } else {
+                            if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
+                                $result['msg'] = '该商品已超过当前活动最大购买量';
+                                return $result;
+                            }
                         }
                     }
                     if (isset($params['max_nums']) && $params['max_nums'] != 0) {
-                        if ($params['max_nums'] <= $check_order['data']['total_user_orders']) {
-                            $result['msg'] = '您已超过该活动最大购买量';
-                            return $result;
+                        if ($cat_info) {
+                            if (($cat_info['nums'] + $nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
+                                $result['msg'] = '您已超过该活动最大购买量';
+                                return $result;
+                            }
+                        } else {
+                            if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
+                                $result['msg'] = '您已超过该活动最大购买量';
+                                return $result;
+                            }
                         }
                     }
                 }
@@ -107,13 +126,8 @@ class Cart extends Common
                 return error_code(10000);
         }
 
-        $canBuyNum = $productInfo['data']['stock'];
 
-        $where[] = array('product_id', 'eq', $product_id);
-        $where[] = array('user_id', 'eq', $user_id);
-        $where[] = ['type', 'eq', $type];
 
-        $cat_info = $this->where($where)->find();
 
         if ($cat_info) {
             if ($num_type == 1) {
@@ -129,7 +143,6 @@ class Cart extends Common
             $cat_info->save();
 
             $result['data'] = $cat_info->id;
-
         } else {
             if ($nums > $canBuyNum) {
                 $result['msg'] = '库存不足';
@@ -142,7 +155,6 @@ class Cart extends Common
             $data['type']       = $type;
 
             $result['data'] = $this->insertGetId($data);
-
         }
         $result['msg']    = '加入成功';
         $result['status'] = true;
@@ -467,7 +479,7 @@ class Cart extends Common
             $orders_point_proportion     = $settingModel->getValue('orders_point_proportion'); //订单积分使用比例
             $max_point_deducted_money    = $result['data']['amount'] * ($orders_point_proportion / 100); //最大积分抵扣的钱
             $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
-            $point_deducted_money        = (int)$point / (int)$point_discounted_proportion; //积分可以抵扣的钱
+            $point_deducted_money        = (int) $point / (int) $point_discounted_proportion; //积分可以抵扣的钱
             if ($max_point_deducted_money < $point_deducted_money) {
                 $result['msg'] = "积分超过订单可使用的积分数量";
                 return false;
@@ -478,7 +490,6 @@ class Cart extends Common
             $result['data']['amount']      = $result['data']['amount'] - $point_deducted_money;
         }
         return true;
-
     }
 
 

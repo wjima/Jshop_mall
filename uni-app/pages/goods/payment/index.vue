@@ -155,23 +155,24 @@
             this.recharge = Number(options.recharge)
             this.type = Number(options.type)
 			this.form_id =  Number(options.form_id)
-			this.getOrderInfo ()
-   //          if (this.orderId && this.type == 1) {
-   //              // 商品订单
-   //              this.getOrderInfo()
-   //          } else if (this.recharge && this.type == 2) {
-   //              // 充值订单 获取用户id
-   //              this.getUserInfo()
-   //          } else if (this.form_id && (this.type == 5 || this.type == 6)) {
-			// 	// 表单订单 id传到订单上
-			// 	this.orderId = ''+this.form_id;
-			// } else {
-   //              this.$common.errorToShow('订单支付参数错误', () => {
-   //                  uni.navigateBack({
-   //                      delta: 1
-   //                  })
-   //              })
-   //          }
+			//this.getOrderInfo ()
+           if (this.orderId && this.type == 1) {
+                // 商品订单
+				
+                this.getOrderInfo()
+            } else if (this.recharge && this.type == 2) {
+                // 充值订单 获取用户id
+                this.getUserInfo()
+            } else if (this.form_id && (this.type == 5 || this.type == 6)) {
+				// 表单订单 id传到订单上
+				this.orderId = ''+this.form_id;
+			} else {
+                this.$common.errorToShow('订单支付参数错误', () => {
+                    uni.navigateBack({
+                        delta: 1
+                    })
+                })
+            }
         },
         methods: {
             // 获取订单详情
@@ -181,14 +182,15 @@
                     payment_type: this.type
                 }
                 this.$api.paymentsCheckpay(data, res => {
+					
                     if (res.status) {
                         this.orderInfo = res.data;
-						//console.log(this.orderInfo)
-						// if(this.orderInfo.pay_status == 2){
-						// 	this.$common.redirectTo(
-						// 		'/pages/goods/payment/result?order_id=' + this.orderInfo.order_id
-						// 	)
-						// }
+						/* console.log(this.orderInfo)
+						if(this.orderInfo.pay_status == 2){
+							this.$common.redirectTo(
+								'/pages/goods/payment/result?order_id=' + this.orderInfo.order_id
+							)
+						} */
                     }
                 })
             },

@@ -727,6 +727,8 @@
 							this.toclose();
 							let cartIds = res.data;
 							this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds));
+						}else{
+						    this.$common.errorToShow(res.msg);
 						}
 					},res => {
 						this.submitStatus = false;

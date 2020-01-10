@@ -260,8 +260,7 @@ class Order extends Common
         $result = $this->getListByWhere($input, $isPage);
 
         if (count($result['data']) > 0) {
-            $as = new BillAftersales();
-
+            //$as = new BillAftersales();
             foreach ($result['data'] as $k => &$v) {
                 $v['s']           = $this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment']);
                 $v['status_text'] = config('params.order')['status_text'][$this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment'])];
@@ -322,52 +321,6 @@ class Order extends Common
         }
         return $result;
     }
-
-
-    /**
-     * API获取数据
-     * @param $input
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getListFromApi($input)
-    {
-        $return_data = $this->getListByWhere($input);
-        return $return_data;
-    }
-
-
-    /**
-     * 获取待发货列表
-     * @param $input
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-//    public function getWaitListFromAdmin($input)
-//    {
-//        $input['pay_status'] = self::PAY_STATUS_YES;
-//        $input['ship_status'] = self::SHIP_STATUS_NO;
-//
-//        $result = $this->getListByWhere($input);
-//
-//        if(count($result['data']) > 0)
-//        {
-//            foreach($result['data'] as $k => &$v)
-//            {
-//                $v['username'] = get_user_info($v['user_id'], 'nickname');
-//                $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status']);
-//                $v['area_name'] = get_area($v['ship_area_id']).'-'.$v['ship_address'];
-//                $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
-//                $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
-//                $v['source'] = config('params.order')['source'][$v['source']];
-//            }
-//        }
-//        return $result;
-//    }
 
 
     /**
@@ -1259,8 +1212,8 @@ class Order extends Common
 
         $return['data'] = $newOrder;
         return $return;
-
     }
+
 
     /**
      * 发货改状态
@@ -2180,6 +2133,7 @@ class Order extends Common
 
         return $return;
     }
+
 
     /**
      * 查询团购秒杀下单数量

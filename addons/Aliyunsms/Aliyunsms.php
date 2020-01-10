@@ -24,7 +24,7 @@ class Aliyunsms extends Addons
         'description' => '阿里云发送短信插件，请勿和其它短信通道一起使用',    // 插件简介
         'status'      => 0,    // 状态
         'author'      => 'mark',
-        'version'     => '0.1',
+        'version'     => '0.2',
     ];
 
     /**
@@ -64,11 +64,11 @@ class Aliyunsms extends Addons
         $security = false;
 
         // fixme 必填: 请参阅 https://ak-console.aliyun.com/ 取得您的AK信息
-        $accessKeyId     = $setting['accessKeyId'];
-        $accessKeySecret = $setting['accessKeySecret'];
+        $accessKeyId     = trim($setting['accessKeyId']);
+        $accessKeySecret = trim($setting['accessKeySecret']);
 
         if ($data['params']['code'] == 'seller_order_notice') {
-            $data['params']['mobile'] = getSetting('shop_mobile');
+            $data['params']['mobile'] = trim(getSetting('shop_mobile'));
             if (!$data['params']['mobile']) {
                 $result['msg'] = '商户手机号不存在';
                 return $result;
@@ -76,17 +76,17 @@ class Aliyunsms extends Addons
         }
 
         // fixme 必填: 短信接收号码
-        $params["PhoneNumbers"] = $data['params']['mobile'];
+        $params["PhoneNumbers"] = trim($data['params']['mobile']);
 
         // fixme 必填: 短信签名，应严格按"签名名称"填写，请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/sign
-        $params["SignName"] = $setting['aliyunPrefix'];
+        $params["SignName"] = trim($setting['aliyunPrefix']);
 
         // fixme 必填: 短信模板Code，应严格按"模板CODE"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template
         if (!isset($setting[$data['params']['code']]['data']['title']['value'])) {
             $result['msg'] = '请先配置后台短信接口';
             return $result;
         }
-        $params["TemplateCode"] = $setting[$data['params']['code']]['data']['title']['value'];
+        $params["TemplateCode"] = trim($setting[$data['params']['code']]['data']['title']['value']);
 
         // fixme 可选: 设置模板参数, 假如模板中存在变量需要替换则为必填项
         $params['TemplateParam'] = $this->getTemplateData($data['params']);

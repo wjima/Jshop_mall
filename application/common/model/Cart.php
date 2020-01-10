@@ -113,7 +113,7 @@ class Cart extends Common
                 $num_type = 2;
                 //拼团模式去判断是否开启拼团，是否存在
                 $pintuanRuleModel = new PintuanRule();
-                $re               = $pintuanRuleModel->addCart($product_id, $user_id);
+                $re               = $pintuanRuleModel->addCart($product_id, $user_id, $nums);
                 if (!$re['status']) {
                     return $re;
                 }

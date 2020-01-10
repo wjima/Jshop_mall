@@ -47,7 +47,7 @@
         <label class="layui-form-label">限购数量：</label>
         <div class="layui-input-inline seller-inline-1">
             {php}
-            if($info){
+            if($info &&isset($info['max_nums'])){
             $max_nums = $info['max_nums'];
             }else{
             $max_nums = 0;
@@ -61,7 +61,7 @@
         <label class="layui-form-label">总量：</label>
         <div class="layui-input-inline seller-inline-1">
             {php}
-            if($info){
+            if($info&&isset($info['max_goods_nums'])){
             $max_goods_nums = $info['max_goods_nums'];
             }else{
             $max_goods_nums = 0;

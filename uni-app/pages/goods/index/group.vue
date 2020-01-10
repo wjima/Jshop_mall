@@ -580,7 +580,8 @@
 				if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index]
 					[key].product_id) {
 					let data = {
-						'id': this.product.default_spes_desc[index][key].product_id
+						'id': this.product.default_spes_desc[index][key].product_id,
+						'type':'group',//商品类型
 					};
 					let userToken = this.$db.get("userToken");
 					if (userToken) {

@@ -23,12 +23,12 @@
 				<!-- 倒计时 -->
 				<view class='price-salesvolume' v-if="lasttime.hour!==false">
 					<view class='commodity-price'>
-						<text class='current-price'>￥{{pintuanPrice || ''}}</text>
-						<text class='cost-price' v-if="parseFloat(product.mktprice)>0">￥{{product.mktprice}}</text>
+						<text class='current-price'>￥{{pintuanPrice || '0'}}</text>
+						<text class='cost-price' >￥{{product.mktprice || '0.00'}}</text>
 					</view>
 					<view class='commodity-salesvolume'>
-						<text>已售{{goodsInfo.buy_count || ''}}件/剩余{{product.stock || ''}}件</text>
-						<text>累计销售{{goodsInfo.buy_count || ''}}件</text>
+						<text>已售{{goodsInfo.buy_pintuan_count || '0'}}件/剩余{{product.stock || '0'}}件</text>
+						<text>累计销售{{goodsInfo.buy_count || '0'}}件</text>
 					</view>
 
 					<view class='commodity-time' v-if="goodsInfo.pintuan_rule.pintuan_start_status == 1">
@@ -121,7 +121,7 @@
 
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>{{teamCount || ''}}人在拼单，可直接参与</view>
+						<view class='cell-hd-title'>{{teamCount || '0'}}人在拼单，可直接参与</view>
 					</view>
 					<!-- <view class='cell-item-ft' >
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
@@ -699,14 +699,11 @@
 							_this.goodsInfo = info;
 							let products = res.data.product;
 							_this.discount_amount = parseFloat(info.pintuan_rule.discount_amount).toFixed(2);
-
-							//products.price = _this.$common.moneySub(products.price,_this.discount_amount);
 							_this.product = _this.spesClassHandle(products);
 							_this.isfav = _this.goodsInfo.isfav === 'true' ? true : false;
-							// _this.pintuanPrice = info.pintuan_price.toFixed(2)
+							
 							_this.pintuanPrice = this.$common.moneySub(_this.product.price, _this.discount_amount);
-							// console.log(_this.product.price)
-							// console.log(_this.discount_amount)
+		
 							let timestamp = Date.parse(new Date()) / 1000;
 
 							let lasttime = res.data.pintuan_rule.etime - timestamp;
@@ -730,7 +727,7 @@
 							}
 							pintuan_data.length < 2 ? _this.groupHeight = 'groupHeight' : _this.groupHeight = '';
 							_this.pintuanRecord = new_data;
-							// console.log(new_data);
+							
 							_this.teamCount = info.pintuan_record_nums;
 							// 判断如果登录用户添加商品浏览足迹
 							if (userToken) {
@@ -808,7 +805,8 @@
 					[key].product_id) {
 
 					let data = {
-						'id': this.product.default_spes_desc[index][key].product_id
+						'id': this.product.default_spes_desc[index][key].product_id,
+						'type':'pintuan',//商品类型
 					};
 					let userToken = this.$db.get("userToken");
 					if (userToken) {

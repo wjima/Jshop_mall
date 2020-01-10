@@ -201,12 +201,16 @@ class PintuanRule extends Common{
         return $result;
     }
 
+
     /**
+     * Undocumented function
      * 在加入购物车的时候，判断是否有参加拼团的商品
-     * @param $product_id
-     * @return array
+     * @param [type] $product_id
+     * @param integer $user_id
+     * @param integer $nums 加入购物车数量
+     * @return void
      */
-    public function addCart($product_id, $user_id = 0)
+    public function addCart($product_id, $user_id = 0, $nums = 1)
     {
         $result = [
             'status' => false,
@@ -245,14 +249,14 @@ class PintuanRule extends Common{
         $condition['stime'] = $pinfo['stime'];
         $condition['etime'] = $pinfo['etime'];
         $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $condition, $orderModel::ORDER_TYPE_PINTUAN);
-
+       
         if (isset($pinfo['max_goods_nums']) && $pinfo['max_goods_nums'] != 0) {
-            if ($pinfo['max_goods_nums'] <= $check_order['data']['total_orders']) {
+            if (($check_order['data']['total_orders'] + $nums) > $pinfo['max_goods_nums']) {
                 return error_code(15610);
             }
         }
         if (isset($pinfo['max_nums']) && $pinfo['max_nums'] != 0) {
-            if ($pinfo['max_nums'] <= $check_order['data']['total_user_orders']) {
+            if (($nums + $check_order['data']['total_user_orders']) > $pinfo['max_nums']) {
                 return error_code(15611);
             }
         }

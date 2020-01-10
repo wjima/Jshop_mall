@@ -2170,11 +2170,15 @@ class Order extends Common
             ->sum('oi.nums');
 
         //该会员已下多少订单
-        $where[]           = ['o.user_id', '=', $user_id];
-        $total_user_orders = $this->alias('o')
-            ->join('order_items oi', 'oi.order_id = o.order_id')
-            ->where($where)
-            ->sum('oi.nums');
+        $total_user_orders = 0;
+        if($user_id){
+            $where[]           = ['o.user_id', '=', $user_id];
+            $total_user_orders = $this->alias('o')
+                ->join('order_items oi', 'oi.order_id = o.order_id')
+                ->where($where)
+                ->sum('oi.nums');
+        }
+        
 
         $return['msg']  = '查询成功';
         $return['data'] = [

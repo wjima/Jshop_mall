@@ -436,10 +436,6 @@ return [
                 'code' => 'confirm',
                 'is_login' => true
             ],
-            'getlist' => [
-                'code' => 'getList',
-                'is_login' => true
-            ],
             'create' => [
                 'code' => 'create',
                 'is_login' => true

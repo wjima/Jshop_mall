@@ -200,7 +200,6 @@ export default {
 			}
 			this.$api.orderDetail(data, res => {
 				if (res.status) {
-					//console.log(res);
 					//如果不是未支付的，已取消的，已完成的状态，就都可以售后
 					if (res.data.text_status != 1 && res.data.text_status != 6 && res.data.text_status != 7){
 						//判断是已付款未发货，如果是，就禁用退货
@@ -258,7 +257,6 @@ export default {
 			this.isFlag = true;
 			this.items[key].returnNums = updateNum.returnNums;
 			this.getReturnData();
-			//console.log(this.items);
 	
 		},
 		
@@ -266,22 +264,25 @@ export default {
 		getReturnData(){
 			let nums = 0;
 			this.item_ids = [];
-			//console.log(this.items);
-			for (var i = 0; i < this.checkedItems; i++) {
+			for (var i = 0; i < this.checkedItems.length; i++) {
+				// console.log(this.checkedItems.length)
 				let k = this.checkedItems[i];
 				for(var j = 0; j < this.items.length; j++){
+					// console.log(this.items.length)
+					// console.log(k)
 					if(this.items[j].id == k) {
 						if(this.items[j].nums >= this.items[j].reship_nums) {
+							
 							nums = this.items[j].nums - this.items[j].reship_nums;
 							if (nums>=this.items[j].returnNums) {
 								nums = this.items[j].returnNums
 								this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+								console.log("11")
+								console.log(this.item_ids)
 							} else {
-								console.log("111")
 								this.$common.errorToShow("您填写的数量不对！")
 								return ;
 							}
-
 						}
 					}
 				}
@@ -314,7 +315,8 @@ export default {
 				this.submitStatus = false;
 				return false;
 			}
-			
+			// console.log("33")
+			// console.log(this.item_ids)
 			if(this.item_ids.length<=0){
 				this.$common.errorToShow('请处理要售后的商品');
 				this.submitStatus = false;
@@ -332,14 +334,14 @@ export default {
 			// #ifdef MP-WEIXIN
 			data['formId'] = e.detail.formId;
 			// #endif
-			// console.log(data);
 			this.$api.addAfterSales(data, res => {
 				if(res.status){
 					this.$common.successToShow('提交成功', ress => {
 						// this.submitStatus = false;
-						uni.navigateBack({
-							delta: 1
-						});
+						// uni.navigateBack({
+						// 	delta: 1
+						// });
+						this.$common.navigateTo("/pages/member/order/orderdetail?order_id="+this.order_id)
 					});
 				}else{
 					this.$common.errorToShow(res.msg);

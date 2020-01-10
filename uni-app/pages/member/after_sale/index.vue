@@ -10,8 +10,9 @@
 						<view class="cart-checkbox-item" v-for="(item, key) in items" :key="key">
 							<label class="uni-list-cell uni-list-cell-pd">
 								<view class="cart-checkbox-c">
-									<checkbox :value='item.id' :checked="item.checked" color="#FF7159"  v-if="item.disabled" :disabled="item.disabled" class="checkboxNo"/>
-									<checkbox :value='item.id' :checked="item.checked" color="#FF7159"  v-else/>
+									<checkbox :value='item.id' :checked="item.checked" color="#FF7159" v-if="item.disabled" :disabled="item.disabled"
+									 class="checkboxNo" />
+									<checkbox :value='item.id' :checked="item.checked" color="#FF7159" v-else />
 								</view>
 								<view class="img-list-item">
 									<image class="img-list-item-l little-img have-none" :src="item.image_url" mode="aspectFill"></image>
@@ -39,9 +40,10 @@
 												<view class="goods-salesvolume mr5" v-show="item.reship_nums!=0">
 													已退数量:{{item.reship_nums}}
 												</view>
-												<view class="goods-salesvolume"  v-if="!item.disabled">
+												<view class="goods-salesvolume" v-if="!item.disabled">
 													<label>可退数：</label>
-													<input type="number" v-model="item.returnNums" placeholder="" @focus="onFocus(item,key)" @blur="updateNum(item,key)" class="inputStyle" ref="input" @click.stop />
+													<input type="number" v-model="item.returnNums" @focus="onFocus(item,key)" @blur="updateNum(item,key)"
+													 class="inputStyle" ref="input" @click.stop />
 												</view>
 											</view>
 										</view>
@@ -78,7 +80,8 @@
 								<radio-group class="uni-list" @change="radioChange">
 									<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in type_list" :key="index">
 										<view class="invoice-type-icon">
-											<radio class="a-radio radioNo" v-if="item.disabled" :id="item.name" :value="item.value" :checked="item.checked" :disabled="item.disabled"></radio>
+											<radio class="a-radio radioNo" v-if="item.disabled" :id="item.name" :value="item.value" :checked="item.checked"
+											 :disabled="item.disabled"></radio>
 											<radio class="a-radio " v-else :id="item.name" :value="item.value" :checked="item.checked" :disabled="item.disabled"></radio>
 										</view>
 										<view class="invoice-type-c">
@@ -100,12 +103,12 @@
 							<view class='cell-hd-title'>退款金额</view>
 						</view>
 						<view class='cell-item-ft'>
-							<input class='cell-bd-input red-price' v-model="refund" @focus="refundFocus" ref="refund"></input>
+							<input type="digit" class='cell-bd-input red-price' v-model="refund" @focus="refundFocus" ref="refund"></input>
 						</view>
-						
+
 					</view>
 					<view class="color-9 fsz24 refund-tip">
-						可修改，最多￥{{maxRefund}}，含发货邮费￥
+						可修改，最多￥{{maxRefund}}，含发货邮费￥{{cost_freight}}
 					</view>
 				</view>
 				<view class='cell-group margin-cell-group'>
@@ -169,6 +172,7 @@ export default {
 			submitStatus: false,
 			checkedItems:[],//当前选中的商品
 			isFlag: true,
+			cost_freight:0//运费
         }
     },
 	components: { jhlable },
@@ -242,7 +246,7 @@ export default {
 						this.items = res.data.items;
 						this.refund = res.data.order_amount - res.data.refunded;
 						this.maxRefund = res.data.order_amount - res.data.refunded;
-						
+						this.cost_freight = res.data.cost_freight;//运费
 						this.refund_show = res.data.payed - res.data.refunded;
 						this.type_list = type_list;
 					}else{
@@ -256,19 +260,16 @@ export default {
 		
 		//退货商品选择
 		checkboxChange (e) {
-			
 			this.checkedItems = e.detail.value;
-			console.log(this.checkedItems);
 			this.getReturnData();
 		},
 		
 		// 点击输入框的事件
 		onFocus(item,key){
-			item.returnNums = "";
+			item.returnNums = '';
 			if(this.checkedItems.indexOf(item.id)==-1){
 				this.checkedItems.push(item.id)
 			}
-			console.log(this.checkedItems);
 			this.items[key].checked = true;
 			this.getReturnData();
 		},
@@ -523,13 +524,13 @@ export default {
 .inputStyle{
 	display: inline-block;
 	border: 2rpx solid #ccc;
-	height: 30rpx;
-	line-height: 30rpx;
+	height: 13rpx;
+	line-height: 13rpx;
 	width: 60rpx;
 	text-align: center;
 	font-size: 24rpx;
 	vertical-align: middle;
-	margin-bottom: 8rpx;
+	margin-bottom: 22rpx;
 }
 /* #ifdef MP-ALIPAY */
 

@@ -13,3 +13,4 @@ public/static/poster/*
 public/static/qrcode/*
 uni-app/unpackage/
 .user.ini
+.vscode/

@@ -54,7 +54,6 @@ const methodsToken = [
 	'order.del',
 	'order.details',
 	'order.confirm',
-	'order.getlist',
 	'order.create',
 	'order.getship',
 	'order.getorderlist',
@@ -529,9 +528,6 @@ export const setDefShip = (data, callback) => post('user.setdefship', data, call
 
 // 生成订单
 export const createOrder = (data, callback, complete) => post('order.create', data, callback, complete);
-
-// 获取状态订单列表
-export const getOrderList = (data, callback) => post('order.getlist', data, callback);
 
 // 取消订单
 export const cancelOrder = (data, callback) => post('order.cancel', data, callback);

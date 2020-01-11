@@ -338,7 +338,7 @@ class BillAftersales extends Common
                 //未发货的商品库存调整,如果订单未发货或者部分发货，并且用户未收到商品的情况下，需要解冻冻结库存
                 if (
                     ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
-                    $type = self::TYPE_REFUND
+                    $type == self::TYPE_REFUND
                 ){
                     $goodsModel = new Goods();
                     foreach ($orderInfo['items'] as $key => $val) {
@@ -350,7 +350,7 @@ class BillAftersales extends Common
                 //已发货的商品库存调整，如果是订单已发货或部分发货的时候，并且用户收到商品的情况下的处理
                 if (
                     ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_YES || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
-                    $type = self::TYPE_RESHIP
+                    $type == self::TYPE_RESHIP
                 ){
                     //判断货物退完了没有，如果货已发完了，订单就已完成
                     $all_sened = true;

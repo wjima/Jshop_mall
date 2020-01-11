@@ -313,7 +313,7 @@
 		align-items: center;
 		box-shadow: 0 0 10rpx #ccc;
 		padding: 0;
-		z-index: 999;
+		z-index: 996;
 	}
 	.service .icon{
 		width: 60rpx;

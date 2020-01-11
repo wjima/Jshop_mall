@@ -341,6 +341,12 @@
 							<el-input type="textarea" autosize v-html="item.value" resize="none"></el-input>
 						</div>
 					</div>
+					<!-- 弹出广告位 -->
+					<div v-if="item.type==='adpop'" class="drag lay-imgSingle">
+						<div class="img-wrap" v-for="(img,key) in item.value.list">
+							<img :src="img.image" alt="">
+						</div>
+					</div>
 					<div @click.stop="handleWidgetDelete(index)" class="btn-delete" v-if="selectWg.key === item.key">删除</div>
 					<div @click.stop="handleWidgetClone(index)" class="btn-clone" v-if="selectWg.key === item.key">复制</div>
 				</div>
@@ -867,6 +873,19 @@
 					<div>
 						<textarea id="container"></textarea>
 					</div>
+				</template>
+				<!-- 弹出广告位 -->
+				<template v-if="selectWg.type=='adpop'">
+					<li v-for="(item, index) in selectWg.value.list" :key="index">
+						<div class="content">
+							<div class="content-item">
+								<span class="item-label">图片:</span>
+								<upload-img @upload-img="upImage(index,item)" :index="index" :item="item"></upload-img>
+							</div>
+							<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"
+								:id.sync="item.linkValue"></select-link>
+						</div>
+					</li>
 				</template>
 			</el-form>
 		</div>

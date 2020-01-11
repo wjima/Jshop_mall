@@ -18,6 +18,7 @@
       <jshopgroupPurchase :jdata="item" v-if="item.widget_code=='groupPurchase' "></jshopgroupPurchase>
       <jshoprecord :jdata="item" v-if="item.widget_code=='record' "></jshoprecord>
 	  <jshoppintuan :jdata="item" v-if="item.widget_code=='pintuan' "></jshoppintuan>
+	  <jshopadpop :jdata="item" v-if="item.widget_code=='adpop' "></jshopadpop>
     </block>
   </view>
 </template>
@@ -46,6 +47,8 @@ import jshopgroupPurchase from '@/components/jshop/jshop-groupPurchase.vue'
 import jshoprecord from '@/components/jshop/jshop-record.vue'
 import jshoppintuan from '@/components/jshop/jshop-pintuan.vue'
 import jshoptabbar from '@/components/jshop/jshop-tabbar.vue'
+import jshopadpop from '@/components/jshop/jshop-adpop.vue'
+
 export default {
   name: 'jshop',
   components: {
@@ -65,7 +68,8 @@ export default {
     jshopgroupPurchase,
     jshoprecord,
 	jshoppintuan,
-	jshoptabbar
+	jshoptabbar,
+	jshopadpop
   },
   props: {
     jdata: {

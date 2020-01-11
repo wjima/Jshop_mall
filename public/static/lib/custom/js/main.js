@@ -290,7 +290,17 @@ var allWidget = {
       }
     },
     "icon": "icon-jilu"
-  }
+  },
+  {
+    "type": "adpop",
+    "name": "弹出广告位",
+    "value": {
+        "image": default_banner,
+        "linkType": '',
+        "linkValue": '',
+    },
+    "icon": "icon-zhaopiantubiao"
+  },
   ],
   "utilsComponents": [
     {
@@ -308,6 +318,7 @@ var allWidget = {
       "value": '',
       "icon": 'icon-fuwenben',
     }]
+    
 };
 
 var deepClone = function (obj) {
@@ -600,6 +611,9 @@ Vue.component('layout-config', {
           case 'navBar':
             return '导航组'
             break;
+          case 'tabBar':
+            return '文字导航组'
+            break;
           case 'goods':
             return '商品组'
             break;
@@ -620,6 +634,9 @@ Vue.component('layout-config', {
             break;
           case 'textarea':
             return '文本域'
+            break;
+          case 'adpop':
+            return '弹出广告位'
             break;
           default:
             return '';

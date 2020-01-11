@@ -1,17 +1,19 @@
 <template>
 	<!-- 单图 -->
 	<view class="jshop-adpop" v-if="jdata.params.list && jdata.params.list.length > 0">
-		<view class="adpop">
-			<!-- #ifdef MP-WEIXIN -->
-			<view @click="showSliderInfo2" :data-type="item.linkType" :data-val="item.linkValue">
-				<image class="ad-img" :src="item.image" mode="widthFix" ></image>
-			</view>
-			<!-- #endif -->
-			<!-- #ifndef MP-WEIXIN -->
-			<image class="ad-img" :src="item.image" mode="widthFix" @click="showSliderInfo(item.linkType, item.linkValue)"></image>
-			<!-- #endif -->
-			<view class="imgup-btn" v-if="item.buttonText != ''" @click="showSliderInfo(item.linkType, item.linkValue)">
-				<button class="btn btn-fillet" :style="{background:item.buttonColor,color:item.textColor}">{{item.buttonText}}</button>
+		<view class="adpop" v-if="closeAd">
+			<view class="adpop-c">
+				<view class="adpop-img">
+					<!-- #ifdef MP-WEIXIN -->
+					<view @click="showSliderInfo2" :data-type="jdata.params.list[0].linkType" :data-val="jdata.params.list[0].linkValue">
+						<image class="ad-img" :src="jdata.params.list[0].image" mode="widthFix" ></image>
+					</view>
+					<!-- #endif -->
+					<!-- #ifndef MP-WEIXIN -->
+					<image class="ad-img" :src="jdata.params.list[0].image" mode="widthFix" @click="showSliderInfo(jdata.params.list[0].linkType, jdata.params.list[0].linkValue)"></image>
+					<!-- #endif -->
+				</view>
+				<image class="close-btn" src="/static/image/close-pink.png" mode="" @click="closePop"></image>
 			</view>
 		</view>
 	</view>
@@ -19,11 +21,16 @@
 
 <script>
 	export default {
-		name: "jshopimgsingle",
+		name: "jshopadpop",
 		props: {
 			jdata: {
 				// type: Object,
 				required: true,
+			}
+		},
+		data(){
+			return{
+				closeAd: true
 			}
 		},
 		computed: {
@@ -34,6 +41,9 @@
 			
 		},
 		methods: {
+			closePop(){
+				this.closeAd = false
+			},
 			showSliderInfo(type, val) {
 				console.log(type);
 				if (!val) {
@@ -144,46 +154,34 @@
 </script>
 
 <style>
-	/* .ad {
+.adpop{
+	position: fixed;
+	background: rgba(0,0,0,.5);
 	width: 100%;
-	overflow: hidden;
+	height: 100vh;
+	z-index: 999;
+	top: 0;
+	left: 0;
+}
+.adpop-c{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	width: 70%;
+	text-align: center;
+}
+.adpop-img{
+	width: 100%;
+	max-height: 1000rpx;
+	margin-bottom: 50rpx;
 }
 .ad-img{
 	width: 100%;
-	float: left;
-	margin-bottom: 20upx;
+	max-height: 1000rpx;
 }
-.ad-img:last-child{
-	margin-bottom: 0;
-} */
-	.jshop-imgsingle.ad {
-		width: 100%;
-		overflow: hidden;
-		position: relative;
-	}
-
-	.jshop-imgsingle .ad-img {
-		width: 100%;
-		float: left;
-		position: relative;
-		z-index: 667;
-		/* margin-bottom: 20upx; */
-	}
-
-	.jshop-imgsingle .ad-img:last-child {
-		margin-bottom: 0;
-	}
-
-	.jshop-imgsingle .imgup-btn {
-		position: absolute;
-		z-index: 668;
-		bottom: 80upx;
-		left: 40upx;
-	}
-
-	.jshop-imgsingle .imgup-btn .btn {
-		line-height: 2;
-		font-size: 28upx;
-		padding: 0 50upx;
-	}
+.close-btn{
+	width: 80rpx;
+	height: 80rpx;
+}
 </style>

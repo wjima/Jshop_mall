@@ -8,14 +8,14 @@
 				</view>
 			</scroll-view>
 		</view>
-		<view class="jshop-tabbar bottom-cell-group tabbar-fixed" v-show="tabbarFixed">
+		<!-- <view class="jshop-tabbar bottom-cell-group tabbar-fixed" v-show="tabbarFixed">
 			<scroll-view scroll-x='true' class="tabbar-list">
 				<view class="tabbar-item" v-for="(item, index) in jdata.params.list" :key="index" @click="showSliderInfo(item.linkType, item.linkValue)">
 					{{item.text}}
 					<view class="active-tabbar"></view>
 				</view>
 			</scroll-view>
-		</view>
+		</view> -->
 	</view>
 	
 </template>

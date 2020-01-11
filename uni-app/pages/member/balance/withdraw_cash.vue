@@ -45,7 +45,7 @@
 				</view>
 				<view class='cell-item'>
 					<view class='cell-item-bd withdrawcash-input'>
-						<view class='cell-hd-title'><text>￥</text><input type="number" focus v-model="money"/></view>
+						<text>￥</text><input type="number" focus v-model="money"/>
 					</view>
 				</view>
 				<view class='cell-item'>
@@ -220,9 +220,13 @@ export default {
 	float: left;
 }
 .withdrawcash-input{
+	display: flex;
+	align-items: center;
 	font-size: 50upx;
 	border-bottom: 2upx solid #e8e8e8;
 	padding-bottom: 20upx;
+	width: 95%;
+	max-width: 95%;
 }
 .withdrawcash-input text{
 	font-size: 40upx;

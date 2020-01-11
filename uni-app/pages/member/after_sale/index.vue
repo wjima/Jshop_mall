@@ -244,10 +244,11 @@ export default {
 							}
 						}		
 						this.items = res.data.items;
-						this.refund = res.data.order_amount - res.data.refunded;
-						this.maxRefund = res.data.order_amount - res.data.refunded;
+						
+						this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
+						this.maxRefund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.cost_freight = res.data.cost_freight;//运费
-						this.refund_show = res.data.payed - res.data.refunded;
+						this.refund_show = this.$common.formatMoney((res.data.payed - res.data.refunded), 2, '');
 						this.type_list = type_list;
 					}else{
 						this.$common.errorToBack('订单不可以进行售后');

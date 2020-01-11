@@ -159,6 +159,41 @@ var allWidget = {
     "icon": "icon-daohangliebiao"
   },
   {
+    "type": "tabBar",
+    "name": "文字导航组",
+    "value": {
+      "limit": 5,
+      "list": [
+        {
+          "text": "按钮1",
+          "linkType": '',
+          "linkValue": ''
+        },
+        {
+          "text": "按钮2",
+          "linkType": '',
+          "linkValue": ''
+        },
+        {
+          "text": "按钮3",
+          "linkType": '',
+          "linkValue": ''
+        },
+        {
+          "text": "按钮4",
+          "linkType": '',
+          "linkValue": ''
+        },
+		{
+		  "text": "按钮5",
+		  "linkType": '',
+		  "linkValue": ''
+		}
+      ]
+    },
+    "icon": "icon-daohangliebiao"
+  },
+  {
     "type": "goods",
     "name": "商品组",
     "icon": "icon-shangpin",

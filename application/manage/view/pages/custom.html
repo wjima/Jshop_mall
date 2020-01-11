@@ -322,6 +322,15 @@
 							<p class="item-text">{{nav.text}}</p>
 						</div>
 					</div>
+					<!-- 文字导航组 -->
+					<div v-if="item.type==='tabBar'" class="drag lay-tabBar clearfix" >
+						<div class="item" v-for="(nav,key) in item.value.list" :key="key">
+							<!-- <div class="item-image">
+								<img :src="nav.image" alt="">
+							</div> -->
+							<p class="item-text">{{nav.text}}</p>
+						</div>
+					</div>
 					<!-- 辅助空白 -->
 					<div v-if="item.type==='blank'" class="drag lay-item lay-blank"
 						:style="{height:item.value.height+'px',backgroundColor:item.value.backgroundColor}">
@@ -800,6 +809,46 @@
 										<el-form-item label="按钮文字：">
 											<input type="text" class="selectLinkVal" v-model="item.text">
 
+										</el-form-item>
+									</div>
+									<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"
+										:id.sync="item.linkValue"></select-link>
+								</div>
+							</li>
+						</draggable>
+						<div class="addImg" @click="handleAddNav">
+							<i class="iconfont icon-icon-test"></i>
+							<span>添加一个导航组</span>
+						</div>
+					</div>
+				</template>
+				<!-- 文字导航组-->
+				<template v-if="selectWg.type=='tabBar'">
+					<div>
+						<!-- <el-form-item label="每行数量">
+							<el-radio-group v-model="selectWg.value.limit">
+								<el-radio :label="3">3个</el-radio>
+								<el-radio :label="4">4个</el-radio>
+								<el-radio :label="5">5个</el-radio>
+							</el-radio-group>
+						</el-form-item> -->
+						<draggable element="ul" :list="selectWg.value.list"
+							:options="{group:{ name:'slideList'}, ghostClass: 'ghost',animation: 150,handle:'.drag-block'}">
+							<li v-for="(item, index) in selectWg.value.list" :key="index">
+								<div class="drag-block">
+									<div class="handle-icon" title="删除这一项">
+										<i class="iconfont icon-cuohao" @click="handleSlideRemove(index)"></i>
+									</div>
+								</div>
+								<div class="content">
+									<!-- <div class="content-item">
+										<el-form-item label="图片：">
+											<upload-img @upload-img="upImage(index,item)" :index="index" :item="item"></upload-img>
+										</el-form-item>
+									</div> -->
+									<div class="content-item">
+										<el-form-item label="文字：">
+											<input type="text" class="selectLinkVal" v-model="item.text">
 										</el-form-item>
 									</div>
 									<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"

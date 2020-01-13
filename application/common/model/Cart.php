@@ -78,33 +78,26 @@ class Cart extends Common
                 //标准模式不需要做什么判断
                 //判断商品是否做团购秒杀
                 if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion)) {
+                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
+                    $delwhere[] = ['user_id', 'eq', $user_id];
+                    $delWhere[] = ['type', 'eq', 1];
+                    $delWhere[] = ['product_id', 'eq', $product_id];
+                    $this->where($delWhere)->delete();
+                    unset($cat_info);
+
                     $params      = json_decode($promotion['params'], true);
                     $orderModel  = new Order();
                     $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion);
                     if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
-                        if ($cat_info) {
-                            if (($check_order['data']['total_orders'] + $cat_info['nums'] + $nums) > $params['max_goods_nums']) {
-                                $result['msg'] = '您添加的数量已超过当前活动最大购买量';
-                                return $result;
-                            }
-                        } else {
-                            if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
-                                $result['msg'] = '该商品已超过当前活动最大购买量';
-                                return $result;
-                            }
+                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
+                            $result['msg'] = '该商品已超过当前活动最大购买量';
+                            return $result;
                         }
                     }
                     if (isset($params['max_nums']) && $params['max_nums'] != 0) {
-                        if ($cat_info) {
-                            if (($cat_info['nums'] + $nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
-                                $result['msg'] = '您已超过该活动最大购买量';
-                                return $result;
-                            }
-                        } else {
-                            if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
-                                $result['msg'] = '您已超过该活动最大购买量';
-                                return $result;
-                            }
+                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
+                            $result['msg'] = '您已超过该活动最大购买量';
+                            return $result;
                         }
                     }
                 }

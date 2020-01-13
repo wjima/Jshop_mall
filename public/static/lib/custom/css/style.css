@@ -1362,6 +1362,18 @@ template {
   font-size: 0;
 }
 
+.layout-list .layout-main .lay-tabBar{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  
+}
+.layout-list .layout-main .lay-tabBar .item {
+  float: left;
+  padding: 5px 10px;
+}
+
 #selectGoods li {
   float: left;
   margin: 10px;

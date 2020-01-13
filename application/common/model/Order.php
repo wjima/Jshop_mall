@@ -2160,6 +2160,11 @@ class Order extends Common
         //在活动时间范围内
         $where[] = ['o.ctime', '>=', $condition['stime']];
         $where[] = ['o.ctime', '<', $condition['etime']];
+
+         //已退款、已退货、部分退款的、部分退货的排除
+        $where[] = ['o.pay_status', 'in',['1','2','3']];
+        $where[] = ['o.ship_status', 'in',['1','2','3']];
+        
         //订单类型
         if ($order_type) {
             $where[] = ['o.order_type', '=', $order_type];

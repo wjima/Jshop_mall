@@ -27,17 +27,12 @@
 					</view>
 					<view class='cell-item add-title-item' v-for="(v, k) in orderInfo.delivery" :key="k" @click="logistics(k)">
 						<view class='cell-item-bd'>
-							<!-- <view class="cell-bd-view black-text">
-								<text class="cell-bd-text">已发货，请注意查收</text>
-							</view> -->
-							<!-- <view class=""> -->
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{v.logi_name|| ''}} : {{v.logi_no|| ''}}</text>
 								</view>
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{ v.ctime || ''}}</text>
 								</view>
-							<!-- </view> -->
 						</view>
 						<view class="cell-item-ft">
 							<image class='cell-ft-next icon' src='/static/image/right.png'></image>
@@ -258,14 +253,13 @@
 				</view>
 			</view>
 		</view>
-		<view class="button-bottom">
+		<view class="button-bottom" v-if="orderInfo.status == 1 || orderInfo.status == 2">
 			<button class='btn btn-circle btn-g' hover-class="btn-hover" v-if="orderInfo.status == 1 && orderInfo.pay_status == 1 && orderInfo.ship_status == 1" @click="cancelOrder(orderInfo.order_id)">取消订单</button>
 			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.status == 1 && orderInfo.pay_status == 1" @click="toPay(orderInfo.order_id)">立即支付</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="(orderInfo.ship_status == 2 || orderInfo.ship_status == 3) && orderInfo.confirm ==1 && orderInfo.status == 1" @click="tackDeliery(orderInfo.order_id)">确认收货</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.pay_status != 5 && orderInfo.ship_status != 5 && orderInfo.confirm ==2 && orderInfo.is_comment == 1" @click="toEvaluate(orderInfo.order_id)">立即评价</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="customerService(orderInfo.order_id)" v-if="orderInfo.add_aftersales_status==true">申请售后</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="showCustomerService(orderInfo)"
-			 v-if="orderInfo.bill_aftersales_id && orderInfo.bill_aftersales_id != false">查看售后</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.status == 1 && orderInfo.pay_status >= 2 && orderInfo.ship_status >= 3 && orderInfo.confirm == 1" @click="tackDeliery(orderInfo.order_id)">确认收货</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.status === 1 && orderInfo.pay_status >= 2 && orderInfo.ship_status >= 3 && orderInfo.confirm >= 2 && orderInfo.is_comment === 1" @click="toEvaluate(orderInfo.order_id)">立即评价</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="customerService(orderInfo.order_id)" v-if="orderInfo.add_aftersales_status == true">申请售后</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="showCustomerService(orderInfo)" v-if="orderInfo.bill_aftersales_id && orderInfo.bill_aftersales_id != false">查看售后</button>
 		</view>
 	</view>
 </template>
@@ -325,30 +319,27 @@
 					if (res.status) {
 						let data = res.data
 						// 订单状态文字转化
-						switch (data.text_status) {
+						switch (data.status) {
 							case 1:
-								_this.$set(data, 'status_name', '待付款')
+                                if (data.pay_status === 1) {
+                                	_this.$set(data, 'status_name', '待付款')
+                                } else if (data.pay_status >= 2 && data.ship_status === 1){
+                                	_this.$set(data, 'status_name', '待发货')
+                                } else if (data.pay_status >= 2 && data.ship_status === 2){
+                                	_this.$set(data, 'status_name', '部分发货')
+                                } else if (data.pay_status >= 2 && data.ship_status >= 3 && data.confirm === 1) {
+                                	_this.$set(data, 'status_name', '已发货')
+                                } else if (data.pay_status >= 2 && data.ship_status >= 3 && data.confirm >= 2 && data.is_comment === 1) {
+                                	_this.$set(data, 'status_name', '待评价')
+                                } else if (data.pay_status >= 2 && data.ship_status >= 3 && data.confirm >= 2 && data.is_comment >= 2) {
+                                	_this.$set(data, 'status_name', '已评价')
+                                }
 								break
 							case 2:
-								_this.$set(data, 'status_name', '待发货')
+								_this.$set(data, 'status_name', data.text_status)
 								break
 							case 3:
-								_this.$set(data, 'status_name', '待收货')
-								break
-							case 4:
-								_this.$set(data, 'status_name', '待评价')
-								break
-							case 6:
-								_this.$set(data, 'status_name', '交易完成')
-								break
-							case 7:
-								_this.$set(data, 'status_name', '交易取消')
-								break
-							case 8:
-								_this.$set(data, 'status_name', '部分发货')
-								break
-							default:
-								_this.$set(data, 'status_name', '交易成功')
+								_this.$set(data, 'status_name', data.text_status)
 								break
 						}
 						// 订单时间转换

@@ -107,12 +107,10 @@ export default {
 			this.$api.setDefaultBankCard(data, res => {
 				if (res.status) {
 					this.$common.successToShow(res.msg, ress => {
-						// this.submitStatus = false;
 						this.getBankCards();
 					})
 				} else {
 					this.$common.errorToShow(res.msg);
-					// this.submitStatus = false;
 				}
 			},res => {
 				this.submitStatus = false;

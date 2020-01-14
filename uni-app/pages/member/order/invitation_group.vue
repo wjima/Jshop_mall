@@ -375,7 +375,6 @@
 		margin-right: 20upx;
 		box-sizing: border-box;
 		display: inline-block;
-		/* float: left; */
 		border: 1px solid #f3f3f3;
 	}
 	.user-head-img-tip {

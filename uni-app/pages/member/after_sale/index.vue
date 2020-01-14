@@ -47,10 +47,6 @@
 												</view>
 											</view>
 										</view>
-										<!-- <view class="goods-salesvolume" v-show="item.returnStatus">
-											<label>可退货数量：</label>
-											<input type="text" v-model="item.returnNums" class="inputStyle" ref="input" @click.stop />
-										</view> -->
 									</view>
 								</view>
 							</label>
@@ -64,18 +60,6 @@
 						</view>
 						<view class='cell-item-ft'>
 							<view class="uni-form-item uni-column invoice-type">
-								<!-- <radio-group class="uni-list" @change="radioChange">
-									<label class="uni-list-cell uni-list-cell-pd" v-for="(item,index) in type_list" :key="index">
-										<view>
-											<radio :id="item.name" :value="item.name" :checked="item.checked"></radio>
-										</view>
-										<view>
-											<label class="label-2-text" :for="item.name">
-												<text>{{item.value}}</text>
-											</label>
-										</view>
-									</label>
-								</radio-group> -->
 								<!-- #ifndef MP-ALIPAY -->
 								<radio-group class="uni-list" @change="radioChange">
 									<label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in type_list" :key="index">
@@ -231,9 +215,6 @@ export default {
 								 returnStatus=true
 							 }
 							res.data.items[i].id = res.data.items[i].id.toString();
-							// nums = res.data.items[i].nums;
-							// res.data.items[i].checked = true;
-							// this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: nums });
 							this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: returnNums });
 							res.data.items[i].returnNums=returnNums			
 							res.data.items[i].returnStatus=returnStatus		
@@ -304,11 +285,8 @@ export default {
 			let nums = 0;
 			this.item_ids = [];
 			for (var i = 0; i < this.checkedItems.length; i++) {
-				// console.log(this.checkedItems.length)
 				let k = this.checkedItems[i];
 				for(var j = 0; j < this.items.length; j++){
-					// console.log(this.items.length)
-					// console.log(k)
 					if(this.items[j].id == k) {
 						if(this.items[j].nums >= this.items[j].reship_nums) {
 							
@@ -352,7 +330,6 @@ export default {
 				this.submitStatus = false;
 				return false;
 			}
-			// console.log("33")
 			 console.log(this.item_ids.length)
 			if(this.item_ids.length<=0){
 				this.$common.errorToShow('请处理要售后的商品');
@@ -374,15 +351,10 @@ export default {
 			this.$api.addAfterSales(data, res => {
 				if(res.status){
 					this.$common.successToShow('提交成功', ress => {
-						// this.submitStatus = false;
-						// uni.navigateBack({
-						// 	delta: 1
-						// });
 						this.$common.navigateTo("/pages/member/order/orderdetail?order_id="+this.order_id)
 					});
 				}else{
 					this.$common.errorToShow(res.msg);
-					// this.submitStatus = false;
 				}
 			},res => {
 				this.submitStatus = false;

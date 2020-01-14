@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="content-top">
 			<view class='cell-group'>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>银行卡号</view>
 					</view>
@@ -10,7 +10,7 @@
 						<input type="number" class='cell-bd-input' v-model="cardNumber" focus @blur="checkCard()" placeholder='请输入银行卡号'></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>持卡人</view>
 					</view>
@@ -18,7 +18,7 @@
 						<input type="text" class='cell-bd-input' v-model="name" placeholder='请输入持卡人姓名'></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>银行名称</view>
 					</view>
@@ -26,7 +26,7 @@
 						<input type="text" class='cell-bd-input' :disabled="true" v-model="bankName"></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>银行卡类型</view>
 					</view>
@@ -34,7 +34,7 @@
 						<input type="text" class='cell-bd-input' :disabled="true" v-model='cardTypeName'></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>开户行名</view>
 					</view>
@@ -43,7 +43,7 @@
 					</view>
 				</view>
 				
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid right-img'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>开户行地址</view>
 					</view>
@@ -69,7 +69,6 @@
 			</view>
 		</view>
 		<view class="button-bottom">
-			<!-- <button class="btn btn-square btn-w" @click="delShip" v-show="id && id != 0" hover-class="btn-hover2">删除</button> -->
 			<button class="btn btn-square btn-b" @click="addCard" hover-class="btn-hover2" :disabled='submitStatus' :loading='submitStatus'>保存</button>
 		</view>
 	</view>
@@ -241,7 +240,6 @@ export default {
 						})
 					} else {
 						this.$common.errorToShow(res.msg);
-						// this.submitStatus = false;
 					}
 				},res => {
 					this.submitStatus = false;
@@ -312,12 +310,18 @@ export default {
 .cell-hd-title{
 	color: #333;
 }
+.cell-item-hd{
+	width: 180rpx;
+}
 .cell-item-bd{
 	color: #666;
 	font-size: 26upx;
 }
 .button-bottom .btn {
 	width: 50%;
+}
+.right-img .cell-item-ft{
+	right: 26rpx;
 }
 /* #ifdef MP-ALIPAY */
 input{

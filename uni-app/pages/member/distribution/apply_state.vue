@@ -124,7 +124,6 @@ export default {
 	margin: 40upx auto 20upx;
 	display: flex;
 	line-height: 1.7555;
-	/* vertical-align: middle; */
 }
 .apply-bot-sop>view{
 	display: inline-block;
@@ -138,7 +137,6 @@ export default {
 	transform: translateY(-50%);
 }
 .abs-mid{
-	/* font-size: 70upx; */
 	flex: 2;
 	display: flex;
 }

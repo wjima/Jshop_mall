@@ -49,7 +49,7 @@
 				</view>
 
 				<!-- 促销 -->
-				<view class='cell-item goods-title-item' v-if="promotion.length">
+				<view class='cell-item goods-title-item cell-item-mid' v-if="promotion.length">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>促销</view>
 					</view>
@@ -65,7 +65,7 @@
 				<!-- 促销end -->
 
 				<!-- 规格 -->
-				<view class='cell-item goods-title-item' v-if="isSpes">
+				<view class='cell-item goods-title-item cell-item-mid' v-if="isSpes">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>规格</view>
 					</view>
@@ -75,7 +75,7 @@
 				</view>
 				<!-- 规格end -->
 
-				<view class='cell-item goods-title-item'>
+				<view class='cell-item goods-title-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>说明</view>
 					</view>
@@ -111,19 +111,6 @@
 									<text class='cell-bd-text'>{{ item.value || ''}}</text>
 								</view>
 							</view>
-							<!-- 							<view class='cell-item'>
-								<view class='cell-item-hd'>
-									<view class='cell-hd-title'>保修政策</view>
-								</view>
-								<view class='cell-item-bd'>
-									<view class="cell-bd-view">
-										<text class="cell-bd-text">二十日内包修理或换货</text>
-									</view>
-									<view class="cell-bd-view">
-										<text class="cell-bd-text">一年内包修理</text>
-									</view>
-								</view>
-							</view> -->
 						</view>
 						<view class="comment-none" v-else>
 							<image class="comment-none-img" src="/static/image/order.png" mode=""></image>
@@ -133,7 +120,7 @@
 						<view v-if="goodsComments.list.length">
 							<view class="goods-assess-item" v-for="(item, index) in goodsComments.list" :key="index">
 								<view class='cell-group'>
-									<view class='cell-item goods-title-item'>
+									<view class='cell-item goods-title-item cell-item-mid'>
 										<view class='cell-item-hd'>
 											<image class='user-head-img' :src='item.user.avatar' mode="aspectFill"></image>
 										</view>
@@ -231,8 +218,6 @@
 						</view>
 					</scroll-view>
 					<view class="pop-b">
-						<!-- <button class='btn btn-square btn-g btn-half' @click="addToCart">加入购物车</button>
-						<button class='btn btn-square btn-b btn-half' @click="buyNow">立即购买</button> -->
 						<button class='btn btn-square btn-b btn-all' hover-class="btn-hover2" @click="clickHandle()" :disabled='submitStatus'
 						 :loading='submitStatus' v-if="product.stock">确定</button>
 						<button class='btn btn-square btn-g btn-all' v-else>已售罄</button>
@@ -746,26 +731,8 @@
 				this.submitStatus = true;
 				this.type === 1 ? this.addToCart() : this.buyNow();
 			},
-			// 右下角按钮
-			// 		goIndex(){
-			// 			uni.switchTab({
-			// 				url:'../../index/index'
-			// 			});
-			// 		},
 			trigger(e) {
-				// console.log(e);
 				this.content[e.index].active = !e.item.active;
-				//             uni.showModal({
-				//                 title: '提示',
-				//                 content: `您${this.content[e.index].active?'选中了':'取消了'}${e.item.text}`,
-				//                 success: function(res) {
-				//                     if (res.confirm) {
-				//                         console.log('用户点击确定');
-				//                     } else if (res.cancel) {
-				//                         console.log('用户点击取消');
-				//                     }
-				//                 }
-				//             });
 				uni.switchTab({
 					url: e.item.url
 				})
@@ -915,6 +882,7 @@
 	.goods-title-item .cell-item-bd {
 		color: #333;
 		font-size: 24upx;
+		display: block;
 	}
 
 	.goods-title-item .cell-bd-text {
@@ -992,7 +960,6 @@
 	.goods-bottom-ic .icon {
 		position: relative;
 		top: 6upx;
-		/* left: -6upx; */
 		/* #ifdef MP-ALIPAY */
 		background-size: 100% 100%;
 		/* #endif */
@@ -1029,7 +996,6 @@
 		position: relative;
 		padding: 30upx 26upx;
 		border-bottom: 2upx solid #f3f3f3;
-		/* box-shadow: 0 0 20upx #ccc; */
 	}
 
 	.goods-img {
@@ -1211,7 +1177,6 @@
 		z-index: 999;
 		text-align: center;
 		padding: 14upx 0;
-		/* line-height: 80upx; */
 		width: 80upx;
 		height: 80upx;
 		font-size: 24upx;
@@ -1256,7 +1221,6 @@
 	.cost-price {
 		font-size: 26upx;
 		text-decoration: line-through;
-		/* margin-left: 8rpx; */
 		display: block;
 	}
 

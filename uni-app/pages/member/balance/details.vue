@@ -132,7 +132,6 @@ export default {
 }
 .uni-list-cell-db{
 	float: left;
-	/* padding-top: 8upx; */
 	margin-right: 6upx;
 	display: inline-block;
 	height: 50upx;

@@ -108,7 +108,6 @@ export default {
 	padding: 26upx 10upx;
 }
 .db-item{
-	/* padding: ; */
 	margin-bottom: 14upx;
 }
 pre {

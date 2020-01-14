@@ -6,11 +6,11 @@
 				<view v-show="type_current === 0">
 					<!-- 收货地址信息 -->
 					<view class='cell-group margin-cell-group' v-if="userShip && userShip.id"  @click="showAddressList">
-						<view class='cell-item add-title-item right-img'>
+						<view class='cell-item add-title-item right-img cell-item-mid'>
 							<view class='cell-item-hd'>
 								<image class='cell-hd-icon' src='/static/image/location.png'></image>
 							</view>
-							<view class='cell-item-bd'>
+							<view class='cell-item-bd cell-item-bd-block'>
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">收货人：{{ userShip.name || '' }}</text>
 									<text class="cell-bd-text-right">{{ userShip.mobile || ''}}</text>
@@ -33,11 +33,11 @@
 				<view v-show="type_current === 1">
 					<!-- 门店信息 -->
 					<view v-if="store && store.id && store.id != 0" class='cell-group margin-cell-group' @click="goStorelist()">
-						<view class='cell-item add-title-item right-img'>
+						<view class='cell-item add-title-item right-img cell-item-mid'>
 							<view class='cell-item-hd'>
 								<image class='cell-hd-icon' src='/static/image/homepage.png'></image>
 							</view>
-							<view class='cell-item-bd'>
+							<view class='cell-item-bd cell-item-bd-block'>
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{store.name|| ''}}</text>
 									<text class="cell-bd-text-right">{{store.mobile|| ''}}</text>
@@ -52,13 +52,13 @@
 						</view>
 					</view>
 					<view v-else class='cell-group margin-cell-group'>
-						<view class='cell-item add-title-item right-img no-store'>暂无门店</view>
+						<view class='cell-item add-title-item right-img no-store cell-item-bd-block'>暂无门店</view>
 					</view>
 				</view>
 			</view>
 
 			<view class='cell-group margin-cell-group' v-if="storeSwitch == 1 && type_current === 1">
-				<view class='cell-item user-head'>
+				<view class='cell-item user-head cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>姓名</view>
 					</view>
@@ -66,11 +66,11 @@
 						<input class='cell-bd-input' placeholder='请输入提货人姓名' v-model="store_pick.name" style="width: 100%;"></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>电话</view>
 					</view>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd'> 
 						<input class='cell-bd-input' placeholder='请输入提货人电话' v-model="store_pick.mobile" style="width: 100%;"></input>
 					</view>
 				</view>
@@ -133,13 +133,14 @@
 						<view class='cell-hd-title'>发票</view>
 					</view>
 					<view class='cell-item-ft' @click="goInvoice()">
-						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+						
 						<text class='cell-ft-text'>{{invoice.name|| ''}}</text>
+						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
 
 				<view class='cell-item'>
-					<view class='cell-item-hd'>
+					<view class='cell-item-hd cell-item-bd-block'>
 						<view class='cell-bd-view'>商品价格</view>
 						<view class='cell-bd-view' v-if="cartData.goods_pmt_old > 0">商品优惠</view>
 						<view class='cell-hd-view' v-if="cartData.order_pmt_old > 0">订单优惠</view>
@@ -147,7 +148,7 @@
 						<view class='cell-hd-view' v-if="cartData.point > 0">积分抵扣</view>
 						<view class='cell-hd-view'>运费</view>
 					</view>
-					<view class='cell-item-ft'>
+					<view class='cell-item-ft cell-item-bd-block'>
 						<view class="cell-ft-view red-price">{{ cartData.goods_amount || ''}}</view>
 						<view class="cell-ft-view" v-if="cartData.goods_pmt_old > 0">-{{ cartData.goods_pmt || ''}}</view>
 						<view class="cell-ft-view" v-if="cartData.order_pmt_old > 0">-{{ cartData.order_pmt || ''}}</view>

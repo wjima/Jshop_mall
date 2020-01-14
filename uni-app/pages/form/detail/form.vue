@@ -199,7 +199,7 @@
 								<text>{{item.name}}：</text>
 							</view>
 							<view class='ib-item-right'>
-								<view class="ib-item-mid">
+								<view class="ib-item-mid ib-item-start">
 									<image class='icon-img' src='/static/image/ic-location.png'></image>
 									<input class='ib-item-input margin-r' placeholder-class='ib-item-input-c' :name="''+item.id" :value="item.default_value"
 									 disabled='disabled' placeholder="点击获取位置信息" @click="chooseLocation($event,item,index)" :data-id='item.id' />
@@ -906,7 +906,7 @@
 	}
 
 	.form-input-box-item {
-		overflow: hidden;
+		/* overflow: hidden; */
 		padding: 20rpx 30rpx 20rpx 0;
 		margin-left: 30rpx;
 		border-bottom: 2rpx solid #eeeeee;
@@ -914,22 +914,23 @@
 
 	.ib-item-left {
 		display: inline-block;
-		min-width: 150rpx;
-		max-width: 600rpx;
+		/* min-width: 150rpx; */
+		/* max-width: 600rpx; */
 		font-size: 28rpx;
 		color: #333;
-
-		float: left;
+		width: 100%;
+		/* float: left; */
 		padding: 10rpx 0;
 	}
 
 	.ib-item-right {
-		min-width: 600rpx;
-		max-width: 690rpx;
+		/* min-width: 600rpx; */
+		/* max-width: 690rpx; */
+		width: 100%;
 		display: inline-block;
 		color: #666;
 		font-size: 28rpx;
-		float: left;
+		/* float: left; */
 		padding: 6rpx 0;
 	}
 
@@ -980,7 +981,10 @@
 	.ib-item-mid {
 		padding-top: 4rpx;
 		margin: 0;
-		position: relative;
+		/* position: relative; */
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.ib-item-mid picker {
@@ -1000,17 +1004,17 @@
 	}
 
 	.icon-img {
-		position: absolute;
+		/* position: absolute;
 		top: 50%;
-		transform: translateY(-50%);
+		transform: translateY(-50%); */
 		width: 32rpx;
 		height: 32rpx;
 	}
 
 	.icon-img-right {
-		position: absolute;
+		/* position: absolute;
 		top: 50%;
-		transform: translateY(-50%);
+		transform: translateY(-50%); */
 		width: 32rpx;
 		height: 32rpx;
 		right: 0;
@@ -1528,5 +1532,8 @@
 
 	.lvvpopref {
 		z-index: 100;
+	}
+	.ib-item-start{
+		justify-content: flex-start;
 	}
 </style>

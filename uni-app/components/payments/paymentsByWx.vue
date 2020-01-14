@@ -1,13 +1,13 @@
 <template>
 	<view class='cell-group payment-method payment-wx'>
-		<form class='cell-item add-title-item' v-for="item in payments" :key="item.code" @submit="toPayHandler" report-submit="true"
+		<form class='cell-item add-title-item cell-item-mid right-img' v-for="item in payments" :key="item.code" @submit="toPayHandler" report-submit="true"
 		 v-if="!(type == 2 && item.code == 'balancepay')">
 			<input name="code" :value="item.code" class="no-show">
 			<button class="btn" form-type="submit">
 				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' :src='item.icon'></image>
 				</view>
-				<view class='cell-item-bd'>
+				<view class='cell-item-bd cell-item-bd-block'>
 					<view class="cell-bd-view">
 						<text class="cell-bd-text">{{ item.name }}</text>
 					</view>

@@ -4,9 +4,7 @@
 		<view class="search">
 			<view class="search-c" @click="goSearch" v-bind:class="$store.state.searchStyle">
 				<view class="search-input search-input-p">
-					<view class="search-input-p-c">
-					{{ searchKey }}
-					</view>
+					<view class="search-input-p-c">{{ searchKey }}</view>
 				</view>
 				<image class="icon search-icon" src="/static/image/zoom.png"></image>
 			</view>
@@ -16,9 +14,9 @@
 		<view class="screen">
 			<view class="screen-item" @click="comprehensive">
 				<text class="screen-item-text">综合</text>
-				<view class='screen-item-icon'>
+				<view class="screen-item-icon">
 					<image v-if="searchData.order.key == 'sort' && searchData.order.sort == 'asc'" class="screen-item-icon-img" src="/static/image/bottom-black.png"></image>
-					<image v-else class="screen-item-icon-img" src="/static/image/bottom-gray.png" ></image>
+					<image v-else class="screen-item-icon-img" src="/static/image/bottom-gray.png"></image>
 				</view>
 			</view>
 			<view class="screen-item" @click="priceSort">
@@ -27,16 +25,24 @@
 					<image v-if="searchData.order.key == 'price' && searchData.order.sort == 'asc'" class="screen-item-icon-img" src="/static/image/top-black.png"></image>
 					<image v-else-if="!(searchData.order.key == 'price' && searchData.order.sort == 'asc')" class="screen-item-icon-img" src="/static/image/top-gray.png"></image>
 					<image v-if="searchData.order.key == 'price' && searchData.order.sort == 'desc'" class="screen-item-icon-img" src="/static/image/bottom-black.png"></image>
-					<image v-if="!(searchData.order.key == 'price' && searchData.order.sort == 'desc')" class="screen-item-icon-img" src="/static/image/bottom-gray.png" ></image>
+					<image v-if="!(searchData.order.key == 'price' && searchData.order.sort == 'desc')" class="screen-item-icon-img" src="/static/image/bottom-gray.png"></image>
 				</view>
 			</view>
 			<view class="screen-item" @click="salesVolume">
 				<text class="screen-item-text">销量</text>
 				<view class="screen-item-icon">
 					<image v-if="searchData.order.key == 'buy_count' && searchData.order.sort == 'asc'" class="screen-item-icon-img" src="/static/image/top-black.png"></image>
-					<image v-else-if="!(searchData.order.key == 'buy_count' && searchData.order.sort == 'asc')" class="screen-item-icon-img" src="/static/image/top-gray.png"></image>
+					<image
+						v-else-if="!(searchData.order.key == 'buy_count' && searchData.order.sort == 'asc')"
+						class="screen-item-icon-img"
+						src="/static/image/top-gray.png"
+					></image>
 					<image v-if="searchData.order.key == 'buy_count' && searchData.order.sort == 'desc'" class="screen-item-icon-img" src="/static/image/bottom-black.png"></image>
-					<image v-if="!(searchData.order.key == 'buy_count' && searchData.order.sort == 'desc')" class="screen-item-icon-img" src="/static/image/bottom-gray.png"></image>
+					<image
+						v-if="!(searchData.order.key == 'buy_count' && searchData.order.sort == 'desc')"
+						class="screen-item-icon-img"
+						src="/static/image/bottom-gray.png"
+					></image>
 				</view>
 			</view>
 			<view class="screen-item">
@@ -54,93 +60,68 @@
 				<image class="filter-img" src="/static/image/bottom.png"></image>
 			</view>
 		</view>
-		
+
 		<!-- 高级赛选 -->
 		<lvv-popup position="top" ref="lvvpopref" style="background: none;">
 			<view class="fliter-c">
 				<scroll-view scroll-y="true" style="height: 100%;">
 					<view class="fliter-item">
-						<view class='cell-item right-img'>
-							<view class='cell-item-hd'>
-								<view class='cell-hd-title'>价格区间</view>
-							</view>
+						<view class="cell-item right-img">
+							<view class="cell-item-hd"><view class="cell-hd-title">价格区间</view></view>
 						</view>
 						<view class="fliter-i-c">
-							<view class="fic-item">
-								<input class="fic-item-input" type="number" v-model="sPrice" />
-							</view>
+							<view class="fic-item"><input class="fic-item-input" type="number" v-model="sPrice" /></view>
 							<view class="fic-item-line"></view>
-							<view class="fic-item">
-								<input class="fic-item-input" type="number" v-model="ePrice" />
-							</view>
+							<view class="fic-item"><input class="fic-item-input" type="number" v-model="ePrice" /></view>
 						</view>
 					</view>
 					<view class="fliter-item" v-if="cat_list.length > 0">
-						<view class='cell-item right-img'>
-							<view class='cell-item-hd'>
-								<view class='cell-hd-title'>分类</view>
-							</view>
+						<view class="cell-item right-img">
+							<view class="cell-item-hd"><view class="cell-hd-title">分类</view></view>
 						</view>
 						<view class="fliter-i-c">
 							<view v-for="item in cat_list" :key="item.goods_cat_id" v-if="item.goods_cat_id && item.name" @click="selectKey('cat_list', item.goods_cat_id)">
 								<view class="fic-item" v-if="!item.isSelect">
-									<view class="fic-item-text two-line" >
-										{{item.name}}
-									</view>
+									<view class="fic-item-text two-line">{{ item.name }}</view>
 								</view>
 								<view class="fic-item fic-item-active" v-else-if="item.isSelect">
-									<view class="fic-item-text two-line">
-										{{item.name}}
-									</view>
+									<view class="fic-item-text two-line">{{ item.name }}</view>
 								</view>
 							</view>
 						</view>
 					</view>
 					<view class="fliter-item" v-if="brand_list.length > 0">
-						<view class='cell-item right-img'>
-							<view class='cell-item-hd'>
-								<view class='cell-hd-title'>品牌</view>
-							</view>
+						<view class="cell-item right-img">
+							<view class="cell-item-hd"><view class="cell-hd-title">品牌</view></view>
 						</view>
 						<view class="fliter-i-c">
 							<view v-for="item in brand_list" :key="item.brand_id" v-if="item.brand_id && item.name" @click="selectKey('brand_list', item.brand_id)">
 								<view class="fic-item" v-if="!item.isSelect">
-									<view class="fic-item-text two-line">
-										{{item.name}}
-									</view>
+									<view class="fic-item-text two-line">{{ item.name }}</view>
 								</view>
 								<view class="fic-item fic-item-active" v-else-if="item.isSelect">
-									<view class="fic-item-text two-line">
-										{{item.name}}
-									</view>
+									<view class="fic-item-text two-line">{{ item.name }}</view>
 								</view>
 							</view>
 						</view>
 					</view>
 					<view class="fliter-item" v-if="label_list.length > 0">
-						<view class='cell-item right-img'>
-							<view class='cell-item-hd'>
-								<view class='cell-hd-title'>标签</view>
-							</view>
+						<view class="cell-item right-img">
+							<view class="cell-item-hd"><view class="cell-hd-title">标签</view></view>
 						</view>
 						<view class="fliter-i-c">
 							<view v-for="item in label_list" :key="item.id" v-if="item.id && item.name" @click="selectKey('label_list', item.id)">
 								<view class="fic-item" v-if="!item.isSelect">
-									<view class="fic-item-text two-line">
-										{{item.name}}
-									</view>
+									<view class="fic-item-text two-line">{{ item.name }}</view>
 								</view>
 								<view class="fic-item fic-item-active" v-else-if="item.isSelect">
-									<view class="fic-item-text two-line">
-										{{item.name}}
-									</view>
+									<view class="fic-item-text two-line">{{ item.name }}</view>
 								</view>
 							</view>
 						</view>
 					</view>
 				</scroll-view>
 				<view class="button-bottom">
-					<!-- <button class="btn btn-square" @click="filterNo()">重置</button> -->
 					<button class="btn btn-square" @click="toclose()">关闭</button>
 					<button class="btn btn-b btn-square" @click="filterOk()">确定</button>
 				</view>
@@ -151,39 +132,33 @@
 		<scroll-view scroll-y="true" :scroll-into-view="toView" class="scroll-Y" @scrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
 			<!-- 表格图片 -->
 			<view class="img-grids" v-show="current === 0">
-				<view v-if="goodsList.length>0">
+				<view v-if="goodsList.length > 0">
 					<view class="img-grids-item" v-for="(item, index) in goodsList" :key="index" @click="goodsDetail(item.id)">
-						<image class="img-grids-item-t have-none" :src="item.image_url" mode='aspectFill'></image>
+						<image class="img-grids-item-t have-none" :src="item.image_url" mode="aspectFill"></image>
 						<view class="img-grids-item-b">
-							<view class="goods-name grids-goods-name">
-								{{item.name}}
-							</view>
+							<view class="goods-name grids-goods-name">{{ item.name }}</view>
 							<view class="goods-item-c">
-								<view class="goods-price red-price">￥{{item.price}}</view>
+								<view class="goods-price red-price">￥{{ item.price }}</view>
 								<image class="goods-cart" src="/static/image/ic-car.png"></image>
 							</view>
 						</view>
 					</view>
 				</view>
 				<!-- 无数据时默认显示 -->
-				<view class="order-none" v-else>
-					<image class="order-none-img" src="/static/image/order.png" mode=""></image>
-				</view>
+				<view class="order-none" v-else><image class="order-none-img" src="/static/image/order.png" mode=""></image></view>
 			</view>
-		
+
 			<!-- 列表图片 -->
 			<view class="img-list" v-show="current === 1">
-				<view v-if="goodsList.length>0">
+				<view v-if="goodsList.length > 0">
 					<view class="img-list-item" v-for="(item, index) in goodsList" :key="index" @click="goodsDetail(item.id)">
-						<image class="img-list-item-l" :src="item.image_url" mode='aspectFill'></image>
+						<image class="img-list-item-l" :src="item.image_url" mode="aspectFill"></image>
 						<view class="img-list-item-r">
-							<view class="goods-name list-goods-name">
-								{{item.name}}
-							</view>
+							<view class="goods-name list-goods-name">{{ item.name }}</view>
 							<view class="goods-item-c">
-								<view class="goods-price red-price">￥{{item.price}}</view>
+								<view class="goods-price red-price">￥{{ item.price }}</view>
 								<view class="goods-buy">
-									<view class="goods-salesvolume" v-if="item.comments_count > 0">{{item.comments_count}}条评论</view>
+									<view class="goods-salesvolume" v-if="item.comments_count > 0">{{ item.comments_count }}条评论</view>
 									<view class="goods-salesvolume" v-else-if="item.comments_count <= 0">暂无评论</view>
 									<image class="goods-cart" src="/static/image/ic-car.png"></image>
 								</view>
@@ -191,16 +166,14 @@
 						</view>
 					</view>
 				</view>
-				<view class="order-none" v-else>
-					<image class="order-none-img" src="/static/image/order.png" mode=""></image>
-				</view>
+				<view class="order-none" v-else><image class="order-none-img" src="/static/image/order.png" mode=""></image></view>
 			</view>
 		</scroll-view>
 	</view>
 </template>
 
 <script>
-import lvvPopup from '@/components/lvv-popup/lvv-popup.vue'
+import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
 export default {
 	data() {
 		return {
@@ -243,7 +216,6 @@ export default {
 			where = {
 				cat_id: options.id
 			};
-			//this.getGoodsClass(options.id);
 		}
 		if (options.key) {
 			where = {
@@ -260,32 +232,32 @@ export default {
 			if (options.type == 'recommend') {
 				where = {
 					recommend: true
-				}
+				};
 			}
 		}
-		if(options.cat_id){
-			where.cat_id = options.cat_id
+		if (options.cat_id) {
+			where.cat_id = options.cat_id;
 		}
-		if(options.brand_id){
-			where.brand_id =options.brand_id
+		if (options.brand_id) {
+			where.brand_id = options.brand_id;
 		}
-		if(options.hot){
-			where.hot =options.hot
+		if (options.hot) {
+			where.hot = options.hot;
 		}
-		if(options.recommend){
-			where.recommend =options.recommend
+		if (options.recommend) {
+			where.recommend = options.recommend;
 		}
-		if(options.label_id){
-			where.label_id =options.label_id
+		if (options.label_id) {
+			where.label_id = options.label_id;
 		}
 		this.setSearchData({
 			where: where
 		});
-		
+
 		this.getGoods();
 	},
 
-	components: {lvvPopup},
+	components: { lvvPopup },
 	methods: {
 		listGrid() {
 			if (this.current == 0) {
@@ -297,22 +269,11 @@ export default {
 		//设置查询条件
 		setSearchData: function(searchData, clear = false) {
 			var sd = this.searchData;
-			this.searchData = this.$common.deepCopy(sd, searchData)
+			this.searchData = this.$common.deepCopy(sd, searchData);
 			if (clear) {
 				this.goodsList = [];
 			}
 		},
-		//获取分类名称
-// 		getGoodsClass: function(id) {
-// 			let data = {
-// 				id: id
-// 			};
-// 			this.$api.getGoodsClass(data, function(res) {
-// 				wx.setNavigationBarTitle({
-// 					title: res.data
-// 				});
-// 			});
-// 		},
 		onChangeShowState: function() {
 			var _this = this;
 			_this.showView = !_this.showView;
@@ -368,38 +329,38 @@ export default {
 			this.getGoods();
 		},
 		//设置查询价格区间
-// 		orderPrice: function(e) {
-// 			var reg = /^[0-9]+(.[0-9]{2})?$/;
-// 			if (!reg.test(e.detail.value)) {
-// 				this.$common.errorToShow('请输入正确金额');
-// 				this.maxPrice = '';
-// 			} else {
-// 				this.maxPrice = e.detail.value;
-// 			}
-// 		},
+		// 		orderPrice: function(e) {
+		// 			var reg = /^[0-9]+(.[0-9]{2})?$/;
+		// 			if (!reg.test(e.detail.value)) {
+		// 				this.$common.errorToShow('请输入正确金额');
+		// 				this.maxPrice = '';
+		// 			} else {
+		// 				this.maxPrice = e.detail.value;
+		// 			}
+		// 		},
 		//查询价格区间
-// 		searchPrice: function(event) {
-// 			if (
-// 				this.minPrice > 0 &&
-// 				this.maxPrice > 0 &&
-// 				this.minPrice > this.maxPrice
-// 			) {
-// 				app.common.errorToShow('价格区间有误');
-// 				return false;
-// 			}
-// 
-// 			this.setSearchData(
-// 				{
-// 					page: 1,
-// 					where: {
-// 						price_f: this.minPrice,
-// 						price_t: this.maxPrice
-// 					}
-// 				},
-// 				true
-// 			);
-// 			this.getGoods();
-// 		},
+		// 		searchPrice: function(event) {
+		// 			if (
+		// 				this.minPrice > 0 &&
+		// 				this.maxPrice > 0 &&
+		// 				this.minPrice > this.maxPrice
+		// 			) {
+		// 				app.common.errorToShow('价格区间有误');
+		// 				return false;
+		// 			}
+		//
+		// 			this.setSearchData(
+		// 				{
+		// 					page: 1,
+		// 					where: {
+		// 						price_f: this.minPrice,
+		// 						price_t: this.maxPrice
+		// 					}
+		// 				},
+		// 				true
+		// 			);
+		// 			this.getGoods();
+		// 		},
 		//页面相关事件处理函数--监听用户下拉动作
 		onPullDownRefresh: function() {},
 		//跳转到商品详情页面
@@ -419,11 +380,10 @@ export default {
 			_this.nodata = true;
 			//如果已经没有数据了，就不取数据了，直接提示已经没有数据
 			if (_this.loadingComplete) {
-				_this.$common.errorToShow("暂时没有数据了")
+				_this.$common.errorToShow('暂时没有数据了');
 				return false;
 			}
-			
-			
+
 			_this.$api.goodsList(_this.conditions(), function(res) {
 				if (res.status) {
 					//判是否没有数据了，只要返回的记录条数小于总记录条数，那就说明到底了，因为后面没有数据了
@@ -436,41 +396,41 @@ export default {
 					if (_this.searchData.page == 1 && res.data.list.length == 0) {
 						isEmpty = true;
 					}
-					
-					if(res.data.class_name != ''){
+
+					if (res.data.class_name != '') {
 						uni.setNavigationBarTitle({
 							title: res.data.class_name
 						});
-					}else{
-						if(res.data.where && res.data.where.search_name && res.data.where.search_name != ''){
+					} else {
+						if (res.data.where && res.data.where.search_name && res.data.where.search_name != '') {
 							uni.setNavigationBarTitle({
 								title: '商品搜索'
 							});
 						}
 					}
-					
+
 					_this.goodsList = _this.goodsList.concat(res.data.list);
 					_this.ajaxStatus = false;
 					_this.loading = !isEnd && !isEmpty;
 					_this.toView = '';
-					_this.loadingComplete =  isEnd && !isEmpty;
+					_this.loadingComplete = isEnd && !isEmpty;
 					_this.nodata = isEmpty;
-					if(res.data.filter){
+					if (res.data.filter) {
 						let filter = res.data.filter;
-						if(filter.brand_ids){
-							for(let i = 0; i < filter.brand_ids.length; i++){
+						if (filter.brand_ids) {
+							for (let i = 0; i < filter.brand_ids.length; i++) {
 								filter.brand_ids[i].isSelect = false;
 							}
 							_this.brand_list = filter.brand_ids;
 						}
-						if(filter.goods_cat){
-							for(let i = 0; i < filter.goods_cat.length; i++){
+						if (filter.goods_cat) {
+							for (let i = 0; i < filter.goods_cat.length; i++) {
 								filter.goods_cat[i].isSelect = false;
 							}
 							_this.cat_list = filter.goods_cat;
 						}
-						if(filter.label_ids){
-							for(let i = 0; i < filter.label_ids.length; i++){
+						if (filter.label_ids) {
+							for (let i = 0; i < filter.label_ids.length; i++) {
 								filter.label_ids[i].isSelect = false;
 							}
 							_this.label_list = filter.label_ids;
@@ -504,28 +464,28 @@ export default {
 			}
 		},
 		// 统一返回筛选条件 查询条件 分页
-		conditions () {
+		conditions() {
 			let data = this.searchData;
 			var newData = {};
-			newData = this.$common.deepCopy(newData,data);
+			newData = this.$common.deepCopy(newData, data);
 			//把data里的where换成json
-			if(data.where){
+			if (data.where) {
 				newData.where = JSON.stringify(data.where);
 			}
 			//把排序换成字符串
-			if(data.order){
+			if (data.order) {
 				var sort = data.order.key + ' ' + data.order.sort;
-				if(data.order.key != 'sort'){
-					sort = sort + ',sort asc'   //如果不是综合排序，增加上第二个排序优先级排序
+				if (data.order.key != 'sort') {
+					sort = sort + ',sort asc'; //如果不是综合排序，增加上第二个排序优先级排序
 				}
 				newData.order = sort;
-			}else{
+			} else {
 				newData.order = 'sort asc';
 			}
 			return newData;
 		},
 		//老搜索
-		search(){
+		search() {
 			this.setSearchData(
 				{
 					page: 1,
@@ -542,102 +502,107 @@ export default {
 			let pages = getCurrentPages();
 			let prevPage = pages[pages.length - 2];
 			// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE || MP-TOUTIAO
-			if(prevPage && prevPage.route){
+			if (prevPage && prevPage.route) {
 				let search_flag = prevPage.route;
 				if (search_flag == 'pages/index/search') {
 					uni.navigateBack({
 						delta: 1
 					});
-				}else{
+				} else {
 					this.$common.navigateTo('/pages/index/search');
 				}
-			}else{
+			} else {
 				this.$common.navigateTo('/pages/index/search');
 			}
 			// #endif
-			
+
 			// #ifdef MP-ALIPAY
-			if(prevPage && prevPage.__proto__.route){
+			if (prevPage && prevPage.__proto__.route) {
 				let search_flag = prevPage.__proto__.route;
 				if (search_flag == 'pages/index/search') {
 					uni.navigateBack({
 						delta: 1
 					});
-				}else{
+				} else {
 					this.$common.navigateTo('/pages/index/search');
 				}
-			}else{
+			} else {
 				this.$common.navigateTo('/pages/index/search');
 			}
 			// #endif
 		},
 		//筛选条件弹出窗口
-		toshow(){
+		toshow() {
 			this.$refs.lvvpopref.show();
 			this.screents = false;
 			this.screentc = true;
 		},
 		//关闭筛选
-		toclose(){
+		toclose() {
 			this.$refs.lvvpopref.close();
 			this.screentc = false;
 			this.screents = true;
 		},
 		//取消筛选
-		filterNo(){
+		filterNo() {
 			this.ePrice = '';
 			this.sPrice = '';
-			for(let i = 0; i < this.cat_list.length; i++){
+			for (let i = 0; i < this.cat_list.length; i++) {
 				this.cat_list[i].isSelect = false;
 			}
-			for(let i = 0; i < this.brand_list.length; i++){
+			for (let i = 0; i < this.brand_list.length; i++) {
 				this.brand_list[i].isSelect = false;
 			}
-			for(let i = 0; i < this.label_list.length; i++){
+			for (let i = 0; i < this.label_list.length; i++) {
 				this.label_list[i].isSelect = false;
 			}
 			this.filterOk();
 			this.toclose();
 		},
 		//确认筛选
-		filterOk(){
+		filterOk() {
 			let data = this.searchData;
-			
+
 			//获取分类
 			// data.where.cat_id = '';
-			for(let i = 0; i < this.cat_list.length; i++){
-				if(this.cat_list[i].isSelect){
+			for (let i = 0; i < this.cat_list.length; i++) {
+				if (this.cat_list[i].isSelect) {
 					data.where.cat_id = this.cat_list[i].goods_cat_id;
 				}
 			}
-			
+
 			//获取多个品牌
 			let brand_ids = '';
-			for(let i = 0; i < this.brand_list.length; i++){
-				if(this.brand_list[i].isSelect){
-					brand_ids += this.brand_list[i].brand_id+',';
+			for (let i = 0; i < this.brand_list.length; i++) {
+				if (this.brand_list[i].isSelect) {
+					brand_ids += this.brand_list[i].brand_id + ',';
 				}
 			}
-			if(brand_ids){
-				brand_ids = brand_ids.substr(0, brand_ids.length-1);
+			if (brand_ids) {
+				brand_ids = brand_ids.substr(0, brand_ids.length - 1);
 			}
 			data.where.brand_id = brand_ids;
-			
+
 			//获取标签
 			data.where.label_id = '';
-			for(let i = 0; i < this.label_list.length; i++){
-				if(this.label_list[i].isSelect){
+			for (let i = 0; i < this.label_list.length; i++) {
+				if (this.label_list[i].isSelect) {
 					data.where.label_id = this.label_list[i].id;
 				}
 			}
-			
+
 			//价格区间
 			data.where.price_f = '';
 			data.where.price_t = '';
-			if(this.sPrice*1 < 0 || (this.ePrice != '' && this.ePrice <= 0) || this.ePrice*1 < 0 || (this.sPrice*1 > this.ePrice*1 && this.sPrice != '' && this.ePrice != '')){
+			if (
+				this.sPrice * 1 < 0 ||
+				(this.ePrice != '' && this.ePrice <= 0) ||
+				this.ePrice * 1 < 0 ||
+				(this.sPrice * 1 > this.ePrice * 1 && this.sPrice != '' && this.ePrice != '')
+			) {
 				this.$common.errorToShow('价格区间有误');
 				return false;
-			}else{
+			} else {
 				data.where.price_f = this.sPrice;
 				data.where.price_t = this.ePrice;
 			}
@@ -647,31 +612,31 @@ export default {
 			this.toclose();
 		},
 		//选择
-		selectKey(type, id){
+		selectKey(type, id) {
 			//分类一次只能选择一个
-			if(type == 'cat_list'){
-				for(let i = 0; i < this.cat_list.length; i++){
-					if(this.cat_list[i].goods_cat_id == id){
-						this.cat_list[i].isSelect = this.cat_list[i].isSelect?false:true;
-					}else{
+			if (type == 'cat_list') {
+				for (let i = 0; i < this.cat_list.length; i++) {
+					if (this.cat_list[i].goods_cat_id == id) {
+						this.cat_list[i].isSelect = this.cat_list[i].isSelect ? false : true;
+					} else {
 						this.cat_list[i].isSelect = false;
 					}
 				}
 			}
-			
-			if(type == 'brand_list'){
-				for(let i = 0; i < this.brand_list.length; i++){
-					if(this.brand_list[i].brand_id == id){
-						this.brand_list[i].isSelect = this.brand_list[i].isSelect?false:true;
+
+			if (type == 'brand_list') {
+				for (let i = 0; i < this.brand_list.length; i++) {
+					if (this.brand_list[i].brand_id == id) {
+						this.brand_list[i].isSelect = this.brand_list[i].isSelect ? false : true;
 					}
 				}
 			}
-			
-			if(type == 'label_list'){
-				for(let i = 0; i < this.label_list.length; i++){
-					if(this.label_list[i].id == id){
-						this.label_list[i].isSelect = this.label_list[i].isSelect?false:true;
-					}else{
+
+			if (type == 'label_list') {
+				for (let i = 0; i < this.label_list.length; i++) {
+					if (this.label_list[i].id == id) {
+						this.label_list[i].isSelect = this.label_list[i].isSelect ? false : true;
+					} else {
 						this.label_list[i].isSelect = false;
 					}
 				}
@@ -679,27 +644,27 @@ export default {
 		}
 	},
 	// #ifdef MP-ALIPAY
-	onChangeShowState_show: function () {
+	onChangeShowState_show: function() {
 		var that = this;
 		that.setData({
-		showView: that.showView =true
-		})
-		},
-		onChangeShowState_hid: function () {
-		var that = this;
-		that.setData({
-		showView: that.showView =false
-		})
+			showView: (that.showView = true)
+		});
 	},
+	onChangeShowState_hid: function() {
+		var that = this;
+		that.setData({
+			showView: (that.showView = false)
+		});
+	}
 	// #endif
 };
 </script>
 
 <style>
-page{
+page {
 	background-color: #fff;
 }
-.search{
+.search {
 	position: fixed;
 	z-index: 997;
 	/*  #ifdef  H5  */
@@ -709,7 +674,6 @@ page{
 .screen {
 	width: 100%;
 	padding: 10upx 26upx 20upx;
-	/* overflow: hidden; */
 	margin-bottom: 2upx;
 	background-color: #fff;
 	position: fixed;
@@ -725,10 +689,7 @@ page{
 .screen-item {
 	width: 20%;
 	height: 50upx;
-	/* line-height: 42upx; */
-	/* float: left; */
 	display: flex;
-	/* text-align: center; */
 	position: relative;
 	align-items: center;
 	justify-content: center;
@@ -743,10 +704,6 @@ page{
 }
 .screen-item-icon {
 	display: inline-block;
-	/* position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	overflow: hidden; */
 }
 .screen-item-icon-img {
 	width: 16upx;
@@ -764,43 +721,39 @@ page{
 .filter-img {
 	width: 18upx;
 	height: 8upx;
-	/* position: absolute;
-	top: 50%;
-	transform: translateY(-50%); */
 }
-.img-grids{
+.img-grids {
 	padding-bottom: 26upx;
 }
 .img-grids-item {
 	margin-bottom: 0;
 }
-.img-grids>view,.img-list>view{
+.img-grids > view,
+.img-list > view {
 	overflow: hidden;
 }
-.scroll-Y{
+.scroll-Y {
 	/*  #ifdef  H5  */
-	height:calc(100vh - 44px - 186upx);
+	height: calc(100vh - 44px - 186upx);
 	margin-top: 186rpx;
 	/*  #endif  */
 	/*  #ifndef H5 */
-	height:calc(100vh - 186upx);
+	height: calc(100vh - 186upx);
 	padding-top: 186rpx;
 	/*  #endif  */
-	/* position: fixed; */
-	/* bottom: 0; */
 }
-.search-input-p{
+.search-input-p {
 	color: #888;
 }
-.order-none{
+.order-none {
 	text-align: center;
 	padding: 200upx 0;
 }
-.order-none-img{
+.order-none-img {
 	width: 274upx;
 	height: 274upx;
 }
-.fliter-c{
+.fliter-c {
 	width: 100%;
 	/*  #ifdef  H5  */
 	height: calc(100% - 44px - 184upx);
@@ -810,21 +763,22 @@ page{
 	height: calc(100% - 184upx);
 	top: 182upx;
 	/*  #endif  */
-	background: #FFFFFF;
+	background: #ffffff;
 	position: absolute;
-	left:0;
-	
+	left: 0;
+
 	padding-bottom: 90upx;
 }
-.fliter-item{}
-.fliter-item .cell-item{
+.fliter-item {
+}
+.fliter-item .cell-item {
 	border-bottom: none;
 }
-.fliter-i-c{
+.fliter-i-c {
 	padding: 0 26upx;
 	overflow: hidden;
 }
-.fic-item{
+.fic-item {
 	display: inline-block;
 	float: left;
 	width: 160upx;
@@ -837,44 +791,43 @@ page{
 	color: #333;
 	padding: 0 10upx;
 }
-.fic-item-active{
-	background-color: #FF7159;
+.fic-item-active {
+	background-color: #ff7159;
 	color: #fff;
 }
-.fic-item-text{
+.fic-item-text {
 	position: relative;
-	top:50%;
+	top: 50%;
 	transform: translateY(-50%);
 }
-.fic-item:nth-child(4n){
+.fic-item:nth-child(4n) {
 	margin-right: 0;
 }
-.fic-item-line{
+.fic-item-line {
 	float: left;
 	margin: 34upx 18upx 0 0;
 	width: 50upx;
 	height: 2upx;
 	border-bottom: 2upx solid #ccc;
 }
-.fic-item-input{
+.fic-item-input {
 	position: relative;
 	top: 50%;
 	transform: translateY(-50%);
 }
 
 /* #ifdef MP-ALIPAY */
-.hide{
- display: none;
+.hide {
+	display: none;
 }
-.show{ 
- display: block;
-
+.show {
+	display: block;
 }
 /* #endif */
-.square{
+.square {
 	border-radius: 0;
 }
-.radius{
+.radius {
 	border-radius: 12upx;
 }
 </style>

@@ -8,11 +8,11 @@
 			<button class="btn btn-g" hover-class="btn-hover2" @click="storeSearch">搜索</button>
 		</view>
 		<view class='cell-group margin-cell-group'>
-			<view class='cell-item add-title-item right-img' v-for="(item, key) in storeList" :key="key" @click="selectStore(item.id, item.store_name, item.mobile, item.all_address)">
+			<view class='cell-item add-title-item right-img cell-item-mid' v-for="(item, key) in storeList" :key="key" @click="selectStore(item.id, item.store_name, item.mobile, item.all_address)">
 				<view class="cell-item-hd">
 					<image class='cell-hd-icon' src='/static/image/homepage.png'></image>
 				</view>
-				<view class='cell-item-bd'>
+				<view class='cell-item-bd cell-item-bd-block'>
 					<view class="cell-bd-view black-text">
 						<text class="cell-bd-text">{{item.store_name|| ''}}</text>
 					</view>
@@ -109,11 +109,8 @@
 	width: 80%;
 	margin-right: 2%;
 }
-.search-icon{
-	left: 30upx;	
-}
 .search-input {
-	padding: 10upx 30upx 10upx 90upx;
+	padding: 10upx;
 }
 .search-input-p{
 	padding: 0 !important;

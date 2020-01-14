@@ -44,13 +44,11 @@
 		font-size: 32upx;
 		color: #333;
 		margin-bottom: 20upx;
-		/* text-align: center; */
 		position: relative;
 		height: 100upx;
 	}
 
 	.article-time {
-		/* text-align: right; */
 		margin-left: 20upx;
 	}
 

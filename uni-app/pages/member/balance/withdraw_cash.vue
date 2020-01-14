@@ -7,7 +7,7 @@
 			v-if="userbankCard"
 			@click="toBankCardList"
 			>
-				<view class='cell-item right-img'>
+				<view class='cell-item right-img cell-item-mid'>
 					<view class='cell-item-hd'>
 						<image class="yl-logo" :src="cardInfo.bank_logo" mode=""></image>
 					</view>
@@ -23,7 +23,7 @@
 			v-else
 			@click="toBankCardList"
 			>
-				<view class='cell-item right-img'>
+				<view class='cell-item right-img cell-item-mid'>
 					<view class='cell-item-hd'>
 						<image class="yl-logo" src="/static/image/yl.png" mode=""></image>
 					</view>

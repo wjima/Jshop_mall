@@ -3,7 +3,6 @@
 
 		<!-- 用户头像header -->
 		<view class='member-top'>
-			<!-- <image class='bg-img' src='/static/image/member-bg.png'></image> -->
 			<view class='member-top-c'>
 				<view class="fsz50 color-f">{{info.total_settlement_amount}}</view>
 				<view class='fsz26 color-d'>累计收入</view>

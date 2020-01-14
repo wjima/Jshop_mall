@@ -1,11 +1,11 @@
 <template>
 	<view class='cell-group payment-method'>
-		<view class='cell-item add-title-item' v-for="item in payments" :key="item.code" @click="toPayHandler(item.code)"
+		<view class='cell-item add-title-item cell-item-mid right-img' v-for="item in payments" :key="item.code" @click="toPayHandler(item.code)"
 		 v-if="!(type == 2 && item.code == 'balancepay')">
 			<view class='cell-item-hd'>
 				<image class='cell-hd-icon' :src='item.icon'></image>
 			</view>
-			<view class='cell-item-bd'>
+			<view class='cell-item-bd cell-item-bd-block'>
 				<view class="cell-bd-view">
 					<text class="cell-bd-text">{{ item.name }}</text>
 				</view>

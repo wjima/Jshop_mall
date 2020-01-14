@@ -13,7 +13,7 @@
 						</view>
 					</view>
 					<view class='cell-item' @click="isSelect(item)">
-						<view class='cell-item-bd'>
+						<view class='cell-item-hd'>
 							<view class="cell-bd-view">
 								<view class="cell-tip" v-show="item.is_def === 1">默认</view>
 								<text class="cell-bd-text">{{item.area_name + item.address}}</text>
@@ -180,7 +180,6 @@ export default {
 	font-size: 24upx;
 	display: inline-block;
 	float: left;
-	/* border-radius: 10upx; */
 	padding: 4upx 10upx;
 	margin-right: 10upx;
 	transform: scale(.9);

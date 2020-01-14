@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="content-top">
 			<view class='cell-group'>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>收货人</view>
 					</view>
@@ -10,7 +10,7 @@
 						<input type="text" class='cell-bd-input' placeholder='请填写收货人姓名' v-model="name"></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>手机号</view>
 					</view>
@@ -19,7 +19,7 @@
 					</view>
 				</view>
 				
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid right-img'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>省市区</view>
 					</view>
@@ -34,7 +34,7 @@
 					</view>
 				</view>
 				
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>详细地址</view>
 					</view>
@@ -289,6 +289,9 @@ export default {
 .cell-hd-title{
 	color: #333;
 }
+.cell-item-hd{
+	width: 180rpx;
+}
 .cell-item-bd{
 	color: #666;
 	font-size: 26upx;
@@ -298,6 +301,9 @@ export default {
 }
 .cell-bd-input{
 	width: 100%;
+}
+.right-img .cell-item-ft{
+	right: 26rpx;
 }
 /* #ifdef MP-ALIPAY */
 input{

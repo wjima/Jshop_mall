@@ -395,17 +395,13 @@
 		height: calc(100vh - 0upx);
 		/*  #endif  */
 		position: position;
-		/* bottom: 0; */
-		/* 	padding-bottom:200upx */
 	}
 	.collect-pop {
 		width: 100%;
 		height: 100%;
-		/* background: #FFFFFF; */
 		position: absolute;
 		left: 0;
 		bottom: 0;
-		/* transform: ; */
 	}
 	.collect-pop image {
 		width: 100%;

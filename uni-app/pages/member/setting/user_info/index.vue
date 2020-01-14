@@ -10,7 +10,7 @@
 						<image class='cell-ft-next user-head-img have-none' mode="aspectFill" :src="avatar" @click="uploadAvatar"></image>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>昵称</view>
 					</view>
@@ -19,7 +19,7 @@
 					</view>
 				</view>
 				<!-- #ifndef MP-TOUTIAO || MP-ALIPAY -->
-					<view class='cell-item right-img'>
+					<view class='cell-item cell-item-mid right-img'>
 						<view class='cell-item-hd'>
 							<view class='cell-hd-title'>性别</view>
 						</view>
@@ -37,7 +37,7 @@
 						</view>
 					</view>
 				<!-- #endif -->
-				<view class='cell-item right-img'>
+				<view class='cell-item cell-item-mid right-img'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>生日</view>
 					</view>
@@ -200,5 +200,8 @@ export default {
 .cell-item-bd{
 	color: #666;
 	font-size: 26upx;
+}
+.cell-item-hd{
+	width: 160rpx;
 }
 </style>

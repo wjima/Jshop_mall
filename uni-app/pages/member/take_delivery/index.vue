@@ -193,7 +193,6 @@
 <style>
 .ad {
 	width: 100%;
-	/* margin: 20upx 0; */
 	overflow: hidden;
 }
 .ad-img{
@@ -260,7 +259,6 @@
 	float: right;
 }
 .img-list-checkbox{
-	/* display: inline-block; */
 	position: relative;
 	height: 100%;
 }
@@ -270,7 +268,6 @@
 	transform: translateY(-50%);
 }
 .img-list-right{
-	/* display: inline-block; */
 	margin-left: 60upx;
 }
 .img-list-item{

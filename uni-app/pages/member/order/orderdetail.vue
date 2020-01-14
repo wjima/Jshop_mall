@@ -3,7 +3,7 @@
 		<view class="content-top">
 			<view class='cell-group margin-cell-group'>
 				<view class='cell-item add-title-item'>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block'>
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">{{ orderInfo.status_name || ''}}</text>
 						</view>
@@ -40,7 +40,7 @@
 					</view>
 				</view>
 				<view class='cell-item add-title-item' v-if="!orderInfo.store">
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block'>
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">收件人：{{ orderInfo.ship_name || ''}}</text>
 						</view>
@@ -447,7 +447,6 @@
 				} else if (info.aftersalesItem.length>1){
 					this.$common.navigateTo('../after_sale/list?order_id=' + info.order_id);
 				}
-				// this.$common.navigateTo('../after_sale/detail?aftersales_id=' + id);
 			},
 			goInvition() {
 				uni.navigateTo({
@@ -617,6 +616,10 @@
 	    min-width: 20px;
 	    color: #666;
 	    font-size: 14px;
+	}
+	
+	.add-title-item .cell-item-bd{
+		margin-left: 0;
 	}
 	
 	.delivery{

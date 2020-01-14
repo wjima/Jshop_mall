@@ -11,8 +11,9 @@
 				<view class='cell-item-bd'>
 				</view>
 				<view class='cell-item-ft' v-if="jdata.params.lookMore == 'true'">
-					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+					
 					<text class='cell-ft-text' @click="goodsList({cat_id: jdata.params.classifyId,brand_id:jdata.params.brandId})">查看更多</text>
+					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
 			<!-- <view class='img-grids'> -->
@@ -79,8 +80,9 @@
 				<view class='cell-item-bd'>
 				</view>
 				<view class='cell-item-ft' v-if="jdata.params.lookMore == 'true'">
-					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+					
 					<text class='cell-ft-text' @click="goodsList({cat_id: jdata.params.classifyId,brand_id:jdata.params.brandId})">查看更多</text>
+					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
 			<view v-if="count">
@@ -117,8 +119,9 @@
 				<view class='cell-item-bd'>
 				</view>
 				<view class='cell-item-ft' v-if="jdata.params.lookMore == 'true'">
-					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+					
 					<text class='cell-ft-text' @click="goodsList({cat_id: jdata.params.classifyId,brand_id:jdata.params.brandId})">查看更多</text>
+					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
 			<view class='swiper-grids'>

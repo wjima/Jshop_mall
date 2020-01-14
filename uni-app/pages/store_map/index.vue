@@ -92,7 +92,6 @@ export default {
 	/* #ifdef H5 */
 	height: calc(100vh - 44px);
 	/* #endif */
-	/* height: 100vh; */
 }
 .map-body {
 	width: 100%;

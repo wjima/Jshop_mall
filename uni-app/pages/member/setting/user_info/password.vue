@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="content-top">
 			<view class='cell-group'>
-				<view class='cell-item' v-if="oldPassword">
+				<view class='cell-item cell-item-mid' v-if="oldPassword">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>旧密码</view>
 					</view>
@@ -10,7 +10,7 @@
 						<input class='cell-bd-input' placeholder='输入旧密码' v-model="pwd"></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>新密码</view>
 					</view>
@@ -18,7 +18,7 @@
 						<input class='cell-bd-input' placeholder='输入6-16位新密码' v-model="newPwd"></input>
 					</view>
 				</view>
-				<view class='cell-item'>
+				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>确认密码</view>
 					</view>
@@ -27,12 +27,6 @@
 					</view>
 				</view>
 			</view>
-			<!-- <view class='cell-group'>
-				
-			</view>
-			<view class='cell-group'>
-				
-			</view> -->
 		</view>
 		<view class="button-bottom">
 			<button class="btn btn-square btn-b" hover-class="btn-hover2" @click="submitHandler()" :disabled='submitStatus'
@@ -149,22 +143,25 @@
 </script>
 
 <style>
-	.user-head {
-		height: 100upx;
-	}
+.user-head {
+	height: 100upx;
+}
 
-	.user-head-img {
-		height: 90upx;
-		width: 90upx;
-		border-radius: 50%;
-	}
+.user-head-img {
+	height: 90upx;
+	width: 90upx;
+	border-radius: 50%;
+}
 
-	.cell-hd-title {
-		color: #333;
-	}
+.cell-hd-title {
+	color: #333;
+}
 
-	.cell-item-bd {
-		color: #666;
-		font-size: 26upx;
-	}
+.cell-item-bd {
+	color: #666;
+	font-size: 26upx;
+}
+.cell-item-hd{
+	width: 160rpx;
+}
 </style>

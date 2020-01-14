@@ -306,6 +306,14 @@ class Setting extends Common
         'privacy_policy' => [
             'name' => '隐私政策',
             'value' => ''
+        ],
+        'goods_show_word1' => [
+            'name' => '商品显示文字1',
+            'value' => '24小时内发货',
+        ],
+        'goods_show_word2' => [
+            'name' => '商品显示文字2',
+            'value' => '7天无理由退款'
         ]
     ];
 

@@ -75,18 +75,14 @@
 				</view>
 				<!-- 规格end -->
 
-				<view class='cell-item goods-title-item cell-item-mid'>
+				<view class='cell-item goods-title-item cell-item-mid' v-if="goodsShowWord && goodsShowWord != ''">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>说明</view>
 					</view>
 					<view class='cell-item-bd'>
-						<view class="cell-bd-view">
+						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
 							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<text class="cell-bd-text">24小时内发货</text>
-						</view>
-						<view class="cell-bd-view">
-							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<text class="cell-bd-text">7天拆封无条件退货</text>
+							<text class="cell-bd-text">{{item}}</text>
 						</view>
 					</view>
 				</view>
@@ -390,6 +386,7 @@
 				],
 				submitStatus: false,
 				config:'',//配置信息
+				goodsShowWord: []
 			}
 		},
 		onLoad(options) {
@@ -415,6 +412,8 @@
 			this.getMyShareCode();
 			this.$api.shopConfig(res => {
 				this.config = res;
+				console.log(res)
+				this.goodsShowWord = res.goods_show_word;
 			});
 			var _this = this
 			if (this.$db.get('userToken')) {
@@ -892,10 +891,11 @@
 	.cell-bd-view {
 		position: relative;
 		overflow: hidden;
+		margin-bottom: 8upx;
 	}
 
-	.cell-bd-view:first-child {
-		margin-bottom: 8upx;
+	.cell-bd-view:last-child {
+		margin-bottom: 0;
 	}
 
 	.goods-title-item-ic {

@@ -295,9 +295,11 @@ var allWidget = {
     "type": "adpop",
     "name": "弹出广告位",
     "value": {
+      "list": [{
         "image": default_banner,
         "linkType": '',
         "linkValue": '',
+      }]
     },
     "icon": "icon-zhaopiantubiao"
   },

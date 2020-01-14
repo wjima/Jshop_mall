@@ -4,7 +4,7 @@
 			<view class='cell-group margin-cell-group'>
 				<view class='cell-item add-title-item'>
 					<view class='cell-item-bd'>
-						<view class="cell-bd-view black-text" v-if="orderInfo.order_type != 2">
+						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">{{ orderInfo.status_name || ''}}</text>
 						</view>
 						<view class="cell-bd-view">
@@ -77,7 +77,7 @@
 			</view>
 			
 			<!-- 团购分享拼单 -->
-			<view class="cell-group margin-cell-group" v-if="(orderInfo.text_status == 1 || orderInfo.text_status == 2 ) && orderInfo.order_type==2">
+			<view class="cell-group margin-cell-group" v-if="orderInfo.order_type==2 && orderInfo.status != 3 && orderInfo.pay_status==1">
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
 						<view v-if="teamInfo.status==1" class='cell-hd-title'>待拼团，还差{{ teamInfo.team_nums || ''}}人</view>
@@ -356,13 +356,12 @@
 						}
 
 						_this.orderInfo = data;
-						// _this.$common.timeToDate(_this.orderInfo.delivery.citme)
+						
 						_this.orderInfo.delivery.forEach(item=>{
-							// console.log(item.ctime)
 							item.ctime=_this.$common.timeToDate(item.ctime)
 						})
-						//console.log(_this.orderInfo.delivery)
-						if (data.order_type == 2 && (data.text_status == 2 || data.text_status == 1)) {
+						//判断是否拼团
+						if (data.order_type == 2) {
 							_this.getTeam(data.order_id);
 						}
 						

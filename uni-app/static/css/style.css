@@ -563,11 +563,12 @@ uni-toast .uni-toast {
 
 .cell-bd-view {
 	position: relative;
-	overflow: hidden;
+	/* overflow: hidden; */
+	display: flex;
 }
 
 .cell-bd-text {
-	float: left;
+	/* float: left; */
 	position: relative;
 	font-size: 24upx;
 }

@@ -543,7 +543,11 @@ class BillDelivery extends Common
         if ($res) {
             $count = $this->where($where)->count();
             foreach ($res as $k => &$v) {
-                $v['username'] = get_user_info($v['user_id'], 'nickname');
+                if(isset($v['user_id']) && $v['user_id']){
+                    $v['username'] = get_user_info($v['user_id'], 'nickname');
+                }else{
+                    $v['username'] = '';
+                }
                 $v['logi_name'] = get_logi_info($v['logi_code']);
                 $v['ship_address'] = get_area($v['ship_area_id']) . '- ' . $v['ship_address'];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);

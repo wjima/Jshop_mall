@@ -526,7 +526,8 @@ uni-toast .uni-toast {
 
 .cell-item-hd {
 	display: flex;
-	vertical-align: middle;
+	/* vertical-align: middle; */
+	align-items: center;
 	font-size: 28upx;
 	position: relative;
 }
@@ -539,12 +540,12 @@ uni-toast .uni-toast {
 	width: 40upx;
 	height: 40upx;
 	display: inline-block;
-	float: left;
+	/* float: left; */
 	margin-right: 8upx;
 }
 
 .cell-hd-title {
-	float: left;
+	/* float: left; */
 	display: inline-block;
 	position: relative;
 	/* #ifdef MP-ALIPAY */

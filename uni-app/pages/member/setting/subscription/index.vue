@@ -131,16 +131,17 @@ export default {
 }
 .cell-hd-title{
     font-size: 30rpx;
-    color: #000000;
+    /* color: #000000; */
     display: block;
-    width: 100%;
+    width: 180rpx;
 }
 .cell-hd-desc{
     font-size: 24rpx;
-    display: block;
-    width: 100%;
+    /* display: block; */
+    width: 200rpx;
+	
     color: #888888;
-    margin-top: 50rpx;
+    /* margin-top: 50rpx; */
 }
 .subscription-btn{
     background-color: #333333;

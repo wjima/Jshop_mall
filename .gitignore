@@ -16,3 +16,4 @@ uni-app/unpackage/
 .vscode/
 .history
 .idea
+themes/pc/node_modules/*

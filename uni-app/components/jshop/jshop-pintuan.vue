@@ -19,7 +19,7 @@
 								<view class="goods-salesvolume red-price" v-if="item.pintuan_start_status == 3">已结束</view>
 								<view class="goods-salesvolume red-price" v-if="item.pintuan_start_status == 2">即将开团</view>
 								
-								<image class="goods-cart" src="/static/image/ic-car.png" @click="pintuanDetail(item.goods.id)"></image>
+								<image class="goods-cart" src="/static/image/ic-car.png" @click="pintuanDetail(item.goods_id)"></image>
 							</view>
 						</view>
 					</view>

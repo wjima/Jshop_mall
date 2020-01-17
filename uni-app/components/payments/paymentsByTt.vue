@@ -229,6 +229,7 @@
 	.payment-method .cell-item-bd {
 		border-left: 2upx solid #F0F0F0;
 		padding-left: 30upx;
+		margin-left: 0;
 	}
 
 	.payment-method .cell-bd-text {
@@ -251,8 +252,10 @@
 		padding: 0;
 		width: 724upx;
 		position: relative;
-		overflow: hidden;
-		float: left;
+		/* overflow: hidden;
+		float: left; */
+		display: flex;
+		align-items: center;
 	}
 
 	.payment-wx .btn .cell-item-hd {

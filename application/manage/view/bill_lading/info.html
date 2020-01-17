@@ -1,10 +1,6 @@
 <style>
 	.layui-form-label{
 		width: 100px;
-		padding: 5px 15px;
-	}
-	.layui-form-mid{
-		padding: 5px 0 !important;
 	}
 </style>
 <form class="layui-form seller-alone-form" id="edit-form">
@@ -18,7 +14,7 @@
 	</div>
 	<div class="layui-form-item" lay-size="sm">
 		<label class="layui-form-label">提货门店：</label>
-		<div class="layui-form-mid seller-inline-3">
+		<div class="layui-input-inline seller-inline-3">
 			<select name="store_id" id="store_id" {if $info.status == 2}disabled="disabled"{/if}>
 				{foreach $store as $k => $v}
 					<option value="{$v.id}" {if $info.store_info.id == $v.id}selected{/if}>{$v.store_name}</option>
@@ -27,13 +23,13 @@
 		</div>
 
 		<label class="layui-form-label">提货人名：</label>
-		<div class="layui-form-mid seller-inline-3">
+		<div class="layui-input-inline seller-inline-3">
 			<input type="text" name="name" id="name" value="{$info.name}" placeholder="提货人姓名" autocomplete="off" class="layui-input" {if $info.status == 2}disabled="disabled"{/if}>
 		</div>
 	</div>
 	<div class="layui-form-item" lay-size="sm">
 		<label class="layui-form-label">提货电话：</label>
-		<div class="layui-form-mid seller-inline-3">
+		<div class="layui-input-inline seller-inline-3">
 			<input type="text" name="mobile" id="mobile" value="{$info.mobile}" placeholder="提货人姓名" autocomplete="off" class="layui-input" {if $info.status == 2}disabled="disabled"{/if}>
 		</div>
 

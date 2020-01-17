@@ -121,7 +121,7 @@
 						</view>
 					</view>
 					<view class="cell-textarea ">
-						<textarea v-model="reason" placeholder="请您在此描述问题(最多200字)" maxlength="200" />
+						<input v-model="reason" placeholder="请您在此描述问题(最多200字)" maxlength="200" />
 						</view>
 				</view>
 			</view>
@@ -402,6 +402,11 @@ export default {
 </script>
 
 <style>
+.content-top{
+	/* #ifdef MP-WEIXIN */
+	padding-bottom: 116rpx;
+	/* #endif */
+}
 .list-goods-name{
 	font-size: 26rpx;
 	width: 100% !important;

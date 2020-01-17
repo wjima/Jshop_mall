@@ -220,7 +220,7 @@ class BillLading extends Common
                 }
                 else
                 {
-                    $v['clerk'] = '(后台管理员)';
+                    $v['clerk'] = $v['status'] == 2 ? '(后台管理员)' : '';
                 }
 
                 //获取订单商品详情

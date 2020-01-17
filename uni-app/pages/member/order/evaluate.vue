@@ -31,7 +31,7 @@
 					
 					<view class="evaluate-content">
 						<view class="evaluate-c-t">
-							<textarea v-model="textarea[item.id]" placeholder="宝贝满足你的期待吗? 说说你的使用心得" />
+							<input v-model="textarea[item.id]" placeholder="宝贝满足你的期待吗? 说说你的使用心得" />
 						</view>
 						<view class="evaluate-c-b">
 							<view class="goods-img-item"

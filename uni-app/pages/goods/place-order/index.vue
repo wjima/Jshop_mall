@@ -805,6 +805,11 @@
 </script>
 
 <style>
+	.content-top{
+		/* #ifdef MP-WEIXIN */
+		padding-bottom: 116rpx;
+		/* #endif */
+	}
 	.margin-cell-group {
 		margin: 0 0 2upx 0;
 	}

@@ -265,6 +265,7 @@
 
 	.payment-pop-b .btn {
 		flex: 1;
+		justify-content: center;
 	}
 
 	.payment-pop-b .btn-o {

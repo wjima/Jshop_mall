@@ -3,7 +3,7 @@
 		<view class="content-top">
 			<view class='cell-group margin-cell-group'>
 				<view class='cell-item add-title-item'>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block'>
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text color-3">退款单状态</text>
 						</view>
@@ -402,5 +402,8 @@ export default {
 }
 .button-bottom .btn{
 	line-height: 86rpx;
+}
+.add-title-item .cell-item-bd{
+	margin-left: 0;
 }
 </style>

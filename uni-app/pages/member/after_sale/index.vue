@@ -215,7 +215,7 @@ export default {
 								 returnStatus=true
 							 }
 							res.data.items[i].id = res.data.items[i].id.toString();
-							this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: returnNums });
+							//this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: returnNums });
 							res.data.items[i].returnNums=returnNums			
 							res.data.items[i].returnStatus=returnStatus		
 							if(res.data.items[i].returnNums>0){
@@ -226,10 +226,10 @@ export default {
 						}		
 						this.items = res.data.items;
 						
-						this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
+						this.refund = res.data.order_amount - res.data.refunded;
 						this.maxRefund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.cost_freight = res.data.cost_freight;//运费
-						this.refund_show = this.$common.formatMoney((res.data.payed - res.data.refunded), 2, '');
+						this.refund_show = res.data.payed - res.data.refunded;
 						this.type_list = type_list;
 					}else{
 						this.$common.errorToBack('订单不可以进行售后');
@@ -331,11 +331,11 @@ export default {
 				return false;
 			}
 			 console.log(this.item_ids.length)
-			if(this.item_ids.length<=0){
+			/* if(this.item_ids.length<=0){
 				this.$common.errorToShow('请处理要售后的商品');
 				this.submitStatus = false;
 				return false;
-			}
+			} */
 			//组装数据，提交数据
 			let data = {
 				order_id:this.order_id,

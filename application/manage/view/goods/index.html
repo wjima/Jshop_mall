@@ -275,11 +275,11 @@
             if (type == 'all') {
                 filter = {};
             } else if (type == 'up') {
-                delete filter.warn;
                 filter['marketable'] = '1';
+                filter['warn'] = 'false';
             } else if (type == 'down') {
-                delete filter.warn;
                 filter['marketable'] = '2';
+                filter['warn'] = 'false';
             } else if (type == 'warn') {
                 delete filter.marketable;
                 filter['warn'] = 'true';

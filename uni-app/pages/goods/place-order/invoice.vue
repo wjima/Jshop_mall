@@ -188,7 +188,8 @@
 					// #endif
 
 					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-					beforePage.invoice = data;
+					// beforePage.invoice = data;
+					this.$store.commit('invoice',data)
 					// #endif
 
 					uni.navigateBack({

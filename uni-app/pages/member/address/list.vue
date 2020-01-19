@@ -3,8 +3,8 @@
 		<view class="content-top" v-if="list.length">
 			<view class="uni-list-cell uni-list-cell-pd" v-for="(item, key) in list" :key="key">
 				<view class='cell-group min-cell-group'>
-					<view class='cell-item'>
-						<view class='cell-item-hd' @click="isSelect(item)">
+					<view class='cell-item' @click="isSelect(item)">
+						<view class='cell-item-hd'>
 							<view class='cell-hd-title'>{{item.name}} <text class="phone-num">{{item.mobile}}</text></view>
 						</view>
 						<view class='cell-item-ft' v-show="type != 'order'">
@@ -94,10 +94,9 @@ export default {
 				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				this.$db.set('address_user_ship', data, true);
 				// #endif
-				
+		
 				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-				beforePage.userShip = data;
-				beforePage.params.area_id = data.area_id;
+				this.$store.commit("userShip",data)
 				// #endif
 
 				// #ifdef MP-WEIXIN
@@ -108,6 +107,7 @@ export default {
 				uni.navigateBack({
 					delta: 1
 				});
+				// this.$common.navigateTo("/pages/goods/place-order/index")
 			}
 		},
 		// #ifdef MP-WEIXIN

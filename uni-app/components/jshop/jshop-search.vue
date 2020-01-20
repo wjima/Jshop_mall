@@ -56,12 +56,8 @@
 			window.addEventListener('scroll', this.handleScroll)
 			// #endif
 		},
-		//监听变化
-		watch: {
-		    '$store.state.searchFixed': function (newVal) {
-		      this.searchFixed = newVal
-		    }
-		},
+
+
 		methods: {
 			searchStyle (){
 				this.$store.commit('searchStyle',this.jdata.params.style)

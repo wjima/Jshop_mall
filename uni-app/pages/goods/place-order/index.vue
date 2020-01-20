@@ -395,6 +395,17 @@
 				this.$db.del('user_store', true);
 			}
 			// #endif
+			// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+			let user_ship = this.$store.state.userShip;
+			if (user_ship) {
+				this.userShip = user_ship;
+				this.params.area_id = user_ship.area_id;
+			}
+			let user_invoice = this.$store.state.invoice;
+			if (user_invoice) {
+				this.invoice = user_invoice;
+			}
+			// #endif
 		},
         methods: {
             // 切换门店
@@ -830,9 +841,13 @@
 	.add-title-item .cell-item-bd {
 		color: #333;
 		font-size: 28upx;
+		width: 100%;
 	}
 	.add-title-item .cell-bd-text {
 		bottom: 0;
+	}
+	.add-title-item .cell-item-bd .cell-bd-view{
+		justify-content: space-between;
 	}
 	.cell-bd-view:first-child {
 		margin-bottom: 8upx;

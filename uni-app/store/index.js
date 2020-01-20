@@ -11,6 +11,8 @@ const store = new Vuex.Store({
 		uuid:'',//当前客户端
 		searchStyle: '',
 		searchFixed:false,//搜索框样式
+		userShip: {}, //地区信息
+		invoice: {}, //发票信息
 	},
     mutations: {
 		config (state, payload) {
@@ -28,6 +30,12 @@ const store = new Vuex.Store({
 		searchFixed (state, payload) {
 			state.searchFixed = payload
 		},
+		userShip (state, userShip) {
+			state.userShip = userShip
+		},
+		invoice (state, invoice) {
+			state.invoice = invoice
+		}
 	},
 	actions: {
 

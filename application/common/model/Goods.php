@@ -347,8 +347,6 @@ class Goods extends Common
      */
     public function getGoodsDetial($gid, $fields = '*', $token = '')
     {
-
-
         $result        = [
             'status' => true,
             'data'   => [],
@@ -357,19 +355,18 @@ class Goods extends Common
         $productsModel = new Products();
         $preModel      = '';
         if ($fields == '*') {
-            $preModel = 'brand,goodsCat';
+            $preModel = 'goodsCat';
         } else {
-            if (stripos($fields, 'brand_id') !== false) {
-                $preModel .= 'brand,';
-            }
             if (stripos($fields, 'goods_cat_id') !== false) {
-                $preModel .= 'goodsCat,';
+                $preModel .= 'goodsCat';
             }
-            $preModel = substr($preModel, 0, -1);
         }
         $list = $this::with($preModel)->field($fields)->where(['id' => $gid])->find();
 
         if ($list) {
+            if(isset($list['brand_id']) && $list['brand_id']){
+                $list->brand;
+            }
             //$list = $list->toArray();
             //$list['products'] = $this->products($list['id']);
 
@@ -377,9 +374,7 @@ class Goods extends Common
                 $image_url         = _sImage($list['image_id']);
                 $list['image_url'] = $image_url;
             }
-//            if($list['products']){
-//                $list['default']   = $list['products'][0];
-//            }
+
             if (isset($list['label_ids'])) {
                 $list['label_ids'] = getLabel($list['label_ids']);
             } else {
@@ -415,13 +410,7 @@ class Goods extends Common
             }
             $list['album'] = $album;
 
-            //取出销量
-            $orderItem         = new OrderItems();
-            $count             = $orderItem->where(['goods_id' => $gid])->sum('nums');
-            $list['buy_count'] = $count;
-
             //获取当前登录是否收藏
-
             $list['isfav'] = $this->getFav($list['id'], $user_id);
 
             //图片处理

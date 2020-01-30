@@ -118,10 +118,26 @@ export default {
 		// 广告点击查看详情
 		showSliderInfo(type, val) {
 			if (type == 1) {
-				// URL
-				// #ifdef H5
-				window.location.href = val;
-				// #endif
+				if (val.indexOf('http') != -1) {
+					// #ifdef H5 
+					window.location.href = val
+					// #endif
+				} else {
+					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP
+					if (val == '/pages/index/index' || val == '/pages/classify/classify' || val == '/pages/cart/index/index' || val == '/pages/member/index/index') {
+						uni.switchTab({
+							url: val
+						});
+						return;
+					} else if(val.indexOf('/pages/coupon/coupon')>-1){
+						var id = val.replace('/pages/coupon/coupon?id=',"");
+						this.receiveCoupon(id)
+					} else {
+						this.$common.navigateTo(val);
+						return;
+					}
+					// #endif
+				}
 			} else if (type == 2) {
 				// 商品详情
 				this.goodsDetail(val);
@@ -132,6 +148,19 @@ export default {
 				// 文章列表
 				this.$common.navigateTo('/pages/article/list?cid=' + val);
 			}
+		},
+		// 用户领取优惠券
+		receiveCoupon(couponId) {
+			let data = {
+				promotion_id: couponId
+			}
+			this.$api.getCoupon(data, res => {
+				if (res.status) {
+					this.$common.successToShow(res.msg)
+				} else {
+					this.$common.errorToShow(res.msg)
+				}
+			})
 		}
 	},
 	onLoad() {

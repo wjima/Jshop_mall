@@ -1,5 +1,4 @@
 .idea/*
-runtime/*
 config/database.php
 public/static/uploads
 config/install.lock

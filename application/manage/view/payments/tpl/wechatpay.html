@@ -1,4 +1,19 @@
 <div class="layui-form-item">
+    <label class="layui-form-label">模式：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="radio" name="params[type]" value="1" title="服务商模式" {if !isset($paymentInfo['params']['type']) || $paymentInfo['params']['type'] == 1} checked=""{/if}>
+      <input type="radio" name="params[type]" value="2" title="普通商户模式" {if isset($paymentInfo['params']['type']) && $paymentInfo['params']['type'] == 2} checked=""{/if}><br />
+         <span style="font-size:0.8em;">
+            目前我们吉海科技已经成为了微信服务商，可以为大家提供更好的微信支付的服务，可以使你的费率更低，配置微信支付更简单，请联系<a href="https://www.jihainet.com/" style="color:#FF7159;" target="_blank">我们客服</a>来帮您申请微信支付吧
+            </span>
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">服务商商户号：</label>
+    <div class="layui-form-mid">{:config('jshop.service_wechatpay_mch_id')}</div>
+</div>
+
+<div class="layui-form-item">
     <label class="layui-form-label">商户号：</label>
     <div class="layui-input-inline seller-inline-6">
         <input type="text" name="params[mch_id]" value="{$paymentInfo.params.mch_id}" required  lay-verify="required" placeholder="请输入商户号" autocomplete="off" class="layui-input">

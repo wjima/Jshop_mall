@@ -31,4 +31,5 @@ return [
     'area_list'             => ROOT_PATH . 'public/static/area.json',//地址库信息地址
     'service_wechatpay_mch_id'  => '1498297512',            //微信支付服务商模式，服务商的商户号
     'service_wechatpay_appid'   => 'wxd02de048830633c7',
+    'service_wechatpay_key'   => '11111111111234567890123456789012',
 ];

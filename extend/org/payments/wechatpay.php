@@ -10,6 +10,16 @@ class wechatpay implements Payment
 
     function __construct($config){
         $this->config = $config;
+        if(!isset($this->config['type'])){
+            $this->config['type'] = 2;          //默认普通模式，兼容之前代码
+        }
+        //服务商模式，参数初始化
+        if($this->config['type'] == 1){
+            $this->config['key'] = config('jshop.service_wechatpay_key');
+            $this->config['sub_mch_id'] = $this->config['mch_id'];
+            $this->config['mch_id'] = config('jshop.service_wechatpay_mch_id');
+            $this->config['appid'] = config('jshop.service_wechatpay_appid');
+        }
     }
 
     public function pay($paymentInfo){
@@ -20,18 +30,12 @@ class wechatpay implements Payment
         ];
         $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
-        if(!isset($this->config['type'])){
-            $this->config['type'] = 2;          //默认普通模式，兼容之前代码
-        }
+        
+        $data['mch_id'] = $this->config['mch_id'];//商户号
         if($this->config['type'] == 1){
-            $data['mch_id'] = config('jshop.service_wechatpay_mch_id');
-            $data['sub_mch_id'] = $this->config['mch_id'];//商户号
-        }else{
-            $data['mch_id'] = $this->config['mch_id'];//商户号
+            $data['appid'] = $this->config['appid'];
+            $data['sub_mch_id'] = $this->config['sub_mch_id'];//商户号
         }
-
-
-
         
         $data['nonce_str'] = self::getNonceStr();//$this->config['nonce_str'];//32位随机数
         $data['body'] = mb_substr($paymentInfo['pay_title'], 0, 42, 'utf-8');       //商品描述，不能超过128个字符，所以这里要截取，防止超过
@@ -62,8 +66,12 @@ class wechatpay implements Payment
         if(!$appid_re['status']){
             return $appid_re;
         }
-        $data['appid'] = $appid_re['data'];
 
+        if($this->config['type'] == 1){
+            $data['sub_appid'] = $appid_re['data'];
+        }else{
+            $data['appid'] = $appid_re['data']; 
+        }
 
 
         $data['trade_type'] = $trade_type;                       //交易类型JSAPI微信小程序或微信公众号，MWEB是H5支付,APP是app支付
@@ -227,16 +235,27 @@ class wechatpay implements Payment
         if(!isset($params['trade_type'])){
             $params['trade_type'] = "JSAPI";
         }
+
+
+        $data['mch_id'] = $this->config['mch_id'];//商户号
+        if($this->config['type'] == 1){
+            $data['appid'] = $this->config['appid'];
+            $data['sub_mch_id'] = $this->config['sub_mch_id'];//商户号
+        }
+
         //取appid
         $appid_re = $this->getAppid($params['trade_type']);
         if(!$appid_re['status']){
             return $appid_re;
         }
+        if($this->config['type'] == 1){
+            $data['sub_appid'] = $appid_re['data'];
+        }else{
+            $data['appid'] = $appid_re['data']; 
+        }
 
 
 
-        $data['appid'] = $appid_re['data'];
-        $data['mch_id'] = $this->config['mch_id'];//商户号
         $data['nonce_str'] = self::getNonceStr();
         $data['out_trade_no'] = $paymentInfo['payment_id'];      //平台支付单号
         $data['out_refund_no'] = $refundInfo['refund_id'];            //退款单号

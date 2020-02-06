@@ -16,14 +16,14 @@
         </div>
     </div>
 </div>
-<div id="radio_type_2" {if !isset($paymentInfo['params']['type']) || $paymentInfo['params']['type'] == 1} style="display:none;"{/if}>
-    <div class="layui-form-item">
-        <label class="layui-form-label">商户号：</label>
-        <div class="layui-input-inline seller-inline-6">
-            <input type="text" name="params[mch_id]" value="{$paymentInfo.params.mch_id}" required  lay-verify="required" placeholder="请输入商户号" autocomplete="off" class="layui-input">
-            <span style="font-size:0.8em;"><a href="https://pay.weixin.qq.com/" style="color:#FF7159;" target="_blank">商户平台</a>》账户中心》账户设置》商户信息</span>
-        </div>
+<div class="layui-form-item">
+    <label class="layui-form-label">商户号：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="text" name="params[mch_id]" value="{$paymentInfo.params.mch_id}" required  lay-verify="required" placeholder="请输入商户号" autocomplete="off" class="layui-input">
+        <span style="font-size:0.8em;"><a href="https://pay.weixin.qq.com/" style="color:#FF7159;" target="_blank">商户平台</a>》账户中心》账户设置》商户信息</span>
     </div>
+</div>
+<div id="radio_type_2" {if !isset($paymentInfo['params']['type']) || $paymentInfo['params']['type'] == 1} style="display:none;"{/if}>
     <div class="layui-form-item">
         <label class="layui-form-label">API秘钥：</label>
         <div class="layui-input-inline seller-inline-6">

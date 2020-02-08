@@ -20,7 +20,7 @@
 				<!-- 倒计时 -->
 				<view class="price-salesvolume" v-if="lasttime.hour !== false">
 					<view class="commodity-price">
-						<text class="current-price">￥{{ pintuanPrice || '0' }}</text>
+						<text class="current-price">￥{{ pintuanPrice || '0.00' }}</text>
 						<text class="cost-price">￥{{ product.mktprice || '0.00' }}</text>
 					</view>
 					<view class="commodity-salesvolume">

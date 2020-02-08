@@ -19,12 +19,12 @@
 				<!-- 倒计时 -->
 				<view class="price-salesvolume" v-if="lasttime.hour !== false">
 					<view class="commodity-price">
-						<text class="current-price">￥{{ product.price || '' }}</text>
-						<text class="cost-price" v-if="parseFloat(product.mktprice) > 0">￥{{ product.mktprice || '' }}</text>
+						<text class="current-price">￥{{ product.price || '0.00' }}</text>
+						<text class="cost-price" v-if="parseFloat(product.mktprice) > 0">￥{{ product.mktprice || '0.00' }}</text>
 					</view>
 					<view class="commodity-salesvolume">
-						<text>已售{{ goodsInfo.buy_count || '' }}件/剩余{{ product.stock || '' }}件</text>
-						<text>累计销售{{ goodsInfo.buy_count || '' }}件</text>
+						<text>已售{{ goodsInfo.buy_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
+						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
 					<view class="commodity-time-img"></view>
 					<view class="commodity-time">

@@ -59,7 +59,7 @@ class Area extends Manage
     public function add()
     {
         $areaModel         = new AreaModel();
-        $data['name']      = input('name');
+        $data['name']      = trim(input('name'));
         $data['postal_code']= trim(input('postal_code'));
         $id                = $areaModel->max('id');
         $data['id']        = $id + 1;
@@ -70,54 +70,31 @@ class Area extends Manage
             $parentAreaInfo = $areaModel->get($data['parent_id']);
             $data['depth']  = $parentAreaInfo['depth'] + 1;
         }
-        $result = $areaModel->add($data);
-        if ($result) {
-            $return_data = array(
-                'status' => true,
-                'msg'    => '添加成功',
-                'data'   => $result,
-            );
-        } else {
-            $return_data = array(
-                'status' => false,
-                'msg'    => '添加失败',
-                'data'   => $result,
-            );
-        }
-        return $return_data;
+        return $areaModel->add($data);
     }
 
 
     /**
      * 编辑地区
      * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
      */
     public function edit()
     {
+        $areaModel = new AreaModel();
+
         if (Request::isPost()) {
             $id           = input('id');
-            $data['name'] = input('name');
+            $data['name'] = trim(input('name'));
             $data['postal_code']= trim(input('postal_code'));
             $data['sort'] = input('sort');
-            $result       = model('common/Area')->edit($id, $data);
-            if ($result !== false) {
-                $return_data = array(
-                    'status' => true,
-                    'msg'    => '修改成功',
-                    'data'   => $result
-                );
-            } else {
-                $return_data = array(
-                    'status' => false,
-                    'msg'    => '修改失败',
-                    'data'   => $result
-                );
-            }
-            return $return_data;
+            return $areaModel->edit($id, $data);
         }
 
         $id   = input('id');
-        $info = model('common/Area')->getAreaInfo($id);
+        $info = $areaModel->getAreaInfo($id);
         if ($info) {
             $return_data = array(
                 'status' => true,

@@ -420,10 +420,14 @@
                     'depth': depth,
                     'sort': $("#area_sort").val()
                 },function(e){
-                    layer.close(window_box);
-                    layer.msg(e.msg, {time: 1300}, function(){
-                        location.reload();
-                    });
+                    if(e.status) {
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            layer.close(window_box);
+                            location.reload();
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
                 });
             }else{
                 layer.msg('请填写地区名称');
@@ -508,10 +512,14 @@
                     },
                     dataType: 'json',
                     success: function(e){
-                        layer.close(window_box);
-                        layer.msg(e.msg, {time: 1300}, function(){
-                            location.reload();
-                        });
+                        if (e.status) {
+                            layer.msg(e.msg, {time: 1300}, function(){
+                                layer.close(window_box);
+                                location.reload();
+                            });
+                        } else {
+                            layer.msg(e.msg);
+                        }
                     }
                 })
             }else{

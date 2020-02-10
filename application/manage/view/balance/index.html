@@ -53,7 +53,13 @@
 </form>
 
 <div class="table-body">
+    <?php
+        if(isset($_GET['user_id'])){
+    ?>
     <a class="layui-btn layui-btn-sm" style="margin-top: 10px;" href="{:url('manage/user/index')}">返回</a>
+    <?php
+        }
+    ?>
     <table id="balanceTable" lay-filter="balanceTable"></table>
 </div>
 

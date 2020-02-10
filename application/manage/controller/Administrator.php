@@ -59,9 +59,10 @@ class Administrator extends ManageController
         $manageRoleModel = new ManageRole();
         $manageRoleList  = $manageRoleModel->select();
         if (Request::isPost()) {
-            if (!input('?param.username') || input('param.username') == "") {
+            if (!input('?param.username') || input('param.username') == "" || strlen(input('param.username')) < 6 || strlen(input('param.username')) > 20) {
                 return error_code(11008);
             }
+
             if (!input('?param.mobile') || input('param.mobile') == "") {
                 return error_code(11080);
             }

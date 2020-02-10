@@ -24,11 +24,11 @@
 			<view class='cell-group'>
 				<view class='cell-item goods-top'>
 					<view class='cell-item-hd'>
-						<view class='cell-hd-title goods-price red-price'>￥{{ product.price || '' }}</view>
-						<view class='cell-hd-title goods-price cost-price' v-if="parseFloat(product.mktprice)>0">￥{{ product.mktprice  || ''}}</view>
+						<view class='cell-hd-title goods-price red-price'>￥{{ product.price || '0.00' }}</view>
+						<view class='cell-hd-title goods-price cost-price' v-if="parseFloat(product.mktprice)>0">￥{{ product.mktprice  || '0.00'}}</view>
 					</view>
 					<view class='cell-item-ft'>
-						<text>{{ goodsInfo.buy_count || '' }} 人已购买</text>
+						<text>{{ goodsInfo.buy_count || '0' }} 人已购买</text>
 					</view>
 				</view>
 

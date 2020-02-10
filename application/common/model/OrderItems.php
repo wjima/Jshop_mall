@@ -24,6 +24,7 @@ class OrderItems extends Common
      */
     public function ship($order_id, $item)
     {
+        $goodsModel = new Goods();
         $isOver = true;     //是否发完了，true发完了，false未发完
         $list = $this->where('order_id',$order_id)->select();
         foreach ($list as $k => $v) {
@@ -36,6 +37,11 @@ class OrderItems extends Common
                     $isOver = false;
                 }
                 $v->setInc('sendnums',$item[$v['product_id']]);
+
+                //发货后，减库存
+                $goodsModel->changeStock($v['product_id'], 'send', $item[$v['product_id']]);
+
+
                 unset($item[$v['product_id']]);
             }
         }

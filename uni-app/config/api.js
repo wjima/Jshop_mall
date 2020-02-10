@@ -54,6 +54,7 @@ const methodsToken = [
 	'order.del',
 	'order.details',
 	'order.confirm',
+	'order.getlist',
 	'order.create',
 	'order.getship',
 	'order.getorderlist',

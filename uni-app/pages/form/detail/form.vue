@@ -80,7 +80,7 @@
 							</view>
 							<view class='ib-item-right'>
 								<view class="ib-item-mid">
-									<picker class="weui-btn" :name="''+item.id" mode="time" :value="item.default_value" start="09:01" end="21:01"
+									<picker class="weui-btn" :name="''+item.id" mode="time" :value="item.default_value"
 									 @change="bindTimeChange($event,item)" :data-id='item.id'>
 										<view>{{item.default_value}}</view>
 									</picker>

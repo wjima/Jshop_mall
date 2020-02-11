@@ -65,7 +65,7 @@
 							</view>
 							<view class='ib-item-right'>
 								<view class="ib-item-mid">
-									<picker mode="date" :name="''+item.id" :value="item.default_value" start="1949-10-01" end="2019-10-01" @change="bindDateChange($event,item)"
+									<picker mode="date" :name="''+item.id" :value="item.default_value" @change="bindDateChange($event,item)"
 									 :data-id='item.id'>
 										<view>{{item.default_value}}</view>
 									</picker>

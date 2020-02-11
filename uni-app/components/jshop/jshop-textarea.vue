@@ -1,6 +1,8 @@
 <template>
-	<view class="textarea bottom-cell-group" >
-		<jshopContent :content="jdata.params" v-if="jdata.params"></jshopContent>
+	<view>
+		<view class="textarea bottom-cell-group" >
+			<jshopContent :content="jdata.params" v-if="jdata.params"></jshopContent>
+		</view>
 	</view>
 </template>
 

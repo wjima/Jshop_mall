@@ -1,5 +1,5 @@
 <template>
-	<view class="imgnavbar bottom-cell-group">
+	<view class="imgnavbar">
 		<view class="imgnavbar-list" v-if="jdata.params.limit == '3' ||jdata.params.limit == '4' ||jdata.params.limit == '5'"
 		 v-bind:class="'row'+jdata.params.limit">
 			<view class="imgnavbar-item" ref="imgwitem" v-for="(item, index) in jdata.params.list" :key="index">

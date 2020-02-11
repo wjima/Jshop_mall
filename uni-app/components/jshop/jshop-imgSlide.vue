@@ -1,5 +1,5 @@
 <template>
-	<view class='swiper bottom-cell-group' v-if="jdata.params.list && count">
+	<view class='swiper' v-if="jdata.params.list && count">
 		<swiper class="swiper-c" :indicator-dots="swiper.indicatorDots" :autoplay="swiper.autoplay" :interval="jdata.params.duration"
 		 :duration="swiper.duration">
 			<swiper-item class="have-none" v-for="(item, index) in jdata.params.list" :key="index">

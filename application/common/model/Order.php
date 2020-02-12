@@ -1046,6 +1046,7 @@ class Order extends Common
             'msg' => '',
             'data' => []
         ];
+        $billAftersalesmodel = new BillAftersales();
 
         $where[] = ['order_id', 'in', $ids];
         $order = $this::with('items')
@@ -1079,6 +1080,14 @@ class Order extends Common
                 }
             } else {
                 $store_id = $v['store_id'];
+            }
+
+            //判断是否有未审核的售后单，如果有，就不能发货，已做拦截
+            $baInfo = $billAftersalesmodel->where(['order_id'=> $v['order_id'], 'status' => $billAftersalesmodel::STATUS_WAITAUDIT])->find();            //有一例都不让发货
+            if($baInfo){
+                $return['status'] = false;
+                $return['msg'] = '订单号：'.$v['order_id'].'有未审核的售后单，请先处理掉才能发货。';
+                return $return;
             }
 
 

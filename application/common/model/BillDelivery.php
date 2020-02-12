@@ -119,7 +119,7 @@ class BillDelivery extends Common
             //判断总发货数量
             $tNum = $tNum + $num;
             //判断是否超发
-            if(($dinfo['items'][$product_id]['nums'] - $dinfo['items']['$product_id']['sendnums'] - $dinfo['items'][$product_id]['reship_nums']) < $num){
+            if(($dinfo['items'][$product_id]['nums'] - $dinfo['items'][$product_id]['sendnums'] - $dinfo['items'][$product_id]['reship_nums']) < $num){
                 $result['msg'] = $dinfo['items'][$product_id]['name']." 发超了";
                 return $result;
             }

@@ -29,7 +29,12 @@ class OrderItems extends Common
         $list = $this->where('order_id',$order_id)->select();
         foreach ($list as $k => $v) {
             if(isset($item[$v['product_id']])){
-                $max_num = $v['nums'] - $v['sendnums'];     //还需要减掉收货数量
+                $max_num = $v['nums'] - $v['sendnums'];     //还需要减掉已发数量
+
+                //还需要减掉已退的数量
+                $reship_nums = $this->getaftersalesNums($order_id,$v['sn']);
+                $max_num = $max_num - $reship_nums;
+
                 if($item[$v['product_id']] > $max_num){     //如果发超了怎么办
                     exception($order_id."的".$v['product_id']."发超了",10000);
                 }
@@ -50,5 +55,22 @@ class OrderItems extends Common
             exception('发货明细里包含订单之外的商品',13008);
         }
         return $isOver;
+    }
+    //算订单的商品退了多少个
+    private function getaftersalesNums($order_id,$sn){
+        $where = [
+            'a.order_id' => $order_id,
+            'a.status' => 2,
+            'asi.sn' => $sn
+        ];
+        $afterSalesItemsModel = new BillAftersalesItems();
+        $re = $afterSalesItemsModel
+            ->alias('asi')
+            ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
+            ->where($where)
+            ->sum('asi.nums');
+
+
+        return $re;
     }
 }

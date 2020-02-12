@@ -338,10 +338,11 @@ class BillAftersales extends Common
                 //未发货的商品库存调整,如果订单未发货或者部分发货，并且用户未收到商品的情况下，需要解冻冻结库存
                 if (
                     ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
-                    $type == self::TYPE_REFUND
+                    $type == self::TYPE_REFUND &&
+                    $aftersalesItems['data']
                 ){
                     $goodsModel = new Goods();
-                    foreach ($orderInfo['items'] as $key => $val) {
+                    foreach ($aftersalesItems['data'] as $key => $val) {
                         $goodsModel->changeStock($val['product_id'], 'refund', $val['nums']);
                     }
                 }

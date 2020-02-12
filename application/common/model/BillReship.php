@@ -150,9 +150,9 @@ class BillReship extends Common
         $this->where($where)->data($data)->update();
 
         //退货
-        $orderItems = new OrderItems();
-        $items      = $orderItems->where([[
-            'order_id', '=', $info['order_id']
+        $billReshipItemsModel = new BillReshipItems();
+        $items      = $billReshipItemsModel->where([[
+            'reship_id', '=', $info['reship_id']
         ]])->select();
         if (!$items->isEmpty()) {
             $goodsModel = new Goods();

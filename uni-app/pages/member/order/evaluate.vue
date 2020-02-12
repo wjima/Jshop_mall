@@ -102,7 +102,7 @@ export default {
 				order_id: this.orderId
 			}
 			this.$api.orderDetail(data, res => {
-				if (res.status && res.data.text_status === 4) {
+				if (res.status && res.data.pay_status >= 2 && res.data.ship_status >= 3 && res.data.confirm >= 2 && res.data.is_comment === 1) {
 					const _info = res.data
 					
 					let images = []

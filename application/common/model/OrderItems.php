@@ -16,7 +16,7 @@ class OrderItems extends Common
 
 
     /**
-     * 更改发货数量
+     * 发货数量
      * @param $order_id
      * @param $item         发货明细
      * @return string
@@ -36,7 +36,7 @@ class OrderItems extends Common
                 $max_num = $max_num - $reship_nums;
 
                 if($item[$v['product_id']] > $max_num){     //如果发超了怎么办
-                    exception($order_id."的".$v['product_id']."发超了",10000);
+                    exception($order_id."的".$v['sn']."发超了",10000);
                 }
                 if($isOver && $item[$v['product_id']] < $max_num){          //判断是否订单发完了，有一个没发完，就是未发完
                     $isOver = false;
@@ -56,12 +56,13 @@ class OrderItems extends Common
         }
         return $isOver;
     }
-    //算订单的商品退了多少个
-    private function getaftersalesNums($order_id,$sn){
+    //算订单的商品退了多少个(未发货的退货数量，已发货的退货不算)
+    public function getaftersalesNums($order_id,$sn){
         $where = [
             'a.order_id' => $order_id,
             'a.status' => 2,
-            'asi.sn' => $sn
+            'asi.sn' => $sn,
+            'a.type' => 1
         ];
         $afterSalesItemsModel = new BillAftersalesItems();
         $re = $afterSalesItemsModel

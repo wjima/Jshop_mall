@@ -78,7 +78,7 @@ class BillAftersales extends Common
      * @param bool $user_id
      * @return array
      */
-    public function orderToAftersales($order_id,$user_id = false){
+    public function orderToAftersales($order_id){
         $result = [
             'status' => false,
             'data' => [
@@ -91,9 +91,6 @@ class BillAftersales extends Common
         //算已经退过款的金额，取已经完成的售后单的金额汇总
         $where[] = ['order_id', 'eq', $order_id];
         $where[] = ['status', 'in', [self::STATUS_SUCCESS,self::STATUS_WAITAUDIT]];     //加上待审核状态，这样申请过售后的商品和金额不会再重复申请了
-        if($user_id){
-            $where[] = ['user_id', 'eq', $user_id];
-        }
 
         $result['data']['refund_money'] = $this->where($where)->sum('refund');   //已经退过款的金额
 
@@ -101,13 +98,28 @@ class BillAftersales extends Common
         $afterSalesItemsModel = new BillAftersalesItems();
         $list = $afterSalesItemsModel
             ->alias('asi')
-            ->field('asi.order_items_id,sum(asi.nums) as nums')
+            ->field('asi.order_items_id,asi.nums as nums,a.status as status,a.type as type')
             ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
             ->where($where)
-            ->group('asi.order_items_id')
             ->select();
         if(!$list->isEmpty()){
-            $result['data']['reship_goods'] = array_column($list->toArray(),'nums', 'order_items_id');     //采用order_items_id=>nums的一维数组形式，好查
+            $list = $list->toArray();
+            
+            $reship_goods = [];
+            foreach($list as $v){
+                if(!isset($reship_goods[$v['order_items_id']])){
+                    $reship_goods[$v['order_items_id']] = [
+                        'reship_nums' => 0,                         //售后商品数量，包含申请中和审核通过的
+                        'reship_nums_ed' => 0,                      //已发货的商品进行退货的数量
+                    ];
+                }
+                $reship_goods[$v['order_items_id']]['reship_nums'] += $v['nums'];
+                if($v['type'] == self::TYPE_RESHIP){
+                    $reship_goods[$v['order_items_id']]['reship_nums_ed'] += $v['nums'];
+                }
+
+            }
+            $result['data']['reship_goods'] = $reship_goods;
         }
 
         //把订单有关的所有售后单也都查出来吧
@@ -122,7 +134,7 @@ class BillAftersales extends Common
      * 创建售后单
      * @param $user_id
      * @param $order_id //发起售后的订单
-     * @param $type //是否收到退货，1未收到退货，不会创建退货单，2收到退货，会创建退货单
+     * @param $type //是否收到退货，1未收到退货，不会创建退货单，2收到退货，会创建退货单,只有未发货的商品才能选择未收到货，只有已发货的才能选择已收到货
      * @param array $items //如果是退款退货，退货的明细 以 [[order_item_id=>nums]]的二维数组形式传值
      * @param array $images
      * @param string $reason //售后理由
@@ -254,10 +266,9 @@ class BillAftersales extends Common
         $info = $re['data']['info'];
         $orderInfo = $re['data']['orderInfo'];
 
-
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
-        $verify = $this->verify($info['type'], $orderInfo, $refund);
-        if (!$verify['status']) {
+        $verify = $this->verify($info['type'], $orderInfo, $refund,$items);
+        if (!$verify['status'] && $status == self::STATUS_SUCCESS) {
             return $verify;
         }
 
@@ -428,6 +439,9 @@ class BillAftersales extends Common
             foreach($info['items'] as $i => $j){
                 if($v['id'] == $j['order_items_id']){
                     $orderInfo['items'][$k]['reship_nums'] -= $j['nums'];
+                    if($info['type'] == self::TYPE_RESHIP){
+                        $orderInfo['items'][$k]['reship_nums_ed'] -= $j['nums'];
+                    }
                     $orderInfo['items'][$k]['the_reship_nums'] = $j['nums'];
                 }
             }
@@ -468,16 +482,48 @@ class BillAftersales extends Common
             return error_code(13227);
         }
 
+        
+
+
+
         //判断退款金额不能超
         if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
             return error_code(13206);
         }
 
-        return [
-            'status' => true,
-            'data'   => [],
-            'msg'    => ''
+        //根据是否已收到货和未收到货来判断实际可以退的数量，不能超过最大数量，已收到货的和未收到货的不能一起退，在这里做判断
+        return $this->verifyNums($type, $orderInfo, $items);
+    }
+
+    //判断退货数量是否超标
+    private function verifyNums($type, $orderInfo, $items){
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
         ];
+        foreach($items as $k => $num){
+            foreach($orderInfo['items'] as $v){
+                if($v['id'] == $k){
+                    if($type == self::TYPE_REFUND){
+                        $n = $v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']); 
+                        if($n < $num){
+                            $result['msg'] = "未发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+                            return $result;
+                        }
+                    }else{
+                        $n = $v['sendnums'] - $v['reship_nums_ed'];
+                        if($n < $num){
+                            $result['msg'] = "已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+                            return $result;
+                        }
+                    }
+                    
+                }
+            }
+        }
+        $result['status'] = true;
+        return $result;
     }
 
 

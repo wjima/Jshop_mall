@@ -690,13 +690,19 @@ class Order extends Common
         //算退货商品数量
         foreach ($orderInfo['items'] as $k => $v) {
             if (isset($re['data']['reship_goods'][$v['id']])) {
-                $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']];
+                $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']]['reship_nums'];              //  退货的商品
+                $orderInfo['items'][$k]['reship_nums_ed'] = $re['data']['reship_goods'][$v['id']]['reship_nums_ed'];        //  已发货的退货商品
 
-                if (!$add_aftersales_status && $orderInfo['items'][$k]['nums'] > $orderInfo['items'][$k]['reship_nums']) {            //如果没退完，就可以再次发起售后
+                //商品总数量 - 已发货数量 - 未发货的退货数量（总退货数量减掉已发货的退货数量）
+                if (
+                    !$add_aftersales_status && 
+                    $orderInfo['items'][$k]['nums'] - $orderInfo['items'][$k]['sendnums'] - ($orderInfo['items'][$k]['reship_nums'] - $orderInfo['items'][$k]['reship_nums_ed']) > 0
+                ) {            //如果没退完，就可以再次发起售后
                     $add_aftersales_status = true;
                 }
             } else {
-                $orderInfo['items'][$k]['reship_nums'] = 0;
+                $orderInfo['items'][$k]['reship_nums'] = 0;                     //退货商品
+                $orderInfo['items'][$k]['reship_nums_ed'] = 0;                  //已发货的退货商品
 
                 if (!$add_aftersales_status) {            //没退货，就能发起售后
                     $add_aftersales_status = true;

@@ -48,8 +48,10 @@
             <td>{$vo.bn}</td>
             <td>￥{$vo.price}</td>
             {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
-            <td>{$vo.nums}</td>
-            <td>￥{$vo.amount}</td>
+            <td>
+                {$vo.nums-$vo.sendnums-$vo.reship_nums+$vo.reship_nums_ed}
+            </td>
+            <td>￥{php} echo $vo['price'] * ($vo['nums']-$vo['sendnums']-$vo['reship_nums']+$vo['reship_nums_ed']); {/php}</td>
         </tr>
         {/volist}
         </tbody>

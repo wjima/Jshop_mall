@@ -18,7 +18,7 @@ class Goods extends Validate
         'brief'            => 'max:255',
         'costprice'        => 'float',
         'mktprice'         => 'float',
-        'price'            => 'require|float',
+        //'price'            => 'require|float',
         'image_id'         => 'require',
         'goods_cat_id'     => 'require|number',
         'goods_type_id'    => 'require|number',

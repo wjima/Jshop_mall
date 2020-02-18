@@ -141,9 +141,9 @@ class wechatpay implements Payment
                 $app_data['nonceStr'] = $data['nonce_str'];
                 $app_data['package'] = 'prepay_id='.$data['prepay_id'];
                 $app_data['signType'] = 'MD5';
-                $app_data['appid'] = $data['appid'];
+                $app_data['appid'] = getSetting('wx_appid');//$data['appid'];不管是服务商模式还是普通模式，这里都是客户的实际的小程序的appid，故此这里写死。
                 $app_data['paySign'] = md5(
-                    'appId='.$data['appid'].
+                    'appId='.$app_data['appid'].
                     '&nonceStr='.$app_data['nonceStr'].
                     '&package='.$app_data['package'].
                     '&signType='.$app_data['signType'].

@@ -114,7 +114,7 @@ class wechatpay implements Payment
         if($re['return_code'] == 'SUCCESS'){
             if($re['result_code'] == 'SUCCESS'){
                 $result['status'] = true;
-                $data = $this->wxapppay($re);
+                $data = $this->wxapppay($re, $params['trade_type']);
                 //支付单传到前台
                 $data['payment_id'] = $paymentInfo['payment_id'];
                 $result['data'] = $data;
@@ -130,18 +130,25 @@ class wechatpay implements Payment
     }
 
     //根据统一下单接口的数据拼装调起支付所需要的参数,为什么要传第二个参数$source_data,这是原始参数，为了h5支付拼接回调地址
-    private function wxapppay($data){
+    private function wxapppay($data,$trade_type){
         $app_data = [];
 
         switch ($data['trade_type'])
         {
             case 'JSAPI':                   //微信小程序组建数据
+                //服务商模式下的小程序支付，appid取商户实际的appid
+                if($this->config['type'] == 1 && $trade_type == 'JSAPI'){
+                    $appid = getSetting('wx_appid');
+                }else{
+                    $appid = $data['appid'];
+                }
+
                 $time = time();
                 $app_data['timeStamp'] = "$time";
                 $app_data['nonceStr'] = $data['nonce_str'];
                 $app_data['package'] = 'prepay_id='.$data['prepay_id'];
                 $app_data['signType'] = 'MD5';
-                $app_data['appid'] = getSetting('wx_appid');//$data['appid'];不管是服务商模式还是普通模式，这里都是客户的实际的小程序的appid，故此这里写死。
+                $app_data['appid'] = $appid;
                 $app_data['paySign'] = md5(
                     'appId='.$app_data['appid'].
                     '&nonceStr='.$app_data['nonceStr'].

@@ -90,13 +90,9 @@
 				<view class="cell-item goods-title-item cell-item-mid">
 					<view class="cell-item-hd"><view class="cell-hd-title">说明</view></view>
 					<view class="cell-item-bd">
-						<view class="cell-bd-view">
+						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
 							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<text class="cell-bd-text">24小时内发货</text>
-						</view>
-						<view class="cell-bd-view">
-							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<text class="cell-bd-text">7天拆封无条件退货</text>
+							<view class="cell-bd-text">{{item}}</view>
 						</view>
 					</view>
 				</view>

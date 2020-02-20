@@ -1608,7 +1608,7 @@ class Order extends Common
             $item['nums'] = $v['nums'];
             $item['amount'] = $v['products']['amount'];
             $item['promotion_amount'] = isset($v['products']['promotion_amount']) ? $v['products']['promotion_amount'] : 0;
-            $item['weight'] = $v['weight'];
+            $item['weight'] = bcmul($v['weight'], $v['nums'], 2);
             $item['sendnums'] = 0;
             $item['addon'] = $v['products']['spes_desc'];
             if (isset($v['products']['promotion_list'])) {

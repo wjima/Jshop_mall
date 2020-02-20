@@ -88,7 +88,6 @@ class TencentSMS extends Addons
         $signName = $setting['SignName'];
         $mobile = $data['params']['mobile'];
         $params = $this->getSmsParams($data['params']['code'], $data['params']['params']);
-
         try {
             $ssender = new SmsSingleSender(trim($appID), trim($appKey));
             $res = $ssender->sendWithParam("86", trim($mobile), trim($setting[$data['params']['code']]['data']['title']['value']), $params, trim($signName), "", "");

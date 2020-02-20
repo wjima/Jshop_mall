@@ -192,18 +192,18 @@ return [
                                 'description' => '订单号',
                                 'order' => ''
                             ],
-                            'ship_id' => [
+                            /*'ship_id' => [
                                 'name' => 'ship_id',
                                 'description' => '配送方式',
                                 'order' => ''
-                            ],
+                            ],*/
                             'logistics_name' => [
                                 'name' => 'logistics_name',
                                 'description' => '物流公司',
                                 'order' => ''
                             ],
                             'ship_no' => [
-                                'name' => 'ship_no',
+                                'name' => 'logi_no',
                                 'description' => '物流单号',
                                 'order' => ''
                             ],
@@ -212,8 +212,8 @@ return [
                                 'description' => '收货人姓名',
                                 'order' => ''
                             ],
-                            'ship_addr' => [
-                                'name' => 'ship_addr',
+                            'ship_address' => [
+                                'name' => 'ship_address',
                                 'description' => '收货人地址',
                                 'order' => ''
                             ],

@@ -638,7 +638,8 @@ class BillDelivery extends Common
             $orderLog->addLog($orderInfo['order_id'], $orderInfo['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $deliveryInfo['delivery_id'], $deliveryInfo);
 
             //发送消息
-            $deliveryInfo['ship_name'] = get_logi_info($deliveryInfo['logi_code']);
+            $deliveryInfo['logistics_name'] = get_logi_info($deliveryInfo['logi_code']);
+            $deliveryInfo['order_id'] = $orderInfo['order_id'];
             sendMessage($orderInfo['user_id'], 'delivery_notice', $deliveryInfo);
 
         }

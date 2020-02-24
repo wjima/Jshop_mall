@@ -69,7 +69,7 @@
 				<!-- 规格end -->
 
 				<!-- 说明 -->
-				<view class="cell-item goods-title-item cell-item-mid">
+				<view class="cell-item goods-title-item cell-item-mid" v-if="goodsShowWord && goodsShowWord != ''">
 					<view class="cell-item-hd"><view class="cell-hd-title">说明</view></view>
 					<view class="cell-item-bd">
 						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
@@ -399,7 +399,7 @@ export default {
 				hour: false,
 				minute: 0,
 				second: 0
-			}
+			},
 		};
 	},
 	onLoad(e) {
@@ -462,7 +462,10 @@ export default {
 		// 获取店铺联系人手机号
 		shopMobile() {
 			return this.$store.state.config.shop_mobile || 0;
-		}
+		},
+		goodsShowWord() {
+			return this.$store.state.config.goods_show_word;
+		},
 	},
 	onReachBottom() {
 		if (this.current === 2 && this.goodsComments.loadStatus === 'more') {

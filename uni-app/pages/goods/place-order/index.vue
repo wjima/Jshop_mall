@@ -16,7 +16,7 @@
 									<text class="cell-bd-text-right">{{ userShip.mobile || ''}}</text>
 								</view>
 								<view class="cell-bd-view">
-									<text class="cell-bd-text address">{{ userShip.area_name || ''}}</text>
+									<text class="cell-bd-text address">{{ userShip.area_name || ''}} {{userShip.address || ''}}</text>
 								</view>
 							</view>
 							<view class='cell-item-ft'>

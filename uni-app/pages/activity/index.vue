@@ -367,7 +367,7 @@
 		position: relative;
 		width: 600upx;
 		height: 600upx;
-		background: url(/static/img/circle.png) no-repeat;
+        background: url("../../static/img/circle.png") no-repeat;
 		background-size: cover;
 		border-radius: 50%;
 	}

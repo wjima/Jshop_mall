@@ -114,6 +114,7 @@ class Cart extends Common
                 $delwhere[] = ['user_id', 'eq', $user_id];
                 $delWhere[] = ['type', 'eq', 2];
                 $this->where($delWhere)->delete();
+                unset($cat_info);
                 break;
             default:
                 return error_code(10000);

@@ -480,6 +480,16 @@
                         this.cartData = data
                         // 商品详情
                         this.products = data.list
+						//判断是否有库存
+						let noStock = true;
+						for(let i=0;i<data.list.length;i++){
+							if(data.list[i].is_select){
+								noStock = false;
+							}
+						}
+						if(noStock){
+							this.$common.errorToShow("您所挑选的商品已售罄，请重新添加哦");
+						}
                         // 优惠信息
                         this.promotions = data.promotion_list
                         // 使用的优惠券信息

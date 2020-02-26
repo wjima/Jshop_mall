@@ -75,10 +75,10 @@ class BillAftersales extends Common
     /**
      * 根据订单号查询已经售后的内容
      * @param $order_id
-     * @param bool $user_id
+     * @param bool $aftersale_level      取售后单的时候，售后单的等级，0：待审核的和审核通过的售后单，1未审核的，2审核通过的
      * @return array
      */
-    public function orderToAftersales($order_id){
+    public function orderToAftersales($order_id, $aftersale_level = 0){
         $result = [
             'status' => false,
             'data' => [
@@ -88,9 +88,23 @@ class BillAftersales extends Common
             ],
             'msg' => ''
         ];
+        switch($aftersale_level){
+            case 0:
+                $status_arr = [self::STATUS_SUCCESS,self::STATUS_WAITAUDIT];
+                break;
+            case 1:
+                $status_arr = [self::STATUS_WAITAUDIT];
+                break;
+            case 2:
+                $status_arr = [self::STATUS_SUCCESS];
+                break;
+            default:
+                $result['msg'] = 'aftersale_level值类型不对';
+                return $result;    
+        }
         //算已经退过款的金额，取已经完成的售后单的金额汇总
         $where[] = ['order_id', 'eq', $order_id];
-        $where[] = ['status', 'in', [self::STATUS_SUCCESS,self::STATUS_WAITAUDIT]];     //加上待审核状态，这样申请过售后的商品和金额不会再重复申请了
+        $where[] = ['status', 'in', $status_arr];     //加上待审核状态，这样申请过售后的商品和金额不会再重复申请了
 
         $result['data']['refund_money'] = $this->where($where)->sum('refund');   //已经退过款的金额
 
@@ -426,21 +440,18 @@ class BillAftersales extends Common
 
         //取订单的信息
         $orderModel = new Order();
-        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'],$info['user_id']);
+        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'],$info['user_id'],2);
         if(!$orderInfo){
             return error_code(10000);
         }
 
-        //订单上的退款金额和退货数量包含当次的，要减掉
-        $orderInfo['refunded'] -= $info['refund'];
+        //订单上的退款金额和数量只包含已经售后的，这里要把当次售后单的商品信息保存到订单明细表上
         foreach ($orderInfo['items'] as $k => $v) {
             unset($orderInfo['items'][$k]['promotion_list']);       //此字段会影响前端表格显示，所以删掉
             $orderInfo['items'][$k]['the_reship_nums'] = 0;
             foreach($info['items'] as $i => $j){
                 if($v['id'] == $j['order_items_id']){
-                    $orderInfo['items'][$k]['reship_nums'] -= $j['nums'];
                     if($info['type'] == self::TYPE_RESHIP){
-                        $orderInfo['items'][$k]['reship_nums_ed'] -= $j['nums'];
                     }
                     $orderInfo['items'][$k]['the_reship_nums'] = $j['nums'];
                 }

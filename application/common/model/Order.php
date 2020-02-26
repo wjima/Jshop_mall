@@ -457,13 +457,13 @@ class Order extends Common
      * 获取订单信息
      * @param $id
      * @param bool $user_id
-     * @param bool $logistics
+     * @param bool $aftersale_level         //取售后单的时候，售后单的等级，0：待审核的和审核通过的售后单，1未审核的，2审核通过的
      * @return bool|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getOrderInfoByOrderID($id, $user_id = false, $logistics = true)
+    public function getOrderInfoByOrderID($id, $user_id = false, $aftersale_level = 0)
     {
         $order_info = $this->get($id); //订单信息
 
@@ -648,7 +648,7 @@ class Order extends Common
             }
         }
         //把退款金额和退货商品查出来
-        $this->aftersalesVal($order_info);
+        $this->aftersalesVal($order_info, $aftersale_level);
 
         //促销信息
         if ($order_info['promotion_list']) {
@@ -675,14 +675,15 @@ class Order extends Common
     /**
      * 把退款的金额和退货的商品数量保存起来
      * @param $orderInfo
+     * @param $aftersale_level      取售后单的时候，售后单的等级，0：待审核的和审核通过的售后单，1未审核的，2审核通过的
      * @return bool
      */
-    public function aftersalesVal(&$orderInfo)
+    public function aftersalesVal(&$orderInfo, $aftersale_level = 0)
     {
         $add_aftersales_status = false;     //是否可以提交售后,只要没退完就可以进行售后
 
         $billAftersalesModel = new BillAftersales();
-        $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id']);
+        $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id'], $aftersale_level);
 
         //已经退过款的金额
         $orderInfo['refunded'] = $re['data']['refund_money'];
@@ -694,10 +695,7 @@ class Order extends Common
                 $orderInfo['items'][$k]['reship_nums_ed'] = $re['data']['reship_goods'][$v['id']]['reship_nums_ed'];        //  已发货的退货商品
 
                 //商品总数量 - 已发货数量 - 未发货的退货数量（总退货数量减掉已发货的退货数量）
-                if (
-                    !$add_aftersales_status && 
-                    $orderInfo['items'][$k]['nums'] - $orderInfo['items'][$k]['sendnums'] - ($orderInfo['items'][$k]['reship_nums'] - $orderInfo['items'][$k]['reship_nums_ed']) > 0
-                ) {            //如果没退完，就可以再次发起售后
+                if (!$add_aftersales_status && ($orderInfo['items'][$k]['nums']  - $orderInfo['items'][$k]['reship_nums']) > 0) {            //如果没退完，就可以再次发起售后
                     $add_aftersales_status = true;
                 }
             } else {

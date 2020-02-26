@@ -114,7 +114,7 @@ class Order extends Manage
         ];
         $this->view->engine->layout(false);
         $orderModel = new OrderModel();
-        $order_info = $orderModel->getOrderInfoByOrderID($id, false, false);
+        $order_info = $orderModel->getOrderInfoByOrderID($id);
         $this->assign('order', $order_info);
 
         $orderLog = new OrderLog();
@@ -440,7 +440,7 @@ class Order extends Manage
             $this->error("关键参数丢失");
         }
         $orderModel = new OrderModel();
-        $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+        $order_info = $orderModel->getOrderInfoByOrderID($order_id);
         $this->assign('order', $order_info);
         $this->view->engine->layout(false);
         $shop_name = getSetting('shop_name');
@@ -502,7 +502,7 @@ class Order extends Manage
 
             //默认快递公司
             $orderModel = new OrderModel();
-            $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+            $order_info = $orderModel->getOrderInfoByOrderID($order_id);
             $this->assign('order_info', $order_info);
 
             $ship['logi_code'] = $order_info['logistics']['logi_code'];

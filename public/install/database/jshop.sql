@@ -6092,7 +6092,7 @@ CREATE TABLE IF NOT EXISTS `jshop_operation_log` (
   `controller` varchar(50) DEFAULT NULL COMMENT '操作的控制器名',
   `method` varchar(50) DEFAULT NULL COMMENT '操作方法名',
   `desc` varchar(255) DEFAULT NULL COMMENT '操作描述',
-  `content` text COMMENT '操作数据序列号存储',
+  `content` text COMMENT '日志内容',
   `ip` char(50) DEFAULT NULL COMMENT '操作IP',
   `ctime` bigint(12) unsigned DEFAULT NULL COMMENT '操作时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='后台操作记录表';

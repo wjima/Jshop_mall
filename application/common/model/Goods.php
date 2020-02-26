@@ -636,7 +636,7 @@ class Goods extends Common
                 $res = $productModel->where($where)->setInc('freeze_stock', $num);
                 break;
         }
-        if ($res !== false) {
+        if ($res > 0) {
             $result['msg']    = '库存更新成功';
             $result['status'] = true;
             return $result;

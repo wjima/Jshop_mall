@@ -694,10 +694,7 @@ class Order extends Common
                 $orderInfo['items'][$k]['reship_nums_ed'] = $re['data']['reship_goods'][$v['id']]['reship_nums_ed'];        //  已发货的退货商品
 
                 //商品总数量 - 已发货数量 - 未发货的退货数量（总退货数量减掉已发货的退货数量）
-                if (
-                    !$add_aftersales_status && 
-                    $orderInfo['items'][$k]['nums'] - $orderInfo['items'][$k]['sendnums'] - ($orderInfo['items'][$k]['reship_nums'] - $orderInfo['items'][$k]['reship_nums_ed']) > 0
-                ) {            //如果没退完，就可以再次发起售后
+                if (!$add_aftersales_status && ($orderInfo['items'][$k]['nums']  - $orderInfo['items'][$k]['reship_nums']) > 0) {            //如果没退完，就可以再次发起售后
                     $add_aftersales_status = true;
                 }
             } else {

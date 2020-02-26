@@ -239,7 +239,7 @@ class Ship extends Common
     static function calculate_fee($ship, $weight, $totalmoney = 0)
     {
         //满多少免运费
-        if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney > $ship['goodsmoney']) {
+        if (isset($ship['goodsmoney']) && $ship['goodsmoney'] > 0 && $totalmoney >= $ship['goodsmoney']) {
             return 0;
         }
         if ($weight > $ship['firstunit']) {

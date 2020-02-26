@@ -1598,22 +1598,24 @@ export default {
 }
 
 .group-swiper-c .swiper-item .cell-item .cell-hd-title {
-	position: absolute;
+	/* position: absolute;
 	top: 50%;
 	left: 100upx;
-	transform: translateY(-50%);
-	max-width: 220upx;
+	transform: translateY(-50%); */
+	max-width: 200upx;
 	width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	flex: 1;
 }
 
 .group-swiper-c .swiper-item .cell-item .cell-item-bd {
 	min-width: 150upx;
-	max-width: 200upx;
-	padding-right: 134upx;
+	/* max-width: 200upx; */
+	/* padding-right: 134upx; */
 	text-align: center;
+	display: block;
 }
 
 .group-swiper-c .swiper-item .cell-item .cell-item-bd .cell-bd-view {

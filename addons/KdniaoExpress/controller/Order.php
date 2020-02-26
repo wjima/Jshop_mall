@@ -53,7 +53,7 @@ class Order extends AddonController
             return $return;
         }
         $orderModel              = new \app\common\model\Order();
-        $order_info              = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+        $order_info              = $orderModel->getOrderInfoByOrderID($order_id);
         $order_info['logi_code'] = $logi_code;
 
         $kdniaoExpress = new KdniaoExpress();

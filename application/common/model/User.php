@@ -1164,4 +1164,41 @@ class User extends Common
     {
         return $this->hasMany("UserWx", 'user_id', 'id');
     }
+
+
+    /**
+     * 按天统计新会员
+     */
+    public function statistics($day)
+    {
+        $where   = [];
+        $where[] = ['ctime', '>', strtotime('-' . $day . ' days')];
+
+        $field = 'DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums';
+
+        $res  = $this->field($field)->where($where)->where("TIMESTAMPDIFF(DAY,from_unixtime(ctime),now()) <7")->group('DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")')->select();
+        $data = get_lately_days($day, $res);
+        return ['day' => $data['day'], 'data' => $data['data']];
+    }
+
+    /**
+     * 按天统计当天下单活跃会员
+     * @param $day
+     * @return array
+     */
+    public function statisticsOrder($day)
+    {
+        $orderModel = new Order();
+        $where      = [];
+        $where[]    = ['ctime', '>', strtotime('-' . $day . ' days')];
+
+        $field = 'DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums';
+
+        $order_id_sql = $orderModel->where($where)->field('order_id')->group('user_id')->buildSql();
+
+        $where[] = ['order_id', 'in', Db::raw($order_id_sql)];
+        $res     = $orderModel->field($field)->where($where)->where("TIMESTAMPDIFF(DAY,from_unixtime(ctime),now()) <7")->group('user_id')->group('DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")')->select();
+        $data    = get_lately_days($day, $res);
+        return ['day' => $data['day'], 'data' => $data['data']];
+    }
 }

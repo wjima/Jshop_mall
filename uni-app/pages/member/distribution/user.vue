@@ -1,20 +1,80 @@
 <template>
 	<view class="content">
 
-		<!-- 用户头像header -->
-		<view class='member-top'>
+
+		<!-- <view class='member-top'>
 			<view class='member-top-c'>
 				<view class="fsz50 color-f">{{info.total_settlement_amount}}</view>
 				<view class='fsz26 color-d'>累计收入</view>
 			</view>
+		</view> -->
+		
+		<view class='member-top'>
+			<image class='bg-img' src='/static/image/member-bg.png'></image>
+			<view class='member-top-c'>
+				<image class='user-head-img' mode="aspectFill" :src='userInfo.avatar'></image>
+				<view class="">
+					<view class='user-name fsz34'>{{ userInfo.nickname }}</view>
+					<view class="fz12 color-f grade">
+						当前店铺：jshop
+					</view>
+				</view>
+			</view>
 		</view>
-		<!-- 用户头像header end -->
-
+		
+		<view class="" style="background-color: #fff;">
+			<view class="dist-list">
+				<view class="dist-item">
+					<view class="dist-num fsz34  color-3">
+						{{info.total_settlement_amount}}
+					</view>
+					<view class="dist-name fsz26 color-9">
+						累计收入(元)
+					</view>
+					<view class="fsz24 color-3">
+						含待结算0.00元
+					</view>
+				</view>
+				<view class="dist-item" v-for="(item, index) in orderItems" :key="index">
+					<view class="dist-num fsz34 color-3">
+						{{ item.nums }}
+					</view>
+					<view class="dist-name fsz26 color-9">
+						{{ item.name }}
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class='cell-group right-img'>
+			<view class='cell-item'>
+				<view class='cell-item-hd' >
+					
+					<view class='cell-hd-title'>可提现金额（元）</view>
+				</view>
+				<view class='cell-item-ft'>
+					<view class="red-price fsz30">
+						0.00
+					</view>
+					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+				</view>
+			</view>
+		</view>
 		<!-- 其他功能菜单 -->
-		<view class='member-grid'>
-			<view class='member-item' v-for="(item, index) in orderItems" :key="index">
-				<text class='member-item-text'>{{ item.name }}</text>
-				<view class="color-o fsz38">{{ item.nums }}</view>
+		<view class='member-grid margin-cell-group'>
+			<view class='member-item'>
+				<view class="color-3 fsz38">0.00</view>
+				<text class='member-item-text'>今日收益（元）</text>
+				
+			</view>
+			<view class='member-item'>
+				<view class="color-3 fsz38">0</view>
+				<text class='member-item-text'>今日订单</text>
+				
+			</view>
+			<view class='member-item'>
+				<view class="color-3 fsz38">0</view>
+				<text class='member-item-text'>今日新增客户</text>
+				
 			</view>
 		</view>
 		<view class='cell-group margin-cell-group right-img'>
@@ -101,6 +161,7 @@
 					}
 				},
 				info: {}, //分销商信息
+				userInfo: {}, // 用户信息
 
 			}
 		},
@@ -128,6 +189,9 @@
 					_this.$common.errorToShow(res.msg);
 				}
 			});
+		},
+		onLoad() {
+			this.initData()
 		},
 		methods: {
 
@@ -191,6 +255,18 @@
 					}
 				})
 			},
+			
+			initData() {
+				// 获取用户信息
+				var _this = this
+				this.$api.userInfo({}, res => {
+					if (res.status) {
+						_this.userInfo = res.data
+						
+					}
+				})
+		
+			},
 		},
 		//分享
 		onShareAppMessage() {
@@ -213,7 +289,7 @@
 	.member-top {
 		position: relative;
 		width: 100%;
-		height: 340upx;
+		height: 200upx;
 		background-color: #FF7159;
 	}
 
@@ -226,18 +302,21 @@
 	.member-top-c {
 		position: absolute;
 		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		text-align: center;
+		left: 50rpx;
+		transform: translateY(-50%);
+		/* text-align: center; */
+		display: flex;
+		
 	}
 
 	.user-head-img {
 		display: block;
-		width: 160upx;
-		height: 160upx;
+		width: 100upx;
+		height: 100upx;
 		border-radius: 50%;
 		overflow: hidden;
 		background-color: rgba(255, 255, 255, 0.7);
+		margin-right: 20rpx;
 	}
 
 	.user-name {
@@ -247,10 +326,13 @@
 
 	.member-grid {
 		background-color: #fff;
-		border-top: 2upx solid #eee;
+		/* border-top: 2upx solid #eee; */
 		padding: 20upx 0;
 	}
-
+	.member-item{
+		padding: 0 26rpx;
+		text-align: left;
+	}
 	.margin-cell-group {
 		margin: 20upx 0;
 		color: #666666;
@@ -281,5 +363,19 @@
 		background: #ff7159;
 		font-size: 12px;
 		margin-top: 16upx;
+	}
+	.dist-list{
+		overflow: hidden;
+		background-color: #fff;
+		/* padding: 26rpx 26rpx 0; */
+		margin: 0 26rpx;
+		border-bottom: 2rpx solid #eee;
+	}
+	.dist-item{
+		width: 50%;
+		text-align: left;
+		float: left;
+		height: 120rpx;
+		margin-top: 20rpx;
 	}
 </style>

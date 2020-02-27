@@ -1,14 +1,6 @@
 <template>
 	<view class="content">
 
-
-		<!-- <view class='member-top'>
-			<view class='member-top-c'>
-				<view class="fsz50 color-f">{{info.total_settlement_amount}}</view>
-				<view class='fsz26 color-d'>累计收入</view>
-			</view>
-		</view> -->
-		
 		<view class='member-top'>
 			<image class='bg-img' src='/static/image/member-bg.png'></image>
 			<view class='member-top-c'>
@@ -16,7 +8,7 @@
 				<view class="">
 					<view class='user-name fsz34'>{{ userInfo.nickname }}</view>
 					<view class="fz12 color-f grade">
-						当前店铺：jshop
+						当前店铺：{{ siteName }}
 					</view>
 				</view>
 			</view>
@@ -32,7 +24,7 @@
 						累计收入(元)
 					</view>
 					<view class="fsz24 color-3">
-						含待结算0.00元
+						含待结算{{info.freeze_amount}}元
 					</view>
 				</view>
 				<view class="dist-item" v-for="(item, index) in orderItems" :key="index">
@@ -46,33 +38,32 @@
 			</view>
 		</view>
 		<view class='cell-group right-img'>
-			<view class='cell-item'>
+			<view class='cell-item' @click="goWithdraw()">
 				<view class='cell-item-hd' >
-					
 					<view class='cell-hd-title'>可提现金额（元）</view>
 				</view>
 				<view class='cell-item-ft'>
 					<view class="red-price fsz30">
-						0.00
+						{{userInfo.balance}}
 					</view>
-					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+					<image class='cell-ft-next icon' src='/static/image/right.png' ></image>
 				</view>
 			</view>
 		</view>
 		<!-- 其他功能菜单 -->
 		<view class='member-grid margin-cell-group'>
 			<view class='member-item'>
-				<view class="color-3 fsz38">0.00</view>
+				<view class="color-3 fsz38">{{info.today_freeze_amount}}</view>
 				<text class='member-item-text'>今日收益（元）</text>
 				
 			</view>
 			<view class='member-item'>
-				<view class="color-3 fsz38">0</view>
+				<view class="color-3 fsz38">{{info.today_order}}</view>
 				<text class='member-item-text'>今日订单</text>
 				
 			</view>
 			<view class='member-item'>
-				<view class="color-3 fsz38">0</view>
+				<view class="color-3 fsz38">{{info.today_user}}</view>
 				<text class='member-item-text'>今日新增客户</text>
 				
 			</view>
@@ -118,6 +109,7 @@
 		mixins: [checkLogin],
 		data() {
 			return {
+				siteName:this.$store.state.config.shop_name,
 				// isClerk: false,
 				orderItems: {
 					freeze: {
@@ -265,8 +257,11 @@
 						
 					}
 				})
-		
 			},
+			//去提现
+			goWithdraw(){
+				this.$common.navigateTo('/pages/member/balance/withdraw_cash')
+			}
 		},
 		//分享
 		onShareAppMessage() {
@@ -290,7 +285,7 @@
 		position: relative;
 		width: 100%;
 		height: 200upx;
-		background-color: #FF7159;
+		/* background-color: #FF7159; */
 	}
 
 	.bg-img {

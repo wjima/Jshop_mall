@@ -162,8 +162,8 @@
 		<lvv-popup position="bottom" ref="share">
 
 			<!-- #ifdef H5 -->
-			<shareByH5 :ifwx="ifwx" :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
-			 :shareHref="shareHref" @close="closeShare()"></shareByH5>
+			<shareByH5 :ifwx="ifwx" :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name"
+			 :shareContent="goodsInfo.brief" :shareHref="shareHref" @close="closeShare()"></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
@@ -175,7 +175,7 @@
 			<shareByAli :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
 			 :shareHref="shareHref" @close="closeShare()"></shareByAli>
 			<!-- #endif -->
-			
+
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
 			 :shareHref="shareHref" @close="closeShare()"></shareByTt>
@@ -234,13 +234,15 @@
 			</view>
 			<!-- #endif -->
 			<!-- #ifdef MP-WEIXIN -->
-			<button class="goods-bottom-ic weiContact" hover-class="none" open-type="contact" bindcontact="showChat" :session-from="kefupara">
+			<button class="goods-bottom-ic weiContact" hover-class="none" open-type="contact" bindcontact="showChat"
+			 :session-from="kefupara">
 				<image class="icon" src="/static/image/customerservice.png" mode=""></image>
 				<view>客服</view>
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef MP-ALIPAY -->
-			<contact-button class="goods-bottom-ic icon" icon="/static/image/customerservice.png" size="80rpx*80rpx" tnt-inst-id="WKPKUZXG" scene="SCE00040186" hover-class="none" />
+			<contact-button class="goods-bottom-ic icon" icon="/static/image/customerservice.png" size="80rpx*80rpx" tnt-inst-id="WKPKUZXG"
+			 scene="SCE00040186" hover-class="none" />
 			<!-- #endif -->
 			<!-- #ifdef MP-TOUTIAO -->
 			<view class="goods-bottom-ic" @click="showChat()">
@@ -248,19 +250,19 @@
 				<view>客服</view>
 			</view>
 			<!-- #endif -->
-			
+
 			<view class="goods-bottom-ic" @click="redirectCart">
 				<view class="badge color-f" v-if="cartNums">{{ cartNums || ''}}</view>
 				<image class="icon" src="/static/image/ic-me-car.png" mode=""></image>
 				<view>购物车</view>
 			</view>
-			
+
 			<view class="goods-bottom-ic" @click="collection">
 				<image class="icon" :src="isfav ? favLogo[1] : favLogo[0]" mode=""></image>
 				<view v-if="!isfav">收藏</view>
 				<view v-if="isfav">已收藏</view>
 			</view>
-			
+
 			<button class='btn btn-square btn-g' @click="toshow(1)" hover-class="btn-hover2">加入购物车</button>
 			<button class='btn btn-square btn-b' @click="toshow(2)" hover-class="btn-hover2">立即购买</button>
 		</view>
@@ -269,7 +271,7 @@
 		<!-- 右边浮动球 -->
 		<uni-fab :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical" :direction="direction"
 		 @trigger="trigger"></uni-fab>
-		 
+
 	</view>
 </template>
 
@@ -302,7 +304,7 @@
 	// #ifdef APP-PLUS || APP-PLUS-NVUE
 	import shareByApp from '@/components/share/shareByApp.vue'
 	// #endif
-	import jshopContent from '@/components/jshop/jshop-content.vue'//视频和文本解析组件
+	import jshopContent from '@/components/jshop/jshop-content.vue' //视频和文本解析组件
 
 	export default {
 		components: {
@@ -385,7 +387,7 @@
 					}
 				],
 				submitStatus: false,
-				config:'',//配置信息
+				config: '', //配置信息
 				goodsShowWord: []
 			}
 		},
@@ -432,7 +434,7 @@
 			};
 			this.ifwxl()
 		},
-		onShow(){
+		onShow() {
 			this.submitStatus = false;
 		},
 		computed: {
@@ -470,7 +472,7 @@
 				// #endif
 			},
 			// 获取店铺联系人手机号
-			shopMobile(){
+			shopMobile() {
 				return this.$store.state.config.shop_mobile || 0;
 			}
 		},
@@ -481,14 +483,21 @@
 		},
 		methods: {
 			// 判断是不是微信浏览器
-			ifwxl(){
+			ifwxl() {
 				this.ifwx = this.$common.isWeiXinBrowser()
 			},
 			// 返回上一页
 			backBtn() {
-				uni.navigateBack({
-					delta: 1
-				});
+				var pages = getCurrentPages();
+				if (pages.length > 1) {
+					uni.navigateBack({
+						delta: 1
+					});
+				} else {
+					uni.switchTab({
+						url: '/pages/index/index'
+					});
+				}
 			},
 			// 获取商品详情
 			getGoodsDetail() {
@@ -692,7 +701,7 @@
 						} else {
 							this.$common.errorToShow(res.msg);
 						}
-					},res => {
+					}, res => {
 						this.submitStatus = false;
 					})
 				}
@@ -711,10 +720,10 @@
 							this.toclose();
 							let cartIds = res.data;
 							this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds));
-						}else{
-						    this.$common.errorToShow(res.msg);
+						} else {
+							this.$common.errorToShow(res.msg);
 						}
-					},res => {
+					}, res => {
 						this.submitStatus = false;
 					})
 				}
@@ -785,22 +794,22 @@
 				})
 				window._AIHECONG('showChat')
 				// #endif
-			
+
 				// 客服页面
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
 				this.$common.navigateTo('../customer_service/index');
 				// #endif
-				
+
 				// 头条系客服
 				// #ifdef MP-TOUTIAO
-				if(this.shopMobile != 0){
+				if (this.shopMobile != 0) {
 					let _this = this;
 					tt.makePhoneCall({
 						phoneNumber: this.shopMobile.toString(),
 						success(res) {},
 						fail(res) {}
 					});
-				}else{
+				} else {
 					_this.$common.errorToShow('暂无设置客服电话');
 				}
 				// #endif
@@ -1326,8 +1335,8 @@
 		vertical-align: middle;
 		margin-right: 4px;
 	}
-	
-	.service{
+
+	.service {
 		width: 80rpx;
 		height: 80rpx;
 		background-color: #fff;
@@ -1341,25 +1350,29 @@
 		box-shadow: 0 0 10rpx #ccc;
 		padding: 0;
 	}
-	.service .icon{
+
+	.service .icon {
 		width: 60rpx;
 		height: 60rpx;
 	}
-	
+
 	/* #ifdef MP-WEIXIN */
-	.weiContact{
+	.weiContact {
 		background-color: #fff;
 		border: none;
 	}
-	.weiContact::after{
+
+	.weiContact::after {
 		border: none;
 	}
-	.weiContact>view{
-		position:absolute;
-		top:45rpx;
-		left:50%;
-		transform:translateX(-50%);
+
+	.weiContact>view {
+		position: absolute;
+		top: 45rpx;
+		left: 50%;
+		transform: translateX(-50%);
 
 	}
+
 	/* #endif */
 </style>

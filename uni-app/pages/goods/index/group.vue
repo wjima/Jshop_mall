@@ -475,9 +475,16 @@ export default {
 	methods: {
 		// 返回上一页
 		backBtn() {
-			uni.navigateBack({
-				delta: 1
-			});
+			var pages = getCurrentPages();
+			if (pages.length > 1) {
+				uni.navigateBack({
+					delta: 1
+				});
+			} else {
+				uni.switchTab({
+					url: '/pages/index/index'
+				});
+			}
 		},
 		getGoodsInfo() {
 			let data = {

@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="ig-top">
 			<view class="ig-top-t">
-				<view class="">
+				<view class="" v-if="lasttime.day!=0||lasttime.hour!=0||lasttime.minute!=0||lasttime.second!=0">
 					剩余时间：<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
 				</view>
 			</view>

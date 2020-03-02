@@ -23,7 +23,7 @@ class PosterShare extends UrlShare implements BaseShare
             ],
             'image' => [
                 [
-                    'src' => 'https://demo.jihainet.com/static/poster/1/1-ed9cdad670a3299fbcbb20f6ec48a1b8.jpg',
+                    'src' => 'https://demo.jihainet.com/static/uploads/images/2020/03/01/15830590755e5b908324b57.jpeg',
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
@@ -48,7 +48,7 @@ class PosterShare extends UrlShare implements BaseShare
             ],
             'image' => [
                 [
-                    'src' => 'https://demo.jihainet.com/static/poster/1/1-ed9cdad670a3299fbcbb20f6ec48a1b8.jpg',
+                    'src' => 'https://demo.jihainet.com/static/uploads/images/2020/03/01/15830590755e5b908324b57.jpeg',
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
@@ -73,7 +73,7 @@ class PosterShare extends UrlShare implements BaseShare
             ],
             'image' => [
                 [
-                    'src' => 'https://demo.jihainet.com/static/poster/1/1-ed9cdad670a3299fbcbb20f6ec48a1b8.jpg',
+                    'src' => 'https://demo.jihainet.com/static/uploads/images/2020/03/01/15830590755e5b908324b57.jpeg',
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
@@ -130,11 +130,11 @@ class PosterShare extends UrlShare implements BaseShare
                 $this->data1($data,$url);
                 break;
             case 2:
-                $this->data2();
+                $this->data2($data,$url);
                 break;
 
             case 3:
-                $this->data3();
+                $this->data3($data,$url);
                 break;
 
             default:

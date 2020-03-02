@@ -2,7 +2,7 @@
 
 namespace org\share;
 
-class UrlShare
+class UrlShare implements BaseShare
 {
 
     //场景值，1首页，2商品详情页，3拼团详情页
@@ -45,7 +45,7 @@ class UrlShare
         return $page. "-".$userShareCode."-".$params_str;
     }
     //url参数解密
-    protected function de_url($str){
+    public function de_url($code){
         $result = [
             'status' => false,
             'data' => [
@@ -55,7 +55,7 @@ class UrlShare
             ],
             'msg' => ''
         ];
-        $arr = explode('-', $str);
+        $arr = explode('-', $code);
         if(count($arr) != 3){
             return $result;
         }

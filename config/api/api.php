@@ -256,6 +256,10 @@ return [
             'share' => [
                 'code' => 'share',
                 'is_login' => false
+            ],
+            'deshare' => [
+                'code' => 'deshare',
+                'is_login' => false
             ]
         ]
     ],

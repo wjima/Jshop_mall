@@ -2,8 +2,7 @@
 
 namespace org\share;
 
-abstract class BaseShare
+interface BaseShare
 {
-
-
+    function share($client, $page, $userShareCode, $url, $params);
 }

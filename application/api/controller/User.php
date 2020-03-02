@@ -31,6 +31,7 @@ use org\login\Wxapp;
 use org\login\Wxofficial;
 use org\Poster;
 use org\Share;
+use org\share\UrlShare;
 use think\facade\Request;
 
 /**
@@ -1247,6 +1248,13 @@ class User extends Api
 
         $share = new Share();
         return $share->get($client, $page, $type, $user_id, $url, $params);
+    }
+    public function deshare(){
+        if(!input('?param.code')){
+            return error_code(10000);
+        }
+        $share = new UrlShare();
+        return $share->de_url(input('param.code'));
     }
 
 

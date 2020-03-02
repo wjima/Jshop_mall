@@ -2,7 +2,7 @@
 
 namespace org\share;
 
-class PosterShare extends UrlShare
+class PosterShare extends UrlShare implements BaseShare
 {
     const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
     private $c = [

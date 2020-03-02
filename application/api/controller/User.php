@@ -30,6 +30,7 @@ use org\login\Uniapp;
 use org\login\Wxapp;
 use org\login\Wxofficial;
 use org\Poster;
+use org\Share;
 use think\facade\Request;
 
 /**
@@ -1217,6 +1218,35 @@ class User extends Api
 
         $poster = new Poster();
         return $poster->posterGenerate($data);
+    }
+
+
+    /**
+     * 新的分享，不管是二维码，还是地址，都走这个
+     * page	场景值		1店铺首页，2商品详情页，3拼团详情页
+    url	 	前端地址
+    params	参数，根据场景值不一样而内容不一样
+    type	类型，1url，2二维码，3海报
+    token	可以保存推荐人的信息
+    client	终端，1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序,5pc
+     * @return array
+     */
+    public function share(){
+        $token = Request::param('token', false);
+        if (input('?param.token')) {
+            $user_id = getUserIdByToken($token);
+        } else {
+            $user_id = 0;
+        }
+        $page = input('param.page');
+        $url = input('param.url');
+
+        $params = input('param.params', []);//json_decode(input('param.params', ""), true);
+        $type = input('param.type');
+        $client = input('param.client');
+
+        $share = new Share();
+        return $share->get($client, $page, $type, $user_id, $url, $params);
     }
 
 

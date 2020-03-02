@@ -75,33 +75,48 @@ export default {
 		},
 		// 生成海报
 		createPoster () {
-			let data = {
-				id: this.goodsId,
-				type: this.shareType,
-				group_id :this.groupId,
-				team_id :this.teamId,
-			}
-			
-			let pages = getCurrentPages()
-			let page = pages[pages.length - 1]
-			
-			data.source = 4;
-			data.return_url = 'pages/share/jump';//page.route;
-			data.tt_platform = ttPlatform;
-			
-			let userToken = this.$db.get('userToken')
-			if (userToken) {
-				data.token = userToken
-			}
-			
-			this.$api.createPoster(data, res => {
-				if (res.status) {
-					this.close()
-					this.$common.navigateTo('/pages/share?poster=' + res.data)
-				} else {
-					this.$common.errorToShow(res.msg)
-				}
-			})
+            let data = {};
+            if (this.shareType == 1) {
+                //商品
+                data = {
+                    page: 2, //商品
+                    url: '/pages/share/jump',
+                    params: {
+                        goods_id: this.goodsId
+                    },
+                    type: 3,//海报
+                    client: 4
+                }
+                let userToken = this.$db.get('userToken')
+                if (userToken) {
+                	data.token = userToken
+                }
+            } else if(this.shareType == 3) {
+                //拼团
+                data = {
+                    page: 3, //商品
+                    url: '/pages/share/jump',
+                    params: {
+                        goods_id: this.goodsId,
+                        group_id: this.groupId,
+                        team_id: this.teamId
+                    },
+                    type: 3,//海报
+                    client: 4
+                }
+                let userToken = this.$db.get('userToken')
+                if (userToken) {
+                	data.token = userToken
+                }
+            }
+            this.$api.share(data, res => {
+            	if (res.status) {
+            		this.close()
+            		this.$common.navigateTo('/pages/share?poster=' + res.data)
+            	} else {
+            		this.$common.errorToShow(res.msg)
+            	}
+            });
 		}
 	}
 }	

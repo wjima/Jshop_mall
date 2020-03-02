@@ -38,7 +38,7 @@ class Share
                 $obj = new QrShare();
                 break;
             case self::TYPE_POSTER :
-                $obj = new PosterShare();
+                $obj = new QrShare();
                 break;
             default:
                 return error_code(10000);

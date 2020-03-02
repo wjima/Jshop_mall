@@ -37,7 +37,7 @@ class UrlShare implements BaseShare
 
     //根据获得的code，拼接url
     protected function getUrl($url,$code){
-        return $url."?s=".$code;
+        return $url."?scene=".$code;
     }
 
     //url参数加密

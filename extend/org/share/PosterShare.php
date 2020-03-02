@@ -89,8 +89,8 @@ class PosterShare extends UrlShare implements BaseShare
             return $re;
         }
         $url = $this->getUrl($url,$re['data']['code']);
-        $url = urldecode($url);
-        $re['data'] = url('b2c/common/poster',['url' => $url,'code' => $re['data']['code']],true,true);
+        $url = urlencode($url);
+        $re['data'] = url('b2c/common/poster',['code' => $re['data']['code'],'url' => $url],true,true);
         return $re;
     }
 

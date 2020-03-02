@@ -5,10 +5,11 @@ namespace org\share;
 class UrlShare implements BaseShare
 {
 
-    //场景值，1首页，2商品详情页，3拼团详情页
+    //场景值，1首页，2商品详情页，3拼团详情页,4邀请页面
     const PAGE_INDEX = 1;
     const PAGE_GOODS = 2;
     const PAGE_PINTUAN = 3;
+    const PAGE_INV = 4;
 
 
     public function share($client, $page, $userShareCode, $url, $params){
@@ -37,7 +38,7 @@ class UrlShare implements BaseShare
 
     //根据获得的code，拼接url
     protected function getUrl($url,$code){
-        return $url."?s=".$code;
+        return $url."?scene=".$code;
     }
 
     //url参数加密
@@ -93,8 +94,14 @@ class UrlShare implements BaseShare
                 }
                 break;
             case self::PAGE_PINTUAN :
+                if(isset($params['goods_id'])){
+                    $str = $params['goods_id'];
+                }else{
+                    $result['msg'] = '参数必须传goods_id';
+                    return $result;
+                }
                 if(isset($params['group_id'])){     //拼团规则ID
-                    $str = $params['group_id'];
+                    $str .= "_" . $params['group_id'];
                 }else{
                     $result['msg'] = '参数必须传group_id';
                     return $result;
@@ -106,7 +113,14 @@ class UrlShare implements BaseShare
                     return $result;
                 }
                 break;
-
+            case self::PAGE_INV :
+                if(isset($params['store'])){
+                    $str = $params['store'];
+                }else{
+                    $result['msg'] = '参数必须传store';
+                    return $result;
+                }
+                break;
             default:
                 return error_code(10000);
         }
@@ -135,13 +149,19 @@ class UrlShare implements BaseShare
                 }
                 break;
             case self::PAGE_PINTUAN :
-                if(count($arr) == 2){
-                    $result['data']['group_id'] = $arr[0];
-                    $result['data']['team_id'] = $arr[1];
+                if(count($arr) == 3){
+                    $result['data']['goods_id'] = $arr[0];
+                    $result['data']['group_id'] = $arr[1];
+                    $result['data']['team_id'] = $arr[2];
                     $result['status'] = true;
                 }
                 break;
-
+            case self::PAGE_INV :
+                if(count($arr) == 1){
+                    $result['data']['store'] = $arr[0];
+                    $result['status'] = true;
+                }
+                break;
             default:
                 return error_code(10000);
         }

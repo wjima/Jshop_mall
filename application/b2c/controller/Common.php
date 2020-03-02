@@ -172,7 +172,12 @@ class Common extends Base
     public function qr(){
         Header("Content-type: image/png");
         include_once ROOT_PATH . 'extend/org/phpqrcode.php';
-        $url = input('param.url','https://www.ji'.'hai'.'net.com');
+        if(input('?param.url')){
+            $url = urldecode(input('param.url'));
+        }else{
+            $url = 'https://www.ji'.'hai'.'net.com';
+        }
+        $url = urldecode($url);
         $level = input('param.level', 'L');
         $size =input('param.size', 10);
         return QRcode::png($url, false, $level, $size, 2);
@@ -184,7 +189,11 @@ class Common extends Base
     public function poster(){
         Header("Content-type: image/png");
         //include_once ROOT_PATH . 'extend/org/phpqrcode.php';
-        $url = input('param.url','https://www.ji'.'hai'.'net.com');
+        if(input('?param.url')){
+            $url = urldecode(input('param.url'));
+        }else{
+            $url = 'https://www.ji'.'hai'.'net.com';
+        }
         $code = input('param.code');
 
         $posterShare = new PosterShare();

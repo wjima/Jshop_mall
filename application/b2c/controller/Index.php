@@ -14,6 +14,7 @@ use app\common\model\Payments;
 use app\common\model\User;
 use app\common\model\UserWx;
 use org\login\Wxofficial;
+use org\Wx;
 use think\Hook;
 
 
@@ -35,5 +36,10 @@ class Index extends Base
         $ent_id = getSetting('ent_id');
         $this->assign('ent_id', $ent_id);
         return $this->fetch();
+    }
+    public function t(){
+        $m = new Wx();
+        $re = $m->getQRCode();
+        dump($re);
     }
 }

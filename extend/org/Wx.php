@@ -300,6 +300,78 @@ class Wx
 
         return $return;
     }
+    /**
+     * 小程序二维码，和业务没关系
+     */
+    public function getQRCode($scene,$page = 'pages/share/jump')
+    {
+        $return = [
+            'status' => false,
+            'msg' => '',
+            'data' => ''
+        ];
+
+
+        $filename = "static/qrcode/wechat/".md5($scene).".jpg";
+
+        if(file_exists($filename))
+        {
+            //有这个二维码了
+            $return['status'] = true;
+            $return['msg'] = '二维码获取成功';
+            $return['data'] = $filename;
+        }
+        else
+        {
+            //没有去官方请求生成
+            $wx_appid = getSetting('wx_appid');
+            $wx_app_secret = getSetting('wx_app_secret');
+            $accessToken = $this->getAccessToken($wx_appid, $wx_app_secret);
+            if(!$accessToken)
+            {
+                $return['msg'] = "accessToken获取失败";
+                return $return;
+            }
+            $curl = new Curl();
+            $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$access_token;
+
+            $data = [
+                'scene' => $scene,
+                'page' => $page
+            ];
+            $data = json_encode($data);
+            $res = $curl->post($url, $data);
+            $flag = json_decode($res, true);
+            if($flag && $flag['errcode'] == 41030)
+            {
+                $return['msg'] = '后台小程序配置的APPID和APPSECRET对应的小程序未发布上线，无法生成海报';
+                return $return;
+            }
+            elseif($flag && $flag['errcode'] == 40001)
+            {
+                $return['msg'] = '微信小程序access_token已过期，无法为你生成海报';
+                return $return;
+            }
+            elseif($flag && isset($flag['errcode']))
+            {
+                $return['msg'] = $flag['errcode'].':'.$flag['errmsg'];
+                return $return;
+            }
+
+            $file = fopen($filename, "w");//打开文件准备写入
+            fwrite($file, $res);//写入
+            fclose($file);//关闭
+
+            if(file_exists($filename))
+            {
+                $return['status'] = true;
+                $return['msg'] = '二维码获取成功';
+                $return['data'] = $filename;
+            }
+        }
+
+        return $return;
+    }
 
     /**
      * 小程序发送模板消息

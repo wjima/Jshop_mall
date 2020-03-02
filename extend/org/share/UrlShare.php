@@ -93,8 +93,14 @@ class UrlShare implements BaseShare
                 }
                 break;
             case self::PAGE_PINTUAN :
+                if(isset($params['goods_id'])){
+                    $str = $params['goods_id'];
+                }else{
+                    $result['msg'] = '参数必须传goods_id';
+                    return $result;
+                }
                 if(isset($params['group_id'])){     //拼团规则ID
-                    $str = $params['group_id'];
+                    $str .= "_" . $params['group_id'];
                 }else{
                     $result['msg'] = '参数必须传group_id';
                     return $result;
@@ -135,9 +141,10 @@ class UrlShare implements BaseShare
                 }
                 break;
             case self::PAGE_PINTUAN :
-                if(count($arr) == 2){
-                    $result['data']['group_id'] = $arr[0];
-                    $result['data']['team_id'] = $arr[1];
+                if(count($arr) == 3){
+                    $result['data']['goods_id'] = $arr[0];
+                    $result['data']['group_id'] = $arr[1];
+                    $result['data']['team_id'] = $arr[2];
                     $result['status'] = true;
                 }
                 break;

@@ -11,6 +11,14 @@ class UrlShare implements BaseShare
     const PAGE_PINTUAN = 3;
     const PAGE_INV = 4;
 
+    //1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序,5pc，6阿里小程序
+    const CLIENT_H5 = 1;
+    const CLIENT_WXMNAPP = 2;
+    const CLIENT_WXOFFICIAL = 3;
+    const CLIENT_TTMNAPP = 4;
+    const CLIENT_PC = 5;
+    const CLIENT_ALIMNAPP = 6;
+
 
     public function share($client, $page, $userShareCode, $url, $params){
         $re = $this->getCode($client, $page, $userShareCode, $url, $params);

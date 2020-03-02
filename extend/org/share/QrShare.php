@@ -2,6 +2,8 @@
 
 namespace org\share;
 
+use org\Wx;
+
 class QrShare extends UrlShare implements BaseShare
 {
     public function share($client, $page, $userShareCode, $url, $params){
@@ -10,17 +12,24 @@ class QrShare extends UrlShare implements BaseShare
             return $re;
         }
 
-        return $this->getQr($url, $re['data']['code']);
+        return $this->getQr($url, $re['data']['code'],$client);
     }
-    protected function getQr($url,$code){
+    protected function getQr($url,$code,$client){
         $result = [
             'status' => true,
             'data' => [],
             'msg' => ''
         ];
-        $url = $this->getUrl($url,$code);
-        $url = urlencode($url);
-        $result['data'] = url('b2c/common/qr',['url' => $url],true,true);
+        switch($client){
+            case self::CLIENT_WXMNAPP:
+                $wx = new Wx();
+                $result = $wx->getQRCode($code,$url);
+                break;
+            default:
+                $url = $this->getUrl($url,$code);
+                $url = urlencode($url);
+                $result['data'] = url('b2c/common/qr',['url' => $url],true,true);
+        }
         return $result;
     }
 }

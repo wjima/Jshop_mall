@@ -5,6 +5,7 @@
 namespace org;
 use think\facade\Cache;
 use think\facade\Log;
+use think\facade\Request;
 
 class Wx
 {
@@ -333,7 +334,7 @@ class Wx
                 return $return;
             }
             $curl = new Curl();
-            $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$access_token;
+            $url = 'https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token='.$accessToken;
 
             $data = [
                 'scene' => $scene,
@@ -366,7 +367,7 @@ class Wx
             {
                 $return['status'] = true;
                 $return['msg'] = '二维码获取成功';
-                $return['data'] = $filename;
+                $return['data'] = Request::root(true).'/'.$filename;
             }
         }
 

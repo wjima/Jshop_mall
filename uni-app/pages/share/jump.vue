@@ -7,81 +7,59 @@
 			return {};
 		},
 		onLoad(e) {
-			let url = this.$common.shareParameterEncode(e.scene);
-			let arr1 = url.split('&');
-			
-			let type = '',
-				invite = '',
-				page_code = '',
-				id = '',
-				id_type = '',
-				group_id = '',
-				team_id = '';
-
-			for (var i = 0; i < arr1.length; i++) {
-				let key = arr1[i].split('=')[0]
-				if (key == 'type') {
-					type = arr1[i].split('=')[1]
-				}
-				if (key == 'invite') {
-					invite = arr1[i].split('=')[1]
-				}
-				if (key == 'page_code') {
-					page_code = arr1[i].split('=')[1]
-				}
-				if (key == 'id') {
-					id = arr1[i].split('=')[1]
-				}
-				if (key == 'id_type') {
-					id_type = arr1[i].split('=')[1]
-				}
-				if (key == 'group_id') {
-					group_id = arr1[i].split('=')[1]
-				}
-				if (key == 'team_id') {//拼团参团id
-					team_id = arr1[i].split('=')[1]
-				}
-			}
-			
-			this.saveInviteCode(invite); //存储邀请码
-			switch (type) {
-				case '1': //首页
-					this.gotoIndex();
-					break;
-				case '2': //商品详情页面
-					this.gotoGoods(id);
-					break;
-				case '3': //首页
-					this.gotoIndex();
-					break;
-				case '4': //文章页面
-					this.gotoArticle(id, id_type);
-					break;
-				case '5': //拼团页面
-					this.gotoPinTuan(id, team_id);
-					break;
-				case '6': //团购页面
-					this.gotoGroup(id, group_id);
-					break;
-				case '7': //参团页面
-					// todo:: 功能暂无后续开发
-					// this.gotoInvitationGroup(id, group_id, team_id);
-					break;
-				case '8': //自定义页面
-					this.gotoCustom(page_code);
-					break;
-				case '9': //店铺邀请
-					this.gotoStore(id);
-					break;
-				case '10': //智能表单
-					this.gotoForm(id);
-					break;
-				default:
-					this.gotoIndex();
-					break;
-			}
+            if(e.scene) {
+                this.deshare(e.scene);
+            } else {
+                this.$common.errorToShow('失败', () => {
+                	uni.navigateBack({
+                		delta: 1
+                	});
+                });
+            }
 		},
 		methods: {
+            deshare(data) {
+                this.$api.deshare({code: data}, res => {
+                    if (res.status) {
+                        this.saveInviteCode(res.data.userShareCode); //存储邀请码
+                        switch(res.data.page) {
+                            case '1': //首页
+                                this.gotoIndex();
+                                break;
+                            case '2': //商品
+                                this.gotoGoods(res.data.params.goods_id);
+                                break;
+                            case '3': //拼团
+                                this.gotoPinTuan(res.data.params.goods_id, res.data.params.team_id);
+                                break;
+                            case '4': //店铺邀请
+                                this.gotoStore(res.data.params.store);
+                                break;
+                            case '5': //文章页面
+                                this.gotoArticle(res.data.params.article_id, res.data.params.article_type);
+                                break;
+                            case '6': //参团页面
+                                this.gotoInvitationGroup(res.data.params.goods_id, res.data.params.group_id, res.data.params.team_id)
+                                break;
+                            case '7': //自定义页面
+                                this.gotoCustom(res.data.params.page_code);
+                                break;
+                            case '8': //智能表单
+                                this.gotoForm(res.data.params.id)
+                                break;
+                            default:
+                            	this.gotoIndex();
+                            	break;
+                        }
+                    } else {
+                        this.$common.errorToShow('失败', () => {
+                        	uni.navigateBack({
+                        		delta: 1
+                        	});
+                        });
+                    }
+                });
+            },
 			//存储邀请码
 			saveInviteCode(invite) {
 				if (invite && invite != '') {

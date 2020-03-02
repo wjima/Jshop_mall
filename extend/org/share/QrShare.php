@@ -2,7 +2,7 @@
 
 namespace org\share;
 
-class QrShare extends UrlShare
+class QrShare extends UrlShare implements BaseShare
 {
     public function share($client, $page, $userShareCode, $url, $params){
         $re = $this->getCode($client, $page, $userShareCode, $url, $params);

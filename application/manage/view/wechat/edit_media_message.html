@@ -293,8 +293,7 @@
         var ue = UE.getEditor('container');
         var contentData = '';
 
-
-        var messageData =  eval('({$mediaData|raw})');
+        var messageData = {$mediaData|raw};
         var last_id = 0;
         if(Object.getOwnPropertyNames(messageData).length){
             last_id = Object.getOwnPropertyNames(messageData).length;

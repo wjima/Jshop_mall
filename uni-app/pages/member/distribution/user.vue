@@ -18,13 +18,13 @@
 			<view class="dist-list">
 				<view class="dist-item">
 					<view class="dist-num fsz34  color-3">
-						{{info.total_settlement_amount}}
+						{{info.total_settlement_amount||0.00}}
 					</view>
 					<view class="dist-name fsz26 color-9">
 						累计收入(元)
 					</view>
 					<view class="fsz24 color-3">
-						含待结算{{info.freeze_amount}}元
+						含待结算{{info.freeze_amount||0.00}}元
 					</view>
 				</view>
 				<view class="dist-item" v-for="(item, index) in orderItems" :key="index">
@@ -44,7 +44,7 @@
 				</view>
 				<view class='cell-item-ft'>
 					<view class="red-price fsz30">
-						{{userInfo.balance}}
+						{{userInfo.balance||0.00}}
 					</view>
 					<image class='cell-ft-next icon' src='/static/image/right.png' ></image>
 				</view>
@@ -53,17 +53,17 @@
 		<!-- 其他功能菜单 -->
 		<view class='member-grid margin-cell-group'>
 			<view class='member-item'>
-				<view class="color-3 fsz38">{{info.today_freeze_amount}}</view>
+				<view class="color-3 fsz38">{{info.today_freeze_amount||0.00}}</view>
 				<text class='member-item-text'>今日收益（元）</text>
 				
 			</view>
 			<view class='member-item'>
-				<view class="color-3 fsz38">{{info.today_order}}</view>
+				<view class="color-3 fsz38">{{info.today_order||0}}</view>
 				<text class='member-item-text'>今日订单</text>
 				
 			</view>
 			<view class='member-item'>
-				<view class="color-3 fsz38">{{info.today_user}}</view>
+				<view class="color-3 fsz38">{{info.today_user||0}}</view>
 				<text class='member-item-text'>今日新增客户</text>
 				
 			</view>

@@ -16,7 +16,7 @@ class QrShare extends UrlShare
         $result = [
             'status' => true,
             'data' => [],
-            'msg' > ''
+            'msg' => ''
         ];
         $url = $this->getUrl($url,$code);
         $url = urldecode($url);

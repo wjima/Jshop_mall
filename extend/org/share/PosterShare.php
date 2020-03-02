@@ -84,7 +84,6 @@ class PosterShare extends UrlShare
     ];
 
     public function share($client, $page, $userShareCode, $url, $params){
-        return $this->poster('','1--');
         $re = $this->getCode($client, $page, $userShareCode, $url, $params);
         if(!$re['status']){
             return $re;

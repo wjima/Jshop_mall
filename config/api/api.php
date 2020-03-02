@@ -252,6 +252,10 @@ return [
             'ttlogin' => [
                 'code' => 'ttLogin',
                 'is_login' => false
+            ],
+            'share' => [
+                'code' => 'share',
+                'is_login' => false
             ]
         ]
     ],

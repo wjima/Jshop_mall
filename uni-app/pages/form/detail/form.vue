@@ -493,7 +493,11 @@
 			pic_choose(e, item, index) {
 				var that = this
 				var pages = getCurrentPages()
-				var items = pages[0].$vm.form.items;
+				if(pages.length>1){
+					var items = pages[1].$vm.form.items;
+				}else{
+					var items = pages[0].$vm.form.items;
+				}
 				this.$api.uploadImage(5, res => {
 					if (res.status) {
 						if (!item.pics) {

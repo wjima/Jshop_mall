@@ -836,3 +836,9 @@ export const subscriptionCloseTip = callback => pluginsPost('wechat_applets_mess
 
 //判断用户是否需要显示订阅提醒
 export const subscriptionIsTip = callback => pluginsPost('wechat_applets_message-api-istip', {}, callback);
+
+//统一分享
+export const share = (data, callback) => post('user.share', data, callback);
+
+//统一分享解码
+export const deshare = (data, callback) => post('user.deshare', data, callback);

@@ -1,5 +1,6 @@
 export const apiBaseUrl = 'https://demo.jihainet.com/'
 // export const apiBaseUrl = 'http://www.jshopmall.com/'
+export const h5Url = "https://demo.jihainet.com/wap/" //H5端网站地址
 
 // #ifdef H5
 export const baseUrl=process.env.NODE_ENV === 'development'?window.location.origin+'/':apiBaseUrl

@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { apiBaseUrl } from '@/config/config.js'	
+import { h5Url } from '@/config/config.js'
 export default {
 	props: {
 		// 商品id
@@ -78,48 +78,87 @@ export default {
 		},
 		// 生成海报
 		createPoster () {
-			let data = {
-				id: this.goodsId,
-				type: this.shareType,
-				group_id :this.groupId,
-				team_id :this.teamId,
-			}
-			
-			data.return_url = apiBaseUrl + 'wap/pages/share/jump';
-
-			let userToken = this.$db.get('userToken')
-			if (userToken) {
-				data.token = userToken
-			}
-			
-			this.$api.createPoster(data, res => {
-				if (res.status) {
-					this.close()
-					this.$common.navigateTo('/pages/share?poster=' + res.data)
-				} else {
-					this.$common.errorToShow(res.msg)
-				}
-			});
+            let data = {};
+            if (this.shareType == 1) {
+                //商品
+                data = {
+                    page: 2, //商品
+                    url: h5Url + 'pages/share/jump',
+                    params: {
+                        goods_id: this.goodsId
+                    },
+                    type: 3,//海报
+                    client: 1
+                }
+                let userToken = this.$db.get('userToken')
+                if (userToken) {
+                	data.token = userToken
+                }
+            } else if(this.shareType == 3) {
+                //拼团
+                data = {
+                    page: 3, //商品
+                    url: h5Url + 'pages/share/jump',
+                    params: {
+                        goods_id: this.goodsId,
+                        group_id: this.groupId,
+                        team_id: this.teamId
+                    },
+                    type: 3,//海报
+                    client: 1
+                }
+                let userToken = this.$db.get('userToken')
+                if (userToken) {
+                	data.token = userToken
+                }
+            }
+            this.$api.share(data, res => {
+            	if (res.status) {
+            		this.close()
+            		this.$common.navigateTo('/pages/share?poster=' + res.data)
+            	} else {
+            		this.$common.errorToShow(res.msg)
+            	}
+            });
 		},
 		copyUrl () {
-			let data = {
-				id: this.goodsId,
-				type: this.shareType,
-				group_id :this.groupId,
-				team_id :this.teamId,
+			let data = {};
+			if (this.shareType == 1) {
+			    data = {
+			        page: 2, //商品
+			        url: h5Url + 'pages/share/jump',
+			        params: {
+			            goods_id: this.goodsId
+			        },
+			        type: 1,//URL
+			        client: 1
+			    }
+			    let userToken = this.$db.get('userToken')
+			    if (userToken) {
+			    	data.token = userToken
+			    }
+			} else if(this.shareType == 3) {
+			    data = {
+			        page: 3, //拼团
+			        url: h5Url + 'pages/share/jump',
+			        params: {
+			            goods_id: this.goodsId,
+			            group_id: this.groupId,
+			            team_id: this.teamId
+			        },
+			        type: 1,//URL
+			        client: 1
+			    }
+			    let userToken = this.$db.get('userToken')
+			    if (userToken) {
+			    	data.token = userToken
+			    }
 			}
-			
-			data.return_url = apiBaseUrl + 'wap/pages/share/jump';
-			let userToken = this.$db.get('userToken')
-			if (userToken) {
-				data.token = userToken
-			}
-			let _this = this;
-			_this.$api.createShareUrl(data, res => {
+            let _this = this;
+			_this.$api.share(data, res => {
 				if(res.status) {
-					//todo::要复制的内容是 res.data
 					uni.setClipboardData({
-						data:res.data,
+						data: res.data,
 						success:function(data){
 							_this.$common.successToShow('复制成功');
 						}, 

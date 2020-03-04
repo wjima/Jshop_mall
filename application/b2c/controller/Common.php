@@ -170,6 +170,8 @@ class Common extends Base
      * 二维码
      */
     public function qr(){
+        ob_end_clean();
+        header('Content-type:image/png'); //mime信息
         if(input('?param.url')){
             $url = urldecode(input('param.url'));
         }else{
@@ -178,13 +180,18 @@ class Common extends Base
         $url = urldecode($url);
         $level = input('param.level', 'L');
         $size =input('param.size', 10);
-        return QRcode::png($url, false, $level, $size, 2);
+        $data = QRcode::png($url, false, $level, $size, 2);
+        ob_end_clean();
+        echo $data;
+
     }
 
     /**
      * 海报
      */
     public function poster(){
+        ob_end_clean();
+        header('Content-type:image/png'); //mime信息
         if(input('?param.url')){
             $url = urldecode(input('param.url'));
         }else{
@@ -192,9 +199,9 @@ class Common extends Base
         }
         $code = input('param.code');
         $client = input('param.client');
-
         $posterShare = new PosterShare();
-        return $posterShare->poster($url,$code,$client);
-
+        $data = $posterShare->poster($url,$code,$client);
+        ob_end_clean();
+        echo $data;
     }
 }

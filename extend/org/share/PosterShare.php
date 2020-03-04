@@ -125,7 +125,9 @@ class PosterShare extends QrShare implements BaseShare
         if(!$re['status']){
             return $re;
         }
-        $url = $this->getUrl($url,$re['data']['code']);
+        if($client != self::CLIENT_WXMNAPP){
+            $url = $this->getUrl($url,$re['data']['code']);
+        }
         $url = urlencode($url);
         $re['data'] = url('b2c/common/poster',['client' => $client,'code' => $re['data']['code']],true,true)."?url=".$url;
         return $re;

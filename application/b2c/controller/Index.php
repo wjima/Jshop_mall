@@ -38,8 +38,6 @@ class Index extends Base
         return $this->fetch();
     }
     public function t(){
-        $m = new Wx();
-        $re = $m->getQRCode();
-        dump($re);
+        echo "<img src='https://demo.jihainet.com/b2c/common/poster/client/2/code/2-38967-30.html?url=pages%2Fshare%2Fjump' />";
     }
 }

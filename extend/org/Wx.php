@@ -345,7 +345,7 @@ class Wx
             $flag = json_decode($res, true);
             if($flag && $flag['errcode'] == 41030)
             {
-                $return['msg'] = '后台小程序配置的APPID和APPSECRET对应的小程序未发布上线，无法生成海报';
+                $return['msg'] = '后台小程序配置的APPID和APPSECRET对应的小程序未发布上线,或者page没有发布，无法生成海报';
                 return $return;
             }
             elseif($flag && $flag['errcode'] == 40001)

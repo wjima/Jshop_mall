@@ -28,7 +28,7 @@ class QrShare extends UrlShare implements BaseShare
             default:
                 $url = $this->getUrl($url,$code);
                 $url = urlencode($url);
-                $result['data'] = url('b2c/common/qr',['url' => $url],true,true);
+                $result['data'] = url('b2c/common/qr',[],true,true)."?url=".$url;
         }
         return $result;
     }

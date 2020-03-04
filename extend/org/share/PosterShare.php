@@ -4,82 +4,117 @@ namespace org\share;
 
 use app\common\model\Goods;
 
-class PosterShare extends UrlShare implements BaseShare
+class PosterShare extends QrShare implements BaseShare
 {
     const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
     private $c = [
         'page_1' => [               //首页
             'poster_w' => 400,
-            'poster_h' => 700,
-            'poster_bcolor' =>[255,255,204],
+            'poster_h' => 600,
+            'poster_bcolor' =>[255,255,255],
             'word' => [
-                [
-                    'string' => '你好，我是王海涛，这个产品不4235345错，我很ajfdslkjlsdkfjlkj喜欢',
-                    'dst_x' => 10,
-                    'dst_y' => 420,
-                    'width' => 260,
-                    'max_line' => 2,
-                    'color' => [255,0,0],
-                    'size' => 16,
-                ],
+
             ],
             'image' => [
-                [
-                    'src' => 'https://demo.jihainet.com/static/uploads/images/2020/03/01/15830590755e5b908324b57.jpeg',
-                    'dst_x' => 0,
-                    'dst_y' => 0,
-                    'dst_w' => 400,
-                    'dst_h' => 400
-                ],
             ]
         ],
         'page_2' => [               //商品详情页
             'poster_w' => 400,
-            'poster_h' => 700,
-            'poster_bcolor' =>[255,255,204],
+            'poster_h' => 570,
+            'poster_bcolor' =>[255,255,255],
             'word' => [
                 [
-                    'string' => '你好，我是王海涛，这个产品不4235345错，我很ajfdslkjlsdkfjlkj喜欢',
+                    'string' => '商品名称-data2里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 420,
+                    'dst_y' => 470,
+                    'width' => 260,
+                    'max_line' => 2,
+                    'color' => [0,0,0],
+                    'size' => 14,
+                ],
+                [
+                    'string' => '价格-data2里动态设置',
+                    'dst_x' => 10,
+                    'dst_y' => 530,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [255,0,0],
                     'size' => 16,
                 ],
+                [
+                    'string' => '扫描或长按识别二维码',
+                    'dst_x' => 278,
+                    'dst_y' => 555,
+                    'width' => 260,
+                    'max_line' => 1,
+                    'color' => [0,0,0],
+                    'size' => 8,
+                ]
             ],
             'image' => [
                 [
-                    'src' => 'https://demo.jihainet.com/static/uploads/images/2020/03/01/15830590755e5b908324b57.jpeg',
+                    'src' => '商品主图-data2里动态设置',
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
                     'dst_h' => 400
+                ],
+                [
+                    'src' => '二维码-data2里动态设置',
+                    'dst_x' => 275,
+                    'dst_y' => 420,
+                    'dst_w' => 120,
+                    'dst_h' => 120
                 ],
             ]
         ],
         'page_3' => [
             'poster_w' => 400,
-            'poster_h' => 700,
-            'poster_bcolor' =>[255,255,204],
+            'poster_h' => 600,
+            'poster_bcolor' =>[255,255,255],
             'word' => [
                 [
-                    'string' => '你好，我是王海涛，这个产品不4235345错，我很ajfdslkjlsdkfjlkj喜欢',
+                    'string' => '商品名称-data2里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 420,
+                    'dst_y' => 470,
+                    'width' => 260,
+                    'max_line' => 2,
+                    'color' => [0,0,0],
+                    'size' => 14,
+                ],
+                [
+                    'string' => '价格-data2里动态设置',
+                    'dst_x' => 10,
+                    'dst_y' => 530,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [255,0,0],
                     'size' => 16,
                 ],
+                [
+                    'string' => '扫描或长按识别二维码',
+                    'dst_x' => 278,
+                    'dst_y' => 555,
+                    'width' => 260,
+                    'max_line' => 1,
+                    'color' => [0,0,0],
+                    'size' => 8,
+                ]
             ],
             'image' => [
                 [
-                    'src' => 'https://demo.jihainet.com/static/uploads/images/2020/03/01/15830590755e5b908324b57.jpeg',
+                    'src' => '商品主图-data2里动态设置',
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
                     'dst_h' => 400
+                ],
+                [
+                    'src' => '二维码-data2里动态设置',
+                    'dst_x' => 275,
+                    'dst_y' => 420,
+                    'dst_w' => 120,
+                    'dst_h' => 120
                 ],
             ]
         ]              //拼团详情页
@@ -92,7 +127,7 @@ class PosterShare extends UrlShare implements BaseShare
         }
         $url = $this->getUrl($url,$re['data']['code']);
         $url = urlencode($url);
-        $re['data'] = url('b2c/common/poster',['code' => $re['data']['code'],'url' => $url],true,true);
+        $re['data'] = url('b2c/common/poster',['client' => $client,'code' => $re['data']['code']],true,true)."?url=".$url;
         return $re;
     }
 
@@ -101,13 +136,19 @@ class PosterShare extends UrlShare implements BaseShare
      * @param $code
      * @return bool
      */
-    public function poster($url,$code){
+    public function poster($url,$code,$client){
         $re = $this->de_url($code);
         if(!$re['status']){
             return $re;
         }
 
-        return $this->mark($re['data'],$url);
+        $qr_re = $this->getQr($url,$code,$client);
+        if(!$qr_re['status']){
+            return $qr_re;
+        }
+
+
+        return $this->mark($re['data'],$qr_re['data']);
     }
     private function mark($data,$url){
         if(!isset($this->c['page_'.$data['page']])){
@@ -179,17 +220,40 @@ class PosterShare extends UrlShare implements BaseShare
             return false;
         }
         $goodsModel = new Goods();
-        $info = $goodsModel->field('name,image_id')->where('id',$data['params']['goods_id'])->find();
+        $info = $goodsModel->field('name,image_id,price')->where('id',$data['params']['goods_id'])->find();
         if(!$info){
+            unset($this->c['page_2']['image'][0]);
+
             return false;
         }
         $this->c['page_2']['word'][0]['string'] = $info['name'];
-        //$this->c['page_2']['image'][0]['src'] = _sImage($info['image_id']);
+        $this->c['page_2']['word'][1]['string'] = "￥".$info['price'];
+        $this->c['page_2']['image'][0]['src'] = _sImage($info['image_id']);
+        $this->c['page_2']['image'][1]['src'] = $url;
+
+
 
         return true;
     }
     //拼团页海报取数据
     private function data3($data,$url){
+        if(!isset($data['params']['goods_id'])){
+            return false;
+        }
+        $goodsModel = new Goods();
+        $info = $goodsModel->field('name,image_id,price')->where('id',$data['params']['goods_id'])->find();
+        if(!$info){
+            unset($this->c['page_2']['image'][0]);
+
+            return false;
+        }
+        $this->c['page_2']['word'][0]['string'] = $info['name'];
+        $this->c['page_2']['word'][1]['string'] = "￥".$info['price'];
+        $this->c['page_2']['image'][0]['src'] = _sImage($info['image_id']);
+        $this->c['page_2']['image'][1]['src'] = $url;
+
+
+
         return true;
     }
 
@@ -277,6 +341,9 @@ class PosterShare extends UrlShare implements BaseShare
      * @return bool
      */
      private function addfont(&$poster,$x,$y,$word,$width,$max_line,$color,$size = 12,$symbol = '...'){
+         if(!$word){
+             return false;
+         }
          for ($i=0;$i<mb_strlen($word);$i++) {
              $letter[] = mb_substr($word, $i, 1);
          }

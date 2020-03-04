@@ -170,8 +170,6 @@ class Common extends Base
      * 二维码
      */
     public function qr(){
-        Header("Content-type: image/png");
-        include_once ROOT_PATH . 'extend/org/phpqrcode.php';
         if(input('?param.url')){
             $url = urldecode(input('param.url'));
         }else{
@@ -187,17 +185,16 @@ class Common extends Base
      * 海报
      */
     public function poster(){
-        Header("Content-type: image/png");
-        //include_once ROOT_PATH . 'extend/org/phpqrcode.php';
         if(input('?param.url')){
             $url = urldecode(input('param.url'));
         }else{
             $url = 'https://www.ji'.'hai'.'net.com';
         }
         $code = input('param.code');
+        $client = input('param.client');
 
         $posterShare = new PosterShare();
-        return $posterShare->poster($url,$code);
+        return $posterShare->poster($url,$code,$client);
 
     }
 }

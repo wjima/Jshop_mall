@@ -2,6 +2,8 @@
 
 namespace org\share;
 
+use app\common\model\Goods;
+
 class PosterShare extends UrlShare implements BaseShare
 {
     const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
@@ -173,6 +175,17 @@ class PosterShare extends UrlShare implements BaseShare
     }
     //商品详情页海报取数据
     private function data2($data,$url){
+        if(!isset($data['params']['goods_id'])){
+            return false;
+        }
+        $goodsModel = new Goods();
+        $info = $goodsModel->field('name,image_id')->where('id',$data['params']['goods_id'])->find();
+        if(!$info){
+            return false;
+        }
+        $this->c['page_2']['word'][0]['string'] = $info['name'];
+        //$this->c['page_2']['image'][0]['src'] = _sImage($info['image_id']);
+
         return true;
     }
     //拼团页海报取数据

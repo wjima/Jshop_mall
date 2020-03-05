@@ -31,7 +31,7 @@
 						<image class="dot" src="/static/image/dot-g.png" mode="" ></image>
 					</view>
 					<view class="abs-img">
-						<image class="icon" src="/static/image/close.png" mode=""></image>
+						<image class="icon" src="/static/image/success.png" mode=""></image>
 					</view>
                 </view>
 				<view class="apply-bot-text">

@@ -110,6 +110,10 @@ class MessageCenter extends Common
             if($code == 'seller_order_notice'){
                 $mobile = getSetting('shop_mobile');
             }
+            //发货时，短信通知用发货人的
+            if($code == 'delivery_notice'){
+                $mobile = $params['ship_mobile'];
+            }
             if($mobile){
                 $smsModel = new Sms();
                 $smsModel->send($mobile,$code,$params);

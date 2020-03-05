@@ -172,6 +172,7 @@ class Common extends Base
     public function qr(){
         ob_end_clean();
         header('Content-type:image/png'); //mime信息
+        include_once ROOT_PATH . 'extend/org/phpqrcode.php';
         if(input('?param.url')){
             $url = urldecode(input('param.url'));
         }else{
@@ -181,8 +182,8 @@ class Common extends Base
         $level = input('param.level', 'L');
         $size =input('param.size', 10);
         $data = QRcode::png($url, false, $level, $size, 2);
-        ob_end_clean();
-        echo $data;
+//        ob_end_clean();
+//        echo $data;
 
     }
 
@@ -201,7 +202,7 @@ class Common extends Base
         $client = input('param.client');
         $posterShare = new PosterShare();
         $data = $posterShare->poster($url,$code,$client);
-        ob_end_clean();
-        echo $data;
+//        ob_end_clean();
+//        echo $data;
     }
 }

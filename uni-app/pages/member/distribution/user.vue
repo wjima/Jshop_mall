@@ -7,6 +7,9 @@
 				<image class='user-head-img' mode="aspectFill" :src='userInfo.avatar'></image>
 				<view class="">
 					<view class='user-name fsz34'>{{ userInfo.nickname }}</view>
+					<view class="fz12 color-f grade" v-if="info.grade_name">
+						当前等级：{{ info.grade_name }}
+					</view>
 					<view class="fz12 color-f grade">
 						当前店铺：{{ siteName }}
 					</view>
@@ -69,8 +72,8 @@
 			</view>
 		</view>
 		<view class='cell-group margin-cell-group right-img'>
-			<view class='cell-item' v-for="(item, index) in utilityMenus" :key="index">
-				<view class='cell-item-hd' @click="navigateToHandle(item.router)">
+			<view class='cell-item' v-for="(item, index) in utilityMenus" :key="index" @click="navigateToHandle(item.router)">
+				<view class='cell-item-hd' >
 					<image class='cell-hd-icon' :src='item.icon'></image>
 					<view class='cell-hd-title'>{{ item.name }}</view>
 				</view>
@@ -78,8 +81,8 @@
 					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
-			<view class='cell-item'>
-				<view class='cell-item-hd' @click="createPoster()">
+			<view class='cell-item' @click="createPoster()">
+				<view class='cell-item-hd' >
 					<image class='cell-hd-icon' src='/static/image/extension.png'></image>
 					<view class='cell-hd-title'>我要推广</view>
 				</view>
@@ -234,7 +237,6 @@
                 
                 this.$api.share(data, res => {
                 	if (res.status) {
-                		this.close()
                 		this.$common.navigateTo('/pages/share?poster=' + res.data)
                 	} else {
                 		this.$common.errorToShow(res.msg)

@@ -270,6 +270,8 @@ function timeToDateObj(micro_second) {
 
 //货币格式化
 function formatMoney(number, places, symbol, thousand, decimal) {
+	// console.log(number)
+	// console.log(places)
 	number = number || 0
 	places = !isNaN((places = Math.abs(places))) ? places : 2
 	symbol = symbol !== undefined ? symbol : '￥'

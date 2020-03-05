@@ -21,14 +21,14 @@ class QrShare extends UrlShare implements BaseShare
             'msg' => ''
         ];
         switch($client){
-            case self::CLIENT_WXMNAPP && false:
+            case self::CLIENT_WXMNAPP:
                 $wx = new Wx();
                 $result = $wx->getQRCode($code,$url);
                 break;
             default:
                 $url = $this->getUrl($url,$code);
                 $url = urlencode($url);
-                $result['data'] = url('b2c/common/qr',['url' =>$url],'png',true);
+                $result['data'] = url('b2c/common/qr',['url' =>$url],true,true);
         }
         return $result;
     }

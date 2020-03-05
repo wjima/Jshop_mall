@@ -211,7 +211,7 @@ export default {
 				this.$common.errorToShow('请输入银行卡号')
             } else if (!this.bankName || !this.cardType || !this.bankCode) {
 				this.$common.errorToShow('请输入正确的银行卡号')
-            } else if (!/^[\u4E00-\u9FA5]{2,4}$/.test(this.name)) {
+            } else if (!/^[\u4E00-\u9FA5\uf900-\ufa2d·s]{2,30}$/.test(this.name)) {
 				this.$common.errorToShow('请输入正确的持卡人名称')
             } else if (!this.areaId) {
 				this.$common.errorToShow('请选择开户行所在地区')

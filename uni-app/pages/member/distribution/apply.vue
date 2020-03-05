@@ -94,7 +94,7 @@ export default {
 				return false
 			} else if (data.agreement != 'on') {
 				//console.log(data)
-				this.$common.errorToShow('请钩选分销协议')
+				this.$common.errorToShow('请勾选分销协议')
 				return false
 			} else {
 				return true

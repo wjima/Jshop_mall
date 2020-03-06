@@ -50,7 +50,6 @@ export default {
 	},
 	data() {
 		return {
-			myShareCode: '', //分享Code
 			imageUrl: '/static/image/share_image.png', //店铺分享图片
 			pageData: [],
 			pageCode: 'mobile_home', //页面布局编码
@@ -60,7 +59,8 @@ export default {
 			userInfo: {}, // 用户信息
 			kefupara: '', //客服传递资料
 			copy: false,
-			suTipStatus: false
+			suTipStatus: false,
+            shareUrl: '/pages/share/jump'
 		};
 	},
 	updated() {
@@ -125,8 +125,6 @@ export default {
 				this.config = res;
 			});
 
-			this.getMyShareCode();
-
 			var _this = this;
 			if (this.$db.get('userToken')) {
 				this.$api.userInfo({}, res => {
@@ -146,17 +144,8 @@ export default {
 			// #ifdef MP-WEIXIN
 			this.userIsSubscription();
 			// #endif
-		},
-		getMyShareCode() {
-			let userToken = this.$db.get('userToken');
-			if (userToken && userToken != '') {
-				// 获取我的分享码
-				this.$api.shareCode({}, res => {
-					if (res.status) {
-						this.myShareCode = res.data ? res.data : '';
-					}
-				});
-			}
+            
+            this.getShareUrl();
 		},
 		//在线客服,只有手机号的，请自己替换为手机号
 		showChat() {
@@ -235,7 +224,23 @@ export default {
 			} else {
 				this.suTipStatus = false;
 			}
-		}
+		},
+        //获取分享URL
+        getShareUrl() {
+            let data = {
+                client: 2,
+                url: "/pages/share/jump",
+                type: 1,
+                page: 1,
+            };
+            let userToken = this.$db.get('userToken');
+            if (userToken && userToken != '') {
+            	data['token'] = userToken;
+            }
+            this.$api.share(data, res => {
+                this.shareUrl = res.data
+            });
+        }
 	},
 	onPullDownRefresh() {
 		this.initData();
@@ -243,16 +248,13 @@ export default {
 	},
 	//分享
 	onShareAppMessage() {
-		let myInviteCode = this.myShareCode ? this.myShareCode : '';
-		let ins = this.$common.shareParameterDecode('type=1&invite=' + myInviteCode);
-		let path = '/pages/share/jump?scene=' + ins;
 		return {
 			title: this.$store.state.config.share_title,
 			// #ifdef MP-ALIPAY
 			desc: this.$store.state.config.share_desc,
 			// #endif
 			imageUrl: this.$store.state.config.share_image,
-			path: path
+			path: this.shareUrl
 		};
 	},
 	// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE

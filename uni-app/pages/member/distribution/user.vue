@@ -153,7 +153,7 @@
 				},
 				info: {}, //分销商信息
 				userInfo: {}, // 用户信息
-
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onShow() {
@@ -252,25 +252,39 @@
 						_this.userInfo = res.data
 						
 					}
+                    this.getShareUrl();
 				})
 			},
 			//去提现
 			goWithdraw(){
 				this.$common.navigateTo('/pages/member/balance/withdraw_cash')
-			}
+			},
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 1,
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=3&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.$store.state.config.share_title,
 				// #ifdef MP-ALIPAY
 				desc: this.$store.state.config.share_desc,
 				// #endif
 				imageUrl: this.$store.state.config.share_image,
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}

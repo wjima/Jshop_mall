@@ -1189,16 +1189,26 @@ class User extends Common
     public function statisticsOrder($day)
     {
         $orderModel = new Order();
-        $where      = [];
-        $where[]    = ['ctime', '>', strtotime('-' . $day . ' days')];
+        $res        = [];
+        for ($i = 0; $i < $day; $i++) {
+            $where    = [];
+            $curr_day = date('Y-m-d');
+            if ($i == 0) {
+                $where[]  = ['ctime', '<', time()];
+                $curr_day = date('Y-m-d');
+            } else {
+                $where[]  = ['ctime', '<', strtotime(date("Y-m-d", strtotime("-" . $i . " day")) . ' 23:59:59')];
+                $curr_day = date("Y-m-d", strtotime("-" . $i . " day"));
+            }
+            $where[] = ['ctime', '>=', strtotime(date("Y-m-d", strtotime("-" . $i . " day")) . ' 00:00:00')];
+            $res[]   =
+                [
+                    'nums' => $orderModel->where($where)->group('user_id')->count(),
+                    'day'  => $curr_day
+                ];
+        }
 
-        $field = 'DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d") as day, count(*) as nums';
-
-        $order_id_sql = $orderModel->where($where)->field('order_id')->group('user_id')->buildSql();
-
-        $where[] = ['order_id', 'in', Db::raw($order_id_sql)];
-        $res     = $orderModel->field($field)->where($where)->where("TIMESTAMPDIFF(DAY,from_unixtime(ctime),now()) <7")->group('user_id')->group('DATE_FORMAT(from_unixtime(ctime),"%Y-%m-%d")')->select();
-        $data    = get_lately_days($day, $res);
+        $data = get_lately_days($day, $res);
         return ['day' => $data['day'], 'data' => $data['data']];
     }
 }

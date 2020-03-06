@@ -141,7 +141,6 @@
 		},
 		data() {
 			return {
-				myShareCode: '', //分享Code
 				shareType: 3,
 				providerList: [], // 分享通道 包含生成海报
 				swiper: {
@@ -180,7 +179,8 @@
 				userToken: 0,
 				time: 0,
 				order_id:'',//订单号
-				orderInfo:{}
+				orderInfo:{},
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
@@ -220,7 +220,6 @@
 			}
 			let timestamp = Date.parse(new Date())/1000;
 			this.lasttime = this.$common.timeToDateObj(options.close_time-timestamp);
-			this.getMyShareCode();
 		},
 		computed: {
 			shareHref() {
@@ -312,7 +311,6 @@
 			toclose() {
 				this.$refs.lvvpopref.close();
 			},
-
 			// 跳转到h5分享页面
 			goShare() {
 				this.$refs.share.show();
@@ -320,33 +318,50 @@
 			closeShare() {
 				this.$refs.share.close();
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			}
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 3,
+                    params: {
+                        goods_id: this.goodsInfo.goods_id,
+                        team_id: this.teamInfo.list[0].team_id
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
+        watch:{
+            goodsInfo: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            },
+            teamInfo: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
 		//分享
 		onShareAppMessage() {
-			 let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			 let teamId = this.teamInfo.list[0].team_id;
-			 let ins = this.$common.shareParameterDecode('type=5&invite=' + myInviteCode+'&id='+ this.goodsInfo.goods_id +'&team_id=' + teamId );
-			
-			 let path = '/pages/share/jump?scene=' + ins;
-			  //console.log(path);
-			 return {
+            return {
 			 	title: this.goodsInfo.name,
 			 	// #ifdef MP-ALIPAY
 			 	desc: this.goodsInfo.brief,
 			 	// #endif
 			 	imageUrl: this.goodsInfo.image_url,
-			 	path: path
+			 	path: this.shareUrl
 			 }
 		 }
 	}

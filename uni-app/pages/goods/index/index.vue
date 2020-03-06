@@ -334,7 +334,6 @@
 		},
 		data() {
 			return {
-				myShareCode: '', //分享Code
 				swiper: {
 					indicatorDots: true,
 					autoplay: true,
@@ -388,7 +387,8 @@
 				],
 				submitStatus: false,
 				config: '', //配置信息
-				goodsShowWord: []
+				goodsShowWord: [],
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
@@ -411,7 +411,6 @@
 
 			// 获取购物车数量
 			this.getCartNums();
-			this.getMyShareCode();
 			this.$api.shopConfig(res => {
 				this.config = res;
 				console.log(res)
@@ -432,7 +431,7 @@
 					}
 				})
 			};
-			this.ifwxl()
+			this.ifwxl();
 		},
 		onShow() {
 			this.submitStatus = false;
@@ -759,17 +758,6 @@
 					urls: imgs.split()
 				});
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			},
 			//在线客服,只有手机号的，请自己替换为手机号
 			showChat() {
 				let _this = this;
@@ -813,20 +801,44 @@
 					_this.$common.errorToShow('暂无设置客服电话');
 				}
 				// #endif
-			}
+			},
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 2,
+                    params: {
+                        goods_id: this.goodsInfo.id,
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
-		//分享
+		watch:{
+            goodsInfo: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
+        //分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=2&id=' + this.goodsInfo.id + '&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.goodsInfo.name,
 				// #ifdef MP-ALIPAY
 				desc: this.goodsInfo.brief,
 				// #endif
 				imageUrl: this.goodsInfo.album[0],
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}

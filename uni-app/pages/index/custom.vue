@@ -16,7 +16,6 @@ export default {
 	},
 	data() {
 		return {
-			myShareCode: '', //分享Code
 			imageUrl: '/static/image/share_image.png', //店铺分享图片
 			pageData: [],
 			pageCode: 'mobile_home', //页面布局编码
@@ -24,7 +23,8 @@ export default {
 			customBarOpacity: false,
 			scrollTop: 0,
 			showLoad: false, //是否显示loading
-			share_name: ''
+			share_name: '',
+            shareUrl: '/pages/share/jump'
 		};
 	},
 	computed: {
@@ -85,37 +85,48 @@ export default {
 					}
 				}
 			);
-
-			this.getMyShareCode();
 		},
-		getMyShareCode() {
-			let userToken = this.$db.get('userToken');
-			if (userToken && userToken != '') {
-				// 获取我的分享码
-				this.$api.shareCode({}, res => {
-					if (res.status) {
-						this.myShareCode = res.data ? res.data : '';
-					}
-				});
-			}
-		}
+        //获取分享URL
+        getShareUrl() {
+            let data = {
+                client: 2,
+                url: "/pages/share/jump",
+                type: 1,
+                page: 7,
+                params: {
+                    page_code: this.pageCode
+                }
+            };
+            let userToken = this.$db.get('userToken');
+            if (userToken && userToken != '') {
+            	data['token'] = userToken;
+            }
+            this.$api.share(data, res => {
+                this.shareUrl = res.data
+            });
+        }
 	},
+    watch:{
+        pageCode: {
+            handler () {
+                this.getShareUrl();
+            },
+            deep: true
+        }
+    },
 	onPullDownRefresh() {
 		this.initData();
 		uni.stopPullDownRefresh();
 	},
 	//分享
 	onShareAppMessage() {
-		let myInviteCode = this.myShareCode ? this.myShareCode : '';
-		let ins = this.$common.shareParameterDecode('type=8&page_code=' + this.pageCode + '&invite=' + myInviteCode);
-		let path = '/pages/share/jump?scene=' + ins;
 		return {
 			title: this.share_name,
 			// #ifdef MP-ALIPAY
 			//desc: this.$store.state.config.share_desc,
 			// #endif
 			//imageUrl: this.$store.state.config.share_image,
-			path: path
+			path: this.shareUrl
 		};
 	},
 	// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE

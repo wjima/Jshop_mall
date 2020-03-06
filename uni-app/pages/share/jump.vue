@@ -10,11 +10,12 @@
             if(e.scene) {
                 this.deshare(e.scene);
             } else {
-                this.$common.errorToShow('失败', () => {
-                	uni.navigateBack({
-                		delta: 1
-                	});
-                });
+                this.gotoIndex();
+                // this.$common.errorToShow('失败', () => {
+                // 	uni.navigateBack({
+                // 		delta: 1
+                // 	});
+                // });
             }
 		},
 		methods: {
@@ -46,6 +47,9 @@
                                 break;
                             case '8': //智能表单
                                 this.gotoForm(res.data.params.id)
+                                break;
+                            case '9': //团购秒杀
+                                this.gotoGroup(res.data.params.goods_id, res.data.params.group_id);
                                 break;
                             default:
                             	this.gotoIndex();

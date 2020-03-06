@@ -503,7 +503,6 @@ export default {
 	},
 	data() {
 		return {
-			myShareCode: '', //分享Code
 			swiper: {
 				indicatorDots: true,
 				autoplay: true,
@@ -591,7 +590,7 @@ export default {
 					second: 0
 				} //被邀请拼团倒计时
 			},
-			
+			shareUrl: '/pages/share/jump'
 		};
 	},
 	onLoad(e) {
@@ -614,7 +613,6 @@ export default {
 
 		// 获取购物车数量
 		this.getCartNums();
-		this.getMyShareCode();
 	},
 	computed: {
 		// 规格切换计算规格商品的 可购买数量
@@ -999,17 +997,6 @@ export default {
 				urls: imgs.split()
 			});
 		},
-		getMyShareCode() {
-			let userToken = this.$db.get('userToken');
-			if (userToken && userToken != '') {
-				// 获取我的分享码
-				this.$api.shareCode({}, res => {
-					if (res.status) {
-						this.myShareCode = res.data ? res.data : '';
-					}
-				});
-			}
-		},
 		//在线客服,只有手机号的，请自己替换为手机号
 		showChat() {
 			// #ifdef H5
@@ -1053,20 +1040,51 @@ export default {
 				_this.$common.errorToShow('暂无设置客服电话');
 			}
 			// #endif
-		}
+		},
+        //获取分享URL
+        getShareUrl() {
+            let data = {
+                client: 2,
+                url: "/pages/share/jump",
+                type: 1,
+                page: 3,
+                params: {
+                    goods_id: this.goodsId,
+                    team_id: this.teamId
+                }
+            };
+            let userToken = this.$db.get('userToken');
+            if (userToken && userToken != '') {
+            	data['token'] = userToken;
+            }
+            this.$api.share(data, res => {
+                this.shareUrl = res.data
+            });
+        }
 	},
+    watch:{
+        goodsId: {
+            handler () {
+                this.getShareUrl();
+            },
+            deep: true
+        },
+        teamId: {
+            handler () {
+                this.getShareUrl();
+            },
+            deep: true
+        }
+    },
 	//分享
 	onShareAppMessage() {
-		let myInviteCode = this.myShareCode ? this.myShareCode : '';
-		let ins = this.$common.shareParameterDecode('type=5&id=' + this.goodsId + '&invite=' + myInviteCode);
-		let path = '/pages/share/jump?scene=' + ins;
 		return {
 			title: this.goodsInfo.name,
 			// #ifdef MP-ALIPAY
 			desc: this.goodsInfo.brief,
 			// #endif
 			imageUrl: this.goodsInfo.album[0],
-			path: path
+			path: this.shareUrl
 		};
 	}
 };

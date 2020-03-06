@@ -326,7 +326,7 @@
 				select_id: '',
 				showSpecs: false,
 				submitStatus: false, //按钮状态
-
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
@@ -722,16 +722,40 @@
 						this.status = res.data.stock < 1 ? false : true
 					}
 				})
-			}
+			},
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 8,
+                    params: {
+                        id: this.formId
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
+        watch:{
+            formId: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.$db.get("userToken");
-			let ins = this.$common.shareParameterDecode('type=10&id=' + this.formId + '&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.form.name,
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}

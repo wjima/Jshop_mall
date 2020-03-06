@@ -51,13 +51,13 @@
 	export default {
 		data() {
 			return {
-				myShareCode: '', //分享Code
 				code: '',
 				money: 0,
 				number: 0,
 				is_superior: false,
 				inviteKey: '',
 				imageUrl: '/static/image/share_image.png',
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		computed: {
@@ -67,7 +67,6 @@
 		},
 		onShow() {
 			this.getInviteData();
-			this.getMyShareCode();
 			this.ifwxl()
 		},
 		methods: {
@@ -193,30 +192,32 @@
 					}
 				});
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			}
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 1,
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=3&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.$store.state.config.share_title,
 				// #ifdef MP-ALIPAY
 				desc: this.$store.state.config.share_desc,
 				// #endif
 				imageUrl: this.$store.state.config.share_image,
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}

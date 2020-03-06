@@ -1189,21 +1189,26 @@ class User extends Common
     public function statisticsOrder($day)
     {
         $orderModel = new Order();
-        $data       = [];
+        $res        = [];
         for ($i = 0; $i < $day; $i++) {
             $where    = [];
-            $curr_day = date('d') . '日';
+            $curr_day = date('Y-m-d');
             if ($i == 0) {
                 $where[]  = ['ctime', '<', time()];
-                $curr_day = date('d') . '日';
+                $curr_day = date('Y-m-d');
             } else {
                 $where[]  = ['ctime', '<', strtotime(date("Y-m-d", strtotime("-" . $i . " day")) . ' 23:59:59')];
-                $curr_day = date("d", strtotime("-" . $i . " day")) . '日';
+                $curr_day = date("Y-m-d", strtotime("-" . $i . " day"));
             }
-            $where[]        = ['ctime', '>=', strtotime(date("Y-m-d", strtotime("-" . $i . " day")) . ' 00:00:00')];
-            $data['data'][] = $orderModel->where($where)->group('user_id')->count();
-            $data['day'][]  = $curr_day;
+            $where[] = ['ctime', '>=', strtotime(date("Y-m-d", strtotime("-" . $i . " day")) . ' 00:00:00')];
+            $res[]   =
+                [
+                    'nums' => $orderModel->where($where)->group('user_id')->count(),
+                    'day'  => $curr_day
+                ];
         }
+
+        $data = get_lately_days($day, $res);
         return ['day' => $data['day'], 'data' => $data['data']];
     }
 }

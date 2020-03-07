@@ -8,16 +8,6 @@ class PosterShare extends QrShare implements BaseShare
 {
     const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
     private $c = [
-        'page_1' => [               //首页
-            'poster_w' => 400,
-            'poster_h' => 600,
-            'poster_bcolor' =>[255,255,255],
-            'word' => [
-
-            ],
-            'image' => [
-            ]
-        ],
         'page_2' => [               //商品详情页
             'poster_w' => 400,
             'poster_h' => 570,
@@ -68,7 +58,7 @@ class PosterShare extends QrShare implements BaseShare
                 ],
             ]
         ],
-        'page_3' => [
+        'page_3' => [               //拼团
             'poster_w' => 400,
             'poster_h' => 600,
             'poster_bcolor' =>[255,255,255],
@@ -124,6 +114,9 @@ class PosterShare extends QrShare implements BaseShare
         $re = $this->getCode($client, $page, $userShareCode, $url, $params);
         if(!$re['status']){
             return $re;
+        }
+        if(!isset($this->c['page_'.$page])){
+            return $this->getQr($url, $re['data']['code'],$client);
         }
         if($client != self::CLIENT_WXMNAPP){
             $url = $this->getUrl($url,$re['data']['code']);

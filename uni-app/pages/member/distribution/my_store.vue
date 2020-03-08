@@ -139,9 +139,9 @@
 				store_banner_src: '',
 				isWeixinBrowser: this.$common.isWeiXinBrowser(), //判断是否是微信浏览器
 				total_goods: 0,
-				myShareCode: '', //邀请码
 				page: 1, //默认页码
-				searchKey: '请输入关键字搜索'
+				searchKey: '请输入关键字搜索',
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onShow: function() {
@@ -158,7 +158,6 @@
 			this.storeCode = store;
 			this.getDistribution(store);
 			this.getGoods();
-			this.getMyShareCode()
 		},
 		mounted() {
 			// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
@@ -314,18 +313,34 @@
 					}
 				})
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			}
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 4,
+                    params: {
+                        store: this.storeCode
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
+        watch:{
+            storeCode: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
 		//上拉加载
 		onReachBottom() {
 			if (this.loadStatus === 'more') {
@@ -334,16 +349,13 @@
 		},
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=9&invite=' + myInviteCode + "&id=" + this.storeCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.$store.state.config.share_title,
 				// #ifdef MP-ALIPAY
 				desc: this.$store.state.config.share_desc,
 				// #endif
 				imageUrl: this.$store.state.config.share_image,
-				path: path
+				path: this.shareUrl
 			}
 		}
 

@@ -23,10 +23,10 @@ export default {
 	},
 	data() {
 		return {
-			myShareCode: '', //分享Code
 			idType: 1, //1文章 2公告 3微信图文消息
 			id: 0,
-			info: {}
+			info: {},
+            shareUrl: '/pages/share/jump'
 		};
 	},
 	onLoad(e) {
@@ -53,8 +53,6 @@ export default {
 
 			this.messageDetail();
 		}
-
-		this.getMyShareCode();
 	},
 	computed: {
 		shopName() {
@@ -115,30 +113,44 @@ export default {
 				}
 			});
 		},
-		getMyShareCode() {
-			let userToken = this.$db.get('userToken');
-			if (userToken && userToken != '') {
-				// 获取我的分享码
-				this.$api.shareCode({}, res => {
-					if (res.status) {
-						this.myShareCode = res.data ? res.data : '';
-					}
-				});
-			}
-		}
+        //获取分享URL
+        getShareUrl() {
+            let data = {
+                client: 2,
+                url: "/pages/share/jump",
+                type: 1,
+                page: 5,
+                params: {
+                    article_id: this.id,
+                    article_type: this.idType
+                }
+            };
+            let userToken = this.$db.get('userToken');
+            if (userToken && userToken != '') {
+            	data['token'] = userToken;
+            }
+            this.$api.share(data, res => {
+                this.shareUrl = res.data
+            });
+        }
 	},
+    watch:{
+        id: {
+            handler () {
+                this.getShareUrl();
+            },
+            deep: true
+        }
+    },
 	//分享
 	onShareAppMessage() {
-		let myInviteCode = this.myShareCode ? this.myShareCode : '';
-		let ins = this.$common.shareParameterDecode('type=4&id=' + this.id + '&id_type=' + this.idType + '&invite=' + myInviteCode);
-		let path = '/pages/share/jump?scene=' + ins;
 		return {
 			title: this.info.title,
 			// #ifdef MP-ALIPAY
 			//desc: this.goodsInfo.brief,
 			// #endif
 			//imageUrl: this.goodsInfo.album[0],
-			path: path
+			path: this.shareUrl
 		};
 	}
 };

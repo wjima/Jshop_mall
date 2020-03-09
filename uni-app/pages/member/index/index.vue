@@ -353,7 +353,7 @@
 				},
 				clerk: [{
 						name: '提货单列表',
-						icon: '/static/image/me-ic-phone.png',
+						icon: '/static/image/ic-me-take.png',
 						router: '../take_delivery/list'
 
 					},

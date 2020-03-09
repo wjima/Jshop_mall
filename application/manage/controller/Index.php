@@ -33,7 +33,7 @@ class Index extends Manage
         //未发货数量
         $unpaid_count = $orderModel->where(['status' => 1, 'pay_status' => 1, 'ship_status' => 1])->count();
         //待发货数量
-        $unship_count = $orderModel->where(['status' => 1, 'pay_status' => 2, 'ship_status' => 1])->count();
+        $unship_count = $orderModel->where(['status' => 1, 'pay_status' => 2, 'ship_status' => [1,2]])->count();
         //待售后数量
         $billAfterSalesModel = new BillAftersales();
         $afterSales_count    = $billAfterSalesModel->getCount();

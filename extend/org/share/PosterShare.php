@@ -126,7 +126,7 @@ class PosterShare extends QrShare implements BaseShare
             $url = $this->getUrl($url,$re['data']['code']);
         }
         $url = urlencode($url);
-        $re['data'] = url('b2c/common/poster',['client' => $client,'code' => $re['data']['code'],'url'=>$url],true,true);
+        $re['data'] = url('b2c/common/poster',['client' => $client,'code' => $re['data']['code']],true,true)."?url=".$url;
         return $re;
     }
 

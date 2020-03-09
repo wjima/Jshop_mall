@@ -16,7 +16,7 @@ export default {
 		};
 	},
 	onLoad(options) {
-		this.poster = options.poster;
+		this.poster = JSON.parse(options.poster);
 	},
 	computed: {
 		weiXinBrowser () {

@@ -205,7 +205,7 @@
 						</view>
 					</view>
 					<scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
-						<spec :spesData="product.default_spes_desc" ref="spec" @changeSpes="changeSpes"></spec>
+						<spec :spesData="defaultSpesDesc" ref="spec" @changeSpes="changeSpes"></spec>
 						<view class="goods-number">
 							<text class="pop-m-title">数量</text>
 							<view class="pop-m-bd-in">
@@ -473,7 +473,10 @@
 			// 获取店铺联系人手机号
 			shopMobile() {
 				return this.$store.state.config.shop_mobile || 0;
-			}
+			},
+            defaultSpesDesc() {
+                return this.product.default_spes_desc;
+            }
 		},
 		onReachBottom() {
 			if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -563,49 +566,45 @@
 				let index = obj.v;
 				let key = obj.k;
 
-				if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index]
-					[key].product_id) {
-					let data = {
-						'id': this.product.default_spes_desc[index][key].product_id
-					};
-					let userToken = this.$db.get("userToken");
-					if (userToken) {
-						data['token'] = userToken;
-					}
-					this.$api.getProductInfo(data, res => {
-						if (res.status == true) {
-							// 切换规格判断可购买数量
-							this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
-							this.product = this.spesClassHandle(res.data);
-						}
-					});
-					uni.showLoading({
-						title: '加载中'
-					});
-					setTimeout(function() {
-						uni.hideLoading();
-					}, 1000);
-				}
+                let userToken = this.$db.get('userToken');
+                let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+                if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
+                    this.$refs.spec.changeSpecData();
+                    this.$api.getProductInfo({id: tmp_default_spes_desc[index][key].product_id,token:userToken}, res => {
+                        if (res.status == true) {
+                            // 切换规格判断可购买数量
+                            this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
+                            this.product = this.spesClassHandle(res.data);
+                        }
+                    });
+                    uni.showLoading({
+                        title: '加载中'
+                    });
+                    setTimeout(function () {
+                        uni.hideLoading();
+                    }, 1000);
+                }
 			},
 			// 多规格样式统一处理
 			spesClassHandle(products) {
-				// 判断是否是多规格 (是否有默认规格)
-				if (products.hasOwnProperty('default_spes_desc')) {
-					let spes = products.default_spes_desc;
-					for (let key in spes) {
-						for (let i in spes[key]) {
-							if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
-								this.$set(spes[key][i], 'cla', 'pop-m-item selected');
-							} else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
-								this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
-							} else {
-								this.$set(spes[key][i], 'cla', 'pop-m-item none');
-							}
-						}
-					}
-					products.default_spes_desc = spes;
-				}
-				return products;
+                // 判断是否是多规格 (是否有默认规格)
+                if (products.hasOwnProperty('default_spes_desc')) {
+                    let spes = products.default_spes_desc;
+                    for (let key in spes) {
+                        for (let i in spes[key]) {
+                            if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
+                                this.$set(spes[key][i], 'cla', 'pop-m-item selected');
+                            } else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
+                                this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
+                            } else {
+                                this.$set(spes[key][i], 'cla', 'pop-m-item none');
+                            }
+                        }
+                    }
+                    spes = JSON.stringify(spes)
+                    products.default_spes_desc = spes;
+                }
+                return products;
 			},
 			// 购买数量加减操作
 			bindChange(val) {

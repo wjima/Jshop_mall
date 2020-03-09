@@ -302,12 +302,12 @@ php;
     file_put_contents($config['databaseUrl'], $db_str);
 
     //配置H5的host
-    $scheme = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:'http';
+    /*$scheme = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:'http';
     $host_url = $scheme . '://' . $_SERVER['HTTP_HOST'];
     $h5config = <<<h5
 window.host = '{$host_url}';
 h5;
-    @file_put_contents($config['h5ConfigUrl'], $h5config);
+    @file_put_contents($config['h5ConfigUrl'], $h5config);*/
     @touch(dirname(dirname(dirname(__FILE__))).'/runtime/install.lock');
 }
 

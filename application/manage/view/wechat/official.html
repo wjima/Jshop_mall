@@ -64,13 +64,7 @@
             <input type="radio" name="wx_official_type" value="subscribe" title="订阅号" {if condition="$data.wx_official_type.value eq 'subscribe'"} checked="" {/if}>
         </div>
     </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label seller-inline-2">公众号二维码：</label>
-        <div class="layui-input-inline seller-inline-5">
-            {Jshop:image id='official_head_img' name="wx_official_head_img" value="$data['wx_official_head_img']['value']"/}
-        </div>
-    </div>
+    
     <div class="layui-form-item">
         <div class="layui-input-block">
             {:jshopToken()}

@@ -103,10 +103,11 @@ class Jshop extends TagLib
             <input class="layui-upload-file" type="hidden" name="' . $str_name . '"  id="image_value_' . $id . '" value="' . "<?php echo " . $value . "?>" . '">
             <textarea id="edit_'.$id.'" style="display: none;"></textarea>
             <script>
+            var maxIndex = getMaxZIndex();
             var _edito'.$id.'r = UE.getEditor("edit_'.$id.'",{
                 initialFrameWidth:800,
                 initialFrameHeight:300,
-                zIndex:19891026,
+                zIndex:maxIndex+1,
                  single:'.$single.'
             });
             _edito'.$id.'r.ready(function (){

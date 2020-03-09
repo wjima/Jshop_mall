@@ -48,22 +48,22 @@ class BillDelivery extends Common
 
     /**
      * 批量发货，可以支持多个订单合并发货，单个订单拆分发货等。
-     * @param $order_id     英文逗号分隔的订单号
-     * @param $logi_code    物流公司编码
-     * @param $logi_no      物流单号
-     * @param $items        发货明细
-     * @param $store_id     收货地址
-     * @param $ship_name    收货人姓名
-     * @param $ship_mobile  收货人电话
-     * @param $ship_area_id 省市区id
-     * @param $shop_address 收货地址
-     * @param string $memo  发货描述
+     * @param $order_id //英文逗号分隔的订单号
+     * @param $logi_code //物流公司编码
+     * @param $logi_no //物流单号
+     * @param $items //发货明细
+     * @param int $store_id //店铺收货地址
+     * @param string $ship_name //收货人姓名
+     * @param string $ship_mobile //收货人电话
+     * @param int $ship_area_id //省市区id
+     * @param string $ship_address //收货地址
+     * @param string $memo 、、发货描述
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function ship($order_id, $logi_code, $logi_no,$items,$store_id=0 ,$ship_name="", $ship_mobile="",$ship_area_id=0,$ship_address="",$memo="")
+    public function ship($order_id, $logi_code, $logi_no, $items, $store_id = 0, $ship_name = "", $ship_mobile = "", $ship_area_id = 0, $ship_address = "", $memo = "")
     {
         $result = [
             'status' => false,
@@ -111,12 +111,15 @@ class BillDelivery extends Common
         ];
 
         //校验发货内容
+        $tNum = 0;
         foreach($items as $product_id => $num){
             if(!isset($dinfo['items'][$product_id])){
                 return error_code(10000);       //发货的商品不在发货明细里，肯定有问题
             }
+            //判断总发货数量
+            $tNum = $tNum + $num;
             //判断是否超发
-            if(($dinfo['items'][$product_id]['nums'] - $dinfo['items']['$product_id']['sendnums'] - $dinfo['items'][$product_id]['reship_nums']) < $num){
+            if(($dinfo['items'][$product_id]['nums'] - $dinfo['items'][$product_id]['sendnums'] - ($dinfo['items'][$product_id]['reship_nums'] - $dinfo['items'][$product_id]['reship_nums_ed'])) < $num){
                 $result['msg'] = $dinfo['items'][$product_id]['name']." 发超了";
                 return $result;
             }
@@ -129,9 +132,14 @@ class BillDelivery extends Common
                 'sn' => $dinfo['items'][$product_id]['sn'],
                 'weight' => $dinfo['items'][$product_id]['weight'],
                 'name' => $dinfo['items'][$product_id]['name'],
-                'addon' => $dinfo['items'][$product_id]['addon'],
+                'addon' => $dinfo['items'][$product_id]['addon'] ? $dinfo['items'][$product_id]['addon'] : '',
                 'nums' => $num
             ];
+        }
+
+        if ($tNum < 1) {
+            $result['msg'] = '请至少发生一件商品！';
+            return $result;
         }
 
         Db::startTrans();
@@ -238,6 +246,7 @@ class BillDelivery extends Common
         } else {
             $logisticsInfo = $this->logistics_query($code, $no);
         }
+
         if ($logisticsInfo['status'] === '200') {
             $result['data']['info'] = [
                 'no' => $logisticsInfo['nu'],
@@ -488,9 +497,9 @@ class BillDelivery extends Common
     public function exportValidate(&$params = [])
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => [],
-            'msg' => '参数丢失',
+            'msg' => '验证成功',
         ];
         return $result;
     }
@@ -534,7 +543,11 @@ class BillDelivery extends Common
         if ($res) {
             $count = $this->where($where)->count();
             foreach ($res as $k => &$v) {
-                $v['username'] = get_user_info($v['user_id'], 'nickname');
+                if(isset($v['user_id']) && $v['user_id']){
+                    $v['username'] = get_user_info($v['user_id'], 'nickname');
+                }else{
+                    $v['username'] = '';
+                }
                 $v['logi_name'] = get_logi_info($v['logi_code']);
                 $v['ship_address'] = get_area($v['ship_area_id']) . '- ' . $v['ship_address'];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
@@ -625,7 +638,8 @@ class BillDelivery extends Common
             $orderLog->addLog($orderInfo['order_id'], $orderInfo['user_id'], $orderLog::LOG_TYPE_SHIP, '订单发货操作，发货单号：' . $deliveryInfo['delivery_id'], $deliveryInfo);
 
             //发送消息
-            $deliveryInfo['ship_name'] = get_logi_info($deliveryInfo['logi_code']);
+            $deliveryInfo['logistics_name'] = get_logi_info($deliveryInfo['logi_code']);
+            $deliveryInfo['order_id'] = $orderInfo['order_id'];
             sendMessage($orderInfo['user_id'], 'delivery_notice', $deliveryInfo);
 
         }

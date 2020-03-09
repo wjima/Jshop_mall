@@ -42,6 +42,12 @@
             </div>
         </div>
         <div class="layui-inline">
+            <label class="layui-form-label">商品编号：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="bn" lay-verify="title" autocomplete="off" placeholder="请输入商品编号" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
             <label class="layui-form-label">上架状态：</label>
             <div class="layui-input-inline seller-inline-2">
                     <select name="marketable" id="marketable">
@@ -153,7 +159,7 @@
             id:'goodsTable',
             cols: [[
                 {type:'checkbox'},
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field:'operating',width:180,title:'操作', align: 'center',templet:function(data){
                     var html = '';
                     html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
@@ -167,7 +173,7 @@
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
-                {field:'name', width:250,title:'名称', align: 'center'},
+                {field:'name', minWidth:250,title:'名称', align: 'center'},
                 {field:'brand_name', width:100,title:'品牌', align: 'center'},
                 {field:'stock', width:100,title:'库存', align: 'center'},
                 {field:'sort', edit: 'text', width:80,title:'排序', align: 'center',templet: function (data) {
@@ -202,7 +208,7 @@
             layer.open({
                 type: 1,
                 title:'商品导入',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn:['确定','取消'],
                 content: $("#importGoods").html(),
                 yes:function (index,obj) {
@@ -232,7 +238,7 @@
             layer.open({
                 type: 1,
                 title:'商品导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn:['确定','取消'],
                 content: $("#exportGoods").html(),
                 yes:function () {
@@ -275,11 +281,11 @@
             if (type == 'all') {
                 filter = {};
             } else if (type == 'up') {
-                delete filter.warn;
                 filter['marketable'] = '1';
+                filter['warn'] = 'false';
             } else if (type == 'down') {
-                delete filter.warn;
                 filter['marketable'] = '2';
+                filter['warn'] = 'false';
             } else if (type == 'warn') {
                 delete filter.marketable;
                 filter['warn'] = 'true';
@@ -319,7 +325,7 @@
                 if(html.status){
                     layer.open({
                         type: 1,
-                        area: ['500px', '450px'],
+                        area: setpage(550,450),
                         fixed: false,
                         title:'高级筛选',
                         maxmin: false,
@@ -416,7 +422,7 @@
                 if(res.status){
                     layer.open({
                         type: 1,
-                        area: ['700px', '450px'],
+                        area: setpage(700,450),
                         fixed: false, //不固定
                         title:'标签设置',
                         shade: 0,
@@ -454,7 +460,7 @@
                 if(res.status){
                     layer.open({
                         type: 1,
-                        area: ['500px', '350px'],
+                        area: setpage(550,350),
                         fixed: false, //不固定
                         title:'取消标签',
                         shade: 0,
@@ -500,7 +506,7 @@
                 if(res.status){
                     layer.open({
                         type: 1,
-                        area: ['700px', '450px'],
+                        area: setpage(700,450),
                         fixed: false, //不固定
                         title:'价格设置',
                         shade: 0,
@@ -536,7 +542,7 @@
                 if(res.status){
                     layer.open({
                         type: 1,
-                        area: ['700px', '450px'],
+                        area: setpage(700,450),
                         fixed: false, //不固定
                         title:'库存设置',
                         shade: 0,

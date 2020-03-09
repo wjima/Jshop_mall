@@ -1,37 +1,67 @@
 <div class="layui-form-item">
+    <label class="layui-form-label">模式：</label>
+    <div class="layui-input-inline seller-inline-6">
+        <input type="radio" name="params[type]" lay-filter="radio_type" value="1" title="服务商模式" {if !isset($paymentInfo['params']['type']) || $paymentInfo['params']['type'] == 1} checked=""{/if}>
+      <input type="radio" name="params[type]" lay-filter="radio_type" value="2" title="普通商户模式" {if isset($paymentInfo['params']['type']) && $paymentInfo['params']['type'] == 2} checked=""{/if}><br />
+         
+    </div>
+</div>
+<div id="radio_type_1"  {if isset($paymentInfo['params']['type']) && $paymentInfo['params']['type'] == 2} style="display:none;"{/if}>
+    <div class="layui-form-item">
+        <label class="layui-form-label">服务商商户号：</label>
+        <div class="layui-form-mid seller-inline-6">{:config('jshop.service_wechatpay_mch_id')}<br />
+            <span style="font-size:0.8em;">
+                目前我们吉海科技已经成为了微信服务商，可以为大家提供更好的微信支付的服务，可以使你的费率更低，配置微信支付更简单，请联系<a href="https://www.jihainet.com/" style="color:#FF7159;" target="_blank">我们客服</a>来帮您申请微信支付吧
+                </span>
+        </div>
+    </div>
+</div>
+<div class="layui-form-item">
     <label class="layui-form-label">商户号：</label>
     <div class="layui-input-inline seller-inline-6">
         <input type="text" name="params[mch_id]" value="{$paymentInfo.params.mch_id}" required  lay-verify="required" placeholder="请输入商户号" autocomplete="off" class="layui-input">
-         <span style="font-size:0.8em;"><a href="https://pay.weixin.qq.com/" style="color:#FF7159;" target="_blank">商户平台</a>》账户中心》账户设置》商户信息</span>
+        <span style="font-size:0.8em;"><a href="https://pay.weixin.qq.com/" style="color:#FF7159;" target="_blank">商户平台</a>》账户中心》账户设置》商户信息</span>
     </div>
 </div>
-<div class="layui-form-item">
-    <label class="layui-form-label">API秘钥：</label>
-    <div class="layui-input-inline seller-inline-6">
-        <input type="text" name="params[key]" value="{$paymentInfo.params.key}" required  lay-verify="required" placeholder="请输入API秘钥" autocomplete="off" class="layui-input">
-        <span style="font-size:0.8em;"><a href="https://pay.weixin.qq.com/" style="color:#FF7159;" target="_blank">商户平台</a>》账户中心》账户设置》API安全</span>
+<div id="radio_type_2" {if !isset($paymentInfo['params']['type']) || $paymentInfo['params']['type'] == 1} style="display:none;"{/if}>
+    <div class="layui-form-item">
+        <label class="layui-form-label">API秘钥：</label>
+        <div class="layui-input-inline seller-inline-6">
+            <input type="text" name="params[key]" value="{$paymentInfo.params.key}" required  lay-verify="required" placeholder="请输入API秘钥" autocomplete="off" class="layui-input">
+            <span style="font-size:0.8em;"><a href="https://pay.weixin.qq.com/" style="color:#FF7159;" target="_blank">商户平台</a>》账户中心》账户设置》API安全</span>
+        </div>
     </div>
-</div>
-<div class="layui-form-item">
-    <label class="layui-form-label">appid：</label>
-    <div class="layui-input-block" style="font-size:0.9em;">
-        appid的取值是取的在后台》微信管理》小程序配置里和后台》微信管理》公众号配置里的appid，当是微信公众号内支付的话，使用的就是微信公众号的appid，当是小程序支付的话，使用的是小程序的appid，当只有h5端微信支付的时候，不开启微信公众号和微信小程序的时候，这两个appid随便写一个，就可以了。
+    <div class="layui-form-item">
+        <label class="layui-form-label">appid：</label>
+        <div class="layui-input-block" style="font-size:0.9em;">
+            appid的取值是取的在后台》微信管理》小程序配置里和后台》微信管理》公众号配置里的appid，当是微信公众号内支付的话，使用的就是微信公众号的appid，当是小程序支付的话，使用的是小程序的appid，当只有h5端微信支付的时候，不开启微信公众号和微信小程序的时候，这两个appid随便写一个，就可以了。
+        </div>
     </div>
-</div>
-<div class="layui-form-item">
-    <label class="layui-form-label">证书</label>
-    <div class="layui-input-block" style="font-size:0.9em;">
-        如果在线退款的话，需要手动上传cert证书和key证书，不在线退款的话，可以不传cert证书和key证书<br />
-        cert证书请手动上传到/config/payment_cert/wechatpay/apiclient_cert.pem，
-        key证书请手动上传到/config/payment_cert/wechatpay/apiclient_key.pem。
+    <div class="layui-form-item">
+        <label class="layui-form-label">证书</label>
+        <div class="layui-input-block" style="font-size:0.9em;">
+            如果在线退款的话，需要手动上传cert证书和key证书，不在线退款的话，可以不传cert证书和key证书<br />
+            cert证书请手动上传到/config/payment_cert/wechatpay/apiclient_cert.pem，
+            key证书请手动上传到/config/payment_cert/wechatpay/apiclient_key.pem。
 
+        </div>
     </div>
 </div>
 
 <script>
     layui.use('upload', function() {
         var $ = layui.jquery;
+        layui.form.on('radio(radio_type)', function(data){
+            if(data.value == 1){
+                layui.jquery('#radio_type_1').show();
+                layui.jquery('#radio_type_2').hide();
+            }else{
+                layui.jquery('#radio_type_2').show();
+                layui.jquery('#radio_type_1').hide();
+            }
+        });  
     });
+
 
 
 </script>

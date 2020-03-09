@@ -5,11 +5,9 @@
 		</div>
 	</div>
 </form>
-
 <div class="table-body">
 	<table id="typeTable" lay-filter="test"></table>
 </div>
-
 <script>
     var table;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
@@ -22,9 +20,9 @@
             url: "{:url('GoodsTypeSpec/index')}?_ajax=1",
             id: 'typeTable',
             cols: [[
-                {type:'numbers'},
-                {field: 'name', width: 150, title: '名称'},
-                {field: 'spec_value', width: 240, title: '属性值',templet:function(data){
+				{field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'name', width: 150, title: '名称', align: 'center'},
+                {field: 'spec_value', minWidth: 240, title: '属性值',templet:function(data){
                     var html="";
                     if(data.spec_value.length>0){
                         $.each(data.spec_value,function(i,j){
@@ -35,13 +33,13 @@
                     }else{
                         return '无属性值';
                     }
-                }},
-                {field: 'sort', width: 100, title: '排序'},
+                }, align: 'center'},
+                {field: 'sort', width: 100, title: '排序', align: 'center'},
                 {field: 'operating', title: '操作', templet: function (data) {
                     var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
                     html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
                     return html;
-                }}
+                }, align: 'center', width: 140}
             ]],
         });
 
@@ -63,7 +61,7 @@
 					window_box = layer.open({
 						type: 1,
 						title: '添加属性',
-						area: ['420px', '420px'], //宽高
+						area: setpage(420,420), //宽高
 						content: e.data
 					});
 				}else{
@@ -81,7 +79,7 @@
 					window_box = layer.open({
 						type: 1,
 						title: '编辑属性',
-						area: ['440px', '550px'], //宽高
+						area: setpage(440,550), //宽高
 						content: e.data
 					});
 				}else{

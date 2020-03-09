@@ -250,7 +250,7 @@ class Manage extends Common
         session('manage', $userInfo->toArray());
 
         $userLogModel = new UserLog();//添加登录日志
-        $userLogModel->setLog($userInfo->id, $userLogModel::USER_LOGIN);
+        $userLogModel->setLog($userInfo->id, $userLogModel::USER_LOGIN,[],$userLogModel::MANAGE_TYPE);
 
         $result['status'] = true;
         return $result;

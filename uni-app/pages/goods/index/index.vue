@@ -24,11 +24,11 @@
 			<view class='cell-group'>
 				<view class='cell-item goods-top'>
 					<view class='cell-item-hd'>
-						<view class='cell-hd-title goods-price red-price'>￥{{ product.price || '' }}</view>
-						<view class='cell-hd-title goods-price cost-price' v-if="parseFloat(product.mktprice)>0">￥{{ product.mktprice  || ''}}</view>
+						<view class='cell-hd-title goods-price red-price'>￥{{ product.price || '0.00' }}</view>
+						<view class='cell-hd-title goods-price cost-price' v-if="parseFloat(product.mktprice)>0">￥{{ product.mktprice  || '0.00'}}</view>
 					</view>
 					<view class='cell-item-ft'>
-						<text>{{ goodsInfo.buy_count || '' }} 人已购买</text>
+						<text>{{ goodsInfo.buy_count || '0' }} 人已购买</text>
 					</view>
 				</view>
 
@@ -49,7 +49,7 @@
 				</view>
 
 				<!-- 促销 -->
-				<view class='cell-item goods-title-item' v-if="promotion.length">
+				<view class='cell-item goods-title-item cell-item-mid' v-if="promotion.length">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>促销</view>
 					</view>
@@ -65,7 +65,7 @@
 				<!-- 促销end -->
 
 				<!-- 规格 -->
-				<view class='cell-item goods-title-item' v-if="isSpes">
+				<view class='cell-item goods-title-item cell-item-mid' v-if="isSpes">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>规格</view>
 					</view>
@@ -75,18 +75,14 @@
 				</view>
 				<!-- 规格end -->
 
-				<view class='cell-item goods-title-item'>
+				<view class='cell-item goods-title-item cell-item-mid' v-if="goodsShowWord && goodsShowWord != ''">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>说明</view>
 					</view>
 					<view class='cell-item-bd'>
-						<view class="cell-bd-view">
+						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
 							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<text class="cell-bd-text">24小时内发货</text>
-						</view>
-						<view class="cell-bd-view">
-							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<text class="cell-bd-text">7天拆封无条件退货</text>
+							<view class="cell-bd-text">{{item}}</view>
 						</view>
 					</view>
 				</view>
@@ -111,19 +107,6 @@
 									<text class='cell-bd-text'>{{ item.value || ''}}</text>
 								</view>
 							</view>
-							<!-- 							<view class='cell-item'>
-								<view class='cell-item-hd'>
-									<view class='cell-hd-title'>保修政策</view>
-								</view>
-								<view class='cell-item-bd'>
-									<view class="cell-bd-view">
-										<text class="cell-bd-text">二十日内包修理或换货</text>
-									</view>
-									<view class="cell-bd-view">
-										<text class="cell-bd-text">一年内包修理</text>
-									</view>
-								</view>
-							</view> -->
 						</view>
 						<view class="comment-none" v-else>
 							<image class="comment-none-img" src="/static/image/order.png" mode=""></image>
@@ -133,7 +116,7 @@
 						<view v-if="goodsComments.list.length">
 							<view class="goods-assess-item" v-for="(item, index) in goodsComments.list" :key="index">
 								<view class='cell-group'>
-									<view class='cell-item goods-title-item'>
+									<view class='cell-item goods-title-item cell-item-mid'>
 										<view class='cell-item-hd'>
 											<image class='user-head-img' :src='item.user.avatar' mode="aspectFill"></image>
 										</view>
@@ -179,8 +162,8 @@
 		<lvv-popup position="bottom" ref="share">
 
 			<!-- #ifdef H5 -->
-			<shareByH5 :ifwx="ifwx" :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
-			 :shareHref="shareHref" @close="closeShare()"></shareByH5>
+			<shareByH5 :ifwx="ifwx" :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name"
+			 :shareContent="goodsInfo.brief" :shareHref="shareHref" @close="closeShare()"></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
@@ -192,7 +175,7 @@
 			<shareByAli :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
 			 :shareHref="shareHref" @close="closeShare()"></shareByAli>
 			<!-- #endif -->
-			
+
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
 			 :shareHref="shareHref" @close="closeShare()"></shareByTt>
@@ -222,7 +205,7 @@
 						</view>
 					</view>
 					<scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
-						<spec :spesData="product.default_spes_desc" ref="spec" @changeSpes="changeSpes"></spec>
+						<spec :spesData="defaultSpesDesc" ref="spec" @changeSpes="changeSpes"></spec>
 						<view class="goods-number">
 							<text class="pop-m-title">数量</text>
 							<view class="pop-m-bd-in">
@@ -231,8 +214,6 @@
 						</view>
 					</scroll-view>
 					<view class="pop-b">
-						<!-- <button class='btn btn-square btn-g btn-half' @click="addToCart">加入购物车</button>
-						<button class='btn btn-square btn-b btn-half' @click="buyNow">立即购买</button> -->
 						<button class='btn btn-square btn-b btn-all' hover-class="btn-hover2" @click="clickHandle()" :disabled='submitStatus'
 						 :loading='submitStatus' v-if="product.stock">确定</button>
 						<button class='btn btn-square btn-g btn-all' v-else>已售罄</button>
@@ -253,13 +234,15 @@
 			</view>
 			<!-- #endif -->
 			<!-- #ifdef MP-WEIXIN -->
-			<button class="goods-bottom-ic weiContact" hover-class="none" open-type="contact" bindcontact="showChat" :session-from="kefupara">
+			<button class="goods-bottom-ic weiContact" hover-class="none" open-type="contact" bindcontact="showChat"
+			 :session-from="kefupara">
 				<image class="icon" src="/static/image/customerservice.png" mode=""></image>
 				<view>客服</view>
 			</button>
 			<!-- #endif -->
 			<!-- #ifdef MP-ALIPAY -->
-			<contact-button class="goods-bottom-ic icon" icon="/static/image/customerservice.png" size="80rpx*80rpx" tnt-inst-id="WKPKUZXG" scene="SCE00040186" hover-class="none" />
+			<contact-button class="goods-bottom-ic icon" icon="/static/image/customerservice.png" size="80rpx*80rpx" tnt-inst-id="WKPKUZXG"
+			 scene="SCE00040186" hover-class="none" />
 			<!-- #endif -->
 			<!-- #ifdef MP-TOUTIAO -->
 			<view class="goods-bottom-ic" @click="showChat()">
@@ -267,19 +250,19 @@
 				<view>客服</view>
 			</view>
 			<!-- #endif -->
-			
+
 			<view class="goods-bottom-ic" @click="redirectCart">
 				<view class="badge color-f" v-if="cartNums">{{ cartNums || ''}}</view>
 				<image class="icon" src="/static/image/ic-me-car.png" mode=""></image>
 				<view>购物车</view>
 			</view>
-			
+
 			<view class="goods-bottom-ic" @click="collection">
 				<image class="icon" :src="isfav ? favLogo[1] : favLogo[0]" mode=""></image>
 				<view v-if="!isfav">收藏</view>
 				<view v-if="isfav">已收藏</view>
 			</view>
-			
+
 			<button class='btn btn-square btn-g' @click="toshow(1)" hover-class="btn-hover2">加入购物车</button>
 			<button class='btn btn-square btn-b' @click="toshow(2)" hover-class="btn-hover2">立即购买</button>
 		</view>
@@ -288,7 +271,7 @@
 		<!-- 右边浮动球 -->
 		<uni-fab :pattern="pattern" :content="content" :horizontal="horizontal" :vertical="vertical" :direction="direction"
 		 @trigger="trigger"></uni-fab>
-		 
+
 	</view>
 </template>
 
@@ -321,7 +304,7 @@
 	// #ifdef APP-PLUS || APP-PLUS-NVUE
 	import shareByApp from '@/components/share/shareByApp.vue'
 	// #endif
-	import jshopContent from '@/components/jshop/jshop-content.vue'//视频和文本解析组件
+	import jshopContent from '@/components/jshop/jshop-content.vue' //视频和文本解析组件
 
 	export default {
 		components: {
@@ -351,7 +334,6 @@
 		},
 		data() {
 			return {
-				myShareCode: '', //分享Code
 				swiper: {
 					indicatorDots: true,
 					autoplay: true,
@@ -404,7 +386,9 @@
 					}
 				],
 				submitStatus: false,
-				config:'',//配置信息
+				config: '', //配置信息
+				goodsShowWord: [],
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
@@ -427,9 +411,10 @@
 
 			// 获取购物车数量
 			this.getCartNums();
-			this.getMyShareCode();
 			this.$api.shopConfig(res => {
 				this.config = res;
+				console.log(res)
+				this.goodsShowWord = res.goods_show_word;
 			});
 			var _this = this
 			if (this.$db.get('userToken')) {
@@ -446,9 +431,9 @@
 					}
 				})
 			};
-			this.ifwxl()
+			this.ifwxl();
 		},
-		onShow(){
+		onShow() {
 			this.submitStatus = false;
 		},
 		computed: {
@@ -486,9 +471,12 @@
 				// #endif
 			},
 			// 获取店铺联系人手机号
-			shopMobile(){
+			shopMobile() {
 				return this.$store.state.config.shop_mobile || 0;
-			}
+			},
+            defaultSpesDesc() {
+                return this.product.default_spes_desc;
+            }
 		},
 		onReachBottom() {
 			if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -497,14 +485,21 @@
 		},
 		methods: {
 			// 判断是不是微信浏览器
-			ifwxl(){
+			ifwxl() {
 				this.ifwx = this.$common.isWeiXinBrowser()
 			},
 			// 返回上一页
 			backBtn() {
-				uni.navigateBack({
-					delta: 1
-				});
+				var pages = getCurrentPages();
+				if (pages.length > 1) {
+					uni.navigateBack({
+						delta: 1
+					});
+				} else {
+					uni.switchTab({
+						url: '/pages/index/index'
+					});
+				}
 			},
 			// 获取商品详情
 			getGoodsDetail() {
@@ -571,49 +566,45 @@
 				let index = obj.v;
 				let key = obj.k;
 
-				if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index]
-					[key].product_id) {
-					let data = {
-						'id': this.product.default_spes_desc[index][key].product_id
-					};
-					let userToken = this.$db.get("userToken");
-					if (userToken) {
-						data['token'] = userToken;
-					}
-					this.$api.getProductInfo(data, res => {
-						if (res.status == true) {
-							// 切换规格判断可购买数量
-							this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
-							this.product = this.spesClassHandle(res.data);
-						}
-					});
-					uni.showLoading({
-						title: '加载中'
-					});
-					setTimeout(function() {
-						uni.hideLoading();
-					}, 1000);
-				}
+                let userToken = this.$db.get('userToken');
+                let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+                if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
+                    this.$refs.spec.changeSpecData();
+                    this.$api.getProductInfo({id: tmp_default_spes_desc[index][key].product_id,token:userToken}, res => {
+                        if (res.status == true) {
+                            // 切换规格判断可购买数量
+                            this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
+                            this.product = this.spesClassHandle(res.data);
+                        }
+                    });
+                    uni.showLoading({
+                        title: '加载中'
+                    });
+                    setTimeout(function () {
+                        uni.hideLoading();
+                    }, 1000);
+                }
 			},
 			// 多规格样式统一处理
 			spesClassHandle(products) {
-				// 判断是否是多规格 (是否有默认规格)
-				if (products.hasOwnProperty('default_spes_desc')) {
-					let spes = products.default_spes_desc;
-					for (let key in spes) {
-						for (let i in spes[key]) {
-							if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
-								this.$set(spes[key][i], 'cla', 'pop-m-item selected');
-							} else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
-								this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
-							} else {
-								this.$set(spes[key][i], 'cla', 'pop-m-item none');
-							}
-						}
-					}
-					products.default_spes_desc = spes;
-				}
-				return products;
+                // 判断是否是多规格 (是否有默认规格)
+                if (products.hasOwnProperty('default_spes_desc')) {
+                    let spes = products.default_spes_desc;
+                    for (let key in spes) {
+                        for (let i in spes[key]) {
+                            if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
+                                this.$set(spes[key][i], 'cla', 'pop-m-item selected');
+                            } else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
+                                this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
+                            } else {
+                                this.$set(spes[key][i], 'cla', 'pop-m-item none');
+                            }
+                        }
+                    }
+                    spes = JSON.stringify(spes)
+                    products.default_spes_desc = spes;
+                }
+                return products;
 			},
 			// 购买数量加减操作
 			bindChange(val) {
@@ -708,7 +699,7 @@
 						} else {
 							this.$common.errorToShow(res.msg);
 						}
-					},res => {
+					}, res => {
 						this.submitStatus = false;
 					})
 				}
@@ -727,8 +718,10 @@
 							this.toclose();
 							let cartIds = res.data;
 							this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds));
+						} else {
+							this.$common.errorToShow(res.msg);
 						}
-					},res => {
+					}, res => {
 						this.submitStatus = false;
 					})
 				}
@@ -744,26 +737,8 @@
 				this.submitStatus = true;
 				this.type === 1 ? this.addToCart() : this.buyNow();
 			},
-			// 右下角按钮
-			// 		goIndex(){
-			// 			uni.switchTab({
-			// 				url:'../../index/index'
-			// 			});
-			// 		},
 			trigger(e) {
-				// console.log(e);
 				this.content[e.index].active = !e.item.active;
-				//             uni.showModal({
-				//                 title: '提示',
-				//                 content: `您${this.content[e.index].active?'选中了':'取消了'}${e.item.text}`,
-				//                 success: function(res) {
-				//                     if (res.confirm) {
-				//                         console.log('用户点击确定');
-				//                     } else if (res.cancel) {
-				//                         console.log('用户点击取消');
-				//                     }
-				//                 }
-				//             });
 				uni.switchTab({
 					url: e.item.url
 				})
@@ -781,17 +756,6 @@
 				uni.previewImage({
 					urls: imgs.split()
 				});
-			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
 			},
 			//在线客服,只有手机号的，请自己替换为手机号
 			showChat() {
@@ -817,39 +781,63 @@
 				})
 				window._AIHECONG('showChat')
 				// #endif
-			
+
 				// 客服页面
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
 				this.$common.navigateTo('../customer_service/index');
 				// #endif
-				
+
 				// 头条系客服
 				// #ifdef MP-TOUTIAO
-				if(this.shopMobile != 0){
+				if (this.shopMobile != 0) {
 					let _this = this;
 					tt.makePhoneCall({
 						phoneNumber: this.shopMobile.toString(),
 						success(res) {},
 						fail(res) {}
 					});
-				}else{
+				} else {
 					_this.$common.errorToShow('暂无设置客服电话');
 				}
 				// #endif
-			}
+			},
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 2,
+                    params: {
+                        goods_id: this.goodsInfo.id,
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
-		//分享
+		watch:{
+            goodsInfo: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
+        //分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=2&id=' + this.goodsInfo.id + '&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.goodsInfo.name,
 				// #ifdef MP-ALIPAY
 				desc: this.goodsInfo.brief,
 				// #endif
 				imageUrl: this.goodsInfo.album[0],
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}
@@ -913,6 +901,7 @@
 	.goods-title-item .cell-item-bd {
 		color: #333;
 		font-size: 24upx;
+		display: block;
 	}
 
 	.goods-title-item .cell-bd-text {
@@ -922,10 +911,11 @@
 	.cell-bd-view {
 		position: relative;
 		overflow: hidden;
+		margin-bottom: 8upx;
 	}
 
-	.cell-bd-view:first-child {
-		margin-bottom: 8upx;
+	.cell-bd-view:last-child {
+		margin-bottom: 0;
 	}
 
 	.goods-title-item-ic {
@@ -990,7 +980,6 @@
 	.goods-bottom-ic .icon {
 		position: relative;
 		top: 6upx;
-		/* left: -6upx; */
 		/* #ifdef MP-ALIPAY */
 		background-size: 100% 100%;
 		/* #endif */
@@ -1027,7 +1016,6 @@
 		position: relative;
 		padding: 30upx 26upx;
 		border-bottom: 2upx solid #f3f3f3;
-		/* box-shadow: 0 0 20upx #ccc; */
 	}
 
 	.goods-img {
@@ -1209,7 +1197,6 @@
 		z-index: 999;
 		text-align: center;
 		padding: 14upx 0;
-		/* line-height: 80upx; */
 		width: 80upx;
 		height: 80upx;
 		font-size: 24upx;
@@ -1254,7 +1241,6 @@
 	.cost-price {
 		font-size: 26upx;
 		text-decoration: line-through;
-		/* margin-left: 8rpx; */
 		display: block;
 	}
 
@@ -1360,8 +1346,8 @@
 		vertical-align: middle;
 		margin-right: 4px;
 	}
-	
-	.service{
+
+	.service {
 		width: 80rpx;
 		height: 80rpx;
 		background-color: #fff;
@@ -1375,25 +1361,29 @@
 		box-shadow: 0 0 10rpx #ccc;
 		padding: 0;
 	}
-	.service .icon{
+
+	.service .icon {
 		width: 60rpx;
 		height: 60rpx;
 	}
-	
+
 	/* #ifdef MP-WEIXIN */
-	.weiContact{
+	.weiContact {
 		background-color: #fff;
 		border: none;
 	}
-	.weiContact::after{
+
+	.weiContact::after {
 		border: none;
 	}
-	.weiContact>view{
-		position:absolute;
-		top:45rpx;
-		left:50%;
-		transform:translateX(-50%);
+
+	.weiContact>view {
+		position: absolute;
+		top: 45rpx;
+		left: 50%;
+		transform: translateX(-50%);
 
 	}
+
 	/* #endif */
 </style>

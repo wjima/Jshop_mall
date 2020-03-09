@@ -5,8 +5,9 @@
 			<text class='withdrawcash-num'>{{ userInfo.balance }}</text>
 		</view>
 		<view class='cell-group margin-cell-group right-img'>
-			<view class='cell-item'>
-				<view class='cell-item-hd' @click="navigateToHandle('./recharge')">
+			<!-- #ifndef MP-WEIXIN -->
+			<view class='cell-item' v-if="platform != 'ios'" @click="navigateToHandle('./recharge')">
+				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' src='/static/image/topup.png'></image>
 					<view class='cell-hd-title'>账户充值</view>
 				</view>
@@ -14,8 +15,9 @@
 					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
-			<view class='cell-item'>
-				<view class='cell-item-hd' @click="navigateToHandle('./withdraw_cash')">
+			<!-- #endif -->
+			<view class='cell-item' @click="navigateToHandle('./withdraw_cash')">
+				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' src='/static/image/withdraw.png'></image>
 					<view class='cell-hd-title'>余额提现</view>
 				</view>
@@ -23,8 +25,8 @@
 					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
-			<view class='cell-item'>
-				<view class='cell-item-hd' @click="navigateToHandle('./details')">
+			<view class='cell-item' @click="navigateToHandle('./details')">
+				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' src='/static/image/detail.png'></image>
 					<view class='cell-hd-title'>余额明细</view>
 				</view>
@@ -32,8 +34,8 @@
 					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
-			<view class='cell-item'>
-				<view class='cell-item-hd' @click="navigateToHandle('./cashlist')">
+			<view class='cell-item' @click="navigateToHandle('./cashlist')">
+				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' src='/static/image/record.png'></image>
 					<view class='cell-hd-title'>提现记录</view>
 				</view>
@@ -41,8 +43,8 @@
 					<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 				</view>
 			</view>
-			<view class='cell-item'>
-				<view class='cell-item-hd' @click="navigateToHandle('./bankcard')">
+			<view class='cell-item' @click="navigateToHandle('./bankcard')">
+				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' src='/static/image/card.png'></image>
 					<view class='cell-hd-title'>我的银行卡</view>
 				</view>
@@ -58,15 +60,23 @@
 export default {
 	data () {
 		return {
-			userInfo: {}
+			userInfo: {},
+			platform: 'ios'
 		}
 	},
 	onShow () {
-		this.getUserInfo()
+		this.getUserInfo();
 	},
 	methods: {
 		// 获取用户信息
 		getUserInfo () {
+			let _this = this;
+			uni.getSystemInfo({
+				success: function (res) {
+					_this.platform = res.platform;
+				}
+			});
+			
 			this.$api.userInfo({}, res => {
 				if (res.status) {
 					this.userInfo = res.data

@@ -1,26 +1,22 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">广告名称：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="name" lay-verify="title" placeholder="请输入广告名称" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">更新时间：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" id="utime" name="utime" lay-verify="title" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="search"><i class="iconfont icon-chaxun"></i>筛选</button>
 
             <button type="button" class="layui-btn layui-btn-sm add"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
 </form>
 
@@ -41,25 +37,26 @@
             id:'carousel',
             url: "{:url('Carousel/index')}",
             cols: [[ //标题栏
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field: 'name', title: '广告名称',align:'center'},
-                {field: 'img', title: '广告图片',align:'center',width:120, templet: function(data){
+                {field: 'img', title: '广告图片',align:'center',width:100, templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.img+'")><image style="max-width:30px;max-height:30px;" src="'+data.img+'"/></a>';
                 }},
                 {field: 'carousel_type', title: '广告类型',align:'center',width:100},
                 {field: 'value', title: '广告地址',align:'center'},
                 {field: 'pname', title: '所属广告位',align:'center'},
-                {field: 'ctime',sort: true, title: '创建时间' ,align:'center'},
-                {field: 'utime',sort: true, title: '更新时间' ,align:'center'},
+                {field: 'ctime',sort: true, title: '创建时间' ,align:'center',width:170},
+                {field: 'utime',sort: true, title: '更新时间' ,align:'center',width:170},
                 {field: 'sort', sort: true, title: '排序',align:'center',width:80},
-                {width:150, title:'操作',align:'center', toolbar:'#carouselBar'}
+                {width:140, title:'操作',align:'center', toolbar:'#carouselBar'}
             ]] //设置表头
             //,…… //更多参数参考右侧目录：基本参数选项
         });
 
         date.render({
             elem:'#utime',
-            range: '到'
+            range: '到',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(search)', function(data){

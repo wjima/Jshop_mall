@@ -8,7 +8,7 @@
         </div>
         {else /}
             <div class="layui-input-inline seller-inline-3">
-                <input name="username" value="{$data.username}" lay-verify="required" placeholder="请输入登陆账号" class="layui-input" type="text">
+                <input name="username" value="{$data.username}" lay-verify="required" placeholder="请输入登陆账号" class="layui-input" type="text" maxlength="20">
             </div>
         <div class="layui-form-mid layui-word-aux">字母数字或下划线,6-20位</div>
         {/if}

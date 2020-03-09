@@ -13,6 +13,7 @@ use app\common\controller\Manage as ManageController;
 use app\common\model\ManageRole;
 use app\common\model\Manage as ManageModel;
 use app\common\model\ManageRoleRel;
+use app\common\model\UserLog;
 use think\facade\Request;
 use org\Curl;
 
@@ -59,9 +60,10 @@ class Administrator extends ManageController
         $manageRoleModel = new ManageRole();
         $manageRoleList  = $manageRoleModel->select();
         if (Request::isPost()) {
-            if (!input('?param.username') || input('param.username') == "") {
+            if (!input('?param.username') || input('param.username') == "" || strlen(input('param.username')) < 6 || strlen(input('param.username')) > 20) {
                 return error_code(11008);
             }
+
             if (!input('?param.mobile') || input('param.mobile') == "") {
                 return error_code(11080);
             }
@@ -257,4 +259,11 @@ class Administrator extends ManageController
         $return['data']['is_authorization'] = false;
         return $return;
     }
+
+    public function userLogList()
+    {
+        $userLogModel = new UserLog();
+        return $userLogModel->getList(0,$userLogModel::MANAGE_TYPE);
+    }
+
 }

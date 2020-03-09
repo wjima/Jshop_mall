@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="order-list">
-			<view class="goods-detail" v-for="(item, key) in order" :key="key">   <!-- v-if="item.order && item.order.items" -->
+			<view class="goods-detail" v-for="(item, key) in order" :key="key"> 
 				<view class="order-item">
 					<view class='cell-group'>
 						<view class='cell-item'>
@@ -16,13 +16,12 @@
 							</view>
 						</view>
 					</view>
-					<view class='img-list'>   <!-- v-if="item.order && item.order.items" -->
+					<view class='img-list'> 
 						<view class='img-list-item' v-for="(v, k) in item.items" :key="k" @click="showOrder(item.aftersales_id)">
 							<image class='img-list-item-l little-img' :src='v.image_url' mode='aspectFill'></image>
 							<view class='img-list-item-r little-right'>
 								<view class='little-right-t'>
 									<view class='goods-name list-goods-name'>{{v.name}}</view>
-									<!-- <view class='goods-price'>￥{{v.refund}}</view> -->
 								</view>
 								<view class='goods-item-c'>
 									<view class='goods-buy'>
@@ -33,14 +32,6 @@
 							</view>
 						</view>
 					</view>
-					<!-- <view class='cell-group'>
-						<view class='cell-item'>
-							<view class='cell-item-ft goods-num'>
-								<text class='cell-ft-text'>合计<text class="red-price">￥{{item.order.order_amount}}（含运费￥{{item.order.cost_freight}})</text></text>
-								<text class='cell-ft-text'>共计{{item.countnum}}件商品</text>
-							</view>
-						</view>
-					</view> -->
 					<view class='order-list-button'>
 						<view class='goods-price'>退款金额：￥{{item.refund}}</view>
 						<button class='btn btn-circle btn-b' @click="showOrder(item.aftersales_id)">查看详情</button>
@@ -139,10 +130,6 @@ export default {
 .segmented-control-item{
 	line-height: 70upx;
 }
-.order-list{
-	/* margin-top: 64upx; */
-	
-}
 .order-item{
 	margin-bottom: 20upx;
 }
@@ -164,12 +151,10 @@ export default {
 .order-list-button{
 	width: 100%;
 	background-color: #fff;
-	/* text-align: right; */
 	padding: 10upx 26upx;
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	/* text-align: center; */
 }
 .order-list-button .btn{
 	height: 50upx;

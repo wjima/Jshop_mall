@@ -139,54 +139,6 @@ class Order extends Api
 
 
     /**
-     * 获取订单列表
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getList()
-    {
-        $input = array(
-            'order_id'    => input('order_id'),
-            'pay_status'  => input('pay_status'),
-            'ship_status' => input('ship_status'),
-            'start_date'  => input('start_date'),
-            'end_date'    => input('end_date'),
-            'source'      => input('source'),
-            'page'        => input('page'),
-            'limit'       => input('limit'),
-            'user_id'     => $this->userId
-        );
-        $model = new orderModel();
-        $data  = $model->getListFromApi($input);
-        if(count($data['data']) > 0)
-        {
-            $return_data = array(
-                'status' => true,
-                'msg'    => '获取成功',
-                'data'   => array(
-                    'list'  => $data['data'],
-                    'count' => $data['count'],
-                )
-            );
-        }
-        else
-        {
-            $return_data = array(
-                'status' => false,
-                'msg'    => '没有符合的订单',
-                'data'   => array(
-                    'list'  => $data['data'],
-                    'count' => $data['count'],
-                )
-            );
-        }
-        return $return_data;
-    }
-
-
-    /**
      * 创建订单
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
@@ -541,6 +493,9 @@ class Order extends Api
     /**
      * 前台物流查询接口
      * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function logisticsByApi()
     {

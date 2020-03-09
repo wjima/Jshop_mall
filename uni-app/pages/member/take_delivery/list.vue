@@ -18,11 +18,6 @@
 							<view class='cell-item-hd'>
 								<view class='cell-hd-title'>订单编号：{{item.order_id}}</view>
 							</view>
-							<view class='cell-item-ft'>
-<!-- 								<text class='cell-ft-text' v-if="item.status == 1">待提货</text>
-								<text class='cell-ft-text' v-else-if="item.status === 2">已提货</text>
-								<text class='cell-ft-text' v-else>未知状态</text> -->
-							</view>
 						</view>
 					</view>
 					<view class='img-list'>
@@ -103,14 +98,10 @@ export default {
 	width: 100%;
 	background-color: #fff;
 	position: fixed;
-	
 	z-index: 999;
 }
 .segmented-control-item{
 	line-height: 70upx;
-}
-.order-list{
-	/* margin-top: 64upx; */
 }
 .order-item{
 	margin-bottom: 20upx;
@@ -135,7 +126,6 @@ export default {
 	background-color: #fff;
 	text-align: right;
 	padding: 10upx 26upx;
-	/* border-top: 2upx solid #f8f8f8; */
 }
 .order-list-button .btn{
 	height: 50upx;

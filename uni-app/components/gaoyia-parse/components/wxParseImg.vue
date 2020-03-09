@@ -1,14 +1,29 @@
 <template>
-	<image
-		:mode="node.attr.mode"
-		:lazy-load="node.attr.lazyLoad"
-		:class="node.classStr"
-		:style="newStyleStr || node.styleStr"
-		:data-src="node.attr.src"
-		:src="node.attr.src"
-		@tap="wxParseImgTap"
-		@load="wxParseImgLoad"
-	/>
+	<view class="">
+		<!-- #ifdef MP -->
+		<image
+			:lazy-load="node.attr.lazyLoad"
+			:data-src="node.attr.src"
+			:src="node.attr.src"
+			@tap="wxParseImgTap"
+			mode="widthFix"
+			class="nodeclassStr"
+		/>
+		<!-- #endif -->
+		<!-- #ifndef MP -->
+		<image
+			:lazy-load="node.attr.lazyLoad"
+			:data-src="node.attr.src"
+			:src="node.attr.src"
+			@tap="wxParseImgTap"
+			:mode="node.attr.mode"
+			:class="node.classStr"
+			:style="newStyleStr || node.styleStr"
+			@load="wxParseImgLoad"
+		/>
+		<!-- #endif -->
+		
+	</view>
 </template>
 
 <script>
@@ -56,10 +71,12 @@ export default {
 			// const { mode } = this.node.attr;
 
 			const { styleStr } = this.node;
-			const imageHeightStyle = mode === 'widthFix' ? '' : `height: ${imageheight}px;`;
-
+			// console.log(styleStr)
+			const imageHeightStyle = mode === 'widthFix' ? '' : `height: ${imageheight}px`;
+			// console.log(imageHeightStyle)
 			this.newStyleStr = `${styleStr}; ${imageHeightStyle}; width: ${imageWidth}px; padding: 0 ${+padding}px;`;//删除padding
 			// this.newStyleStr = `${styleStr}; ${imageHeightStyle}; width: ${imageWidth}px;`;
+			// console.log(this.newStyleStr);
 		},
 		// 计算视觉优先的图片宽高
 		wxAutoImageCal(originalWidth, originalHeight) {
@@ -92,3 +109,11 @@ export default {
 	}
 };
 </script>
+<style>
+	.nodeclassStr{
+		max-width: 100%;
+		float:left;
+		width: 750rpx; 
+		padding: 0 0px;
+	}
+</style>

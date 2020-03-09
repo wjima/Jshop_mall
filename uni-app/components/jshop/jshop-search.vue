@@ -2,8 +2,8 @@
 	<view class="" >
 		<!-- 搜索框 -->
 		<view class="search" ref="searchBar" id="search">
-			<view class='search-c' @click='goSearch()'>
-				<view class='search-input search-input-p' v-bind:class="jdata.params.style">
+			<view class='search-c' @click='goSearch()' v-bind:class="jdata.params.style" >
+				<view class='search-input search-input-p'>
 					<view class="search-input-p-c">
 						{{jdata.params.keywords}}
 					</view>
@@ -13,8 +13,8 @@
 		</view>
 		<!-- 搜索框 -->
 		<view class="search search-fixed" v-show="searchFixed">
-			<view class='search-c' @click='goSearch()'>
-				<view class='search-input search-input-p' v-bind:class="jdata.params.style">
+			<view class='search-c' @click='goSearch()' v-bind:class="jdata.params.style">
+				<view class='search-input search-input-p'>
 					<view class="search-input-p-c">
 						{{jdata.params.keywords}}
 					</view>
@@ -24,7 +24,6 @@
 		</view>	
 	</view>
 </template>
-
 <script>
 	export default {
 		name: "jshopsearch",
@@ -39,9 +38,10 @@
 				keyword:'',
 				searchTop: 0,
 				scrollTop: 0,
-				searchFixed: false
+				searchFixed: this.$store.state.searchFixed||false
 			};
 		},
+		
 		created() {
 			//#ifdef H5
 			this.$nextTick(() => {
@@ -49,18 +49,15 @@
 			})
 			// #endif
 			this.searchStyle()
-			
-			
-			
 		},
 
 		mounted() {
 			// #ifdef H5
 			window.addEventListener('scroll', this.handleScroll)
 			// #endif
-			
-				
 		},
+
+
 		methods: {
 			searchStyle (){
 				this.$store.commit('searchStyle',this.jdata.params.style)
@@ -76,9 +73,11 @@
 				this.scrollTop >= this.searchTop? this.searchFixed = true : this.searchFixed = false;
 			},
 		},
-		onPageScroll(){
+		/*
+		 //失效
+		 onPageScroll(){
 			var _this = this;
-			// #ifdef MP-WEIXIN || APP-PLUS
+			// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
 			const query = uni.createSelectorQuery().in(this)
 			  query.select('.search').boundingClientRect(function(res){
 				if(res.top<0){
@@ -88,7 +87,7 @@
 				}
 			  }).exec()
 			// #endif
-		}
+		} */
 	}
 </script>
 

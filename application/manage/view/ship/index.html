@@ -7,11 +7,9 @@
 		</div>
 	</div>
 </div>
-
 <div class="table-body">
 	<table id="shipTable" lay-filter="shipTable"></table>
 </div>
-
 <script>
     layui.use(['table','form','layer','laydate'],function(){
         var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
@@ -25,21 +23,22 @@
             id:'shipTable',
             url: "{:url('ship/index')}",
             cols: [[
-                {type:'numbers'},
+				{field:'id', width:90, title:'ID', align: 'center'},
                 {field: 'name', title: '配送方式名称',align:'center'},
-                {field: 'has_cod', title: '是否货到付款',align:'center'},
-                {field: 'free_postage',title: '是否包邮',align:'center'},
                 {field: 'logi_name',title: '物流公司名称',align:'center'},
                 {field: 'logi_code',title: '物流公司编码',align:'center'},
-                {field: 'is_def',title: '是否默认',align:'center'},
-                {field: 'status',title: '状态',align:'center'},
-                {field: 'sort',title: '排序',align:'center'},
-                {width:150, title:'操作',align:'center', toolbar:'#shipBar'}
+				{field: 'has_cod', title: '是否货到付款',width: 120,align:'center'},
+				{field: 'free_postage',title: '是否包邮',width: 90,align:'center'},
+                {field: 'is_def',title: '是否默认',width: 90,align:'center'},
+                {field: 'status',title: '状态',width: 80,align:'center'},
+                {field: 'sort',title: '排序', width: 80,align:'center'},
+                {width:140, title:'操作',align:'center', toolbar:'#shipBar'}
             ]]
         });
         date.render({
             elem:'#utime',
-            range: '~'
+            range: '~',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         form.on('submit(ship-search)', function(data){
             layui.table.reload('shipTable', {

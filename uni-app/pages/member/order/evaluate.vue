@@ -31,7 +31,7 @@
 					
 					<view class="evaluate-content">
 						<view class="evaluate-c-t">
-							<textarea v-model="textarea[item.id]" placeholder="宝贝满足你的期待吗? 说说你的使用心得" />
+							<input v-model="textarea[item.id]" placeholder="宝贝满足你的期待吗? 说说你的使用心得" />
 						</view>
 						<view class="evaluate-c-b">
 							<view class="goods-img-item"
@@ -102,7 +102,7 @@ export default {
 				order_id: this.orderId
 			}
 			this.$api.orderDetail(data, res => {
-				if (res.status && res.data.text_status === 4) {
+				if (res.status && res.data.pay_status >= 2 && res.data.ship_status >= 3 && res.data.confirm >= 2 && res.data.is_comment === 1) {
 					const _info = res.data
 					
 					let images = []
@@ -193,14 +193,30 @@ export default {
 							beforePage.isReload = true
 							// #endif
 							
-							// #ifdef MP-ALIPAY
-							beforePage.data.isReload = true
+							// #ifdef MP-ALIPAY || MP-TOUTIAO
+							this.$db.set('order_user_evaluate', true, true);
 							// #endif
 						}
+						
+						let before = pages[pages.length - 3]; // 上个页面
+						if (before !== undefined && before.route === 'pages/member/order/orderlist') {
+							// #ifdef MP-WEIXIN
+							before.$vm.isReload = true
+							// #endif
+							
+							// #ifdef H5
+							before.isReload = true
+							// #endif
+							
+							// #ifdef MP-ALIPAY || MP-TOUTIAO
+							this.$db.set('order_user_evaluate', true, true);
+							// #endif
+						}
+						
 						// this.submitStatus = false;
 						uni.navigateBack({
 							delta: 1
-						})
+						});
 					})
                 } else {
 					this.$common.errorToShow(res.msg)

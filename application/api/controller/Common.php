@@ -83,7 +83,7 @@ class Common extends Base
      */
     public function jshopConf()
     {
-        $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id,user_agreement_id,privacy_policy_id');
+        $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id,user_agreement_id,privacy_policy_id,goods_show_word1,goods_show_word2');
 
         $conf['shop_logo']          = _sImage($config['shop_logo']); //店铺logo
         $conf['shop_name']          = $config['shop_name'];  //店铺名称
@@ -117,6 +117,18 @@ class Common extends Base
         $conf['ent_id']           = $config['ent_id'];    //客服ID
         $conf['user_agreement_id'] = $config['user_agreement_id']; //用户协议
         $conf['privacy_policy_id'] = $config['privacy_policy_id']; //隐私政策
+
+        //手机端商品详情页文字说明，如果为空就不显示
+        $goods_show_word = [];
+        if($config['goods_show_word1'] != ''){
+            $goods_show_word[] = $config['goods_show_word1'];
+        }
+        if($config['goods_show_word2'] != ''){
+            $goods_show_word[] = $config['goods_show_word2'];
+        }
+        $conf['goods_show_word'] = $goods_show_word;
+
+
         return $conf;
     }
 }

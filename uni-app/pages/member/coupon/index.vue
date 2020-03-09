@@ -130,7 +130,6 @@
 <style>
 .coupon-c-item{
 	margin: 30upx 50upx;
-	/* width: 100%; */
 	height: 150upx;
 	margin-bottom: 20upx;
 }

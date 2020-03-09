@@ -1,13 +1,13 @@
 <template>
 	<view class='cell-group payment-method payment-wx'>
-		<form class='cell-item add-title-item' v-for="item in payments" :key="item.code" @submit="toPayHandler" report-submit="true"
+		<form class='cell-item add-title-item cell-item-mid right-img' v-for="item in payments" :key="item.code" @submit="toPayHandler" report-submit="true"
 		 v-if="!(type == 2 && item.code == 'balancepay')">
 			<input name="code" :value="item.code" class="no-show">
 			<button class="btn" form-type="submit">
 				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' :src='item.icon'></image>
 				</view>
-				<view class='cell-item-bd'>
+				<view class='cell-item-bd cell-item-bd-block'>
 					<view class="cell-bd-view">
 						<text class="cell-bd-text">{{ item.name }}</text>
 					</view>
@@ -197,6 +197,7 @@
 	.payment-method .cell-item-bd {
 		border-left: 2upx solid #F0F0F0;
 		padding-left: 30upx;
+		margin-left: 0;
 	}
 
 	.payment-method .cell-bd-text {
@@ -219,8 +220,10 @@
 		padding: 0;
 		width: 724upx;
 		position: relative;
-		overflow: hidden;
-		float: left;
+		/* overflow: hidden;
+		float: left; */
+		display: flex;
+		align-items: center;
 	}
 
 	.payment-wx .btn .cell-item-hd {
@@ -262,6 +265,7 @@
 
 	.payment-pop-b .btn {
 		flex: 1;
+		justify-content: center;
 	}
 
 	.payment-pop-b .btn-o {

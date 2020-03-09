@@ -1,1 +1,0 @@
-ALTER TABLE `jshop_article_type` ADD `sort` smallint(5) NULL DEFAULT 100 COMMENT '排序 '

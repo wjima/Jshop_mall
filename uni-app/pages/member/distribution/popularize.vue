@@ -28,7 +28,6 @@
 .qrcode-img{
 	width: 400upx;
 	height: 400upx;
-	/* margin-top: 50upx; */
 	margin: 50upx auto;
 }
 </style>

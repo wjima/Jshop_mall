@@ -159,6 +159,41 @@ var allWidget = {
     "icon": "icon-daohangliebiao"
   },
   {
+    "type": "tabBar",
+    "name": "文字导航组",
+    "value": {
+      "limit": 5,
+      "list": [
+        {
+          "text": "按钮1",
+          "linkType": '',
+          "linkValue": ''
+        },
+        {
+          "text": "按钮2",
+          "linkType": '',
+          "linkValue": ''
+        },
+        {
+          "text": "按钮3",
+          "linkType": '',
+          "linkValue": ''
+        },
+        {
+          "text": "按钮4",
+          "linkType": '',
+          "linkValue": ''
+        },
+		{
+		  "text": "按钮5",
+		  "linkType": '',
+		  "linkValue": ''
+		}
+      ]
+    },
+    "icon": "icon-daohangliebiao"
+  },
+  {
     "type": "goods",
     "name": "商品组",
     "icon": "icon-shangpin",
@@ -255,7 +290,19 @@ var allWidget = {
       }
     },
     "icon": "icon-jilu"
-  }
+  },
+  {
+    "type": "adpop",
+    "name": "弹出广告位",
+    "value": {
+      "list": [{
+        "image": default_banner,
+        "linkType": '',
+        "linkValue": '',
+      }]
+    },
+    "icon": "icon-zhaopiantubiao"
+  },
   ],
   "utilsComponents": [
     {
@@ -273,6 +320,7 @@ var allWidget = {
       "value": '',
       "icon": 'icon-fuwenben',
     }]
+    
 };
 
 var deepClone = function (obj) {
@@ -565,6 +613,9 @@ Vue.component('layout-config', {
           case 'navBar':
             return '导航组'
             break;
+          case 'tabBar':
+            return '文字导航组'
+            break;
           case 'goods':
             return '商品组'
             break;
@@ -585,6 +636,9 @@ Vue.component('layout-config', {
             break;
           case 'textarea':
             return '文本域'
+            break;
+          case 'adpop':
+            return '弹出广告位'
             break;
           default:
             return '';
@@ -936,8 +990,8 @@ new Vue({
       methods: {
         savePage: function () {
           var data = {
-            data: this.$refs.layout.pageData,
-            pageCode: pageCode
+            pageCode: pageCode,
+            data: this.$refs.layout.pageData
           }
           JsPost(this.saveUrl, data, function (res) {
             if (res.status) {

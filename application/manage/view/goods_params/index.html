@@ -38,8 +38,8 @@
             url: "{:url('GoodsParams/index')}?_ajax=1",
             id: 'typeTable',
             cols: [[
-                { type: 'numbers' },
-                { field: 'name', width: 150, title: '名称' },
+                {field:'id', width:90, title:'ID', align: 'center'},
+                { field: 'name', width: 150, title: '名称', align: 'center'},
                 {
                     field: 'type', width: 150, title: '类型', templet: function (data) {
                         if (data.type == 'text') {
@@ -49,16 +49,16 @@
                         } else if (data.type == 'checkbox') {
                             return '复选框';
                         }
-                    }
+                    }, align: 'center'
                 },
-                { field: 'value', width: 150, title: '参数' },
+                { field: 'value', minWidth: 150, title: '参数', align: 'center' },
                 {
                     field: 'operating', title: '操作', templet: function (data) {
                         var html = '';
                         var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="' + data.name + '" data-id="' + data.id + '">删除</a>';
                         return html;
-                    }
+                    }, align: 'center', width: 140
                 }
             ]]
         });
@@ -80,7 +80,7 @@
                         type: 1,
                         title: '添加参数',
                         btn: ['保存', '取消'],
-                        area: ['450px', '350px'], //宽高
+                        area: setpage(450,350), //宽高
                         content: e.data,
                         yes: function () {
                             var name = $("#name").val();
@@ -134,7 +134,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '编辑参数',
-                        area: ['450px', '350px'], //宽高
+                        area: setpage(450,350), //宽高
                         content: e.data,
                         btn: ['保存', '取消'],
                         yes: function (d) {

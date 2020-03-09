@@ -1,24 +1,11 @@
 <template>
 	<view class="content">
-		<uni-segmented-control 
-		:current="tab" 
-		:values="items" 
-		@clickItem="onClickItem" 
-		style-type="text" 
-		active-color="#333"
-		></uni-segmented-control>
+		<uni-segmented-control :current="tab" :values="items" @clickItem="onClickItem" style-type="text" active-color="#333"></uni-segmented-control>
 		<view class="order-list">
-			
-			<view class="goods-detail" 
-			v-if="list.length">
-				<view class="order-item"
-				v-for="(item, index) in list"
-				:key="index"
-				>
+			<view class="goods-detail" v-if="list.length">
+				<view class="order-item" v-for="(item, index) in list" :key="index">
 					<view class='cell-group'>
-						<view class='cell-item'
-						@click="orderDetail(item.order_id)"
-						>
+						<view class='cell-item' @click="orderDetail(item.order_id)">
 							<view class='cell-item-hd'>
 								<view class='cell-hd-title'>订单编号：{{ item.order_id }}</view>
 							</view>
@@ -28,31 +15,21 @@
 						</view>
 					</view>
 					<view class='img-list'>
-						<view class='img-list-item'
-						v-for="(goods, key) in item.items"
-						:key="key"
-						>
+						<view class='img-list-item' v-for="(goods, key) in item.items" :key="key">
 							<image class='img-list-item-l little-img have-none' :src='goods.image_url' mode='aspectFill'></image>
 							<view class='img-list-item-r little-right'>
 								<view class='little-right-t'>
-									<view class='goods-name list-goods-name'
-									@click="orderDetail(item.order_id)"
-									>{{ goods.name }}</view>
+									<view class='goods-name list-goods-name' @click="orderDetail(item.order_id)">{{ goods.name }}</view>
 									<view class='goods-price'>￥{{ goods.price }}</view>
 								</view>
 								<view class="romotion-tip">
-									<view class="romotion-tip-item"
-									v-for="(promotion, k) in goods.promotion_list"
-									:key="k"
-									>
+									<view class="romotion-tip-item" v-for="(promotion, k) in goods.promotion_list" :key="k">
 										{{ promotion }}
 									</view>
 								</view>
 								<view class='goods-item-c'>
 									<view class='goods-buy'>
-										<view class='goods-salesvolume'
-										v-if="goods.addon !== null"
-										>{{ goods.addon }}</view>
+										<view class='goods-salesvolume' v-if="goods.addon !== null">{{ goods.addon }}</view>
 										<view class='goods-num'>× {{ goods.nums }}</view>
 									</view>
 								</view>
@@ -68,50 +45,17 @@
 						</view>
 					</view>
 					<view class='order-list-button'>
-						
 						<button class='btn btn-circle btn-g' hover-class="btn-hover" @click="orderDetail(item.order_id)">查看详情</button>
-						
-						<button class='btn btn-circle btn-w'
-						hover-class="btn-hover"
-						v-if="item.status === 1 && item.pay_status === 1" 
-						@click="toPay(item.order_id)"
-						>立即支付</button>
-						
-						<button class='btn btn-circle btn-w' 
-						hover-class="btn-hover"
-						v-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 1" 
-						@click="tackDelivery(index)"
-						>确认收货</button>
-						
-						<button class='btn btn-circle btn-w' 
-						hover-class="btn-hover"
-						v-if="item.status === 1 && item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 1" 
-						@click="toEvaluate(item.order_id)"
-						>立即评价</button>
-						
+						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status === 1" @click="toPay(item.order_id)">立即支付</button>
+						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status >= 2 && item.ship_status >= 3 && item.confirm === 1" @click="tackDelivery(index)">确认收货</button>
+						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status >= 2 && item.ship_status >= 3 && item.confirm >= 2 && item.is_comment === 1" @click="toEvaluate(item.order_id)">立即评价</button>
 					</view>
 				</view>
-				<uni-load-more
-				:status="loadStatus"
-				></uni-load-more>
+				<uni-load-more :status="loadStatus"></uni-load-more>
 			</view>
 			<view class="order-none" v-else>
 				<image class="order-none-img" src="/static/image/order.png" mode=""></image>
 			</view>
-<!-- 			<view class="goods-detail" v-show="current === 1">
-				<view class="order-none">
-					<image class="order-none-img" src="/static/image/order.png" mode=""></image>
-				</view>
-			</view>
-			<view class="goods-detail" v-show="current === 2">
-				3
-			</view>
-			<view class="goods-detail" v-show="current === 3">
-				4
-			</view>
-			<view class="goods-detail" v-show="current === 4">
-				5
-			</view> -->
 		</view>
 	</view>
 </template>
@@ -131,7 +75,7 @@ export default {
 				'全部',
 				'待付款',
 				'待发货',
-				'待收货',
+				'已发货',
 				'待评价',
 			],
 			list: [],
@@ -146,6 +90,18 @@ export default {
 		this.initData()
 	},
 	onShow () {
+		// #ifdef MP-ALIPAY || MP-TOUTIAO
+		let order_user_ship = this.$db.get('order_user_ship', true);
+		if (order_user_ship) {
+			this.isReload = order_user_ship;
+			this.$db.del('order_user_ship', true);
+		}
+		let order_user_evaluate = this.$db.get('order_user_evaluate', true);
+		if (order_user_evaluate) {
+			this.isReload = order_user_evaluate;
+			this.$db.del('order_user_evaluate', true);
+		}
+		// #endif
 		if (this.isReload) {
 			this.initData()
 		}
@@ -177,9 +133,7 @@ export default {
 				limit: this.limit,
 				status: this.status[this.tab]
 			}
-			
 			this.loadStatus = 'loading'
-
 			this.$api.orderList(data, res => {
 				if (res.status) {
 					let _list = res.data.list
@@ -197,7 +151,6 @@ export default {
 					this.$common.errorToShow(res.msg)
 				}
 			})
-			
 			if (this.isReload) {
 				this.isReload = false
 			}
@@ -230,35 +183,31 @@ export default {
 					case 1:
 						if (item.pay_status === 1) {
 							this.$set(item, 'order_status_name', '待付款')
-						} else if (item.pay_status === 2 && item.ship_status === 1){
+						} else if (item.pay_status >= 2 && item.ship_status === 1){
 							this.$set(item, 'order_status_name', '待发货')
-						} else if (item.pay_status === 2 && item.ship_status === 2){
+						} else if (item.pay_status >= 2 && item.ship_status === 2){
 							this.$set(item, 'order_status_name', '部分发货')
-						} else if (item.pay_status === 2 && item.ship_status === 3 && item.confirm === 1) {
-							this.$set(item, 'order_status_name', '待收货')
-						} else if (item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 1) {
+						} else if (item.pay_status >= 2 && item.ship_status >= 3 && item.confirm === 1) {
+							this.$set(item, 'order_status_name', '已发货')
+						} else if (item.pay_status >= 2 && item.ship_status >= 3 && item.confirm >= 2 && item.is_comment === 1) {
 							this.$set(item, 'order_status_name', '待评价')
-						} else if (item.pay_status === 2 && item.ship_status === 3 && item.confirm === 2 && item.is_comment === 2) {
+						} else if (item.pay_status >= 2 && item.ship_status >= 3 && item.confirm >= 2 && item.is_comment >= 2) {
 							this.$set(item, 'order_status_name', '已评价')
-						} else if (item.pay_status === 4) {
-							this.$set(item, 'order_status_name', '售后单')
 						}
 						break
 					case 2:
-						this.$set(item, 'order_status_name', '已完成')
+						this.$set(item, 'order_status_name', '完成')
 						break
 					case 3:
-						this.$set(item, 'order_status_name', '已取消')
+						this.$set(item, 'order_status_name', '取消')
 						break
 				}
 			});
-			
 			for(let i in orderList){
 				for(let j in orderList[i].items){
 					orderList[i].items[j].promotion_list = JSON.parse(orderList[i].items[j].promotion_list);
 				}
 			}
-
 			return orderList
 		}
 	},
@@ -317,7 +266,6 @@ export default {
 	background-color: #fff;
 	text-align: right;
 	padding: 10upx 26upx;
-	/* border-top: 2upx solid #f8f8f8; */
 }
 .order-list-button .btn{
 	height: 50upx;

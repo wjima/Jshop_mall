@@ -1,6 +1,6 @@
 {
     "name" : "Jshop",
-    "appid" : "__UNI__CCE5D0F",
+    "appid" : "__UNI__8AA8302",
     "description" : "Jshop小程序商城",
     "versionName" : "2.0",
     "versionCode" : 15,
@@ -81,7 +81,7 @@
     },
     "h5" : {
         "title" : "Jshop小程序商城",
-        "domain" : "http://www.jshop.com/",
+        "domain" : "https://demo.jihainet.com/",
         "router" : {
             "base" : "/wap/",
             "mode" : "history"

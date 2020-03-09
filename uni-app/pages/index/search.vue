@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
 		<view class='search'>
-			<view class='search-c'>
+			<view class='search-c' v-bind:class="$store.state.searchStyle">
 				<image class='icon search-icon' src='/static/image/zoom.png'></image>
-				<input v-bind:class="$store.state.searchStyle" class='search-input' placeholder-class='search-input-p' placeholder='请输入关键字搜索' v-model="key" focus :auto-focus="focus" :fixed="focus"></input>
+				<input class='search-input' placeholder-class='search-input-p' placeholder='请输入关键字搜索' v-model="key" focus :auto-focus="focus" :fixed="focus"></input>
 			</view>
 			<button class="btn btn-g" @click="search" hover-class="btn-hover2">搜索</button>
 		</view>
@@ -119,12 +119,6 @@ export default {
 	width: 80%;
 	margin-right: 2%;
 }
-.search-icon{
-	left: 30upx;	
-}
-.search-input {
-	padding: 10upx 30upx 10upx 90upx;
-}
 .search-input-p{
 	padding: 0 !important;
 }
@@ -138,7 +132,6 @@ export default {
 	line-height: 72upx;
 }
 .history-c{
-	/* background-color: #fff; */
 	padding: 20upx 26upx;
 }
 .history-title{

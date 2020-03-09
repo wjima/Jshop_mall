@@ -83,7 +83,11 @@ const methodsToken = [
 	'lottery-api-lotteryLog',
 	'user.myinvoicelist',
 	'payments.checkpay',
-	'order.gettaxcode'
+	'order.gettaxcode',
+    'wechat_applets_message-api-tmpl',
+    'wechat_applets_message-api-settip',
+    'wechat_applets_message-api-closetip',
+    'wechat_applets_message-api-istip'
 ];
 
 const post = (method, data, callback,complete) => {
@@ -128,12 +132,12 @@ const post = (method, data, callback,complete) => {
 						complete: function() {
 							setTimeout(function() {
 								uni.hideToast();
-								// #ifdef H5 || APP-PLUS
+								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
 									url: '/pages/login/login/index1'
 								})
 								// #endif
-								// #ifdef MP-WEIXIN || MP-ALIPAY	
+								// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 								uni.navigateTo({
 									url: '/pages/login/choose/index',
 									animationType: 'pop-in',
@@ -211,12 +215,12 @@ const pluginsPost = (method, data, callback) => {
 						complete: function() {
 							setTimeout(function() {
 								uni.hideToast();
-								// #ifdef H5 || APP-PLUS
+								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
 									url: '/pages/login/login/index1'
 								})
 								// #endif
-								// #ifdef MP-WEIXIN || MP-ALIPAY	
+								// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 								uni.navigateTo({
 									url: '/pages/login/choose/index',
 									animationType: 'pop-in',
@@ -526,9 +530,6 @@ export const setDefShip = (data, callback) => post('user.setdefship', data, call
 // 生成订单
 export const createOrder = (data, callback, complete) => post('order.create', data, callback, complete);
 
-// 获取状态订单列表
-export const getOrderList = (data, callback) => post('order.getlist', data, callback);
-
 // 取消订单
 export const cancelOrder = (data, callback) => post('order.cancel', data, callback);
 
@@ -823,3 +824,21 @@ export const ttlogin = (data, callback) => post('user.ttlogin', data, callback);
 
 //发票模糊查询
 export const getTaxInfo = (data, callback) => post('order.gettaxcode', data, callback);
+
+//获取订阅模板
+export const getSubscriptionTmplIds = callback => pluginsPost('wechat_applets_message-api-tmpl', {}, callback);
+
+//订阅状态修改
+export const setSubscriptionStatus = (data, callback) => pluginsPost('wechat_applets_message-api-settip', data, callback);
+
+//用户关闭订阅提醒
+export const subscriptionCloseTip = callback => pluginsPost('wechat_applets_message-api-closetip', {}, callback);
+
+//判断用户是否需要显示订阅提醒
+export const subscriptionIsTip = callback => pluginsPost('wechat_applets_message-api-istip', {}, callback);
+
+//统一分享
+export const share = (data, callback) => post('user.share', data, callback);
+
+//统一分享解码
+export const deshare = (data, callback) => post('user.deshare', data, callback);

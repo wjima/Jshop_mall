@@ -41,10 +41,10 @@
             url: "{:url('role/index')}?_ajax=1",
             id:'userTable',
             cols: [[
-                {type:'numbers'},
-                {field:'name',title:'角色名称'},
-                {field:'utime',title:'创建时间'},
-                {field: 'operating', title: '操作', width:250, align: 'center', templet:function(data){
+                {field:'id', width:90, title:'ID', align:'center'},
+                {field:'name',title:'角色名称', align:'center'},
+                {field:'utime',title:'创建时间', width:200, align:'center'},
+                {field: 'operating', title: '操作', width:140, align: 'center', templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-perm" data-id="' + data.id + '">权限</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-danger" data-id="' + data.id + '">删除</a>';
@@ -68,7 +68,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['400px', '300px'],
+                        area: setpage(400,300),
                         title:'添加角色',
                         btn: ['确定','取消'],
                         yes: function(index, layero){
@@ -122,7 +122,7 @@
             var id = $(this).attr('data-id');
             layer.open({
                 type: 1,
-                area: ['400px', '600px'],
+                area: setpage(400,600),
                 content:'<ul id="areaTree" class="dtree" data-id="0"></ul>',
                 title: '配置权限',
                 btn:['保存','关闭'],

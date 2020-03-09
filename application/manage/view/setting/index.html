@@ -33,7 +33,7 @@
             <li lay-id="goods">商品设置</li>
             <li lay-id="order">订单管理</li>
             <li lay-id="points">积分设置</li>
-            <li lay-id="cash">提现设置</li>
+            <li lay-id="cash">财务设置</li>
             <li lay-id="other">其他设置</li>
         </ul>
         <div class="layui-tab-content">
@@ -232,6 +232,20 @@
                         <div class="layui-form-mid layui-word-aux">商品中只要有货品库存低于报警数量，就会在后台提示</div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['goods_show_word1']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-3">
+                            <input type="text" name="goods_show_word1" value="{$data['goods_show_word1']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">手机端商品详情页说明文字1</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{$data['goods_show_word2']['name']}：</label>
+                        <div class="layui-input-inline seller-inline-3">
+                            <input type="text" name="goods_show_word2" value="{$data['goods_show_word2']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">手机端商品详情页说明文字2</div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">&nbsp;</label>
                         <div class="layui-input-block">
                             <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
@@ -336,21 +350,21 @@
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="point_discounted_proportion" value="{$data['point_discounted_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">多少积分可以折现1元人民币</div>
+                        <div class="layui-form-mid layui-word-aux">个；多少积分可以折现1元人民币</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['orders_point_proportion']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="orders_point_proportion" value="{$data['orders_point_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" max="100" min="0">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">（%）单个订单积分折现最大百分比</div>
+                        <div class="layui-form-mid layui-word-aux">%；单个订单积分折现最大百分比</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['orders_reward_proportion']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
                             <input type="number" name="orders_reward_proportion" value="{$data['orders_reward_proportion']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input" min="0">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">订单多少人民币奖励1个积分</div>
+                        <div class="layui-form-mid layui-word-aux">元；订单多少元人民币奖励1个积分</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -368,14 +382,14 @@
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="sign_random_min" value="{$data['sign_random_min']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">签到随机最小奖励积分</div>
+                            <div class="layui-form-mid layui-word-aux">个；签到随机最小奖励积分</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{$data['sign_random_max']['name']}：</label>
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="sign_random_max" value="{$data['sign_random_max']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">签到随机最大奖励积分</div>
+                            <div class="layui-form-mid layui-word-aux">个；签到随机最大奖励积分</div>
                         </div>
                     </div>
 
@@ -385,21 +399,21 @@
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="first_sign_point" value="{$data['first_sign_point']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">起始签到奖励积分</div>
+                            <div class="layui-form-mid layui-word-aux">个；起始签到奖励积分</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{$data['continuity_sign_additional']['name']}：</label>
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="continuity_sign_additional" value="{$data['continuity_sign_additional']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">连续签到追加积分</div>
+                            <div class="layui-form-mid layui-word-aux">个；连续签到追加积分</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">{$data['sign_most_point']['name']}：</label>
                             <div class="layui-input-inline seller-inline-2">
                                 <input type="text" name="sign_most_point" value="{$data['sign_most_point']['value']}" lay-verify="title" autocomplete="off" placeholder="请输入正整数" class="layui-input">
                             </div>
-                            <div class="layui-form-mid layui-word-aux">连续签到奖励积分单日上限</div>
+                            <div class="layui-form-mid layui-word-aux">个；连续签到奖励积分单日上限</div>
                         </div>
                     </div>
 
@@ -419,22 +433,22 @@
                         <div class="layui-input-inline seller-inline-2">
                             <input type="text" name="tocash_money_low" value="{$data['tocash_money_low']['value']}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">最低提现标准，默认0不限制</div>
+                        <div class="layui-form-mid layui-word-aux">元；最低提现标准，默认0元不限制</div>
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['tocash_money_rate']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
-                            <input type="text" name="tocash_money_rate" value="{$data['tocash_money_rate']['value']}" lay-verify="title" autocomplete="off" placeholder="%" class="layui-input">
+                            <input type="text" name="tocash_money_rate" value="{$data['tocash_money_rate']['value']}" lay-verify="title" autocomplete="off" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">提现费率，默认0% 没有费率</div>
+                        <div class="layui-form-mid layui-word-aux">%；提现费率，默认0% 没有费率</div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">{$data['tocash_money_limit']['name']}：</label>
                         <div class="layui-input-inline seller-inline-2">
-                            <input type="text" name="tocash_money_limit" value="{$data['tocash_money_limit']['value']}" lay-verify="title" autocomplete="off" placeholder="%" class="layui-input">
+                            <input type="text" name="tocash_money_limit" value="{$data['tocash_money_limit']['value']}" lay-verify="title" autocomplete="off" class="layui-input">
                         </div>
-                        <div class="layui-form-mid layui-word-aux">每日提现上限，默认0不限制</div>
+                        <div class="layui-form-mid layui-word-aux">元；每日提现上限，默认0元不限制</div>
                     </div>
 
                     <div class="layui-form-item">
@@ -489,6 +503,7 @@
                             <select name="image_storage_type" lay-filter="image_storage_type">
                                 <option value="Local" {if condition="$data['image_storage_type']['value'] eq 'Local' "} selected {/if} >本地</option>
                                 <option value="Aliyun" {if condition="$data['image_storage_type']['value'] eq 'Aliyun' "} selected {/if} >阿里云OSS</option>
+                                <option value="Cos" {if condition="$data['image_storage_type']['value'] eq 'Cos' "} selected {/if} >腾讯云COS</option>
                             </select>
                         </div>
                         <div class="layui-form-mid layui-word-aux">图片保存方式</div>
@@ -526,24 +541,57 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label">空间名称：</label>
                                 <div class="layui-input-inline seller-inline-5">
-                                    <input type="text" name="image_storage_params[bucket]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['bucket']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                    <input type="text" name="image_storage_params[oss_bucket]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['bucket']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid layui-word-aux">阿里云OSS的 bucket，例如：jshop-jihainet</div>
                             </div>
                         </div>
-                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>统计代码</legend></fieldset>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">{$data['statistics_code']['name']}：</label>
-                        <div class="layui-input-inline seller-inline-8">
-                            <textarea name="statistics_code" id="statistics_code" cols="30" rows="10" class="layui-input" style="height: 100px; padding: 10px">{$data['statistics_code']['value']}</textarea>
-                        </div>
-                        <div class="layui-form-mid layui-word-aux">只需要粘贴&lt;script&gt;&lt;/script&gt;内的代码，只统计H5端。微信小程序请使用"小程序数据助手"</div>
-                    </div>
 
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">&nbsp;</label>
-                        <div class="layui-input-block">
-                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        <div class="item Cos" {if condition="$data['image_storage_type']['value'] eq 'Cos' "} style="display: block" {/if}>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">secretId：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[secretId]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['secretId']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">腾讯云secretId，申请地址：腾讯云API密钥管理https://console.cloud.tencent.com/capi</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">secretKey：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[secretKey]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['secretKey']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">腾讯云secretKey</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">存储节点：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[region]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['region']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">腾讯云的所属地域，例如：ap-beijing</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">空间名称：</label>
+                                <div class="layui-input-inline seller-inline-5">
+                                    <input type="text" name="image_storage_params[bucket]" value="{if $data['image_storage_params']['value']}{$data['image_storage_params']['value']['bucket']}{/if}" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">腾讯云的 空间名称，例如：xxx-11110000</div>
+                            </div>
+                        </div>
+
+                        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>统计代码</legend></fieldset>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{$data['statistics_code']['name']}：</label>
+                            <div class="layui-input-inline seller-inline-8">
+                                <textarea name="statistics_code" id="statistics_code" cols="30" rows="10" class="layui-input" style="height: 100px; padding: 10px">{$data['statistics_code']['value']}</textarea>
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">只需要粘贴&lt;script&gt;&lt;/script&gt;内的代码，只统计H5端。微信小程序请使用"小程序数据助手"</div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">&nbsp;</label>
+                            <div class="layui-input-block">
+                                <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -633,7 +681,7 @@
             window.box = layer.open({
                 type: 1,
                 content: e,
-                area: ['700px', '450px'],
+                area: setpage(700,450),
                 title:'文章列表'
             });
         });

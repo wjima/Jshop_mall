@@ -110,11 +110,11 @@
 			let pages = getCurrentPages()
 			let pre = pages[pages.length - 2]
 			if (pre != undefined) {
-				// #ifdef H5
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				invoice = pre.invoice
 				// #endif
 
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				invoice = pre.$vm.invoice
 				// #endif
 
@@ -183,12 +183,13 @@
 					this.$db.set('user_invoice', data, true);
 					// #endif
 
-					// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+					// #ifdef MP-WEIXIN
 					beforePage.$vm.invoice = data;
 					// #endif
 
-					// #ifdef H5 
-					beforePage.invoice = data;
+					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+					// beforePage.invoice = data;
+					this.$store.commit('invoice',data)
 					// #endif
 
 					uni.navigateBack({
@@ -231,9 +232,6 @@
 </script>
 
 <style>
-	/* .margin-cell-group{
-	margin-bottom: 20upx;
-} */
 	.invoice-type .uni-list-cell {
 		display: inline-block;
 		font-size: 26upx;
@@ -267,10 +265,7 @@
 	}
 
 	.cheque {
-		/* position: relative; */
 		overflow: visible;
-		/* margin-left: 0; */
-		/* width: 376px; */
 	}
 
 	.cheque-content {
@@ -279,7 +274,6 @@
 		top: 90rpx;
 		z-index: 2;
 		width: 100%;
-		/* height: 200rpx; */
 		background-color: #fff;
 		box-shadow: 0 0 0.666667vw 0.4vw rgba(0, 0, 0, .13);
 		border-radius: 10rpx;

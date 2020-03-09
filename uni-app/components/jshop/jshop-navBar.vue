@@ -1,5 +1,5 @@
 <template>
-	<view class="imgnavbar bottom-cell-group">
+	<view class="imgnavbar">
 		<view class="imgnavbar-list" v-if="jdata.params.limit == '3' ||jdata.params.limit == '4' ||jdata.params.limit == '5'"
 		 v-bind:class="'row'+jdata.params.limit">
 			<view class="imgnavbar-item" ref="imgwitem" v-for="(item, index) in jdata.params.list" :key="index">
@@ -33,9 +33,11 @@
 		},
 		methods: {
 			showSliderInfo(type, val) {
+				console.log(val)
 				if (!val) {
 					return;
 				}
+				console.log("11")
 				if (type == 1) {
 					if (val.indexOf('http') != -1) {
 						// #ifdef H5 
@@ -61,6 +63,7 @@
 					// 文章详情
 					this.$common.navigateTo('/pages/article/index?id=' + val + '&id_type=1')
 				} else if (type == 4) {
+					// console.log("11")
 					// 文章列表
 					this.$common.navigateTo('/pages/article/list?cid=' + val)
 				} else if (type == 5) {

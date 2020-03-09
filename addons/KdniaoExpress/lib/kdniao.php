@@ -7,17 +7,17 @@ use org\Curl;
 class kdniao
 {
 
-    private $apiKey         = '';//加密私钥，快递鸟提供
-    private $ebusinessid    = ''; //电商ID
-    const DEVREQURL         = 'http://testapi.kdniao.com:8081/api/Eorderservice'; //测试地址
-    const PROREQURL         = 'http://api.kdniao.com/api/Eorderservice'; //正式地址
-    const IPSERVICEURL      = 'http://www.kdniao.com/External/GetIp.aspx';//获取ip地址
-    const PRINTURL          = 'http://www.kdniao.com/External/PrintOrder.aspx';//打印订单地址
-    const DEVSEARCHURL      = 'http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json';//即时查询测试地址
-    const PROSEARCHURL      = 'http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx';//即时查询生产URL地址
-    const DEBUG             = false;//是否调试
-    const ISPRIVIEW         = 0;//是否预览，0-不预览 1-预览
-    private $isNotice       = 1;//是否通知快递员上门揽件 0-通知 1-	不通知 不填则默认为1
+    private $apiKey = '';//加密私钥，快递鸟提供
+    private $ebusinessid = ''; //电商ID
+    const DEVREQURL = 'http://testapi.kdniao.com:8081/api/Eorderservice'; //测试地址
+    const PROREQURL = 'http://api.kdniao.com/api/Eorderservice'; //正式地址
+    const IPSERVICEURL = 'http://www.kdniao.com/External/GetIp.aspx';//获取ip地址
+    const PRINTURL = 'http://www.kdniao.com/External/PrintOrder.aspx';//打印订单地址
+    const DEVSEARCHURL = 'http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json';//即时查询测试地址
+    const PROSEARCHURL = 'http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx';//即时查询生产URL地址
+    const DEBUG = false;//是否调试
+    const ISPRIVIEW = 0;//是否预览，0-不预览 1-预览
+    private $isNotice = 1;//是否通知快递员上门揽件 0-通知 1-	不通知 不填则默认为1
 
     function __construct($ebusinessid, $apiKey)
     {
@@ -65,7 +65,7 @@ class kdniao
             $return['msg'] = '请先配置退货信息';
             return $return;
         }
-        $areainfo         = get_area($senderAreaId);
+        $areainfo = get_area($senderAreaId);
         list($province, $city, $area) = explode(' ', $areainfo);
         $sender["ProvinceName"] = $province;
         $sender["CityName"]     = $city;
@@ -81,14 +81,33 @@ class kdniao
         $receiver["ExpAreaName"]  = $area;
         $receiver["Address"]      = $order['ship_address'];
 
-        $commodityOne              = [];
-        $commodityOne["GoodsName"] = "物品";
-        $commodity                 = [];
-        $commodity[]               = $commodityOne;
+        //取发货明细
+        $commodity = [];
+        if (isset($order['items'])) {
+            $items = $order['items'];
+            foreach ($items->toArray() as $key => $item) {
+                $commodityOne              = [];
+                $commodityOne["GoodsName"] = $item['name'];
+                if ($item['addon']) {
+                    $commodityOne["GoodsName"] = $commodityOne["GoodsName"] . '-' . $item['addon'];
+                }
+                $commodityOne["GoodsCode"]     = $item['bn'];
+                $commodityOne["Goodsquantity"] = $item['nums'];
+                $commodityOne["GoodsWeight"]   = number_format($item['weight'] / 1000, 3);//保留3位小数
+                $commodity[]                   = $commodityOne;
+            }
+        }
 
         $eorder["Sender"]    = $sender;
         $eorder["Receiver"]  = $receiver;
         $eorder["Commodity"] = $commodity;
+
+        if ($order['logi_code'] == 'HTKY') {//快递公司编码，例如HTKY
+            $eorder["CustomerName"] = "";//快递公司账号
+            $eorder["CustomerPwd"]  = "";//快递公司密码
+            $eorder["SendSite"]     = "";//快递公司网点地址
+            $eorder['TemplateSize'] = '';//快递单模板
+        }
 
         $jsonParam = json_encode($eorder, JSON_UNESCAPED_UNICODE);
 
@@ -222,7 +241,7 @@ class kdniao
         if ($requestData['ShipperCode'] == 'SF') {
             //查询订单收货人手机号后四位
             $billDeliveryModel = new BillDelivery();
-            $deliveryInfo      = $billDeliveryModel->where([['logi_no', '=', $requestData['logisticCode']], ['logi_code', '=', 'SF']])->field('ship_mobile,order_id')->find();
+            $deliveryInfo      = $billDeliveryModel->where([['logi_no', '=', $requestData['logisticCode']], ['logi_code', '=', 'SF']])->field('ship_mobile')->find();
             if ($deliveryInfo && isset($deliveryInfo['ship_mobile'])) {
                 $requestData['CustomerName'] = substr($deliveryInfo['ship_mobile'], -4);
             }

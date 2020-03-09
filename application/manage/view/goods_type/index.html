@@ -13,11 +13,9 @@
 		</div>
 	</div>
 </form>
-
 <div class="table-body">
 	<table id="typeTable" lay-filter="test"></table>
 </div>
-
 <script>
     var table;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
@@ -32,9 +30,9 @@
             url: "{:url('GoodsType/index')}?_ajax=1",
             id:'typeTable',
             cols: [[
-                {type:'numbers'},
-                {field:'name', width:150,title:'名称'},
-                {field:'params', width:240,title:'参数',templet:function (data) {
+				{field:'id', width:90, title:'ID', align: 'center'},
+                {field:'name', width:200,title:'名称', align: 'center'},
+                {field:'params', minWidth:200,title:'参数',templet:function (data) {
                     if(typeof(data.params) == "undefined"||data.params.length==0){
                         var html='<a href="javascript:void(0);" data-id="'+data.id+'" onclick="addParams('+data.id+')">关联参数</a>';
                         return html;
@@ -46,8 +44,8 @@
                         html=html.substr(1);
                         return html;
                     }
-                }},
-                {field:'spec', width:240,title:'属性',templet:function(data){
+                }, align: 'center'},
+                {field:'spec', minWidth:200,title:'属性',templet:function(data){
                     if(typeof(data.spec) == "undefined"||data.spec.length==0){
                         var html='<a href="javascript:void(0);" data-id="'+data.id+'" onclick="addRel('+data.id+')">关联属性</a>';
                         return html;
@@ -59,13 +57,13 @@
                         html=html.substr(1);
                         return html;
                     }
-                }},
+                }, align: 'center'},
                 {field:'operating',title:'操作',templet:function(data){
                     var html='';
                     var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
                     html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
                     return html;
-                }}
+                }, align: 'center', width: 140}
             ]]
         });
         layui.form.on('submit(*)', function(data){
@@ -87,7 +85,7 @@
 					window_box = layer.open({
 						type: 1,
 						title: '添加类型',
-						area: ['750px', '440px'], //宽高
+						area: setpage(750,440), //宽高
 						content: e.data,
 						btn:['保存','关闭'],
 						success:function (layero,index) {
@@ -126,7 +124,7 @@
 					window_box = layer.open({
 						type: 1,
 						title: '编辑类型',
-						area: ['400px', '240px'], //宽高
+						area: setpage(400,240), //宽高
 						content: e.data
 					});
 				}else{
@@ -197,7 +195,7 @@
 				window_box = layer.open({
 					type: 1,
 					title: '关联属性',
-					area: ['400px', '340px'], //宽高
+					area: setpage(440,340), //宽高
 					btn:['保存','取消'],
 					content: e.data,
 					yes:function (e) {
@@ -230,7 +228,7 @@
 				window_box = layer.open({
 					type: 1,
 					title: '关联属性',
-					area: ['400px', '340px'], //宽高
+					area: setpage(400,340), //宽高
 					content: e.data,
 					btn:['保存','取消'],
 					yes:function (e) {

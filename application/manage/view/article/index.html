@@ -1,16 +1,13 @@
 <div class="layui-form seller-form"  action="" >
-
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <label class="layui-form-label">文章标题：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="title" lay-verify="title" placeholder="请输入标题关键字" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
-            <label class="layui-form-label">文章类型：</label>
+            <label class="layui-form-label">文章分类：</label>
             <div class="layui-input-inline seller-inline-3">
                 <select name="type_id" id="type" lay-verify="">
                     <option value="">选择分类</option>
@@ -20,7 +17,6 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">发布状态：</label>
             <div class="layui-input-inline seller-inline-3">
@@ -31,25 +27,18 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">选择时间：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" id="utime" name="utime" lay-verify="title" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="article_search"><i class="iconfont icon-chaxun"></i>筛选</button>
             <button type="button" class="layui-btn layui-btn-sm add-article"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
-
 </div>
-
-
-
 <div class="table-body">
 	<table id="articleTable" lay-filter="articleTable"></table>
 </div>
@@ -66,19 +55,19 @@
             id:'articleTable',
             url: "{:url('Article/index')}",
             cols: [[ //标题栏
-                {type: 'numbers'},
-                {field: 'title', title: '文章标题'},
-                {field: 'cover', title: '封面图',align:'center',width:120, templet: function(data){
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'title', title: '文章标题', align: 'center'},
+                {field: 'cover', title: '封面图',align:'center',width:110, templet: function(data){
                         return '<a href="javascript:void(0);" onclick=viewImage("'+data.cover+'")><image style="max-width:30px;max-height:30px;" src="'+data.cover+'"/></a>';
                     }
                 },
-                {field: 'type_name', title: '文章类型',align:'center'},
-                {field: 'ctime', title: '创建时间',align:'center',sort:true},
-                {field: 'utime', title: '更新时间',align:'center',sort:true},
-                {field: 'is_pub', title: '发布状态',align:'center',sort:true,width:120},
+                {field: 'type_name', title: '文章分类',width:150,align:'center'},
+                {field: 'ctime', title: '创建时间',align:'center',sort:true,width:170},
+                {field: 'utime', title: '更新时间',align:'center',sort:true,width:170},
+                {field: 'is_pub', title: '发布状态',align:'center',sort:true,width:110},
                 {field: 'pv', title: '访问量',align:'center',sort:true,width:100},
-                {field: 'sort', title: '排序',align:'center',sort:true,width:100},
-                {width:150, title:'操作',align:'center', toolbar:'#articleBar'}
+                {field: 'sort', title: '排序',align:'center',sort:true,width:80},
+                {width:140, title:'操作',align:'center', toolbar:'#articleBar'}
             ]] //设置表头
             //,…… //更多参数参考右侧目录：基本参数选项
         });
@@ -96,7 +85,8 @@
 
         date.render({
             elem: '#utime',
-            range: '到'
+            range: '到',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         $(document).on('click','.add-article',function(){

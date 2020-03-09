@@ -1,15 +1,10 @@
 <form class="layui-form seller-form"  action="" >
-
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm add"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
-
 </form>
-
 <div class="table-body">
     <table id="pagesTable" lay-filter="pagesTable"></table>
 </div>
@@ -26,13 +21,13 @@
             id:'pagesTable',
             url: "{:url('Pages/index')}",
             cols: [[ //标题栏
-                {type:'numbers'},
-                {field: 'name', title: '名称', align:'center'},
-                {field: 'code', title: '编码',align:'center'},
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'name', title: '名称', align:'center', width:160},
+                {field: 'code', title: '编码',align:'center', width:160},
                 {field: 'desc',sort: true, title: '描述' ,align:'center'},
-                {field: 'layout', sort: true, title: '布局样式',align:'center'},
-                {field: 'type', sort: true, title: '布局类型',align:'center'},
-                {title:'操作', toolbar:'#pagesBar'}
+                {field: 'layout', sort: true, title: '布局样式',align:'center', width:110},
+                {field: 'type', sort: true, title: '布局类型',align:'center', width:110},
+                {title:'操作', toolbar:'#pagesBar',align:'center', width:90}
             ]]
         });
 
@@ -71,7 +66,7 @@
                 window.box = layer.open({
                     type: 1,
                     content: e,
-                    area: ['400px', '450px'],
+                    area: setpage(400,450),
                     title:'添加'
                 });
             })

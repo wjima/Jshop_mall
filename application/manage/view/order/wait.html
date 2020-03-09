@@ -62,7 +62,8 @@
         laydate.render({
             elem: '#date',
             range: '到',
-            format: 'yyyy-MM-dd'
+            format: 'yyyy-MM-dd',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //获取订单数据
@@ -110,7 +111,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '订单详情',
-                        area: ['800px', '445px'], //宽高
+                        area: setpage(800,445), //宽高
                         content: e.data
                     });
                 }else{
@@ -127,7 +128,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '编辑订单',
-                        area: ['770px', '350px'], //宽高
+                        area: setpage(770,350), //宽高
                         content: e.data
                     });
                 }else{
@@ -166,7 +167,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '支付订单',
-                        area: ['530px', '290px'], //宽高
+                        area: setpage(530,290), //宽高
                         content: e.data.tpl
                     });
                 }else{
@@ -190,7 +191,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '支付订单',
-                        area: ['530px', '620px'], //宽高
+                        area: setpage(530,620), //宽高
                         content: e.data.tpl
                     });
                 }else{
@@ -225,7 +226,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '支付订单',
-                        area: ['800px', '800px'], //宽高
+                        area: setpage(800,800), //宽高
                         content: e.data
                     });
                 }else{

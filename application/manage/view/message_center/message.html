@@ -34,7 +34,8 @@
         layui.laydate.render({
             elem: '#date',
             range: '到',
-            type: 'datetime'
+            type: 'datetime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         //获取列表数据
         layui.table.render({
@@ -79,7 +80,7 @@
                     layer.open({
                         type: 1,
                         skin: 'layui-layer-rim', //加上边框
-                        area: ['420px', '240px'], //宽高
+                        area: setpage(420,240), //宽高
                         content: "<div style='padding:20px;'>" +e.data.content+ "</div>"
                     });
                 }else{

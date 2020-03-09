@@ -1,11 +1,11 @@
 <template>
-	<view class="imgwindow bottom-cell-group">
+	<view class="imgwindow">
 		<view class="imgwindow-list" v-if="jdata.params.style == '2' ||jdata.params.style == '3' ||jdata.params.style == '4'"
 		 v-bind:class="'row'+jdata.params.style" :style="{margin:-jdata.params.margin+'px'}">
-			<view class="imgwindow-item" ref="imgwitem" :style="{height:height+'px',padding:jdata.params.margin+'px'}" v-for="(item, index) in jdata.params.list"
-			 :key="index">
-				<image :src="item.image" mode="aspectFill" @click="showSliderInfo(item.linkType, item.linkValue)"></image>
-			</view>
+			<!-- <view class="imgwindow-item" ref="imgwitem" :style="{height:height+'px',padding:jdata.params.margin+'px'}" v-for="(item, index) in jdata.params.list"
+			 :key="index"> -->
+				<image v-for="(item, index) in jdata.params.list" :key="index" :src="item.image" mode="widthFix" @click="showSliderInfo(item.linkType, item.linkValue)"></image>
+			<!-- </view> -->
 		</view>
 		<view class="imgwindow-list" v-if="jdata.params.style == '0'" v-bind:class="'row'+jdata.params.style" :style="{margin:-jdata.params.margin+'px'}">
 			<view class="imgwindow-item" ref="imgwitem" :style="{height:height+'px',padding:jdata.params.margin+'px'}" v-for="(item, index) in jdata.params.list"
@@ -63,7 +63,7 @@
 
 			// #ifdef MP-WEIXIN
 
-			var view = uni.createSelectorQuery().in(this).select(".content");
+			var view = uni.createSelectorQuery().select(".content");
 
 			view.boundingClientRect(jdata => {
 
@@ -98,6 +98,9 @@
 								url: val
 							});
 							return;
+						} else if(val.indexOf('/pages/coupon/coupon')>-1){
+							var id = val.replace('/pages/coupon/coupon?id=',"");
+							this.receiveCoupon(id)
 						} else {
 							this.$common.navigateTo(val);
 							return;
@@ -123,6 +126,19 @@
 				let url = '/pages/goods/index/index?id=' + id;
 				this.$common.navigateTo(url);
 			},
+			// 用户领取优惠券
+			receiveCoupon(couponId) {
+				let data = {
+					promotion_id: couponId
+				}
+				this.$api.getCoupon(data, res => {
+					if (res.status) {
+						this.$common.successToShow(res.msg)
+					} else {
+						this.$common.errorToShow(res.msg)
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -133,22 +149,39 @@
 	}
 
 	.imgwindow-list {
-		overflow: hidden;
+		/* overflow: hidden; */
 		/* margin: -16upx; */
+		display: flex;
 	}
 
 	/* 堆积两列 */
 	.imgwindow-list .imgwindow-item {
 		height: auto;
-		float: left;
+		flex: 1;
+		/* float: left; */
 		/* padding: 8upx; */
 	}
 
 	.imgwindow-list .imgwindow-item image {
 		width: 100%;
+		/* height: 100%; */
+	}
+	
+	.imgwindow-list.row0{
+		overflow: hidden;
+		display: block;
+	}
+	.imgwindow-list.row0 .imgwindow-item {
+		height: auto;
+		flex: auto;
+		float: left;
+		/* padding: 8upx; */
+	}
+	.imgwindow-list.row0 .imgwindow-item image {
+		width: 100%;
 		height: 100%;
 	}
-
+	
 	.imgwindow-list.row0 .imgwindow-item:first-child {
 		width: 50%;
 	}
@@ -163,7 +196,7 @@
 
 	}
 
-	.imgwindow-list.row2 .imgwindow-item {
+	/* .imgwindow-list.row2 .imgwindow-item {
 		width: 50%;
 	}
 
@@ -173,5 +206,5 @@
 
 	.imgwindow-list.row4 .imgwindow-item {
 		width: 25%;
-	}
+	} */
 </style>

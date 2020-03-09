@@ -252,6 +252,14 @@ return [
             'ttlogin' => [
                 'code' => 'ttLogin',
                 'is_login' => false
+            ],
+            'share' => [
+                'code' => 'share',
+                'is_login' => false
+            ],
+            'deshare' => [
+                'code' => 'deshare',
+                'is_login' => false
             ]
         ]
     ],
@@ -295,6 +303,10 @@ return [
             ],
             'leftarticletype' => [
                 'code' => 'leftArticleType',
+                'is_login' => false
+            ],
+            'search' => [
+                'code' => 'search',
                 'is_login' => false
             ]
         ]
@@ -430,10 +442,6 @@ return [
             ],
             'confirm' => [
                 'code' => 'confirm',
-                'is_login' => true
-            ],
-            'getlist' => [
-                'code' => 'getList',
                 'is_login' => true
             ],
             'create' => [

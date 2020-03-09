@@ -3,8 +3,8 @@
 		<view class="content-top" v-if="list.length">
 			<view class="uni-list-cell uni-list-cell-pd" v-for="(item, key) in list" :key="key">
 				<view class='cell-group min-cell-group'>
-					<view class='cell-item'>
-						<view class='cell-item-hd' @click="isSelect(item)">
+					<view class='cell-item' @click="isSelect(item)">
+						<view class='cell-item-hd'>
 							<view class='cell-hd-title'>{{item.name}} <text class="phone-num">{{item.mobile}}</text></view>
 						</view>
 						<view class='cell-item-ft' v-show="type != 'order'">
@@ -13,7 +13,7 @@
 						</view>
 					</view>
 					<view class='cell-item' @click="isSelect(item)">
-						<view class='cell-item-bd'>
+						<view class='cell-item-hd'>
 							<view class="cell-bd-view">
 								<view class="cell-tip" v-show="item.is_def === 1">默认</view>
 								<text class="cell-bd-text">{{item.area_name + item.address}}</text>
@@ -94,13 +94,12 @@ export default {
 				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				this.$db.set('address_user_ship', data, true);
 				// #endif
-				
-				// #ifdef H5
-				beforePage.userShip = data;
-				beforePage.params.area_id = data.area_id;
+		
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+				this.$store.commit("userShip",data)
 				// #endif
 
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				beforePage.$vm.userShip = data;
 				beforePage.$vm.params.area_id = data.area_id;
 				// #endif
@@ -108,6 +107,7 @@ export default {
 				uni.navigateBack({
 					delta: 1
 				});
+				// this.$common.navigateTo("/pages/goods/place-order/index")
 			}
 		},
 		// #ifdef MP-WEIXIN
@@ -180,7 +180,6 @@ export default {
 	font-size: 24upx;
 	display: inline-block;
 	float: left;
-	/* border-radius: 10upx; */
 	padding: 4upx 10upx;
 	margin-right: 10upx;
 	transform: scale(.9);

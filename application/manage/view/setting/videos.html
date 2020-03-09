@@ -49,7 +49,8 @@
 
         date.render({
             elem: '#date',
-            range: '~'
+            range: '~',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(search)', function (data) {
@@ -68,7 +69,7 @@
                 layer.open({
                     type: 1,
                     content: e,
-                    area: ['600px', '500px'],
+                    area: setpage(600,500),
                     title: '添加',
                     btn: ['确定', '取消'],
                     zIndex: 1800,
@@ -117,7 +118,7 @@
                     type: 1
                     ,title: false //不显示标题栏
                     ,closeBtn: true
-                    ,area: ['610px', '410px']
+                    ,area: setpage(610,410)
                     ,content: '<video class="edui-faked video-js"  controls src="'+data.video_url+'" id="toVideo" style="width:600px;height:400px;" poster="'+data.video_cover+'">'
                 });
             }

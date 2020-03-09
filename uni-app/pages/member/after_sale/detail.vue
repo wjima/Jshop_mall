@@ -1,23 +1,14 @@
 <template>
 	<view class="content">
 		<view class="content-top">
-			<!-- <view class="back-img">
-				<view class="back-img-c">
-					<view class="back-img-t">退款单状态</view>
-					<view class="back-img-b">{{status_name}} {{refund_name}} {{reship_name}}...</view>
-				</view>
-			</view> -->
 			<view class='cell-group margin-cell-group'>
 				<view class='cell-item add-title-item'>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block'>
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text color-3">退款单状态</text>
 						</view>
 						<view class="cell-bd-view">
 							<text class="cell-bd-text color-9">{{status_name}} {{refund_name}} {{reship_name}}...</text>
-						</view>
-						<view class="cell-bd-view">
-							<!-- <text class="cell-bd-text">下单时间：{{ orderInfo.ctime }}</text> -->
 						</view>
 					</view>
 				</view>
@@ -92,30 +83,6 @@
 						<view class='cell-hd-title'>退货邮寄信息</view>
 					</view>
 				</view>
-				<!-- <view class='cell-item'>
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>收件人</view>
-					</view>
-					<view class='cell-item-bd'>
-						<input class='cell-bd-input' type="text" disabled="false" :value="reship_info.reship_name" />
-					</view>
-				</view>
-				<view class='cell-item'>
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>联系方式</view>
-					</view>
-					<view class='cell-item-bd'>
-						<input class='cell-bd-input' type="text" disabled="false" :value="reship_info.reship_mobile" />
-					</view>
-				</view>
-				<view class='cell-item'>
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>邮寄地址</view>
-					</view>
-					<view class='cell-item-bd'>
-						<input class='cell-bd-input' type="text" disabled="false" :value="reship_info.reship_area + reship_info.reship_address" />
-					</view>
-				</view> -->
 				<view class='cell-item add-title-item right-img'>
 					<view class='cell-item-hd' style="min-width: 50rpx;">
 						<image class='cell-hd-icon' src='/static/image/location.png'></image>
@@ -129,9 +96,6 @@
 							<text class="cell-bd-text address">{{ reship_info.reship_area + reship_info.reship_address }}</text>
 						</view>
 					</view>
-					<!-- <view class='cell-item-ft'>
-						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
-					</view> -->
 				</view>
 			</view>
 			<view class='cell-group margin-cell-group' v-show="status == 2 && reship_status == 1">
@@ -318,12 +282,6 @@ export default {
 					this.status = 3;
 					this.status_name = '申请驳回';
 				}
-				//售后单明细,如果有退货单明细，就用退货单明细，否则就用售后单明细
-				// if(info.bill_reship.items){
-				//   page.data.items = info.bill_reship.items;
-				// }else{
-				//   page.data.items = info.items;
-				// }
 			} else {
 				this.$common.errorToShow(res.msg);
 			}
@@ -444,5 +402,8 @@ export default {
 }
 .button-bottom .btn{
 	line-height: 86rpx;
+}
+.add-title-item .cell-item-bd{
+	margin-left: 0;
 }
 </style>

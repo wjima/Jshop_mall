@@ -87,6 +87,13 @@
             <input name="mark" value="" required="" lay-verify="required" placeholder="请输入备注" style="width:100%;"
                    autocomplete="off" class="layui-input" type="text"></div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">说明：</label>
+        <div class="layui-input-block">
+            1. 选择”未收到货“是退未发货的商品，选择”已收到货“是退已发货的商品，选择”未收到货“不会生成退货单，选择”已收到货“会生成退货单，<span style="color:red;">未发货的商品和已发货的商品不能混合着退</span>。<br />
+            2. "售后数量"里的数字包含已提交的售后和审核通过的售后的商品数量，后面如果有括号，表示已发货的商品的退货数量。
+        </div>
+    </div>
     {:jshopToken()}
 </form>
 
@@ -109,7 +116,9 @@
                 }},
                 { field: 'nums', title: '购买数量', width: 80 },
                 { field: 'sendnums', title: '发货数量', width: 80 },
-                { field: 'reship_nums', title: '已退数量', width: 80 },
+                { field: 'reship_nums', title: '售后数量', width: 80 , templet: function (data){
+                    return data.reship_nums + '('+ data.reship_nums_ed +')';
+                }},
                 {
                     field: 'the_reship_nums', title: '退货数量', width: 80, templet: function (data) {
                         return '<input name="aftersaleeItems[' + data.id + ']" style="width:50px;" value="' + data.the_reship_nums + '"  type="text">';

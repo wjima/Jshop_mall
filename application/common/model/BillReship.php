@@ -1,6 +1,7 @@
 <?php
 namespace app\common\model;
 
+use think\Db;
 use think\model\concern\SoftDelete;
 
 class BillReship extends Common
@@ -149,9 +150,9 @@ class BillReship extends Common
         $this->where($where)->data($data)->update();
 
         //退货
-        $orderItems = new OrderItems();
-        $items      = $orderItems->where([[
-            'order_id', '=', $info['order_id']
+        $billReshipItemsModel = new BillReshipItems();
+        $items      = $billReshipItemsModel->where([[
+            'reship_id', '=', $info['reship_id']
         ]])->select();
         if (!$items->isEmpty()) {
             $goodsModel = new Goods();
@@ -393,9 +394,9 @@ class BillReship extends Common
     public function exportValidate(&$params = [])
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '验证成功',
         ];
         return $result;
     }

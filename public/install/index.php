@@ -3,7 +3,7 @@ header('Content-type:text/html;charset=utf-8');
 session_start();
 //配置信息
 $config = array(
-    'version'     => 'v2.0.7',        //版本号
+    'version'     => 'v2.2.0',        //版本号
     'indexPage'   => 'step1',         //用户协议
     'checkPage'   => 'step2',         //环境检测
     'createPage'  => 'step3',         //数据库配置
@@ -40,9 +40,9 @@ $errorMsg   = '';
 $get = @$_GET['type'] ? $_GET['type'] : $config['indexPage'];
 //检测是否已安装
 if($get!='step5-1'){
-    if (file_exists('./install.lock')||file_exists(dirname(dirname(dirname(__FILE__))).'/config/install.lock')) {
+    if (file_exists('./install.lock')||file_exists(dirname(dirname(dirname(__FILE__))).'/runtime/install.lock')) {
         $errorTitle = '系统已安装';
-        $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或config/install.lock 文件';
+        $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或runtime/install.lock 文件';
         die(require $config['errorPage'] . '.html');
     }
 }
@@ -302,16 +302,13 @@ php;
     file_put_contents($config['databaseUrl'], $db_str);
 
     //配置H5的host
-    $scheme = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:'http';
+    /*$scheme = isset($_SERVER['REQUEST_SCHEME'])?$_SERVER['REQUEST_SCHEME']:'http';
     $host_url = $scheme . '://' . $_SERVER['HTTP_HOST'];
     $h5config = <<<h5
 window.host = '{$host_url}';
-window.entId = '';
 h5;
-    @file_put_contents($config['h5ConfigUrl'], $h5config);
-
-
-    @touch(dirname(dirname(dirname(__FILE__))).'/config/install.lock');
+    @file_put_contents($config['h5ConfigUrl'], $h5config);*/
+    @touch(dirname(dirname(dirname(__FILE__))).'/runtime/install.lock');
 }
 
 

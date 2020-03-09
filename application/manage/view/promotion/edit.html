@@ -78,7 +78,8 @@ layui.use(['form', 'table', 'laydate'], function(){
     laydate.render({
         elem: '#date',
         range: '到',
-        type: 'datetime'
+        type: 'datetime',
+				trigger: 'click' //自动弹出控件的事件，采用click弹出
     });
 
     //提交
@@ -214,7 +215,7 @@ function conditionAdd(callback){
             window.box = layer.open({
                 type: 1,
                 content: e.data,//
-                area: ['400px', '500px'],
+                area: setpage(400,500),
                 title:'选择促销条件',
                 btn: ['下一步','取消'],
                 yes: function(index, layero){
@@ -250,7 +251,7 @@ function conditionEdit(id,promotion_id,condition_code,callback){
             layer.open({
                 type: 1,
                 content: e.data,//
-                area: ['600px', '400px'],
+                area: setpage(600,400),
                 title:'设置促销条件',
                 btn: ['完成','取消'],
                 yes: function(index, layero){
@@ -277,7 +278,7 @@ function resultAdd(callback){
             window.box = layer.open({
                 type: 1,
                 content: e.data,//
-                area: ['400px', '500px'],
+                area: setpage(400,500),
                 title:'选择促销结果',
                 btn: ['下一步','取消'],
                 yes: function(index, layero){
@@ -313,7 +314,7 @@ function resultEdit(id,promotion_id,result_code,callback){
             layer.open({
                 type: 1,
                 content: e.data,//
-                area: ['600px', '400px'],
+                area: setpage(600,400),
                 title:'设置促销结果',
                 btn: ['完成','取消'],
                 yes: function(index, layero){

@@ -96,7 +96,7 @@ class Aliyun
 
             $fileName = substr($file['savepath'], 1) . $file['savename'];
 
-            $result = $this->aliyun->uploadFile($this->config['bucket'], $fileName, $filePath);
+            $result = $this->aliyun->uploadFile($this->config['oss_bucket'], $fileName, $filePath);
             if (isset($result['info']['url'])) {
                 return true;
             } else {

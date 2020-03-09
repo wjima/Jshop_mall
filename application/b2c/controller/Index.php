@@ -14,6 +14,7 @@ use app\common\model\Payments;
 use app\common\model\User;
 use app\common\model\UserWx;
 use org\login\Wxofficial;
+use org\Wx;
 use think\Hook;
 
 

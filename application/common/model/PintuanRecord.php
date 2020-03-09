@@ -318,6 +318,9 @@ class PintuanRecord extends Model{
 
     /**
      * 自动取消到时间的团
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
     public function autoCancle(){
         $time = time();

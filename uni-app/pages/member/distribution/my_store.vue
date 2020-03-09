@@ -14,10 +14,20 @@
 							<view class="color-o fsz36">{{total_goods}}</view>
 							<text class='member-item-text'>全部宝贝</text>
 						</view>
+						<!-- #ifdef MP-TOUTIAO -->
+						<view class='member-item'>
+							<button class='share btn' @click="createPoster()">
+								<image class='member-item-icon' src='/static/image/ic-me-collect.png'></image>
+								<text class='member-item-text'>分享店铺</text>
+							</button>
+						</view>
+						<!-- #endif -->
+						<!-- #ifndef MP-TOUTIAO -->
 						<view class='member-item' @click="openPopup()">
 							<image class='member-item-icon' src='/static/image/ic-me-collect.png'></image>
 							<text class='member-item-text'>收藏本店</text>
 						</view>
+						<!-- #endif -->
 						<view class='member-item'>
 							<!-- #ifdef MP-WEIXIN -->
 							<button class='share btn' open-type="share">
@@ -31,7 +41,6 @@
 								<text class='member-item-text'>二维码</text>
 							</button>
 							<!-- #endif -->
-
 						</view>
 					</view>
 				</view>
@@ -130,9 +139,9 @@
 				store_banner_src: '',
 				isWeixinBrowser: this.$common.isWeiXinBrowser(), //判断是否是微信浏览器
 				total_goods: 0,
-				myShareCode: '', //邀请码
 				page: 1, //默认页码
-				searchKey: '请输入关键字搜索'
+				searchKey: '请输入关键字搜索',
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onShow: function() {
@@ -149,15 +158,14 @@
 			this.storeCode = store;
 			this.getDistribution(store);
 			this.getGoods();
-			this.getMyShareCode()
 		},
 		mounted() {
-			// #ifdef H5 || APP-PLUS
+			// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 			window.addEventListener('scroll', this.handleScroll)
 			// #endif
 		},
 		updated() {
-			// #ifndef MP-WEIXIN
+			// #ifndef MP-WEIXIN || MP-TOUTIAO || MP-ALIPAY
 			// 获取上半部分的整体高度
 			this.$nextTick(() => {
 				let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; //浏览器高度
@@ -178,7 +186,7 @@
 			goSearch() {
 				let pages = getCurrentPages();
 				let prevPage = pages[pages.length - 2];
-				// #ifdef H5 || MP-WEIXIN
+				// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE || MP-TOUTIAO
 				if (prevPage && prevPage.route) {
 					let search_flag = prevPage.route;
 					if (search_flag == 'pages/index/search') {
@@ -287,6 +295,10 @@
 				data.source = 5;
 				data.return_url = apiBaseUrl + 'wap/' + page_path;
 				// #endif
+				
+				// #ifdef MP-TOUTIAO
+				data.source = 6;
+				// #endif
 
 				let userToken = this.$db.get('userToken')
 
@@ -295,24 +307,40 @@
 				}
 				this.$api.createPoster(data, res => {
 					if (res.status) {
-						this.$common.navigateTo('/pages/share?poster=' + res.data)
+						this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
 					} else {
 						this.$common.errorToShow(res.msg)
 					}
 				})
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			}
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 4,
+                    params: {
+                        store: this.storeCode
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
+        watch:{
+            storeCode: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
 		//上拉加载
 		onReachBottom() {
 			if (this.loadStatus === 'more') {
@@ -321,16 +349,13 @@
 		},
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=9&invite=' + myInviteCode + "&id=" + this.storeCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.$store.state.config.share_title,
 				// #ifdef MP-ALIPAY
 				desc: this.$store.state.config.share_desc,
 				// #endif
 				imageUrl: this.$store.state.config.share_image,
-				path: path
+				path: this.shareUrl
 			}
 		}
 
@@ -341,26 +366,21 @@
 	.mst-top {
 		width: 100%;
 	}
-
 	.mst-top image {
 		width: 100%;
 	}
-
 	.member-grid {
 		border-top: 2upx solid #ddd;
 		background-color: #fff;
 		margin-bottom: 20upx;
 	}
-
 	.member-item {
 		border-right: 2upx solid #eee;
 		height: 90upx;
 	}
-
 	.member-item:last-child {
 		border-right: none;
 	}
-
 	.member-item-img {
 		width: 150upx;
 		height: 150upx;
@@ -373,15 +393,12 @@
 		border-radius: 6upx;
 		box-shadow: 0 0 10upx #ccc;
 	}
-
 	.img-grids {
 		padding-bottom: 26upx;
 	}
-
 	.img-grids-item {
 		margin-bottom: 0;
 	}
-
 	.scroll-Y {
 		/*  #ifdef  H5  */
 		height: calc(100vh - 44px - 0upx);
@@ -390,30 +407,21 @@
 		height: calc(100vh - 0upx);
 		/*  #endif  */
 		position: position;
-		/* bottom: 0; */
-		/* 	padding-bottom:200upx */
-
 	}
-
 	.collect-pop {
 		width: 100%;
 		height: 100%;
-		/* background: #FFFFFF; */
 		position: absolute;
 		left: 0;
 		bottom: 0;
-		/* transform: ; */
 	}
-
 	.collect-pop image {
 		width: 100%;
 	}
-
 	.h5-tip {
 		text-align: center;
 		margin-top: 300upx;
 	}
-
 	.member-item .share {
 		background: none !important;
 		line-height: normal;

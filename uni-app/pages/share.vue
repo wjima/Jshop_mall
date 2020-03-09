@@ -16,7 +16,7 @@ export default {
 		};
 	},
 	onLoad(options) {
-		this.poster = options.poster;
+		this.poster = decodeURIComponent(options.poster);
 	},
 	computed: {
 		weiXinBrowser () {

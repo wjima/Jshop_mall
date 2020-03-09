@@ -71,11 +71,7 @@ export default {
     // #endif
   },
   // #ifdef MP-WEIXIN
-  // onUnload: function() {
-  //   wx.reLaunch({
-  //     url: '/pages/index/index'
-  //   })
-  // },
+
   // #endif
   methods: {
     getCode: function(callback) {

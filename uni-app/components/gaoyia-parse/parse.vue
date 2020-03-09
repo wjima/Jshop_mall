@@ -143,7 +143,6 @@
 						this.nodes.push(item)
 					}, 0);
 				})
-				console.log(this.nodes);
 			},
 			getWidth() {
 				return new Promise((res, rej) => {

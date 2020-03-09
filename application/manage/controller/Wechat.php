@@ -413,7 +413,7 @@ class Wechat extends Manage
             }
         }
         $this->assign('id', $id);
-        $this->assign('mediaData', json_encode($mediaData));
+        $this->assign('mediaData', json_encode($mediaData,320));
         $this->assign('mediaList', $mediaData);
         return $this->fetch('edit_media_message');
     }

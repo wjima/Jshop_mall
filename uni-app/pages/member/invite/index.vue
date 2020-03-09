@@ -44,20 +44,20 @@
 </template>
 
 <script>
-	import {apiBaseUrl} from '@/config/config.js'
+	import { h5Url } from '@/config/config.js'
 	// #ifdef MP-TOUTIAO
 	import {ttPlatform} from '@/config/config.js'
 	// #endif
 	export default {
 		data() {
 			return {
-				myShareCode: '', //分享Code
 				code: '',
 				money: 0,
 				number: 0,
 				is_superior: false,
 				inviteKey: '',
 				imageUrl: '/static/image/share_image.png',
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		computed: {
@@ -67,7 +67,6 @@
 		},
 		onShow() {
 			this.getInviteData();
-			this.getMyShareCode();
 			this.ifwxl()
 		},
 		methods: {
@@ -107,63 +106,80 @@
 				});
 			},
 			// 生成邀请海报
-			createPoster() {
+			createPoster() {                
 				let data = {
-					type: 2
+				    page: 1,//首页
+				    type: 3,//海报
 				}
-
-				let page_path = 'pages/share/jump';
-				// #ifdef H5
-				data.source = 1;
-				data.return_url = apiBaseUrl + 'wap/' + page_path;
+				let userToken = this.$db.get('userToken')
+				if (userToken) {
+				    data.token = userToken
+				}
+				
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+				data.client = 1;
+				data.url = h5Url + 'pages/share/jump'
 				// #endif
-
+				
 				// #ifdef MP-WEIXIN
-				data.source = 2;
-				data.return_url = page_path;
-				// #endif
-
-				// #ifdef MP-ALIPAY
-				data.source = 3;
-				data.return_url = page_path;
+				data.client = 2;
+				data.url = '/pages/share/jump'
 				// #endif
 				
 				// #ifdef MP-TOUTIAO
-				data.source = 4;
-				data.return_url = page_path;
-				data.tt_platform = ttPlatform;
+				data.client = 4;
+				data.url = '/pages/share/jump'
 				// #endif
-
-				let userToken = this.$db.get('userToken')
-
-				if (userToken) {
-					data.token = userToken
-				}
-				this.$api.createPoster(data, res => {
+				
+				// #ifdef MP-ALIPAY
+				data.client = 6;
+				data.url = '/pages/share/jump'
+				// #endif
+				
+				this.$api.share(data, res => {
 					if (res.status) {
-						this.$common.navigateTo('/pages/share?poster=' + res.data)
+						this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
 					} else {
 						this.$common.errorToShow(res.msg)
 					}
-				})
+				});
 			},
 			//复制URL链接
 			copyUrl() {
 				let data = {
-					type: 2
+				    page: 1,//首页
+				    type: 1,//海报
 				}
-				let page_path = 'pages/share/jump';
-				data.return_url = apiBaseUrl + 'wap/' + page_path;
 				let userToken = this.$db.get('userToken')
 				if (userToken) {
-					data.token = userToken
+				    data.token = userToken
 				}
-				let _this = this;
-				_this.$api.createShareUrl(data, res => {
+				
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+				data.client = 1;
+				data.url = h5Url + 'pages/share/jump'
+				// #endif
+				
+				// #ifdef MP-WEIXIN
+				data.client = 2;
+				data.url = '/pages/share/jump'
+				// #endif
+				
+				// #ifdef MP-TOUTIAO
+				data.client = 4;
+				data.url = '/pages/share/jump'
+				// #endif
+				
+				// #ifdef MP-ALIPAY
+				data.client = 6;
+				data.url = '/pages/share/jump'
+				// #endif
+
+                let _this = this;
+				this.$api.share(data, res => {
 					if(res.status) {
-						//todo::要复制的内容是 res.data
 						uni.setClipboardData({
-							data:res.data,
+							data: res.data,
 							success:function(data){
 								_this.$common.successToShow('复制成功');
 							}, 
@@ -171,36 +187,37 @@
 								_this.$common.errorToShow('复制分享URL失败');
 							}
 						})
-						
 					} else {
 						_this.$common.errorToShow('复制分享URL失败');
 					}
 				});
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			}
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 1,
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			let ins = this.$common.shareParameterDecode('type=3&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.$store.state.config.share_title,
 				// #ifdef MP-ALIPAY
 				desc: this.$store.state.config.share_desc,
 				// #endif
 				imageUrl: this.$store.state.config.share_image,
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}

@@ -105,7 +105,7 @@ class Pages extends Common
                     $goodsModel = new Goods();
                     if ($data[$i]['params']['type'] == 'auto') {
                         //商品分类,同时取所有子分类 todo 无限极分类时要注意
-                        if (isset($data[$i]['params']['classifyId']) && $data[$i]['params']['classifyId']) {
+                        if (isset($data[$i]['params']['classifyId']) && trim($data[$i]['params']['classifyId'])) {
                             $goodsCatModel = new GoodsCat();
                             $catIds        = [];
                             $childCats     = $goodsCatModel->getCatByParentId($data[$i]['params']['classifyId']);

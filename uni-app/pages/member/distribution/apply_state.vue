@@ -31,7 +31,7 @@
 						<image class="dot" src="/static/image/dot-g.png" mode="" ></image>
 					</view>
 					<view class="abs-img">
-						<image class="icon" src="/static/image/close.png" mode=""></image>
+						<image class="icon" src="/static/image/success.png" mode=""></image>
 					</view>
                 </view>
 				<view class="apply-bot-text">
@@ -124,7 +124,6 @@ export default {
 	margin: 40upx auto 20upx;
 	display: flex;
 	line-height: 1.7555;
-	/* vertical-align: middle; */
 }
 .apply-bot-sop>view{
 	display: inline-block;
@@ -138,7 +137,6 @@ export default {
 	transform: translateY(-50%);
 }
 .abs-mid{
-	/* font-size: 70upx; */
 	flex: 2;
 	display: flex;
 }

@@ -1,31 +1,20 @@
 <form class="layui-form seller-form" action="">
-
     <div class="layui-form-item">
-
         <div class="layui-inline">
-            <label class="layui-form-label seller-inline-2">钩子名称：</label>
+            <label class="layui-form-label seller-inline-2">钩子信息：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="name" lay-verify="title" placeholder="请输入钩子名称关键字" autocomplete="off"
-                       class="layui-input">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入编码或描述" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
-            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="hooks-search"><i
-                    class="iconfont icon-chaxun"></i>筛选
-            </button>
-            <button type="button" class="layui-btn layui-btn-sm add-hooks"><i class="layui-icon">&#xe608;</i> 添加
-            </button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="hooks-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button type="button" class="layui-btn layui-btn-sm add-hooks"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
-
     </div>
-
 </form>
-
 <div class="table-body">
     <table id="hooksTable" lay-filter="hooksTable"></table>
 </div>
-
 <script>
     layui.use(['table', 'form', 'layer', 'laydate'], function () {
         var layer = layui.layer, table = layui.table, form = layui.form, date = layui.laydate;
@@ -39,9 +28,9 @@
             id: 'hooksTable',
             url: "{:url('hooks/index')}",
             cols: [[ //标题栏
-                {type: 'numbers'},
-                {field: 'name', title: '编码', align: 'center', width: 150},
-                {field: 'description', title: '钩子描述', width: 200},
+                {field:'id', width:90, title:'ID', align:'center'},
+                {field: 'name', title: '编码', align: 'center', width: 160},
+                {field: 'description', title: '钩子描述', width: 220, align:'center'},
                 {
                     field: 'type', sort: true, title: '类型', align: 'center', templet: function (data) {
                         if (data.type == '1') {
@@ -49,16 +38,17 @@
                         } else {
                             return '视图';
                         }
-                    }, width: 150
+                    }, width: 110
                 },
                 {field: 'addons', sort: true, title: '挂载插件', align: 'center'},
-                {width: 150, title: '操作', align: 'center', toolbar: '#hooksBar'}
+                {width: 140, title: '操作', align: 'center', toolbar: '#hooksBar'}
             ]]
         });
 
         //search
         date.render({
-            elem: '#utime'
+            elem: '#utime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(hooks-search)', function (data) {
@@ -77,7 +67,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['380px', '400px'],
+                        area: setpage(380,400),
                         title: '添加钩子'
                     });
                 }else{
@@ -133,7 +123,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['380px', '400px'],
+                            area: setpage(380,400),
                             title: '编辑钩子'
                         })
                     }else{

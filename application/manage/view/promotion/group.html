@@ -30,18 +30,17 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="promotion" lay-filter="test"></table>
 </div>
-
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         //时间插件
         layui.laydate.render({
             elem: '#date',
             range: '到',
-            type: 'datetime'
+            type: 'datetime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //表格渲染
@@ -54,20 +53,20 @@
             url: "{:url('promotion/group')}?_ajax=1",
             id:'promotion',
             cols: [[
-                {type:'numbers'},
-                {field:'name',title:'团购(秒杀)名称'},
-                {field:'sort', sort: true,title:'权重'},
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field:'name',title:'团购(秒杀)名称', align: 'center'},
+                {field:'sort', sort: true,title:'权重', align: 'center', width: 100},
                 {field:'type', sort: true,title:'类型',templet:function (data) {
                     if(data.type=='3'){
                         return '团购';
                     }else{
                         return '秒杀';
                     }
-                }},
-                {field:'status',title:'启用状态', templet: '#status', width: 120},
-                {field:'stime',title:'开始时间'},
-                {field:'etime',title:'结束时间'},
-                {field: 'operating', title: '操作', align: 'center',templet:function(data){
+                }, align: 'center', width: 110},
+                {field:'status',sort: true,title:'启用状态', templet: '#status', width: 110, align: 'center'},
+                {field:'stime',sort: true,title:'开始时间', align: 'center', width: 170},
+                {field:'etime',sort: true,title:'结束时间', align: 'center', width: 170},
+                {field: 'operating', title: '操作', width: 140, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs" href="{:url('promotion/groupEdit')}?id=' + data.id + '">编辑</a>';
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';

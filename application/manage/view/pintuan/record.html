@@ -34,11 +34,9 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <table id="pintuan" lay-filter="pintuan"></table>
 </div>
-
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         var table = layui.table;
@@ -46,7 +44,8 @@
         layui.laydate.render({
             elem: '#date',
             range: '到',
-            type: 'datetime'
+            type: 'datetime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //表格渲染
@@ -59,20 +58,20 @@
             url: "{:url('record')}",
             id:'pintuan',
             cols: [[
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field:'team_id',title:'团ID',templet:function(data){
                     var str = data.team_id;
                     if(data.id == data.team_id){
                         str = str + "(团长)";
                     }
                     return str;
-                }},
-                {field:'user_nickname' ,title:'用户', align: 'center'},
-                {field:'status_name',title:'状态'},
-                {field:'order_id',title:'订单号'},
-                {field:'close_time',title:'关闭时间'},
-                {field:'ctime',title:'创建时间'},
-                {field:'utime',title:'更新时间'}
+                }, align: 'center'},
+                {field:'user_nickname' ,title:'用户', align: 'center', width: 130},
+                {field:'status_name',title:'状态', align: 'center', width: 110},
+                {field:'order_id',title:'订单号', align: 'center', width: 150},
+                {field:'close_time',title:'关闭时间', align: 'center', width: 170},
+                {field:'ctime',title:'创建时间', align: 'center', width: 170},
+                {field:'utime',title:'更新时间', align: 'center', width: 170}
             ]]
         });
 

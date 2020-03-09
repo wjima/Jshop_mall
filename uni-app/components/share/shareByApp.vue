@@ -1,5 +1,4 @@
 <template>
-	
 	<view style="width: 100%;height: 300upx;background: #FFFFFF;position: absolute;left:0;bottom: 0;">
 		<view class="share-pop">
 			<view class="share-item" 
@@ -17,7 +16,7 @@
 </template>
 
 <script>
-import { apiBaseUrl } from '@/config/config.js'
+import { h5Url } from '@/config/config.js'
 export default {
 	props: {
 		// 商品id
@@ -150,25 +149,44 @@ export default {
 		},
 		// 生成海报
 		createPoster () {
-			let data = {
-				id: this.goodsId,
-				type: this.shareType,
-				group_id :this.groupId,
-				team_id :this.teamId,
+			let data = {};
+			if (this.shareType == 1) {
+			    //商品
+			    data = {
+			        page: 2, //商品
+			        url: '/pages/share/jump',
+			        params: {
+			            goods_id: this.goodsId
+			        },
+			        type: 3,//海报
+			        client: 2
+			    }
+			    let userToken = this.$db.get('userToken')
+			    if (userToken) {
+			    	data.token = userToken
+			    }
+			} else if(this.shareType == 3) {
+			    //拼团
+			    data = {
+			        page: 3, //商品
+			        url: '/pages/share/jump',
+			        params: {
+			            goods_id: this.goodsId,
+			            group_id: this.groupId,
+			            team_id: this.teamId
+			        },
+			        type: 3,//海报
+			        client: 2
+			    }
+			    let userToken = this.$db.get('userToken')
+			    if (userToken) {
+			    	data.token = userToken
+			    }
 			}
-			
-			data.source = 5;
-			data.return_url = apiBaseUrl + 'wap/pages/share/jump';
-			
-			let userToken = this.$db.get('userToken')
-			if (userToken) {
-				data.token = userToken
-			}
-			
-			this.$api.createPoster(data, res => {
+			this.$api.share(data, res => {
 				if (res.status) {
 					this.close()
-					this.$common.navigateTo('/pages/share?poster=' + res.data)
+					this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
 				} else {
 					this.$common.errorToShow(res.msg)
 				}

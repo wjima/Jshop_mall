@@ -11,6 +11,7 @@ namespace app\common\model;
 
 use think\Db;
 use think\facade\Cache;
+use think\Validate;
 
 /**
  * 地区模型
@@ -28,6 +29,23 @@ class Area extends Common
     const PROVINCE_PARENT_ID = 0;           //根节点
 
     public $areaList; //地区数据
+
+    //验证规则
+    protected $rule     =   [
+        'name'         =>  'require|max:50|min:2',
+        'postal_code'  =>  'require|max:10|min:1',
+        'sort'         =>  'number',
+    ];
+
+    protected $msg          =   [
+        'name.require'     =>  '地区名称必须填写',
+        'name.max'         =>  '地区名称最多不能超过50个字符',
+        'name.min'         =>  '地区名称最少不能小于2个字符',
+        'postal_code.require'     =>  '地区邮编必须填写',
+        'postal_code.max'         =>  '地区邮编最多不能超过10个字符',
+        'postal_code.min'         =>  '地区邮编最少不能小于1个字符',
+        'sort.number'       =>  '排序必须是数字类型',
+    ];
 
     /**
      * 指定region id的下级信息
@@ -247,12 +265,26 @@ class Area extends Common
     /**
      * 添加地区
      * @param $data
-     * @return int|string
+     * @return array
      */
     public function add($data)
     {
         Cache::set('area_tree', '');//清理地区缓存
-        return $this->insert($data);
+
+        $validate = new Validate($this->rule, $this->msg);
+        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
+        if(!$validate->check($data))
+        {
+            $result['status'] = false;
+            $result['msg'] = $validate->getError();
+        } else {
+            if (!$this->insert($data))
+            {
+                $result['status'] = false;
+                $result['msg'] = '保存失败';
+            }
+        }
+        return $result;
     }
 
 
@@ -272,13 +304,28 @@ class Area extends Common
      * 编辑存储
      * @param $id
      * @param $data
-     * @return static
+     * @return array
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
      */
     public function edit($id, $data)
     {
         Cache::set('area_tree', '');//清理地区缓存
-        return $this->where('id', 'eq', $id)
-            ->update($data);
+
+        $validate = new Validate($this->rule, $this->msg);
+        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
+        if(!$validate->check($data))
+        {
+            $result['status'] = false;
+            $result['msg'] = $validate->getError();
+        } else {
+            if (!$this->where('id', 'eq', $id)->update($data))
+            {
+                $result['status'] = false;
+                $result['msg'] = '保存失败';
+            }
+        }
+        return $result;
     }
 
 

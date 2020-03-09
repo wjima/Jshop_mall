@@ -64,7 +64,7 @@ class Order extends Manage
                 'order_id' => Request::param('order_id'),
                 'username' => Request::param('username'),
                 'ship_mobile' => Request::param('ship_mobile'),
-                'order_unified_status' => Request::param('order_unified_status'),
+                'order_unified_status' => Request::param('order_unified_status',0),
                 'date' => Request::param('date'),
                 'source' => Request::param('source'),
                 'page' => Request::param('page'),
@@ -114,7 +114,7 @@ class Order extends Manage
         ];
         $this->view->engine->layout(false);
         $orderModel = new OrderModel();
-        $order_info = $orderModel->getOrderInfoByOrderID($id, false, false);
+        $order_info = $orderModel->getOrderInfoByOrderID($id);
         $this->assign('order', $order_info);
 
         $orderLog = new OrderLog();
@@ -203,7 +203,6 @@ class Order extends Manage
         ];
         $this->view->engine->layout(false);
         if (Request::isPost()) {
-            $data = input('param.');
             $billDeliveryModel = new BillDelivery();
             $result = $billDeliveryModel->ship(
                 input('param.order_id'),
@@ -213,9 +212,9 @@ class Order extends Manage
                 input('param.store_id',0),
                 input('param.ship_name',""),
                 input('param.ship_mobile',""),
-                input('param.ship_area_id',""),
+                input('param.ship_area_id',0),
                 input('param.ship_address',""),
-                input('param.memo')
+                input('param.memo', "")
             );
             return $result;
         }
@@ -441,7 +440,7 @@ class Order extends Manage
             $this->error("关键参数丢失");
         }
         $orderModel = new OrderModel();
-        $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+        $order_info = $orderModel->getOrderInfoByOrderID($order_id);
         $this->assign('order', $order_info);
         $this->view->engine->layout(false);
         $shop_name = getSetting('shop_name');
@@ -503,7 +502,7 @@ class Order extends Manage
 
             //默认快递公司
             $orderModel = new OrderModel();
-            $order_info = $orderModel->getOrderInfoByOrderID($order_id, false, false);
+            $order_info = $orderModel->getOrderInfoByOrderID($order_id);
             $this->assign('order_info', $order_info);
 
             $ship['logi_code'] = $order_info['logistics']['logi_code'];

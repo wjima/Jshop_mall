@@ -147,16 +147,9 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_addr},收货人手机:${ship_mobile},备注:${memo}',
+                        'content' => '订单号:${order_id}',
                         'variable'=>[
-                            'order_id'=>'order_id',  //模板变量，对应系统变量名称
-                            'ship_id'=>'ship_id',
-                            'logistics_name'=>'logistics_name',
-                            'ship_no'=>'ship_no',
-                            'ship_name'=>'ship_name',
-                            'ship_addr'=>'ship_addr',
-                            'ship_mobile'=>'ship_mobile',
-                            'memo'=>'memo',
+                            'order_id'=>'order_id'
                         ]
                     ],
                     'content'  => [
@@ -175,14 +168,14 @@ return [
                     ],
                     'template' => [
                         'title'   => '模板变量',
-                        'content' => '订单号:${order_id},配送方式:${ship_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_addr},收货人手机:${ship_mobile},备注:${memo}',
+                        'content' => '订单号:${order_id},物流公司:${logistics_name},物流单号:${ship_no},收货人姓名:${ship_name},收货人地址:${ship_address},收货人手机:${ship_mobile},备注:${memo}',
                         'variable'=>[
                             'order_id'=>'order_id',  //模板变量，对应系统变量名称
-                            'ship_id'=>'ship_id',
+                            /*'ship_id'=>'ship_id',*/
                             'logistics_name'=>'logistics_name',
-                            'ship_no'=>'ship_no',
+                            'ship_no'=>'logi_no',
                             'ship_name'=>'ship_name',
-                            'ship_addr'=>'ship_addr',
+                            'ship_address'=>'ship_address',
                             'ship_mobile'=>'ship_mobile',
                             'memo'=>'memo',
                         ]

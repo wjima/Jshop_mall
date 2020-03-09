@@ -49,7 +49,8 @@
         laydate.render({
             elem: '#date',
             range: '到',
-            format: 'yyyy-MM-dd'
+            format: 'yyyy-MM-dd',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         var userlistTables = layui.table.render({
@@ -83,7 +84,7 @@
             layer.open({
                 type: 1,
                 title:'操作日志导出',
-                area: ['400px', '290px'], //宽高
+                area: setpage(400,290), //宽高
                 btn:['确定','取消'],
                 content: $("#exportOperationLog").html(),
                 yes:function () {

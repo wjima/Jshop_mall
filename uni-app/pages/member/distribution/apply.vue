@@ -38,7 +38,7 @@
 					
 				</view>
 				<view class="apply-tip color-6 fsz26">
-					<label class="radio" @click="agreeAgreement"><radio value="1" :checked="checked" color="#FF7159"/>我已经阅读并接受</label><text class="" @click="goAgreement()">"分销协议"</text>
+					<label class="radio" @click="agreeAgreement"><radio value="1" :checked="checked" color="#FF7159"/>我已经阅读并接受</label><text class="agreement" @click="goAgreement()">"分销协议"</text>
 				</view>
 			</view>
 			
@@ -94,7 +94,7 @@ export default {
 				return false
 			} else if (data.agreement != 'on') {
 				//console.log(data)
-				this.$common.errorToShow('请钩选分销协议')
+				this.$common.errorToShow('请勾选分销协议')
 				return false
 			} else {
 				return true
@@ -172,5 +172,9 @@ export default {
 	border-radius: 50upx;
 	width: 90%;
 	margin: 40upx auto 0;
+}
+.agreement{
+	text-decoration: underline;
+	color: #FF7159;
 }
 </style>

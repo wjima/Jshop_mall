@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="ig-top">
 			<view class="ig-top-t">
-				<view class="">
+				<view class="" v-if="lasttime.day!=0||lasttime.hour!=0||lasttime.minute!=0||lasttime.second!=0">
 					剩余时间：<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
 				</view>
 			</view>
@@ -44,6 +44,12 @@
 			<shareByAli :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
 			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
 			 @close="closeShare()"></shareByAli>
+			<!-- #endif -->
+			
+			<!-- #ifdef MP-TOUTIAO -->
+			<shareByTt :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByTt>
 			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
@@ -103,6 +109,9 @@
 	// #ifdef MP-ALIPAY
 	import shareByAli from '@/components/share/shareByAli.vue'
 	// #endif
+	// #ifdef MP-TOUTIAO
+	import shareByTt from '@/components/share/shareByTt.vue'
+	// #endif
 	// #ifdef APP-PLUS || APP-PLUS-NVUE
 	import shareByApp from '@/components/share/shareByApp.vue'
 	// #endif
@@ -116,15 +125,15 @@
 			// #ifdef H5
 			shareByH5,
 			// #endif
-
 			// #ifdef MP-WEIXIN
 			shareByWx,
 			// #endif
-
 			// #ifdef MP-ALIPAY
 			shareByAli,
 			// #endif
-
+			// #ifdef MP-TOUTIAO
+			shareByTt,
+			// #endif
 			// #ifdef APP-PLUS || APP-PLUS-NVUE
 			shareByApp,
 			// #endif
@@ -132,7 +141,6 @@
 		},
 		data() {
 			return {
-				myShareCode: '', //分享Code
 				shareType: 3,
 				providerList: [], // 分享通道 包含生成海报
 				swiper: {
@@ -171,7 +179,8 @@
 				userToken: 0,
 				time: 0,
 				order_id:'',//订单号
-				orderInfo:{}
+				orderInfo:{},
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
@@ -185,17 +194,17 @@
 			let pages = getCurrentPages()
 			let pre = pages[pages.length - 2]
 			if(typeof pre!='undefined'){
-				// #ifdef H5
+				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				teamInfo = pre.teamInfo
 				orderInfo = pre.orderInfo
 				// #endif
 				
-				// #ifdef MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef MP-WEIXIN
 				teamInfo = pre.$vm.teamInfo
 				orderInfo = pre.$vm.orderInfo
 				// #endif
 				
-				// #ifdef MP-ALIPAY
+				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				teamInfo = pre.data.teamInfo;
 				orderInfo = pre.data.orderInfo
 				// #endif
@@ -211,13 +220,12 @@
 			}
 			let timestamp = Date.parse(new Date())/1000;
 			this.lasttime = this.$common.timeToDateObj(options.close_time-timestamp);
-			this.getMyShareCode();
 		},
 		computed: {
 			shareHref() {
 				let pages = getCurrentPages()
 				let page = pages[pages.length - 1]
-				// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
+				// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE || MP-TOUTIAO
 				return apiBaseUrl + 'wap/' + page.route + '?scene=' + this.query;
 				// #endif
 
@@ -225,7 +233,6 @@
 				return apiBaseUrl + 'wap/' + page.__proto__.route + '?scene=' + this.query;
 				// #endif
 			}
-
 		},
 		onReachBottom() {
 			if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -304,7 +311,6 @@
 			toclose() {
 				this.$refs.lvvpopref.close();
 			},
-
 			// 跳转到h5分享页面
 			goShare() {
 				this.$refs.share.show();
@@ -312,33 +318,50 @@
 			closeShare() {
 				this.$refs.share.close();
 			},
-			getMyShareCode() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					// 获取我的分享码
-					this.$api.shareCode({}, res => {
-						if (res.status) {
-							this.myShareCode = res.data ? res.data : '';
-						}
-					});
-				}
-			}
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 3,
+                    params: {
+                        goods_id: this.goodsInfo.goods_id,
+                        team_id: this.teamInfo.list[0].team_id
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
+        watch:{
+            goodsInfo: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            },
+            teamInfo: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
 		//分享
 		onShareAppMessage() {
-			 let myInviteCode = this.myShareCode ? this.myShareCode : '';
-			 let teamId = this.teamInfo.list[0].team_id;
-			 let ins = this.$common.shareParameterDecode('type=5&invite=' + myInviteCode+'&id='+ this.goodsInfo.goods_id +'&team_id=' + teamId );
-			
-			 let path = '/pages/share/jump?scene=' + ins;
-			  //console.log(path);
-			 return {
+            return {
 			 	title: this.goodsInfo.name,
 			 	// #ifdef MP-ALIPAY
 			 	desc: this.goodsInfo.brief,
 			 	// #endif
 			 	imageUrl: this.goodsInfo.image_url,
-			 	path: path
+			 	path: this.shareUrl
 			 }
 		 }
 	}
@@ -350,18 +373,15 @@
 		background-color: #fff;
 		padding: 20upx 26upx;
 	}
-
 	.ig-top-t,
 	.ig-top-m {
 		margin-bottom: 20upx;
 	}
-
 	.ig-top-t>view {
 		display: inline-block;
 		padding: 0 10upx;
 		color: #999;
 	}
-
 	.user-head-img-c {
 		position: relative;
 		width: 80upx;
@@ -370,10 +390,8 @@
 		margin-right: 20upx;
 		box-sizing: border-box;
 		display: inline-block;
-		/* float: left; */
 		border: 1px solid #f3f3f3;
 	}
-
 	.user-head-img-tip {
 		position: absolute;
 		top: -6upx;
@@ -387,17 +405,14 @@
 		border-radius: 10upx;
 		transform: scale(.8);
 	}
-
 	.user-head-img-c .user-head-img {
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
 	}
-
 	.user-head-img-c:first-child {
 		border: 1px solid #FF7159;
 	}
-
 	.uhihn {
 		width: 80upx;
 		height: 80upx;
@@ -410,42 +425,35 @@
 		box-sizing: border-box;
 		position: relative;
 	}
-
 	.uhihn>text {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
 	}
-
 	.igtb-top {
 		font-size: 32upx;
 		color: #333;
 		margin-bottom: 16upx;
 	}
-
 	.igtb-mid {
 		margin-bottom: 16upx;
 	}
-
 	.igtb-mid .btn {
 		width: 100%;
 		background-color: #FF7159;
 		color: #fff;
 	}
-
 	.igtb-bot {
 		font-size: 24upx;
 		color: #666;
 	}
-
 	.cell-ft-text {
 		max-width: 520upx;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-
 	.group-notice .cell-ft-text {
 		color: #999;
 		margin-left: 20upx;

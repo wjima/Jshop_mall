@@ -55,11 +55,13 @@
         //search
         date.render({
             elem:'#ctime',
-            range: '~'
+            range: '~',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         date.render({
             elem:'#utime',
-            range: '~'
+            range: '~',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
         form.on('submit(advertPosition-search)', function(data){
             layui.table.reload('advertPositionTable', {
@@ -78,7 +80,7 @@
                 window.box = layer.open({
                     type: 1,
                     content: e,
-                    area: ['400px', '400px'],
+                    area: setpage(400,400),
                     title:'添加广告位'
                 });
             })
@@ -133,7 +135,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e,
-                        area: ['400px','400px'],
+                        area: setpage(400,400),
                         title: '编辑广告位',
                     })
                 })

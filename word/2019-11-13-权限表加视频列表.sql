@@ -1,1 +1,0 @@
-INSERT INTO `jshop_operation` (parent_id, name, code, type, parent_menu_id, perm_type, sort) VALUES (244, "视频列表", "videos", "a", 244, 1, 100);

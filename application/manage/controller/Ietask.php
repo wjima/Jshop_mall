@@ -51,14 +51,6 @@ class Ietask extends Manage
         $taskname   = input('taskname/s', '');
         $filter     = input('filter/s', '');
         $job        = input('model/s', '');
-        $filter_res = strstr ($filter,'ids=');
-
-        $filter_res = str_replace("ids=","",$filter_res);
-        if(empty($filter_res)){
-            $result['status'] = false;
-            $result['msg']    = '请选择要导出的数据';
-            return $result;
-        }
         if(empty($taskname)){
             $result['status'] = false;
             $result['msg']    = '请输入任务名称,防止混淆';
@@ -76,8 +68,8 @@ class Ietask extends Manage
             $where = convertUrlQuery($filter);
         }
         //增加条件验证
-        if (method_exists("app\\common\\model\\$job", "export_validate")) {
-            $model       = "app\\common\\model\\$job";
+        $model       = "app\\common\\model\\$job";
+        if (method_exists($model, "exportValidate")) {
             $obj         = new $model();
             $validateRes = $obj->exportValidate($where); //验证过滤条件
             if (!$validateRes['status']) {

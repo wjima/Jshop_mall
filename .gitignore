@@ -1,5 +1,4 @@
 .idea/*
-runtime/*
 config/database.php
 public/static/uploads
 config/install.lock
@@ -9,6 +8,9 @@ public/static/file
 public/install/install.lock
 public/qrcode/
 *.bak
-public/static/poster/*
-public/static/qrcode/*
 uni-app/unpackage/
+.user.ini
+.vscode/
+.history
+.idea
+themes/pc/node_modules/*

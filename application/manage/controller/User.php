@@ -8,6 +8,7 @@ use app\common\model\UserGrade;
 use app\common\model\UserLog;
 use app\common\model\User as UserModel;
 use app\common\model\UserPointLog;
+use app\common\model\UserWx;
 use think\facade\Request;
 
 class User extends Manage
@@ -105,7 +106,8 @@ class User extends Manage
     public function userLogList()
     {
         $userLogModel = new UserLog();
-        return $userLogModel->getList(session('user.id'));
+
+        return $userLogModel->getList();
     }
 
 
@@ -115,18 +117,17 @@ class User extends Manage
      */
     public function statistics()
     {
-        $userLogModel = new UserLog();
-        $list_login   = $userLogModel->statistics(7, $userLogModel::USER_LOGIN);
-        $list_reg     = $userLogModel->statistics(7, $userLogModel::USER_REG);
-
-        $data = [
+        $userModel = new \app\common\model\User();
+        $list_reg   = $userModel->statistics(7);
+        $list_order = $userModel->statisticsOrder(7);
+        $data       = [
             'legend' => [
                 'data' => ['新增记录', '活跃记录']
             ],
             'xAxis'  => [
                 [
                     'type' => 'category',
-                    'data' => $list_login['day']
+                    'data' => $list_order['day']
                 ]
             ],
             'series' => [
@@ -138,7 +139,7 @@ class User extends Manage
                 [
                     'name' => '活跃记录',
                     'type' => 'line',
-                    'data' => $list_login['data']
+                    'data' => $list_order['data']
                 ]
             ]
         ];
@@ -451,15 +452,13 @@ class User extends Manage
         $res = $userModel::destroy($ids);
         if($res !== false)
         {
+            //同步删除user_wx
+            $userWxModel = new UserWx();
+            $userWxModel->where([['user_id','in', $ids]])->delete();
+            hook('deleteUserAfter',$ids);
             $result['msg'] = '删除成功';
             $result['status'] = true;
         }
-        $c = [];
-        foreach($c as $item){
-            $le[$item['id']] = $item['name'];
-        }
-
-
         return $result;
     }
 }

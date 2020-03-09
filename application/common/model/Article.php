@@ -28,20 +28,16 @@ class Article extends Common
 
     //验证规则
     protected $rule     =   [
-        'cover'         =>  'require',
         'title'         =>  'require|max:200',
-        'content'       =>  'require',
         'brief'         =>  'max:100',
         'type_id'       =>  'require',
         'sort'          =>  'number',
     ];
 
     protected $msg          =   [
-        'cover.require'     =>  '请上传文章封面图',
         'title.require'     =>  '文章标题必须填写',
         'title.max'         =>  '标题名称最多不能超过200个字符',
         'brief.max'         =>  '文章简介最多不能超过100个字符',
-        'content.require'   =>  '文章内容必须填写',
         'type_id.require'   =>  '请选择文章分类',
         'sort.number'       =>  '排序必须是数字类型',
     ];
@@ -195,7 +191,7 @@ class Article extends Common
 
         $list = $this->where($where)
             ->field('id,title,cover,type_id,ctime,utime,sort,is_pub,pv,brief')
-            ->order('sort desc')
+            ->order('sort asc')
             ->page($page, $limit)
             ->select();
 
@@ -234,6 +230,57 @@ class Article extends Common
 
 
     /**
+     * 文章搜索
+     * @param $search_name
+     * @param int $page
+     * @param int $limit
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function search($search_name, $page = 1, $limit = 10){
+
+        $result = [
+            'status' =>  true,
+            'msg'    =>  '获取成功',
+            'data'   =>  []
+        ];
+        // 发布状态
+        $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
+        $where[] = ['title|brief', 'like', '%'.$search_name.'%'];
+
+        $list = $this->where($where)
+            ->field('id,title,cover,type_id,ctime,utime,sort,is_pub,pv,brief')
+            ->order('sort asc')
+            ->page($page, $limit)
+            ->select();
+
+        $count = $this->where($where)->count();
+
+        if(!$list->isEmpty())
+        {
+            $list = $list->hidden(['is_pub', 'isdel']);
+            foreach ($list as &$v)
+            {
+                $v['cover'] = _sImage($v['cover']);
+                $v['ctime'] = getTime($v['ctime']);
+            }
+        }
+
+        $result['data'] = [
+            'list' => $list,
+            'count' => $count,
+            'page' => $page,
+            'limit' => $limit,
+        ];
+
+        return $result;
+
+    }
+
+
+    /**
      * 获取指定id 的文章详情
      * @param $article_id
      * @return array
@@ -267,6 +314,30 @@ class Article extends Common
                 $result['msg'] = '失败';
                 return $result;
             }
+            //上一篇，下一篇
+            $data['up'] = [];
+            $data['down'] = [];
+
+            $uwhere['is_pub'] = ['is_pub', 'eq', self::IS_PUB_YES];
+            $uwhere['type_id'] = ['type_id', 'eq', $data['type_id']];
+            $list = $this->field('id,title')->where($uwhere)->select();
+            if(count($list)>1){
+                foreach($list as $k => $v){
+                    if($v['id'] == $data['id']){
+                        if($k == 0 || $k == count($list)-1){
+                            if($k == 0){
+                                $data['down'] = $list[$k+1];
+                            }else{
+                                $data['up'] = $list[$k-1];
+                            }
+                        }else{
+                            $data['up'] = $list[$k-1];
+                            $data['down'] = $list[$k+1];
+                        }
+                    }
+                }
+            }
+
             $result['status'] = true;
             $result['msg'] = '获取成功';
             $result['data'] = $data;

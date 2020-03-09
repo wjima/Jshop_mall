@@ -67,7 +67,7 @@ class BillLading extends Manage
 
         $model = new Model();
         $result = $model->getInfo($id);
-        $this->assign('info', $result['data']);
+        $this->assign('info', $result['data'][0]);
         $storeModel = new Store();
         $store = $storeModel->getAllList();
         $this->assign('store', $store);

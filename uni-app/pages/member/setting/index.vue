@@ -2,44 +2,40 @@
 	<view class="content">
 		<view class="content-top">
 			<view class='cell-group right-img'>
-				<view class='cell-item'>
-					<view class='cell-item-hd' @click="navigateToHandle('./user_info/index')">
-						<!-- <image class='cell-hd-icon' src=''></image> -->
+				<view class='cell-item' @click="navigateToHandle('./user_info/index')">
+					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>个人信息</view>
 					</view>
 					<view class='cell-item-ft'>
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
-				<view class='cell-item'>
-					<view class='cell-item-hd' @click="navigateToHandle('./user_info/password')">
+				<view class='cell-item' @click="navigateToHandle('./user_info/password')">
+					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>修改密码</view>
 					</view>
 					<view class='cell-item-ft'>
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
-				<view class='cell-item'>
-					<view class='cell-item-hd' @click="clearCache">
-						<!-- <image class='cell-hd-icon' src=''></image> -->
+				<view class='cell-item' @click="clearCache">
+					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>清除缓存</view>
 					</view>
 					<view class='cell-item-ft'>
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
-				<view class='cell-item'>
-					<view class='cell-item-hd' @click="aboutUs">
-						<!-- <image class='cell-hd-icon' src='/static/image/me-ic-about.png'></image> -->
+				<view class='cell-item' @click="aboutUs">
+					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>关于我们</view>
 					</view>
 					<view class='cell-item-ft'>
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
-				<view class='cell-item'>
-					<view class='cell-item-hd' @click="logOff">
-						<!-- <image class='cell-hd-icon' src='/static/image/me-ic-about.png'></image> -->
+				<view class='cell-item' @click="logOff">
+					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>退出</view>
 					</view>
 					<view class='cell-item-ft'>
@@ -51,9 +47,6 @@
 		<view class="color-9 fsz24 agreement">
 			<text @click="goAgreement()" class="color-o">《用户协议》</text> 和 <text @click="goPrivacy()" class="color-o">《隐私政策》</text>
 		</view>
-		<!-- 		<view class="button-bottom">
-			<button class="btn btn-b">退出登录</button>
-		</view> -->
 	</view>
 </template>
 

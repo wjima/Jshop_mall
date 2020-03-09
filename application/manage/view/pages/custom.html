@@ -93,6 +93,7 @@
 					<p>2.当前可视化操作只支持uniapp简约模板,下载地址：<a href="https://gitee.com/hnjihai/uniapp" target="_blank">点击下载</a></p>
 					<p>3.站内URL地址获取方法：浏览器打开H5，复制#后面的即可。</p>
 					<p>4.自定义页面的地址为：/pages/index/custom?page_code=themes，其中themes为新增页面时的编码</p>
+					<p>5.图片领取优惠券方法，类型选择URL链接，具体链接为：/pages/coupon/coupon?id=7 其中7为优惠券ID</p>
 
 				</div>
 			</div>
@@ -321,6 +322,15 @@
 							<p class="item-text">{{nav.text}}</p>
 						</div>
 					</div>
+					<!-- 文字导航组 -->
+					<div v-if="item.type==='tabBar'" class="drag lay-tabBar clearfix" >
+						<div class="item" v-for="(nav,key) in item.value.list" :key="key">
+							<!-- <div class="item-image">
+								<img :src="nav.image" alt="">
+							</div> -->
+							<p class="item-text">{{nav.text}}</p>
+						</div>
+					</div>
 					<!-- 辅助空白 -->
 					<div v-if="item.type==='blank'" class="drag lay-item lay-blank"
 						:style="{height:item.value.height+'px',backgroundColor:item.value.backgroundColor}">
@@ -329,6 +339,12 @@
 					<div v-if="item.type==='textarea'" class="drag lay-item lay-textarea">
 						<div class="lay-search-c">
 							<el-input type="textarea" autosize v-html="item.value" resize="none"></el-input>
+						</div>
+					</div>
+					<!-- 弹出广告位 -->
+					<div v-if="item.type==='adpop'" class="drag lay-imgSingle">
+						<div class="img-wrap" v-for="(img,key) in item.value.list">
+							<img :src="img.image" alt="">
 						</div>
 					</div>
 					<div @click.stop="handleWidgetDelete(index)" class="btn-delete" v-if="selectWg.key === item.key">删除</div>
@@ -812,11 +828,64 @@
 						</div>
 					</div>
 				</template>
+				<!-- 文字导航组-->
+				<template v-if="selectWg.type=='tabBar'">
+					<div>
+						<!-- <el-form-item label="每行数量">
+							<el-radio-group v-model="selectWg.value.limit">
+								<el-radio :label="3">3个</el-radio>
+								<el-radio :label="4">4个</el-radio>
+								<el-radio :label="5">5个</el-radio>
+							</el-radio-group>
+						</el-form-item> -->
+						<draggable element="ul" :list="selectWg.value.list"
+							:options="{group:{ name:'slideList'}, ghostClass: 'ghost',animation: 150,handle:'.drag-block'}">
+							<li v-for="(item, index) in selectWg.value.list" :key="index">
+								<div class="drag-block">
+									<div class="handle-icon" title="删除这一项">
+										<i class="iconfont icon-cuohao" @click="handleSlideRemove(index)"></i>
+									</div>
+								</div>
+								<div class="content">
+									<!-- <div class="content-item">
+										<el-form-item label="图片：">
+											<upload-img @upload-img="upImage(index,item)" :index="index" :item="item"></upload-img>
+										</el-form-item>
+									</div> -->
+									<div class="content-item">
+										<el-form-item label="文字：">
+											<input type="text" class="selectLinkVal" v-model="item.text">
+										</el-form-item>
+									</div>
+									<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"
+										:id.sync="item.linkValue"></select-link>
+								</div>
+							</li>
+						</draggable>
+						<div class="addImg" @click="handleAddNav">
+							<i class="iconfont icon-icon-test"></i>
+							<span>添加一个导航组</span>
+						</div>
+					</div>
+				</template>
 				<!-- 文本域 -->
 				<template v-if="selectWg.type=='textarea'">
 					<div>
 						<textarea id="container"></textarea>
 					</div>
+				</template>
+				<!-- 弹出广告位 -->
+				<template v-if="selectWg.type=='adpop'">
+					<li v-for="(item, index) in selectWg.value.list" :key="index">
+						<div class="content">
+							<div class="content-item">
+								<span class="item-label">图片:</span>
+								<upload-img @upload-img="upImage(index,item)" :index="index" :item="item"></upload-img>
+							</div>
+							<select-link @choose-link="chooseLink(index,item.linkType)" :index="index" :type.sync="item.linkType"
+								:id.sync="item.linkValue"></select-link>
+						</div>
+					</li>
 				</template>
 			</el-form>
 		</div>

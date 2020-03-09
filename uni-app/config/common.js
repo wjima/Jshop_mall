@@ -270,6 +270,8 @@ function timeToDateObj(micro_second) {
 
 //货币格式化
 function formatMoney(number, places, symbol, thousand, decimal) {
+	// console.log(number)
+	// console.log(places)
 	number = number || 0
 	places = !isNaN((places = Math.abs(places))) ? places : 2
 	symbol = symbol !== undefined ? symbol : '￥'
@@ -291,7 +293,11 @@ function formatMoney(number, places, symbol, thousand, decimal) {
 			'')
 	)
 }
-
+//金额格式化还原
+function rmoney(s)
+{
+	return parseFloat(s.replace(/[^\d\.-]/g, ""));
+}
 function throttle(fn, context, delay) {
 	clearTimeout(fn.timeoutId)
 	fn.timeoutId = setTimeout(function() {
@@ -496,5 +502,6 @@ export {
 	moneySum,
 	moneySub,
 	shareParameterEncode,
-	shareParameterDecode
+	shareParameterDecode,
+	rmoney
 }

@@ -67,12 +67,14 @@
                 page: true,
                 cols: [
                     [{
-                        type: 'numbers'
-                    }, {
+                        field:'id',
+                        width:90,
+                        title:'ID',
+                        align: 'center'
+                    },{
                         field: 'type_name',
                         minWidth: 200,
-                        title: '分类名称',
-                        width: 400
+                        title: '分类名称'
                     },{
                         field: 'sort',
                         title: '排序',
@@ -81,7 +83,8 @@
                     }, {
                         align: 'center',
                         title: '操作',
-                        toolbar: '#articleTypeBar'
+                        toolbar: '#articleTypeBar',
+                        width: 230,
                     }]
                 ],
                 done: function () {
@@ -98,7 +101,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: ['400px', '300px'],
+                        area: setpage(400,300),
                         title: '添加文章分类',
                         btn: ['确定', '取消'],
                         zIndex: 1800,
@@ -176,7 +179,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['400px', '300px'],
+                            area: setpage(400,300),
                             title: '修改文章分类',
                             btn: ['确定', '取消'],
                             zIndex: 1800,
@@ -209,7 +212,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['400px', '300px'],
+                            area: setpage(400,300),
                             title: '添加子分类',
                             btn: ['确定', '取消'],
                             zIndex: 1800,

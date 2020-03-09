@@ -2,6 +2,7 @@
   <view>
     <block v-for="(item,index) in jdata" :key="index">
       <jshopsearch :jdata="item" v-if="item.widget_code=='search' "></jshopsearch>
+	  <jshoptabbar :jdata="item" v-if="item.widget_code=='tabBar' "></jshoptabbar>
       <jshopnotice :jdata="item" v-if="item.widget_code=='notice' "></jshopnotice>
       <jshopimgSlide :jdata="item" v-if="item.widget_code=='imgSlide' "></jshopimgSlide>
       <jshopcoupon :jdata="item" v-if="item.widget_code=='coupon' "></jshopcoupon>
@@ -17,6 +18,7 @@
       <jshopgroupPurchase :jdata="item" v-if="item.widget_code=='groupPurchase' "></jshopgroupPurchase>
       <jshoprecord :jdata="item" v-if="item.widget_code=='record' "></jshoprecord>
 	  <jshoppintuan :jdata="item" v-if="item.widget_code=='pintuan' "></jshoppintuan>
+	  <jshopadpop :jdata="item" v-if="item.widget_code=='adpop' "></jshopadpop>
     </block>
   </view>
 </template>
@@ -44,6 +46,9 @@ import jshopnavBar from '@/components/jshop/jshop-navBar.vue'
 import jshopgroupPurchase from '@/components/jshop/jshop-groupPurchase.vue'
 import jshoprecord from '@/components/jshop/jshop-record.vue'
 import jshoppintuan from '@/components/jshop/jshop-pintuan.vue'
+import jshoptabbar from '@/components/jshop/jshop-tabbar.vue'
+import jshopadpop from '@/components/jshop/jshop-adpop.vue'
+
 export default {
   name: 'jshop',
   components: {
@@ -62,7 +67,9 @@ export default {
     jshopnavBar,
     jshopgroupPurchase,
     jshoprecord,
-	jshoppintuan
+	jshoppintuan,
+	jshoptabbar,
+	jshopadpop
   },
   props: {
     jdata: {

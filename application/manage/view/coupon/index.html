@@ -42,6 +42,7 @@
             height: 'full-220',
             url: '{:url("Coupon/index")}?promotion_id={$promotion_id}', //数据接口
             page: true, //开启分页
+            limit:'{:config("jshop.page_limit")}',
             cols: [[ //表头
                 {type:'numbers'},
                 {field: 'name', title: '优惠券名称',align:'center'},
@@ -58,7 +59,8 @@
         date.render({
             elem:'#date',
             type: 'datetime',
-            range: '到' //或 range: '~' 来自定义分割字符
+            range: '到', //或 range: '~' 来自定义分割字符
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         form.on('submit(coupon-search)', function(data){
@@ -91,7 +93,7 @@
                     layui.layer.open({
                         type: 1,
                         content: e,
-                        area: ["800px", "600px"],
+                        area: setpage(800,600),
                         title: "选择会员",
                         btn: ["完成", "取消"],
                         yes: function (index, layero) {

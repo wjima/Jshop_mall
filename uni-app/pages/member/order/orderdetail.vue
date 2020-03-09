@@ -3,8 +3,8 @@
 		<view class="content-top">
 			<view class='cell-group margin-cell-group'>
 				<view class='cell-item add-title-item'>
-					<view class='cell-item-bd'>
-						<view class="cell-bd-view black-text" v-if="orderInfo.order_type != 2">
+					<view class='cell-item-bd cell-item-bd-block'>
+						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">{{ orderInfo.status_name || ''}}</text>
 						</view>
 						<view class="cell-bd-view">
@@ -27,17 +27,12 @@
 					</view>
 					<view class='cell-item add-title-item' v-for="(v, k) in orderInfo.delivery" :key="k" @click="logistics(k)">
 						<view class='cell-item-bd'>
-							<!-- <view class="cell-bd-view black-text">
-								<text class="cell-bd-text">已发货，请注意查收</text>
-							</view> -->
-							<!-- <view class=""> -->
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{v.logi_name|| ''}} : {{v.logi_no|| ''}}</text>
 								</view>
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{ v.ctime || ''}}</text>
 								</view>
-							<!-- </view> -->
 						</view>
 						<view class="cell-item-ft">
 							<image class='cell-ft-next icon' src='/static/image/right.png'></image>
@@ -45,7 +40,7 @@
 					</view>
 				</view>
 				<view class='cell-item add-title-item' v-if="!orderInfo.store">
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block'>
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">收件人：{{ orderInfo.ship_name || ''}}</text>
 						</view>
@@ -57,7 +52,7 @@
 			</view>
 			
 			<view class='cell-group margin-cell-group' v-if="orderInfo.store">
-				<view class='cell-item add-title-item'>
+				<view class='cell-item add-title-item th'>
 					<view class="cell-item-hd">
 						<image class='cell-hd-icon' src='/static/image/homepage.png'></image>
 					</view>
@@ -82,7 +77,7 @@
 			</view>
 			
 			<!-- 团购分享拼单 -->
-			<view class="cell-group margin-cell-group" v-if="(orderInfo.text_status == 1 || orderInfo.text_status == 2 ) && orderInfo.order_type==2">
+			<view class="cell-group margin-cell-group" v-if="orderInfo.order_type==2 && orderInfo.status != 3 && orderInfo.pay_status==1">
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
 						<view v-if="teamInfo.status==1" class='cell-hd-title'>待拼团，还差{{ teamInfo.team_nums || ''}}人</view>
@@ -258,14 +253,13 @@
 				</view>
 			</view>
 		</view>
-		<view class="button-bottom">
+		<view class="button-bottom" v-if="orderInfo.status == 1 || orderInfo.status == 2">
 			<button class='btn btn-circle btn-g' hover-class="btn-hover" v-if="orderInfo.status == 1 && orderInfo.pay_status == 1 && orderInfo.ship_status == 1" @click="cancelOrder(orderInfo.order_id)">取消订单</button>
 			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.status == 1 && orderInfo.pay_status == 1" @click="toPay(orderInfo.order_id)">立即支付</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="(orderInfo.ship_status == 2 || orderInfo.ship_status == 3) && orderInfo.confirm ==1 && orderInfo.status == 1" @click="tackDeliery(orderInfo.order_id)">确认收货</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.pay_status != 5 && orderInfo.ship_status != 5 && orderInfo.confirm ==2 && orderInfo.is_comment == 1" @click="toEvaluate(orderInfo.order_id)">立即评价</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="customerService(orderInfo.order_id)" v-if="orderInfo.add_aftersales_status==true">申请售后</button>
-			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="showCustomerService(orderInfo)"
-			 v-if="orderInfo.bill_aftersales_id && orderInfo.bill_aftersales_id != false">查看售后</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.status == 1 && orderInfo.pay_status >= 2 && orderInfo.ship_status >= 3 && orderInfo.confirm == 1" @click="tackDeliery(orderInfo.order_id)">确认收货</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="orderInfo.status === 1 && orderInfo.pay_status >= 2 && orderInfo.ship_status >= 3 && orderInfo.confirm >= 2 && orderInfo.is_comment === 1" @click="toEvaluate(orderInfo.order_id)">立即评价</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="customerService(orderInfo.order_id)" v-if="orderInfo.add_aftersales_status == true">申请售后</button>
+			<button class='btn btn-circle btn-w' hover-class="btn-hover" @click="showCustomerService(orderInfo)" v-if="orderInfo.bill_aftersales_id && orderInfo.bill_aftersales_id != false">查看售后</button>
 		</view>
 	</view>
 </template>
@@ -325,30 +319,27 @@
 					if (res.status) {
 						let data = res.data
 						// 订单状态文字转化
-						switch (data.text_status) {
+						switch (data.status) {
 							case 1:
-								_this.$set(data, 'status_name', '待付款')
+                                if (data.pay_status === 1) {
+                                	_this.$set(data, 'status_name', '待付款')
+                                } else if (data.pay_status >= 2 && data.ship_status === 1){
+                                	_this.$set(data, 'status_name', '待发货')
+                                } else if (data.pay_status >= 2 && data.ship_status === 2){
+                                	_this.$set(data, 'status_name', '部分发货')
+                                } else if (data.pay_status >= 2 && data.ship_status >= 3 && data.confirm === 1) {
+                                	_this.$set(data, 'status_name', '已发货')
+                                } else if (data.pay_status >= 2 && data.ship_status >= 3 && data.confirm >= 2 && data.is_comment === 1) {
+                                	_this.$set(data, 'status_name', '待评价')
+                                } else if (data.pay_status >= 2 && data.ship_status >= 3 && data.confirm >= 2 && data.is_comment >= 2) {
+                                	_this.$set(data, 'status_name', '已评价')
+                                }
 								break
 							case 2:
-								_this.$set(data, 'status_name', '待发货')
+								_this.$set(data, 'status_name', data.text_status)
 								break
 							case 3:
-								_this.$set(data, 'status_name', '待收货')
-								break
-							case 4:
-								_this.$set(data, 'status_name', '待评价')
-								break
-							case 6:
-								_this.$set(data, 'status_name', '交易完成')
-								break
-							case 7:
-								_this.$set(data, 'status_name', '交易取消')
-								break
-							case 8:
-								_this.$set(data, 'status_name', '部分发货')
-								break
-							default:
-								_this.$set(data, 'status_name', '交易成功')
+								_this.$set(data, 'status_name', data.text_status)
 								break
 						}
 						// 订单时间转换
@@ -365,13 +356,12 @@
 						}
 
 						_this.orderInfo = data;
-						// _this.$common.timeToDate(_this.orderInfo.delivery.citme)
+						
 						_this.orderInfo.delivery.forEach(item=>{
-							// console.log(item.ctime)
 							item.ctime=_this.$common.timeToDate(item.ctime)
 						})
-						//console.log(_this.orderInfo.delivery)
-						if (data.order_type == 2 && (data.text_status == 2 || data.text_status == 1)) {
+						//判断是否拼团
+						if (data.order_type == 2) {
 							_this.getTeam(data.order_id);
 						}
 						
@@ -416,18 +406,17 @@
 								// 更改订单列表页的订单状态
 								let pages = getCurrentPages(); // 当前页
 								let beforePage = pages[pages.length - 2]; // 上个页面
-
 								if (beforePage !== undefined && beforePage.route === 'pages/member/order/orderlist') {
 									// #ifdef MP-WEIXIN
 									beforePage.$vm.isReload = true
 									// #endif
 
-									// #ifdef H5
+									// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 									beforePage.isReload = true
 									// #endif
 
-									// #ifdef MP-ALIPAY
-									beforePage.data.isReload = true
+									// #ifdef MP-ALIPAY || MP-TOUTIAO
+									this.$db.set('order_user_ship', true, true);
 									// #endif
 								}
 
@@ -458,7 +447,6 @@
 				} else if (info.aftersalesItem.length>1){
 					this.$common.navigateTo('../after_sale/list?order_id=' + info.order_id);
 				}
-				// this.$common.navigateTo('../after_sale/detail?aftersales_id=' + id);
 			},
 			goInvition() {
 				uni.navigateTo({
@@ -630,7 +618,17 @@
 	    font-size: 14px;
 	}
 	
+	.add-title-item .cell-item-bd{
+		margin-left: 0;
+	}
+	
 	.delivery{
 		border-bottom: 1px solid #f3f3f3;
+	}
+	.th .cell-item-bd{
+		display: block;
+		flex: 1;
+		margin-left: 20rpx;
+		padding-right: 0;
 	}
 </style>

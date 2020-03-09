@@ -24,7 +24,6 @@
 						<open-data type="userAvatarUrl"></open-data>
 					</view>
 					<view>
-						<!-- open-type="getUserInfo" @getuserinfo="getUserInfo" -->
 						<button class="login-btn" hover-class="btn-hover" @click="goLogin()">授权登录</button>
 					</view>
 					<!-- #endif -->
@@ -160,23 +159,19 @@
 				<view class="sale-title">
 					<image class='cell-hd-icon' src='/static/image/service.png'></image>
 					<view class="">
-						<!-- <i class="iconfont icon-jinrongguanli_o icon"></i> -->
 						我的服务
 					</view>
 				</view>
 				<view class="flc sale-list">
 					<view class="item tc" v-for="(item,i) in utilityMenus" :key="i" v-if="(!item.unshowItem && i != 'invoice') || (!item.unshowItem && i == 'invoice' && invoice_switch == 1)">
-						<!-- <navigator :url="item.route"> -->
 						<view class="" @click="navigateToHandle(item.router)">
 							<view class="">
-								<!-- <i class="iconfont" :class="item.icon"></i> -->
 								<image class='cell-hd-icon' :src='item.icon'></image>
 							</view>
 							<view class="text">
 								<text class="">{{item.name}}</text>
 							</view>
 						</view>
-						<!-- </navigator> -->
 					</view>
 				</view>
 			</view>
@@ -184,23 +179,19 @@
 				<view class="sale-title">
 					<image class='cell-hd-icon' src='/static/image/shop.png'></image>
 					<view class="">
-						<!-- <i class="iconfont icon-RectangleCopy icon"></i> -->
 						门店管理
 					</view>
 				</view>
 				<view class="flc sale-list">
 					<view class="item tc" v-for="(item,i) in clerk" :key="i">
-						<!-- <navigator :url="item.route"> -->
 						<view class="" @click="navigateToHandle(item.router)">
 							<view class="">
-								<!-- <i class="iconfont" :class="item.icon"></i> -->
 								<image class='cell-hd-icon' :src='item.icon'></image>
 							</view>
 							<view class="text">
 								<text class="">{{item.name}}</text>
 							</view>
 						</view>
-						<!-- </navigator> -->
 					</view>
 				</view>
 			</view>
@@ -208,23 +199,32 @@
 				<view class="sale-title">
 					<image class='cell-hd-icon' src='/static/image/other.png'></image>
 					<view class="">
-						<!-- <i class="iconfont icon-qita other"></i> -->
 						其他
 					</view>
 				</view>
 				<view class="flc sale-list">
+                    <!-- 微信小程序消息订阅 -->
+                    <!-- #ifdef MP-WEIXIN -->
+                    <view class="item tc" v-if="isTip">
+                    	<view class="" @click="navigateToHandle('../setting/subscription/index')">
+                    		<view class="">
+                    			<image class='cell-hd-icon' src='/static/image/subscription.png'></image>
+                    		</view>
+                    		<view class="text">
+                    			<text class="">消息订阅</text>
+                    		</view>
+                    	</view>
+                    </view>
+                    <!-- #endif -->
 					<view class="item tc" v-for="(item,i) in order" :key="i" v-if="!item.unshowItem">
-						<!-- <navigator :url="item.route"> -->
 						<view class="" @click="navigateToHandle(item.router)">
 							<view class="">
-								<!-- <i class="iconfont" :class="item.icon"></i> -->
 								<image class='cell-hd-icon' :src='item.icon'></image>
 							</view>
 							<view class="text">
 								<text class="">{{item.name}}</text>
 							</view>
 						</view>
-						<!-- </navigator> -->
 					</view>
 					<!-- #ifdef H5 || APP-PLUS || APP-PLUS-NVUE -->
 					<view class="item tc">
@@ -353,7 +353,7 @@
 				},
 				clerk: [{
 						name: '提货单列表',
-						icon: '/static/image/me-ic-phone.png',
+						icon: '/static/image/ic-me-take.png',
 						router: '../take_delivery/list'
 
 					},
@@ -377,7 +377,8 @@
 						unshowItem: false
 					}
 				},
-				list: 2
+				list: 2,
+                suTipStatus: false
 			}
 		},
 		onShow() {
@@ -564,6 +565,8 @@
 					this.getWxCode()
 					// #endif
 				}
+                
+                this.userIsSubscription();
 			},
 			navigateToHandle(pageUrl) {
 				if (!this.hasLogin) {
@@ -639,6 +642,25 @@
 
 			// 	}
 			// },
+            //查询用户订阅
+            userIsSubscription() {
+                let userToken = this.$db.get("userToken");
+                if (userToken && userToken != '') {
+                	this.$api.subscriptionIsTip(res => {
+                        if (res.status) {
+                            if (res.switch) {
+                                this.suTipStatus = true;
+                            } else {
+                                this.suTipStatus = false;
+                            }
+                        } else {
+                            this.suTipStatus = true;
+                        }
+                	});
+                } else {
+                    this.suTipStatus = true;
+                }
+            },
 		},
 		computed: {
 			// 获取店铺联系人手机号
@@ -650,7 +672,10 @@
 			},
 			store_switch() {
 				return this.$store.state.config.store_switch || 0;
-			}
+			},
+            isTip() {
+                return this.suTipStatus;
+            }
 		},
 		watch: {}
 	}

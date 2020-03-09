@@ -5,12 +5,10 @@
         </div>
     </div>
 </form>
-
 <div class="table-body">
     <span class="layui-breadcrumb" style="margin-bottom:0;padding-bottom:0;" id="parent_url"></span>
     <table id="operationTable" lay-filter="operation"></table>
 </div>
-
 <script>
     var pid = 1;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
@@ -23,8 +21,8 @@
             url: "{:url('Operation/index')}?_ajax=1",
             id:'operationTable',
             cols: [[
-                {field:'id',title:'ID',width:60},
-                {field:'code', title:'编码'},
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field:'code', title:'编码', align: 'center'},
                 { title:'名称',templet:function(data){
                     var html = '';
                     if(data.type != '方法'){
@@ -32,14 +30,13 @@
                     }else{
                         html += data.name;
                     }
-
                     return html;
-                }},
-                {field:'type',title:'类型'},
-                {field:'parent_menu_name',title:'父菜单'},
-                {field:'perm_type',title:'许可类型'},
-                {field:'sort',title:'排序'},
-                {field: 'operating', title: '操作', width:250, align: 'center',templet:function(data){
+                }, align: 'center'},
+                {field:'type',title:'类型', align: 'center', width: 100},
+                {field:'parent_menu_name',title:'父菜单', align: 'center'},
+                {field:'perm_type',title:'许可类型', align: 'center', width:110},
+                {field:'sort',title:'排序', align: 'center', width:80},
+                {field: 'operating', title: '操作', width:140, align: 'center',templet:function(data){
                     var html = '';
                     html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
                     html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-primary" data-id="' + data.id + '">删除</a>';
@@ -61,7 +58,7 @@
                 if(tpl.status){
                     layer.open({
                         type: 1,
-                        area: ['600px', '500px'],
+                        area: setpage(600,500),
                         data:'',
                         title: '添加',
                         content: tpl.data,
@@ -136,7 +133,7 @@
                 if(tpl.status){
                     layer.open({
                         type: 1,
-                        area: ['600px', '500px'],
+                        area: setpage(600,500),
                         data:'',
                         title: '编辑',
                         content: tpl.data,

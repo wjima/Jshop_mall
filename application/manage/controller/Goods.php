@@ -679,7 +679,7 @@ class Goods extends Manage
         $this->assign('open_spec', '0');
         $this->assign('data', $goods['data']);
         $this->assign('products', $goods['data']['products']);
-        if ($goods['data']['spes_desc'] != '') {
+        if (count($goods['data']['products'])>1 && $goods['data']['new_spec']) {
             $this->assign('open_spec', '1');
         } else {
             $this->assign('open_spec', '0');
@@ -687,6 +687,7 @@ class Goods extends Manage
         //类型
         $goodsTypeModel = new GoodsType();
         $res            = $this->getEditSpec($goods['data']['goods_type_id'], $goods['data']);
+
         $this->assign('spec_html', $res['data']);
         $goodsCatModel = new GoodsCat();
         $catids        = $goodsCatModel->getCatIdsByLastId($goods['data']['goods_cat_id']);
@@ -984,12 +985,12 @@ class Goods extends Manage
         $goodsTypeModel = new GoodsType();
         $res            = $goodsTypeModel->getTypeValue($type_id);
 
+
         /**
          * 修复类型值问题，避免修改规格值，导致无法显示
          */
         $temp_new_spec = unserialize($goods['new_spec']);
-
-        if (is_array($temp_new_spec) && $spes_desc == '') {
+        if ($temp_new_spec && is_array($temp_new_spec) && $spes_desc == '') {
             //先重新定义new_spec
             $spec = $res['data']['spec']->toArray();
             foreach ((array)$spec as $key => $val) {
@@ -1015,6 +1016,7 @@ class Goods extends Manage
 
         $html       = '';
         $customSpec = false;//是否可以使用自定义规格
+
         if ($res['status'] == true) {
             $this->assign('typeInfo', $res['data']);
             if (!$res['data']['spec']->isEmpty()) {
@@ -1026,25 +1028,28 @@ class Goods extends Manage
                 //有规格值调整的时候需要操作一遍下面的逻辑
                 if ($spes_desc && $customSpec) {
                     $temp_new_spec = unserialize($goods['new_spec']);
+
                     $spec          = $res['data']['spec']->toArray();
                     foreach ((array)$spec as $key => $val) {
                         foreach ((array)$temp_new_spec as $tkey => $tval) {
                             $first = array_shift($val['spec']['getSpecValue']);
-                            if ($first) {
+                            if ($first && $tval) {
                                 unset($temp_new_spec[$tkey]);
                                 $temp_new_spec[$first['id']] = $tval;
                             }
                         }
                     }
-                    $temp_spes_desc = [];
-                    foreach ($goods['products'] as $key => $pval) {
-                        $pspes_desc = $pval['spes_desc'];
-                        $pspes_desc = explode(',', $pspes_desc);
-                        foreach ($pspes_desc as $pk => $pv) {
-                            list($spec_name, $spec_value) = explode(':', $pv);
-                            foreach ($temp_new_spec as $key => $val) {
-                                if ($val[0] == $spec_value) {
-                                    $temp_spes_desc[$spec_name][$key] = $spec_value;
+                    if($temp_new_spec){
+                        $temp_spes_desc = [];
+                        foreach ($goods['products'] as $key => $pval) {
+                            $pspes_desc = $pval['spes_desc'];
+                            $pspes_desc = explode(',', $pspes_desc);
+                            foreach ($pspes_desc as $pk => $pv) {
+                                list($spec_name, $spec_value) = explode(':', $pv);
+                                foreach ($temp_new_spec as $key => $val) {
+                                    if ($val[0] == $spec_value) {
+                                        $temp_spes_desc[$spec_name][$key] = $spec_value;
+                                    }
                                 }
                             }
                         }
@@ -1054,9 +1059,7 @@ class Goods extends Manage
                     //避免后面修改规格后无法显示，需要再来一遍
                     $spec = $this->getSpecData($spec, $spes_desc, $new_spec);
                 }
-
                 $this->assign('spec', $spec);
-
             }
 
             $this->assign('customSpec', $customSpec);

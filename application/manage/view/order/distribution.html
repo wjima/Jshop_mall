@@ -36,18 +36,22 @@
             <th>商品名称</th>
             <th>货号</th>
             <th>单价</th>
+            {:hook('orderviewinfo', ['type'=>'title'])}
             <th>数量</th>
             <th>小计</th>
         </tr>
         {volist name='order.items' id='vo'}
         <tr>
             <td>
-                {$vo.name}{if condition="$vo.addon"} - {$vo.addon}{/if}
+                {$vo.name}{if $vo.addon} - {$vo.addon}{/if}
             </td>
-            <td>{$vo.bn}</td>
+            <td>{$vo.sn}</td>
             <td>￥{$vo.price}</td>
-            <td>{$vo.nums}</td>
-            <td>￥{$vo.amount}</td>
+            {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
+            <td>
+                {$vo.nums-$vo.sendnums-$vo.reship_nums+$vo.reship_nums_ed}
+            </td>
+            <td>￥{php} echo $vo['price'] * ($vo['nums']-$vo['sendnums']-$vo['reship_nums']+$vo['reship_nums_ed']); {/php}</td>
         </tr>
         {/volist}
         </tbody>

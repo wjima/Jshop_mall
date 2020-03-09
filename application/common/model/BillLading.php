@@ -220,7 +220,7 @@ class BillLading extends Common
                 }
                 else
                 {
-                    $v['clerk'] = '(后台管理员)';
+                    $v['clerk'] = $v['status'] == 2 ? '(后台管理员)' : '';
                 }
 
                 //获取订单商品详情
@@ -527,9 +527,9 @@ class BillLading extends Common
     public function exportValidate(&$params = [])
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '验证成功',
         ];
         return $result;
     }

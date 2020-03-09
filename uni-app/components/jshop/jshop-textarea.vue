@@ -1,6 +1,8 @@
 <template>
-	<view class="textarea bottom-cell-group" >
-		<jshopContent :content="jdata.params" v-if="jdata.params"></jshopContent>
+	<view class="clearfix">
+		<view class="textarea bottom-cell-group" >
+			<jshopContent :content="jdata.params" v-if="jdata.params"></jshopContent>
+		</view>
 	</view>
 </template>
 
@@ -46,5 +48,12 @@ export default {
 }
 .textarea p {
 	background-color: #000;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
 </style>

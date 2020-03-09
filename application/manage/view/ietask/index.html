@@ -1,6 +1,5 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
-
         <div class="layui-inline">
             <label class="layui-form-label">任务名称：</label>
             <div class="layui-input-inline seller-inline-3">
@@ -24,18 +23,14 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="task-search"><i class="iconfont icon-chaxun"></i>筛选</button>
         </div>
     </div>
 </form>
-
-
 <div class="table-body">
     <table id="taskTable" lay-filter="taskTable"></table>
 </div>
-
 <script>
     var table = '';
     layui.use(['table','form','layer','laydate'],function(){
@@ -50,17 +45,17 @@
             id:'taskTable',
             url: "{:url('ietask/index')}",
             cols: [[
-                {type:'numbers'},
+                {field:'id', width:90, title:'ID', align: 'center'},
                 {field: 'name', title: '任务名称',align:'center'},
-                {field: 'type', title: '任务类型',align:'center'},
                 {field: 'file_name', title: '文件名称',align:'center'},
-                {field: 'status', title: '状态',align:'center'},
-                {field: 'file_size', title: '文件大小',align:'center'},
+                {field: 'type', title: '任务类型',align:'center', width: 90},
+                {field: 'status', title: '状态',align:'center', width: 100},
+                {field: 'file_size', title: '文件大小',align:'center', width: 120},
                 {field: 'file_path', title: '文件下载',align:'center',templet:function (data) {
                     return '<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="downfile('+data.id+')">下载文件</button>';
-                }},
-                {field: 'ctime',sort: true, title: '创建时间' ,align:'center'},
-                {field: 'operating', title: '操作', width:100, align: 'center',templet:function(data){
+                }, width: 120},
+                {field: 'ctime',sort: true, title: '创建时间' ,align:'center', width: 170},
+                {field: 'operating', title: '操作', width:90, align: 'center',templet:function(data){
                         var html = '';
                         html += '<a  class="layui-btn layui-btn-xs task-del" data-id="' + data.id + '">删除</a>';
                         return html;

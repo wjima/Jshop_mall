@@ -5,7 +5,7 @@
 				<view class='cell-item-hd'>
 					<view class='cell-hd-title color-6'>类型筛选</view>
 				</view>
-				<view class='cell-item-bd'>
+				<view class='cell-item-ft'>
 					<view class="uni-list">
 						<view class="uni-list-cell-db color-6">
 							<picker @change="changeState" :value="index" :range="objectType">

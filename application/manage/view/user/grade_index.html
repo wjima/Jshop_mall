@@ -22,11 +22,11 @@
             url: "{:url('user/grade')}?_ajax=1",
             id: 'userTable',
             cols: [[
-                { field: 'id', width: 100, title: '编号' },
-                { field: 'name', width: 100, title: '等级名称' },
+                { field: 'id', width: 90, title: 'ID', align: 'center' },
+                { field: 'name', width: 150, title: '等级名称', align: 'center' },
                 { field: 'is_def', title: '是否默认' },
                 {
-                    field: 'operating', title: '操作', width: 250, align: 'center', templet: function (data) {
+                    field: 'operating', title: '操作', width: 140, align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
                         html += '<a  class="layui-btn layui-btn-xs option-del layui-btn-danger" data-id="' + data.id + '">删除</a>';
@@ -41,7 +41,7 @@
                 if(tpl.status){
                     layer.open({
                         type: 1,
-                        area: ['600px', '400px'],
+                        area: setpage(600,400),
                         data: '',
                         title: '添加用户等级',
                         content: tpl.data,
@@ -91,7 +91,7 @@
                 if(tpl.status){
                     layer.open({
                         type: 1,
-                        area: ['600px', '400px'],
+                        area: setpage(600,400),
                         data: '',
                         title: '编辑会员等级',
                         content: tpl.data,

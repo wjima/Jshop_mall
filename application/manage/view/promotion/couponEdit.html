@@ -28,6 +28,13 @@
         <div class="layui-form-mid layui-word-aux">数字越小，权重越大</div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">可领取数量：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="number" name="max_nums" required  lay-verify="required" value="{$info.params.max_nums}" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">优惠券可领取数量,0为无限制</div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">用户领取：</label>
         <div class="layui-input-inline seller-inline-1">
             <input type="checkbox" name="auto_receive" lay-skin="switch" {if $info.auto_receive == 1}checked{/if}  value="1" lay-text="启用|禁用">
@@ -77,7 +84,8 @@
         laydate.render({
             elem: '#date',
             range: '到',
-            type: 'datetime'
+            type: 'datetime',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //提交
@@ -212,7 +220,7 @@
                 window.box = layer.open({
                     type: 1,
                     content: e.data,//
-                    area: ['400px', '500px'],
+                    area: setpage(400,500),
                     title:'选择促销条件',
                     btn: ['下一步','取消'],
                     yes: function(index, layero){
@@ -248,7 +256,7 @@
                 layer.open({
                     type: 1,
                     content: e.data,//
-                    area: ['600px', '400px'],
+                    area: setpage(600,400),
                     title:'设置促销条件',
                     btn: ['完成','取消'],
                     yes: function(index, layero){
@@ -275,7 +283,7 @@
                 window.box = layer.open({
                     type: 1,
                     content: e.data,//
-                    area: ['400px', '500px'],
+                    area: setpage(400,500),
                     title:'选择促销结果',
                     btn: ['下一步','取消'],
                     yes: function(index, layero){
@@ -311,7 +319,7 @@
                 layer.open({
                     type: 1,
                     content: e.data,//
-                    area: ['600px', '400px'],
+                    area: setpage(600,400),
                     title:'设置促销结果',
                     btn: ['完成','取消'],
                     yes: function(index, layero){

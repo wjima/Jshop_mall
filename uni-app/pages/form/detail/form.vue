@@ -65,7 +65,7 @@
 							</view>
 							<view class='ib-item-right'>
 								<view class="ib-item-mid">
-									<picker mode="date" :name="''+item.id" :value="item.default_value" start="1949-10-01" end="2019-10-01" @change="bindDateChange($event,item)"
+									<picker mode="date" :name="''+item.id" :value="item.default_value" @change="bindDateChange($event,item)"
 									 :data-id='item.id'>
 										<view>{{item.default_value}}</view>
 									</picker>
@@ -80,7 +80,7 @@
 							</view>
 							<view class='ib-item-right'>
 								<view class="ib-item-mid">
-									<picker class="weui-btn" :name="''+item.id" mode="time" :value="item.default_value" start="09:01" end="21:01"
+									<picker class="weui-btn" :name="''+item.id" mode="time" :value="item.default_value"
 									 @change="bindTimeChange($event,item)" :data-id='item.id'>
 										<view>{{item.default_value}}</view>
 									</picker>
@@ -199,7 +199,7 @@
 								<text>{{item.name}}：</text>
 							</view>
 							<view class='ib-item-right'>
-								<view class="ib-item-mid">
+								<view class="ib-item-mid ib-item-start">
 									<image class='icon-img' src='/static/image/ic-location.png'></image>
 									<input class='ib-item-input margin-r' placeholder-class='ib-item-input-c' :name="''+item.id" :value="item.default_value"
 									 disabled='disabled' placeholder="点击获取位置信息" @click="chooseLocation($event,item,index)" :data-id='item.id' />
@@ -326,7 +326,7 @@
 				select_id: '',
 				showSpecs: false,
 				submitStatus: false, //按钮状态
-
+                shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
@@ -493,7 +493,11 @@
 			pic_choose(e, item, index) {
 				var that = this
 				var pages = getCurrentPages()
-				var items = pages[0].$vm.form.items;
+				if(pages.length>1){
+					var items = pages[1].$vm.form.items;
+				}else{
+					var items = pages[0].$vm.form.items;
+				}
 				this.$api.uploadImage(5, res => {
 					if (res.status) {
 						if (!item.pics) {
@@ -718,16 +722,40 @@
 						this.status = res.data.stock < 1 ? false : true
 					}
 				})
-			}
+			},
+            //获取分享URL
+            getShareUrl() {
+                let data = {
+                    client: 2,
+                    url: "/pages/share/jump",
+                    type: 1,
+                    page: 8,
+                    params: {
+                        id: this.formId
+                    }
+                };
+                let userToken = this.$db.get('userToken');
+                if (userToken && userToken != '') {
+                	data['token'] = userToken;
+                }
+                this.$api.share(data, res => {
+                    this.shareUrl = res.data
+                });
+            }
 		},
+        watch:{
+            formId: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
+            }
+        },
 		//分享
 		onShareAppMessage() {
-			let myInviteCode = this.$db.get("userToken");
-			let ins = this.$common.shareParameterDecode('type=10&id=' + this.formId + '&invite=' + myInviteCode);
-			let path = '/pages/share/jump?scene=' + ins;
 			return {
 				title: this.form.name,
-				path: path
+				path: this.shareUrl
 			}
 		}
 	}
@@ -906,7 +934,7 @@
 	}
 
 	.form-input-box-item {
-		overflow: hidden;
+		/* overflow: hidden; */
 		padding: 20rpx 30rpx 20rpx 0;
 		margin-left: 30rpx;
 		border-bottom: 2rpx solid #eeeeee;
@@ -914,22 +942,23 @@
 
 	.ib-item-left {
 		display: inline-block;
-		min-width: 150rpx;
-		max-width: 600rpx;
+		/* min-width: 150rpx; */
+		/* max-width: 600rpx; */
 		font-size: 28rpx;
 		color: #333;
-
-		float: left;
+		width: 100%;
+		/* float: left; */
 		padding: 10rpx 0;
 	}
 
 	.ib-item-right {
-		min-width: 600rpx;
-		max-width: 690rpx;
+		/* min-width: 600rpx; */
+		/* max-width: 690rpx; */
+		width: 100%;
 		display: inline-block;
 		color: #666;
 		font-size: 28rpx;
-		float: left;
+		/* float: left; */
 		padding: 6rpx 0;
 	}
 
@@ -980,7 +1009,10 @@
 	.ib-item-mid {
 		padding-top: 4rpx;
 		margin: 0;
-		position: relative;
+		/* position: relative; */
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.ib-item-mid picker {
@@ -1000,17 +1032,17 @@
 	}
 
 	.icon-img {
-		position: absolute;
+		/* position: absolute;
 		top: 50%;
-		transform: translateY(-50%);
+		transform: translateY(-50%); */
 		width: 32rpx;
 		height: 32rpx;
 	}
 
 	.icon-img-right {
-		position: absolute;
+		/* position: absolute;
 		top: 50%;
-		transform: translateY(-50%);
+		transform: translateY(-50%); */
 		width: 32rpx;
 		height: 32rpx;
 		right: 0;
@@ -1528,5 +1560,8 @@
 
 	.lvvpopref {
 		z-index: 100;
+	}
+	.ib-item-start{
+		justify-content: flex-start;
 	}
 </style>

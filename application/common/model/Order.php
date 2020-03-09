@@ -260,11 +260,9 @@ class Order extends Common
         $result = $this->getListByWhere($input, $isPage);
 
         if (count($result['data']) > 0) {
-            $as = new BillAftersales();
-
+            //$as = new BillAftersales();
             foreach ($result['data'] as $k => &$v) {
-                $v['s'] = $this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment']);
-                $v['status_text'] = config('params.order')['status_text'][$this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment'])];
+                $v['status_text'] = config('params.order')['status'][$v['status']];
                 $v['username'] = get_user_info($v['user_id'], 'nickname');
                 $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status']);
                 $v['area_name'] = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
@@ -311,7 +309,7 @@ class Order extends Common
 
         if (count($result['data']) > 0) {
             foreach ($result['data'] as $k => &$v) {
-                $v['status_text'] = config('params.order')['status_text'][$this->getStatus($v['status'], $v['pay_status'], $v['ship_status'], $v['confirm'], $v['is_comment'])];
+                $v['status_text'] = config('params.order')['status'][$v['status']];
                 $v['username'] = get_user_info($v['user_id'], 'nickname');
                 $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status'], 'manage');
                 $v['area_name'] = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
@@ -322,52 +320,6 @@ class Order extends Common
         }
         return $result;
     }
-
-
-    /**
-     * API获取数据
-     * @param $input
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getListFromApi($input)
-    {
-        $return_data = $this->getListByWhere($input);
-        return $return_data;
-    }
-
-
-    /**
-     * 获取待发货列表
-     * @param $input
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-//    public function getWaitListFromAdmin($input)
-//    {
-//        $input['pay_status'] = self::PAY_STATUS_YES;
-//        $input['ship_status'] = self::SHIP_STATUS_NO;
-//
-//        $result = $this->getListByWhere($input);
-//
-//        if(count($result['data']) > 0)
-//        {
-//            foreach($result['data'] as $k => &$v)
-//            {
-//                $v['username'] = get_user_info($v['user_id'], 'nickname');
-//                $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status']);
-//                $v['area_name'] = get_area($v['ship_area_id']).'-'.$v['ship_address'];
-//                $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
-//                $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
-//                $v['source'] = config('params.order')['source'][$v['source']];
-//            }
-//        }
-//        return $result;
-//    }
 
 
     /**
@@ -505,13 +457,13 @@ class Order extends Common
      * 获取订单信息
      * @param $id
      * @param bool $user_id
-     * @param bool $logistics
+     * @param bool $aftersale_level         //取售后单的时候，售后单的等级，0：待审核的和审核通过的售后单，1未审核的，2审核通过的
      * @return bool|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getOrderInfoByOrderID($id, $user_id = false, $logistics = true)
+    public function getOrderInfoByOrderID($id, $user_id = false, $aftersale_level = 0)
     {
         $order_info = $this->get($id); //订单信息
 
@@ -559,7 +511,7 @@ class Order extends Common
         } else {
             $order_info['logistics'] = null;
         }
-        $order_info['text_status'] = $this->getStatus($order_info['status'], $order_info['pay_status'], $order_info['ship_status'], $order_info['confirm'], $order_info['is_comment']);
+        $order_info['text_status'] = config('params.order')['status'][$order_info['status']];
         $order_info['ship_area_name'] = get_area($order_info['ship_area_id']);
 
         if (isset(config('params.payment_type')[$order_info['payment_code']])) {
@@ -696,7 +648,7 @@ class Order extends Common
             }
         }
         //把退款金额和退货商品查出来
-        $this->aftersalesVal($order_info);
+        $this->aftersalesVal($order_info, $aftersale_level);
 
         //促销信息
         if ($order_info['promotion_list']) {
@@ -723,14 +675,15 @@ class Order extends Common
     /**
      * 把退款的金额和退货的商品数量保存起来
      * @param $orderInfo
+     * @param $aftersale_level      取售后单的时候，售后单的等级，0：待审核的和审核通过的售后单，1未审核的，2审核通过的
      * @return bool
      */
-    public function aftersalesVal(&$orderInfo)
+    public function aftersalesVal(&$orderInfo, $aftersale_level = 0)
     {
         $add_aftersales_status = false;     //是否可以提交售后,只要没退完就可以进行售后
 
         $billAftersalesModel = new BillAftersales();
-        $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id']);
+        $re = $billAftersalesModel->orderToAftersales($orderInfo['order_id'], $aftersale_level);
 
         //已经退过款的金额
         $orderInfo['refunded'] = $re['data']['refund_money'];
@@ -738,21 +691,24 @@ class Order extends Common
         //算退货商品数量
         foreach ($orderInfo['items'] as $k => $v) {
             if (isset($re['data']['reship_goods'][$v['id']])) {
-                $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']];
+                $orderInfo['items'][$k]['reship_nums'] = $re['data']['reship_goods'][$v['id']]['reship_nums'];              //  退货的商品
+                $orderInfo['items'][$k]['reship_nums_ed'] = $re['data']['reship_goods'][$v['id']]['reship_nums_ed'];        //  已发货的退货商品
 
-                if(!$add_aftersales_status && $orderInfo['items'][$k]['nums'] > $orderInfo['items'][$k]['reship_nums']){            //如果没退完，就可以再次发起售后
+                //商品总数量 - 已发货数量 - 未发货的退货数量（总退货数量减掉已发货的退货数量）
+                if (!$add_aftersales_status && ($orderInfo['items'][$k]['nums']  - $orderInfo['items'][$k]['reship_nums']) > 0) {            //如果没退完，就可以再次发起售后
                     $add_aftersales_status = true;
                 }
             } else {
-                $orderInfo['items'][$k]['reship_nums'] = 0;
+                $orderInfo['items'][$k]['reship_nums'] = 0;                     //退货商品
+                $orderInfo['items'][$k]['reship_nums_ed'] = 0;                  //已发货的退货商品
 
-                if(!$add_aftersales_status){            //没退货，就能发起售后
+                if (!$add_aftersales_status) {            //没退货，就能发起售后
                     $add_aftersales_status = true;
                 }
             }
         }
         //商品没退完或没退，可以发起售后，但是订单状态不对的话，也不能发起售后
-        if($orderInfo['pay_status'] == self::PAY_STATUS_NO || $orderInfo['status'] != self::ORDER_STATUS_NORMAL){
+        if ($orderInfo['pay_status'] == self::PAY_STATUS_NO || $orderInfo['status'] != self::ORDER_STATUS_NORMAL) {
             $add_aftersales_status = false;
         }
         $orderInfo['add_aftersales_status'] = $add_aftersales_status;
@@ -789,45 +745,6 @@ class Order extends Common
 
 
     /**
-     * 获取状态
-     * @param $status
-     * @param $pay_status
-     * @param $ship_status
-     * @param $confirm
-     * @param $is_comment
-     * @return int
-     */
-    protected function getStatus($status, $pay_status, $ship_status, $confirm, $is_comment)
-    {
-        if ($status == self::ORDER_STATUS_NORMAL && $pay_status == self::PAY_STATUS_NO) {
-            //待付款
-            return self::ALL_PENDING_PAYMENT;
-        } elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status == self::PAY_STATUS_YES && $ship_status == self::SHIP_STATUS_NO) {
-            //待发货
-            return self::ALL_PENDING_DELIVERY;
-        } else if ($status == self::ORDER_STATUS_NORMAL && $pay_status == self::PAY_STATUS_YES && $ship_status == self::SHIP_STATUS_PARTIAL_YES) {
-            //部分发货
-            return self::ALL_PARTIAL_DELIVERY;
-        } elseif ($status == self::ORDER_STATUS_NORMAL && $ship_status == self::SHIP_STATUS_YES && $confirm == self::RECEIPT_NOT_CONFIRMED) {
-            //待收货
-            return self::ALL_PENDING_RECEIPT;
-        } elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status > self::PAY_STATUS_NO && $ship_status == self::SHIP_STATUS_YES && $confirm == self::CONFIRM_RECEIPT && $is_comment == self::NO_COMMENT) {
-            //待评价
-            return self::ALL_PENDING_EVALUATE;
-        } elseif ($status == self::ORDER_STATUS_NORMAL && $pay_status > self::PAY_STATUS_NO && $ship_status == self::SHIP_STATUS_YES && $confirm == self::CONFIRM_RECEIPT && $is_comment == self::ALREADY_COMMENT) {
-            //已评价
-            return self::ALL_COMPLETED_EVALUATE;
-        } elseif ($status == self::ORDER_STATUS_COMPLETE) {
-            //已完成
-            return self::ALL_COMPLETED;
-        } elseif ($status == self::ORDER_STATUS_CANCEL) {
-            //已取消
-            return self::ALL_CANCEL;
-        }
-    }
-
-
-    /**
      * 获取订单状态反查
      * @param $status
      * @param string $table_name
@@ -846,22 +763,22 @@ class Order extends Common
             case self::ALL_PENDING_DELIVERY: //待发货
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
-                    [$table_name . 'pay_status', 'eq', self::PAY_STATUS_YES],
+                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_NO],
                     [$table_name . 'ship_status', 'in', self::SHIP_STATUS_NO . ',' . self::SHIP_STATUS_PARTIAL_YES]
                 ];
                 break;
             case self::ALL_PENDING_RECEIPT: //待收货
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
-                    [$table_name . 'ship_status', 'eq', self::SHIP_STATUS_YES],
+                    [$table_name . 'ship_status', 'in', self::SHIP_STATUS_YES . ',' . self::SHIP_STATUS_PARTIAL_YES],
                     [$table_name . 'confirm', 'eq', self::RECEIPT_NOT_CONFIRMED]
                 ];
                 break;
             case self::ALL_PENDING_EVALUATE: //待评价
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
-                    [$table_name . 'pay_status', '>', self::PAY_STATUS_NO],
-                    [$table_name . 'ship_status', 'eq', self::SHIP_STATUS_YES],
+                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_NO],
+                    [$table_name . 'ship_status', 'neq', self::SHIP_STATUS_NO],
                     [$table_name . 'confirm', 'eq', self::CONFIRM_RECEIPT],
                     [$table_name . 'is_comment', 'eq', self::NO_COMMENT]
                 ];
@@ -869,8 +786,8 @@ class Order extends Common
             case self::ALL_COMPLETED_EVALUATE: //已评价
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
-                    [$table_name . 'pay_status', '>', self::PAY_STATUS_NO],
-                    [$table_name . 'ship_status', 'eq', self::SHIP_STATUS_YES],
+                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_NO],
+                    [$table_name . 'ship_status', 'neq', self::SHIP_STATUS_NO],
                     [$table_name . 'confirm', 'eq', self::CONFIRM_RECEIPT],
                     [$table_name . 'is_comment', 'eq', self::ALREADY_COMMENT]
                 ];
@@ -1133,6 +1050,7 @@ class Order extends Common
             'msg' => '',
             'data' => []
         ];
+        $billAftersalesmodel = new BillAftersales();
 
         $where[] = ['order_id', 'in', $ids];
         $order = $this::with('items')
@@ -1158,14 +1076,22 @@ class Order extends Common
                 $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
             }
             //校验，不能普通快递和门店自提，不能混发
-            if($store_id !== false){
-                if($store_id != $v['store_id']){
+            if ($store_id !== false) {
+                if ($store_id != $v['store_id']) {
                     $return['status'] = false;
                     $return['msg'] = '门店自提订单和普通订单不能混合发货。';
                     return $return;
                 }
-            }else{
+            } else {
                 $store_id = $v['store_id'];
+            }
+
+            //判断是否有未审核的售后单，如果有，就不能发货，已做拦截
+            $baInfo = $billAftersalesmodel->where(['order_id'=> $v['order_id'], 'status' => $billAftersalesmodel::STATUS_WAITAUDIT])->find();            //有一例都不让发货
+            if($baInfo){
+                $return['status'] = false;
+                $return['msg'] = '订单号：'.$v['order_id'].'有未审核的售后单，请先处理掉才能发货。';
+                return $return;
             }
 
 
@@ -1259,8 +1185,8 @@ class Order extends Common
 
         $return['data'] = $newOrder;
         return $return;
-
     }
+
 
     /**
      * 发货改状态
@@ -1411,7 +1337,7 @@ class Order extends Common
         try {
             //修改订单
             $re = $this->save($data, $where);
-            if(!$re){
+            if (!$re) {
                 $result['msg'] = "确认收货失败";
             }
 
@@ -1680,7 +1606,7 @@ class Order extends Common
             $item['nums'] = $v['nums'];
             $item['amount'] = $v['products']['amount'];
             $item['promotion_amount'] = isset($v['products']['promotion_amount']) ? $v['products']['promotion_amount'] : 0;
-            $item['weight'] = $v['weight'];
+            $item['weight'] = bcmul($v['weight'], $v['nums'], 2);
             $item['sendnums'] = 0;
             $item['addon'] = $v['products']['spes_desc'];
             if (isset($v['products']['promotion_list'])) {
@@ -2178,6 +2104,65 @@ class Order extends Common
             $return['msg'] = '备注成功';
         }
 
+        return $return;
+    }
+
+
+    /**
+     * 查询团购秒杀下单数量
+     * @param int $product_id
+     * @param int $user_id
+     * @param array $condition
+     * @param int $order_type 订单类型
+     * @return array
+     */
+    public function findLimitOrder($product_id = 0, $user_id = 0, $condition = [], $order_type = 0)
+    {
+        $return = [
+            'status' => true,
+            'msg' => '查无订单',
+            'data' => [
+                'total_orders' => 0,
+                'total_user_orders' => 0,
+            ]
+        ];
+        //计算订单总量
+        $where = [];
+        $where[] = ['oi.product_id', '=', $product_id];
+        $where[] = ['o.status', 'in', [self::ORDER_STATUS_NORMAL, self::ORDER_STATUS_COMPLETE]];//正常订单和已完成订单
+        //在活动时间范围内
+        $where[] = ['o.ctime', '>=', $condition['stime']];
+        $where[] = ['o.ctime', '<', $condition['etime']];
+
+         //已退款、已退货、部分退款的、部分退货的排除
+        $where[] = ['o.pay_status', 'in',['1','2','3']];
+        $where[] = ['o.ship_status', 'in',['1','2','3']];
+        
+        //订单类型
+        if ($order_type) {
+            $where[] = ['o.order_type', '=', $order_type];
+        }
+        $total_orders = $this->alias('o')
+            ->join('order_items oi', 'oi.order_id = o.order_id')
+            ->where($where)
+            ->sum('oi.nums');
+
+        //该会员已下多少订单
+        $total_user_orders = 0;
+        if ($user_id) {
+            $where[] = ['o.user_id', '=', $user_id];
+            $total_user_orders = $this->alias('o')
+                ->join('order_items oi', 'oi.order_id = o.order_id')
+                ->where($where)
+                ->sum('oi.nums');
+        }
+
+
+        $return['msg'] = '查询成功';
+        $return['data'] = [
+            'total_orders' => $total_orders,
+            'total_user_orders' => $total_user_orders,
+        ];
         return $return;
     }
 }

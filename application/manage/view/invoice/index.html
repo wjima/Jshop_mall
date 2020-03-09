@@ -9,14 +9,12 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">资源ID：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" placeholder="请输入资源ID" name="source_id" id="source_id" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">发票类型：</label>
             <div class="layui-input-inline seller-inline-3">
@@ -27,21 +25,18 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">发票抬头：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" placeholder="请输入发票抬头" name="title" id="title" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">发票税号：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" placeholder="请输入发票税号" name="tax_number" id="tax_number" autocomplete="off" class="layui-input">
             </div>
         </div>
-
         <div class="layui-inline">
             <label class="layui-form-label">开票状态：</label>
             <div class="layui-input-inline seller-inline-3">
@@ -52,7 +47,6 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="invoice-search"><i class="iconfont icon-chaxun"></i>筛选</button>
         </div>
@@ -61,7 +55,6 @@
 <div class="table-body">
     <table id="invoiceTable" lay-filter="invoiceTable"></table>
 </div>
-
 <script>
     layui.use(['table','form','laydate'],function(){
         var table = layui.table,form = layui.form,date = layui.laydate;
@@ -74,16 +67,16 @@
             page: true ,//开启分页
             limit:'20',
             cols: [[ //表头
-                {type: 'numbers'},
-                {field: 'class', title: '资源类型', width: 90},
-                {field: 'source_id', title: '资源ID', width: 160},
-                {field: 'type', title: '发票类型', width: 90},
-                {field: 'title', title: '发票抬头'},
-                {field: 'tax_number', title: '发票税号', width: 180},
-                {field: 'amount', title: '发票金额', width: 160},
-                {field: 'status', title: '开票状态', width: 90},
-                {field: 'ctime', title: '创建时间', width: 165},
-                {field: 'right', title:'操作', width: 150, align:'center', toolbar:'#invoice'}
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'class', title: '资源类型', width: 90, align: 'center'},
+                {field: 'source_id', title: '资源ID', width: 150, align: 'center'},
+                {field: 'type', title: '发票类型', width: 90, align: 'center'},
+                {field: 'title', title: '发票抬头', align: 'center'},
+                {field: 'tax_number', title: '发票税号', width: 180, align: 'center'},
+                {field: 'amount', title: '发票金额', width: 120, align: 'center'},
+                {field: 'status', title: '开票状态', width: 90, align: 'center'},
+                {field: 'ctime', title: '创建时间', width: 170, align: 'center'},
+                {field: 'right', title:'操作', width: 140, align:'center', toolbar:'#invoice'}
             ]]
         });
 
@@ -120,7 +113,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['700px', '430px'],
+                            area: setpage(700,430),
                             title: '发票编辑'
                         })
                     }else{
@@ -133,7 +126,7 @@
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: ['660px', '300px'],
+                            area: setpage(660,300),
                             title: '发票信息'
                         })
                     }else{

@@ -147,7 +147,17 @@ class PintuanGoods extends Common
         $re                                  = $recordModel->getRecord($info['id'], $gid, 1);
         $goodsInfo['data']['pintuan_record'] = $re['data'];
 
-
+        //调整前台显示数量
+        $orderModel  = new Order();
+        $check_order = $orderModel->findLimitOrder($goodsInfo['data']['product']['id'], 0, $info);
+        if (isset($info['max_goods_nums']) && $info['max_goods_nums'] != 0) {
+            $goodsInfo['data']['stock'] = $info['max_goods_nums'];
+            //活动销售件数
+            $goodsInfo['data']['product']['stock']    = $info['max_goods_nums'] - $check_order['data']['total_orders'];
+            $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];
+        } else {
+            $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];
+        }
         return $goodsInfo;
     }
 

@@ -36,7 +36,6 @@ export default {
 		};
 	},
 	onLoad () {
-		this.getShareCode();
 		this.getDataList();
 	},
 	onReachBottom () {
@@ -73,18 +72,6 @@ export default {
 					this.$common.errorToShow(res.msg)
 				}
 			});
-		},
-		//获取邀请码
-		getShareCode(){
-			let userToken = this.$db.get("userToken");
-			if (userToken && userToken != '') {
-				// 获取我的分享码
-				this.$api.shareCode({}, res => {
-					if (res.status) {
-						this.myShareCode = res.data;
-					}
-				});
-			}
 		}
 	},
 };

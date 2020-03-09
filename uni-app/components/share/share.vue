@@ -294,7 +294,7 @@ export default {
 			this.$api.createPoster(data, res => {
 				if (res.status) {
 					this.close()
-					this.$common.navigateTo('/pages/share?poster=' + res.data)
+					this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
 				} else {
 					this.$common.errorToShow(res.msg)
 				}

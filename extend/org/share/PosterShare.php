@@ -8,16 +8,6 @@ class PosterShare extends QrShare implements BaseShare
 {
     const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
     private $c = [
-        'page_1' => [               //首页
-            'poster_w' => 400,
-            'poster_h' => 600,
-            'poster_bcolor' =>[255,255,255],
-            'word' => [
-
-            ],
-            'image' => [
-            ]
-        ],
         'page_2' => [               //商品详情页
             'poster_w' => 400,
             'poster_h' => 570,
@@ -57,18 +47,20 @@ class PosterShare extends QrShare implements BaseShare
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
-                    'dst_h' => 400
+                    'dst_h' => 400,
+                    'radius' => 0
                 ],
                 [
                     'src' => '二维码-data2里动态设置',
                     'dst_x' => 275,
                     'dst_y' => 420,
                     'dst_w' => 120,
-                    'dst_h' => 120
+                    'dst_h' => 120,
+                    'radius' => 0
                 ],
             ]
         ],
-        'page_3' => [
+        'page_3' => [               //拼团
             'poster_w' => 400,
             'poster_h' => 600,
             'poster_bcolor' =>[255,255,255],
@@ -107,14 +99,16 @@ class PosterShare extends QrShare implements BaseShare
                     'dst_x' => 0,
                     'dst_y' => 0,
                     'dst_w' => 400,
-                    'dst_h' => 400
+                    'dst_h' => 400,
+                    'radius' => 0
                 ],
                 [
                     'src' => '二维码-data2里动态设置',
                     'dst_x' => 275,
                     'dst_y' => 420,
                     'dst_w' => 120,
-                    'dst_h' => 120
+                    'dst_h' => 120,
+                    'radius' => 0
                 ],
             ]
         ]              //拼团详情页
@@ -124,6 +118,9 @@ class PosterShare extends QrShare implements BaseShare
         $re = $this->getCode($client, $page, $userShareCode, $url, $params);
         if(!$re['status']){
             return $re;
+        }
+        if(!isset($this->c['page_'.$page])){
+            return $this->getQr($url, $re['data']['code'],$client);
         }
         if($client != self::CLIENT_WXMNAPP){
             $url = $this->getUrl($url,$re['data']['code']);
@@ -193,7 +190,8 @@ class PosterShare extends QrShare implements BaseShare
                 $image['dst_x'],
                 $image['dst_y'],
                 $image['dst_w'],
-                $image['dst_h']
+                $image['dst_h'],
+                $image['radius']
             );
         }
         //添加文字
@@ -268,19 +266,17 @@ class PosterShare extends QrShare implements BaseShare
      * @param $dst_y                图片加到画布上的起始y坐标
      * @param $dst_w                图片加到画布上的宽（图片在画布区域上的宽，下高相同）
      * @param $dst_h                图片加到画布上的高
+     * @param $radius               圆角
      * @return bool
      */
-    private function addimg(&$poster,$img_src,$dst_x, $dst_y,$dst_w,$dst_h){
+    private function addimg(&$poster,$img_src,$dst_x, $dst_y,$dst_w,$dst_h,$radius){
         //加图片
-        $img = $this->getimg($img_src,$dst_w,$dst_h);
+        $img = $this->getimg($img_src,$dst_w,$dst_h,$radius);
         if(!$img){
             return false;
         }
-        $size = $this->getimgsize($img_src,$dst_w, $dst_h);
-        if(!$size){
-            return false;
-        }
-        imagecopyresized($poster,$img, $dst_x,$dst_y,$size['src_x'],$size['src_y'],$dst_w,$dst_h,$size['src_w'],$size['src_h']);
+        
+        imagecopy($poster,$img['source_img'], $dst_x,$dst_y,0,0,$dst_w,$dst_h);
         return true;
     }
 
@@ -289,16 +285,38 @@ class PosterShare extends QrShare implements BaseShare
      * @param $url
      * @return false|resource|string
      */
-    private function getimg($url){
+    private function getimg($url,$dst_w,$dst_h,$radius){
+        //计算尺寸和宽高比
+        $size = $this->getimgsize($url,$dst_w, $dst_h);
+        if(!$size){
+            return false;
+        }
         $img_string = @file_get_contents($url);
         if(!$img_string){
             return $img_string;
         }
-        return imagecreatefromstring($img_string);
+        $source_img = imagecreatefromstring($img_string);
+        //先裁剪&缩放
+        $source_img = $this->cutimg($source_img,$size);
+        if(!$source_img){
+            return false;
+        }
+
+        if($radius > 0){
+            //再圆角
+            $source_img = $this->radius_img($source_img,$size['dst_w'],$size['dst_h'],$radius);
+        }
+
+
+        $size['source_img'] = $source_img;
+
+        return $size;
     }
 
 
-
+    /**
+     * 图片取范围
+     */
     private function getimgsize($url,$dst_w,$dst_h){
         $size = @getimagesize($url);
         if(!$size){
@@ -309,10 +327,13 @@ class PosterShare extends QrShare implements BaseShare
             //上下顶头
             $b = $size[1]/$dst_h;
             $re = [
-                'src_x' => floor(($size[0] - $dst_w * $b) / 2),
-                'src_y' => 0,
-                'src_w' => $dst_w * $b,
-                'src_h' => $size[1]
+                'src_x' => floor(($size[0] - $dst_w * $b) / 2),             //源图像x坐标  
+                'src_y' => 0,                                               //源图像y坐标
+                'src_w' => floor($dst_w * $b),                              //源图像宽
+                'src_h' => $size[1],                                        //源图像高
+                'scale' => $b,                                              //缩放比
+                'dst_w' => $dst_w,                                          //画框宽度
+                'dst_h' => $dst_h                                           //画框高度
             ];
         }else{
             //左右顶头
@@ -321,11 +342,24 @@ class PosterShare extends QrShare implements BaseShare
                 'src_x' => 0,
                 'src_y' => floor(($size[1] - $dst_h * $b) / 2),
                 'src_w' => $size[0],
-                'src_h' => $dst_h * $b
+                'src_h' => floor($dst_h * $b),
+                'scale' =>$b,
+                'dst_w' => $dst_w,
+                'dst_h' => $dst_h                             
             ];
         }
 
         return $re;
+    }
+
+    //裁剪缩放
+    private function cutimg($image,$size){
+        $nimage = imagecreatetruecolor($size['dst_w'], $size['dst_h']);
+        if(imagecopyresampled($nimage, $image, 0, 0, $size['src_x'], $size['src_y'], $size['dst_w'], $size['dst_h'], $size['src_w'], $size['src_h'])){
+            return $nimage;
+        }else{
+            return false;
+        }
     }
 
     /**
@@ -371,4 +405,56 @@ class PosterShare extends QrShare implements BaseShare
          imagettftext($poster, $size, 0, $x, $y, $color, self::FONT, $new_word );
          return true;
      }
+
+     /**
+    * 处理四角圆图片
+    * @param  string  $imgpath 源图片路径
+    * @param  integer $radius  圆角半径长度默认为15,处理成圆型
+    * @return [type]           [description]
+    */
+    private function radius_img($src_img, $w,$h,$radius = 15) {
+        $img = imagecreatetruecolor($w, $h);
+        //这一句一定要有
+        imagesavealpha($img, true);
+        //拾取一个完全透明的颜色,最后一个参数127为全透明
+        $bg = imagecolorallocatealpha($img, 255, 255, 255, 127);
+        imagefill($img, 0, 0, $bg);
+        $r = $radius; //圆 角半径
+        for ($x = 0; $x < $w; $x++) {
+            for ($y = 0; $y < $h; $y++) {
+                $rgbColor = imagecolorat($src_img, $x, $y);
+                if (($x >= $radius && $x <= ($w - $radius)) || ($y >= $radius && $y <= ($h - $radius))) {
+                    //不在四角的范围内,直接画
+                    imagesetpixel($img, $x, $y, $rgbColor);
+                } else {
+                    //在四角的范围内选择画
+                    //上左
+                    $y_x = $r; //圆心X坐标
+                    $y_y = $r; //圆心Y坐标
+                    if (((($x - $y_x) * ($x - $y_x) + ($y - $y_y) * ($y - $y_y)) <= ($r * $r))) {
+                        imagesetpixel($img, $x, $y, $rgbColor);
+                    }
+                    //上右
+                    $y_x = $w - $r; //圆心X坐标
+                    $y_y = $r; //圆心Y坐标
+                    if (((($x - $y_x) * ($x - $y_x) + ($y - $y_y) * ($y - $y_y)) <= ($r * $r))) {
+                        imagesetpixel($img, $x, $y, $rgbColor);
+                    }
+                    //下左
+                    $y_x = $r; //圆心X坐标
+                    $y_y = $h - $r; //圆心Y坐标
+                    if (((($x - $y_x) * ($x - $y_x) + ($y - $y_y) * ($y - $y_y)) <= ($r * $r))) {
+                        imagesetpixel($img, $x, $y, $rgbColor);
+                    }
+                    //下右
+                    $y_x = $w - $r; //圆心X坐标
+                    $y_y = $h - $r; //圆心Y坐标
+                    if (((($x - $y_x) * ($x - $y_x) + ($y - $y_y) * ($y - $y_y)) <= ($r * $r))) {
+                        imagesetpixel($img, $x, $y, $rgbColor);
+                    }
+                }
+            }
+        }
+        return $img;
+    }
 }

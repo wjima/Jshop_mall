@@ -38,7 +38,7 @@
             <td>
                 {$vo.name}{if condition="$vo.addon"} - {$vo.addon}{/if}
             </td>
-            <td>{$vo.bn}</td>
+            <td>{$vo.sn}</td>
             <td>￥{$vo.price}</td>
             <td>{$vo.weight*$vo.nums}g</td>
             <td>
@@ -124,7 +124,7 @@
             <td>
                 {$vo.name}{if condition="$vo.addon"} - {$vo.addon}{/if}
             </td>
-            <td>{$vo.bn}</td>
+            <td>{$vo.sn}</td>
             <td>￥{$vo.price}</td>
             <td>
                 {$vo.nums-$vo.sendnums-$vo.reship_nums+$vo.reship_nums_ed}

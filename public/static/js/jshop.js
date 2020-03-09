@@ -305,11 +305,35 @@ $(function() {
 		topLayui.index.openTabsPage(href, text || othis.text());
 	});
 });
-
-function setpage(width,height) {
-	if ($(window).width() <= 1280) {
-		return [ width+'px','70%'];
+/**
+ * 优化弹窗
+ * @param width
+ * @param height
+ * @returns {*[]}
+ */
+function setpage(width, height) {
+	var pageHeight = $(window).height();
+	var newHeight = 0;
+	if (pageHeight * 0.7 > height) {
+		newHeight = height+ 'px';
 	} else {
-		return [width+'px',height+'px' ];
+		newHeight = '70%'
 	}
+	if ($(window).width() <= 1280) {
+		return [width + 'px', newHeight];
+	} else {
+		return [width + 'px', height + 'px'];
+	}
+}
+
+/**
+ * 获取页面最大index
+ */
+function getMaxZIndex() {
+	var maxZ = Math.max.apply(null,
+			$.map($('body *'), function(e,n) {
+				if ($(e).css('position') != 'static')
+					return parseInt($(e).css('z-index')) || -1;
+			}));
+	return maxZ;
 }

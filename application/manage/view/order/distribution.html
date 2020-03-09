@@ -43,9 +43,9 @@
         {volist name='order.items' id='vo'}
         <tr>
             <td>
-                {$vo.name}{if condition="$vo.addon"} - {$vo.addon}{/if}
+                {$vo.name}{if $vo.addon} - {$vo.addon}{/if}
             </td>
-            <td>{$vo.bn}</td>
+            <td>{$vo.sn}</td>
             <td>￥{$vo.price}</td>
             {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
             <td>

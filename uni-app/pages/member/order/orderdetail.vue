@@ -52,7 +52,7 @@
 			</view>
 			
 			<view class='cell-group margin-cell-group' v-if="orderInfo.store">
-				<view class='cell-item add-title-item'>
+				<view class='cell-item add-title-item th'>
 					<view class="cell-item-hd">
 						<image class='cell-hd-icon' src='/static/image/homepage.png'></image>
 					</view>
@@ -624,5 +624,11 @@
 	
 	.delivery{
 		border-bottom: 1px solid #f3f3f3;
+	}
+	.th .cell-item-bd{
+		display: block;
+		flex: 1;
+		margin-left: 20rpx;
+		padding-right: 0;
 	}
 </style>

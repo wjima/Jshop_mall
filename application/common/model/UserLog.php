@@ -14,23 +14,32 @@ class UserLog extends Common
     const USER_REG = 3;    //注册
     const USER_EDIT = 4;    //用户编辑信息
 
+    const USER_TYPE = 1;//用户类型，会员
+    const MANAGE_TYPE = 2;//用户类型，管理员
 
     //总后台的登陆记录
-    public function getList( $user_id, $limit = 10 )
+    public function getList($user_id = 0, $type = self::USER_TYPE, $limit = 10)
     {
         $where = [];
-        if($user_id){
-            $where[] = ['user_id','eq',$user_id];
+        if ($user_id) {
+            $where[] = ['user_id', 'eq', $user_id];
         }
-        $where[] = ['state','eq',1];
-        $data = $this->where($where)
+        $where[] = ['state', 'eq', 1];
+        $where[] = ['type', 'eq', $type];
+        $data    = $this->where($where)
             ->order('ctime DESC')
             ->paginate($limit);
-        foreach( $data as $key => $val )
-        {
-            $userModel              = new UserModel();
-            $userInfo               = $userModel->field('id,username,nickname,mobile')->where(['id' => $val['user_id']])->select();
-            $data[$key]['username'] = $userInfo[0]['mobile'];
+        foreach ($data as $key => $val) {
+            if ($val['type'] == self::USER_TYPE) {
+                $userModel              = new UserModel();
+                $userInfo               = $userModel->field('id,username,nickname,mobile')->where(['id' => $val['user_id']])->find();
+                $data[$key]['username'] = isset($userInfo['mobile']) ? $userInfo['mobile'] : $userInfo['nickname'];
+            } else {
+                $manageModel            = new Manage();
+                $manageInfo             = $manageModel->field('id,username,nickname,mobile')->where(['id' => $val['user_id']])->find();
+                $data[$key]['username'] = (isset($manageInfo['mobile'])&&$manageInfo['mobile']) ? $manageInfo['mobile'] : $manageInfo['username'];
+            }
+
             $data[$key]['state'] = config('params.user')['state'][$val['state']];
             $data[$key]['ctime'] = getTime($val['ctime']);
         }
@@ -81,15 +90,16 @@ class UserLog extends Common
      * @param $user_id
      * @param string $state
      */
-    public function setLog( $user_id,$state,$data = [] )
+    public function setLog($user_id, $state, $data = [], $type = self::USER_TYPE)
     {
 
         $data = [
             'user_id' => $user_id,
-            'state' => $state,
-            'ctime' => time(),
-            'params' => json_encode($data),
-            'ip' => get_client_ip(0,true)
+            'state'   => $state,
+            'ctime'   => time(),
+            'params'  => json_encode($data),
+            'ip'      => get_client_ip(0, true),
+            'type'    => $type
         ];
         $this->allowField(true)->save($data);
     }

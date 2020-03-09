@@ -13,6 +13,7 @@ use app\common\controller\Manage as ManageController;
 use app\common\model\ManageRole;
 use app\common\model\Manage as ManageModel;
 use app\common\model\ManageRoleRel;
+use app\common\model\UserLog;
 use think\facade\Request;
 use org\Curl;
 
@@ -258,4 +259,11 @@ class Administrator extends ManageController
         $return['data']['is_authorization'] = false;
         return $return;
     }
+
+    public function userLogList()
+    {
+        $userLogModel = new UserLog();
+        return $userLogModel->getList(0,$userLogModel::MANAGE_TYPE);
+    }
+
 }

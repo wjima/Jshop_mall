@@ -106,7 +106,8 @@ class User extends Manage
     public function userLogList()
     {
         $userLogModel = new UserLog();
-        return $userLogModel->getList(session('user.id'));
+
+        return $userLogModel->getList();
     }
 
 

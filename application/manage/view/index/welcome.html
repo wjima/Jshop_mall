@@ -286,7 +286,7 @@
 
 
                     //获取历史登录记录
-                    $.get("{:url('manage/User/userLogList',array('state'=>1))}", function(data) {
+                    $.get("{:url('manage/administrator/userLogList',array('state'=>1))}", function(data) {
                         var getTpl = log.innerHTML,
                             view = document.getElementById('loginLog');
                         laytpl(getTpl).render(data.data, function(html) {

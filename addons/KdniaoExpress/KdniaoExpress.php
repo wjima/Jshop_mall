@@ -3,6 +3,7 @@ namespace addons\KdniaoExpress;    // 注意命名空间规范
 
 use addons\KdniaoExpress\lib\kdniao;
 use app\common\model\BillDelivery;
+use app\common\model\Order;
 use app\common\model\OrderItems;
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
@@ -17,11 +18,11 @@ class KdniaoExpress extends Addons
     // 该插件的基础信息
     public $info = [
         'name'         => 'KdniaoExpress',    // 插件标识
-        'title'        => '快递打印插件',    // 插件名称
+        'title'        => '快递鸟插件',    // 插件名称
         'description'  => '快递鸟快递查询以及订单打印插件，请勿和其它打印插件一起使用。',    // 插件简介
         'status'       => 0,    // 状态
         'author'       => 'mark',
-        'version'      => '0.2',
+        'version'      => '0.3',
         'dialog_width' => '600px',
     ];
 
@@ -307,16 +308,19 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
      */
     public function autoSend($order_id = '', $logi_code = '', $logi_no = '')
     {
-        $ship_data       = [];
+        $ship_data  = [];
+        $orderModel = new Order();
+        $order_info = $orderModel->where('order_id', $order_id)->field('store_id,ship_name,ship_mobile,ship_area_id,ship_address')->find();
+
         $orderItemsModel = new OrderItems();
-        $items           = $orderItemsModel->field('id,nums')->where(['order_id' => $order_id])->select();
+        $items           = $orderItemsModel->field('product_id,id,nums')->where(['order_id' => $order_id])->select();
         foreach ($items as $key => $val) {
-            $ship_data[] = [
-                $val['id'], $val['nums']
+            $ship_data = [
+                $val['product_id'] => $val['nums']
             ];
         }
         $billDeliveryModel = new BillDelivery();
-        $billDeliveryModel->ship($order_id, $logi_code, $logi_no, $ship_data, 0, "", "", 0, "", '打单自动发货');
+        $billDeliveryModel->ship($order_id, $logi_code, $logi_no, $ship_data, $order_info['store_id'], $order_info['ship_name'], $order_info['ship_mobile'], $order_info['ship_area_id'], $order_info['ship_address'], '快递鸟自动发货');
         return true;
     }
 

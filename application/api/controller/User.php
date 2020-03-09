@@ -1224,9 +1224,18 @@ class User extends Api
 
     /**
      * 新的分享，不管是二维码，还是地址，都走这个
-     * page	场景值		1店铺首页，2商品详情页，3拼团详情页,4邀请好友（店铺页面,params里需要传store）
+     * page	场景值		1店铺首页，2商品详情页，3拼团详情页,4邀请好友（店铺页面,params里需要传store）,5文章页面,6参团页面，7自定义页面，8智能表单，9团购秒杀
     url	 	前端地址
     params	参数，根据场景值不一样而内容不一样
+     *      1
+     *      2 goods_id:商品ID
+     *      3 goods_id:商品ID，team_id:拼团ID
+     *      4 store:店铺code
+     *      5 article_id:文章ID，article_type:文章类型
+     *      6 goods_id:商品ID，group_id:参团ID，team_id:拼团ID
+     *      7 page_code:自定义页面code
+     *      8 id：智能表单ID
+     *      9 goods_id:商品ID，group_id:团购秒杀ID
     type	类型，1url，2二维码，3海报
     token	可以保存推荐人的信息
     client	终端，1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序,5pc，6阿里小程序

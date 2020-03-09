@@ -181,9 +181,8 @@ class Common extends Base
         $url = urldecode($url);
         $level = input('param.level', 'L');
         $size =input('param.size', 10);
-        $data = QRcode::png($url, false, $level, $size, 2);
-//        ob_end_clean();
-//        echo $data;
+        QRcode::png($url, false, $level, $size, 2);
+
 
     }
 
@@ -201,8 +200,7 @@ class Common extends Base
         $code = input('param.code');
         $client = input('param.client');
         $posterShare = new PosterShare();
-        $data = $posterShare->poster($url,$code,$client);
-//        ob_end_clean();
-//        echo $data;
+        $posterShare->poster($url,$code,$client);
+
     }
 }

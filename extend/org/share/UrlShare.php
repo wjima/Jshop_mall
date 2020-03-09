@@ -5,11 +5,16 @@ namespace org\share;
 class UrlShare implements BaseShare
 {
 
-    //场景值，1首页，2商品详情页，3拼团详情页,4邀请页面
+    //场景值，1首页，2商品详情页，3拼团详情页,4邀请页面,5文章页面，6参团页面，7自定义页面，8智能表单，9团购秒杀
     const PAGE_INDEX = 1;
     const PAGE_GOODS = 2;
     const PAGE_PINTUAN = 3;
     const PAGE_INV = 4;
+    const PAGE_ARTICLE = 5;
+    const PAGE_ADDPINTUAN = 6;
+    const PAGE_PAGE = 7;
+    const PAGE_FORM = 8;
+    const PAGE_GROUP = 9;
 
     //1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序,5pc，6阿里小程序
     const CLIENT_H5 = 1;
@@ -102,22 +107,10 @@ class UrlShare implements BaseShare
                 }
                 break;
             case self::PAGE_PINTUAN :
-                if(isset($params['goods_id'])){
-                    $str = $params['goods_id'];
+                if(!isset($params['goods_id'])  || !isset($params['team_id'])){
+                    $str = $params['goods_id']  . "_".$params['team_id'];
                 }else{
-                    $result['msg'] = '参数必须传goods_id';
-                    return $result;
-                }
-                if(isset($params['group_id'])){     //拼团规则ID
-                    $str .= "_" . $params['group_id'];
-                }else{
-                    $result['msg'] = '参数必须传group_id';
-                    return $result;
-                }
-                if(isset($params['team_id'])){     //团队ID
-                    $str .= "_".$params['team_id'];
-                }else{
-                    $result['msg'] = '参数必须传team_id';
+                    $result['msg'] = '参数必须传goods_id,team_id';
                     return $result;
                 }
                 break;
@@ -126,6 +119,46 @@ class UrlShare implements BaseShare
                     $str = $params['store'];
                 }else{
                     $result['msg'] = '参数必须传store';
+                    return $result;
+                }
+                break;
+            case self::PAGE_ARTICLE :
+                if(!isset($params['article_id'])  || !isset($params['article_type'])){
+                    $str = $params['article_id']  . "_".$params['article_type'];
+                }else{
+                    $result['msg'] = '参数必须传article_id,article_type';
+                    return $result;
+                }
+                break;
+            case self::PAGE_ADDPINTUAN :
+                if(!isset($params['goods_id'])  || !isset($params['group_id']) || !isset($params['team_id'])){
+                    $str = $params['goods_id']  . "_".$params['group_id']  . "_".$params['team_id'];
+                }else{
+                    $result['msg'] = '参数必须传goods_id,group_id,team_id';
+                    return $result;
+                }
+                break;
+            case self::PAGE_PAGE :
+                if(!isset($params['page_code'])){
+                    $str = $params['page_code'];
+                }else{
+                    $result['msg'] = '参数必须传page_code';
+                    return $result;
+                }
+                break;
+            case self::PAGE_FORM :
+                if(!isset($params['id'])){
+                    $str = $params['id'];
+                }else{
+                    $result['msg'] = '参数必须传id';
+                    return $result;
+                }
+                break;
+            case self::PAGE_GROUP :
+                if(!isset($params['article_id'])  || !isset($params['article_type'])){
+                    $str = $params['article_id']  . "_".$params['article_type'];
+                }else{
+                    $result['msg'] = '参数必须传article_id,article_type';
                     return $result;
                 }
                 break;
@@ -167,6 +200,40 @@ class UrlShare implements BaseShare
             case self::PAGE_INV :
                 if(count($arr) == 1){
                     $result['data']['store'] = $arr[0];
+                    $result['status'] = true;
+                }
+                break;
+            case self::PAGE_ARTICLE :
+                if(count($arr) == 2){
+                    $result['data']['article_id'] = $arr[0];
+                    $result['data']['article_type'] = $arr[1];
+                    $result['status'] = true;
+                }
+                break;
+            case self::PAGE_ADDPINTUAN :
+                if(count($arr) == 3){
+                    $result['data']['goods_id'] = $arr[0];
+                    $result['data']['group_id'] = $arr[1];
+                    $result['data']['team_id'] = $arr[2];
+                    $result['status'] = true;
+                }
+                break;
+            case self::PAGE_PAGE :
+                if(count($arr) == 1){
+                    $result['data']['page_code'] = $arr[0];
+                    $result['status'] = true;
+                }
+                break;
+            case self::PAGE_FORM :
+                if(count($arr) == 1){
+                    $result['data']['goods_id'] = $arr[0];
+                    $result['status'] = true;
+                }
+                break;
+            case self::PAGE_GROUP :
+                if(count($arr) == 2){
+                    $result['data']['goods_id'] = $arr[0];
+                    $result['data']['group_id'] = $arr[1];
                     $result['status'] = true;
                 }
                 break;

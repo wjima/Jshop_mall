@@ -37,7 +37,4 @@ class Index extends Base
         $this->assign('ent_id', $ent_id);
         return $this->fetch();
     }
-    public function t(){
-        echo "<img src='https://demo.jihainet.com/b2c/common/poster/client/2/code/2-38967-30.html?url=pages%2Fshare%2Fjump' />";
-    }
 }

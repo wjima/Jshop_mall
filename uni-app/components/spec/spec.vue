@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="goods-specs" v-for="(item, index) in spesData" :key="index">
+		<view class="goods-specs" v-for="(item, index) in specList" :key="index">
 			<text class="pop-m-title">{{ index }}</text>
 			<view class="pop-m-bd">
 				<view :class="spes.cla" v-for="(spes, key) in item" :key="key" @click="specChangeSpes(index, key)">
@@ -13,12 +13,23 @@
 <script>
 	export default {
 		name: "spec",
+        data() {
+            return {
+                specList: {}
+            }
+        },
 		props: {
 			// 默认picker选中项索引
 			spesData: {
 				required: true
 			}
 		},
+        watch:{
+            spesData: function (val) {
+                let d = JSON.parse(val);
+                this.specList = d;
+            }
+        },
 		methods: {
 			specChangeSpes(v, k){
 				let newData = {
@@ -26,7 +37,10 @@
 					k: k
 				}
 				this.$emit("changeSpes", newData);
-			}
+			},
+            changeSpecData(){
+                this.specList = {};
+            }
 		}
 	}
 </script>

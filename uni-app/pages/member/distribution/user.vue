@@ -237,7 +237,7 @@
                 
                 this.$api.share(data, res => {
                 	if (res.status) {
-                		this.$common.navigateTo('/pages/share?poster=' + JSON.stringify(res.data))
+                		this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
                 	} else {
                 		this.$common.errorToShow(res.msg)
                 	}

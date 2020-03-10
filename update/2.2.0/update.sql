@@ -10,7 +10,7 @@ ADD COLUMN `max_nums` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '每人限购数�
 ADD COLUMN `max_goods_nums` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '每个商品活动数量' AFTER `max_nums`;
 
 -- 添加变更优惠券领取者节点
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (588, 263, '变更领取者', 'binduser', 'a', 361, 2, 100);
+--INSERT INTO `jshop_operation`( `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES ( 263, '变更领取者', 'binduser', 'a', 361, 2, 100);
 
 -- 发货明细addons字段设置默认值
 ALTER TABLE `jshop_bill_delivery_items` CHANGE `addon` `addon` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;

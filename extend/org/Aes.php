@@ -1,6 +1,6 @@
 <?php
 
-namespace Aes;
+namespace org;
 
 class Aes
 {

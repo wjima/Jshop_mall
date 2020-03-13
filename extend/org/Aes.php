@@ -2,6 +2,12 @@
 
 namespace org;
 
+/**
+ * AES加密解密类
+ * @author sin@2020.03.13
+ * Class Aes
+ * @package org
+ */
 class Aes
 {
     /**
@@ -71,13 +77,3 @@ class Aes
         return openssl_decrypt($data, $this->method, $this->secret_key, $this->options, $this->iv);
     }
 }
-
-$aes = new Aes('12345678');
-
-$encrypted = $aes->encrypt('bbm是一家很傻逼的公司');
-
-echo '要加密的字符串：bbm是一家很傻逼的公司<br>加密后的字符串：', $encrypted, '<hr>';
-
-$decrypted = $aes->decrypt($encrypted);
-
-echo '要解密的字符串：', $encrypted, '<br>解密后的字符串：', $decrypted;

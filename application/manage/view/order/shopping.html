@@ -42,7 +42,7 @@
             <td>{$vo.sn}</td>
             <td>￥{$vo.price}</td>
             {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
-            <td>{$vo.weight*$vo.nums}g</td>
+            <td>{$vo.weight}g</td>
             <td>
                 {$vo.nums-$vo.sendnums-$vo.reship_nums+$vo.reship_nums_ed}
             </td>

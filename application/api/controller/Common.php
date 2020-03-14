@@ -83,7 +83,7 @@ class Common extends Base
      */
     public function jshopConf()
     {
-        $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id,user_agreement_id,privacy_policy_id,goods_show_word1,goods_show_word2');
+        $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id,user_agreement_id,privacy_policy_id,goods_show_word1,goods_show_word2,shop_beian');
 
         $conf['shop_logo']          = _sImage($config['shop_logo']); //店铺logo
         $conf['shop_name']          = $config['shop_name'];  //店铺名称
@@ -105,25 +105,26 @@ class Common extends Base
         $conf['open_distribution']  = get_addons_status('DistributionCenter');   //是否开启分销
         if ($conf['open_distribution']) {
             $distributionSetting            = getAddonsConfigVal('DistributionCenter', 'setting');
-            $conf['distribution_notes']     = isset($distributionSetting['notes'])?$distributionSetting['notes']:'';    //用户须知
-            $conf['distribution_agreement'] = isset($distributionSetting['agreement'])?$distributionSetting['agreement']:'';    //分销协议
-            $conf['distribution_store']     = isset($distributionSetting['distribution_store'])?$distributionSetting['distribution_store']:'';    //是否开启店铺
+            $conf['distribution_notes']     = isset($distributionSetting['notes']) ? $distributionSetting['notes'] : '';    //用户须知
+            $conf['distribution_agreement'] = isset($distributionSetting['agreement']) ? $distributionSetting['agreement'] : '';    //分销协议
+            $conf['distribution_store']     = isset($distributionSetting['distribution_store']) ? $distributionSetting['distribution_store'] : '';    //是否开启店铺
         }
-        $conf['show_inviter']     = $config['show_inviter'];    //是否显示邀请人信息
-        $conf['share_title']      = $config['share_title'];  //分享标题
-        $conf['share_desc']       = $config['share_desc'];    //分享描述
-        $conf['share_image']      = _sImage($config['share_image']); //分享图片
-        $conf['about_article_id'] = $config['about_article_id'];    //关于我们文章
-        $conf['ent_id']           = $config['ent_id'];    //客服ID
+        $conf['show_inviter']      = $config['show_inviter'];    //是否显示邀请人信息
+        $conf['share_title']       = $config['share_title'];  //分享标题
+        $conf['share_desc']        = $config['share_desc'];    //分享描述
+        $conf['share_image']       = _sImage($config['share_image']); //分享图片
+        $conf['about_article_id']  = $config['about_article_id'];    //关于我们文章
+        $conf['ent_id']            = $config['ent_id'];    //客服ID
         $conf['user_agreement_id'] = $config['user_agreement_id']; //用户协议
         $conf['privacy_policy_id'] = $config['privacy_policy_id']; //隐私政策
+        $conf['shop_beian']        = $config['shop_beian']; //备案
 
         //手机端商品详情页文字说明，如果为空就不显示
         $goods_show_word = [];
-        if($config['goods_show_word1'] != ''){
+        if ($config['goods_show_word1'] != '') {
             $goods_show_word[] = $config['goods_show_word1'];
         }
-        if($config['goods_show_word2'] != ''){
+        if ($config['goods_show_word2'] != '') {
             $goods_show_word[] = $config['goods_show_word2'];
         }
         $conf['goods_show_word'] = $goods_show_word;

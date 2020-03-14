@@ -136,20 +136,32 @@ class PosterShare extends QrShare implements BaseShare
      * @return bool
      */
     public function poster($url,$code,$client){
-        $re = $this->de_url($code);
-        if(!$re['status']){
-            return $re;
+        //增加缓存
+        $filename = md5($url.$code.$client);
+        $file_url = "static/poster/".$filename.".png";
+
+        if(!file_exists($file_url)){
+            //去生成
+            $re = $this->de_url($code);
+            if(!$re['status']){
+                return $re;
+            }
+
+            $qr_re = $this->getQr($url,$code,$client);
+            if(!$qr_re['status']){
+                return $qr_re;
+            }
+             if(!$this->mark($re['data'],$qr_re['data'],$filename)){
+                 return false;
+             }
         }
+        $img = file_get_contents($file_url);
+        return $img;
 
-        $qr_re = $this->getQr($url,$code,$client);
-        if(!$qr_re['status']){
-            return $qr_re;
-        }
-
-
-        return $this->mark($re['data'],$qr_re['data']);
     }
-    private function mark($data,$url){
+    private function mark($data,$url,$filename){
+        $file_url = "static/poster/".$filename.".png";
+
         if(!isset($this->c['page_'.$data['page']])){
             return false;
         }
@@ -207,8 +219,7 @@ class PosterShare extends QrShare implements BaseShare
                 $word['size']
             );
         }
-        imagepng($poster);               //生成PNG格式的图像
-        imagedestroy($poster);           //释放图像资源
+        return imagepng($poster,$file_url);               //生成PNG格式的图像
     }
     //首页海报取数据
     private function data1($data,$url){

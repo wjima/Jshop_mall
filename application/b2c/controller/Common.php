@@ -200,7 +200,7 @@ class Common extends Base
         $code = input('param.code');
         $client = input('param.client');
         $posterShare = new PosterShare();
-        $posterShare->poster($url,$code,$client);
+        echo $posterShare->poster($url,$code,$client);
 
     }
 }

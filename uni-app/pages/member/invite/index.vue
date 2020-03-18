@@ -123,7 +123,7 @@
 				
 				// #ifdef MP-WEIXIN
 				data.client = 2;
-				data.url = '/pages/share/jump'
+				data.url = 'pages/share/jump'
 				// #endif
 				
 				// #ifdef MP-TOUTIAO
@@ -162,7 +162,7 @@
 				
 				// #ifdef MP-WEIXIN
 				data.client = 2;
-				data.url = '/pages/share/jump'
+				data.url = 'pages/share/jump'
 				// #endif
 				
 				// #ifdef MP-TOUTIAO

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { apiBaseUrl } from '@/config/config.js'
+import { h5Url } from '@/config/config.js'
 // #ifdef MP-TOUTIAO
 import {ttPlatform} from '@/config/config.js'
 // #endif
@@ -266,7 +266,7 @@ export default {
 			
 			// #ifdef H5
 			data.source = 1;
-			data.return_url = apiBaseUrl + 'wap/pages/share/jump';
+			data.return_url = h5Url + 'pages/share/jump';
 			// #endif
 			
 			// #ifdef MP-WEIXIN
@@ -276,12 +276,12 @@ export default {
 			
 			// #ifdef MP-ALIPAY
 			data.source = 3;
-			data.return_url = 'pages/share/jump';//page.__proto__.route;
+			data.return_url = '/pages/share/jump';//page.__proto__.route;
 			// #endif
 			
 			// #ifdef MP-TOUTIAO
 			data.source = 4;
-			data.return_url = 'pages/share/jump';//page.__proto__.route;
+			data.return_url = '/pages/share/jump';//page.__proto__.route;
 			data.tt_platform = ttPlatform;
 			// #endif
 			

@@ -1,5 +1,5 @@
 {
-    "name" : "Jshop",
+    "name" : "Jshop商城",
     "appid" : "__UNI__8AA8302",
     "description" : "Jshop小程序商城",
     "versionName" : "2.0",
@@ -106,7 +106,7 @@
             "postcss" : true,
             "minified" : true
         },
-        "appid" : "tt63241599fc0e9ee3"
+        "appid" : "ttfb828d3f64a89680"
     },
     "mp-qq" : {
         "setting" : {

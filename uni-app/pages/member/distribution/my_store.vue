@@ -103,7 +103,7 @@
 
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
-
+    import { h5Url } from '@/config/config.js'
 	import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
 	import {
 		apiBaseUrl
@@ -266,53 +266,48 @@
 					}
 				});
 			},
-			// 生成邀请海报
-			createPoster() {
-				let data = {
-					type: 4,
-					id: this.storeCode
-				}
-
-				let pages = getCurrentPages()
-				let page = pages[pages.length - 1]
-				let page_path = 'pages/share/jump';
-				// #ifdef H5
-				data.source = 1;
-				data.return_url = apiBaseUrl + 'wap/' + page_path;
-				// #endif
-
-				// #ifdef MP-WEIXIN
-				data.source = 2;
-				data.return_url = page_path;
-				// #endif
-
-				// #ifdef MP-ALIPAY
-				data.source = 3;
-				data.return_url = page_path;
-				// #endif
-				
-				// #ifdef APP-PLUS || APP-PLUS-NVUE
-				data.source = 5;
-				data.return_url = apiBaseUrl + 'wap/' + page_path;
-				// #endif
-				
-				// #ifdef MP-TOUTIAO
-				data.source = 6;
-				// #endif
-
-				let userToken = this.$db.get('userToken')
-
-				if (userToken) {
-					data.token = userToken
-				}
-				this.$api.createPoster(data, res => {
-					if (res.status) {
-						this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
-					} else {
-						this.$common.errorToShow(res.msg)
-					}
-				})
-			},
+            // 生成邀请海报
+            createPoster() {
+                let data = {
+                    page: 4,
+                    params: {
+                        store: this.info.store
+                    },
+                    type: 3,//海报
+                }
+                let userToken = this.$db.get('userToken')
+                if (userToken) {
+                    data.token = userToken
+                }
+                
+                // #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+                data.client = 1;
+                data.url = h5Url + 'pages/share/jump'
+                // #endif
+                
+                // #ifdef MP-WEIXIN
+                data.client = 2;
+                data.url = 'pages/share/jump'
+                // #endif
+                
+                // #ifdef MP-TOUTIAO
+                data.client = 4;
+                data.url = '/pages/share/jump'
+                // #endif
+                
+                // #ifdef MP-ALIPAY
+                data.client = 6;
+                data.url = '/pages/share/jump'
+                // #endif
+                
+                this.$api.share(data, res => {
+                	if (res.status) {
+                		this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
+                	} else {
+                		this.$common.errorToShow(res.msg)
+                	}
+                });
+            },
             //获取分享URL
             getShareUrl() {
                 let data = {

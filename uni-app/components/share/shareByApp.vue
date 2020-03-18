@@ -154,7 +154,7 @@ export default {
 			    //商品
 			    data = {
 			        page: 2, //商品
-			        url: '/pages/share/jump',
+			        url: h5Url + 'pages/share/jump',
 			        params: {
 			            goods_id: this.goodsId
 			        },
@@ -169,7 +169,7 @@ export default {
 			    //拼团
 			    data = {
 			        page: 3, //商品
-			        url: '/pages/share/jump',
+			        url: h5Url + 'pages/share/jump',
 			        params: {
 			            goods_id: this.goodsId,
 			            group_id: this.groupId,

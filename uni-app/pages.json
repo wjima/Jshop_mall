@@ -20,6 +20,24 @@
 	    "enablePullDownRefresh": true
 	  }
 	},
+	{
+	  "path": "pages/bargain/index",
+	  "style": {
+	    "navigationBarTitleText": "好友帮砍价"
+	  }
+	},
+	{
+	  "path": "pages/bargain/details",
+	  "style": {
+	    "navigationBarTitleText": "商品详情"
+	  }
+	},
+	{
+	  "path": "pages/bargain/list",
+	  "style": {
+	    "navigationBarTitleText": "砍价优惠拿"
+	  }
+	},
     {
       "path": "pages/index/search",
       "style": {

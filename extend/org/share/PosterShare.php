@@ -8,6 +8,49 @@ class PosterShare extends QrShare implements BaseShare
 {
     const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
     private $c = [
+        'page_1' => [               //首页
+            'poster_w' => 400,
+            'poster_h' => 600,
+            'poster_bcolor' =>[255,255,255],
+            'word' => [
+                [
+                    'string' => '推荐码',
+                    'dst_x' => 140,
+                    'dst_y' => 550,
+                    'width' => 260,
+                    'max_line' => 1,
+                    'color' => [255,255,255],
+                    'size' => 18,
+                ],
+                [
+                    'string' => '推荐码',
+                    'dst_x' => 141,
+                    'dst_y' => 550,
+                    'width' => 260,
+                    'max_line' => 1,
+                    'color' => [255,255,255],
+                    'size' => 18,
+                ],
+            ],
+            'image' => [
+                [
+                    'src' => './static/images/share.png',
+                    'dst_x' => 0,
+                    'dst_y' => 0,
+                    'dst_w' => 400,
+                    'dst_h' => 600,
+                    'radius' => 0
+                ],
+                [
+                    'src' => '二维码-data2里动态设置',
+                    'dst_x' => 50,
+                    'dst_y' => 50,
+                    'dst_w' => 300,
+                    'dst_h' => 300,
+                    'radius' => 0
+                ],
+            ]
+        ],
         'page_2' => [               //商品详情页
             'poster_w' => 400,
             'poster_h' => 570,
@@ -223,6 +266,14 @@ class PosterShare extends QrShare implements BaseShare
     }
     //首页海报取数据
     private function data1($data,$url){
+        $this->c['page_1']['image'][1]['src'] = $url;
+        if(isset($data['userShareCode']) && $data['userShareCode'] != ""){
+            $this->c['page_1']['word'][0]['string'] = "邀请码:".$data['userShareCode'];
+            $this->c['page_1']['word'][1]['string'] = "邀请码:".$data['userShareCode'];
+        }else{
+            unset($this->c['page_1']['word'][0]);
+            unset($this->c['page_1']['word'][1]);
+        }
         return true;
     }
     //商品详情页海报取数据

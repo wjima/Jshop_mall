@@ -784,7 +784,7 @@
 
 				// 客服页面
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
-				this.$common.navigateTo('../customer_service/index');
+                this.$common.navigateTo('/pages/member/customer_service/index');
 				// #endif
 
 				// 头条系客服

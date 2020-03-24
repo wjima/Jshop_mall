@@ -20,72 +20,24 @@
 				</swiper>
 			</view>
 			<!-- 轮播图end -->
-
-			<view class='cell-group'>
-				<view class='cell-item goods-top'>
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title goods-price red-price'>￥{{ product.price || '0.00' }}</view>
-						<view class='cell-hd-title goods-price cost-price' v-if="parseFloat(product.mktprice)>0">￥{{ product.mktprice  || '0.00'}}</view>
-					</view>
-					<view class='cell-item-ft'>
-						<text>{{ goodsInfo.buy_count || '0' }} 人已购买</text>
-					</view>
-				</view>
-
-				<view class='cell-item goods-details'>
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>
-							<view class="color-3 fsz28 cell-hd-title-view">
-								{{ product.name || '' }}
-							</view>
-							<text v-if="goodsInfo.brief" class="color-9 fsz24 ">
-								{{ goodsInfo.brief || '' }}
-							</text>
-						</view>
-					</view>
-					<view class='cell-item-ft'>
-						<image class='cell-ft-next icon' @click="goShare()" src='/static/image/share.png'></image>
+			<view class="time-wrap">
+				剩余时间: 18天19时57分8秒
+			</view>
+			<view class='cell-group shop-info-wrap'>
+				<view class="shop-info">
+					<view class="title"> <text class="tag">砍价</text> <text>FENDI男款军绿色牛皮手拿包</text> </view>
+					<view class="icon-wrap">
+						规则
 					</view>
 				</view>
-
-				<!-- 促销 -->
-				<view class='cell-item goods-title-item cell-item-mid' v-if="promotion.length">
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>促销</view>
-					</view>
-					<view class='cell-item-bd'>
-						<view class="romotion-tip">
-							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion"
-							 :key="index">
-								{{ item.name || ''}}
-							</view>
-						</view>
-					</view>
-				</view>
-				<!-- 促销end -->
-
-				<!-- 规格 -->
-				<view class='cell-item goods-title-item cell-item-mid' v-if="isSpes">
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>规格</view>
-					</view>
-					<view class='cell-item-bd' @click="toshow()">
-						<text class='cell-bd-text'>{{ product.spes_desc || ''}}</text>
-					</view>
-				</view>
-				<!-- 规格end -->
-
-				<view class='cell-item goods-title-item cell-item-mid' v-if="goodsShowWord && goodsShowWord != ''">
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>说明</view>
-					</view>
-					<view class='cell-item-bd'>
-						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
-							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<view class="cell-bd-text">{{item}}</view>
-						</view>
-					</view>
-				</view>
+				<view class="money">原价 <text>￥70</text> </view>
+				<view class="pep">已有34人参与砍价</view>
+			</view>
+			<view class='cell-group progress-wrap'>
+				<image 
+				style="height: 260rpx; width: 100%;"
+				src="https://demo.jihainet.com/static/uploads/images/2020/03/20/15846976615e74913d77c62.png" mode=""></image>
+				<!-- <view class="title">砍价流程</view> -->
 			</view>
 
 			<view class="goods-content">
@@ -263,8 +215,8 @@
 				<view v-if="isfav">已收藏</view>
 			</view>
 
-			<button class='btn btn-square btn-g' @click="toshow(1)" hover-class="btn-hover2">加入购物车</button>
-			<button class='btn btn-square btn-b' @click="toshow(2)" hover-class="btn-hover2">立即购买</button>
+			<button class='btn btn-square btn-g' @click="toshow(1)" hover-class="btn-hover2">直接购买</button>
+			<button class='btn btn-square btn-b' @click="toshow(2)" hover-class="btn-hover2">立即砍价</button>
 		</view>
 		<!-- 底部按钮end -->
 
@@ -554,6 +506,9 @@
 			},
 			// 显示modal弹出框
 			toshow(type) {
+				if(type == 2) {
+					return
+				}
 				this.type = type;
 				this.$refs.lvvpopref.show();
 			},
@@ -784,7 +739,7 @@
 
 				// 客服页面
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
-                this.$common.navigateTo('/pages/member/customer_service/index');
+				this.$common.navigateTo('../customer_service/index');
 				// #endif
 
 				// 头条系客服
@@ -844,6 +799,56 @@
 </script>
 
 <style>
+	.time-wrap {
+		text-align: center;
+		height: 50rpx;
+		line-height: 50rpx;
+		font-size: 20rpx;
+		color: #FFFFFF;
+		background: linear-gradient(left, #ff7058, #fb3642);
+		/* background: ; */
+	}
+	.shop-info-wrap {
+		padding: 20rpx;
+		
+	}
+	.shop-info-wrap .shop-info {
+		display: flex;
+		justify-content: space-between;
+		font-size: 22rpx;
+		margin-bottom: 30rpx;
+	}
+	.shop-info-wrap .shop-info .title {
+		display: flex;
+		align-items: center;
+	}
+	.shop-info-wrap .shop-info .title .tag {
+		background: #fb3642;
+		padding: 4rpx 15rpx;
+		color: #fff;
+		font-size: 16rpx;
+		margin-right: 5rpx;
+	}
+	.shop-info-wrap .money {
+		color: #fb3642;
+		font-size: 18rpx;
+		margin-bottom: 16rpx;
+	}
+	.shop-info-wrap .money text {
+		font-size: 28rpx;
+	}
+	.shop-info-wrap .pep {
+		font-size: 20rpx;
+	}
+	.progress-wrap {
+		margin-top: 20rpx;
+		padding: 20rpx;
+	}
+	.progress-wrap .title{
+		font-size: 20rpx;
+		padding-bottom: 20rpx;
+		border-bottom: 1rpx solid #dfdfdf;
+	}
 	.swiper {
 		height: 750upx;
 	}

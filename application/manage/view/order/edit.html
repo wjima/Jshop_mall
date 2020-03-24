@@ -70,15 +70,25 @@
 			<input type="text" id="ship_mobile" value="{$order.ship_mobile}" class="layui-input">
 		</div>
 
+		<label class="layui-form-label">订单邮费：</label>
+		<div class="layui-input-inline seller-inline-3">
+			<input type="text" id="cost_freight" value="{$order.cost_freight}" class="layui-input">
+		</div>
+
+	</div>
+
+	<div class="layui-form-item" lay-size="sm">
 		<label class="layui-form-label">订单总金额：</label>
 		{if $order_type == 1}
-			<div class="layui-input-inline seller-inline-4">
-				<input type="number" id="order_amount" value="{$order.order_amount}" class="layui-input">
-			</div>
+		<div class="layui-input-inline seller-inline-4">
+			<input type="number" id="order_amount" value="{$order.order_amount}" class="layui-input">
+		</div>
 		{else}
-			<div class="layui-form-mid seller-inline-4">{$order.order_amount}</div>
+		<div class="layui-form-mid seller-inline-4">{$order.order_amount}</div>
 		{/if}
+
 	</div>
+
 	{/if}
 	{:jshopToken()}
 	<button class="layui-btn layui-btn-fluid order-edit-btn">保存</button>
@@ -88,5 +98,16 @@
     layui.use('form', function(){
         var form = layui.form;
         form.render();
-    });
+	});
+	var old_cost_freight = parseFloat("{$order.cost_freight}");
+	var old_order_amount = parseFloat("{$order.order_amount}");
+	$("#cost_freight").on('input propertychange',function(){
+		var cost_freight = parseFloat($("#cost_freight").val());
+		var difference = old_cost_freight-cost_freight;
+		var order_amount = old_order_amount-difference;
+		$("#order_amount").val(order_amount);
+		console.log(order_amount);
+	});
+
+
 </script>

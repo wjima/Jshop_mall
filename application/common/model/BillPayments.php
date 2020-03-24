@@ -118,6 +118,7 @@ class BillPayments extends Common
      */
     protected function tableFormat($list)
     {
+        $billPaymentsRelModel = new BillPaymentsRel();
         foreach($list as $k => $v) {
             if($v['status']) {
                 $list[$k]['status'] = config('params.bill_payments')['status'][$v['status']];
@@ -134,6 +135,8 @@ class BillPayments extends Common
             if($v['type']) {
                 $list[$k]['type'] = config('params.bill_payments')['type'][$v['type']];
             }
+            $payment = $billPaymentsRelModel->where([['payment_id','=', $v['payment_id']]])->cache(86400)->find();
+            $list[$k]['source_id'] = $payment['source_id'];
         }
         return $list;
     }
@@ -506,6 +509,11 @@ class BillPayments extends Common
                 'modify'=>'convertString'
             ],
             [
+                'id' => 'source_id',
+                'desc' => '支付对象',
+                'modify'=>'convertString'
+            ],
+            [
                 'id' => 'status',
                 'desc' => '状态',
             ],
@@ -517,8 +525,6 @@ class BillPayments extends Common
                 'id' => 'type',
                 'desc' => '单据类型',
             ],
-
-
             [
                 'id' => 'user_id',
                 'desc' => '用户',
@@ -639,7 +645,7 @@ class BillPayments extends Common
         $list = $this->where($where)
             ->order('utime desc')
             ->select();
-
+        $billPaymentsRelModel = new BillPaymentsRel();
         if($list){
             $count = $this->where($where)->count();
             foreach($list as $k => $v) {
@@ -658,6 +664,8 @@ class BillPayments extends Common
                 if($v['type']) {
                     $list[$k]['type'] = config('params.bill_payments')['type'][$v['type']];
                 }
+                $payment = $billPaymentsRelModel->where([['payment_id','=', $v['payment_id']]])->cache(86400)->find();
+                $list[$k]['source_id'] = $payment['source_id'];
             }
             $return_data = [
                 'status' => true,

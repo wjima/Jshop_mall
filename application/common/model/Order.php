@@ -1015,6 +1015,9 @@ class Order extends Common
             if ($data['order_amount']) {
                 $update['order_amount'] = $data['order_amount'];
             }
+            if (isset($data['cost_freight']) && $data['cost_freight']!='') {
+                $update['cost_freight'] = $data['cost_freight'];
+            }
         } elseif ($data['edit_type'] == 2) {
             $update['store_id'] = $data['store_id'];
             $update['ship_name'] = $data['ship_name'];
@@ -1931,7 +1934,7 @@ class Order extends Common
                 $i++;
                 $orderItems = $this->orderItems($val['order_id']);
                 $itemData = [];
-                foreach ($header as $hk => $hv) {
+                /*foreach ($header as $hk => $hv) {
                     if (isset($hv['modify']) && isset($val[$hv['id']]) && $val[$hv['id']]) {
                         if (function_exists($hv['modify'])) {
                             $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
@@ -1941,10 +1944,11 @@ class Order extends Common
                     } else {
                         $body[$i][$hk] = '';
                     }
-                }
+                }*/
 
                 foreach ($orderItems as $itemKey => $itemVal) {
                     $i++;
+                    $sval = $val;
                     $sval['item_name'] = $itemVal['name'] . '-' . $itemVal['addon'];
                     $sval['item_price'] = $itemVal['price'];
                     $sval['item_nums'] = $itemVal['nums'];

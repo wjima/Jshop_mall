@@ -316,7 +316,7 @@
                     window_box = layer.open({
                         type: 1,
                         title: '编辑订单',
-                        area: setpage(660,280), //宽高
+                        area: setpage(660,350), //宽高
                         content: e.data
                     });
                 } else {
@@ -335,6 +335,7 @@
             var ship_name = $("#ship_name").val();
             var ship_mobile = $("#ship_mobile").val();
             var order_amount = $("#order_amount").val();
+            var cost_freight = $("#cost_freight").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
 
             JsPost('{:url("order/edit")}', {
@@ -346,6 +347,7 @@
                 'ship_name': ship_name,
                 'ship_mobile': ship_mobile,
                 'order_amount': order_amount,
+                'cost_freight': cost_freight,
                 __Jshop_Token__:__Jshop_Token__
             }, function(e){
                 layer.close(window_box);

@@ -320,7 +320,7 @@ class Wx
             //有这个二维码了
             $return['status'] = true;
             $return['msg'] = '二维码获取成功';
-            $return['data'] = $filename;
+            $return['data'] = Request::root(true).'/'.$filename;
         }
         else
         {

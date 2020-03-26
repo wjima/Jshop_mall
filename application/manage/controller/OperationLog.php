@@ -58,9 +58,10 @@ class OperationLog extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => '后台操作日志默认不让删除',
             'data' => ''
         ];
+        return $result;
 
         $ids = input('ids/a', []);
         if(!$ids)

@@ -159,8 +159,8 @@ class BillReship extends Common
             foreach ($items as $key => $val) {
                 $goodsRes = $goodsModel->changeStock($val['product_id'], 'return', $val['nums']);
                 if (!$goodsRes['status']) {
-                    return $goodsRes;
                     Db::rollback();
+                    return $goodsRes;
                 }
             }
         }

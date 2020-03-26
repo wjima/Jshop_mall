@@ -337,9 +337,10 @@
 			}
 			this.formId = id
 			this.$db.set('formId', id)
+			this.getFormDetail()
 		},
 		onShow() {
-			this.getFormDetail()
+			
 		},
 		methods: {
 			// 省市区联动初始化

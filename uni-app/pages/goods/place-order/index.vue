@@ -622,10 +622,10 @@
             },
             // 去支付
             toPay (e) {
-				if (this.submitStatus) {
-				    return false;
-				}
-				this.submitStatus = true;
+		if(this.submitStatus){
+		    return false;
+		}
+		this.submitStatus = true;
                 let receiptType = 1;
                 if(this.type_current != 0){
                     receiptType = 2;

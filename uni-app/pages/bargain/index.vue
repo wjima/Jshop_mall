@@ -103,7 +103,7 @@
 }
 page {
 	/* background: url('~@/static/image/bg-bargain.png') no-repeat center center; */
-	background: url('https://demo.jihainet.com/static/uploads/images/2020/03/20/15846972345e748f92c0a17.png') no-repeat center center;
+	/* background: url('https://demo.jihainet.com/static/uploads/images/2020/03/20/15846972345e748f92c0a17.png') no-repeat center center; */
 }
 .red {
 	color: #fe4949;
@@ -116,6 +116,7 @@ page {
 	padding: 0 20rpx;
 	background: #fff;
 	padding: 15rpx 20rpx 30rpx 20rpx;
+	margin-top: 20rpx;
 }
 .shop-wrap .shop-title {
 	display: flex;

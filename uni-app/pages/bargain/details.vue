@@ -34,10 +34,17 @@
 				<view class="pep">已有34人参与砍价</view>
 			</view>
 			<view class='cell-group progress-wrap'>
-				<image 
-				style="height: 260rpx; width: 100%;"
-				src="https://demo.jihainet.com/static/uploads/images/2020/03/20/15846976615e74913d77c62.png" mode=""></image>
-				<!-- <view class="title">砍价流程</view> -->
+				<view class="title">砍价流程</view>
+				<view class="progress-step">
+					<view :class="[ `step${idx + 1}`, 'step']"  v-for="(item, idx) in stepArr " :key="idx">
+						<view class="step-top">
+							<image src="/static/images/step1.png" style="width: 100%; height: 60rpx;" mode=""></image>
+							<text>{{idx + 1}}</text>
+							<image src="/static/images/step2.png" style="width: 100%; height: 60rpx;" mode=""></image>
+						</view>
+						<view class="step-desc">{{item}}</view>
+					</view>
+				</view>
 			</view>
 
 			<view class="goods-content">
@@ -286,6 +293,7 @@
 		},
 		data() {
 			return {
+				stepArr: ['选择心仪商品', '邀请好友砍价', '砍到低价后支付'],
 				swiper: {
 					indicatorDots: true,
 					autoplay: true,
@@ -1387,8 +1395,48 @@
 		top: 45rpx;
 		left: 50%;
 		transform: translateX(-50%);
-
 	}
 
 	/* #endif */
+	
+	.progress-step {
+		display: flex;
+		padding: 10rpx 0;
+	}
+	.progress-step .step {
+		flex: 1;
+		text-align: center;
+		font-size: 20rpx;
+	}
+	.progress-step .step-top {
+		display: flex;
+		align-items: center;
+	}
+	.progress-step .step-top text {
+		display: inline-block;
+		width: 32rpx;
+		height: 32rpx;
+		border-radius: 50%;
+		background: #999;
+		flex: 0 0 32rpx;
+		text-align: center;
+		line-height: 32rpx;
+		color: #fff;
+		font-size: 24rpx;
+	}
+	.step1 .step-top image:first-child{
+		visibility: hidden;
+	}
+	.step3 .step-top image:last-child {
+		visibility: hidden;
+	}
+	.progress-step .step-desc {
+		color: #bdbdbd;
+	}
+	.progress-step .step1.step,.progress-step .step1.step .step-desc {
+		color: #e66650;
+	}
+	.progress-step .step1.step text{
+		background: #e66650;
+	}
 </style>

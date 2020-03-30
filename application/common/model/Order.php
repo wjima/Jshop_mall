@@ -59,6 +59,7 @@ class Order extends Common
 
     const ORDER_TYPE_COMMON = 1;            //订单类型，1普通订单，严格按照cart模型里的type_common字段来设置，是一一对应的
     const ORDER_TYPE_PINTUAN = 2;           //订单类型，2拼团订单
+    const ORDER_TYPE_LOTTERY = 3;           //订单类型，3抽奖订单
 
 
     /**

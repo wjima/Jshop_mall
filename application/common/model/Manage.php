@@ -14,13 +14,14 @@ class Manage extends Common
 
     protected $rule = [
         'username' => 'length:3,20|alphaDash',
-        'mobile'   => ['regex' => '^1[3|4|5|6|7|8][0-9]\d{4,8}$'],
+        'mobile'   => 'require|mobile',
         'nickname' => 'length:2,50',
     ];
     protected $msg = [
         'username.length'    => '用户名长度6~20位',
         'username.alphaDash' => '用户名只能是字母、数字或下划线组成',
-        'mobile'             => '请输入一个合法的手机号码',
+        'mobile.mobile'             => '请输入一个合法的手机号码',
+        'mobile.require'        => '手机号码必填',
         'nickname'           => '昵称长度为2-50个字符',
     ];
 

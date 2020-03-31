@@ -161,6 +161,12 @@
 	    "navigationBarTitleText": "修改密码"
 	  }
 	},
+	{
+	  "path": "pages/member/setting/user_info/resetpassword",
+	  "style": {
+	    "navigationBarTitleText": "重置密码"
+	  }
+	},
     {
       "path": "pages/member/integral/index",
       "style": {

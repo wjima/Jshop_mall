@@ -10,6 +10,14 @@
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
+				<view class='cell-item' @click="navigateToHandle('./user_info/resetpassword')">
+					<view class='cell-item-hd'>
+						<view class='cell-hd-title'>重置密码</view>
+					</view>
+					<view class='cell-item-ft'>
+						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
+					</view>
+				</view>
 				<view class='cell-item' @click="navigateToHandle('./user_info/password')">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>修改密码</view>

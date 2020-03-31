@@ -22,6 +22,8 @@ class Cart extends Common
 {
     const TYPE_COMMON = 1;      //普通模式          //这些都是系统内置的type类型，如果二开新增购物车类型的话，建议从二位数开始
     const TYPE_PINTUAN = 2;      //拼团模式
+    const TYPE_GROUP = 3;      //团购模式
+    const TYPE_SKILL = 4;      //秒杀模式
 
 
     /**
@@ -75,32 +77,7 @@ class Cart extends Common
         $cat_info = $this->where($where)->find();
         switch ($type) {
             case self::TYPE_COMMON:
-                //标准模式不需要做什么判断
-                //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion)) {
-                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                    $delwhere[] = ['user_id', 'eq', $user_id];
-                    $delWhere[] = ['type', 'eq', 1];
-                    $delWhere[] = ['product_id', 'eq', $product_id];
-                    $this->where($delWhere)->delete();
-                    unset($cat_info);
 
-                    $params      = json_decode($promotion['params'], true);
-                    $orderModel  = new Order();
-                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion);
-                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
-                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
-                            $result['msg'] = '该商品已超过当前活动最大购买量';
-                            return $result;
-                        }
-                    }
-                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
-                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
-                            $result['msg'] = '您已超过该活动最大购买量';
-                            return $result;
-                        }
-                    }
-                }
                 break;
             case self::TYPE_PINTUAN:
                 $num_type = 2;
@@ -116,12 +93,64 @@ class Cart extends Common
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
+            case self::TYPE_GROUP:
+                //判断商品是否做团购秒杀
+                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion, self::TYPE_GROUP)) {
+                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
+                    $delwhere[] = ['user_id', 'eq', $user_id];
+                    $delWhere[] = ['type', 'eq', self::TYPE_GROUP];
+                    $delWhere[] = ['product_id', 'eq', $product_id];
+                    $this->where($delWhere)->delete();
+
+
+                    $params      = json_decode($promotion['params'], true);
+                    $orderModel  = new Order();
+                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion, self::TYPE_GROUP);
+                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
+                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
+                            $result['msg'] = '该商品已超过当前活动最大购买量';
+                            return $result;
+                        }
+                    }
+                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
+                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
+                            $result['msg'] = '您已超过该活动最大购买量';
+                            return $result;
+                        }
+                    }
+                    unset($cat_info);
+                }
+                break;
+            case self::TYPE_SKILL:
+                //判断商品是否做团购秒杀
+                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion, self::TYPE_SKILL)) {
+                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
+                    $delwhere[] = ['user_id', 'eq', $user_id];
+                    $delWhere[] = ['type', 'eq', self::TYPE_SKILL];
+                    $delWhere[] = ['product_id', 'eq', $product_id];
+                    $this->where($delWhere)->delete();
+
+                    $params      = json_decode($promotion['params'], true);
+                    $orderModel  = new Order();
+                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion,self::TYPE_SKILL);
+                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
+                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
+                            $result['msg'] = '该商品已超过当前活动最大购买量';
+                            return $result;
+                        }
+                    }
+                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
+                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
+                            $result['msg'] = '您已超过该活动最大购买量';
+                            return $result;
+                        }
+                    }
+                    unset($cat_info);
+                }
+                break;
             default:
                 return error_code(10000);
         }
-
-
-
 
         if ($cat_info) {
             if ($num_type == 1) {
@@ -251,6 +280,12 @@ class Cart extends Common
                     return $result;
                 }
                 break;
+            case self::TYPE_GROUP:
+                //团购模式不需要修改订单数据和商品数据
+                break;
+            case self::TYPE_SKILL:
+                //秒杀模式不需要修改订单数据和商品数据
+                break;
             default:
                 return error_code(10000);
         }
@@ -345,8 +380,10 @@ class Cart extends Common
         if ($order_type == self::TYPE_COMMON) {
             $promotionModel = new Promotion();
             $result['data'] = $promotionModel->toPromotion($result['data']);
+        }elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
+            $promotionModel = new Promotion();
+            $result['data'] = $promotionModel->toPromotion($result['data'],$order_type);
         }
-
 
         //使用优惠券，判断优惠券是否可用
         if (!$this->cartCoupon($result, $coupon_code)) {

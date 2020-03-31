@@ -59,8 +59,11 @@ class Order extends Common
 
     const ORDER_TYPE_COMMON = 1;            //订单类型，1普通订单，严格按照cart模型里的type_common字段来设置，是一一对应的
     const ORDER_TYPE_PINTUAN = 2;           //订单类型，2拼团订单
-    const ORDER_TYPE_LOTTERY = 3;           //订单类型，3抽奖订单
-    const ORDER_TYPE_BARGAIN = 4;           //订单类型，4砍价订单
+
+    const ORDER_TYPE_GROUP = 3;           //订单类型，3团购
+    const ORDER_TYPE_SKILL = 4;           //订单类型，4秒杀
+    const ORDER_TYPE_LOTTERY = 5;           //订单类型，5抽奖订单
+    const ORDER_TYPE_BARGAIN = 6;           //订单类型，6砍价订单
 
 
     /**
@@ -1471,6 +1474,10 @@ class Order extends Common
                         return $pt_re;
                     }
                     break;
+                case self::ORDER_TYPE_GROUP:
+                    break;
+                case self::ORDER_TYPE_SKILL:
+                    break;
                 default:
                     Db::rollback();
                     return error_code(10000);
@@ -2162,7 +2169,6 @@ class Order extends Common
                 ->where($where)
                 ->sum('oi.nums');
         }
-
 
         $return['msg'] = '查询成功';
         $return['data'] = [

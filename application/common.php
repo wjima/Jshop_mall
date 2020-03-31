@@ -1057,16 +1057,17 @@ function isInGroup($gid = 0, &$promotion_id = 0,&$condition = [])
     $promotion = new app\common\model\Promotion();
 
     $where[]   = ['p.status', 'eq', $promotion::STATUS_OPEN];
+    /*
     $where[]   = ['p.stime', 'lt', time()];
-    $where[]   = ['p.etime', 'gt', time()];
-    $where[]   = ['pc.params', 'like', '%"' . $gid . '"%'];
+    $where[]   = ['p.etime', 'gt', time()];*/
+    $where[]   = ['gg.goods_id', '=',  $gid];
     $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
-    $condition = $promotion->field('p.id as id,p.params as params,p.stime as stime,p.etime as etime')
+    $condition = $promotion->field('p.id as id,p.type,p.status,p.params as params,p.stime as stime,p.etime as etime')
         ->alias('p')
         ->join('promotion_condition pc', 'pc.promotion_id = p.id')
+        ->join('group_goods gg', 'gg.rule_id = p.id')
         ->where($where)
         ->find();
-
     if ($condition) {
         $promotion_id = $condition['id'];
         return true;

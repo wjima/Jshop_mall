@@ -33,14 +33,14 @@ class Products extends Common
      */
     public function doAdd($data = [])
     {
-        $stock      = isset($data['stock']) ? $data['stock'] : 0;
+        $stock = isset($data['stock']) ? $data['stock'] : 0;
         unset($data['stock']);
         $product_id = $this->allowField(true)->insertGetId($data);
 
         $where[] = ['id', '=', $product_id];
         if ($stock != 0) { //增加库存
-            $exp = Db::raw('cast(stock as signed) + ' . $stock . '>= 0');
-            $where[]      = [0, 'exp', $exp];
+            $exp     = Db::raw('cast(stock as signed) + ' . $stock . '>= 0');
+            $where[] = [0, 'exp', $exp];
             $this->where($where)->setInc('stock', $stock);
         }
 
@@ -56,21 +56,16 @@ class Products extends Common
         return $this->hasOne('Goods', 'id', 'goods_id');
     }
 
-
     /**
      * 根据货品ID获取货品信息
      * @param $id
-     * @param int $user_id
-     * @param array $where
-     * @param bool $isPromotion 默认是true，如果为true的时候，就去算此商品的促销信息，否则，就不算
-     * @param string $token 默认空，传后取会员等级优惠价
+     * @param bool|true $isPromotion 默认是true，如果为true的时候，就去算此商品的促销信息，否则，就不算
+     * @param int $user_id 默认0，传后取会员等级优惠价
+     * @param string $type goods:商品 pintuan:拼团 group:团购 skill:秒杀 bargain:砍价
      * @return array
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
     public function getProductInfo($id, $isPromotion = true, $user_id = 0, $type = 'goods')
     {
@@ -115,8 +110,8 @@ class Products extends Common
 
             //设置on的效果
             $productSpesDesc = getProductSpesDesc($product['spes_desc']);
-            foreach ((array) $spesDesc as $k => $v) {
-                foreach ((array) $v as $j) {
+            foreach ((array)$spesDesc as $k => $v) {
+                foreach ((array)$v as $j) {
                     $defaultSpec[$k][$j]['name'] = $j;
                     if ($productSpesDesc[$k] == $j) {
                         $defaultSpec[$k][$j]['is_default'] = true;
@@ -193,7 +188,15 @@ class Products extends Common
                 ]
             ];
             $promotionModel = new Promotion();
-            $cart           = $promotionModel->toPromotion($miniCart);
+            $promotion_type = $promotionModel::TYPE_PROMOTION;
+            if ($type == 'group') {
+                $promotion_type = $promotionModel::TYPE_GROUP;
+            } elseif ($type == 'skill') {
+                $promotion_type = $promotionModel::TYPE_SKILL;
+            } else {
+                //todo 其它类型
+            }
+            $cart = $promotionModel->toPromotion($miniCart, $promotion_type);
 
             //把促销信息和新的价格等，覆盖到这里
             $promotionList = $cart['promotion_list'];
@@ -214,15 +217,15 @@ class Products extends Common
         if ($type == 'pintuan') {
             //把拼团的一些属性等加上
             $pintuanGoodsModel = new PintuanGoods();
-            $pwhere[] = ['pg.goods_id', 'eq', $product['goods_id']];
-            $info    = $pintuanGoodsModel
+            $pwhere[]          = ['pg.goods_id', 'eq', $product['goods_id']];
+            $info              = $pintuanGoodsModel
                 ->alias('pg')
                 ->join('pintuan_rule pr', 'pg.rule_id = pr.id')
                 ->where($pwhere)
                 ->find();
             //调整前台显示数量
             $orderModel  = new Order();
-            $check_order = $orderModel->findLimitOrder($product['id'], $user_id, $info);
+            $check_order = $orderModel->findLimitOrder($product['id'], $user_id, $info, $orderModel::ORDER_TYPE_PINTUAN);
             if (isset($info['max_goods_nums']) && $info['max_goods_nums'] != 0) {
                 //活动销售件数
                 $product['stock']             = $info['max_goods_nums'] - $check_order['data']['total_orders'];
@@ -230,7 +233,7 @@ class Products extends Common
             } else {
                 $product['buy_pintuan_count'] = $check_order['data']['total_orders'];
             }
-        } elseif ($type == 'group') {
+        } elseif ($type == 'group' || $type == 'skill') {
             if (!isInGroup($product['goods_id'], $group_id)) {
                 $result['msg'] = '获取失败';
                 return $result;
@@ -239,9 +242,14 @@ class Products extends Common
             $where['status'] = $promotionModel::STATUS_OPEN;
             $groupPromotion  = $promotionModel->where($where)->find();
             $extendParams    = json_decode($groupPromotion['params'], true);
+
             //调整前台显示数量
-            $orderModel  = new Order();
-            $check_order = $orderModel->findLimitOrder($product['id'], $user_id, $groupPromotion);
+            $orderModel = new Order();
+            $order_type = $orderModel::ORDER_TYPE_GROUP;
+            if ($extendParams['type'] == $promotionModel::TYPE_SKILL) {
+                $order_type = $orderModel::ORDER_TYPE_SKILL;
+            }
+            $check_order = $orderModel->findLimitOrder($product['id'], $user_id, $groupPromotion, $order_type);
             if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
                 //活动销售件数
                 $product['stock']               = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];
@@ -267,9 +275,9 @@ class Products extends Common
         $where[] = ['id', '=', $product_id];
         if ($stock != 0) {
             //$this->where($where)->setInc('stock', $stock);
-            $exp = Db::raw('cast(stock as signed) + ' . $stock . '>= 0');
-            $where[]      = [0, 'exp', $exp];
-            $re = $this->where($where)->setInc('stock', $stock);
+            $exp     = Db::raw('cast(stock as signed) + ' . $stock . '>= 0');
+            $where[] = [0, 'exp', $exp];
+            $re      = $this->where($where)->setInc('stock', $stock);
             if (!$re) {
                 $res = false;
             }
@@ -295,11 +303,11 @@ class Products extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '商品已下架',
-            'data' => ''
+            'msg'    => '商品已下架',
+            'data'   => ''
         ];
 
-        $where[] = ['p.id', 'eq', $products_id];
+        $where[]        = ['p.id', 'eq', $products_id];
         $return['data'] = $this->alias('p')
             ->field('p.id,g.marketable')
             ->join('goods g', 'g.id = p.goods_id')
@@ -308,7 +316,7 @@ class Products extends Common
 
         if ($return['data'] && $return['data']['marketable'] == 1) {
             $return['status'] = true;
-            $return['msg'] = '上架';
+            $return['msg']    = '上架';
         }
 
         return $return;

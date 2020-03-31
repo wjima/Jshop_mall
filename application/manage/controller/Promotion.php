@@ -3,6 +3,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\GroupGoods;
 use app\common\model\Promotion as PromotionModel;
 use app\common\model\PromotionCondition;
 use app\common\model\PromotionResult;
@@ -597,12 +598,32 @@ class Promotion extends Manage
             if (isset($params['salesnum']) && !$params['salesnum']) {
                 $params['salesnum'] = rand(1, 10);
             }
-            $data['params'] = json_encode($params);
-            $promotionModel = new PromotionModel();
+            $data['params']  = json_encode($params);
+            $promotionModel  = new PromotionModel();
+            $groupGoodsModel = new GroupGoods();
             //保存或更新促销条件商品
 
             $conditionModel->where(['promotion_id' => $id])->delete();
-            $goods_id      = input('post.goods_id');
+            $goods_id   = input('post.goods_id');
+            $goods_ids  = explode(',', $goods_id);
+            $groupGoods = [];
+
+            foreach ($goods_ids as $gid) {
+                //判断商品是否在促销中，如果存在不允许保存
+                $goods = $groupGoodsModel->checkInActivity($gid,$id);
+                if ($goods) {
+                    $result = [
+                        'status' => false,
+                        'data'   => 0,
+                        'msg'    => '商品：' . $goods['goods_name'] . '已在未结束的活动'.$goods['name'].'中，请勿重复添加！'
+                    ];
+                    return $result;
+                }
+                $groupGoods[] = [
+                    'goods_id' => $gid,
+                    'rule_id'  => $id
+                ];
+            }
             $conditionData = [
                 'promotion_id' => $id,
                 'code'         => 'GOODS_IDS',
@@ -612,6 +633,11 @@ class Promotion extends Manage
             if (!$conditionRes['status']) {
                 return $conditionRes;
             }
+            //保存到关系表中
+
+            $groupGoodsModel->where([['rule_id', '=', $info['id']]])->delete();
+
+            $groupGoodsModel->saveAll($groupGoods);
             $id = $promotionModel->where($where)->update($data);
             return [
                 'status' => true,
@@ -638,6 +664,8 @@ class Promotion extends Manage
             return error_code(10002);
         }
         if ($promotionModel::destroy($info['id'])) {
+            $groupGoodsModel = new GroupGoods();
+            $groupGoodsModel->where([['rule_id', '=', $info['id']]])->delete();
             return [
                 'status' => true,
                 'data'   => '',

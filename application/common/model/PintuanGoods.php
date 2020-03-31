@@ -149,7 +149,7 @@ class PintuanGoods extends Common
 
         //调整前台显示数量
         $orderModel  = new Order();
-        $check_order = $orderModel->findLimitOrder($goodsInfo['data']['product']['id'], 0, $info);
+        $check_order = $orderModel->findLimitOrder($goodsInfo['data']['product']['id'], 0, $info,$orderModel::ORDER_TYPE_PINTUAN);
         if (isset($info['max_goods_nums']) && $info['max_goods_nums'] != 0) {
             $goodsInfo['data']['stock'] = $info['max_goods_nums'];
             //活动销售件数

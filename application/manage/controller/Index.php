@@ -119,7 +119,7 @@ class Index extends Manage
             $request         = input('param.');
             $promotionModel  = new Promotion();
             $request['type'] = [$promotionModel::TYPE_GROUP, $promotionModel::TYPE_SKILL];
-            return $promotionModel->tableData($request);
+            return $promotionModel->tableGroupData($request);
         } else {
             return $this->fetch('tagSelectGroup');
         }

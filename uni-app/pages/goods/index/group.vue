@@ -17,7 +17,7 @@
 
 			<view class="cell-group">
 				<!-- 倒计时 -->
-				<view class="price-salesvolume" v-if="lasttime.hour !== false">
+				<view class="price-salesvolume" v-if="goodsInfo.activity_status">
 					<view class="commodity-price">
 						<text class="current-price">￥{{ product.price || '0.00' }}</text>
 						<text class="cost-price" v-if="parseFloat(product.mktprice) > 0">￥{{ product.mktprice || '0.00' }}</text>
@@ -27,11 +27,14 @@
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
 					<view class="commodity-time-img"></view>
-					<view class="commodity-time">
-						<text>距结束仅剩</text>
-						<view class="commodity-day">
-							<uni-countdown :show-day="false" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+					<view class="commodity-time" >
+						<text v-if="goodsInfo.activity_status=='1'">活动即将开始</text>
+						<text v-if="goodsInfo.activity_status=='2'">距结束仅剩</text>
+						<text v-if="goodsInfo.activity_status=='3'">活动已结束</text>
+						<view class="commodity-day" v-if="goodsInfo.activity_status=='2' || goodsInfo.activity_status=='1' || goodsInfo.activity_status=='3' ">
+							<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
 						</view>
+						
 					</view>
 				</view>
 				<!-- 倒计时end -->
@@ -265,14 +268,14 @@
 				<view v-if="!isfav">收藏</view>
 				<view v-if="isfav">已收藏</view>
 			</view>
-
 			<view class="goods-bottom-ic" @click="redirectCart">
 				<view class="badge color-f" v-if="cartNums">{{ cartNums || '' }}</view>
 				<image class="icon" src="/static/image/ic-me-car.png" mode=""></image>
 				<view>购物车</view>
 			</view>
-
-			<button class="btn btn-square btn-b tl" @click="toshow(2)" hover-class="btn-hover2">立即{{ typeName || '' }}</button>
+			<button class="btn btn-square btn-b tl btn-hover2"  v-if="goodsInfo.activity_status =='1' ">即将开始</button>
+			<button class="btn btn-square btn-b tl btn-hover2"  v-else-if="goodsInfo.activity_status =='3' ">已结束</button>
+			<button class="btn btn-square btn-b tl" @click="toshow(2)" hover-class="btn-hover2" v-else>立即{{ typeName || '' }}</button>
 		</view>
 		<!-- 底部按钮end -->
 
@@ -553,9 +556,10 @@ export default {
 			let index = obj.v;
 			let key = obj.k;
 			if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index][key].product_id) {
+				let type = this.goodsInfo.group_type == 3 ? 'group' : 'skill';
 				let data = {
 					id: this.product.default_spes_desc[index][key].product_id,
-					type: 'group' //商品类型
+					type: type //商品类型
 				};
 				let userToken = this.$db.get('userToken');
 				if (userToken) {
@@ -678,17 +682,18 @@ export default {
 		},
 		// 立即购买
 		buyNow() {
+			let order_type = this.goodsInfo.group_type == 3 ? 3 : 4;
 			if (this.buyNum > 0) {
 				let data = {
 					product_id: this.product.id,
 					nums: this.buyNum,
-					order_type: 1
+					order_type: order_type
 				};
 				this.$api.addCart(data, res => {
 					if (res.status) {
 						this.toclose();
 						let cartIds = res.data;
-						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds));
+						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=' +order_type);
 					} else {
 						this.$common.errorToShow(res.msg);
 					}

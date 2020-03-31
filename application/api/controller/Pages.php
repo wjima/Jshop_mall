@@ -20,7 +20,7 @@ class Pages extends Api
         ];
         $input['page_code'] = input('code/s', 'mobile_home');
         $pageModel          = new \app\common\model\Pages();
-        $result             = $pageModel->getDetails($input['page_code']);
+        $result             = $pageModel->getDetails($input['page_code'],'',true);
         return $result;
     }
 

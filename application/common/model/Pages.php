@@ -69,7 +69,7 @@ class Pages extends Common
      * @param string $token
      * @return array
      */
-    public function getDetails($page_code, $token = '')
+    public function getDetails($page_code, $token = '',$api = false)
     {
         $result          = [
             'status' => true,
@@ -77,9 +77,14 @@ class Pages extends Common
             'data'   => [],
         ];
         $pageModel       = new Pages();
-        $pageinfo        = $pageModel->where([['code', '=', $page_code]])->find();
         $pagesItemsModel = new PagesItems();
-        $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
+        if($api){
+            $pageinfo        = $pageModel->where([['code', '=', $page_code]])->cache(86400)->find();
+            $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->cache(86400)->select();
+        }else{
+            $pageinfo        = $pageModel->where([['code', '=', $page_code]])->find();
+            $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
+        }
         if ($data->isEmpty()) {
             $result['msg'] = '请先配置该页面';
             return $result;
@@ -144,7 +149,7 @@ class Pages extends Common
                     if (isset($data[$i]['params']['list']) && $data[$i]['params']['list']) {
                         foreach ((array)$data[$i]['params']['list'] as $k => $v) {
                             if (isset($v['goods_id']) && $v['goods_id']) {
-                                $goods = $promotion->getGroupDetial($v['goods_id'], $token);
+                                $goods = $promotion->getGroupDetial($v['goods_id'], $token,'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
                                 if ($goods['status']) {
                                     $data[$i]['params']['list'][$k] = $goods['data'];
                                 } else {

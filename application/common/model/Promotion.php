@@ -319,9 +319,10 @@ class Promotion extends Common
      * 获取团购&秒杀商品详情
      * @param int $goods_id 商品id
      * @param string $token 登录信息
+     * @param string $fields 查询字段
      * @return array
      */
-    public function getGroupDetial($goods_id = 0, $token = '')
+    public function getGroupDetial($goods_id = 0, $token = '',$fields = '*')
     {
         $result = [
             'status' => false,
@@ -340,7 +341,7 @@ class Promotion extends Common
         if ($condition['type'] == self::TYPE_SKILL) {
             $goods_type = 'skill';
         }
-        $goods = $goodsModel->getGoodsDetial($goods_id, '*', $token, $goods_type);
+        $goods = $goodsModel->getGoodsDetial($goods_id, $fields, $token, $goods_type);
 
         if (!$goods['data']) {
             $result['msg'] = '商品不存在';
@@ -451,7 +452,7 @@ class Promotion extends Common
         } else {
             $limit = config('paginate.list_rows');
         }
-        $tableWhere = $this->tableWhere($post);
+        $tableWhere = $this->tableGroupWhere($post);
 
         $list = $this
             ->alias("pr")
@@ -461,7 +462,7 @@ class Promotion extends Common
             ->where($tableWhere['where'])
             ->order($tableWhere['order'])
             ->paginate($limit);
-        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        $data = $this->tableGroupFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
 
         $re['code']  = 0;
         $re['msg']   = '';
@@ -469,5 +470,68 @@ class Promotion extends Common
         $re['data']  = $data;
         return $re;
     }
+
+    /**
+     * 根据查询结果，格式化数据
+     * @author sin
+     * @param $list  array格式的collection
+     * @return mixed
+     */
+    protected function tableGroupFormat($list)
+    {
+        foreach ($list as $k => $v) {
+            if ($v['stime']) {
+                $list[$k]['stime'] = getTime($v['stime']);
+            }
+            if ($v['etime']) {
+                $list[$k]['etime'] = getTime($v['etime']);
+            }
+            if(isset($v['goods_image_id']) && $v['goods_image_id']){
+                $list[$k]['image_url'] = _sImage($v['goods_image_id']);
+
+            }
+            //            if($v['status']){
+            //                $list[$k]['status'] = config('params.promotion.status')[$v['status']];
+            //            }
+            //            if($v['exclusive']){
+            //                $list[$k]['exclusive'] = config('params.promotion.exclusive')[$v['exclusive']];
+            //            }
+        }
+        return $list;
+    }
+
+
+    protected function tableGroupWhere($post)
+    {
+
+        $where = [];
+        if (is_array($post['type'])) {
+            $where[] = ['pr.type', 'in', $post['type']];
+        } else {
+            $where[] = ['pr.type', 'eq', $post['type']];
+        }
+
+        if (isset($post['name']) && $post['name'] != "") {
+            $where[] = ['g.name', 'like', '%' . $post['name'] . '%'];
+        }
+        if (isset($post['pr.status']) && $post['status'] != "") {
+            $where[] = ['pr.status', 'eq', $post['status']];
+        }
+        if (isset($post['pr.exclusive']) && $post['exclusive'] != "") {
+            $where[] = ['pr.exclusive', 'eq', $post['exclusive']];
+        }
+        if (input('?param.date')) {
+            $theDate = explode(' 到 ', input('param.date'));
+            if (count($theDate) == 2) {
+                $where[] = ['pr.stime', '<', strtotime($theDate[1])];
+                $where[] = ['pr.etime', '>', strtotime($theDate[0])];
+            }
+        }
+        $result['where'] = $where;
+        $result['field'] = "*";
+        $result['order'] = ['pr.stime' => 'desc']; //默认最新添加靠前，排序越小越靠前
+        return $result;
+    }
+
 
 }

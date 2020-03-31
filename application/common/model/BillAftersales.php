@@ -123,7 +123,7 @@ class BillAftersales extends Common
             foreach($list as $v){
                 if(!isset($reship_goods[$v['order_items_id']])){
                     $reship_goods[$v['order_items_id']] = [
-                        'reship_nums' => 0,                         //售后商品数量，包含申请中和审核通过的
+                        'reship_nums' => 0,                         //售后商品数量
                         'reship_nums_ed' => 0,                      //已发货的商品进行退货的数量
                     ];
                 }
@@ -281,36 +281,22 @@ class BillAftersales extends Common
         $orderInfo = $re['data']['orderInfo'];
 
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
-        $verify = $this->verify($info['type'], $orderInfo, $refund,$items);
+        $verify = $this->verify($type, $orderInfo, $refund,$items);
         if (!$verify['status'] && $status == self::STATUS_SUCCESS) {
             return $verify;
         }
 
-        $orderModel = new Order();
-        //如果订单未发货，那么用户不能选择已收到货
-        if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
-            return error_code(13227);
-        }
-
-        //如果是退货单，必须选择退货明细
-        if ($info['type'] == self::TYPE_RESHIP && !$items) {
-            return error_code(13205);
-        }
-        //如果是退货，判断退货明细，数量是否超出可退的数量
+        //根据退货的明细，生成售后单明细表的数据
         if ($items) {
             $aftersalesItems = $this->formatAftersalesItems($orderInfo, $items, $info['aftersales_id']);
             if (!$aftersalesItems['status']) {
                 return $aftersalesItems;
             }
+        }else{
+            $aftersalesItems['data'] = [];
         }
 
-        //判断退款金额不能超了
-        if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
-            return error_code(13206);
-        }
-
-
-
+        $orderModel = new Order();
         Db::startTrans();
         try {
             $where['aftersales_id'] = $aftersales_id;
@@ -353,11 +339,46 @@ class BillAftersales extends Common
                 //更新订单状态
 
                 //如果是退款，退完了就变成已退款并且订单类型变成已完成，如果未退完，就是部分退款
-                if (($refund + $orderInfo['refunded']) == $orderInfo['payed']) {
-                    $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
-                    $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
-                }else{
-                    $order_data['pay_status'] = $orderModel::PAY_STATUS_PARTIAL_NO;
+                //判断退款金额不能超
+                if($refund > 0){
+                    if (($refund + $orderInfo['refunded']) == $orderInfo['payed']) {
+                        $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
+                        $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
+                    }else{
+                        $order_data['pay_status'] = $orderModel::PAY_STATUS_PARTIAL_NO;
+                    }
+                }
+
+
+                //判断货物发完没，如果货已发完了，订单发货就变成已发货,为了判断在有退款的情况下，当
+                $all_deliveryed = true;     //商品该发货状态，默认发货了,为了判断部分发货的情况下，的订单发货状态
+                $no_deliveryed = true;      //是否都没发货,默认都没发货
+                $all_sened = true;          //商品退货状态（所有退货，包含已发的退货和未发的退货），默认都退货了,为了判断都退了的话，订单状态变成已完成
+                foreach ($orderInfo['items'] as $k => $v) {
+                    if (isset($items[$v['id']])) {
+                        $v['reship_nums'] += $items[$v['id']];      //把本次退货数量加上去
+                        if($type == self::TYPE_RESHIP){
+                            $v['reship_nums_ed'] += $items[$v['id']];
+                        }
+                    }
+                    //有任何商品发货，都不是未发货状态
+                    if($no_deliveryed && ($v['sendnums'] > 0)){
+                        $no_deliveryed = false;
+                    }
+                    if ($all_deliveryed && ($v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']) > 0)) {
+                        //说明该发货的商品没发完
+                        $all_deliveryed = false;
+                    }
+                    if ($all_sened && ($v['reship_nums'] < $v['nums'])) {
+                        //说明未退完商品
+                        $all_sened = false;
+                    }
+                }
+                if ($all_deliveryed && !$no_deliveryed) {
+                    $order_data['ship_status'] = $orderModel::SHIP_STATUS_YES;
+                }
+                if ($all_sened) {
+                    $order_data['status'] = $orderModel::ORDER_STATUS_COMPLETE;
                 }
 
                 //未发货的商品库存调整,如果订单未发货或者部分发货，并且用户未收到商品的情况下，需要解冻冻结库存
@@ -366,34 +387,13 @@ class BillAftersales extends Common
                     $type == self::TYPE_REFUND &&
                     $aftersalesItems['data']
                 ){
+                    //未发货商品解冻库存
                     $goodsModel = new Goods();
                     foreach ($aftersalesItems['data'] as $key => $val) {
                         $goodsModel->changeStock($val['product_id'], 'refund', $val['nums']);
                     }
                 }
 
-
-                //已发货的商品库存调整，如果是订单已发货或部分发货的时候，并且用户收到商品的情况下的处理
-                if (
-                    ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_YES || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
-                    $type == self::TYPE_RESHIP
-                ){
-                    //判断货物退完了没有，如果货已发完了，订单就已完成
-                    $all_sened = true;
-                    foreach ($orderInfo['items'] as $k => $v) {
-                        if (isset($items[$v['id']])) {
-                            $v['reship_nums'] += $items[$v['id']];      //把本次退货数量加上去，然后再判断是否已经退完货了
-                        }
-                        if ($v['reship_nums'] < $v['nums']) {
-                            //说明未退完商品
-                            $all_sened = false;
-                            break;
-                        }
-                    }
-                    if ($all_sened) {
-                        $order_data['status'] = $orderModel::ORDER_STATUS_COMPLETE;
-                    }
-                }
                 $orderModel->where(['order_id' => $orderInfo['order_id'], 'status' => $orderModel::ORDER_STATUS_NORMAL])->data($order_data)->update();
             }
 
@@ -451,8 +451,6 @@ class BillAftersales extends Common
             $orderInfo['items'][$k]['the_reship_nums'] = 0;
             foreach($info['items'] as $i => $j){
                 if($v['id'] == $j['order_items_id']){
-                    if($info['type'] == self::TYPE_RESHIP){
-                    }
                     $orderInfo['items'][$k]['the_reship_nums'] = $j['nums'];
                 }
             }
@@ -492,9 +490,6 @@ class BillAftersales extends Common
         if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
             return error_code(13227);
         }
-
-        
-
 
 
         //判断退款金额不能超
@@ -555,9 +550,9 @@ class BillAftersales extends Common
             foreach ($orderInfo['items'] as $v) {
                 if ($v['id'] == $oi_id) {
                     //判断已经退过的加上本次退的，是否超过了购买的数量,具体取nums（购买数量）还是取sendnums(已发货数量),以后再说吧。要取购买数量，因为未发货的，也可以退的
-                    if ($num + $v['reship_nums'] > $v['nums']) {
-                        return error_code(13201);
-                    }
+//                    if ($num + $v['reship_nums'] > $v['nums']) {
+//                        return error_code(13201);
+//                    }
                     $row['aftersales_id']  = $aftersales_id;
                     $row['order_items_id'] = $v['id'];
                     $row['goods_id']       = $v['goods_id'];

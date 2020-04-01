@@ -226,8 +226,9 @@ export default {
 							}
 						}		
 						this.items = res.data.items;
-						
-						this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
+	
+						this.refund = this.$common.moneySum((res.data.order_amount - res.data.refunded),0);
+						//this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.maxRefund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.cost_freight = res.data.cost_freight;//运费
 						this.refund_show = res.data.payed - res.data.refunded;

@@ -20,10 +20,12 @@ class GroupGoods extends Common
      */
     public function checkInActivity($goods_id = 0, $promotion_id = 0)
     {
+        $promotionModel = new Promotion();
         $where   = [];
         $where[] = ['gg.goods_id', '=', $goods_id];
         $where[] = ['pr.etime', '>', time()];
         $where[] = ['pr.id', 'neq', $promotion_id];
+        $where[] = ['pr.type', 'in', [$promotionModel::TYPE_GROUP,$promotionModel::TYPE_SKILL]];
         $goods   = $this
             ->alias("gg")
             ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")

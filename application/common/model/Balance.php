@@ -194,34 +194,34 @@ class Balance extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['user_id']) && $post['user_id'] != "" )
-        {
+        if (isset($post['user_id']) && $post['user_id'] != "") {
             $where[] = ['user_id', 'eq', $post['user_id']];
-        }
-        else
-        {
-            if(isset($post['mobile']) && $post['mobile'] != "")
-            {
-                if($user_id = get_user_id($post['mobile']))
-                {
+        } else {
+            if (isset($post['mobile']) && $post['mobile'] != "") {
+                if ($user_id = get_user_id($post['mobile'])) {
                     $where[] = ['user_id', 'eq', $user_id];
-                }
-                else
-                {
+                } else {
                     $where[] = ['user_id', 'eq', '99999999'];   //如果没有此用户，那么就赋值个数值，让他查不出数据
                 }
             }
         }
-        if(isset($post['type']) && $post['type'] != "")
-        {
+        if (isset($post['nickname']) && $post['nickname'] != "") {
+            $userModel = new User();
+            $user_list = $userModel->where([['nickname', 'like', '%' . $post['nickname'] . '%']])->field('id')->select();
+            if (!$user_list->isEmpty()) {
+                $user_list = $user_list->toArray();
+                $user_ids  = array_column($user_list, 'id');
+                $where[]   = ['user_id', 'in', $user_ids];
+            }
+        }
+        if (isset($post['type']) && $post['type'] != "") {
             $where[] = ['type', 'eq', $post['type']];
         }
-        if(isset($post['datetime']) && $post['datetime'] != "")
-        {
+        if (isset($post['datetime']) && $post['datetime'] != "") {
             $datetime = explode(' 到 ', $post['datetime']);
-            $sd = strtotime($datetime[0].' 00:00:00');
-            $ed = strtotime($datetime[1].' 23:59:59');
-            $where[] = ['ctime', 'BETWEEN', [$sd, $ed]];
+            $sd       = strtotime($datetime[0] . ' 00:00:00');
+            $ed       = strtotime($datetime[1] . ' 23:59:59');
+            $where[]  = ['ctime', 'BETWEEN', [$sd, $ed]];
         }
         $result['where'] = $where;
         $result['field'] = "*";

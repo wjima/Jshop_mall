@@ -307,7 +307,7 @@ class BillDelivery extends Common
             $where[] = ['d.ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
         }
         $res = $this->alias('d')
-            ->field('d.*')
+            ->field('d.*,r.order_id')
             ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
             ->where($where)
             ->group('r.delivery_id')
@@ -418,6 +418,7 @@ class BillDelivery extends Common
             [
                 'id' => 'logi_no',
                 'desc' => '快递单号',
+                'modify' => 'convertString'
             ],
             [
                 'id' => 'ship_address',
@@ -513,35 +514,40 @@ class BillDelivery extends Common
             'data' => '',
             'count' => 0
         ];
+
         $where = [];
-
-        if (isset($input['id']) && $input['id'] != "") {
-            $where[] = ['delivery_id', 'in', $input['id']];
-        }
-
         if ($input['delivery_id']) {
-            $where[] = ['delivery_id', 'like', '%' . $input['delivery_id'] . '%'];
+            $where[] = ['d.delivery_id', 'like', '%' . $input['delivery_id'] . '%'];
+        }
+        if ($input['order_id']) {
+            $where[] = ['r.order_id', 'like', '%' . $input['order_id'] . '%'];
+        }
+        if ($input['logi_no']) {
+            $where[] = ['d.logi_no', 'like', '%' . $input['logi_no'] . '%'];
+        }
+        if ($input['mobile']) {
+            $where[] = ['d.ship_mobile', 'like', '%' . $input['mobile'] . '%'];
         }
         if ($input['date']) {
             $date = explode(' 到 ', $input['date']);
-            $where[] = ['ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
+            $where[] = ['d.ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
         }
-        if ($input['order_id']) {
-            $where[] = ['order_id', 'like', '%' . $input['order_id'] . '%'];
-        }
-        if ($input['logi_no']) {
-            $where[] = ['logi_no', 'like', '%' . $input['logi_no'] . '%'];
-        }
-        if ($input['mobile']) {
-            $where[] = ['ship_mobile', 'like', '%' . $input['mobile'] . '%'];
-        }
-
-        $res = $this->where($where)
+        $res = $this->alias('d')
+            ->field('d.*,r.order_id')
+            ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
+            ->where($where)
+            ->group('r.delivery_id')
             ->order('ctime desc')
             ->select();
 
         if ($res) {
-            $count = $this->where($where)->count();
+
+            $count = $this->alias('d')
+                ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
+                ->group('r.delivery_id')
+                ->where($where)
+                ->count();
+
             foreach ($res as $k => &$v) {
                 if(isset($v['user_id']) && $v['user_id']){
                     $v['username'] = get_user_info($v['user_id'], 'nickname');

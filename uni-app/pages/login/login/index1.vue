@@ -4,7 +4,7 @@
 		<view>
 			<view class="login-m">
 				<view class="login-item">
-					<input type="number" v-model="mobile" :maxlength="maxMobile" placeholder="请输入手机号码" placeholder-class="login-item-i-p fsz26" />
+					<input type="text" v-model="mobile"  placeholder="请输入手机号码或账号" placeholder-class="login-item-i-p fsz26" />
 				</view>
 				<view class="login-item flc">
 					<input class="login-item-input" :password="true" placeholder-class="login-item-i-p fsz26" type="text" v-model="pwd" placeholder="请输入密码" />
@@ -93,7 +93,7 @@ export default {
 	computed: {
 		// 动态更改登录按钮bg
 		loginButtonClass() {
-			return this.mobile && this.mobile.length === 11 && this.pwd ? this.btnb + ' btn-b' : this.btnb;
+			return this.mobile && this.mobile.length > 0 && this.pwd ? this.btnb + ' btn-b' : this.btnb;
 		},
 		logoImage() {
 			return this.$store.state.config.shop_logo;
@@ -128,12 +128,13 @@ export default {
 		},
 		// 登录处理
 		loginHandler() {
-			if (this.mobile && this.mobile.length === 11 && this.pwd) {
-				if (!this.rightMobile().status) {
-					this.$common.errorToShow(this.rightMobile().msg);
-				} else {
-					this.toLogin();
-				}
+			if (this.mobile && this.mobile.length > 0 && this.pwd) {
+				this.toLogin();
+				// if (!this.rightMobile().status) {
+				// 	this.$common.errorToShow(this.rightMobile().msg);
+				// } else {
+				// 	this.toLogin();
+				// }
 			}
 		},
 		// 获取验证码图片地址

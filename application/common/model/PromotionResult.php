@@ -82,6 +82,7 @@ class PromotionResult extends Common
                         if($v['is_select']){
                             //设置总的商品促销金额
                             $cart['goods_pmt'] = bcadd($cart['goods_pmt'], $promotionMoney, 2);
+                            $cart['goods_amount'] = bcsub($cart['goods_amount'], $promotionMoney, 2);
                             //设置总的价格
                             $cart['amount'] = bcsub($cart['amount'], $promotionMoney, 2);
                             //优惠券商品促销金额也加到订单上面，让这个字段标示实际的优惠金额

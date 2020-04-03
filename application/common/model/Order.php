@@ -358,6 +358,7 @@ class Order extends Common
             ->leftJoin('order_items oi', 'oi.order_id = o.order_id')
             ->order('o.ctime desc')
             ->page($page, $limit)
+            ->group('order_id')
             ->select();
         /*$data = $this::with('items')->where($where)
             ->order('ctime desc')
@@ -368,6 +369,7 @@ class Order extends Common
             ->field('o.*')
             ->alias('o')
             ->leftJoin('order_items oi', 'oi.order_id = o.order_id')
+            ->group('order_id')
             ->count();
         return ['data' => $data, 'count' => $count];
     }

@@ -339,21 +339,35 @@ class Order extends Common
     {
         $where = [];
         if (!empty($input['status'])) {
-            $where = $this->getReverseStatus($input['status']);
+            $where = $this->getReverseStatus($input['status'], 'o.');
         }
         if (!empty($input['user_id'])) {
-            $where[] = ['user_id', 'eq', $input['user_id']];
+            $where[] = ['o.user_id', 'eq', $input['user_id']];
         }
 
-        $page = $input['page'] ? $input['page'] : 1;
+        if (!empty($input['keyword'])) {
+            $where[] = ['o.order_id|oi.bn|oi.name|o.ship_mobile', 'LIKE', '%' . $input['keyword'] . '%'];
+        }
+
+        $page  = $input['page'] ? $input['page'] : 1;
         $limit = $input['limit'] ? $input['limit'] : 20;
 
         $data = $this::with('items')->where($where)
-            ->order('ctime desc')
+            ->field('o.*')
+            ->alias('o')
+            ->leftJoin('order_items oi', 'oi.order_id = o.order_id')
+            ->order('o.ctime desc')
             ->page($page, $limit)
             ->select();
+        /*$data = $this::with('items')->where($where)
+            ->order('ctime desc')
+            ->page($page, $limit)
+            ->select();*/
 
-        $count = $this->where($where)
+        $count = $this::with('items')->where($where)
+            ->field('o.*')
+            ->alias('o')
+            ->leftJoin('order_items oi', 'oi.order_id = o.order_id')
             ->count();
         return ['data' => $data, 'count' => $count];
     }

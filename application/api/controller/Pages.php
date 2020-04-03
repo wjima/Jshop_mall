@@ -76,7 +76,7 @@ class Pages extends Api
         if ($type == 'home') {
             //数据库里面随机取出来几条数据
             $orderModel = new Order();
-            $orders     = $orderModel->order('ctime desc')->field('order_id,user_id,ctime')->limit(0, 5)->select();
+            $orders     = $orderModel->order('ctime','desc')->field('order_id,user_id,ctime')->limit(0, 5)->select();
             if (!$orders->isEmpty()) {
                 $order     = $orders[rand(0, 4)];
                 $info      = [];
@@ -89,9 +89,13 @@ class Pages extends Api
                         'ctime'    => time_ago($order['ctime']),
                         'desc'     => '下单成功',
                     ];
+                    $return['status'] = true;
+                    $return['msg'] = '获取成功';
                 }
             } else {
                 $return['data'] = $randUser[rand(0, 4)];
+                $return['status'] = true;
+                $return['msg'] = '获取成功';
             }
         }
         return $return;

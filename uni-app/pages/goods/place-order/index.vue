@@ -105,7 +105,7 @@
 			<view class='cell-group'>
 				<view class='cell-item'>
 					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>优惠券</view>
+						<view class='cell-hd-title' style="min-width: 100rpx;">优惠券</view>
 					</view>
 					<view class='cell-item-ft'>
 						<text class="cell-ft-p" @click="toshow()">{{ usedCouponsCompute || ''}}</text>
@@ -273,7 +273,37 @@
 									<button class="btn btn-b">确认</button>
 								</view>
 							</view>
-								<view class="coupon-list" v-for="(item,index) in inputCouArr" :key="index">
+							<view class="coupon-c-item" v-for="(item,index) in inputCouArr" :key="index">
+								<view class="cci-l">
+									<view class="cci-l-c color-f">
+										coupon
+									</view>
+								</view>
+									
+								<view class="cci-r">
+									<view class="cci-r-c">
+										<view class="ccirc-b" style="padding: 20rpx 10rpx;">
+											<view class="ccirc-b-l">
+												<view class="ccirc-b-tip" style="margin-bottom: 40rpx;">
+														{{ item.name || ''}}
+												</view>
+												<view class="ccirc-b-time color-9">
+													{{item.code}}
+												</view>
+											</view>
+											<view class="ccirc-b-r color-f"
+												  @click="removeCouponCode(item.code)"
+											>
+												取消使用
+											</view>
+										</view>
+									</view>
+								</view>
+							</view>
+								<!-- <view class="coupon-list" v-for="(item,index) in inputCouArr" :key="index">
+									<view class="cci-l-c color-f">
+										coupon
+									</view>
 									<view class="coupon-item">
 										<view class="color-6 fsz28 coupon-name">
 											{{item.name}}
@@ -285,7 +315,7 @@
 											<image src="/static/image/del.png" mode=""></image>
 										</view>
 									</view>
-								</view>
+								</view> -->
 							</scroll-view>
 						</view>
 					</view>
@@ -624,10 +654,11 @@
                 })
                 if (this.userCoupons[index].checked) {
                     // 使用
-										this.params.coupon_code = arr.join()
-										// if(this.params.coupon_code){
-										// 	this.params.coupon_code += ','+arr.join()
-										// }
+										if(this.params.coupon_code){
+											this.params.coupon_code += ','+arr.join()
+										}else{
+											this.params.coupon_code = arr.join()
+										}
                 } else {
                     // 取消使用
                     let paramsCodes = this.params.coupon_code.split(',')
@@ -659,6 +690,7 @@
                     item.checked = false
                 }) // 取消所有选中的使用状态
                 this.params.coupon_code = ''	// 清空params优惠券码
+								this.inputCouArr=[] //清空优惠券码列表
             },
             // 移除/取消使用中的指定优惠券
             removeCouponCode (code, current) {
@@ -1171,12 +1203,15 @@
 		margin-bottom: 20rpx;
 		position: relative;
 	}
-	.coupon-name,.coupon-code1{
+	.coupon-name{
+		padding: 10rpx 34rpx 10rpx 10rpx;
+	}
+	.coupon-code1{
 		padding: 10rpx;
 	}
 	.delete{
 		position: absolute;
-		top: 0;
+		top: 10rpx;
 		right: 0;
 	}
 	.delete image{

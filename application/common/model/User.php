@@ -141,85 +141,67 @@ class User extends Common
 
         $userInfo = $this->where(array('mobile' => $data['mobile']))->find();
         if (!$userInfo) {
-            //判断是否传token了，如果传了，就说明是此手机号码绑定到此user_id下
-            if(isset($data['token'])){
-                $userTokenModel = new UserToken();
-                $result = $userTokenModel->checkToken($data['token']);
-                if(!$result['status']){
-                    return error_code(14007);
-                }else{
-                    $this->userId = $result['data']['user_id'];
-                }
-                $userInfo = $this->where('id',$result['data']['user_id'])->find();
-                if($userInfo){
-                   //把手机号码绑定到当前用户上
-                    $userInfo->mobile = $data['mobile'];
-                    $userInfo->save();
-                }
-            }else{
-                //没有此用户，创建此用户
-                $userData['mobile'] = $data['mobile'];
+            //没有此用户，创建此用户
+            $userData['mobile'] = $data['mobile'];
 
-                //判断是否是小程序里的微信登陆，如果是，就查出来记录，取他的头像和昵称
-                if (isset($data['user_wx_id'])) {
-                    $user_wx_info = $userWxModel->where(['id' => $data['user_wx_id']])->find();
-                    if ($user_wx_info) {
-                        if (!isset($data['avatar'])) {
-                            $data['avatar'] = $user_wx_info['avatar'];
-                        }
-                        if (!isset($data['nickname'])) {
-                            $data['nickname'] = $user_wx_info['nickname'];
-                        }
+            //判断是否是小程序里的微信登陆，如果是，就查出来记录，取他的头像和昵称
+            if (isset($data['user_wx_id'])) {
+                $user_wx_info = $userWxModel->where(['id' => $data['user_wx_id']])->find();
+                if ($user_wx_info) {
+                    if (!isset($data['avatar'])) {
+                        $data['avatar'] = $user_wx_info['avatar'];
+                    }
+                    if (!isset($data['nickname'])) {
+                        $data['nickname'] = $user_wx_info['nickname'];
                     }
                 }
-                //如果没有头像和昵称，那么就取系统头像和昵称吧
-                if (isset($data['avatar'])) {
-                    $userData['avatar'] = $data['avatar'];
+            }
+            //如果没有头像和昵称，那么就取系统头像和昵称吧
+            if (isset($data['avatar'])) {
+                $userData['avatar'] = $data['avatar'];
+            } else {
+                $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+                $userData['avatar'] = _sImage('');
+            }
+            if (isset($data['nickname'])) {
+                $userData['nickname'] = $data['nickname'];
+            } else {
+                $userData['nickname'] = format_mobile($data['mobile']);
+            }
+            if (isset($data['invitecode']) && $data['invitecode']) {
+                $pid   = $this->getUserIdByShareCode($data['invitecode']);
+                $pinfo = model('common/User')->where(['id' => $pid])->find();
+                if ($pinfo) {
+                    $userData['pid'] = $pid;
                 } else {
-                    $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-                    $userData['avatar'] = _sImage('');
+                    error_code(10014);
                 }
-                if (isset($data['nickname'])) {
-                    $userData['nickname'] = $data['nickname'];
-                } else {
-                    $userData['nickname'] = format_mobile($data['mobile']);
-                }
-                if (isset($data['invitecode']) && $data['invitecode']) {
-                    $pid   = $this->getUserIdByShareCode($data['invitecode']);
-                    $pinfo = model('common/User')->where(['id' => $pid])->find();
-                    if ($pinfo) {
-                        $userData['pid'] = $pid;
-                    } else {
-                        error_code(10014);
-                    }
-                }
-
-                $userData['ctime'] = time();
-                if (isset($data['password'])) {
-                    //判断密码是否符合要求
-                    if (!isset($data['password'][5]) || isset($data['password'][16])) {
-                        return error_code(11009);
-                    }
-                    $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
-                }else{
-                    $userData['password'] = "";
-                }
-
-                //取默认的用户等级
-                $userGradeModel = new UserGrade();
-                $userGradeInfo  = $userGradeModel->where('is_def', $userGradeModel::IS_DEF_YES)->find();
-                if ($userGradeInfo) {
-                    $userData['grade'] = $userGradeInfo['id'];
-                }
-
-
-                $user_id = $this->insertGetId($userData);
-                if (!$user_id) {
-                    return error_code(10000);
-                }
-                $userInfo = $this->where(array('id' => $user_id))->find();
             }
 
+            $userData['ctime'] = time();
+            if (isset($data['password'])) {
+                //判断密码是否符合要求
+                if (!isset($data['password'][5]) || isset($data['password'][16])) {
+                    return error_code(11009);
+                }
+                $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
+            }else{
+                $userData['password'] = "";
+            }
+
+            //取默认的用户等级
+            $userGradeModel = new UserGrade();
+            $userGradeInfo  = $userGradeModel->where('is_def', $userGradeModel::IS_DEF_YES)->find();
+            if ($userGradeInfo) {
+                $userData['grade'] = $userGradeInfo['id'];
+            }
+
+
+            $user_id = $this->insertGetId($userData);
+            if (!$user_id) {
+                return error_code(10000);
+            }
+            $userInfo = $this->where(array('id' => $user_id))->find();
         } else {
             //如果有这个账号的话，判断一下是不是传密码了，如果传密码了，就是注册，这里就有问题，因为已经注册过
             if (isset($data['password'])) {

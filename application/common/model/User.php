@@ -87,7 +87,6 @@ class User extends Common
         if ($userInfo) {
             if ($userInfo['status'] == self::STATUS_NORMAL) {
                 $result = $this->setSession($userInfo, $loginType, $platform);            //根据登陆类型，去存session，或者是返回user_token
-                hook('loginAfter',$userInfo);//登录后事件
             } else {
                 return error_code(11022);
             }
@@ -215,7 +214,6 @@ class User extends Common
 
         if ($userInfo['status'] == self::STATUS_NORMAL) {
             $result = $this->setSession($userInfo, $loginType, $platform);            //根据登陆类型，去存session，或者是返回user_token
-            hook('loginAfter',$userInfo);//登录后事件
         } else {
             return error_code(11022);
         }

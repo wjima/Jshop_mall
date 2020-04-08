@@ -50,6 +50,14 @@ class Demo extends Addons
         }
         return true;
     }
+    public function apiAddonsConf($obj){
+        $data = [
+            'key'=>'3',
+            'val' =>'yxq'
+        ];
+        $obj->data[$this->info['name']] = $data;
+        return true;
+    }
 
     public function config($params = [])
     {

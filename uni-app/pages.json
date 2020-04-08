@@ -466,6 +466,12 @@
     	"style": {
     		"navigationBarTitleText": "消息订阅"
     	}
+    },
+    {
+    	"path" : "pages/login/mobile/index",
+    	"style": {
+    		"navigationBarTitleText": "绑定手机号"
+    	}
     }
     ],
   "globalStyle": {

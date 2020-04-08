@@ -171,7 +171,7 @@ export default {
 						// 绑定手机号
 						if (res.data === '11027') {
 							this.$db.set('userToken', res.token);
-							this.$common.redirectTo("/pages/login/mobile/index")
+							this.$common.navigateTo("/pages/login/mobile/index")
 						}
 						// 需要输入验证码 或者 验证码错误刷新
 						if (res.data === 10013 || res.data === 10012) {
@@ -209,6 +209,7 @@ export default {
 		},
 		// 第三方登录授权
 		handleThirdLogin(url) {
+			// console.log(url);
 			this.$common.redirectTo('');
 			let redirect = this.$store.state.redirectPage;
 			this.$db.set('redirectPage', redirect);

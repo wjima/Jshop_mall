@@ -247,6 +247,11 @@ class User extends Common
             $result['msg'] = '短信验证码错误';
             return $result;
         }
+        //校验手机号码是否已经绑定用户
+        $info = $this->where('mobile',$mobile)->find();
+        if($info){
+            return error_code(11028);
+        }
 
         $userInfo = $this->where('id',$user_id)->find();
         if ($userInfo) {

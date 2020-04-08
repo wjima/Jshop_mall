@@ -71,6 +71,17 @@ class User extends Api
         return $userModel->smsLogin($data, 2, $platform);
     }
 
+    public function bindMobile(){
+        $userModel = new UserModel();
+        if (!input('?param.mobile')){
+            return error_code(11051);
+        }
+        if (!input('?param.code')) {
+            return error_code(10013);
+        }
+        return $userModel->bindMobile($this->userId,input('param.mobile'), input('param.code'));
+    }
+
 
     /**
      * 微信小程序创建用户，不登陆，只是保存登录态

@@ -224,6 +224,47 @@ class User extends Common
     }
 
     /**
+     * 用户绑定新手机号码，当没有绑定手机号码，又必须绑定的时候，会报11027错误码，然后需要请求这个接口绑定手机号码，也可以做更改手机号码的接口
+     * @param $user_id
+     * @param $mobile
+     * @param $code
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function bindMobile($user_id,$mobile,$code)
+    {
+        $result = array(
+            'status' => false,
+            'data'   => '',
+            'msg'    => ''
+        );
+        //判断是否是用户名登陆
+        $smsModel    = new Sms();
+
+        if (!$smsModel->check($mobile, $code, 'bind')) {
+            $result['msg'] = '短信验证码错误';
+            return $result;
+        }
+        //校验手机号码是否已经绑定用户
+        $info = $this->where('mobile',$mobile)->find();
+        if($info){
+            return error_code(11028);
+        }
+
+        $userInfo = $this->where('id',$user_id)->find();
+        if ($userInfo) {
+            $userInfo->mobile = $mobile;
+            $userInfo->save();
+            $result['status'] = true;
+            return $result;
+        } else {
+            return error_code(10000);
+        }
+    }
+
+    /**
      * 登陆注册的时候，发送短信验证码
      */
     public function sms($mobile, $code)
@@ -236,13 +277,11 @@ class User extends Common
 
         $userInfo = $this->where(array('mobile' => $mobile))->find();
         if ($code == 'reg') {
-            //注册
+            //注册，目前暂时没有走注册流程，注册和登陆是一样的接口，都是login，这里要尤其注意
             if ($userInfo) {
                 $result['msg'] = '此账号已经注册过，请直接登陆';
                 return $result;
             }
-            $code = 'login';        //手机短信注册和手机短信登陆是一个接口，所以，在这要换算成login，详见smsLogin方法
-
             //判断账号状态
 //            if($userInfo->status != self::STATUS_NORMAL) {
 //                $result['msg'] = '此账号已停用';
@@ -252,6 +291,8 @@ class User extends Common
             //登陆
         } elseif ($code === 'veri') {
             // 找回密码
+        } elseif ($code === 'bind') {
+            // 账户绑定手机号码
         } else {
             //其他业务逻辑
             $result['msg'] = '无此业务类型';

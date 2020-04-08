@@ -110,7 +110,7 @@ export default {
 				this.$common.loadToShow('发送中...');
 				setTimeout(() => {
 					this.$common.loadToHide();
-					this.$api.sms({ mobile: this.mobile, code: 'reg' }, res => {
+					this.$api.sms({ mobile: this.mobile, code: 'login' }, res => {
 						if (res.status) {
 							this.timer = 60;
 							this.verification = false;

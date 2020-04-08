@@ -17,6 +17,10 @@ return [
                 'code' => 'smsLogin',
                 'is_login' => false
             ],
+            'bindMobile' => [
+                'code' => 'bindMobile',
+                'is_login' => true
+            ],
             'wxapplogin1' => [
                 'code' => 'wxappLogin1',
                 'is_login' => false

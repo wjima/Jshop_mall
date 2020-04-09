@@ -153,6 +153,7 @@ class Index extends Manage
             $userModel = new User();
             return $userModel->tableData($request);
         } else {
+            $this->assign('grade',input('grade',''));
             return $this->fetch('tagSelectUser');
         }
     }

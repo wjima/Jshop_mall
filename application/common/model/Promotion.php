@@ -37,9 +37,14 @@ class Promotion extends Common
         $list    = $this->where($where)->order('sort', 'asc')->select();
         foreach ($list as $v) {
             $this->setPromotion($v, $cart);
-            //如果排他，就跳出循环，不执行下面的促销了
-            if ($v['exclusive'] == self::EXCLUSIVE_YES) {
-                break;
+            //团购秒杀不排他
+            if(self::TYPE_GROUP||self::TYPE_SKILL){
+
+            }else{
+                //如果排他，就跳出循环，不执行下面的促销了
+                if ($v['exclusive'] == self::EXCLUSIVE_YES) {
+                    break;
+                }
             }
         }
         return $cart;

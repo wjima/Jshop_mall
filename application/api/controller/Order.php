@@ -252,6 +252,7 @@ class Order extends Api
             'status'  => Request::param('status'),
             'page'    => Request::param('page'),
             'limit'   => Request::param('limit'),
+            'keyword' => Request::param('keyword'),
             'user_id' => $this->userId
         ];
         $model = new orderModel();

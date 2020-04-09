@@ -294,7 +294,7 @@ class UserWx extends Common
             $info->save();
         }
 
-        //到这里，如果没有用户id，就需要去绑定手机号码了。
+        //到这里，如果没有用户id，就需要去绑定user了。
         if ($info->user_id == 0) {
             //未绑定用户，需要先绑定手机号码
             $result['status'] = true;

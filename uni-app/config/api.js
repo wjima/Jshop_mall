@@ -842,3 +842,6 @@ export const share = (data, callback) => post('user.share', data, callback);
 
 //统一分享解码
 export const deshare = (data, callback) => post('user.deshare', data, callback);
+
+//绑定手机号
+export const bindMobile = (data, callback) => post('user.bindMobile', data, callback);

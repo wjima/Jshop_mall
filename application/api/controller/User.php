@@ -60,7 +60,7 @@ class User extends Api
      * code         手机验证码，必填
      * invitecode   邀请码，推荐人的邀请码 选填
      * password     注册的时候，可以传密码 选填
-     * user_wx_id   第三方登录，微信公众号里的登陆，微信小程序登陆等需要绑定账户的时候，要传这个参数，这是第一次的时候需要这样绑定，以后就不需要了  选填
+     * user_wx_id   第三方账号，绑定当前已有账号，第三方登录，微信公众号里的登陆，微信小程序登陆等需要绑定账户的时候，要传这个参数，这是第一次的时候需要这样绑定，以后就不需要了  选填
      * @return array
      */
     public function smsLogin()
@@ -69,6 +69,17 @@ class User extends Api
         $userModel = new UserModel();
         $data = input('param.');
         return $userModel->smsLogin($data, 2, $platform);
+    }
+
+    public function bindMobile(){
+        $userModel = new UserModel();
+        if (!input('?param.mobile')){
+            return error_code(11051);
+        }
+        if (!input('?param.code')) {
+            return error_code(10013);
+        }
+        return $userModel->bindMobile($this->userId,input('param.mobile'), input('param.code'));
     }
 
 

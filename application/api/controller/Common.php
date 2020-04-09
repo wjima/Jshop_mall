@@ -11,6 +11,7 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\Area;
 use app\common\controller\Base;
+use think\facade\Hook;
 
 
 /**
@@ -135,7 +136,7 @@ class Common extends Api
         return $conf;
     }
 
-    //插件列表
+    //插件配置列表，插件是否开启，也通过此接口判断
     public function addons(){
         $result = [
             'status' => true,
@@ -147,5 +148,4 @@ class Common extends Api
         $result['data'] = $obj->data;
         return $result;
     }
-
 }

@@ -44,5 +44,19 @@ return [
                 'sort' => 100
             ]
         ]
+    ],
+    'api' => [
+        'title' => '插件对外的接口都放到这里，接口请求的时候，会来此判断是否存在此控制器和方法,类似/config/api/api.php',
+        'value' => [
+            'api' => [      //控制器名称，可以随便起名，不过此控制器集成的基类一定要注意，不要写错了
+                'code'   => 'Api',
+                'method' => [
+                    'zouqi' => [
+                        'code'     => 'jshop',
+                        'is_login' => true
+                    ]
+                ]
+            ]
+        ]
     ]
 ];

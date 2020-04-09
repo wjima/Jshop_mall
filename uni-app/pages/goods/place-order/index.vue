@@ -599,8 +599,8 @@
                             // 优惠券不符合使用规则		15014
                             // 优惠券不可使用多张			15015
 														//同一类优惠券只能用一张  11255
-                            let errStatus = [15009, 15010, 15013, 15014, 15015,11255]
-                            if (errStatus.indexOf(res.data.user_id) !== -1) { 
+                            // let errStatus = [15009, 15010, 15013, 15014, 15015,11255]
+                            // if (errStatus.indexOf(res.data) !== -1) { 
                                 // 删除使用的优惠券号码
                                 if (this.current === 1) {
                                     this.removeCouponCode(this.inputCouponCode, this.current)
@@ -615,7 +615,7 @@
                                     }
                                     this.removeCouponCode(this.optCoupon, this.current)
                                 }
-                            }
+                            // }
                         })
                     }
                 })
@@ -654,11 +654,14 @@
                 })
                 if (this.userCoupons[index].checked) {
                     // 使用
-										if(this.params.coupon_code){
-											this.params.coupon_code += ','+arr.join()
-										}else{
-											this.params.coupon_code = arr.join()
-										}
+										this.params.coupon_code = arr.join()
+										// if(this.params.coupon_code){
+										// 	// console.log(this.params.coupon_code);
+										// 	this.params.coupon_code += ','+arr.join()
+										// 	// console.log(this.params.coupon_code);
+										// }else{
+										// 	this.params.coupon_code = arr.join()
+										// }
                 } else {
                     // 取消使用
                     let paramsCodes = this.params.coupon_code.split(',')

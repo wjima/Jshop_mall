@@ -19,7 +19,10 @@ class Api extends Base
         parent::initialize();
         //配置统一入口，只让访问init方法
         if(request()->module()!= 'api' || request()->controller() != 'Index' || request()->action() != 'index'){
-            die('error');
+            if(!(request()->module() == 'api' && request()->controller() == 'Common')){     //这个if是为了兼容api/Common控制器可以直接访问，为了向下兼容
+                die('error');
+            }
+
         }
     }
 

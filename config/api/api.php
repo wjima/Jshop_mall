@@ -736,7 +736,7 @@ return [
                 'code' => 'area',
                 'is_login' => false
             ],
-            'areaChildren' => [
+            'areachildren' => [
                 'code' => 'areaChildren',
                 'is_login' => false
             ],
@@ -744,13 +744,13 @@ return [
                 'code' => 'verify',
                 'is_login' => false
             ],
-            'jshopConf' => [
+            'jshopconf' => [
                 'code' => 'jshopConf',
                 'is_login' => false
             ],
-            'jshopAddons' => [
+            'jshopaddons' => [
                 'code' => 'addons',
-                'js_login' => false
+                'is_login' => false
             ]
         ]
     ]

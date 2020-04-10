@@ -4,13 +4,13 @@
 		<view>
 			<view class="login-m">
 				<view class="login-item">
-					<input type="text" v-model="mobile"  placeholder="请输入手机号码或账号" placeholder-class="login-item-i-p fsz26" />
+					<input type="text" v-model="mobile"  placeholder="请输入手机号码或账号" placeholder-class="login-item-i-p fsz26" style="width: 100%" />
 				</view>
 				<view class="login-item flc">
 					<input class="login-item-input" :password="true" placeholder-class="login-item-i-p fsz26" type="text" v-model="pwd" placeholder="请输入密码" />
 				</view>
 				<view class="login-item" v-if="isCaptcha">
-					<input class="login-item-input" placeholder-class="login-item-i-p fsz26" type="text" v-model="captcha" placeholder="输入验证码" />
+					<input class="login-item-input" placeholder-class="login-item-i-p fsz26" type="text" v-model="captcha" placeholder="输入验证码" style="width: 100%"/>
 					<img class="codeimg" :src="captchaUrl" alt="" />
 				</view>
 				<view class="goforgetpwd color-9 fsz24" @click="goForgetpwd()">忘记密码？</view>

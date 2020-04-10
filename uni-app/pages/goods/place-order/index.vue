@@ -63,7 +63,7 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>姓名</view>
 					</view>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd' style="width: 88%;">
 						<input class='cell-bd-input' placeholder='请输入提货人姓名' v-model="store_pick.name" style="width: 100%;"></input>
 					</view>
 				</view>
@@ -71,7 +71,7 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>电话</view>
 					</view>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd' style="width: 88%;">
 						<input class='cell-bd-input' placeholder='请输入提货人电话' v-model="store_pick.mobile" style="width: 100%;"></input>
 					</view>
 				</view>

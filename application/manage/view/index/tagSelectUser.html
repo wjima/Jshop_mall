@@ -20,13 +20,14 @@
 <script>
     var ids = {};
     var table_data=new Array();
+    var grade = "{$grade}";
     layui.use(['form', 'laydate','table'], function(){
         layui.table.render({
             elem: '#tagUserTable',
             height: '420',
             page: 'true',
             limit:'10',
-            url: "{:url('index/tagSelectUser')}?_ajax=1",
+            url: "{:url('index/tagSelectUser')}?_ajax=1&grade="+grade,
             id:'tagUserTable',
             cols: [[
                 {type:'checkbox'},
@@ -34,18 +35,18 @@
                 { field: 'mobile', title: '手机号码', width: 150 },
                 { field: 'grade_name', title: '等级', width: 150 },
                 { field: 'sex', title: '性别' },
-                { field: 'birthday', title: '生日', width: 150 },
-                {
-                    field: 'avatar', title: '头像',
-                    templet: function (d) {
-                        if (d.avatar) {
-                            return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:30px;max-height:30px;" src="' + d.avatar + '"/></a>';
-                        } else {
-                            return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
-                        }
-                    }, width: 80
-                },
-                { field: 'nickname', title: '昵称' },
+                // { field: 'birthday', title: '生日', width: 150 },
+                // {
+                //     field: 'avatar', title: '头像',
+                //     templet: function (d) {
+                //         if (d.avatar) {
+                //             return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:30px;max-height:30px;" src="' + d.avatar + '"/></a>';
+                //         } else {
+                //             return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
+                //         }
+                //     }, width: 80
+                // },
+                // { field: 'nickname', title: '昵称' },
                 {
                     title: '余额', templet: function (data) {
                     var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
@@ -61,7 +62,7 @@
 
                 { field: 'status', title: '状态' },
                 { field: 'pid_name', title: '邀请人' },
-                { field: 'ctime', title: '创建时间', width: 200 }
+                // { field: 'ctime', title: '创建时间', width: 200 }
             ]],
             done: function(res, curr, count){
                 table_data=res.data;

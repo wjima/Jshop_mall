@@ -1,0 +1,266 @@
+<div style="padding:30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>上级菜单：</label>
+        <div class="layui-input-block">
+            <select name="pid">
+                <option value="{$typeInfo.id}">{$typeInfo.name}</option>
+            </select>
+        </div>
+    </div>
+    <input type="hidden" name="code" value="{$typeInfo.code}">
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>菜单名称：</label>
+        <div class="layui-input-block">
+
+            <input type="text" name="name" required lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input">
+
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>菜单类型：</label>
+        <div class="layui-input-block">
+            <select name="type" lay-filter="type" id="type">
+                {foreach $type as $k=>$v}
+                <option value="{$k}"{if $k==6}id="id"{/if}>{$v}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+
+    <div id="div1"  style="display: none">
+        <div class="layui-form-item">
+            <label class="layui-form-label">链接URL：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="url" name="url" required placeholder="请输入合法的URL链接,必须以http://开头" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div id="div3"  style="display: none">
+        <input type="hidden" name="article_id" id="article_id">
+        <div class="layui-form-item">
+            <label class="layui-form-label">文章详情：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" id="article" name="article" readonly="readonly" required placeholder="请选择文章" autocomplete="off" class="layui-input" onclick="article_info()">
+            </div>
+        </div>
+    </div>
+    <div id="div4"  style="display: none">
+        <div class="layui-form-item">
+            <label class="layui-form-label"><i class="required-color">*</i>商品列表：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <div>
+                    <a href="javascript:;"  id="goods" name="goods" class="layui-btn layui-btn-primary layui-btn-sm" onclick="goods_list()"><i class="iconfont icon-choose1"></i>选择商品</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="div5"  style="display: none">
+        <div class="layui-form-item">
+            <label class="layui-form-label">商品详情：</label>
+            <input type="hidden" name="goods_id" id="goods_id">
+            <div class="layui-input-inline ">
+                <div class="layui-input-inline seller-inline-5">
+                    <input type="text" id="goods_info"   required placeholder="请选择商品" autocomplete="off" class="layui-input" onclick="goodsInfo()">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="div2"  style="display: none">
+        <input type="hidden" name="article_type" id="article_type">
+        <div class="layui-form-item">
+            <label class="layui-form-label">分类列表：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <div>
+                    <input type="text" id="articles"  name="articles"  required placeholder="选择分类" autocomplete="off" class="layui-input" onclick="articleType()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>排序：</label>
+        <div class="layui-input-block">
+            <input type="text" name="sort" value="100" required lay-verify="required"  autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="submit_article_type">保存</button>
+
+</div>
+
+<script>
+    layui.use(['form','table','laydate'], function(){
+        var form = layui.form,table = layui.table;
+        layui.form.render();
+
+        //监听提交
+        form.render();
+        var cat = $("#cat").val();
+        if(!cat){
+            cat = '1';
+        }
+        if (cat === '1') {
+            $("#div1").show();
+        } else if (cat === '2') {
+            $("#div2").show();
+        } else if (cat === '3') {
+            $("#div3").show();
+        } else if (cat === '4') {
+            $("#div4").show();
+        } else if (cat === '5') {
+            $("#div5").show();
+        }
+        $(document).on('click', '.dele', function () {
+            $(this).parent().remove();
+        });
+        form.on('select(type)', function (data) {
+            if (data.value === '1') {
+                $("#div1").show();
+                $("#div2").hide();
+                $("#div3").hide();
+                $("#div4").hide();
+                $("#div5").hide();
+            }
+            if (data.value === '2') {
+                $("#div1").hide();
+                $("#div2").show();
+                $("#div3").hide();
+                $("#div4").hide();
+                $("#div5").hide();
+            }
+            if (data.value === '3') {
+                $("#div1").hide();
+                $("#div2").hide();
+                $("#div3").show();
+                $("#div4").hide();
+                $("#div5").hide();
+            }
+            if (data.value === '4') {
+                $("#div1").hide();
+                $("#div2").hide();
+                $("#div3").hide();
+                $("#div4").show();
+                $("#div5").hide();
+            }
+            if (data.value === '5') {
+                $("#div1").hide();
+                $("#div2").hide();
+                $("#div3").hide();
+                $("#div4").hide();
+                $("#div5").show();
+            }
+        });
+
+        //监听文章列表页工具条
+        table.on('tool(articleTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'selectArticle'){ //选择
+                $("#article").val(data.title);
+                $("#article_id").val(data.id);
+                layer.close(window.box);
+            }
+        });
+        table.on('tool(tagArticleTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'selectArticleType'){ //选择
+                $("#articles").val(data.type_name);
+                $("#article_type").val(data.id);
+                layer.close(window.box);
+            }
+        });
+        table.on('tool(goodsTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            if(layEvent === 'selectGoods'){ //选择
+                console.log(data);
+                $("#goods_info").val(data.name);
+                $("#goods_id").val(data.id);
+                layer.close(window.box);
+            }
+        });
+        //保存
+        form.on('submit(save)', function(data){
+            formData = data.field;
+            if(!formData){
+                layer.msg('请先完善数据', {time: 1300});
+                return false;
+            }
+            $.ajax({
+                url: "{:get_addon_url('Pc://PcMenu/add')}",
+                type: 'post',
+                data: formData,
+                dataType: 'json',
+                success: function(e){
+                    console.log(e);
+                    if(e.status === true){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            window.location.href= "{:get_addon_url('Pc://PcMenu/index')}";
+                        });
+                    }else{
+                        layer.msg(e.msg, {time: 1300});
+                    }
+                }
+            });
+            return false;
+        });
+    });
+    function article_info()
+    {
+        JsGet("{:get_addon_url('Pc://PcMenu/articleInfo')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'文章列表'
+            });
+        });
+    }
+
+    function articleType()
+    {
+        JsGet("{:get_addon_url('Pc://PcMenu/getArticle')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'文章分类列表',
+            });
+        });
+    }
+    function goodsInfo()
+    {
+        JsGet("{:get_addon_url('Pc://PcMenu/goodsInfo')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'商品列表',
+            });
+        });
+    }
+    function goods_list()
+    {
+        JsGet("{:get_addon_url('Pc://PcMenu/getGoods')}",function(e){
+            window.box = layer.open({
+                type: 1,
+                content: e,
+                area: ['700px', '450px'],
+                title:'商品列表',
+                btn: ['确定','取消'],
+                yes: function(){
+                    $(".goods").remove();
+                    for(var i in ids){
+                        var div = '<div class="goods"><li class="dele"><span style="color: red;cursor: pointer" id="goods'+ i+'"' +'>×  </span>' + ids[i]["name"]+ '</li>';
+                        div +=' <input type="hidden" name="goods['+ i + ']" value=""></div>';
+                        $("#goods").after(div);
+                    }
+                    layer.close(window.box);
+                }
+            });
+        });
+    }
+</script>

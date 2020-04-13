@@ -1,0 +1,26 @@
+<form class="layui-form  seller-alone-form" id="edit" style="padding:20px;">
+
+    <div class="layui-form-item">
+        <input type="hidden" value="{$info.id}" name="id">
+        <div class="layui-inline">
+            <label class="layui-form-label">网站名称：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" name="name" required  value="{$info.name}" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>链接URL：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" id="url" name="url" value="{$info.link}" required placeholder="请输入合法的URL链接,必须以http://开头" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">排序：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text" name="sort" value="{$info.sort}"  class="layui-input">
+            </div>
+        </div>
+    </div>
+</form>

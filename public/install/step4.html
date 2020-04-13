@@ -9,25 +9,32 @@
 <body>
 <div class="layui-main">
     <h1 class="site-h1">初始数据配置</h1>
+
     <form class="layui-form" action="index.php?type=step5-1" method="post">
         <div class="layui-form-item">
             <label class="layui-form-label">管理员账号</label>
+
             <div class="layui-input-inline">
-                <input type="text" name="admin_account" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="<?php echo $config['account']; ?>" />
+                <input type="text" name="admin_account" required lay-verify="required" placeholder="请输入"
+                       autocomplete="off" class="layui-input" value="<?php echo $config['account']; ?>"/>
             </div>
             <label class="layui-form-label">管理员密码</label>
+
             <div class="layui-input-inline">
-                <input type="text" name="admin_password" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" value="<?php echo $config['password']; ?>" />
+                <input type="text" name="admin_password" required lay-verify="required" placeholder="请输入"
+                       autocomplete="off" class="layui-input" value="<?php echo $config['password']; ?>"/>
             </div>
             <label class="layui-form-label"></label>
+
             <div class="layui-input-inline">
                 <input type="checkbox" name="demo" id="demo" title="安装演示数据">
             </div>
         </div>
         <div class="layui-form-item">
             <div class="btn-box">
-                <a class="layui-btn layui-btn-small layui-btn-normal" href="./index.php?type=<?php echo $config['createPage']?>">上一步</a>
-                <button lay-submit=""  class="layui-btn layui-btn-small" lay-filter="install" >开始安装</button>
+                <a class="layui-btn layui-btn-small layui-btn-normal"
+                   href="./index.php?type=<?php echo $config['createPage']?>">上一步</a>
+                <button lay-submit="" class="layui-btn layui-btn-small" lay-filter="install">开始安装</button>
             </div>
         </div>
     </form>
@@ -47,145 +54,152 @@
 <script type="text/javascript" src="/static/lib/layuiadmin/layui/layui.js"></script>
 <script>
 
-layui.use(['form','layer','jquery','element'], function(){
-    var form = layui.form;
-    var layer = layui.layer;
-    var $ = layui.jquery;
-    var element = layui.element;
-    form.render();
-    element.render();
+    layui.use(['form', 'layer', 'jquery', 'element'], function () {
+        var form = layui.form;
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var element = layui.element;
+        form.render();
+        element.render();
 
-
-
-    //监听提交
-    form.on('submit(install)', function (data) {
-        var data = $('form').serialize();
-        var url = getUrlPath();
-
-        window_box = layer.open({
-            type: 1,
-            title: '开始安装',
-            area: ['450px', '305px'], //宽高
-            content: $("#installDialog").html()
+        //监听提交
+        form.on('submit(install)', function (data) {
+            var data = $('form').serialize();
+            var url = getUrlPath();
+            window_box = layer.open({
+                type: 1,
+                title: '开始安装',
+                area: ['450px', '305px'], //宽高
+                content: $("#installDialog").html()
+            });
+            $.ajax({
+                type: 'POST',
+                url: url + '?type=step5-1',
+                data: data + '&type=1',
+                success: function (res) {
+                    if (!res.status) {
+                        layer.msg(res.msg);
+                        return false;
+                    } else {
+                        installBase(res.data.page, res.data.totalPage, data)
+                    }
+                },
+                dataType: 'json'
+            });
+            return false;
         });
-        $.ajax({
-            type: 'POST',
-            url: url + '?type=step5-1',
-            data: data + '&type=1',
-            success: function (res) {
-                if (!res.status) {
-                    layer.msg(res.msg);
-                    return false;
-                } else {
-                    installBase(res.data.page, res.data.totalPage, data)
-                }
-            },
-            dataType: 'json'
-        });
-        return false;
+        //安装基础数据
+        function installBase(page, total, data) {
+            var url = getUrlPath();
+
+            if (page <= total) {
+                $.ajax({
+                    type: 'POST',
+                    url: url + '?type=step5-1',
+                    data: {page: page, type: 2},
+                    success: function (res) {
+                        if (!res.status) {
+                            layer.msg(res.msg);
+                            return false;
+                        } else {
+                            element.progress('syncInstall', res.data.percent + '%');
+                            installBase(res.data.page, res.data.totalPage, data);
+                        }
+                    },
+                    dataType: 'json'
+                });
+            } else {
+                layer.msg("基础数据安装成功");
+                //添加管理员账号
+                installManage(data);
+            }
+        }
+
+        //添加管理员账号
+        function installManage(data) {
+            var url = getUrlPath();
+            var check = document.getElementById("demo").checked;
+            element.progress('syncInstall', '0%');
+            $("#install-desc").html('开始添加管理员账号');
+
+            $.ajax({
+                type: 'POST',
+                url: url + '?type=step5-1',
+                data: data + '&type=3&demo=' + check,
+                success: function (res) {
+                    console.log(res);
+                    if (!res.status) {
+                        layer.msg(res.msg);
+                        return false;
+                    } else {
+                        element.progress('syncInstall', '100%');
+                        if (check) {
+                            element.progress('syncInstall', '0%');
+                            installDemo(res.data.page, res.data.totalPage, data);
+                        } else {
+                            layer.msg("安装成功", {time: 1000}, function () {
+                                window.location.href = getSiteUrl() + '/install_result.php';
+                            })
+                        }
+                    }
+                },
+                dataType: 'json'
+            });
+        }
+
+        //安装演示数据
+        function installDemo(page, total) {
+            var url = getUrlPath();
+            var check = document.getElementById("demo").checked;
+            if (page <= total) {
+                $.ajax({
+                    type: 'POST',
+                    url: url + '?type=step5-1',
+                    data: {page: page, type: 4, demo: check},
+                    success: function (res) {
+                        if (!res.status) {
+                            layer.msg(res.msg);
+                            return false;
+                        } else {
+                            element.progress('syncInstall', res.data.percent + '%');
+                            installDemo(res.data.page, res.data.totalPage);
+                        }
+                    },
+                    dataType: 'json'
+                });
+            } else {
+                layer.msg("演示数据安装成功", {time: 1000}, function () {
+                    window.location.href = getSiteUrl() + '/install_result.php';
+                })
+            }
+        }
+
+        function getUrlPath() {
+            var domain = window.location.host;
+            var url = document.location.toString();
+            var arrUrl = url.split("//");
+            var start = arrUrl[1].indexOf("/");
+            var relUrl = arrUrl[1].substring(start);
+            if (relUrl.indexOf("?") != -1) {
+                relUrl = relUrl.split("?")[0];
+            }
+            return arrUrl[0] + '//' + domain + relUrl;
+        }
+
+        function getSiteUrl() {
+            var url = getUrlPath();
+            return url.replace('index.php', '');
+        }
     });
-    //安装基础数据
-    function installBase(page, total, data) {
-        var url = getUrlPath();
-        if (page <= total) {
-            $.ajax({
-                type: 'POST',
-                url: url + '?type=step5-1',
-                data: {page: page, type: 2},
-                success: function (res) {
-                    if (!res.status) {
-                        layer.msg(res.msg);
-                        return false;
-                    } else {
-                        element.progress('syncInstall', res.data.percent + '%');
-                        installBase(res.data.page, res.data.totalPage, data);
-                    }
-                },
-                dataType: 'json'
-            });
-        } else {
-            layer.msg("基础数据安装成功");
-            //添加管理员账号
-            installManage(data);
-        }
-    }
-    //添加管理员账号
-    function installManage(data){
-        var url = getUrlPath();
-        element.progress('syncInstall', '0%');
-        $("#install-desc").html('开始添加管理员账号');
-        $.ajax({
-            type: 'POST',
-            url: url + '?type=step5-1',
-            data: data + '&type=3',
-            success: function (res) {
-                console.log(res);
-                if (!res.status) {
-                    layer.msg(res.msg);
-                    return false;
-                } else {
-                    element.progress('syncInstall',  '100%');
-                    var check = document.getElementById("demo").checked;
-                    if(check){
-                        element.progress('syncInstall',  '0%');
-                        installDemo(res.data.page, res.data.totalPage, data);
-                    }else{
-                        layer.msg("安装成功", {time: 1000}, function () {
-                            window.location.href=url+'?type=step5-1';
-                        })
-                    }
-                }
-            },
-            dataType: 'json'
-        });
-    }
-    //安装演示数据
-    function installDemo(page, total){
-        var url = getUrlPath();
-        if (page <= total) {
-            $.ajax({
-                type: 'POST',
-                url: url + '?type=step5-1',
-                data: {page: page, type: 4},
-                success: function (res) {
-                    if (!res.status) {
-                        layer.msg(res.msg);
-                        return false;
-                    } else {
-                        element.progress('syncInstall', res.data.percent + '%');
-                        installDemo(res.data.page, res.data.totalPage);
-                    }
-                },
-                dataType: 'json'
-            });
-        } else {
-            layer.msg("演示数据安装成功", {time: 1000}, function () {
-                window.location.href=url+'?type=step5-1';
-            })
-        }
-    }
-
-    function getUrlPath()
-    {
-        var domain = window.location.host;
-        var url = document.location.toString();
-        var arrUrl = url.split("//");
-        var start = arrUrl[1].indexOf("/");
-        var relUrl = arrUrl[1].substring(start);
-        if(relUrl.indexOf("?") != -1){
-            relUrl = relUrl.split("?")[0];
-        }
-        return arrUrl[0]+'//'+domain+relUrl;
-    }
-});
 </script>
 <style>
-    .start-install{
+    .start-install {
         padding: 20px;
         text-align: center;
     }
-    #installDialogContent{
-        padding:20px;;
+
+    #installDialogContent {
+        padding: 20px;;
     }
 </style>
 </body>

@@ -69,7 +69,14 @@ export default {
 						});
 					}
 				} else {
-					this.$common.errorToShow(res.msg);
+					// this.$common.errorToShow(res.msg);
+					this.$common.errorToShow(res.msg, () => {
+						// 绑定手机号
+						if (res.data === '11027') {
+							this.$db.set('userToken', res.token);
+							this.$common.navigateTo("/pages/login/mobile/index")
+						}
+					});
 				}
 			});
 		},

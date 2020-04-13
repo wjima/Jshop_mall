@@ -151,6 +151,7 @@
                 },
                 { field: 'id', title: 'ID', width:90, align: 'center' },
                 { field: 'mobile', title: '手机号码', width: 150, align: 'center'},
+                { field: 'username', title: '用户名', width: 120, align: 'center'},
                 { field: 'grade_name', title: '等级', width: 150, align: 'center'},
                 { field: 'sex', title: '性别', align: 'center' },
                 {
@@ -306,7 +307,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: setpage(700,550),
+                        area: setpage(700,600),
                         title: '添加用户',
                         btn: ['确定', '取消'],
                         zIndex: 1800,

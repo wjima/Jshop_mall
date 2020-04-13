@@ -63,7 +63,7 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>姓名</view>
 					</view>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd' style="width: 88%;">
 						<input class='cell-bd-input' placeholder='请输入提货人姓名' v-model="store_pick.name" style="width: 100%;"></input>
 					</view>
 				</view>
@@ -71,7 +71,7 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>电话</view>
 					</view>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd' style="width: 88%;">
 						<input class='cell-bd-input' placeholder='请输入提货人电话' v-model="store_pick.mobile" style="width: 100%;"></input>
 					</view>
 				</view>
@@ -292,7 +292,7 @@
 												</view>
 											</view>
 											<view class="ccirc-b-r color-f"
-												  @click="removeCouponCode(item.code)"
+												  @click="removeCouponCode1(item.code)"
 											>
 												取消使用
 											</view>
@@ -396,8 +396,9 @@
                     mobile: ''
                 },
                 team_id: 0, //拼团id
-				submitStatus: false,
-				inputCouArr:[] //输入的优惠券码的列表
+								submitStatus: false,
+								inputCouArr:[], //输入的优惠券码的列表
+								clickIndex:Number //当前点击的优惠券
             }
         },
         components: {lvvPopup,uniSegmentedControl},
@@ -526,7 +527,7 @@
             getCartList () {
                 let data = this.params
                 data['receipt_type'] = this.receiptType	// 区分订单类型  1快递订单 2门店自提订单
-
+								
                 this.$api.cartList(data, res => {
                     if (res.status) {
                         let data = res.data
@@ -559,16 +560,21 @@
                         this.cartData = data
                         // 商品详情
                         this.products = data.list
-						//判断是否有库存
-						let noStock = true;
-						for(let i=0;i<data.list.length;i++){
-							if(data.list[i].is_select){
-								noStock = false;
-							}
-						}
-						if(noStock){
-							this.$common.errorToShow("您所挑选的商品已售罄，请重新添加哦");
-						}
+												//判断是否有库存
+												let noStock = true;
+												for(let i=0;i<data.list.length;i++){
+													if(data.list[i].is_select){
+														noStock = false;
+													}
+												}
+												if(noStock){
+													this.$common.errorToShow("您所挑选的商品已售罄，请重新添加哦");
+												}
+												this.userCoupons.forEach(item => {
+												    if (item.checked1){
+															item.checked=item.checked1
+														}    
+												})
                         // 优惠信息
                         this.promotions = data.promotion_list
                         // 使用的优惠券信息
@@ -582,7 +588,6 @@
 													}
 													this.inputCouArr.push(item)
 												}
-												console.log(this.usedCoupons);
                         // 手动输入的优惠券使用成功后关闭弹窗并清除输入的优惠券码
                         // this.current === 1 && this.$refs.lvvpopref.popshow && this.inputCouponCode ? this.toclose() : ''
                         this.current === 1 && this.$refs.lvvpopref.popshow
@@ -592,6 +597,13 @@
                         this.optCoupon = ''
                     } else {
                         this.$common.errorToShow(res.msg, () => {
+													// this.userCoupons[this.clickIndex].checked1=false
+													// this.userCoupons.forEach(item=>{
+													// 	if(item.coupon_code==this.optCoupon){
+													// 		item.checked1=false;
+													// 		item.checked=item.checked1;
+													// 	}
+													// })
                             // 优惠券不可用状态判断
                             // 优惠券号码不存在 			15009
                             // 优惠券未开始				15010
@@ -599,8 +611,8 @@
                             // 优惠券不符合使用规则		15014
                             // 优惠券不可使用多张			15015
 														//同一类优惠券只能用一张  11255
-                            let errStatus = [15009, 15010, 15013, 15014, 15015,11255]
-                            if (errStatus.indexOf(res.data.user_id) !== -1) { 
+                            // let errStatus = [15009, 15010, 15013, 15014, 15015,11255]
+                            // if (errStatus.indexOf(res.data) !== -1) { 
                                 // 删除使用的优惠券号码
                                 if (this.current === 1) {
                                     this.removeCouponCode(this.inputCouponCode, this.current)
@@ -609,13 +621,13 @@
                                     if (this.optCoupon) {
                                         this.userCoupons.forEach(item => {
                                             if (item.coupon_code === this.optCoupon) {
-                                                item.checked = false
+                                                item.checked1 = false
                                             }
                                         })
                                     }
                                     this.removeCouponCode(this.optCoupon, this.current)
                                 }
-                            }
+                            // }
                         })
                     }
                 })
@@ -641,21 +653,38 @@
             },
             // 点击使用/取消优惠券操作
             couponHandle (index) {
+								this.clickIndex=index;
                 // 更改使用/取消状态
-                this.userCoupons[index].checked = !this.userCoupons[index].checked
-
+                // this.userCoupons[index].checked = !this.userCoupons[index].checked
+								this.userCoupons[index].checked1 = !this.userCoupons[index].checked
                 // 暂存当次选中使用的优惠券key
                 this.optCoupon = this.userCoupons[index].coupon_code
                 let arr = []
                 this.userCoupons.forEach(item => {
-                    if (item.checked) {
+                    if (item.checked1) {
                         arr.push(item.coupon_code)
                     }
                 })
-                if (this.userCoupons[index].checked) {
-                    // 使用
+                if (this.userCoupons[index].checked1) {
+										// this.params.coupon_code = arr.join()
 										if(this.params.coupon_code){
-											this.params.coupon_code += ','+arr.join()
+											// 正在使用的优惠
+											// console.log(this.params.coupon_code);
+											// console.log(this.optCoupon);
+											this.params.coupon_code+= ','+this.optCoupon
+											// console.log(this.params.coupon_code);
+											// this.params.coupon_code += ','+arr.join()
+											// let all= (this.params.coupon_code + ','+arr.join()).split(",")
+											// console.log(all);
+											// let arr1=[]
+											// for(let i=0;i<all.length;i++){
+											// 	if(arr1.indexOf(all[i]) == -1){
+											// 		// console.log(all[i]);
+											// 		arr1.push(all[i])
+											// 	}
+											// }
+											// console.log(arr1);
+											// this.params.coupon_code=arr1.join()
 										}else{
 											this.params.coupon_code = arr.join()
 										}
@@ -667,6 +696,7 @@
                         paramsCodes.splice(usedIndex, 1)
                         this.params.coupon_code = paramsCodes.join()
                     }
+										this.userCoupons[index].checked=false
                 }
             },
             // 手输的优惠券码使用
@@ -688,6 +718,7 @@
                 this.inputCouponCode = ''	// 清空手输的优惠券码
                 this.userCoupons.forEach(item => {
                     item.checked = false
+                    item.checked1 = false
                 }) // 取消所有选中的使用状态
                 this.params.coupon_code = ''	// 清空params优惠券码
 								this.inputCouArr=[] //清空优惠券码列表
@@ -698,6 +729,21 @@
                 arr.splice(arr.indexOf(code), 1)
                 current === 0 ? this.optCoupon = '' : this.inputCouponCode = ''
                 this.params.coupon_code = arr.join()
+								
+								// let inputCouArr=[]
+								// this.inputCouArr.forEach(item=>{
+								// 	if(item.code!=code){
+								// 		inputCouArr.push(item)
+								// 	}
+								// })
+								// this.inputCouArr=inputCouArr
+            },
+						// 取消使用中的优惠券码
+						removeCouponCode1 (code) {
+							console.log(code);
+								let arr = this.params.coupon_code.split(',')
+								arr.splice(arr.indexOf(code), 1)
+								this.params.coupon_code = arr.join()
 								let inputCouArr=[]
 								this.inputCouArr.forEach(item=>{
 									if(item.code!=code){
@@ -705,7 +751,7 @@
 									}
 								})
 								this.inputCouArr=inputCouArr
-            },
+						},
             // 是否使用积分
             changePointHandle(){
                 if(this.userPointNums > 0){

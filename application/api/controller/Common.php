@@ -8,16 +8,18 @@
 // +----------------------------------------------------------------------
 namespace app\api\controller;
 
+use app\common\controller\Api;
 use app\common\model\Area;
 use app\common\controller\Base;
 
 
 /**
- * 此控制器不用api校验，不需要token登陆，就是单纯的标准的接口数据,用于取一些通用的信息
+ * old 此控制器不用api校验，不需要token登陆，就是单纯的标准的接口数据,用于取一些通用的信息
+ * new 此控制器不校验token登陆但是最好也放到api体系了里面吧
  * Class Common
  * @package app\api\controller
  */
-class Common extends Base
+class Common extends Api
 {
     /**
      * 加载方法
@@ -132,4 +134,18 @@ class Common extends Base
 
         return $conf;
     }
+
+    //插件列表
+    public function addons(){
+        $result = [
+            'status' => true,
+            'data' => [],
+            'msg' => ''
+        ];
+        $obj = new \stdClass;
+        Hook('apiAddonsConf', $obj);
+        $result['data'] = $obj->data;
+        return $result;
+    }
+
 }

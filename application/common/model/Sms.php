@@ -23,6 +23,10 @@ class Sms extends Common
             'name' => '短信校验',
             'check' => true
         ],
+        'bind' => [
+            'name' => '用户绑定',
+            'check' => true
+        ],
 
 
     ];
@@ -33,7 +37,7 @@ class Sms extends Common
             return error_code(11051);
         }
         //如果是登陆注册等的短信，增加校验
-        if($code == 'reg' || $code == 'login' || $code== 'veri'){
+        if($code == 'reg' || $code == 'login' || $code== 'veri' || $code== 'bind'){
             $where[] = ['mobile', 'eq', $mobile];
             $where[] = ['code', 'eq', $code];
             $where[] = ['ctime', 'gt', time()-60*10];
@@ -55,7 +59,9 @@ class Sms extends Common
         }else{
             $status = self::STATUS_USED;
         }
+
         $str = $this->temp($code,$params);
+
         if($str == ''){
             return error_code(10009);
         }
@@ -110,6 +116,11 @@ class Sms extends Common
                 // 账户登录
                 // $params['code'] = 验证码
                 $msg = "您正在登陆账号，验证码是".$params['code']."，请勿告诉他人。";
+                break;
+            case 'bind':
+                // 账户登录
+                // $params['code'] = 验证码
+                $msg = "您正在绑定新手机号码，验证码是".$params['code']."，请勿告诉他人。";
                 break;
             case 'veri':
                 // 验证验证码

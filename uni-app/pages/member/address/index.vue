@@ -6,16 +6,16 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>收货人</view>
 					</view>
-					<view class='cell-item-bd'>
-						<input type="text" class='cell-bd-input' placeholder='请填写收货人姓名' v-model="name"></input>
+					<view class='cell-item-bd' style="width: 70%;">
+						<input type="text" class='cell-bd-input' placeholder='请填写收货人姓名' v-model="name" ></input>
 					</view>
 				</view>
 				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>手机号</view>
 					</view>
-					<view class='cell-item-bd'>
-						<input type="text" class='cell-bd-input' placeholder='请填写收货人手机号' v-model="mobile"></input>
+					<view class='cell-item-bd' style="width: 70%;">
+						<input type="text" class='cell-bd-input' placeholder='请填写收货人手机号' v-model="mobile" ></input>
 					</view>
 				</view>
 				
@@ -26,7 +26,7 @@
 
 					<view class='cell-item-bd'>
 						<input :value="pickerValue" @focus="showThreePicker"></input>
-						<area-picker ref="areaPicker" :areaId="areaId" :defaultIndex="defaultIndex" @onConfirm="onConfirm"></area-picker>
+						<area-picker ref="areaPicker" :areaId="areaId" :defaultIndex="defaultIndex" @onConfirm="onConfirm" class="fsz26"></area-picker>
 					</view>
 					
 					<view class='cell-item-ft'>
@@ -38,7 +38,7 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>详细地址</view>
 					</view>
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd'style="width: 70%;">
 						<input type="text" class='cell-bd-input' placeholder='请填写收货详细地址' v-model="address"></input>
 					</view>
 				</view>

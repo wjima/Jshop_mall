@@ -17,6 +17,10 @@ return [
                 'code' => 'smsLogin',
                 'is_login' => false
             ],
+            'bindMobile' => [
+                'code' => 'bindMobile',
+                'is_login' => true
+            ],
             'wxapplogin1' => [
                 'code' => 'wxappLogin1',
                 'is_login' => false
@@ -725,4 +729,29 @@ return [
 
         ]
     ],
+    'common' => [
+        'code' => 'Common',
+        'method' => [
+            'area' => [
+                'code' => 'area',
+                'is_login' => false
+            ],
+            'areaChildren' => [
+                'code' => 'areaChildren',
+                'is_login' => false
+            ],
+            'verify' => [
+                'code' => 'verify',
+                'is_login' => false
+            ],
+            'jshopConf' => [
+                'code' => 'jshopConf',
+                'is_login' => false
+            ],
+            'jshopAddons' => [
+                'code' => 'addons',
+                'js_login' => false
+            ]
+        ]
+    ]
 ];

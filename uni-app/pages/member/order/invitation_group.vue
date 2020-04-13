@@ -29,35 +29,74 @@
 		<lvv-popup position="bottom" ref="share">
 
 			<!-- #ifdef H5 -->
-			<shareByH5 :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
-			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
-			 @close="closeShare()"></shareByH5>
+			<shareByH5
+                :shareType='6'
+                :goodsId="goodsInfo.goods_id"
+                :teamId="teamInfo.team_id"
+                :groupId="teamInfo.rule_id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                @close="closeShare()"
+            ></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
-			<shareByWx :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
-			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
-			 @close="closeShare()"></shareByWx>
+			<shareByWx
+                :shareType='6'
+                :goodsId="goodsInfo.goods_id"
+                :teamId="teamInfo.team_id"
+                :groupId="teamInfo.rule_id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                @close="closeShare()"
+            ></shareByWx>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-ALIPAY -->
-			<shareByAli :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
-			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
-			 @close="closeShare()"></shareByAli>
+			<shareByAli
+                :shareType='6'
+                :goodsId="goodsInfo.goods_id"
+                :teamId="teamInfo.team_id"
+                :groupId="teamInfo.rule_id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                @close="closeShare()"
+            ></shareByAli>
 			<!-- #endif -->
 			
 			<!-- #ifdef MP-TOUTIAO -->
-			<shareByTt :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
-			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
-			 @close="closeShare()"></shareByTt>
+			<shareByTt
+                :shareType='6'
+                :goodsId="goodsInfo.goods_id"
+                :teamId="teamInfo.team_id"
+                :groupId="teamInfo.rule_id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                @close="closeShare()"
+            ></shareByTt>
 			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
-			<shareByApp :shareType='3' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
-			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
-			 @close="closeShare()"></shareByApp>
+			<shareByApp
+                :shareType='6'
+                :goodsId="goodsInfo.goods_id"
+                :teamId="teamInfo.team_id"
+                :groupId="teamInfo.rule_id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                @close="closeShare()"
+            ></shareByApp>
 			<!-- #endif -->
-
 		</lvv-popup>
 		<view class="cell-group margin-cell-group">
 			<view class='cell-item'>

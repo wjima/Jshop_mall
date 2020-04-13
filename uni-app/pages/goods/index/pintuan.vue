@@ -316,6 +316,7 @@
 
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
+                :shareType="3"
 				:goodsId="goodsInfo.id"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"

@@ -358,4 +358,164 @@ class BillRefund extends Common
         }
         return $text;
     }
+
+    /**
+     * 导出验证
+     * @param array $params
+     * @return array
+     */
+    public function exportValidate(&$params = [])
+    {
+        $result = [
+            'status' => true,
+            'data'   => [],
+            'msg'    => '验证成功',
+        ];
+        return $result;
+    }
+
+    /**
+     * 设置csv header
+     * @return array
+     */
+    public function csvHeader()
+    {
+        return [
+            [
+                'id' => 'refund_id',
+                'desc' => '退款单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'source_id',
+                'desc' => '单号',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'user_id',
+                'desc' => '用户',
+            ],
+            [
+                'id' => 'money',
+                'desc' => '退款金额',
+            ],
+            [
+                'id' => 'new_memo',
+                'desc' => '说明',
+            ],
+            [
+                'id' => 'payment_code',
+                'desc' => '退款方式',
+            ],
+            [
+                'id' => 'status_name',
+                'desc' => '状态',
+
+            ],
+            [
+                'id' => 'type',
+                'desc' => '类型',
+
+            ],
+            [
+                'id' => 'ctime',
+                'desc' => '创建时间',
+
+            ],
+        ];
+    }
+    /**
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
+    public function getCsvData($post)
+    {
+        $result = [
+            'status' => false,
+            'data' => [],
+            'msg' => '无可导出数据',
+
+        ];
+        $header = $this->csvHeader();
+        $userData = $this->getExportList($post);
+
+        if ($userData['count'] > 0) {
+            $tempBody = $userData['data'];
+            $body = [];
+            $i = 0;
+
+            foreach ($tempBody as $key => $val) {
+                $i++;
+                foreach ($header as $hk => $hv) {
+                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                        if (function_exists($hv['modify'])) {
+                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                        }
+                    } elseif (isset($val[$hv['id']]) &&!empty($val[$hv['id']])) {
+                        $body[$i][$hk] = $val[$hv['id']];
+                    } else {
+                        $body[$i][$hk] = '';
+                    }
+                }
+            }
+            $result['status'] = true;
+            $result['msg'] = '导出成功';
+            $result['data'] = $body;
+            return $result;
+        } else {
+            //失败，导出失败
+            return $result;
+        }
+    }
+
+    //导出格式
+    public function getExportList($post = [])
+    {
+        $return_data = [
+            'status' => false,
+            'msg'    => '获取失败',
+            'data'   => '',
+            'count'  => 0
+        ];
+        $where       = [];
+        if (isset($post['source_id']) && $post['source_id'] != "") {
+            $where[] = ['source_id', 'like', '%' . $post['source_id'] . '%'];
+        }
+        if (isset($post['refund_id']) && $post['refund_id'] != "") {
+            $where[] = ['refund_id', 'like', '%' . $post['refund_id'] . '%'];
+        }
+        if (isset($post['mobile']) && $post['mobile'] != "") {
+            if ($user_id = get_user_id($post['mobile'])) {
+                $where[] = ['user_id', 'eq', $user_id];
+            } else {
+                $where[] = ['user_id', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+            }
+        }
+
+        if (isset($post['status']) && $post['status'] != "") {
+            $where[] = ['status', 'eq', $post['status']];
+        }
+        if (isset($post['type']) && $post['type'] != "") {
+            $where[] = ['type', 'eq', $post['type']];
+        }
+
+
+        $list = $this->where($where)
+            ->order('ctime desc')
+            ->select();
+        if (!$list->isEmpty()) {
+            $count       = $this->where($where)->count();
+            $list        = $this->tableFormat($list->toArray());
+            $return_data = [
+                'status' => true,
+                'msg'    => '获取成功',
+                'data'   => $list,
+                'count'  => $count
+            ];
+        }
+        return $return_data;
+    }
+
+
 }

@@ -31,7 +31,7 @@
                                 this.gotoGoods(res.data.params.goods_id);
                                 break;
                             case '3': //拼团
-                                this.gotoPinTuan(res.data.params.goods_id, res.data.params.team_id);
+                                this.gotoPinTuan(res.data.params.goods_id);
                                 break;
                             case '4': //店铺邀请
                                 this.gotoStore(res.data.params.store);
@@ -95,9 +95,9 @@
 				}
 			},
 			//跳转到拼团
-			gotoPinTuan(id, team_id) {
+			gotoPinTuan(id) {
 				if(id && id != ''){
-					let url = '/pages/goods/index/pintuan?id=' + id + '&team_id=' + team_id;
+					let url = '/pages/goods/index/pintuan?id=' + id;
 					this.$common.redirectTo(url);
 				}else{
 					this.gotoIndex();
@@ -113,15 +113,14 @@
 				}
 			},
 			//跳转到参团
-			//todo:: 功能暂无后续开发
-			// gotoInvitationGroup(id, group_id, team_id) {
-			// 	if(id && id != '' && group_id && group_id != '' && team_id && team_id != ''){
-			// 		let url = '/pages/member/order/invitation_group?id=' + id + '&group_id=' + group_id + '&team_id=' + team_id;
-			// 		this.$common.redirectTo(url);
-			// 	}else{
-			// 		this.gotoIndex();
-			// 	}
-			// },
+			gotoInvitationGroup(id, group_id, team_id) {
+				if(id && id != '' && group_id && group_id != '' && team_id && team_id != ''){
+					let url = '/pages/member/order/pintuan?id=' + id + '&group_id=' + group_id + '&team_id=' + team_id;
+					this.$common.redirectTo(url);
+				}else{
+					this.gotoIndex();
+				}
+			},
 			//跳转到自定义页
 			gotoCustom(page_code) {
 				if(page_code && page_code != ''){

@@ -77,7 +77,7 @@
 			</view>
 			
 			<!-- 团购分享拼单 -->
-			<view class="cell-group margin-cell-group" v-if="orderInfo.order_type==2 && orderInfo.status != 3 && orderInfo.pay_status==1">
+			<view class="cell-group margin-cell-group" v-if="orderInfo.order_type==2 && orderInfo.status != 3 && orderInfo.pay_status != 1">
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
 						<view v-if="teamInfo.status==1" class='cell-hd-title'>待拼团，还差{{ teamInfo.team_nums || ''}}人</view>

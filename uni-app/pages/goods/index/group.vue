@@ -148,10 +148,12 @@
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByH5>
 			<!-- #endif -->
@@ -159,10 +161,12 @@
 			<!-- #ifdef MP-WEIXIN -->
 			<shareByWx
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByWx>
 			<!-- #endif -->
@@ -170,10 +174,12 @@
 			<!-- #ifdef MP-ALIPAY -->
 			<shareByAli
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByAli>
 			<!-- #endif -->
@@ -181,10 +187,12 @@
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByTt>
 			<!-- #endif -->
@@ -192,10 +200,12 @@
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByApp>
 			<!-- #endif -->

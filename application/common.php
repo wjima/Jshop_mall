@@ -337,7 +337,7 @@ function get_user_info($user_id, $field = 'mobile')
 function get_goods_info($goods_id, $field = 'name')
 {
     $goodsModel = new \app\common\model\Goods();
-    $info       = $goodsModel->where(['id' => $goods_id])->find();
+    $info       = $goodsModel->where(['id' => $goods_id])->cache(86400)->find();
     if ($info) {
         if ($field == 'image_id') {
             return _sImage($info[$field]);
@@ -628,11 +628,16 @@ function getBool($value = '1')
 /**
  * 时间格式化
  * @param int $time
- * @return false|string
+ * @param bool|true $year
+ * @return bool|string
  */
-function getTime($time = 0)
+function getTime($time = 0,$year=true)
 {
-    return date('Y-m-d H:i:s', $time);
+    if($year){
+        return date('Y-m-d H:i:s', $time);
+    }else{
+        return date('m-d H:i:s', $time);
+    }
 }
 
 

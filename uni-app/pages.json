@@ -473,6 +473,12 @@
     		"navigationBarTitleText": "绑定手机号"
     	}
     }
+        ,{
+            "path" : "pages/member/bargain/list",
+            "style" : {
+				"navigationBarTitleText": "砍价记录"
+			}
+        }
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

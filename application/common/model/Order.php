@@ -1432,6 +1432,7 @@ class Order extends Common
             $items = $order_re['data'];        //订单明细
         }
 
+
         //以下值不是通过购物车得来的，是直接赋值的，就写这里吧，不写formatOrder里了。
         $order['memo'] = $memo;
         $order['source'] = $source;
@@ -1493,6 +1494,15 @@ class Order extends Common
                 case self::ORDER_TYPE_GROUP:
                     break;
                 case self::ORDER_TYPE_SKILL:
+                    break;
+                case self::ORDER_TYPE_BARGAIN:
+                    $bargainRecordModel = new BargainRecord();
+                    $bo_re = $bargainRecordModel->updateRecord($params['record_id'], ['order_id'=>$order['order_id'],'status'=>$bargainRecordModel::STATUS_HAVE_ORDER]);
+                    if (!$bo_re) {
+                        Db::rollback();
+                        $result['msg'] = '砍价活动订单更新失败';
+                        return $result;
+                    }
                     break;
                 default:
                     Db::rollback();

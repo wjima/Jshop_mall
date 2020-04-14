@@ -370,6 +370,12 @@
 						router: '../invite/index',
 						unshowItem: true
 					},
+					bargain: {
+						name: '砍价记录',
+						icon: '/static/image/me-ic-sendout.png',
+						router: '../bargain/list',
+						unshowItem: false
+					},
 					setting: {
 						name: '系统设置',
 						icon: '/static/image/me-ic-set.png',

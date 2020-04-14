@@ -1,7 +1,7 @@
 <form class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label" style="width:120px;">砍价名称：</label>
+            <label class="layui-form-label" style="width:120px;">活动名称：</label>
             <div class="layui-input-inline seller-inline-3">
                 <input type="text" name="name" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
             </div>
@@ -40,7 +40,7 @@
             elem: '#date',
             range: '到',
             type: 'datetime',
-						trigger: 'click' //自动弹出控件的事件，采用click弹出
+			trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //表格渲染
@@ -60,6 +60,9 @@
                     html += '<a  class="layui-btn layui-btn-danger layui-btn-xs option-del" data-id="' + data.id + '" >删除</a>';
                     return html;
                 }},
+                {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
+                    return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
+                }},
                 {field:'name',title:'活动名称', align: 'center', width: 170},
                 {field:'sort', edit: 'text',title:'权重', width: 80, align: 'center'},
                 {field:'status',title:'启用状态', width: 110, templet: '#status', align: 'center'},
@@ -71,9 +74,7 @@
                 {field:'bargain_max_price', align: ' center',title:'砍价最大金额'},
                 {field:'bargain_min_price', align: ' center',title:'砍价最小金额'},
                 {field:'max_goods_nums', align: ' center',title:'活动数量'},
-                {field:'goods_name', align: ' center',title:'销量'},
-                {field:'max_nums', align: ' center',title:'每人限购'},
-                {field:'every_max_times', align: ' center',title:'每人砍价次数'},
+                {field:'sales_num', align: ' center',title:'销量'},
                 {field:'ctime',title:'创建时间', align: 'center', width: 170}
 
             ]]
@@ -102,83 +103,14 @@
 
         //添加
         layui.form.on('submit(add)', function () {
-            $.ajax({
-                type: 'get',
-                url: "{:url('edit')}",
-                success: function (e) {
-                    if(e.status){
-                        window.box = layer.open({
-                            type: 1,
-                            content: e.data,
-                            area: setpage(600,550),
-                            title: '添加',
-                            btn: ['确定', '取消'],
-                            zIndex: 1800,
-                            yes: function () {
-                                var data = $("#bargainAdd").serializeArray();
-                                console.log(data);
-                                $.ajax({
-                                    type: 'post',
-                                    url: '{:url("edit")}',
-                                    data: data,
-                                    dataType: 'json',
-                                    success: function (e) {
-                                        if (e.status) {
-                                            layer.close(window.box);
-                                            layer.msg(e.msg, { time: 1300 }, function () {
-                                                layui.table.reload('bargain');
-                                            });
-                                        } else {
-                                            layer.msg(e.msg);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }else{
-                        layer.msg(e.msg);
-                    }
-                }
-            });
+            window.location.href="{:url('edit')}";
             return false;
         });
         //编辑
         $(document).on('click','.option-edit',function(){
             var id = $(this).attr('data-id');
-            JsGet(" {:url('edit')}?id="+id,function(e){
-                if(e.status){
-                    window.box = layer.open({
-                        type: 1,
-                        content: e.data,
-                        area: setpage(650,550),
-                        title: '编辑',
-                        btn: ['确定', '取消'],
-                        zIndex: 1800,
-                        yes: function () {
-                            var data = $("#bargainAdd").serializeArray();
-                            console.log(data);
-                            $.ajax({
-                                type: 'post',
-                                url: '{:url("edit")}',
-                                data: data,
-                                dataType: 'json',
-                                success: function (e) {
-                                    if (e.status) {
-                                        layer.close(window.box);
-                                        layer.msg(e.msg, { time: 1300 }, function () {
-                                            layui.table.reload('bargain');
-                                        });
-                                    } else {
-                                        layer.msg(e.msg);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }else{
-                    layer.msg(e.msg);
-                }
-            });
+            window.location.href="{:url('edit')}?id="+id;
+            return false;
         });
 
         //删除

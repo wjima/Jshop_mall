@@ -18,9 +18,9 @@ class Bargain extends Manage
      */
     public function index()
     {
-        if(Request::isAjax()) {
+        if (Request::isAjax()) {
             $bargainModel = new BargainModel();
-            $request = input('param.');
+            $request      = input('param.');
             return $bargainModel->tableData($request);
         }
         return $this->fetch();
@@ -29,61 +29,52 @@ class Bargain extends Manage
 
 
     //添加&编辑砍价
-    public function edit(){
-        $this->view->engine->layout(false);
-        $result = [
+    public function edit()
+    {
+        $result       = [
             'status' => true,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         ];
-
         $bargainModel = new BargainModel();
-
-
         if (Request::isPost()) {
             $data = input('param.');
-
             return $bargainModel->toAdd($data);
         }
-
         //如果是编辑，取数据
-        if(input('?param.id')){
-            $info = $bargainModel->where('id',input('param.id'))->find();
-            if(!$info){
+        if (input('?param.id')) {
+            $info = $bargainModel->where('id', input('param.id'))->find();
+            if (!$info) {
                 return error_code(10001);
             }
-
-            $info['date'] = date('Y-m-d H:i:s',$info['stime'])." 到 ".date('Y-m-d H:i:s',$info['etime']);
-
-            $this->assign('info',$info);
+            $info['date'] = date('Y-m-d H:i:s', $info['stime']) . " 到 " . date('Y-m-d H:i:s', $info['etime']);
+            $this->assign('info', $info);
         }
-
-
-        $result['data'] = $this->fetch();
-        return $result;
+        return $this->fetch();;
     }
 
     public function del()
     {
 
-        if(!input('?param.id')){
+        if (!input('?param.id')) {
             return error_code(10000);
         }
         $bargainModel = new BargainModel();
-        $bargainModel->where(['id'=>input('param.id')])->delete();
+        $bargainModel->where(['id' => input('param.id')])->delete();
 
         $bargainLogModel = new BargainLog();
-        $bargainLogModel->where(['bargain'=>input('param.id')])->delete();
+        $bargainLogModel->where(['bargain' => input('param.id')])->delete();
 
         return [
             'status' => true,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         ];
     }
 
     //排序更改
-    public function updateSort(){
+    public function updateSort()
+    {
         $result = [
             'status' => false,
             'data'   => [],
@@ -98,7 +89,7 @@ class Bargain extends Manage
         }
 
         $bargainModel = new BargainModel();
-        $rel = $bargainModel->where('id','eq',$id)->update([$field => $value]);
+        $rel          = $bargainModel->where('id', 'eq', $id)->update([$field => $value]);
         if ($rel) {
             $result['msg']    = '更新成功';
             $result['status'] = true;
@@ -115,26 +106,25 @@ class Bargain extends Manage
      */
     public function changeState()
     {
-        $result = [
+        $result       = [
             'status' => false,
-            'msg' => '关键参数丢失',
-            'data' => []
+            'msg'    => '关键参数丢失',
+            'data'   => []
         ];
         $bargainModel = new BargainModel();
-        $id = input('param.id/d', 0);
+        $id           = input('param.id/d', 0);
 
         $state = input('param.state/s', 'true');
 
         if (!$id) return $result;
-        if($state == 'true'){
+        if ($state == 'true') {
             $status = $bargainModel::STATUS_ON;
-        }else{
+        } else {
             $status = $bargainModel::STATUS_OFF;
         }
-        if ($bargainModel->save(['status'=>$status], ['id' => $id]))
-        {
+        if ($bargainModel->save(['status' => $status], ['id' => $id])) {
             $result['status'] = true;
-            $result['msg'] = '设置成功';
+            $result['msg']    = '设置成功';
         } else {
             $result['msg'] = '设置失败';
         }

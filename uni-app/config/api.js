@@ -87,7 +87,11 @@ const methodsToken = [
     'wechat_applets_message-api-tmpl',
     'wechat_applets_message-api-settip',
     'wechat_applets_message-api-closetip',
-    'wechat_applets_message-api-istip'
+    'wechat_applets_message-api-istip',
+	'bargain.dobargain',
+	'bargain.goodsinfo',
+	'bargain.add',
+	'bargain.getuserbargainlog'
 ];
 
 const post = (method, data, callback,complete) => {
@@ -845,3 +849,17 @@ export const deshare = (data, callback) => post('user.deshare', data, callback);
 
 //绑定手机号
 export const bindMobile = (data, callback) => post('user.bindMobile', data, callback);
+
+//获取砍价商品列表
+export const getBargainList = (data, callback) => post('bargain.list', data, callback);
+
+//获取砍价商品详情
+export const getBargainDetial = (data, callback) => post('bargain.goodsinfo', data, callback);
+
+//砍一刀
+export const doBargain = (data, callback) => post('bargain.dobargain', data, callback);
+
+//砍一刀
+export const addBargain = (data, callback) => post('bargain.add', data, callback);
+//砍一刀参与活动记录
+export const getUserBargainLog = (data, callback) => post('bargain.getuserbargainlog', data, callback);

@@ -5,7 +5,7 @@
 				<image src="/static/image/share-f.png" mode=""></image>
 				<view class="">复制链接</view>
 			</view>
-			<view class="share-item" @click="createPoster()">
+			<view class="share-item" @click="createPoster()" v-show="shareType!=10">
 				<image src="/static/image/poster.png" mode=""></image>
 				<view class="">生成海报</view>
 			</view>
@@ -60,6 +60,16 @@ export default {
 			type:Number,
 			default:0
 		},
+		//砍价参与类型
+		bargainType:{
+			type:Number,
+			default:1
+		},
+		//砍价活动id
+		record_id:{
+			type:Number,
+			default:0
+		},
 		ifwx:{
 			type: Boolean
 		}
@@ -103,6 +113,13 @@ export default {
                 data.params = {
                     goods_id: this.goodsId,
                     group_id: this.groupId
+                }
+            } else if (this.shareType == 10) {
+                //砍价
+                data.params = {
+                    id: this.goodsId,
+                    type: this.bargainType,
+					record_id:this.record_id
                 }
             }
             let userToken = this.$db.get('userToken')
@@ -148,6 +165,13 @@ export default {
                 data.params = {
                     goods_id: this.goodsId,
                     group_id: this.groupId
+                }
+            } else if (this.shareType == 10) {
+                //砍价
+                data.params = {
+                    id: this.goodsId,
+                    type: this.bargainType,
+					record_id:this.record_id
                 }
             }
             let userToken = this.$db.get('userToken')

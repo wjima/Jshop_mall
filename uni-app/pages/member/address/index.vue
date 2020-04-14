@@ -186,6 +186,14 @@ export default {
 			this.submitStatus = true;
 			this.$api.removeShip({'id': this.id}, res => {
 				if(res.status){
+					// console.log(res);
+					let user_ship = this.$store.state.userShip;
+					// console.log(user_ship);
+					if(user_ship.id==this.id){
+						let data={}
+						this.$store.commit("userShip",data)
+					}
+					
 					this.$common.successToShow(res.msg, ress => {
 						// this.submitStatus = false;
 						uni.navigateBack({

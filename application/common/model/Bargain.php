@@ -236,18 +236,18 @@ class Bargain extends Common
             'status_progress'  => self::PROGRESS_STATUS_ING,
         ];
         $bargainRecordModel = new BargainRecord();
-        $record             = $bargainRecordModel->where([['bargain_id', '=', $bargain_id], ['user_id', '=', $user_id]])->find();
+        $record             = $bargainRecordModel->where([['bargain_id', '=', $bargain_id], ['user_id', '=', $user_id], ['status', '=', $bargainRecordModel::STATUS_ING]])->find();
         if (!$record) {
             $result['msg'] = '砍价记录不存在，请先参加活动';
             return $result;
         }
 
-        $data['cut_price']        = bcsub($record['start_price'], $record['price'], 2);
-        $dvalue                   = bcsub($record['start_price'], $record['end_price'], 2);
-        if($data['cut_price'] == 0 || $dvalue == 0){
+        $data['cut_price'] = bcsub($record['start_price'], $record['price'], 2);
+        $dvalue            = bcsub($record['start_price'], $record['end_price'], 2);
+        if ($data['cut_price'] == 0 || $dvalue == 0) {
             $progress = 1;
-        }else{
-            $progress                 = bcdiv($data['cut_price'], $dvalue, 2);
+        } else {
+            $progress = bcdiv($data['cut_price'], $dvalue, 2);
         }
         $data['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100;
         $data['status_progress']  = $record['status'];

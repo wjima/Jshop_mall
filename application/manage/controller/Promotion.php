@@ -583,6 +583,7 @@ class Promotion extends Manage
             $data['status']    = input('param.status/d', 2);
             $data['sort']      = input('param.sort/d', 100);
             $data['exclusive'] = input('param.exclusive/d', 2);
+            $data['type']      = input('param.type/d', 3);
             $params            = input('param.params/a', []);
 
             $params['max_nums']       = input('param.max_nums/d', 0);//每人限购

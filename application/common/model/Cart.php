@@ -152,11 +152,13 @@ class Cart extends Common
             case self::TYPE_BARGAIN://砍价
                 $num_type = 2;
                 //砍价
+
                 $bargainModel = new Bargain();
                 $re           = $bargainModel->addCart($product_id, $user_id, $nums);
                 if (!$re['status']) {
                     return $re;
                 }
+
                 //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                 $delwhere[] = ['user_id', 'eq', $user_id];
                 $delWhere[] = ['type', 'eq', self::TYPE_BARGAIN];

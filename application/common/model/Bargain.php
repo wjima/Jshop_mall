@@ -460,17 +460,17 @@ class Bargain extends Common
         $productModel = new Products();
         $info         = $productModel->where(['id' => $product_id])->find();
         if (!$info) {
-            return error_code(10000);
+            return error_code(17603);
         }
         $where[] = ['status', 'eq', self::STATUS_ON];
         $where[] = ['goods_id', 'eq', $info['goods_id']];
-
+        
         $binfo = $this
             ->where($where)
             ->order('sort asc')
             ->find();
         if (!$binfo) {
-            return error_code(10000);
+            return error_code(17612);
         }
         if ($binfo['stime'] > time()) {
             return error_code(17601);

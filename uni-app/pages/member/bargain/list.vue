@@ -26,9 +26,10 @@
 					<text class="txt" v-if="item.status==3">活动已成交</text>
 					<text class="txt" v-if="item.status==4">活动结束</text>
 					<text class="txt" v-if="item.status==5">活动已取消</text>
-					<view class="btn-wrap" v-if="item.status==1">
-						<view class="btn cancle" @click="cancleBargain(item)">取消活动</view>
-						<view class="btn submit" @click="bargainDetail(item)">继续砍价</view>
+					<view class="btn-wrap" >
+						<view class="btn cancle" @click="cancleBargain(item)" v-if="item.status==1">取消活动</view>
+						<view class="btn submit" @click="bargainDetail(item)" v-if="item.status==1">继续砍价</view>
+						<view class="btn submit" @click="buyNow(item)" v-if="item.status==2">立即下单</view>
 					</view>
 				</view>
 			</view>
@@ -105,6 +106,32 @@ export default {
 					_this.$common.errorToShow(res.msg);
 				}
 			});
+		},
+		// 立即购买
+		buyNow(item) {
+			let data = {
+				product_id: item.product_id,
+				nums: 1,
+				type: 2,
+				order_type: 6 //砍价
+			};
+			this.$api.addCart(
+				data,
+				res => {
+					if (res.status) {
+						let cartIds = res.data;
+						this.$common.navigateTo(
+							'/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=6&bargain_id=' + item.bargain_id + '&record_id=' + item.id
+						);
+					} else {
+						this.$common.errorToShow(res.msg);
+					}
+				},
+				res => {
+					this.submitStatus = false;
+				}
+			);
+			
 		}
 	},
 	// 页面滚动到底部触发事件

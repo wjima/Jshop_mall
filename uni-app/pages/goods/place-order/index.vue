@@ -328,7 +328,8 @@ export default {
 			inputCouArr: [], //输入的优惠券码的列表
 			clickIndex: Number ,//当前点击的优惠券
 			bargain_id: 0, //砍价活动id
-			record_id: 0 //砍价活动id
+			record_id: 0 ,//砍价活动id
+			group_id:0,//团购活动id
 		};
 	},
 	components: { lvvPopup, uniSegmentedControl },
@@ -344,11 +345,14 @@ export default {
 		if (options.bargain_id) {
 			this.bargain_id = options.bargain_id;
 		}
-		//砍价活动id
+		//发起人砍价活动id
 		if (options.record_id) {
 			this.record_id = options.record_id;
 		}
-
+		//团购活动id
+		if(options.group_id){
+			this.group_id = options.group_id
+		}
 		this.params.ids = JSON.parse(cartIds);
 		if (!this.params.ids) {
 			this.$common.successToShow('获取失败', function() {
@@ -486,7 +490,10 @@ export default {
 
 					// 所有价格转换
 					data.amount = this.$common.formatMoney(data.amount);
-					data.goods_amount = this.$common.formatMoney(data.goods_amount);
+					//商品金额=商品优惠后金额+商品优惠金额
+					let goods_amount = this.$common.moneySum(data.goods_amount,data.goods_pmt);
+
+					data.goods_amount = this.$common.formatMoney(goods_amount);
 					data.goods_pmt_old = data.goods_pmt;
 					data.goods_pmt = this.$common.formatMoney(data.goods_pmt);
 					data.coupon_pmt = this.$common.formatMoney(data.coupon_pmt);
@@ -732,6 +739,10 @@ export default {
 			//砍价
 			if (this.bargain_id != 0) {
 				data['params'] = JSON.stringify({ bargain_id: this.bargain_id, record_id: this.record_id }); //砍价信息
+			}
+			//团购秒杀
+			if(this.group_id!=0){
+				data['params'] = JSON.stringify({ group_id: this.group_id}); //砍价信息
 			}
 			let delivery = {};
 			// 判断是快递配送还是门店自提

@@ -429,19 +429,17 @@ class Promotion extends Manage
             return error_code(10002);
         }
 
-
         $resultModel = new PromotionResult();
-
-        //团购和秒杀时，限制一个促销结果
-        if ($info['type'] == $promotionModel::TYPE_GROUP || $info['type'] == $promotionModel::TYPE_SKILL) {
-            $result = $resultModel->where(['promotion_id' => $pwhere['id']])->count();
-            if ($result >= 1) {
-                return error_code(15016);
-            }
-        }
 
         if (Request::isPOST()) {
             $data = input('param.');
+            //团购和秒杀时，限制一个促销结果
+            if ($info['type'] == $promotionModel::TYPE_GROUP || $info['type'] == $promotionModel::TYPE_SKILL) {
+                $result = $resultModel->where(['promotion_id' => $pwhere['id']])->find();
+                if ($result && $result['id'] != input('param.id') ) {
+                    return error_code(15016);
+                }
+            }
             return $resultModel->addData($data);
         }
 
@@ -577,11 +575,6 @@ class Promotion extends Manage
                 $theDate = explode(' 到 ', input('param.date'));
                 if (count($theDate) != 2) {
                     return error_code(15002);
-                }
-            }
-            if (isInGroup($params['goods_id'], $promotion_id)) {
-                if ($promotion_id != $id) {
-                    return error_code(15017);
                 }
             }
             $data['name']      = input('param.name');

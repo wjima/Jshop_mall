@@ -54,6 +54,7 @@ class Group extends Api
             'data'   => [],
         ];
         $goods_id    = input('id/d', 0);
+        $group_id    = input('group_id/d', 0);//活动id
         $token       = input('token', '');//token值 会员登录后传
 
         if (!$goods_id) {
@@ -62,7 +63,7 @@ class Group extends Api
             return $return_data;
         }
         $promotion   = new Promotion();
-        $returnGoods = $promotion->getGroupDetial($goods_id, $token);
+        $returnGoods = $promotion->getGroupDetial($goods_id, $token,'*',$group_id);
         if ($returnGoods['status']) {
             $return_data ['msg']  = '查询成功';
             $return_data ['data'] = $returnGoods['data'];

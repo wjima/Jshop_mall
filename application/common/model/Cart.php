@@ -43,6 +43,7 @@ class Cart extends Common
      * @param $nums //数量
      * @param $num_type //数量类型，1是直接增加，2是赋值
      * @param int $type
+     * @param array $params //扩展参数
      * @return array|mixed
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -50,7 +51,7 @@ class Cart extends Common
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
-    public function add($user_id, $product_id, $nums, $num_type, $type = 1)
+    public function add($user_id, $product_id, $nums, $num_type, $type = 1,$params = [])
     {
         $result        = [
             'status' => false,
@@ -96,7 +97,7 @@ class Cart extends Common
                 break;
             case self::TYPE_GROUP:
                 //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion, self::TYPE_GROUP)) {
+                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_GROUP)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                     $delwhere[] = ['user_id', 'eq', $user_id];
                     $delWhere[] = ['type', 'eq', self::TYPE_GROUP];
@@ -123,7 +124,7 @@ class Cart extends Common
                 break;
             case self::TYPE_SKILL:
                 //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion, self::TYPE_SKILL)) {
+                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_SKILL)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                     $delwhere[] = ['user_id', 'eq', $user_id];
                     $delWhere[] = ['type', 'eq', self::TYPE_SKILL];
@@ -392,10 +393,6 @@ class Cart extends Common
         if ($delivery_type == 2) {
             $free_freight = true;
         }
-        //运费判断
-        if (!$this->cartFreight($result, $area_id, $free_freight)) {
-            return $result;
-        }
 
         //接下来算订单促销金额,有些模式不需要计算促销信息，这里就增加判断
         if ($order_type == self::TYPE_COMMON) {
@@ -404,6 +401,11 @@ class Cart extends Common
         } elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
             $promotionModel = new Promotion();
             $result['data'] = $promotionModel->toPromotion($result['data'], $order_type);
+        }
+
+        //运费判断
+        if (!$this->cartFreight($result, $area_id, $free_freight)) {
+            return $result;
         }
 
         //使用优惠券，判断优惠券是否可用
@@ -469,7 +471,7 @@ class Cart extends Common
         if (!$free) {
             if ($area_id) {
                 $shipModel                      = new Ship();
-                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount']);
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount'] - $result['data']['goods_pmt']);//运费是商品金额-优惠有金额
                 $result['data']['amount']       = bcadd($result['data']['amount'], $result['data']['cost_freight'], 2);
             }
         }

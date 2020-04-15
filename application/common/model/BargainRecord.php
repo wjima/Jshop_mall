@@ -17,6 +17,7 @@ class BargainRecord extends Common
     const STATUS_SUCCESS = '2';//砍价成功
     const STATUS_HAVE_ORDER = '3';//已下单
     const STATUS_END = '4';//未支付砍价结束
+    const STATUS_CANCLE = '5';//活动取消
 
     /**
      * 返回layui的table所需要的格式
@@ -80,6 +81,9 @@ class BargainRecord extends Common
             $list[$k]['ctime']    = getTime($v['ctime']);
             $list[$k]['utime']    = getTime($v['utime']);
             $list[$k]['avatar']   = _sImage(get_user_info($v['user_id'], 'avatar'));
+            if($v['status'] == self::STATUS_ING){
+                $list[$k]['lasttime'] = secondConversionArray($v['etime'] - time());
+            }
         }
         return $list;
     }
@@ -107,8 +111,14 @@ class BargainRecord extends Common
             $result['msg']  = '您有正在进行中的砍价，请勿重复参加';
             return $result;
         }
+        if(!$this->countRecord($bargain_id)){
+            $result['msg']  = '活动数量已满，请看看其它活动吧';
+            $result['data']['code'] = 'over';
+            return $result;
+        }
         $bargainModel           = new Bargain();
         $info                   = $bargainModel->get($bargain_id);
+
         $recData['user_id']     = $user_id;
         $recData['bargain_id']  = $bargain_id;
         $recData['status']      = self::STATUS_ING;
@@ -176,6 +186,52 @@ class BargainRecord extends Common
         $result['data']['list']  = $list;
         $result['data']['count'] = $total;
         return $result;
+    }
+
+    /**
+     * 取消砍价
+     * @param $record_id
+     * @param int $user_id
+     * @return array
+     */
+    public function cancleBargain($record_id, $user_id = 0)
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => ''
+        ];
+        if (!$record_id || !$user_id) {
+            $result['msg'] = '取消失败';
+            return $result;
+        }
+        $recordModel = new BargainRecord();
+        $info        = $recordModel->where([['user_id', '=', $user_id], ['id', '=', $record_id], ['status', '=', self::STATUS_ING]])->find();
+        if (!$info) {
+            $result['msg'] = '无砍价活动记录，取消失败';
+            return $result;
+        }
+        $res              = $this->where([['id', '=', $record_id]])->update(['status' => self::STATUS_CANCLE]);
+        $result['status'] = true;
+        $result['msg']    = '取消成功';
+        return $result;
+    }
+
+    /***
+     * 统计是否可以参加活动
+     * @param int $bargain_id
+     * @return bool
+     */
+    public function countRecord($bargain_id = 0)
+    {
+        $count        = $this->where([['bargain_id', '=', $bargain_id], ['status', 'not in', [4, 5]]])->count();
+        $bargainModel = new Bargain();
+        $info         = $bargainModel->field('max_goods_nums,status')->get($bargain_id);
+        if ($info && $info['status'] == $bargainModel::STATUS_ON && $info['max_goods_nums'] > $count) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

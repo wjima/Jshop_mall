@@ -91,7 +91,8 @@ const methodsToken = [
 	'bargain.dobargain',
 	'bargain.goodsinfo',
 	'bargain.add',
-	'bargain.getuserbargainlog'
+	'bargain.getuserbargainlog',
+	'bargain.canclebargain'
 ];
 
 const post = (method, data, callback,complete) => {
@@ -863,3 +864,6 @@ export const doBargain = (data, callback) => post('bargain.dobargain', data, cal
 export const addBargain = (data, callback) => post('bargain.add', data, callback);
 //砍一刀参与活动记录
 export const getUserBargainLog = (data, callback) => post('bargain.getuserbargainlog', data, callback);
+
+//取消砍一刀活动
+export const cancleBargain = (data, callback) => post('bargain.canclebargain', data, callback);

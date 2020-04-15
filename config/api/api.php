@@ -782,6 +782,10 @@ return [
             'getuserbargainlog' => [
                 'code'     => 'getUserBargainLog',
                 'is_login' => true
+            ],
+            'canclebargain'     => [
+                'code'     => 'cancleBargain',
+                'is_login' => true
             ]
         ]
     ]

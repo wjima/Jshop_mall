@@ -67,7 +67,6 @@ export default {
 		},
 		//砍价活动id
 		record_id:{
-			type:Number,
 			default:0
 		},
 		ifwx:{
@@ -138,7 +137,7 @@ export default {
 		copyUrl () {
             let data = {
                 page: this.shareType,
-                url: 'pages/share/jump',
+                url: h5Url+'pages/share/jump',
                 type: 1,
                 client: 1
             }

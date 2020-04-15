@@ -174,7 +174,7 @@ class Bargain extends Common
         $bargainRecordModel   = new BargainRecord();
         $aWhere['bargain_id'] = $bargain_id;
         $aWhere['id']         = $record_id;
-        $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime', $aWhere, ['ctime' => 'desc'], 1, 50);//todo 参与活动记录要拆分开
+        $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime,status,etime,stime', $aWhere, ['ctime' => 'desc'], 1, 50);//todo 参与活动记录要拆分开
 
         $info['attendance_record'] = $attendance_record['data'];
         //亲友团
@@ -191,13 +191,17 @@ class Bargain extends Common
         $info['friends_record'] = $friends_record['data'];
 
         $info['lasttime'] = secondConversionArray($record['etime'] - time());
+
         //已经砍的价格
         $info['cut_off_price'] = bcsub($record['start_price'], $record['price'], 2);//砍掉多少钱
         $dvalue                = bcsub($record['start_price'], $record['end_price'], 2);
 
 
-        $progress = bcdiv($info['cut_off_price'], $dvalue, 2);
-
+        if($dvalue==0||$info['cut_off_price']==0){
+            $progress = 1;
+        }else{
+            $progress = bcdiv($info['cut_off_price'], $dvalue, 2);
+        }
         $info['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100;//砍价进度条
         $info['status_progress']  = $record['status'];
         $info['current_price']    = $record['price'];
@@ -240,7 +244,11 @@ class Bargain extends Common
 
         $data['cut_price']        = bcsub($record['start_price'], $record['price'], 2);
         $dvalue                   = bcsub($record['start_price'], $record['end_price'], 2);
-        $progress                 = bcdiv($data['cut_price'], $dvalue, 2);
+        if($data['cut_price'] == 0 || $dvalue == 0){
+            $progress = 1;
+        }else{
+            $progress                 = bcdiv($data['cut_price'], $dvalue, 2);
+        }
         $data['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100;
         $data['status_progress']  = $record['status'];
         $data['current_price']    = $record['price'];

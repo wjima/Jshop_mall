@@ -32,14 +32,15 @@ class Bargain extends Api
      */
     public function getList()
     {
-        $return_data  = [
+        $return_data      = [
             'status' => true,
             'msg'    => '查询成功',
             'data'   => []
         ];
-        $bargainModel = new bargainModel();
-        $params       = input('param.');
-        $list         = $bargainModel->tableData($params);
+        $bargainModel     = new bargainModel();
+        $params           = input('param.');
+        $params['status'] = $bargainModel::STATUS_ON;
+        $list             = $bargainModel->tableData($params);
 
         if ($list) {
             $return_data['status']        = true;
@@ -123,6 +124,18 @@ class Bargain extends Api
         $where              = [];
         $where[]            = ['user_id', '=', $this->userId];
         return $bargainRecordModel->getList('*', $where, ['ctime' => 'desc'], $page, $limit);
+    }
+
+    /**
+     * 取消砍价活动
+     * @return mixed
+     */
+    public function cancleBargain()
+    {
+        $record_id           = input('record_id/d', 0);
+        $bargainRecordModel  = new BargainRecord();
+        $return_data['data'] = $bargainRecordModel->cancleBargain($record_id, $this->userId);
+        return $return_data;
     }
 
 }

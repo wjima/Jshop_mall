@@ -3,7 +3,7 @@
 		<view class="shop-wrap">
 			<view class="shop-title">
 				<image :src="userInfo.avatar" mode="" class="avatar"></image>
-				{{ userInfo.nickname||'' }}
+				{{ userInfo.nickname || '' }}
 			</view>
 			<view class="shop-info" v-if="info.goods">
 				<image :src="info.goods.image_url || ''" mode="" class="shop-pic"></image>
@@ -15,7 +15,7 @@
 						<text class="color-9">|</text>
 						<text class="color-9">已售:{{ info.sales_num || '0' }}</text>
 					</view>
-					<view class="time" v-show="info.lasttime && info.status_progress ==2">
+					<view class="time" v-show="info.lasttime && info.status_progress == 2">
 						<uni-countdown
 							:day="info.lasttime.day"
 							:hour="info.lasttime.hour"
@@ -30,17 +30,19 @@
 			</view>
 			<view class="pro-text">
 				<view class="now-price-wrap">
-					<text class="tag">当前价</text><text class="red now-price">￥{{ info.current_price || '0.00' }}元</text>  <br/>
+					<text class="tag">当前价</text>
+					<text class="red now-price">￥{{ info.current_price || '0.00' }}元</text>
+					<br />
 				</view>
 				已砍
 				<text class="red">￥{{ info.cut_off_price || '0.00' }}</text>
 				元
 			</view>
 			<progress :percent="info.cut_off_progress" active border-radius="10" stroke-width="5" activeColor="#ff7159" backgroundColor="#e5e5e5" />
-			<view class="share" @click="goShare()" v-if="info.status_progress ==1 && type==1">分享好友，代您砍价</view>
-			<view class="share" @click="goShare()" v-if="info.status_progress ==1 && type==2">分享好友，帮他砍价吧~</view>
-			<view class="share" v-if="info.status_progress ==2 && type==1">砍价成功，购买吧~</view>
-			<view class="share"  v-if="info.status_progress ==3||info.status_progress ==4">砍价结束</view>
+			<view class="share" @click="goShare()" v-if="info.status_progress == 1 && type == 1">分享好友，代您砍价</view>
+			<view class="share" @click="goShare()" v-if="info.status_progress == 1 && type == 2">分享好友，帮他砍价吧~</view>
+			<view class="share" v-if="info.status_progress == 2 && type == 1" @click="buyNow()">砍价成功，购买吧~</view>
+			<view class="share" v-if="info.status_progress == 3 || info.status_progress == 4">砍价结束</view>
 		</view>
 
 		<view class="tab-nav">
@@ -50,7 +52,7 @@
 			<view v-if="info.friends_record && info.friends_record.list.length > 0">
 				<view v-for="(item, idx) in info.friends_record.list" :key="idx" class="tab-list">
 					<view class="user">
-						<image :src="item.avatar" mode="aspectFill"  class="user-avatar"></image>
+						<image :src="item.avatar" mode="aspectFill" class="user-avatar"></image>
 						<view class="user-info">
 							<view class="user-name">{{ item.nickname || '' }}</view>
 							<view class="user-date">{{ item.ctime || '' }}</view>
@@ -88,8 +90,8 @@
 			</view>
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
-		<pop :popShow.sync="popShow" :price="bargain_price"/>
-		<lvv-popup position="bottom" ref="share" v-if="record_id!=0">
+		<pop :popShow.sync="popShow" :price="bargain_price" />
+		<lvv-popup position="bottom" ref="share" v-if="record_id && record_id != 0">
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:goodsId="info.id"
@@ -160,8 +162,8 @@
 			></shareByApp>
 			<!-- #endif -->
 		</lvv-popup>
-		<view class="flot-btn" v-if="type == 2"  @click="friendsAddBargain()">我也要砍</view>
-		<view class="flot-btn" v-if="type == 1 && info.status_progress== 1 " @click="buyNow()">立即购买</view>
+		<view class="flot-btn" v-if="type == 2" @click="friendsAddBargain()">我也要砍</view>
+		<view class="flot-btn" v-if="type == 1 && info.status_progress == 1" @click="buyNow()">立即购买</view>
 	</view>
 </template>
 
@@ -188,11 +190,10 @@ import shareByApp from '@/components/share/shareByApp.vue';
 import { apiBaseUrl } from '@/config/config.js';
 
 import { goBack } from '@/config/mixins.js';
-	
-	
+
 export default {
 	mixins: [goBack],
-	
+
 	data() {
 		return {
 			tabList: ['亲友团', '商品详情', '活动规则', '参与榜'],
@@ -202,8 +203,7 @@ export default {
 			type: 1, //砍价类型 1自己砍，2替别人砍
 			record_id: 0, //邀请人活动id //自己进的时候，没有记录id
 			bargain_price: 0, //砍掉多少钱
-			info: {
-			}, //砍价信息
+			info: {}, //砍价信息
 			userInfo: {}, // 用户信息
 			buyNum: 1, //购买数量
 			shareUrl: '/pages/share/jump'
@@ -232,14 +232,14 @@ export default {
 	},
 	onLoad(option) {
 		if (!option.id) {
-			goBack.backBtn()
+			goBack.backBtn();
 		}
 		this.id = option.id;
 		//有邀请人，说明是别人来砍价的
-		if (option.record_id && option.record_id!=0) {
+		if (option.record_id && option.record_id != 0) {
 			this.record_id = option.record_id;
 		}
-		if (option.type && option.type!=0) {
+		if (option.type && option.type != 0) {
 			this.type = option.type;
 		}
 		this.getUserInfo();
@@ -249,11 +249,11 @@ export default {
 			let pages = getCurrentPages();
 			let page = pages[pages.length - 1];
 			// #ifdef H5 || MP-WEIXIN || APP-PLUS || APP-PLUS-NVUE
-			return apiBaseUrl + 'wap/' + page.route + '?id=' + this.id + '&record_id=' + this.record_id+'&type=2';
+			return apiBaseUrl + 'wap/' + page.route + '?id=' + this.id + '&record_id=' + this.record_id + '&type=2';
 			// #endif
 
 			// #ifdef MP-ALIPAY
-			return apiBaseUrl + 'wap/' + page.__proto__.route + '?id=' + this.id + '&record_id=' + this.record_id+'&type=2';
+			return apiBaseUrl + 'wap/' + page.__proto__.route + '?id=' + this.id + '&record_id=' + this.record_id + '&type=2';
 			// #endif
 		}
 	},
@@ -268,9 +268,14 @@ export default {
 			};
 			this.$api.addBargain(data, res => {
 				if (res.status) {
-					this.doBargain(res.data);//参与成功
+					this.doBargain(res.data); //参与成功
 				} else {
-					this.getBargainDetial(res.data);//已经参与过
+					if (res.data.code && res.data.code == 'over') {
+						this.$common.errorToShow(res.msg);
+						goBack.backBtn();
+					} else {
+						this.getBargainDetial(res.data); //已经参与过
+					}
 				}
 			});
 		},
@@ -279,11 +284,11 @@ export default {
 			let data = {
 				type: this.type,
 				id: this.id,
-				record_id:record_id,
+				record_id: record_id
 			};
 			this.record_id = record_id;
 			this.$api.doBargain(data, res => {
-				this.getBargainDetial(record_id);//获取详情
+				this.getBargainDetial(record_id); //获取详情
 				if (res.status) {
 					this.info.current_price = res.data.current_price;
 					this.bargain_price = res.data.bargain_price; //砍掉多少钱
@@ -297,8 +302,8 @@ export default {
 		getBargainDetial(record_id) {
 			let data = {
 				type: this.type,
-				record_id:record_id,
-				id: this.id,
+				record_id: record_id,
+				id: this.id
 			};
 			this.record_id = record_id;
 			this.$api.getBargainDetial(data, res => {
@@ -315,14 +320,16 @@ export default {
 			this.$api.userInfo({}, res => {
 				if (res.status) {
 					_this.userInfo = res.data;
-					if(_this.type == 1){//自己进入的，先参加
-						if(_this.record_id && _this.record_id!=0){//会员中心进入
+					if (_this.type == 1) {
+						//自己进入的，先参加
+						if (_this.record_id && _this.record_id != 0) {
+							//会员中心进入
 							_this.getBargainDetial(_this.record_id);
-						}else{
+						} else {
 							_this.doAdd();
 						}
-					}else{
-						_this.doBargain(_this.record_id);//他人进入的，直接进入砍价
+					} else {
+						_this.doBargain(_this.record_id); //他人进入的，直接进入砍价
 					}
 				}
 			});
@@ -333,15 +340,17 @@ export default {
 				let data = {
 					product_id: this.info.goods.product.id,
 					nums: 1,
-					type: 2 ,
-					order_type:6//砍价
+					type: 2,
+					order_type: 6 //砍价
 				};
 				this.$api.addCart(
 					data,
 					res => {
 						if (res.status) {
 							let cartIds = res.data;
-							this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=6&bargain_id='+this.id+'&record_id='+this.record_id);
+							this.$common.navigateTo(
+								'/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=6&bargain_id=' + this.id + '&record_id=' + this.record_id
+							);
 						} else {
 							this.$common.errorToShow(res.msg);
 						}
@@ -353,7 +362,7 @@ export default {
 			}
 		},
 		//我也要砍
-		friendsAddBargain(){
+		friendsAddBargain() {
 			this.$common.navigateTo('/pages/bargain/index?id=' + this.id);
 		},
 		goShare() {
@@ -384,13 +393,15 @@ export default {
 			});
 		}
 	},
-	watch:{
-	    record_id: {
-	        handler () {
-	            this.getShareUrl();
-	        },
-	        deep: true
-	    }
+	watch: {
+		record_id: {
+			handler() {
+				// #ifdef MP-WEIXIN
+				this.getShareUrl();
+				// #endif
+			},
+			deep: true
+		}
 	},
 	//分享
 	onShareAppMessage() {
@@ -509,7 +520,7 @@ export default {
 .pro-text .now-price {
 	font-size: 44rpx;
 }
-.pro-text .tag{
+.pro-text .tag {
 	color: #ff7159;
 	border: 1rpx solid #ff7159;
 	padding: 2rpx 4rpx;

@@ -430,6 +430,9 @@ export default {
 			this.invoice = user_invoice;
 		}
 		// #endif
+		if(this.$store.state.shopAddress.id) {
+			this.store = this.$store.state.shopAddress
+		}
 	},
 	methods: {
 		// 切换门店

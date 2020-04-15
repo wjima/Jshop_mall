@@ -233,5 +233,18 @@ class BargainRecord extends Common
             return false;
         }
     }
+
+    /**
+     * 过期的活动状态取消
+     *
+     */
+    public function bargainCancle(){
+        $current_time = time();
+        $where = [];
+        $where[] = ['etime','<',$current_time];
+        $where[] = ['status','=',self::STATUS_END];
+        $this->where($where)->update(['status'=>self::STATUS_END]);
+    }
+
 }
 

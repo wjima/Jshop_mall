@@ -464,7 +464,7 @@ class Bargain extends Common
         }
         $where[] = ['status', 'eq', self::STATUS_ON];
         $where[] = ['goods_id', 'eq', $info['goods_id']];
-        
+
         $binfo = $this
             ->where($where)
             ->order('sort asc')
@@ -523,7 +523,5 @@ class Bargain extends Common
         $result['status'] = true;
         return $result;
     }
-
-
 }
 

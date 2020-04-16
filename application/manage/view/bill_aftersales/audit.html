@@ -67,10 +67,10 @@
         <div class="layui-form-mid">订单支付金额：{$order_info.payed},已退款金额：{$order_info.refunded}</div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">收货与否：</label>
+        <label class="layui-form-label">是否发货：</label>
         <div class="layui-input-inline seller-inline-8">
-            <input name="type" value="1" title="未收到货" {if $info['type'] == 1} checked="" {/if} type="radio">
-            <input name="type" value="2" title="已收到货" {if $info['type'] == 2} checked="" {/if} type="radio">
+            <input name="type" value="1" title="未发货" {if $info['type'] == 1} checked="" {/if} type="radio">
+            <input name="type" value="2" title="已发货" {if $info['type'] == 2} checked="" {/if} type="radio">
         </div>
     </div>
     <div class="layui-form-item">

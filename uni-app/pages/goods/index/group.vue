@@ -23,7 +23,7 @@
 						<text class="cost-price" v-if="parseFloat(product.mktprice) > 0">￥{{ product.mktprice || '0.00' }}</text>
 					</view>
 					<view class="commodity-salesvolume">
-						<text>已售{{ goodsInfo.buy_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
+						<text>已售{{ goodsInfo.buy_promotion_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
 					<view class="commodity-time-img"></view>
@@ -148,10 +148,12 @@
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByH5>
 			<!-- #endif -->
@@ -159,10 +161,12 @@
 			<!-- #ifdef MP-WEIXIN -->
 			<shareByWx
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByWx>
 			<!-- #endif -->
@@ -170,10 +174,12 @@
 			<!-- #ifdef MP-ALIPAY -->
 			<shareByAli
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByAli>
 			<!-- #endif -->
@@ -181,10 +187,12 @@
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByTt>
 			<!-- #endif -->
@@ -192,10 +200,12 @@
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp
 				:goodsId="goodsInfo.id"
+                :groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+                :shareType="9"
 				@close="closeShare()"
 			></shareByApp>
 			<!-- #endif -->
@@ -312,8 +322,9 @@ import shareByApp from '@/components/share/shareByApp.vue';
 // #endif
 
 import jshopContent from '@/components/jshop/jshop-content.vue'; //视频和文本解析组件
-
+import { goBack } from '@/config/mixins.js';
 export default {
+	mixins: [goBack],
 	components: {
 		uniSegmentedControl,
 		lvvPopup,
@@ -527,6 +538,10 @@ export default {
 							this.goodsBrowsing();
 						}
 					}
+				}else{
+					this.$common.errorToShow(res.msg, () => {
+						goBack.backBtn()
+					});
 				}
 			});
 		},
@@ -689,11 +704,15 @@ export default {
 					nums: this.buyNum,
 					order_type: order_type
 				};
+				//团购秒杀
+				if(this.groupId!=0){
+					data['params'] = JSON.stringify({ group_id: this.groupId}); //砍价信息
+				}
 				this.$api.addCart(data, res => {
 					if (res.status) {
 						this.toclose();
 						let cartIds = res.data;
-						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=' +order_type);
+						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=' +order_type+'&group_id='+this.groupId);
 					} else {
 						this.$common.errorToShow(res.msg);
 					}

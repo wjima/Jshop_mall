@@ -169,38 +169,41 @@ class Common extends Base
     /**
      * 二维码
      */
-    public function qr(){
+    public function qr()
+    {
         ob_end_clean();
         header('Content-type:image/png'); //mime信息
         include_once ROOT_PATH . 'extend/org/phpqrcode.php';
-        if(input('?param.url')){
+        if (input('?param.url')) {
             $url = urldecode(input('param.url'));
-        }else{
+        } else {
             $url = 'https://www.ji'.'hai'.'net.com';
         }
         $url = urldecode($url);
         $level = input('param.level', 'L');
-        $size =input('param.size', 10);
+        $size = input('param.size', 10);
         QRcode::png($url, false, $level, $size, 2);
-
-
     }
+
 
     /**
      * 海报
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
      */
-    public function poster(){
+    public function poster()
+    {
         ob_end_clean();
         header('Content-type:image/png'); //mime信息
-        if(input('?param.url')){
+        if (input('?param.url')) {
             $url = urldecode(input('param.url'));
-        }else{
+        } else {
             $url = 'https://www.ji'.'hai'.'net.com';
         }
         $code = input('param.code');
         $client = input('param.client');
         $posterShare = new PosterShare();
-        echo $posterShare->poster($url,$code,$client);
-
+        echo $posterShare->poster($url, $code, $client);
     }
 }

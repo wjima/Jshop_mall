@@ -66,11 +66,7 @@ export default {
 		}
 	},
 	mounted () {
-		/**
-		 * 
-		 *  H5+ 获取分享通道
-		 * 
-		 */
+		//H5+ 获取分享通道
 		uni.getProvider({
 			service: 'share',
 			success: (e) => {
@@ -116,7 +112,6 @@ export default {
 							break;
 					}
 				}
-				
 				data.push({
 					name: '生成海报',
 					cate: 'poster',
@@ -149,39 +144,40 @@ export default {
 		},
 		// 生成海报
 		createPoster () {
-			let data = {};
-			if (this.shareType == 1) {
-			    //商品
-			    data = {
-			        page: 2, //商品
-			        url: h5Url + 'pages/share/jump',
-			        params: {
-			            goods_id: this.goodsId
-			        },
-			        type: 3,//海报
-			        client: 2
+			let data = {
+			    page: this.shareType,
+			    url: h5Url + 'pages/share/jump',
+			    type: 3,
+			    client: 1
+			}
+			
+			if (this.shareType == 2) {
+			    //商品详情页
+			    data.params = {
+			        goods_id: this.goodsId
+			    };
+			} else if (this.shareType == 3) {
+			    //拼团详情页
+			    data.params = {
+			        goods_id: this.goodsId
+			    };
+			} else if (this.shareType == 6) {
+			    //拼团参团页
+			    data.params = {
+			        goods_id: this.goodsId,
+			        group_id: this.groupId,
+			        team_id: this.teamId
+			    };
+			} else if (this.shareType == 9) {
+			    //团购秒杀
+			    data.params = {
+			        goods_id: this.goodsId,
+			        group_id: this.groupId
 			    }
-			    let userToken = this.$db.get('userToken')
-			    if (userToken) {
-			    	data.token = userToken
-			    }
-			} else if(this.shareType == 3) {
-			    //拼团
-			    data = {
-			        page: 3, //商品
-			        url: h5Url + 'pages/share/jump',
-			        params: {
-			            goods_id: this.goodsId,
-			            group_id: this.groupId,
-			            team_id: this.teamId
-			        },
-			        type: 3,//海报
-			        client: 2
-			    }
-			    let userToken = this.$db.get('userToken')
-			    if (userToken) {
-			    	data.token = userToken
-			    }
+			}
+			let userToken = this.$db.get('userToken')
+			if (userToken) {
+				data.token = userToken
 			}
 			this.$api.share(data, res => {
 				if (res.status) {

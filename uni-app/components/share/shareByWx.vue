@@ -9,7 +9,7 @@
 					</view>
 				</button>
 			</view>
-			<view class="share-item" @click="createPoster()">
+			<view class="share-item" @click="createPoster()" v-show="shareType!=10">
 				<image src="/static/image/poster.png" mode=""></image>
 				<view class="">生成海报</view>
 			</view>
@@ -52,7 +52,7 @@ export default {
 		//分享类型
 		shareType:{
 			type:Number,
-			default:1
+			default:2
 		},
 		//拼团id
 		groupId:{
@@ -63,15 +63,22 @@ export default {
 		teamId:{
 			type:Number,
 			default:0
+		},
+		//砍价参与类型
+		bargainType:{
+			type:Number,
+			default:1
+		},
+		//砍价活动id
+		record_id:{
+			type:Number,
+			default:0
 		}
 	},
 	data () {
 		return {
 			providerList: [] // 分享通道 包含生成海报
 		}
-	},
-	mounted () {
-		
 	},
 	methods: {
 		// 关闭弹出层
@@ -80,40 +87,48 @@ export default {
 		},
 		// 生成海报
 		createPoster () {
-			let data = {};
-			if (this.shareType == 1) {
-			    //商品
-			    data = {
-			        page: 2, //商品
-			        url: 'pages/share/jump',
-			        params: {
-			            goods_id: this.goodsId
-			        },
-			        type: 3,//海报
-			        client: 2
-			    }
-			    let userToken = this.$db.get('userToken')
-			    if (userToken) {
-			    	data.token = userToken
-			    }
-			} else if(this.shareType == 3) {
-			    //拼团
-			    data = {
-			        page: 3, //商品
-			        url: 'pages/share/jump',
-			        params: {
-			            goods_id: this.goodsId,
-			            group_id: this.groupId,
-			            team_id: this.teamId
-			        },
-			        type: 3,//海报
-			        client: 2
-			    }
-			    let userToken = this.$db.get('userToken')
-			    if (userToken) {
-			    	data.token = userToken
-			    }
-			}
+			let data = {
+                page: this.shareType,
+                url: 'pages/share/jump',
+                type: 3,
+                client: 2
+            }
+            
+            if (this.shareType == 2) {
+                //商品详情页
+                data.params = {
+                    goods_id: this.goodsId
+                };
+            } else if (this.shareType == 3) {
+                //拼团详情页
+                data.params = {
+                    goods_id: this.goodsId
+                };
+            } else if (this.shareType == 6) {
+                //拼团参团页
+                data.params = {
+                    goods_id: this.goodsId,
+                    group_id: this.groupId,
+                    team_id: this.teamId
+                };
+            } else if (this.shareType == 9) {
+                //团购秒杀
+                data.params = {
+                    goods_id: this.goodsId,
+                    group_id: this.groupId
+                }
+            } else if (this.shareType == 10) {
+                //砍价
+                data.params = {
+                    id: this.goodsId,
+                    type: this.bargainType,
+					record_id:this.record_id
+                }
+            }
+            let userToken = this.$db.get('userToken')
+            if (userToken) {
+            	data.token = userToken
+            }
 			this.$api.share(data, res => {
 				if (res.status) {
 					this.close()

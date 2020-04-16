@@ -26,9 +26,9 @@ class PromotionResult extends Common
             'name' => '订单打X折',
             'type' => 'order',
         ],
-        'GOODS_HALF_PRICE' => [
+        'ORDER_HALF_PRICE' => [
             'name' => '指定商品每第几件减指定金额',
-            'type' => 'goods',
+            'type' => 'order',
         ],
     ];
 
@@ -57,7 +57,7 @@ class PromotionResult extends Common
             case 'ORDER_DISCOUNT':
                 $msg = '订单打'.$params['discount'].'折 ';
                 break;
-            case 'GOODS_HALF_PRICE':
+            case 'ORDER_HALF_PRICE':
                 $msg = '第'.$params['num'].'件'.$params['money'].'元';
                 break;
         }
@@ -462,7 +462,7 @@ class PromotionResult extends Common
                     return $result;
                 }
                 break;
-            case 'GOODS_HALF_PRICE':
+            case 'ORDER_HALF_PRICE':
                 if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
                     $result['msg'] = "请正确输入金额，最多2位小数";
                     return $result;
@@ -509,27 +509,67 @@ class PromotionResult extends Common
     }
 
     //第几件减去指定金额
-    private function result_GOODS_HALF_PRICE($params,&$v,$promotionInfo)
+    private function result_ORDER_HALF_PRICE($params,&$cart,$promotionInfo)
     {
-        $promotionMoney = 0;
-        //判断是否满足件数
-        if($v['nums'] < $params['num']){
-            return $promotionMoney;
+
+        $conditionModel = new PromotionCondition();
+        $condition = $conditionModel->where([['promotion_id','=',$promotionInfo['id']]])->select();
+        $qualified_goods = [];
+        foreach($cart['list'] as $k => $v) {
+            $type = $conditionModel->goods_check($promotionInfo['id'], $v['products']['goods_id'], $v['nums']);
+            if($type == 2){
+                if(isset($qualified_goods[$v['products']['goods_id']]) && $qualified_goods[$v['products']['goods_id']]){
+                    $qualified_goods[$v['products']['goods_id']]['nums'] += $v['nums'];
+                }else{
+                    $qualified_goods[$v['products']['goods_id']] = [
+                        'id'=>$v['id'],
+                        'nums'=>$v['nums'],
+                    ];
+                }
+            }
         }
-        //此次商品促销一共优惠了多少钱
-        $times = floor($v['nums']/$params['num']);
-        if($times>0){
-            $promotionMoney =  $params['money']*$times;
+        $totalPromotionMoney = 0;
+        if($qualified_goods){
+            foreach($qualified_goods as $key=>$val){
+                $promotionMoney = 0;
+                //判断是否满足件数
+                if($val['nums'] < $params['num']){
+                    continue;
+                }
+                //此次商品促销一共优惠了多少钱
+                $times = floor($val['nums']/$params['num']);
+                if($times>0){
+                    $promotionMoney =  $params['money']*$times;
+                    $totalPromotionMoney = $totalPromotionMoney+$promotionMoney;
+                    $qualified_goods[$key]['promotion_money'] = $promotionMoney;
+                }
+
+            }
         }
-        //设置商品优惠总金额
-        if(!isset($v['products']['promotion_amount'])){
-            $v['products']['promotion_amount'] = 0;
+
+        $order_amount = $cart['amount'];
+        //总价格修改
+        $cart['amount'] = bcsub($cart['amount'],$totalPromotionMoney,2);
+
+        switch ($promotionInfo['type']){
+            case $promotionInfo::TYPE_PROMOTION:
+                //总促销修改
+                $cart['order_pmt'] = bcadd($cart['order_pmt'], bcsub($order_amount, $cart['amount'], 2), 2);
+
+                //设置促销列表
+                if(!isset($cart['promotion_list'][$promotionInfo['id']])){
+                    $cart['promotion_list'][$promotionInfo['id']] = [
+                        'name' => $promotionInfo['name'],
+                        'type' => 2
+                    ];
+                }
+                break;
+            case $promotionInfo::TYPE_COUPON:
+                //优惠券促销金额
+                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], bcsub($order_amount, $cart['amount'], 2), 2);
+                break;
         }
-        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
-        //设置商品的实际销售金额（单品）
-        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
-        $v['products']['amount'] = $v['products']['amount']>0?$v['products']['amount']:0;
-        return $promotionMoney;
+
     }
 
 }

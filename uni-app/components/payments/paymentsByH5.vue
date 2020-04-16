@@ -252,7 +252,9 @@
 								// }
 							} else if ((this.type == 5 || this.type == 6) && this.recharge) {
 								data['params'] = {
-									formid: this.orderId
+									formid: this.orderId,
+									trade_type: 'JSAPI_OFFICIAL',
+									url: transitUrl
 								}
 							}
 							this.$api.pay(data, res => {
@@ -279,7 +281,9 @@
 								}
 							} else if ((this.type == 5 || this.type == 6) && this.recharge) {
 								data['params'] = {
-									formid: this.orderId
+									formid: this.orderId,
+									trade_type: 'MWEB',
+									return_url: baseUrl + 'wap/pages/goods/payment/result'
 								}
 							}
 							// 微信h5支付

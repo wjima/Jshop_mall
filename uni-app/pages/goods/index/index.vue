@@ -160,32 +160,66 @@
 		</view>
 
 		<lvv-popup position="bottom" ref="share">
-
 			<!-- #ifdef H5 -->
-			<shareByH5 :ifwx="ifwx" :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name"
-			 :shareContent="goodsInfo.brief" :shareHref="shareHref" @close="closeShare()"></shareByH5>
+			<shareByH5
+                :ifwx="ifwx"
+                :goodsId="goodsInfo.id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                :shareType="2"
+                @close="closeShare()"
+            ></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
-			<shareByWx :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
-			 :shareHref="shareHref" @close="closeShare()"></shareByWx>
+			<shareByWx
+                :goodsId="goodsInfo.id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                :shareType="2"
+                @close="closeShare()"
+            ></shareByWx>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-ALIPAY -->
-			<shareByAli :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
-			 :shareHref="shareHref" @close="closeShare()"></shareByAli>
+			<shareByAli
+                :goodsId="goodsInfo.id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                :shareType="2"
+                @close="closeShare()"
+            ></shareByAli>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-TOUTIAO -->
-			<shareByTt :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
-			 :shareHref="shareHref" @close="closeShare()"></shareByTt>
+			<shareByTt
+                :goodsId="goodsInfo.id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                :shareType="2"
+                @close="closeShare()"
+            ></shareByTt>
 			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
-			<shareByApp :goodsId="goodsInfo.id" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
-			 :shareHref="shareHref" @close="closeShare()"></shareByApp>
+			<shareByApp
+                :goodsId="goodsInfo.id"
+                :shareImg="goodsInfo.image_url"
+                :shareTitle="goodsInfo.name"
+                :shareContent="goodsInfo.brief"
+                :shareHref="shareHref"
+                :shareType="2"
+                @close="closeShare()"
+            ></shareByApp>
 			<!-- #endif -->
-
 		</lvv-popup>
 
 		<!-- 弹出层 -->

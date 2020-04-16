@@ -20,6 +20,7 @@
 		},
 		methods: {
             deshare(data) {
+				console.log(data);
                 this.$api.deshare({code: data}, res => {
                     if (res.status) {
                         this.saveInviteCode(res.data.userShareCode); //存储邀请码
@@ -31,7 +32,7 @@
                                 this.gotoGoods(res.data.params.goods_id);
                                 break;
                             case '3': //拼团
-                                this.gotoPinTuan(res.data.params.goods_id, res.data.params.team_id);
+                                this.gotoPinTuan(res.data.params.goods_id);
                                 break;
                             case '4': //店铺邀请
                                 this.gotoStore(res.data.params.store);
@@ -51,6 +52,9 @@
                             case '9': //团购秒杀
                                 this.gotoGroup(res.data.params.goods_id, res.data.params.group_id);
                                 break;
+							case '10'://邀请砍价
+								this.gotoBargain(res.data.params.id, res.data.params.type, res.data.params.record_id);
+								break;
                             default:
                             	this.gotoIndex();
                             	break;
@@ -95,9 +99,9 @@
 				}
 			},
 			//跳转到拼团
-			gotoPinTuan(id, team_id) {
+			gotoPinTuan(id) {
 				if(id && id != ''){
-					let url = '/pages/goods/index/pintuan?id=' + id + '&team_id=' + team_id;
+					let url = '/pages/goods/index/pintuan?id=' + id;
 					this.$common.redirectTo(url);
 				}else{
 					this.gotoIndex();
@@ -113,15 +117,14 @@
 				}
 			},
 			//跳转到参团
-			//todo:: 功能暂无后续开发
-			// gotoInvitationGroup(id, group_id, team_id) {
-			// 	if(id && id != '' && group_id && group_id != '' && team_id && team_id != ''){
-			// 		let url = '/pages/member/order/invitation_group?id=' + id + '&group_id=' + group_id + '&team_id=' + team_id;
-			// 		this.$common.redirectTo(url);
-			// 	}else{
-			// 		this.gotoIndex();
-			// 	}
-			// },
+			gotoInvitationGroup(id, group_id, team_id) {
+				if(id && id != '' && group_id && group_id != '' && team_id && team_id != ''){
+					let url = '/pages/member/order/pintuan?id=' + id + '&group_id=' + group_id + '&team_id=' + team_id;
+					this.$common.redirectTo(url);
+				}else{
+					this.gotoIndex();
+				}
+			},
 			//跳转到自定义页
 			gotoCustom(page_code) {
 				if(page_code && page_code != ''){
@@ -147,7 +150,17 @@
 				}else{
 					this.gotoIndex();
 				}
+			},
+			//跳转砍价页面
+			gotoBargain(id,type,record_id){
+				if(id && id != '' && type && record_id && record_id!=0){
+					let url = '/pages/bargain/index?id=' + id+'&type='+type+'&record_id='+record_id;
+					this.$common.redirectTo(url);
+				}else{
+					this.gotoIndex();
+				}
 			}
+			
 		}
 	};
 </script>

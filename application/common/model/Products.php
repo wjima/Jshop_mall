@@ -101,6 +101,7 @@ class Products extends Common
         $priceData = $goodsModel->getPrice($product, $user_id);
 
         $product['price']       = bcadd($priceData['price'], 0, 2);
+
         $product['grade_price'] = $priceData['grade_price'];
         $product['grade_info']  = $priceData['grade_info'];
         //如果是多规格商品，算多规格
@@ -160,6 +161,7 @@ class Products extends Common
         $product['promotion_list']   = [];             //促销列表
         $product['promotion_amount'] = 0;         //如果商品促销应用了，那么促销的金额
         //算促销信息
+
         if ($isPromotion) {
             $product['amount'] = $product['price'];
             //模拟购物车数据库结构，去取促销信息
@@ -233,31 +235,8 @@ class Products extends Common
             } else {
                 $product['buy_pintuan_count'] = $check_order['data']['total_orders'];
             }
-        } elseif ($type == 'group' || $type == 'skill') {
-            if (!isInGroup($product['goods_id'], $group_id)) {
-                $result['msg'] = '获取失败';
-                return $result;
-            }
-            $where['id']     = $group_id;
-            $where['status'] = $promotionModel::STATUS_OPEN;
-            $groupPromotion  = $promotionModel->where($where)->find();
-            $extendParams    = json_decode($groupPromotion['params'], true);
-
-            //调整前台显示数量
-            $orderModel = new Order();
-            $order_type = $orderModel::ORDER_TYPE_GROUP;
-            if ($extendParams['type'] == $promotionModel::TYPE_SKILL) {
-                $order_type = $orderModel::ORDER_TYPE_SKILL;
-            }
-            $check_order = $orderModel->findLimitOrder($product['id'], $user_id, $groupPromotion, $order_type);
-            if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
-                //活动销售件数
-                $product['stock']               = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];
-                $product['buy_promotion_count'] = $check_order['data']['total_orders'];
-            } else {
-                $product['buy_promotion_count'] = $check_order['data']['total_orders'];
-            }
         }
+
         $result = [
             'status' => true,
             'msg'    => '获取成功',

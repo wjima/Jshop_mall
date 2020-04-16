@@ -13,6 +13,7 @@ const store = new Vuex.Store({
 		searchFixed:false,//搜索框样式
 		userShip: {}, //地区信息
 		invoice: {}, //发票信息
+		shopAddress: {}, // 选择门店地址
 	},
     mutations: {
 		config (state, payload) {
@@ -35,6 +36,9 @@ const store = new Vuex.Store({
 		},
 		invoice (state, invoice) {
 			state.invoice = invoice
+		},
+		changeAddress (state, value) {
+			state.shopAddress = value
 		}
 	},
 	actions: {

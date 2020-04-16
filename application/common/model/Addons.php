@@ -53,13 +53,15 @@ class Addons extends Common
         $list    = $this->where($where)->field('*')->select();
         if (!$list->isEmpty()) {
             $list = $list->toArray();
-            foreach ($list as $addon) {
-                $addon['install']       = $addon['status'];
-                $addons[$addon['name']] = $addon;
-            }
         }
 
         foreach ($dirs as $value) {
+            foreach ($list as $addon) {
+                if($addon['name'] == $value){
+                    $addon['install']       = $addon['status'];
+                    $addons[$addon['name']] = $addon;
+                }
+            }
             if (!isset($addons[$value])) {
                 $class = get_addon_class($value);
                 if (!class_exists($class)) { // 实例化插件失败忽略执行

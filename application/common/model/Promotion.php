@@ -327,17 +327,19 @@ class Promotion extends Common
      * @param string $fields 查询字段
      * @return array
      */
-    public function getGroupDetial($goods_id = 0, $token = '',$fields = '*')
+    public function getGroupDetial($goods_id = 0, $token = '', $fields = '*', $group_id = 0)
     {
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '关键参数丢失',
+            'msg'    => '',
         ];
         if (!$goods_id) {
             return $result;
         }
+
         if (!isInGroup($goods_id, $group_id, $condition)) {
+            $result['msg'] = '活动不存在';
             return $result;
         }
 
@@ -363,12 +365,14 @@ class Promotion extends Common
         if ($condition['type'] == self::TYPE_SKILL) {
             $order_type = $orderModel::ORDER_TYPE_SKILL;
         }
+
         $check_order = $orderModel->findLimitOrder($goods['data']['product']['id'], 0, $condition, $order_type);
 
         if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
             $goods['data']['stock'] = $extendParams['max_goods_nums'];
             //活动销售件数
-            $goods['data']['product']['stock']    = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];
+            $stock                                = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];
+            $goods['data']['product']['stock']    = $stock > 0 ? $stock : 0;
             $goods['data']['buy_promotion_count'] = $check_order['data']['total_orders'];
         } else {
             $goods['data']['buy_promotion_count'] = $check_order['data']['total_orders'];

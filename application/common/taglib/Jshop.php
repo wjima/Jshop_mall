@@ -960,12 +960,22 @@ goodscat' . $id . '();
                 $where[] = ["id","in",'.$tag['value'].'];
                 $list = $userModel->where($where)->select()->toArray();
                
+               
             ?>
             <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="<?php echo implode(",",array_column($list,"id")) ?>" />
             <ul id="'.$time.'_list" class="sellect_seller_goods_list">
                 <?php
                     foreach($list as $k => $v){
-                        echo \'<li><span id="\'.$v["id"].\'"  >×</span>\'.$v["name"].\'</li>\';
+                        $s = "";
+                        if(!empty($v[\'username\'])) {
+                            $s = $v["username"];
+                        }
+                        $s .= "(";
+                         if(!empty($v[\'mobile\'])) {
+                            $s .= $v["mobile"];
+                        }
+                         $s .= ")";
+                        echo \'<li><span id="\'.$v["id"].\'"  >×</span>\'.$s.\'</li>\';
                     }
                 ?>
             </ul>

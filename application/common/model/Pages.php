@@ -63,10 +63,12 @@ class Pages extends Common
         return $list;
     }
 
-    /***
+
+    /**
      * 获取页面配置详情
-     * @param $page_code
+     * @param $page_code 页面编码
      * @param string $token
+     * @param bool|false $api 是否接口访问，接口为前台
      * @return array
      */
     public function getDetails($page_code, $token = '',$api = false)
@@ -148,12 +150,14 @@ class Pages extends Common
                     $promotion      = new Promotion();
                     if (isset($data[$i]['params']['list']) && $data[$i]['params']['list']) {
                         foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                            if (isset($v['goods_id']) && $v['goods_id']) {
-                                $goods = $promotion->getGroupDetial($v['goods_id'], $token,'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
-                                if ($goods['status']) {
-                                    $data[$i]['params']['list'][$k] = $goods['data'];
-                                } else {
-                                    $data[$i]['params']['list'][$k] = [];
+                            if($api){
+                                if (isset($v['goods_id']) && $v['goods_id']) {
+                                    $goods = $promotion->getGroupDetial($v['goods_id'], $token,'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids',$v['id']);
+                                    if ($goods['status']) {
+                                        $data[$i]['params']['list'][$k] = $goods['data'];
+                                    } else {
+                                        $data[$i]['params']['list'][$k] = [];
+                                    }
                                 }
                             }
                         }

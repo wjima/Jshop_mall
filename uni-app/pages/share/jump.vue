@@ -20,6 +20,7 @@
 		},
 		methods: {
             deshare(data) {
+				console.log(data);
                 this.$api.deshare({code: data}, res => {
                     if (res.status) {
                         this.saveInviteCode(res.data.userShareCode); //存储邀请码
@@ -51,6 +52,9 @@
                             case '9': //团购秒杀
                                 this.gotoGroup(res.data.params.goods_id, res.data.params.group_id);
                                 break;
+							case '10'://邀请砍价
+								this.gotoBargain(res.data.params.id, res.data.params.type, res.data.params.record_id);
+								break;
                             default:
                             	this.gotoIndex();
                             	break;
@@ -146,7 +150,17 @@
 				}else{
 					this.gotoIndex();
 				}
+			},
+			//跳转砍价页面
+			gotoBargain(id,type,record_id){
+				if(id && id != '' && type && record_id && record_id!=0){
+					let url = '/pages/bargain/index?id=' + id+'&type='+type+'&record_id='+record_id;
+					this.$common.redirectTo(url);
+				}else{
+					this.gotoIndex();
+				}
 			}
+			
 		}
 	};
 </script>

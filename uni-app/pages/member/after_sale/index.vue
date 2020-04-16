@@ -56,7 +56,7 @@
 				<view class='cell-group margin-cell-group'>
 					<view class='cell-item'>
 						<view class='cell-item-hd'>
-							<view class='cell-hd-title'>是否收到商品</view>
+							<view class='cell-hd-title'>是否发货</view>
 						</view>
 						<view class='cell-item-ft'>
 							<view class="uni-form-item uni-column invoice-type">
@@ -138,8 +138,8 @@ export default {
     data() {
         return {
 			type_list: [
-				{ value: '1', name: '未收到', checked: true, disabled: false },
-				{ value: '2', name: '已收到', checked: false, disabled:false },
+				{ value: '1', name: '未发货', checked: true, disabled: false },
+				{ value: '2', name: '已发货', checked: false, disabled:false },
 			],
 			order_id:'',
 			items:[],   //退货明细

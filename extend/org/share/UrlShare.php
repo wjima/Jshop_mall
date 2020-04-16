@@ -17,6 +17,7 @@ class UrlShare implements BaseShare
     const PAGE_PAGE = 7;
     const PAGE_FORM = 8;
     const PAGE_GROUP = 9;
+    const PAGE_BARGAIN = 10;//砍价
 
     //1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序,5pc，6阿里小程序
     const CLIENT_H5 = 1;
@@ -210,6 +211,15 @@ class UrlShare implements BaseShare
                     return $result;
                 }
                 break;
+            case self::PAGE_BARGAIN:
+                if (isset($params['id']) && isset($params['type'])&& isset($params['record_id'])){
+                    $str = $params['id'] . "_" . $params['type']. "_" . $params['record_id'];
+                } else {
+                    $result['msg'] = '参数必须传id,type,record_id';
+                    return $result;
+                }
+                break;
+
             default:
                 return error_code(10000);
         }
@@ -288,6 +298,14 @@ class UrlShare implements BaseShare
                     $result['data']['goods_id'] = $arr[0];
                     $result['data']['group_id'] = $arr[1];
                     $result['status'] = true;
+                }
+                break;
+            case self::PAGE_BARGAIN:
+                if (count($arr) == 3) {
+                    $result['data']['id']        = $arr[0];
+                    $result['data']['type']      = $arr[1];
+                    $result['data']['record_id'] = $arr[2];
+                    $result['status']            = true;
                 }
                 break;
             default:

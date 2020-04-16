@@ -39,6 +39,13 @@ class Bargain extends Common
     const STATUS_ON = 1; //启用
     const STATUS_OFF = 2; //禁用
 
+    const PROGRESS_STATUS_ING = '2';//进行中
+    const PROGRESS_STATUS_SUCCESS = '3';//砍价成功
+    const PROGRESS_STATUS_END = '4';//砍价结束
+
+    const TYPE_SELF = 1;//自己砍
+    const TYPE_OTHER = 2;//给别人砍
+
 
     protected function tableWhere($post)
     {
@@ -73,10 +80,11 @@ class Bargain extends Common
     protected function tableFormat($list)
     {
         foreach ($list as $k => $v) {
-            $list[$k]['stime'] = getTime($v['stime']);
-            $list[$k]['etime'] = getTime($v['etime']);
-            $list[$k]['ctime'] = getTime($v['ctime']);
-            $list[$k]['utime'] = getTime($v['utime']);
+            $list[$k]['ctime']      = getTime($v['ctime']);
+            $list[$k]['stime']      = getTime($v['stime']);
+            $list[$k]['etime']      = getTime($v['etime']);
+            $list[$k]['goods_name'] = get_goods_info($v['goods_id']);
+            $list[$k]['image']      = get_goods_info($v['goods_id'], 'image_id');
         }
         return $list;
     }
@@ -99,19 +107,19 @@ class Bargain extends Common
         }
         $theDate = explode(' 到 ', $data['date']);
 
-        //判断商品是否有参加过拼团
+        //判断商品是否有参加过拼团 todo
         $where[] = ['goods_id', '=', $data['goods_id']];
 
         $re = $this->where($where)->find();
         if ($re) {
-            $goodsModel = new Goods();
-            $goodsInfo  = $goodsModel->get($re['goods_id']);
-            if ($goodsInfo['status']) {
-                $result['msg'] = "商品：" . $goodsInfo['data']['name'] . " 参加过砍价了";
-                return $result;
-            } else {
-                return error_code(10000);
-            }
+            /* $goodsModel = new Goods();
+             $goodsInfo  = $goodsModel->get($re['goods_id']);
+             if ($goodsInfo) {
+                 $result['msg'] = "商品：" . $goodsInfo['name'] . " 参加过砍价了";
+                 return $result;
+             } else {
+                 return error_code(10000);
+             }*/
         }
 
         if (count($theDate) != 2) {
@@ -119,7 +127,6 @@ class Bargain extends Common
         }
         $data['stime'] = strtotime($theDate[0]);
         $data['etime'] = strtotime($theDate[1]);
-
         if (isset($data['id'])) {
             $this->allowField(true)->save($data, $data['id']);
         } else {
@@ -132,145 +139,383 @@ class Bargain extends Common
         return $result;
     }
 
-    /**
-     * 接口上获取拼团所有商品
-     * @param array $params
-     * @return array|\PDOStatement|string|\think\Collection
+    /***
+     * 获取砍价详情
+     * @param $bargain_id
+     * @param int $type
+     * @param int $record_id
+     * @param int $user_id
+     * @return array
      */
-    public function getPintuanList($id = 0)
+    public function getBargainDetial($bargain_id, $type = 1, $record_id = 0, $user_id = 0)
     {
         $result = [
-            'status' => true,
-            'data'   => [],
+            'status' => false,
             'msg'    => '',
+            'data'   => [],
         ];
-
-        $pintuanGoodsModel = new PintuanGoods();
-        $where[]           = ['status', 'eq', self::STATUS_ON];
-        $where[]           = ['stime', 'lt', time()];
-        $where[]           = ['etime', 'gt', time()];
-        if ($id != 0) {
-            $where[] = ['id', 'eq', $id];
+        if (!$bargain_id || !$user_id) {
+            $result['msg'] = '参数丢失';
+            return $result;
         }
+        $info       = $this->field('id,name,intro,desc,sales_num,goods_id,max_goods_nums,sales_num,start_price,end_price,etime')->get($bargain_id);
+        $goodsModel = new Goods();
 
-
-        $list = $pintuanGoodsModel
-            ->alias('pg')
-            ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
-            ->where($where)
-            ->order('sort asc')
-            ->select();
-
-        if (!$list->isEmpty()) {
-            $list = $list->toArray();
+        $goods = $goodsModel->getGoodsDetial($info['goods_id']);
+        if (!$goods['status']) {
+            $result['msg'] = '参数丢失';
+            return $result;
         }
-        $goods = [];
-        foreach ($list as $k => $v) {
-            $res = $pintuanGoodsModel->getGoodsInfo($v['goods_id']);
-            if ($res['status']) {
-                $goods[] = $res['data'];
-            }
-        }
-        $result['data'] = $goods;
+        $info['goods'] = $goods['data'];
 
+        $logModel = new BargainLog();
+        $aWhere   = $fWhere = [];
+
+        $bargainRecordModel   = new BargainRecord();
+        $aWhere['bargain_id'] = $bargain_id;
+        $aWhere['id']         = $record_id;
+        $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime,status,etime,stime', $aWhere, ['ctime' => 'desc'], 1, 50);//todo 参与活动记录要拆分开
+
+        $info['attendance_record'] = $attendance_record['data'];
+        //亲友团
+        if ($type == self::TYPE_SELF) {
+            $aWhere['user_id'] = $user_id;
+            $record            = $bargainRecordModel->where($aWhere)->find();
+            $record_id         = $record['id'];
+        } else {
+            $record = $bargainRecordModel->where($aWhere)->find();
+        }
+        $fWhere['bargain_id']   = $bargain_id;
+        $fWhere['record_id']    = $record_id;
+        $friends_record         = $logModel->getList('*', $fWhere, ['ctime' => 'desc'], 1, 50);//todo 亲友参与记录要拆分开
+        $info['friends_record'] = $friends_record['data'];
+
+        $info['lasttime'] = secondConversionArray($record['etime'] - time());
+
+        //已经砍的价格
+        $info['cut_off_price'] = bcsub($record['start_price'], $record['price'], 2);//砍掉多少钱
+        $dvalue                = bcsub($record['start_price'], $record['end_price'], 2);
+
+
+        if($dvalue==0||$info['cut_off_price']==0){
+            $progress = 1;
+        }else{
+            $progress = bcdiv($info['cut_off_price'], $dvalue, 2);
+        }
+        $info['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100;//砍价进度条
+        $info['status_progress']  = $record['status'];
+        $info['current_price']    = $record['price'];
+
+        //活动数量
+        if ($info['max_goods_nums'] == 0) {
+            $info['max_goods_nums'] = $goods['data']['product']['stock'];
+        }
+        $result['status'] = true;
+        $result['data']   = $info;
         return $result;
     }
 
 
     /**
-     * Undocumented function
+     * 当前价格
+     * @param $bargain_id
+     * @param int $record_id
+     * @return array
+     */
+    public function geBargainPrice($bargain_id, $user_id = 0)
+    {
+        $result             = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => [],
+        ];
+        $data               = [
+            'cut_price'        => 0,
+            'current_price'    => 0,
+            'cut_off_progress' => 0,
+            'status_progress'  => self::PROGRESS_STATUS_ING,
+        ];
+        $bargainRecordModel = new BargainRecord();
+        $record             = $bargainRecordModel->where([['bargain_id', '=', $bargain_id], ['user_id', '=', $user_id], ['status', '=', $bargainRecordModel::STATUS_ING]])->find();
+        if (!$record) {
+            $result['msg'] = '砍价记录不存在，请先参加活动';
+            return $result;
+        }
+
+        $data['cut_price'] = bcsub($record['start_price'], $record['price'], 2);
+        $dvalue            = bcsub($record['start_price'], $record['end_price'], 2);
+        if ($data['cut_price'] == 0 || $dvalue == 0) {
+            $progress = 1;
+        } else {
+            $progress = bcdiv($data['cut_price'], $dvalue, 2);
+        }
+        $data['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100;
+        $data['status_progress']  = $record['status'];
+        $data['current_price']    = $record['price'];
+        $result['data']           = $data;
+        $result['status']         = true;
+        return $result;
+    }
+
+    /**
+     * 砍一刀
+     * @param $id 活动id
+     * @param int $type 自己砍还是别人砍价
+     * @param int $user_id 当前用户id
+     * @param int $record_id 发起人id
+     * @return array
+     */
+    public function doBargain($id, $type = 1, $user_id = 0, $record_id = 0)
+    {
+        $result = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => [],
+        ];
+
+        $info = $this->get($id);
+        if (!$info) {
+            $result['msg'] = '砍价活动不存在';
+            return $result;
+        }
+        $current_time = time();
+        if ($current_time < $info['stime']) {
+            $result['msg'] = '砍价活动暂未开始';
+            return $result;
+        }
+        if ($current_time > $info['etime']) {
+            $result['msg'] = '砍价活动已结束';
+            return $result;
+        }
+        $logModel           = new BargainLog();
+        $bargainRecordModel = new BargainRecord();
+        //查看当前用户是否参加过
+        $section_price = $last_goods_price = 0;//剩余砍价区间
+        $where         = [];
+        $where[]       = ['id', '=', $record_id];
+        $record        = $bargainRecordModel->where($where)->find();
+        if (!$record) {
+            $result['msg'] = '砍价活动不存在';
+            return $result;
+        }
+
+        if ($record['status'] == $bargainRecordModel::STATUS_SUCCESS) {
+            $result['msg'] = '该砍价已成功，请先支付后再继续参与活动';
+            return $result;
+        }
+        if ($current_time > $record['etime']) {
+            $result['msg'] = '该用户砍价活动已结束';
+            return $result;
+        }
+        if ($record['status'] != $bargainRecordModel::STATUS_ING) {
+            $result['msg'] = '该用户砍价活动已结束';
+            return $result;
+        }
+        $where   = [];
+        $where[] = ['user_id', '=', $user_id];
+        $where[] = ['record_id', '=', $record_id];
+        $nums    = $logModel->where($where)->count();
+
+        $section_price = bcsub($info['start_price'], $info['end_price'], 2);//剩余砍价区间
+        $bargain_price = $this->calculationMoney($section_price, $info['bargain_max_price'], $info['bargain_min_price'], $info['total_times'], $nums + 1);//当前砍价金额
+
+
+        if ($nums >= 1) {//暂时限定一个人只能参加1次 todo 以后考虑接入任务
+            $result['msg'] = '您已超过该活动最大参加次数，看看别的活动吧~';
+            return $result;
+        }
+        $last_goods_price = $record['price'];//砍价前金额
+
+        $last_goods_price = $last_goods_price - $bargain_price;//砍价后金额
+        //计算砍价金额
+        $newLog               = [];
+        $newLog['record_id']  = $record_id;
+        $newLog['user_id']    = $user_id;
+        $newLog['bargain_id'] = $id;
+        $newLog['type']       = $type;
+        $newLog['ctime']      = $current_time;
+        $newLog['ip']         = get_client_ip(0, true);
+        if ($section_price < $info['bargain_min_price']) {//区间金额都小于最小砍价金额了，直接砍价成功吧
+            $bargain_price         = $section_price;
+            $newLog['goods_price'] = $info['end_price'];
+        } elseif ($last_goods_price < $info['end_price']) {
+            $last_goods_price      = $info['end_price'];
+            $bargain_price         = abs($info['end_price'] - $last_goods_price);
+            $newLog['goods_price'] = $info['end_price'];
+        } else {
+            $newLog['goods_price'] = $last_goods_price;
+        }
+        $newLog['bargain_price'] = $bargain_price;
+
+        if ($logModel->save($newLog)) {
+            $this->where([['id', '=', $id]])->setInc('sales_num', 1);//销量加1
+            if ($record['price'] - $bargain_price < $record['end_price']) {//避免出现最后金额低于最低金额情况
+                $bargain_price = $record['end_price'] - ($record['price'] - $bargain_price);
+            }
+
+            $bargainRecordModel->where([['id', '=', $record_id]])->setDec('price', $bargain_price);
+            //判断是否砍价成功
+            if ($record['price'] - $bargain_price <= $record['end_price']) {
+                $bargainRecordModel->updateRecord($record_id, ['status' => $bargainRecordModel::STATUS_SUCCESS]);//砍价成功
+            }
+        }
+        //累计砍掉多少钱
+        $result['status'] = true;
+        $result['data']   = [
+            'current_price' => $last_goods_price,
+            'bargain_price' => $bargain_price,
+        ];
+        $result['msg']    = '砍价成功';
+        return $result;
+    }
+
+
+    /**
+     * 计算砍价金额
+     * @param $section_price
+     * @param int $max_price
+     * @param int $min_price
+     * @param int $max_times
+     * @param int $number
+     * @return bool|float
+     */
+    private function calculationMoney($section_price, $max_price = 0, $min_price = 0, $max_times = 0, $number = 1)
+    {
+        $times = 0;
+        $price = self::k($section_price, $max_times, 900, $number, 80);
+
+        $res = !($price >= $min_price && $price <= $max_price);
+        while ($res) {
+            $price = self::k($section_price, $max_times, 900, $number, 80);
+            $res   = !($price >= $min_price && $price <= $max_price);
+            if ($times > 200) {
+                $res = false;
+            }
+            $times++;
+        }
+
+        return $price;
+    }
+
+    /**
+     * 计算砍价金额
+     * @param $money //金额
+     * @param $nums //预计砍n刀
+     * @param $n //离散值，0~1000,越小越平均
+     * @param $k //第n刀
+     * @param $rand //随机值0~100的整数
+     * @return bool|float
+     */
+    static function k($money, $nums, $n, $k, $rand = 0)
+    {
+        $n = $nums - $n + 1;
+        if ($k < 0 || $k > 1000) {
+            return false;
+        }
+        $rand = $rand / 100;
+        $bc   = $money / $nums;
+        if ($money <= 0 || $nums <= 0 || $bc <= 0.01) {
+            return false;
+        }
+        $bi = self::gs($money, $k) / ($money);
+
+        $y  = self::gs($bc * ($nums - $n + 1), $k);
+        $i2 = ($nums - $n);
+        $y2 = self::gs($bc * $i2, $k);
+
+        $re = ($y - $y2) / $bi;
+        if ($re < 0.01) {
+            return 0.01;
+        } else {
+            $re = round($re, 2);
+        }
+        //取随机值
+        $re = $re * 100;
+        $re = $re + mt_rand(0, $re * 2 * $rand) - $re * $rand;
+        $re = $re / 100;
+        return $re;
+    }
+
+    static function gs($x, $k = 1)
+    {
+        return pow($x, 1 + $k / 100);    //如果还想把离散值的差距搞大，这里的第二个参数往上加
+    }
+
+
+    /**
      * 在加入购物车的时候，判断是否有参加拼团的商品
-     * @param [type] $product_id
-     * @param integer $user_id
-     * @param integer $nums 加入购物车数量
-     * @return void
+     * @param $product_id 货品id
+     * @param int $user_id 用户id
+     * @param int $nums 加入购物车数量
+     * @return array|mixed
      */
     public function addCart($product_id, $user_id = 0, $nums = 1)
     {
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '',
+            'msg'    => ''
         ];
 
         $productModel = new Products();
         $info         = $productModel->where(['id' => $product_id])->find();
         if (!$info) {
-            return error_code(10000);
+            return error_code(17603);
         }
-        $pintuanGoodsModel = new PintuanGoods();
-        $where[]           = ['status', 'eq', self::STATUS_ON];
-        //$where[] = ['stime','lt',time()];
-        //$where[] = ['etime','gt',time()];
+        $where[] = ['status', 'eq', self::STATUS_ON];
         $where[] = ['goods_id', 'eq', $info['goods_id']];
 
-        $pinfo = $pintuanGoodsModel
-            ->alias('pg')
-            ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
+        $binfo = $this
             ->where($where)
             ->order('sort asc')
             ->find();
-        if (!$pinfo) {
-            return error_code(10000);
+        if (!$binfo) {
+            return error_code(17612);
         }
-        if ($pinfo['stime'] > time()) {
-            return error_code(15601);
+        if ($binfo['stime'] > time()) {
+            return error_code(17601);
         }
-        if ($pinfo['etime'] < time()) {
-            return error_code(15602);
-        }
-        //参与数量
-        $orderModel         = new Order();
-        $condition['stime'] = $pinfo['stime'];
-        $condition['etime'] = $pinfo['etime'];
-        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $condition, $orderModel::ORDER_TYPE_PINTUAN);
-
-        if (isset($pinfo['max_goods_nums']) && $pinfo['max_goods_nums'] != 0) {
-            if (($check_order['data']['total_orders'] + $nums) > $pinfo['max_goods_nums']) {
-                return error_code(15610);
-            }
-        }
-        if (isset($pinfo['max_nums']) && $pinfo['max_nums'] != 0) {
-            if (($nums + $check_order['data']['total_user_orders']) > $pinfo['max_nums']) {
-                return error_code(15611);
-            }
+        if ($binfo['etime'] < time()) {
+            return error_code(17602);
         }
         $result['status'] = true;
         return $result;
     }
 
     /**
-     * 取购物车数据的时候，更新价格
-     * @param $result
+     * 获取砍价价格信息
+     * @param $list
+     * @param $user_id
+     * @return array|mixed
      */
-    public function pintuanInfo(&$list)
+    public function bargainInfo(&$list, $user_id)
     {
-        $result            = [
+        $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '',
+            'msg'    => ''
         ];
-        $pintuanGoodsModel = new PintuanGoods();
         foreach ($list as $k => $v) {
             $where   = [];
             $where[] = ['status', 'eq', self::STATUS_ON];
             $where[] = ['goods_id', 'eq', $v['products']['goods_id']];
-            $pinfo   = $pintuanGoodsModel
-                ->alias('pg')
-                ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
+            $pinfo   = $this
                 ->where($where)
+                ->field('id,stime,etime,goods_id')
                 ->find();
             if (!$pinfo) {
-                return error_code(15603);
+                return error_code(17603);
             }
             if ($pinfo['stime'] > time()) {
-                return error_code(15601);
+                return error_code(17601);
             }
             if ($pinfo['etime'] < time()) {
-                return error_code(15602);
+                return error_code(17602);
             }
+            $price = $this->geBargainPrice($pinfo['id'], $user_id);
 
-            $list[$k]['products']['price'] -= $pinfo['discount_amount'];
+            $list[$k]['products']['price']            = $price['data']['current_price'];
+            $list[$k]['products']['promotion_amount'] = $price['data']['cut_price'];
             if ($list[$k]['products']['price'] < 0) {
                 return error_code(10000);
             }
@@ -278,28 +523,5 @@ class Bargain extends Common
         $result['status'] = true;
         return $result;
     }
-
-    /**
-     * 根据商品id获取拼团规则信息
-     * @param $goods_id
-     * @return array|null|\PDOStatement|string|Model
-     */
-    public function getPintuanInfo($goods_id)
-    {
-        $where = [];
-        //取得规则id
-        $where[]           = ['status', 'eq', $this::STATUS_ON];
-        $where[]           = ['goods_id', 'eq', $goods_id];
-        $where[]           = ['etime', '>', time()];
-        $pintuanGoodsModel = new PintuanGoods();
-        $pinfo             = $pintuanGoodsModel
-            ->alias('pg')
-            ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
-            ->join('goods g', 'pg.goods_id = g.id')
-            ->where($where)
-            ->find();
-        return $pinfo;
-    }
-
 }
 

@@ -34,8 +34,9 @@
                 { field: 'id', title: 'ID', width:80 },
                 { field: 'username', title: '用户名', width: 150 },
                 { field: 'mobile', title: '手机号码', width: 150 },
+                { field: 'nickname', title: '昵称' },
                 { field: 'grade_name', title: '等级', width: 150 },
-                { field: 'sex', title: '性别' },
+                // { field: 'sex', title: '性别' },
                 // { field: 'birthday', title: '生日', width: 150 },
                 // {
                 //     field: 'avatar', title: '头像',
@@ -47,22 +48,21 @@
                 //         }
                 //     }, width: 80
                 // },
-                // { field: 'nickname', title: '昵称' },
-                {
-                    title: '余额', templet: function (data) {
-                    var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
-                    return html;
-                }
-                },
-                {
-                    title: '积分', templet: function (data) {
-                    var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';
-                    return html;
-                }
-                },
-
-                { field: 'status', title: '状态' },
-                { field: 'pid_name', title: '邀请人' },
+                // {
+                //     title: '余额', templet: function (data) {
+                //     var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
+                //     return html;
+                // }
+                // },
+                // {
+                //     title: '积分', templet: function (data) {
+                //     var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';
+                //     return html;
+                // }
+                // },
+                //
+                // { field: 'status', title: '状态' },
+                // { field: 'pid_name', title: '邀请人' },
                 // { field: 'ctime', title: '创建时间', width: 200 }
             ]],
             done: function(res, curr, count){

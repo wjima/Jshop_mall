@@ -75,11 +75,16 @@
 			selectStore(id, name, mobile, address){
 				let pages = getCurrentPages()
 				let pre = pages[pages.length - 2]
-				let store = {};
-				store['id'] = id;
-				store['name'] = name;
-				store['mobile'] = mobile;
-				store['address'] = address;
+				let store = {id, name,mobile, address};
+				// store['id'] = id;
+				// store['name'] = name;
+				// store['mobile'] = mobile;
+				// store['address'] = address;
+				this.$store.commit('changeAddress', store);
+				uni.navigateBack({
+					delta: 1
+				});
+				return
 				
 				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				this.$db.set('user_store', store, true);

@@ -63,6 +63,11 @@ class Jshop extends TagLib
         'pintuan' => [
             'attr' => 'id,name,value',
             'close' => 0
+        ],
+        //用户列表
+        'selectuser'  =>  [
+            'attr'  =>  'id,name,value,grade,num,key',
+            'close' => 0
         ]
     ];
 
@@ -900,6 +905,140 @@ goodscat' . $id . '();
                 });
             </script>
         ';
+        return $parse;
+    }
+
+    /**
+     * 选择用户
+     * @param $tag
+     * @return string
+     */
+    public function tagSelectuser($tag)
+    {
+        //绑定变量
+        if(isset($tag['value'])){
+            $tag['value'] = $this->autoBuildVar($tag['value']);
+        }else{
+            $tag['value'] = "";
+        }
+
+        //选择的数量
+        if(isset($tag['num'])){
+            $tag['num'] = $this->autoBuildVar($tag['num']);
+            $num = "<?php echo (" . $tag['num'] . ");?>";
+        }else{
+            $num = "1";
+        }
+        $time = "u".time().rand(1,4).rand(1,4);
+        //增加变量key，解决同时存在多个选择用户时的问题
+
+        if (isset($tag['key']) && $tag['key']) {
+            $tag['key']  = $this->autoBuildVar($tag['key']);
+            $tag['key']  = "<?php echo (" . $tag['key'] . ");?>";
+            $tag['name'] = $tag['name'] . '[' . $tag['key'] . ']';
+            $time        = $time . '_' . $tag['key'];
+        } else {
+            $tag['key'] = "";
+        }
+        //判断用户等级
+        $where = [];
+        if(isset($tag['grade'])){
+            $tag['grade'] = $this->autoBuildVar($tag['grade']);
+            $grade = "<?php echo (" . $tag['grade'] . ");?>";
+            $where[] = ['grade','in',$grade];
+        }else{
+            $grade = "";
+        }
+
+        $parse = '
+        <div id="'.$time.'_box" class="select_userlist_box">
+            <div>
+                <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择用户</a>
+            </div>
+            <?php
+                $userModel = new app\common\model\User();
+                $where[] = ["id","in",'.$tag['value'].'];
+                $list = $userModel->where($where)->select()->toArray();
+               
+               
+            ?>
+            <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="<?php echo implode(",",array_column($list,"id")) ?>" />
+            <ul id="'.$time.'_list" class="sellect_seller_goods_list">
+                <?php
+                    foreach($list as $k => $v){
+                        $s = "";
+                        if(!empty($v[\'username\'])) {
+                            $s = $v["username"];
+                        }
+                        $s .= "(";
+                         if(!empty($v[\'mobile\'])) {
+                            $s .= $v["mobile"];
+                        }
+                         $s .= ")";
+                        echo \'<li><span id="\'.$v["id"].\'"  >×</span>\'.$s.\'</li>\';
+                    }
+                ?>
+            </ul>
+        </div>
+    ';
+
+        $parse .= '
+        <script>
+            var obj_'.$time.'_ids = {};
+            var num_'.$time.' = "'.$num.'";
+            var grade = "'.''.$tag['grade'].'";
+            function '.$time.'_show(){
+                layui.use([\'form\', \'table\'], function(){
+                    $.ajax({
+                        type:"get",
+                        url:"<?php echo url("manage/index/tagSelectUser",array("type"=>"show"));  ?>?grade="+grade,
+                        success:function(e){
+                            layui.layer.open({
+                                type: 1,
+                                content: e,
+                                area: ["800px", "600px"],
+                                title:"选择用户",
+                                btn: ["完成","取消"],
+                                yes: function(index, layero){
+                                    //判断个数是否满足
+                                    if(Object.getOwnPropertyNames(ids).length > num_'.$time.'){
+                                        layer.msg("最多只能选择"+num_'.$time.'+"个");
+                                        return false;
+                                    }
+                                  
+                                    $("#'.$time.'_list").empty();
+                                    var the_val = "";
+                                    for(var key in ids){
+                                        let str = "";
+                                        if(ids[key].username != null) str+=ids[key].username
+                                        str+="("
+                                        if(ids[key].mobile != null) str+=ids[key].mobile
+                                        str+=")"
+                                        $("#'.$time.'_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+str+\'</li>\');
+                                        the_val += "," + key;
+                                    }
+                                    $("#'.$time.'").val(the_val.slice(1));
+                                    layer.close(index);
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+            
+            $("#'.$time.'_list").delegate("span","click",function(){
+                var ids_array = $("#'.$time.'").val().split(",");
+                for (var i=0;i<ids_array.length ;i++ )
+                {
+                    if(ids_array[i] == $(this).attr("id")){
+                        ids_array.splice(i,1);
+                    }
+                }
+                $("#'.$time.'").val(ids_array.join(","));
+                $(this).parent().remove();
+            });
+        </script>
+    ';
         return $parse;
     }
 

@@ -37,23 +37,23 @@ class Cart extends Api
     {
         $result = [
             'status' => false,
-            'data' => [],
-            'msg' => ''
+            'data'   => [],
+            'msg'    => ''
         ];
 
-        if(!input("?param.product_id")){
+        if (!input("?param.product_id")) {
             $result['msg'] = '请输入货品id';
             return $result;
         }
-        if(!input("?param.nums")){
+        if (!input("?param.nums")) {
             $result['msg'] = '请输入货品数量';
             return $result;
         }
-        $type = input('param.type',1);          //1是累加，2是覆盖
-        $cart_type = input('param.order_type',1);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
+        $type      = input('param.type', 1);          //1是累加，2是覆盖
+        $cart_type = input('param.order_type', 1);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
+        $params    = json_decode(input('param.params', '{}'), true);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
 
-        return $this->cartModel->add($this->userId,input('product_id'),input('nums'),$type,$cart_type);
-
+        return $this->cartModel->add($this->userId, input('product_id'), input('nums'), $type, $cart_type, $params);
     }
 
 

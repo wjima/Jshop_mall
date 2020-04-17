@@ -38,7 +38,7 @@ class Promotion extends Common
         foreach ($list as $v) {
             $this->setPromotion($v, $cart);
             //团购秒杀不排他
-            if(self::TYPE_GROUP||self::TYPE_SKILL){
+            if($type == self::TYPE_GROUP||$type == self::TYPE_SKILL){
 
             }else{
                 //如果排他，就跳出循环，不执行下面的促销了
@@ -275,50 +275,6 @@ class Promotion extends Common
         return $info;
     }
 
-    /**
-     * 获取团购秒杀商品列表
-     * @param array $params
-     * @return array
-     */
-    public function getGroupList($params = [])
-    {
-        $type           = isset($params['type']) ? $params['type'] : self::TYPE_GROUP;
-        $where[]        = ['type', '=', $type];
-        $where[]        = ['status', '=', self::STATUS_OPEN];
-        $where[]        = ['stime', 'lt', time()];
-        $where[]        = ['etime', 'gt', time()];
-        $list           = $this->field('*')->where($where)->order('sort asc')->select();
-        $activeGoods    = []; //活动商品列表
-        $conditionModel = new PromotionCondition();
-        $goodsModel     = new Goods();
-        $orderItem      = new OrderItems();
-
-        if (!$list->isEmpty()) {
-            $i = 0;
-            foreach ((array)$list->toArray() as $key => $value) {
-                $extendParams           = json_decode($value['params'], true);
-                $filter['promotion_id'] = $value['id'];
-                $condition              = $conditionModel->field('*')->where($filter)->find();
-                if ($condition) {
-                    $params = json_decode($condition['params'], true);
-                    $res    = $goodsModel->getGoodsDetial($params['goods_id'], '*', '');
-                    if ($res['status']) {
-
-                        $activeGoods[$i]             = $res['data'];
-                        $activeGoods[$i]['group_id'] = $value['id'];
-                        $activeGoods[$i]['status']   = $value['status'];
-                        $activeGoods[$i]['time']     = time();
-                        $activeGoods[$i]['stime']    = $value['stime'];
-                        $activeGoods[$i]['etime']    = $value['etime'];
-                        $activeGoods[$i]['lasttime'] = secondConversionArray($value['etime'] - time());
-                        $i++;
-                    }
-                }
-            }
-        }
-
-        return $activeGoods;
-    }
 
     /**
      * 获取团购&秒杀商品详情
@@ -327,17 +283,19 @@ class Promotion extends Common
      * @param string $fields 查询字段
      * @return array
      */
-    public function getGroupDetial($goods_id = 0, $token = '',$fields = '*')
+    public function getGroupDetial($goods_id = 0, $token = '', $fields = '*', $group_id = 0)
     {
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '关键参数丢失',
+            'msg'    => '',
         ];
         if (!$goods_id) {
             return $result;
         }
+
         if (!isInGroup($goods_id, $group_id, $condition)) {
+            $result['msg'] = '活动不存在';
             return $result;
         }
 
@@ -363,12 +321,14 @@ class Promotion extends Common
         if ($condition['type'] == self::TYPE_SKILL) {
             $order_type = $orderModel::ORDER_TYPE_SKILL;
         }
+
         $check_order = $orderModel->findLimitOrder($goods['data']['product']['id'], 0, $condition, $order_type);
 
         if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
             $goods['data']['stock'] = $extendParams['max_goods_nums'];
             //活动销售件数
-            $goods['data']['product']['stock']    = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];
+            $stock                                = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];
+            $goods['data']['product']['stock']    = $stock > 0 ? $stock : 0;
             $goods['data']['buy_promotion_count'] = $check_order['data']['total_orders'];
         } else {
             $goods['data']['buy_promotion_count'] = $check_order['data']['total_orders'];
@@ -444,13 +404,14 @@ class Promotion extends Common
     }
 
 
+
     /**
-     * 返回layui的table所需要的格式
-     * @author sin
+     * 返回layui的table所需要的格式以及前台接口需要的数据
      * @param $post
+     * @param bool|false $api
      * @return mixed
      */
-    public function tableGroupData($post)
+    public function tableGroupData($post,$api = false)
     {
         if (isset($post['limit'])) {
             $limit = $post['limit'];
@@ -459,19 +420,46 @@ class Promotion extends Common
         }
         $tableWhere = $this->tableGroupWhere($post);
 
-        $list = $this
-            ->alias("pr")
-            ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
-            ->join("group_goods gg", "gg.rule_id = pr.id")
-            ->join("goods g", "g.id = gg.goods_id")
-            ->where($tableWhere['where'])
-            ->order($tableWhere['order'])
-            ->paginate($limit);
-        $data = $this->tableGroupFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        if($api){
+            $tableWhere['where'][] = ['pr.stime','<=',time()];
+            $tableWhere['where'][] = ['pr.etime','>',time()];
+            $list = $this
+                ->alias("pr")
+                ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                ->join("group_goods gg", "gg.rule_id = pr.id")
+                ->join("goods g", "g.id = gg.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
+                ->page($post['page'],$limit)
+                ->select();
+
+            $count = $this
+                ->alias("pr")
+                ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                ->join("group_goods gg", "gg.rule_id = pr.id")
+                ->join("goods g", "g.id = gg.goods_id")
+                ->where($tableWhere['where'])
+                ->count();
+            $data = $this->tableGroupFormat($list,$api);
+        }else{
+            $list = $this
+                ->alias("pr")
+                ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                ->join("group_goods gg", "gg.rule_id = pr.id")
+                ->join("goods g", "g.id = gg.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
+                ->paginate($limit);
+
+            $count = $list->total();
+            $data = $this->tableGroupFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+        }
+
+
 
         $re['code']  = 0;
         $re['msg']   = '';
-        $re['count'] = $list->total();
+        $re['count'] = $count;
         $re['data']  = $data;
         return $re;
     }
@@ -482,8 +470,9 @@ class Promotion extends Common
      * @param $list  array格式的collection
      * @return mixed
      */
-    protected function tableGroupFormat($list)
+    protected function tableGroupFormat($list, $api = false)
     {
+        $goodsModel = new Goods();
         foreach ($list as $k => $v) {
             if ($v['stime']) {
                 $list[$k]['stime'] = getTime($v['stime']);
@@ -491,9 +480,12 @@ class Promotion extends Common
             if ($v['etime']) {
                 $list[$k]['etime'] = getTime($v['etime']);
             }
-            if(isset($v['goods_image_id']) && $v['goods_image_id']){
+            if (isset($v['goods_image_id']) && $v['goods_image_id']) {
                 $list[$k]['image_url'] = _sImage($v['goods_image_id']);
-
+            }
+            if ($api) {
+                $res               = $this->getGroupDetial($v['goods_id'], '*', '', $v['id']);
+                $list[$k]['goods'] = $res['data'];
             }
             //            if($v['status']){
             //                $list[$k]['status'] = config('params.promotion.status')[$v['status']];

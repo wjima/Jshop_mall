@@ -554,7 +554,7 @@
 										res.data.isAfterSale :
 										0
 								}
-								console.log(res);
+								// console.log(res);
 								this.utilityMenus.coupon.nums=res.data.coupon
 							})
 							//判断是否是店员

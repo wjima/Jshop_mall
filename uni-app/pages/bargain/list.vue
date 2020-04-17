@@ -1,60 +1,57 @@
 <template>
 	<view class="bargain-list">
 		<view class="img-wrap">
-			<image src="../../static/image/banner.png" mode="" style="width:100%; height: 100%"></image>
+			<image src="/static/image/bargain.png" mode="" style="width:100%; height: 100%"></image>
 		</view>
 		<view class="list-wrap">
-			<view class="list-item" v-for="(item, idx) in 5" :key="idx">
+			<view class="list-item" v-for="(item, index) in list" :key="index">
 				<view class="pic">
-					<image src="../../static/image/car.png" mode="" style="width: 100%; height: 100%;"></image>
+					<image :src="item.image" mode="" style="width: 100%; height: 100%;"></image>
 				</view>
 				<view class="cont">
-					<text class="title">海晨酱-2019新款外套女黑色宽松短款工装夹克外套女秋冬百搭</text>
+					<text class="title fsz26">{{item.goods_name||''}}</text>
 					<view class="desc">
-						<text class="num">已售: <text>50</text> 件</text>
-						<navigator url="/pages/bargain/index">
-							<text class="btn">点击砍价</text>
+						<!-- <text class="num fsz24">已售: <text>{{item.sales_num||'0'}}</text> 件</text> -->
+						<text class="num fsz24">可砍至: <text>{{item.end_price||'0.00'}}</text>元</text>
+						<navigator :url="'/pages/bargain/index?id='+item.id">
+							<text class="btn fsz24">点击砍价</text>
 						</navigator>
 					</view>
 				</view>
 			</view>
+			<uni-load-more :status="loadStatus"></uni-load-more>
 		</view>
-		<lvv-popup position="bottom" ref="lvvpopref">
-			<view class="pop-wrap">
-				<view class="pop-title">
-					<text>选择收货地址</text>
-					<image @click="toclose" src="../../static/image/close-2.png" class="close-btn" mode=""></image>
-				</view>
-				<view class="address">
-					<image class="icon1" src="../../static/image/address.png" mode=""></image>
-					<view class="add-info">
-						<view class="add-user">
-							<text>小胖纸</text> 15539466899
-						</view>
-						<view>河南省 郑州市 高新技术开发区 河南省郑州市高新技术开发区 科学大道金梭路西悦城 11楼 870</view>
-					</view>
-					<image class="icon2" src="../../static/image/check.png" mode=""></image>
-				</view>
-				<view class="subtitle">添加其他收货地址</view>
-				<view class="btn-wrap">
-					<view class="btn">已选定该商品</view>
-				</view>
-			</view>
-		</lvv-popup>
 	</view>
 </template>
 
 <script>
 	import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	export default {
 		data() {
 			return {
+				page: 1,
+				limit: 10,
+				list: [],
+				loadStatus: 'more',
+				userInfo:{id:0}//用户信息
 			}
 		},
 		components: {
-			lvvPopup
+			lvvPopup,
+			uniLoadMore
 		},
 		mounted() {
+		},
+		onLoad(options) {
+			this.cid = options.cid;
+			this.getBargainList();
+			this.getUserInfo();
+		},
+		onReachBottom() {
+			if (this.loadStatus === 'more') {
+				this.getBargainList();
+			}
 		},
 		methods: {
 			// 显示modal弹出框
@@ -65,11 +62,45 @@
 			toclose() {
 				this.$refs.lvvpopref.close();
 			},
+			//获取砍价列表
+			getBargainList() {
+				let data = {
+					page: this.page,
+					limit: this.limit
+				};
+				this.loadStatus = 'loading';
+				this.$api.getBargainList(data, res => {
+					if (res.status) {
+						const _list = res.data.list;
+						this.list = [...this.list, ..._list];
+						if (res.data.count > this.list.length) {
+							this.loadStatus = 'more';
+							this.page++;
+						} else {
+							this.loadStatus = 'noMore';
+						}
+					} else {
+						// 接口请求出错了
+						this.$common.errorToShow(res.msg);
+					}
+				});
+			},
+			getUserInfo() {
+				var _this = this;
+				if (!this.$db.get('userToken')) {
+					this.$api.userInfo({}, res => {
+						if (res.status) {
+							_this.userInfo = res.data;
+						}
+					});
+				}
+			},
 		}
 	}
 </script>
 
 <style>
+
 	.pop-wrap {
 		width: 100%;
 		max-height: 804upx;
@@ -79,14 +110,14 @@
 		bottom: 0;
 	}
 	.bargain-list {
-		
+		background-color: #fff !important;
 	}
 	.bargain-list .img-wrap {
 		width: 100%;
 		height: 300rpx;
 	}
 	.bargain-list .list-item {
-		border-bottom: 1rpx solid #dfdfdf;
+		border-bottom: 2rpx solid #f3f3f3;
 		padding: 20rpx;
 		display: flex;
 	}
@@ -101,28 +132,21 @@
 		flex-direction: column;
 		justify-content: space-between;
 	}
-	.cont .title {
-		font-size: 20rpx;
-	}
+
 	.cont .desc {
 		display: flex;
 		justify-content: space-between;
 	}
 	.cont .desc .num {
-		color: #ff3535;
-		font-size: 20rpx;
-	}
-	.cont .desc .num text {
-		font-size: 24rpx;
+		color: #FF7159;
 	}
 	.cont .desc .btn {
-		width: 124rpx;
-		height: 36rpx;
+		width: 180rpx;
+		height: 48rpx;
 		text-align: center;
-		line-height: 36rpx;
-		background-color: #fc3742;
-		border-radius: 5rpx;
-		font-size: 20rpx;
+		line-height: 48rpx;
+		background-color: #FF7159;
+		border-radius: 4rpx;
 		color: #ffffff;
 	}
 	.pop-wrap {

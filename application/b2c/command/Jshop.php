@@ -67,6 +67,9 @@ class Jshop extends Command
             case 'remove_op_log':
                 $output->writeln(controller('b2c/Crontab')->removeOpLog());
                 break;
+            case 'bargain_cancle':
+                $output->writeln(controller('b2c/Crontab')->bargainCancle());
+                break;
         }
     }
 }

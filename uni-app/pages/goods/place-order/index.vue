@@ -427,35 +427,36 @@
 
             //获取默认门店信息
             this.getDefaultStore();
-						// // #ifdef MP-ALIPAY || MP-TOUTIAO
-						// let user_ship = this.$db.get('address_user_ship', true);
-						// if (user_ship) {
-						// 	this.userShip = user_ship;
-						// 	this.params.area_id = user_ship.area_id;
-						// 	this.$db.del('address_user_ship', true);
-						// }
-						// let user_invoice = this.$db.get('user_invoice', true);
-						// if (user_invoice) {
-						// 	this.invoice = user_invoice;
-						// 	this.$db.del('user_invoice', true);
-						// }
-						// let user_store = this.$db.get('user_store', true);
-						// if (user_store) {
-						// 	this.store = user_store;
-						// 	this.$db.del('user_store', true);
-						// }
-						// // #endif
-						// // #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-						// let user_ship = this.$store.state.userShip;
-						// if (user_ship) {
-						// 	this.userShip = user_ship;
-						// 	this.params.area_id = user_ship.area_id;
-						// }
-						// let user_invoice = this.$store.state.invoice;
-						// if (user_invoice) {
-						// 	this.invoice = user_invoice;
-						// }
-						// // #endif
+						
+						// #ifdef MP-ALIPAY || MP-TOUTIAO
+						let user_ship = this.$db.get('address_user_ship', true);
+						if (user_ship) {
+							this.userShip = user_ship;
+							this.params.area_id = user_ship.area_id;
+							this.$db.del('address_user_ship', true);
+						}
+						let user_invoice = this.$db.get('user_invoice', true);
+						if (user_invoice) {
+							this.invoice = user_invoice;
+							this.$db.del('user_invoice', true);
+						}
+						let user_store = this.$db.get('user_store', true);
+						if (user_store) {
+							this.store = user_store;
+							this.$db.del('user_store', true);
+						}
+						// #endif
+						// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+						let user_ship = this.$store.state.userShip;
+						if (user_ship) {
+							this.userShip = user_ship;
+							this.params.area_id = user_ship.area_id;
+						}
+						let user_invoice = this.$store.state.invoice;
+						if (user_invoice) {
+							this.invoice = user_invoice;
+						}
+						// #endif
         },
 		onShow() {
 			// #ifdef MP-ALIPAY || MP-TOUTIAO

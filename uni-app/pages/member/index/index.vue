@@ -169,6 +169,7 @@
 								<image class='cell-hd-icon' :src='item.icon'></image>
 							</view>
 							<view class="text">
+								<view class="badge color-f coupon" v-if="item.nums">{{ item.nums }}</view>
 								<text class="">{{item.name}}</text>
 							</view>
 						</view>
@@ -311,7 +312,8 @@
 						name: '我的优惠券',
 						icon: '/static/image/ic-me-coupon.png',
 						router: '../coupon/index',
-						unshowItem: false
+						unshowItem: false,
+						nums:0
 					},
 					balance: {
 						name: '我的余额',
@@ -552,6 +554,8 @@
 										res.data.isAfterSale :
 										0
 								}
+								console.log(res);
+								this.utilityMenus.coupon.nums=res.data.coupon
 							})
 							//判断是否是店员
 							this.$api.isStoreUser({}, res => {
@@ -792,6 +796,7 @@
 					margin-top: 12upx;
 					color: #4d4d4d;
 					font-size: 24rpx;
+					position: relative;
 				}
 			}
 			.tc {
@@ -804,5 +809,9 @@
 				}
 			}
 		}
+	}
+	.coupon{
+		top: -40px;
+		left: 50px;
 	}
 </style>

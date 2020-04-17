@@ -46,6 +46,47 @@ class Bargain extends Common
     const TYPE_SELF = 1;//自己砍
     const TYPE_OTHER = 2;//给别人砍
 
+    /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post,$api = false)
+    {
+        if(isset($post['limit'])){
+            $limit = $post['limit'];
+        }else{
+            $limit = config('paginate.list_rows');
+        }
+        if($api){
+
+            $tableWhere = $this->tableWhere($post);
+            $tableWhere['where'][] = ['stime','<=',time()];
+            $tableWhere['where'][] = ['etime','>',time()];
+
+            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])
+                ->page($post['page'],$limit)
+                ->select();
+
+            $count = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->count();
+            $data = $this->tableFormat($list,$api);
+
+        }else{
+            $tableWhere = $this->tableWhere($post);
+            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $count = $list->total();
+        }
+
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $count;
+        $re['data'] = $data;
+
+        return $re;
+    }
 
     protected function tableWhere($post)
     {
@@ -173,10 +214,11 @@ class Bargain extends Common
 
         $bargainRecordModel   = new BargainRecord();
         $aWhere['bargain_id'] = $bargain_id;
-        $aWhere['id']         = $record_id;
         $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime,status,etime,stime', $aWhere, ['ctime' => 'desc'], 1, 50);//todo 参与活动记录要拆分开
 
         $info['attendance_record'] = $attendance_record['data'];
+        $aWhere['id']         = $record_id;
+
         //亲友团
         if ($type == self::TYPE_SELF) {
             $aWhere['user_id'] = $user_id;
@@ -187,7 +229,7 @@ class Bargain extends Common
         }
         $fWhere['bargain_id']   = $bargain_id;
         $fWhere['record_id']    = $record_id;
-        $friends_record         = $logModel->getList('*', $fWhere, ['ctime' => 'desc'], 1, 50);//todo 亲友参与记录要拆分开
+        $friends_record         = $logModel->getList('*', $fWhere, ['ctime' => 'asc'], 1, 50);//todo 亲友参与记录要拆分开
         $info['friends_record'] = $friends_record['data'];
 
         $info['lasttime'] = secondConversionArray($record['etime'] - time());
@@ -195,7 +237,6 @@ class Bargain extends Common
         //已经砍的价格
         $info['cut_off_price'] = bcsub($record['start_price'], $record['price'], 2);//砍掉多少钱
         $dvalue                = bcsub($record['start_price'], $record['end_price'], 2);
-
 
         if($dvalue==0){
             $progress = 1;
@@ -206,10 +247,14 @@ class Bargain extends Common
         $info['status_progress']  = $record['status'];
         $info['current_price']    = $record['price'];
 
+
         //活动数量
         if ($info['max_goods_nums'] == 0) {
             $info['max_goods_nums'] = $goods['data']['product']['stock'];
         }
+        $userModel = new User();
+        $bargain_user = $userModel->getUserInfo($record['user_id']);
+        $info['bargain_user'] = $bargain_user['data'];
         $result['status'] = true;
         $result['data']   = $info;
         return $result;

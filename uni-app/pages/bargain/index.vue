@@ -2,8 +2,8 @@
 	<view class="bargain">
 		<view class="shop-wrap">
 			<view class="shop-title">
-				<image :src="userInfo.avatar" mode="" class="avatar"></image>
-				{{ userInfo.nickname || '' }}
+				<image :src="info.bargain_user.avatar" mode="" class="avatar"></image>
+				{{ info.bargain_user.nickname || '' }}
 			</view>
 			<view class="shop-info" v-if="info.goods">
 				<image :src="info.goods.image_url || ''" mode="" class="shop-pic"></image>
@@ -381,7 +381,7 @@ export default {
 				params: {
 					record_id: this.record_id,
 					id: this.id,
-					type: this.type
+					type:2//分享别人，只能是2
 				}
 			};
 			let userToken = this.$db.get('userToken');

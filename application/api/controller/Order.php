@@ -287,6 +287,8 @@ class Order extends Api
         $data  = $model->getOrderStatusNum($input);
         if($data)
         {
+            $couponCount = (new \app\common\model\Coupon())->getMyCouponCount($this->userId,'no_used');
+            $data['coupon'] = $couponCount;
             $return_data = [
                 'status' => true,
                 'msg'    => '获取成功',
@@ -295,6 +297,7 @@ class Order extends Api
         }
         else
         {
+            $data['coupon'] = 0;
             $return_data = [
                 'status' => false,
                 'msg'    => '没有符合的数据',

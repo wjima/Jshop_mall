@@ -5,6 +5,7 @@ namespace app\Manage\controller;
 use app\common\controller\Manage;
 use app\common\model\Bargain as BargainModel;
 use app\common\model\BargainLog;
+use app\common\model\BargainRecord;
 use think\facade\Request;
 
 
@@ -32,13 +33,18 @@ class Bargain extends Manage
     public function edit()
     {
         $result       = [
-            'status' => true,
+            'status' => false,
             'data'   => '',
             'msg'    => ''
         ];
         $bargainModel = new BargainModel();
         if (Request::isPost()) {
-            $data = input('param.');
+            $data     = input('param.');
+            $validate = new \app\common\validate\Bargain();
+            if (!$validate->check($data)) {
+                $result['msg'] = $validate->getError();
+                return $result;
+            }
             return $bargainModel->toAdd($data);
         }
         //如果是编辑，取数据
@@ -129,5 +135,20 @@ class Bargain extends Manage
             $result['msg'] = '设置失败';
         }
         return $result;
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function record()
+    {
+        if (Request::isAjax()) {
+            $bargainRecordModel = new BargainRecord();
+            $request      = input('param.');
+            return $bargainRecordModel->tableData($request);
+        }
+        return $this->fetch();
+
     }
 }

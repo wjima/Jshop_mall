@@ -35,7 +35,7 @@
     </div>
 </form>
 <div class="table-body">
-    <table id="pintuan" lay-filter="pintuan"></table>
+    <table id="bargain" lay-filter="bargain"></table>
 </div>
 <script>
     layui.use(['form', 'layedit', 'laydate','table'], function(){
@@ -45,31 +45,29 @@
             elem: '#date',
             range: '到',
             type: 'datetime',
-						trigger: 'click' //自动弹出控件的事件，采用click弹出
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //表格渲染
         layui.table.render({
-            elem: '#pintuan',
+            elem: '#bargain',
             height: 'full-220',
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
             url: "{:url('record')}",
-            id:'pintuan',
+            id:'bargain',
             cols: [[
                 {field:'id', width:90, title:'ID', align: 'center'},
-                {field:'team_id',title:'团ID',templet:function(data){
-                    var str = data.team_id;
-                    if(data.id == data.team_id){
-                        str = str + "(团长)";
-                    }
-                    return str;
-                }, align: 'center'},
-                {field:'user_nickname' ,title:'用户', align: 'center', width: 130},
+                {field:'name',title:'砍价活动',align: 'center'},
+                {field:'user' ,title:'发起用户', align: 'center', width: 130},
                 {field:'status_name',title:'状态', align: 'center', width: 110},
                 {field:'order_id',title:'订单号', align: 'center', width: 150},
-                {field:'close_time',title:'关闭时间', align: 'center', width: 170},
+                {field:'start_price',title:'开始价', align: 'center', width: 170},
+                {field:'end_price',title:'底价', align: 'center', width: 170},
+                {field:'price',title:'当前价', align: 'center', width: 170},
+                {field:'stime',title:'开始时间', align: 'center', width: 170},
+                {field:'etime',title:'结束时间', align: 'center', width: 170},
                 {field:'ctime',title:'创建时间', align: 'center', width: 170},
                 {field:'utime',title:'更新时间', align: 'center', width: 170}
             ]]
@@ -77,7 +75,7 @@
 
         //搜索
         layui.form.on('submit(*)', function(data){
-            layui.table.reload('pintuan', {
+            layui.table.reload('bargain', {
                 where: data.field
                 ,page: {
                     curr: 1 //重新从第 1 页开始

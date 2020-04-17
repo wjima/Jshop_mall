@@ -57,6 +57,7 @@ export default {
 			this.$api.userShip({}, res => {
                 if (res.status) {
                     this.list = res.data
+										
                 }
             })
 		},

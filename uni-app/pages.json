@@ -490,13 +490,14 @@
 		    "style" : {
 				"navigationBarTitleText": "团购列表"
 			}
-		},
-		{
-		    "path" : "pages/promotion/pintuan",
-		    "style" : {
-				"navigationBarTitleText": "拼团列表"
-			}
 		}
+		// ,
+		// {
+		//     "path" : "pages/promotion/pintuan",
+		//     "style" : {
+		// 		"navigationBarTitleText": "拼团列表"
+		// 	}
+		// }
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

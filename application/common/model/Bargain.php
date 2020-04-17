@@ -197,7 +197,7 @@ class Bargain extends Common
         $dvalue                = bcsub($record['start_price'], $record['end_price'], 2);
 
 
-        if($dvalue==0||$info['cut_off_price']==0){
+        if($dvalue==0){
             $progress = 1;
         }else{
             $progress = bcdiv($info['cut_off_price'], $dvalue, 2);
@@ -315,9 +315,24 @@ class Bargain extends Common
         $where[] = ['user_id', '=', $user_id];
         $where[] = ['record_id', '=', $record_id];
         $nums    = $logModel->where($where)->count();
-
+        //如果有记录，则砍价开始价为上次砍过后的价
+        if($record){
+            $info['start_price'] = $record['price'];
+        }
         $section_price = bcsub($info['start_price'], $info['end_price'], 2);//剩余砍价区间
-        $bargain_price = $this->calculationMoney($section_price, $info['bargain_max_price'], $info['bargain_min_price'], $info['total_times'], $nums + 1);//当前砍价金额
+
+        //已砍价次数
+        $totalRecord =  $logModel->where([['record_id', '=', $record_id]])->count();
+        if($totalRecord>=$info['total_times']){
+            $result['msg'] = '此商品只能砍价'.$info['total_times'].'次';
+            return $result;
+        }
+
+        if($record && $record['price'] <=$info['end_price']){
+            $result['msg'] = '此商品只能已砍到底价了';
+            return $result;
+        }
+        $bargain_price = $this->calculationMoney($section_price, $info['bargain_max_price'], $info['bargain_min_price'], $info['total_times']-$totalRecord);//当前砍价金额
 
 
         if ($nums >= 1) {//暂时限定一个人只能参加1次 todo 以后考虑接入任务
@@ -379,22 +394,22 @@ class Bargain extends Common
      * @param int $number
      * @return bool|float
      */
-    private function calculationMoney($section_price, $max_price = 0, $min_price = 0, $max_times = 0, $number = 1)
+    private function calculationMoney($section_price, $max_price = 0, $min_price = 0, $max_times = 0)
     {
-        $times = 0;
-        $price = self::k($section_price, $max_times, 900, $number, 80);
 
-        $res = !($price >= $min_price && $price <= $max_price);
-        while ($res) {
-            $price = self::k($section_price, $max_times, 900, $number, 80);
-            $res   = !($price >= $min_price && $price <= $max_price);
-            if ($times > 200) {
-                $res = false;
-            }
-            $times++;
+        $tmpTotal = $section_price * 100;
+        $tmpMin = $min_price * 100;
+        $tmpMax = $max_price * 100;
+        // 计算n-1次的随机金额，如果不减1，则会出现多减一次随机金额的问题，应该是最后的金额直接赋值
+        for ($i = 0; $i < $max_times - 1; $i++) {
+            $arr[$i] = mt_rand($tmpMin, $tmpMax);
+            $tmpTotal = $tmpTotal - $arr[$i];
         }
+        $arr[$max_times - 1] = $tmpTotal;
 
-        return $price;
+        $price = $arr[mt_rand(0,$max_times)];
+
+        return $price/100;
     }
 
     /**

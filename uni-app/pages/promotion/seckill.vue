@@ -5,34 +5,35 @@
 		</view>
 		<view class="">
 			<view class="img-list">
-				<view v-if="goodsLists.length > 0">
-					<view class="img-list-item" v-for="(item, index) in goodsLists" :key="index" @click="groupDetail(item.id, item.group_id)">
+				<view v-if="list.length > 0">
+					<view class="img-list-item" v-for="(item, index) in list" :key="index" @click="groupDetail(item.goods_id, item.id)">
 						<view class="img-list-item-t">
 							
 							<view class="">
 								<text class="fsz26 color-6">还剩：</text><uni-countdown
-									:backgroundColor="'#ff7159'" :color="'#fff'" :day="item.lasttime.day" :hour="item.lasttime.hour" :minute="item.lasttime.minute" :second="item.lasttime.second"></uni-countdown>
+									:backgroundColor="'#ff7159'" :color="'#fff'" :day="item.goods.lasttime.day" :hour="item.goods.lasttime.hour" :minute="item.goods.lasttime.minute" :second="item.goods.lasttime.second"></uni-countdown>
 							</view>
 							
 						</view>
 						<view class="img-list-item-b">
-							<image class="img-list-item-l little-img have-none" :src="item.image_url" mode="aspectFill"></image>
+							<image class="img-list-item-l little-img have-none" :src="item.goods.image_url" mode="aspectFill"></image>
 							<view class="img-list-item-r little-right">
-								<view class="goods-name list-goods-name">{{ item.name }}</view>
+								<view class="goods-name list-goods-name">{{ item.goods.name }}</view>
 								<view class="">
-									<view class="goods-price red-price fsz34"><text class="fsz24 color-3">限时价</text>￥{{ item.price }}</view>
+									<view class="goods-price red-price fsz34"><text class="fsz24 color-3">限时价</text>￥{{ item.goods.price }}</view>
 								</view>
 								<view class="goods-item-c">
 									<view class="goods-item-c-tip">
-										仅剩{{item.product.stock}}件
+										仅剩{{item.goods.product.stock}}件
 									</view>
-									<button class="btn" @click="groupDetail(item.id, item.group_id)" v-if="item.product.stock > 0">马上抢</button>
+									<button class="btn" @click="groupDetail(item.goods_id, item.id)" v-if="item.goods.product.stock > 0">马上抢</button>
 									<button class="btn btn-g" v-else>已售罄</button>
 								</view>
 							</view>
 						</view>
 					</view>
 				</view>
+				<uni-load-more :status="loadStatus"></uni-load-more>
 				<!-- <view class="order-none" v-else><image class="order-none-img" src="/static/image/order.png" mode=""></image></view> -->
 			</view>
 		</view>
@@ -41,17 +42,26 @@
 
 <script>
 import uniCountdown from "@/components/uni-countdown/uni-countdown.vue"
+import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 import {
 	goods
 } from '@/config/mixins.js'
 export default {
 	components: {
-		uniCountdown
+		uniCountdown,uniLoadMore
 	},
 	mixins: [goods],
 	data() {
 		return {
-			goodsLists:{}
+			page: 1,
+			limit: 10,
+			loadStatus: 'more',
+			list:[]
+		}
+	},
+	onReachBottom() {
+		if (this.loadStatus === 'more') {
+			this.getList();
 		}
 	},
 	onLoad() {
@@ -59,9 +69,27 @@ export default {
 	},
 	methods:{
 		getList(){
-			this.$api.getGroup({type: 4},res=>{
-				if(res.status){
-					this.goodsLists = res.data
+			let data = {
+				page: this.page,
+				limit: this.limit,
+				type:4
+			};
+			this.loadStatus = 'loading';
+			
+			this.$api.getGroup(data,res=>{
+				if (res.status) {
+					const _list = res.data.list;
+					console.log(_list);
+					this.list = [...this.list, ..._list];
+					if (res.data.count > this.list.length) {
+						this.loadStatus = 'more';
+						this.page++;
+					} else {
+						this.loadStatus = 'noMore';
+					}
+				} else {
+					// 接口请求出错了
+					this.$common.errorToShow(res.msg);
 				}
 			})
 		}

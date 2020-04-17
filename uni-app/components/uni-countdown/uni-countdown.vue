@@ -150,7 +150,7 @@
 			font-size:  24upx;
 			// border: 1px solid #000000;
 			font-size: $uni-font-size-sm;
-			// padding: 0 10upx;
+			padding: 0 5upx;
 		}
 	}
 </style>

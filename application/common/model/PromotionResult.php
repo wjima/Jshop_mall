@@ -27,7 +27,7 @@ class PromotionResult extends Common
             'type' => 'order',
         ],
         'ORDER_HALF_PRICE' => [
-            'name' => '指定商品每第几件减指定金额',
+            'name' => '指定商品满几件减指定金额',
             'type' => 'order',
         ],
     ];
@@ -58,7 +58,7 @@ class PromotionResult extends Common
                 $msg = '订单打'.$params['discount'].'折 ';
                 break;
             case 'ORDER_HALF_PRICE':
-                $msg = '第'.$params['num'].'件'.$params['money'].'元';
+                $msg = '满'.$params['num'].'件优惠'.$params['money'].'元';
                 break;
         }
         return $msg;

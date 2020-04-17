@@ -35,7 +35,7 @@
 	{
 	  "path": "pages/bargain/list",
 	  "style": {
-	    "navigationBarTitleText": "砍价优惠拿"
+	    "navigationBarTitleText": "砍价列表"
 	  }
 	},
     {
@@ -478,7 +478,25 @@
             "style" : {
 				"navigationBarTitleText": "砍价记录"
 			}
-        }
+        },
+		{
+		    "path" : "pages/promotion/seckill",
+		    "style" : {
+				"navigationBarTitleText": "秒杀列表"
+			}
+		},
+		{
+		    "path" : "pages/promotion/group",
+		    "style" : {
+				"navigationBarTitleText": "团购列表"
+			}
+		},
+		{
+		    "path" : "pages/promotion/pintuan",
+		    "style" : {
+				"navigationBarTitleText": "拼团列表"
+			}
+		}
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

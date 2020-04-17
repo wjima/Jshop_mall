@@ -420,9 +420,8 @@ export default {
 <style>
 .flot-btn {
 	position: fixed;
-	left: 20rpx;
 	bottom: 0;
-	width: 710rpx;
+	width: 100%;
 	height: 80rpx;
 	text-align: center;
 	line-height: 80rpx;
@@ -435,14 +434,12 @@ export default {
 	color: #ff7159;
 }
 .bargain {
-	padding: 0 20rpx;
 	padding-bottom: 100rpx;
 }
 .shop-wrap {
 	padding: 0 20rpx;
 	background: #fff;
 	padding: 15rpx 20rpx 30rpx 20rpx;
-	margin-top: 20rpx;
 }
 .shop-wrap .shop-title {
 	display: flex;

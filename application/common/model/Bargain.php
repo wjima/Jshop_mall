@@ -368,7 +368,7 @@ class Bargain extends Common
 
         //已砍价次数
         $totalRecord = $logModel->where([['record_id', '=', $record_id]])->count();
-        if ($totalRecord >= $info['total_times']) {
+        if ($totalRecord >= $info['total_times'] && $info['total_times'] ) {
             $result['msg'] = '此商品只能砍价' . $info['total_times'] . '次';
             return $result;
         }
@@ -400,7 +400,7 @@ class Bargain extends Common
             $newLog['goods_price'] = $info['end_price'];
         } elseif ($last_goods_price < $info['end_price']) {
             $last_goods_price      = $info['end_price'];
-            $bargain_price         = abs($info['end_price'] - $last_goods_price);
+            $bargain_price         = abs($record['price'] - $last_goods_price);
             $newLog['goods_price'] = $info['end_price'];
         } else {
             $newLog['goods_price'] = $last_goods_price;
@@ -441,7 +441,9 @@ class Bargain extends Common
      */
     private function calculationMoney($section_price, $max_price = 0, $min_price = 0, $max_times = 0)
     {
-
+        if($max_times<=0){
+            $max_times = ceil($section_price/$min_price);
+        }
         $tmpTotal = $section_price * 100;
         $tmpMin   = $min_price * 100;
         $tmpMax   = $max_price * 100;
@@ -451,9 +453,10 @@ class Bargain extends Common
             $tmpTotal = $tmpTotal - $arr[$i];
         }
         $arr[$max_times - 1] = $tmpTotal;
-
         $price = $arr[mt_rand(0, $max_times)];
-
+        if($price == 0){
+            $price = 0.01;
+        }
         return $price / 100;
     }
 

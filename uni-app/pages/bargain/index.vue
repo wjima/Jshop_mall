@@ -294,7 +294,7 @@ export default {
 					this.bargain_price = res.data.bargain_price; //砍掉多少钱
 					this.popShow = true;
 				} else {
-					//this.$common.errorToShow(res.msg);
+					this.$common.errorToShow(res.msg);
 				}
 			});
 		},
@@ -537,6 +537,7 @@ export default {
 	text-align: center;
 	line-height: 60rpx;
 	color: #fff;
+	margin: 0 auto;
 	margin-top: 44rpx;
 	background: linear-gradient(left, #ff7159, #fb3642);
 }

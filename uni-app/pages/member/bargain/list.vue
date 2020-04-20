@@ -7,29 +7,28 @@
 						<view class="icon-circle"><image class="goods-img" :src="item.image_url" mode="aspectFill"></image></view>
 						<view class="list-right">
 							<view class="list-title">{{ item.name }}</view>
-							<view class="count-down"  v-if="item.status==1 && item.lasttime">
+							<view class="count-down" v-if="item.status == 1 && item.lasttime">
 								<text class="count-down-text">倒计时</text>
-								<uniCountdown :show-colon="false" 
-								splitor-color="#868686"
-								color="#FF7159"
-								:day="10" />
+								<uniCountdown :show-colon="false" splitor-color="#868686" color="#FF7159" :day="10" />
 							</view>
-							<view class="red-price"> <text class="price-txt">已砍至</text> ￥{{ item.price }}</view>
+							<view class="red-price">
+								<text class="price-txt">已砍至</text>
+								￥{{ item.price }}
+							</view>
 						</view>
-						<view class="list-right-1">
-						</view>
+						<view class="list-right-1"></view>
 					</view>
 				</view>
 				<view class="footer-button">
-					<text class="txt" v-if="item.status==1">活动进行中</text>
-					<text class="txt" v-if="item.status==2">砍价成功</text>
-					<text class="txt" v-if="item.status==3">活动已成交</text>
-					<text class="txt" v-if="item.status==4">活动结束</text>
-					<text class="txt" v-if="item.status==5">活动已取消</text>
-					<view class="btn-wrap" >
-						<view class="btn cancle" @click="cancleBargain(item)" v-if="item.status==1">取消活动</view>
-						<view class="btn submit" @click="bargainDetail(item)" v-if="item.status==1">继续砍价</view>
-						<view class="btn submit" @click="buyNow(item)" v-if="item.status==2">立即下单</view>
+					<text class="txt" v-if="item.status == 1">活动进行中</text>
+					<text class="txt" v-if="item.status == 2">砍价成功</text>
+					<text class="txt" v-if="item.status == 3">活动已成交</text>
+					<text class="txt" v-if="item.status == 4">活动结束</text>
+					<text class="txt" v-if="item.status == 5">活动已取消</text>
+					<view class="btn-wrap">
+						<view class="btn cancle" @click="cancleBargain(item)" v-if="item.status == 1">取消活动</view>
+						<view class="btn submit" @click="bargainDetail(item)" v-if="item.status == 1">继续砍价</view>
+						<view class="btn submit" @click="buyNow(item)" v-if="item.status == 2">立即下单</view>
 					</view>
 				</view>
 			</view>
@@ -50,7 +49,7 @@ export default {
 			loadStatus: 'more'
 		};
 	},
-	components: { uniLoadMore, uniCountdown},
+	components: { uniLoadMore, uniCountdown },
 	onLoad() {
 		this.userbargainLog();
 	},
@@ -86,22 +85,23 @@ export default {
 				}
 			});
 		},
-		bargainDetail(item){
+		bargainDetail(item) {
 			uni.navigateTo({
-				url:'/pages/bargain/index?id='+item.bargain_id+'&record_id='+item.id
-			})
+				url: '/pages/bargain/index?id=' + item.bargain_id + '&record_id=' + item.id
+			});
 		},
 		//取消记录
-		cancleBargain(item){
+		cancleBargain(item) {
 			let data = {
-				record_id:item.id
+				record_id: item.id
 			};
 			let _this = this;
 			this.$api.cancleBargain(data, function(res) {
 				if (res.status) {
-					_this.page=1;
-					_this.userbargainLog();//更新记录
-					_this.$common.errorToShow(res.msg);
+					_this.page = 1;
+					_this.bargainList = [];
+					_this.userbargainLog(); //更新记录
+					_this.$common.successToShow(res.msg);
 				} else {
 					_this.$common.errorToShow(res.msg);
 				}
@@ -131,7 +131,6 @@ export default {
 					this.submitStatus = false;
 				}
 			);
-			
 		}
 	},
 	// 页面滚动到底部触发事件
@@ -214,7 +213,7 @@ export default {
 	color: #a9a9a9;
 }
 .list-title {
-	 width: 490upx;
+	width: 490upx;
 	/*line-height: 1.5;
 	overflow: hidden;
 	color: #333;

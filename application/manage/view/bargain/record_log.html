@@ -22,7 +22,7 @@
     <?php
         }
     ?>
-    <table id="balanceTable" lay-filter="balanceTable"></table>
+    <table id="recordLogTable" lay-filter="recordLogTable"></table>
 </div>
 
 <div id="export" style="display: none;">
@@ -50,11 +50,11 @@
             elem: '#datetime',
             range: '到',
             format: 'yyyy-MM-dd',
-						trigger: 'click' //自动弹出控件的事件，采用click弹出
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         layui.table.render({
-            elem: '#balanceTable',
+            elem: '#recordLogTable',
             height: 'full-99',
             cellMinWidth: '80',
             page: 'true',
@@ -62,7 +62,7 @@
             totalRow: true,
             user_id: 33,
             url: "{:url('recordLog')}?_ajax=1&record_id=" + $('#record_id').val(),
-            id: 'balanceTable',
+            id: 'recordLogTable',
             cols: [[
                 {field:'id', width:90, title:'ID', align:'center'},
                 {
@@ -81,7 +81,7 @@
             ]]
         });
         layui.form.on('submit(*)', function (data) {
-            layui.table.reload('balanceTable', {
+            layui.table.reload('recordLogTable', {
                 where: data.field
                 , page: {
                     curr: 1 //重新从第 1 页开始
@@ -89,34 +89,6 @@
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
-        //会员导出
-        layui.form.on('submit(export)', function (data) {
-            layer.open({
-                type: 1,
-                title: '导出',
-                area: setpage(400,290), //宽高
-                btn: ['确定', '取消'],
-                content: $("#export").html(),
-                yes: function () {
-                    //判断是否有选中
-                    var filter = $(".seller-form").serialize();
-                    $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
-                    var data = $(".export-form:last").serializeArray();
-                    data.push({ 'name': 'model', 'value': 'Balance' });
-                    JsPost("{:url('Ietask/export')}", data, function (res) {
-                            layer.msg(res.msg, { time: 1500 }, function () {
-                                if (res.status) {
-                                    layui.table.reload('balanceTable');
-                                    layer.closeAll();
-                                }
-                            });
-                        }
-                    );
-                }, btn2: function () {
-                    layer.closeAll();
-                }
-            });
-            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-        });
+
     });
 </script>

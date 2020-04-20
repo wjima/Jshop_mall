@@ -94,8 +94,7 @@
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
-
-        //删除
+        //查看日志
         $(document).on('click','.option-log',function(){
             var id = $(this).attr('data-id');
             window.location.href="{:url('recordLog')}?record_id="+id;

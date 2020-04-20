@@ -151,4 +151,17 @@ class Bargain extends Manage
         return $this->fetch();
 
     }
+
+    /**
+     * 砍价日志
+     */
+    public function recordLog(){
+        $this->assign('record_id',input('record_id'));
+        if (Request::isAjax()) {
+            $bargainLogModel = new BargainLog();
+            $request      = input('param.');
+            return $bargainLogModel->tableData($request);
+        }
+        return $this->fetch();
+    }
 }

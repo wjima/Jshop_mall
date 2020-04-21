@@ -470,7 +470,7 @@ class Cart extends Common
         if (!$free) {
             if ($area_id) {
                 $shipModel                      = new Ship();
-                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount'] - $result['data']['goods_pmt']);//运费是商品金额-优惠有金额
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount']);//todo 运费是商品金额-优惠有金额
                 $result['data']['amount']       = bcadd($result['data']['amount'], $result['data']['cost_freight'], 2);
             }
         }

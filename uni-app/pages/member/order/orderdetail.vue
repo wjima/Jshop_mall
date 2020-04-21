@@ -127,8 +127,22 @@
 								<view class='goods-num'>× {{ item.nums || ''}}</view>
 							</view>
 						</view>
+                        <view class='goods-item-c gift' v-if="item.giveaway.length > 0" v-for="(v, k) in item.giveaway" :key="k">
+                            <view class='goods-buy'>
+                                <view class='goods-salesvolume'>商品赠品：{{ v.name || ''}} </view>
+                                <view class='goods-num'> × {{ v.num || ''}}</view>
+                            </view>
+                        </view>
 					</view>
 				</view>
+                <view class="zp">
+                    <view class='zpzh' v-if="orderInfo.giveaway.length > 0" v-for="(v, k) in orderInfo.giveaway" :key="k">
+                        <view class='goods-buy'>
+                            <view class='goods-salesvolume ddzpsp'>订单赠品：{{ v.name || ''}} </view>
+                            <view class='goods-num'> × {{ v.num || ''}}</view>
+                        </view>
+                    </view>
+                </view>
 			</view>
 
 			<view class='cell-group margin-cell-group' v-if="orderInfo.invoice && orderInfo.invoice.type != 1">
@@ -631,4 +645,21 @@
 		margin-left: 20rpx;
 		padding-right: 0;
 	}
+    .zp{
+        background-color: #ffffff;
+        margin-top: 20upx;
+    }
+    .zpzh{
+        padding: 10upx 40upx;
+    }
+    .ddzpsp{
+        font-size: 24upx;
+    }
+    .gift{
+        background-color: #f3f3f3;
+        padding: 2px 10px;
+        border-bottom: dotted 1px #fff;
+        padding: 4upx 20upx;
+        border-bottom: dotted 2upx #fff;
+    }
 </style>

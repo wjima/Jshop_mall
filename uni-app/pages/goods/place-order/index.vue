@@ -99,8 +99,14 @@
 							</view>
 						</view>
 					</view>
+                    <view>
+                        <view class="giveaway2" v-for="(v, k) in item.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
+                    </view>
 				</view>
 			</view>
+            <view class="giveaway" v-if="cartData.giveaway.length > 0">
+                <view v-for="(v, k) in cartData.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
+            </view>
 
 			<view class='cell-group'>
 				<view class='cell-item'>
@@ -1265,4 +1271,14 @@
 		width: 40rpx;
 		height: 40rpx;
 	}
+    .giveaway{
+        margin-bottom: 10px;
+        margin-left: 10px;
+        font-size: 14px;
+        color: #666666;
+    }
+    .giveaway2{
+        font-size: 14px;
+        color: #666666;
+    }
 </style>

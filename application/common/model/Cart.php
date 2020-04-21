@@ -332,7 +332,8 @@ class Cart extends Common
                 'coupon'         => [],
                 'point'          => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money'    => 0,              //积分可以抵扣多少金额
-                'params'         => []              //一些可以放到购物车中的参数
+                'params'         => [],              //一些可以放到购物车中的参数
+                'giveaway'       => []
             ],
             'msg'    => ""
         ];

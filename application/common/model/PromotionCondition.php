@@ -28,7 +28,11 @@ class PromotionCondition extends Common
         'USER_GRADE' => [
             'name' => '用户符合指定等级',
             'type' => 'user'
-        ]
+        ],
+        'USER_IDS' => [
+            'name' => '指定某些用户',
+            'type' => 'user',
+        ],
     ];
 
 
@@ -252,6 +256,15 @@ class PromotionCondition extends Common
         }
         return 0;
 
+    }
+    //指定某些用户
+    private function condition_USER_IDS($params,$user_id){
+        $user_ids = explode(',',$params['user_id']);
+        if(in_array($user_id, $user_ids)){
+            return 2;
+        }else{
+            return 0;
+        }
     }
 
 

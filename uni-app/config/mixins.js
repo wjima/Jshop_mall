@@ -98,7 +98,19 @@ export const goBack = {
 			})
 			return true
 		}
-	}
+	},
+	backBtn() {
+		var pages = getCurrentPages();
+		if (pages.length > 1) {
+			uni.navigateBack({
+				delta: 1
+			});
+		} else {
+			uni.switchTab({
+				url: '/pages/index/index'
+			});
+		}
+	},
 }
 
 /* Function Info

@@ -337,7 +337,7 @@ function get_user_info($user_id, $field = 'mobile')
 function get_goods_info($goods_id, $field = 'name')
 {
     $goodsModel = new \app\common\model\Goods();
-    $info       = $goodsModel->where(['id' => $goods_id])->find();
+    $info       = $goodsModel->where(['id' => $goods_id])->cache(86400)->find();
     if ($info) {
         if ($field == 'image_id') {
             return _sImage($info[$field]);
@@ -628,11 +628,16 @@ function getBool($value = '1')
 /**
  * 时间格式化
  * @param int $time
- * @return false|string
+ * @param bool|true $year
+ * @return bool|string
  */
-function getTime($time = 0)
+function getTime($time = 0,$year=true)
 {
-    return date('Y-m-d H:i:s', $time);
+    if($year){
+        return date('Y-m-d H:i:s', $time);
+    }else{
+        return date('m-d H:i:s', $time);
+    }
 }
 
 
@@ -1057,19 +1062,24 @@ function isInGroup($gid = 0, &$promotion_id = 0,&$condition = [])
     $promotion = new app\common\model\Promotion();
 
     $where[]   = ['p.status', 'eq', $promotion::STATUS_OPEN];
+
+    if($promotion_id){
+        $where[]   = ['p.id', 'eq', $promotion_id];//团购秒杀id
+    }
     /*
     $where[]   = ['p.stime', 'lt', time()];
     $where[]   = ['p.etime', 'gt', time()];*/
     $where[]   = ['gg.goods_id', '=',  $gid];
     $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
+
     $condition = $promotion->field('p.id as id,p.type,p.status,p.params as params,p.stime as stime,p.etime as etime')
         ->alias('p')
         ->join('promotion_condition pc', 'pc.promotion_id = p.id')
         ->join('group_goods gg', 'gg.rule_id = p.id')
         ->where($where)
         ->find();
+
     if ($condition) {
-        $promotion_id = $condition['id'];
         return true;
     }
     return false;

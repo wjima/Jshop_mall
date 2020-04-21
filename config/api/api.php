@@ -6,396 +6,396 @@
 
 return [
     //用户
-    'user'    => [
-        'code' => 'User',
+    'user' => [
+        'code'   => 'User',
         'method' => [
-            'login' => [
-                'code' => 'login',
+            'login'                   => [
+                'code'     => 'login',
                 'is_login' => false
             ],
-            'smslogin' => [
-                'code' => 'smsLogin',
+            'smslogin'                => [
+                'code'     => 'smsLogin',
                 'is_login' => false
             ],
-            'bindMobile' => [
-                'code' => 'bindMobile',
+            'bindMobile'              => [
+                'code'     => 'bindMobile',
                 'is_login' => true
             ],
-            'wxapplogin1' => [
-                'code' => 'wxappLogin1',
+            'wxapplogin1'             => [
+                'code'     => 'wxappLogin1',
                 'is_login' => false
             ],
-            'wxapplogin2' => [
-                'code' => 'wxappLogin2',
+            'wxapplogin2'             => [
+                'code'     => 'wxappLogin2',
                 'is_login' => false
             ],
-            'alipayapplogin1' => [
-                'code' => 'alipayappLogin1',
+            'alipayapplogin1'         => [
+                'code'     => 'alipayappLogin1',
                 'is_login' => false
             ],
-            'sms' => [
-                'code' => 'sms',
+            'sms'                     => [
+                'code'     => 'sms',
                 'is_login' => false
             ],
-            'logout' => [
-                'code' => 'logout',
+            'logout'                  => [
+                'code'     => 'logout',
                 'is_login' => true
             ],
-            'reg' => [
-                'code' => 'reg',
+            'reg'                     => [
+                'code'     => 'reg',
                 'is_login' => false
             ],
-            'officiallogin' => [
-                'code' => 'officialLogin',
+            'officiallogin'           => [
+                'code'     => 'officialLogin',
                 'is_login' => false
             ],
-            'info' => [
-                'code' => 'info',
+            'info'                    => [
+                'code'     => 'info',
                 'is_login' => true
             ],
-            'changeavatar' => [
-                'code' => 'changeAvatar',
+            'changeavatar'            => [
+                'code'     => 'changeAvatar',
                 'is_login' => true
             ],
-            'editinfo' => [
-                'code' => 'editInfo',
+            'editinfo'                => [
+                'code'     => 'editInfo',
                 'is_login' => true
             ],
-            'addgoodsbrowsing' => [
-                'code' => 'addGoodsBrowsing',
+            'addgoodsbrowsing'        => [
+                'code'     => 'addGoodsBrowsing',
                 'is_login' => true
             ],
-            'delgoodsbrowsing' => [
-                'code' => 'delGoodsBrowsing',
+            'delgoodsbrowsing'        => [
+                'code'     => 'delGoodsBrowsing',
                 'is_login' => true
             ],
-            'goodsbrowsing' => [
-                'code' => 'goodsBrowsing',
+            'goodsbrowsing'           => [
+                'code'     => 'goodsBrowsing',
                 'is_login' => true
             ],
-            'goodscollection' => [
-                'code' => 'goodsCollection',
+            'goodscollection'         => [
+                'code'     => 'goodsCollection',
                 'is_login' => true
             ],
-            'goodscollectionlist' => [
-                'code' => 'goodsCollectionList',
+            'goodscollectionlist'     => [
+                'code'     => 'goodsCollectionList',
                 'is_login' => true
             ],
-            'saveusership' => [
-                'code' => 'saveUserShip',
+            'saveusership'            => [
+                'code'     => 'saveUserShip',
                 'is_login' => true
             ],
-            'vuesaveusership' => [
-                'code' => 'vueSaveUserShip',
+            'vuesaveusership'         => [
+                'code'     => 'vueSaveUserShip',
                 'is_login' => true
             ],
-            'getshipdetail' => [
-                'code' => 'getShipDetail',
+            'getshipdetail'           => [
+                'code'     => 'getShipDetail',
                 'is_login' => true
             ],
-            'setdefship' => [
-                'code' => 'setDefShip',
+            'setdefship'              => [
+                'code'     => 'setDefShip',
                 'is_login' => true
             ],
-            'editship' => [
-                'code' => 'editShip',
+            'editship'                => [
+                'code'     => 'editShip',
                 'is_login' => true
             ],
-            'removeship' => [
-                'code' => 'removeShip',
+            'removeship'              => [
+                'code'     => 'removeShip',
                 'is_login' => true
             ],
-            'getusership' => [
-                'code' => 'getUserShip',
+            'getusership'             => [
+                'code'     => 'getUserShip',
                 'is_login' => true
             ],
-            'getallname' => [
-                'code' => 'getAllName',
+            'getallname'              => [
+                'code'     => 'getAllName',
                 'is_login' => false
             ],
-            'getareaid' => [
-                'code' => 'getAreaId',
+            'getareaid'               => [
+                'code'     => 'getAreaId',
                 'is_login' => false
             ],
-            'pay' => [
-                'code' => 'pay',
+            'pay'                     => [
+                'code'     => 'pay',
                 'is_login' => false,
             ],
-            'orderevaluate' => [
-                'code' => 'orderEvaluate',
+            'orderevaluate'           => [
+                'code'     => 'orderEvaluate',
                 'is_login' => true,
             ],
-            'getuserdefaultship' => [
-                'code' => 'getUserDefaultShip',
+            'getuserdefaultship'      => [
+                'code'     => 'getUserDefaultShip',
                 'is_login' => true,
             ],
-            'issign' => [
-                'code' => 'isSign',
+            'issign'                  => [
+                'code'     => 'isSign',
                 'is_login' => true
             ],
-            'sign' => [
-                'code' => 'sign',
+            'sign'                    => [
+                'code'     => 'sign',
                 'is_login' => true
             ],
-            'getuserpoint' => [
-                'code' => 'getUserPoint',
+            'getuserpoint'            => [
+                'code'     => 'getUserPoint',
                 'is_login' => true
             ],
-            'getsetting' => [
-                'code' => 'getSetting',
+            'getsetting'              => [
+                'code'     => 'getSetting',
                 'is_login' => false
             ],
-            'getdefaultbankcard' => [
-                'code' => 'getDefaultBankCard',
+            'getdefaultbankcard'      => [
+                'code'     => 'getDefaultBankCard',
                 'is_login' => true
             ],
-            'getbankcardlist' => [
-                'code' => 'getBankCardList',
+            'getbankcardlist'         => [
+                'code'     => 'getBankCardList',
                 'is_login' => true
             ],
-            'addbankcard' => [
-                'code' => 'addBankCard',
+            'addbankcard'             => [
+                'code'     => 'addBankCard',
                 'is_login' => true
             ],
-            'removebankcard' => [
-                'code' => 'removeBankCard',
+            'removebankcard'          => [
+                'code'     => 'removeBankCard',
                 'is_login' => true
             ],
-            'setdefaultbankcard' => [
-                'code' => 'setDefaultBankCard',
+            'setdefaultbankcard'      => [
+                'code'     => 'setDefaultBankCard',
                 'is_login' => true
             ],
-            'getbankcardinfo' => [
-                'code' => 'getBankCardInfo',
+            'getbankcardinfo'         => [
+                'code'     => 'getBankCardInfo',
                 'is_login' => true
             ],
             'getbankcardorganization' => [
-                'code' => 'getBankCardOrganization',
+                'code'     => 'getBankCardOrganization',
                 'is_login' => false
             ],
-            'editpwd' => [
-                'code' => 'editPwd',
+            'editpwd'                 => [
+                'code'     => 'editPwd',
                 'is_login' => true
             ],
-            'forgetpwd' => [
-                'code' => 'forgetPwd',
+            'forgetpwd'               => [
+                'code'     => 'forgetPwd',
                 'is_login' => false
             ],
-            'balancelist' => [
-                'code' => 'userBalance',
+            'balancelist'             => [
+                'code'     => 'userBalance',
                 'is_login' => true
             ],
-            'recommend' => [
-                'code' => 'recommend',
+            'recommend'               => [
+                'code'     => 'recommend',
                 'is_login' => true
             ],
-            'sharecode' => [
-                'code' => 'sharecode',
+            'sharecode'               => [
+                'code'     => 'sharecode',
                 'is_login' => true
             ],
-            'cash' => [
-                'code' => 'cash',
+            'cash'                    => [
+                'code'     => 'cash',
                 'is_login' => true
             ],
-            'cashlist' => [
-                'code' => 'cashList',
+            'cashlist'                => [
+                'code'     => 'cashList',
                 'is_login' => true
             ],
-            'gettrustlogin' => [ //获取信任登录接口
-                'code' => 'getTrustLogin',
+            'gettrustlogin'           => [ //获取信任登录接口
+                'code'     => 'getTrustLogin',
                 'is_login' => false
             ],
-            'trustcallback' => [ //获取用户信息接口
-                'code' => 'trustCallBack',
+            'trustcallback'           => [ //获取用户信息接口
+                'code'     => 'trustCallBack',
                 'is_login' => false
             ],
-            'trustbind' => [  //账号绑定接口
-                'code' => 'trustBind',
+            'trustbind'               => [  //账号绑定接口
+                'code'     => 'trustBind',
                 'is_login' => false
             ],
-            'ispoint' => [
-                'code' => 'isPoint',
+            'ispoint'                 => [
+                'code'     => 'isPoint',
                 'is_login' => false
             ],
-            'myinvite' => [
-                'code' => 'myInvite',
+            'myinvite'                => [
+                'code'     => 'myInvite',
                 'is_login' => true
             ],
-            'activationinvite' => [
-                'code' => 'activationInvite',
+            'activationinvite'        => [
+                'code'     => 'activationInvite',
                 'is_login' => true
             ],
-            'userpointlog' => [
-                'code' => 'userPointLog',
+            'userpointlog'            => [
+                'code'     => 'userPointLog',
                 'is_login' => true
             ],
-            'getsigninfo' => [
-                'code' => 'getSignInfo',
+            'getsigninfo'             => [
+                'code'     => 'getSignInfo',
                 'is_login' => true
             ],
-            'getarealist' => [
-                'code' => 'getAreaList',
+            'getarealist'             => [
+                'code'     => 'getAreaList',
                 'is_login' => false
             ],
-            'getposter' => [
-                'code' => 'getPoster',
+            'getposter'               => [
+                'code'     => 'getPoster',
                 'is_login' => false
             ],
-            'uniapplogin'=>[
-                'code' => 'uniAppLogin',
+            'uniapplogin'             => [
+                'code'     => 'uniAppLogin',
                 'is_login' => false
             ],
-            'shareurl' => [
-                'code' => 'shareUrl',
+            'shareurl'                => [
+                'code'     => 'shareUrl',
                 'is_login' => false
             ],
-            'myinvoicelist' => [
-                'code' => 'myInvoiceList',
+            'myinvoicelist'           => [
+                'code'     => 'myInvoiceList',
                 'is_login' => true
             ],
-            'ttlogin' => [
-                'code' => 'ttLogin',
+            'ttlogin'                 => [
+                'code'     => 'ttLogin',
                 'is_login' => false
             ],
-            'share' => [
-                'code' => 'share',
+            'share'                   => [
+                'code'     => 'share',
                 'is_login' => false
             ],
-            'deshare' => [
-                'code' => 'deshare',
+            'deshare'                 => [
+                'code'     => 'deshare',
                 'is_login' => false
             ]
         ]
     ],
 
     'advert' => [
-        'code' => 'Carousel',
+        'code'   => 'Carousel',
         'method' => [
-            'positionList' => [
-                'code' => 'carouselSeatList',
+            'positionList'     => [
+                'code'     => 'carouselSeatList',
                 'is_login' => false
             ],
-            'getAdvertList' => [
-                'code' => 'getList',
+            'getAdvertList'    => [
+                'code'     => 'getList',
                 'is_login' => false
             ],
             'getcarousellists' => [
-                'code' => 'getCarouselLists',
+                'code'     => 'getCarouselLists',
                 'is_login' => false
             ]
         ],
     ],
 
     'articles' => [
-        'code' => 'Articles',
+        'code'   => 'Articles',
         'method' => [
-            'getArticleType' => [
-                'code' => 'getArticleType',
+            'getArticleType'   => [
+                'code'     => 'getArticleType',
                 'is_login' => false
             ],
-            'getArticleList' => [
-                'code' => 'getArticleList',
+            'getArticleList'   => [
+                'code'     => 'getArticleList',
                 'is_login' => false
             ],
             'getArticleDetail' => [
-                'code' => 'getArticleDetail',
+                'code'     => 'getArticleDetail',
                 'is_login' => false
             ],
-            'getweixinmessage'=>[
-                'code'=>'getWeixinMessage',
+            'getweixinmessage' => [
+                'code'     => 'getWeixinMessage',
                 'is_login' => false
             ],
-            'leftarticletype' => [
-                'code' => 'leftArticleType',
+            'leftarticletype'  => [
+                'code'     => 'leftArticleType',
                 'is_login' => false
             ],
-            'search' => [
-                'code' => 'search',
+            'search'           => [
+                'code'     => 'search',
                 'is_login' => false
             ]
         ]
     ],
 
     'brand' => [
-        'code' => 'Brand',
+        'code'   => 'Brand',
         'method' => [
             'brandList' => [
-                'code' => 'brandList',
+                'code'     => 'brandList',
                 'is_login' => false
             ]
         ]
     ],
 
     'coupon' => [
-        'code' => 'Coupon',
+        'code'   => 'Coupon',
         'method' => [
-            'couponlist' =>[
-               'code' => 'couponList',
-               'is_login' => false
-            ],
-            'coupondetail' => [
-                'code' => 'couponDetail',
+            'couponlist'   => [
+                'code'     => 'couponList',
                 'is_login' => false
             ],
-            'getcoupon' => [
-                'code' => 'getCoupon',
+            'coupondetail' => [
+                'code'     => 'couponDetail',
+                'is_login' => false
+            ],
+            'getcoupon'    => [
+                'code'     => 'getCoupon',
                 'is_login' => true,
             ],
-            'usercoupon' => [
-                'code' => 'userCoupon',
+            'usercoupon'   => [
+                'code'     => 'userCoupon',
                 'is_login' => true
             ],
             'getcouponkey' => [
-                'code' => 'getCouponKey',
+                'code'     => 'getCouponKey',
                 'is_login' => true
             ]
         ]
     ],
 
-    'notice' => [
-        'code' => 'Notice',
+    'notice'     => [
+        'code'   => 'Notice',
         'method' => [
             'noticeList' => [
-                'code' => 'noticeList',
+                'code'     => 'noticeList',
                 'is_login' => false
             ],
-            'noticeType' =>[
-                'code' => 'noticeType',
+            'noticeType' => [
+                'code'     => 'noticeType',
                 'is_login' => false
             ],
             'noticeInfo' => [
-                'code' => 'noticeInfo',
+                'code'     => 'noticeInfo',
                 'is_login' => false
             ]
         ]
     ],
 
     //购物车
-    'cart' => [
-        'code' => 'Cart',
+    'cart'       => [
+        'code'   => 'Cart',
         'method' => [
-            'add' => [
-                'code' => 'add',
+            'add'              => [
+                'code'     => 'add',
                 'is_login' => true
             ],
-            'del' => [
-                'code' => 'del',
+            'del'              => [
+                'code'     => 'del',
                 'is_login' => true
             ],
-            'getlist' => [
-                'code' => 'getList',
+            'getlist'          => [
+                'code'     => 'getList',
                 'is_login' => true
             ],
-            'setnums' => [
-                'code' => 'setNums',
+            'setnums'          => [
+                'code'     => 'setNums',
                 'is_login' => true
             ],
-            'getnumber' => [
-                'code' => 'getNumber',
+            'getnumber'        => [
+                'code'     => 'getNumber',
                 'is_login' => true
             ],
-            'batchsetcart' => [
-                'code' => 'batchSetCart',
+            'batchsetcart'     => [
+                'code'     => 'batchSetCart',
                 'is_login' => true
             ],
             'getlistselectall' => [
@@ -407,289 +407,289 @@ return [
 
     //商品分类
     'categories' => [
-        'code' => 'Categories',
+        'code'   => 'Categories',
         'method' => [
-            'gettopcat' => [
-                'code' => 'getTopCat',
+            'gettopcat'   => [
+                'code'     => 'getTopCat',
                 'is_login' => false
             ],
             'getchildcat' => [
-                'code' => 'getChildCat',
+                'code'     => 'getChildCat',
                 'is_login' => false
             ],
-            'getallcat' => [
-                'code' => 'getAllCat',
+            'getallcat'   => [
+                'code'     => 'getAllCat',
                 'is_login' => false
             ],
-            'getname' => [
-                'code' => 'getName',
+            'getname'     => [
+                'code'     => 'getName',
                 'is_login' => false
             ]
         ]
     ],
 
     //订单模块
-    'order' => [
-        'code' => 'Order',
+    'order'      => [
+        'code'   => 'Order',
         'method' => [
-            'cancel' => [
-                'code' => 'cancel',
+            'cancel'            => [
+                'code'     => 'cancel',
                 'is_login' => true
             ],
-            'del' => [
-                'code' => 'del',
+            'del'               => [
+                'code'     => 'del',
                 'is_login' => true
             ],
-            'details' => [
-                'code' => 'details',
+            'details'           => [
+                'code'     => 'details',
                 'is_login' => true
             ],
-            'confirm' => [
-                'code' => 'confirm',
+            'confirm'           => [
+                'code'     => 'confirm',
                 'is_login' => true
             ],
-            'create' => [
-                'code' => 'create',
+            'create'            => [
+                'code'     => 'create',
                 'is_login' => true
             ],
-            'getship' => [
-                'code' => 'getShip',
+            'getship'           => [
+                'code'     => 'getShip',
                 'is_login' => true
             ],
-            'getorderlist' => [
-                'code' => 'getOrderList',
+            'getorderlist'      => [
+                'code'     => 'getOrderList',
                 'is_login' => true
             ],
             'getorderstatusnum' => [
-                'code' => 'getOrderStatusNum',
+                'code'     => 'getOrderStatusNum',
                 'is_login' => true
             ],
-            'aftersaleslist' => [
-                'code' => 'aftersalesList',
+            'aftersaleslist'    => [
+                'code'     => 'aftersalesList',
                 'is_login' => true
             ],
-            'aftersalesinfo'=> [
-                'code' => 'aftersalesInfo',
+            'aftersalesinfo'    => [
+                'code'     => 'aftersalesInfo',
                 'is_login' => true,
             ],
-            'aftersalesstatus' => [
-                'code' => 'aftersalesStatus',
+            'aftersalesstatus'  => [
+                'code'     => 'aftersalesStatus',
                 'is_login' => true
             ],
-            'addaftersales' => [
-                'code' => 'addAftersales',
+            'addaftersales'     => [
+                'code'     => 'addAftersales',
                 'is_login' => true
             ],
-            'sendreship' => [
-                'code' => 'sendReship',
+            'sendreship'        => [
+                'code'     => 'sendReship',
                 'is_login' => true
             ],
-            'iscomment' => [
-                'code' => 'isComment',
+            'iscomment'         => [
+                'code'     => 'isComment',
                 'is_login' => true
             ],
-            'logistics' => [
-                'code' => 'logistics',
+            'logistics'         => [
+                'code'     => 'logistics',
                 'is_login' => true
             ],
-            'logisticbyapi' => [
-                'code' => 'logisticsByApi',
+            'logisticbyapi'     => [
+                'code'     => 'logisticsByApi',
                 'is_login' => false
             ],
-            'gettaxcode' => [
-                'code' => 'getTaxCode',
+            'gettaxcode'        => [
+                'code'     => 'getTaxCode',
                 'is_login' => false
             ]
         ]
     ],
 
     //商品
-    'goods' => [
-        'code' => 'Goods',
+    'goods'      => [
+        'code'   => 'Goods',
         'method' => [
-            'getlist' => [
-                'code' => 'getList',
+            'getlist'             => [
+                'code'     => 'getList',
                 'is_login' => false
             ],
-            'getdetial' => [
-                'code' => 'getDetial',
+            'getdetial'           => [
+                'code'     => 'getDetial',
                 'is_login' => false
             ],
-            'appgetdetial' => [
-                'code' => 'appGetDetail',
+            'appgetdetial'        => [
+                'code'     => 'appGetDetail',
                 'is_login' => false
             ],
-            'getskudetial' => [
-                'code' => 'getSkuDetial',
+            'getskudetial'        => [
+                'code'     => 'getSkuDetial',
                 'is_login' => false
             ],
-            'getgoodsparams' => [
-                'code' => 'getGoodsParams',
+            'getgoodsparams'      => [
+                'code'     => 'getGoodsParams',
                 'is_login' => false
             ],
-            'getproductinfo' => [
-                'code' => 'getProductInfo',
+            'getproductinfo'      => [
+                'code'     => 'getProductInfo',
                 'is_login' => false
             ],
-            'appgetproductinfo' => [
-                'code' => 'appGetProductInfo',
+            'appgetproductinfo'   => [
+                'code'     => 'appGetProductInfo',
                 'is_login' => false
             ],
-            'getgoodscomment' => [
-                'code' => 'getGoodsComment',
+            'getgoodscomment'     => [
+                'code'     => 'getGoodsComment',
                 'is_login' => false
             ],
             'getgoodscathotgoods' => [
-                'code' => 'getGoodsCatHotGoods',
+                'code'     => 'getGoodsCatHotGoods',
                 'is_login' => false
             ],
-            'getpickgoods'=>[
-                'code'=>'getPickGoods',
-                'is_login'=>false
+            'getpickgoods'        => [
+                'code'     => 'getPickGoods',
+                'is_login' => false
             ],
-            'goodsall' => [
-                'code' => 'goodsall',
-                'is_login'=>false
+            'goodsall'            => [
+                'code'     => 'goodsall',
+                'is_login' => false
             ],
-            'newgoods' => [
-                'code' => 'newgoods',
-                'is_login'=>false
+            'newgoods'            => [
+                'code'     => 'newgoods',
+                'is_login' => false
             ]
             ,
-            'promotiongoods' => [
-                'code' => 'promotiongoods',
-                'is_login'=>false
+            'promotiongoods'      => [
+                'code'     => 'promotiongoods',
+                'is_login' => false
             ]
         ]
     ],
 
     //支付单
-    'payments' => [
-        'code' => 'Payments',
+    'payments'   => [
+        'code'   => 'Payments',
         'method' => [
-            'getlist' => [
-                'code' => 'getList',
+            'getlist'  => [
+                'code'     => 'getList',
                 'is_login' => false
             ],
-            'getinfo' => [
-                'code' => 'getInfo',
+            'getinfo'  => [
+                'code'     => 'getInfo',
                 'is_login' => true
             ],
             'checkpay' => [
-                'code' => 'checkPay',
+                'code'     => 'checkPay',
                 'is_login' => false
             ]
         ]
     ],
 
-    'images' => [
-        'code' => 'Images',
+    'images'      => [
+        'code'   => 'Images',
         'method' => [
             'upload' => [
-                'code' => 'upload',
+                'code'     => 'upload',
                 'is_login' => false
             ],
         ]
     ],
 
     //商户门店列表
-    'store' => [
-        'code' => 'Store',
-        'method'    =>  [
-            'getdefaultstore' => [
-                'code' => 'getDefaultStore',
+    'store'       => [
+        'code'   => 'Store',
+        'method' => [
+            'getdefaultstore'  => [
+                'code'     => 'getDefaultStore',
                 'is_login' => false
             ],
-            'getstorelist' => [
-                'code' => 'getStoreList',
+            'getstorelist'     => [
+                'code'     => 'getStoreList',
                 'is_login' => false
             ],
-            'isclerk' => [
-                'code' => 'isClerk',
+            'isclerk'          => [
+                'code'     => 'isClerk',
                 'is_login' => true
             ],
-            'storeladinglist' => [
-                'code' => 'storeLadingList',
+            'storeladinglist'  => [
+                'code'     => 'storeLadingList',
                 'is_login' => true
             ],
-            'ladinginfo' => [
-                'code' => 'ladingInfo',
+            'ladinginfo'       => [
+                'code'     => 'ladingInfo',
                 'is_login' => true
             ],
-            'lading' => [
-                'code' => 'lading',
+            'lading'           => [
+                'code'     => 'lading',
                 'is_login' => true
             ],
-            'getstoreswitch' => [
-                'code' => 'getStoreSwitch',
+            'getstoreswitch'   => [
+                'code'     => 'getStoreSwitch',
                 'is_login' => false
             ],
-            'ladingdel' => [
-                'code' => 'ladingDel',
+            'ladingdel'        => [
+                'code'     => 'ladingDel',
                 'is_login' => true
             ],
-            'getinviteqrcode' => [
-                'code' => 'getInviteQRCode',
+            'getinviteqrcode'  => [
+                'code'     => 'getInviteQRCode',
                 'is_login' => false
             ],
             'getrecommendkeys' => [
-                'code' => 'getRecommendKeys',
+                'code'     => 'getRecommendKeys',
                 'is_login' => false
             ]
         ]
     ],
 
     //团购&秒杀
-    'group' => [
-        'code' => 'Group',
-        'method'    =>  [
-            'getlist' => [
-                'code' => 'getList',
+    'group'       => [
+        'code'   => 'Group',
+        'method' => [
+            'getlist'        => [
+                'code'     => 'getList',
                 'is_login' => false
             ],
-            'getgoodsdetial'=>[
-                'code'=>'getGoodsDetial',
-                'is_login'=>false
+            'getgoodsdetial' => [
+                'code'     => 'getGoodsDetial',
+                'is_login' => false
             ]
         ]
     ],
 
     // h5 微信浏览器里分享
     'weixinshare' => [
-        'code' => 'WeiXinShare',
+        'code'   => 'WeiXinShare',
         'method' => [
             'share' => [
-                'code' => 'share',
+                'code'     => 'share',
                 'is_login' => false
             ]
         ]
     ],
 
     // 表单
-    'form'=>[
-        'code'=>'Form',
-        'method'=>[
-            'getformdetial'=>[
-                'code'=>'getFormDetial',
+    'form'        => [
+        'code'   => 'Form',
+        'method' => [
+            'getformdetial' => [
+                'code'     => 'getFormDetial',
                 'is_login' => false
             ],
-            'addsubmit'=>[
-                'code'=>'addSubmit',
+            'addsubmit'     => [
+                'code'     => 'addSubmit',
                 'is_login' => false
             ],
 
         ],
     ],
-    'appplus' => [
-        'code' => 'AppPlus',
+    'appplus'     => [
+        'code'   => 'AppPlus',
         'method' => [
             'checkversion' => [
-                'code' => 'checkVersion',
+                'code'     => 'checkVersion',
                 'is_login' => false
             ]
         ]
     ],
-    'pages' => [//首页布局可视化接口
+    'pages'       => [//首页布局可视化接口
         'code'   => 'Pages',
         'method' => [
             'getpageconfig' => [
@@ -697,60 +697,95 @@ return [
                 'is_login' => false
             ],
             //获取购买记录，非当前会员，首页滚动提示用的。
-            'getrecod'=>[
-                'code' => 'getRecod',
+            'getrecod'      => [
+                'code'     => 'getRecod',
                 'is_login' => false
             ]
         ]
     ],
-    'pintuan' => [
-        'code' => 'Pintuan',
+    'pintuan'     => [
+        'code'   => 'Pintuan',
         'method' => [
-            'list' => [
-                'code' => 'getList',
+            'list'          => [
+                'code'     => 'getList',
                 'is_login' => false
             ],
-            'goodsinfo' => [
-                'code' => 'getGoodsInfo',
+            'goodsinfo'     => [
+                'code'     => 'getGoodsInfo',
                 'is_login' => false
             ],
-            'productinfo' => [
-                'code' => 'getProductInfo',
+            'productinfo'   => [
+                'code'     => 'getProductInfo',
                 'is_login' => false
             ],
             'pintuanrecord' => [
-                'code' => 'pintuanRecord',
+                'code'     => 'pintuanRecord',
                 'is_login' => false,
             ],
-            'pintuanteam' => [
-                'code' => 'pintuanTeam',
+            'pintuanteam'   => [
+                'code'     => 'pintuanTeam',
                 'is_login' => false
             ]
 
         ]
     ],
-    'common' => [
-        'code' => 'Common',
+    'common'      => [
+        'code'   => 'Common',
         'method' => [
-            'area' => [
-                'code' => 'area',
+            'area'         => [
+                'code'     => 'area',
                 'is_login' => false
             ],
-            'areaChildren' => [
+            'areachildren' => [
                 'code' => 'areaChildren',
                 'is_login' => false
             ],
-            'verify' => [
-                'code' => 'verify',
+            'verify'       => [
+                'code'     => 'verify',
                 'is_login' => false
             ],
-            'jshopConf' => [
+            'jshopconf' => [
                 'code' => 'jshopConf',
                 'is_login' => false
             ],
-            'jshopAddons' => [
+            'jshopaddons' => [
                 'code' => 'addons',
-                'js_login' => false
+                'is_login' => false
+            ]
+        ]
+    ],
+    //砍价
+    'bargain'     => [
+        'code'   => 'Bargain',
+        'method' => [
+            'list'              => [
+                'code'     => 'getList',
+                'is_login' => false
+            ],
+            'goodsinfo'         => [
+                'code'     => 'getBargainDetial',
+                'is_login' => true
+            ],
+            'dobargain'         => [
+                'code'     => 'doBargain',
+                'is_login' => true
+            ],
+            //获取价格信息
+            'getprice'          => [
+                'code'     => 'getUserBargainPrice',
+                'is_login' => false
+            ],
+            'add'               => [
+                'code'     => 'add',
+                'is_login' => true
+            ],
+            'getuserbargainlog' => [
+                'code'     => 'getUserBargainLog',
+                'is_login' => true
+            ],
+            'canclebargain'     => [
+                'code'     => 'cancleBargain',
+                'is_login' => true
             ]
         ]
     ]

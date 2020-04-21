@@ -24,7 +24,7 @@ class Cart extends Common
     const TYPE_PINTUAN = 2;      //拼团模式
     const TYPE_GROUP = 3;      //团购模式
     const TYPE_SKILL = 4;      //秒杀模式
-
+    const TYPE_BARGAIN = 6;      //砍价模式
 
     /**
      * 关联货品
@@ -43,6 +43,7 @@ class Cart extends Common
      * @param $nums //数量
      * @param $num_type //数量类型，1是直接增加，2是赋值
      * @param int $type
+     * @param array $params //扩展参数
      * @return array|mixed
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -50,7 +51,7 @@ class Cart extends Common
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
-    public function add($user_id, $product_id, $nums, $num_type, $type = 1)
+    public function add($user_id, $product_id, $nums, $num_type, $type = 1,$params = [])
     {
         $result        = [
             'status' => false,
@@ -71,10 +72,11 @@ class Cart extends Common
 
         $canBuyNum = $productInfo['data']['stock'];
 
-        $where[] = array('product_id', 'eq', $product_id);
-        $where[] = array('user_id', 'eq', $user_id);
-        $where[] = ['type', 'eq', $type];
+        $where[]  = array('product_id', 'eq', $product_id);
+        $where[]  = array('user_id', 'eq', $user_id);
+        $where[]  = ['type', 'eq', $type];
         $cat_info = $this->where($where)->find();
+
         switch ($type) {
             case self::TYPE_COMMON:
 
@@ -95,13 +97,12 @@ class Cart extends Common
                 break;
             case self::TYPE_GROUP:
                 //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion, self::TYPE_GROUP)) {
+                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_GROUP)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                     $delwhere[] = ['user_id', 'eq', $user_id];
                     $delWhere[] = ['type', 'eq', self::TYPE_GROUP];
                     $delWhere[] = ['product_id', 'eq', $product_id];
                     $this->where($delWhere)->delete();
-
 
                     $params      = json_decode($promotion['params'], true);
                     $orderModel  = new Order();
@@ -123,7 +124,7 @@ class Cart extends Common
                 break;
             case self::TYPE_SKILL:
                 //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion, self::TYPE_SKILL)) {
+                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_SKILL)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                     $delwhere[] = ['user_id', 'eq', $user_id];
                     $delWhere[] = ['type', 'eq', self::TYPE_SKILL];
@@ -132,7 +133,7 @@ class Cart extends Common
 
                     $params      = json_decode($promotion['params'], true);
                     $orderModel  = new Order();
-                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion,self::TYPE_SKILL);
+                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion, self::TYPE_SKILL);
                     if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
                         if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
                             $result['msg'] = '该商品已超过当前活动最大购买量';
@@ -148,6 +149,21 @@ class Cart extends Common
                     unset($cat_info);
                 }
                 break;
+            case self::TYPE_BARGAIN://砍价
+                $num_type = 2;
+                //砍价
+                $bargainModel = new Bargain();
+                $re           = $bargainModel->addCart($product_id, $user_id, $nums);
+                if (!$re['status']) {
+                    return $re;
+                }
+                //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
+                $delwhere[] = ['user_id', 'eq', $user_id];
+                $delWhere[] = ['type', 'eq', self::TYPE_BARGAIN];
+                $this->where($delWhere)->delete();
+                unset($cat_info);
+                break;
+
             default:
                 return error_code(10000);
         }
@@ -286,11 +302,16 @@ class Cart extends Common
             case self::TYPE_SKILL:
                 //秒杀模式不需要修改订单数据和商品数据
                 break;
+            case self::TYPE_BARGAIN:
+                $bargainModel = new Bargain();
+                $result       = $bargainModel->bargainInfo($list, $userId);
+                if (!$result['status']) {
+                    return $result;
+                }
+                break;
             default:
                 return error_code(10000);
         }
-
-
         $data['list']     = $list;
         $result['data']   = $data;
         $result['status'] = true;
@@ -372,18 +393,19 @@ class Cart extends Common
         if ($delivery_type == 2) {
             $free_freight = true;
         }
-        //运费判断
-        if (!$this->cartFreight($result, $area_id, $free_freight)) {
-            return $result;
-        }
 
         //接下来算订单促销金额,有些模式不需要计算促销信息，这里就增加判断
         if ($order_type == self::TYPE_COMMON) {
             $promotionModel = new Promotion();
             $result['data'] = $promotionModel->toPromotion($result['data']);
-        }elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
+        } elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
             $promotionModel = new Promotion();
-            $result['data'] = $promotionModel->toPromotion($result['data'],$order_type);
+            $result['data'] = $promotionModel->toPromotion($result['data'], $order_type);
+        }
+
+        //运费判断
+        if (!$this->cartFreight($result, $area_id, $free_freight)) {
+            return $result;
         }
 
         //使用优惠券，判断优惠券是否可用
@@ -449,7 +471,7 @@ class Cart extends Common
         if (!$free) {
             if ($area_id) {
                 $shipModel                      = new Ship();
-                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount']);
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount'] - $result['data']['goods_pmt']);//运费是商品金额-优惠有金额
                 $result['data']['amount']       = bcadd($result['data']['amount'], $result['data']['cost_freight'], 2);
             }
         }
@@ -511,7 +533,7 @@ class Cart extends Common
             $orders_point_proportion     = $settingModel->getValue('orders_point_proportion'); //订单积分使用比例
             $max_point_deducted_money    = $result['data']['amount'] * ($orders_point_proportion / 100); //最大积分抵扣的钱
             $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
-            $point_deducted_money        = (int) $point / (int) $point_discounted_proportion; //积分可以抵扣的钱
+            $point_deducted_money        = (int)$point / (int)$point_discounted_proportion; //积分可以抵扣的钱
             if ($max_point_deducted_money < $point_deducted_money) {
                 $result['msg'] = "积分超过订单可使用的积分数量";
                 return false;

@@ -23,22 +23,12 @@ class Group extends Api
         ];
         $promotion = new Promotion();
         $type      = input('type',$promotion::TYPE_GROUP);//默认团购
-        $stime     = input('stime','0');//开始时间
-        $etime     = input('etime','0');//结束时间
+        $params['limit']     = input('limit','0');//每页数量
+        $params['page'] = input('param.page', 1);
         $params['type'] = $type;
-        if($stime){
-            $params['stime'] = $stime;
-        }
-        if($etime){
-            $params['etime'] = $etime;
-        }
-        $list = $promotion->getGroupList($params);
-        if($list){
-            $return_data['status'] = true;
-            $return_data['data'] = $list;
-            $return_data['msg'] = '查询成功';
-        }
-
+        $data = $promotion->tableGroupData($params,true);
+        $return_data['data']['list'] = $data['data'];
+        $return_data['data']['count'] = $data['count'];
         return $return_data;
     }
 
@@ -54,6 +44,7 @@ class Group extends Api
             'data'   => [],
         ];
         $goods_id    = input('id/d', 0);
+        $group_id    = input('group_id/d', 0);//活动id
         $token       = input('token', '');//token值 会员登录后传
 
         if (!$goods_id) {
@@ -62,7 +53,7 @@ class Group extends Api
             return $return_data;
         }
         $promotion   = new Promotion();
-        $returnGoods = $promotion->getGroupDetial($goods_id, $token);
+        $returnGoods = $promotion->getGroupDetial($goods_id, $token,'*',$group_id);
         if ($returnGoods['status']) {
             $return_data ['msg']  = '查询成功';
             $return_data ['data'] = $returnGoods['data'];

@@ -8,8 +8,8 @@
 				<image class="purse" src="../../static/image/purse.png" mode=""></image>
 			</view>
 			<view class="title">恭喜您成功砍掉</view>
-			<view class="money"> <text>10</text>元</view>
-			<view class="button">我知道啦</view>
+			<view class="money"> <text>{{price||'0.00'}}</text>元</view>
+			<view class="button" @click="close">我知道啦</view>
 		</view>
 	</view>
 </template>
@@ -19,6 +19,9 @@
 		props: {
 			popShow: {
 				default: false
+			},
+			price:{
+				default:0
 			}
 		},
 		methods: {
@@ -39,6 +42,7 @@
 	right: 0;
 	bottom: 0;
 	background: rgba(0, 0, 0, .5);
+	z-index: 9;
 }
 .pop .content {
 	position: absolute;
@@ -55,8 +59,9 @@
 	padding: 20rpx 25rpx;
 }
 .pop .content .purse {
-	width: 122rpx;
-	height: 109rpx;
+	width: 100rpx;
+	height: 100rpx;
+	/* margin-top: 32rpx; */
 }
 .close-wrap {
 	width: 100%;
@@ -85,7 +90,7 @@
 	line-height: 60rpx;
 	text-align: center;
 	color: #fff;
-	background-color: #fc3742;
-	border-radius: 30rpx;
+	background-color: #FF7159;
+	border-radius: 5rpx;
 }
 </style>

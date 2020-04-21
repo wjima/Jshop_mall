@@ -829,17 +829,34 @@ class BillAftersales extends Common
             ],
             [
                 'id'   => 'refund',
-                'desc' => '退款金额',
+                'desc' => '退款总金额',
             ],
             [
                 'id'   => 'reason',
                 'desc' => '原因',
-
             ],
             [
                 'id'   => 'ctime',
                 'desc' => '申请时间',
-
+            ],
+            [
+                'id' => 'item_name',
+                'desc' => '商品名称',
+                'modify' => 'convertString'
+            ],
+            [
+                'id' => 'item_sn',
+                'desc' => '货品编码',
+                'modify' => 'convertString'
+            ],
+            [
+                'id' => 'item_bn',
+                'desc' => '商品编码',
+                'modify' => 'convertString'
+            ],
+            [
+                'id' => 'item_nums',
+                'desc' => '退货数量',
             ],
         ];
     }
@@ -860,7 +877,6 @@ class BillAftersales extends Common
         ];
         $header   = $this->csvHeader();
         $userData = $this->getExportList($post);
-
         if ($userData['count'] > 0) {
             $tempBody = $userData['data'];
             $body     = [];
@@ -868,17 +884,59 @@ class BillAftersales extends Common
 
             foreach ($tempBody as $key => $val) {
                 $i++;
-                foreach ($header as $hk => $hv) {
-                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
-                        if (function_exists($hv['modify'])) {
-                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                if(empty($val['items'])){
+                    foreach ($header as $hk => $hv) {
+                        if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                            if (function_exists($hv['modify'])) {
+                                $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                            }
+                        } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
+                            $body[$i][$hk] = $val[$hv['id']];
+                        } else {
+                            $body[$i][$hk] = '';
                         }
-                    } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
-                        $body[$i][$hk] = $val[$hv['id']];
-                    } else {
-                        $body[$i][$hk] = '';
+                    }
+                }else{
+                    foreach ($val['items'] as $k=>$item){
+                        if($k == 0){
+                            $val['item_name'] = $item['name'].$item['addon'];
+                            $val['item_sn'] = $item['sn'];
+                            $val['item_bn'] = $item['bn'];
+                            $val['item_nums'] = $item['nums'];
+                            foreach ($header as $hk => $hv) {
+                                if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                                    if (function_exists($hv['modify'])) {
+                                        $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                                    }
+                                } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
+                                    $body[$i][$hk] = $val[$hv['id']];
+                                } else {
+                                    $body[$i][$hk] = '';
+                                }
+                            }
+                        }else{
+                            $tmp = [];
+                            $tmp['item_name'] = $item['name'].$item['addon'];
+                            $tmp['item_sn'] = $item['sn'];
+                            $tmp['item_bn'] = $item['bn'];
+                            $tmp['item_nums'] = $item['nums'];
+                            foreach ($header as $hk => $hv) {
+                                if (isset($tmp[$hv['id']]) && $tmp[$hv['id']] && isset($hv['modify'])) {
+                                    if (function_exists($hv['modify'])) {
+                                        $body[$i][$hk] = $hv['modify']($tmp[$hv['id']]);
+                                    }
+                                } elseif (isset($tmp[$hv['id']]) && !empty($tmp[$hv['id']])) {
+                                    $body[$i][$hk] = $tmp[$hv['id']];
+                                } else {
+                                    $body[$i][$hk] = '';
+                                }
+                            }
+                            $tmp = [];
+                        }
+                        $i++;
                     }
                 }
+
             }
             $result['status'] = true;
             $result['msg']    = '导出成功';
@@ -945,9 +1003,11 @@ class BillAftersales extends Common
             $where[] = ['type', 'eq', $post['type']];
         }
 
-        $list = $this->where($where)
+        $list = $this->with(['items'=>function($query){
+            return $query->field(['sn','bn','name','addon','nums','aftersales_id']);
+        }])->where($where)
             ->order('aftersales_id desc')
-            ->select();
+            ->select()->toArray();
 
         if ($list) {
             $count = $this->where($where)->count();

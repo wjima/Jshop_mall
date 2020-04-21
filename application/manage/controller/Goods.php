@@ -1420,7 +1420,7 @@ class Goods extends Manage
                     ];
                 } else {
                     $uData = [
-                        'price' => Db::raw('(cast(price as signed) ' . $modify_type . ' ' . $price_value . ')')
+                        'price' => Db::raw('if ((price ' . $modify_type . ' ' . $price_value.') >0,(price ' . $modify_type . ' ' . $price_value.'),0 )')
                     ];
                 }
                 $goodsModel->where([['id', 'in', $ids]])->update($uData);
@@ -1433,7 +1433,7 @@ class Goods extends Manage
                     ];
                 } else {
                     $uData = [
-                        'mktprice' => Db::raw('(cast(mktprice as signed)' . $modify_type . ' ' . $price_value . ')')
+                        'mktprice' => Db::raw('if ((mktprice ' . $modify_type . ' ' . $price_value.') >0,(mktprice ' . $modify_type . ' ' . $price_value.'),0 )')
                     ];
                 }
                 $goodsModel->where([['id', 'in', $ids]])->update($uData);
@@ -1446,7 +1446,7 @@ class Goods extends Manage
                     ];
                 } else {
                     $uData = [
-                        'costprice' => Db::raw('(cast(costprice as signed)' . $modify_type . ' ' . $price_value . ')')
+                        'costprice' => Db::raw('if ((costprice ' . $modify_type . ' ' . $price_value.') >0,(costprice ' . $modify_type . ' ' . $price_value.'),0 )')
                     ];
                 }
                 $goodsModel->where([['id', 'in', $ids]])->update($uData);
@@ -1459,8 +1459,7 @@ class Goods extends Manage
                     if ($modify_type == '=') {
                         $price = $price_value;
                     } else {
-                        $price = Db::raw('(cast(grade_price as signed) ' . $modify_type . ' ' . $price_value . ')');
-
+                        $price = Db::raw('if ((grade_price ' . $modify_type . ' ' . $price_value.') >0,(grade_price ' . $modify_type . ' ' . $price_value.'),0 )');
                     }
                     $goodsGrade->setGradePrice($value, $grade_id, $price);
                 }

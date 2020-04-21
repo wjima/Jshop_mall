@@ -1448,6 +1448,7 @@ class Order extends Common
             $items = $order_re['data'];        //订单明细
         }
 
+
         //以下值不是通过购物车得来的，是直接赋值的，就写这里吧，不写formatOrder里了。
         $order['memo'] = $memo;
         $order['source'] = $source;
@@ -1535,8 +1536,29 @@ class Order extends Common
                     }
                     break;
                 case self::ORDER_TYPE_GROUP:
+                    $promotionRecordModel = new PromotionRecord();
+                    $pt_re = $promotionRecordModel->orderAdd($order, $items, $params,$promotionRecordModel::TYPE_GROUP);
+                    if (!$pt_re['status']) {
+                        Db::rollback();
+                        return $pt_re;
+                    }
                     break;
                 case self::ORDER_TYPE_SKILL:
+                    $promotionRecordModel = new PromotionRecord();
+                    $pt_re = $promotionRecordModel->orderAdd($order, $items, $params,$promotionRecordModel::TYPE_SKILL);
+                    if (!$pt_re['status']) {
+                        Db::rollback();
+                        return $pt_re;
+                    }
+                    break;
+                case self::ORDER_TYPE_BARGAIN:
+                    $bargainRecordModel = new BargainRecord();
+                    $bo_re = $bargainRecordModel->updateRecord($params['record_id'], ['order_id'=>$order['order_id'],'status'=>$bargainRecordModel::STATUS_HAVE_ORDER]);
+                    if (!$bo_re) {
+                        Db::rollback();
+                        $result['msg'] = '砍价活动订单更新失败';
+                        return $result;
+                    }
                     break;
                 default:
                     Db::rollback();
@@ -2241,22 +2263,28 @@ class Order extends Common
          //已退款、已退货、部分退款的、部分退货的排除
         $where[] = ['o.pay_status', 'in',['1','2','3']];
         $where[] = ['o.ship_status', 'in',['1','2','3']];
-        
+
+        //团购秒杀id
+        if(isset($condition['id']) && $condition['id']){
+            $where[] = ['pr.promotion_id', '=',$condition['id']];
+        }
         //订单类型
         if ($order_type) {
             $where[] = ['o.order_type', '=', $order_type];
         }
+
         $total_orders = $this->alias('o')
             ->join('order_items oi', 'oi.order_id = o.order_id')
+            ->join('promotion_record pr','pr.order_id=o.order_id')
             ->where($where)
             ->sum('oi.nums');
-
         //该会员已下多少订单
         $total_user_orders = 0;
         if ($user_id) {
             $where[] = ['o.user_id', '=', $user_id];
             $total_user_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')
+                ->join('promotion_record pr','pr.order_id=o.order_id')
                 ->where($where)
                 ->sum('oi.nums');
         }

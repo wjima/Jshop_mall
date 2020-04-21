@@ -422,6 +422,9 @@ class User extends Common
                 $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
         }
+        if (isset($post['grade']) && $post['grade'] != "") {
+            $where[] = ['grade', 'in', $post['grade']];
+        }
 
         $result['where'] = $where;
         $result['field'] = "*";

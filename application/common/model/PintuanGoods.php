@@ -15,7 +15,7 @@ class PintuanGoods extends Common
      * @param $post
      * @return mixed
      */
-    public function tableData($post)
+    public function tableData($post,$api = false)
     {
         if (isset($post['limit'])) {
             $limit = $post['limit'];
@@ -23,21 +23,43 @@ class PintuanGoods extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $list       = $this
-            ->alias("pg")
-            ->field("pr.*,pg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
-            ->join("pintuan_rule pr", "pg.rule_id = pr.id")
-            ->join("goods g", "g.id = pg.goods_id")
-            ->where($tableWhere['where'])
-            ->order($tableWhere['order'])
-            ->paginate($limit);
 
+        if($api){
+            $tableWhere['where'][] = ['pr.stime','<=',time()];
+            $tableWhere['where'][] = ['pr.etime','>',time()];
+            $list       = $this
+                ->alias("pg")
+                ->field("pr.*,pg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                ->join("pintuan_rule pr", "pg.rule_id = pr.id")
+                ->join("goods g", "g.id = pg.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
+                ->page($post['page'],$limit)
+                ->select();
+            $data = $this->tableFormat($list,$api);         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $count   = $this
+                ->alias("pg")
+                ->field("pr.*,pg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                ->join("pintuan_rule pr", "pg.rule_id = pr.id")
+                ->join("goods g", "g.id = pg.goods_id")
+                ->where($tableWhere['where'])
+                ->count();
 
-        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
-
+        }else{
+            $list       = $this
+                ->alias("pg")
+                ->field("pr.*,pg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                ->join("pintuan_rule pr", "pg.rule_id = pr.id")
+                ->join("goods g", "g.id = pg.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
+                ->paginate($limit);
+            $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $count = $list->total();
+        }
         $re['code']  = 0;
         $re['msg']   = '';
-        $re['count'] = $list->total();
+        $re['count'] = $count;
         $re['data']  = $data;
 
         return $re;
@@ -63,7 +85,7 @@ class PintuanGoods extends Common
      * @param $list
      * @return mixed
      */
-    protected function tableFormat($list)
+    protected function tableFormat($list,$api = false)
     {
         foreach ($list as $key => $value) {
             if ($value['goods_image_id']) {
@@ -71,6 +93,11 @@ class PintuanGoods extends Common
             } else {
                 $list[$key]['goods_image'] = _sImage();
             }
+            if($api){
+                $goods = $this->getGoodsInfo($value['goods_id']);
+                $list[$key]['goods'] = $goods['data'];
+            }
+
         }
         return $list;
     }

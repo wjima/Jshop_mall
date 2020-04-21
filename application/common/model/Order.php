@@ -2260,9 +2260,9 @@ class Order extends Common
         $where[] = ['o.ctime', '>=', $condition['stime']];
         $where[] = ['o.ctime', '<', $condition['etime']];
 
-         //已退款、已退货、部分退款的、部分退货的排除
-        $where[] = ['o.pay_status', 'in',['1','2','3']];
-        $where[] = ['o.ship_status', 'in',['1','2','3']];
+         //已退款、已退货、部分退款的、部分退货的排除 todo 团购秒杀部分退换货问题
+        //$where[] = ['o.pay_status', 'in',['1','2','3','4','5']];
+        //$where[] = ['o.ship_status', 'in',['1','2','3','4','5']];
 
         //团购秒杀id
         if(isset($condition['id']) && $condition['id']){

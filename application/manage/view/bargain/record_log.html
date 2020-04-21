@@ -1,0 +1,94 @@
+<style>
+    @media screen and (max-width: 500px) {
+        .layui-table-view {
+            width: 100% !important;
+            overflow-x: scroll !important;
+            left: 0 !important;
+        }
+
+        .layui-table-box {
+            width:1000px !important;
+            box-sizing: border-box;
+        }
+    }
+</style>
+
+<div class="table-body">
+    <input type="hidden" id="record_id" value="{$record_id}">
+    <?php
+        if(isset($_GET['record_id'])){
+    ?>
+    <a class="layui-btn layui-btn-sm" style="margin-top: 10px;" href="{:url('manage/bargain/record')}">返回</a>
+    <?php
+        }
+    ?>
+    <table id="recordLogTable" lay-filter="recordLogTable"></table>
+</div>
+
+<div id="export" style="display: none;">
+    <form class="layui-form export-form" action="">
+        <div class="layui-form-item">
+            <div class="layui-margin-10">
+                <blockquote class="layui-elem-quote layui-text">
+                    请先筛选要导出的账户资金，默认导出全部
+                </blockquote>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">任务名称：</label>
+                <input type="text" name="taskname" lay-verify="title" style="width:200px;" placeholder="请输入任务名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var laydate = layui.laydate;
+
+        //时间插件
+        laydate.render({
+            elem: '#datetime',
+            range: '到',
+            format: 'yyyy-MM-dd',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+
+        layui.table.render({
+            elem: '#recordLogTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: 'true',
+            limit: '20',
+            totalRow: true,
+            user_id: 33,
+            url: "{:url('recordLog')}?_ajax=1&record_id=" + $('#record_id').val(),
+            id: 'recordLogTable',
+            cols: [[
+                {field:'id', width:90, title:'ID', align:'center'},
+                {
+                    field: 'bargain_user', width: 120, title: '发起用户', align: 'center', templet: function (data) {
+                        var html = '';
+                        html += data.nickname;
+                        return html;
+                    }
+                },
+                { field: 'nickname', align: 'center', width: 120, title: '砍价人' },
+                { field: 'bargain_name', align: 'center', width: 170, title: '砍价活动名称' },
+                { field: 'bargain_price', align: 'center', width: 160, title: '砍掉金额'},
+                { field: 'goods_price', align: 'center', width: 160, title: '砍掉后商品金额' },
+                { field: 'ip', align: 'center', title: '砍价人IP' },
+                { field: 'ctime', align: 'center', width: 130, title: '时间' }
+            ]]
+        });
+        layui.form.on('submit(*)', function (data) {
+            layui.table.reload('recordLogTable', {
+                where: data.field
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    });
+</script>

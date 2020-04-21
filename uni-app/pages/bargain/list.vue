@@ -12,6 +12,7 @@
 					<text class="title fsz26">{{item.goods_name||''}}</text>
 					<view class="desc">
 						<!-- <text class="num fsz24">已售: <text>{{item.sales_num||'0'}}</text> 件</text> -->
+						<text class="num fsz24 origin">原价：{{item.start_price}}元</text>
 						<text class="num fsz24">可砍至: <text>{{item.end_price||'0.00'}}</text>元</text>
 						<navigator :url="'/pages/bargain/index?id='+item.id">
 							<text class="btn fsz24">点击砍价</text>
@@ -200,5 +201,8 @@
 	}
 	.pop-wrap .address .add-info {
 		flex: 1;
+	}
+	.origin {
+		color: #000!important;
 	}
 </style>

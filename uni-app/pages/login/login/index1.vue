@@ -11,7 +11,7 @@
 				</view>
 				<view class="login-item" v-if="isCaptcha">
 					<input class="login-item-input" placeholder-class="login-item-i-p fsz26" type="text" v-model="captcha" placeholder="输入验证码" style="width: 100%"/>
-					<img class="codeimg" :src="captchaUrl" alt="" />
+					<img class="codeimg" :src="captchaUrl" alt="" @click="getCodeImg"/>
 				</view>
 				<view class="goforgetpwd color-9 fsz24" @click="goForgetpwd()">忘记密码？</view>
 			</view>
@@ -140,6 +140,10 @@ export default {
 		// 获取验证码图片地址
 		getCaptchaUrl() {
 			this.captchaUrl = this.$config.apiBaseUrl + 'captcha.html';
+		},
+		getCodeImg(){
+			let num=Math.ceil(Math.random()*1000);
+			this.captchaUrl = this.$config.apiBaseUrl + 'captcha.html?'+num;
 		},
 		// 去注册
 		toReg() {

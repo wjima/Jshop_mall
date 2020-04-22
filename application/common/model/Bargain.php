@@ -455,7 +455,7 @@ class Bargain extends Common
         $arr[$max_times - 1] = $tmpTotal;
         $price = $arr[mt_rand(0, $max_times)];
         if($price == 0){
-            $price = 0.01;
+            $price = 1;
         }
         return $price / 100;
     }

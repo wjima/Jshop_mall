@@ -1,5 +1,7 @@
 <template>
-	<view></view>
+	<view class="contaier">
+		<!-- <image src="/static/" mode=""></image> -->
+	</view>
 </template>
 <script>
 	export default {
@@ -20,10 +22,14 @@
 		},
 		methods: {
             deshare(data) {
-				console.log(data);
                 this.$api.deshare({code: data}, res => {
                     if (res.status) {
                         this.saveInviteCode(res.data.userShareCode); //存储邀请码
+												// if(res.data.huodong){
+													
+												// }else{
+													
+												// }
                         switch(res.data.page) {
                             case '1': //首页
                                 this.gotoIndex();
@@ -52,18 +58,19 @@
                             case '9': //团购秒杀
                                 this.gotoGroup(res.data.params.goods_id, res.data.params.group_id);
                                 break;
-							case '10'://邀请砍价
-								this.gotoBargain(res.data.params.id, res.data.params.type, res.data.params.record_id);
-								break;
+														case '10'://邀请砍价
+															this.gotoBargain(res.data.params.id, res.data.params.type, res.data.params.record_id);
+															break;
                             default:
                             	this.gotoIndex();
                             	break;
                         }
                     } else {
                         this.$common.errorToShow('失败', () => {
-                        	uni.navigateBack({
-                        		delta: 1
-                        	});
+                        	// uni.navigateBack({
+                        	// 	delta: 1
+                        	// });
+													this.gotoIndex();
                         });
                     }
                 });
@@ -164,3 +171,8 @@
 		}
 	};
 </script>
+<style lang="scss">
+	.contaier{
+		
+	}
+</style>

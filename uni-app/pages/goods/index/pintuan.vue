@@ -716,6 +716,7 @@ export default {
 						_this.discount_amount = parseFloat(info.pintuan_rule.discount_amount).toFixed(2);
 						_this.product = _this.spesClassHandle(products);
 						_this.isfav = _this.goodsInfo.isfav === 'true' ? true : false;
+						
 						// debugger;
 						_this.pintuanPrice = this.$common.moneySub(_this.product.price, _this.discount_amount);
 

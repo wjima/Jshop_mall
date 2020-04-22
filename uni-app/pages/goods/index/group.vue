@@ -144,7 +144,7 @@
 			</view>
 		</view>
 
-		<lvv-popup position="bottom" ref="share">
+		<lvv-popup position="bottom" ref="share" v-if="goodsId">
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:goodsId="goodsId"

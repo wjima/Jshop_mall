@@ -210,11 +210,9 @@ export default {
 			uni.setClipboardData({
 				data: this.copyUrlink,
 				success:function(succ){
-					_this.$emit('copydata', succ)
 					_this.$common.successToShow('复制成功');
 				}, 
 				fail:function(err){
-					_this.$emit('copydata2', err)
 					_this.$common.errorToShow('复制分享URL失败');
 				}
 			})

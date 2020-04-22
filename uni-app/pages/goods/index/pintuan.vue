@@ -287,8 +287,6 @@
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
 				@close="closeShare()"
-				@copydata="copydata"
-				@copydata2="copydata2"
 			></shareByH5>
 			<!-- #endif -->
 

@@ -425,6 +425,9 @@ class User extends Common
         if (isset($post['grade']) && $post['grade'] != "") {
             $where[] = ['grade', 'in', $post['grade']];
         }
+        if (isset($post['mobileOrUser']) && $post['mobileOrUser'] != "") {
+            $where[] = ['username|mobile', 'like', '%'.$post['mobileOrUser'].'%'];
+        }
 
         $result['where'] = $where;
         $result['field'] = "*";

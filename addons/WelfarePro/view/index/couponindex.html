@@ -1,0 +1,151 @@
+<style>
+    .layui-btn .layui-icon{
+        margin-right: 0;
+    }
+    .layui-layer-page .layui-layer-content{
+        overflow: initial;
+    }
+</style>
+<form class="layui-form seller-form" action="">
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<button class="layui-btn add-class layui-btn-sm"><i class="layui-icon">&#xe608;</i> 添加</button>
+		</div>
+	</div>
+</form>
+<div class="table-body">
+	<table id="hbTable" lay-filter="test"></table>
+</div>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+
+        table = layui.table.render({
+            elem: '#hbTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:get_addon_url('WelfarePro://index/couponIndex')}?_ajax=1",
+            id:'hbTable',
+            cols: [[
+				{field:'id', width:90, title:'批次', align: 'center'},
+				{field:'name', width:200,title:'名称', align: 'center'},
+				{field:'user_ids', title:'用户', align: 'center'},
+				{field:'coupon_ids', title:'优惠券', align: 'center'},
+				{field:'sendnum', title:'数量', align: 'center'},
+				{field:'date_start', width:200,title:'生效时间', align: 'center'},
+				{field:'date_end', width:200,title:'失效时间', align: 'center'},
+				{field:'type_name', width:100,title:'目标群体', align: 'center'},
+				{field:'ctime', width:200,title:'创建时间', align: 'center'},
+				{field:'utime', width:200,title:'修改时间', align: 'center'},
+                {field:'operating',title:'操作',templet:function(data){
+                    var html='';
+                    var html = '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
+                    html += '<a class="layui-btn layui-btn-danger layui-btn-xs option-del" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }, align: 'center', width: 140}
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('userTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        //添加
+        $(document).on('click', '.add-class', function(){
+            JsGet("{:get_addon_url('WelfarePro://index/couponAdd')}", function(tpl){
+				if(tpl.status){
+					layer.open({
+						type: 1,
+						area: setpage(700,500),
+						data:'',
+						title: '添加',
+						content: tpl.data,
+						btn:['保存','关闭'],
+						yes:function (index,layero) {
+							var thedata = $('.hbaddForm').serialize();
+							JsPost("{:get_addon_url('WelfarePro://index/couponAdd')}",thedata,function (re) {
+								if(re.status){
+									layer.msg('保存成功');
+									layer.close(index);
+									//userTables.reload();
+									layui.table.reload('hbTable');
+								}else{
+									layer.msg(re.msg);
+								}
+							});
+						}
+					});
+				}else{
+					layer.msg(tpl.msg);
+				}
+			});
+            return false;
+        });
+
+		//编辑
+		$(document).on('click','.option-edit',function(){
+			var id = $(this).attr('data-id');
+			JsGet("{:get_addon_url('WelfarePro://index/couponAdd')}?id="+id, function(tpl){
+				if(tpl.status){
+					layer.open({
+						type: 1,
+						area: setpage(700,500),
+						data:'',
+						title: '编辑',
+						content: tpl.data,
+						btn:['保存','关闭'],
+						yes:function (index,layero) {
+							var thedata = $('.hbaddForm').serialize();
+							JsPost("{:get_addon_url('WelfarePro://index/couponAdd')}",thedata,function (re) {
+								if(re.status){
+									layer.msg('保存成功');
+									layer.close(index);
+									//userTables.reload();
+									layui.table.reload('hbTable');
+								}else{
+									layer.msg(re.msg);
+								}
+							});
+						}
+					});
+				}else{
+					layer.msg(tpl.msg);
+				}
+			});
+		});
+
+
+		//删除
+		$(document).on('click','.option-del',function(){
+			var id = $(this).attr('data-id');
+			layer.confirm('您确定删除此记录吗？', {
+				btn: ['确认','取消'] //按钮
+			}, function(){
+				//去删除
+				JsPost("{:get_addon_url('WelfarePro://index/couponDel')}",{'id':id},function(res){
+					if(res.status){
+						layer.msg('删除成功');
+						layui.table.reload('hbTable');
+					}else{
+						layer.msg(res.msg);
+					}
+
+				});
+			}, function(){
+				layer.close(1);
+			});
+		});
+    });
+
+
+
+</script>

@@ -48,7 +48,7 @@ class WelfareproHb extends Common
             }
             $this->save($data,['id'=>$data['id']]);
             //清空老的用户关系
-            $hbuserModel->where('hb_id',$data['id'])->delete();
+            $hbuserModel->where('hb_id',$data['id'])->where('type',1)->delete();
             //保存用户
             $data = [];
             foreach($user as $v){
@@ -90,7 +90,7 @@ class WelfareproHb extends Common
         ];
         $this->where('id',$id)->delete();
         $hbuserModel= new WelfareproHbuser();
-        $hbuserModel->where('hb_id',$id)->delete();
+        $hbuserModel->where('hb_id',$id)->where('type',1)->delete();
         return $result;
     }
 
@@ -107,6 +107,7 @@ class WelfareproHb extends Common
             if($hb_id != 0){
                 $where[] = ['hb_id', '<>', $hb_id];
             }
+            $where[] = ['type','=',1];
             $where[] = ['user_id', '=', $v];
             $info = $m->where($where)->find();
             if($info){

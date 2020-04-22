@@ -21,6 +21,15 @@ return [
                 'url' => get_addon_url('WelfarePro://index/index'),
                 'sort' => 100
             ],
+            'welfarepro_3' =>[
+                'id' => 'welfarepro_3',
+                'parent_menu_id' => 'welfarepro_1',
+                'name' => '扫码领优惠券',
+                'type' => 'a',
+                'perm_type' => 1,
+                'url' => get_addon_url('WelfarePro://index/CouponIndex'),
+                'sort' => 100
+            ],
         ]
     ],
     'api' => [

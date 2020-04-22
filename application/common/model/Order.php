@@ -497,6 +497,8 @@ class Order extends Common
                 return false;
             }
         }
+        //下单人
+        $order_info['username'] = get_user_info($order_info['user_id'],'nickname');
 
         $order_info->items; //订单详情
         $order_info->user; //用户信息

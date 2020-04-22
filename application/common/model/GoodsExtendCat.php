@@ -29,11 +29,15 @@ class GoodsExtendCat extends Common
     {
         $this->where([['goods_id', '=', $goods_id]])->delete();
         $iData = [];
+        $catIds = array_diff((array)$catIds,[0]);
         foreach ((array)$catIds as $key => $value) {
-            $iData[] = [
-                'goods_id'     => $goods_id,
-                'goods_cat_id' => $value,
-            ];
+            if(!empty($value)){
+                $iData[] = [
+                    'goods_id'     => $goods_id,
+                    'goods_cat_id' => $value,
+                ];
+            }
+
         }
         if ($iData) {
             return $this->saveAll($iData);

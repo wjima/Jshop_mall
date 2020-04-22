@@ -208,7 +208,6 @@ class WelfareproHb extends Common
         }else{
             $is_new = true;     //新用户
         }
-
         $userModel = new User();
         $tj_user_id = $userModel->getUserIdByShareCode($userShareCode);
 
@@ -217,6 +216,7 @@ class WelfareproHb extends Common
             $result['msg'] == "没有活动或者已经结束";
             return $result;
         }
+
         //判断是否是限于新用户参加
         if($info['type'] == 2 && $is_new){
             $result['msg'] == "没有活动或者已经结束。";         //只限于新用户参与
@@ -251,14 +251,14 @@ class WelfareproHb extends Common
         $userWxModel = new UserWx();
         $where[] = ['user_id', '=', $user_id];
         $where[] = ['type', '=', 2];
-        $userwxInfo = $userWxModel->where()->find();
+        $userwxInfo = $userWxModel->where($where)->find();
         if(!$userwxInfo){
             $result['data'] = "请在微信内扫码登陆";
             return $result;
         }
         $openid = $userwxInfo['openid'];
 
-        $money = mt_rand($info['money_end'] , $info['money_start']);
+        $money = mt_rand($info['money_start'] , $info['money_end']);
         //$result = $hb->send($openid,$money,$info['id']);
         //调试代码,先不实际去发。
         $result['status'] = true;

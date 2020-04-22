@@ -132,10 +132,9 @@ class Bargain extends Api
      */
     public function cancleBargain()
     {
-        $record_id           = input('record_id/d', 0);
-        $bargainRecordModel  = new BargainRecord();
-        $return_data['data'] = $bargainRecordModel->cancleBargain($record_id, $this->userId);
-        return $return_data;
+        $record_id          = input('record_id/d', 0);
+        $bargainRecordModel = new BargainRecord();
+        return $bargainRecordModel->cancleBargain($record_id, $this->userId);
     }
 
 }

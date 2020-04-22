@@ -2,8 +2,8 @@
 	<view class="bargain">
 		<view class="shop-wrap">
 			<view class="shop-title">
-				<image :src="userInfo.avatar" mode="" class="avatar"></image>
-				{{ userInfo.nickname || '' }}
+				<image :src="info.bargain_user.avatar" mode="" class="avatar"></image>
+				{{ info.bargain_user.nickname || '' }}
 			</view>
 			<view class="shop-info" v-if="info.goods">
 				<image :src="info.goods.image_url || ''" mode="" class="shop-pic"></image>
@@ -42,6 +42,8 @@
 			<view class="share" @click="goShare()" v-if="info.status_progress == 1 && type == 1">分享好友，代您砍价</view>
 			<view class="share" @click="goShare()" v-if="info.status_progress == 1 && type == 2">分享好友，帮他砍价吧~</view>
 			<view class="share" v-if="info.status_progress == 2 && type == 1" @click="buyNow()">砍价成功，购买吧~</view>
+			<view class="share" v-if="info.status_progress == 2 && type == 2" >非常感谢，助我砍价成功</view>
+			
 			<view class="share" v-if="info.status_progress == 3 || info.status_progress == 4">砍价结束</view>
 		</view>
 
@@ -294,7 +296,7 @@ export default {
 					this.bargain_price = res.data.bargain_price; //砍掉多少钱
 					this.popShow = true;
 				} else {
-					//this.$common.errorToShow(res.msg);
+					this.$common.errorToShow(res.msg);
 				}
 			});
 		},
@@ -381,7 +383,7 @@ export default {
 				params: {
 					record_id: this.record_id,
 					id: this.id,
-					type: this.type
+					type:2//分享别人，只能是2
 				}
 			};
 			let userToken = this.$db.get('userToken');
@@ -537,6 +539,7 @@ export default {
 	text-align: center;
 	line-height: 60rpx;
 	color: #fff;
+	margin: 0 auto;
 	margin-top: 44rpx;
 	background: linear-gradient(left, #ff7159, #fb3642);
 }

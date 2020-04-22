@@ -113,6 +113,9 @@
 
 .seller-alone-form {
     padding: 10px;
+    overflow-y: auto;
+    height:100%;
+    box-sizing: border-box;
 }
 
 .layui-form-item .seller-inline-1 {

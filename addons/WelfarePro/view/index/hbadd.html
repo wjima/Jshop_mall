@@ -1,0 +1,72 @@
+<form style="padding:30px;" class="layui-form  seller-alone-form hbaddForm">
+    <input type="hidden" value="{$info.id}" name="id" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户ID：</label>
+        <div class="layui-input-block">
+            {Jshop:selectuser value="$info.user_id" id="user_id" grade="" num="100" name="user_id" /}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>总金额：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="money_all"  placeholder="请输入名称" value="{$info.money_all}" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">分，总放款金额</div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label"><i class="required-color">*</i>红包金额：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <input type="text" name="money_start" placeholder="起始金额" value="{$info.money_start}" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline seller-inline-2">
+                <input type="text" name="money_end" placeholder="结束金额" value="{$info.money_end}" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">分</div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>起止时间：</label>
+        <div class="layui-input-inline seller-inline-6">
+            {if $info}
+            <input id="date"  type="text" name="date" value="{:getTime($info['date_start'])} 到 {:getTime($info['date_end'])}" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+            {else /}
+            <input id="date"  type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+            {/if}
+
+            </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>范围：</label>
+        <div class="layui-input-block">
+            <!--<input type="radio" name="type" value="m" title="模块" {if $info.type == 'm'} checked=""{/if}>-->
+            <input type="radio" name="type" value="2" title="新用户" {if $info.type == '2'} checked=""{/if}>
+            <input type="radio" name="type" value="1" title="所有用户"  {if $info.type == '1'} checked=""{/if} >
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">注意：</label>
+        <div class="layui-input-block">
+            <div class="layui-form-mid layui-word-aux" style="padding:0!important;margin-top:8px;">1.红包起始金额必须大于等于100分，结束金额必须大于等于起始金额，然后实际红包金额会在这个范围之间取一个随机数。</div>
+            <div class="layui-form-mid layui-word-aux" style="padding:0!important;">2.此功能是通过微信公众号发放的，所以只限于微信公众号内使用和领取</div>
+            <div class="layui-form-mid layui-word-aux" style="padding:0!important;">3.用户可以不选择，不选择就相当于所有用户的券都可以领</div>
+        </div>
+    </div>
+    {:jshopToken()}
+</form>
+<script>
+    layui.use(['form','laydate'], function(){
+        //时间插件
+        layui.form.render();
+        layui.laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+    });
+</script>

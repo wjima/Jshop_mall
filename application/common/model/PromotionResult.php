@@ -27,8 +27,16 @@ class PromotionResult extends Common
             'type' => 'order',
         ],
         'ORDER_HALF_PRICE' => [
-            'name' => '指定商品每第几件减指定金额',
+            'name' => '指定商品满几件减指定金额',
             'type' => 'order',
+        ],
+        'ORDER_GIVEAWAY' => [
+            'name' => '订单满赠商品',
+            'type' => 'order',
+        ],
+        'GOODS_GIVEAWAY' => [
+            'name' => '商品满赠商品',
+            'type' => 'goods',
         ],
     ];
 
@@ -58,7 +66,7 @@ class PromotionResult extends Common
                 $msg = '订单打'.$params['discount'].'折 ';
                 break;
             case 'ORDER_HALF_PRICE':
-                $msg = '第'.$params['num'].'件'.$params['money'].'元';
+                $msg = '满'.$params['num'].'件优惠'.$params['money'].'元';
                 break;
         }
         return $msg;
@@ -572,4 +580,71 @@ class PromotionResult extends Common
 
     }
 
+
+    /**
+     * 订单满赠
+     * @param $params
+     * @param $v
+     * @param $promotionInfo
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    private function result_ORDER_GIVEAWAY($params, &$v, $promotionInfo)
+    {
+        $goodsModel = new Goods();
+        $productsModel = new Products();
+        $goods = $goodsModel->where('id', '=', $params['goods_id'])
+            ->find();
+        $goods['product'] = $productsModel->where('goods_id', '=', $params['goods_id'])
+            ->find();
+        //判断库存
+        $stock = $goods['product']['stock'] - $goods['product']['freeze_stock'];
+        if ( $stock != 0) {
+            if ($stock > $params['nums']) {
+                $num = $params['nums'];
+            } else {
+                $num = $stock;
+            }
+            $goods['nums'] = $num;
+            $v['giveaway'][] = $goods;
+        }
+    }
+
+
+    /**
+     * 商品满赠
+     * @param $params
+     * @param $v
+     * @param $promotionInfo
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    private function result_GOODS_GIVEAWAY($params, &$v, $promotionInfo)
+    {
+        $goodsModel = new Goods();
+        $productsModel = new Products();
+        $goods = $goodsModel->where('id', '=', $params['goods_id'])
+            ->find();
+        $goods['product'] = $productsModel->where('goods_id', '=', $params['goods_id'])
+            ->find();
+        $promotionConditionModel = new PromotionCondition();
+        $condition = $promotionConditionModel
+            ->where('promotion_id', '=', $promotionInfo['id'])
+            ->find();
+        $condition = json_decode($condition['params'], true);
+        $servings = floor($v['nums'] / $condition['nums']);
+        $nums = $params['nums'] * $servings;
+        $stock = $goods['product']['stock'] - $goods['product']['freeze_stock'];
+        if ( $stock != 0) {
+            if ($stock > $nums) {
+                $num = $nums;
+            } else {
+                $num = $stock;
+            }
+            $goods['nums'] = $num;
+            $v['giveaway'][] = $goods;
+        }
+    }
 }

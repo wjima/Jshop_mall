@@ -1280,9 +1280,6 @@ class User extends Api
         }
         $share = new UrlShare();
         $re = $share->de_url(input('param.code'));
-        $re['status'] = false;
-        return $re;
-        die();
         if(!$re['status']){
             return $re;
         }
@@ -1290,7 +1287,7 @@ class User extends Api
         $obj = new \stdClass;
         $obj->data = $re['data'];
         Hook('deshare', $obj);
-        $result['data'] = $obj->data;
+        $re['data'] = $obj->data;
 
         return $re;
     }

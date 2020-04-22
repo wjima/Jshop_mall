@@ -41,7 +41,11 @@ return [
                     'hb' => [
                         'code'     => 'hb',
                         'is_login' => true
-                    ]
+                    ],
+                    'coupon' => [
+                        'code'     => 'coupon',
+                        'is_login' => true
+                    ],
                 ]
             ]
         ]

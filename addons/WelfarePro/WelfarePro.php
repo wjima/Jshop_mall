@@ -61,8 +61,7 @@ class WelfarePro extends Addons
         return $this->fetch('config');
     }
     public function deshare($obj){
-        dump($obj->data);
-        die();
+        $obj->data['welfarepro'] = ['hb','coupon'];
         return true;
     }
 

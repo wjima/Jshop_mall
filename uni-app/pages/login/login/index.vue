@@ -141,7 +141,7 @@ export default {
 		},
 		// 去注册
 		toReg() {
-			this.$common.navigateTo('/pages/login/register/index');
+			this.$common.redirectTo('/pages/login/register/index');
 		},
 		// 验证码倒计时
 		countDown() {
@@ -195,7 +195,10 @@ export default {
 			this.$common.successToShow('登录成功!', () => {
 				this.$db.set('timer', 0);
 				this.$db.del('invitecode');
-				this.handleBack();
+				// this.handleBack();
+				uni.navigateBack({
+				    delta: 1
+				});
 			});
 		},
 		// 跳转到普通登录

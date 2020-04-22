@@ -147,7 +147,7 @@ export default {
 		},
 		// 去注册
 		toReg() {
-			this.$common.navigateTo('/pages/login/register/index');
+			this.$common.redirectTo('/pages/login/register/index');
 		},
 		// 去登录
 		toLogin() {
@@ -194,7 +194,10 @@ export default {
 		// 重定向跳转 或者返回上一个页面
 		redirectHandler() {
 			this.$db.del('invitecode');
-			this.handleBack();
+			// this.handleBack();
+			uni.navigateBack({
+			    delta: 1
+			});
 		},
 		// 登录方式切换
 		selectLoginType() {

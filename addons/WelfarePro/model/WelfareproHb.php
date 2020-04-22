@@ -1,7 +1,10 @@
 <?php
 
 namespace addons\WelfarePro\model;
+use addons\WelfarePro\lib\Hb;
 use app\common\model\Common;
+use app\common\model\User;
+use app\common\model\UserWx;
 use think\Model;
 class WelfareproHb extends Common
 {
@@ -28,7 +31,7 @@ class WelfareproHb extends Common
         $data['date_start'] = strtotime($theDate[0]);
         $data['date_end'] = strtotime($theDate[1]);
         //如果选择了用户，那么就解析成一维数组
-        if(isset($data['user_id'])){
+        if(isset($data['user_id']) && !empty($data['user_id'])){
             $user = explode(',',$data['user_id']);
         }else{
             $user = [0];
@@ -152,4 +155,131 @@ class WelfareproHb extends Common
         }
         return $list;
     }
+
+    //判断某人是否有发红包的活动
+
+    /**
+     * @param $userShareCode
+     * @param bool $is_new 是否是新用户，如果是只限于新用户，那么就传true，默认是false，不传
+     * @return array|\PDOStatement|string|Model|null
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function userHb($tj_user_id){
+
+        //取这个人的红包活动
+        $where = [];
+        $where[] = ['hb.date_start', '<',time()];
+        $where[] = ['hb.date_end', '>', time()];
+        $where[] = ['hbu.user_id', 'eq', $tj_user_id];
+
+        $m = new WelfareproHb();
+        $info = $m
+            ->alias('hb')
+            ->join('welfarepro_hbuser hbu', 'hbu.hb_id = hb.id')
+            ->where($where)
+            ->find();
+
+        return $info;
+    }
+
+    /**
+     * 发放红包
+     * @param $user_id      领取人
+     * @param $info         红包记录
+     */
+    public function sendHb($user_id,$userShareCode){
+        $result = [
+            'status' => false,
+            'data' => "",
+            'msg' => ''
+        ];
+
+        //注册时间到现在小于10分钟的都算新用户
+        //判断用户是否是新用户
+        $userModel = new User();
+        $userInfo = $userModel->where('id',$user_id)->find();
+        if(!$userInfo){
+            return error_code(10000);
+        }
+        if(time() - $userInfo['ctime'] > 600){
+            $is_new = false;
+        }else{
+            $is_new = true;     //新用户
+        }
+
+        $userModel = new User();
+        $tj_user_id = $userModel->getUserIdByShareCode($userShareCode);
+
+        $info = $this->userHb($tj_user_id);
+        if(!$info){
+            $result['msg'] == "没有活动或者已经结束";
+            return $result;
+        }
+        //判断是否是限于新用户参加
+        if($info['type'] == 2 && $is_new){
+            $result['msg'] == "没有活动或者已经结束。";         //只限于新用户参与
+            return $result;
+        }
+        //判断是否领取过，
+        $hblogModel = new WelfareproHblog();
+        $where = [
+            ['user_id', '=', $user_id],
+            ['tj_user_id', '=', $tj_user_id],
+            ['hb_id', '=', $info['id']]
+        ];
+        if($hblogModel->where($where)->find()){
+            $result['msg'] = '您已经领取，不能重复领取';
+            return $result;
+        }
+        //去发券
+        return $this->sendHb2($user_id,$info,$tj_user_id);
+    }
+
+    /**
+     * 实际取发红包
+     */
+    private function sendHb2($user_id,$info,$tj_user_id){
+        $result = [
+            'status' => false,
+            'data' => "",
+            'msg' => ''
+        ];
+        $hb = new Hb();
+        //取openid
+        $userWxModel = new UserWx();
+        $where[] = ['user_id', '=', $user_id];
+        $where[] = ['type', '=', 2];
+        $userwxInfo = $userWxModel->where()->find();
+        if(!$userwxInfo){
+            $result['data'] = "请在微信内扫码登陆";
+            return $result;
+        }
+        $openid = $userwxInfo['openid'];
+
+        $money = mt_rand($info['money_end'] , $info['money_start']);
+        //$result = $hb->send($openid,$money,$info['id']);
+        //调试代码,先不实际去发。
+        $result['status'] = true;
+        //结束
+
+        if(!$result['status']){
+            return $result;
+        }
+        //保存到日志表
+        $hblog = new WelfareproHblog();
+        $data = [
+            'user_id' => $user_id,
+            'tj_user_id' => $tj_user_id,
+            'money' => $money,
+            'hb_id' => $info['id'],
+        ];
+        $hblog->save($data);
+        $result['status'] = true;
+        $result['msg'] = '领取成功';
+
+        return $result;
+    }
+
 }

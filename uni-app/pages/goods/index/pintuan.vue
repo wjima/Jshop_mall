@@ -245,7 +245,7 @@
 				</view>
 			</view>
 		</view>
-
+		
 		<lvv-popup position="bottom" ref="pintuanpop">
 			<view class="ig-top" v-if="teamInfo.list.length > 0">
 				<view class="ig-top-t">
@@ -714,7 +714,8 @@ export default {
 						_this.discount_amount = parseFloat(info.pintuan_rule.discount_amount).toFixed(2);
 						_this.product = _this.spesClassHandle(products);
 						_this.isfav = _this.goodsInfo.isfav === 'true' ? true : false;
-
+						
+						// debugger;
 						_this.pintuanPrice = this.$common.moneySub(_this.product.price, _this.discount_amount);
 
 						let timestamp = Date.parse(new Date()) / 1000;

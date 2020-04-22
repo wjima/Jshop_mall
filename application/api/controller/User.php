@@ -1279,7 +1279,20 @@ class User extends Api
             return error_code(10000);
         }
         $share = new UrlShare();
-        return $share->de_url(input('param.code'));
+        $re = $share->de_url(input('param.code'));
+        $re['status'] = false;
+        return $re;
+        die();
+        if(!$re['status']){
+            return $re;
+        }
+
+        $obj = new \stdClass;
+        $obj->data = $re['data'];
+        Hook('deshare', $obj);
+        $result['data'] = $obj->data;
+
+        return $re;
     }
 
 

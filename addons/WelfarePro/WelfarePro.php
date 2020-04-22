@@ -60,5 +60,10 @@ class WelfarePro extends Addons
         $this->assign('config', $params);
         return $this->fetch('config');
     }
+    public function deshare($obj){
+        dump($obj->data);
+        die();
+        return true;
+    }
 
 }

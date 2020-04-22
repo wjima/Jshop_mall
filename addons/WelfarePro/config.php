@@ -29,8 +29,8 @@ return [
             'api' => [      //控制器名称，可以随便起名，不过此控制器集成的基类一定要注意，不要写错了
                 'code'   => 'Api',
                 'method' => [
-                    'zouqi' => [
-                        'code'     => 'jshop',
+                    'hb' => [
+                        'code'     => 'hb',
                         'is_login' => true
                     ]
                 ]

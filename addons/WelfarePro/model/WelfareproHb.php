@@ -173,7 +173,7 @@ class WelfareproHb extends Common
         $where = [];
         $where[] = ['hb.date_start', '<',time()];
         $where[] = ['hb.date_end', '>', time()];
-        $where[] = ['hbu.user_id', 'eq', $tj_user_id];
+        $where[] = ['hbu.user_id', 'in', [$tj_user_id,0]];
 
         $m = new WelfareproHb();
         $info = $m

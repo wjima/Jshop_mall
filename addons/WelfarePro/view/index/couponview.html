@@ -1,0 +1,42 @@
+<style>
+    .seller-form{
+        padding: 10px;
+    }
+</style>
+<div class="layui-form-item">
+    <label class="layui-form-label">目标群体：</label>
+    <div class="layui-input-inline seller-inline-2">
+        <div class="layui-form-mid">{$info.type}</div>
+    </div>
+    <label class="layui-form-label">名称：</label>
+    <div class="layui-input-inline seller-inline-2">
+        <div class="layui-form-mid">{$info.name}</div>
+    </div>
+</div>
+
+<table class="layui-table" id="log" lay-filter="log"></table>
+<script>
+    layui.use(['table','form'], function () {
+
+        layui.table.render({
+            elem: '#log',
+            // height: 'full-200',
+            page: 'true',
+            limit: '10',
+            url: "{:get_addon_url('WelfarePro://index/couponView')}?id="+{$id},
+            id: 'log',
+            method: 'post',
+            // response: {
+            //     statusName: 'code',
+            //     statusCode: 0
+            // },
+            cols: [[
+                {field: 'c_id', width: 140, title: '批次', align: 'center'},
+                {field: 'coupon_id', title: '优惠券名称', align: 'center'},
+                {field: 'tj_user_id', title: '推荐人', align: 'center'},
+                {field: 'num', title: '领取数量', align: 'center'},
+            ]]
+        });
+
+    });
+</script>

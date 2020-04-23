@@ -74,7 +74,7 @@ class WelfarePro extends Addons
             $hb = new WelfareproHb();
             $info = $hb->userHb($tj_user_id);
             if($info){
-                $obj->data['welfarepro'][] = 'hb';
+//                $obj->data['welfarepro'][] = 'hb';
             }
 
             //判断优惠券

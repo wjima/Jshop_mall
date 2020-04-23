@@ -16,4 +16,15 @@ class WelfareproCouponLog extends Common
         }
         return true;
     }
+    public function getList($param){
+        $page = isset($param['page']) ? $param['page'] : 1;
+        $limit = isset($param['limit']) ? $param['limit'] : 10;
+        $list = $this->page($page,$limit)->select()->toArray();
+        return [
+          'list'=>$list,
+          'count'=>$this->count(),
+          'msg'=>'success',
+          'code'=>0
+        ];
+    }
 }

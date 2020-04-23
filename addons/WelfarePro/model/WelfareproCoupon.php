@@ -385,7 +385,7 @@ class WelfareproCoupon extends Common
      * 获取当前推荐用户的优惠券列表
      * @param $tj_user_id
      */
-    private function userCoupon($tj_user_id){
+    public function userCoupon($tj_user_id){
         $where = [];
         $where[] = ['c.date_start', '<',time()];
         $where[] = ['c.date_end', '>', time()];

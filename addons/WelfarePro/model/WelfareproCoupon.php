@@ -286,15 +286,16 @@ class WelfareproCoupon extends Common
 
         $info = $this->userCoupon($tj_user_id);
         if(!$info){
-            $result['msg'] == "没有活动或者已经结束";
+            $result['msg'] = "没有活动或者已经结束";
+            return $result;
+        }
+        
+        //判断是否是限于新用户参加
+        if($info['type'] == 2 && !$is_new){
+            $result['msg'] = "没有活动或者已经结束。";         //只限于新用户参与
             return $result;
         }
 
-        //判断是否是限于新用户参加
-        if($info['type'] == 2 && $is_new){
-            $result['msg'] == "没有活动或者已经结束。";         //只限于新用户参与
-            return $result;
-        }
         //判断该推荐人推荐数量是否已发完
         $couponLogModel = new WelfareproCouponLog();
         $is_over =  $couponLogModel->couponOver($info['id'],$tj_user_id,$info['sendnum']);
@@ -338,27 +339,26 @@ class WelfareproCoupon extends Common
             }
             //推荐人推荐数量+1
             $couponLogModel = new WelfareproCouponLog();
-            $log = $couponLogModel->where('tj_user_id',$tj_user_id)->where('c_id',$id)->find();
+            $num = $couponLogModel->where('tj_user_id',$tj_user_id)->where('c_id',$id)->count();
             $maxNums = $this->where('id',$id)->value('sendnum');
-            if($log){
-                if($log['nums'] < $maxNums){
-                    $log->nums = ['inc',1];
-                    $log->save();
-                }else {
-                    //用户领取优惠券失败
-                    throw  new \Exception('来晚一步，优惠券已经被领完了.');
-                }
+            if($num >= $maxNums){
+                //用户领取优惠券失败
+                throw  new \Exception('来晚一步，优惠券已经被领完了.');
             }else{
                 $data = [
-                  'tj_user_id'=>$tj_user_id,
-                  'c_id'=>$id,
-                  'nums'=>1,
+                    'tj_user_id'=>$tj_user_id,
+                    'c_id'=>$id,
+                    'user_id'=>$user_id,
+                    'coupon_id'=>$coupon_id,
+                    'ctime'=>time()
                 ];
                 $couponLogModel->save($data);
             }
             Db::commit();
         }catch (\Throwable $e){
             Db::rollback();
+            dump($e);
+            die;
             $result['msg'] = $e->getMessage();
             return $result;
         }

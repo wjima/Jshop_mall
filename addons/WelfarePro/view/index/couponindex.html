@@ -12,7 +12,11 @@
         <div class="layui-inline">
             <button class="layui-btn add-class layui-btn-sm"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
+        <div class="layui-inline">
+            <a href="{:get_addon_url('WelfarePro://index/couponView')}" class="layui-btn layui-btn-sm hblog_class"  ><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>领取记录</a>
+        </div>
     </div>
+
 </form>
 <div class="table-body">
     <table id="hbTable" lay-filter="test"></table>
@@ -44,8 +48,8 @@
                 {
                     field: 'operating', title: '操作', templet: function (data) {
 
-                        var html = '<a  class="layui-btn layui-btn-xs option-view" data-id="' + data.id + '">查看</a>';
-                        html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
+
+                       var html = '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">编辑</a>';
 
                         html += '<a class="layui-btn layui-btn-danger layui-btn-xs option-del" data-name="' + data.name + '" data-id="' + data.id + '">删除</a>';
                         return html;

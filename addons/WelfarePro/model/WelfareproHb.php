@@ -229,13 +229,13 @@ class WelfareproHb extends Common
 
         $info = $this->userHb($tj_user_id);
         if(!$info){
-            $result['msg'] == "没有活动或者已经结束";
+            $result['msg'] = "没有活动或者已经结束";
             return $result;
         }
 
         //判断是否是限于新用户参加
-        if($info['type'] == 2 && $is_new){
-            $result['msg'] == "没有活动或者已经结束。";         //只限于新用户参与
+        if($info['type'] == 2 && !$is_new){
+            $result['msg'] = "没有活动或者已经结束。";         //只限于新用户参与
             return $result;
         }
         //判断是否领取过，

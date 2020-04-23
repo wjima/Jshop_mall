@@ -217,29 +217,20 @@ class Index extends AddonController
 
     public function couponView(){
         $return = [
-            'status' => true,
+            'status' => false,
             'msg' => '失败',
             'data' => ''
         ];
-        $this->view->engine->layout(false);
-        $id = input('id/d',0);  //批次ID
-        if(empty($id)) {
-            $return['msg'] = '缺少必要参数';
-            $return['status'] = false;
-            return $return;
-        }
-        if($this->request->isPost())
+        $this->view->engine->layout('layout');
+        $this->view->engine->layout('../../../application/manage/view/layout');     //此处引入后台的样式，其实插件不仅仅局限于后台，他是一个单独的模块，可以做成独立的功能
+
+        if($this->request->isAjax())
         {
-            $param = input('post.');
+            $param = input('param.');
             $model = new WelfareproCouponLog();
             return $model->getList($param);
         }
-        $model = new WelfareproCoupon();
-        $info = $model->where(['id'=>$id])->find();
-        $this->assign('info',$info);
-        $this->assign('id',$id);
-        $return['msg'] = '成功';
-        $return['data'] = $this->fetch();
-        return $return;
+
+        return $this->fetch();
     }
 }

@@ -49,7 +49,11 @@ Alter TABLE jshop_welfarepro_hbuser add `type` tinyint(1) unsigned NOT NULL DEFA
 
 DROP TABLE IF EXISTS `jshop_welfarepro_coupon_log`;
 CREATE TABLE `jshop_welfarepro_coupon_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `c_id` int(11) unsigned NOT NULL,
   `tj_user_id` int(11) NOT NULL COMMENT '推荐人',
-  `nums` int(8) unsigned NOT NULL DEFAULT '0' COMMENT '已领数量'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='优惠券领取数量表';
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '扫码人',
+  `coupon_id` int(11) unsigned NOT NULL COMMENT '优惠券ID',
+  `ctime` bigint(12) unsigned DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='优惠券领取记录表';

@@ -35,6 +35,23 @@ class WelfareproHblog extends Common
         $result['order'] = ['id' => 'desc']; //默认最新添加靠前，排序越小越靠前
         return $result;
     }
+    protected function tableFormat($list)
+    {
+        $hbuserModel= new WelfareproHbuser();
+        foreach ($list as $k => $v) {
+            if ($v['user_id']) {
+                $list[$k]['user_id'] = get_user_info($v['user_id'],'showname');
+            }
+            if ($v['tj_user_id']) {
+                $list[$k]['tj_user_id'] = get_user_info($v['tj_user_id'],'showname');
+            }
+
+            if ($v['ctime']) {
+                $list[$k]['ctime'] = getTime($v['ctime']);
+            }
+        }
+        return $list;
+    }
 
     private function getUserId($name){
         $userModel = new User();

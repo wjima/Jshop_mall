@@ -62,11 +62,11 @@
             id:'hbTable',
             cols: [[
 				{field:'id', width:90, title:'ID', align: 'center'},
-				{field:'hb_id', width:90, title:'红包批次', align: 'center'},
+				{field:'hb_id', title:'红包批次', align: 'center'},
 				{field:'user_id',title:'扫码人', align: 'center'},
-				{field:'tj_user_id', width:150,title:'推荐人', align: 'center'},
-				{field:'money', width:200,title:'红包金额', align: 'center'},
-				{field:'ctime', width:200,title:'领取时间', align: 'center'}
+				{field:'tj_user_id',title:'推荐人', align: 'center'},
+				{field:'money',title:'红包金额(分)', align: 'center'},
+				{field:'ctime',title:'领取时间', align: 'center'}
             ]]
         });
         layui.form.on('submit(*)', function(data){

@@ -316,6 +316,12 @@ function get_user_info($user_id, $field = 'mobile')
                 $nickname = format_mobile($user['mobile']);
             }
             return $nickname;
+        }elseif($field == 'showname'){
+            $str = $user['mobile'];
+            if($user['username']){
+                $str .= "(".$user['username'].")";
+            }
+            return $str;
         } else {
             return $user->$field;
         }

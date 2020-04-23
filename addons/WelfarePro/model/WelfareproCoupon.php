@@ -5,6 +5,8 @@ namespace addons\WelfarePro\model;
 
 
 use app\common\model\Common;
+use app\common\model\Coupon;
+use app\common\model\User;
 use think\Db;
 
 class WelfareproCoupon extends Common
@@ -33,8 +35,8 @@ class WelfareproCoupon extends Common
                 $result['msg'] = '参数错误';
                 return $result;
             }
-            foreach ($post['coupons'] as $val){
-                if((int)$post['nums'][$val] <= 0){
+            foreach ($post['coupons'] as $couponId=>$v){
+                if((int)$post['nums'][$couponId] <= 0){
                     $result['msg'] = '选中的优惠券的数量不能为空';
                     return $result;
                 }
@@ -167,8 +169,14 @@ class WelfareproCoupon extends Common
             $where[] = ['user_id', '=', $v];
             $info = $m->where($where)->find();
             if($info){
-                $result['msg'] = "用户ID：".$v."已经参加活动了";
-                return $result;
+                if($v == 0){
+                    $result['msg'] = "只能有一个所有人都可参与分享的福利。";
+                    return $result;
+                }else{
+                    $result['msg'] = "用户ID：".$v."已经参加活动了";
+                    return $result;
+                }
+
             }
         }
         $result['status'] = true;
@@ -204,8 +212,8 @@ class WelfareproCoupon extends Common
         return $this->hasMany(WelfareproCouponRel::class,'c_id','id');
     }
     public function getList($post){
-        $page = $post['page'] ?? 1;
-        $limit = $post['limit'] ?? 10;
+        $page = isset($post['page']) ?$post['page'] : 1;
+        $limit = isset($post['limit']) ?$post['limit'] : 10;
         $list = $this->with(['user','coupon'])->page($page,$limit)->select()->toArray();
         $count = $this->count('id');
         if(!empty($list)){
@@ -244,8 +252,6 @@ class WelfareproCoupon extends Common
                 $coupon_ids = array_column($val['coupon'],'coupon_id');
                 $coupon_ids = implode(',',$coupon_ids);
                 $val['coupon_ids'] = $coupon_ids;
-
-
             }
         }
         return [
@@ -254,5 +260,99 @@ class WelfareproCoupon extends Common
             'data'=>$list,
             'msg'=>'查询成功'
         ];
+    }
+
+    public function sendCoupon($user_id,$shareCode){
+        $result = [
+            'status' => false,
+            'data' => "",
+            'msg' => ''
+        ];
+
+        //注册时间到现在小于10分钟的都算新用户
+        //判断用户是否是新用户
+        $userModel = new User();
+        $userInfo = $userModel->where('id',$user_id)->find();
+        if(!$userInfo){
+            return error_code(10000);
+        }
+        if(time() - $userInfo['ctime'] > 600){
+            $is_new = false;
+        }else{
+            $is_new = true;     //新用户
+        }
+        $userModel = new User();
+        $tj_user_id = $userModel->getUserIdByShareCode($shareCode);
+
+        $info = $this->userCoupon($tj_user_id);
+        if(!$info){
+            $result['msg'] == "没有活动或者已经结束";
+            return $result;
+        }
+
+        //判断是否是限于新用户参加
+        if($info['type'] == 2 && $is_new){
+            $result['msg'] == "没有活动或者已经结束。";         //只限于新用户参与
+            return $result;
+        }
+        //判断该推荐人推荐数量是否已发完
+        $couponLogModel = new WelfareproCouponLog();
+        $is_over =  $couponLogModel->couponOver($info['id'],$tj_user_id,$info['sendnums']);
+        if(!$is_over){
+            $result['msg'] == "优惠券已经被领完了。";         //只限于新用户参与
+            return $result;
+        }
+        //判断是否领取过，
+        $coupon_ids = $info->coupon->column('coupon_id');
+        $couponModel = new Coupon();
+        $where = [
+            ['promotion_id','in',$coupon_ids],
+            ['user_id','=',$user_id]
+        ];
+        if($couponModel->where($where)->find()){
+            $result['msg'] = '您已经领取，不能重复领取';
+            return $result;
+        }
+
+        //去发券
+        return $this->sendCoupon2($user_id,$info,$tj_user_id);
+    }
+
+    private function sendCoupon2($user_id,$info,$tj_user_id){
+        //根据权重找到一张优惠券。
+        $coupon = $this->getCoupon($info->coupon);
+    }
+
+    private function  getCoupon($coupons){
+        $tempArray = [];
+        foreach ($coupons as $coupon){
+            for ($i=0;$i<(int)$coupon['num'];$i++){
+                $tempArray[$i] = $coupon;
+            }
+        }
+        $length = count($tempArray);
+        $key = mt_rand(0,$length-1);    //获取随机数
+        return $tempArray[$key];
+    }
+
+
+    /**
+     * 获取当前推荐用户的优惠券列表
+     * @param $tj_user_id
+     */
+    private function userCoupon($tj_user_id){
+        $where = [];
+        $where[] = ['c.date_start', '<',time()];
+        $where[] = ['c.date_end', '>', time()];
+        $where[] = ['hbu.user_id', 'in', [$tj_user_id,0]];
+        $where[] = ['hbu.type', '=', 2];
+
+        $info = $this->with(['coupon'])->alias('c')
+                ->leftJoin(app(WelfareproHbuser::class)->getTable().' hbu','hbu.hb_id=c.id')
+                ->where($where)
+                ->field(['c.*'])
+                ->find();
+        return $info;
+
     }
 }

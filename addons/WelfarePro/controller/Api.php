@@ -3,6 +3,7 @@
 namespace addons\WelfarePro\controller;
 
 //演示插件的接口使用方法，此控制器命名可以随便命名，但是继承的类一定要集成这个\app\common\controller\Api
+use addons\WelfarePro\model\WelfareproCoupon;
 use addons\WelfarePro\model\WelfareproHb;
 use app\common\model\User;
 
@@ -16,10 +17,6 @@ class Api extends \app\common\controller\Api
             'data' => "",
             'msg' => ''
         ];
-        $result['status'] = true;
-        $result['msg'] = "领取成功";
-        return $result;
-
         if(!input('?param.userShareCode')){
             $data['msg'] = "userShareCode必须填";
             return $result;
@@ -38,8 +35,13 @@ class Api extends \app\common\controller\Api
         ];
         $result['status'] = true;
         $result['msg'] = "领取成功";
-        return $result;
+        if(!input('?param.userShareCode')){
+            $data['msg'] = "userShareCode必须填";
+            return $result;
+        }
 
+        $m = new WelfareproCoupon();
+        return $m->sendCoupon($this->userId,input('param.userShareCode'));
     }
 
 }

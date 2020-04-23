@@ -46,3 +46,10 @@ CREATE TABLE `jshop_welfarepro_coupon_rel`  (
 SET FOREIGN_KEY_CHECKS = 1;
 
 Alter TABLE jshop_welfarepro_hbuser add `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 红包 2优惠券';
+
+DROP TABLE IF EXISTS `jshop_welfarepro_coupon_log`;
+CREATE TABLE `jshop_welfarepro_coupon_log` (
+  `c_id` int(11) unsigned NOT NULL,
+  `tj_user_id` int(11) NOT NULL COMMENT '推荐人',
+  `nums` int(8) unsigned NOT NULL DEFAULT '0' COMMENT '已领数量'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='优惠券领取数量表';

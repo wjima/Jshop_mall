@@ -957,6 +957,14 @@ class User extends Common
                 return $return;
             }
         }
+
+        if (isset($data['username']) && $data['username'] != "") {
+            if ($this->where('username', $data['username'])->find()) {
+                $return['msg'] = '用户名已经存在，请确认';
+                return $return;
+            }
+        }
+
         if(isset($data['password'])){
             if ($data['password'] == '' || strlen($data['password']) < 6 || strlen($data['password']) > 16) {
                 return error_code(11009);
@@ -967,6 +975,19 @@ class User extends Common
                 return $return;
             }
         }
+
+        if (isset($data['p_mobile']) && $data['p_mobile'] != '') {
+            $pinfo = $this->where('mobile',$data['p_mobile'])->find();
+            if(!$pinfo){
+                $return['msg'] = "推荐人手机号码没有找到";
+                return $return;
+            }else{
+                $pid = $pinfo['id'];
+            }
+        }else{
+            $pid = 0;
+        }
+
         //默认用户等级
         if(!isset($data['grade'])){
             $userGradeModel = new UserGrade();
@@ -978,9 +999,8 @@ class User extends Common
             }
         }
 
-
         $time                = time();
-        $newData['username'] = null;
+        $newData['username'] = $data['username'];
         $newData['mobile']   = isset($data['mobile']) ? $data['mobile'] : "";
         $newData['password'] = isset($data['password']) ? $this->enPassword($data['password'], $time) : "";
         $newData['sex']      = isset($data['sex']) ? $data['sex'] : 3;
@@ -992,7 +1012,7 @@ class User extends Common
         $newData['ctime']    = $time;
         $newData['utime']    = $time;
         $newData['status']   = isset($data['status']) ? $data['status'] : self::STATUS_NORMAL;
-        $newData['pid']      = isset($data['pid']) ? $data['pid'] : 0;
+        $newData['pid']      = $pid;
         $newData['grade']    = $data['grade'];
         $result         = $this->save($newData);
         $return['data'] = $this->id;

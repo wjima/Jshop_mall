@@ -1,6 +1,8 @@
 <?php
 namespace addons\WelfarePro;	// 注意命名空间规范
 
+use addons\WelfarePro\model\WelfareproHb;
+use app\common\model\User;
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
 
@@ -61,7 +63,27 @@ class WelfarePro extends Addons
         return $this->fetch('config');
     }
     public function deshare($obj){
-        $obj->data['welfarepro'] = ['hb'];
+        $obj->data['welfarepro'] = [];      //'hb','coupon'
+
+        if(isset($obj->data['userShareCode']) && $obj->data['userShareCode'] != ""){
+            $userModel = new User();
+            $tj_user_id = $userModel->getUserIdByShareCode($obj->data['userShareCode']);
+
+            //判断当前推荐人是否有红包活动
+            $hb = new WelfareproHb();
+            $info = $hb->userHb($tj_user_id);
+            if($info){
+                $obj->data['welfarepro'][] = 'hb';
+            }
+
+            //判断优惠券
+
+
+        }
+
+
+
+
         return true;
     }
 

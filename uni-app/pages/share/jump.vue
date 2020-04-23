@@ -87,7 +87,7 @@
 					if (res.status) {
 						this.saveInviteCode(res.data.userShareCode); //存储邀请码
 						this.data=res.data;
-						if(res.data.welfarepro && this.welfarepro.length!=0){
+						if(res.data.welfarepro && res.data.welfarepro.length!=0){
 							if(res.data.welfarepro.indexOf('hb')>-1){
 								this.hasHb=true
 							}else if(res.data.welfarepro.indexOf('coupon')>-1){
@@ -159,7 +159,14 @@
 								}
 							});
 						}else{
-							this.$common.errorToShow(res.msg)
+							this.$common.errorToShow(res.msg,()=>{
+								this.hasHb=false
+								if(this.data.welfarepro.indexOf('coupon')>-1){
+									this.hasCoupon=true
+								}else{
+									this.goPage()
+								}
+							})
 						}
 					})
 				}else if(type==2){
@@ -170,7 +177,10 @@
 								this.goPage()
 							});
 						}else{
-							this.$common.errorToShow(res.msg)
+							this.$common.errorToShow(res.msg,()=>{
+								this.hasCoupon=false
+								this.goPage()
+							})
 						}
 					})
 				}

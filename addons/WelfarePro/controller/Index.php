@@ -3,6 +3,7 @@
 namespace addons\WelfarePro\controller;
 
 use addons\WelfarePro\model\WelfareproCoupon;
+use addons\WelfarePro\model\WelfareproCouponLog;
 use addons\WelfarePro\model\WelfareproHb;
 use addons\WelfarePro\model\WelfareproHbuser;
 use app\common\model\Coupon;
@@ -199,5 +200,32 @@ class Index extends AddonController
         }
         $HbModel = new WelfareproCoupon();
         return $HbModel->toDel(input('param.id'));
+    }
+    public function couponView(){
+        $return = [
+            'status' => true,
+            'msg' => '失败',
+            'data' => ''
+        ];
+        $this->view->engine->layout(false);
+        $id = input('id/d',0);  //批次ID
+        if(empty($id)) {
+            $return['msg'] = '缺少必要参数';
+            $return['status'] = false;
+            return $return;
+        }
+        if($this->request->isPost())
+        {
+            $param = input('post.');
+            $model = new WelfareproCouponLog();
+            return $model->getList($param);
+        }
+        $model = new WelfareproCoupon();
+        $info = $model->where(['id'=>$id])->find();
+        $this->assign('info',$info);
+        $this->assign('id',$id);
+        $return['msg'] = '成功';
+        $return['data'] = $this->fetch();
+        return $return;
     }
 }

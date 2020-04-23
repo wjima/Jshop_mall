@@ -1,5 +1,8 @@
 <template>
 	<view class="container">
+		<view class="bg">
+			<image :src="`${url}static/images/welfarepro/bg_img.jpg`" mode="" class="img"></image>
+		</view>
 		<view class="red" v-if="hasHb">
 			<view class="red_bgi">
 				<image :src="`${url}static/images/welfarepro/red.png`" mode="" class="img"></image>
@@ -18,7 +21,7 @@
 			</view>
 			<view class="btn" @click="receive(1)">
 				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/red_btn.png" mode="" class="btn_icon"></image> -->
-				<image :src="`${url}static/images/welfarepro/red_btn.png`" mode="" class="del_icon"></image>
+				<image :src="`${url}static/images/welfarepro/red_btn.png`" mode="" class="btn_icon"></image>
 				<view class="btn_word">
 					立即领取
 				</view>
@@ -27,7 +30,7 @@
 		<view class="red" v-if="hasCoupon">
 			<view class="red_bgi">
 				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/coupon_bgi.png" mode="" class="img"></image> -->
-				<image :src="`${url}static/images/welfarepro/coupon_bgi.png`" mode="" class="del_icon"></image>
+				<image :src="`${url}static/images/welfarepro/coupon_bgi.png`" mode="" class="img"></image>
 			</view>
 			<view class="del" @click="goPage">
 				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/del_jump.png" mode="" class="del_icon"></image> -->
@@ -43,7 +46,7 @@
 			</view>
 			<view class="btn coupon_btn" @click="receive(2)">
 				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/coupon_btn.png" mode="" class="btn_icon"></image> -->
-				<image :src="`${url}static/images/welfarepro/coupon_btn.png`" mode="" class="del_icon"></image>
+				<image :src="`${url}static/images/welfarepro/coupon_btn.png`" mode="" class="btn_icon"></image>
 				<view class="btn_word">
 					立即领取
 				</view>
@@ -84,7 +87,7 @@
 					if (res.status) {
 						this.saveInviteCode(res.data.userShareCode); //存储邀请码
 						this.data=res.data;
-						if(res.data.welfarepro && this.welfarepro.length!=0){
+						if(res.data.welfarepro && res.data.welfarepro.length!=0){
 							if(res.data.welfarepro.indexOf('hb')>-1){
 								this.hasHb=true
 							}else if(res.data.welfarepro.indexOf('coupon')>-1){
@@ -156,7 +159,14 @@
 								}
 							});
 						}else{
-							this.$common.errorToShow(res.msg)
+							this.$common.errorToShow(res.msg,()=>{
+								this.hasHb=false
+								if(this.data.welfarepro.indexOf('coupon')>-1){
+									this.hasCoupon=true
+								}else{
+									this.goPage()
+								}
+							})
 						}
 					})
 				}else if(type==2){
@@ -167,7 +177,10 @@
 								this.goPage()
 							});
 						}else{
-							this.$common.errorToShow(res.msg)
+							this.$common.errorToShow(res.msg,()=>{
+								this.hasCoupon=false
+								this.goPage()
+							})
 						}
 					})
 				}
@@ -312,14 +325,22 @@
 	page {
 		width: 100%;
 		height: 100%;
-		// background: url("'/'+apiBaseUrl+'/static/images/welfarepro/bg_img.jpg'") no-repeat;
-		background: url("`${url}static/images/welfarepro/bg_img.jpg`") no-repeat;
-		background-size: 100%;
+		// background: url("`${url}static/images/welfarepro/bg_img.jpg`") no-repeat;
+		// background-size: 100%;
 
 		.container {
 			position: relative;
 			width: 100%;
 			height: 100%;
+			.bg{
+				width: 100%;
+				height: 100%;
+				// position: relative;
+				image{
+					width: 100%;
+					height: 100%;
+				}
+			}
 			.red {
 				position: absolute;
 				top: 50%;

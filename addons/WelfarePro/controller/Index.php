@@ -5,6 +5,7 @@ namespace addons\WelfarePro\controller;
 use addons\WelfarePro\model\WelfareproCoupon;
 use addons\WelfarePro\model\WelfareproCouponLog;
 use addons\WelfarePro\model\WelfareproHb;
+use addons\WelfarePro\model\WelfareproHblog;
 use addons\WelfarePro\model\WelfareproHbuser;
 use app\common\model\Coupon;
 use app\common\model\Promotion;
@@ -201,6 +202,19 @@ class Index extends AddonController
         $HbModel = new WelfareproCoupon();
         return $HbModel->toDel(input('param.id'));
     }
+
+    public function hblog(){
+        $this->view->engine->layout('layout');
+        $this->view->engine->layout('../../../application/manage/view/layout');     //此处引入后台的样式，其实插件不仅仅局限于后台，他是一个单独的模块，可以做成独立的功能
+
+        $HbModel = new WelfareproHblog();
+        if (\think\facade\Request::isAjax())
+        {
+            return $HbModel->tableData(input('param.'));
+        }
+        return $this->fetch();
+    }
+
     public function couponView(){
         $return = [
             'status' => true,

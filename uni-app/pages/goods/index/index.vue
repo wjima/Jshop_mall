@@ -159,11 +159,11 @@
 			</view>
 		</view>
 
-		<lvv-popup position="bottom" ref="share">
+		<lvv-popup position="bottom" ref="share" v-if="goodsId">
 			<!-- #ifdef H5 -->
 			<shareByH5
                 :ifwx="ifwx"
-                :goodsId="goodsInfo.id"
+                :goodsId="goodsId"
                 :shareImg="goodsInfo.image_url"
                 :shareTitle="goodsInfo.name"
                 :shareContent="goodsInfo.brief"
@@ -175,7 +175,7 @@
 
 			<!-- #ifdef MP-WEIXIN -->
 			<shareByWx
-                :goodsId="goodsInfo.id"
+                :goodsId="goodsId"
                 :shareImg="goodsInfo.image_url"
                 :shareTitle="goodsInfo.name"
                 :shareContent="goodsInfo.brief"
@@ -187,7 +187,7 @@
 
 			<!-- #ifdef MP-ALIPAY -->
 			<shareByAli
-                :goodsId="goodsInfo.id"
+                :goodsId="goodsId"
                 :shareImg="goodsInfo.image_url"
                 :shareTitle="goodsInfo.name"
                 :shareContent="goodsInfo.brief"
@@ -199,7 +199,7 @@
 
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
-                :goodsId="goodsInfo.id"
+                :goodsId="goodsId"
                 :shareImg="goodsInfo.image_url"
                 :shareTitle="goodsInfo.name"
                 :shareContent="goodsInfo.brief"
@@ -211,7 +211,7 @@
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp
-                :goodsId="goodsInfo.id"
+                :goodsId="goodsId"
                 :shareImg="goodsInfo.image_url"
                 :shareTitle="goodsInfo.name"
                 :shareContent="goodsInfo.brief"

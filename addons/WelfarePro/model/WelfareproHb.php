@@ -129,6 +129,16 @@ class WelfareproHb extends Common
             1 => '全部用户',
             2 => '新用户',
         ];
+        $scene = [
+            1 => '商品促销',
+            2 => '抽奖',
+            3 => '虚拟物品兑奖',
+            4 => '企业内部福利',
+            5 => '渠道分润',
+            6 => '保险回馈',
+            7 => '彩票派奖',
+            8 => '税务刮奖'
+        ];
         $hbuserModel= new WelfareproHbuser();
         foreach ($list as $k => $v) {
             if ($v['type']) {
@@ -146,8 +156,11 @@ class WelfareproHb extends Common
             if ($v['utime']) {
                 $list[$k]['utime'] = getTime($v['utime']);
             }
+            //取场景值
+            if ($v['scene_id']) {
+                $list[$k]['scene_id'] = $scene[$v['scene_id']];
+            }
             //取用户id
-
             $hb_users = $hbuserModel->where('hb_id',$v['id'])->select()->toArray();
             if($hb_users && $hb_users[0]['user_id'] == 0){
                 unset($hb_users[0]);

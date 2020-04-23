@@ -2,10 +2,11 @@
 	<view class="container">
 		<view class="red" v-if="hasHb">
 			<view class="red_bgi">
-				<image src="/static/image/red.png" mode="" class="img"></image>
+				<image :src="`${url}static/images/welfarepro/red.png`" mode="" class="img"></image>
 			</view>
 			<view class="del" @click="goPage">
-				<image src="/static/image/del_jump.png" mode="" class="del_icon"></image>
+				<!-- <image src= apiBaseUrl+"/static/images/welfarepro/del_jump.png" mode="" class="del_icon"></image> -->
+				<image :src="`${url}static/images/welfarepro/del_jump.png`" mode="" class="del_icon"></image>
 			</view>
 			<view class="word">
 				<view class="title">
@@ -16,7 +17,8 @@
 				</view>
 			</view>
 			<view class="btn" @click="receive(1)">
-				<image src="/static/image/red_btn.png" mode="" class="btn_icon"></image>
+				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/red_btn.png" mode="" class="btn_icon"></image> -->
+				<image :src="`${url}static/images/welfarepro/red_btn.png`" mode="" class="del_icon"></image>
 				<view class="btn_word">
 					立即领取
 				</view>
@@ -24,10 +26,12 @@
 		</view>
 		<view class="red" v-if="hasCoupon">
 			<view class="red_bgi">
-				<image src="/static/image/coupon_bgi.png" mode="" class="img"></image>
+				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/coupon_bgi.png" mode="" class="img"></image> -->
+				<image :src="`${url}static/images/welfarepro/coupon_bgi.png`" mode="" class="del_icon"></image>
 			</view>
 			<view class="del" @click="goPage">
-				<image src="/static/image/del_jump.png" mode="" class="del_icon"></image>
+				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/del_jump.png" mode="" class="del_icon"></image> -->
+				<image :src="`${url}static/images/welfarepro/del_jump.png`" mode="" class="del_icon"></image>
 			</view>
 			<view class="word coupon">
 				<view class="title">
@@ -38,7 +42,8 @@
 				</view>
 			</view>
 			<view class="btn coupon_btn" @click="receive(2)">
-				<image src="/static/image/coupon_btn.png" mode="" class="btn_icon"></image>
+				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/coupon_btn.png" mode="" class="btn_icon"></image> -->
+				<image :src="`${url}static/images/welfarepro/coupon_btn.png`" mode="" class="del_icon"></image>
 				<view class="btn_word">
 					立即领取
 				</view>
@@ -47,16 +52,19 @@
 	</view>
 </template>
 <script>
+	import { apiBaseUrl } from '@/config/config.js'	
 	export default {
 		data() {
 			return {
 				hasHb:false,
 				hasCoupon:false,
 				data:{},
-				welfarepro:["hb","coupon"]
+				welfarepro:["hb","coupon"],
+				url:''
 			};
 		},
 		onLoad(e) {
+			this.url=apiBaseUrl
 			if (e.scene) {
 				this.deshare(e.scene);
 			} else {
@@ -304,7 +312,8 @@
 	page {
 		width: 100%;
 		height: 100%;
-		background: url("../../static/image/bg_img.jpg") no-repeat;
+		// background: url("'/'+apiBaseUrl+'/static/images/welfarepro/bg_img.jpg'") no-repeat;
+		background: url("`${url}static/images/welfarepro/bg_img.jpg`") no-repeat;
 		background-size: 100%;
 
 		.container {

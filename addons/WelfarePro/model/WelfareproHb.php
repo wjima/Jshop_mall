@@ -260,10 +260,7 @@ class WelfareproHb extends Common
         $openid = $userwxInfo['openid'];
 
         $money = mt_rand($info['money_start'] , $info['money_end']);
-        //$result = $hb->send($openid,$money,$info['id']);
-        //调试代码,先不实际去发。
-        $result['status'] = true;
-        //结束
+        $result = $hb->send($openid,$money,$info['id']);
 
         if(!$result['status']){
             return $result;

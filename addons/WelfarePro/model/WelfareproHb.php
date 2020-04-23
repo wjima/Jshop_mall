@@ -57,7 +57,8 @@ class WelfareproHb extends Common
             foreach($user as $v){
                 $data[] = [
                     'hb_id' => $this->id,
-                    'user_id' => $v
+                    'user_id' => $v,
+                    'type' => 1
                 ];
             }
             $hbuserModel->saveAll($data);

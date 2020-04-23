@@ -7,4 +7,9 @@ class WelfareproHblog extends Common
 {
     protected $autoWriteTimestamp = true;
     protected $createTime = 'ctime';
+
+
+
+
+
 }

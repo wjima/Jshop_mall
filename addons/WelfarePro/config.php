@@ -21,6 +21,33 @@ return [
                 'url' => get_addon_url('WelfarePro://index/index'),
                 'sort' => 100
             ],
+            'welfarepro_21' =>[
+                'id' => 'welfarepro_21',
+                'parent_menu_id' => 'welfarepro_2',
+                'name' => '红包添加&编辑',
+                'type' => 'a',
+                'perm_type' => 3,
+                'url' => '',
+                'sort' => 100
+            ],
+            'welfarepro_22' =>[
+                'id' => 'welfarepro_22',
+                'parent_menu_id' => 'welfarepro_2',
+                'name' => '红包删除',
+                'type' => 'a',
+                'perm_type' => 3,
+                'url' => '',
+                'sort' => 100
+            ],
+            'welfarepro_23' =>[
+                'id' => 'welfarepro_23',
+                'parent_menu_id' => 'welfarepro_2',
+                'name' => '红包领取记录',
+                'type' => 'a',
+                'perm_type' => 3,
+                'url' => '',
+                'sort' => 100
+            ],
             'welfarepro_3' =>[
                 'id' => 'welfarepro_3',
                 'parent_menu_id' => 'welfarepro_1',

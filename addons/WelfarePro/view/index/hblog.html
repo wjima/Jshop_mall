@@ -1,0 +1,54 @@
+<style>
+    .layui-btn .layui-icon{
+        margin-right: 0;
+    }
+    .layui-layer-page .layui-layer-content{
+        overflow: initial;
+    }
+</style>
+<form class="layui-form seller-form" action="">
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<a onclick="window.history.back();" href="#" class="layui-btn add-class layui-btn-sm">返回</a>
+		</div>
+	</div>
+</form>
+<div class="table-body">
+	<table id="hbTable" lay-filter="test"></table>
+</div>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+
+        table = layui.table.render({
+            elem: '#hbTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:get_addon_url('WelfarePro://index/hblog')}?_ajax=1",
+            id:'hbTable',
+            cols: [[
+				{field:'id', width:90, title:'ID', align: 'center'},
+				{field:'hb_id', width:90, title:'红包批次', align: 'center'},
+				{field:'user_id',title:'扫码人', align: 'center'},
+				{field:'tj_user_id', width:150,title:'推荐人', align: 'center'},
+				{field:'money', width:200,title:'红包金额', align: 'center'},
+				{field:'ctime', width:200,title:'领取时间', align: 'center'}
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('userTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    });
+
+
+
+</script>

@@ -17,6 +17,7 @@ class Api extends \app\common\controller\Api
             'data' => "",
             'msg' => ''
         ];
+
         if(!input('?param.userShareCode')){
             $data['msg'] = "userShareCode必须填";
             return $result;
@@ -33,8 +34,7 @@ class Api extends \app\common\controller\Api
             'data' => "",
             'msg' => ''
         ];
-        $result['status'] = true;
-        $result['msg'] = "领取成功";
+
         if(!input('?param.userShareCode')){
             $data['msg'] = "userShareCode必须填";
             return $result;

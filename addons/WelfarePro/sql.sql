@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: 2020-04-22 13:46:56
+-- Generation Time: 2020-04-23 13:39:57
 -- 服务器版本： 5.5.42
 -- PHP Version: 5.6.6
 
@@ -32,13 +32,6 @@ CREATE TABLE `jshop_welfarepro_hb` (
   `utime` bigint(12) unsigned DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='红包表';
 
---
--- 转存表中的数据 `jshop_welfarepro_hb`
---
-
-INSERT INTO `jshop_welfarepro_hb` (`id`, `money_all`, `money_start`, `money_end`, `date_start`, `date_end`, `type`, `ctime`, `utime`) VALUES
-(4, 1000, 888, 8888, 1586361600, 1589385600, 1, 1587469406, 1587469406);
-
 -- --------------------------------------------------------
 
 --
@@ -47,22 +40,12 @@ INSERT INTO `jshop_welfarepro_hb` (`id`, `money_all`, `money_start`, `money_end`
 
 CREATE TABLE `jshop_welfarepro_hblog` (
   `id` int(11) unsigned NOT NULL,
-  `money_all` int(11) unsigned NOT NULL COMMENT '总金额',
-  `money_start` int(8) unsigned NOT NULL COMMENT '开始的钱',
-  `money_end` int(8) unsigned NOT NULL COMMENT '结束的钱',
-  `date_start` bigint(12) unsigned NOT NULL COMMENT '开始时间',
-  `date_end` bigint(12) unsigned NOT NULL COMMENT '结束时间',
-  `type` tinyint(2) unsigned NOT NULL COMMENT '1，全部用户，2新用户',
-  `ctime` bigint(12) unsigned DEFAULT NULL,
-  `utime` bigint(12) unsigned DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='红包表';
-
---
--- 转存表中的数据 `jshop_welfarepro_hblog`
---
-
-INSERT INTO `jshop_welfarepro_hblog` (`id`, `money_all`, `money_start`, `money_end`, `date_start`, `date_end`, `type`, `ctime`, `utime`) VALUES
-(0, 0, 0, 0, 2020, 0, 0, 0, 0);
+  `user_id` int(11) unsigned NOT NULL COMMENT '扫码人',
+  `tj_user_id` int(11) unsigned NOT NULL COMMENT '推荐人',
+  `money` int(10) unsigned NOT NULL COMMENT '红包金额',
+  `hb_id` int(11) unsigned NOT NULL COMMENT '批次，红包活动id',
+  `ctime` bigint(12) unsigned DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='红包表';
 
 -- --------------------------------------------------------
 
@@ -76,13 +59,6 @@ CREATE TABLE `jshop_welfarepro_hbuser` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='红包表';
 
 --
--- 转存表中的数据 `jshop_welfarepro_hbuser`
---
-
-INSERT INTO `jshop_welfarepro_hbuser` (`hb_id`, `user_id`) VALUES
-(4, 0);
-
---
 -- Indexes for dumped tables
 --
 
@@ -90,6 +66,12 @@ INSERT INTO `jshop_welfarepro_hbuser` (`hb_id`, `user_id`) VALUES
 -- Indexes for table `jshop_welfarepro_hb`
 --
 ALTER TABLE `jshop_welfarepro_hb`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `jshop_welfarepro_hblog`
+--
+ALTER TABLE `jshop_welfarepro_hblog`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -101,3 +83,8 @@ ALTER TABLE `jshop_welfarepro_hb`
 --
 ALTER TABLE `jshop_welfarepro_hb`
   MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `jshop_welfarepro_hblog`
+--
+ALTER TABLE `jshop_welfarepro_hblog`
+  MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;

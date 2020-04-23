@@ -73,6 +73,12 @@
             "minified" : true,
             "es6" : true
         },
+		 "plugins": {
+		        "live-player-plugin": {
+		            "version": "1.0.7",
+		            "provider": "wx2b03c6e691cd7370"
+		        }
+		    },
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "用于获取您附近的门店列表"

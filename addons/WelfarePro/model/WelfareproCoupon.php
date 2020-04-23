@@ -297,9 +297,9 @@ class WelfareproCoupon extends Common
         }
         //判断该推荐人推荐数量是否已发完
         $couponLogModel = new WelfareproCouponLog();
-        $is_over =  $couponLogModel->couponOver($info['id'],$tj_user_id,$info['sendnums']);
+        $is_over =  $couponLogModel->couponOver($info['id'],$tj_user_id,$info['sendnum']);
         if(!$is_over){
-            $result['msg'] == "优惠券已经被领完了。";         //只限于新用户参与
+            $result['msg'] = "来晚一步，优惠券已经被领完了。";         //只限于新用户参与
             return $result;
         }
         //判断是否领取过，
@@ -313,7 +313,6 @@ class WelfareproCoupon extends Common
             $result['msg'] = '您已经领取，不能重复领取';
             return $result;
         }
-
         //去发券
         return $this->sendCoupon2($user_id,$info,$tj_user_id);
     }
@@ -321,10 +320,56 @@ class WelfareproCoupon extends Common
     private function sendCoupon2($user_id,$info,$tj_user_id){
         //根据权重找到一张优惠券。
         $coupon = $this->getCoupon($info->coupon);
+        $id = $coupon['c_id'];  //扫码领优惠券福利
+        $coupon_id = $coupon['coupon_id'];
+        $couponModel = new Coupon();
+        $result = [
+            'status'=>false,
+            'msg'=>'领取失败',
+            'data'=>''
+        ];
+        try{
+            Db::startTrans();
+            //用户领取优惠券
+            $res = $couponModel->addData($user_id,$coupon_id);
+            if(!$res['status']){
+                //用户领取优惠券失败
+                throw  new \Exception($res['msg']);
+            }
+            //推荐人推荐数量+1
+            $couponLogModel = new WelfareproCouponLog();
+            $log = $couponLogModel->where('tj_user_id',$tj_user_id)->where('c_id',$id)->find();
+            $maxNums = $this->where('id',$id)->value('sendnum');
+            if($log){
+                if($log['nums'] < $maxNums){
+                    $log->nums = ['inc',1];
+                    $log->save();
+                }else {
+                    //用户领取优惠券失败
+                    throw  new \Exception('来晚一步，优惠券已经被领完了.');
+                }
+            }else{
+                $data = [
+                  'tj_user_id'=>$tj_user_id,
+                  'c_id'=>$id,
+                  'nums'=>1,
+                ];
+                $couponLogModel->save($data);
+            }
+            Db::commit();
+        }catch (\Throwable $e){
+            Db::rollback();
+            $result['msg'] = $e->getMessage();
+            return $result;
+        }
+        $result['status'] = true;
+        $result['msg'] = '领取成功';
+        return $result;
     }
 
     private function  getCoupon($coupons){
         $tempArray = [];
+        if(count($coupons) == 1) return $coupons[0];    //如果只有一张优惠券 就用这张优惠券
         foreach ($coupons as $coupon){
             for ($i=0;$i<(int)$coupon['num'];$i++){
                 $tempArray[$i] = $coupon;

@@ -1,6 +1,7 @@
 <?php
 namespace addons\WelfarePro;	// 注意命名空间规范
 
+use addons\WelfarePro\model\WelfareproCoupon;
 use addons\WelfarePro\model\WelfareproHb;
 use app\common\model\User;
 use myxland\addons\Addons;
@@ -77,7 +78,11 @@ class WelfarePro extends Addons
             }
 
             //判断优惠券
-
+            $coupon = new WelfareproCoupon();
+            $info = $coupon->userCoupon($tj_user_id);
+            if($info){
+                $obj->data['welfarepro'][] = 'coupon';
+            }
 
         }
 

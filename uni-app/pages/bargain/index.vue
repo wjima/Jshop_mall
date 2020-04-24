@@ -42,6 +42,8 @@
 			<view class="share" @click="goShare()" v-if="info.status_progress == 1 && type == 1">分享好友，代您砍价</view>
 			<view class="share" @click="goShare()" v-if="info.status_progress == 1 && type == 2">分享好友，帮他砍价吧~</view>
 			<view class="share" v-if="info.status_progress == 2 && type == 1" @click="buyNow()">砍价成功，购买吧~</view>
+			<view class="share" v-if="info.status_progress == 2 && type == 2" >非常感谢，助我砍价成功</view>
+			
 			<view class="share" v-if="info.status_progress == 3 || info.status_progress == 4">砍价结束</view>
 		</view>
 

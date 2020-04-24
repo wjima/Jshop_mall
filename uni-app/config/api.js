@@ -92,7 +92,9 @@ const methodsToken = [
 	'bargain.goodsinfo',
 	'bargain.add',
 	'bargain.getuserbargainlog',
-	'bargain.canclebargain'
+	'bargain.canclebargain',
+	'api.hb.WelfarePro',
+	'api.coupon.WelfarePro'
 ];
 
 const post = (method, data, callback,complete) => {
@@ -867,3 +869,9 @@ export const getUserBargainLog = (data, callback) => post('bargain.getuserbargai
 
 //取消砍一刀活动
 export const cancleBargain = (data, callback) => post('bargain.canclebargain', data, callback);
+
+//分享领取红包
+export const getShareHb = (data, callback) => post('api.hb.WelfarePro', data, callback);
+
+//分享领取优惠券
+export const getShareCoupon = (data, callback) => post('api.coupon.WelfarePro', data, callback);

@@ -86,8 +86,14 @@
 							</view>
 						</view>
 					</view>
+                    <view>
+                        <view class="giveaway2" v-for="(v, k) in item.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
+                    </view>
 				</view>
 			</view>
+            <view class="giveaway" v-if="cartData.giveaway.length > 0">
+                <view v-for="(v, k) in cartData.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
+            </view>
 
 			<view class="cell-group">
 				<view class="cell-item">
@@ -941,6 +947,95 @@ export default {
 	padding-bottom: 116rpx;
 	/* #endif */
 }
+.coupon-enter{
+    display: flex;
+    height: 60upx;
+    margin: 40upx;
+}
+.coupon-enter>view{
+    display: inline-block;
+}
+.coupon-input{
+    /* width: 450upx; */
+    flex: 1;
+    border: 2upx solid #e8e8e8;
+    background-color: #fff;
+    height: 100%;
+        display: block;
+}
+.coupon-input input{
+    height: 100%;
+    font-size: 26upx;
+    padding: 2upx 10upx;
+}
+.coupon-code{
+    margin: 4upx 30upx;
+}
+.input-arr{
+
+}
+.coupon-enter-btn{
+    height: 100%;
+    margin-left: 20upx;
+}
+.coupon-enter-btn .btn{
+    font-size: 24upx;
+    height: 100%;
+    width: 108upx;
+    line-height: 58upx;
+}
+.bg-c{
+    background-color: #ccc;
+}
+.no-store{
+    text-align: center;
+    padding: 30upx 0;
+    font-size: 26upx;
+    color: #666;
+    /* min-height: 60upx; */
+}
+.coupon-none{
+    text-align: center;
+    padding: 120upx 0;
+}
+.coupon-none-img{
+    width: 274upx;
+    height: 274upx;
+}
+.coupon-list{
+    padding: 0 40rpx;
+}
+.coupon-item{
+    background-color: #fff;
+    margin-bottom: 20rpx;
+    position: relative;
+}
+.coupon-name{
+    padding: 10rpx 34rpx 10rpx 10rpx;
+}
+.coupon-code1{
+    padding: 10rpx;
+}
+.delete{
+    position: absolute;
+    top: 10rpx;
+    right: 0;
+}
+.delete image{
+    width: 40rpx;
+    height: 40rpx;
+}
+.giveaway{
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #666666;
+}
+.giveaway2{
+    font-size: 14px;
+    color: #666666;
+}
+
 .margin-cell-group {
 	margin: 0 0 2upx 0;
 }

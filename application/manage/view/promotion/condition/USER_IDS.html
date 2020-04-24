@@ -9,9 +9,6 @@
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>请选择：</label>
         <div class="layui-input-block">
-            {volist name="gradeList" id="vo"}
-                <input type="checkbox" name="params[{$vo.id}]"  lay-skin="primary" title="{$vo.name}{if condition='$vo.is_def eq 1'} (默) {/if}" {if condition="isset($params[$vo['id']])"}checked=""{/if} >
-            {/volist}
             {Jshop:selectuser value="$params.user_id" num="100" name="params[user_id]" /}
         </div>
     </div>

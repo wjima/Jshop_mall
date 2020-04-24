@@ -32,15 +32,13 @@ class BargainRecord extends Common
         } else {
             $limit = config('paginate.list_rows');
         }
-        $tableWhere = $this->tableWhere($post);
-        $list       = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
-        $data       = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
-
+        $tableWhere  = $this->tableWhere($post);
+        $list        = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         $re['code']  = 0;
         $re['msg']   = '';
         $re['count'] = $list->total();
         $re['data']  = $data;
-
         return $re;
     }
 
@@ -61,10 +59,20 @@ class BargainRecord extends Common
         if (isset($post['status']) && $post['status'] != "") {
             $where[] = ['status', 'eq', $post['status']];
         }
-
+        if (isset($post['bargain_id']) && $post['bargain_id'] != "") {
+            $where[] = ['bargain_id', 'eq', $post['bargain_id']];
+        }
+        if (isset($post['mobile']) && $post['mobile'] != "") {
+            $user_id = get_user_id($post['mobile']);
+            if ($user_id) {
+                $where[] = ['user_id', 'eq', $user_id];
+            } else {
+                $where[] = ['user_id', 'eq', 99999999];
+            }
+        }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = ['ctime' => 'desc'];
         return $result;
     }
 
@@ -77,11 +85,14 @@ class BargainRecord extends Common
     protected function tableFormat($list)
     {
         foreach ($list as $k => $v) {
-            $list[$k]['nickname'] = get_user_info($v['user_id'], 'nickname');
-            $list[$k]['ctime']    = getTime($v['ctime']);
-            $list[$k]['utime']    = getTime($v['utime']);
-            $list[$k]['avatar']   = _sImage(get_user_info($v['user_id'], 'avatar'));
-            if($v['status'] == self::STATUS_ING){
+            $list[$k]['nickname']    = get_user_info($v['user_id'], 'nickname');
+            $list[$k]['stime']       = getTime($v['stime']);
+            $list[$k]['etime']       = getTime($v['etime']);
+            $list[$k]['ctime']       = getTime($v['ctime']);
+            $list[$k]['utime']       = getTime($v['utime']);
+            $list[$k]['status_name'] = config('params.bargain')['status'][$v['status']];
+            $list[$k]['avatar']      = _sImage(get_user_info($v['user_id'], 'avatar'));
+            if ($v['status'] == self::STATUS_ING) {
                 $list[$k]['lasttime'] = secondConversionArray($v['etime'] - time());
             }
         }
@@ -105,19 +116,19 @@ class BargainRecord extends Common
             $result['msg'] = '参数错误';
             return $result;
         }
-        $info = $this->where([['bargain_id', '=', $bargain_id, 'user_id', '=', $user_id], ['status', '=', self::STATUS_ING]])->field('id')->find();
+        $info = $this->where([['bargain_id', '=', $bargain_id], ['user_id', '=', $user_id], ['status', 'in', [self::STATUS_ING, self::STATUS_SUCCESS]]])->field('id')->find();
         if ($info) {
             $result['data'] = $info['id'];
             $result['msg']  = '您有正在进行中的砍价，请勿重复参加';
             return $result;
         }
-        if(!$this->countRecord($bargain_id)){
-            $result['msg']  = '活动数量已满，请看看其它活动吧';
+        if (!$this->countRecord($bargain_id)) {
+            $result['msg']          = '活动数量已满，请看看其它活动吧';
             $result['data']['code'] = 'over';
             return $result;
         }
-        $bargainModel           = new Bargain();
-        $info                   = $bargainModel->get($bargain_id);
+        $bargainModel = new Bargain();
+        $info         = $bargainModel->get($bargain_id);
 
         $recData['user_id']     = $user_id;
         $recData['bargain_id']  = $bargain_id;
@@ -238,12 +249,13 @@ class BargainRecord extends Common
      * 过期的活动状态取消
      *
      */
-    public function bargainCancle(){
+    public function bargainCancle()
+    {
         $current_time = time();
-        $where = [];
-        $where[] = ['etime','<',$current_time];
-        $where[] = ['status','=',self::STATUS_END];
-        $this->where($where)->update(['status'=>self::STATUS_END]);
+        $where        = [];
+        $where[]      = ['etime', '<', $current_time];
+        $where[]      = ['status', '=', self::STATUS_END];
+        $this->where($where)->update(['status' => self::STATUS_END]);
     }
 
 }

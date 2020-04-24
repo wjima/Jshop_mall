@@ -182,7 +182,7 @@ export default {
 			}
 		},
 		toLogin() {
-			this.$common.navigateTo('/pages/login/login/index1');
+			this.$common.redirectTo('/pages/login/login/index1');
 		},
 		// 跳转到用户协议
 		goAgreement() {

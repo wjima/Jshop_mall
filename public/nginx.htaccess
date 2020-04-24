@@ -1,0 +1,8 @@
+location /wap/ {
+       try_files $uri /wap/index.html;
+}
+location / {
+    if (!-e $request_filename){
+        rewrite  ^(.*)$  /index.php?s=$1  last;   break;
+    }
+}

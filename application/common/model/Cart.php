@@ -152,17 +152,14 @@ class Cart extends Common
             case self::TYPE_BARGAIN://砍价
                 $num_type = 2;
                 //砍价
-
                 $bargainModel = new Bargain();
                 $re           = $bargainModel->addCart($product_id, $user_id, $nums);
                 if (!$re['status']) {
                     return $re;
                 }
-
                 //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                 $delwhere[] = ['user_id', 'eq', $user_id];
                 $delWhere[] = ['type', 'eq', self::TYPE_BARGAIN];
-
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
@@ -356,7 +353,8 @@ class Cart extends Common
                 'coupon'         => [],
                 'point'          => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money'    => 0,              //积分可以抵扣多少金额
-                'params'         => []              //一些可以放到购物车中的参数
+                'params'         => [],              //一些可以放到购物车中的参数
+                'giveaway'       => []
             ],
             'msg'    => ""
         ];
@@ -473,7 +471,7 @@ class Cart extends Common
         if (!$free) {
             if ($area_id) {
                 $shipModel                      = new Ship();
-                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount'] - $result['data']['goods_pmt']);//运费是商品金额-优惠有金额
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount']);//todo 运费是商品金额-优惠有金额
                 $result['data']['amount']       = bcadd($result['data']['amount'], $result['data']['cost_freight'], 2);
             }
         }

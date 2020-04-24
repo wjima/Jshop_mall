@@ -17,6 +17,7 @@ function deepCopy(newobj, obj) {
 
 //跳转到登陆页面
 function jumpToLogin(method) {
+	console.log(11);
 	var now_time = Date.parse(new Date())
 	var value = db.get('jump_to_login')
 	if (!value) {
@@ -27,6 +28,7 @@ function jumpToLogin(method) {
 		// 将当前页面route存vuex中 登录注册后跳转
 		let pages = getCurrentPages()
 		let page = pages[pages.length - 1]
+		console.log(page);
 		// 获取页面参数信息
 		let pagePath = ''
 		// #ifdef H5 || MP-WEIXIN || APP-PLUS	 || APP-PLUS-NVUE
@@ -46,6 +48,17 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
+		if (page.route.indexOf('pages/share/jump') !== -1) {
+			//分享领取红包优惠券
+			// console.log(page.$mp.query);
+			if (page.$mp.query) {
+				pagePath = '/' + page.route + '?scene=' + page.$mp.query.scene;
+				// console.log(pagePath);
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
+		
 		// #endif
 
 		// #ifdef MP-ALIPAY
@@ -66,6 +79,7 @@ function jumpToLogin(method) {
 			}
 		}
 		// #endif
+		
 		if (pagePath) {
 			store.commit({
 				type: 'redirect',

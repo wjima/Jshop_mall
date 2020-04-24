@@ -147,7 +147,7 @@ export default {
 		},
 		// 去注册
 		toReg() {
-			this.$common.navigateTo('/pages/login/register/index');
+			this.$common.redirectTo('/pages/login/register/index');
 		},
 		// 去登录
 		toLogin() {
@@ -194,7 +194,10 @@ export default {
 		// 重定向跳转 或者返回上一个页面
 		redirectHandler() {
 			this.$db.del('invitecode');
-			this.handleBack();
+			// this.handleBack();
+			uni.navigateBack({
+			    delta: 1
+			});
 		},
 		// 登录方式切换
 		selectLoginType() {
@@ -217,6 +220,7 @@ export default {
 			this.$common.redirectTo('');
 			let redirect = this.$store.state.redirectPage;
 			this.$db.set('redirectPage', redirect);
+			console.log(this.$db.get('redirectPage'));
 			window.location.href = url;
 		},
 		//获取APP信任登录

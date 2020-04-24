@@ -44,6 +44,7 @@
         <div class="layui-input-block">
             {Jshop:sellergoods value="$info.goods_id" num="1" name="goods_id" /}
         </div>
+        <div class="layui-form-mid layui-word-aux">请选择单规格商品</div>
     </div>
 
     <div class="layui-form-item">
@@ -100,7 +101,7 @@
         <label class="layui-form-label"><i class="required-color">*</i>起始金额：</label>
 
         <div class="layui-input-inline seller-inline-2">
-            <input type="text" name="start_price" value="{$info.start_price}" required placeholder="砍价起始金额"
+            <input type="text" name="start_price" value="{$info.start_price}" lay-verify="required" placeholder="砍价起始金额"
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">砍价起始金额</div>
@@ -109,7 +110,7 @@
         <label class="layui-form-label"><i class="required-color">*</i>成交金额：</label>
 
         <div class="layui-input-inline seller-inline-2">
-            <input type="text" name="end_price" value="{$info.end_price}" required placeholder="砍价成交金额"
+            <input type="text" name="end_price" value="{$info.end_price}" lay-verify="required" placeholder="砍价成交金额"
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">砍价最终价格</div>
@@ -118,7 +119,7 @@
         <label class="layui-form-label"><i class="required-color">*</i>最大价：</label>
 
         <div class="layui-input-inline seller-inline-2">
-            <input type="text" name="bargain_max_price" value="{$info.bargain_max_price}" required placeholder="最大价"
+            <input type="text" name="bargain_max_price" value="{$info.bargain_max_price}" lay-verify="required" placeholder="最大价"
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">砍价每次最大金额，必须大于0</div>
@@ -127,7 +128,7 @@
         <label class="layui-form-label"><i class="required-color">*</i>最小价：</label>
 
         <div class="layui-input-inline seller-inline-2">
-            <input type="text" name="bargain_min_price" value="{$info.bargain_min_price}" required placeholder="最小价"
+            <input type="text" name="bargain_min_price" value="{$info.bargain_min_price}" lay-verify="required" placeholder="最小价"
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">砍价每次最小金额，必须大于0</div>
@@ -138,7 +139,7 @@
         <label class="layui-form-label"><i class="required-color">*</i>有效时长：</label>
 
         <div class="layui-input-inline seller-inline-2">
-            <input type="text" name="significant_interval" value="{$info.significant_interval|default='0'}" required
+            <input type="text" name="significant_interval" value="{$info.significant_interval|default='0'}" lay-verify="required"
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">单位 小时，0为以活动结束时间为有效时长</div>
@@ -148,10 +149,10 @@
         <label class="layui-form-label"><i class="required-color">*</i>总砍价次数：</label>
 
         <div class="layui-input-inline seller-inline-2">
-            <input type="text" name="total_times" value="{$info.total_times|default='0'}" required autocomplete="off"
+            <input type="text" name="total_times" value="{$info.total_times|default='0'}" lay-verify="required" autocomplete="off"
                    class="layui-input">
         </div>
-        <div class="layui-form-mid layui-word-aux">为0时，根据(砍价区间/最小价)*砍价次数计算总次数</div>
+        <div class="layui-form-mid layui-word-aux">不能为0</div>
     </div>
 
 

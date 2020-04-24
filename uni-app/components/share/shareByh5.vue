@@ -1,7 +1,7 @@
 <template>
 	<view style="width: 100%;height: 300upx;background: #FFFFFF;position: absolute;left:0;bottom: 0;">
 		<view class="share-pop">
-			<view class="share-item" @click="copyUrl()" v-show="!ifwx">
+			<view class="share-item" @click="copyAction()" v-show="!ifwx">
 				<image src="/static/image/share-f.png" mode=""></image>
 				<view class="">复制链接</view>
 			</view>
@@ -75,6 +75,12 @@ export default {
 	},
 	mounted () {
 		//todo::H5端分享两种 (微信浏览器内引导用户去分享, 其他浏览器)
+		this.copyUrl()
+	},
+	data() {
+		return{
+			copyUrlink: ''
+		}
 	},
 	methods: {
 		// 关闭弹出层
@@ -135,6 +141,7 @@ export default {
             });
 		},
 		copyUrl () {
+			
             let data = {
                 page: this.shareType,
                 url: h5Url+'pages/share/jump',
@@ -179,20 +186,26 @@ export default {
             }
             let _this = this;
 			_this.$api.share(data, res => {
+				// this.$emit('copydata', data)
 				if(res.status) {
-					uni.setClipboardData({
-						data: res.data,
-						success:function(data){
-							_this.$common.successToShow('复制成功');
-						}, 
-						fail:function(err){
-							_this.$common.errorToShow('复制分享URL失败');
-						}
-					})
+					_this.copyUrlink = res.data
 				} else {
-					_this.$common.errorToShow('复制分享URL失败');
+					_this.$common.errorToShow('获取分享URL失败');
 				}
 			});
+		},
+		copyAction() {
+			let _this = this;
+			uni.setClipboardData({
+				data: this.copyUrlink,
+				success:function(succ){
+					_this.$common.successToShow('复制成功');
+				}, 
+				fail:function(err){
+					_this.$common.errorToShow('复制分享URL失败');
+				}
+			})
+			
 		},
 		// 分享操作
 		share () {

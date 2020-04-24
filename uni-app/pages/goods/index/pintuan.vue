@@ -245,7 +245,7 @@
 				</view>
 			</view>
 		</view>
-
+		
 		<lvv-popup position="bottom" ref="pintuanpop">
 			<view class="ig-top" v-if="teamInfo.list.length > 0">
 				<view class="ig-top-t">
@@ -277,11 +277,11 @@
 			</view>
 		</lvv-popup>
 
-		<lvv-popup position="bottom" ref="share">
+		<lvv-popup position="bottom" ref="share" v-if="goodsId">
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:shareType="3"
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
@@ -293,7 +293,7 @@
 			<!-- #ifdef MP-WEIXIN -->
 			<shareByWx
 				:shareType="3"
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
@@ -305,7 +305,7 @@
 			<!-- #ifdef MP-ALIPAY -->
 			<shareByAli
 				:shareType="3"
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
@@ -317,7 +317,7 @@
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
                 :shareType="3"
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
@@ -329,7 +329,7 @@
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp
 				:shareType="3"
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
@@ -714,7 +714,8 @@ export default {
 						_this.discount_amount = parseFloat(info.pintuan_rule.discount_amount).toFixed(2);
 						_this.product = _this.spesClassHandle(products);
 						_this.isfav = _this.goodsInfo.isfav === 'true' ? true : false;
-
+						
+						// debugger;
 						_this.pintuanPrice = this.$common.moneySub(_this.product.price, _this.discount_amount);
 
 						let timestamp = Date.parse(new Date()) / 1000;

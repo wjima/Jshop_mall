@@ -175,7 +175,6 @@
                         the_name[5] = "QQ在APP中快捷登陆"
                         the_name[6] = "头条系小程序"
                         var html = "";
-                        console.log(d.user_wx);
                         for(wx in d.user_wx){
                             html = html + "<img src='/static/images/userwx_"+d.user_wx[wx].type+".jpg' style='width:28px;' title='" +the_name[d.user_wx[wx].type]+"' />";
                         }

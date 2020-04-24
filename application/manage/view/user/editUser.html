@@ -94,6 +94,12 @@
                 {Jshop:image id="avatar" name="avatar" value="$info.avatar"}
             </div>
         </div>
+        <div class="layui-inline" style="margin-top: -50px">
+            <label class="layui-form-label">备注：</label>
+            <div class="layui-input-inline">
+                <textarea name="remarks" maxlength="100" cols="10" rows="3" placeholder="用户备注" class="layui-textarea" style="resize: none">{$info.remarks}</textarea>
+            </div>
+        </div>
     </div>
     {:jshopToken()}
 </form>

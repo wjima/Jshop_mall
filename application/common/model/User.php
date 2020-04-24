@@ -536,7 +536,7 @@ class User extends Common
             'msg' => ''
         ];
         $userInfo = $this::with("grade")
-            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,grade,status,pid,password,ctime')
+            ->field('id,username,mobile,sex,birthday,avatar,nickname,balance,point,grade,status,pid,password,ctime,remarks')
             ->where(array('id' => $user_id))
             ->find();
         if ($userInfo !== false) {
@@ -999,6 +999,13 @@ class User extends Common
             }
         }
 
+        //用户备注只取前100个字符
+        if(isset($data['remarks'])){
+            $data['remarks'] = trim($data['remarks']);
+            if(mb_strlen($data['remarks']) > 100){
+                $data['remarks'] = substr($data['remarks'],0,99);
+            }
+        }
         $time                = time();
         $newData['username'] = $data['username'];
         $newData['mobile']   = isset($data['mobile']) ? $data['mobile'] : "";
@@ -1014,6 +1021,7 @@ class User extends Common
         $newData['status']   = isset($data['status']) ? $data['status'] : self::STATUS_NORMAL;
         $newData['pid']      = $pid;
         $newData['grade']    = $data['grade'];
+        $newData['remarks'] = isset($data['remarks']) ? $data['remarks'] : '';
         $result         = $this->save($newData);
         $return['data'] = $this->id;
         if ($result) {
@@ -1078,6 +1086,14 @@ class User extends Common
             $newData['password'] = $this->enPassword($data['password'], $userInfo['ctime']);
         }
 
+        //用户备注只取前100个字符
+        if(isset($data['remarks'])){
+            $data['remarks'] = trim($data['remarks']);
+            if(mb_strlen($data['remarks']) > 100){
+                $data['remarks'] = substr($data['remarks'],0,99);
+            }
+            $newData['remarks'] = $data['remarks'];
+        }
         $where[]             = ['id', 'eq', $data['id']];
         $newData['nickname'] = $data['nickname'];
         $newData['sex']      = $data['sex'] ? $data['sex'] : 3;

@@ -287,7 +287,8 @@ class Order extends Api
         $data  = $model->getOrderStatusNum($input);
         if($data)
         {
-            $couponCount = (new \app\common\model\Coupon())->getMyCouponCount($this->userId,'no_used');
+            $couponModel = new \app\common\model\Coupon();
+            $couponCount = $couponModel->getMyCouponCount($this->userId,'no_used');
             $data['coupon'] = $couponCount;
             $return_data = [
                 'status' => true,

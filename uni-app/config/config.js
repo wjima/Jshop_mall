@@ -1,6 +1,7 @@
 
 export const apiBaseUrl = 'https://demo.jihainet.com/'
 // export const apiBaseUrl = 'https://hbsw.jihainet.com/'
+// export const apiBaseUrl = 'https://ljyp.yintongyun.com/'
 // export const apiBaseUrl = 'http://www.jshopmall.com/'
 
 // export const h5Url = apiBaseUrl + "wap/" //H5端网站地址,

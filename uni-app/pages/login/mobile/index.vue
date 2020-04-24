@@ -145,7 +145,19 @@ export default {
 		redirectHandler() {
 			this.$common.successToShow('登录成功!', () => {
 				this.$db.set('timer', 0);
-				this.handleBack();
+				let redirect = this.$store.state.redirectPage;
+				console.log("绑定手机号页面vuex"+redirect);
+				let redirectPage = this.$db.get('redirectPage');
+				console.log("绑定手机号页面本地"+redirectPage);
+				if (redirectPage) {
+					this.$db.del('redirectPage');
+					this.$common.redirectTo(redirectPage);
+				} else {
+					uni.reLaunch({
+						url: '/pages/index/index'
+					});
+				}
+				// this.handleBack();
 				// uni.navigateBack({
 				//     delta: 1
 				// });

@@ -48,6 +48,17 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
+		if (page.route.indexOf('pages/share/jump') !== -1) {
+			//分享领取红包优惠券
+			// console.log(page.$mp.query);
+			if (page.$mp.query) {
+				pagePath = '/' + page.route + '?scene=' + page.$mp.query.scene;
+				// console.log(pagePath);
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
+		
 		// #endif
 
 		// #ifdef MP-ALIPAY

@@ -1,11 +1,11 @@
 <template>
 	<view class="cpr">
-		<view class="color-9">
+		<!-- <view class="color-9">
 			吉海科技 © jihainet.com 版权所有
 		</view>
 		<view class="color-9 beian">
 			<view v-if="shop_beian"><a href="http://beian.miit.gov.cn/" target="_blank">备案号：{{shop_beian}}</a></view>
-		</view>
+		</view> -->
 	</view>
 </template>
 

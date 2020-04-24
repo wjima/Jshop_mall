@@ -82,18 +82,15 @@ export default {
 		},
 		redirectHandler() {
 			this.$db.del('invitecode');
-			uni.navigateBack({
-			    delta: 1
-			});
-			// let redirectPage = this.$db.get('redirectPage');
-			// if (redirectPage) {
-			// 	this.$db.del('redirectPage');
-			// 	this.$common.redirectTo(redirectPage);
-			// } else {
-			// 	uni.reLaunch({
-			// 		url: '/pages/index/index'
-			// 	});
-			// }
+			let redirectPage = this.$db.get('redirectPage');
+			if (redirectPage) {
+				this.$db.del('redirectPage');
+				this.$common.redirectTo(redirectPage);
+			} else {
+				uni.reLaunch({
+					url: '/pages/index/index'
+				});
+			}
 		}
 	}
 };

@@ -7,7 +7,7 @@
 			<view class="red_bgi">
 				<image :src="`${url}static/images/welfarepro/red.png`" mode="" class="img"></image>
 			</view>
-			<view class="del" @click="goPage">
+			<view class="del" @click="goPage(1)">
 				<!-- <image src= apiBaseUrl+"/static/images/welfarepro/del_jump.png" mode="" class="del_icon"></image> -->
 				<image :src="`${url}static/images/welfarepro/del_jump.png`" mode="" class="del_icon"></image>
 			</view>
@@ -32,7 +32,7 @@
 				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/coupon_bgi.png" mode="" class="img"></image> -->
 				<image :src="`${url}static/images/welfarepro/coupon_bgi.png`" mode="" class="img"></image>
 			</view>
-			<view class="del" @click="goPage">
+			<view class="del" @click="goPage(2)">
 				<!-- <image src=apiBaseUrl+"/static/images/welfarepro/del_jump.png" mode="" class="del_icon"></image> -->
 				<image :src="`${url}static/images/welfarepro/del_jump.png`" mode="" class="del_icon"></image>
 			</view>
@@ -85,6 +85,7 @@
 					code: data
 				}, res => {
 					if (res.status) {
+						// console.log(res.data);
 						this.saveInviteCode(res.data.userShareCode); //存储邀请码
 						this.data=res.data;
 						if(res.data.welfarepro && res.data.welfarepro.length!=0){
@@ -188,41 +189,47 @@
 				
 			},
 			//不领取的话跳转到分享的页面
-			goPage(){
-				switch(this.data.page) {
-					case '1': //首页
-						this.gotoIndex();
-							break;
-					case '2': //商品
-						this.gotoGoods(this.data.params.goods_id);
-							break;
-					case '3': //拼团
-						this.gotoPinTuan(this.data.params.goods_id);
-							break;
-					case '4': //店铺邀请
-						this.gotoStore(this.data.params.store);
-							break;
-					case '5': //文章页面
-						this.gotoArticle(this.data.params.article_id, this.data.params.article_type);
-							break;
-					case '6': //参团页面
-						this.gotoInvitationGroup(this.data.params.goods_id, this.data.params.group_id, this.data.params.team_id)
-							break;
-					case '7': //自定义页面
-						this.gotoCustom(this.data.params.page_code);
-							break;
-					case '8': //智能表单
-						this.gotoForm(this.data.params.id)
-							break;
-					case '9': //团购秒杀
-						this.gotoGroup(this.data.params.goods_id, this.data.params.group_id);
-							break;
-					case '10'://邀请砍价
-						this.gotoBargain(this.data.params.id, this.data.params.type, this.data.params.record_id);
-							break;
-				  default:
-				    this.gotoIndex();
-							break;
+			goPage(type){
+				if(type==1){
+					if(this.data.welfarepro.indexOf('coupon')>-1){
+						this.hasCoupon=true
+					}
+				}else{
+					switch(this.data.page) {
+						case '1': //首页
+							this.gotoIndex();
+								break;
+						case '2': //商品
+							this.gotoGoods(this.data.params.goods_id);
+								break;
+						case '3': //拼团
+							this.gotoPinTuan(this.data.params.goods_id);
+								break;
+						case '4': //店铺邀请
+							this.gotoStore(this.data.params.store);
+								break;
+						case '5': //文章页面
+							this.gotoArticle(this.data.params.article_id, this.data.params.article_type);
+								break;
+						case '6': //参团页面
+							this.gotoInvitationGroup(this.data.params.goods_id, this.data.params.group_id, this.data.params.team_id)
+								break;
+						case '7': //自定义页面
+							this.gotoCustom(this.data.params.page_code);
+								break;
+						case '8': //智能表单
+							this.gotoForm(this.data.params.id)
+								break;
+						case '9': //团购秒杀
+							this.gotoGroup(this.data.params.goods_id, this.data.params.group_id);
+								break;
+						case '10'://邀请砍价
+							this.gotoBargain(this.data.params.id, this.data.params.type, this.data.params.record_id);
+								break;
+					  default:
+					    this.gotoIndex();
+								break;
+					}
 				}
 			},
 			//存储邀请码

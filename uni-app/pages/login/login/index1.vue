@@ -220,6 +220,7 @@ export default {
 			this.$common.redirectTo('');
 			let redirect = this.$store.state.redirectPage;
 			this.$db.set('redirectPage', redirect);
+			console.log(this.$db.get('redirectPage'));
 			window.location.href = url;
 		},
 		//获取APP信任登录

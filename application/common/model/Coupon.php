@@ -149,6 +149,32 @@ class Coupon extends Common
     }
 
     /**
+     * @param $user_id
+     */
+    public function getMyCouponCount($user_id,$display = 'all'){
+        $where[] = ['c.user_id', 'eq', $user_id];
+        $where[] = ['p.type', 'eq', 2];
+        if($display == 'no_used')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_NO];
+            $where[] = ['p.etime', '>=', time()];
+        }
+        if($display == 'yes_used')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_YES];
+        }
+        if($display == 'invalid')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_NO];
+            $where[] = ['p.etime', '<', time()];
+        }
+        return $this->alias('c')
+            ->join('promotion p', 'p.id = c.promotion_id')
+            ->where($where)
+            ->count();
+    }
+
+    /**
      * 获取 我的优惠券
      * @param $user_id
      * @param string $promotion_id

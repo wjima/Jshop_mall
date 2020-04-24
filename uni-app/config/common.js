@@ -17,6 +17,7 @@ function deepCopy(newobj, obj) {
 
 //跳转到登陆页面
 function jumpToLogin(method) {
+	console.log(11);
 	var now_time = Date.parse(new Date())
 	var value = db.get('jump_to_login')
 	if (!value) {
@@ -27,6 +28,7 @@ function jumpToLogin(method) {
 		// 将当前页面route存vuex中 登录注册后跳转
 		let pages = getCurrentPages()
 		let page = pages[pages.length - 1]
+		console.log(page);
 		// 获取页面参数信息
 		let pagePath = ''
 		// #ifdef H5 || MP-WEIXIN || APP-PLUS	 || APP-PLUS-NVUE
@@ -66,6 +68,7 @@ function jumpToLogin(method) {
 			}
 		}
 		// #endif
+		
 		if (pagePath) {
 			store.commit({
 				type: 'redirect',

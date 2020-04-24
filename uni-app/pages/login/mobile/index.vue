@@ -145,7 +145,10 @@ export default {
 		redirectHandler() {
 			this.$common.successToShow('登录成功!', () => {
 				this.$db.set('timer', 0);
-				this.handleBack();
+				// this.handleBack();
+				uni.navigateBack({
+				    delta: 1
+				});
 			});
 		},
 	}

@@ -353,7 +353,8 @@ class Cart extends Common
                 'coupon'         => [],
                 'point'          => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money'    => 0,              //积分可以抵扣多少金额
-                'params'         => []              //一些可以放到购物车中的参数
+                'params'         => [],              //一些可以放到购物车中的参数
+                'giveaway'       => []
             ],
             'msg'    => ""
         ];
@@ -470,7 +471,7 @@ class Cart extends Common
         if (!$free) {
             if ($area_id) {
                 $shipModel                      = new Ship();
-                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount'] - $result['data']['goods_pmt']);//运费是商品金额-优惠有金额
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount']);//todo 运费是商品金额-优惠有金额
                 $result['data']['amount']       = bcadd($result['data']['amount'], $result['data']['cost_freight'], 2);
             }
         }

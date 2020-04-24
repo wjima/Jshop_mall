@@ -146,8 +146,9 @@ export default {
 			this.$common.successToShow('登录成功!', () => {
 				this.$db.set('timer', 0);
 				let redirect = this.$store.state.redirectPage;
-				console.log("绑定手机号页面"+redirect);
+				console.log("绑定手机号页面vuex"+redirect);
 				let redirectPage = this.$db.get('redirectPage');
+				console.log("绑定手机号页面本地"+redirectPage);
 				if (redirectPage) {
 					this.$db.del('redirectPage');
 					this.$common.redirectTo(redirectPage);

@@ -123,28 +123,28 @@ export const goBack = {
 
 export const jumpBackPage = {
 	methods: {
-		// 分享页面登陆之后不能跳转到之前页面,所以不使用该方法了
-		// handleBack() {
-		// 	let redirect = this.$store.state.redirectPage;
-		// 	this.$store.commit({
-		// 		type: 'redirect',
-		// 		page: ''
-		// 	})
-		// 	let switchTabs = ['/pages/index/index', '/pages/member/index/index']
-		// 	if (switchTabs.indexOf(redirect) > -1) {
-		// 		uni.switchTab({
-		// 			url: redirect
-		// 		})
-		// 	} else if (redirect) {
-		// 		uni.redirectTo({
-		// 			url: redirect
-		// 		})
-		// 	} else {
-		// 		uni.switchTab({
-		// 			url: '/pages/index/index'
-		// 		})
-		// 	}
-		// }
+		handleBack() {
+			let redirect = this.$store.state.redirectPage;
+			console.log(redirect);
+			this.$store.commit({
+				type: 'redirect',
+				page: ''
+			})
+			let switchTabs = ['/pages/index/index', '/pages/member/index/index']
+			if (switchTabs.indexOf(redirect) > -1) {
+				uni.switchTab({
+					url: redirect
+				})
+			} else if (redirect) {
+				uni.redirectTo({
+					url: redirect
+				})
+			} else {
+				uni.switchTab({
+					url: '/pages/index/index'
+				})
+			}
+		}
 	}
 }
 

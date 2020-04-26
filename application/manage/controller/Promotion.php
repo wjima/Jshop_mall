@@ -17,6 +17,7 @@ class Promotion extends Manage
     /**
      *
      * User:sin
+     *
      * @return mixed
      */
     public function index()
@@ -242,15 +243,20 @@ class Promotion extends Manage
         if (!$info) {
             return error_code(10002);
         }
-        if ($promotionModel::destroy($info['id'])) {
-            return [
-                'status' => true,
-                'data'   => '',
-                'msg'    => ''
-            ];
-        } else {
-            return error_code(10007);
+        $couponModel = new \app\common\model\Coupon();
+        //只删除未使用过的优惠券 已使用过的需要保存记录
+        $where = [
+            'promotion_id' => $info['id'],
+            'is_used'      => 1
+        ];
+        $couponModel->where($where)->delete();
+        if (!$promotionModel::destroy($info['id'])) {
+            $return['status'] = false;
+            $return['msg']    = '失败';
         }
+        $return['status'] = true;
+        $return['msg']    = '成功';
+        return $return;
     }
 
 
@@ -436,7 +442,7 @@ class Promotion extends Manage
             //团购和秒杀时，限制一个促销结果
             if ($info['type'] == $promotionModel::TYPE_GROUP || $info['type'] == $promotionModel::TYPE_SKILL) {
                 $result = $resultModel->where(['promotion_id' => $pwhere['id']])->find();
-                if ($result && $result['id'] != input('param.id') ) {
+                if ($result && $result['id'] != input('param.id')) {
                     return error_code(15016);
                 }
             }
@@ -604,12 +610,12 @@ class Promotion extends Manage
 
             foreach ($goods_ids as $gid) {
                 //判断商品是否在促销中，如果存在不允许保存
-                $goods = $groupGoodsModel->checkInActivity($gid,$id);
+                $goods = $groupGoodsModel->checkInActivity($gid, $id);
                 if ($goods) {
                     $result = [
                         'status' => false,
                         'data'   => 0,
-                        'msg'    => '商品：' . $goods['goods_name'] . '已在未结束的活动'.$goods['name'].'中，请勿重复添加！'
+                        'msg'    => '商品：' . $goods['goods_name'] . '已在未结束的活动' . $goods['name'] . '中，请勿重复添加！'
                     ];
                     return $result;
                 }
@@ -647,6 +653,7 @@ class Promotion extends Manage
 
     /**
      * 先删除促销信息，促销条件和结果可能跟订单有关，暂时不删除
+     *
      * @return array|mixed
      */
     public function groupdel()

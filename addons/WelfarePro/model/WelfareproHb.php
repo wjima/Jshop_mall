@@ -204,7 +204,7 @@ class WelfareproHb extends Common
         $m = new WelfareproHblog();
         $where1[] = ['hb_id', '=', $info['id']];
         $where1[] = ['tj_user_id', '=',$tj_user_id];
-        $moneys = $m->$where($where1)->sum('money');
+        $moneys = $m->where($where1)->sum('money');
         if($moneys >= $info['money_all']){
             return false;
         }

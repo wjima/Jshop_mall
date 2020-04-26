@@ -219,9 +219,9 @@ export default {
 			// console.log(url);
 			this.$common.redirectTo('');
 			let redirect = this.$store.state.redirectPage;
-			console.log("第三方登录vuex"+redirect);
+			// console.log("第三方登录vuex"+redirect);
 			this.$db.set('redirectPage', redirect);
-			console.log("第三方登录本地存储"+this.$db.get('redirectPage'));
+			// console.log("第三方登录本地存储"+this.$db.get('redirectPage'));
 			window.location.href = url;
 		},
 		//获取APP信任登录

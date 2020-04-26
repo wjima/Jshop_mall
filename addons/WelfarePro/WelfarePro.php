@@ -2,6 +2,7 @@
 namespace addons\WelfarePro;	// 注意命名空间规范
 
 use addons\WelfarePro\model\WelfareproCoupon;
+use addons\WelfarePro\model\WelfareproCouponLog;
 use addons\WelfarePro\model\WelfareproHb;
 use app\common\model\User;
 use myxland\addons\Addons;
@@ -81,7 +82,12 @@ class WelfarePro extends Addons
             $coupon = new WelfareproCoupon();
             $info = $coupon->userCoupon($tj_user_id);
             if($info){
-                $obj->data['welfarepro'][] = 'coupon';
+                //判断该推荐人推荐数量是否已发完
+                $couponLogModel = new WelfareproCouponLog();
+                $is_over =  $couponLogModel->couponOver($info['id'],$tj_user_id,$info['sendnum']);
+                if($is_over){
+                    $obj->data['welfarepro'][] = 'coupon';
+                }
             }
 
         }

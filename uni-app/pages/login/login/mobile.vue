@@ -29,10 +29,13 @@ export default {
 			verification: true, // 通过v-show控制显示获取还是倒计时
 			timer: 60, // 定义初始时间为60s
 			btnb: 'btn btn-square btn-c btn-all', //按钮背景
+			user_wx_id: '', //授权id
 		};
 	},
 	onLoad(option) {
-		
+		if (option.user_wx_id) {
+			this.user_wx_id = option.user_wx_id;
+		}
 	},
 	computed: {
 		// 验证手机号
@@ -85,7 +88,7 @@ export default {
 				this.$common.loadToShow('发送中...');
 				setTimeout(() => {
 					this.$common.loadToHide();
-					this.$api.sms({ mobile: this.mobile, code: 'bind' }, res => {
+					this.$api.sms({ mobile: this.mobile, code: 'login' }, res => {
 						if (res.status) {
 							this.timer = 60;
 							this.verification = false;
@@ -115,7 +118,8 @@ export default {
 				}
 			}, 1000);
 		},
-		// 绑定手机号
+		// 公众号第三方登录账号绑定
+		
 		toBind() {
 			if (this.mobile == '') {
 				this.$common.errorToShow('请输入手机号码');
@@ -125,15 +129,21 @@ export default {
 				this.$common.errorToShow('请输入验证码');
 				return false;
 			}
-			let token=this.$db.get('userToken');
 			let data = {
 				mobile: this.mobile,
 				code: this.code,
-				token:token
+				user_wx_id: this.user_wx_id
 			};
-
-			this.$api.bindMobile(data, res => {
+			
+			// 获取邀请码
+			let invicode = this.$db.get('invitecode');
+			if (invicode) {
+				data.invitecode = invicode;
+			}
+			
+			this.$api.smsLogin(data, res => {
 				if (res.status) {
+					this.$db.set('userToken', res.data);
 					this.redirectHandler();
 				} else {
 					this.$common.errorToShow(res.msg);
@@ -144,22 +154,22 @@ export default {
 		redirectHandler() {
 			this.$common.successToShow('登录成功!', () => {
 				this.$db.set('timer', 0);
-				// let redirect = this.$store.state.redirectPage;
-				// console.log("绑定手机号页面vuex"+redirect);
-				// let redirectPage = this.$db.get('redirectPage');
-				// console.log("绑定手机号页面本地"+redirectPage);
-				// if (redirectPage) {
-				// 	this.$db.del('redirectPage');
-				// 	this.$common.redirectTo(redirectPage);
-				// } else {
-				// 	uni.reLaunch({
-				// 		url: '/pages/index/index'
-				// 	});
-				// }
+				let redirect = this.$store.state.redirectPage;
+				console.log("绑定手机号页面vuex"+redirect);
+				let redirectPage = this.$db.get('redirectPage');
+				console.log("绑定手机号页面本地"+redirectPage);
+				if (redirectPage) {
+					this.$db.del('redirectPage');
+					this.$common.redirectTo(redirectPage);
+				} else {
+					uni.reLaunch({
+						url: '/pages/index/index'
+					});
+				}
 				// this.handleBack();
-				uni.navigateBack({
-				    delta: 1
-				});
+				// uni.navigateBack({
+				//     delta: 1
+				// });
 			});
 		},
 	}

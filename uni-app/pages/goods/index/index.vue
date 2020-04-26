@@ -428,7 +428,7 @@
 		onLoad(options) {
 			//获取商品ID
 			if (options.id != '') {
-				this.goodsId = options.id;
+				this.goodsId = options.id-0;
 			}
 
 			if (this.goodsId) {

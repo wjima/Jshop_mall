@@ -280,7 +280,7 @@ class WelfareproHb extends Common
         $where[] = ['type', '=', 2];
         $userwxInfo = $userWxModel->where($where)->find();
         if(!$userwxInfo){
-            $result['data'] = "请在微信内扫码登陆";
+            $result['msg'] = "只有微信公众号内才能领取微信红包";
             return $result;
         }
         $openid = $userwxInfo['openid'];

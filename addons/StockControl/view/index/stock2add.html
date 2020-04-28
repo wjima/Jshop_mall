@@ -1,0 +1,39 @@
+<form class="layui-form" lay-filter="stock1">
+    <br>
+    <div class="layui-form-item">
+
+        <label class="layui-form-label">货品ID</label>
+        <div class="pro">
+            <div class="layui-input-inline">
+                <select name="product_id[0]" lay-verify="" lay-search>
+                    <option value=""></option>
+                    {volist name="products" id="val"}
+                    <option value="{$val.id}">{$val.goods_id}-{$val.sn}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="layui-input-inline seller-inline-2">
+                <input type="number" name="nums[0]" class="layui-input">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline">
+            <textarea name="memo" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    var count = 1;
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+
+        form.render();
+    });
+</script>

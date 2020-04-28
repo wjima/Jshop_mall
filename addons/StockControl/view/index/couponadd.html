@@ -1,0 +1,79 @@
+<form style="padding:30px;" class="layui-form  seller-alone-form hbaddForm">
+    <input type="hidden" value="{$info.id}" name="id" />
+    <div class="layui-form-item">
+
+            <label class="layui-form-label"><i class="required-color">*</i>名称：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="name" placeholder="" value="{$info.name}" required  lay-verify="required" autocomplete="off" class="layui-input">
+
+            </div>
+            <div class="layui-form-mid layui-word-aux">最长50个字符，保存时超出的会自动截断</div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">推荐人：</label>
+        <div class="layui-input-block">
+            {Jshop:selectuser value="$info.user_id" id="user_id" grade="" num="100" name="user_id" /}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>优惠券：</label>
+        <div class="layui-input-block" >
+
+            {volist name="couponlist" id="vo"}
+            <div style="display: flex">
+                <div style="width: 200px">
+                    <input type="checkbox" name="coupons[{$vo.id}]" title="{$vo.name}{eq name='$vo.is_expired' value='1'}-已过期{/eq}"  lay-skin="primary" value="1" {if $info && in_array($vo.id,$info.coupon_ids)}checked{/if}>
+                </div>
+
+                <input type="number" class="layui-input " value="{$info.coupon_nums[$vo.id]['num']|default=\"0\"}" name="nums[{$vo.id}]" style="margin-left: 20px;width:70px;">
+
+            </div>
+            {/volist}
+        </div>
+    </div>
+    <div class="layui-form-item">
+
+        <label class="layui-form-label"><i class="required-color">*</i>数量：</label>
+        <div class="layui-input-inline seller-inline-2" style="width: 70px">
+            <input type="number" class="layui-input " value="{$info.sendnum|default=\"0\"}" name="sendnum">
+        </div>
+        <div class="layui-form-mid layui-word-aux">张，单个用户最多可发放的张数</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>起止时间：</label>
+        <div class="layui-input-inline seller-inline-6">
+            {if $info}
+            <input id="date"  type="text" name="date" required  lay-verify="required" value="{:getTime($info['date_start'])} 到 {:getTime($info['date_end'])}" id="date" placeholder="请选择起止时间" autocomplete="off" class="layui-input">
+            {else /}
+            <input id="date"  type="text" name="date" required  lay-verify="required" value="" id="date" placeholder="请选择起止时间" autocomplete="off" class="layui-input">
+            {/if}
+
+            </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>范围：</label>
+        <div class="layui-input-block">
+            <!--<input type="radio" name="type" value="m" title="模块" {if $info.type == 'm'} checked=""{/if}>-->
+            <input type="radio" name="type" value="1" title="所有用户"  {if $info.type == '1'} checked=""{/if} >
+            <input type="radio" name="type" value="2" title="新用户" {if $info.type == '2'} checked=""{/if}>
+
+        </div>
+    </div>
+
+    {:jshopToken()}
+</form>
+<script>
+    layui.use(['form','laydate'], function(){
+        //时间插件
+        layui.form.render();
+        layui.laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+    });
+</script>

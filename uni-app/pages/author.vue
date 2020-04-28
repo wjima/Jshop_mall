@@ -64,19 +64,23 @@ export default {
 						this.$db.set('userToken', res.data.token);
 						this.redirectHandler();
 					} else if (res.data.user_wx_id) {
+						// 第三方登录去绑定手机号
+						// uni.redirectTo({
+						// 	url: '/pages/login/login/index?user_wx_id=' + res.data.user_wx_id
+						// });
 						uni.redirectTo({
-							url: '/pages/login/login/index?user_wx_id=' + res.data.user_wx_id
+							url: '/pages/login/login/mobile?user_wx_id=' + res.data.user_wx_id
 						});
 					}
 				} else {
-					// this.$common.errorToShow(res.msg);
-					this.$common.errorToShow(res.msg, () => {
-						// 绑定手机号
-						if (res.data === '11027') {
-							this.$db.set('userToken', res.token);
-							this.$common.navigateTo("/pages/login/mobile/index")
-						}
-					});
+					this.$common.errorToShow(res.msg);
+					// this.$common.errorToShow(res.msg, () => {
+					// 	// 绑定手机号
+					// 	if (res.data === '11027') {
+					// 		this.$db.set('userToken', res.token);
+					// 		this.$common.navigateTo("/pages/login/mobile/index")
+					// 	}
+					// });
 				}
 			});
 		},

@@ -192,11 +192,22 @@ class WelfareproHb extends Common
 
         $m = new WelfareproHb();
         $info = $m
+            ->field("hb.*")
             ->alias('hb')
             ->join('welfarepro_hbuser hbu', 'hbu.hb_id = hb.id')
             ->where($where)
             ->find();
-
+        if(!$info){
+            return false;
+        }
+        //判断此人已经发了多少钱，如果发超了，就不发了。
+        $m = new WelfareproHblog();
+        $where1[] = ['hb_id', '=', $info['id']];
+        $where1[] = ['tj_user_id', '=',$tj_user_id];
+        $moneys = $m->where($where1)->sum('money');
+        if($moneys >= $info['money_all']){
+            return false;
+        }
         return $info;
     }
 
@@ -269,7 +280,7 @@ class WelfareproHb extends Common
         $where[] = ['type', '=', 2];
         $userwxInfo = $userWxModel->where($where)->find();
         if(!$userwxInfo){
-            $result['data'] = "请在微信内扫码登陆";
+            $result['msg'] = "只有微信公众号内才能领取微信红包";
             return $result;
         }
         $openid = $userwxInfo['openid'];

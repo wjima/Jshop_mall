@@ -6,18 +6,18 @@
 		<!-- 列表图片 -->
 		<view class="img-list">
 			<view v-if="goodsList.length > 0">
-				<view class="img-list-item" v-for="(item, index) in goodsList" :key="index" @click="goodsDetail(item.id)">
-					<image class="img-list-item-l little-img have-none" :src="item.image_url" mode="aspectFill"></image>
+				<view class="img-list-item" v-for="(item, index) in goodsList" :key="index" @click="goodsDetail(item.goods.id)">
+					<image class="img-list-item-l little-img have-none" :src="item.goods.image_url" mode="aspectFill"></image>
 					<view class="img-list-item-r">
-						<view class="goods-name list-goods-name">{{ item.name }}</view>
+						<view class="goods-name list-goods-name">{{ item.goods.name }}</view>
 						<view class="goods-item-c-tip">
-							<view class="people-num fsz24">{{ item.pintuan_rule.people_number }}人团</view>
+							<view class="people-num fsz24">{{ item.goods.pintuan_rule.people_number }}人团</view>
 						</view>
 						<view class="goods-item-c">
 							<view class="goods-price fsz28">
-								￥{{ item.pintuanPrice }} <text class="fsz24 color-9">￥{{item.price}}</text>
+								￥{{ item.goods.pintuanPrice }} <text class="fsz24 color-9">￥{{item.goods.price}}</text>
 							</view>
-							<button class="btn" @click="goodsDetail(item.id)"><text>去拼团</text><image class="icon" src="/static/image/right-w.png" mode=""></image></button>
+							<button class="btn" @click="goodsDetail(item.goods.id)"><text>去拼团</text><image class="icon" src="/static/image/right-w.png" mode=""></image></button>
 						</view>
 						
 					</view>
@@ -60,15 +60,15 @@ export default {
 			let data = {};
 			_this.$api.pintuanList(data, res => {
 				if (res.status) {
-					_this.goodsList = res.data;
+					_this.goodsList = res.data.list;
 					_this.goodsList.forEach(item => {
-						if (item.pintuan_price <= 0) {
-							item.pintuan_price = '0.00';
+						if (item.goods.pintuan_price <= 0) {
+							item.goods.pintuan_price = '0.00';
 						} else {
-							item.pintuanPrice = this.$common.moneySub(item.price, item.pintuan_rule.discount_amount);
+							item.goods.pintuanPrice = this.$common.moneySub(item.goods.price, item.goods.pintuan_rule.discount_amount);
 						}
 						let timestamp = Date.parse(new Date()) / 1000;
-						let lasttime = item.pintuan_rule.etime - timestamp;
+						let lasttime = item.goods.pintuan_rule.etime - timestamp;
 						item.lasttime = _this.$common.timeToDateObj(lasttime);
 					});
 				}

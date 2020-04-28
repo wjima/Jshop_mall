@@ -356,18 +356,18 @@ export default {
 			}
 
 			//判断退款金额
-			let reg = /^[0-9]+(.[0-9]{1,2})?$/;
-			if (!reg.test(this.refund)) {
-				this.$common.errorToShow('请输入正确金额');
-				this.submitStatus = false;
-				return false;
-			} else {
-				if (this.refund > this.refund_show) {
-					this.$common.errorToShow('退款金额过大');
-					this.submitStatus = false;
-					return false;
-				} 
-			}
+			// let reg = /^[0-9]+(.[0-9]{1,2})?$/;
+			// if (!reg.test(this.refund)) {
+			// 	this.$common.errorToShow('请输入正确金额');
+			// 	this.submitStatus = false;
+			// 	return false;
+			// } else {
+			// 	if (this.refund > this.refund_show) {
+			// 		this.$common.errorToShow('退款金额过大');
+			// 		this.submitStatus = false;
+			// 		return false;
+			// 	} 
+			// }
 			if(!this.isFlag) {
 				this.$common.errorToShow('您填写的数量不对！');
 				this.submitStatus = false;

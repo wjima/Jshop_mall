@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS `jshop_stock`;
 CREATE TABLE `jshop_stock` (
   `id` varchar(20) NOT NULL COMMENT '单号',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 入库 2出库',
+  `manage_id` int(10) unsigned DEFAULT '0' COMMENT '操作人',
   `ctime` bigint(12) unsigned DEFAULT NULL COMMENT '创建时间',
   `memo` varchar(200) NOT NULL DEFAULT '' COMMENT '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库存操作表';

@@ -4,6 +4,7 @@ namespace addons\StockControl\model;
 
 use app\common\model\Common;
 use app\common\model\Goods;
+use app\common\model\Manage;
 use app\common\model\Products;
 use think\Db;
 
@@ -22,13 +23,16 @@ class Stock extends Common
     {
         return date('Y-m-d H:i:s', $value);
     }
+    public function manage(){
+        return $this->belongsTo(Manage::class,'manage_id','id')->bind(['username']);
+    }
 
     public function getStockList($type = 1, $params = [])
     {
         $query = $this->getListQuery($type, $params);
         $page = isset($params['page']) ? $params['page']: 1;
         $limit = isset($params['limit']) ? $params['limit']: 10;
-        $data = $query->page($page, $limit)->select()->toArray();
+        $data = $query->with(['manage'])->page($page, $limit)->select()->toArray();
         $count = $query->count();
         return [
             'code' => 0,
@@ -50,7 +54,8 @@ class Stock extends Common
         $stockData = [
             'id' => $this->createCode($type),
             'memo' => mb_substr($params['memo'],0,200), //截取前200个字符
-            'type' => $type
+            'type' => $type,
+            'manage_id'=>session('manage.id')
         ];
         $stockLogData = [];
         $productData = [];
@@ -179,7 +184,7 @@ class Stock extends Common
             $query->field(['name','id']);
         },'product'=>function($query){
             $query->field(['spes_desc','id','sn']);
-        }]])->where('type',$type)->where('id',$id)->find();
+        }],'manage'])->where('type',$type)->where('id',$id)->find();
         if(empty($info)) return [];
         return $info;
     }

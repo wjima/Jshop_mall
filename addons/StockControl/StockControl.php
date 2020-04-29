@@ -32,6 +32,7 @@ class StockControl extends Addons
     {
         $db = new Db();
         $sql = file_get_contents(ADDON_PATH . 'StockControl/SQL/install.sql');
+        $sql = str_replace("`jshop_",'`'.config('database.prefix'),$sql);
         $list = explode(';', $sql);
         for ($i = 0; $i < count($list); $i++) {
             if (trim($list[$i])) {
@@ -49,6 +50,7 @@ class StockControl extends Addons
     {
         $db = new Db();
         $sql = file_get_contents(ADDON_PATH . 'StockControl/SQL/uninstall.sql');
+        $sql = str_replace("`jshop_",'`'.config('database.prefix'),$sql);
         $list = explode(';', $sql);
         for ($i = 0; $i < count($list); $i++) {
             if (trim($list[$i])) {

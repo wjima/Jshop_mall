@@ -57,6 +57,16 @@ class Products extends Common
     }
 
     /**
+     * 根据goods_id获取商品名称
+     * 2020-4-29
+     * 小果果在库存管理插件中用到
+     * @return \think\model\relation\BelongsTo
+     */
+    public function goodsInfo(){
+        return $this->belongsTo(Goods::class, 'goods_id', 'id')->bind('name');
+    }
+
+    /**
      * 根据货品ID获取货品信息
      * @param $id
      * @param bool|true $isPromotion 默认是true，如果为true的时候，就去算此商品的促销信息，否则，就不算

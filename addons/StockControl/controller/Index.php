@@ -63,6 +63,10 @@ class Index extends AddonController
 
     }
 
+    /**
+     * 入库单列表
+     * @return array|mixed
+     */
     public function stock1Index()
     {
         if($this->request->isAjax()){
@@ -72,6 +76,14 @@ class Index extends AddonController
         }
         return $this->fetch();
     }
+
+    /**
+     * 新增入库单
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function stock1Add(){
         $this->view->engine->layout(false);
         if($this->request->isPost()){
@@ -80,14 +92,19 @@ class Index extends AddonController
             return $stockModel->addStock(1,$params);
         }
         $productModel = new Products();
-        $products = $productModel->field(['id','goods_id','sn'])->select()->toArray();
+        $products = $productModel->with(['goodsInfo'])->field(['id','goods_id','sn','stock','spes_desc'])->select()->toArray();
         $this->assign('products',$products);
         return [
             'status'=>true,
             'msg'=>'',
-            'data'=>$this->fetch()
+            'data'=>$this->fetch('stockAdd')
         ];
     }
+
+    /**
+     * 出库单列表
+     * @return array|mixed
+     */
     public function stock2Index()
     {
         if($this->request->isAjax()){
@@ -97,6 +114,14 @@ class Index extends AddonController
         }
         return $this->fetch();
     }
+
+    /**
+     * 新增出库单
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function stock2Add(){
         $this->view->engine->layout(false);
         if($this->request->isPost()){
@@ -105,13 +130,52 @@ class Index extends AddonController
             return $stockModel->addStock(2,$params);
         }
         $productModel = new Products();
-        $products = $productModel->field(['id','goods_id','sn'])->select()->toArray();
+        $products = $productModel->with(['goodsInfo'])->field(['id','goods_id','sn','stock','spes_desc'])->select()->toArray();
         $this->assign('products',$products);
         return [
             'status'=>true,
             'msg'=>'',
-            'data'=>$this->fetch()
+            'data'=>$this->fetch('stockAdd')
         ];
+    }
+
+    /**
+     * 入库出库详情
+     * @return array
+     */
+    public function stockView(){
+        $this->view->engine->layout(false);
+        $res = [
+            'status'=>false,
+            'msg'=>'参数错误',
+            'data'=>''
+        ];
+        $type = input('type/d',1);
+        if(!in_array($type,[1,2]))  return $res;
+        $id = input('id','');
+        if(empty($id)) return $res;
+        $stockModel = new Stock();
+        $info = $stockModel->stockInfo($id,$type);
+        if(empty($info)) return $res;
+        $this->assign('info',$info);
+        $this->assign('type',$type);
+//        dump($info);die;
+        $res['status'] = true;
+        $res['data'] = $this->fetch();
+        return $res;
+    }
+
+    /**
+     * 库存盘点
+     * @return array|mixed
+     */
+    public function index(){
+        if($this->request->isAjax()){
+            $params = input();
+            $stockModel = new Stock();
+            return $stockModel->getStockCheck($params);
+        }
+        return $this->fetch();
     }
 
 }

@@ -75,7 +75,7 @@
             height: 'full-99',
             cellMinWidth: '80',
             page: 'true',
-            limit:'10',
+            limit:'20',
             url: "{:get_addon_url('StockControl://index/index')}?_ajax=1",
             id:'hbTable',
             cols: [[
@@ -93,12 +93,10 @@
 				{field:'bn',title:'商品编号', align: 'center'},
 				{field:'sn',title:'货品编号', align: 'center'},
 				{field:'spes_desc', width:200,title:'货品规格', align: 'center'},
-
 				{field:'nums', width:200, title:'数量', align: 'center'},
 				{field:'ctime',title:'时间', align: 'center'},
 
-            ]],
-			limits:[10,20,30,40,50,60,70,80,90]
+            ]]
         });
         layui.form.on('submit(*)', function(data){
             layui.table.reload('hbTable', {

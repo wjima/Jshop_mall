@@ -7,6 +7,7 @@ use addons\WelfarePro\model\WelfareproHb;
 use app\common\model\User;
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
+use think\Db;
 
 /**
  * 领红包和领优惠券功能
@@ -29,6 +30,14 @@ class StockControl extends Addons
      */
     public function install()
     {
+        $db = new Db();
+        $sql = file_get_contents(ADDON_PATH . 'StockControl/SQL/install.sql');
+        $list = explode(';', $sql);
+        for ($i = 0; $i < count($list); $i++) {
+            if (trim($list[$i])) {
+                $db::execute(trim($list[$i]));
+            }
+        }
         return true;
     }
 
@@ -38,6 +47,14 @@ class StockControl extends Addons
      */
     public function uninstall()
     {
+        $db = new Db();
+        $sql = file_get_contents(ADDON_PATH . 'StockControl/SQL/uninstall.sql');
+        $list = explode(';', $sql);
+        for ($i = 0; $i < count($list); $i++) {
+            if (trim($list[$i])) {
+                $db::execute(trim($list[$i]));
+            }
+        }
         return true;
     }
 

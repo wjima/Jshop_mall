@@ -35,10 +35,6 @@ class Order extends Manage
     public function index()
     {
         if (!Request::isAjax()) {
-            //订单来源
-            $source = config('params.order')['source'];
-            $this->assign('source', $source);
-
             //数据统计
             $input = [
                 'ids' => '0,1,2,3,4,5,6,7'
@@ -143,46 +139,33 @@ class Order extends Manage
      */
     public function edit()
     {
-        $return_data = [
+        $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => '',
             'data' => ''
         ];
         $this->view->engine->layout(false);
         $orderModel = new OrderModel();
         if (!Request::isPost()) {
             //订单信息
-            $id = Request::param('id');
-            $order_info = $orderModel->getOrderInfoByOrderID($id);
+            if(!input('?param.id')){
+                $result['msg'] = "必须传";
+                return $result;
+            }
+            $order_info = $orderModel->getOrderInfoByOrderID(input('param.id'));
+            if(!$order_info){
+                return error_code(10000);
+            }
             $this->assign('order', $order_info);
-
-            $order_type = Request::param('order_type');
-            $this->assign('order_type', $order_type);
 
             $storeModel = new Store();
             $store_list = $storeModel->getAllList();
             $this->assign('store_list', $store_list);
-            $return_data['status'] = true;
-            $return_data['msg'] = '成功';
-            $return_data['data'] = $this->fetch('edit');
-            return $return_data;
+            $result['status'] = true;
+            $result['data'] = $this->fetch('edit2');
+            return $result;
         } else {
-            $data = Request::param();
-            $result = $orderModel->edit($data);
-            if ($result) {
-                $return_data = array(
-                    'status' => true,
-                    'msg' => '编辑成功',
-                    'data' => $result
-                );
-            } else {
-                $return_data = array(
-                    'status' => false,
-                    'msg' => '编辑失败',
-                    'data' => $result
-                );
-            }
-            return $return_data;
+            return $orderModel->edit(input('param.'));
         }
     }
 

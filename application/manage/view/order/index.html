@@ -105,7 +105,7 @@
             <div class="layui-input-inline">
                 <select name="source" id="source">
                     <option value="">-- 全部 --</option>
-                    {foreach $source as $key=>$vo}
+                    {foreach $params['order']['source'] as $key=>$vo}
                     <option value="{$key}">{$vo}</option>
                     {/foreach}
                 </select>
@@ -322,6 +322,36 @@
                         title: '编辑订单',
                         area: setpage(660,350), //宽高
                         content: e.data
+                    });
+                } else {
+                    layer.msg(e.msg);
+                }
+            });
+        });
+
+        //新编辑订单
+        $(document).on('click', '.edit-order2', function () {
+            var id = $(this).attr('data-id');
+            JsGet("{:url('order/edit')}?id=" + $(this).attr('data-id'), function(e){
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: setpage(800,650),
+                        title: '订单编辑',
+                        btn: ['确认', '取消'],
+                        yes: function (index, layero) {
+                            JsPost("{:url('order/edit')}", $('#order_edit_form').serialize(), function(res){
+                                if (res.status) {
+                                    layer.msg("保存成功", { time: 1000 }, function () {
+                                        layer.closeAll();
+                                        table.reload();
+                                    });
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            });
+                        }
                     });
                 } else {
                     layer.msg(e.msg);

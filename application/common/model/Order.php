@@ -446,7 +446,7 @@ class Order extends Common
             }
             if ($pay_status != self::PAY_STATUS_NO) {
                 if (($ship_status == self::SHIP_STATUS_NO || $ship_status == self::SHIP_STATUS_PARTIAL_YES) && $from == 'seller') {
-                    $html .= '<a class="layui-btn layui-btn-xs edit-order" data-id="' . $id . '">编辑</a>';
+                    $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '">编辑</a>';
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="' . $id . '">发货</a>';
                 }
                 $html .= '<a class="layui-btn layui-btn-xs complete-order" data-id="' . $id . '">完成</a>';
@@ -457,7 +457,7 @@ class Order extends Common
             }
             if ($pay_status == self::PAY_STATUS_NO) {
                 if ($from == 'seller') {
-                    $html .= '<a class="layui-btn layui-btn-xs edit-order" data-id="' . $id . '" data-type="1">编辑</a>';
+                    $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '" data-type="1">编辑</a>';
                 }
                 $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="' . $id . '">取消</a>';
             }
@@ -1044,36 +1044,48 @@ class Order extends Common
      */
     public function edit($data)
     {
-        if ($data['edit_type'] == 1) {
-            $update = [
-                'ship_area_id' => $data['ship_area_id'],
-                'ship_address' => $data['ship_address'],
-                'ship_name' => $data['ship_name'],
-                'ship_mobile' => $data['ship_mobile']
-            ];
-            if ($data['order_amount']) {
-                $update['order_amount'] = $data['order_amount'];
-            }
-            if (isset($data['cost_freight']) && $data['cost_freight']!='') {
-                $update['cost_freight'] = $data['cost_freight'];
-            }
-        } elseif ($data['edit_type'] == 2) {
-            $update['store_id'] = $data['store_id'];
-            $update['ship_name'] = $data['ship_name'];
-            $update['ship_mobile'] = $data['ship_mobile'];
+        $result = [
+            'status' => false,
+            'data' => "",
+            'msg' => ""
+        ];
+        if(isset($data['order_amount'])){
+            $udata['oreer_amount'] = $data['order_amount'];
         }
+        $udata['source'] = $data['source'];
+        if($data['delivery_type'] == 1){
+            //快递
+            $udata['ship_name'] = $data['ship_name'];
+            $udata['ship_mobile'] = $data['ship_mobile'];
+            $udata['ship_address'] = $data['ship_address'];
+            $udata['ship_area_id'] = $data['ship_area_id'];
+            $udata['store_id'] = 0;
 
-        $res = $this->where('order_id', 'eq', $data['order_id'])
-            ->update($update);
+        }else{
+            //门店自提
+            $storeModel = new Store();
+            $info = $storeModel->where('id',$data['store_id'])->find();
+            if(!$info){
+                return error_code(10000);
+            }
+            $udata['ship_name'] = $data['tship_name'];
+            $udata['ship_mobile'] = $data['tship_mobile'];
+            $udata['ship_address'] = $info['address'];
+            $udata['ship_area_id'] = $info['area_id'];
+            $udata['store_id'] = $data['store_id'];
+        }
+        $udata['mark'] = $data['mark'];
+
+
+        $re = $this->save($udata,['order_id'=>$data['order_id']]);
+
 
         //订单记录
         $orderLog = new OrderLog();
-        $w[] = ['order_id', 'eq', $data['order_id']];
-        $info = $this->where($w)
-            ->find();
-        $orderLog->addLog($info['order_id'], $info['user_id'], $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $update);
+        $orderLog->addLog($data['order_id'],0, $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $udata);
 
-        return $res;
+        $result['status'] = true;
+        return $result;
     }
 
 

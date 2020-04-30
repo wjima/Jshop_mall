@@ -1292,8 +1292,10 @@ function secondConversionArray($second = 0)
  */
 function validateJshopToken()
 {
-    $_token = input('__Jshop_Token__/s', '');
-    if (!$_token || $_token != session('__Jshop_Token__')) {
+    $_token      = input('__Jshop_Token__/s', '');
+    $form        = input('validate_form/s', '');
+    $cache_token = \think\facade\Cache::get($form . '_token');
+    if (!$_token || $_token != $cache_token) {
         if (\think\facade\Request::isAjax()) {
             $return = [
                 'data'   => '',
@@ -1308,15 +1310,19 @@ function validateJshopToken()
             die("CSRF is die");
         }
     }
+    \think\facade\Cache::rm($form . '_token');//删除缓存
 }
 
 /**
  * 生成令牌
+ * @param string $form
+ * @return string
  */
-function jshopToken()
+function jshopToken($form = 'form')
 {
     $data = \think\facade\Request::token('__Jshop_Token__', 'sha1');
-    return '<input type="hidden" name="__Jshop_Token__" value="' . $data . '" class="Jshop_Token">';
+    \think\facade\Cache::set($form . '_token', $data, 86400);   //1天过期
+    return '<input type="hidden" name="validate_form" value="' . $form . '"><input type="hidden" name="__Jshop_Token__" value="' . $data . '" class="Jshop_Token">';
 }
 
 

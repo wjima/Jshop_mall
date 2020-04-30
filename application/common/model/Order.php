@@ -1076,8 +1076,23 @@ class Order extends Common
         }
         $udata['mark'] = $data['mark'];
 
+        //发票信息
+        if($data['tax_type'] == 2){
+            $data['tax_code'] = "";
+        }
+        if($data['tax_type'] == 1){
+            $data['tax_title'] = "";
+        }
+        $udata['tax_type'] = $data['tax_type'];
+        $udata['tax_title'] = $data['tax_title'];
+        $udata['tax_code'] = $data['tax_code'];
 
         $re = $this->save($udata,['order_id'=>$data['order_id']]);
+
+        //处理订单明细
+        if(isset($data['items'])){
+            $this->editItems($data['order_id'],$data['items']);
+        }
 
 
         //订单记录
@@ -1086,6 +1101,38 @@ class Order extends Common
 
         $result['status'] = true;
         return $result;
+    }
+
+    //处理订单明细，处理库存
+    private function editItems($order_id,$items){
+        $orderItemsModel = new OrderItems();
+        $goodsModel = new Goods();
+        foreach($items as $k => $v){
+            $oiInfo = $orderItemsModel->where('id',$k)->where('order_id',$order_id)->find();
+            if(!$oiInfo){
+                continue;
+            }
+            $v = intval($v);
+            $oldNums = $oiInfo['nums'];
+            $changeNums = $v - $oldNums;
+
+            if($v == 0){
+                $orderItemsModel->where('id',$k)->where('order_id',$order_id)->delete();
+            }else{
+                $orderItemsModel->save(
+                    [
+                        'nums' => $v
+                    ],[
+                    'id' => $k,
+                    'order_id' => $order_id
+                ]);
+            }
+            //加或减冻结库存
+            $goodsModel->changeStock($oiInfo['product_id'], 'default', $changeNums);
+
+        }
+
+        return true;
     }
 
 

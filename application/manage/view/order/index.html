@@ -343,7 +343,7 @@
                         yes: function (index, layero) {
                             JsPost("{:url('order/edit')}", $('#order_edit_form').serialize(), function(res){
                                 if (res.status) {
-                                    layer.msg("保存成功", { time: 1000 }, function () {
+                                    layer.msg(res.msg, { time: 1000 }, function () {
                                         layer.closeAll();
                                         table.reload();
                                     });

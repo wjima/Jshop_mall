@@ -7,11 +7,29 @@
     }
 </style>
 <form class="layui-form seller-form" action="">
-	<div class="layui-form-item">
-		<div class="layui-inline">
-			<button class="layui-btn add-class layui-btn-sm"><i class="layui-icon">&#xe608;</i> 添加</button>
+<div class="layui-form-item">
+	<div class="layui-inline">
+		<label class="layui-form-label">入库单号：</label>
+		<!-- <div class="layui-input-inline seller-inline-3"> -->
+		<div class="layui-input-inline">
+			<input type="text" name="id" placeholder="请输入入库单号" autocomplete="off" class="layui-input">
 		</div>
 	</div>
+	<div class="layui-inline">
+		<label class="layui-form-label">时间：</label>
+		<div class="layui-input-inline">
+			<input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+				   class="layui-input">
+		</div>
+	</div>
+	<div class="layui-inline" id="layui-btn-group-container">
+		<button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+				class="iconfont icon-chaxun"></i>筛选</button>
+
+		<button class="layui-btn add-class layui-btn-sm"><i class="layui-icon">&#xe608;</i> 添加</button>
+	</div>
+
+</div>
 </form>
 <div class="table-body">
 	<table id="hbTable" lay-filter="test"></table>
@@ -20,7 +38,13 @@
     var table;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
         var form = layui.form;
-
+//时间插件
+		layui.laydate.render({
+			elem: '#date',
+			range: '到',
+			format: 'yyyy-MM-dd',
+			trigger: 'click' //自动弹出控件的事件，采用click弹出
+		});
         table = layui.table.render({
             elem: '#hbTable',
             height: 'full-99',
@@ -31,11 +55,12 @@
             id:'hbTable',
             cols: [[
 				{field:'id', width:200, title:'入库单号', align: 'center'},
+				{field:'username', width:200, title:'操作人', align: 'center'},
 				{field:'memo',title:'备注', align: 'center'},
 				{field:'ctime', width:200,title:'入库时间', align: 'center'},
 
                 {field:'operating',title:'操作',templet:function(data){
-                    var html = '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">查看详情</a>';
+                    var html = '<a  class="layui-btn layui-btn-xs option-view" data-id="' + data.id + '">查看详情</a>';
                     return html;
                 }, align: 'center', width: 140}
             ]]
@@ -57,7 +82,7 @@
 				if(tpl.status){
 					layer.open({
 						type: 1,
-						area: setpage(600,500),
+						area: setpage(800,500),
 						data:'',
 						title: '新增入库单',
 						content: tpl.data,
@@ -82,6 +107,26 @@
 			});
             return false;
         });
+        //查看详情
+		$(document).on('click', '.option-view', function(){
+			var id = $(this).attr('data-id');
+			JsGet("{:get_addon_url('StockControl://index/stockView')}?id="+id+"&type="+1, function(tpl){
+				if(tpl.status){
+					layer.open({
+						type: 1,
+						area: setpage(700,600),
+						data:'',
+						title: '查看入库单详情',
+						content: tpl.data,
+						// btn:['关闭'],
+
+					});
+				}else{
+					layer.msg(tpl.msg);
+				}
+			});
+			return false;
+		});
 
     });
 

@@ -1,0 +1,54 @@
+<!--<fieldset class="layui-elem-field layui-field-title" style=>-->
+<!--    <legend style="font-size:14px;">{eq name="type" value="1"}入库{else/}出库{/eq}信息</legend>-->
+<!--</fieldset>-->
+<div class="layui-form-item">
+    <label class="layui-form-label">{eq name="type" value="1"}入库{else/}出库{/eq}单号：</label>
+    <div class="layui-form-mid seller-inline-3">{$info.id}</div>
+
+    <label class="layui-form-label">{eq name="type" value="1"}入库{else/}出库{/eq}时间：</label>
+    <div class="layui-form-mid seller-inline-4">{$info.ctime}</div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">备注：</label>
+    <div class="layui-form-mid seller-inline-3">{$info.memo}</div>
+    <label class="layui-form-label">操作人：</label>
+    <div class="layui-form-mid seller-inline-4">{$info.username}</div>
+    
+</div>
+<fieldset class="layui-elem-field layui-field-title">
+    <legend style="font-size:14px;">{eq name="type" value="1"}入库{else/}出库{/eq}详情</legend>
+</fieldset>
+<table class="layui-table" lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{field:'name'}">商品名称</th>
+        <th lay-data="{field:'spes_desc', width:100}">商品规格</th>
+        <th lay-data="{field:'sn', width:100}">货品编号</th>
+        <th lay-data="{field:'nums', width:100,sort:true}">{eq name="type" value="1"}增加{else/}减少{/eq}库存</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {volist name="info.log" id="vo"}
+    <tr>
+        <td>{$vo.goods.name}</td>
+        <td>{$vo.product.spes_desc}</td>
+        <td>{$vo.product.sn}</td>
+        <td>{$vo.nums}</td>
+    </tr>
+    {/volist}
+    </tbody>
+</table>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var form = layui.form;
+        //时间插件
+        layui.table.init('demo',{
+            height:310
+        })
+
+    });
+
+
+</script>

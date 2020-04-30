@@ -653,10 +653,8 @@ class PosterShare extends QrShare implements BaseShare
         $promotion = new Promotion();
         $goods     = $promotion->getGroupDetial($data['params']['goods_id'], '', 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $data['params']['group_id']);
 
-        $origin_price = bcadd($goods['data']['product']['price'], $goods['data']['product']['promotion_amount'], 2);//原价
-
         $this->c['page_9']['word'][0]['string'] = $goods['data']['name'];
-        $this->c['page_9']['word'][2]['string'] = "原价：￥" . $origin_price . "";
+        $this->c['page_9']['word'][2]['string'] = "原价：￥" . $goods['data']['product']['mktprice'] . "";
         $this->c['page_9']['image'][0]['src']   = $goods['data']['image_url'];
         $this->c['page_9']['image'][1]['src']   = $url;
 

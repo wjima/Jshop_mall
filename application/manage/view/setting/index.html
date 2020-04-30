@@ -626,7 +626,11 @@
             }
             JsPost('{:url("Setting/index")}',formData,function(e){
                 if (e.status === true) {
-                    layer.msg('保存成功');
+                    layer.msg('保存成功',{
+                        time: 1300
+                    },function(){
+                        window.location.reload();
+                    });
                 } else {
                     layer.msg(e.msg, {
                         time: 1300

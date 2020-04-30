@@ -638,9 +638,6 @@ export default {
 			}
 			return arr;
 		},
-		typeName() {
-			return this.goodsInfo.group_type == 3 ? '团购' : '秒杀';
-		},
 		shareHref() {
 			let pages = getCurrentPages();
 			let page = pages[pages.length - 1];
@@ -657,9 +654,9 @@ export default {
 			return this.$store.state.config.shop_mobile || 0;
 		},
 		
-			goodsShowWord() {
-				return this.$store.state.config.goods_show_word;
-			},
+		goodsShowWord() {
+			return this.$store.state.config.goods_show_word;
+		},
 
 	},
 	onReachBottom() {

@@ -406,9 +406,13 @@ class Promotion extends Manage
         $this->view->engine->layout(false);
         $resultModel = new PromotionResult();
         $type        = input('type', 'promotion');
+
         if ($type && $type == 'group') {//团购时不要订单促销
-            unset($resultModel->code['ORDER_REDUCE']);
-            unset($resultModel->code['ORDER_DISCOUNT']);
+            foreach ($resultModel->code as $key => $value) {
+                if ($key != 'GOODS_REDUCE' && $key != 'GOODS_DISCOUNT' && $key != 'GOODS_ONE_PRICE') {
+                    unset($resultModel->code[$key]);
+                }
+            }
         }
         $this->assign('code', $resultModel->code);
         return [

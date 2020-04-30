@@ -366,6 +366,7 @@
                     page: 3,
                     params: {
                         goods_id: this.goodsInfo.goods_id,
+						group_id:this.teamInfo.rule_id,
                         team_id: this.teamInfo.list[0].team_id
                     }
                 };
@@ -379,12 +380,6 @@
             }
 		},
         watch:{
-            goodsInfo: {
-                handler () {
-                    this.getShareUrl();
-                },
-                deep: true
-            },
             teamInfo: {
                 handler () {
                     this.getShareUrl();

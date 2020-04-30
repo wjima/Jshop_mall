@@ -310,19 +310,15 @@ class Promotion extends Common
             $result['msg'] = '商品不存在';
             return $result;
         }
-        if ($goods_id['data']['marketable'] == $goodsModel::MARKETABLE_DOWN) {
+        if ($goods['data']['marketable'] == $goodsModel::MARKETABLE_DOWN) {
             $result['msg'] = '商品已下架';
             return $result;
         }
         $extendParams = json_decode($condition['params'], true);
         //调整前台显示数量
         $orderModel = new Order();
-        $order_type = $orderModel::ORDER_TYPE_GROUP;
-        if ($condition['type'] == self::TYPE_SKILL) {
-            $order_type = $orderModel::ORDER_TYPE_SKILL;
-        }
 
-        $check_order = $orderModel->findLimitOrder($goods['data']['product']['id'], 0, $condition, $order_type);
+        $check_order = $orderModel->findLimitOrder($goods['data']['product']['id'], 0, $condition, $condition['type']);//todo 促销这里的团购秒杀类型和订单里面的数字一样
 
         if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
             $goods['data']['stock'] = $extendParams['max_goods_nums'];

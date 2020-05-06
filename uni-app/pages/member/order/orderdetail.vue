@@ -114,6 +114,7 @@
 						<view class='little-right-t'>
 							<view class='goods-name list-goods-name' @click="goodsDetail(item.goods_id)" v-if="orderInfo.order_type == 1">{{ item.name || ''}}</view>
 							<view class='goods-name list-goods-name' @click="pintuanDetail(item.goods_id)" v-else-if="orderInfo.order_type == 2">{{ item.name || ''}}</view>
+							<view class='goods-name list-goods-name'  v-else>{{ item.name || ''}}</view>
 							<view class='goods-price'>￥{{ item.price }}</view>
 						</view>
 						<view class="romotion-tip">

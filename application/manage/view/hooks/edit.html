@@ -22,7 +22,7 @@
             <input type="radio" name="type" value="2" title="视图" {if $data.type eq 2}checked{/if}>
         </div>
     </div>
-    {:jshopToken()}
+    {:jshopToken('hooks_edit')}
     <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="hooks-edit">保存</button>
 </div>
 

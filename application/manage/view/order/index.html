@@ -341,6 +341,7 @@
             var order_amount = $("#order_amount").val();
             var cost_freight = $("#cost_freight").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
 
             JsPost('{:url("order/edit")}', {
                 'order_id': order_id,
@@ -352,7 +353,8 @@
                 'ship_mobile': ship_mobile,
                 'order_amount': order_amount,
                 'cost_freight': cost_freight,
-                __Jshop_Token__:__Jshop_Token__
+                __Jshop_Token__:__Jshop_Token__,
+                validate_form:validate_form
             }, function(e){
                 layer.close(window_box);
                 layer.msg(e.msg, { time: 1300 }, function () {
@@ -490,10 +492,12 @@
             var type = $("#input_type").val();
             var payment_code = $("#payment_code").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
             JsPost('{:url("bill_payments/toPay")}', {'order_id': order_id,
                 'type': type,
                 'payment_code': payment_code,
-                __Jshop_Token__:__Jshop_Token__
+                __Jshop_Token__:__Jshop_Token__,
+                validate_form:validate_form
             }, function(e){
                 layer.close(window_box);
                 layer.msg(e.msg, { time: 1300 }, function () {

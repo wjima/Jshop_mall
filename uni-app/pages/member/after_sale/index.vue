@@ -6,7 +6,7 @@
 		<form @submit="submit" report-submit='true'>
 			<view class="content-top">
 				<view class="img-list cart-list">
-					<checkbox-group class="cart-checkbox" v-for="(item, key) in items" :key="key" @change="checkboxChange">
+					<checkbox-group class="cart-checkbox" v-for="(item, key) in items" :key="key" @change="checkboxChange" :data-idx="key" :data-itemid="item.id">
 						<view class="cart-checkbox-item">
 							<label class="uni-list-cell uni-list-cell-pd">
 								<view class="cart-checkbox-c">
@@ -244,21 +244,33 @@ export default {
 		
 		//退货商品选择
 		checkboxChange (e) {
-			let nums = 0;
-			this.item_ids = [];
-			for (var i = 0; i < e.detail.value.length; i++) {
-				let k = e.detail.value[i];
-				for(var j = 0; j < this.items.length; j++){
-					if(this.items[j].id == k) {
-						if(this.items[j].nums > this.items[j].reship_nums) {
-							// nums = this.items[j].sendnums - this.items[j].reship_nums;
-							nums=this.$refs.input[i].value
-							this.item_ids = this.item_ids.concat({ id: k, nums: nums });
-							console.log(this.item_ids)
-						}
-					}
-				}
+			let id = e.target.dataset.itemid
+			let idx = this.checkedItems.findIndex(item => item == id)
+			if(idx >=0) {
+				this.checkedItems.splice(idx, 1)
+			} else {
+				this.checkedItems.push(id);
 			}
+			this.getReturnData();
+			// return 
+			// this.checkedItems.push(v);
+			// console.log(e)
+			// return
+			// let nums = 0;
+			// this.item_ids = [];
+			// for (var i = 0; i < e.detail.value.length; i++) {
+			// 	let k = e.detail.value[i];
+			// 	for(var j = 0; j < this.items.length; j++){
+			// 		if(this.items[j].id == k) {
+			// 			if(this.items[j].nums > this.items[j].reship_nums) {
+			// 				// nums = this.items[j].sendnums - this.items[j].reship_nums;
+			// 				nums=this.$refs.input[i].value
+			// 				this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+			// 				console.log(this.item_ids)
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 			
 			// let _this = this;
@@ -277,7 +289,6 @@ export default {
 			// console.log(cartData)
 			// this.getReturnData();
 		},
-		
 		// 点击输入框的事件
 		onFocus(item,key){
 			item.returnNums = '';
@@ -345,18 +356,18 @@ export default {
 			}
 
 			//判断退款金额
-			let reg = /^[0-9]+(.[0-9]{1,2})?$/;
-			if (!reg.test(this.refund)) {
-				this.$common.errorToShow('请输入正确金额');
-				this.submitStatus = false;
-				return false;
-			} else {
-				if (this.refund > this.refund_show) {
-					this.$common.errorToShow('退款金额过大');
-					this.submitStatus = false;
-					return false;
-				} 
-			}
+			// let reg = /^[0-9]+(.[0-9]{1,2})?$/;
+			// if (!reg.test(this.refund)) {
+			// 	this.$common.errorToShow('请输入正确金额');
+			// 	this.submitStatus = false;
+			// 	return false;
+			// } else {
+			// 	if (this.refund > this.refund_show) {
+			// 		this.$common.errorToShow('退款金额过大');
+			// 		this.submitStatus = false;
+			// 		return false;
+			// 	} 
+			// }
 			if(!this.isFlag) {
 				this.$common.errorToShow('您填写的数量不对！');
 				this.submitStatus = false;

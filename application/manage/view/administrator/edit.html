@@ -40,7 +40,7 @@
         <div class="layui-form-mid layui-word-aux"><span style="color:red;">注意：</span>编辑账号的时候，如果密码为空则是不修改密码，否则，就是修改密码</div>
     </div>
     {/if}
-    {:jshopToken()}
+    {:jshopToken('administrator')}
 </form>
 <script>
     layui.use('form', function(){

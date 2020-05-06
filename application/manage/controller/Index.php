@@ -9,6 +9,7 @@ use app\common\model\Order;
 use app\common\model\PintuanGoods;
 use app\common\model\Promotion;
 use app\common\model\User;
+use app\common\model\UserGrade;
 use think\Console;
 use think\facade\Cache;
 use app\common\model\WeixinAuthor;
@@ -153,7 +154,12 @@ class Index extends Manage
             $userModel = new User();
             return $userModel->tableData($request);
         } else {
-            $this->assign('grade',input('grade',''));
+            $grade = input('grade','');
+            if(empty($grade)){
+                $userGrade = UserGrade::field(['id','name'])->select()->toArray();
+                $this->assign('userGrade',$userGrade);
+            }
+            $this->assign('grade',$grade);
             return $this->fetch('tagSelectUser');
         }
     }

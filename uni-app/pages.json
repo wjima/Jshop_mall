@@ -490,6 +490,12 @@
 		    "style" : {
 				"navigationBarTitleText": "团购列表"
 			}
+		},
+		{
+		    "path" : "pages/login/login/mobile",
+		    "style" : {
+				"navigationBarTitleText": "绑定手机号"
+			}
 		}
 		// ,
 		// {

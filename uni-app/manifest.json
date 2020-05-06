@@ -1,5 +1,5 @@
 {
-    "name" : "Jshop商城",
+    "name" : "ljyp",
     "appid" : "__UNI__8AA8302",
     "description" : "Jshop小程序商城",
     "versionName" : "2.0",
@@ -66,13 +66,19 @@
     "quickapp" : {},
     /* 快应用特有相关 */
     "mp-weixin" : {
-        "appid" : "wxaec38ca2e5cdc46a",
+        "appid" : "wx5161257e62c37da7",
         "setting" : {
             "urlCheck" : true,
             "postcss" : true,
             "minified" : true,
             "es6" : true
         },
+		 // "plugins": {
+		 //        "live-player-plugin": {
+		 //            "version": "1.0.7",
+		 //            "provider": "wx2b03c6e691cd7370"
+		 //        }
+		 //    },
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "用于获取您附近的门店列表"

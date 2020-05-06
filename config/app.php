@@ -16,7 +16,7 @@
 return [
 
     // 应用调试模式
-    'app_debug'              => true,
+    'app_debug'              => false,
     // 应用Trace
     'app_trace'              => false,
     // 应用模式状态
@@ -117,6 +117,6 @@ return [
     'exception_handle'       => '',
     'rename_manage'          => false,//后台是否重名了，后台重命名需要开启
     'route_check_cache'      => true,//路由缓存
-    'validate_token'         => false,//是否开启token验证预防CSRF攻击
+    'validate_token'         => true,//是否开启token验证预防CSRF攻击
 
 ];

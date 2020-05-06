@@ -497,6 +497,8 @@ class Order extends Common
                 return false;
             }
         }
+        //下单人
+        $order_info['username'] = get_user_info($order_info['user_id'],'nickname');
 
         $order_info->items; //订单详情
         $order_info->user; //用户信息
@@ -2246,52 +2248,77 @@ class Order extends Common
     {
         $return = [
             'status' => true,
-            'msg' => '查无订单',
-            'data' => [
-                'total_orders' => 0,
+            'msg'    => '查无订单',
+            'data'   => [
+                'total_orders'      => 0,
                 'total_user_orders' => 0,
-            ]
+            ],
         ];
         //计算订单总量
-        $where = [];
+        $where   = [];
         $where[] = ['oi.product_id', '=', $product_id];
         $where[] = ['o.status', 'in', [self::ORDER_STATUS_NORMAL, self::ORDER_STATUS_COMPLETE]];//正常订单和已完成订单
         //在活动时间范围内
         $where[] = ['o.ctime', '>=', $condition['stime']];
         $where[] = ['o.ctime', '<', $condition['etime']];
 
+
          //已退款、已退货、部分退款的、部分退货的排除
         $where[] = ['o.pay_status', 'in',['1','2','3']];
         $where[] = ['o.ship_status', 'in',['1','2','3']];
 
+        //已退款、已退货、部分退款的、部分退货的排除 todo 团购秒杀部分退换货问题
+        //$where[] = ['o.pay_status', 'in',['1','2','3','4','5']];
+        //$where[] = ['o.ship_status', 'in',['1','2','3','4','5']];
+
+
         //团购秒杀id
-        if(isset($condition['id']) && $condition['id']){
-            $where[] = ['pr.promotion_id', '=',$condition['id']];
+        if (isset($condition['id']) && $condition['id'] && ($order_type == self::ORDER_TYPE_GROUP || $order_type == self::ORDER_TYPE_SKILL)) {
+            $where[] = ['pr.promotion_id', '=', $condition['id']];
         }
         //订单类型
         if ($order_type) {
             $where[] = ['o.order_type', '=', $order_type];
         }
 
-        $total_orders = $this->alias('o')
-            ->join('order_items oi', 'oi.order_id = o.order_id')
-            ->join('promotion_record pr','pr.order_id=o.order_id')
-            ->where($where)
-            ->sum('oi.nums');
-        //该会员已下多少订单
-        $total_user_orders = 0;
-        if ($user_id) {
-            $where[] = ['o.user_id', '=', $user_id];
-            $total_user_orders = $this->alias('o')
+        if ($order_type != self::ORDER_TYPE_GROUP && $order_type != self::ORDER_TYPE_SKILL) {
+            $total_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')
-                ->join('promotion_record pr','pr.order_id=o.order_id')
                 ->where($where)
                 ->sum('oi.nums');
+
+            //该会员已下多少订单
+            $total_user_orders = 0;
+            if ($user_id) {
+                $where[]           = ['o.user_id', '=', $user_id];
+                $total_user_orders = $this->alias('o')
+                    ->join('order_items oi', 'oi.order_id = o.order_id')
+                    ->where($where)
+                    ->sum('oi.nums');
+            }
+        } else {
+            $total_orders = $this->alias('o')
+                ->join('order_items oi', 'oi.order_id = o.order_id')
+                ->join('promotion_record pr', 'pr.order_id=o.order_id')
+                ->where($where)
+                ->sum('oi.nums');
+
+            //该会员已下多少订单
+            $total_user_orders = 0;
+            if ($user_id) {
+                $where[]           = ['o.user_id', '=', $user_id];
+                $total_user_orders = $this->alias('o')
+                    ->join('order_items oi', 'oi.order_id = o.order_id')
+                    ->join('promotion_record pr', 'pr.order_id=o.order_id')
+                    ->where($where)
+                    ->sum('oi.nums');
+            }
         }
 
-        $return['msg'] = '查询成功';
+
+        $return['msg']  = '查询成功';
         $return['data'] = [
-            'total_orders' => $total_orders,
+            'total_orders'      => $total_orders,
             'total_user_orders' => $total_user_orders,
         ];
         return $return;

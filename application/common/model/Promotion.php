@@ -31,8 +31,13 @@ class Promotion extends Common
     {
         //按照权重取所有已生效的促销列表
         $where[] = ['status', 'eq', self::STATUS_OPEN];
-        $where[] = ['stime', 'lt', time()];
-        $where[] = ['etime', 'gt', time()];
+
+        if($type == self::TYPE_GROUP||$type == self::TYPE_SKILL){//todo 团购秒杀不管时间，以后增加其他条件
+
+        }else{
+            $where[] = ['stime', 'lt', time()];
+            $where[] = ['etime', 'gt', time()];
+        }
         $where[] = ['type', 'eq', $type];
         $list    = $this->where($where)->order('sort', 'asc')->select();
         foreach ($list as $v) {
@@ -310,19 +315,15 @@ class Promotion extends Common
             $result['msg'] = '商品不存在';
             return $result;
         }
-        if ($goods_id['data']['marketable'] == $goodsModel::MARKETABLE_DOWN) {
+        if ($goods['data']['marketable'] == $goodsModel::MARKETABLE_DOWN) {
             $result['msg'] = '商品已下架';
             return $result;
         }
         $extendParams = json_decode($condition['params'], true);
         //调整前台显示数量
         $orderModel = new Order();
-        $order_type = $orderModel::ORDER_TYPE_GROUP;
-        if ($condition['type'] == self::TYPE_SKILL) {
-            $order_type = $orderModel::ORDER_TYPE_SKILL;
-        }
 
-        $check_order = $orderModel->findLimitOrder($goods['data']['product']['id'], 0, $condition, $order_type);
+        $check_order = $orderModel->findLimitOrder($goods['data']['product']['id'], 0, $condition, $condition['type']);//todo 促销这里的团购秒杀类型和订单里面的数字一样
 
         if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
             $goods['data']['stock'] = $extendParams['max_goods_nums'];
@@ -333,6 +334,7 @@ class Promotion extends Common
         } else {
             $goods['data']['buy_promotion_count'] = $check_order['data']['total_orders'];
         }
+
         $goods['data']['group_id']        = $condition['id'];
         $goods['data']['group_type']      = $condition['type'];
         $goods['data']['status']          = $condition['status'];
@@ -350,6 +352,8 @@ class Promotion extends Common
         } else {
             $goods['data']['lasttime'] = secondConversionArray($condition['stime'] - time());
         }
+        $origin_price                         = bcadd($goods['data']['product']['price'], $goods['data']['product']['promotion_amount'], 2);//原价
+        $goods['data']['product']['mktprice'] = $origin_price;//原销售价替换原市场价
         return $goods;
     }
 

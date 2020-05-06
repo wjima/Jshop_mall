@@ -24,7 +24,7 @@
     }
 </style>
 <div class="layui-card" style="padding:10px;">
-    {:jshopToken()}
+    {:jshopToken('setting_save')}
     <div class="layui-tab" lay-filter="setting">
         <ul class="layui-tab-title">
             <li lay-id="platform" class="layui-this">平台设置</li>
@@ -626,7 +626,11 @@
             }
             JsPost('{:url("Setting/index")}',formData,function(e){
                 if (e.status === true) {
-                    layer.msg('保存成功');
+                    layer.msg('保存成功',{
+                        time: 1300
+                    },function(){
+                        window.location.reload();
+                    });
                 } else {
                     layer.msg(e.msg, {
                         time: 1300

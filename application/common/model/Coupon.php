@@ -152,8 +152,10 @@ class Coupon extends Common
      * @param $user_id
      */
     public function getMyCouponCount($user_id,$display = 'all'){
-        $where[] = ['c.user_id', 'eq', $user_id];
-        $where[] = ['p.type', 'eq', 2];
+        $where = [];
+        $where[] = ['p.type', 'eq', 2]; //优惠券
+        $where[] = ['p.status','eq',Promotion::STATUS_OPEN];
+        $where[] = ['c.user_id', 'eq', $user_id];   //领取者是$user_id
         if($display == 'no_used')
         {
             $where[] = ['c.is_used', 'eq', self::USED_NO];

@@ -124,7 +124,8 @@ export const goBack = {
 export const jumpBackPage = {
 	methods: {
 		handleBack() {
-			let redirect = this.$store.state.redirectPage
+			let redirect = this.$store.state.redirectPage;
+			console.log(redirect);
 			this.$store.commit({
 				type: 'redirect',
 				page: ''

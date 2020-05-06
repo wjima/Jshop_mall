@@ -26,7 +26,7 @@
 									<view class="goods-item-c-tip">
 										仅剩{{item.goods.product.stock}}件
 									</view>
-									<button class="btn" @click="groupDetail(item.goods_id, item.id)" v-if="item.goods.product.stock > 0">马上抢</button>
+									<button class="btn" v-if="item.goods.product.stock > 0">马上抢</button>
 									<button class="btn btn-g" v-else>已售罄</button>
 								</view>
 							</view>

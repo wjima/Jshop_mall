@@ -40,7 +40,7 @@ class Bargain extends Api
         $bargainModel     = new bargainModel();
         $params           = input('param.');
         $params['status'] = $bargainModel::STATUS_ON;
-        $list             = $bargainModel->tableData($params);
+        $list             = $bargainModel->tableData($params,true);
 
         if ($list) {
             $return_data['status']        = true;

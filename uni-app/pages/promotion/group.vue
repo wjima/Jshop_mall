@@ -1,153 +1,118 @@
 <template>
 	<view class="content">
-		<view class="bg">
-			<image class="bg-img" src="/static/image/1571297537282.jpg" mode="widthFix"></image>
+		<view class="banner">
+			<image class="banner-img" src="/static/image/1222.png" mode="widthFix"></image>
 		</view>
-		<!-- 列表图片 -->
-		<view class="img-list">
-			<view v-if="goodsList.length > 0">
-				<view class="img-list-item" v-for="(item, index) in goodsList" :key="index" @click="goodsDetail(item.goods.id)">
-					<image class="img-list-item-l little-img have-none" :src="item.goods.image_url" mode="aspectFill"></image>
-					<view class="img-list-item-r">
-						<view class="goods-name list-goods-name">{{ item.goods.name }}</view>
-						<view class="goods-item-c-tip">
-							<view class="people-num fsz24">{{ item.goods.pintuan_rule.people_number }}人团</view>
-						</view>
-						<view class="goods-item-c">
-							<view class="goods-price fsz28">
-								￥{{ item.goods.pintuanPrice }} <text class="fsz24 color-9">￥{{item.goods.price}}</text>
+		<view class="">
+			<view class="img-list">
+				<view v-if="list.length > 0">
+					<view class="img-list-item" v-for="(item, index) in list" :key="index" @click="groupDetail(item.goods_id, item.id)">
+						<view class="img-list-item-t">
+							
+							<view class="">
+								<text class="fsz26 color-6">还剩：</text><uni-countdown
+									:backgroundColor="'#ff7159'" :color="'#fff'" :day="item.goods.lasttime.day" :hour="item.goods.lasttime.hour" :minute="item.goods.lasttime.minute" :second="item.goods.lasttime.second"></uni-countdown>
 							</view>
-							<button class="btn" @click="goodsDetail(item.goods.id)"><text>去拼团</text><image class="icon" src="/static/image/right-w.png" mode=""></image></button>
+							
 						</view>
-						
+						<view class="img-list-item-b">
+							<image class="img-list-item-l little-img have-none" :src="item.goods.image_url" mode="aspectFill"></image>
+							<view class="img-list-item-r little-right">
+								<view class="goods-name list-goods-name">{{ item.goods.name }}</view>
+								<view class="">
+									<view class="goods-price red-price fsz34"><text class="fsz24 color-3">限时价</text>￥{{ item.goods.price }}</view>
+								</view>
+								<view class="goods-item-c">
+									<view class="goods-item-c-tip">
+										仅剩{{item.goods.product.stock}}件
+									</view>
+									<button class="btn" v-if="item.goods.product.stock > 0">马上抢</button>
+									<button class="btn btn-g" v-else>已售罄</button>
+								</view>
+							</view>
+						</view>
 					</view>
 				</view>
+				<uni-load-more :status="loadStatus"></uni-load-more>
+				<!-- <view class="order-none" v-else><image class="order-none-img" src="/static/image/order.png" mode=""></image></view> -->
 			</view>
-			<!-- <view class="order-none" v-else><image class="order-none-img" src="/static/image/order.png" mode=""></image></view> -->
 		</view>
 	</view>
 </template>
 
 <script>
-import uniCountdown from '@/components/uni-countdown/uni-countdown.vue';
+import uniCountdown from "@/components/uni-countdown/uni-countdown.vue"
+import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+import {
+	goods
+} from '@/config/mixins.js'
 export default {
-	components: { uniCountdown },
+	components: {
+		uniCountdown,uniLoadMore
+	},
+	mixins: [goods],
 	data() {
 		return {
-			goodsList: {},
-			pintuanPrice: 0,
-			lasttime: {
-				day: 0,
-				hour: false,
-				minute: 0,
-				second: 0
-			} //购买倒计时
-		};
+			page: 1,
+			limit: 10,
+			loadStatus: 'more',
+			list:[]
+		}
 	},
-	//加载执行
+	onReachBottom() {
+		if (this.loadStatus === 'more') {
+			this.getList();
+		}
+	},
 	onLoad() {
-		this.getGoods();
+		this.getList()
 	},
-	methods: {
-		//跳转到商品详情页面
-		goodsDetail: function(id) {
-			let url = '/pages/goods/index/pintuan?id=' + id;
-			this.$common.navigateTo(url);
-		},
-		//取得商品数据
-		getGoods: function() {
-			var _this = this;
-			let data = {};
-			_this.$api.pintuanList(data, res => {
+	methods:{
+		getList(){
+			let data = {
+				page: this.page,
+				limit: this.limit,
+				type:3
+			};
+			this.loadStatus = 'loading';
+			
+			this.$api.getGroup(data,res=>{
 				if (res.status) {
-					_this.goodsList = res.data.list;
-					_this.goodsList.forEach(item => {
-						if (item.goods.pintuan_price <= 0) {
-							item.goods.pintuan_price = '0.00';
-						} else {
-							item.goods.pintuanPrice = this.$common.moneySub(item.goods.price, item.goods.pintuan_rule.discount_amount);
-						}
-						let timestamp = Date.parse(new Date()) / 1000;
-						let lasttime = item.goods.pintuan_rule.etime - timestamp;
-						item.lasttime = _this.$common.timeToDateObj(lasttime);
-					});
+					const _list = res.data.list;
+					console.log(_list);
+					this.list = [...this.list, ..._list];
+					if (res.data.count > this.list.length) {
+						this.loadStatus = 'more';
+						this.page++;
+					} else {
+						this.loadStatus = 'noMore';
+					}
+				} else {
+					// 接口请求出错了
+					this.$common.errorToShow(res.msg);
 				}
-			});
+			})
 		}
 	}
-};
+}
 </script>
 
 <style>
-.content{
-	padding-top: 520rpx;
-	height: 100vh;
-	background-color: #49a4c1;
-}
-.bg{
+.banner{
 	width: 100%;
 	overflow: hidden;
-	position: absolute;
-	top: 0;
-	z-index: 98;
 }
-.bg-img{
+.banner-img{
 	width: 100%;
 	float: left;
 }
-.img-list{
-	position: relative;
-	z-index: 99;
-	padding: 0 20rpx;
-	
+.little-right .list-goods-name{
+	width: 100%;
+	-webkit-line-clamp: 1;
 }
-.list-grid {
-	width: 44upx;
-	height: 44upx;
-	float: left;
-}
-
-.img-grids {
-	padding-bottom: 26upx;
-}
-.img-grids-item {
-	
-	margin-bottom: 0;
-}
-.img-grids > view,
-.img-list > view {
-	overflow: hidden;
-}
-
-.order-none {
-	text-align: center;
-	padding: 200upx 0;
-}
-.order-none-img {
-	width: 274upx;
-	height: 274upx;
-}
-.goods-price {
-	/* margin-bottom: 10upx; */
-	/* width: 100%; */
-	overflow: hidden;
-}
-.goods-price .fsz24{
-	text-decoration: line-through;
-	margin-left: 10rpx;
-}
-.people-num {
-	margin-right: 16upx;
-	border: 2rpx solid #FF7159;
-	display: inline-block;
-	border-radius: 4rpx;
-	padding: 0 6rpx;
-	color: #FF7159;
-	transform: scale(.9);
-}
-.img-list-item{
-	border-radius: 10rpx;
-	margin-bottom: 16rpx;
+.little-right .goods-price{
+	float: none;
+	max-width: 300rpx;
 }
 .img-list-item .goods-item-c {
 	bottom: 0;
@@ -159,7 +124,7 @@ export default {
 	background-color: #FF7159;
 	color: #fff;
 	margin: 0;
-	padding: 0 0rpx 0 14rpx;
+	/* padding: 0 14rpx; */
 	line-height: 1.6;
 	display: flex;
 	justify-content: center;
@@ -168,20 +133,56 @@ export default {
 	height: 46rpx;
 	transform: scale(.9);
 }
-.img-list-item .goods-item-c .btn .icon{
-	width: 40rpx;
-	height: 40rpx;
-}
-.img-list-item-r{
-	width: 492rpx;
-	min-height: auto;
-	padding: 0;
-}
-.goods-name{
-	-webkit-line-clamp: 1;
-	margin-bottom: 10rpx;
+.img-list-item .goods-item-c .btn.btn-g{
+	font-size: 24rpx;
+	background-color: #eee;
+	border-color: #eee;
+	color: #fff;
+	margin: 0;
+	/* padding: 0 14rpx; */
+	line-height: 1.6;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 4rpx;
+	height: 46rpx;
+	transform: scale(.9);
 }
 .goods-item-c-tip{
-	margin-bottom: 6rpx;
+	border-radius: 50rpx;
+	border: 2rpx solid #ff7159;
+	font-size: 24rpx;
+	color: #FF7159;
+	/* padding: 0 20rpx; */
+	width: 200rpx;
+	text-align: center;
+	height: 40rpx;
+	line-height: 36rpx;
+}
+.img-list-item{
+	padding-top: 14rpx;
+}
+.img-list-item-t{
+	margin-bottom: 10rpx;
+	display: flex;
+	justify-content: space-between;
+}
+
+.img-list-item-b{
+	overflow: hidden;
+}
+.img-list-item-t-tip{
+	border-radius: 6rpx;
+	border: 2rpx solid #ff7159;
+	font-size: 24rpx;
+	color: #FF7159;
+	padding: 0 20rpx;
+	/* width: 200rpx; */
+	text-align: center;
+	height: 40rpx;
+	line-height: 36rpx;
+}
+.little-right{
+	width: 532rpx;
 }
 </style>

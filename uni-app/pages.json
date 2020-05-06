@@ -492,6 +492,12 @@
 			}
 		},
 		{
+		    "path" : "pages/promotion/pintuan",
+		    "style" : {
+				"navigationBarTitleText": "拼团列表"
+			}
+		},
+		{
 		    "path" : "pages/login/login/mobile",
 		    "style" : {
 				"navigationBarTitleText": "绑定手机号"

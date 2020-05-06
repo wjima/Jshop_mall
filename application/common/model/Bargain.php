@@ -48,7 +48,6 @@ class Bargain extends Common
 
     /**
      * 返回layui的table所需要的格式
-     * @author sin
      * @param $post
      * @return mixed
      */

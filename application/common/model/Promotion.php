@@ -32,9 +32,9 @@ class Promotion extends Common
         //按照权重取所有已生效的促销列表
         $where[] = ['status', 'eq', self::STATUS_OPEN];
 
-        if($type == self::TYPE_GROUP||$type == self::TYPE_SKILL){//todo 团购秒杀不管时间，以后增加其他条件
+        if ($type == self::TYPE_GROUP || $type == self::TYPE_SKILL) {//todo 团购秒杀不管时间，以后增加其他条件
 
-        }else{
+        } else {
             $where[] = ['stime', 'lt', time()];
             $where[] = ['etime', 'gt', time()];
         }
@@ -43,9 +43,9 @@ class Promotion extends Common
         foreach ($list as $v) {
             $this->setPromotion($v, $cart);
             //团购秒杀不排他
-            if($type == self::TYPE_GROUP||$type == self::TYPE_SKILL){
+            if ($type == self::TYPE_GROUP || $type == self::TYPE_SKILL) {
 
-            }else{
+            } else {
                 //如果排他，就跳出循环，不执行下面的促销了
                 if ($v['exclusive'] == self::EXCLUSIVE_YES) {
                     break;
@@ -408,14 +408,13 @@ class Promotion extends Common
     }
 
 
-
     /**
      * 返回layui的table所需要的格式以及前台接口需要的数据
      * @param $post
      * @param bool|false $api
      * @return mixed
      */
-    public function tableGroupData($post,$api = false)
+    public function tableGroupData($post, $api = false)
     {
         if (isset($post['limit'])) {
             $limit = $post['limit'];
@@ -424,17 +423,19 @@ class Promotion extends Common
         }
         $tableWhere = $this->tableGroupWhere($post);
 
-        if($api){
-            $tableWhere['where'][] = ['pr.stime','<=',time()];
-            $tableWhere['where'][] = ['pr.etime','>',time()];
-            $list = $this
+        if ($api) {
+            $goodsModel            = new Goods();
+            $tableWhere['where'][] = ['pr.stime', '<=', time()];
+            $tableWhere['where'][] = ['pr.etime', '>', time()];
+            $tableWhere['where'][] = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
+            $list                  = $this
                 ->alias("pr")
                 ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
                 ->join("group_goods gg", "gg.rule_id = pr.id")
                 ->join("goods g", "g.id = gg.goods_id")
                 ->where($tableWhere['where'])
                 ->order($tableWhere['order'])
-                ->page($post['page'],$limit)
+                ->page($post['page'], $limit)
                 ->select();
 
             $count = $this
@@ -444,8 +445,8 @@ class Promotion extends Common
                 ->join("goods g", "g.id = gg.goods_id")
                 ->where($tableWhere['where'])
                 ->count();
-            $data = $this->tableGroupFormat($list,$api);
-        }else{
+            $data  = $this->tableGroupFormat($list, $api);
+        } else {
             $list = $this
                 ->alias("pr")
                 ->field("pr.*,gg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
@@ -456,9 +457,8 @@ class Promotion extends Common
                 ->paginate($limit);
 
             $count = $list->total();
-            $data = $this->tableGroupFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $data  = $this->tableGroupFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         }
-
 
 
         $re['code']  = 0;

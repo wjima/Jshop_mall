@@ -112,9 +112,9 @@ function JsAjax(url, type, dataType, data, success, error, cache, alone, async) 
 		}
 	};
 	var newSuccess = function(data) {
-		if (data.token) {
+		/*if (data.token) {
 			$(".Jshop_Token").val(data.token);
-		}
+		}*/
 		success(data);
 	}
 

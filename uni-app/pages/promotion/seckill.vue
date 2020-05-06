@@ -18,13 +18,13 @@
 						<view class="img-list-item-b">
 							<image class="img-list-item-l little-img have-none" :src="item.goods.image_url" mode="aspectFill"></image>
 							<view class="img-list-item-r little-right">
-								<view class="goods-name list-goods-name">{{ item.goods.name }}</view>
+								<view class="goods-name list-goods-name">{{ item.goods.name||'' }}</view>
 								<view class="">
-									<view class="goods-price red-price fsz34"><text class="fsz24 color-3">限时价</text>￥{{ item.goods.price }}</view>
+									<view class="goods-price red-price fsz34"><text class="fsz24 color-3">限时价</text>￥{{ item.goods.price||'0.00' }}</view>
 								</view>
 								<view class="goods-item-c">
 									<view class="goods-item-c-tip">
-										仅剩{{item.goods.product.stock}}件
+										仅剩{{item.goods.product.stock||'0'}}件
 									</view>
 									<button class="btn" v-if="item.goods.product.stock > 0">马上抢</button>
 									<button class="btn btn-g" v-else>已售罄</button>

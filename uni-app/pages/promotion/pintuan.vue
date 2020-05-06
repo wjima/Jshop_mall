@@ -9,13 +9,13 @@
 				<view class="img-list-item" v-for="(item, index) in goodsList" :key="index" @click="goodsDetail(item.goods.id)">
 					<image class="img-list-item-l little-img have-none" :src="item.goods.image_url" mode="aspectFill"></image>
 					<view class="img-list-item-r">
-						<view class="goods-name list-goods-name">{{ item.goods.name }}</view>
+						<view class="goods-name list-goods-name">{{ item.goods.name||'' }}</view>
 						<view class="goods-item-c-tip">
-							<view class="people-num fsz24">{{ item.goods.pintuan_rule.people_number }}人团</view>
+							<view class="people-num fsz24">{{ item.goods.pintuan_rule.people_number||'0' }}人团</view>
 						</view>
 						<view class="goods-item-c">
 							<view class="goods-price fsz28">
-								￥{{ item.goods.pintuanPrice }} <text class="fsz24 color-9">￥{{item.goods.price}}</text>
+								￥{{ item.goods.pintuanPrice||'0.00' }} <text class="fsz24 color-9">￥{{item.goods.price||'0.00'}}</text>
 							</view>
 							<button class="btn"><text>去拼团</text><image class="icon" src="/static/image/right-w.png" mode=""></image></button>
 						</view>

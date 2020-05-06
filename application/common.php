@@ -1297,11 +1297,13 @@ function validateJshopToken()
     $cache_token = \think\facade\Cache::get($form . '_token');
     if (!$_token || $_token != $cache_token) {
         if (\think\facade\Request::isAjax()) {
+            $new_token = \think\facade\Request::token('__Jshop_Token__', 'sha1');
+            \think\facade\Cache::set($form . '_token', $new_token, 86400);   //1天过期
             $return = [
                 'data'   => '',
                 'msg'    => '已超时或重复提交，请重试或刷新页面',
                 'status' => false,
-                'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
+                'token'  => $new_token
             ];
             header('Content-type:text/json');
             echo json_encode($return);

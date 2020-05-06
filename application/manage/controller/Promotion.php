@@ -607,8 +607,16 @@ class Promotion extends Manage
             $groupGoodsModel = new GroupGoods();
             //保存或更新促销条件商品
 
-            $conditionModel->where(['promotion_id' => $id])->delete();
+
             $goods_id   = input('post.goods_id');
+            if(!$goods_id){
+                $result = [
+                    'status' => false,
+                    'data'   => 0,
+                    'msg'    => '请选择商品'
+                ];
+                return $result;
+            }
             $goods_ids  = explode(',', $goods_id);
             $groupGoods = [];
 
@@ -633,6 +641,8 @@ class Promotion extends Manage
                 'code'         => 'GOODS_IDS',
                 'params'       => ['goods_id' => $goods_id, 'nums' => '1'],
             ];
+            $conditionModel->where(['promotion_id' => $id])->delete();
+
             $conditionRes  = $conditionModel->addData($conditionData);
             if (!$conditionRes['status']) {
                 return $conditionRes;

@@ -244,7 +244,7 @@ const pluginsPost = (method, data, callback) => {
 									animationDuration: 200
 								});
 								// #endif
-							}, 1000);
+							}, 500);
 						}
 					});
 				}

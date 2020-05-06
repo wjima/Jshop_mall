@@ -15,8 +15,8 @@ class Bargain extends Validate
         'date'                 => 'require',
         'start_price'          => 'require',
         'end_price'            => 'require',
-        'bargain_max_price'    => 'require',
-        'bargain_min_price'    => 'require',
+       /* 'bargain_max_price'    => 'require',
+        'bargain_min_price'    => 'require',*/
         'significant_interval' => 'require',
         'total_times'          => 'require',
     ];

@@ -171,7 +171,7 @@ function errorToShow(msg = '操作失败', callback = function() {}) {
 				}, 1500)
 			}
 		})
-	},100)
+	},1000)
 
 }
 

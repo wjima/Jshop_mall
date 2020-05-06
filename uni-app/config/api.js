@@ -139,6 +139,11 @@ const post = (method, data, callback,complete) => {
 						complete: function() {
 							setTimeout(function() {
 								uni.hideToast();
+								let current =  getCurrentPages()
+								current = current[current.length - 1]
+								if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+									return
+								}
 								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
 									url: '/pages/login/login/index1'
@@ -221,6 +226,11 @@ const pluginsPost = (method, data, callback) => {
 						duration: 1000,
 						complete: function() {
 							setTimeout(function() {
+								let current =  getCurrentPages()
+								current = current[current.length - 1]
+								if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+									return
+								}
 								uni.hideToast();
 								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({

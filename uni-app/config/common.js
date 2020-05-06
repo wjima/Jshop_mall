@@ -97,24 +97,24 @@ function jumpToLogin(method) {
 			icon: 'none',
 			duration: 1000,
 			success: function(res) {
-				// #ifdef H5 || APP-PLUS
 				setTimeout(() => {
 					uni.hideToast();
+					let current =  getCurrentPages()
+					current = current[current.length - 1]
+					if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+						return
+					}
 					uni.navigateTo({
-						url: '/pages/login/login/index1'
-					})
-				}, 1000)
-				// #endif
-				// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
-				setTimeout(() => {
-					uni.hideToast();
-					uni.navigateTo({
+						// #ifdef H5 || APP-PLUS
+						url: '/pages/login/login/index1',
+						// #endif
+						// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 						url: '/pages/login/choose/index',
+						// #endif
 						animationType: 'pop-in',
 						animationDuration: 200
 					})
 				}, 500)
-				// #endif
 			}
 		})
 	}

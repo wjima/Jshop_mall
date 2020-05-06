@@ -92,7 +92,6 @@ class Bargain extends Common
 
     protected function tableWhere($post)
     {
-
         $where = [];
         if (isset($post['status']) && $post['status'] != "") {
             $where[] = ['status', 'eq', $post['status']];
@@ -100,7 +99,6 @@ class Bargain extends Common
         if (isset($post['name']) && $post['name'] != '') {
             $where[] = ['name', 'like', '%' . $post['name'] . '%'];
         }
-
         if (input('?param.date')) {
             $theDate = explode(' 到 ', input('param.date'));
             if (count($theDate) == 2) {
@@ -110,7 +108,7 @@ class Bargain extends Common
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort Asc'];
+        $result['order'] = ['sort'=>'asc','id' => 'desc'];
         return $result;
     }
 

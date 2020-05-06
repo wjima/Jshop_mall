@@ -154,12 +154,22 @@
         </div>
         <div class="layui-form-mid layui-word-aux">不能为0</div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权重：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="sort" value="{$info.sort|default='100'}" lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">越小越靠前</div>
+    </div>
+
 
 
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">活动规则：</label>
     </div>
-    <div class="layui-form-item">
+    <div class="layui-form-item" style="margin-bottom: 32px;">
         <div class="layui-input-block">
             <div id="bargain_desc" style="display: none;">{$info.desc|default=''}</div>
             <script id="container" name="desc" type="text/plain" class="layui-textarea"></script>

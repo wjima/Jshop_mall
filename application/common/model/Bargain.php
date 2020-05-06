@@ -21,6 +21,8 @@ class Bargain extends Common
         /*'bargain_max_price' => 'require',
         'bargain_min_price' => 'require',*/
         'sort'        => 'integer|gt:0',
+        'total_times'          => 'require',
+        'total_times'          => 'gt:0',
 
     ];
 
@@ -33,7 +35,8 @@ class Bargain extends Common
         'end_price.require'         => '砍价成交金额必填',
         'bargain_max_price.require' => '砍价每次最大金额必填',
         'bargain_min_price.require' => '砍价每次最小金额必填',
-
+        'total_times.require'          => '请输入砍价次数',
+        'total_times.gt'               => '砍价总次数必须大于0',
     ];
 
     const STATUS_ON = 1; //启用
@@ -146,28 +149,32 @@ class Bargain extends Common
             return $result;
         }
         $theDate = explode(' 到 ', $data['date']);
-
-        //判断商品是否有参加过拼团 todo
-        $where[] = ['goods_id', '=', $data['goods_id']];
-
-        $re = $this->where($where)->find();
-        if ($re) {
-            /* $goodsModel = new Goods();
-             $goodsInfo  = $goodsModel->get($re['goods_id']);
-             if ($goodsInfo) {
-                 $result['msg'] = "商品：" . $goodsInfo['name'] . " 参加过砍价了";
-                 return $result;
-             } else {
-                 return error_code(10000);
-             }*/
-        }
-
         if (count($theDate) != 2) {
             return error_code(15002);
         }
         $data['stime'] = strtotime($theDate[0]);
         $data['etime'] = strtotime($theDate[1]);
-        if (isset($data['id'])) {
+
+        //判断商品是否有参加过拼团
+        $where[] = ['goods_id', '=', $data['goods_id']];
+        $where[] = ['status','=',self::STATUS_ON];
+
+        if (isset($data['id']) && $data['id']) {
+            $where[] = ['id','neq',$data['id']];
+        }
+        $re = $this->where($where)->find();
+        if ($re) {
+             $goodsModel = new Goods();
+             $goodsInfo  = $goodsModel->field('name')->get($re['goods_id']);
+             if ($goodsInfo) {
+                 $result['msg'] = "商品：" . $goodsInfo['name'] . " 参加过砍价了";
+                 return $result;
+             } else {
+                 return error_code(10000);
+             }
+        }
+
+        if (isset($data['id']) && $data['id']) {
             $this->allowField(true)->save($data, $data['id']);
         } else {
             $this->allowField(true)->save($data);
@@ -388,6 +395,7 @@ class Bargain extends Common
             //砍一刀金额计算
             $bargain_price = self::k($section_price, $info['total_times'], 900, $totalRecord + 1, 50);
         }
+
 
         if ($nums >= 1) {//暂时限定一个人只能参加1次 todo 以后考虑接入任务
             $result['msg'] = '您已超过该活动最大参加次数，看看别的活动吧~';

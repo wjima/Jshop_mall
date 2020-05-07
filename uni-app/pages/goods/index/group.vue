@@ -417,8 +417,8 @@ export default {
 		};
 	},
 	onLoad(e) {
-		this.goodsId = e.id;
-		this.groupId = e.group_id;
+		this.goodsId = e.id-0;
+		this.groupId = e.group_id-0;
 
 		if (this.goodsId && this.groupId) {
 			this.getGoodsInfo();

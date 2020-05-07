@@ -11,6 +11,14 @@ return [
                 'url' => '',
                 'sort' => 110
             ],
+            'menu_5' => [
+                'id' => 'menu_5',
+                'parent_menu_id' => 'menu_1',
+                'name' => '库存盘点',
+                'type' => 'a',
+                'url' => get_addon_url('StockControl://Index/stockIndex'),  //当前实时库存
+                'sort' => 110
+            ],
             'menu_2' => [
                 'id' => 'menu_2',
                 'parent_menu_id' => 'menu_1',
@@ -30,7 +38,7 @@ return [
             'menu_4' => [
                 'id' => 'menu_4',
                 'parent_menu_id' => 'menu_1',
-                'name' => '库存盘点',
+                'name' => '库存记录',
                 'type' => 'a',
                 'url' => get_addon_url('StockControl://Index/index'),
                 'sort' => 110

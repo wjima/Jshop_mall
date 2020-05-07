@@ -34,7 +34,10 @@
         <th>货号</th>
         <th>规格</th>
         {if !$erp_syn_on}
+        {if get_addons_status('StockControl')}
+        {else /}
         <th>库存</th>
+        {/if}
         {/if}
         <th><i class="required-color">*</i>销售价</th>
         <th>成本价</th>

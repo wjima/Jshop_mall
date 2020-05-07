@@ -18,7 +18,7 @@ class StockControl extends Addons
     public $info = [
         'name' => 'StockControl',	// 插件标识
         'title' => '库存管理',	// 插件名称
-        'description' => '库存管理、入库、出库、库存明细',	// 插件简介
+        'description' => '库存管理、入库、出库、库存明细、库存盘点',	// 插件简介
         'status' => 0,	// 状态
         'author' => 'wgg',
         'version' => '1.0'

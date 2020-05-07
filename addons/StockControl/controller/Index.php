@@ -62,6 +62,26 @@ class Index extends AddonController
         $this->view->engine->layout('../../../application/manage/view/layout');     //此处引入后台的样式，其实插件不仅仅局限于后台，他是一个单独的模块，可以做成独立的功能
 
     }
+    public function stockIndex(){
+        if($this->request->isAjax()){
+            $params = input();
+            $stockModel = new Stock();
+            return $stockModel->stockIndex($params);
+        }
+        return $this->fetch();
+    }
+    public function editStock(){
+        $res = [
+            'status'=>false,
+            'msg'=>'参数错误',
+            'data'=>0
+        ];
+        $product_id = input('id/d',0);
+        if(empty($product_id)) return $res;
+        $stock = input('stock/d',0);
+        $stockModel = new Stock();
+        return $stockModel->editStock($product_id,$stock);
+    }
 
     /**
      * 入库单列表
@@ -175,6 +195,8 @@ class Index extends AddonController
             $stockModel = new Stock();
             return $stockModel->getStockCheck($params);
         }
+        $bn = input('bn/s','');
+        $this->assign('bn',$bn);
         return $this->fetch();
     }
 

@@ -2,6 +2,13 @@
 <form class="layui-form seller-form" action="">
 	<div class="layui-form-item">
 		<div class="layui-inline">
+			<label class="layui-form-label">关联单号：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="relation_id" placeholder="请输入关联单号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
 			<label class="layui-form-label">商品编号：</label>
 			<!-- <div class="layui-input-inline seller-inline-3"> -->
 			<div class="layui-input-inline">
@@ -12,7 +19,7 @@
 			<label class="layui-form-label">货品编号：</label>
 			<!-- <div class="layui-input-inline seller-inline-3"> -->
 			<div class="layui-input-inline">
-				<input type="text" name="sn" placeholder="请输入货品编号" autocomplete="off" class="layui-input">
+				<input type="text" name="sn" placeholder="请输入货品编号" autocomplete="off" class="layui-input" value="{$bn}">
 			</div>
 		</div>
 		<div class="layui-inline">
@@ -29,15 +36,17 @@
 					<option value="">请选择</option>
 					<option value="1">入库</option>
 					<option value="2">出库</option>
-					<option value="3">发货</option>
-					<option value="4">退货</option>
+					<option value="3">库存盘点</option>
+					<option value="4">发货</option>
+					<option value="5">退货</option>
 				</select>
 			</div>
 		</div>
 
-		<div class="layui-btn-group" id="layui-btn-group-container">
+		<div class="layui-inline" id="layui--group-container">
 			<button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
 					class="iconfont icon-chaxun"></i>筛选</button>
+			<button type="reset" class="layui-btn layui-btn-sm">重置</button>
 		</div>
 	</div>
 	<!-- <div class="layui-form-item">
@@ -79,22 +88,24 @@
             url: "{:get_addon_url('StockControl://index/index')}?_ajax=1",
             id:'hbTable',
             cols: [[
-				{field:'type', width:200,title:'类型', align: 'center',templet:function(data){
+				{field:'type', width:100,title:'类型', align: 'center',templet:function(data){
 						var type = {
 							1:"入库",
 							2:"出库",
-							3:"发货",
-							4:"退货"
+							3:"库存盘点",
+							4:"发货",
+							5:"退货",
 						}
 						return type[data.type];
 					}},
 				{field:'relation_id', width:200,title:'关联单号', align: 'center'},
-				{field:'name', width:200, title:'商品名称', align: 'center'},
-				{field:'bn',title:'商品编号', align: 'center'},
-				{field:'sn',title:'货品编号', align: 'center'},
+				{field:'name', title:'商品名称', align: 'center'},
 				{field:'spes_desc', width:200,title:'货品规格', align: 'center'},
-				{field:'nums', width:200, title:'数量', align: 'center'},
-				{field:'ctime',title:'时间', align: 'center'},
+				{field:'bn', width:200,title:'商品编号', align: 'center'},
+				{field:'sn', width:200,title:'货品编号', align: 'center'},
+				{field:'nums', width:100, title:'数量', align: 'center'},
+				{field:'unit', width:80, title:'单位', align: 'center'},
+				{field:'ctime', width:200,title:'时间', align: 'center'},
 
             ]]
         });

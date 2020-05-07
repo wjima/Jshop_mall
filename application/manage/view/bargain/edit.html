@@ -115,7 +115,7 @@
         </div>
         <div class="layui-form-mid layui-word-aux">砍价最终价格</div>
     </div>
-    <div class="layui-form-item">
+    <!--<div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>最大价：</label>
 
         <div class="layui-input-inline seller-inline-2">
@@ -132,7 +132,7 @@
                    autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">砍价每次最小金额，必须大于0</div>
-    </div>
+    </div>-->
 
 
     <div class="layui-form-item">
@@ -154,12 +154,22 @@
         </div>
         <div class="layui-form-mid layui-word-aux">不能为0</div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权重：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="sort" value="{$info.sort|default='100'}" lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">越小越靠前</div>
+    </div>
+
 
 
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">活动规则：</label>
     </div>
-    <div class="layui-form-item">
+    <div class="layui-form-item" style="margin-bottom: 32px;">
         <div class="layui-input-block">
             <div id="bargain_desc" style="display: none;">{$info.desc|default=''}</div>
             <script id="container" name="desc" type="text/plain" class="layui-textarea"></script>
@@ -167,7 +177,7 @@
     </div>
     <div class="layui-form-item" id="fixed-block">
         <div>
-            {:jshopToken()}
+            {:jshopToken('bargain_edit')}
             <button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
             <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</a>
         </div>

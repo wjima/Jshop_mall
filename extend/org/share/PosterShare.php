@@ -3,6 +3,7 @@ namespace org\share;
 use app\common\model\Goods;
 use app\common\model\PintuanGoods;
 use app\common\model\PintuanRule;
+use app\common\model\Promotion;
 use app\common\model\PromotionResult;
 
 /**
@@ -11,7 +12,7 @@ use app\common\model\PromotionResult;
  */
 class PosterShare extends QrShare implements BaseShare
 {
-    const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Deng.ttf';
+    const FONT = ROOT_PATH . 'public' . DS . 'static' . DS . 'share' . DS . 'Alibaba-PuHuiTi-Regular.ttf';
     private $c = [
         'page_1' => [
             //首页
@@ -66,7 +67,7 @@ class PosterShare extends QrShare implements BaseShare
                 [
                     'string' => '商品名称-data2里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 470,
+                    'dst_y' => 440,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [0,0,0],
@@ -74,8 +75,8 @@ class PosterShare extends QrShare implements BaseShare
                 ],
                 [
                     'string' => '价格-data2里动态设置',
-                    'dst_x' => 10,
-                    'dst_y' => 530,
+                    'dst_x' => 7,
+                    'dst_y' => 510,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [255,0,0],
@@ -119,7 +120,7 @@ class PosterShare extends QrShare implements BaseShare
                 [
                     'string' => '商品名称-data3里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 470,
+                    'dst_y' => 440,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [0,0,0],
@@ -127,8 +128,8 @@ class PosterShare extends QrShare implements BaseShare
                 ],
                 [
                     'string' => '价格-data3里动态设置',
-                    'dst_x' => 10,
-                    'dst_y' => 530,
+                    'dst_x' => 7,
+                    'dst_y' => 510,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [255,0,0],
@@ -137,7 +138,7 @@ class PosterShare extends QrShare implements BaseShare
                 [
                     'string' => '原价-data9里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 555,
+                    'dst_y' => 535,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [180,180,180],
@@ -256,7 +257,7 @@ class PosterShare extends QrShare implements BaseShare
                 [
                     'string' => '商品名称-data9里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 470,
+                    'dst_y' => 440,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [0,0,0],
@@ -264,8 +265,8 @@ class PosterShare extends QrShare implements BaseShare
                 ],
                 [
                     'string' => '价格-data9里动态设置',
-                    'dst_x' => 10,
-                    'dst_y' => 530,
+                    'dst_x' => 7,
+                    'dst_y' => 510,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [255,0,0],
@@ -274,11 +275,11 @@ class PosterShare extends QrShare implements BaseShare
                 [
                     'string' => '原价-data9里动态设置',
                     'dst_x' => 10,
-                    'dst_y' => 555,
+                    'dst_y' => 535,
                     'width' => 260,
                     'max_line' => 2,
                     'color' => [180,180,180],
-                    'size' => 16,
+                    'size' => 14,
                 ],
                 [
                     'string' => '扫描或长按识别二维码',
@@ -531,7 +532,7 @@ class PosterShare extends QrShare implements BaseShare
             return false;
         }
         $this->c['page_3']['word'][0]['string'] = $info['name'];
-        $this->c['page_3']['word'][2]['string'] = "￥".$info['price'];
+        $this->c['page_3']['word'][2]['string'] = "原价：￥".$info['price'];
         $this->c['page_3']['image'][0]['src'] = _sImage($info['image_id']);
         $this->c['page_3']['image'][1]['src'] = $url;
 
@@ -648,26 +649,16 @@ class PosterShare extends QrShare implements BaseShare
         if (!isset($data['params']['goods_id']) && !isset($data['params']['group_id'])) {
             return false;
         }
-        $goodsModel = new Goods();
-        $info = $goodsModel->field('name,image_id,price')
-            ->where('id', $data['params']['goods_id'])
-            ->find();
-        if (!$info) {
-            unset($this->c['page_9']['image'][0]);
-            return false;
-        }
-        $this->c['page_9']['word'][0]['string'] = $info['name'];
-        $this->c['page_9']['word'][2]['string'] = "￥".$info['price']."";
-        $this->c['page_9']['image'][0]['src'] = _sImage($info['image_id']);
-        $this->c['page_9']['image'][1]['src'] = $url;
 
-        $promotionResultModel = new PromotionResult();
-        $params = $promotionResultModel->field('params')
-            ->where('promotion_id', '=', $data['params']['group_id'])
-            ->find();
-        $params = json_decode($params['params'], true);
-        $nowPrice = bcsub($info['price'], $params['money'], 2);
-        $this->c['page_9']['word'][1]['string'] = "￥".$nowPrice;
+        $promotion = new Promotion();
+        $goods     = $promotion->getGroupDetial($data['params']['goods_id'], '', 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $data['params']['group_id']);
+
+        $this->c['page_9']['word'][0]['string'] = $goods['data']['name'];
+        $this->c['page_9']['word'][2]['string'] = "原价：￥" . $goods['data']['product']['mktprice'] . "";
+        $this->c['page_9']['image'][0]['src']   = $goods['data']['image_url'];
+        $this->c['page_9']['image'][1]['src']   = $url;
+
+        $this->c['page_9']['word'][1]['string'] = "￥" . $goods['data']['product']['price'];
         return true;
     }
 

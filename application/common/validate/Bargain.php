@@ -15,10 +15,11 @@ class Bargain extends Validate
         'date'                 => 'require',
         'start_price'          => 'require',
         'end_price'            => 'require',
-        'bargain_max_price'    => 'require',
-        'bargain_min_price'    => 'require',
+       /* 'bargain_max_price'    => 'require',
+        'bargain_min_price'    => 'require',*/
         'significant_interval' => 'require',
         'total_times'          => 'require',
+        'total_times'          => 'gt:0',
     ];
 
 
@@ -34,5 +35,6 @@ class Bargain extends Validate
         'bargain_min_price.require'    => '请输入最小价',
         'significant_interval.require' => '请输入有效时长',
         'total_times.require'          => '请输入砍价次数',
+        'total_times.gt'               => '砍价总次数必须大于0',
     ];
 }

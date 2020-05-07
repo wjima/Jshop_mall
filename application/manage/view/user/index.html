@@ -262,6 +262,7 @@
             var point = $("#point").val();
             var memo = $("#memo").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
             if ($.trim(point) == '') {
                 layer.msg('积分变更不能为空');
                 return false;
@@ -271,7 +272,8 @@
                 'flag': 'true',
                 'point': point,
                 'memo': memo,
-                '__Jshop_Token__': __Jshop_Token__
+                '__Jshop_Token__': __Jshop_Token__,
+                validate_form:validate_form
             }, function (e) {
                 if (e.status) {
                     layer.msg(e.msg, {time: 1500}, function () {
@@ -381,6 +383,8 @@
         $(document).on('click', '.edit-money-save', function () {
             var user_id = $("#user_id").val();
             var money = $("#money").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
             if ($.trim(money) == '') {
                 layer.msg('余额变更不能为空');
                 return false;
@@ -388,7 +392,9 @@
             JsPost("{:url('manage/user/editMoney')}",{
                 'user_id': user_id,
                 'flag': 'true',
-                'money': money
+                'money': money,
+                __Jshop_Token__:__Jshop_Token__,
+                validate_form:validate_form
             },function(e){
                 if (e.status) {
                     layer.msg(e.msg, { time: 1500 }, function () {

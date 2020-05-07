@@ -2350,13 +2350,14 @@ class Order extends Common
 
 
         //团购秒杀id
-        if (isset($condition['id']) && $condition['id'] && ($order_type == self::ORDER_TYPE_GROUP && $order_type == self::ORDER_TYPE_SKILL)) {
+        if (isset($condition['id']) && $condition['id'] && ($order_type == self::ORDER_TYPE_GROUP || $order_type == self::ORDER_TYPE_SKILL)) {
             $where[] = ['pr.promotion_id', '=', $condition['id']];
         }
         //订单类型
         if ($order_type) {
             $where[] = ['o.order_type', '=', $order_type];
         }
+
         if ($order_type != self::ORDER_TYPE_GROUP && $order_type != self::ORDER_TYPE_SKILL) {
             $total_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')

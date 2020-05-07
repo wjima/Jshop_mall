@@ -99,6 +99,11 @@ class BillPayments extends Common
         if(isset($post['trade_no']) && $post['trade_no'] != ""){
             $where[] = ['trade_no', 'eq', $post['trade_no']];
         }
+        if(isset($post['source_id']) && $post['source_id'] != ""){
+            $billPaymentsRelModel = new BillPaymentsRel();
+            $payment = $billPaymentsRelModel->where([['source_id','=', $post['source_id']]])->cache(86400)->find();
+            $where[] = ['payment_id', 'eq', $payment['payment_id']];
+        }
         if(isset($post['status']) && $post['status'] != ""){
             $where[] = ['status', 'eq', $post['status']];
         }

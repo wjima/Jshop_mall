@@ -50,7 +50,9 @@
 				{field:'goods_name',  title:'商品名称', align: 'center'},
 				{field:'spes_desc', width:200,title:'货品规格', align: 'center'},
 				{field:'bn',width:200,title:'商品编号', align: 'center'},
-				{field:'sn',width:200,title:'货品编号',event: 'setSign', align: 'center'},
+				{field:'sn',width:200,title:'货品编号',event: 'setSign', align: 'center',templet:function(data){
+						return '<span class="link-hot option-show" data-id="' + data.id + '">'+data.sn+'</span>';
+					}},
 				{field:'stock', width:150, title:'库存',edit: 'number', align: 'center'},
 				{field:'freeze_stock', width:150, title:'冻结库存', align: 'center'},
 				{field:'unit', width:100, title:'单位', align: 'center'},

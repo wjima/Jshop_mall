@@ -21,6 +21,7 @@ use app\common\model\Operation;
 use app\common\model\Area;
 use app\common\model\Payments;
 use app\common\model\Logistics;
+use org\Wx;
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
@@ -1727,4 +1728,26 @@ function remove_xss($val)
     }
 
     return $val;
+}
+
+/**
+ * 检查文字
+ * @param $content
+ * @return mixed
+ */
+function msgSecCheck($content)
+{
+    $wx = new Wx();
+    return $wx->msgSecCheck($content);
+}
+
+/**
+ * 检查图片
+ * @param $img
+ * @return mixed
+ */
+function imgSecCheck($img)
+{
+    $wx = new Wx();
+    return $wx->imgSecCheck($img);
 }

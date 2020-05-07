@@ -1,7 +1,7 @@
 <template>
 	<view style="width: 100%;height: 300upx;background: #FFFFFF;position: absolute;left:0;bottom: 0;">
 		<view class="share-pop">
-			<view class="share-item" @click="copyAction()" v-show="!ifwx">
+			<view class="share-item" @click="copyAction()" >
 				<image src="/static/image/share-f.png" mode=""></image>
 				<view class="">复制链接</view>
 			</view>

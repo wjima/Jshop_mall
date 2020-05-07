@@ -195,8 +195,8 @@ class Index extends AddonController
             $stockModel = new Stock();
             return $stockModel->getStockCheck($params);
         }
-        $bn = input('bn/s','');
-        $this->assign('bn',$bn);
+        $sn = input('sn/s','');
+        $this->assign('sn',$sn);
         return $this->fetch();
     }
 

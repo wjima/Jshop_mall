@@ -283,7 +283,7 @@
 			//跳转到参团
 			gotoInvitationGroup(id, group_id, team_id) {
 				if (id && id != '' && group_id && group_id != '' && team_id && team_id != '') {
-					let url = '/pages/member/order/pintuan?id=' + id + '&group_id=' + group_id + '&team_id=' + team_id;
+                    let url = '/pages/goods/index/pintuan?id=' + id + '&team_id=' + team_id;
 					this.$common.redirectTo(url);
 				} else {
 					this.gotoIndex();

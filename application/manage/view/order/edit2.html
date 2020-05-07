@@ -95,7 +95,13 @@
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">配送费用：</label>
+					{if $order.status == 1 && $order.pay_status == 1}
+					<div class="layui-input-inline seller-inline-2">
+						<input type="text" name="cost_freight" value="{$order.cost_freight}" lay-verify="required" autocomplete="off" class="layui-input">
+					</div>
+					{else /}
 					<div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
+					{/if}
 					<label class="layui-form-label">收货状态：</label>
 					<div class="layui-form-mid seller-inline-2">{:config('params.order.confirm')[$order.confirm]}</div>
 				</div>

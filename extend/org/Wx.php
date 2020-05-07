@@ -436,4 +436,60 @@ class Wx
         }
     }
 
+
+    /**
+     * 文字内容安全检测
+     * @param $content
+     * @return bool
+     */
+    public function msgSecCheck($content)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+
+        $curl = new Curl();
+        $url = 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token='.$access_token;
+        $data = [
+            'content' => $content
+        ];
+        $data = json_encode($data);
+        $res = $curl->post($url, $data);
+        $flag = json_decode($res, true);
+        if ($flag['errcode'] == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 图片内容安全检测
+     * @param $img
+     * @return bool
+     */
+    public function imgSecCheck($img)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+        $curl = new Curl();
+
+        $file = file_get_contents($img);
+        $filePath = $_SERVER['DOCUMENT_ROOT'].'/uploads/'.time().rand().'.jpg';
+        file_put_contents($filePath, $file);
+        $obj = new \CURLFile($filePath);
+        $obj->setMimeType("image/jpeg");
+        $obj->setPostFilename(basename($filePath));
+        $filedata['media'] = $obj;
+
+        $url = "https://api.weixin.qq.com/wxa/img_sec_check?access_token=".$access_token;
+        $res = $curl->postFile($url, $filedata);
+        $flag = json_decode($res,true);
+        if ($flag['errcode'] == 0) {
+            return true;
+        }
+        return false;
+    }
 }

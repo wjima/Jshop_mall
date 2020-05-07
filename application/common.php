@@ -21,6 +21,7 @@ use app\common\model\Operation;
 use app\common\model\Area;
 use app\common\model\Payments;
 use app\common\model\Logistics;
+use org\Wx;
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
@@ -1204,7 +1205,7 @@ function isEmail($email)
  */
 function convertString($value = '')
 {
-    return $value . "\t";
+    return  '="'.$value.'"';
 }
 
 
@@ -1214,7 +1215,7 @@ function convertString($value = '')
 function mobile_string($user_id = 0)
 {
     $mobile = get_user_info($user_id);
-    return $mobile . "\t";
+    return '="'.$mobile.'"';
 }
 
 
@@ -1224,7 +1225,7 @@ function mobile_string($user_id = 0)
 function nickname_string($user_id = 0)
 {
     $nickname = get_user_info($user_id, 'nickname');
-    return $nickname . "\t";
+    return '="'.$nickname.'"';
 }
 
 
@@ -1294,6 +1295,7 @@ function validateJshopToken()
 {
     $_token      = input('__Jshop_Token__/s', '');
     $form        = input('validate_form/s', '');
+
     $cache_token = \think\facade\Cache::get($form . '_token');
     if (!$_token || $_token != $cache_token) {
         if (\think\facade\Request::isAjax()) {
@@ -1305,6 +1307,7 @@ function validateJshopToken()
                 'status' => false,
                 'token'  => $new_token
             ];
+            \think\facade\Cache::rm($form . '_token');//删除缓存
             header('Content-type:text/json');
             echo json_encode($return);
             exit;
@@ -1312,7 +1315,6 @@ function validateJshopToken()
             die("CSRF is die");
         }
     }
-    \think\facade\Cache::rm($form . '_token');//删除缓存
 }
 
 /**
@@ -1726,4 +1728,26 @@ function remove_xss($val)
     }
 
     return $val;
+}
+
+/**
+ * 检查文字
+ * @param $content
+ * @return mixed
+ */
+function msgSecCheck($content)
+{
+    $wx = new Wx();
+    return $wx->msgSecCheck($content);
+}
+
+/**
+ * 检查图片
+ * @param $img
+ * @return mixed
+ */
+function imgSecCheck($img)
+{
+    $wx = new Wx();
+    return $wx->imgSecCheck($img);
 }

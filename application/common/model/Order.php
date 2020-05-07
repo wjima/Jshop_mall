@@ -1053,6 +1053,8 @@ class Order extends Common
             $udata['oreer_amount'] = $data['order_amount'];
         }
         $udata['source'] = $data['source'];
+        $udata['cost_freight'] = $data['cost_freight'];
+
         if($data['delivery_type'] == 1){
             //快递
             $udata['ship_name'] = $data['ship_name'];

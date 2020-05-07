@@ -1294,6 +1294,7 @@ function validateJshopToken()
 {
     $_token      = input('__Jshop_Token__/s', '');
     $form        = input('validate_form/s', '');
+
     $cache_token = \think\facade\Cache::get($form . '_token');
     if (!$_token || $_token != $cache_token) {
         if (\think\facade\Request::isAjax()) {
@@ -1305,6 +1306,7 @@ function validateJshopToken()
                 'status' => false,
                 'token'  => $new_token
             ];
+            \think\facade\Cache::rm($form . '_token');//删除缓存
             header('Content-type:text/json');
             echo json_encode($return);
             exit;
@@ -1312,7 +1314,6 @@ function validateJshopToken()
             die("CSRF is die");
         }
     }
-    \think\facade\Cache::rm($form . '_token');//删除缓存
 }
 
 /**

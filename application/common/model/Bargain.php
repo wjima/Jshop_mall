@@ -14,13 +14,15 @@ class Bargain extends Common
     protected $updateTime = 'utime';
 
     protected $rule = [
-        'name'              => 'require',
-        'goods_id'          => 'require',
-        'start_price'       => 'require',
-        'end_price'         => 'require',
-        'bargain_max_price' => 'require',
-        'bargain_min_price' => 'require',
-        'sort'              => 'integer|gt:0',
+        'name'        => 'require',
+        'goods_id'    => 'require',
+        'start_price' => 'require',
+        'end_price'   => 'require',
+        /*'bargain_max_price' => 'require',
+        'bargain_min_price' => 'require',*/
+        'sort'        => 'integer|gt:0',
+        'total_times' => 'require',
+        'total_times' => 'gt:0',
 
     ];
 
@@ -33,7 +35,8 @@ class Bargain extends Common
         'end_price.require'         => '砍价成交金额必填',
         'bargain_max_price.require' => '砍价每次最大金额必填',
         'bargain_min_price.require' => '砍价每次最小金额必填',
-
+        'total_times.require'       => '请输入砍价次数',
+        'total_times.gt'            => '砍价总次数必须大于0',
     ];
 
     const STATUS_ON = 1; //启用
@@ -48,7 +51,6 @@ class Bargain extends Common
 
     /**
      * 返回layui的table所需要的格式
-     * @author sin
      * @param $post
      * @return mixed
      */
@@ -61,22 +63,42 @@ class Bargain extends Common
         }
         if ($api) {
 
-            $tableWhere            = $this->tableWhere($post);
-            $tableWhere['where'][] = ['stime', '<=', time()];
-            $tableWhere['where'][] = ['etime', '>', time()];
 
-            $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])
+            $tableWhere            = $this->tableWhere($post);
+            $tableWhere['where'][] = ['b.stime', '<=', time()];
+            $tableWhere['where'][] = ['b.etime', '>', time()];
+
+            //增加上下架过滤
+            $goodsModel            = new Goods();
+            $tableWhere['where'][] = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
+
+            $list = $this->field('b.*,g.name as goods_name,g.image_id as goods_image_id')
+                ->alias('b')
+                ->join("goods g", "g.id = b.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
                 ->page($post['page'], $limit)
                 ->select();
 
-            $count = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->count();
+            $count = $this->field('b.*,g.name as goods_name,g.image_id as goods_image_id')
+                ->alias('b')
+                ->join("goods g", "g.id = b.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
+                ->count();
             $data  = $this->tableFormat($list, $api);
 
         } else {
             $tableWhere = $this->tableWhere($post);
-            $list       = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
-            $data       = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
-            $count      = $list->total();
+
+            $list  = $this->field('b.*,g.name as goods_name,g.image_id as goods_image_id')
+                ->alias('b')
+                ->join("goods g", "g.id = b.goods_id")
+                ->where($tableWhere['where'])
+                ->order($tableWhere['order'])
+                ->paginate($limit);
+            $data  = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+            $count = $list->total();
         }
 
 
@@ -90,25 +112,23 @@ class Bargain extends Common
 
     protected function tableWhere($post)
     {
-
         $where = [];
         if (isset($post['status']) && $post['status'] != "") {
-            $where[] = ['status', 'eq', $post['status']];
+            $where[] = ['b.status', 'eq', $post['status']];
         }
         if (isset($post['name']) && $post['name'] != '') {
-            $where[] = ['name', 'like', '%' . $post['name'] . '%'];
+            $where[] = ['b.name', 'like', '%' . $post['name'] . '%'];
         }
-
         if (input('?param.date')) {
             $theDate = explode(' 到 ', input('param.date'));
             if (count($theDate) == 2) {
-                $where[] = ['stime', '<', strtotime($theDate[1])];
-                $where[] = ['etime', '>', strtotime($theDate[0])];
+                $where[] = ['b.stime', '<', strtotime($theDate[1])];
+                $where[] = ['b.etime', '>', strtotime($theDate[0])];
             }
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort Asc'];
+        $result['order'] = ['b.sort' => 'asc', 'b.id' => 'desc'];
         return $result;
     }
 
@@ -121,11 +141,10 @@ class Bargain extends Common
     protected function tableFormat($list)
     {
         foreach ($list as $k => $v) {
-            $list[$k]['ctime']      = getTime($v['ctime']);
-            $list[$k]['stime']      = getTime($v['stime']);
-            $list[$k]['etime']      = getTime($v['etime']);
-            $list[$k]['goods_name'] = get_goods_info($v['goods_id']);
-            $list[$k]['image']      = get_goods_info($v['goods_id'], 'image_id');
+            $list[$k]['ctime'] = getTime($v['ctime']);
+            $list[$k]['stime'] = getTime($v['stime']);
+            $list[$k]['etime'] = getTime($v['etime']);
+            $list[$k]['image'] = _sImage($v['goods_image_id']);
         }
         return $list;
     }
@@ -147,28 +166,32 @@ class Bargain extends Common
             return $result;
         }
         $theDate = explode(' 到 ', $data['date']);
-
-        //判断商品是否有参加过拼团 todo
-        $where[] = ['goods_id', '=', $data['goods_id']];
-
-        $re = $this->where($where)->find();
-        if ($re) {
-            /* $goodsModel = new Goods();
-             $goodsInfo  = $goodsModel->get($re['goods_id']);
-             if ($goodsInfo) {
-                 $result['msg'] = "商品：" . $goodsInfo['name'] . " 参加过砍价了";
-                 return $result;
-             } else {
-                 return error_code(10000);
-             }*/
-        }
-
         if (count($theDate) != 2) {
             return error_code(15002);
         }
         $data['stime'] = strtotime($theDate[0]);
         $data['etime'] = strtotime($theDate[1]);
-        if (isset($data['id'])) {
+
+        //判断商品是否有参加过拼团
+        $where[] = ['goods_id', '=', $data['goods_id']];
+        $where[] = ['status', '=', self::STATUS_ON];
+
+        if (isset($data['id']) && $data['id']) {
+            $where[] = ['id', 'neq', $data['id']];
+        }
+        $re = $this->where($where)->find();
+        if ($re) {
+            $goodsModel = new Goods();
+            $goodsInfo  = $goodsModel->field('name')->get($re['goods_id']);
+            if ($goodsInfo) {
+                $result['msg'] = "商品：" . $goodsInfo['name'] . " 参加过砍价了";
+                return $result;
+            } else {
+                return error_code(10000);
+            }
+        }
+
+        if (isset($data['id']) && $data['id']) {
             $this->allowField(true)->save($data, $data['id']);
         } else {
             $this->allowField(true)->save($data);
@@ -199,7 +222,7 @@ class Bargain extends Common
             $result['msg'] = '参数丢失';
             return $result;
         }
-        $info       = $this->field('id,name,intro,desc,sales_num,goods_id,max_goods_nums,sales_num,start_price,end_price,etime')->get($bargain_id);
+        $info       = $this->field('id,name,intro,desc,sales_num,goods_id,max_goods_nums,start_price,end_price,etime')->get($bargain_id);
         $goodsModel = new Goods();
 
         $goods = $goodsModel->getGoodsDetial($info['goods_id']);
@@ -368,7 +391,7 @@ class Bargain extends Common
 
         //已砍价次数
         $totalRecord = $logModel->where([['record_id', '=', $record_id]])->count();
-        if ($totalRecord >= $info['total_times'] && $info['total_times'] ) {
+        if ($totalRecord >= $info['total_times'] && $info['total_times']) {
             $result['msg'] = '此商品只能砍价' . $info['total_times'] . '次';
             return $result;
         }
@@ -377,7 +400,18 @@ class Bargain extends Common
             $result['msg'] = '此商品只能已砍到底价了';
             return $result;
         }
-        $bargain_price = $this->calculationMoney($section_price, $info['bargain_max_price'], $info['bargain_min_price'], $info['total_times'] - $totalRecord);//当前砍价金额
+        //当前次数够了,直接成功吧
+        if ($totalRecord + 1 == $info['total_times']) {
+            $lastRecord = $logModel->where([['record_id', '=', $record_id]])->order('id', 'desc')->find();
+            if (!$lastRecord) {
+                $lastRecord['goods_price'] = $info['start_price'];
+            }
+            $bargain_price = abs($lastRecord['goods_price'] - $info['end_price']);
+
+        } else {
+            //砍一刀金额计算
+            $bargain_price = self::k($section_price, $info['total_times'], 900, $totalRecord + 1, 50);
+        }
 
 
         if ($nums >= 1) {//暂时限定一个人只能参加1次 todo 以后考虑接入任务
@@ -408,7 +442,7 @@ class Bargain extends Common
         $newLog['bargain_price'] = $bargain_price;
 
         if ($logModel->save($newLog)) {
-            $this->where([['id', '=', $id]])->setInc('sales_num', 1);//销量加1
+
             if ($record['price'] - $bargain_price < $record['end_price']) {//避免出现最后金额低于最低金额情况
                 $bargain_price = $record['end_price'] - ($record['price'] - $bargain_price);
             }
@@ -432,41 +466,11 @@ class Bargain extends Common
 
     /**
      * 计算砍价金额
-     * @param $section_price
-     * @param int $max_price
-     * @param int $min_price
-     * @param int $max_times
-     * @param int $number
-     * @return bool|float
-     */
-    private function calculationMoney($section_price, $max_price = 0, $min_price = 0, $max_times = 0)
-    {
-        if($max_times<=0){
-            $max_times = ceil($section_price/$min_price);
-        }
-        $tmpTotal = $section_price * 100;
-        $tmpMin   = $min_price * 100;
-        $tmpMax   = $max_price * 100;
-        // 计算n-1次的随机金额，如果不减1，则会出现多减一次随机金额的问题，应该是最后的金额直接赋值
-        for ($i = 0; $i < $max_times - 1; $i++) {
-            $arr[$i]  = mt_rand($tmpMin, $tmpMax);
-            $tmpTotal = $tmpTotal - $arr[$i];
-        }
-        $arr[$max_times - 1] = $tmpTotal;
-        $price = $arr[mt_rand(0, $max_times)];
-        if($price == 0){
-            $price = 0.01;
-        }
-        return $price / 100;
-    }
-
-    /**
-     * 计算砍价金额
-     * @param $money //金额
-     * @param $nums //预计砍n刀
-     * @param $n //离散值，0~1000,越小越平均
-     * @param $k //第n刀
-     * @param $rand //随机值0~100的整数
+     * @param $money 金额
+     * @param $nums 预计砍n刀
+     * @param $n 离散值，0~1000,越小越平均
+     * @param $k 第n刀
+     * @param $rand 随机值0~100的整数
      * @return bool|float
      */
     static function k($money, $nums, $n, $k, $rand = 0)
@@ -496,7 +500,7 @@ class Bargain extends Common
         $re = $re * 100;
         $re = $re + mt_rand(0, $re * 2 * $rand) - $re * $rand;
         $re = $re / 100;
-        return $re;
+        return sprintf("%.2f", $re);
     }
 
     static function gs($x, $k = 1)
@@ -557,6 +561,7 @@ class Bargain extends Common
         if ($binfo['etime'] < time()) {
             return error_code(17602);
         }
+        $this->where([['id', '=', $binfo['id']]])->setInc('sales_num', 1);//销量加1
         $result['status'] = true;
         return $result;
     }

@@ -406,9 +406,13 @@ class Promotion extends Manage
         $this->view->engine->layout(false);
         $resultModel = new PromotionResult();
         $type        = input('type', 'promotion');
+
         if ($type && $type == 'group') {//团购时不要订单促销
-            unset($resultModel->code['ORDER_REDUCE']);
-            unset($resultModel->code['ORDER_DISCOUNT']);
+            foreach ($resultModel->code as $key => $value) {
+                if ($key != 'GOODS_REDUCE' && $key != 'GOODS_DISCOUNT' && $key != 'GOODS_ONE_PRICE') {
+                    unset($resultModel->code[$key]);
+                }
+            }
         }
         $this->assign('code', $resultModel->code);
         return [
@@ -603,8 +607,16 @@ class Promotion extends Manage
             $groupGoodsModel = new GroupGoods();
             //保存或更新促销条件商品
 
-            $conditionModel->where(['promotion_id' => $id])->delete();
+
             $goods_id   = input('post.goods_id');
+            if(!$goods_id){
+                $result = [
+                    'status' => false,
+                    'data'   => 0,
+                    'msg'    => '请选择商品'
+                ];
+                return $result;
+            }
             $goods_ids  = explode(',', $goods_id);
             $groupGoods = [];
 
@@ -629,6 +641,8 @@ class Promotion extends Manage
                 'code'         => 'GOODS_IDS',
                 'params'       => ['goods_id' => $goods_id, 'nums' => '1'],
             ];
+            $conditionModel->where(['promotion_id' => $id])->delete();
+
             $conditionRes  = $conditionModel->addData($conditionData);
             if (!$conditionRes['status']) {
                 return $conditionRes;

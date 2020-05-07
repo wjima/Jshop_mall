@@ -237,8 +237,14 @@ class BargainRecord extends Common
     {
         $count        = $this->where([['bargain_id', '=', $bargain_id], ['status', 'not in', [4, 5]]])->count();
         $bargainModel = new Bargain();
-        $info         = $bargainModel->field('max_goods_nums,status')->get($bargain_id);
-        if ($info && $info['status'] == $bargainModel::STATUS_ON && $info['max_goods_nums'] > $count) {
+        $info         = $bargainModel->field('max_goods_nums,status,goods_id')->get($bargain_id);
+        if ($info['max_goods_nums'] == 0) {
+            $productModel           = new Products();
+            $product                = $productModel->where([['goods_id', '=', $info['goods_id']], ['is_defalut', '=', $productModel::DEFALUT_YES]])->cache(86400)->find();
+            $info['max_goods_nums'] = $product['stock'] - $product['freeze_stock'];
+            $info['max_goods_nums'] = ($info['max_goods_nums'] > 0) ? $info['max_goods_nums'] : 0;
+        }
+        if ($info && $info['status'] == $bargainModel::STATUS_ON && $info['max_goods_nums'] && $info['max_goods_nums'] > $count) {
             return true;
         } else {
             return false;

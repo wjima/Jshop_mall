@@ -1,1 +1,1 @@
-INSERT INTO jshop_hooks` (`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (NULL, 'deshare', '用户扫码后的事件', '1', NULL, 1586337762, 1586337762);
+INSERT INTO jshop_hooks ( `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES ( 'deshare', '用户扫码后的事件', '1', NULL, 1586337762, 1586337762);

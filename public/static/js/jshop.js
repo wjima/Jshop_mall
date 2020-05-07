@@ -163,6 +163,7 @@ function submitJsAjax(form, success, cache, alone) {
 function JsPost(url, data, success, cache, alone) {
 	if (!data.hasOwnProperty('__Jshop_Token__') && $(".Jshop_Token").length > 0) {
 		data.__Jshop_Token__ = $(".Jshop_Token:last").val();
+		data.validate_form = $("input[name='validate_form']").val();
 	}
 	JsAjax(url, 'post', 'json', data, success, false, cache, alone, false);
 }

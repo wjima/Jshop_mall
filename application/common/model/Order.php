@@ -446,7 +446,7 @@ class Order extends Common
             }
             if ($pay_status != self::PAY_STATUS_NO) {
                 if (($ship_status == self::SHIP_STATUS_NO || $ship_status == self::SHIP_STATUS_PARTIAL_YES) && $from == 'seller') {
-                    $html .= '<a class="layui-btn layui-btn-xs edit-order" data-id="' . $id . '">编辑</a>';
+                    $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '">编辑</a>';
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="' . $id . '">发货</a>';
                 }
                 $html .= '<a class="layui-btn layui-btn-xs complete-order" data-id="' . $id . '">完成</a>';
@@ -457,7 +457,7 @@ class Order extends Common
             }
             if ($pay_status == self::PAY_STATUS_NO) {
                 if ($from == 'seller') {
-                    $html .= '<a class="layui-btn layui-btn-xs edit-order" data-id="' . $id . '" data-type="1">编辑</a>';
+                    $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '" data-type="1">编辑</a>';
                 }
                 $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="' . $id . '">取消</a>';
             }
@@ -1044,36 +1044,113 @@ class Order extends Common
      */
     public function edit($data)
     {
-        if ($data['edit_type'] == 1) {
-            $update = [
-                'ship_area_id' => $data['ship_area_id'],
-                'ship_address' => $data['ship_address'],
-                'ship_name' => $data['ship_name'],
-                'ship_mobile' => $data['ship_mobile']
-            ];
-            if ($data['order_amount']) {
-                $update['order_amount'] = $data['order_amount'];
+        $result = [
+            'status' => false,
+            'data' => "",
+            'msg' => ""
+        ];
+        if(isset($data['order_amount'])){
+            $udata['oreer_amount'] = $data['order_amount'];
+        }
+        $udata['source'] = $data['source'];
+        if($data['delivery_type'] == 1){
+            //快递
+            $udata['ship_name'] = $data['ship_name'];
+            $udata['ship_mobile'] = $data['ship_mobile'];
+            $udata['ship_address'] = $data['ship_address'];
+            $udata['ship_area_id'] = $data['ship_area_id'];
+            $udata['store_id'] = 0;
+
+        }else{
+            //门店自提
+            $storeModel = new Store();
+            $info = $storeModel->where('id',$data['store_id'])->find();
+            if(!$info){
+                return error_code(10000);
             }
-            if (isset($data['cost_freight']) && $data['cost_freight']!='') {
-                $update['cost_freight'] = $data['cost_freight'];
-            }
-        } elseif ($data['edit_type'] == 2) {
-            $update['store_id'] = $data['store_id'];
-            $update['ship_name'] = $data['ship_name'];
-            $update['ship_mobile'] = $data['ship_mobile'];
+            $udata['ship_name'] = $data['tship_name'];
+            $udata['ship_mobile'] = $data['tship_mobile'];
+            $udata['ship_address'] = $info['address'];
+            $udata['ship_area_id'] = $info['area_id'];
+            $udata['store_id'] = $data['store_id'];
+        }
+        $udata['mark'] = $data['mark'];
+
+        //发票信息
+        if($data['tax_type'] == 2){
+            $data['tax_code'] = "";
+        }
+        if($data['tax_type'] == 1){
+            $data['tax_title'] = "";
+        }
+        $udata['tax_type'] = $data['tax_type'];
+        $udata['tax_title'] = $data['tax_title'];
+        $udata['tax_code'] = $data['tax_code'];
+
+        $re = $this->save($udata,['order_id'=>$data['order_id']]);
+
+        //处理订单明细
+        if(isset($data['items'])){
+            $re_items = $this->editItems($data['order_id'],$data['items']);
+        }else{
+            $re_items = true;
         }
 
-        $res = $this->where('order_id', 'eq', $data['order_id'])
-            ->update($update);
 
         //订单记录
         $orderLog = new OrderLog();
-        $w[] = ['order_id', 'eq', $data['order_id']];
-        $info = $this->where($w)
-            ->find();
-        $orderLog->addLog($info['order_id'], $info['user_id'], $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $update);
+        $orderLog->addLog($data['order_id'],0, $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $udata);
 
-        return $res;
+        $result['status'] = true;
+        if($re_items){
+            $result['msg'] = "操作成功";
+        }else{
+            $result['msg'] = "提交成功，但订单明细数量编辑失败";
+        }
+
+        return $result;
+    }
+
+    //处理订单明细，处理库存
+    private function editItems($order_id,$items){
+        //判断订单是否是未付款状态，极端情况，可能订单已经付款了,所以这个订单一定是正常，未支付，未发货的订单
+        $where[] = ['order_id', '=', $order_id];
+        $where[] = ['pay_status', '=', self::PAY_STATUS_NO];
+        $where[] = ['status', '=', self::ORDER_STATUS_NORMAL];
+        $where[] = ['ship_status', '=', self::SHIP_STATUS_NO];
+        $orderInfo = $this->where($where)->find();
+        if(!$orderInfo){
+            return false;
+        }
+
+        $orderItemsModel = new OrderItems();
+        $goodsModel = new Goods();
+        foreach($items as $k => $v){
+            $oiInfo = $orderItemsModel->where('id',$k)->where('order_id',$order_id)->find();
+            if(!$oiInfo){
+                continue;
+            }
+            $v = intval($v);
+            $oldNums = $oiInfo['nums'];
+            $changeNums = $v - $oldNums;
+
+            if($v == 0){
+                $orderItemsModel->where('id',$k)->where('order_id',$order_id)->delete();
+            }else{
+                $orderItemsModel->save(
+                    [
+                        'nums' => $v
+                    ],[
+                    'id' => $k,
+                    'order_id' => $order_id
+                ]);
+            }
+            //加或减冻结库存
+            $goodsModel->changeStock($oiInfo['product_id'], 'default', $changeNums);
+
+        }
+
+        return true;
     }
 
 
@@ -2273,13 +2350,14 @@ class Order extends Common
 
 
         //团购秒杀id
-        if (isset($condition['id']) && $condition['id'] && ($order_type == self::ORDER_TYPE_GROUP && $order_type == self::ORDER_TYPE_SKILL)) {
+        if (isset($condition['id']) && $condition['id'] && ($order_type == self::ORDER_TYPE_GROUP || $order_type == self::ORDER_TYPE_SKILL)) {
             $where[] = ['pr.promotion_id', '=', $condition['id']];
         }
         //订单类型
         if ($order_type) {
             $where[] = ['o.order_type', '=', $order_type];
         }
+
         if ($order_type != self::ORDER_TYPE_GROUP && $order_type != self::ORDER_TYPE_SKILL) {
             $total_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')

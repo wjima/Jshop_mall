@@ -90,7 +90,7 @@ class Cart extends Common
                     return $re;
                 }
                 //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                $delwhere[] = ['user_id', 'eq', $user_id];
+                $delWhere[] = ['user_id', 'eq', $user_id];
                 $delWhere[] = ['type', 'eq', 2];
                 $this->where($delWhere)->delete();
                 unset($cat_info);
@@ -99,7 +99,7 @@ class Cart extends Common
                 //判断商品是否做团购秒杀
                 if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_GROUP)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                    $delwhere[] = ['user_id', 'eq', $user_id];
+                    $delWhere[] = ['user_id', 'eq', $user_id];
                     $delWhere[] = ['type', 'eq', self::TYPE_GROUP];
                     $delWhere[] = ['product_id', 'eq', $product_id];
                     $this->where($delWhere)->delete();
@@ -126,7 +126,7 @@ class Cart extends Common
                 //判断商品是否做团购秒杀
                 if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_SKILL)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                    $delwhere[] = ['user_id', 'eq', $user_id];
+                    $delWhere[] = ['user_id', 'eq', $user_id];
                     $delWhere[] = ['type', 'eq', self::TYPE_SKILL];
                     $delWhere[] = ['product_id', 'eq', $product_id];
                     $this->where($delWhere)->delete();
@@ -158,7 +158,7 @@ class Cart extends Common
                     return $re;
                 }
                 //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                $delwhere[] = ['user_id', 'eq', $user_id];
+                $delWhere[] = ['user_id', 'eq', $user_id];
                 $delWhere[] = ['type', 'eq', self::TYPE_BARGAIN];
                 $this->where($delWhere)->delete();
                 unset($cat_info);

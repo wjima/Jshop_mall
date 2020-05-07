@@ -276,37 +276,10 @@ class Stock extends Common
         return [
             'code' => 0,
             'msg' => '',
-            'data' => $data->isEmpty()?[]:$this->formatUnionData($data->toArray()),
+            'data' => $data?$this->formatUnionData($data):[],
             'count' => $count
         ];
     }
-    private function unionTable(){
-        $sql = <<<heredoc
-                    (select product_id,goods_id,nums,ctime,stock_id as relation_id,s.type type
-                    from jshop_stock_log	sl
-                    join jshop_stock s
-                    on s.id = sl.stock_id
-                    union
-                    select product_id,goods_id,nums,d.ctime ctime,d.delivery_id as relation_id,4 type
-                    from jshop_bill_delivery_items	di
-                    join jshop_bill_delivery d
-                    on d.delivery_id = di.delivery_id
-                    union
-                    select product_id,goods_id,nums,r.ctime ctime,r.reship_id as relation_id,5 type
-                    from jshop_bill_reship_items	ri
-                    join jshop_bill_reship r
-                    on r.reship_id = ri.reship_id) u
-heredoc;
-
-
-        return Db::table($sql)
-            ->leftJoin(app(Goods::class)->getTable().' g','u.goods_id=g.id')
-            ->leftJoin(app(Products::class)->getTable().' p','u.product_id=p.id')
-            ->whereNull('g.isdel')
-            ->whereNull('p.isdel')
-            ->order('u.ctime','desc');
-    }
-
     /**
      * @param $query
      * @param $params
@@ -349,6 +322,33 @@ heredoc;
 
         if(empty($params)) return $query;
         return $query->where($where);
+    }
+
+    private function unionTable(){
+        $sql = <<<heredoc
+                    (select product_id,goods_id,nums,ctime,stock_id as relation_id,s.type type
+                    from jshop_stock_log	sl
+                    join jshop_stock s
+                    on s.id = sl.stock_id
+                    union
+                    select product_id,goods_id,nums,d.ctime ctime,d.delivery_id as relation_id,4 type
+                    from jshop_bill_delivery_items	di
+                    join jshop_bill_delivery d
+                    on d.delivery_id = di.delivery_id
+                    union
+                    select product_id,goods_id,nums,r.ctime ctime,r.reship_id as relation_id,5 type
+                    from jshop_bill_reship_items	ri
+                    join jshop_bill_reship r
+                    on r.reship_id = ri.reship_id) u
+heredoc;
+
+
+        return Db::table($sql)
+            ->leftJoin(app(Goods::class)->getTable().' g','u.goods_id=g.id')
+            ->leftJoin(app(Products::class)->getTable().' p','u.product_id=p.id')
+            ->whereNull('g.isdel')
+            ->whereNull('p.isdel')
+            ->order('u.ctime','desc');
     }
 
     private function formatUnionData($list){

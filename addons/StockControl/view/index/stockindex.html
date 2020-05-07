@@ -92,7 +92,7 @@
 		layui.table.on('tool(test)', function(obj){
 			var data = obj.data;
 			if(obj.event === 'setSign'){
-				location.href = "{:get_addon_url('StockControl://index/index')}?bn="+data.bn;
+				location.href = "{:get_addon_url('StockControl://index/index')}?bn="+data.sn;
 				return false;
 			}
 		});

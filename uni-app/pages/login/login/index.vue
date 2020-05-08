@@ -255,7 +255,7 @@ export default {
 				}
 			});
 		},
-		// 公众号第三方登录账号绑定
+		// 微信小程序第三方登录账号绑定
 		toBind() {
 			if (this.mobile == '') {
 				this.$common.errorToShow('请输入手机号码');

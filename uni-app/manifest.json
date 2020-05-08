@@ -66,19 +66,19 @@
     "quickapp" : {},
     /* 快应用特有相关 */
     "mp-weixin" : {
-        "appid" : "wx5161257e62c37da7",
+        "appid" : "wxaec38ca2e5cdc46a",
         "setting" : {
             "urlCheck" : true,
             "postcss" : true,
             "minified" : true,
             "es6" : true
         },
-		 // "plugins": {
-		 //        "live-player-plugin": {
-		 //            "version": "1.0.7",
-		 //            "provider": "wx2b03c6e691cd7370"
-		 //        }
-		 //    },
+        // "plugins": {
+        //        "live-player-plugin": {
+        //            "version": "1.0.7",
+        //            "provider": "wx2b03c6e691cd7370"
+        //        }
+        //    },
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "用于获取您附近的门店列表"

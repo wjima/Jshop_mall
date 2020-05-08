@@ -154,7 +154,7 @@ class Addons extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '获取配置信息失败',
+            'msg'    => '获取配置信息',
             'data'   => '',
             'dialog' => [],
         ];
@@ -176,7 +176,7 @@ class Addons extends Manage
         }
         $addonObject      = new $class_name();
         $result['status'] = true;
-        $result['data']   = $addonObject->config($setting);
+        $result['data']   = $addonObject->config($setting['setting']);
         $result['dialog'] = $addonObject->getDialog();
         return $result;
     }
@@ -192,11 +192,11 @@ class Addons extends Manage
             'msg'    => '配置信息保存失败',
             'data'   => '',
         ];
-        $data        = input('post.');
+        $data        = input('post.');//配置项
         $addonsModel = new addonsModel();
-        $setting     = $addonsModel->getSetting($data['name']);
-        if (isset($setting['menu']) && $setting['menu']) {
-            $data['setting']['menu'] = $setting['menu'];
+        $default_setting     = $addonsModel->getSetting($data['name']);
+        if($default_setting){
+            $data        = array_merge($default_setting,$data);
         }
         if ($addonsModel->doSetting($data)) {
             $result['status'] = true;

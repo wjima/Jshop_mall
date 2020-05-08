@@ -678,7 +678,7 @@ class Goods extends Manage
         $this->assign('open_spec', '0');
         $this->assign('data', $goods['data']);
         $this->assign('products', $goods['data']['products']);
-        if (count($goods['data']['products'])>1 && $goods['data']['new_spec']) {
+        if ($goods['data']['spes_desc'] || $goods['data']['new_spec']) {
             $this->assign('open_spec', '1');
         } else {
             $this->assign('open_spec', '0');

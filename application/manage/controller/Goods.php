@@ -580,7 +580,6 @@ class Goods extends Manage
                 }
                 $items[$key]['stock'] = $goodsDefault['stock'];
             }
-
             if ($products) {
                 foreach ($items as $key => $val) {
                     foreach ($products as $product) {
@@ -761,10 +760,9 @@ class Goods extends Manage
             $total_stock   = $price = $costprice = $mktprice = 0;
             $isExitDefalut = false;
             $exit_product  = [];
-            if (isset($product['id']) && !$product['id']) {
+            if (isset($product['id']) && $product['id']) {
                 unset($product['id']);
             }
-
             foreach ($product as $key => $val) {
                 $tmp_product['goods']['price']        = !empty($val['price']) ? $val['price'] : 0;
                 $tmp_product['goods']['costprice']    = !empty($val['costprice']) ? $val['costprice'] : 0;

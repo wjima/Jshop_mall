@@ -165,31 +165,31 @@
             <input type="text" name="goods[sn]" value="{$product.sn}" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
         </div>
     </div>
-    {if !$erp_syn_on}
-{if get_addons_status('StockControl')}
-    <div class="layui-form-item have-add" style="display: none">
-        <label class="layui-form-label">库存：</label>
-        <div class="layui-input-inline">
-            <input type="text" name="goods[stock]" value="0"   autocomplete="off" placeholder="" class="layui-input goods-stock">
 
-        </div>
-        <div class="layui-form-mid layui-word-aux">
-            总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}
-        </div>
-    </div>
-{else /}
-<div class="layui-form-item have-add">
-    <label class="layui-form-label">库存：</label>
-    <div class="layui-input-inline">
-        <input type="text" name="goods[stock]" value="0"   autocomplete="off" placeholder="" class="layui-input goods-stock">
+    {if get_addons_status('StockControl')}
+        <div class="layui-form-item have-add" style="display: none">
+            <label class="layui-form-label">库存：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="goods[stock]" value="0"   autocomplete="off" placeholder="" class="layui-input goods-stock">
 
-    </div>
-    <div class="layui-form-mid layui-word-aux">
-        总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}
-    </div>
-</div>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}
+            </div>
+        </div>
+    {else /}
+        <div class="layui-form-item have-add">
+            <label class="layui-form-label">库存：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="goods[stock]" value="0"   autocomplete="off" placeholder="" class="layui-input goods-stock">
+
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                总库存：{$product.total_stock}，冻结库存：{$product.freeze_stock}
+            </div>
+        </div>
     {/if}
-    {/if}
+
 </div>
 </div>
 

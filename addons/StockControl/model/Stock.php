@@ -50,7 +50,9 @@ class Stock extends Common
             'data' => ''
         ];
         $productsModel = new Products();
-        $products = $productsModel->field(['stock','goods_id'])->get($product_id);
+        $products = $productsModel->with(['goods'=>function($query){
+            $query->field(['id','name','bn']);
+        }])->field(['stock','goods_id','sn','spes_desc'])->get($product_id);
         if(empty($product_id)){
             $res['msg'] = "错误的商品";
             $res['data'] = 0;
@@ -76,7 +78,11 @@ class Stock extends Common
             'stock_id'=>$stockData['id'],
             'product_id'=>$product_id,
             'goods_id'=>$products['goods_id'],
-            'nums'=>$nums
+            'nums'=>$nums,
+            'goods_name'=>$products['goods']['name'],
+            'sn'=>$products['sn'],
+            'bn'=>$products['goods']['bn'],
+            'spes_desc'=>$products['spes_desc']
         ];
         try{
             Db::startTrans();
@@ -177,7 +183,9 @@ class Stock extends Common
         $productModel = new Products();
         foreach ($product_ids as $k => $product_id) {
             //判断此货品是否存在
-            $product = $productModel->field(['id', 'stock','goods_id'])->get($product_id);
+            $product = $productModel->with(['goods'=>function($query){
+                $query->field(['id','name','bn']);
+            }])->field(['id', 'stock','goods_id','sn','spes_desc'])->get($product_id);
             if (!empty($product) && (int)$nums[$k] > 0) {
                 if ($type == self::TYPE_IN) {
                     $stock = $product['stock'] + (int)$nums[$k];
@@ -193,7 +201,11 @@ class Stock extends Common
                     'stock_id'=>$stock_id,
                     'product_id'=>$product_id,
                     'goods_id'=>$product['goods_id'],
-                    'nums'=>(int)$nums[$k]
+                    'nums'=>(int)$nums[$k],
+                    'goods_name'=>$product['goods']['name'],
+                    'sn'=>$product['sn'],
+                    'bn'=>$product['goods']['bn'],
+                    'spes_desc'=>$product['spes_desc']
                 ];
             }else{
                 return '请检查第'.($k+1).'个货品或数量是否正确';
@@ -271,7 +283,7 @@ class Stock extends Common
         $query = $this->_where($query,$params);
         $page = isset($params['page']) ? $params['page'] : 1;
         $limit = isset($params['limit']) ? $params['limit'] :  10;
-        $data = $query->field(['u.*','g.name','g.unit','g.bn','p.sn','p.spes_desc'])->page($page, $limit)->select();
+        $data = $query->field(['u.*','g.unit'])->page($page, $limit)->select();
         $count = $query->count();
         return [
             'code' => 0,
@@ -290,23 +302,23 @@ class Stock extends Common
         $where = [];
         if($type == 1){
             if(isset($params['type']) && !empty($params['type'])){
-                $where[] = ['u.type','=',(int)$params['type']];
+                $where[] = ['type','=',(int)$params['type']];
             }
             if(isset($params['relation_id']) && !empty($params['relation_id'])){
-                $where[] = ['u.relation_id','=',$params['relation_id']];
+                $where[] = ['relation_id','=',$params['relation_id']];
             }
             if(isset($params['bn']) && !empty($params['bn'])){
-                $where[] = ['g.bn','=',$params['bn']];
+                $where[] = ['bn','=',$params['bn']];
             }
             if(isset($params['sn']) && !empty($params['sn'])){
-                $where[] = ['p.sn','=',$params['sn']];
+                $where[] = ['sn','=',$params['sn']];
             }
             if(isset($params['date']) && !empty($params['date'])){
                 $date_string = $params['date'];
                 $date_array = explode(' 到 ', urldecode($date_string));
                 $sdate = strtotime($date_array[0] . ' 00:00:00');
                 $edate = strtotime($date_array[1] . ' 23:59:59');
-                $where[] = ['u.ctime', ['>=', $sdate], ['<=', $edate], 'and'];
+                $where[] = ['ctime', ['>=', $sdate], ['<=', $edate], 'and'];
             }
         }else{
             if(isset($params['bn']) && !empty($params['bn'])){
@@ -326,35 +338,36 @@ class Stock extends Common
 
     private function unionTable(){
         $sql = <<<heredoc
-                    (select product_id,goods_id,nums,ctime,stock_id as relation_id,s.type type
+                    (select sl.goods_name,sl.bn,sl.sn,sl.spes_desc,sl.nums,s.ctime,sl.stock_id as relation_id,s.type type
                     from jshop_stock_log	sl
                     join jshop_stock s
                     on s.id = sl.stock_id
                     union
-                    select product_id,goods_id,nums,d.ctime ctime,d.delivery_id as relation_id,4 type
+                    select di.name goods_name,di.bn,di.sn,di.addon spes_desc,di.nums,d.ctime ctime,d.delivery_id as relation_id,4 type
                     from jshop_bill_delivery_items	di
                     join jshop_bill_delivery d
                     on d.delivery_id = di.delivery_id
                     union
-                    select product_id,goods_id,nums,r.ctime ctime,r.reship_id as relation_id,5 type
+                    select ri.name goods_name,ri.bn,ri.sn,ri.addon spes_desc,ri.nums,r.utime ctime,r.reship_id as relation_id,5 type
                     from jshop_bill_reship_items	ri
                     join jshop_bill_reship r
-                    on r.reship_id = ri.reship_id) u
+                    on r.reship_id = ri.reship_id)
 heredoc;
-
-
-        return Db::table($sql)
-            ->leftJoin(app(Goods::class)->getTable().' g','u.goods_id=g.id')
-            ->leftJoin(app(Products::class)->getTable().' p','u.product_id=p.id')
-            ->whereNull('g.isdel')
-            ->whereNull('p.isdel')
+        return Db::table($sql)->alias('u')
+            ->leftJoin(app(Goods::class)->getTable().' g','u.bn=g.bn')
+//            ->leftJoin(app(Products::class)->getTable().' p','u.product_id=p.id')
+//            ->whereNull('g.isdel')
+//            ->whereNull('p.isdel')
             ->order('u.ctime','desc');
     }
 
     private function formatUnionData($list){
-        foreach ($list as &$val){
+        $data = [];
+        foreach ($list as $val){
             $val['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
+            $data[] = $val;
         }
-        return $list;
+        unset($list);
+        return $data;
     }
 }

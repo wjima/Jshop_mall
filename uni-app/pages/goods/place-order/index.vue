@@ -1,20 +1,16 @@
 <template>
 	<form class="content" @submit="toPay" report-submit="true">
 		<view class="content-top">
-			<uni-segmented-control
-				:current="type_current"
-				:values="type_items"
-				@clickItem="onTypeItem"
-				style-type="text"
-				active-color="#333"
-				v-if="storeSwitch == 1"
-			></uni-segmented-control>
+			<uni-segmented-control :current="type_current" :values="type_items" @clickItem="onTypeItem" style-type="text"
+			 active-color="#333" v-if="storeSwitch == 1"></uni-segmented-control>
 			<view class="content">
 				<view v-show="type_current === 0">
 					<!-- 收货地址信息 -->
 					<view class="cell-group margin-cell-group" v-if="userShip && userShip.id" @click="showAddressList">
 						<view class="cell-item add-title-item right-img cell-item-mid">
-							<view class="cell-item-hd"><image class="cell-hd-icon" src="/static/image/location.png"></image></view>
+							<view class="cell-item-hd">
+								<image class="cell-hd-icon" src="/static/image/location.png"></image>
+							</view>
 							<view class="cell-item-bd cell-item-bd-block">
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">收货人：{{ userShip.name || '' }}</text>
@@ -24,7 +20,9 @@
 									<text class="cell-bd-text address">{{ userShip.area_name || '' }} {{ userShip.address || '' }}</text>
 								</view>
 							</view>
-							<view class="cell-item-ft"><image class="cell-ft-next icon" src="/static/image/right.png"></image></view>
+							<view class="cell-item-ft">
+								<image class="cell-ft-next icon" src="/static/image/right.png"></image>
+							</view>
 						</view>
 					</view>
 					<view class="cell-group margin-cell-group" v-else>
@@ -35,7 +33,9 @@
 					<!-- 门店信息 -->
 					<view v-if="store && store.id && store.id != 0" class="cell-group margin-cell-group" @click="goStorelist()">
 						<view class="cell-item add-title-item right-img cell-item-mid">
-							<view class="cell-item-hd"><image class="cell-hd-icon" src="/static/image/homepage.png"></image></view>
+							<view class="cell-item-hd">
+								<image class="cell-hd-icon" src="/static/image/homepage.png"></image>
+							</view>
 							<view class="cell-item-bd cell-item-bd-block">
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{ store.name || '' }}</text>
@@ -45,22 +45,30 @@
 									<text class="cell-bd-text address">{{ store.address || '' }}</text>
 								</view>
 							</view>
-							<view class="cell-item-ft"><image class="cell-ft-next icon" src="/static/image/right.png"></image></view>
+							<view class="cell-item-ft">
+								<image class="cell-ft-next icon" src="/static/image/right.png"></image>
+							</view>
 						</view>
 					</view>
-					<view v-else class="cell-group margin-cell-group"><view class="cell-item add-title-item right-img no-store cell-item-bd-block">暂无门店</view></view>
+					<view v-else class="cell-group margin-cell-group">
+						<view class="cell-item add-title-item right-img no-store cell-item-bd-block">暂无门店</view>
+					</view>
 				</view>
 			</view>
 
 			<view class="cell-group margin-cell-group" v-if="storeSwitch == 1 && type_current === 1">
 				<view class="cell-item user-head cell-item-mid">
-					<view class="cell-item-hd"><view class="cell-hd-title">姓名</view></view>
+					<view class="cell-item-hd">
+						<view class="cell-hd-title">姓名</view>
+					</view>
 					<view class="cell-item-bd" style="width:88%;">
 						<input class="cell-bd-input" style="width: 100%;" placeholder="请输入提货人姓名" v-model="store_pick.name" />
 					</view>
 				</view>
 				<view class="cell-item cell-item-mid">
-					<view class="cell-item-hd"><view class="cell-hd-title">电话</view></view>
+					<view class="cell-item-hd">
+						<view class="cell-hd-title">电话</view>
+					</view>
 					<view class="cell-item-bd" style="width: 88%;">
 						<input class="cell-bd-input" placeholder="请输入提货人电话" v-model="store_pick.mobile" style="width:100%;" />
 					</view>
@@ -77,7 +85,8 @@
 							<view class="goods-price">￥{{ item.products.price || '' }}</view>
 						</view>
 						<view class="romotion-tip" v-if="item.products.promotion_list">
-							<view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list" :key="k">{{ v.name || '' }}</view>
+							<view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
+							 :key="k">{{ v.name || '' }}</view>
 						</view>
 						<view class="goods-item-c">
 							<view class="goods-buy">
@@ -86,18 +95,20 @@
 							</view>
 						</view>
 					</view>
-                    <view>
-                        <view class="giveaway2" v-for="(v, k) in item.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
-                    </view>
+					<view>
+						<view class="giveaway2" v-for="(v, k) in item.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
+					</view>
 				</view>
 			</view>
-            <view class="giveaway" v-if="cartData.giveaway.length > 0">
-                <view v-for="(v, k) in cartData.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
-            </view>
+			<view class="giveaway" v-if="cartData.giveaway">
+				<view v-for="(v, k) in cartData.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
+			</view>
 
 			<view class="cell-group">
 				<view class="cell-item">
-					<view class="cell-item-hd"><view class="cell-hd-title" style="min-width: 100rpx;">优惠券</view></view>
+					<view class="cell-item-hd">
+						<view class="cell-hd-title" style="min-width: 100rpx;">优惠券</view>
+					</view>
 					<view class="cell-item-ft">
 						<text class="cell-ft-p" @click="toshow()">{{ usedCouponsCompute || '' }}</text>
 					</view>
@@ -122,7 +133,9 @@
 				</view>
 
 				<view class="cell-item invoice right-img" v-if="invoiceSwitch == 1">
-					<view class="cell-item-hd"><view class="cell-hd-title">发票</view></view>
+					<view class="cell-item-hd">
+						<view class="cell-hd-title">发票</view>
+					</view>
 					<view class="cell-item-ft" @click="goInvoice()">
 						<text class="cell-ft-text">{{ invoice.name || '' }}</text>
 						<image class="cell-ft-next icon" src="/static/image/right.png"></image>
@@ -151,7 +164,9 @@
 
 			<view class="cell-group leave-message">
 				<view class="cell-item right-img">
-					<view class="cell-item-hd"><view class="cell-hd-title">买家留言</view></view>
+					<view class="cell-item-hd">
+						<view class="cell-hd-title">买家留言</view>
+					</view>
 				</view>
 				<view class="cell-textarea ">
 					<!-- #ifdef MP-WEIXIN -->
@@ -427,7 +442,7 @@ export default {
 		// #endif
 		// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 		let user_ship = this.$store.state.userShip;
-		console.log(user_ship);
+		// console.log(user_ship);
 		if (user_ship) {
 			this.userShip = user_ship;
 			this.params.area_id = user_ship.area_id;

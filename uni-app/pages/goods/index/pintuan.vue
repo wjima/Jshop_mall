@@ -595,9 +595,9 @@ export default {
 		};
 	},
 	onLoad(e) {
-		this.goodsId = e.id;
+		this.goodsId = e.id-0;
 		if (e.team_id) {
-			this.teamId = e.team_id;
+			this.teamId = e.team_id-0;
 			this.getTeam(this.teamId);
 		}
 		if (this.goodsId) {

@@ -1050,7 +1050,7 @@ class Order extends Common
             'msg' => ""
         ];
         if(isset($data['order_amount'])){
-            $udata['oreer_amount'] = $data['order_amount'];
+            $udata['order_amount'] = $data['order_amount'];
         }
         $udata['source'] = $data['source'];
         $udata['cost_freight'] = $data['cost_freight'];

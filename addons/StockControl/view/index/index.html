@@ -19,7 +19,7 @@
 			<label class="layui-form-label">货品编号：</label>
 			<!-- <div class="layui-input-inline seller-inline-3"> -->
 			<div class="layui-input-inline">
-				<input type="text" name="sn" placeholder="请输入货品编号" autocomplete="off" class="layui-input" value="{$bn}">
+				<input type="text" name="sn" placeholder="请输入货品编号" autocomplete="off" class="layui-input" value="{$sn}">
 			</div>
 		</div>
 		<div class="layui-inline">
@@ -99,7 +99,7 @@
 						return type[data.type];
 					}},
 				{field:'relation_id', width:200,title:'关联单号', align: 'center'},
-				{field:'name', title:'商品名称', align: 'center'},
+				{field:'goods_name', title:'商品名称', align: 'center'},
 				{field:'spes_desc', width:200,title:'货品规格', align: 'center'},
 				{field:'bn', width:200,title:'商品编号', align: 'center'},
 				{field:'sn', width:200,title:'货品编号', align: 'center'},

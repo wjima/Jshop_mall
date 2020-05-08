@@ -33,11 +33,8 @@
         <th>图片</th>
         <th>货号</th>
         <th>规格</th>
-        {if !$erp_syn_on}
-        {if get_addons_status('StockControl')}
-        {else /}
-        <th>库存</th>
-        {/if}
+        {if !get_addons_status('StockControl')}
+            <th>库存</th>
         {/if}
         <th><i class="required-color">*</i>销售价</th>
         <th>成本价</th>
@@ -72,11 +69,11 @@
         <td>
             {$vo.spec_name}
         </td>
-        {if !$erp_syn_on}
-        <td class="have-add-td">
-            <input type="text" name="product[{$vo.spec_name}][stock]" value="0"   placeholder="库存" autocomplete="off" class="layui-input goods-stock">
-            总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}
-        </td>
+        {if !get_addons_status('StockControl')}
+            <td class="have-add-td">
+                <input type="text" name="product[{$vo.spec_name}][stock]" value="0"   placeholder="库存" autocomplete="off" class="layui-input goods-stock">
+                总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}
+            </td>
         {/if}
         <td>
             <input type="text" name="product[{$vo.spec_name}][price]" value="{$vo.price}"   placeholder="销售价" autocomplete="off" class="layui-input">
@@ -114,11 +111,11 @@
             <td>
                 {$vo.spec_name}
             </td>
-            {if !$erp_syn_on}
-            <td class="have-add-td">
-                <input type="text" name="product[{$vo.spec_name}][stock]"   value="{$vo.stock}"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
-                总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}
-            </td>
+            {if !get_addons_status('StockControl')}
+                <td class="have-add-td">
+                    <input type="text" name="product[{$vo.spec_name}][stock]"   value="{$vo.stock}"  placeholder="库存" autocomplete="off" class="layui-input goods-stock">
+                    总库存：{$vo.total_stock|default=0}，冻结库存：{$vo.freeze_stock|default=0}
+                </td>
             {/if}
             <td>
                 <input type="text" name="product[{$vo.spec_name}][price]"  value="{$vo.price}"  placeholder="销售价" autocomplete="off" class="layui-input">

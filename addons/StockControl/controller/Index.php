@@ -68,7 +68,7 @@ class Index extends AddonController
             $stockModel = new Stock();
             return $stockModel->stockIndex($params);
         }
-        return $this->fetch();
+        return $this->fetch('stockindex');
     }
     public function editStock(){
         $res = [
@@ -94,7 +94,7 @@ class Index extends AddonController
             $stockModel = new Stock();
             return $stockModel->getStockList(1,$params);
         }
-        return $this->fetch();
+        return $this->fetch('stock1index');
     }
 
     /**
@@ -117,7 +117,7 @@ class Index extends AddonController
         return [
             'status'=>true,
             'msg'=>'',
-            'data'=>$this->fetch('stockAdd')
+            'data'=>$this->fetch('stockadd')
         ];
     }
 
@@ -132,7 +132,7 @@ class Index extends AddonController
             $stockModel = new Stock();
             return $stockModel->getStockList(2,$params);
         }
-        return $this->fetch();
+        return $this->fetch('stock2index');
     }
 
     /**
@@ -155,7 +155,7 @@ class Index extends AddonController
         return [
             'status'=>true,
             'msg'=>'',
-            'data'=>$this->fetch('stockAdd')
+            'data'=>$this->fetch('stockadd')
         ];
     }
 
@@ -181,7 +181,7 @@ class Index extends AddonController
         $this->assign('type',$type);
 //        dump($info);die;
         $res['status'] = true;
-        $res['data'] = $this->fetch();
+        $res['data'] = $this->fetch('stockview');
         return $res;
     }
 
@@ -195,9 +195,9 @@ class Index extends AddonController
             $stockModel = new Stock();
             return $stockModel->getStockCheck($params);
         }
-        $bn = input('bn/s','');
-        $this->assign('bn',$bn);
-        return $this->fetch();
+        $sn = input('sn/s','');
+        $this->assign('sn',$sn);
+        return $this->fetch('index');
     }
 
 }

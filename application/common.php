@@ -1751,3 +1751,24 @@ function imgSecCheck($img)
     $wx = new Wx();
     return $wx->imgSecCheck($img);
 }
+
+/**
+ * 递归删除文件
+ * @param $dirName 目录名称
+ * @param bool|true $subdir 是否删除文件夹
+ */
+function del_dir_and_file($dirName,$subdir = true)
+{
+    if ($handle = opendir("$dirName")) {
+        while (false !== ($item = readdir($handle))) {
+            if ($item != "." && $item != "..") {
+                if (is_dir("$dirName/$item"))
+                    $this->delDirAndFile("$dirName/$item", false);
+                else
+                    @unlink("$dirName/$item");
+            }
+        }
+        closedir($handle);
+        if (!$subdir) @rmdir($dirName);
+    }
+}

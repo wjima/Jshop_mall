@@ -141,9 +141,8 @@ class Addons extends Common
             return false;
         }
         $uData = [
-            'config' => json_encode($params['setting']),
+            'config' => json_encode($params),
         ];
-
         $res   = $this->where(['id' => $addon['id']])->cache('addon_'.$params['name'])->update($uData);
         if ($res !== false) {
             return true;

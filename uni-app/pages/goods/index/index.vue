@@ -226,13 +226,16 @@
 		<lvv-popup position="bottom" ref="lvvpopref">
 			<view style="width: 100%;max-height: 804upx;background: #FFFFFF;position: absolute;left:0;bottom: 0;">
 				<view class="pop-c">
-					<view class="pop-t">
+					<view class="pop-t" style="padding: 26rpx;">
 						<view class='goods-img'>
 							<image :src='product.image_path' mode='aspectFill'></image>
 						</view>
 						<view class='goods-information'>
-							<view class='pop-goods-name'>{{ product.name || ''}}</view>
-							<view class='pop-goods-price red-price'>￥ {{ product.price || ''}}</view>
+							<view class='pop-goods-name' style="margin-bottom: 6rpx;">{{ product.name || ''}}</view>
+							<view class='pop-goods-price red-price' style="margin-bottom: 6rpx;">￥ {{ product.price || ''}}</view>
+							<view class="fsz24 color-9">
+								库存{{ product.stock || ''}}{{goodsInfo.unit || ''}}
+							</view>
 						</view>
 						<view class='close-btn' @click="toclose()">
 							<image src='/static/image/close.png'></image>

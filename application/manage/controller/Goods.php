@@ -370,6 +370,7 @@ class Goods extends Manage
             $data['goods']['new_spec']  = serialize($new_spec);
         } else {
             $data['goods']['spes_desc'] = '';
+            $data['goods']['new_spec'] = '';
         }
         //商品参数处理
         $params     = [];

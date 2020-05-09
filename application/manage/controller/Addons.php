@@ -176,7 +176,7 @@ class Addons extends Manage
         }
         $addonObject      = new $class_name();
         $result['status'] = true;
-        $result['data']   = $addonObject->config($setting['setting']);
+        $result['data']   = $addonObject->config($setting);
         $result['dialog'] = $addonObject->getDialog();
         return $result;
     }
@@ -194,10 +194,10 @@ class Addons extends Manage
         ];
         $data        = input('post.');//配置项
         $addonsModel = new addonsModel();
-        $default_setting     = $addonsModel->getSetting($data['name']);
-        if($default_setting){
-            $data        = array_merge($default_setting,$data);
-        }
+        $setting    = $addonsModel->getSetting($data['name']);
+
+        $data = array_merge($setting,$data['setting']);//todo 所有插件列表上面的配置，都要以setting为name
+
         if ($addonsModel->doSetting($data)) {
             $result['status'] = true;
             $result['msg']    = '配置信息保存成功';

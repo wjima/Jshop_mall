@@ -196,7 +196,7 @@ class Addons extends Manage
         $addonsModel = new addonsModel();
         $setting    = $addonsModel->getSetting($data['name']);
 
-        $data = array_merge($setting,$data['setting']);
+        $data = array_merge($setting,$data['setting']);//todo 所有插件列表上面的配置，都要以setting为name
 
         if ($addonsModel->doSetting($data)) {
             $result['status'] = true;

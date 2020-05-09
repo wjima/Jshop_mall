@@ -370,6 +370,7 @@ class Goods extends Manage
             $data['goods']['new_spec']  = serialize($new_spec);
         } else {
             $data['goods']['spes_desc'] = '';
+            $data['goods']['new_spec'] = '';
         }
         //商品参数处理
         $params     = [];
@@ -580,7 +581,6 @@ class Goods extends Manage
                 }
                 $items[$key]['stock'] = $goodsDefault['stock'];
             }
-
             if ($products) {
                 foreach ($items as $key => $val) {
                     foreach ($products as $product) {
@@ -679,7 +679,7 @@ class Goods extends Manage
         $this->assign('open_spec', '0');
         $this->assign('data', $goods['data']);
         $this->assign('products', $goods['data']['products']);
-        if (count($goods['data']['products'])>1 && $goods['data']['new_spec']) {
+        if ($goods['data']['spes_desc'] || $goods['data']['new_spec']) {
             $this->assign('open_spec', '1');
         } else {
             $this->assign('open_spec', '0');
@@ -761,10 +761,9 @@ class Goods extends Manage
             $total_stock   = $price = $costprice = $mktprice = 0;
             $isExitDefalut = false;
             $exit_product  = [];
-            if (isset($product['id']) && !$product['id']) {
+            if (isset($product['id']) && $product['id']) {
                 unset($product['id']);
             }
-
             foreach ($product as $key => $val) {
                 $tmp_product['goods']['price']        = !empty($val['price']) ? $val['price'] : 0;
                 $tmp_product['goods']['costprice']    = !empty($val['costprice']) ? $val['costprice'] : 0;

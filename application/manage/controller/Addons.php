@@ -195,9 +195,9 @@ class Addons extends Manage
         $data        = input('post.');//配置项
         $addonsModel = new addonsModel();
         $setting    = $addonsModel->getSetting($data['name']);
-        if(isset($setting['menu']) && $setting['menu']){
-            $data['setting']['menu'] = $setting['menu'];
-        }
+
+        $data = array_merge($setting,$data['setting']);
+
         if ($addonsModel->doSetting($data)) {
             $result['status'] = true;
             $result['msg']    = '配置信息保存成功';

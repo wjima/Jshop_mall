@@ -1,1 +1,1 @@
-INSERT INTO `hbsw`.`jshop_hooks` (`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (NULL, 'apiAddonsConf', '接口访问插件的配置参数，如果插件需要在前台使用配置参数，就用此方法', '1', '', '1586337762', '1586337762');
+INSERT INTO `jshop_hooks` (`id`, `name`, `description`, `type`, `addons`, `ctime`, `utime`) VALUES (NULL, 'apiAddonsConf', '接口访问插件的配置参数，如果插件需要在前台使用配置参数，就用此方法', '1', '', '1586337762', '1586337762');

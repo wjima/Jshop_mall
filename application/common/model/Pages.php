@@ -98,7 +98,7 @@ class Pages extends Common
 
                 $data[$i]['params'] = json_decode($value['params'], true);
                 if ($value['widget_code'] == 'notice') {
-                    if ($data[$i]['params']['type'] == 'auto') {
+                    if ($data[$i]['params']['type'] == 'auto' && $api) {
                         $noticeModel                = new Notice();
                         $list                       = $noticeModel->getNoticeList();
                         $data[$i]['params']['list'] = $list;
@@ -110,7 +110,7 @@ class Pages extends Common
                 } elseif ($value['widget_code'] == 'goods') {
                     $list       = $where = $whereOr = [];
                     $goodsModel = new Goods();
-                    if ($data[$i]['params']['type'] == 'auto') {
+                    if ($data[$i]['params']['type'] == 'auto' && $api) {
                         //商品分类,同时取所有子分类 todo 无限极分类时要注意
                         if (isset($data[$i]['params']['classifyId']) && trim($data[$i]['params']['classifyId'])) {
                             $goodsCatModel = new GoodsCat();
@@ -134,19 +134,19 @@ class Pages extends Common
                         $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
                         $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
                         $data[$i]['params']['list'] = $returnGoods['data'];
-                    } else {
+                    } elseif($api) {
                         foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
                             $goods                           = $goodsModel->getGoodsDetial($gv['id'], 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $token);
                             $data[$i]['params']['list'][$gk] = $goods['data'];
                         }
                     }
-                } elseif ($value['widget_code'] == 'articleClassify') {
+                } elseif ($value['widget_code'] == 'articleClassify' && $api) {
                     $article                    = new Article();
                     $type_id                    = $data[$i]['params']['articleClassifyId'];
                     $limit                      = $data[$i]['params']['limit'];
                     $res                        = $article->articleList($type_id, 1, $limit);
                     $data[$i]['params']['list'] = $res['data']['list'];
-                } elseif ($value['widget_code'] == 'groupPurchase') {
+                } elseif ($value['widget_code'] == 'groupPurchase' && $api) {
                     $promotion      = new Promotion();
                     if (isset($data[$i]['params']['list']) && $data[$i]['params']['list']) {
                         foreach ((array)$data[$i]['params']['list'] as $k => $v) {
@@ -163,7 +163,7 @@ class Pages extends Common
                         }
                     }
                     $data[$i]['params']['list'] = array_values(array_filter((array)$data[$i]['params']['list']));
-                } elseif ($value['widget_code'] == 'pintuan') {
+                } elseif ($value['widget_code'] == 'pintuan' && $api) {
                     $pintuanModel = new PintuanRule();
                     $pi           = 0;
                     $pintuan      = [];

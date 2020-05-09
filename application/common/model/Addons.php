@@ -128,22 +128,23 @@ class Addons extends Common
 
     /**
      * 保存插件信息
-     * @param $params
+     * @param $params 插件参数
+     * @param string $name 插件名称
      * @return bool
      */
-    public function doSetting($params)
+    public function doSetting($params, $name)
     {
-        if (!$params['name']) {
+        if (!$name) {
             return false;
         }
-        $addon = $this->where(['name' => $params['name']])->cache('addon_'.$params['name'])->find();
+        $addon = $this->where(['name' => $name])->cache('addon_' . $name)->find();
         if (!$addon) {
             return false;
         }
         $uData = [
             'config' => json_encode($params),
         ];
-        $res   = $this->where(['id' => $addon['id']])->cache('addon_'.$params['name'])->update($uData);
+        $res   = $this->where(['id' => $addon['id']])->cache('addon_' . $name)->update($uData);
         if ($res !== false) {
             return true;
         } else {

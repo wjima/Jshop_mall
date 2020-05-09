@@ -187,18 +187,23 @@ class Addons extends Manage
      */
     public function doSetting()
     {
-        $result      = [
+        $result = [
             'status' => false,
             'msg'    => '配置信息保存失败',
             'data'   => '',
         ];
-        $data        = input('post.');//配置项
+        $data   = input('post.');//配置项
+
         $addonsModel = new addonsModel();
-        $setting    = $addonsModel->getSetting($data['name']);
+        $setting     = $addonsModel->getSetting($data['name']);
+        $addonName   = $data['name'];
+        if ($setting) {
+            $uData = array_merge($setting, $data['setting']);//todo 所有插件列表上面的配置，都要以setting为name
+        } else {
+            $uData = $data['setting'];
+        }
 
-        $data = array_merge($setting,$data['setting']);//todo 所有插件列表上面的配置，都要以setting为name
-
-        if ($addonsModel->doSetting($data)) {
+        if ($addonsModel->doSetting($uData, $addonName)) {
             $result['status'] = true;
             $result['msg']    = '配置信息保存成功';
         }

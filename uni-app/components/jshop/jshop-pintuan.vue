@@ -44,6 +44,7 @@ export default {
 	},
 	computed: {  
 		count() {  
+			// console.log(this.jdata.params.list);
 			return (this.jdata.params.list.length > 0)
 		}
 	},

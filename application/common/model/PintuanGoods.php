@@ -185,7 +185,8 @@ class PintuanGoods extends Common
         if (isset($info['max_goods_nums']) && $info['max_goods_nums'] != 0) {
             $goodsInfo['data']['stock'] = $info['max_goods_nums'];
             //活动销售件数
-            $goodsInfo['data']['product']['stock']  = $info['max_goods_nums'] - $check_order['data']['total_orders'];
+            $pintuan_stock                          = $info['max_goods_nums'] - $check_order['data']['total_orders'];
+            $goodsInfo['data']['product']['stock']  = $pintuan_stock > 0 ? $pintuan_stock : 0;
             $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];
         } else {
             $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];

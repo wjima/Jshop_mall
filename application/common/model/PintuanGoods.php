@@ -96,6 +96,7 @@ class PintuanGoods extends Common
             if($api){
                 $goods = $this->getGoodsInfo($value['goods_id']);
                 $list[$key]['goods'] = $goods['data'];
+
             }
 
         }

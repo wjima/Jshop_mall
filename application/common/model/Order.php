@@ -2342,9 +2342,9 @@ class Order extends Common
         $where[] = ['o.ctime', '<', $condition['etime']];
 
 
-         //已退款、已退货、部分退款的、部分退货的排除
-        $where[] = ['o.pay_status', 'in',['1','2','3']];
-        $where[] = ['o.ship_status', 'in',['1','2','3']];
+        //已退款、已退货、部分退款的、部分退货的排除
+        $where[] = ['o.pay_status', 'in', ['1', '2', '3']];
+        $where[] = ['o.ship_status', 'in', ['1', '2', '3']];
 
         //已退款、已退货、部分退款的、部分退货的排除 todo 团购秒杀部分退换货问题
         //$where[] = ['o.pay_status', 'in',['1','2','3','4','5']];
@@ -2360,9 +2360,13 @@ class Order extends Common
             $where[] = ['o.order_type', '=', $order_type];
         }
 
-        if ($order_type != self::ORDER_TYPE_GROUP && $order_type != self::ORDER_TYPE_SKILL) {
+        if ($order_type == self::ORDER_TYPE_PINTUAN) {
+
+            $where[] = ['pr.rule_id', '=', $condition['rule_id']];
+
             $total_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')
+                ->join('pintuan_record pr', 'pr.order_id = o.order_id')
                 ->where($where)
                 ->sum('oi.nums');
 
@@ -2372,10 +2376,12 @@ class Order extends Common
                 $where[]           = ['o.user_id', '=', $user_id];
                 $total_user_orders = $this->alias('o')
                     ->join('order_items oi', 'oi.order_id = o.order_id')
+                    ->join('pintuan_record pr', 'pr.order_id = o.order_id')
                     ->where($where)
                     ->sum('oi.nums');
             }
-        } else {
+
+        } elseif ($order_type == self::ORDER_TYPE_SKILL || $order_type == self::ORDER_TYPE_GROUP) {
             $total_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')
                 ->join('promotion_record pr', 'pr.order_id=o.order_id')
@@ -2389,6 +2395,21 @@ class Order extends Common
                 $total_user_orders = $this->alias('o')
                     ->join('order_items oi', 'oi.order_id = o.order_id')
                     ->join('promotion_record pr', 'pr.order_id=o.order_id')
+                    ->where($where)
+                    ->sum('oi.nums');
+            }
+        } else {
+            $total_orders = $this->alias('o')
+                ->join('order_items oi', 'oi.order_id = o.order_id')
+                ->where($where)
+                ->sum('oi.nums');
+
+            //该会员已下多少订单
+            $total_user_orders = 0;
+            if ($user_id) {
+                $where[]           = ['o.user_id', '=', $user_id];
+                $total_user_orders = $this->alias('o')
+                    ->join('order_items oi', 'oi.order_id = o.order_id')
                     ->where($where)
                     ->sum('oi.nums');
             }

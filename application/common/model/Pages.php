@@ -170,7 +170,6 @@ class Pages extends Common
                     foreach ((array)$data[$i]['params']['list'] as $k => $v) {
                         if ($v['goods_id']) {
                             $goodsinfo = $pintuanModel->getPintuanInfo($v['goods_id']);
-
                             if ($goodsinfo) {
                                 $pintuan[$pi]                         = $v;
                                 $pintuan[$pi]['pintuan_start_status'] = 1;

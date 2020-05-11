@@ -308,25 +308,28 @@ class PintuanRule extends Common{
      * @param $goods_id
      * @return array|null|\PDOStatement|string|Model
      */
-    public function getPintuanInfo($goods_id){
+    public function getPintuanInfo($goods_id)
+    {
         $where = [];
         //取得规则id
-        $where[] = ['status','eq',$this::STATUS_ON];
-        $where[] = ['goods_id', 'eq', $goods_id];
-        $where[] = ['etime','>',time()];
+        $where[]           = ['pr.status', 'eq', $this::STATUS_ON];
+        $where[]           = ['pg.goods_id', 'eq', $goods_id];
+        $where[]           = ['pr.etime', '>', time()];
         $pintuanGoodsModel = new PintuanGoods();
-        $pinfo = $pintuanGoodsModel
+        $pinfo             = $pintuanGoodsModel
             ->alias('pg')
-            ->join('pintuan_rule pr','pr.id = pg.rule_id')
-            ->join('goods g','pg.goods_id = g.id')
+            ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
+            ->join('goods g', 'pg.goods_id = g.id')
             ->field('pg.*,pr.*,g.name,g.image_id')
             ->where($where)
             ->find();
 
-        $goodsModel = new Goods();
-        $info       = $goodsModel->getGoodsDetial($goods_id, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
-        $nowPrice                               = bcsub($info['data']['product']['price'], $pinfo['discount_amount'], 2);
-        $pinfo['pintuan_price'] = $nowPrice;
+        if ($pinfo) {
+            $goodsModel             = new Goods();
+            $info                   = $goodsModel->getGoodsDetial($goods_id, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
+            $nowPrice               = bcsub($info['data']['product']['price'], $pinfo['discount_amount'], 2);
+            $pinfo['pintuan_price'] = $nowPrice;
+        }
         return $pinfo;
     }
 

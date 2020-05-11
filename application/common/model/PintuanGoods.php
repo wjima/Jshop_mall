@@ -135,6 +135,9 @@ class PintuanGoods extends Common
         if (!$goodsInfo['status']) {
             return $goodsInfo;
         }
+        $pintuanRuleModel = new PintuanRule();
+        $where[]          = ['pr.status', 'eq', $pintuanRuleModel::STATUS_ON];
+        $where[]          = ['pr.etime', '>', time()];
 
         //把拼团的一些属性等加上
         $where[] = ['pg.goods_id', 'eq', $gid];
@@ -143,12 +146,13 @@ class PintuanGoods extends Common
             ->join('pintuan_rule pr', 'pg.rule_id = pr.id')
             ->where($where)
             ->find();
+
         if (!$info) {
-            return error_code(10000);
+            return error_code(15603);
         }
-        $goodsInfo['data']['pintuan_rule'] = $info;
+        $goodsInfo['data']['pintuan_rule']  = $info;
         $goodsInfo['data']['pintuan_price'] = $goodsInfo['data']['price'] - $info['discount_amount'];
-        if($goodsInfo['data']['pintuan_price'] < 0){
+        if ($goodsInfo['data']['pintuan_price'] < 0) {
             $goodsInfo['data']['pintuan_price'] = 0;
         }
         //取拼团记录
@@ -177,11 +181,11 @@ class PintuanGoods extends Common
 
         //调整前台显示数量
         $orderModel  = new Order();
-        $check_order = $orderModel->findLimitOrder($goodsInfo['data']['product']['id'], 0, $info,$orderModel::ORDER_TYPE_PINTUAN);
+        $check_order = $orderModel->findLimitOrder($goodsInfo['data']['product']['id'], 0, $info, $orderModel::ORDER_TYPE_PINTUAN);
         if (isset($info['max_goods_nums']) && $info['max_goods_nums'] != 0) {
             $goodsInfo['data']['stock'] = $info['max_goods_nums'];
             //活动销售件数
-            $goodsInfo['data']['product']['stock']    = $info['max_goods_nums'] - $check_order['data']['total_orders'];
+            $goodsInfo['data']['product']['stock']  = $info['max_goods_nums'] - $check_order['data']['total_orders'];
             $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];
         } else {
             $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];
@@ -216,7 +220,6 @@ class PintuanGoods extends Common
 
         $product['data']['pintuan_rule'] = $info;
         //$product['data']['pintuan_price'] = $product['data']['price'] - $info['discount_amount'];
-
         return $product;
     }
 

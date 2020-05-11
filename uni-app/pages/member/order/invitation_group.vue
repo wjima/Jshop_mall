@@ -7,7 +7,7 @@
 				</view>
 			</view>
 			<view class="ig-top-m">
-				<view class="user-head-img-c" v-for="(item, index) in teamInfo.list" :key="index">
+				<view class="user-head-img-c" v-for="(item, index) in teamInfo.list" :key="item.user_avatar">
 					<view class="user-head-img-tip" v-if="item.id == item.team_id">拼主</view>
 					<image class="user-head-img cell-hd-icon have-none" :src='item.user_avatar' mode=""></image>
 				</view>

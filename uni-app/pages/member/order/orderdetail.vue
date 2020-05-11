@@ -87,7 +87,7 @@
 				</view>
 				<view class="group-swiper">
 					<view class='cell-item' v-if="teamInfo.current_count">
-						<view class='cell-item-hd'>
+						<view class='cell-item-hd' style="flex-wrap: wrap;">
 							<view class="user-head-img-c" v-for="(item, index) in teamInfo.list" :key="index">
 								<view class="user-head-img-tip" v-if="item.id == item.team_id">拼主</view>
 								<image class="user-head-img cell-hd-icon have-none" :src='item.user_avatar' mode=""></image>
@@ -579,6 +579,7 @@
 		display: inline-block;
 		float: left;
 		border: 1px solid #f3f3f3;
+		margin-bottom: 20rpx;
 	}
 
 	.user-head-img-tip {

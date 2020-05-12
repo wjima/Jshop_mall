@@ -92,6 +92,8 @@ class Index extends Manage
         Cache::clear();//TODO 如果开启其他缓存，记得这里要配置缓存配置信息
         Console::call('clear', ['--cache', '--dir']);//清除缓存文件
         Console::call('clear', ['--path', ROOT_PATH . '\\runtime\\temp\\']); //清除模板缓存
+        //删除海报
+        del_dir_and_file(ROOT_PATH.'public'.DS.'static'.DS.'poster');
         $this->success('清除缓存成功', 'index/welcome');
     }
 

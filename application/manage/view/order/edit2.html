@@ -141,7 +141,7 @@
 						<td>{$vo.price}</td>
 						<td>
 							{if $order.pay_status == 1}
-								<input name="items[{$vo.id}]" style="width:50px;" value="{$vo.nums}"  type="text">
+								<input name="items[{$vo.id}]" style="width:50px;" value="{$vo.nums}"  type="text" readonly>
 							{else /}
 								{$vo.nums}
 							{/if}

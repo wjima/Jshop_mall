@@ -90,9 +90,9 @@
 				<view class="cell-item goods-title-item cell-item-mid" v-if="goodsShowWord && goodsShowWord != ''">
 					<view class="cell-item-hd"><view class="cell-hd-title">说明</view></view>
 					<view class="cell-item-bd">
-						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
+						<view class="cell-bd-view" v-for="(item, index) in goodsShowWord" :key="index">
 							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<view class="cell-bd-text">{{item}}</view>
+							<view class="cell-bd-text">{{ item }}</view>
 						</view>
 					</view>
 				</view>
@@ -245,7 +245,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<lvv-popup position="bottom" ref="pintuanpop">
 			<view class="ig-top" v-if="teamInfo.list.length > 0">
 				<view class="ig-top-t">
@@ -316,7 +316,7 @@
 
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
-                :shareType="3"
+				:shareType="3"
 				:goodsId="goodsId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
@@ -595,9 +595,9 @@ export default {
 		};
 	},
 	onLoad(e) {
-		this.goodsId = e.id-0;
+		this.goodsId = e.id - 0;
 		if (e.team_id) {
-			this.teamId = e.team_id-0;
+			this.teamId = e.team_id - 0;
 			this.getTeam(this.teamId);
 		}
 		if (this.goodsId) {
@@ -653,11 +653,10 @@ export default {
 		shopMobile() {
 			return this.$store.state.config.shop_mobile || 0;
 		},
-		
+
 		goodsShowWord() {
 			return this.$store.state.config.goods_show_word;
-		},
-
+		}
 	},
 	onReachBottom() {
 		if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -692,56 +691,55 @@ export default {
 			_this.$api.pintuanGoodsInfo(data, res => {
 				//console.log(res);
 				if (res.status) {
-					if (res.data.length < 1) {
-						_this.$common.errorToShow('该商品不存在，请返回重新选择商品。', () => {
-							uni.navigateBack({
-								delta: 1
-							});
-						});
-					} else if (res.data.marketable != 1) {
-						_this.$common.errorToShow('该商品已下架，请返回重新选择商品。', () => {
-							uni.navigateBack({
-								delta: 1
-							});
-						});
-					} else {
-						let info = res.data;
-						_this.goodsInfo = info;
-						let products = res.data.product;
-						_this.discount_amount = parseFloat(info.pintuan_rule.discount_amount).toFixed(2);
-						_this.product = _this.spesClassHandle(products);
-						_this.isfav = _this.goodsInfo.isfav === 'true' ? true : false;
-						
-						// debugger;
-						_this.pintuanPrice = this.$common.moneySub(_this.product.price, _this.discount_amount);
+					let info = res.data;
+					_this.goodsInfo = info;
+					let products = res.data.product;
+					_this.discount_amount = parseFloat(info.pintuan_rule.discount_amount).toFixed(2);
+					_this.product = _this.spesClassHandle(products);
+					_this.isfav = _this.goodsInfo.isfav === 'true' ? true : false;
 
-						let timestamp = Date.parse(new Date()) / 1000;
+					// debugger;
+					_this.pintuanPrice = this.$common.moneySub(_this.product.price, _this.discount_amount);
 
-						let lasttime = res.data.pintuan_rule.etime - timestamp;
-						_this.lasttime = _this.$common.timeToDateObj(lasttime);
-						// 获取拼团记录
-						let pintuan_data = info.pintuan_record;
-						let new_data = new Array();
-						for (var k = 0; k < pintuan_data.length; k++) {
-							pintuan_data[k].remainder_time = _this.$common.timeToDateObj(pintuan_data[k].close_time - timestamp);
-							if (k == 0 || k % 2 == 0) {
-								if (k + 1 < pintuan_data.length) {
-									var a = [pintuan_data[k], pintuan_data[k + 1]];
-								} else {
-									var a = [pintuan_data[k]];
-								}
-								new_data.push(a);
+					let timestamp = Date.parse(new Date()) / 1000;
+
+					let lasttime = res.data.pintuan_rule.etime - timestamp;
+					_this.lasttime = _this.$common.timeToDateObj(lasttime);
+					// 获取拼团记录
+					let pintuan_data = info.pintuan_record;
+					let new_data = new Array();
+					for (var k = 0; k < pintuan_data.length; k++) {
+						pintuan_data[k].remainder_time = _this.$common.timeToDateObj(pintuan_data[k].close_time - timestamp);
+						if (k == 0 || k % 2 == 0) {
+							if (k + 1 < pintuan_data.length) {
+								var a = [pintuan_data[k], pintuan_data[k + 1]];
+							} else {
+								var a = [pintuan_data[k]];
 							}
-						}
-						pintuan_data.length < 2 ? (_this.groupHeight = 'groupHeight') : (_this.groupHeight = '');
-						_this.pintuanRecord = new_data;
-
-						_this.teamCount = info.pintuan_record_nums;
-						// 判断如果登录用户添加商品浏览足迹
-						if (userToken) {
-							_this.goodsBrowsing();
+							new_data.push(a);
 						}
 					}
+					pintuan_data.length < 2 ? (_this.groupHeight = 'groupHeight') : (_this.groupHeight = '');
+					_this.pintuanRecord = new_data;
+
+					_this.teamCount = info.pintuan_record_nums;
+					// 判断如果登录用户添加商品浏览足迹
+					if (userToken) {
+						_this.goodsBrowsing();
+					}
+				} else {
+					var pages = getCurrentPages();
+					_this.$common.errorToShow(res.msg, () => {
+						if (pages.length > 1) {
+							uni.navigateBack({
+								delta: 1
+							});
+						} else {
+							uni.switchTab({
+								url: '/pages/index/index'
+							});
+						}
+					});
 				}
 			});
 		},
@@ -1040,41 +1038,41 @@ export default {
 			}
 			// #endif
 		},
-        //获取分享URL
-        getShareUrl() {
-            let data = {
-                client: 2,
-                url: "/pages/share/jump",
-                type: 1,
-                page: 3,
-                params: {
-                    goods_id: this.goodsId,
-                    team_id: this.teamId
-                }
-            };
-            let userToken = this.$db.get('userToken');
-            if (userToken && userToken != '') {
-            	data['token'] = userToken;
-            }
-            this.$api.share(data, res => {
-                this.shareUrl = res.data
-            });
-        }
+		//获取分享URL
+		getShareUrl() {
+			let data = {
+				client: 2,
+				url: '/pages/share/jump',
+				type: 1,
+				page: 3,
+				params: {
+					goods_id: this.goodsId,
+					team_id: this.teamId
+				}
+			};
+			let userToken = this.$db.get('userToken');
+			if (userToken && userToken != '') {
+				data['token'] = userToken;
+			}
+			this.$api.share(data, res => {
+				this.shareUrl = res.data;
+			});
+		}
 	},
-    watch:{
-        goodsId: {
-            handler () {
-                this.getShareUrl();
-            },
-            deep: true
-        },
-        teamId: {
-            handler () {
-                this.getShareUrl();
-            },
-            deep: true
-        }
-    },
+	watch: {
+		goodsId: {
+			handler() {
+				this.getShareUrl();
+			},
+			deep: true
+		},
+		teamId: {
+			handler() {
+				this.getShareUrl();
+			},
+			deep: true
+		}
+	},
 	//分享
 	onShareAppMessage() {
 		return {
@@ -1767,20 +1765,24 @@ export default {
 	font-size: 24upx;
 	color: #666;
 }
+
 /* #ifdef MP-WEIXIN */
 .weiContact {
 	background-color: #fff;
 	border: none;
 	width: 14% !important;
 }
+
 .weiContact::after {
 	border: none;
 }
+
 .weiContact > view {
 	position: absolute;
 	top: 45rpx;
 	left: 50%;
 	transform: translateX(-50%);
 }
+
 /* #endif */
 </style>

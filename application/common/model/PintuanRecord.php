@@ -53,21 +53,21 @@ class PintuanRecord extends Model{
     {
 
         $where = [];
-        if(isset($post['order_id']) && $post['order_id'] != ""){
+        if (isset($post['order_id']) && $post['order_id'] != "") {
             $where[] = ['order_id', 'eq', $post['order_id']];
         }
 
-        if(isset($post['team_id']) && $post['team_id'] != ""){
+        if (isset($post['team_id']) && $post['team_id'] != "") {
             $where[] = ['team_id', 'eq', $post['team_id']];
         }
 
-        if(isset($post['status']) && $post['status'] != ""){
+        if (isset($post['status']) && $post['status'] != "") {
             $where[] = ['status', 'eq', $post['status']];
         }
 
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = ['ctime' => 'desc'];
         return $result;
     }
 
@@ -129,6 +129,8 @@ class PintuanRecord extends Model{
             $model->status = self::STATUS_COMM;
             $model->order_id = $order['order_id'];
             $model->goods_id = $order_item['goods_id'];
+
+            $model->close_time = $info['close_time'];
 
             $model->save();
 

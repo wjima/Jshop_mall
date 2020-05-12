@@ -7,7 +7,7 @@
 				</view>
 			</view>
 			<view class="ig-top-m">
-				<view class="user-head-img-c" v-for="(item, index) in teamInfo.list" :key="index">
+				<view class="user-head-img-c" v-for="(item, index) in teamInfo.list" :key="item.user_avatar">
 					<view class="user-head-img-tip" v-if="item.id == item.team_id">拼主</view>
 					<image class="user-head-img cell-hd-icon have-none" :src='item.user_avatar' mode=""></image>
 				</view>
@@ -29,73 +29,33 @@
 		<lvv-popup position="bottom" ref="share">
 
 			<!-- #ifdef H5 -->
-			<shareByH5
-                :shareType='6'
-                :goodsId="goodsInfo.goods_id"
-                :teamId="teamInfo.team_id"
-                :groupId="teamInfo.rule_id"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                @close="closeShare()"
-            ></shareByH5>
+			<shareByH5 :shareType='6' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
-			<shareByWx
-                :shareType='6'
-                :goodsId="goodsInfo.goods_id"
-                :teamId="teamInfo.team_id"
-                :groupId="teamInfo.rule_id"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                @close="closeShare()"
-            ></shareByWx>
+			<shareByWx :shareType='6' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByWx>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-ALIPAY -->
-			<shareByAli
-                :shareType='6'
-                :goodsId="goodsInfo.goods_id"
-                :teamId="teamInfo.team_id"
-                :groupId="teamInfo.rule_id"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                @close="closeShare()"
-            ></shareByAli>
+			<shareByAli :shareType='6' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByAli>
 			<!-- #endif -->
-			
+
 			<!-- #ifdef MP-TOUTIAO -->
-			<shareByTt
-                :shareType='6'
-                :goodsId="goodsInfo.goods_id"
-                :teamId="teamInfo.team_id"
-                :groupId="teamInfo.rule_id"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                @close="closeShare()"
-            ></shareByTt>
+			<shareByTt :shareType='6' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByTt>
 			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
-			<shareByApp
-                :shareType='6'
-                :goodsId="goodsInfo.goods_id"
-                :teamId="teamInfo.team_id"
-                :groupId="teamInfo.rule_id"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                @close="closeShare()"
-            ></shareByApp>
+			<shareByApp :shareType='6' :goodsId="goodsInfo.goods_id" :teamId="teamInfo.team_id" :groupId="teamInfo.rule_id"
+			 :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief" :shareHref="shareHref"
+			 @close="closeShare()"></shareByApp>
 			<!-- #endif -->
 		</lvv-popup>
 		<view class="cell-group margin-cell-group">
@@ -217,48 +177,49 @@
 				}, //购买倒计时
 				userToken: 0,
 				time: 0,
-				order_id:'',//订单号
-				orderInfo:{},
-                shareUrl: '/pages/share/jump'
+				order_id: '', //订单号
+				orderInfo: {},
+				shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
-			if(options.order_id){
+			if (options.order_id) {
 				this.order_id = options.order_id;
-			}else{
+			} else {
 				this.$common.errorToShow('参数错误');
 			}
-			let teamInfo,orderInfo,goodsInfo
-	
+			let teamInfo, orderInfo, goodsInfo
+
 			let pages = getCurrentPages()
 			let pre = pages[pages.length - 2]
-			if(typeof pre!='undefined'){
+			if (typeof pre != 'undefined') {
 				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 				teamInfo = pre.teamInfo
 				orderInfo = pre.orderInfo
 				// #endif
-				
+
 				// #ifdef MP-WEIXIN
 				teamInfo = pre.$vm.teamInfo
 				orderInfo = pre.$vm.orderInfo
 				// #endif
-				
+
 				// #ifdef MP-ALIPAY || MP-TOUTIAO
 				teamInfo = pre.data.teamInfo;
 				orderInfo = pre.data.orderInfo
 				// #endif
 			}
-			if(teamInfo && orderInfo){
+			if (teamInfo && orderInfo) {
 				this.teamInfo = teamInfo;
 				this.orderInfo = orderInfo;
 				this.goodsInfo = orderInfo.items[0];
-				
-			}else{
+
+			} else {
 				this.orderDetail();
 				this.getTeam();
 			}
-			let timestamp = Date.parse(new Date())/1000;
-			this.lasttime = this.$common.timeToDateObj(options.close_time-timestamp);
+			let timestamp = Date.parse(new Date()) / 1000;
+			this.lasttime = this.$common.timeToDateObj(options.close_time - timestamp);
+			console.log(this.lasttime);
 		},
 		computed: {
 			shareHref() {
@@ -280,48 +241,50 @@
 		},
 		methods: {
 			//拼团信息
-			getTeam(){
-				this.$api.getOrderPintuanTeamInfo({order_id:this.order_id},res=>{
+			getTeam() {
+				this.$api.getOrderPintuanTeamInfo({
+					order_id: this.order_id
+				}, res => {
 					if (res.status) {
-						
-					    this.teamInfo = {
-					        list:res.data.teams,
-							current_count:res.data.teams.length,
-					        people_number:res.data.people_number,
-					        team_nums:res.data.team_nums,//剩余
-					        close_time:res.data.close_time,//关闭时间
-							id:res.data.id,//拼团id
-							team_id:res.data.team_id,//拼团团队id
-							rule_id:res.data.rule_id,
-					    };
+
+						this.teamInfo = {
+							list: res.data.teams,
+							current_count: res.data.teams.length,
+							people_number: res.data.people_number,
+							team_nums: res.data.team_nums, //剩余
+							close_time: res.data.close_time, //关闭时间
+							id: res.data.id, //拼团id
+							team_id: res.data.team_id, //拼团团队id
+							rule_id: res.data.rule_id,
+						};
 						//console.log(this.lasttime);
-					}else{
-					    this.$common.errorToShow(res.msg)
+					} else {
+						this.$common.errorToShow(res.msg)
 					}
-					
+
 				});
 			},
 			//获取订单详情
-			orderDetail () {
-			    let _this = this
-			    let data = {
-			        order_id: _this.order_id
-			    }
-			    _this.$api.orderDetail(data, function(res) {
-			        if (res.status) {
-			            let data = res.data
+			orderDetail() {
+				let _this = this
+				let data = {
+					order_id: _this.order_id
+				}
+				_this.$api.orderDetail(data, function(res) {
+					if (res.status) {
+						let data = res.data
 						// 支付时间转换
 						if (data.ctime !== null) {
 							data.ctime = _this.$common.timeToDate(data.ctime)
 						}
 						
-			            _this.orderInfo = data
+						_this.orderInfo = data
 						_this.goodsInfo = data.items[0];
-					
-			        } else {
-			            _this.$common.errorToShow(res.msg)
-			        }
-			    })
+
+					} else {
+						_this.$common.errorToShow(res.msg)
+					}
+				})
 			},
 			// 关闭弹出层
 			close() {
@@ -357,47 +320,47 @@
 			closeShare() {
 				this.$refs.share.close();
 			},
-            //获取分享URL
-            getShareUrl() {
-                let data = {
-                    client: 2,
-                    url: "/pages/share/jump",
-                    type: 1,
-                    page: 3,
-                    params: {
-                        goods_id: this.goodsInfo.goods_id,
-						group_id:this.teamInfo.rule_id,
-                        team_id: this.teamInfo.list[0].team_id
-                    }
-                };
-                let userToken = this.$db.get('userToken');
-                if (userToken && userToken != '') {
-                	data['token'] = userToken;
-                }
-                this.$api.share(data, res => {
-                    this.shareUrl = res.data
-                });
-            }
+			//获取分享URL
+			getShareUrl() {
+				let data = {
+					client: 2,
+					url: "/pages/share/jump",
+					type: 1,
+					page: 3,
+					params: {
+						goods_id: this.goodsInfo.goods_id,
+						group_id: this.teamInfo.rule_id,
+						team_id: this.teamInfo.list[0].team_id
+					}
+				};
+				let userToken = this.$db.get('userToken');
+				if (userToken && userToken != '') {
+					data['token'] = userToken;
+				}
+				this.$api.share(data, res => {
+					this.shareUrl = res.data
+				});
+			}
 		},
-        watch:{
-            teamInfo: {
-                handler () {
-                    this.getShareUrl();
-                },
-                deep: true
-            }
-        },
+		watch: {
+			teamInfo: {
+				handler() {
+					this.getShareUrl();
+				},
+				deep: true
+			}
+		},
 		//分享
 		onShareAppMessage() {
-            return {
-			 	title: this.goodsInfo.name,
-			 	// #ifdef MP-ALIPAY
-			 	desc: this.goodsInfo.brief,
-			 	// #endif
-			 	imageUrl: this.goodsInfo.image_url,
-			 	path: this.shareUrl
-			 }
-		 }
+			return {
+				title: this.goodsInfo.name,
+				// #ifdef MP-ALIPAY
+				desc: this.goodsInfo.brief,
+				// #endif
+				imageUrl: this.goodsInfo.image_url,
+				path: this.shareUrl
+			}
+		}
 	}
 </script>
 
@@ -407,15 +370,18 @@
 		background-color: #fff;
 		padding: 20upx 26upx;
 	}
+
 	.ig-top-t,
 	.ig-top-m {
 		margin-bottom: 20upx;
 	}
+
 	.ig-top-t>view {
 		display: inline-block;
 		padding: 0 10upx;
 		color: #999;
 	}
+
 	.user-head-img-c {
 		position: relative;
 		width: 80upx;
@@ -426,6 +392,7 @@
 		display: inline-block;
 		border: 1px solid #f3f3f3;
 	}
+
 	.user-head-img-tip {
 		position: absolute;
 		top: -6upx;
@@ -439,14 +406,17 @@
 		border-radius: 10upx;
 		transform: scale(.8);
 	}
+
 	.user-head-img-c .user-head-img {
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
 	}
+
 	.user-head-img-c:first-child {
 		border: 1px solid #FF7159;
 	}
+
 	.uhihn {
 		width: 80upx;
 		height: 80upx;
@@ -459,35 +429,42 @@
 		box-sizing: border-box;
 		position: relative;
 	}
+
 	.uhihn>text {
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
 	}
+
 	.igtb-top {
 		font-size: 32upx;
 		color: #333;
 		margin-bottom: 16upx;
 	}
+
 	.igtb-mid {
 		margin-bottom: 16upx;
 	}
+
 	.igtb-mid .btn {
 		width: 100%;
 		background-color: #FF7159;
 		color: #fff;
 	}
+
 	.igtb-bot {
 		font-size: 24upx;
 		color: #666;
 	}
+
 	.cell-ft-text {
 		max-width: 520upx;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+
 	.group-notice .cell-ft-text {
 		color: #999;
 		margin-left: 20upx;

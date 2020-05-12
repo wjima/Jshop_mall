@@ -195,6 +195,7 @@
 						this.hasCoupon=true
 					}
 				}else{
+					console.log(this.data)
 					switch(this.data.page) {
 						case '1': //首页
 							this.gotoIndex();

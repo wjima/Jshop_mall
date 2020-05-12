@@ -383,7 +383,10 @@ class PosterShare extends QrShare implements BaseShare
      */
     private function mark($data, $url, $filename)
     {
-        $file_url = "static/poster/".$filename.".png";
+        $folder = "static".DS."poster";
+        is_dir("static/poster/") OR mkdir($folder, 0777, true);
+        $file_url = $folder.DS.$filename.".png";
+
         if (!isset($this->c['page_'.$data['page']])) {
             return false;
         }
@@ -524,28 +527,28 @@ class PosterShare extends QrShare implements BaseShare
             return false;
         }
         $goodsModel = new Goods();
-        $info = $goodsModel->field('name,image_id,price')
-            ->where('id', $data['params']['goods_id'])
-            ->find();
+        $info       = $goodsModel->getGoodsDetial($data['params']['goods_id'], 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
+
         if (!$info) {
             unset($this->c['page_3']['image'][0]);
             return false;
         }
-        $this->c['page_3']['word'][0]['string'] = $info['name'];
-        $this->c['page_3']['word'][2]['string'] = "原价：￥".$info['price'];
-        $this->c['page_3']['image'][0]['src'] = _sImage($info['image_id']);
-        $this->c['page_3']['image'][1]['src'] = $url;
+        $this->c['page_3']['word'][0]['string'] = $info['data']['name'];
+        $this->c['page_3']['word'][2]['string'] = "原价：￥" . $info['data']['product']['price'];
+        $this->c['page_3']['image'][0]['src']   = _sImage($info['data']['image_id']);
+        $this->c['page_3']['image'][1]['src']   = $url;
 
         $pintuanGoodsModel = new PintuanGoods();
-        $params = $pintuanGoodsModel->field('rule_id')
+        $params            = $pintuanGoodsModel->field('rule_id')
             ->where('goods_id', '=', $data['params']['goods_id'])
             ->find();
-        $pintuanRuleModel = new PintuanRule();
-        $pintuan = $pintuanRuleModel->field('discount_amount')
+        $pintuanRuleModel  = new PintuanRule();
+        $pintuan           = $pintuanRuleModel->field('discount_amount')
             ->where('id', '=', $params['rule_id'])
             ->find();
-        $nowPrice = bcsub($info['price'], $pintuan['discount_amount'], 2);
-        $this->c['page_3']['word'][1]['string'] = "￥".$nowPrice;
+
+        $nowPrice                               = bcsub($info['data']['product']['price'], $pintuan['discount_amount'], 2);
+        $this->c['page_3']['word'][1]['string'] = "￥" . $nowPrice;
         return true;
     }
 

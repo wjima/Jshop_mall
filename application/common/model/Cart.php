@@ -387,8 +387,6 @@ class Cart extends Common
             }
         }
 
-        //echo json_encode($result['data']['list']);exit;
-
         //门店订单，强制无运费
         if ($delivery_type == 2) {
             $free_freight = true;
@@ -401,6 +399,9 @@ class Cart extends Common
         } elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
             $promotionModel = new Promotion();
             $result['data'] = $promotionModel->toPromotion($result['data'], $order_type);
+        }elseif($order_type == self::TYPE_PINTUAN){//拼团也计算促销信息
+            $promotionModel = new Promotion();
+            $result['data'] = $promotionModel->toPromotion($result['data']);
         }
 
         //运费判断

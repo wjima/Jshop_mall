@@ -1763,7 +1763,7 @@ function del_dir_and_file($dirName,$subdir = true)
         while (false !== ($item = readdir($handle))) {
             if ($item != "." && $item != "..") {
                 if (is_dir("$dirName/$item"))
-                    $this->delDirAndFile("$dirName/$item", false);
+                    del_dir_and_file("$dirName/$item", false);
                 else
                     @unlink("$dirName/$item");
             }

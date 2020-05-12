@@ -37,26 +37,19 @@ class User extends Manage
      */
     public function pointLog()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
-        $this->view->engine->layout(false);
-        $user_id = input('user_id');
+        $user_id = input('user_id','0');
         $flag = input('flag', 'false');
 
         if($flag == 'true')
         {
+            $params = input();
             $userPointLog = new UserPointLog();
-            return $userPointLog->pointLogList($user_id, false, input('page', 1), input('limit', 20));
+            return $userPointLog->pointLogList($user_id, $params['type'], input('page', 1), input('limit', 20),$params);
         }
-
+        $type = config('params.user_point_log.type');
+        $this->assign('type', $type);
         $this->assign('user_id', $user_id);
-        $result['status'] = true;
-        $result['msg'] = '获取成功';
-        $result['data'] = $this->fetch('pointLog');
-        return $result;
+        return $this->fetch('pointLog');
     }
 
 

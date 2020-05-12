@@ -283,7 +283,7 @@ class UserPointLog extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function pointLogList($user_id, $type = false, $page = 1, $limit = 20)
+    public function pointLogList($user_id, $type = false, $page = 1, $limit = 20,$params = [])
     {
         $return = [
             'status' => false,
@@ -295,9 +295,28 @@ class UserPointLog extends Common
         if ($type) {
             $where[] = ['type', 'eq', $type];
         }
-        $where[] = ['user_id', 'eq', $user_id];
+        if($user_id){
+            $where[] = ['user_id', 'eq', $user_id];
+        }
 
-        $res = $this->field('id, type, num, balance, remarks, ctime')
+        if($params){
+            if(isset($params['mobile']) && !empty($params['mobile']) && !$user_id){
+                $user_id_search = get_user_id($params['mobile']);
+                if($user_id_search){
+                    $where[] = ['user_id', 'eq', $user_id_search];
+                }
+            }
+            if(isset($params['date']) && !empty($params['date'])){
+                $date_string = $params['date'];
+                $date_array = explode(' 到 ', urldecode($date_string));
+                $sdate = strtotime($date_array[0] . ' 00:00:00');
+                $edate = strtotime($date_array[1] . ' 23:59:59');
+                $where[] = ['ctime', ['>=', $sdate], ['<=', $edate], 'and'];
+            }
+
+        }
+
+        $res = $this->field('id, type, num, balance, remarks, ctime,user_id')
             ->where($where)
             ->order('ctime', 'desc')
             ->page($page, $limit)
@@ -315,6 +334,7 @@ class UserPointLog extends Common
                 foreach ($return['data'] as &$v) {
                     $v['type']  = config('params.user_point_log')['type'][$v['type']];
                     $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
+                    $v['username'] = get_user_info($v['user_id'],'showname');
                 }
             } else {
                 $return['msg'] = '暂无积分记录';

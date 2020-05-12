@@ -383,7 +383,10 @@ class PosterShare extends QrShare implements BaseShare
      */
     private function mark($data, $url, $filename)
     {
-        $file_url = "static/poster/".$filename.".png";
+        $folder = "static".DS."poster";
+        is_dir("static/poster/") OR mkdir($folder, 0777, true);
+        $file_url = $folder.DS.$filename.".png";
+
         if (!isset($this->c['page_'.$data['page']])) {
             return false;
         }

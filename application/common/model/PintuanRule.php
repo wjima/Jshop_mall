@@ -296,7 +296,7 @@ class PintuanRule extends Common{
 
             $list[$k]['products']['price'] -= $pinfo['discount_amount'];
             if($list[$k]['products']['price'] < 0){
-                return error_code(10000);
+                $list[$k]['products']['price'] = 0;
             }
         }
         $result['status'] = true;

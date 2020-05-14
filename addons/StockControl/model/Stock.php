@@ -58,6 +58,7 @@ class Stock extends Common
             $res['data'] = 0;
             return $res;
         }
+        $o_stock = $products['stock'];
         $nums = $stock-$products['stock'];
         if($nums == 0 ) {
             $res['status'] = true;
@@ -96,7 +97,7 @@ class Stock extends Common
         }catch (\Throwable $e){
             Db::rollback();
             $res['msg'] = $e->getMessage();
-            $res['data'] = $products['stock'];
+            $res['data'] = $o_stock;
             return $res;
         }
         $res['status'] = true;

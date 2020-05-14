@@ -13,7 +13,7 @@ CREATE TABLE `jshop_stock_log` (
   `stock_id` varchar(20) NOT NULL COMMENT '库存单号',
   `product_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '货品ID',
   `goods_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '商品ID',
-  `nums` int(11) unsigned DEFAULT '0' COMMENT '库存',
+  `nums` int(11)  DEFAULT '0' COMMENT '库存',
    `sn` varchar(30) DEFAULT NULL COMMENT '货品编码',
   `bn` varchar(30) DEFAULT NULL COMMENT '商品编码',
   `goods_name` varchar(200) DEFAULT NULL COMMENT '商品名称',

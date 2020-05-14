@@ -82,7 +82,7 @@
 					<view class='cell-item-hd'>
 						<view v-if="teamInfo.status==1" class='cell-hd-title'>待拼团，还差{{ teamInfo.team_nums || ''}}人</view>
 						<view v-else-if="teamInfo.status==2" class='cell-hd-title'>拼团成功</view>
-						<view v-else-if="teamInfo.status==3" class='cell-hd-title'>拼团失败</view>
+						<view v-else-if="teamInfo.status==3" class='cell-hd-title'>拼团失败，拼团已结束</view>
 					</view>
 				</view>
 				<view class="group-swiper">

@@ -292,7 +292,6 @@ class PintuanRecord extends Model{
             $team_id = $info['team_id'];
         }
 
-
         //根据team_id取发起团的信息
         $first_team = $this->where('id',$team_id)->find();
         if(!$first_team){
@@ -311,8 +310,6 @@ class PintuanRecord extends Model{
         //计算还剩几个人拼成功
         $first_team['team_nums'] = count($first_team['teams']);
         $params = json_decode($first_team['params'],true);
-
-
 
         if($first_team['team_nums'] < $params['people_number']){
             $first_team['team_nums'] = $params['people_number'] - $first_team['team_nums'];
@@ -339,18 +336,20 @@ class PintuanRecord extends Model{
         $where[] = ['close_time', '<', $time];
         $where[] = ['status', 'eq', self::STATUS_COMM];
         $list = $this->where($where)->where("id = team_id")->select();
+
         if(!$list->isEmpty()){
             foreach($list as $v){
                 $team_list = $this->where('team_id',$v['id'])->select();
                 //更新拼团状态为失败
                 $data['status'] = self::STATUS_FAIL;
-                $this->save($data,['team_id'=>$v['id']]);
+                $pintuanRecordModel = new PintuanRecord();
+                $pintuanRecordModel->save($data,['team_id'=>$v['id']]);
 
                 if(!$team_list->isEmpty()){
                     foreach($team_list as $j){
-                        //给这个订单作废，如果有支付，并退款
-                        $this->cancleOrder($j['order_id']);
 
+                        //给这个订单作废，如果有支付，并退款
+                       $this->cancleOrder($j['order_id']);
                     }
                 }
             }

@@ -328,7 +328,7 @@ class PintuanRule extends Common{
             $goodsModel             = new Goods();
             $info                   = $goodsModel->getGoodsDetial($goods_id, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
             $nowPrice               = bcsub($info['data']['product']['price'], $pinfo['discount_amount'], 2);
-            $pinfo['pintuan_price'] = $nowPrice;
+            $pinfo['pintuan_price'] = $nowPrice > 0 ? $nowPrice : 0;
         }
         return $pinfo;
     }

@@ -1047,7 +1047,7 @@ class User extends Api
      */
     public function cash()
     {
-        $money = input('param.money');
+        $money = input('param.money/f','0','remove_xss');
         $bankcard_id = input('param.cardId');
         if (!$money) return error_code(11018);
         if (!$bankcard_id) return error_code(11017);

@@ -1460,16 +1460,18 @@ class Order extends Common
             $re = $this->save($data, $where);
             if (!$re) {
                 $result['msg'] = "确认收货失败";
+                Db::rollback();
+                return $result;
+            }else{
+                //订单记录
+                $orderLog = new OrderLog();
+                $orderLog->addLog($order_id, $user_id, $orderLog::LOG_TYPE_SIGN, "确认收货成功", $where);
+                $result['status'] = true;
             }
 
             //修改发货单,如果有为确认收货的发货单，那么给他们回传上去确认收货时间
 //            $billDeliveryModel = new BillDelivery();
 //            $billDeliveryModel->confirm($order_id);
-
-            //订单记录
-            $orderLog = new OrderLog();
-            $orderLog->addLog($order_id, $user_id, $orderLog::LOG_TYPE_SIGN, "确认收货成功", $where);
-            $result['status'] = true;
             Db::commit();
         } catch (\Exception $e) {
             Db::rollback();
@@ -1970,16 +1972,16 @@ class Order extends Common
     public function autoSign($setting)
     {
         unset($where);
-        $where[] = ['pay_status', 'eq', self::PAY_STATUS_YES];
-        $where[] = ['ship_status', 'eq', self::SHIP_STATUS_YES];
+        $where[] = ['pay_status', 'neq', self::PAY_STATUS_NO];
+        $where[] = ['ship_status', 'neq', self::SHIP_STATUS_NO];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $where[] = ['utime', '<=', time() - $setting * 86400];
+        $where[] = ['confirm', 'neq', self::CONFIRM_RECEIPT];
 
         unset($order_list);
-        $order_list = $this->field('order_id,user_id,pay_status,ship_status,status,utime')
+        $order_list = $this->field('order_id,user_id,pay_status,ship_status,status,utime,confirm')
             ->where($where)
             ->select();
-
         if (count($order_list) > 0) {
             foreach ($order_list as $v) {
                 $this->confirm($v['order_id']);

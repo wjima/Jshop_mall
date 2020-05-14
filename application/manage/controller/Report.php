@@ -289,7 +289,7 @@ class Report extends Manage
                     $start = strtotime($theDate[0]);
                     $end = strtotime($theDate[1])+60*60*24;
                 }else{
-                    return result;
+                    return $result;
                 }
             }else{
                 //默认今天
@@ -363,7 +363,7 @@ class Report extends Manage
                     $start = strtotime($theDate[0]);
                     $end = strtotime($theDate[1])+60*60*24;
                 }else{
-                    return result;
+                    return $result;
                 }
             }else{
                 //默认今天

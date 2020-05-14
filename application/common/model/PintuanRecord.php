@@ -200,50 +200,59 @@ class PintuanRecord extends Model{
      * @param int $limit
      * @return array
      */
-    public function getRecord($rule_id, $goods_id,$status=0,$page = 1, $limit = 10){
-        $result = [
+    public function getRecord($rule_id, $goods_id, $status = 0, $page = 1, $limit = 10)
+    {
+        $result           = [
             'status' => false,
-            'data' => [],
-            'msg' => '',
+            'data'   => [],
+            'msg'    => '',
         ];
         $pintuanRuleModel = new PintuanRule();
-        $pinfo = $pintuanRuleModel->where('id',$rule_id)->find();
-        if(!$pinfo){
+        $pinfo            = $pintuanRuleModel->where('id', $rule_id)->find();
+        if (!$pinfo) {
             return error_code(10000);
         }
 
+        $orderModel = new Order();
 
-
-        if($status != 0){
-            $where[] = ['status', 'eq', $status];
-            if($status == 1){       //如果取的是当前正在进行的团的话，这里取还没有结束的团记录，
-                $where[] = ['close_time','>',time()];
+        if ($status != 0) {
+            $where[] = ['pr.status', 'eq', $status];
+            if ($status == 1) {       //如果取的是当前正在进行的团的话，这里取还没有结束的团记录，
+                $where[] = ['pr.close_time', '>', time()];
             }
         }
-        $where[] = ['rule_id', 'eq', $rule_id];
-        $where[] = ['goods_id', 'eq', $goods_id];
+        $where[] = ['pr.rule_id', 'eq', $rule_id];
+        $where[] = ['pr.goods_id', 'eq', $goods_id];
+        $where[] = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
 
-        $data = $this->where($where)->where("id = team_id")->page($page,$limit)->select();
 
-        $count = $this->where($where)->count();
+        $data = $this
+            ->alias('pr')
+            ->join('order o', 'pr.order_id = o.order_id')
+            ->where($where)->where("pr.id = pr.team_id")->page($page, $limit)->select();
+
+        $count = $this
+            ->alias('pr')
+            ->join('order o', 'pr.order_id = o.order_id')
+            ->where($where)->count();
 
         if (!$data->isEmpty()) {
             foreach ($data as $k => $v) {
-                $data[$k]['user_avatar'] = _sImage(get_user_info($v['user_id'],'avatar'));
-                $data[$k]['nickname'] = get_user_info($v['user_id'],'nickname');
+                $data[$k]['user_avatar'] = _sImage(get_user_info($v['user_id'], 'avatar'));
+                $data[$k]['nickname']    = get_user_info($v['user_id'], 'nickname');
                 //获取拼团团队记录
-                $where1 = [];
-                $where1[] = ['team_id', 'eq', $v['team_id']];
+                $where1            = [];
+                $where1[]          = ['team_id', 'eq', $v['team_id']];
                 $data[$k]['teams'] = $this->where($where1)->select();
-                foreach($data[$k]['teams'] as $i => $j){
-                    $data[$k]['teams'][$i]['user_avatar'] = _sImage(get_user_info($j['user_id'],'avatar'));
-                    $data[$k]['teams'][$i]['nickname'] = get_user_info($j['user_id'],'nickname');
+                foreach ($data[$k]['teams'] as $i => $j) {
+                    $data[$k]['teams'][$i]['user_avatar'] = _sImage(get_user_info($j['user_id'], 'avatar'));
+                    $data[$k]['teams'][$i]['nickname']    = get_user_info($j['user_id'], 'nickname');
                 }
                 //计算还剩几个人拼成功
                 $data[$k]['team_nums'] = count($data[$k]['teams']);
-                if($data[$k]['team_nums'] < $pinfo['people_number']){
+                if ($data[$k]['team_nums'] < $pinfo['people_number']) {
                     $data[$k]['team_nums'] = $pinfo['people_number'] - $data[$k]['team_nums'];
-                }else{
+                } else {
                     unset($data[$k]);
                 }
 

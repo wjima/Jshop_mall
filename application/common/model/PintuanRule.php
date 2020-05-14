@@ -248,7 +248,7 @@ class PintuanRule extends Common{
         $orderModel         = new Order();
         $condition['stime'] = $pinfo['stime'];
         $condition['etime'] = $pinfo['etime'];
-        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $condition, $orderModel::ORDER_TYPE_PINTUAN);
+        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $pinfo, $orderModel::ORDER_TYPE_PINTUAN);
        
         if (isset($pinfo['max_goods_nums']) && $pinfo['max_goods_nums'] != 0) {
             if (($check_order['data']['total_orders'] + $nums) > $pinfo['max_goods_nums']) {

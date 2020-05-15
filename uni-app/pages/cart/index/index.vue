@@ -30,8 +30,11 @@
 									<view class="goods-price red-price">￥{{ item.products.price }}</view>
 								</view>
 								<view class="romotion-tip" v-if="item.products.promotion_list">
-									<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k" :class="v.type !== 2 ? 'bg-gray' : ''">
+									<!-- <view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k" :class="v.type !== 2 ? 'bg-gray' : ''">
 										{{ v.name }}
+									</view> -->
+									<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k" >
+										{{ v }}
 									</view>
 								</view>
 								<view class="goods-item-c">
@@ -242,7 +245,7 @@ export default {
 			for (let i in data.promotion_list) {
 				n++;
 			}
-
+			// console.log(data.promotion_list);
 			_this.goSettlement = goSettlement;
 			_this.isLoad = isLoad;
 			_this.cartNums = n;
@@ -325,10 +328,12 @@ export default {
 			_this.cartIds = cartIds;
 			_this.cartData = cartData;
 			if (cartIds.length == 0) {
+				// console.log(111);
 				let cartData = _this.cartData;
-				for (let k in cartData.promotion_list) {
-					cartData.promotion_list[k].type = 1;
-				}
+				// for (let k in cartData.promotion_list) {
+				// 	cartData.promotion_list[k].type = 1;
+				// }
+				
 				cartData.goods_pmt = '0.00';
 				cartData.order_pmt = '0.00';
 				cartData.amount = '0.00';

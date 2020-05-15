@@ -55,9 +55,13 @@
 					</view>
 					<view class='cell-item-bd'>
 						<view class="romotion-tip">
-							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion"
+							<!-- <view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion"
 							 :key="index">
 								{{ item.name || ''}}
+							</view> -->
+							<view class="romotion-tip-item" v-for="(item, index) in promotion"
+							 :key="index">
+								{{ item || ''}}
 							</view>
 						</view>
 					</view>
@@ -450,7 +454,7 @@
 			this.getCartNums();
 			this.$api.shopConfig(res => {
 				this.config = res;
-				console.log(res)
+				// console.log(res)
 				this.goodsShowWord = res.goods_show_word;
 			});
 			var _this = this

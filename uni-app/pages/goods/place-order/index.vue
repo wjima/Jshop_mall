@@ -85,8 +85,12 @@
 							<view class="goods-price">￥{{ item.products.price || '' }}</view>
 						</view>
 						<view class="romotion-tip" v-if="item.products.promotion_list">
-							<view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
-							 :key="k">{{ v.name || '' }}</view>
+							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
+							 :key="k">{{ v.name || '' }}
+							</view> -->
+							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list"
+							 :key="k">{{ v || '' }}
+							</view>
 						</view>
 						<view class="goods-item-c">
 							<view class="goods-buy">

@@ -439,6 +439,7 @@ class Wx
 
     /**
      * 文字内容安全检测
+     * 微信免费
      * @param $content
      * @return bool
      */
@@ -465,7 +466,43 @@ class Wx
 
 
     /**
+     * 文字内容安全检测
+     * 珊瑚收费
+     * @param $content
+     * @return bool
+     */
+    public function msgSecCheckPay($content)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+        $curl = new Curl();
+        $url = 'https://api.weixin.qq.com/wxa/servicemarket?access_token='.$access_token;
+        $data = [
+            'service' => 'wxee446d7507c68b11',
+            'api' => 'msgSecCheck',
+            'client_msg_id' => md5($content.time().mt_rand(10000,99999)),
+            'data' => [
+                'Action' => 'TextApproval',
+                'Text' => $content
+            ]
+        ];
+        $data = json_encode($data);
+        $res = $curl->post($url, $data);
+        $flag = json_decode($res, true);
+        if ($flag['errcode'] == 0) {
+            $data = json_decode($flag['data'], true);
+            if(count($data['Response']['EvilTokens']) <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * 图片内容安全检测
+     * 微信免费
      * @param $img
      * @return bool
      */
@@ -489,6 +526,47 @@ class Wx
         $flag = json_decode($res,true);
         if ($flag['errcode'] == 0) {
             return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 图片内容安全检测
+     * 珊瑚收费
+     * @param $img
+     * @return bool
+     */
+    public function imgSecCheckPay($img)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+        $curl = new Curl();
+        $url = 'https://api.weixin.qq.com/wxa/servicemarket?access_token='.$access_token;
+        $data = [
+            'service' => 'wxee446d7507c68b11',
+            'api' => 'imgSecCheck',
+            'client_msg_id' => md5(time().mt_rand(1000000,9999999)),
+            'data' => [
+                'Action' => 'ImageModeration',
+                'Scenes' => [
+                    'PORN',
+                    'TERRORISM',
+                    'POLITICS',
+                    'TEXT'
+                ],
+                'ImageUrl' => $img
+            ]
+        ];
+        $data = json_encode($data);
+        $res = $curl->post($url, $data);
+        $flag = json_decode($res, true);
+        if ($flag['errcode'] == 0) {
+            $data = json_decode($flag['data'], true);
+            if ($data['Response']['Suggestion'] == 'PASS') {
+                return true;
+            }
         }
         return false;
     }

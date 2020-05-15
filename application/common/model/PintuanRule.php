@@ -248,7 +248,7 @@ class PintuanRule extends Common{
         $orderModel         = new Order();
         $condition['stime'] = $pinfo['stime'];
         $condition['etime'] = $pinfo['etime'];
-        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $condition, $orderModel::ORDER_TYPE_PINTUAN);
+        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $pinfo, $orderModel::ORDER_TYPE_PINTUAN);
        
         if (isset($pinfo['max_goods_nums']) && $pinfo['max_goods_nums'] != 0) {
             if (($check_order['data']['total_orders'] + $nums) > $pinfo['max_goods_nums']) {
@@ -296,7 +296,7 @@ class PintuanRule extends Common{
 
             $list[$k]['products']['price'] -= $pinfo['discount_amount'];
             if($list[$k]['products']['price'] < 0){
-                return error_code(10000);
+                $list[$k]['products']['price'] = 0;
             }
         }
         $result['status'] = true;
@@ -328,7 +328,7 @@ class PintuanRule extends Common{
             $goodsModel             = new Goods();
             $info                   = $goodsModel->getGoodsDetial($goods_id, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
             $nowPrice               = bcsub($info['data']['product']['price'], $pinfo['discount_amount'], 2);
-            $pinfo['pintuan_price'] = $nowPrice;
+            $pinfo['pintuan_price'] = $nowPrice > 0 ? $nowPrice : 0;
         }
         return $pinfo;
     }

@@ -155,12 +155,17 @@ class PintuanGoods extends Common
         if ($goodsInfo['data']['pintuan_price'] < 0) {
             $goodsInfo['data']['pintuan_price'] = 0;
         }
+        $orderModel = new Order();
         //取拼团记录
         $recordModel = new PintuanRecord();
         //多少人在拼
-        $rwhere[]                                 = ['rule_id', 'eq', $info['id']];
-        $rwhere[]                                 = ['goods_id', 'eq', $gid];
-        $goodsInfo['data']['pintuan_record_nums'] = $recordModel->where($rwhere)->count();
+        $rwhere[]                                 = ['pr.rule_id', 'eq', $info['id']];
+        $rwhere[]                                 = ['pr.goods_id', 'eq', $gid];
+        $rwhere[]                                 = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
+        $goodsInfo['data']['pintuan_record_nums'] = $recordModel
+            ->alias('pr')
+            ->join('order o', 'pr.order_id = o.order_id')
+            ->where($rwhere)->count();
 
 
         $goodsInfo['data']['pintuan_rule']['pintuan_start_status'] = 1;
@@ -180,7 +185,6 @@ class PintuanGoods extends Common
         $goodsInfo['data']['pintuan_record'] = $re['data'];
 
         //调整前台显示数量
-        $orderModel  = new Order();
         $check_order = $orderModel->findLimitOrder($goodsInfo['data']['product']['id'], 0, $info, $orderModel::ORDER_TYPE_PINTUAN);
         if (isset($info['max_goods_nums']) && $info['max_goods_nums'] != 0) {
             $goodsInfo['data']['stock'] = $info['max_goods_nums'];

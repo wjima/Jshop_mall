@@ -94,8 +94,13 @@ class Promotion extends Common
         $conditionModel        = new PromotionCondition();
         $where['promotion_id'] = $promotionInfo['id'];
         $conditionList         = $conditionModel->field('*')->where($where)->select();
-        //循环取出所有的促销条件，有一条不满足，就不行，就返回false
+        //循环取出所有的促销条件，有一条不满足，就不行，就返回false，没有促销条件也返回false
         $key = true;
+
+        // 一条促销条件没有，促销也不生效
+        if($conditionList->isEmpty()){
+            $key = false;
+        }
 
         foreach ($conditionList as $v) {
             $re = $conditionModel->check($v, $cart, $promotionInfo);

@@ -288,18 +288,7 @@
         //积分记录
         $(document).on('click', '.point', function () {
             var id = $(this).attr('data-id');
-            JsGet("{:url('manage/user/pointLog')}?user_id="+id+"&flag=false", function(e){
-                if(e.status){
-                    layer.open({
-                        type: 1,
-                        title: '用户积分记录',
-                        area: setpage(800,525), //宽高
-                        content: e.data
-                    });
-                }else{
-                    layer.msg(e.msg);
-                }
-            });
+            window.location.href = "{:url('manage/user/pointLog')}" + '?user_id=' + id;
         });
         //添加
         layui.form.on('submit(user-add)', function () {

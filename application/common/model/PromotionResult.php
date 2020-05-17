@@ -86,17 +86,10 @@ class PromotionResult extends Common
         if(!$this->code[$resultInfo['code']]){
             return false;
         }
-        $method = 'result_'.$resultInfo['code'];
-        $params = json_decode($resultInfo['params'],true);
-        //如果是订单促销就直接去判断促销条件，如果是商品促销，就循环订单明细
-        $this->$method($params,$cart,$promotionInfo);
-
-
-
         $params = json_decode($resultInfo['params'],true);
         $code = '\\org\\promotion\\result\\'.$this->code[$resultInfo['code']]['class'];
-        $condition =  new $code();
-        return $condition->jshop($params,$cart,$promotionInfo);
+        $result =  new $code();
+        return $result->jshop($params,$cart,$promotionInfo);
 
 
         return true;

@@ -8,36 +8,44 @@ class PromotionResult extends Common
 
         'GOODS_REDUCE' => [
             'name' => '指定商品减固定金额',
-            'type' => 'goods'
+            'type' => 'goods',
+            'class' => 'GoodsReduce',
         ],
         'GOODS_DISCOUNT' => [
             'name' => '指定商品打X折',
             'type' => 'goods',
+            'class' => 'GoodsDiscount'
         ],
         'GOODS_ONE_PRICE' => [
             'name' => '指定商品一口价',
             'type' => 'goods',
+            'class' => 'GoodsOnePrice'
         ],
         'ORDER_REDUCE' => [
             'name' => '订单减指定金额',
-            'type' => 'order'
+            'type' => 'order',
+            'class' => 'OrderReduce'
         ],
         'ORDER_DISCOUNT' => [
             'name' => '订单打X折',
             'type' => 'order',
+            'class' => 'OrderDiscount'
         ],
-        'ORDER_HALF_PRICE' => [
-            'name' => '指定商品满几件减指定金额',
-            'type' => 'order',
-        ],
-        'ORDER_GIVEAWAY' => [
-            'name' => '订单满赠商品',
-            'type' => 'order',
-        ],
-        'GOODS_GIVEAWAY' => [
-            'name' => '商品满赠商品',
-            'type' => 'goods',
-        ],
+//        'ORDER_HALF_PRICE' => [
+//            'name' => '指定商品满几件减指定金额',
+//            'type' => 'order',
+//            'class' => 'OrderHalfPrice'
+//        ],
+//        'ORDER_GIVEAWAY' => [
+//            'name' => '订单满赠商品',
+//            'type' => 'order',
+//            'class' => 'OrderGiveaway'
+//        ],
+//        'GOODS_GIVEAWAY' => [
+//            'name' => '商品满赠商品',
+//            'type' => 'goods',
+//            'class' => 'GoodsGiveaway'
+//        ],
     ];
 
 
@@ -75,175 +83,197 @@ class PromotionResult extends Common
     //去计算结果
     public function toResult($resultInfo,&$cart, $promotionInfo)
     {
-        if($this->code[$resultInfo['code']]){
-            $method = 'result_'.$resultInfo['code'];
-            $params = json_decode($resultInfo['params'],true);
-            //如果是订单促销就直接去判断促销条件，如果是商品促销，就循环订单明细
-            if($this->code[$resultInfo['code']]['type'] == 'goods'){
-                $conditionModel = new PromotionCondition();
-                foreach($cart['list'] as $k => $v){
-                    $type = $conditionModel->goods_check($promotionInfo['id'],$v['products']['goods_id'],$v['nums']);
-                    if($type == 2){
-                        //到这里就说明此商品信息满足促销商品促销信息的条件，去计算结果
-                        //注意，在明细上面，就不细分促销的种类了，都放到一个上面，在订单上面才细分
-                        $promotionMoney = $this->$method($params,$cart['list'][$k],$promotionInfo);
-                        if($v['is_select']){
-                            //设置总的商品促销金额
-                            $cart['goods_pmt'] = bcadd($cart['goods_pmt'], $promotionMoney, 2);
-                            $cart['goods_amount'] = bcsub($cart['goods_amount'], $promotionMoney, 2);
-                            //设置总的价格
-                            $cart['amount'] = bcsub($cart['amount'], $promotionMoney, 2);
-                            //优惠券商品促销金额也加到订单上面，让这个字段标示实际的优惠金额
-                            if($promotionInfo['type'] == $promotionInfo::TYPE_COUPON){
-                                //优惠券促销金额
-                                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], $promotionMoney, 2);
-                            }
-                        }
-                    }
-                }
-                //商品促销可能做的比较狠，导致订单价格为负数了，这里判断一下，如果订单价格小于0了，就是0了
-                $cart['amount'] = $cart['amount']>0?$cart['amount']:0;
-            }else{
-                $this->$method($params,$cart,$promotionInfo);
-            }
+        if(!$this->code[$resultInfo['code']]){
+            return false;
         }
+        $method = 'result_'.$resultInfo['code'];
+        $params = json_decode($resultInfo['params'],true);
+        //如果是订单促销就直接去判断促销条件，如果是商品促销，就循环订单明细
+        $this->$method($params,$cart,$promotionInfo);
+
+
+
+        $params = json_decode($resultInfo['params'],true);
+        $code = '\\org\\promotion\\result\\'.$this->code[$resultInfo['code']]['class'];
+        $condition =  new $code();
+        return $condition->jshop($params,$cart,$promotionInfo);
+
+
         return true;
     }
+
+//    //去计算结果
+//    public function toResult($resultInfo,&$cart, $promotionInfo)
+//    {
+//        if($this->code[$resultInfo['code']]){
+//            $method = 'result_'.$resultInfo['code'];
+//            $params = json_decode($resultInfo['params'],true);
+//            //如果是订单促销就直接去判断促销条件，如果是商品促销，就循环订单明细
+//            if($this->code[$resultInfo['code']]['type'] == 'goods'){
+//                $conditionModel = new PromotionCondition();
+//                foreach($cart['list'] as $k => $v){
+//                    $type = $conditionModel->goods_check($promotionInfo['id'],$v['products']['goods_id'],$v['nums']);
+//                    if($type == 2){
+//                        //到这里就说明此商品信息满足促销商品促销信息的条件，去计算结果
+//                        //注意，在明细上面，就不细分促销的种类了，都放到一个上面，在订单上面才细分
+//                        $promotionMoney = $this->$method($params,$cart['list'][$k],$promotionInfo);
+//                        if($v['is_select']){
+//                            //设置总的商品促销金额
+//                            $cart['goods_pmt'] = bcadd($cart['goods_pmt'], $promotionMoney, 2);
+//                            $cart['goods_amount'] = bcsub($cart['goods_amount'], $promotionMoney, 2);
+//                            //设置总的价格
+//                            $cart['amount'] = bcsub($cart['amount'], $promotionMoney, 2);
+//                            //优惠券商品促销金额也加到订单上面，让这个字段标示实际的优惠金额
+//                            if($promotionInfo['type'] == $promotionInfo::TYPE_COUPON){
+//                                //优惠券促销金额
+//                                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], $promotionMoney, 2);
+//                            }
+//                        }
+//                    }
+//                }
+//                //商品促销可能做的比较狠，导致订单价格为负数了，这里判断一下，如果订单价格小于0了，就是0了
+//                $cart['amount'] = $cart['amount']>0?$cart['amount']:0;
+//            }else{
+//                $this->$method($params,$cart,$promotionInfo);
+//            }
+//        }
+//        return true;
+//    }
 
     //订单减固定金额
-    private function result_ORDER_REDUCE($params,&$cart,$promotionInfo)
-    {
-        //判断极端情况，减的太多，超过购物车的总金额了，那么就最多减到0
-        if($cart['amount'] < $params['money']){
-            $params['money'] = $cart['amount'];
-        }
-        //总价格修改
-        $cart['amount'] = bcsub($cart['amount'], $params['money'], 2);
-
-        switch ($promotionInfo['type']){
-            case $promotionInfo::TYPE_PROMOTION:
-                //总促销修改
-                $cart['order_pmt'] = bcadd($cart['order_pmt'], $params['money'], 2);
-
-                //设置促销列表
-                if(!isset($cart['promotion_list'][$promotionInfo['id']])){
-                    $cart['promotion_list'][$promotionInfo['id']] = [
-                        'name' => $promotionInfo['name'],
-                        'type' => 2
-                    ];
-                }
-                break;
-            case $promotionInfo::TYPE_COUPON:
-                //优惠券促销金额
-                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], $params['money'], 2);
-                break;
-        }
-        return true;
-    }
+//    private function result_ORDER_REDUCE($params,&$cart,$promotionInfo)
+//    {
+//        //判断极端情况，减的太多，超过购物车的总金额了，那么就最多减到0
+//        if($cart['amount'] < $params['money']){
+//            $params['money'] = $cart['amount'];
+//        }
+//        //总价格修改
+//        $cart['amount'] = bcsub($cart['amount'], $params['money'], 2);
+//
+//        switch ($promotionInfo['type']){
+//            case $promotionInfo::TYPE_PROMOTION:
+//                //总促销修改
+//                $cart['order_pmt'] = bcadd($cart['order_pmt'], $params['money'], 2);
+//
+//                //设置促销列表
+//                if(!isset($cart['promotion_list'][$promotionInfo['id']])){
+//                    $cart['promotion_list'][$promotionInfo['id']] = [
+//                        'name' => $promotionInfo['name'],
+//                        'type' => 2
+//                    ];
+//                }
+//                break;
+//            case $promotionInfo::TYPE_COUPON:
+//                //优惠券促销金额
+//                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], $params['money'], 2);
+//                break;
+//        }
+//        return true;
+//    }
     //订单打X折
-    private function result_ORDER_DISCOUNT($params,&$cart,$promotionInfo)
-    {
-        //判断参数是否设置的正确
-        if($params['discount'] >=10 || $params['discount'] <=0){
-            return true;
-        }
-        $order_amount = $cart['amount'];
-        //总价格修改
-        $cart['amount'] = bcdiv(bcmul(bcmul($cart['amount'],$params['discount'],3),10,2), 100, 2);
-        switch ($promotionInfo['type']){
-            case $promotionInfo::TYPE_PROMOTION:
-                //总促销修改
-                $cart['order_pmt'] = bcadd($cart['order_pmt'], bcsub($order_amount, $cart['amount'], 2), 2);
-
-                //设置促销列表
-                if(!isset($cart['promotion_list'][$promotionInfo['id']])){
-                    $cart['promotion_list'][$promotionInfo['id']] = [
-                        'name' => $promotionInfo['name'],
-                        'type' => 2
-                    ];
-                }
-                break;
-            case $promotionInfo::TYPE_COUPON:
-                //优惠券促销金额
-                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], bcsub($order_amount, $cart['amount'], 2), 2);
-                break;
-        }
-
-        return true;
-    }
+//    private function result_ORDER_DISCOUNT($params,&$cart,$promotionInfo)
+//    {
+//        //判断参数是否设置的正确
+//        if($params['discount'] >=10 || $params['discount'] <=0){
+//            return true;
+//        }
+//        $order_amount = $cart['amount'];
+//        //总价格修改
+//        $cart['amount'] = bcdiv(bcmul(bcmul($cart['amount'],$params['discount'],3),10,2), 100, 2);
+//        switch ($promotionInfo['type']){
+//            case $promotionInfo::TYPE_PROMOTION:
+//                //总促销修改
+//                $cart['order_pmt'] = bcadd($cart['order_pmt'], bcsub($order_amount, $cart['amount'], 2), 2);
+//
+//                //设置促销列表
+//                if(!isset($cart['promotion_list'][$promotionInfo['id']])){
+//                    $cart['promotion_list'][$promotionInfo['id']] = [
+//                        'name' => $promotionInfo['name'],
+//                        'type' => 2
+//                    ];
+//                }
+//                break;
+//            case $promotionInfo::TYPE_COUPON:
+//                //优惠券促销金额
+//                $cart['coupon_pmt'] = bcadd($cart['coupon_pmt'], bcsub($order_amount, $cart['amount'], 2), 2);
+//                break;
+//        }
+//
+//        return true;
+//    }
 
 
 
 
     //指定商品减固定金额
-    private function result_GOODS_REDUCE($params,&$v,$promotionInfo)
-    {
-        $promotionMoney = 0;
-
-        //判断极端情况，减的太多，超过商品单价了，那么就最多减到0
-        if($v['products']['price'] < $params['money']){
-            $params['money'] = $v['products']['price'];
-        }
-        $v['products']['price'] = bcsub($v['products']['price'], $params['money'], 2);
-
-        //此次商品促销一共优惠了多少钱
-        $promotionMoney = bcmul($v['nums'], $params['money'], 2);
-        //设置商品优惠总金额
-        if(!isset($v['products']['promotion_amount'])){
-            $v['products']['promotion_amount'] = 0;
-        }
-        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
-        //设置商品的实际销售金额（单品）
-        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
-
-        return $promotionMoney;
-    }
+//    private function result_GOODS_REDUCE($params,&$v,$promotionInfo)
+//    {
+//        $promotionMoney = 0;
+//
+//        //判断极端情况，减的太多，超过商品单价了，那么就最多减到0
+//        if($v['products']['price'] < $params['money']){
+//            $params['money'] = $v['products']['price'];
+//        }
+//        $v['products']['price'] = bcsub($v['products']['price'], $params['money'], 2);
+//
+//        //此次商品促销一共优惠了多少钱
+//        $promotionMoney = bcmul($v['nums'], $params['money'], 2);
+//        //设置商品优惠总金额
+//        if(!isset($v['products']['promotion_amount'])){
+//            $v['products']['promotion_amount'] = 0;
+//        }
+//        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
+//        //设置商品的实际销售金额（单品）
+//        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
+//
+//        return $promotionMoney;
+//    }
     //指定商品打X折
-    private function result_GOODS_DISCOUNT($params,&$v,$promotionInfo)
-    {
-        $promotionMoney = 0;
-
-        $goods_price = $v['products']['price'];
-        $v['products']['price'] = bcdiv(bcmul(bcmul($v['products']['price'], $params['discount'], 3), 10, 2), 100, 2);
-        $pmoney = bcsub($goods_price, $v['products']['price'], 2);        //单品优惠的金额
-
-        $promotionMoney = bcmul($v['nums'], $pmoney, 2);
-        //设置商品优惠总金额
-        if(!isset($v['products']['promotion_amount'])){
-            $v['products']['promotion_amount'] = 0;
-        }
-        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
-        //设置商品的实际销售总金额
-        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
-
-        return $promotionMoney;
-    }
+//    private function result_GOODS_DISCOUNT($params,&$v,$promotionInfo)
+//    {
+//        $promotionMoney = 0;
+//
+//        $goods_price = $v['products']['price'];
+//        $v['products']['price'] = bcdiv(bcmul(bcmul($v['products']['price'], $params['discount'], 3), 10, 2), 100, 2);
+//        $pmoney = bcsub($goods_price, $v['products']['price'], 2);        //单品优惠的金额
+//
+//        $promotionMoney = bcmul($v['nums'], $pmoney, 2);
+//        //设置商品优惠总金额
+//        if(!isset($v['products']['promotion_amount'])){
+//            $v['products']['promotion_amount'] = 0;
+//        }
+//        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
+//        //设置商品的实际销售总金额
+//        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
+//
+//        return $promotionMoney;
+//    }
 
     //商品一口价
-    private function result_GOODS_ONE_PRICE($params,&$v,$promotionInfo)
-    {
-        $promotionMoney = 0;
-
-        if($v['products']['price'] <= $params['money']){
-            return $promotionMoney;
-        }
-
-        $goods_price = $v['products']['price'];
-        $v['products']['price'] = bcdiv(bcmul($params['money'], 100, 2), 100, 2);
-        $pmoney = bcsub($goods_price, $v['products']['price'], 2);        //单品优惠的金额
-
-        $promotionMoney = bcmul($v['nums'], $pmoney, 2);
-
-        //设置商品优惠总金额
-        if(!isset($v['products']['promotion_amount'])){
-            $v['products']['promotion_amount'] = 0;
-        }
-        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
-        //设置商品的实际销售总金额
-        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
-
-        return $promotionMoney;
-    }
+//    private function result_GOODS_ONE_PRICE($params,&$v,$promotionInfo)
+//    {
+//        $promotionMoney = 0;
+//
+//        if($v['products']['price'] <= $params['money']){
+//            return $promotionMoney;
+//        }
+//
+//        $goods_price = $v['products']['price'];
+//        $v['products']['price'] = bcdiv(bcmul($params['money'], 100, 2), 100, 2);
+//        $pmoney = bcsub($goods_price, $v['products']['price'], 2);        //单品优惠的金额
+//
+//        $promotionMoney = bcmul($v['nums'], $pmoney, 2);
+//
+//        //设置商品优惠总金额
+//        if(!isset($v['products']['promotion_amount'])){
+//            $v['products']['promotion_amount'] = 0;
+//        }
+//        $v['products']['promotion_amount'] = bcadd($v['products']['promotion_amount'], $promotionMoney, 2);
+//        //设置商品的实际销售总金额
+//        $v['products']['amount'] = bcsub($v['products']['amount'], $promotionMoney, 2);
+//
+//        return $promotionMoney;
+//    }
 
 
     /**
@@ -407,93 +437,98 @@ class PromotionResult extends Common
         if(!isset($this->code[$data['code']])){
             return error_code(15005);
         }
-//        dump($data);
-//        die();
-        switch ($data['code'])
-        {
-            case 'GOODS_REDUCE':
-                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
-                    $result['msg'] = "请正确输入金额，最多2位小数";
-                    return $result;
-                }
-                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
-                    $result['msg'] = "请输入金额";
-                    return $result;
-                }
-                break;
-            case 'GOODS_DISCOUNT':
-                if(!preg_match("/^[0-9]+(.[0-9]{1})?$/",$data['params']['discount'])){
-                    $result['msg'] = "请正确输入折扣，最多1位小数";
-                    return $result;
-                }
-                if($data['params']['discount'] == '' || $data['params']['discount'] == '0'){
-                    $result['msg'] = "请输入0-10之间的数字";
-                    return $result;
-                }
-                if(!($data['params']['discount']>0 && $data['params']['discount'] < 10)){
-                    $result['msg'] = "请输入0-10之间的数字";
-                    return $result;
-                }
 
-                break;
-            case 'GOODS_ONE_PRICE':
-                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
-                    $result['msg'] = "请正确输入金额，最多2位小数";
-                    return $result;
-                }
-                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
-                    $result['msg'] = "请输入金额";
-                    return $result;
-                }
-                break;
-            case 'ORDER_REDUCE':
-                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
-                    $result['msg'] = "请正确输入金额，最多2位小数";
-                    return $result;
-                }
-                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
-                    $result['msg'] = "请输入金额";
-                    return $result;
-                }
-                break;
-            case 'ORDER_DISCOUNT':
-                if(!preg_match("/^[0-9]+(.[0-9]{1})?$/",$data['params']['discount'])){
-                    $result['msg'] = "请正确输入折扣，最多1位小数";
-                    return $result;
-                }
-                if($data['params']['discount'] == '' || $data['params']['discount'] == '0'){
-                    $result['msg'] = "请输入0-10之间的数字";
-                    return $result;
-                }
-                if(!($data['params']['discount']>0 && $data['params']['discount'] < 10)){
-                    $result['msg'] = "请输入0-10之间的数字";
-                    return $result;
-                }
-                break;
-            case 'ORDER_HALF_PRICE':
-                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
-                    $result['msg'] = "请正确输入金额，最多2位小数";
-                    return $result;
-                }
-                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
-                    $result['msg'] = "请输入金额";
-                    return $result;
-                }
+        $code = '\\org\\promotion\\result\\'.$this->code[$data['code']]['class'];;
+        $result =  new $code();
+        return $result->manageCheck($data['params']);
 
-                if($data['params']['num'] == '' || $data['params']['num'] == '0'){
-                    $result['msg'] = "请输入大于0的数字";
-                    return $result;
-                }
-                if(!($data['params']['num']>0)){
-                    $result['msg'] = "请输入大于0的数字";
-                    return $result;
-                }
-                break;
-        }
-        $result['status'] = true;
-
-
-        return $result;
+//
+//
+//        switch ($data['code'])
+//        {
+//            case 'GOODS_REDUCE':
+//                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
+//                    $result['msg'] = "请正确输入金额，最多2位小数";
+//                    return $result;
+//                }
+//                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
+//                    $result['msg'] = "请输入金额";
+//                    return $result;
+//                }
+//                break;
+//            case 'GOODS_DISCOUNT':
+//                if(!preg_match("/^[0-9]+(.[0-9]{1})?$/",$data['params']['discount'])){
+//                    $result['msg'] = "请正确输入折扣，最多1位小数";
+//                    return $result;
+//                }
+//                if($data['params']['discount'] == '' || $data['params']['discount'] == '0'){
+//                    $result['msg'] = "请输入0-10之间的数字";
+//                    return $result;
+//                }
+//                if(!($data['params']['discount']>0 && $data['params']['discount'] < 10)){
+//                    $result['msg'] = "请输入0-10之间的数字";
+//                    return $result;
+//                }
+//
+//                break;
+//            case 'GOODS_ONE_PRICE':
+//                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
+//                    $result['msg'] = "请正确输入金额，最多2位小数";
+//                    return $result;
+//                }
+//                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
+//                    $result['msg'] = "请输入金额";
+//                    return $result;
+//                }
+//                break;
+//            case 'ORDER_REDUCE':
+//                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
+//                    $result['msg'] = "请正确输入金额，最多2位小数";
+//                    return $result;
+//                }
+//                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
+//                    $result['msg'] = "请输入金额";
+//                    return $result;
+//                }
+//                break;
+//            case 'ORDER_DISCOUNT':
+//                if(!preg_match("/^[0-9]+(.[0-9]{1})?$/",$data['params']['discount'])){
+//                    $result['msg'] = "请正确输入折扣，最多1位小数";
+//                    return $result;
+//                }
+//                if($data['params']['discount'] == '' || $data['params']['discount'] == '0'){
+//                    $result['msg'] = "请输入0-10之间的数字";
+//                    return $result;
+//                }
+//                if(!($data['params']['discount']>0 && $data['params']['discount'] < 10)){
+//                    $result['msg'] = "请输入0-10之间的数字";
+//                    return $result;
+//                }
+//                break;
+//            case 'ORDER_HALF_PRICE':
+//                if(!preg_match("/^[0-9]+(.[0-9]{1,2})?$/",$data['params']['money'])){
+//                    $result['msg'] = "请正确输入金额，最多2位小数";
+//                    return $result;
+//                }
+//                if($data['params']['money'] == '' || $data['params']['money'] == '0'){
+//                    $result['msg'] = "请输入金额";
+//                    return $result;
+//                }
+//
+//                if($data['params']['num'] == '' || $data['params']['num'] == '0'){
+//                    $result['msg'] = "请输入大于0的数字";
+//                    return $result;
+//                }
+//                if(!($data['params']['num']>0)){
+//                    $result['msg'] = "请输入大于0的数字";
+//                    return $result;
+//                }
+//                break;
+//        }
+//        $result['status'] = true;
+//
+//
+//        return $result;
     }
 
 

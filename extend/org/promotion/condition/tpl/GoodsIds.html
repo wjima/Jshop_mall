@@ -12,13 +12,6 @@
             {Jshop:sellergoods value="$params.goods_id" num="100" name="params[goods_id]" /}
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">商品数量：</label>
-        <div class="layui-input-inline seller-inline-2">
-            <input name="params[nums]" lay-verify="title" autocomplete="off" value="{:setDefault($params.nums,1)}" placeholder="商品数量" class="layui-input" type="text">
-        </div>
-        <div class="layui-form-mid layui-word-aux">大于等于此商品数量才满足条件</div>
-    </div>
 </form>
 <script>
     layui.use('form', function(){

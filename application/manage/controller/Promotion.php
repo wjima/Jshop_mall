@@ -358,7 +358,7 @@ class Promotion extends Manage
 
         return [
             'status' => true,
-            'data'   => $this->fetch('promotion/condition/' . $code),
+            'data'   => $this->fetch("../extend/org/promotion/condition/tpl/".$conditionModel->code[$code]['class'].".html"),
             'msg'    => ''
         ];
     }
@@ -470,7 +470,7 @@ class Promotion extends Manage
 
         return [
             'status' => true,
-            'data'   => $this->fetch('promotion/result/' . $code),
+            'data'   => $this->fetch("../extend/org/promotion/result/tpl/".$resultModel->code[$code]['class'].".html"),
             'msg'    => ''
         ];
     }

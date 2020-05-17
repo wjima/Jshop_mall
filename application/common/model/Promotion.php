@@ -27,32 +27,28 @@ class Promotion extends Common
     const ACTIVITY_STATUS_END = 3;//促销活动已结束
 
     //购物车的数据传过来，然后去算促销
-    public function toPromotion($cart, $type = self::TYPE_PROMOTION)
+    public function toPromotion(&$cart, $type = self::TYPE_PROMOTION)
     {
+
+        //团购秒杀不会走到这里,团购秒杀直接调用setPromotion方法，这里做个判断吧，防止出现异常情况
+        if ($type == self::TYPE_GROUP || $type == self::TYPE_SKILL) {
+            return true;
+        }
+
         //按照权重取所有已生效的促销列表
         $where[] = ['status', 'eq', self::STATUS_OPEN];
-
-        if ($type == self::TYPE_GROUP || $type == self::TYPE_SKILL) {//todo 团购秒杀不管时间，以后增加其他条件
-
-        } else {
-            $where[] = ['stime', 'lt', time()];
-            $where[] = ['etime', 'gt', time()];
-        }
+        $where[] = ['stime', 'lt', time()];
+        $where[] = ['etime', 'gt', time()];
         $where[] = ['type', 'eq', $type];
         $list    = $this->where($where)->order('sort', 'asc')->select();
         foreach ($list as $v) {
             $condition = $this->setPromotion($v, $cart);
-            //团购秒杀不排他
-            if ($type == self::TYPE_GROUP || $type == self::TYPE_SKILL) {
-
-            } else {
-                //如果当前促销应用了，并且是排他，就跳出循环，不执行下面的促销了
-                if ($v['exclusive'] == self::EXCLUSIVE_YES && $condition) {
-                    break;
-                }
+            //如果当前促销应用了，并且是排他，就跳出循环，不执行下面的促销了
+            if ($v['exclusive'] == self::EXCLUSIVE_YES && $condition) {
+                break;
             }
         }
-        return $cart;
+        return true;
     }
 
     //购物车的数据传过来，然后去算优惠券
@@ -89,7 +85,7 @@ class Promotion extends Common
 
 
     //根据促销信息，去计算购物车的促销情况
-    private function setPromotion($promotionInfo, &$cart)
+    public function setPromotion($promotionInfo, &$cart)
     {
         $conditionModel        = new PromotionCondition();
         $where['promotion_id'] = $promotionInfo['id'];
@@ -98,18 +94,18 @@ class Promotion extends Common
         $key = true;
 
         // 一条促销条件没有，促销也不生效
-        if($conditionList->isEmpty()){
+        if(!$conditionList->isEmpty()){
+            foreach ($conditionList as $v) {
+                if(!$conditionModel->check($v, $cart, $promotionInfo)){
+                    $key = false;
+                    break;
+                }
+            }
+        }else{
             $key = false;
         }
 
-        foreach ($conditionList as $v) {
-            $re = $conditionModel->check($v, $cart, $promotionInfo);
-            if ($key) {
-                if (!$re) {
-                    $key = false;    //多个促销条件中，如果有一个不满足，整体就不满足，但是为了显示完整的促销标签，还是要运算完所有的促销条件
-                }
-            }
-        }
+
 
         if ($key) {
             //走到这一步就说明所有的促销条件都符合，那么就去计算结果

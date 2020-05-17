@@ -395,13 +395,13 @@ class Cart extends Common
         //接下来算订单促销金额,有些模式不需要计算促销信息，这里就增加判断
         if ($order_type == self::TYPE_COMMON) {
             $promotionModel = new Promotion();
-            $result['data'] = $promotionModel->toPromotion($result['data']);
+            $promotionModel->toPromotion($result['data']);
         } elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
             $promotionModel = new Promotion();
-            $result['data'] = $promotionModel->toPromotion($result['data'], $order_type);
+            $promotionModel->toPromotion($result['data'], $order_type);
         }elseif($order_type == self::TYPE_PINTUAN){//拼团也计算促销信息
             $promotionModel = new Promotion();
-            $result['data'] = $promotionModel->toPromotion($result['data']);
+            $promotionModel->toPromotion($result['data']);
         }
 
         //运费判断

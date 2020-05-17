@@ -1818,11 +1818,7 @@ class Order extends Common
             $item['sendnums'] = 0;
             $item['addon'] = $v['products']['spes_desc'];
             if (isset($v['products']['promotion_list'])) {
-                $promotion_list = [];
-                foreach ($v['products']['promotion_list'] as $k => $v) {
-                    $promotion_list[$k] = $v['name'];
-                }
-                $item['promotion_list'] = json_encode($promotion_list);
+                $item['promotion_list'] = json_encode($v['products']['promotion_list']);
             }
             $items[] = $item;
         }

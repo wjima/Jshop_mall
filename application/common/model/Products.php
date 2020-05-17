@@ -175,7 +175,7 @@ class Products extends Common
         if ($isPromotion) {
             $product['amount'] = $product['price'];
             //模拟购物车数据库结构，去取促销信息
-            $miniCart       = [
+            $cart       = [
                 'user_id'        => $user_id,
                 'goods_amount'   => $product['amount'],         //商品总金额
                 'amount'         => $product['amount'],              //总金额
@@ -208,7 +208,7 @@ class Products extends Common
             } else {
                 //todo 其它类型
             }
-            $cart = $promotionModel->toPromotion($miniCart, $promotion_type);
+            $promotionModel->toPromotion($cart, $promotion_type);
 
             //把促销信息和新的价格等，覆盖到这里
             $promotionList = $cart['promotion_list'];

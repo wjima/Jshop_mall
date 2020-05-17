@@ -1733,23 +1733,35 @@ function remove_xss($val)
 /**
  * 检查文字
  * @param $content
- * @return mixed
+ * @param int $type //1微信免费 2珊瑚收费
+ * @return bool
  */
-function msgSecCheck($content)
+function msgSecCheck($content, $type = 1)
 {
     $wx = new Wx();
-    return $wx->msgSecCheck($content);
+    if ($type == 1) {
+        $res = $wx->msgSecCheck($content);
+    } else {
+        $res = $wx->msgSecCheckPay($content);
+    }
+    return $res;
 }
 
 /**
  * 检查图片
  * @param $img
- * @return mixed
+ * @param int $type //1微信免费 2珊瑚收费
+ * @return bool
  */
-function imgSecCheck($img)
+function imgSecCheck($img, $type = 1)
 {
     $wx = new Wx();
-    return $wx->imgSecCheck($img);
+    if ($type == 1) {
+        $res = $wx->imgSecCheck($img);
+    } else {
+        $res = $wx->imgSecCheckPay($img);
+    }
+    return $res;
 }
 
 /**

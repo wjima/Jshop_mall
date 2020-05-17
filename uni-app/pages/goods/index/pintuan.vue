@@ -29,6 +29,7 @@
 					<view class="commodity-salesvolume">
 						<text>已售{{ goodsInfo.buy_pintuan_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
+						<text>{{ goodsInfo.pintuan_rule.people_number || '0' }}人成团</text>
 					</view>
 
 					<view class="commodity-time" v-if="goodsInfo.pintuan_rule.pintuan_start_status == 1">

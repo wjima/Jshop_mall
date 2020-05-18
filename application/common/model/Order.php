@@ -2332,6 +2332,9 @@ class Order extends Common
                 'total_user_orders' => 0,
             ],
         ];
+        if(!$product_id){
+            return $return;
+        }
         //计算订单总量
         $where   = [];
         $where[] = ['oi.product_id', '=', $product_id];

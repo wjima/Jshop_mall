@@ -132,9 +132,10 @@ class PintuanGoods extends Common
         $goodsModel = new Goods();
         $goodsInfo  = $goodsModel->getGoodsDetial($gid);
 
-        if (!$goodsInfo['status']) {
-            return $goodsInfo;
+        if (!$goodsInfo['status'] || !$goodsInfo['data']) {
+            return error_code(15603);
         }
+
         $pintuanRuleModel = new PintuanRule();
         $where[]          = ['pr.status', 'eq', $pintuanRuleModel::STATUS_ON];
         $where[]          = ['pr.etime', '>', time()];

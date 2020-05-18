@@ -795,9 +795,9 @@
 							if (this.type == 2) {
 								//拼团
 								this.product.mktprice = this.product.price;//原价
-								this.price = this.$common.moneySub(this.product.price, this.discount_amount);
+								this.price = this.pintuanPrice = this.$common.moneySub(this.product.price, this.discount_amount);
 							} else {
-								this.price = this.product.price;
+								this.price = this.pintuanPrice = this.product.price;
 							}
 						}
 					});

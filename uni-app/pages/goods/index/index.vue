@@ -59,8 +59,7 @@
 							 :key="index">
 								{{ item.name || ''}}
 							</view> -->
-							<view class="romotion-tip-item" v-for="(item, index) in promotion"
-							 :key="index">
+							<view class="romotion-tip-item" v-for="(item, index) in promotion" :key="index">
 								{{ item || ''}}
 							</view>
 						</view>
@@ -165,64 +164,28 @@
 
 		<lvv-popup position="bottom" ref="share" v-if="goodsId">
 			<!-- #ifdef H5 -->
-			<shareByH5
-                :ifwx="ifwx"
-                :goodsId="goodsId"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                :shareType="2"
-                @close="closeShare()"
-            ></shareByH5>
+			<shareByH5 :ifwx="ifwx" :goodsId="goodsId" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name"
+			 :shareContent="goodsInfo.brief" :shareHref="shareHref" :shareType="2" @close="closeShare()"></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
-			<shareByWx
-                :goodsId="goodsId"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                :shareType="2"
-                @close="closeShare()"
-            ></shareByWx>
+			<shareByWx :goodsId="goodsId" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
+			 :shareHref="shareHref" :shareType="2" @close="closeShare()"></shareByWx>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-ALIPAY -->
-			<shareByAli
-                :goodsId="goodsId"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                :shareType="2"
-                @close="closeShare()"
-            ></shareByAli>
+			<shareByAli :goodsId="goodsId" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
+			 :shareHref="shareHref" :shareType="2" @close="closeShare()"></shareByAli>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-TOUTIAO -->
-			<shareByTt
-                :goodsId="goodsId"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                :shareType="2"
-                @close="closeShare()"
-            ></shareByTt>
+			<shareByTt :goodsId="goodsId" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
+			 :shareHref="shareHref" :shareType="2" @close="closeShare()"></shareByTt>
 			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
-			<shareByApp
-                :goodsId="goodsId"
-                :shareImg="goodsInfo.image_url"
-                :shareTitle="goodsInfo.name"
-                :shareContent="goodsInfo.brief"
-                :shareHref="shareHref"
-                :shareType="2"
-                @close="closeShare()"
-            ></shareByApp>
+			<shareByApp :goodsId="goodsId" :shareImg="goodsInfo.image_url" :shareTitle="goodsInfo.name" :shareContent="goodsInfo.brief"
+			 :shareHref="shareHref" :shareType="2" @close="closeShare()"></shareByApp>
 			<!-- #endif -->
 		</lvv-popup>
 
@@ -429,13 +392,13 @@
 				submitStatus: false,
 				config: '', //配置信息
 				goodsShowWord: [],
-                shareUrl: '/pages/share/jump'
+				shareUrl: '/pages/share/jump'
 			}
 		},
 		onLoad(options) {
 			//获取商品ID
 			if (options.id != '') {
-				this.goodsId = options.id-0;
+				this.goodsId = options.id - 0;
 			}
 
 			if (this.goodsId) {
@@ -515,9 +478,9 @@
 			shopMobile() {
 				return this.$store.state.config.shop_mobile || 0;
 			},
-            defaultSpesDesc() {
-                return this.product.default_spes_desc;
-            }
+			defaultSpesDesc() {
+				return this.product.default_spes_desc;
+			}
 		},
 		onReachBottom() {
 			if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -607,45 +570,48 @@
 				let index = obj.v;
 				let key = obj.k;
 
-                let userToken = this.$db.get('userToken');
-                let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
-                if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
-                    this.$refs.spec.changeSpecData();
-                    this.$api.getProductInfo({id: tmp_default_spes_desc[index][key].product_id,token:userToken}, res => {
-                        if (res.status == true) {
-                            // 切换规格判断可购买数量
-                            this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
-                            this.product = this.spesClassHandle(res.data);
-                        }
-                    });
-                    uni.showLoading({
-                        title: '加载中'
-                    });
-                    setTimeout(function () {
-                        uni.hideLoading();
-                    }, 1000);
-                }
+				let userToken = this.$db.get('userToken');
+				let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+				if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
+					this.$refs.spec.changeSpecData();
+					this.$api.getProductInfo({
+						id: tmp_default_spes_desc[index][key].product_id,
+						token: userToken
+					}, res => {
+						if (res.status == true) {
+							// 切换规格判断可购买数量
+							this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
+							this.product = this.spesClassHandle(res.data);
+						}
+					});
+					uni.showLoading({
+						title: '加载中'
+					});
+					setTimeout(function() {
+						uni.hideLoading();
+					}, 1000);
+				}
 			},
 			// 多规格样式统一处理
 			spesClassHandle(products) {
-                // 判断是否是多规格 (是否有默认规格)
-                if (products.hasOwnProperty('default_spes_desc')) {
-                    let spes = products.default_spes_desc;
-                    for (let key in spes) {
-                        for (let i in spes[key]) {
-                            if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
-                                this.$set(spes[key][i], 'cla', 'pop-m-item selected');
-                            } else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
-                                this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
-                            } else {
-                                this.$set(spes[key][i], 'cla', 'pop-m-item none');
-                            }
-                        }
-                    }
-                    spes = JSON.stringify(spes)
-                    products.default_spes_desc = spes;
-                }
-                return products;
+				// 判断是否是多规格 (是否有默认规格)
+				if (products.hasOwnProperty('default_spes_desc')) {
+					let spes = products.default_spes_desc;
+					for (let key in spes) {
+						for (let i in spes[key]) {
+							if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
+								this.$set(spes[key][i], 'cla', 'pop-m-item selected');
+							} else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
+								this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
+							} else {
+								this.$set(spes[key][i], 'cla', 'pop-m-item none');
+							}
+						}
+					}
+					spes = JSON.stringify(spes)
+					products.default_spes_desc = spes;
+				}
+				return products;
 			},
 			// 购买数量加减操作
 			bindChange(val) {
@@ -825,7 +791,7 @@
 
 				// 客服页面
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
-                this.$common.navigateTo('/pages/member/customer_service/index');
+				this.$common.navigateTo('/pages/member/customer_service/index');
 				// #endif
 
 				// 头条系客服
@@ -842,35 +808,39 @@
 				}
 				// #endif
 			},
-            //获取分享URL
-            getShareUrl() {
-                let data = {
-                    client: 2,
-                    url: "/pages/share/jump",
-                    type: 1,
-                    page: 2,
-                    params: {
-                        goods_id: this.goodsInfo.id,
-                    }
-                };
-                let userToken = this.$db.get('userToken');
-                if (userToken && userToken != '') {
-                	data['token'] = userToken;
-                }
-                this.$api.share(data, res => {
-                    this.shareUrl = res.data
-                });
-            }
+			// #ifdef MP-WEIXIN
+			//获取分享URL
+			getShareUrl() {
+				let data = {
+					client: 2,
+					url: "/pages/share/jump",
+					type: 1,
+					page: 2,
+					params: {
+						goods_id: this.goodsInfo.id,
+					}
+				};
+				let userToken = this.$db.get('userToken');
+				if (userToken && userToken != '') {
+					data['token'] = userToken;
+				}
+				this.$api.share(data, res => {
+					this.shareUrl = res.data
+				});
+			}
+			// #endif
 		},
-		watch:{
-            goodsInfo: {
-                handler () {
-                    this.getShareUrl();
-                },
-                deep: true
-            }
-        },
-        //分享
+		watch: {
+			goodsInfo: {
+				handler() {
+					// #ifdef MP-WEIXIN
+					this.getShareUrl();
+					// #endif
+				},
+				deep: true
+			}
+		},
+		//分享
 		onShareAppMessage() {
 			return {
 				title: this.goodsInfo.name,

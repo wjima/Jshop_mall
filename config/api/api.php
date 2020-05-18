@@ -650,6 +650,10 @@ return [
             'getgoodsdetial' => [
                 'code'     => 'getGoodsDetial',
                 'is_login' => false
+            ],
+            'getproductinfo'=>[
+                'code'     => 'getProductInfo',
+                'is_login' => false
             ]
         ]
     ],

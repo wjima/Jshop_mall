@@ -1524,7 +1524,7 @@ class Order extends Common
             $area_id = $delivery_re['data'];        //下单的省市区地址，算运费用。
         }
         //通过购物车生成订单信息和订单明细信息
-        $order_re = $this->formatOrder($order, $user_id, $cart_ids, $area_id, $point, $coupon_code, false, $delivery['type']);
+        $order_re = $this->formatOrder($order, $user_id, $cart_ids, $area_id, $point, $coupon_code, false, $delivery['type'],$params);
         if (!$order_re['status']) {
             return $order_re;
         } else {
@@ -1701,15 +1701,16 @@ class Order extends Common
      * @param $coupon_code //使用优惠券
      * @param bool $free_freight //是否包邮
      * @param string $delivery_type
+     * @param array $params 扩展信息字段
      * @return array|mixed //返回订单明细信息
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false, $delivery_type = '1')
+    private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false, $delivery_type = '1',$params = [])
     {
         $cartModel = new Cart();
-        $cartInfo = $cartModel->info($user_id, $cart_ids, $order['order_type'], $area_id, $point, $coupon_code, $free_freight, $delivery_type);
+        $cartInfo = $cartModel->info($user_id, $cart_ids, $order['order_type'], $area_id, $point, $coupon_code, $free_freight, $delivery_type,$params);
         if (!$cartInfo['status']) {
             return $cartInfo;
         }
@@ -2335,9 +2336,7 @@ class Order extends Common
         $where   = [];
         $where[] = ['oi.product_id', '=', $product_id];
         $where[] = ['o.status', 'in', [self::ORDER_STATUS_NORMAL, self::ORDER_STATUS_COMPLETE]];//正常订单和已完成订单
-        //在活动时间范围内
-        $where[] = ['o.ctime', '>=', $condition['stime']];
-        $where[] = ['o.ctime', '<', $condition['etime']];
+
 
 
         //已退款、已退货、部分退款的、部分退货的排除
@@ -2359,6 +2358,10 @@ class Order extends Common
         }
 
         if ($order_type == self::ORDER_TYPE_PINTUAN) {
+
+            //在活动时间范围内,拼团同一一个商品，同一个事件段内，只能有一个拼团，所以加上时间判断
+            $where[] = ['o.ctime', '>=', $condition['stime']];
+            $where[] = ['o.ctime', '<', $condition['etime']];
 
             $where[] = ['pr.rule_id', '=', $condition['rule_id']];
 
@@ -2397,6 +2400,10 @@ class Order extends Common
                     ->sum('oi.nums');
             }
         } else {
+            //在活动时间范围内
+            /*$where[] = ['o.ctime', '>=', $condition['stime']];
+            $where[] = ['o.ctime', '<', $condition['etime']];*/
+
             $total_orders = $this->alias('o')
                 ->join('order_items oi', 'oi.order_id = o.order_id')
                 ->where($where)

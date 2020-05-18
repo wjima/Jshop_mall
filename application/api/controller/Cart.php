@@ -104,6 +104,7 @@ class Cart extends Api
         $point = Request::param('point', 0);
         $coupon_code = Request::param('coupon_code', '');
         $receipt_type = Request::param('receipt_type', 1);      //配送方式是否包邮   1=快递配送（要去算运费）生成订单记录快递方式  2=门店自提（不需要计算运费）生成订单记录门店自提信息
+        $params = Request::param('params', '');//购物车扩展信息,json对象，传团购秒杀id或其他信息
         if($receipt_type == 1)
         {
             $free_freight = false;
@@ -112,7 +113,9 @@ class Cart extends Api
         {
             $free_freight = true;
         }
-        $result = $this->cartModel->info($this->userId, $ids, $type, $area_id, $point, $coupon_code, $free_freight);
+
+        $params = json_decode($params,true);
+        $result = $this->cartModel->info($this->userId, $ids, $type, $area_id, $point, $coupon_code, $free_freight,1,$params);
         return $result;
     }
 

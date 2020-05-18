@@ -331,6 +331,7 @@ export default {
 				coupon_code: '', // 优惠券码列表(string)多张逗号分隔
 				point: 0, // 抵扣积分额
 				type: 1, //购物车类型
+				params:''//购物车扩展信息
 			}, // 监听params参数信息 以重新请求接口
 			// 发票信息
 			invoice: {
@@ -389,6 +390,7 @@ export default {
 		//团购活动id
 		if(options.group_id){
 			this.group_id = options.group_id
+			this.params.params = JSON.stringify({ group_id: options.group_id})
 		}
 		this.params.ids = JSON.parse(cartIds);
 		if (!this.params.ids) {
@@ -769,7 +771,7 @@ export default {
 			}
 			//团购秒杀
 			if(this.group_id!=0){
-				data['params'] = JSON.stringify({ group_id: this.group_id}); //砍价信息
+				data['params'] = JSON.stringify({ group_id: this.group_id}); //团购秒杀信息
 			}
 			let delivery = {};
 			// 判断是快递配送还是门店自提

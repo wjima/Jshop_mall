@@ -72,12 +72,13 @@ class Products extends Common
      * @param bool|true $isPromotion 默认是true，如果为true的时候，就去算此商品的促销信息，否则，就不算
      * @param int $user_id 默认0，传后取会员等级优惠价
      * @param string $type goods:商品 pintuan:拼团 group:团购 skill:秒杀 bargain:砍价
+     * @param array $params 扩展字段，可传团购秒杀id等
      * @return array
      * User: wjima
      * Email:1457529125@qq.com
      * Date: 2018-02-08 11:14
      */
-    public function getProductInfo($id, $isPromotion = true, $user_id = 0, $type = 'goods')
+    public function getProductInfo($id, $isPromotion = true, $user_id = 0, $type = 'goods',$params = [])
     {
         $result  = [
             'status' => false,
@@ -201,14 +202,16 @@ class Products extends Common
             ];
             $promotionModel = new Promotion();
             $promotion_type = $promotionModel::TYPE_PROMOTION;
-            if ($type == 'group') {
-                $promotion_type = $promotionModel::TYPE_GROUP;
-            } elseif ($type == 'skill') {
-                $promotion_type = $promotionModel::TYPE_SKILL;
+
+            if ($type == 'group' || $type == 'skill') {
+                //团购秒杀，直接应用
+                $promotionInfo = $promotionModel->getInfo($params['group_id']);
+                $promotionModel->setPromotion($promotionInfo, $cart);
             } else {
                 //todo 其它类型
+                $promotionModel->toPromotion($cart, $promotion_type);
             }
-            $promotionModel->toPromotion($cart, $promotion_type);
+
 
             //把促销信息和新的价格等，覆盖到这里
             $promotionList = $cart['promotion_list'];

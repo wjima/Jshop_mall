@@ -885,3 +885,7 @@ export const getShareHb = (data, callback) => post('api.hb.WelfarePro', data, ca
 
 //分享领取优惠券
 export const getShareCoupon = (data, callback) => post('api.coupon.WelfarePro', data, callback);
+
+
+//团购秒杀获取货品信息
+export const getGroupProductInfo = (data, callback) => post('group.getproductinfo', data, callback);

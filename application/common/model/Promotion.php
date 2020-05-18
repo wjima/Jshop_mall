@@ -310,7 +310,7 @@ class Promotion extends Common
         if ($condition['type'] == self::TYPE_SKILL) {
             $goods_type = 'skill';
         }
-        $goods = $goodsModel->getGoodsDetial($goods_id, $fields, $token, $goods_type);
+        $goods = $goodsModel->getGoodsDetial($goods_id, $fields, $token, $goods_type, ['group_id' => $group_id]);
 
         if (!$goods['data']) {
             $result['msg'] = '商品不存在';
@@ -536,4 +536,53 @@ class Promotion extends Common
     }
 
 
+    /**
+     * 获取促销信息
+     * @param int $id
+     * @param bool|false $check
+     * @return array|null|\PDOStatement|string|\think\Model
+     */
+    public function getInfo($id = 0, $check = false)
+    {
+        $where = [];
+        if ($check) {
+            $where[] = ['stime', 'lt', time()];
+            $where[] = ['etime', 'gt', time()];
+        }
+        $where[] = ['id', '=', $id];
+        $info  = $this->where($where)->find();
+        return $info;
+    }
+
+
+    /**
+     * 团购秒杀规格信息
+     * @param $product_id 货品id
+     * @param $token 用户token
+     * @param $type 类型
+     * @param int $group_id 团购秒杀id
+     * @return array
+     */
+    public function getProductInfo($product_id, $token, $type, $group_id = 0)
+    {
+        $productsModel = new Products();
+        $user_id       = getUserIdByToken($token);//获取user_id
+        $product_info  = $productsModel->getProductInfo($product_id, true, $user_id, $type, ['group_id' => $group_id]);
+        if (!$product_info['status']) {
+            return $product_info;
+        }
+        $orderModel     = new Order();
+        $promotionModel = new Promotion();
+        $promotionInfo = $promotionModel->getInfo($group_id);
+        $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotionInfo, $orderModel::ORDER_TYPE_GROUP);//todo 类型这里统一按团购来
+        $extendParams = json_decode($promotionInfo['params'], true);
+
+        if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
+            //活动销售件数
+            $stock                         = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];//todo 多规格时，不按商品来
+            $product_info['data']['stock'] = $stock > 0 ? $stock : 0;
+        }
+
+        return $product_info;
+    }
 }

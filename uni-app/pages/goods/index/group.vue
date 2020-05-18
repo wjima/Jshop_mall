@@ -27,14 +27,13 @@
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
 					<view class="commodity-time-img"></view>
-					<view class="commodity-time" >
-						<text v-if="goodsInfo.activity_status=='1'">活动即将开始</text>
-						<text v-if="goodsInfo.activity_status=='2'">距结束仅剩</text>
-						<text v-if="goodsInfo.activity_status=='3'">活动已结束</text>
-						<view class="commodity-day" v-if="goodsInfo.activity_status=='2' || goodsInfo.activity_status=='1' || goodsInfo.activity_status=='3' ">
+					<view class="commodity-time">
+						<text v-if="goodsInfo.activity_status == '1'">活动即将开始</text>
+						<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
+						<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
+						<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
 							<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
 						</view>
-						
 					</view>
 				</view>
 				<!-- 倒计时end -->
@@ -75,9 +74,9 @@
 				<view class="cell-item goods-title-item cell-item-mid" v-if="goodsShowWord && goodsShowWord != ''">
 					<view class="cell-item-hd"><view class="cell-hd-title">说明</view></view>
 					<view class="cell-item-bd">
-						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
+						<view class="cell-bd-view" v-for="(item, index) in goodsShowWord" :key="index">
 							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<view class="cell-bd-text">{{item}}</view>
+							<view class="cell-bd-text">{{ item }}</view>
 						</view>
 					</view>
 				</view>
@@ -148,12 +147,12 @@
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:goodsId="goodsId"
-                :groupId="groupId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
-                :shareType="9"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByH5>
 			<!-- #endif -->
@@ -161,12 +160,12 @@
 			<!-- #ifdef MP-WEIXIN -->
 			<shareByWx
 				:goodsId="goodsId"
-                :groupId="groupId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
-                :shareType="9"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByWx>
 			<!-- #endif -->
@@ -174,12 +173,12 @@
 			<!-- #ifdef MP-ALIPAY -->
 			<shareByAli
 				:goodsId="goodsId"
-                :groupId="groupId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
-                :shareType="9"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByAli>
 			<!-- #endif -->
@@ -187,12 +186,12 @@
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
 				:goodsId="goodsId"
-                :groupId="groupId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
-                :shareType="9"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByTt>
 			<!-- #endif -->
@@ -200,12 +199,12 @@
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp
 				:goodsId="goodsId"
-                :groupId="groupId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
-                :shareType="9"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByApp>
 			<!-- #endif -->
@@ -283,8 +282,8 @@
 				<image class="icon" src="/static/image/ic-me-car.png" mode=""></image>
 				<view>购物车</view>
 			</view>
-			<button class="btn btn-square btn-b tl btn-hover2"  v-if="goodsInfo.activity_status =='1' ">即将开始</button>
-			<button class="btn btn-square btn-b tl btn-hover2"  v-else-if="goodsInfo.activity_status =='3' ">已结束</button>
+			<button class="btn btn-square btn-b tl btn-hover2" v-if="goodsInfo.activity_status == '1'">即将开始</button>
+			<button class="btn btn-square btn-b tl btn-hover2" v-else-if="goodsInfo.activity_status == '3'">已结束</button>
 			<button class="btn btn-square btn-b tl" @click="toshow(2)" hover-class="btn-hover2" v-else>立即{{ typeName || '' }}</button>
 		</view>
 		<!-- 底部按钮end -->
@@ -413,12 +412,12 @@ export default {
 				minute: 0,
 				second: 0
 			},
-            shareUrl: '/pages/share/jump'
+			shareUrl: '/pages/share/jump'
 		};
 	},
 	onLoad(e) {
-		this.goodsId = e.id-0;
-		this.groupId = e.group_id-0;
+		this.goodsId = e.id - 0;
+		this.groupId = e.group_id - 0;
 
 		if (this.goodsId && this.groupId) {
 			this.getGoodsInfo();
@@ -478,7 +477,7 @@ export default {
 		},
 		goodsShowWord() {
 			return this.$store.state.config.goods_show_word;
-		},
+		}
 	},
 	onReachBottom() {
 		if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -538,9 +537,9 @@ export default {
 							this.goodsBrowsing();
 						}
 					}
-				}else{
+				} else {
 					this.$common.errorToShow(res.msg, () => {
-						goBack.backBtn()
+						goBack.backBtn();
 					});
 				}
 			});
@@ -574,13 +573,14 @@ export default {
 				let type = this.goodsInfo.group_type == 3 ? 'group' : 'skill';
 				let data = {
 					id: this.product.default_spes_desc[index][key].product_id,
-					type: type //商品类型
+					type: type, //商品类型
+					group_id: this.groupId
 				};
 				let userToken = this.$db.get('userToken');
 				if (userToken) {
 					data['token'] = userToken;
 				}
-				this.$api.getProductInfo(data, res => {
+				this.$api.getGroupProductInfo(data, res => {
 					if (res.status == true) {
 						// 切换规格判断可购买数量
 						this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
@@ -705,14 +705,14 @@ export default {
 					order_type: order_type
 				};
 				//团购秒杀
-				if(this.groupId!=0){
-					data['params'] = JSON.stringify({ group_id: this.groupId}); //砍价信息
+				if (this.groupId != 0) {
+					data['params'] = JSON.stringify({ group_id: this.groupId }); //砍价信息
 				}
 				this.$api.addCart(data, res => {
 					if (res.status) {
 						this.toclose();
 						let cartIds = res.data;
-						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=' +order_type+'&group_id='+this.groupId);
+						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=' + order_type + '&group_id=' + this.groupId);
 					} else {
 						this.$common.errorToShow(res.msg);
 					}
@@ -806,35 +806,35 @@ export default {
 			}
 			// #endif
 		},
-        //获取分享URL
-        getShareUrl() {
-            let data = {
-                client: 2,
-                url: "/pages/share/jump",
-                type: 1,
-                page: 9,
-                params: {
-                    goods_id: this.goodsId,
-                    group_id: this.groupId
-                }
-            };
-            let userToken = this.$db.get('userToken');
-            if (userToken && userToken != '') {
-            	data['token'] = userToken;
-            }
-            this.$api.share(data, res => {
-                this.shareUrl = res.data
-            });
-        }
+		//获取分享URL
+		getShareUrl() {
+			let data = {
+				client: 2,
+				url: '/pages/share/jump',
+				type: 1,
+				page: 9,
+				params: {
+					goods_id: this.goodsId,
+					group_id: this.groupId
+				}
+			};
+			let userToken = this.$db.get('userToken');
+			if (userToken && userToken != '') {
+				data['token'] = userToken;
+			}
+			this.$api.share(data, res => {
+				this.shareUrl = res.data;
+			});
+		}
 	},
-    watch:{
-        goodsId: {
-            handler () {
-                this.getShareUrl();
-            },
-            deep: true
-        }
-    },
+	watch: {
+		goodsId: {
+			handler() {
+				this.getShareUrl();
+			},
+			deep: true
+		}
+	},
 	//分享
 	onShareAppMessage() {
 		return {

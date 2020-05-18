@@ -95,45 +95,19 @@ class Cart extends Common
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
-            case self::TYPE_GROUP:
+            case self::TYPE_GROUP || self::TYPE_SKILL:
                 //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_GROUP)) {
+                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
                     $delWhere[] = ['user_id', 'eq', $user_id];
-                    $delWhere[] = ['type', 'eq', self::TYPE_GROUP];
+                    $delWhere[] = ['type', 'in', [self::TYPE_GROUP,self::TYPE_SKILL]];
                     $delWhere[] = ['product_id', 'eq', $product_id];
                     $this->where($delWhere)->delete();
 
                     $params      = json_decode($promotion['params'], true);
                     $orderModel  = new Order();
                     $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion, self::TYPE_GROUP);
-                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
-                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
-                            $result['msg'] = '该商品已超过当前活动最大购买量';
-                            return $result;
-                        }
-                    }
-                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
-                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
-                            $result['msg'] = '您已超过该活动最大购买量';
-                            return $result;
-                        }
-                    }
-                    unset($cat_info);
-                }
-                break;
-            case self::TYPE_SKILL:
-                //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion, self::TYPE_SKILL)) {
-                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                    $delWhere[] = ['user_id', 'eq', $user_id];
-                    $delWhere[] = ['type', 'eq', self::TYPE_SKILL];
-                    $delWhere[] = ['product_id', 'eq', $product_id];
-                    $this->where($delWhere)->delete();
-
-                    $params      = json_decode($promotion['params'], true);
-                    $orderModel  = new Order();
-                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion, self::TYPE_SKILL);
+                    //应该里面方法判断，以后优化吧
                     if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
                         if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
                             $result['msg'] = '该商品已超过当前活动最大购买量';
@@ -329,12 +303,13 @@ class Cart extends Common
      * @param string $coupon_code
      * @param bool $free_freight //是否免运费
      * @param int $delivery_type
+     * @param array $params 扩展字段信息，传数组
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($userId, $ids, $order_type = '1', $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1)
+    public function info($userId, $ids, $order_type = '1', $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1,$params = [])
     {
         $result   = [
             'status' => false,
@@ -391,15 +366,21 @@ class Cart extends Common
         if ($delivery_type == 2) {
             $free_freight = true;
         }
-
         //接下来算订单促销金额,有些模式不需要计算促销信息，这里就增加判断
         if ($order_type == self::TYPE_COMMON) {
             $promotionModel = new Promotion();
             $promotionModel->toPromotion($result['data']);
-        } elseif ($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) {
+        } elseif (($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) && $params) {
+            //团购秒杀默认时间过期后，不可以下单
             $promotionModel = new Promotion();
-            $promotionModel->toPromotion($result['data'], $order_type);
-        }elseif($order_type == self::TYPE_PINTUAN){//拼团也计算促销信息
+            $promotionInfo  = $promotionModel->getInfo($params['group_id'], true);
+            $checkRes       = $promotionModel->setPromotion($promotionInfo, $result['data']);
+            //如果依然可以下单，但是是正常销售价，请注释下面的判断
+            if (!$checkRes) {
+                $result['msg'] = '活动已结束';
+                return $result;
+            }
+        } elseif ($order_type == self::TYPE_PINTUAN) {//拼团也计算促销信息
             $promotionModel = new Promotion();
             $promotionModel->toPromotion($result['data']);
         }

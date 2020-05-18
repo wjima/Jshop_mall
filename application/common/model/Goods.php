@@ -341,9 +341,10 @@ class Goods extends Common
      * @param string $fields
      * @param string $token
      * @param string $type goods:商品 pintuan:拼团 group:团购 skill:秒杀 bargain:砍价
+     * @param array $params 扩展字段，可传团购秒杀id等
      * @return array
      */
-    public function getGoodsDetial($gid, $fields = '*', $token = '', $type = 'goods')
+    public function getGoodsDetial($gid, $fields = '*', $token = '', $type = 'goods',$params = [])
     {
         $result        = [
             'status' => true,
@@ -384,7 +385,7 @@ class Goods extends Common
                 return error_code(10000);
             }
             $user_id      = getUserIdByToken($token);//获取user_id
-            $product_info = $productsModel->getProductInfo($default_product['id'], true, $user_id, $type);
+            $product_info = $productsModel->getProductInfo($default_product['id'], true, $user_id, $type,$params);
             if (!$product_info['status']) {
                 return $product_info;
             }

@@ -63,4 +63,22 @@ class Group extends Api
         }
         return $return_data;
     }
+
+
+    /**
+     * 获取货品信息
+     * @return array|mixed
+     */
+    public function getProductInfo()
+    {
+        if (!input('?param.id')) {
+            return error_code(10000);
+        }
+        $group_id = input('group_id/d', 0);//活动id
+        $token    = input('token', '');//token值 会员登录后传
+        $type     = input('type', '');//token值 会员登录后传
+
+        $promotion = new Promotion();
+        return $promotion->getProductInfo(input('param.id'), $token, $type, $group_id);
+    }
 }

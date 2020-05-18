@@ -166,28 +166,12 @@ class PromotionCondition extends Common
 
     //因为计算过促销条件后啊，前面有些是满足条件的，所以，他们的type是2，后面有不满足条件的时候呢，要把前面满足条件的回滚成不满足条件的
     public function promotionFalse(&$cart,$promotionInfo){
-        switch ($promotionInfo['type']){
-            case $promotionInfo::TYPE_PROMOTION:
-                //订单促销回滚
-                if(isset($cart['promotion_list'][$promotionInfo['id']])){
-                    $cart['promotion_list'][$promotionInfo['id']] = [
-                        'name' => $promotionInfo['name'],
-                        'type' => 1
-                    ];
-                }
-                //商品回滚
-                foreach($cart['list'] as $k => $v){
-                    if(isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
-                        $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
-                            'name' => $promotionInfo['name'],
-                            'type' => 1
-                        ];
-                    }
-
-                }
-                break;
+        unset($cart['promotion_list'][$promotionInfo['id']]);
+        //商品回滚
+        foreach($cart['list'] as $k => $v){
+            unset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']]);
         }
-
+        return true;
     }
 
 

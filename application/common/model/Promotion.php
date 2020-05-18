@@ -116,7 +116,7 @@ class Promotion extends Common
                 $resultModel->toResult($v, $cart, $promotionInfo);
             }
         } else {
-            //如果不满足需求，就要统一标准，把有些满足条件的（2），变成1
+            //如果不满足需求，就要统一标准，把前面加上的都拿掉
             $conditionModel->promotionFalse($cart, $promotionInfo);
         }
         return $key;

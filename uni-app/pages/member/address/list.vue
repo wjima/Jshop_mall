@@ -89,22 +89,23 @@ export default {
 		//选择
 		isSelect(data) {
 			if(this.type == 'order'){
-				let pages = getCurrentPages();//当前页
-				let beforePage = pages[pages.length - 2];//上个页面
+		// 		let pages = getCurrentPages();//当前页
+		// 		let beforePage = pages[pages.length - 2];//上个页面
 				
-				// #ifdef MP-ALIPAY || MP-TOUTIAO
-				this.$db.set('address_user_ship', data, true);
-				// #endif
+		// 		// #ifdef MP-ALIPAY || MP-TOUTIAO
+		// 		this.$db.set('address_user_ship', data, true);
+		// 		// #endif
 		
-				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-				this.$store.commit("userShip",data)
-				// #endif
+		// 		// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+		// 		this.$store.commit("userShip",data)
+		// 		// #endif
 
-				// #ifdef MP-WEIXIN
-				beforePage.$vm.userShip = data;
-				beforePage.$vm.params.area_id = data.area_id;
-				// #endif
-				
+		// 		// #ifdef MP-WEIXIN
+		// 		beforePage.$vm.userShip = data;
+		// 		beforePage.$vm.params.area_id = data.area_id;
+		// 		// #endif
+		
+				this.$db.set('address_user_ship', data, true);
 				uni.navigateBack({
 					delta: 1
 				});

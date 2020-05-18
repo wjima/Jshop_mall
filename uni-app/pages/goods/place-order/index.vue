@@ -88,8 +88,7 @@
 							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
 							 :key="k">{{ v.name || '' }}
 							</view> -->
-							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list"
-							 :key="k">{{ v || '' }}
+							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k">{{ v || '' }}
 							</view>
 						</view>
 						<view class="goods-item-c">
@@ -104,11 +103,24 @@
 					</view>
 				</view>
 			</view>
+			
+		
 			<view class="giveaway" v-if="cartData.giveaway">
 				<view v-for="(v, k) in cartData.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
 			</view>
 
 			<view class="cell-group">
+				<!-- 订单促销信息 -->
+					<view class="cell-item" v-if="cartData.promotion_list">
+						<view class="cell-item-hd">
+							订单优惠
+						</view>
+						<view class="cell-item-ft">
+							<view class="promotion-item" v-for="(v, k) in cartData.promotion_list" :key="k">
+								{{ v || '' }}
+							</view>
+						</view>
+					</view>
 				<view class="cell-item">
 					<view class="cell-item-hd">
 						<view class="cell-hd-title" style="min-width: 100rpx;">优惠券</view>
@@ -151,7 +163,7 @@
 						<view class="cell-bd-view">商品价格</view>
 						<view class="cell-bd-view" v-if="cartData.goods_pmt_old > 0">商品优惠</view>
 						<view class="cell-hd-view" v-if="cartData.order_pmt_old > 0">订单优惠</view>
-						<view class="cell-hd-view" v-if="!couponIsUsed">优惠券抵扣</view>
+						<!-- <view class="cell-hd-view" v-if="!couponIsUsed">优惠券抵扣</view> -->
 						<view class="cell-hd-view" v-if="cartData.point > 0">积分抵扣</view>
 						<view class="cell-hd-view">运费</view>
 					</view>
@@ -159,7 +171,7 @@
 						<view class="cell-ft-view red-price">{{ cartData.goods_amount || '' }}</view>
 						<view class="cell-ft-view" v-if="cartData.goods_pmt_old > 0">-{{ cartData.goods_pmt || '' }}</view>
 						<view class="cell-ft-view" v-if="cartData.order_pmt_old > 0">-{{ cartData.order_pmt || '' }}</view>
-						<view class="cell-ft-view" v-if="!couponIsUsed">-{{ cartData.coupon_pmt || '' }}</view>
+						<!-- <view class="cell-ft-view" v-if="!couponIsUsed">-{{ cartData.coupon_pmt || '' }}</view> -->
 						<view class="cell-ft-view" v-if="cartData.point > 0">-{{ cartData.point_money || '' }}</view>
 						<view class="cell-ft-view">{{ cartData.cost_freight || '' }}</view>
 					</view>
@@ -392,41 +404,40 @@ export default {
 		// 获取用户的可用优惠券信息
 		this.getUserCounpons();
 
-            //获取默认门店信息
-            this.getDefaultStore();
-						
-						// #ifdef MP-ALIPAY || MP-TOUTIAO
-						let user_ship = this.$db.get('address_user_ship', true);
-						if (user_ship) {
-							this.userShip = user_ship;
-							this.params.area_id = user_ship.area_id;
-							this.$db.del('address_user_ship', true);
-						}
-						let user_invoice = this.$db.get('user_invoice', true);
-						if (user_invoice) {
-							this.invoice = user_invoice;
-							this.$db.del('user_invoice', true);
-						}
-						let user_store = this.$db.get('user_store', true);
-						if (user_store) {
-							this.store = user_store;
-							this.$db.del('user_store', true);
-						}
-						// #endif
-						// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-						let user_ship = this.$store.state.userShip;
-						if (user_ship) {
-							this.userShip = user_ship;
-							this.params.area_id = user_ship.area_id;
-						}
-						let user_invoice = this.$store.state.invoice;
-						if (user_invoice) {
-							this.invoice = user_invoice;
-						}
-						// #endif
-        },
+		//获取默认门店信息
+		this.getDefaultStore();
+	},
 	onShow() {
-		// #ifdef MP-ALIPAY || MP-TOUTIAO
+		// // #ifdef MP-ALIPAY || MP-TOUTIAO
+		// let user_ship = this.$db.get('address_user_ship', true);
+		// if (user_ship) {
+		// 	this.userShip = user_ship;
+		// 	this.params.area_id = user_ship.area_id;
+		// 	this.$db.del('address_user_ship', true);
+		// }
+		// let user_invoice = this.$db.get('user_invoice', true);
+		// if (user_invoice) {
+		// 	this.invoice = user_invoice;
+		// 	this.$db.del('user_invoice', true);
+		// }
+		// let user_store = this.$db.get('user_store', true);
+		// if (user_store) {
+		// 	this.store = user_store;
+		// 	this.$db.del('user_store', true);
+		// }
+		// // #endif
+		// // #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+		// let user_ship = this.$store.state.userShip;
+		// // console.log(user_ship);
+		// if (user_ship) {
+		// 	this.userShip = user_ship;
+		// 	this.params.area_id = user_ship.area_id;
+		// }
+		// let user_invoice = this.$store.state.invoice;
+		// if (user_invoice) {
+		// 	this.invoice = user_invoice;
+		// }
+		// // #endif
 		let user_ship = this.$db.get('address_user_ship', true);
 		if (user_ship) {
 			this.userShip = user_ship;
@@ -443,19 +454,6 @@ export default {
 			this.store = user_store;
 			this.$db.del('user_store', true);
 		}
-		// #endif
-		// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-		let user_ship = this.$store.state.userShip;
-		// console.log(user_ship);
-		if (user_ship) {
-			this.userShip = user_ship;
-			this.params.area_id = user_ship.area_id;
-		}
-		let user_invoice = this.$store.state.invoice;
-		if (user_invoice) {
-			this.invoice = user_invoice;
-		}
-		// #endif
 		if(this.$store.state.shopAddress.id) {
 			this.store = this.$store.state.shopAddress
 		}
@@ -1336,5 +1334,18 @@ export default {
 .delete image {
 	width: 40rpx;
 	height: 40rpx;
+}
+
+.promotion-item{
+	display: inline-block;
+	float: left;
+	margin-right: 10upx;
+	margin-bottom: 4upx;
+	background-color:#FF7159;
+	color: #fff;
+	height: 34upx;
+	font-size: 24upx;
+	line-height: 34upx;
+	padding: 0 10upx;
 }
 </style>

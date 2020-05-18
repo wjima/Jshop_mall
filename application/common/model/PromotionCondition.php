@@ -164,7 +164,7 @@ class PromotionCondition extends Common
         return 2;
     }
 
-    //因为计算过促销条件后啊，前面有些是满足条件的，所以，他们的type是2，后面有不满足条件的时候呢，要把前面满足条件的回滚成不满足条件的
+    //后面有不满足条件的时候呢，要把前面满足条件的回滚成不满足条件的
     public function promotionFalse(&$cart,$promotionInfo){
         unset($cart['promotion_list'][$promotionInfo['id']]);
         //商品回滚

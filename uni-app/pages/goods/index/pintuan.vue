@@ -794,6 +794,7 @@
 							//products.price = _this.$common.moneySub(products.price,_this.discount_amount);
 							if (this.type == 2) {
 								//拼团
+								this.product.mktprice = this.product.price;//原价
 								this.price = this.$common.moneySub(this.product.price, this.discount_amount);
 							} else {
 								this.price = this.product.price;

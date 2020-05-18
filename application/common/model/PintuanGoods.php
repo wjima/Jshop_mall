@@ -195,6 +195,8 @@ class PintuanGoods extends Common
         } else {
             $goodsInfo['data']['buy_pintuan_count'] = $check_order['data']['total_orders'];
         }
+        //原价
+        $goodsInfo['data']['product']['mktprice'] = $goodsInfo['data']['product']['price'];
         return $goodsInfo;
     }
 

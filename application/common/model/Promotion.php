@@ -573,16 +573,17 @@ class Promotion extends Common
         }
         $orderModel     = new Order();
         $promotionModel = new Promotion();
-        $promotionInfo = $promotionModel->getInfo($group_id);
-        $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotionInfo, $orderModel::ORDER_TYPE_GROUP);//todo 类型这里统一按团购来
-        $extendParams = json_decode($promotionInfo['params'], true);
+        $promotionInfo  = $promotionModel->getInfo($group_id);
+        $check_order    = $orderModel->findLimitOrder($product_id, $user_id, $promotionInfo, $orderModel::ORDER_TYPE_GROUP);//todo 类型这里统一按团购来
+        $extendParams   = json_decode($promotionInfo['params'], true);
 
         if (isset($extendParams['max_goods_nums']) && $extendParams['max_goods_nums'] != 0) {
             //活动销售件数
             $stock                         = $extendParams['max_goods_nums'] - $check_order['data']['total_orders'];//todo 多规格时，不按商品来
             $product_info['data']['stock'] = $stock > 0 ? $stock : 0;
         }
-
+        $origin_price                     = bcadd($product_info['data']['price'], $product_info['data']['promotion_amount'], 2);//原价
+        $product_info['data']['mktprice'] = $origin_price;//原销售价替换原市场价
         return $product_info;
     }
 }

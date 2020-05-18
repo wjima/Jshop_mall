@@ -159,9 +159,14 @@ class PintuanGoods extends Common
         //取拼团记录
         $recordModel = new PintuanRecord();
         //多少人在拼
-        $rwhere[]                                 = ['pr.rule_id', 'eq', $info['id']];
-        $rwhere[]                                 = ['pr.goods_id', 'eq', $gid];
-        $rwhere[]                                 = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
+        $rwhere[] = ['pr.rule_id', 'eq', $info['id']];
+        $rwhere[] = ['pr.goods_id', 'eq', $gid];
+        $rwhere[] = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
+
+        //拼团中，未结束的
+        $rwhere[] = ['pr.status', 'eq', $recordModel::STATUS_COMM];
+        $rwhere[] = ['pr.close_time', '>', time()];
+
         $goodsInfo['data']['pintuan_record_nums'] = $recordModel
             ->alias('pr')
             ->join('order o', 'pr.order_id = o.order_id')

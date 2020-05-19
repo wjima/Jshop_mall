@@ -7,7 +7,7 @@ namespace org\promotion\result;
  * Class GoodsReduce
  * @package org\promotion\result
  */
-class GoodsReduce implements Result
+class GoodsDiscount implements Result
 {
     function jshop($params, &$cart, $promotionInfo){
         foreach($cart['list'] as $k => &$v){

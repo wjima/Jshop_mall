@@ -31,11 +31,11 @@ class PromotionResult extends Common
             'type' => 'order',
             'class' => 'OrderDiscount'
         ],
-//        'ORDER_HALF_PRICE' => [
-//            'name' => '指定商品满几件减指定金额',
-//            'type' => 'order',
-//            'class' => 'OrderHalfPrice'
-//        ],
+        'GOODS_HALF_PRICE' => [
+            'name' => '指定商品第X件减指定金额',
+            'type' => 'goods',
+            'class' => 'GoodsHalfPrice'
+        ],
 //        'ORDER_GIVEAWAY' => [
 //            'name' => '订单满赠商品',
 //            'type' => 'order',

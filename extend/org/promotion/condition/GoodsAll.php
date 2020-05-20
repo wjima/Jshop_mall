@@ -27,5 +27,9 @@ class GoodsAll implements Condition
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return "购买所有商品";
+    }
 
 }

@@ -35,5 +35,10 @@ class OrderFull implements Condition
         return $result;
     }
 
+    function getMsg($params)
+    {
+        return '购买订单满'.$params['money'].'元 ';
+    }
+
 
 }

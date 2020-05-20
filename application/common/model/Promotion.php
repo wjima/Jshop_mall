@@ -26,8 +26,17 @@ class Promotion extends Common
     const ACTIVITY_STATUS_PROGRESS = 2;//促销活动进行中
     const ACTIVITY_STATUS_END = 3;//促销活动已结束
 
-    //购物车的数据传过来，然后去算促销
-    public function toPromotion(&$cart, $type = self::TYPE_PROMOTION)
+    /**
+     * 购物车的数据传过来，然后去算促销
+     * @param $cart
+     * @param int $type
+     * @param bool $checkNums          ,是否计算促销的数量，默认是计算，当有时候，不想计算数量，比如商品详情页，就传false
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function toPromotion(&$cart, $type = self::TYPE_PROMOTION, $checkNums = true)
     {
 
         //团购秒杀不会走到这里,团购秒杀直接调用setPromotion方法，这里做个判断吧，防止出现异常情况
@@ -42,7 +51,7 @@ class Promotion extends Common
         $where[] = ['type', 'eq', $type];
         $list    = $this->where($where)->order('sort', 'asc')->select();
         foreach ($list as $v) {
-            $condition = $this->setPromotion($v, $cart);
+            $condition = $this->setPromotion($v, $cart, $checkNums);
             //如果当前促销应用了，并且是排他，就跳出循环，不执行下面的促销了
             if ($v['exclusive'] == self::EXCLUSIVE_YES && $condition) {
                 break;
@@ -85,11 +94,16 @@ class Promotion extends Common
 
 
     //根据促销信息，去计算购物车的促销情况
-    public function setPromotion($promotionInfo, &$cart)
+    public function setPromotion($promotionInfo, &$cart, $checkNums = true)
     {
         $conditionModel        = new PromotionCondition();
-        $where['promotion_id'] = $promotionInfo['id'];
-        $conditionList         = $conditionModel->field('*')->where($where)->select();
+        $where[] = ['promotion_id', '=', $promotionInfo['id']];
+        //如果是商品详情页等，促销的时候，不想计算数量，就执行此代码
+        if(!$checkNums){
+            $where[] = ['code', '<>', "GOODS_P_NUM"];
+            $where[] = ['code', '<>', "GOODS_NUM"];
+        }
+        $conditionList         = $conditionModel->where($where)->order('sort', 'asc')->select();
         //循环取出所有的促销条件，有一条不满足，就不行，就返回false，没有促销条件也返回false
         $key = true;
 
@@ -113,7 +127,7 @@ class Promotion extends Common
         if ($key) {
             //走到这一步就说明所有的促销条件都符合，那么就去计算结果
             $resultModel = new PromotionResult();
-            $resultList  = $resultModel->where($where)->select();
+            $resultList  = $resultModel->where($where)->order('sort', 'asc')->select();
 
             foreach ($resultList as $v) {
                 $resultModel->toResult($v, $cart, $promotionInfo);

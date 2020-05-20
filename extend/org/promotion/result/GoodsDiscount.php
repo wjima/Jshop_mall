@@ -71,4 +71,8 @@ class GoodsDiscount implements Result
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return '打'.$params['discount'].'折 ';
+    }
 }

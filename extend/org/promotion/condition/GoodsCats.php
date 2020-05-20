@@ -41,4 +41,10 @@ class GoodsCats implements Condition
         $result['status'] = true;
         return $result;
     }
+
+    function getMsg($params)
+    {
+        return "购买指定分类商品";
+    }
+
 }

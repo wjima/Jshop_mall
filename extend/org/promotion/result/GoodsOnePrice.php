@@ -69,5 +69,9 @@ class GoodsOnePrice implements Result
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return '一口价'.$params['money'].'元 ';
+    }
 
 }

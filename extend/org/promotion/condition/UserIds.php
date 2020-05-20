@@ -30,5 +30,10 @@ class UserIds implements Condition
         return $result;
     }
 
+    function getMsg($params)
+    {
+        return "专享";
+    }
+
 
 }

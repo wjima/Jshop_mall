@@ -69,5 +69,9 @@ class GoodsReduce implements Result
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return '减'.$params['money'].'元 ';
+    }
 
 }

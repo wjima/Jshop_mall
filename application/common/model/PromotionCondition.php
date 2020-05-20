@@ -8,37 +8,56 @@ class PromotionCondition extends Common
         'GOODS_ALL' => [
             'name' => '所有商品满足条件',
             'type' => 'goods',
+            'sort' => 100,
             'class' => 'GoodsAll',
         ],
         'GOODS_IDS' => [
             'name' => '指定某些商品满足条件',
             'type' => 'goods',
+            'sort' => 100,
             'class' => 'GoodsIds',
         ],
         'GOODS_CATS' => [
             'name' => '指定商品分类满足条件',
             'type' => 'goods',
+            'sort' => 100,
             'class' => 'GoodsCats',
         ],
         'GOODS_BRANDS' => [
             'name' => '指定商品品牌满足条件',
             'type' => 'goods',
+            'sort' => 100,
             'class' => 'GoodsBrands',
         ],
         'ORDER_FULL' => [
             'name' => '订单满XX金额满足条件',
             'type' => 'order',
+            'sort' => 100,
             'class' => 'OrderFull',
         ],
         'USER_GRADE' => [
             'name' => '用户符合指定等级',
             'type' => 'user',
+            'sort' => 100,
             'class' => 'UserGrade'
         ],
         'USER_IDS' => [
             'name' => '指定某些用户',
             'type' => 'user',
+            'sort' => 100,
             'class' => 'UserIds',
+        ],
+        'GOODS_NUM' => [
+            'name' => '指定商品满足数量',
+            'type' => 'goods',
+            'sort' => 200,              //排序一定要小于上面的商品促销条件
+            'class' => 'GoodsNum',
+        ],
+        'GOODS_P_NUM' => [
+            'name' => '指定单品满足数量',
+            'type' => 'goods',
+            'sort' => 200,              //排序一定要小于上面的商品促销条件
+            'class' => 'GoodsPNum',
         ],
     ];
 
@@ -50,28 +69,12 @@ class PromotionCondition extends Common
      */
     public function getConditionMsg($code, $params = [])
     {
-        switch($code)
-        {
-            case 'GOODS_ALL':
-                $msg = '购买所有商品 ';
-                break;
-            case 'GOODS_IDS':
-                $msg = '购买指定商品 ';
-                break;
-            case 'GOODS_CATS':
-                $msg = '购买指定分类商品 ';
-                break;
-            case 'GOODS_BRANDS':
-                $msg = '购买指定品牌商品 ';
-                break;
-            case 'ORDER_FULL':
-                $msg = '购买订单满'.$params['money'].'元 ';
-                break;
-            case 'USER_GRADE':
-                $msg = '用户符合指定等级';
-                break;
+        if(!$this->code[$code]){
+            return "";
         }
-        return $msg;
+        $code = '\\org\\promotion\\condition\\'.$this->code[$code]['class'];
+        $condition =  new $code();
+        return $condition->getMsg($params);
     }
 
 
@@ -89,83 +92,6 @@ class PromotionCondition extends Common
     }
 
 
-
-//    //检查是否满足条件,老的流程
-//    public function check($conditionInfo,&$cart,$promotionInfo)
-//    {
-//        if($this->code[$conditionInfo['code']]){
-//            $method = 'condition_'.$conditionInfo['code'];
-//            $params = json_decode($conditionInfo['params'],true);
-//            //如果是订单促销就直接去判断促销条件，如果是商品促销，就循环订单明细
-//            if($this->code[$conditionInfo['code']]['type'] == 'goods'){
-//                $key = false;
-//                foreach($cart['list'] as $k => $v){
-//                    $type = $this->$method($params,$v['products']['goods_id'],$v['nums']);
-//
-//                    if($type > 0){
-//                        if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
-//                            $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = [
-//                                'name' => $promotionInfo['name'],
-//                                'type' => $type
-//                            ];
-//                        }
-//
-//                    }
-//                    //只有选中的商品才算促销
-//                    if($v['is_select']){
-//                        if(!$key){
-//                            if($type == 2){
-//                                $key = true;            //针对某一条商品促销条件，循环购物车的所有商品，只要有一条满足要求就，算，就返回true
-//                            }
-//                        }
-//                    }
-//                }
-//                return $key;
-//            }elseif($this->code[$conditionInfo['code']]['type'] == 'order'){
-//                $type = $this->$method($params,$cart);
-//                if($type > 0){
-//                    //这里是订单促销，那么不管怎么样，加入待满足的促销列表里,针对本次促销来说，他永远都是没有或者type等于2的状态
-//                    if(!isset($cart['promotion_list'][$promotionInfo['id']])){
-//                        $cart['promotion_list'][$promotionInfo['id']] = [
-//                            'name' => $promotionInfo['name'],
-//                            'type' => $type
-//                        ];
-//                    }
-//
-//                }
-//                if($type == 2){
-//                    return true;
-//                }else{
-//                    return false;
-//                }
-//            }elseif($this->code[$conditionInfo['code']]['type'] == 'user'){
-//                $type = $this->$method($params,$cart['user_id']);
-//                if($type == 2){
-//                    return true;
-//                }else{
-//                    return false;
-//                }
-//            }
-//
-//        }
-//        return false;
-//    }
-    //在促销结果中，如果是商品促销结果，调用此方法，判断商品是否符合需求
-    public function goods_check($promotion_id,$goods_id,$nums = 1){
-        $conditionList = $this->where(['promotion_id'=>$promotion_id])->select();
-        foreach($conditionList as $k => $v){
-            if($this->code[$v['code']]['type'] == 'goods'){
-                $method = 'condition_'.$v['code'];
-                $params = json_decode($v['params'],true);
-                $type = $this->$method($params,$goods_id,$nums);
-                if($type != 2){
-                    return $type;
-                }
-            }
-        }
-
-        return 2;
-    }
 
     /**
      * 促销条件循环的时候，有一些是false，标示这个商品不满足条件，当促销条件执行结束的时候，要把这些false都删掉，防止影响前台
@@ -194,97 +120,6 @@ class PromotionCondition extends Common
     }
 
 
-
-    //订单满XX金额时满足条件
-//    private function condition_ORDER_FULL($params,&$cart){
-//        if($cart['amount']>=$params['money']){
-//            return 2;
-//        }else{
-//            return 1;
-//        }
-//    }
-
-    //指定某些商品满足条件
-//    private function condition_GOODS_IDS($params,$goods_id,$nums){
-//        $goods_ids = explode(',',$params['goods_id']);
-//        if(in_array($goods_id, $goods_ids)){
-//            if($nums>= $params['nums']){
-//                return 2;
-//            }else{
-//                return 1;
-//            }
-//            //return 2;
-//        }else{
-//            return 0;
-//        }
-//    }
-
-    //指定商品分类满足条件
-//    private function condition_GOODS_CATS($params,$goods_id,$nums){
-//        $goodsModel = new Goods();
-//        $goodsCatModel = new GoodsCat();
-//        $goodsInfo = $goodsModel->find($goods_id);
-//        if(!$goodsInfo || !$goodsInfo['goods_cat_id']){
-//            return 0;
-//        }
-//        if($goodsCatModel->isChild($params['cat_id'],$goodsInfo['goods_cat_id'])){
-//            if($nums>= $params['nums']){
-//                return 2;
-//            }else{
-//                return 1;
-//            }
-//            //return 2;
-//        }else{
-//            return 0;
-//        }
-//    }
-
-    //指定商品品牌满足条件
-//    private function condition_GOODS_BRANDS($params,$goods_id,$nums){
-//        $goodsModel = new Goods();
-//        $goodsCatModel = new GoodsCat();
-//        $goodsInfo = $goodsModel->find($goods_id);
-//        if(!$goodsInfo){
-//            return 0;
-//        }
-//        if($goodsInfo->brand && $goodsInfo->brand['id'] == $params['brand_id']){
-//            if($nums>= $params['nums']){
-//                return 2;
-//            }else{
-//                return 1;
-//            }
-//        }else{
-//            return 0;
-//        }
-//    }
-
-    //指定用户等级满足条件
-//    private function condition_USER_GRADE($params,$user_id){
-//        $userModel = new User();
-//        $where[] = ['id', 'eq', $user_id];
-//        $info = $userModel->where($where)->find();
-//        if(!$info){
-//            return 0;
-//        }
-//        foreach($params as $k => $v){
-//            if($info['grade'] == $k){
-//                return 2;
-//            }
-//        }
-//        return 0;
-//
-//    }
-    //指定某些用户
-//    private function condition_USER_IDS($params,$user_id){
-//        $user_ids = explode(',',$params['user_id']);
-//        if(in_array($user_id, $user_ids)){
-//            return 2;
-//        }else{
-//            return 0;
-//        }
-//    }
-
-
     /**
      * 返回layui的table所需要的格式
      * @author sin
@@ -300,6 +135,7 @@ class PromotionCondition extends Common
             ->alias('pc')
             ->join(config('database.prefix').'promotion p','p.id = pc.promotion_id')
             ->where($tableWhere['where'])
+            ->order('sort', 'asc')
             ->select();
 
         $data = $this->tableFormat($list);
@@ -393,6 +229,7 @@ class PromotionCondition extends Common
         }
         $result['status'] = false;          //重新置成false
 
+        $data['sort'] = $this->code[$data['code']]['sort'];
         $data['params'] = json_encode($data['params']);
         if($data['id'] != ''){
             //更新

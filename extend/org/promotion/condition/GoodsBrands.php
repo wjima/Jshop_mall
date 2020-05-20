@@ -15,7 +15,9 @@ class GoodsBrands implements Condition
             $goodsInfo = $goodsModel->find($v['products']['goods_id']);
             if($goodsInfo && $goodsInfo['goods_cat_id']){
                 if($goodsInfo->brand && $goodsInfo->brand['id'] == $params['brand_id']){
-                    $re = true;
+                    if(!$re){
+                        $re = true;
+                    }
                     $type = $promotionInfo['name'];
                 }
             }
@@ -38,6 +40,11 @@ class GoodsBrands implements Condition
         }
         $result['status'] = true;
         return $result;
+    }
+
+    function getMsg($params)
+    {
+        return "购买指定品牌商品";
     }
 
 }

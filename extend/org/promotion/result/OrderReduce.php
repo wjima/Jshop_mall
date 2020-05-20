@@ -51,5 +51,9 @@ class OrderReduce implements Result
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return '订单减'.$params['money'].'元 ';
+    }
 
 }

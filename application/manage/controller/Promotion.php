@@ -225,6 +225,11 @@ class Promotion extends Manage
             return error_code(10002);
         }
         if ($promotionModel::destroy($info['id'])) {
+            //删除促销条件和促销结果
+            $condition = new PromotionCondition();
+            $condition->where('promotion_id', input('param.id'))->delete();
+            $result = new PromotionResult();
+            $result->where('promotion_id', input('param.id'))->delete();
             return [
                 'status' => true,
                 'data'   => '',

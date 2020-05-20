@@ -55,5 +55,9 @@ class OrderDiscount implements Result
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return '订单打'.$params['discount'].'折 ';
+    }
 
 }

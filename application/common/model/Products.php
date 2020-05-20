@@ -206,10 +206,10 @@ class Products extends Common
             if ($type == 'group' || $type == 'skill') {
                 //团购秒杀，直接应用
                 $promotionInfo = $promotionModel->getInfo($params['group_id']);
-                $promotionModel->setPromotion($promotionInfo, $cart);
+                $promotionModel->setPromotion($promotionInfo, $cart, false);
             } else {
                 //todo 其它类型
-                $promotionModel->toPromotion($cart, $promotion_type);
+                $promotionModel->toPromotion($cart, $promotion_type, false);
             }
 
 

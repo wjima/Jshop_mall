@@ -11,7 +11,9 @@ class GoodsIds implements Condition
             $type = false;
             if(in_array($v['products']['goods_id'], $goods_ids) ){
                 //判断返回值,也就是购物车中，只要有一个，就返回正确
-                $re = true;
+                if(!$re){
+                    $re = true;
+                }
                 $type = $promotionInfo['name'];
             }
             if(!isset($v['products']['promotion_list'][$promotionInfo['id']]) || $v['products']['promotion_list'][$promotionInfo['id']]){
@@ -33,5 +35,10 @@ class GoodsIds implements Condition
         }
         $result['status'] = true;
         return $result;
+    }
+
+    function getMsg($params)
+    {
+        return "购买指定商品";
     }
 }

@@ -90,4 +90,8 @@ class GoodsHalfPrice implements Result
         $result['status'] = true;
         return $result;
     }
+    function getMsg($params)
+    {
+        return '第'.$params['num'].'件优惠'.$params['money'].'元';
+    }
 }

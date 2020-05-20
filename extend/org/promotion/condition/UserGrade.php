@@ -35,5 +35,8 @@ class UserGrade implements Condition
         return $result;
     }
 
-
+    function getMsg($params)
+    {
+        return "指定用户等级";
+    }
 }

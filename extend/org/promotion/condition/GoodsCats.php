@@ -41,6 +41,4 @@ class GoodsCats implements Condition
         $result['status'] = true;
         return $result;
     }
-
-
 }

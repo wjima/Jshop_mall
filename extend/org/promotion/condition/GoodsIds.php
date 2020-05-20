@@ -8,14 +8,14 @@ class GoodsIds implements Condition
         $re = false;
         $goods_ids = explode(',',$params['goods_id']);
         foreach($cart['list'] as $k => &$v){
+            $type = false;
             if(in_array($v['products']['goods_id'], $goods_ids) ){
                 //判断返回值,也就是购物车中，只要有一个，就返回正确
-                if(!$re){
-                    $re = true;
-                }
-                if(!isset($v['products']['promotion_list'][$promotionInfo['id']])){
-                    $v['products']['promotion_list'][$promotionInfo['id']] = $promotionInfo['name'];
-                }
+                $re = true;
+                $type = $promotionInfo['name'];
+            }
+            if(!isset($v['products']['promotion_list'][$promotionInfo['id']]) || $v['products']['promotion_list'][$promotionInfo['id']]){
+                $v['products']['promotion_list'][$promotionInfo['id']] = $type;
             }
         }
         return $re;
@@ -34,5 +34,4 @@ class GoodsIds implements Condition
         $result['status'] = true;
         return $result;
     }
-
 }

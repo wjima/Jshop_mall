@@ -10,9 +10,9 @@ namespace org\promotion\condition;
 class GoodsAll implements Condition
 {
     function jshop($params, &$cart, $promotionInfo){
-            foreach($cart['list'] as $k => $v){
-                if(!isset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']])){
-                    $cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']] = $promotionInfo['name'];
+            foreach($cart['list'] as $k => &$v){
+                if(!isset($v['products']['promotion_list'][$promotionInfo['id']]) || $v['products']['promotion_list'][$promotionInfo['id']]){
+                    $v['products']['promotion_list'][$promotionInfo['id']] = $promotionInfo['name'];
                 }
             }
         return true;

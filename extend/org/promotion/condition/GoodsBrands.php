@@ -11,17 +11,16 @@ class GoodsBrands implements Condition
         $re = false;
         $goodsModel = new Goods();
         foreach($cart['list'] as $k => &$v){
+            $type = false;
             $goodsInfo = $goodsModel->find($v['products']['goods_id']);
-            if(!$goodsInfo || !$goodsInfo['goods_cat_id']){
-                continue;
-            }
-            if($goodsInfo->brand && $goodsInfo->brand['id'] == $params['brand_id']){
-                if(!$re){
+            if($goodsInfo && $goodsInfo['goods_cat_id']){
+                if($goodsInfo->brand && $goodsInfo->brand['id'] == $params['brand_id']){
                     $re = true;
+                    $type = $promotionInfo['name'];
                 }
-                if(!isset($v['products']['promotion_list'][$promotionInfo['id']])){
-                    $v['products']['promotion_list'][$promotionInfo['id']] = $promotionInfo['name'];
-                }
+            }
+            if(!isset($v['products']['promotion_list'][$promotionInfo['id']]) || $v['products']['promotion_list'][$promotionInfo['id']]){
+                $v['products']['promotion_list'][$promotionInfo['id']] = $type;
             }
         }
         return $re;

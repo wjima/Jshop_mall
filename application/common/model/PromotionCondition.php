@@ -87,6 +87,9 @@ class PromotionCondition extends Common
         $condition =  new $code();
         return $condition->jshop($params,$cart,$promotionInfo);
     }
+
+
+
 //    //检查是否满足条件,老的流程
 //    public function check($conditionInfo,&$cart,$promotionInfo)
 //    {
@@ -164,12 +167,28 @@ class PromotionCondition extends Common
         return 2;
     }
 
-    //后面有不满足条件的时候呢，要把前面满足条件的回滚成不满足条件的
-    public function promotionFalse(&$cart,$promotionInfo){
-        unset($cart['promotion_list'][$promotionInfo['id']]);
-        //商品回滚
-        foreach($cart['list'] as $k => $v){
-            unset($cart['list'][$k]['products']['promotion_list'][$promotionInfo['id']]);
+    /**
+     * 促销条件循环的时候，有一些是false，标示这个商品不满足条件，当促销条件执行结束的时候，要把这些false都删掉，防止影响前台
+     * @param $cart
+     * @param $promotionInfo
+     * @param $type true&false    此条促销记录是否满足所有条件，如果不满足，就要把此促销信息都删掉，如果满足，就单纯的把商品列表上的不满足删掉
+     * @return bool
+     */
+    public function promotionFalse(&$cart, $promotionInfo, $type){
+        if(!$type){
+            unset($cart['promotion_list'][$promotionInfo['id']]);
+        }
+
+        foreach($cart['list'] as $k => &$v){
+            if(isset($v['products']['promotion_list'][$promotionInfo['id']])){
+                if($type){
+                    if(!$v['products']['promotion_list'][$promotionInfo['id']]){
+                        unset($v['products']['promotion_list'][$promotionInfo['id']]);
+                    }
+                }else{
+                    unset($v['products']['promotion_list'][$promotionInfo['id']]);
+                }
+            }
         }
         return true;
     }

@@ -105,6 +105,9 @@ class Promotion extends Common
             $key = false;
         }
 
+        //如果不满足需求，就要统一标准，把前面加上的都拿掉
+        //把商品明细上的促销为false的删掉，防止影响前端
+        $conditionModel->promotionFalse($cart,$promotionInfo,$key);
 
 
         if ($key) {
@@ -115,9 +118,6 @@ class Promotion extends Common
             foreach ($resultList as $v) {
                 $resultModel->toResult($v, $cart, $promotionInfo);
             }
-        } else {
-            //如果不满足需求，就要统一标准，把前面加上的都拿掉
-            $conditionModel->promotionFalse($cart, $promotionInfo);
         }
         return $key;
     }

@@ -4,14 +4,14 @@
     <input type="hidden" name="id" value="{$id}" />
     <div class="layui-form-item">
         <label class="layui-form-label">条件名称：</label>
-        <div class="layui-form-mid">指定单品数量满足N件</div>
+        <div class="layui-form-mid">指定单品数量满足N件，不可单独使用</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">数量：</label>
         <div class="layui-input-inline seller-inline-2">
             <input name="params[num]" lay-verify="title" autocomplete="off" value="{$params.num}" placeholder="" class="layui-input" type="text">
         </div>
-        <div class="layui-form-mid layui-word-aux">购买的单品数量大于等于此数量才满足条件</div>
+        <div class="layui-form-mid layui-word-aux">购买的同一个单品数量大于等于此数量才满足条件</div>
     </div>
 </form>
 <script>

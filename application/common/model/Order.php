@@ -1725,7 +1725,7 @@ class Order extends Common
         //优惠信息存储
         $promotion_list = [];
         foreach ($cartInfo['data']['promotion_list'] as $k => $v) {
-            if ($v['type'] == 2) {
+            if (isset($v['type']) && $v['type'] == 2) {
                 $promotion_list[] = $v;
             }
         }

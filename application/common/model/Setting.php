@@ -314,7 +314,11 @@ class Setting extends Common
         'goods_show_word2' => [
             'name' => '商品显示文字2',
             'value' => '7天无理由退款'
-        ]
+        ],
+        'language' => [
+            'name' => '语言包',
+            'value' => 'cn',
+        ],
     ];
 
 

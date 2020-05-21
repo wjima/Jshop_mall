@@ -464,18 +464,54 @@ function error_code($code, $mini = false)
 {
     $result = [
         'status' => false,
-        'data'   => 10000,
+        'data'   => $code,
         'msg'    => config('error.10000')
     ];
-    if (config('?error.' . $code)) {
-        $result['data'] = $code;
-        $result['msg']  = config('error.' . $code);
+    //有语言包就应用语言包
+    $data = func_get_args();
+    array_splice($data,1,1);
+    $msg = jshop_l(...$data);
+    if($msg == ""){
+        if (config('?error.' . $code)) {
+            $msg = config('error.' . $code);
+        }
     }
+    $result['msg'] = $msg;
     if ($mini) {
         return $result['msg'];
     } else {
         return $result;
     }
+}
+//语言包，前端和数据
+function jshop_l($code){
+    $data = func_get_args();
+    $str = "";
+    if (!config('?language_'.getSetting('language').'.' . $code)) {
+        return $str;
+    }
+    $str = config('language_'.getSetting('language').'.' . $code);
+    $count = count($data);
+    $count--;
+    for($i=1;$i<=$count;$i++){
+        $str = str_replace("{JSHOP".$i."}",$data[$i],$str);
+    }
+    return $str;
+}
+//后端语言包,所有的后端的显示放到这里
+function jshop_m_l($code){
+    $data = func_get_args();
+    $str = "";
+    if (!config('?language_'.config('jshop.language').'.' . $code)) {
+        return $str;
+    }
+    $str = config('language_'.config('jshop.language').'.' . $code);
+    $count = count($data);
+    $count--;
+    for($i=1;$i<=$count;$i++){
+        $str = str_replace("{JSHOP".$i."}",$data[$i],$str);
+    }
+    return $str;
 }
 
 

@@ -121,6 +121,7 @@ class Common extends Api
         $conf['user_agreement_id'] = $config['user_agreement_id']; //用户协议
         $conf['privacy_policy_id'] = $config['privacy_policy_id']; //隐私政策
         $conf['shop_beian']        = $config['shop_beian']; //备案
+        $conf['language']          = getSetting('language');        //语言包，预留的口
 
         //手机端商品详情页文字说明，如果为空就不显示
         $goods_show_word = [];

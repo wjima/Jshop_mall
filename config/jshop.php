@@ -32,4 +32,5 @@ return [
     'service_wechatpay_mch_id'  => '1498297512',            //微信支付服务商模式，服务商的商户号
     'service_wechatpay_appid'   => 'wxd02de048830633c7',
     'service_wechatpay_key'   => '11111111111234567890123456789012',
+    'language'              => 'cn',        //后台语言包
 ];

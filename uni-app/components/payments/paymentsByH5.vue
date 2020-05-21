@@ -196,6 +196,8 @@
 								tempForm.dispatchEvent(new Event('submit'))
 								tempForm.submit()
 								document.body.removeChild(tempForm)
+							}else{
+								this.$common.errorToShow(res.msg)
 							}
 						})
 						break

@@ -46,6 +46,13 @@ class Demo extends Addons
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
         if(isset($setting['menu'])){
+            $name = strtolower($this->getName());
+            //在插件菜单节点上增加当前插件的名称，用于生成节点url和权限判断
+            foreach($setting['menu'] as $k => &$v){
+                $v['addons'] = $name;
+            }
+
+
             return $setting['menu'];
         }
         return true;

@@ -137,7 +137,7 @@ class Operation extends Common
 
             $menuTree = $this->createTree($list,$parent_menu_id);        //构建菜单树
             //把插件的菜单也增加上去
-            $this->addonsMenu($menuTree,$type);
+            $this->addonsMenu($manage_id,$menuTree,$type);
 
             //存储
             if($type == self::PERM_TYPE_SUB){
@@ -251,6 +251,25 @@ class Operation extends Common
         }
         return "";
 
+    }
+
+    //根据插件节点id生成这个节点的url
+    private function getAddonsUrl(&$v,$list){
+        $v['url'] = "";
+        if($v['type'] == 'c'){
+            $v['url'] = get_addon_url($v['addons'].'://'.$v['code'].'/index');
+        }else{
+            foreach($list as $k => $j){
+                if($j['id'] == $v['parent_id']){
+                    //如果可以，最好判断一下$j['type']是否是c
+
+                    $v['url'] = get_addon_url($v['addons'].'://'.$j['code'].'/'.$v['code']);
+                    return true;
+                }
+            }
+        }
+
+        return true;
     }
 
 //    /**
@@ -650,22 +669,65 @@ class Operation extends Common
         return $list;
     }
 
-    //把插件的菜单增加到树上
-    private function addonsMenu(&$tree,$type){
-        $list = $this->addonsOperations();
-        foreach($list as $v){
-            if($v){
-                if(!is_array($v)){
+    private function addonsMenu($manage_id,&$tree,$type){
+        $list = $this->getManageAddonsMenu($manage_id);
+        foreach($list as $v) {
+            if ($v) {
+                if (!is_array($v)) {
                     continue;
                 }
-                if(!isset($v['perm_type'])){
+                if (!isset($v['perm_type'])) {
                     $v['perm_type'] = self::PERM_TYPE_SUB;          //如果节点没有维护权限的话，默认在菜单上显示
                 }
-                if($type >= $v['perm_type']){
-                    $this->addonsMenuAdd2($v,$tree);
+                if ($type >= $v['perm_type']) {
+                    //计算插件节点的url
+                    $this->getAddonsUrl($v,$list);
+                    $this->addonsMenuAdd2($v, $tree);
                 }
             }
         }
+
+        return true;
+    }
+
+    //获得一个管理员的所有插件的菜单列表
+    public function getManageAddonsMenu($manage_id){
+        $list = $this->addonsOperations();
+        $manageModel = new Manage();
+        //如果不是超级管理员，要把他的插件权限取出来，然后在$list上把没有权限的删掉
+        if($manage_id != $manageModel::TYPE_SUPER_ID){
+            $manageRoleRel = new ManageRoleRel();
+            //取此管理员的所有角色
+            $roles = $manageRoleRel->where('manage_id',$manage_id)->select();
+            if(!$roles->isEmpty()){
+                $roles = $roles->toArray();
+                $roles = array_column($roles,'role_id');
+            }else{
+                $roles = [];
+            }
+            //取所有的角色所对应的权限
+            $mrarModel = new ManageRoleAddonsRel();
+            $manage_list = $mrarModel
+                ->distinct(true)
+                ->where('manage_role_id','IN',$roles)
+                ->select();
+            if(!$manage_list->isEmpty()){
+                $manage_list = $manage_list->toArray();
+                $manage_list = array_column($manage_list,'menu_id');
+            }else{
+                $manage_list = [];
+            }
+            //把插件权限上，不在$list里的都删掉
+            foreach($list as $k => $v){
+                if(!isset($v['id'])){
+                    continue;
+                }
+                if(!in_array($v['id'],$manage_list)){
+                    unset($list[$k]);
+                }
+            }
+        }
+        return $list;
     }
 
     //获得所有插件的所有所有菜单，组合成一个二维数组供调用

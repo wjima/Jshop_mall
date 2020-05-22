@@ -264,6 +264,10 @@
 									window.location.href = res.msg
 									return;
 								}
+								if(!res.status){
+									this.$common.errorToShow(res.msg);
+									return;
+								}
 								const data = res.data
 								this.checkWXJSBridge(data)
 							})

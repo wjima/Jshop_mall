@@ -254,7 +254,12 @@ class Operation extends Common
     }
 
     //根据插件节点id生成这个节点的url
-    private function getAddonsUrl(&$v,$list){
+    private function getAddonsUrl(&$v){
+        //list从新取,要取全部的。
+        static $list = [];
+        if(!$list){
+            $list = $this->addonsOperations();
+        }
         $v['url'] = "";
         if($v['type'] == 'c'){
             $v['url'] = get_addon_url($v['addons'].'://'.$v['code'].'/index');
@@ -262,7 +267,7 @@ class Operation extends Common
             foreach($list as $k => $j){
                 if($j['id'] == $v['parent_id']){
                     //如果可以，最好判断一下$j['type']是否是c
-
+                    //::todo
                     $v['url'] = get_addon_url($v['addons'].'://'.$j['code'].'/'.$v['code']);
                     return true;
                 }
@@ -681,7 +686,7 @@ class Operation extends Common
                 }
                 if ($type >= $v['perm_type']) {
                     //计算插件节点的url
-                    $this->getAddonsUrl($v,$list);
+                    $this->getAddonsUrl($v);
                     $this->addonsMenuAdd2($v, $tree);
                 }
             }

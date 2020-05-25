@@ -2172,7 +2172,7 @@ class Order extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
             $result['data'] = $body;
             return $result;
         } else {
@@ -2424,7 +2424,7 @@ class Order extends Common
         }
 
 
-        $return['msg']  = '查询成功';
+        $return['msg']  = error_code(10026,true);
         $return['data'] = [
             'total_orders'      => $total_orders,
             'total_user_orders' => $total_user_orders,

@@ -122,7 +122,7 @@ class PromotionRecord extends Common
         ];
 
         if (!$this->save($recData)) {
-            $result['msg'] = '保存失败';
+            $result['msg'] = error_code(10004,true);
             return $result;
         }
         $result['status'] = true;

@@ -54,7 +54,7 @@ class Hooks extends Manage
         }
         return [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $this->fetch()
         ];
     }
@@ -81,7 +81,7 @@ class Hooks extends Manage
         }
         return [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $this->fetch('edit', ['data' => $data])
         ];
     }
@@ -97,13 +97,13 @@ class Hooks extends Manage
     {
         $result     = [
             'status' => false,
-            'msg'    => '删除失败',
+            'msg'    => error_code(10023,true),
             'data'   => []
         ];
         $hooksModel = new hooksModel();
         if ($hooksModel::destroy(input('param.id/d'))) {
             $result['status'] = true;
-            $result['msg']    = '删除成功';
+            $result['msg']    = error_code(10022,true);
         }
         return $result;
     }

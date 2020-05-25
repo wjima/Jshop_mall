@@ -24,7 +24,7 @@ class Files extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '上传失败',
+            'msg'    => error_code(10035,true),
             'data'   => []
         ];
         // 获取表单上传文件 例如上传了001.jpg
@@ -52,7 +52,7 @@ class Files extends Manage
             if ($files->save($iData)) {
                 $result['data']   = $iData;
                 $result['status'] = true;
-                $result['msg']    = '上传成功';
+                $result['msg']    = error_code(10034,true);
                 return $result;
             }
         } else {

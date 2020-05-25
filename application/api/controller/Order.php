@@ -41,7 +41,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => true,
-                'msg'    => '取消订单成功',
+                'msg'    => error_code(13002,true),
                 'data'   => $order_ids
             );
         }
@@ -49,7 +49,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg'    => '取消订单失败',
+                'msg'    => error_code(13003,true),
                 'data'   => $order_ids
             );
         }
@@ -73,7 +73,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => true,
-                'msg'    => '删除成功',
+                'msg'    => error_code(10022,true),
                 'data'   => $order_ids
             );
         }
@@ -81,7 +81,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg'    => '删除失败',
+                'msg'    => error_code(10023,true),
                 'data'   => $order_ids
             );
         }
@@ -106,7 +106,7 @@ class Order extends Api
         {
             $return_data = [
                 'status' => true,
-                'msg'    => '获取成功',
+                'msg'    => error_code(10024,true),
                 'data'   => $result
             ];
         }
@@ -114,7 +114,7 @@ class Order extends Api
         {
             $return_data = [
                 'status' => false,
-                'msg'    => '获取失败',
+                'msg'    => error_code(10025,true),
                 'data'   => $result
             ];
         }
@@ -226,7 +226,7 @@ class Order extends Api
         $return_data = [
             'status' => false,
             'data'   => '',
-            'msg'    => '暂未设置配送方式',
+            'msg'    => error_code(13004,true),
         ];
         $model       = new Ship();
         $ship        = $model->getShip($area_id);
@@ -259,7 +259,7 @@ class Order extends Api
         $data  = $model->getListFromWxApi($input);
         $return_data = array(
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => array(
                 'list'   => $data['data'],
                 'count'  => $data['count'],
@@ -292,7 +292,7 @@ class Order extends Api
             $data['coupon'] = $couponCount;
             $return_data = [
                 'status' => true,
-                'msg'    => '获取成功',
+                'msg'    => error_code(10024,true),
                 'data'   => $data
             ];
         }
@@ -301,7 +301,7 @@ class Order extends Api
             $data['coupon'] = 0;
             $return_data = [
                 'status' => false,
-                'msg'    => '没有符合的数据',
+                'msg'    => error_code(10036,true),
                 'data'   => $data
             ];
         }

@@ -127,7 +127,7 @@ class Promotion extends Manage
         $where['type']  = $promotionModel::TYPE_PROMOTION;
         $info           = $promotionModel->where($where)->find();
         if (!$info) {
-            $this->error('没有找到此促销记录');
+            $this->error(error_code(15019,true));
         }
         $info['params'] = json_decode($info['params']);
 
@@ -171,7 +171,7 @@ class Promotion extends Manage
         $where['type']  = $promotionModel::TYPE_COUPON;
         $info           = $promotionModel->where($where)->find();
         if (!$info) {
-            $this->error('没有找到此优惠券记录');
+            $this->error(error_code(15020,true));
         }
         //优惠券条件
         $info['params'] = json_decode($info['params'], true);
@@ -236,7 +236,7 @@ class Promotion extends Manage
                 'msg'    => ''
             ];
         } else {
-            return error_code(10007);
+            return error_code(10023);
         }
     }
 
@@ -257,10 +257,10 @@ class Promotion extends Manage
         $couponModel->where($where)->delete();
         if (!$promotionModel::destroy($info['id'])) {
             $return['status'] = false;
-            $return['msg']    = '失败';
+            $return['msg']    = error_code(10037,true);
         }
         $return['status'] = true;
-        $return['msg']    = '成功';
+        $return['msg']    = error_code(10038,true);
         return $return;
     }
 
@@ -568,7 +568,7 @@ class Promotion extends Manage
         $where[] = ['type', 'in', [$promotionModel::TYPE_GROUP, $promotionModel::TYPE_SKILL]];
         $info    = $promotionModel->where($where)->find();
         if (!$info) {
-            $this->error('没有找到此促销记录');
+            $this->error(error_code(15019,true));
         }
         //取促销信息
         $conditionModel    = new PromotionCondition();
@@ -618,7 +618,7 @@ class Promotion extends Manage
                 $result = [
                     'status' => false,
                     'data'   => 0,
-                    'msg'    => '请选择商品'
+                    'msg'    => error_code(12009,true)
                 ];
                 return $result;
             }
@@ -632,7 +632,7 @@ class Promotion extends Manage
                     $result = [
                         'status' => false,
                         'data'   => 0,
-                        'msg'    => '商品：' . $goods['goods_name'] . '已在未结束的活动' . $goods['name'] . '中，请勿重复添加！'
+                        'msg'    => error_code(12014,true,$goods['goods_name'],$goods['name']),
                     ];
                     return $result;
                 }
@@ -692,7 +692,7 @@ class Promotion extends Manage
                 'msg'    => ''
             ];
         } else {
-            return error_code(10007);
+            return error_code(10023);
         }
     }
 
@@ -705,7 +705,7 @@ class Promotion extends Manage
     {
         $result         = [
             'status' => false,
-            'msg'    => '关键参数丢失',
+            'msg'    => '',
             'data'   => []
         ];
         $promotionModel = new \app\common\model\Promotion();
@@ -713,7 +713,7 @@ class Promotion extends Manage
         $elem           = input('param.elem/s', '');
         $state          = input('param.state/s', 'true');
 
-        if (!$id && !$elem) return $result;
+        if (!$id && !$elem) return error_code(10051);
         if ($elem === 'status') {
             $change = $state === 'true'
                 ? $promotionModel::STATUS_OPEN
@@ -737,9 +737,9 @@ class Promotion extends Manage
 
         if ($promotionModel->save($iData, ['id' => $id])) {
             $result['status'] = true;
-            $result['msg']    = '设置成功';
+            $result['msg']    = error_code(10020,true);
         } else {
-            $result['msg'] = '设置失败';
+            $result['msg'] = error_code(10021,true);
         }
 
         return $result;

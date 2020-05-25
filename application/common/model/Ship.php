@@ -90,7 +90,7 @@ class Ship extends Common
     {
         $result = [
             'status' => false,
-            'msg'    => '保存失败',
+            'msg'    => error_code(10004,true),
             'data'   => '',
         ];
         if ($data['free_postage'] != self::FREE_POSTAGE_YES) {
@@ -113,7 +113,7 @@ class Ship extends Common
 
         if ($this->save($data, ['id' => $id]) !== false) {
             $result['status'] = true;
-            $result['msg']    = '保存成功';
+            $result['msg']    = error_code(10016,true);
         }
         return $result;
     }

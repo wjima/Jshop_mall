@@ -73,7 +73,7 @@ class Index extends AddonController
     public function hbadd(){
         $return = [
             'status' => true,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -102,7 +102,7 @@ class Index extends AddonController
                 $this->assign('info',$info);
             }
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
             $return['data'] = $this->fetch();
             return $return;
         }
@@ -131,7 +131,7 @@ class Index extends AddonController
     public function couponAdd(){
         $return = [
             'status' => true,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -189,7 +189,7 @@ class Index extends AddonController
 //            }
             $this->assign('couponlist',$couponList);
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
             $return['data'] = $this->fetch();
             return $return;
         }
@@ -218,7 +218,7 @@ class Index extends AddonController
     public function couponView(){
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout('layout');

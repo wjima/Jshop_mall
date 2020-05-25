@@ -42,7 +42,7 @@ class Notice extends Manage
         }
         return [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $this->fetch()
         ];
 
@@ -71,7 +71,7 @@ class Notice extends Manage
         }
         return [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $this->fetch('edit', ['noticeInfo' => $noticeInfo])
         ];
     }
@@ -84,11 +84,11 @@ class Notice extends Manage
      */
     public function del()
     {
-        $result      = ['status' => true, 'msg' => '删除成功', 'data' => ''];
+        $result      = ['status' => true, 'msg' => error_code(10022,true), 'data' => ''];
         $noticeModel = new noticeModel();
         if (!$noticeModel->destroy(input('post.id/d'))) {
             $result['status'] = false;
-            $result['msg']    = '删除失败';
+            $result['msg']    = error_code(10023,true);
         }
 
         return $result;

@@ -34,7 +34,7 @@ class WeixinMessage extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => '保存成功',
+            'msg'    => error_code(10016,true),
             'data'   => [],
         ];
         $id     = 0;
@@ -61,14 +61,14 @@ class WeixinMessage extends Common
         if ($params['id']) {
             if ($this->save($params, ['id' => $params['id']]) === false) {
                 $result['status'] = false;
-                $result['msg']    = '保存失败';
+                $result['msg']    = error_code(10004,true);
                 Db::rollback();
             }
             $id = $params['id'];
         } else {
             if (!$this->save($params)) {
                 $result['status'] = false;
-                $result['msg']    = '保存失败';
+                $result['msg']    = error_code(10004,true);
                 Db::rollback();
             }
             $id = $this->getLastInsID();

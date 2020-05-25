@@ -57,7 +57,7 @@ class GoodsImages extends Common
         $images = $this->where([ 'goods_id' => $goods_id ])->order('sort desc')->select();
         if(!$images->isEmpty()) {
             $result['status'] = true;
-            $result['msg'] = '查询成功';
+            $result['msg'] = error_code(10026,true);
             $result['data'] = $images->toArray();
         }else{
             $result['status'] = false;
@@ -85,7 +85,7 @@ class GoodsImages extends Common
             }
         }
         $result['status'] = true;
-        $result['msg'] = '删除成功';
+        $result['msg'] = error_code(10022,true);
         return $result;
     }
 

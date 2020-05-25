@@ -77,7 +77,7 @@ class Articles extends Api
     {
         $result = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => []
         ];
         $msg_id = Request::param('id', 0);

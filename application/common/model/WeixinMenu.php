@@ -30,11 +30,11 @@ class WeixinMenu extends Common
             $res = $this->save($data, ['id' => $info['id']]);
         }
         if ($res === false) {
-            $result['msg'] = '保存失败';
+            $result['msg'] = error_code(10004,true);
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = '保存成功';
+        $result['msg']    = error_code(10016,true);
         return $result;
     }
 

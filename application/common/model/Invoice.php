@@ -47,14 +47,14 @@ class Invoice extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => []
         ];
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->save($data, $where);
         if ($return['data']) {
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
         }
         return $return;
     }
@@ -72,7 +72,7 @@ class Invoice extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => []
         ];
 
@@ -82,7 +82,7 @@ class Invoice extends Common
 
         if ($return['data']) {
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
         }
         return $return;
     }
@@ -151,7 +151,7 @@ class Invoice extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => []
         ];
 
@@ -166,7 +166,7 @@ class Invoice extends Common
         if ($return['data']) {
             $return['data']['class'] = config('params.order')['tax_class'][$return['data']['class']];
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
         }
 
         return $return;
@@ -183,7 +183,7 @@ class Invoice extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
 
@@ -192,7 +192,7 @@ class Invoice extends Common
             ->delete();
         if ($return['data'] !== false) {
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
         }
 
         return $return;
@@ -215,7 +215,7 @@ class Invoice extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [
                 'list' => [],
                 'count' => 0,
@@ -242,7 +242,7 @@ class Invoice extends Common
 
         if ($return['data']['list'] !== false) {
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
             foreach ($return['data']['list'] as &$v) {
                 $v['class_text'] = config('params.order')['tax_class'][$v['class']];
                 $v['type_text'] = config('params.order')['tax_type'][$v['type']];

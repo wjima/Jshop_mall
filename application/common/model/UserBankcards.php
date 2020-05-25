@@ -155,22 +155,22 @@ class UserBankcards extends Common
                     $this->save($new_data);
                     $this->commit();
                     $return['status'] = true;
-                    $return['msg'] = '保存成功';
+                    $return['msg'] = error_code(10016,true);
                 } catch (\Exception $e) {
                     $this->rollback();
-                    $return['msg'] = '保存失败';
+                    $return['msg'] = error_code(10004,true);
                 }
             } else {
                 // 不是默认的直接添加
                 if ($this->allowField(true)->save($new_data)) {
                     $return[ 'status' ] = true;
-                    $return[ 'msg' ] = '保存成功';
+                    $return[ 'msg' ] = error_code(10016,true);
                 }
             }
         } else {
             if ($this->allowField(true)->save($new_data)) {
                 $return[ 'status' ] = true;
-                $return[ 'msg' ] = '保存成功';
+                $return[ 'msg' ] = error_code(10016,true);
             }
         }
 
@@ -194,7 +194,7 @@ class UserBankcards extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => ''
         ];
         $where[] = ['id', 'eq', $id];
@@ -215,21 +215,21 @@ class UserBankcards extends Common
                         $this->where([ 'id' => $id, 'user_id' => $user_id ])->delete();
                         $this->commit();
                         $return[ 'status' ] = true;
-                        $return[ 'msg' ] = '删除成功';
+                        $return[ 'msg' ] = error_code(10022,true);
                     } catch ( \Exception $e ) {
                         $this->rollback();
-                        $return[ 'msg' ] = '删除失败';
+                        $return[ 'msg' ] = error_code(10023,true);
                     }
                 } else {
                     if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
                         $return[ 'status' ] = true;
-                        $return[ 'msg' ] = '删除成功';
+                        $return[ 'msg' ] = error_code(10022,true);
                     }
                 }
             } else {
                 if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
                     $return[ 'status' ] = true;
-                    $return[ 'msg' ] = '删除成功';
+                    $return[ 'msg' ] = error_code(10022,true);
                 }
             }
         } else {
@@ -254,7 +254,7 @@ class UserBankcards extends Common
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $where[] = ['user_id','eq',$user_id];
@@ -358,10 +358,10 @@ class UserBankcards extends Common
                 $this->save(['is_default'=>self::DEFAULT_YES],['id'=>$data['id'],'user_id'=>$user_id]);
                 $this->commit();
                 $return['status'] = true;
-                $return['msg'] = '保存成功';
+                $return['msg'] = error_code(10016,true);
             } catch (\Exception $e){
                 $this->rollback();
-                $return['msg'] = '保存失败';
+                $return['msg'] = error_code(10004,true);
             }
         } else {
             $res['msg'] = '该银行卡不存在';
@@ -382,7 +382,7 @@ class UserBankcards extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => ''
         ];
 
@@ -404,7 +404,7 @@ class UserBankcards extends Common
         if($res)
         {
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
         return $return;
     }
@@ -419,7 +419,7 @@ class UserBankcards extends Common
      */
     public function bankCardsOrganization ($card_code)
     {
-        $result = ['status' => true, 'msg' => '获取成功', 'data' => ''];
+        $result = ['status' => true, 'msg' => error_code(10024,true), 'data' => ''];
         $curl = new Curl();
         $url = 'https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo='.$card_code.'&cardBinCheck=true';
         $res = $curl->get($url);

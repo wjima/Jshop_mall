@@ -262,7 +262,7 @@ class PintuanRecord extends Model{
         }
         return $result = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $data,
             'total'  => ceil($count / $limit)
         ];
@@ -319,7 +319,7 @@ class PintuanRecord extends Model{
         $first_team['people_number'] = $params['people_number'];
         return $result = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $first_team
         ];
     }

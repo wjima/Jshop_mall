@@ -44,7 +44,7 @@ class Invoice extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
 
@@ -70,7 +70,7 @@ class Invoice extends Manage
             $this->assign('info', $info['data']);
             $return['data'] = $this->fetch();
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
         } else {
             $return['msg'] = $info['msg'];
         }
@@ -90,7 +90,7 @@ class Invoice extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
 
@@ -102,7 +102,7 @@ class Invoice extends Manage
             $this->assign('info', $info['data']);
             $return['data'] = $this->fetch();
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
         } else {
             $return['msg'] = $info['msg'];
         }

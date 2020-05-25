@@ -35,13 +35,13 @@ class Area extends Manage
             if ($result) {
                 $return_data = array(
                     'status' => true,
-                    'msg'    => '获取成功',
+                    'msg'    => error_code(10024,true),
                     'data'   => $result
                 );
             } else {
                 $return_data = array(
                     'status' => false,
-                    'msg'    => '获取失败',
+                    'msg'    => error_code(10025,true),
                     'data'   => $result
                 );
             }
@@ -98,13 +98,13 @@ class Area extends Manage
         if ($info) {
             $return_data = array(
                 'status' => true,
-                'msg'    => '获取成功',
+                'msg'    => error_code(10024,true),
                 'data'   => $info
             );
         } else {
             $return_data = array(
                 'status' => false,
-                'msg'    => '获取失败',
+                'msg'    => error_code(10025,true),
                 'data'   => $info
             );
         }

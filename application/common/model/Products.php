@@ -82,7 +82,7 @@ class Products extends Common
     {
         $result  = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => [],
         ];
         $product = $this->where(['id' => $id])->field('*')->find();
@@ -252,7 +252,7 @@ class Products extends Common
 
         $result = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $product
         ];
         return $result;

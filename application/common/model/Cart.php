@@ -422,7 +422,7 @@ class Cart extends Common
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => ''
         ];
 
@@ -542,7 +542,7 @@ class Cart extends Common
     {
         $return = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => []
         ];
 
@@ -615,7 +615,7 @@ class Cart extends Common
                 $list['data']['amount'] = bcadd($list['data']['amount'], bcmul($v['nums'], $v['products']['amount'], 2), 2);
             }
 
-            $return['msg']  = '成功';
+            $return['msg']  = error_code(10038,true);
             $return['data'] = $list['data'];
         } else {
             $return['msg']  = '出了点小状况，请刷新重试~';

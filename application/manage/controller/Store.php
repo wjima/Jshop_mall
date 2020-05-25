@@ -84,11 +84,11 @@ class Store extends Manage
     public function del()
     {
         $storeModel = new storeModel();
-        $result = ['status' => true,'msg' => '删除成功','data' => ''];
+        $result = ['status' => true,'msg' => error_code(10022,true),'data' => ''];
         if(!$storeModel->where('id',input('param.id/d'))->delete())
         {
             $result['status'] = false;
-            $result['msg'] = '删除失败';
+            $result['msg'] = error_code(10023,true);
         }
         return $result;
     }

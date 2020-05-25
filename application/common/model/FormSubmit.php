@@ -106,7 +106,7 @@ class FormSubmit extends common
     {
         $result = [
             'status' => false,
-            'msg'    => '删除失败',
+            'msg'    => error_code(10023,true),
             'data'   => ''
         ];
         if (!$id) {
@@ -127,7 +127,7 @@ class FormSubmit extends common
             return false;
         }
         Db::commit();
-        $result['msg']    = '删除成功';
+        $result['msg']    = error_code(10022,true);
         $result['status'] = true;
         return $result;
     }
@@ -155,7 +155,7 @@ class FormSubmit extends common
     {
         $result = [
             'status' => true,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => []
         ];
         if (!$id) {
@@ -220,7 +220,7 @@ class FormSubmit extends common
             }
         }
         $result['data']   = $formInfo['data'];
-        $result['msg']    = '获取成功';
+        $result['msg']    = error_code(10024,true);
         $result['status'] = true;
         return $result;
     }

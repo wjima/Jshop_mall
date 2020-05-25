@@ -27,7 +27,7 @@ class Notice extends Api
     {
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
 
@@ -64,7 +64,7 @@ class Notice extends Api
     {
         $result = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => []
         ];
         $noticeModel = new NoticeModel;
@@ -72,7 +72,7 @@ class Notice extends Api
 
         if ($data) {
             $result['status'] = true;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
             $result['data'] = $data;
         }
 

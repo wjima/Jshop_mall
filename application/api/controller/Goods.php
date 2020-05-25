@@ -36,12 +36,12 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '有非法查询字段',
+            'msg'    => error_code(10028,true),
             'data'   => []
         ];
 
         if ($data == '' && $data != '*') {
-            $return_data['msg'] = '查询字段错误';
+            $return_data['msg'] = error_code(10029,true);
             return $return_data;
         }
         if ($data != '*') {
@@ -61,7 +61,7 @@ class Goods extends Api
             }
         }
         $return_data['status'] = true;
-        $return_data['msg']    = '字段校检通过';
+        $return_data['msg']    = error_code(10030,true);
         return $return_data;
     }
 
@@ -77,7 +77,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '排序错误',
+            'msg'    => error_code(10031,true),
             'data'   => []
         ];
         //        if(is_array($order)) {
@@ -111,7 +111,7 @@ class Goods extends Api
         //            }
         //        }
         $return_data['status'] = true;
-        $return_data['msg']    = '排序校检通过';
+        $return_data['msg']    = error_code(10032,true);
         return $return_data;
     }
 
@@ -129,7 +129,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => []
         ];
         $field       = input('field', '*');
@@ -210,7 +210,7 @@ class Goods extends Api
 
         $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit, $whereOr);
         if ($returnGoods['status']) {
-            $return_data['msg']                = '查询成功';
+            $return_data['msg']                = error_code(10026,true);
             $return_data['data']['list']       = $returnGoods['data'];
             $return_data['data']['total_page'] = $returnGoods['total'];
             $return_data['data']['filter']      = isset($returnGoods['filter']) ? array_merge($returnGoods['filter'], $filter) : [];
@@ -237,7 +237,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10026),
             'data'   => []
         ];
         $goods_id    = input('id/d', 0); //商品ID
@@ -250,7 +250,7 @@ class Goods extends Api
         $goodsModel  = new GoodsModel();
         $returnGoods = $goodsModel->getGoodsDetial($goods_id, $field, $token);
         if ($returnGoods['status']) {
-            $return_data['msg']  = '查询成功';
+            $return_data['msg']  = error_code(10026,true);
             $return_data['data'] = $returnGoods['data'];
         } else {
             $return_data['msg']    = $returnGoods['msg'];
@@ -300,7 +300,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '无此规格信息',
+            'msg'    => error_code(12701,true),
             'data'   => []
         ];
         $spec_value  = input('spec', '');
@@ -325,7 +325,7 @@ class Goods extends Api
                         $val['price']          = $goodsModel->getPrice($val);
                         $val['stock']          = $goodsModel->getStock($val);
                         $return_data['data']   = $val;
-                        $return_data['msg']    = '获取成功';
+                        $return_data['msg']    = error_code(10024,true);
                         $return_data['status'] = true;
                     }
                 }
@@ -345,7 +345,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '无参数相关信息',
+            'msg'    => error_code(10033,true),
             'data'   => []
         ];
         $goods_id    = input('id/d', 0); //商品ID
@@ -378,7 +378,7 @@ class Goods extends Api
             }
             $return_data['data']   = $params;
             $return_data['status'] = true;
-            $return_data['msg']    = '查询成功';
+            $return_data['msg']    = error_code(10026,true);
         }
         return $return_data;
     }
@@ -392,14 +392,14 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '无参数相关信息',
+            'msg'    => error_code(10033,true),
             'data'   => []
         ];
         $product_id  = input('id/d', 0); //货品ID
         $token       = input('token', ''); //token值 会员登录后传
         $type       = input('type', 'goods'); //商品类型,默认是商品
         if (!$product_id) {
-            $return_data['msg'] = '货品ID缺失';
+            $return_data['msg'] = error_code(14011,true);
             return $return_data;
         }
 
@@ -489,7 +489,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => []
         ];
         $field       = input('field', 'id,bn,name,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,stock,unit,spes_desc,view_count,buy_count,label_ids');
@@ -579,7 +579,7 @@ class Goods extends Api
             $returnGoods['data'] = array_merge($returnGoods['data'], $otherGoods['data']);
         }
         if ($returnGoods['status']) {
-            $return_data['msg']                = '查询成功';
+            $return_data['msg']                = error_code(10026,true);
             $return_data['data']['list']       = $returnGoods['data'];
             $return_data['data']['total_page'] = $returnGoods['total'];
             $return_data['data']['filter']      = isset($returnGoods['filter']) ? array_merge($returnGoods['filter'], $filter) : [];

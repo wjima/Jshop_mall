@@ -53,7 +53,7 @@ class Wechat extends Manage
         $result       = [
             'status' => false,
             'data'   => '',
-            'msg'    => '保存失败',
+            'msg'    => error_code(10004,true),
         ];
         $settingModel = new Setting();
 
@@ -66,7 +66,7 @@ class Wechat extends Manage
                 }
             }
             $result['status'] = true;
-            $result['msg']    = '保存成功';
+            $result['msg']    = error_code(10016,true);
             return $result;
         }
         return $result;
@@ -172,7 +172,7 @@ class Wechat extends Manage
         $this->assign('site_url', $site_url);
         $this->assign('wx_appid', $wx_appid);
         $result['status'] = true;
-        $result['msg']    = '成功';
+        $result['msg']    = error_code(10038,true);
         $result['data']   = $this->fetch('edit_menu');
         return $result;
     }
@@ -227,7 +227,7 @@ class Wechat extends Manage
         //无此菜单时，前台直接删除
         if (!$info) {
             $result['status'] = true;
-            $result['msg']    = '删除成功';
+            $result['msg']    = error_code(10022,true);
             return $result;
         }
         // 当删除父节点菜单时，检查是否有子节点
@@ -240,11 +240,11 @@ class Wechat extends Manage
         }
         $res = $weixinMenu->where(['pid' => $pid, 'menu_id' => $id])->delete();
         if (!$res) {
-            $result['msg'] = '删除失败';
+            $result['msg'] = error_code(10023,true);
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = '删除成功';
+        $result['msg']    = error_code(10022,true);
         return $result;
     }
 
@@ -315,7 +315,7 @@ class Wechat extends Manage
     {
         $return = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -324,7 +324,7 @@ class Wechat extends Manage
             return $messageModel->addData(input('param.'));
         }
         $return['status'] = true;
-        $return['msg']    = '成功';
+        $return['msg']    = error_code(10038,true);
         $return['data']   = $this->fetch('add_message');
         return $return;
     }
@@ -340,7 +340,7 @@ class Wechat extends Manage
     {
         $result       = [
             'status' => false,
-            'msg'    => '删除失败',
+            'msg'    => error_code(10023,true),
             'data'   => [],
         ];
         $messageModel = new WeixinMessage();
@@ -350,7 +350,7 @@ class Wechat extends Manage
         }
         if ($messageModel->where(['id' => $id])->delete()) {
             $result['status'] = true;
-            $result['msg']    = '删除成功';
+            $result['msg']    = error_code(10022,true);
         }
         return $result;
     }
@@ -367,7 +367,7 @@ class Wechat extends Manage
     {
         $return = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -381,7 +381,7 @@ class Wechat extends Manage
         }
         $data['params']   = json_decode($data['params'], true);
         $return['status'] = true;
-        $return['msg']    = '成功';
+        $return['msg']    = error_code(10038,true);
         $return['data']   = $this->fetch('edit_message', ['data' => $data]);
         return $return;
     }

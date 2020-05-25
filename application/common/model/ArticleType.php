@@ -74,7 +74,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => '保存成功',
+            'msg'    => error_code(10016,true),
             'data'   => []
         ];
 
@@ -85,7 +85,7 @@ class ArticleType extends Common
         } else {
             if (!$this->allowField(true)->save($data)) {
                 $result['status'] = false;
-                $result['msg']    = '保存失败';
+                $result['msg']    = error_code(10004,true);
             }
         }
         return $result;
@@ -105,7 +105,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => '保存成功',
+            'msg'    => error_code(10016,true),
             'data'   => []
         ];
         $where = [
@@ -122,7 +122,7 @@ class ArticleType extends Common
         } else {
             if ($this->allowField(true)->save($data, $where) === false) {
                 $result['status'] = false;
-                $result['msg']    = '保存失败';
+                $result['msg']    = error_code(10004,true);
             }
         }
         return $result;
@@ -203,7 +203,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => []
         ];
 
@@ -325,7 +325,7 @@ class ArticleType extends Common
 
         $result = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => [
                 'list' => $type,
                 'hot' => $hot

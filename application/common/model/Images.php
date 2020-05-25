@@ -81,7 +81,7 @@ class Images extends Common
     {
         $return_data = [
             'status' => false,
-            'msg'    => '保存失败',
+            'msg'    => error_code(10004,true),
             'data'   => ''
         ];
         if (!is_dir(ROOT_PATH . 'public/static/uploads/images/')) {
@@ -151,12 +151,12 @@ class Images extends Common
             $iData['ctime'] = time();
             $iData['path']  = ROOT_PATH . 'public' . $first['savepath'] . $first['savename'];
             if (!$this->save($iData)) {
-                $return_data['msg'] = '保存失败';
+                $return_data['msg'] = error_code(10004,true);
                 return $return_data;
             }
             $return_data['status'] = true;
             $return_data['data']   = $iData;
-            $return_data['msg']    = '保存成功';
+            $return_data['msg']    = error_code(10016,true);
         } else {
             $return_data['msg'] = $upload->getError();
             return $return_data;

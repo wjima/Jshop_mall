@@ -548,7 +548,7 @@ class GoodsCat extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => ''
         ];
         $where[] = ['id', 'eq', $id];
@@ -556,7 +556,7 @@ class GoodsCat extends Common
         if($info)
         {
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
             $return['data'] = $info['name'];
         }
 

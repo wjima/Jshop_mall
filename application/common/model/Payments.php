@@ -33,7 +33,7 @@ class Payments extends Common
      */
     public function editData($data)
     {
-        $result = ['status' => true, 'msg'   => '保存失败', 'data'  => ''];
+        $result = ['status' => true, 'msg'   => error_code(10004,true), 'data'  => ''];
         $data['params'] = json_encode($data['params']);
         if(isset($data['status']) && $data['status'] == 1){
         }else{
@@ -44,7 +44,7 @@ class Payments extends Common
 
         if($this->allowField(true)->save($data,$where)){
             $result['status'] = true;
-            $result['msg'] = '保存成功';
+            $result['msg'] = error_code(10016,true);
         }
         return $result;
 

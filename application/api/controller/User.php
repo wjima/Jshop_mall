@@ -90,7 +90,7 @@ class User extends Api
     public function wxappLogin1()
     {
         if (!input("?param.code")) {
-            $result['msg'] = 'code参数缺失';
+            $result['msg'] = error_code(10068,true);
             return $result;
         }
         $wxapp = new Wxapp();
@@ -118,12 +118,12 @@ class User extends Api
             return $result;
         }
         if (!input("?param.iv")) {
-            $result['msg'] = 'iv参数缺失';
+            $result['msg'] = error_code(10070,true);
             return $result;
         }
         if (!input("?param.edata")) {
             //加密的encryptedData数据，这是个加密的字符串
-            $result['msg'] = '加密参数缺失';
+            $result['msg'] = error_code(10071,true);
             return $result;
         }
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
@@ -165,7 +165,7 @@ class User extends Api
         $user_info = Request::param('user_info', false);
 
         if (!$code) {
-            $result['msg'] = 'code参数缺失';
+            $result['msg'] = error_code(10068,true);
             return $result;
         }
         $aliPayApp = new Alipayapp();
@@ -182,16 +182,16 @@ class User extends Api
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '成功'
+            'msg' => error_code(10037,true)
         ];
         $userModel = new UserModel();
         if (!input("?param.mobile")) {
-            $result['msg'] = '请输入手机号码';
+            $result['msg'] = error_code(11051,true);
             return $result;
         }
         //code的值可以为loign，reg，veri
         if (!input("?param.code")) {
-            $result['msg'] = '缺少核心参数';
+            $result['msg'] = error_code(10068,true);
             return $result;
         }
         $code = input('param.code');
@@ -215,7 +215,7 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.token")) {
-            $result['msg'] = '请输入token';
+            $result['msg'] = error_code(11001,true);
             return $result;
         }
         $userTokenModel = new UserToken();
@@ -291,7 +291,7 @@ class User extends Api
         $result = [
             'status' => false,
             'data' => input('param.'),
-            'msg' => '保存失败'
+            'msg' => error_code(10004,true)
         ];
         if (!input("?param.avatar")) {
             return error_code(11003);
@@ -300,7 +300,7 @@ class User extends Api
         if ($userModel->changeAvatar($this->userId, input('param.avatar'))) {
             $result['status'] = true;
             $result['data']['avatar'] = input('param.avatar');
-            $result['msg'] = '保存成功';
+            $result['msg'] = error_code(10016,true);
         }
         return $result;
     }
@@ -332,7 +332,7 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_id")) {
-            $result['msg'] = '请输入goods_id';
+            $result['msg'] = error_code(10013,true);
             return $result;
         }
         $goodsBrowsingModel = new GoodsBrowsing();
@@ -355,7 +355,7 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_ids")) {
-            $result['msg'] = '请输入ids';
+            $result['msg'] = error_code(10013,true);
             return $result;
         }
         $goodsBrowsingModel = new GoodsBrowsing();
@@ -402,7 +402,7 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_id")) {
-            $result['msg'] = '请输入goods_id';
+            $result['msg'] = error_code(10013,true);
             return $result;
         }
         $goodsCollectionModel = new GoodsCollection();
@@ -466,13 +466,13 @@ class User extends Api
         if ($result !== false) {
             $return_data = array(
                 'status' => true,
-                'msg' => '存储收货地址成功',
+                'msg' => error_code(10016,true),
                 'data' => $result
             );
         } else {
             $return_data = array(
                 'status' => false,
-                'msg' => '存储收货地址失败',
+                'msg' => error_code(10004,true),
                 'data' => $result
             );
         }
@@ -535,13 +535,13 @@ class User extends Api
             $result['area_name'] = get_area($result['area_id']);
             $res = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $result
             ];
         } else {
             $res = [
                 'status' => false,
-                'msg' => '该收货地址不存在',
+                'msg' => error_code(10002,true),
                 'data' => ''
             ];
         }
@@ -624,13 +624,13 @@ class User extends Api
         if ($list) {
             $return_data = array(
                 'status' => true,
-                'msg' => '获取用户收货地址成功',
+                'msg' => error_code(10024,true),
                 'data' => $list
             );
         } else {
             $return_data = array(
                 'status' => true,
-                'msg' => '用户暂无收货地址',
+                'msg' => error_code(11056,true),
                 'data' => $list
             );
         }
@@ -670,13 +670,13 @@ class User extends Api
         if ($area_id) {
             $res = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $area_id
             ];
         } else {
             $res = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => $area_id
             ];
         }
@@ -1105,7 +1105,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => 2
         ];
         $settingModel = new Setting();
@@ -1122,7 +1122,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         //我的邀请码
@@ -1190,13 +1190,13 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $area = config('jshop.area_list');
         if (!file_exists($area)) {
             $return['status'] = false;
-            $return['msg'] = '地址库不存在，请重新生成';
+            $return['msg'] = error_code(10072,true);
             return $return;
         }
         $data = file_get_contents($area);
@@ -1309,11 +1309,11 @@ class User extends Api
         ];
 
         if (!input("?param.type")) {
-            $result['msg'] = 'type参数缺失';
+            $result['msg'] = error_code(10003,true);
             return $result;
         }
         $data = input('param.');
-        $userWxModel = new UserWx();
+//        $userWxModel = new UserWx();
         $uniapp = new Uniapp();
 
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
@@ -1393,7 +1393,7 @@ class User extends Api
         $user_info = Request::param('user_info', false);
 
         if (!$code) {
-            $result['msg'] = 'code参数缺失';
+            $result['msg'] = error_code(10003,true);
             return $result;
         }
         $ttApp = new Ttapp();

@@ -61,7 +61,7 @@ class Balance
         if($job->attempts() > 3)
         {
             $bData['status'] = $ietaskModle::EXPORT_FAIL_STATUS;
-            $bData['message'] = '导出执行失败';
+            $bData['message'] = error_code(10039,true);
             $bData['utime'] = time();
             $ietaskModle->update($bData, ['id' => $params['task_id']]);
             $job->delete();

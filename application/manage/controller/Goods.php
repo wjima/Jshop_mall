@@ -134,15 +134,11 @@ class Goods extends Manage
 
             return [
                 'data'   => $catList,
-                'msg'    => '获取成功',
+                'msg'    => error_code(10024,true),
                 'status' => true,
             ];
         } else {
-            return [
-                'data'   => '',
-                'msg'    => '关键参数丢失',
-                'status' => false,
-            ];
+            return error_code(10051);
         }
     }
 
@@ -174,7 +170,7 @@ class Goods extends Manage
         $goods_id = $goodsModel->doAdd($data['goods']);
         if (!$goods_id) {
             $goodsModel->rollback();
-            $result['msg'] = '商品数据保存失败';
+            $result['msg'] = error_code(12002,true);
             return $result;
         }
         $open_spec = input('post.open_spec', 0);
@@ -208,7 +204,7 @@ class Goods extends Manage
                 $product_id      = $productsModel->doAdd($data['product']);
                 if (!$product_id) {
                     $goodsModel->rollback();
-                    $result['msg'] = '货品数据保存失败';
+                    $result['msg'] = error_code(12003,true);
                     return $result;
                 }
                 if ($tmp_product['goods']['is_defalut'] == $productsModel::DEFALUT_YES) {//todo 取商品默认价格
@@ -218,7 +214,7 @@ class Goods extends Manage
                 }
             }
             if (!$isExitDefalut) {
-                $result['msg'] = '请选择默认货品';
+                $result['msg'] = error_code(12004,true);
                 $goodsModel->rollback();
                 return $result;
             }
@@ -244,7 +240,7 @@ class Goods extends Manage
             $product_id = $productsModel->doAdd($data['product']);
             if (!$product_id) {
                 $goodsModel->rollback();
-                $result['msg'] = '货品数据保存失败';
+                $result['msg'] = error_code(12003);
                 return $result;
             }
         }
@@ -263,7 +259,7 @@ class Goods extends Manage
             $goodsGrade->where(['goods_id' => $goods_id])->delete();
             if (!$goodsGrade->saveAll($grade_price_arr)) {
                 $goodsModel->rollback();
-                $result['msg'] = '会员价保存失败';
+                $result['msg'] = error_code(12005,true);
                 return $result;
             }
         }
@@ -284,7 +280,7 @@ class Goods extends Manage
             $goodsImagesModel = new GoodsImages();
             if (!$goodsImagesModel->batchAdd($imgRelData, $goods_id)) {
                 $goodsModel->rollback();
-                $result['msg'] = '商品图片保存失败';
+                $result['msg'] = error_code(12006,true);
                 return $result;
             }
         }
@@ -292,7 +288,7 @@ class Goods extends Manage
         $goodsExtendCat = new GoodsExtendCat();
         if (!$goodsExtendCat->saveCat($data['extend_cat'], $goods_id)) {
             $goodsModel->rollback();
-            $result['msg'] = '扩展分类保存失败';
+            $result['msg'] = error_code(12007,true);
             return $result;
         }
 
@@ -302,7 +298,7 @@ class Goods extends Manage
         $res                  = $goodsModel->updateGoods($goods_id, $upDataGoods);
         if ($res === false) {
             $goodsModel->rollback();
-            $result['msg'] = '总库存更新失败';
+            $result['msg'] = error_code(12008,true);
             return $result;
         }
         $goodsModel->commit();
@@ -310,7 +306,7 @@ class Goods extends Manage
         array_push($data, ['goods_id' => $goods_id]);
         hook('addgoodsafter', $data);//添加商品后增加钩子
 
-        $result['msg']    = '保存成功';
+        $result['msg']    = error_code(10016,true);
         $result['status'] = true;
         return $result;
     }
@@ -391,7 +387,7 @@ class Goods extends Manage
         }
         $images = input('post.goods.img/a', []);
         if (count($images) <= 0) {
-            $result['msg'] = '请先上传图片';
+            $result['msg'] = error_code(10043,true);
             return $result;
         }
         $data['goods']['image_id'] = reset($images);
@@ -433,8 +429,8 @@ class Goods extends Manage
             'data'   => '',
         ];
         if (!$goods_id) {
-            $result['msg'] = '商品ID不能为空';
-            return $result;
+//            $result['msg'] = error_code(12009,true);
+            return error_log(12009);
         }
         $productsModel = new Products();
         //单规格
@@ -528,7 +524,7 @@ class Goods extends Manage
                 $this->assign('typeParams', $typeParams);
                 $html             = $this->fetch('getSpec');
                 $result['status'] = true;
-                $result['msg']    = '获取成功';
+                $result['msg']    = error_code(10024,true);
                 $result['data']   = $html;
             }
         }
@@ -547,7 +543,7 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '关键参数丢失',
+            'msg'    => error_code(10051,true),
             'data'   => '',
         ];
         $this->view->engine->layout(false);
@@ -559,7 +555,7 @@ class Goods extends Manage
             $goodsModel = new goodsModel();
             $goods      = $goodsModel->getOne($goods_id, 'id,image_id');
             if (!$goods['status']) {
-                return '商品不存在';
+                return error_code(12010,true);
             }
             $products = $goods['data']->products;
         }
@@ -605,7 +601,7 @@ class Goods extends Manage
         $html             = $this->fetch('getSpecHtml');
         $result['data']   = $html;
         $result['status'] = true;
-        $result['msg']    = '获取成功';
+        $result['msg']    = error_code(10024,true);
         return $result;
 
     }
@@ -674,7 +670,7 @@ class Goods extends Manage
         $productsModel = new Products();
         $goods         = $goodsModel->getOne($goods_id, '*');
         if (!$goods['status']) {
-            $this->error("无此商品");
+            $this->error(error_code(12010,true));
         }
         $this->assign('open_spec', '0');
         $this->assign('data', $goods['data']);
@@ -934,7 +930,7 @@ class Goods extends Manage
 
         $goodsModel->commit();
         hook('editgoodsafter', $data);//编辑商品后增加钩子
-        $result['msg']    = '保存成功';
+        $result['msg']    = error_code(10016,true);
         $result['status'] = true;
         return $result;
     }
@@ -963,7 +959,7 @@ class Goods extends Manage
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = '删除成功';
+        $result['msg']    = error_code(10022,true);
         return $result;
     }
 
@@ -971,7 +967,7 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => '',
         ];
         if (!$type_id) {
@@ -1247,7 +1243,7 @@ class Goods extends Manage
             }
         }
         $result['status'] = true;
-        $result['msg']    = '删除成功';
+        $result['msg']    = error_code(10022,true);
         return $result;
     }
 
@@ -1260,13 +1256,13 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => ''
         ];
         $this->_common();
         $this->view->engine->layout(false);
         $result['status'] = true;
-        $result['msg']    = '成功';
+        $result['msg']    = error_code(10038,true);
         $result['data']   = $this->fetch('goodsSearch');
         return $result;
     }
@@ -1338,10 +1334,10 @@ class Goods extends Manage
         }
         $goodsModel = new goodsModel();
         if ($goodsModel->updateGoods($id, [$field => $value])) {
-            $result['msg']    = '更新成功';
+            $result['msg']    = error_code(10020,true);
             $result['status'] = true;
         } else {
-            $result['msg']    = '更新失败';
+            $result['msg']    = error_code(10021,true);
             $result['status'] = false;
         }
         return $result;
@@ -1379,7 +1375,7 @@ class Goods extends Manage
         return [
             'status' => true,
             'data'   => $content,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
         ];
     }
 
@@ -1492,7 +1488,7 @@ class Goods extends Manage
         return [
             'status' => true,
             'data'   => $content,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
         ];
     }
 

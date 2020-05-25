@@ -31,7 +31,7 @@ class Coupon extends Api
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '获取失败'
+            'msg' => error_code(10025,true)
         ];
         $promotionModel = new Promotion();
         $limit = Request::param('limit', 3);
@@ -40,7 +40,7 @@ class Coupon extends Api
         {
             $result['status'] = true;
             $result['data'] = $res;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
         }
         return $result;
     }
@@ -58,7 +58,7 @@ class Coupon extends Api
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '获取失败'
+            'msg' => error_code(10025,true)
         ];
         if(!input('promotion_id'))
         {
@@ -72,7 +72,7 @@ class Coupon extends Api
         {
             $result['status'] = true;
             $result['data'] = $res;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
         }
         return $result;
     }

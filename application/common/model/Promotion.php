@@ -403,7 +403,7 @@ class Promotion extends Common
     {
         $return = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => []
         ];
 
@@ -416,7 +416,7 @@ class Promotion extends Common
 
         if ($return['data'] !== false) {
             $return['status'] = true;
-            $return['msg']    = '成功';
+            $return['msg']    = error_code(10038,true);
         }
 
         return $return;

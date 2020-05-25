@@ -197,7 +197,7 @@ class BillDelivery extends Common
 //    {
 //        $result = [
 //            'status' => false,
-//            'msg' => '获取失败',
+//            'msg' => error_code(10025,true),
 //            'data' => []
 //        ];
 //        $deliveryInfo = $this->where('order_id', $order_id)->find();
@@ -210,7 +210,7 @@ class BillDelivery extends Common
 //            $logistics = $this->logistics_query($deliveryInfo['logi_code'], $deliveryInfo['logi_no']);
 //            if ($logistics['status'] === '200') {
 //                $result['status'] = true;
-//                $result['msg'] = '获取成功';
+//                $result['msg'] = error_code(10024,true);
 //                $result['data'] = [
 //                    'list' => $logistics['data'],
 //                    'state' => config('params.order')['logistics_state'][$logistics['state']]
@@ -236,7 +236,7 @@ class BillDelivery extends Common
     {
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
 
@@ -322,14 +322,14 @@ class BillDelivery extends Common
         if ($res) {
             $return_data = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $res,
                 'count' => $count
             ];
         } else {
             $return_data = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => $res,
                 'count' => $count
             ];
@@ -481,7 +481,7 @@ class BillDelivery extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = '导出成功';
+            $result['msg'] = error_code(10040,true);
             $result['data'] = $body;
             return $result;
         } else {
@@ -510,7 +510,7 @@ class BillDelivery extends Common
     {
         $return_data = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => '',
             'count' => 0
         ];
@@ -561,7 +561,7 @@ class BillDelivery extends Common
             }
             $return_data = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $res,
                 'count' => $count
             ];

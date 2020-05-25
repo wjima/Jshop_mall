@@ -88,7 +88,7 @@ class Csv
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = '导出成功';
+        $result['msg']    = error_code(10040,true);
         $result['data']   = [
             'file'     => $filePath,
             'filename' => $file_name,

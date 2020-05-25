@@ -25,7 +25,7 @@ class PagesItems extends Common
     {
         $result = [
             'status' => false,
-            'msg'    => '保存失败',
+            'msg'    => error_code(10004,true),
             'data'   => [],
         ];
         Db::startTrans();
@@ -47,12 +47,12 @@ class PagesItems extends Common
         }
         if (!$this->saveAll($iData)) {
             Db::rollback();
-            $result['msg'] = '保存失败';
+            $result['msg'] = error_code(10004,true);
             return $result;
         }
         Db::commit();
         $result['status'] = true;
-        $result['msg']    = '保存成功';
+        $result['msg']    = error_code(10016,true);
         return $result;
     }
 

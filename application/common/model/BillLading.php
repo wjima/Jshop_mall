@@ -84,7 +84,7 @@ class BillLading extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
             'count' => 0
         ];
@@ -158,7 +158,7 @@ class BillLading extends Common
                 }
             }
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
 
         return $return;
@@ -178,7 +178,7 @@ class BillLading extends Common
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $where[] = ['id|order_id|mobile', 'eq', $key];
@@ -287,7 +287,7 @@ class BillLading extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => ''
         ];
         $result = $this->get($id);
@@ -312,7 +312,7 @@ class BillLading extends Common
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = '删除成功';
+            $return['msg'] = error_code(10022,true);
         }
         return $return;
     }
@@ -350,7 +350,7 @@ class BillLading extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => []
         ];
 
@@ -376,7 +376,7 @@ class BillLading extends Common
                 $v['ctime'] = getTime($v['ctime']);
             }
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
 
         return $return;
@@ -511,7 +511,7 @@ class BillLading extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = '导出成功';
+            $result['msg'] = error_code(10040,true);
             $result['data'] = $body;
             return $result;
         } else {
@@ -539,7 +539,7 @@ class BillLading extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
             'count' =>0
         ];
@@ -622,7 +622,7 @@ class BillLading extends Common
             }
 
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
             $count = $this->where($where)->count();
             $return['count'] =$count;
         }

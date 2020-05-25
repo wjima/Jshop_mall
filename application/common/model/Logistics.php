@@ -52,13 +52,13 @@ class Logistics extends Common
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '保存失败',
+            'msg'    => error_code(10004,true),
         ];
         if ($data['id']) {
             $res = $this->save($data, ['id' => $data['id']]);
             if ($res !== false) {
                 $result['status'] = true;
-                $result['msg']    = '保存成功';
+                $result['msg']    = error_code(10016,true);
             }
         }
         return $result;

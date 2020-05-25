@@ -108,12 +108,12 @@ class Ship extends Manage
             //保存编辑后的数据
             $return_data = [
                 'status' => false,
-                'msg'    => '保存失败',
+                'msg'    => error_code(10004,true),
                 'data'   => '',
             ];
             $id          = input('post.id/d', '0');
             if (!$id) {
-                $return_data['msg'] = '保存失败';
+                $return_data['msg'] = error_code(10004,true);
                 return $return_data;
             }
             $type     = input('type/d', '1');
@@ -164,7 +164,7 @@ class Ship extends Manage
             if ($result['status'] !== false) {
                 $return_data = [
                     'status' => true,
-                    'msg'    => '保存成功',
+                    'msg'    => error_code(10016,true),
                     'data'   => $result,
                 ];
             } else {
@@ -186,7 +186,7 @@ class Ship extends Manage
     {
         $return_data = [
             'status' => false,
-            'msg'    => '删除失败',
+            'msg'    => error_code(10023,true),
             'data'   => '',
         ];
         $shiModel    = new ShipModel();
@@ -198,7 +198,7 @@ class Ship extends Manage
         if (!$res) {
             return $return_data;
         }
-        $return_data['msg']    = '删除成功';
+        $return_data['msg']    = error_code(10022,true);
         $return_data['status'] = true;
         return $return_data;
     }
@@ -207,7 +207,7 @@ class Ship extends Manage
     {
         $return_data    = [
             'code' => 0,
-            'msg'  => '获取成功',
+            'msg'  => error_code(10024,true),
             'data' => [],
         ];
         $parent_id      = input('nodeId', '0');

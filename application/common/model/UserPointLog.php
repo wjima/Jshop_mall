@@ -287,7 +287,7 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => [],
             'total'  => 0,
             'count'  => 0
@@ -454,7 +454,7 @@ class UserPointLog extends Common
     {
         $return = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => [
                 'isSign'     => true, //今日是否已经签到
                 'asi'        => [], //签到的日期

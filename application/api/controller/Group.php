@@ -18,7 +18,7 @@ class Group extends Api
     public function getList(){
         $return_data = [
             'status' => true,
-            'msg'    => '查询成功',
+            'msg'    => error_code(10026,true),
             'data'   => []
         ];
         $promotion = new Promotion();
@@ -40,7 +40,7 @@ class Group extends Api
     {
         $return_data = [
             'status' => true,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => [],
         ];
         $goods_id    = input('id/d', 0);
@@ -48,14 +48,14 @@ class Group extends Api
         $token       = input('token', '');//token值 会员登录后传
 
         if (!$goods_id) {
-            $return_data['msg']    = '关键参数缺失';
+            $return_data['msg']    = error_code(10051,true);
             $return_data['status'] = false;
             return $return_data;
         }
         $promotion   = new Promotion();
         $returnGoods = $promotion->getGroupDetial($goods_id, $token,'*',$group_id);
         if ($returnGoods['status']) {
-            $return_data ['msg']  = '查询成功';
+            $return_data ['msg']  = error_code(10026,true);
             $return_data ['data'] = $returnGoods['data'];
         } else {
             $return_data['msg']    = $returnGoods['msg'];

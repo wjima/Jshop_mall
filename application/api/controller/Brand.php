@@ -28,7 +28,7 @@ class Brand extends Api
     {
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $field = 'id,name,logo,sort';

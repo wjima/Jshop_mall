@@ -52,7 +52,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10019,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -74,7 +74,7 @@ class Administrator extends ManageController
         }
         $this->assign('roleList', $manageRoleList);
         $result['status'] = true;
-        $result['msg']    = '成功';
+        $result['msg']    = error_code(10018,true);
         $result['data']   = $this->fetch('edit');
         return $result;
     }
@@ -93,7 +93,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10021,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -131,7 +131,7 @@ class Administrator extends ManageController
         $this->assign('roleList', $manageRoleList);
         $this->assign('manageInfo', $manageInfo);
         $result['status'] = true;
-        $result['msg']    = '成功';
+        $result['msg']    = error_code(10020,true);
         $result['data']   = $this->fetch('edit');
         return $result;
     }
@@ -147,7 +147,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10023,true),
             'data'   => ''
         ];
         if (!input('?param.id')) {
@@ -163,9 +163,9 @@ class Administrator extends ManageController
         $re          = $manageModel->where($where)->delete();
         if ($re) {
             $result['status'] = true;
-            $result['msg']    = '删除成功';
+            $result['msg']    = error_code(10022,true);
         } else {
-            $result['msg'] = '删除失败，请重试';
+            $result['msg'] = error_code(10023,true);
         }
 
         return $result;
@@ -181,11 +181,6 @@ class Administrator extends ManageController
      */
     public function information()
     {
-        $result      = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => ''
-        ];
         $manageModel = new ManageModel();
         $manageInfo  = $manageModel->where(['id' => session('manage.id')])->find();
         $this->assign('manage_info', $manageInfo);
@@ -201,17 +196,17 @@ class Administrator extends ManageController
     {
         $result      = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10021,true),
             'data'   => ''
         ];
         $manageModel = new ManageModel();
 
         if (!input('?param.newPwd') || !input('?param.password') || !input('?param.rePwd')) {
-            $result['msg'] = "密码不能为空";
+            $result['msg'] = error_code(11009,true);
             return $result;
         }
         if (input('param.newPwd') != input('param.rePwd')) {
-            $result['msg'] = "两次密码不一致";
+            $result['msg'] = error_code(11025,true);
             return $result;
         }
 
@@ -227,7 +222,7 @@ class Administrator extends ManageController
     {
         $return  = [
             'status' => false,
-            'msg'    => '授权查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => []
         ];
         $product = config('jshop.product');
@@ -248,14 +243,14 @@ class Administrator extends ManageController
             $return['data']['version']          = $version;
             $return['data']['product']          = $product;
             $return['data']['changeLog']        = $data['data']['changeLog'];
-            $return['msg']                      = '授权查询成功';
+            $return['msg']                      = error_code(10026,true);
             $return['status']                   = true;
             return $return;
         }
         //未授权
         $return['data']['product']          = $product;
         $return['data']['version']          = $version;
-        $return['data']['changeLog']        = '未查询到授权信息';
+        $return['data']['changeLog']        = error_code(10073);
         $return['data']['is_authorization'] = false;
         return $return;
     }

@@ -58,7 +58,7 @@ class OperationLog extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '后台操作日志默认不让删除',
+            'msg' => error_code(10075),
             'data' => ''
         ];
         return $result;
@@ -72,7 +72,7 @@ class OperationLog extends Manage
         $res = $logModel->where([['id','in',$ids]])->delete();
         if($res !== false)
         {
-            $result['msg'] = '删除成功';
+            $result['msg'] = error_code(10022,true);
             $result['status'] = true;
         }
         return $result;

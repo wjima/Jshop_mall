@@ -70,7 +70,7 @@ class BillDelivery extends Manage
         $temp = $this->fetch('view');
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => $temp
         ];
 

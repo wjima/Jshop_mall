@@ -170,7 +170,7 @@ class GoodsType extends Common
                 }
             }
             $typeInfo['spec'] = $rel;
-            $result['msg'] ='获取成功';
+            $result['msg'] =error_code(10024,true);
             $result['data']   = $typeInfo;
             $result['status'] = true;
         }
@@ -219,7 +219,7 @@ class GoodsType extends Common
         {
             $return = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $res
             ];
         }
@@ -227,7 +227,7 @@ class GoodsType extends Common
         {
             $return = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => $res
             ];
         }

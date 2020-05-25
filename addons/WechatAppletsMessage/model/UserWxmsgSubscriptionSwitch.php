@@ -30,7 +30,7 @@ class UserWxmsgSubscriptionSwitch extends Model
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => true,
             'switch' => false
         ];
@@ -64,7 +64,7 @@ class UserWxmsgSubscriptionSwitch extends Model
             $return['data'] = false;
         }
         $return['status'] = true;
-        $return['msg'] = '获取成功';
+        $return['msg'] = error_code(10024,true);
 
         return $return;
     }

@@ -65,7 +65,7 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -86,7 +86,7 @@ class User extends Manage
         $user_info = $User->where($where)->find();
         $this->assign('point', $user_info['point']);
         $result['status'] = true;
-        $result['msg'] = '获取成功';
+        $result['msg'] = error_code(10024,true);
         $result['data'] = $this->fetch('editPoint');
         return $result;
     }
@@ -162,7 +162,7 @@ class User extends Manage
             {
                 $return = [
                     'status' => true,
-                    'msg'    => '获取成功',
+                    'msg'    => error_code(10024,true),
                     'data'   => $res['data']['list'],
                     'count'  => $res['data']['count']
                 ];
@@ -171,7 +171,7 @@ class User extends Manage
             {
                 $return = [
                     'status' => false,
-                    'msg'    => '获取失败',
+                    'msg'    => error_code(10025,true),
                     'data'   => $res['data']['list'],
                     'count'  => $res['data']['count']
                 ];
@@ -216,7 +216,7 @@ class User extends Manage
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
         $result['status'] = true;
-        $result['msg'] = '获取成功';
+        $result['msg'] = error_code(10024,true);
         $result['data'] = $this->fetch('addUser');
         return $result;
     }
@@ -230,7 +230,7 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -253,7 +253,7 @@ class User extends Manage
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
         $result['status'] = true;
-        $result['msg'] = '获取成功';
+        $result['msg'] = error_code(10024,true);
         $result['data'] = $this->fetch('editUser');
         return $result;
     }
@@ -267,7 +267,7 @@ class User extends Manage
 //    {
 //        $result = [
 //            'status' => false,
-//            'msg' => '失败',
+//            'msg' => error_code(10037,true),
 //            'data' => ''
 //        ];
 //        $this->view->engine->layout(false);
@@ -279,7 +279,7 @@ class User extends Manage
 //        }
 //        $this->assign('info', $info);
 //        $result['status'] = true;
-//        $result['msg'] = '获取成功';
+//        $result['msg'] = error_code(10024,true);
 //        $result['data'] = $this->fetch('details');
 //        return $result;
 //    }
@@ -296,7 +296,7 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -348,7 +348,7 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -376,7 +376,7 @@ class User extends Manage
             $this->assign('data', $info);
         }
         $result['status'] = true;
-        $result['msg'] = '成功';
+        $result['msg'] = error_code(10038,true);
         $result['data'] = $this->fetch('grade_edit');
         return $result;
     }
@@ -395,7 +395,7 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
 
@@ -432,7 +432,7 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
 
@@ -449,7 +449,7 @@ class User extends Manage
             $userWxModel = new UserWx();
             $userWxModel->where([['user_id','in', $ids]])->delete();
             hook('deleteUserAfter',$ids);
-            $result['msg'] = '删除成功';
+            $result['msg'] = error_code(10022,true);
             $result['status'] = true;
         }
         return $result;

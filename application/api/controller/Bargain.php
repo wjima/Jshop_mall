@@ -34,7 +34,7 @@ class Bargain extends Api
     {
         $return_data      = [
             'status' => true,
-            'msg'    => '查询成功',
+            'msg'    => error_code(10026,true),
             'data'   => []
         ];
         $bargainModel     = new bargainModel();
@@ -46,7 +46,7 @@ class Bargain extends Api
             $return_data['status']        = true;
             $return_data['data']['list']  = $list['data'];
             $return_data['data']['count'] = $list['count'];
-            $return_data['msg']           = '查询成功';
+            $return_data['msg']           = error_code(10026,true);
         }
         return $return_data;
     }
@@ -59,7 +59,7 @@ class Bargain extends Api
     {
         $return_data = [
             'status' => true,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => [],
         ];
         $bargain_id  = input('id/d', 0);
@@ -67,7 +67,7 @@ class Bargain extends Api
         $type        = input('type', 1);//自己访问还是别人访问
 
         if (!$bargain_id) {
-            $return_data['msg']    = '关键参数缺失';
+            $return_data['msg']    = error_code(10003,true);
             $return_data['status'] = false;
             return $return_data;
         }
@@ -97,7 +97,7 @@ class Bargain extends Api
     {
         $return_data = [
             'status' => true,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => [],
         ];
         $bargain_id  = input('id/d', 0);

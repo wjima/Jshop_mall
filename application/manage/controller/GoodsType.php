@@ -53,7 +53,7 @@ class GoodsType extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -61,7 +61,7 @@ class GoodsType extends Manage
         {
             $return_data = [
                 'status' => false,
-                'msg' => '添加失败',
+                'msg' => error_code(10019,true),
                 'data' => '',
                 'token' => \think\facade\Request::token('__Jshop_Token__', 'sha1')
             ];
@@ -158,7 +158,7 @@ class GoodsType extends Manage
                 Db::commit();
                 $return_data = [
                     'status' => true,
-                    'msg'    => '添加成功',
+                    'msg'    => error_code(10018,true),
                     'data'   => $result,
                     'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
                 ];
@@ -169,7 +169,7 @@ class GoodsType extends Manage
         }
         //获取添加页面
         $return['status'] = true;
-        $return['msg'] = '成功';
+        $return['msg'] = error_code(10038,true);
         $return['data'] = $this->fetch('add');
         return $return;
     }
@@ -183,7 +183,7 @@ class GoodsType extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -192,7 +192,7 @@ class GoodsType extends Manage
             $id = input('get.id/d');
             if(!$id)
             {
-                $this->error("关键参数错误"); //todo 统一错误页面
+                $this->error(error_code(10051,true)); //todo 统一错误页面
             }
             $typeModel = new typeModel();
             $spec = $typeModel::get($id);
@@ -211,7 +211,7 @@ class GoodsType extends Manage
             }
             $this->assign('typeSids', $typeSids);
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
             $return['data'] = $this->fetch('addRel');
             return $return;
         }
@@ -219,7 +219,7 @@ class GoodsType extends Manage
         {
             $return_data = [
                 'status' => false,
-                'msg' => '保存失败',
+                'msg' => error_code(10004,true),
                 'data' => '',
             ];
             //存储添加内容
@@ -234,7 +234,7 @@ class GoodsType extends Manage
             {
                 $return_data = [
                     'status' => true,
-                    'msg' => '保存成功',
+                    'msg' => error_code(10016,true),
                     'data' => $result,
                 ];
             }
@@ -254,7 +254,7 @@ class GoodsType extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -272,13 +272,13 @@ class GoodsType extends Manage
             $goodsTypeModel::update($data, ['id' => $data['id']]);
             $result = [
                 'status' => true,
-                'msg' => '保存成功',
+                'msg' => error_code(10016,true),
                 'data' => '',
             ];
             return $result;
         }
         $result['status'] = true;
-        $result['msg'] = '成功';
+        $result['msg'] = error_code(10038,true);
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -297,7 +297,7 @@ class GoodsType extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => '',
         ];
         $id = input('post.id', 0);
@@ -312,13 +312,13 @@ class GoodsType extends Manage
                 {
                     $goodsTypeModel->commit();
                     $result['status'] = true;
-                    $result['msg'] = '删除成功';
+                    $result['msg'] = error_code(10022,true);
                     return $result;
                 }
                 if($typeSpecRelModel->where(['type_id' => $id])->delete())
                 {
                     $result['status'] = true;
-                    $result['msg'] = '删除成功';
+                    $result['msg'] = error_code(10022,true);
                     $goodsTypeModel->commit();
                 }
                 else
@@ -342,7 +342,7 @@ class GoodsType extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -351,7 +351,7 @@ class GoodsType extends Manage
             $id = input('id/d');
             if(!$id)
             {
-                return '关键参数错误';
+                return error_code(10051,true);
             }
             $typeModel = new typeModel();
 
@@ -376,7 +376,7 @@ class GoodsType extends Manage
             $this->assign('typePids', $typePids);
 
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
             $return['data'] = $this->fetch('addParams');
             return $return;
         }
@@ -394,7 +394,7 @@ class GoodsType extends Manage
             if ($result !== false) {
                 $return = [
                     'status' => true,
-                    'msg' => '保存成功',
+                    'msg' => error_code(10016,true),
                     'data' => $result,
                 ];
             }
@@ -414,7 +414,7 @@ class GoodsType extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
         ];
         $typeModel = new typeModel();
@@ -423,7 +423,7 @@ class GoodsType extends Manage
         {
             $result['data'] = $typeList->toArray();
             $result['status'] = true;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
         }
         return $result;
     }

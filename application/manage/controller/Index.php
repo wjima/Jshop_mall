@@ -94,7 +94,7 @@ class Index extends Manage
         Console::call('clear', ['--path', ROOT_PATH . '\\runtime\\temp\\']); //清除模板缓存
         //删除海报
         del_dir_and_file(ROOT_PATH.'public'.DS.'static'.DS.'poster');
-        $this->success('清除缓存成功', 'index/welcome');
+        $this->success(error_code(10074,true), 'index/welcome');
     }
 
     /**

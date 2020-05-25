@@ -86,7 +86,7 @@ class UserShip extends Common
 
         $result = [
             'status' => false,
-            'msg' => '保存失败',
+            'msg' => error_code(10004,true),
             'data' => []
         ];
 
@@ -128,7 +128,7 @@ class UserShip extends Common
 
             if ($this->allowField(true)->save($setData)) {
                 $result['status'] = true;
-                $result['msg'] = '保存成功';
+                $result['msg'] = error_code(10016,true);
             }
         }
         else
@@ -158,7 +158,7 @@ class UserShip extends Common
 
             if ($this->allowField(true)->save($ship_data)) {
                 $result['status'] = true;
-                $result['msg'] = '保存成功';
+                $result['msg'] = error_code(10016,true);
             }
         }
 
@@ -209,7 +209,7 @@ class UserShip extends Common
     {
         $result = [
             'status' => false,
-            'msg' => '保存失败',
+            'msg' => error_code(10004,true),
             'data' => ''
         ];
 
@@ -248,7 +248,7 @@ class UserShip extends Common
             if($this->allowField(true)->save($data,['id'=>$data['id'],'user_id'=>$user_id]))
             {
                 $result['status'] = true;
-                $result['msg'] = '保存成功';
+                $result['msg'] = error_code(10016,true);
             }
         }
         else
@@ -272,7 +272,7 @@ class UserShip extends Common
      */
     public function removeShip($id, $user_id)
     {
-        $res = ['status' => false, 'msg' => '删除失败', 'data' => ''];
+        $res = ['status' => false, 'msg' => error_code(10023,true), 'data' => ''];
         $data = $this->where(['id'=>$id,'user_id'=>$user_id])->find();
         //判断收货地址是否存在
         if($data)
@@ -292,7 +292,7 @@ class UserShip extends Common
                         $this->where(['id' => $id, 'user_id' => $user_id])->delete();
                         $this->commit();
                         $res['status'] = true;
-                        $res['msg'] = '删除成功';
+                        $res['msg'] = error_code(10022,true);
                     }catch(\Exception $e){
                         $this->rollback();
                         $res['msg'] = $e->getMessage();
@@ -302,14 +302,14 @@ class UserShip extends Common
                 {
                     $this->where(['id' => $id, 'user_id' => $user_id])->delete();
                     $res['status'] = true;
-                    $res['msg'] = '删除成功';
+                    $res['msg'] = error_code(10022,true);
                 }
             }
             else
             {
                 $this->where(['id' => $id, 'user_id' => $user_id])->delete();
                 $res['status'] = true;
-                $res['msg'] = '删除成功';
+                $res['msg'] = error_code(10022,true);
             }
         }
         else
@@ -332,7 +332,7 @@ class UserShip extends Common
      */
     public function setDefaultShip($id, $user_id)
     {
-        $res = ['status' => false, 'msg' => '保存失败', 'data' => ''];
+        $res = ['status' => false, 'msg' => error_code(10004,true), 'data' => ''];
         $data = $this->where(['id' => $id, 'user_id' => $user_id])->find();
         if($data)
         {
@@ -346,7 +346,7 @@ class UserShip extends Common
                     $this->save(['is_def' => self::SHIP_DEFAULT], ['id' => $data['id'],'user_id' => $user_id]);
                     $this->commit();
                     $res['status'] = true;
-                    $res['msg'] = '保存成功';
+                    $res['msg'] = error_code(10016,true);
                 }catch(\Exception $e){
                     $this->rollback();
                     $res['msg'] = $e->getMessage();
@@ -358,7 +358,7 @@ class UserShip extends Common
                 if($this->save(['is_def' => self::SHIP_DEFAULT], ['id' => $data['id'],'user_id' => $user_id]))
                 {
                     $res['status'] = true;
-                    $res['msg'] = '保存成功';
+                    $res['msg'] = error_code(10016,true);
                 }
             }
         }
@@ -434,7 +434,7 @@ class UserShip extends Common
             }
             $return = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $res
             ];
         }
@@ -442,7 +442,7 @@ class UserShip extends Common
         {
             $return = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => $res
             ];
         }

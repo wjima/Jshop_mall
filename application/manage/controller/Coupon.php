@@ -23,7 +23,7 @@ class Coupon extends Manage
             return $couponModel->tableData(input('param.'));
         }
         if (!input('param.id')) {
-            return $this->error('没有选择任何优惠券');
+            return $this->error(error_code(15018,true));
         } else {
             $this->assign('promotion_id', input('param.id'));
             return $this->fetch('');

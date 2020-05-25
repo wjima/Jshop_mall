@@ -60,7 +60,7 @@ class ManageRole extends Common
             $mrorModel->where(['manage_role_id'=>$id])->delete();
             Db::commit();
             $result['status'] = true;
-            $result['msg'] = '删除成功';
+            $result['msg'] = error_code(10022,true);
         } catch (\Exception $e) {
             Db::rollback();
             $result['msg'] = $e->getMessage();

@@ -47,7 +47,7 @@ class Categories extends Api
         }
         else
         {
-            $return['msg'] = '获取顶级分类失败';
+            $return['msg'] = error_code(12001,true);
         }
         return $return;
     }
@@ -77,7 +77,7 @@ class Categories extends Api
         }
         else
         {
-            $return['msg'] = '获取顶级分类失败';
+            $return['msg'] = error_code(12001,true);
         }
         return $return;
     }
@@ -108,7 +108,7 @@ class Categories extends Api
         }
         else
         {
-            $return['msg'] = '获取顶级分类失败';
+            $return['msg'] = error_code(12001,true);
         }
         return $return;
     }

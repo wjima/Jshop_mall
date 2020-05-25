@@ -143,14 +143,14 @@ class PintuanRule extends Common{
 //    public function getInfo($id){
 //        $result  = [
 //            'status' => false,
-//            'msg' => '获取失败',
+//            'msg' => error_code(10025,true),
 //            'data' => []
 //        ];
 //        $rel = $this->with('goods')->where('id','eq',$id)->find();
 //        if($rel){
 //            $rel['date'] = date("Y-m-d h:i:s",$rel['start_time']). ' 到 ' .date("Y-m-d h:i:s",$rel['end_time']);
 //            $result['status'] = true;
-//            $result['msg'] = '获取成功';
+//            $result['msg'] = error_code(10024,true);
 //            $result['data'] = $rel;
 //        }
 //        return $result;

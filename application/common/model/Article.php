@@ -84,7 +84,7 @@ class Article extends Common
     {
 
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
+        $result = ['status'=>true,'msg'=>error_code(10016,true),'data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -93,7 +93,7 @@ class Article extends Common
             if (!$this->allowField(true)->save($data))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -109,7 +109,7 @@ class Article extends Common
     public function saveData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
+        $result = ['status'=>true,'msg'=>error_code(10016,true),'data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -118,7 +118,7 @@ class Article extends Common
             if(!$this->allowField(true)->save($data,['id'=>$data['id']]))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -171,7 +171,7 @@ class Article extends Common
     {
         $result = [
             'status' =>  true,
-            'msg'    =>  '获取成功',
+            'msg'    =>  error_code(10024,true),
             'data'   =>  []
         ];
         $articleTypeModel = new ArticleType();
@@ -243,7 +243,7 @@ class Article extends Common
 
         $result = [
             'status' =>  true,
-            'msg'    =>  '获取成功',
+            'msg'    =>  error_code(10024,true),
             'data'   =>  []
         ];
         // 发布状态
@@ -311,7 +311,7 @@ class Article extends Common
             $data['ctime'] = time_ago($data['ctime']);
             $add_pv = $this->where(['id'=>$article_id])->update(['pv'=>$data['pv']+1]);
             if(!$add_pv){
-                $result['msg'] = '失败';
+                $result['msg'] = error_code(10037,true);
                 return $result;
             }
             //上一篇，下一篇
@@ -339,7 +339,7 @@ class Article extends Common
             }
 
             $result['status'] = true;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
             $result['data'] = $data;
         }
         return $result;

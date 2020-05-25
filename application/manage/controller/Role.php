@@ -34,7 +34,7 @@ class Role extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -53,7 +53,7 @@ class Role extends Manage
             return $result;
         }
         $result['status'] = true;
-        $result['msg'] = '成功';
+        $result['msg'] = error_code(10038,true);
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -81,7 +81,7 @@ class Role extends Manage
     {
         $return_data = [
             'code' => 0,
-            'msg'  => '获取成功',
+            'msg'  => error_code(10024,true),
             'data' => [],
         ];
 

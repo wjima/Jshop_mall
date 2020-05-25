@@ -258,7 +258,7 @@ class WelfareproCoupon extends Common
             'code'=>0,
             'count'=>$count,
             'data'=>$list,
-            'msg'=>'查询成功'
+            'msg'=>error_code(10026,true)
         ];
     }
 

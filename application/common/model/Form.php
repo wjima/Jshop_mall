@@ -109,7 +109,7 @@ class Form extends common
     {
         $result = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => []
         ];
         if (!$id) {
@@ -190,7 +190,7 @@ class Form extends common
         $form['items']    = $items;
         $result['data']   = $form;
         $result['status'] = true;
-        $result['msg']    = '查询成功';
+        $result['msg']    = error_code(10026,true);
         return $result;
     }
 
@@ -203,7 +203,7 @@ class Form extends common
     {
         $result = [
             'status' => false,
-            'msg'    => '删除失败',
+            'msg'    => error_code(10023,true),
             'data'   => ''
         ];
         if (!$id) {
@@ -230,7 +230,7 @@ class Form extends common
             return false;
         }
         Db::commit();
-        $result['msg']    = '删除成功';
+        $result['msg']    = error_code(10022,true);
         $result['status'] = true;
         return $result;
     }
@@ -321,7 +321,7 @@ class Form extends common
     {
         $result = [
             'status' => false,
-            'msg'    => '导出失败',
+            'msg'    => error_code(10039,true),
             'data'   => []
         ];
 
@@ -369,7 +369,7 @@ class Form extends common
             'desc' => '提交ip'
         ];
         $result ['status'] = true;
-        $result ['msg']    = '获取成功';
+        $result ['msg']    = error_code(10024,true);
         $result ['data']   = $header;
         return $result;
     }
@@ -429,7 +429,7 @@ class Form extends common
                 }
             }
             $result['status'] = true;
-            $result['msg']    = '导出成功';
+            $result['msg']    = error_code(10040,true);
             $result['data']   = $body;
             return $result;
         } else {

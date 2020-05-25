@@ -178,7 +178,7 @@ class UserLog extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg']    = '导出成功';
+            $result['msg']    = error_code(10040,true);
             $result['data']   = $body;
             return $result;
         } else {

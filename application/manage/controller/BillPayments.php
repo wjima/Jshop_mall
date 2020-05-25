@@ -29,12 +29,12 @@ class BillPayments extends Manage
             'msg' => ''
         ];
         if(!input('?param.order_id')){
-            $result['msg'] = "请输入订单编号";
+            $result['msg'] = error_code(13100,true);
             return $result;
         }
 
         if(!input('?param.type')){
-            $result['msg'] = "订单类型不能为空";
+            $result['msg'] = error_code(13103,true);
             return $result;
         }
         $BillPaymentsModel = new BillPaymentsModel();
@@ -63,19 +63,12 @@ class BillPayments extends Manage
     {
 
         //卖家端直接支付的话，先生成支付单，然后去做付款操作
-        $result = [
-            'status' => true,
-            'data' => array(),
-            'msg' => ''
-        ];
         if(!input('?post.order_id')){
-            $result['msg'] = "请输入编号";
-            return $result;
+            return error_code(13100);
         }
 
         if(!input('?post.type')){
-            $result['msg'] = "订单类型不能为空";
-            return $result;
+            return error_code(13103);
         }
         $BillPaymentsModel = new BillPaymentsModel();
 

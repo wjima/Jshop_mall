@@ -25,7 +25,7 @@ class WeixinMediaMessage extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => '保存成功',
+            'msg'    => error_code(10016,true),
             'data'   => [],
         ];
         $ids    = [];

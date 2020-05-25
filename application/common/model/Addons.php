@@ -35,7 +35,7 @@ class Addons extends Common
     {
         $result = [
             'code'   => 0,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'status' => false,
         ];
 
@@ -77,7 +77,7 @@ class Addons extends Common
                 }
             }
         }
-        $result['msg']  = '获取成功';
+        $result['msg']  = error_code(10024,true);
         $result['code'] = 0;
         $result['data'] = $addons;
         $re['count']    = count($addons);

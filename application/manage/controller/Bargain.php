@@ -84,23 +84,23 @@ class Bargain extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => error_code(10003,true),
         ];
         $field  = input('post.field/s');
         $value  = input('post.value/d');
         $id     = input('post.id/d', '0');
         if (!$field || !$value || !$id) {
-            $result['msg']    = '参数丢失';
+            $result['msg']    = error_code(10003,true);
             $result['status'] = false;
         }
 
         $bargainModel = new BargainModel();
         $rel          = $bargainModel->where('id', 'eq', $id)->update([$field => $value]);
         if ($rel) {
-            $result['msg']    = '更新成功';
+            $result['msg']    = error_code(10020,true);
             $result['status'] = true;
         } else {
-            $result['msg']    = '更新失败';
+            $result['msg']    = error_code(10021,true);
             $result['status'] = false;
         }
         return $result;
@@ -114,7 +114,7 @@ class Bargain extends Manage
     {
         $result       = [
             'status' => false,
-            'msg'    => '关键参数丢失',
+            'msg'    => error_code(10003,true),
             'data'   => []
         ];
         $bargainModel = new BargainModel();
@@ -130,9 +130,9 @@ class Bargain extends Manage
         }
         if ($bargainModel->save(['status' => $status], ['id' => $id])) {
             $result['status'] = true;
-            $result['msg']    = '设置成功';
+            $result['msg']    = error_code(10020,true);
         } else {
-            $result['msg'] = '设置失败';
+            $result['msg'] = error_code(10021,true);
         }
         return $result;
     }

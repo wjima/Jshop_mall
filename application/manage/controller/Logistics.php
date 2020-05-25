@@ -38,7 +38,7 @@ class Logistics extends Manage
     {
         $return_data = [
             'status' => false,
-            'msg'    => '添加失败',
+            'msg'    => error_code(10019,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -56,14 +56,14 @@ class Logistics extends Manage
             {
                 $return_data = [
                     'status' => true,
-                    'msg'    => '添加成功',
+                    'msg'    => error_code(10018,true),
                     'data'   => $result
                 ];
             }
             return $return_data;
         }
         $return_data['status'] = true;
-        $return_data['msg'] = '成功';
+        $return_data['msg'] = error_code(10038,true);
         $return_data['data'] = $this->fetch('add');
         return $return_data;
     }
@@ -77,7 +77,7 @@ class Logistics extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -89,7 +89,7 @@ class Logistics extends Manage
         $data = $logModel->getInfo(input('param.id/d'));
         $this->assign('data',$data);
         $return['status'] = true;
-        $return['msg'] = '成功';
+        $return['msg'] = error_code(10038,true);
         $return['data'] = $this->fetch('edit');
         return $return;
     }
@@ -105,7 +105,7 @@ class Logistics extends Manage
     {
         $return_data = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => ''
         ];
         $logModel = new LogisticsModel();
@@ -116,7 +116,7 @@ class Logistics extends Manage
         }
         if($logModel->where(['id'=>$id])->delete())
         {
-            $return_data['msg'] = '删除成功';
+            $return_data['msg'] = error_code(10022,true);
             $return_data['status'] = true;
         }
         return $return_data;

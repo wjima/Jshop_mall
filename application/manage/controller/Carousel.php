@@ -110,11 +110,11 @@ class Carousel extends Manage
     public function del()
     {
         $carouselModel = new CarouselModel();
-        $result = ['status'=>false,'msg'=>'删除失败','data'=>''];
+        $result = ['status'=>false,'msg'=>error_code(10023,true),'data'=>''];
         if ($carouselModel->where('id',input('param.id/d'))->delete())
         {
             $result['status'] = true;
-            $result['msg'] = '删除成功';
+            $result['msg'] = error_code(10022,true);
         }
         return $result;
     }

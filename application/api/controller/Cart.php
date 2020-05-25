@@ -42,11 +42,11 @@ class Cart extends Api
         ];
 
         if (!input("?param.product_id")) {
-            $result['msg'] = '请输入货品id';
+            $result['msg'] = error_code(14011,true);
             return $result;
         }
         if (!input("?param.nums")) {
-            $result['msg'] = '请输入货品数量';
+            $result['msg'] = error_code(14012,true);
             return $result;
         }
         $type      = input('param.type', 1);          //1是累加，2是覆盖
@@ -73,7 +73,7 @@ class Cart extends Api
         {
             $return_data = array(
                 'status' => true,
-                'msg' => '移除购物车成功',
+                'msg' => error_code(14013,true),
                 'data' => $result
             );
         }
@@ -81,7 +81,7 @@ class Cart extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg' => '移除购物车失败',
+                'msg' => error_code(14014,true),
                 'data' => $result
             );
         }
@@ -133,7 +133,7 @@ class Cart extends Api
         ];
         if(!input('?param.id'))
         {
-            $result['msg'] = '请输入货品id';
+            $result['msg'] = error_code(14011,true);
             return $result;
         }
         else
@@ -163,7 +163,7 @@ class Cart extends Api
     {
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $type = input('param.order_type',1);

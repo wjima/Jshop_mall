@@ -163,7 +163,7 @@ class Goods
 
                         if (!$goods_id) {
                             $goodsModel->rollback();
-                            $message[] = '商品数据保存失败';
+                            $message[] = error_code(12002,true);
                             Log::record($goods['name'] . '商品数据保存失败');
                             continue;
                         } else {
@@ -195,7 +195,7 @@ class Goods
                 }
 
                 $uData['status']  = $ietaskModle::IMPORT_SUCCESS_STATUS;
-                $uData['message'] = '导入成功';
+                $uData['message'] = error_code(10042,true);
                 if ($message) {
                     $uData['message'] .= json_encode($message);
                 }
@@ -212,7 +212,7 @@ class Goods
         }
         if ($job->attempts() > 3) {
             $uData['status']  = $ietaskModle::IMPORT_FAIL_STATUS;
-            $uData['message'] = '导入执行失败';
+            $uData['message'] = error_code(10041,true);
             $uData['utime']   = time();
             $ietaskModle->update($uData, ['id' => $params['task_id']]);
             $job->delete();

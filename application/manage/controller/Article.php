@@ -85,12 +85,12 @@ class Article extends Manage
         $article = new articleModel();
         $result  = [
             'status' => true,
-            'msg'    => '删除成功',
+            'msg'    => error_code(10022,true),
             'data'   => ''
         ];
         if (!$article->destroy(input('param.id/d'))) {
             $result['status'] = false;
-            $result['msg']    = '删除失败';
+            $result['msg']    = error_code(10023,true);
         }
         return $result;
     }

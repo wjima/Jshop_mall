@@ -272,7 +272,7 @@ class Area extends Common
         Cache::set('area_tree', '');//清理地区缓存
 
         $validate = new Validate($this->rule, $this->msg);
-        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
+        $result = ['status'=>true,'msg'=>error_code(10016,true),'data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -281,7 +281,7 @@ class Area extends Common
             if (!$this->insert($data))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -313,7 +313,7 @@ class Area extends Common
         Cache::set('area_tree', '');//清理地区缓存
 
         $validate = new Validate($this->rule, $this->msg);
-        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
+        $result = ['status'=>true,'msg'=>error_code(10016,true),'data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -322,7 +322,7 @@ class Area extends Common
             if (!$this->where('id', 'eq', $id)->update($data))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -352,13 +352,13 @@ class Area extends Common
             if ($res) {
                 $result = array(
                     'status' => true,
-                    'msg'    => '删除成功',
+                    'msg'    => error_code(10022,true),
                     'data'   => array(),
                 );
             } else {
                 $result = array(
                     'status' => false,
-                    'msg'    => '删除失败',
+                    'msg'    => error_code(10023,true),
                     'data'   => array(),
                 );
             }
@@ -427,7 +427,7 @@ class Area extends Common
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => [],
         ];
        /* $area_tree = Cache::get('area_tree');
@@ -440,7 +440,7 @@ class Area extends Common
         $list = $this->where(['parent_id'=>$parent_id])->select()->toArray();
         $tree = $this->resolve2($list, $checked,$currentChecked);
         $return_data['data'] = $tree;
-        $return_data['msg'] = '查询成功';
+        $return_data['msg'] = error_code(10026,true);
         $return_data['status'] = true;
         return $return_data;
     }

@@ -149,7 +149,7 @@ class Common extends Base
 //        $result = [
 //            'status' => false,
 //            'data' => '',
-//            'msg' => '成功'
+//            'msg' => error_code(10038,true)
 //        ];
 //        $userModel = new User();
 //        if(!input("?post.mobile")){

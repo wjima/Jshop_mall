@@ -691,7 +691,7 @@ class Goods extends Common
 
             $data['images']   = $images['data'];
             $result['data']   = $data;
-            $result['msg']    = '查询成功';
+            $result['msg']    = error_code(10026,true);
             $result['status'] = true;
         }
         return $result;
@@ -752,7 +752,7 @@ class Goods extends Common
         hook('deletegoodsafter', $goods);//删除商品后增加钩子
 
         $result['status'] = true;
-        $result['msg']    = '删除成功';
+        $result['msg']    = error_code(10022,true);
         return $result;
     }
 
@@ -870,7 +870,7 @@ class Goods extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg']    = '导出成功';
+            $result['msg']    = error_code(10040,true);
             $result['data']   = $body;
             return $result;
         } else {
@@ -1101,7 +1101,7 @@ class Goods extends Common
     {
         $return                 = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => []
         ];
         $where[]                = ['is_hot', 'eq', self::HOT_YES];
@@ -1124,7 +1124,7 @@ class Goods extends Common
                 }
             }
             $return['status'] = true;
-            $return['msg']    = '获取成功';
+            $return['msg']    = error_code(10024,true);
         }
         return $return;
     }
@@ -1210,7 +1210,7 @@ class Goods extends Common
     {
         $return = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => []
         ];
 
@@ -1224,7 +1224,7 @@ class Goods extends Common
 
         if ($return['data'] !== false) {
             $return['status'] = true;
-            $return['msg']    = '成功';
+            $return['msg']    = error_code(10038,true);
         }
 
         return $return;
@@ -1238,7 +1238,7 @@ class Goods extends Common
     {
         $return              = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => []
         ];
         $where['marketable'] = '1';
@@ -1247,7 +1247,7 @@ class Goods extends Common
             ->page($page, $limit)
             ->select();
         if (!$goodsData) {
-            return $return['msg'] = '获取失败';
+            return $return['msg'] = error_code(10025,true);
         }
         foreach ($goodsData as &$v) {
             $image      = Db::table('jshop_images')
@@ -1256,7 +1256,7 @@ class Goods extends Common
                 ->select();
             $v['image'] = $image[0]['url'];
         }
-        $return['msg']    = '获取成功';
+        $return['msg']    = error_code(10024,true);
         $return['status'] = true;
         $return['data']   = $goodsData;
         return $return;
@@ -1270,7 +1270,7 @@ class Goods extends Common
     {
         $return              = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => []
         ];
         $where['marketable'] = '1';
@@ -1279,7 +1279,7 @@ class Goods extends Common
             ->page($page, $limit)
             ->select();
         if (!$goodsData) {
-            return $return['msg'] = '获取失败';
+            return $return['msg'] = error_code(10025,true);
         }
         foreach ($goodsData as &$v) {
             $image      = Db::table('jshop_images')
@@ -1288,7 +1288,7 @@ class Goods extends Common
                 ->select();
             $v['image'] = $image[0]['url'];
         }
-        $return['msg']    = '获取成功';
+        $return['msg']    = error_code(10024,true);
         $return['status'] = true;
         $return['data']   = $goodsData;
         return $return;
@@ -1302,7 +1302,7 @@ class Goods extends Common
     {
         $return                = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => []
         ];
         $where['marketable']   = '1';

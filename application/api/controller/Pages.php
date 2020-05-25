@@ -15,7 +15,7 @@ class Pages extends Api
     {
         $result             = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => []
         ];
         $input['page_code'] = input('code/s', 'mobile_home');
@@ -31,7 +31,7 @@ class Pages extends Api
     {
         $return = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => []
         ];
         /***
@@ -44,31 +44,31 @@ class Pages extends Api
                 'avatar'   => $avatar,
                 'nickname' => '失望中的绝望',
                 'ctime'    => time_ago(time() - rand(100, 1000)),
-                'desc'     => '下单成功',
+                'desc'     => error_code(13005,true),
             ],
             [
                 'avatar'   => $avatar,
                 'nickname' => '一半爱情',
                 'ctime'    => time_ago(time() - rand(100, 1000)),
-                'desc'     => '下单成功',
+                'desc'     => error_code(13005,true),
             ],
             [
                 'avatar'   => $avatar,
                 'nickname' => '最繁华时最悲凉',
                 'ctime'    => time_ago(time() - rand(100, 1000)),
-                'desc'     => '下单成功',
+                'desc'     => error_code(13005,true),
             ],
             [
                 'avatar'   => $avatar,
                 'nickname' => '哎哟喂',
                 'ctime'    => time_ago(time() - rand(100, 1000)),
-                'desc'     => '下单成功',
+                'desc'     => error_code(13005,true),
             ],
             [
                 'avatar'   => $avatar,
                 'nickname' => '枫无痕',
                 'ctime'    => time_ago(time() - rand(100, 1000)),
-                'desc'     => '下单成功',
+                'desc'     => error_code(13005,true),
             ],
         ];
         $type     = input('type/s', 'home');
@@ -87,15 +87,15 @@ class Pages extends Api
                         'avatar'   => _sImage($user['avatar']),
                         'nickname' => $user['nickname'],
                         'ctime'    => time_ago($order['ctime']),
-                        'desc'     => '下单成功',
+                        'desc'     => error_code(13005,true),
                     ];
                     $return['status'] = true;
-                    $return['msg'] = '获取成功';
+                    $return['msg'] = error_code(10024,true);
                 }
             } else {
                 $return['data'] = $randUser[rand(0, 4)];
                 $return['status'] = true;
-                $return['msg'] = '获取成功';
+                $return['msg'] = error_code(10024,true);
             }
         }
         return $return;

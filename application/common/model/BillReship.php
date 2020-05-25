@@ -109,7 +109,7 @@ class BillReship extends Common
 
         $this->where($where)->data($data)->update();
         $result['status'] = true;
-        $result['msg'] = '保存成功';
+        $result['msg'] = error_code(10016,true);
         return $result;
 
     }
@@ -376,7 +376,7 @@ class BillReship extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = '导出成功';
+            $result['msg'] = error_code(10040,true);
             $result['data'] = $body;
             return $result;
         } else {
@@ -414,7 +414,7 @@ class BillReship extends Common
     {
         $return_data = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => '',
             'count' => 0
         ];
@@ -482,7 +482,7 @@ class BillReship extends Common
             }
             $return_data = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $list,
                 'count' => $count
             ];

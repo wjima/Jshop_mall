@@ -46,7 +46,7 @@ class CarouselSeat extends Manage
         }
         return [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $this->fetch('add', [
                     'list' => config('carousel_seat.list')
                 ]
@@ -77,7 +77,7 @@ class CarouselSeat extends Manage
 
         return [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => $this->fetch('', ['info' => $info])
         ];
     }

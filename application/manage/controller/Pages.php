@@ -77,7 +77,7 @@ class Pages extends Manage
     {
         $result          = [
             'status' => true,
-            'msg'    => '保存成功',
+            'msg'    => error_code(10016,true),
             'data'   => [],
         ];
         $data            = input('post.data/a', []);
@@ -119,7 +119,7 @@ class Pages extends Manage
 
         return $result = [
             'status' => true,
-            'msg'    => '删除成功',
+            'msg'    => error_code(10022,true),
             'data'   => []
         ];
     }

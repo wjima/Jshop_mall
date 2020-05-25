@@ -18,7 +18,7 @@ class Images extends Api
         if ($result['status']) {
             $data = [
                 'status' => true,
-                'msg'    => '上传成功',
+                'msg'    => error_code(10034,true),
                 'data'   => [
                     'image_id' => $result['data']['id'],
                     'url'      => $result['data']['url'],
@@ -30,7 +30,7 @@ class Images extends Api
             return [
                 'data'   => '',
                 'status' => false,
-                'msg'    => "上传失败"
+                'msg'    => error_code(10035,false)
             ];
         }
     }

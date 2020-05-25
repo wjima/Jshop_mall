@@ -28,7 +28,7 @@ class Clerk extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => []
         ];
         $where[] = ['id', 'eq', $id];
@@ -38,7 +38,7 @@ class Clerk extends Common
             $userModel = new User();
             $return['data']['user_mobile'] = $userModel->getUserMobile($return['data']['user_id']);
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
         return $return;
     }
@@ -58,7 +58,7 @@ class Clerk extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
             'count' => 0
         ];
@@ -89,7 +89,7 @@ class Clerk extends Common
                 $v['ctime'] = getTime($v['ctime']);
             }
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
 
         return $return;
@@ -161,14 +161,14 @@ class Clerk extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => ''
         ];
         $return['data'] = $this->destroy($id);
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = '删除成功';
+            $return['msg'] = error_code(10022,true);
         }
         return $return;
     }

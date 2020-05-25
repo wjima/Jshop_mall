@@ -30,7 +30,7 @@ class Store extends Api
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => 2
         ];
         $settingModel = new Setting();
@@ -167,7 +167,7 @@ class Store extends Api
         {
             return $return = [
                 'status' => false,
-                'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
+                'msg' => error_code(10069,true),
                 'data' => ''
             ];
         }
@@ -184,7 +184,7 @@ class Store extends Api
         $recommend_keys = explode(' ', $recommend_keys);
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => $recommend_keys
         ];
         return $result;

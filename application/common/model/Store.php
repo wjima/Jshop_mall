@@ -72,7 +72,7 @@ class Store extends Common
      */
     public function addData($data = [])
     {
-        $result = ['status' => true, 'msg' => '保存成功','data' => ''];
+        $result = ['status' => true, 'msg' => error_code(10016,true),'data' => ''];
         $validate = new Validate($this->rule,$this->msg);
         if(!$validate->check($data))
         {
@@ -84,7 +84,7 @@ class Store extends Common
             if(!$this->allowField(true)->save($data))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -100,7 +100,7 @@ class Store extends Common
     {
         $result = [
             'status' => true,
-            'msg' => '保存成功',
+            'msg' => error_code(10016,true),
             'data' => ''
         ];
         $validate = new Validate($this->rule,$this->msg);
@@ -114,7 +114,7 @@ class Store extends Common
             if(!$this->allowField(true)->save($data,['id' => $data['id']]))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -165,7 +165,7 @@ class Store extends Common
 
             $result = [
                 'status'=> true,
-                'msg'   => '获取成功',
+                'msg'   => error_code(10024,true),
                 'data'  => [
                     'list' => $data,
                     'count' => $count
@@ -176,7 +176,7 @@ class Store extends Common
         {
             $result = [
                 'status'=> false,
-                'msg'   => '获取失败',
+                'msg'   => error_code(10025,true),
                 'data'  => ''
             ];
         }
@@ -240,7 +240,7 @@ class Store extends Common
     {
         $return = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $return['data'] = $this->order('ctime desc')->find();
@@ -248,7 +248,7 @@ class Store extends Common
         {
             $return['data']['all_address'] = get_area($return['data']['area_id']).$return['data']['address'];
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
         return $return;
     }
@@ -268,7 +268,7 @@ class Store extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
             'longitude' => $longitude,
             'latitude' => $latitude
@@ -317,7 +317,7 @@ class Store extends Common
 
             }
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
         }
         return $return;
     }

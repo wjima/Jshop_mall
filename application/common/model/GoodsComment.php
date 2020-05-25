@@ -88,7 +88,7 @@ class GoodsComment extends Common
             $res->hidden(['goods_id', 'images', 'user_id', 'user' => ['id', 'isdel', 'password', 'status', 'username', 'ctime', 'utime','balance','point','pid']]);
             $data = [
                 'status' => true,
-                'msg'    => '获取成功',
+                'msg'    => error_code(10024,true),
                 'data'   => [
                     'list'  => $res,
                     'count' => $count,
@@ -99,7 +99,7 @@ class GoodsComment extends Common
         } else {
             $data = [
                 'status' => false,
-                'msg'    => '获取失败',
+                'msg'    => error_code(10025,true),
                 'data'   => []
             ];
         }
@@ -162,7 +162,7 @@ class GoodsComment extends Common
             $res->hidden(['images','user'=>['id','isdel','password','status','username','ctime','utime']]);
             $data = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => [
                     'list' => $res,
                     'count' => $count,
@@ -175,7 +175,7 @@ class GoodsComment extends Common
         {
             $data = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => []
             ];
         }
@@ -198,7 +198,7 @@ class GoodsComment extends Common
         {
             $return_data = [
                 'status' => true,
-                'msg' => '保存成功',
+                'msg' => error_code(10016,true),
                 'data' => $res
             ];
         }
@@ -206,7 +206,7 @@ class GoodsComment extends Common
         {
             $return_data = [
                 'status' => false,
-                'msg' => '保存失败',
+                'msg' => error_code(10004,true),
                 'data' => $res
             ];
         }
@@ -264,7 +264,7 @@ class GoodsComment extends Common
         {
             $return = [
                 'status' => true,
-                'msg' => '获取成功',
+                'msg' => error_code(10024,true),
                 'data' => $res
             ];
         }
@@ -272,7 +272,7 @@ class GoodsComment extends Common
         {
             $return = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => $res
             ];
         }

@@ -60,7 +60,7 @@ class Form extends Manage
             $data['button_color'] = input('button_color/s', '');
             $data['is_login']     = input('is_login', '2');
             $data['sort']         = input('sort/d', '100');
-            $data['return_msg']   = input('return_msg/s', '保存成功');
+            $data['return_msg']   = input('return_msg/s', error_code(10016,true));
             $data['end_date']     = input('end_date', '0');
             $data['times']        = input('times', '0');
             if ($data['end_date'] != '0') {
@@ -80,10 +80,10 @@ class Form extends Manage
                 return $result;
             }
             if (!$form->add($data)) {
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
                 return $result;
             }
-            $result['msg']    = '保存成功';
+            $result['msg']    = error_code(10016,true);
             $result['status'] = true;
             return $result;
         }
@@ -128,7 +128,7 @@ class Form extends Manage
             $data['button_color'] = input('button_color/s', '');
             $data['is_login']     = input('is_login', '2');
             $data['sort']         = input('sort/d', '100');
-            $data['return_msg']   = input('return_msg/s', '保存成功');
+            $data['return_msg']   = input('return_msg/s', error_code(10016,true));
             $data['end_date']     = input('end_date', '0');
             $data['times']        = input('times', '0');
             if ($data['end_date'] != '0') {
@@ -149,10 +149,10 @@ class Form extends Manage
             }
             $where[] = ['id', '=', $data['id']];
             if (!$form->edit($where, $data)) {
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
                 return $result;
             }
-            $result['msg']    = '保存成功';
+            $result['msg']    = error_code(10016,true);
             $result['status'] = true;
             return $result;
         } else {
@@ -186,7 +186,7 @@ class Form extends Manage
         $form         = new FormModel();
         $result       = [
             'status' => true,
-            'msg'    => '删除成功',
+            'msg'    => error_code(10022,true),
             'data'   => ''
         ];
         $id           = input('param.id/d', 0);
@@ -206,7 +206,7 @@ class Form extends Manage
         $id     = input('id/d', 0);
         $result = [
             'status' => false,
-            'msg'    => '参数错误',
+            'msg'    => error_code(10003,true),
             'data'   => ''
         ];
         if (!$id) {
@@ -248,8 +248,8 @@ class Form extends Manage
     {
         $id     = input('id/d', 0);
         $result = [
-            'status' => false,
-            'msg'    => '参数错误',
+            'status' => true,
+            'msg'    => '',
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -263,7 +263,7 @@ class Form extends Manage
         $this->assign('id', $id);
         $result['data']   = $this->fetch('report');
         $result['status'] = true;
-        $result['msg']    = '参数错误';
+        $result['msg']    = error_code(10024,true);
         return $result;
 
     }
@@ -311,7 +311,7 @@ class Form extends Manage
         $formSubmitModel = new FormSubmit();
         $result          = [
             'status' => true,
-            'msg'    => '删除成功',
+            'msg'    => error_code(10022,true),
             'data'   => ''
         ];
         $id              = input('param.id/d', 0);
@@ -350,7 +350,7 @@ class Form extends Manage
         $this->assign('items', $items);
         $this->view->engine->layout(false);
         $result['status'] = true;
-        $result['msg']    = '获取成功';
+        $result['msg']    = error_code(10024,true);
         $result['data']   = $this->fetch('submit_detail');
         return $result;
     }
@@ -385,7 +385,7 @@ class Form extends Manage
         } else {
             $this->view->engine->layout(false);
             $result['status'] = true;
-            $result['msg']    = '获取成功';
+            $result['msg']    = error_code(10024,true);
             $result['data']   = $this->fetch('edit_form_submit');
             return $result;
         }

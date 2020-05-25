@@ -75,7 +75,7 @@ class Pages extends Common
     {
         $result          = [
             'status' => true,
-            'msg'    => '获取成功',
+            'msg'    => error_code(10024,true),
             'data'   => [],
         ];
         $pageModel       = new Pages();
@@ -214,7 +214,7 @@ class Pages extends Common
     {
         $result = [
             'status' => false,
-            'msg'    => '保存失败',
+            'msg'    => error_code(10004,true),
             'data'   => []
         ];
 
@@ -232,7 +232,7 @@ class Pages extends Common
 
         if ($this->allowField(true)->save($data)) {
             $result['status'] = true;
-            $result['msg']    = '保存成功';
+            $result['msg']    = error_code(10016,true);
         }
 
         return $result;

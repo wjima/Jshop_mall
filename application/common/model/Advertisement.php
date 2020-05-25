@@ -82,7 +82,7 @@ class Advertisement extends Common
     public function addData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status' => true, 'msg' => '保存成功' , 'data' => ''];
+        $result = ['status' => true, 'msg' => error_code(10016,true) , 'data' => ''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -108,7 +108,7 @@ class Advertisement extends Common
             }
             if (!$this->allowField(true)->save($data)) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -124,7 +124,7 @@ class Advertisement extends Common
     public function saveData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status' => true, 'msg' => '保存成功' , 'data' => ''];
+        $result = ['status' => true, 'msg' => error_code(10016,true) , 'data' => ''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -150,7 +150,7 @@ class Advertisement extends Common
             }
             if (!$this->allowField(true)->save($data,['id'=>$data['id']])) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -227,7 +227,7 @@ class Advertisement extends Common
     {
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
 

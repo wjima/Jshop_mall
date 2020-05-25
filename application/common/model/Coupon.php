@@ -73,11 +73,11 @@ class Coupon extends Common
      */
     public function del($coupon_code)
     {
-        $result = ['status'=>false,'msg'=>'删除失败','data'=>''];
+        $result = ['status'=>false,'msg'=>error_code(10023,true),'data'=>''];
         if ($this->where('coupon_code',$coupon_code)->delete())
         {
             $result['status'] = true;
-            $result['msg'] = '删除成功';
+            $result['msg'] = error_code(10022,true);
         }
         return $result;
     }
@@ -190,7 +190,7 @@ class Coupon extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [
                 'list' => [],
                 'count' => 0,
@@ -239,7 +239,7 @@ class Coupon extends Common
         if($return['data']['list'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg'] = error_code(10024,true);
             if(count($return['data']['list']) > 0)
             {
                 $conditionModel = new PromotionCondition();

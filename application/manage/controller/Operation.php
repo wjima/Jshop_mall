@@ -62,7 +62,7 @@ class Operation extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -95,7 +95,7 @@ class Operation extends Manage
             $this->assign('menuTree',$menuTree);
 
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
             $return['data'] = $this->fetch('add');
             return $return;
         }

@@ -55,7 +55,7 @@ class Categories extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -84,7 +84,7 @@ class Categories extends Manage
             $this->assign('data',$info);
         }
         $result['status'] = true;
-        $result['msg'] = '成功';
+        $result['msg'] = error_code(10038,true);
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -119,7 +119,7 @@ class Categories extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
         ];
         $goodsCatModel = new GoodsCat();
@@ -128,7 +128,7 @@ class Categories extends Manage
         {
             $result['data'] = $catList->toArray();
             $result['status'] = true;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
         }
         return $result;
     }
@@ -144,7 +144,7 @@ class Categories extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [],
         ];
         $id = input('id/d','0');
@@ -154,7 +154,7 @@ class Categories extends Manage
         {
             $result['data'] = $cat->toArray();
             $result['status'] = true;
-            $result['msg'] = '获取成功';
+            $result['msg'] = error_code(10024,true);
         }
         return $result;
     }
@@ -169,14 +169,14 @@ class Categories extends Manage
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '参数丢失',
+            'msg' => error_code(10003,true),
         ];
         $id = input('post.id/d', 0);
         $state = input('post.status/s', 'false');
 
         if(!$id)
         {
-            return $result;
+            return error_code(10003);
         }
         $iData = [];
         if($state == 'true')
@@ -191,12 +191,12 @@ class Categories extends Manage
         $model = new GoodsCat();
         if($model->save($iData, ['id' => $id]) !== false)
         {
-            $result['msg'] = '设置成功';
+            $result['msg'] = error_code(10016,true);
             $result['status'] = true;
         }
         else
         {
-            $result['msg'] = '设置失败';
+            $result['msg'] = error_code(10004,true);
             $result['status'] = false;
         }
         return $result;
@@ -213,7 +213,7 @@ class Categories extends Manage
     {
         $result = [
             'status' => true,
-            'msg' => '获取成功',
+            'msg' => error_code(10024,true),
             'data' => []
         ];
         $goodsCatModel = new GoodsCat();

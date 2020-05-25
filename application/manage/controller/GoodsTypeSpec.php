@@ -51,7 +51,7 @@ class GoodsTypeSpec extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -59,7 +59,7 @@ class GoodsTypeSpec extends Manage
         {
             //获取添加页面
             $return['status'] = true;
-            $return['msg'] = '成功';
+            $return['msg'] = error_code(10038,true);
             $return['data'] = $this->fetch('add');
             return $return;
         }
@@ -94,7 +94,7 @@ class GoodsTypeSpec extends Manage
                     $specModel::commit();
                     $return = [
                         'status' => true,
-                        'msg' => '添加成功',
+                        'msg' => error_code(10018,true),
                         'data' => $result,
                     ];
                 }
@@ -103,7 +103,7 @@ class GoodsTypeSpec extends Manage
                     $specModel::rollback();
                     $return = [
                         'status' => false,
-                        'msg' => '添加失败',
+                        'msg' => error_code(10019,true),
                         'data' => $result,
                     ];
                 }
@@ -113,7 +113,7 @@ class GoodsTypeSpec extends Manage
                 $specModel::rollback();
                 $return = [
                     'status' => false,
-                    'msg' => '添加失败',
+                    'msg' => error_code(10019,true),
                     'data' => $result,
                 ];
             }
@@ -131,7 +131,7 @@ class GoodsTypeSpec extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '保存失败',
+            'msg' => error_code(10004,true),
             'data' => '',
         ];
         $this->view->engine->layout(false);
@@ -157,7 +157,7 @@ class GoodsTypeSpec extends Manage
             $value = input('post.value/a', []);
             if(!$value)
             {
-                $result['msg'] = '属性值不能为空';
+                $result['msg'] = error_code(12011,true);
                 return $result;
             }
             $goodsTypeModel->startTrans();
@@ -166,7 +166,7 @@ class GoodsTypeSpec extends Manage
                 if(!$specValueModel::destroy(['spec_id' => $data['id']]))
                 {
                     $goodsTypeModel->rollback();
-                    $result['msg'] = '属性值删除失败';
+                    $result['msg'] = error_code(12012,true);
                     return $result;
                 }
             }
@@ -183,19 +183,19 @@ class GoodsTypeSpec extends Manage
             if(!$specValueModel->saveAll($valueData))
             {
                 $goodsTypeModel->rollback();
-                $result['msg'] = '属性值保存失败';
+                $result['msg'] = error_code(12013,true);
                 return $result;
             }
             $goodsTypeModel->commit();
             $result = [
                 'status' => true,
-                'msg'    => '保存成功',
+                'msg'    => error_code(10016,true),
                 'data'   => '',
             ];
             return $result;
         }
         $result['status'] = true;
-        $result['msg'] = '成功';
+        $result['msg'] = error_code(10038,true);
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -213,7 +213,7 @@ class GoodsTypeSpec extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => '',
         ];
         $id = input('post.id', 0);
@@ -231,14 +231,14 @@ class GoodsTypeSpec extends Manage
                 {
                     $goodsTypeModel->commit();
                     $result['status'] = true;
-                    $result['msg'] = '删除成功';
+                    $result['msg'] = error_code(10022,true);
                     return $result;
                 }
 
                 if($specValueModel::destroy(['spec_id' => $id]))
                 {
                     $result['status'] = true;
-                    $result['msg'] = '删除成功';
+                    $result['msg'] = error_code(10022,true);
                     $goodsTypeModel->commit();
                 }
                 else
@@ -259,12 +259,12 @@ class GoodsTypeSpec extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
         $result['status'] = true;
-        $result['msg'] = '成功';
+        $result['msg'] = error_code(10038,true);
         $result['data'] = $this->fetch('getlist');
         return $result;
     }

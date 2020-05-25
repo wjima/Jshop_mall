@@ -9,9 +9,9 @@ return [
                 'parent_menu_id' => '0',
                 'name' => '库存管理',
                 'type' => 'c',
-                'code' => 'index',          //不区分大小写了,如果是控制器的话，加入控制器名称是驼峰写法，比如IndexOrder，这里要写成index_order,下面的插件名称同样写法
+                'code' => 'index',          
                 'perm_type' => 1,
-                'addons' => 'stock_control',
+                'addons' => 'StockControl',
                 'sort' => 110
             ],
             'menu_5' => [
@@ -20,10 +20,20 @@ return [
                 'parent_menu_id' => 'stock_menu_1',
                 'name' => '库存盘点',
                 'type' => 'a',
-//                'url' => get_addon_url('StockControl://Index/stockIndex'),  //当前实时库存
-                'code' => 'stockIndex',          //不区分大小写了,如果是控制器的话，加入控制器名称是驼峰写法，比如IndexOrder，这里要写成index_order,下面的插件名称同样写法
+                'code' => 'stockIndex',          
                 'perm_type' => 1,
-                'addons' => 'stock_control',
+                'addons' => 'StockControl',
+                'sort' => 110
+            ],
+            'menu_5_1' => [
+                'id' => 'stock_menu_5_1',
+                'parent_id' => 'stock_menu_5',
+                'parent_menu_id' => 'stock_menu_5',
+                'name' => '修改库存',
+                'type' => 'a',
+                'code' => 'editStock',          
+                'perm_type' => 2,
+                'addons' => 'StockControl',
                 'sort' => 110
             ],
             'menu_2' => [
@@ -32,10 +42,31 @@ return [
                 'parent_menu_id' => 'stock_menu_1',
                 'name' => '入库管理',
                 'type' => 'a',
-//                'url' => get_addon_url('StockControl://Index/stock1index'),
-                'code' => 'stock1Index',          //不区分大小写了,如果是控制器的话，加入控制器名称是驼峰写法，比如IndexOrder，这里要写成index_order,下面的插件名称同样写法
+                'code' => 'stock1Index',          
                 'perm_type' => 1,
-                'addons' => 'stock_control',
+                'addons' => 'StockControl',
+                'sort' => 110
+            ],
+            'menu_2_1' => [
+                'id' => 'stock_menu_2_1',
+                'parent_id' => 'stock_menu_2',
+                'parent_menu_id' => 'stock_menu_2',
+                'name' => '新增入库单',
+                'type' => 'a',
+                'code' => 'stock1Add',          
+                'perm_type' => 2,
+                'addons' => 'StockControl',
+                'sort' => 110
+            ],
+            'menu_2_2' => [
+                'id' => 'stock_menu_2_2',
+                'parent_id' => 'stock_menu_2',
+                'parent_menu_id' => 'stock_menu_2',
+                'name' => '查看出入单详情',
+                'type' => 'a',
+                'code' => 'stockView',          
+                'perm_type' => 2,
+                'addons' => 'StockControl',
                 'sort' => 110
             ],
             'menu_3' => [
@@ -44,10 +75,20 @@ return [
                 'parent_menu_id' => 'stock_menu_1',
                 'name' => '出库管理',
                 'type' => 'a',
-//                'url' => get_addon_url('StockControl://Index/stock2index'),
-                'code' => 'stock2Index',          //不区分大小写了,如果是控制器的话，加入控制器名称是驼峰写法，比如IndexOrder，这里要写成index_order,下面的插件名称同样写法
+                'code' => 'stock2Index',          
                 'perm_type' => 1,
-                'addons' => 'stock_control',
+                'addons' => 'StockControl',
+                'sort' => 110
+            ],
+            'menu_3_1' => [
+                'id' => 'stock_menu_3_1',
+                'parent_id' => 'stock_menu_3',
+                'parent_menu_id' => 'stock_menu_3',
+                'name' => '新增出库单',
+                'type' => 'a',
+                'code' => 'stock2Add',          
+                'perm_type' => 2,
+                'addons' => 'StockControl',
                 'sort' => 110
             ],
             'menu_4' => [
@@ -56,10 +97,9 @@ return [
                 'parent_menu_id' => 'stock_menu_1',
                 'name' => '库存记录',
                 'type' => 'a',
-//                'url' => get_addon_url('StockControl://Index/index'),
-                'code' => 'index',          //不区分大小写了,如果是控制器的话，加入控制器名称是驼峰写法，比如IndexOrder，这里要写成index_order,下面的插件名称同样写法
+                'code' => 'index',          
                 'perm_type' => 1,
-                'addons' => 'stock_control',
+                'addons' => 'StockControl',
                 'sort' => 110
             ],
         ]

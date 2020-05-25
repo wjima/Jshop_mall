@@ -12,11 +12,11 @@ return [
                 'parent_id' => '2',         //如果是控制器的话，默认就写2吧，挂载到后台根节点
                 'parent_menu_id' => '238',
                 'name' => '演示插件',
-                'code' => 'index',          //不区分大小写了,如果是控制器的话，加入控制器名称是驼峰写法，比如IndexOrder，这里要写成index_order,下面的插件名称同样写法
+                'code' => 'Index',          //严格区分大小写,如果是控制器的话，一定要严格按照实际的名称填写，否则可能找不到此节点
                 'type' => 'c',
                 'perm_type' => 1,
                 'sort' => 140,
-                'addons' => 'demo',     //插件名称，都小写即可。如果是驼峰写法，比如demoJshop,要写成demo_jshop,
+                'addons' => 'demo',     //严格区分大小写
             ],
             [
                 'id' => 'demo_2',

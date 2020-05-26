@@ -57,7 +57,7 @@ class Ship extends Manage
                 }
                 if (count($area_fee) <= 0) {
 //                    $return_data['msg'] = '请选择配送地区';
-                    return error_code(13500);
+                    return error_code(13316);
                 }
             }
             $status = input('post.status');
@@ -134,7 +134,7 @@ class Ship extends Manage
                 }
                 if (count($area_fee) <= 0) {
 //                    $return_data['msg'] = '请选择配送地区';
-                    return error_code(13500);
+                    return error_code(13316);
                 }
             }
             $status = input('post.status');

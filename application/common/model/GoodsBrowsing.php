@@ -31,8 +31,8 @@ class GoodsBrowsing extends Common
         $goodsInfo = $goodsModel->where(array('id'=>$goodsId))->find();
         if(!$goodsInfo)
         {
-            $result['msg'] = '没有此商品';
-            return $result;
+//            $result['msg'] = '没有此商品';
+            return error_code(12700);
         }
         $data['user_id'] = $userId;
         $data['goods_id'] = $goodsId;
@@ -69,7 +69,7 @@ class GoodsBrowsing extends Common
             $v->delete();               //为什么这么删，因为软删除只能这样删
         }
         $result['data'] = count($info);
-        $result['msg'] = error_code(10022,true);
+        $result['msg'] = "删除成功";
         $result['status'] = true;
         return $result;
     }

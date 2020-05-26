@@ -252,7 +252,7 @@ class Products extends Common
 
         $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => $product
         ];
         return $result;

@@ -30,11 +30,7 @@ class BillLading extends Common
      */
     public function addData($order_id, $store_id, $name, $mobile)
     {
-        $return = [
-            'status' => false,
-            'msg' => '添加失败',
-            'data' => ''
-        ];
+        $return = error_code(10038);
 
         $data['id'] = $this->generateId();
         $data['order_id'] = $order_id;
@@ -158,7 +154,7 @@ class BillLading extends Common
                 }
             }
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
 
         return $return;
@@ -178,7 +174,7 @@ class BillLading extends Common
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $where[] = ['id|order_id|mobile', 'eq', $key];
@@ -234,8 +230,9 @@ class BillLading extends Common
             $return['data'] = $data;
 
         } else {
-            $return['msg'] = '提货单不存在';
-            $return['status'] = false;
+//            $return['msg'] = '提货单不存在';
+//            $return['status'] = false;
+            return  error_code(13312);
         }
 
         return $return;
@@ -252,11 +249,7 @@ class BillLading extends Common
      */
     public function edit($id, $store_id, $name, $mobile)
     {
-        $return = [
-            'status' => false,
-            'msg' => '编辑失败',
-            'data' => ''
-        ];
+        $return = error_code(10016);
 
         $data['store_id'] = $store_id;
         $data['name'] = $name;
@@ -285,16 +278,12 @@ class BillLading extends Common
      */
     public function del($id, $user_id = false)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10023,true),
-            'data' => ''
-        ];
+        $return =  error_code(10023) ;
         $result = $this->get($id);
         if($result['status'] == self::STATUS_NO)
         {
-            $return['msg'] = '未提货的提货单不能删除';
-            return $return;
+//            $return['msg'] = '未提货的提货单不能删除';
+            return error_code(13313);
         }
 
         if($user_id)
@@ -303,8 +292,8 @@ class BillLading extends Common
             $store_ids = $clerkModel->getClerkStoreIds($user_id);
             if(!in_array($result['store_id'], $store_ids))
             {
-                $return['msg'] = '你无权删除该提货单';
-                return $return;
+//                $return['msg'] = '你无权删除该提货单';
+                return error_code(13314);
             }
         }
 
@@ -312,7 +301,7 @@ class BillLading extends Common
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10022,true);
+            $return['msg'] = '删除成功';
         }
         return $return;
     }
@@ -348,11 +337,7 @@ class BillLading extends Common
      */
     public function getStoreLadingList($user_id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => []
-        ];
+        $return = error_code(10025);
 
         $clerkModel = new Clerk();
         $store_ids = $clerkModel->getClerkStoreIds($user_id);
@@ -376,7 +361,7 @@ class BillLading extends Common
                 $v['ctime'] = getTime($v['ctime']);
             }
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
 
         return $return;
@@ -391,11 +376,7 @@ class BillLading extends Common
      */
     public function ladingOperating($ids, $user_id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '操作失败',
-            'data' => ''
-        ];
+        $return = error_code(10018);
 
         $where[] = ['id', 'in', $ids];
 
@@ -418,7 +399,8 @@ class BillLading extends Common
                 $return['msg'] = '操作成功';
             }
         } else {
-            $return['msg'] = '没有可提货的订单';
+//            $return['msg'] = '没有可提货的订单';
+            return error_code(13315);
         }
 
         return $return;
@@ -482,12 +464,7 @@ class BillLading extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -511,7 +488,7 @@ class BillLading extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = error_code(10040,true);
+            $result['msg'] = '导出成功';
             $result['data'] = $body;
             return $result;
         } else {
@@ -622,7 +599,7 @@ class BillLading extends Common
             }
 
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
             $count = $this->where($where)->count();
             $return['count'] =$count;
         }

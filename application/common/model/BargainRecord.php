@@ -113,17 +113,17 @@ class BargainRecord extends Common
             'data'   => [],
         ];
         if (!$bargain_id || !$user_id) {
-            $result['msg'] = '参数错误';
-            return $result;
+//            $result['msg'] = '参数错误';
+            return error_code(10051);
         }
         $info = $this->where([['bargain_id', '=', $bargain_id], ['user_id', '=', $user_id], ['status', 'in', [self::STATUS_ING, self::STATUS_SUCCESS]]])->field('id')->find();
         if ($info) {
             $result['data'] = $info['id'];
-            $result['msg']  = '您有正在进行中的砍价，请勿重复参加';
+            $result['msg']  = error_code(17637,true); //'您有正在进行中的砍价，请勿重复参加';
             return $result;
         }
         if (!$this->countRecord($bargain_id)) {
-            $result['msg']          = '活动数量已满，请看看其它活动吧';
+            $result['msg']          = error_code(17638,true);//'活动数量已满，请看看其它活动吧';
             $result['data']['code'] = 'over';
             return $result;
         }
@@ -146,7 +146,7 @@ class BargainRecord extends Common
         $recData['stime']       = time();
         $recData['etime']       = time() + $info['significant_interval'] * 3600;
         if (!$this->save($recData)) {
-            $result['msg'] = '发起砍价活动失败';
+            $result['msg'] = error_log(17618,true);//'发起砍价活动失败';
             return $result;
         }
         $result['data']   = $this->id;
@@ -213,14 +213,14 @@ class BargainRecord extends Common
             'msg'    => ''
         ];
         if (!$record_id || !$user_id) {
-            $result['msg'] = '取消失败';
-            return $result;
+//            $result['msg'] = '取消失败';
+            return error_code(10051);
         }
         $recordModel = new BargainRecord();
         $info        = $recordModel->where([['user_id', '=', $user_id], ['id', '=', $record_id], ['status', '=', self::STATUS_ING]])->find();
         if (!$info) {
-            $result['msg'] = '无砍价活动记录，取消失败';
-            return $result;
+//            $result['msg'] = '无砍价活动记录，取消失败';
+            return error_code(17612);
         }
         $res              = $this->where([['id', '=', $record_id]])->update(['status' => self::STATUS_CANCLE]);
         $result['status'] = true;

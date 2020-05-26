@@ -66,7 +66,7 @@ class Notice extends Common
      */
     public function addData($data = [])
     {
-        $result = ['status' => true, 'msg' => error_code(10016,true) , 'data' => ''];
+        $result = ['status' => true, 'msg' => '保存成功' , 'data' => ''];
 
         $validate = new Validate($this->rule,$this->msg);
         if(!$validate->check($data))
@@ -90,7 +90,7 @@ class Notice extends Common
      */
     public function saveData($data = [])
     {
-        $result = ['status' => true, 'msg' => error_code(10016,true), 'data' => ''];
+        $result = ['status' => true, 'msg' => '保存成功', 'data' => ''];
 
         $validate = new Validate($this->rule, $this->msg);
         if (!$validate->check($data)) {
@@ -98,8 +98,7 @@ class Notice extends Common
             $result['msg']    = $validate->getError();
         } else {
             if ($this->allowField(true)->save($data, ['id' => $data['id']]) === false) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+               return error_code(10004);
             }
         }
         return $result;

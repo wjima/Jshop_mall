@@ -263,7 +263,7 @@ class Form extends Manage
         $this->assign('id', $id);
         $result['data']   = $this->fetch('report');
         $result['status'] = true;
-        $result['msg']    = error_code(10024,true);
+        $result['msg']    = '获取成功';
         return $result;
 
     }

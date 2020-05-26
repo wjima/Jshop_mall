@@ -25,8 +25,8 @@ class GoodsGrade extends Common
             'status' => false,
         ];
         if (!$goods_id) {
-            $returnData['msg'] = '关键参数失败';
-            return $returnData;
+//            $returnData['msg'] = '关键参数失败';
+            return error_code(12009);
         }
         $where   = [];
         $where[] = ['goods_id', '=', $goods_id];
@@ -40,12 +40,12 @@ class GoodsGrade extends Common
         $data = $data->toArray();
         if ($grade_id) {
             $returnData['status'] = true;
-            $returnData['msg']    = error_code(10024,true);
+            $returnData['msg']    = '获取成功';
             $returnData['data']   = $data[0];
             return $returnData;
         }
         $returnData['status'] = true;
-        $returnData['msg']    = error_code(10024,true);
+        $returnData['msg']    = '获取成功';
         $returnData['data']   = $data;
         return $returnData;
     }
@@ -59,14 +59,10 @@ class GoodsGrade extends Common
      */
     public function setGradePrice($goods_id = 0, $grade_id = 0, $price = 0.00)
     {
-        $returnData = [
-            'data'   => [],
-            'msg'    => error_code(10025,true),
-            'status' => false,
-        ];
+        $returnData = error_code(10021);
         if (!$goods_id || !$grade_id) {
-            $returnData['msg'] = '关键参数失败';
-            return $returnData;
+//            $returnData['msg'] = '关键参数失败';
+            return error_code(10051);
         }
 
         $where   = [];
@@ -92,7 +88,7 @@ class GoodsGrade extends Common
             }
         }
         $returnData['status'] = true;
-        $returnData['msg']    = error_code(10020,true);
+        $returnData['msg']    = '更新成功';
         return $returnData;
     }
 

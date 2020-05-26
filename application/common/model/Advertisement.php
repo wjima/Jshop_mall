@@ -82,7 +82,7 @@ class Advertisement extends Common
     public function addData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status' => true, 'msg' => error_code(10016,true) , 'data' => ''];
+        $result = ['status' => true, 'msg' => '保存成功' , 'data' => ''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -124,7 +124,7 @@ class Advertisement extends Common
     public function saveData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status' => true, 'msg' => error_code(10016,true) , 'data' => ''];
+        $result = ['status' => true, 'msg' => '保存成功' , 'data' => ''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -227,7 +227,7 @@ class Advertisement extends Common
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
 

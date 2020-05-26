@@ -77,7 +77,7 @@ class Addons extends Common
                 }
             }
         }
-        $result['msg']  = error_code(10024,true);
+        $result['msg']  = '获取成功';
         $result['code'] = 0;
         $result['data'] = $addons;
         $re['count']    = count($addons);

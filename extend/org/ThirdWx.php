@@ -388,7 +388,7 @@ class ThirdWx
         $res        = $curl->post($delete_url, $data);
         $res        = json_decode($res, true);
         if ($res['errcode'] == '0') {
-            $msg = error_code(10022,true);
+            $msg = '删除成功';
             return true;
         } else {
             $msg = $this->getError($res);
@@ -420,7 +420,7 @@ class ThirdWx
         $res = $curl->post($delete_url, $data);
         $res = json_decode($res, true);
         if ($res['errcode'] == '0') {
-            $msg = error_code(10034,true);
+            $msg = '上传成功';
             return true;
         } else {
             $msg = $this->getError($res);

@@ -466,7 +466,7 @@ class User extends Api
         if ($result !== false) {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(10016,true),
+                'msg' => '保存成功',
                 'data' => $result
             );
         } else {

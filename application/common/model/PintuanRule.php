@@ -150,7 +150,7 @@ class PintuanRule extends Common{
 //        if($rel){
 //            $rel['date'] = date("Y-m-d h:i:s",$rel['start_time']). ' 到 ' .date("Y-m-d h:i:s",$rel['end_time']);
 //            $result['status'] = true;
-//            $result['msg'] = error_code(10024,true);
+//            $result['msg'] = '获取成功';
 //            $result['data'] = $rel;
 //        }
 //        return $result;

@@ -109,7 +109,7 @@ class BillReship extends Common
 
         $this->where($where)->data($data)->update();
         $result['status'] = true;
-        $result['msg'] = error_code(10016,true);
+        $result['msg'] = '保存成功';
         return $result;
 
     }
@@ -347,12 +347,7 @@ class BillReship extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -376,7 +371,7 @@ class BillReship extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = error_code(10040,true);
+            $result['msg'] = '导出成功';
             $result['data'] = $body;
             return $result;
         } else {
@@ -482,7 +477,7 @@ class BillReship extends Common
             }
             $return_data = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $list,
                 'count' => $count
             ];

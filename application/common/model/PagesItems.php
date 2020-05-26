@@ -52,7 +52,7 @@ class PagesItems extends Common
         }
         Db::commit();
         $result['status'] = true;
-        $result['msg']    = error_code(10016,true);
+        $result['msg']    = '保存成功';
         return $result;
     }
 

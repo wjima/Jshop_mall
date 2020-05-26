@@ -555,7 +555,7 @@ class Goods extends Manage
             $goodsModel = new goodsModel();
             $goods      = $goodsModel->getOne($goods_id, 'id,image_id');
             if (!$goods['status']) {
-                return error_code(12010,true);
+                return error_code(12700);
             }
             $products = $goods['data']->products;
         }
@@ -670,7 +670,7 @@ class Goods extends Manage
         $productsModel = new Products();
         $goods         = $goodsModel->getOne($goods_id, '*');
         if (!$goods['status']) {
-            $this->error(error_code(12010,true));
+            $this->error(error_code(12700,true));
         }
         $this->assign('open_spec', '0');
         $this->assign('data', $goods['data']);

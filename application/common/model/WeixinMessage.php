@@ -34,7 +34,7 @@ class WeixinMessage extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10016,true),
+            'msg'    => '保存成功',
             'data'   => [],
         ];
         $id     = 0;

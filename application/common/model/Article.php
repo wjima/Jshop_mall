@@ -84,7 +84,7 @@ class Article extends Common
     {
 
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status'=>true,'msg'=>error_code(10016,true),'data'=>''];
+        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -109,11 +109,7 @@ class Article extends Common
     public function saveData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = [
-            'status'=>true,
-            'msg'=>error_code(10016,true),
-            'data'=>''
-        ];
+        $result = ['status'=>true,'msg'=>'保存成功','data'=>''];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -175,12 +171,12 @@ class Article extends Common
     {
         $result = [
             'status' =>  true,
-            'msg'    =>  error_code(10024,true),
+            'msg'    =>  '获取成功',
             'data'   =>  []
         ];
         $articleTypeModel = new ArticleType();
 
-        $type_name = error_code(10080,true);
+        $type_name = "文章分类";
         if($type_id != 0){
             $info = $articleTypeModel->where('id',$type_id)->find();
             if($info){
@@ -247,7 +243,7 @@ class Article extends Common
 
         $result = [
             'status' =>  true,
-            'msg'    =>  error_code(10024,true),
+            'msg'    =>  '获取成功',
             'data'   =>  []
         ];
         // 发布状态
@@ -343,7 +339,7 @@ class Article extends Common
             }
 
             $result['status'] = true;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
             $result['data'] = $data;
         }
         return $result;

@@ -74,7 +74,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10016,true),
+            'msg'    => '保存成功',
             'data'   => []
         ];
 
@@ -105,7 +105,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10016,true),
+            'msg'    => '保存成功',
             'data'   => []
         ];
         $where = [
@@ -203,7 +203,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => []
         ];
 
@@ -325,7 +325,7 @@ class ArticleType extends Common
 
         $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => [
                 'list' => $type,
                 'hot' => $hot

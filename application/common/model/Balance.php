@@ -48,7 +48,7 @@ class Balance extends Common
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => error_code(10016,true)
+            'msg' => '操作成功'
         ];
 
         if($money != 0)
@@ -281,7 +281,7 @@ class Balance extends Common
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
 
@@ -329,7 +329,7 @@ class Balance extends Common
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
 
         return $return;
@@ -424,7 +424,7 @@ class Balance extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = error_code(10040,true);
+            $result['msg'] = '导出成功';
             $result['data'] = $body;
             return $result;
         }
@@ -515,7 +515,7 @@ class Balance extends Common
 
             $return_data = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $list,
                 'count' => $count
             ];

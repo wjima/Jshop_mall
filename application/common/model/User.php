@@ -272,7 +272,7 @@ class User extends Common
         $result = [
             'status' => false,
             'data'   => '',
-            'msg'    => error_code(10038,true)
+            'msg'    => '成功'
         ];
 
         $userInfo = $this->where(array('mobile' => $mobile))->find();
@@ -372,7 +372,7 @@ class User extends Common
             //$userLogModel = new UserLog();
             //$userLogModel->setLog($id,$userLogModel::USER_EDIT);
             $result['status'] = true;
-            $result['msg']    = error_code(10016,true);
+            $result['msg']    = '保存成功';
             return $result;
         } else {
             return error_code(10005);
@@ -678,7 +678,7 @@ class User extends Common
         }
         return $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => $data,
             'total'  => ceil($count / $limit)
         ];
@@ -727,7 +727,7 @@ class User extends Common
                 $return['point_rmb']         = $return['available_point'] / $point_discounted_proportion;
             }
 
-            $return['msg']    = error_code(10024,true);
+            $return['msg']    = '获取成功';
             $return['data']   = $data['point'];
             $return['status'] = true;
         }
@@ -1219,7 +1219,7 @@ class User extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg']    = error_code(10040,true);
+            $result['msg']    = '导出成功';
             $result['data']   = $body;
             return $result;
         } else {

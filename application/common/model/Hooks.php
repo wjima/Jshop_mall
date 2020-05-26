@@ -143,12 +143,11 @@ class Hooks extends Common
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10016,true),
+            'msg' => '保存成功',
             'data' => []
         ];
         if (!$this->allowField(true)->save($data)) {
-            $result['status'] = false;
-            $result['msg'] = error_code(10004,true);
+            return  error_code(10004);
         }
         return $result;
     }
@@ -163,12 +162,11 @@ class Hooks extends Common
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10016,true),
+            'msg' => '保存成功',
             'data' => []
         ];
         if (!$this->allowField(true)->save($data, ['id' => $data['id']])) {
-            $result['status'] = false;
-            $result['msg'] = error_code(10004,true);
+            return  error_code(10004);
         }
         return $result;
     }

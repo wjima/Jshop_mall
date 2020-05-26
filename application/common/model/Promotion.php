@@ -416,7 +416,7 @@ class Promotion extends Common
 
         if ($return['data'] !== false) {
             $return['status'] = true;
-            $return['msg']    = error_code(10038,true);
+            $return['msg']    = '成功';
         }
 
         return $return;

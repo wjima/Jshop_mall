@@ -80,7 +80,7 @@ class Videos extends Common
     public function addData($data)
     {
         $validate = new Validate($this->rule, $this->msg);
-        $result   = ['status' => true, 'msg' => error_code(10016,true), 'data' => ''];
+        $result   = ['status' => true, 'msg' => '保存成功', 'data' => ''];
         if (!$validate->check($data)) {
             $result['status'] = false;
             $result['msg']    = $validate->getError();
@@ -101,7 +101,7 @@ class Videos extends Common
     public function videoEdit($data)
     {
         $validate = new Validate($this->rule, $this->msg);
-        $result   = ['status' => true, 'msg' => error_code(10016,true), 'data' => ''];
+        $result   = ['status' => true, 'msg' => '保存成功', 'data' => ''];
         if (!$validate->check($data)) {
             $result['status'] = false;
             $result['msg']    = $validate->getError();

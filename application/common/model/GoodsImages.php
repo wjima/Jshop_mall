@@ -46,22 +46,15 @@ class GoodsImages extends Common
      */
     public function getAllImages($goods_id)
     {
-        $result = [
-            'status' => false,
-            'msg'  => '商品ID不能为空',
-            'data'  => ''
-        ];
+        $result = error_code(10027);
         if(!$goods_id){
-            return $result;
+            return error_code(12009);
         }
         $images = $this->where([ 'goods_id' => $goods_id ])->order('sort desc')->select();
         if(!$images->isEmpty()) {
             $result['status'] = true;
-            $result['msg'] = error_code(10026,true);
+            $result['msg'] = '查询成功';
             $result['data'] = $images->toArray();
-        }else{
-            $result['status'] = false;
-            $result['msg'] = '无数据';
         }
         return $result;
     }
@@ -73,11 +66,10 @@ class GoodsImages extends Common
      */
     public function delImages($goods_id)
     {
-        $result = [
-            'status' => false,
-            'msg' => '商品ID不能为空',
-            'data' => ''
-        ];
+        $result = error_code(10023);
+        if(!$goods_id){
+            return error_code(12009);
+        }
         $resImages = $this->getAllImages($goods_id);
         if ($resImages['status']) {
             foreach ($resImages['data'] as $relImage) {
@@ -85,7 +77,7 @@ class GoodsImages extends Common
             }
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10022,true);
+        $result['msg'] = '删除成功';
         return $result;
     }
 

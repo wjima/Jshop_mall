@@ -404,7 +404,7 @@ class User extends Common
             $where[] = ['username', 'like', '%' . $post['username'] . '%'];
         }
         if (isset($post['mobile']) && $post['mobile'] != "") {
-            $where[] = ['mobile', 'eq', $post['mobile']];
+            $where[] = ['mobile|username', 'eq', $post['mobile']];
         }
         if (isset($post['birthday']) && $post['birthday'] != "") {
             $where[] = ['birthday', 'eq', $post['birthday']];
@@ -416,11 +416,20 @@ class User extends Common
             $where[] = ['status', 'eq', $post['status']];
         }
         if (isset($post['pmobile']) && $post['pmobile'] != "") {
-            if ($puser_id = get_user_id($post['pmobile'])) {
-                $where[] = ['pid', 'eq', $puser_id];
-            } else {
+            $pwhere[] = ['mobile|username', 'like', "%".$post['pmobile']."%"];
+            $user      = $this->field('id')->where($pwhere)->select();
+            if(!$user->isEmpty()){
+                $user = array_column($user->toArray(),'id');
+                $where[] = ['pid','in',$user];
+            }else{
                 $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
+
+//            if ($puser_id = get_user_id($post['pmobile'])) {
+//                $where[] = ['pid', 'eq', $puser_id];
+//            } else {
+//                $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+//            }
         }
         if (isset($post['grade']) && $post['grade'] != "") {
             $where[] = ['grade', 'in', $post['grade']];
@@ -482,6 +491,7 @@ class User extends Common
 
         if ($isPage) {
             $list        = $this->with(['grade','userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $re['sql'] = $this->getLastSql();
             $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
         } else {
@@ -898,33 +908,27 @@ class User extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function editInvite($id, $mobile)
+    private function editInvite($id, $pid)
     {
         $return = [
             'status' => false,
-            'msg'    => '操作失败',
+            'msg'    => '',
             'data'   => ''
         ];
 
-        $where[]    = ['mobile', 'eq', $mobile];
-        $inviteInfo = $this->where($where)->find();
-        if (!$inviteInfo) {
-            $return['msg'] = '没有这个手机号注册的用户';
-            return $return;
-        }
-        if ($id == $inviteInfo['id']) {
+        if ($id == $pid) {
             $return['msg'] = '自己不能邀请自己';
             return $return;
         }
 
-        $isInvited = $this->isInvited($id,$inviteInfo['id']);
+        $isInvited = $this->isInvited($id,$pid);
         if ($isInvited) {
             $return['msg'] = '不能关联这个邀请人，因为他是你的下级或者下下级';
             return $return;
         }
         $return['status'] = true;
         $return['msg']    = '操作成功';
-        $return['data']   = $inviteInfo['id'];
+
         return $return;
     }
 
@@ -975,17 +979,8 @@ class User extends Common
                 return $return;
             }
         }
-
-        if (isset($data['p_mobile']) && $data['p_mobile'] != '') {
-            $pinfo = $this->where('mobile',$data['p_mobile'])->find();
-            if(!$pinfo){
-                $return['msg'] = "推荐人手机号码没有找到";
-                return $return;
-            }else{
-                $pid = $pinfo['id'];
-            }
-        }else{
-            $pid = 0;
+        if (!isset($data['pid']) || $data['pid'] == '') {
+            $data['pid'] = 0;
         }
 
         //默认用户等级
@@ -1019,10 +1014,13 @@ class User extends Common
         $newData['ctime']    = $time;
         $newData['utime']    = $time;
         $newData['status']   = isset($data['status']) ? $data['status'] : self::STATUS_NORMAL;
-        $newData['pid']      = $pid;
+        $newData['pid']      = $data['pid'];
         $newData['grade']    = $data['grade'];
         $newData['remarks'] = isset($data['remarks']) ? $data['remarks'] : '';
         $result         = $this->save($newData);
+        dump($newData);
+        dump($this->getLastSql());
+        die();
         $return['data'] = $this->id;
         if ($result) {
             $newData['id'] = $this->id;
@@ -1059,17 +1057,14 @@ class User extends Common
             $return['msg'] = $validate->getError();
             return $return;
         }
-        if (isset($data['p_mobile']) && $data['p_mobile'] != '') {
-            $p = $this->editInvite($data['id'], $data['p_mobile']);
+        if (isset($data['pid']) && $data['pid'] != '') {
+            $p = $this->editInvite($data['id'], $data['pid']);
             if ($p['status'] === false) {
                 $return['msg'] = $p['msg'];
                 return $return;
-            } else {
-                $data['pid'] = $p['data'];
             }
-        }
-        if ($data['p_mobile'] == '') {
-            $data['pid'] = '';
+        }else{
+            $data['pid'] = 0;
         }
         //输入密码时修改密码
         if (isset($data['password']) && $data['password'] != '') {

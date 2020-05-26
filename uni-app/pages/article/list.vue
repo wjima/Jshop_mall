@@ -105,6 +105,10 @@ export default {
 	padding-right: 0;
 	vertical-align: top;
 	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: baseline;
 }
 
 .article-title {
@@ -124,8 +128,8 @@ export default {
 	display: inline-block;
 	min-width: 220upx;
 	min-height: 32upx;
-	position: absolute;
-	bottom: 0;
+	/* position: absolute; */
+	/* bottom: 0; */
 }
 
 .flc {

@@ -24,6 +24,10 @@ class User extends Manage
             $userModel = new UserModel();
             return $userModel->tableData(input('param.'));
         }
+        //所有用户等级
+        $gradeModel = new UserGrade();
+        $gradeList = $gradeModel->select();
+        $this->assign('grade', $gradeList);
         return $this->fetch('index');
     }
 
@@ -179,22 +183,6 @@ class User extends Manage
             return $return;
         }
         return $this->fetch('comment');
-    }
-
-
-    /**
-     * 修改邀请人
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function editInvite()
-    {
-        $id = Request::param('id');
-        $mobile = Request::param('mobile');
-        $model = new UserModel();
-        return $model->editInvite($id, $mobile);
     }
 
 

@@ -296,8 +296,8 @@ class BillPayments extends Common
         $where[] = ['status','neq',self::STATUS_PAYED];
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
-            $result['msg'] = '没有找到此未支付的支付单号';
-            return $result;
+//            $result['msg'] = '没有找到此未支付的支付单号';
+            return error_code(13500);
         }
 
         Db::startTrans();
@@ -379,8 +379,8 @@ class BillPayments extends Common
                     );
                     $data['money'] += $order_info->order_amount;
                 } else {
-                    $result['msg'] = '订单号：' . $v . '没有找到,或不是未支付状态';
-                    return $result;
+//                    $result['msg'] = '订单号：' . $v . '没有找到,或不是未支付状态';
+                    return error_code(13501,false,$v);
                 }
             }
             $result['status'] = true;
@@ -388,8 +388,8 @@ class BillPayments extends Common
         } elseif ($type == self::TYPE_RECHARGE) { //账户充值
             $data['money'] = (float)$params['money'];//充值金额
             if (!$data['money']) {
-                $result['msg'] = '请输入正确的充值金额';
-                return $result;
+//                $result['msg'] = '请输入正确的充值金额';
+                return error_code(13502);
             }
             foreach ($source_arr as $k => $v) {
                 $data['rel'][] = array(
@@ -413,8 +413,8 @@ class BillPayments extends Common
                     );
                     $data['money'] += $form_info->money;
                 } else {
-                    $result['msg'] = '表单：' . $v . '没有找到,或不是未支付状态';
-                    return $result;
+//                    $result['msg'] = '表单：' . $v . '没有找到,或不是未支付状态';
+                    return error_code(13503,false,$v);
                 }
             }
             $result['status'] = true;
@@ -447,8 +447,8 @@ class BillPayments extends Common
         }
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
-            $result['msg'] = '没有找到此支付记录';
-            return error_code(10002);
+//            $result['msg'] = '没有找到此支付记录';
+            return error_code(13504);
         }
         $billPaymentInfo['rel'] = $billPaymentInfo->rel;
         $result['data'] = $billPaymentInfo;
@@ -558,12 +558,7 @@ class BillPayments extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -587,7 +582,7 @@ class BillPayments extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = error_code(10040,true);
+            $result['msg'] = '导出成功';
             $result['data'] = $body;
             return $result;
         } else {
@@ -674,7 +669,7 @@ class BillPayments extends Common
             }
             $return_data = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $list,
                 'count' => $count
             ];

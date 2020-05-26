@@ -34,7 +34,7 @@ class WeixinMenu extends Common
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = error_code(10016,true);
+        $result['msg']    = '保存成功';
         return $result;
     }
 

@@ -59,7 +59,7 @@ class GoodsTypeSpec extends Manage
         {
             //获取添加页面
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch('add');
             return $return;
         }
@@ -94,7 +94,7 @@ class GoodsTypeSpec extends Manage
                     $specModel::commit();
                     $return = [
                         'status' => true,
-                        'msg' => error_code(10018,true),
+                        'msg' => '添加成功',
                         'data' => $result,
                     ];
                 }
@@ -189,13 +189,13 @@ class GoodsTypeSpec extends Manage
             $goodsTypeModel->commit();
             $result = [
                 'status' => true,
-                'msg'    => error_code(10016,true),
+                'msg'    => '保存成功',
                 'data'   => '',
             ];
             return $result;
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -231,14 +231,14 @@ class GoodsTypeSpec extends Manage
                 {
                     $goodsTypeModel->commit();
                     $result['status'] = true;
-                    $result['msg'] = error_code(10022,true);
+                    $result['msg'] = '删除成功';
                     return $result;
                 }
 
                 if($specValueModel::destroy(['spec_id' => $id]))
                 {
                     $result['status'] = true;
-                    $result['msg'] = error_code(10022,true);
+                    $result['msg'] = '删除成功';
                     $goodsTypeModel->commit();
                 }
                 else
@@ -264,7 +264,7 @@ class GoodsTypeSpec extends Manage
         ];
         $this->view->engine->layout(false);
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('getlist');
         return $result;
     }

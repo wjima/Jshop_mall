@@ -41,7 +41,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => true,
-                'msg'    => error_code(13002,true),
+                'msg'    => '取消订单成功',
                 'data'   => $order_ids
             );
         }
@@ -73,7 +73,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => true,
-                'msg'    => error_code(10022,true),
+                'msg'    => '删除成功',
                 'data'   => $order_ids
             );
         }
@@ -106,7 +106,7 @@ class Order extends Api
         {
             $return_data = [
                 'status' => true,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'data'   => $result
             ];
         }
@@ -259,7 +259,7 @@ class Order extends Api
         $data  = $model->getListFromWxApi($input);
         $return_data = array(
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => array(
                 'list'   => $data['data'],
                 'count'  => $data['count'],
@@ -292,7 +292,7 @@ class Order extends Api
             $data['coupon'] = $couponCount;
             $return_data = [
                 'status' => true,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'data'   => $data
             ];
         }

@@ -1179,29 +1179,25 @@ class Order extends Common
             ->where($where)
             ->select();
         if ($order->isEmpty()) {
-            $return['status'] = false;
-            $return['msg'] = "请选择订单";
-            return $return;
+            return error_code(13317);
         }
         $order = $order->toArray();
         $store_id = false;          //校验是普通快递收货，还是门店自提，这两种收货方式不能混着发
         foreach ($order as $k => $v) {
             if ($v['status'] != self::ORDER_STATUS_NORMAL) {
                 $return['status'] = false;
-                $return['msg'] .= '订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
+                $return['msg'] .= error_code(13319,true,$v['order_id']);//'订单号：' . $v['order_id'] . ' 非正常状态不能发货。<br />';
             } elseif ($v['pay_status'] == self::PAY_STATUS_NO) {
                 $return['status'] = false;
-                $return['msg'] .= '订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
+                $return['msg'] .= error_code(13320,true,$v['order_id']);//'订单号：' . $v['order_id'] . ' 未支付不能发货。<br />';
             } elseif (!in_array($v['ship_status'], [self::SHIP_STATUS_NO, self::SHIP_STATUS_PARTIAL_YES])) {
                 $return['status'] = false;
-                $return['msg'] .= '订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
+                $return['msg'] .= error_code(13321,true,$v['order_id']);//'订单号：' . $v['order_id'] . ' 不是待发货和部分发货状态不能发货。<br />';
             }
             //校验，不能普通快递和门店自提，不能混发
             if ($store_id !== false) {
                 if ($store_id != $v['store_id']) {
-                    $return['status'] = false;
-                    $return['msg'] = '门店自提订单和普通订单不能混合发货。';
-                    return $return;
+                    return error_code(13318);
                 }
             } else {
                 $store_id = $v['store_id'];
@@ -1211,7 +1207,7 @@ class Order extends Common
             $baInfo = $billAftersalesmodel->where(['order_id'=> $v['order_id'], 'status' => $billAftersalesmodel::STATUS_WAITAUDIT])->find();            //有一例都不让发货
             if($baInfo){
                 $return['status'] = false;
-                $return['msg'] = '订单号：'.$v['order_id'].'有未审核的售后单，请先处理掉才能发货。';
+                $return['msg'] = error_code(13322,true,$v['order_id']);//'订单号：'.$v['order_id'].'有未审核的售后单，请先处理掉才能发货。';
                 return $return;
             }
 
@@ -1292,16 +1288,16 @@ class Order extends Common
 
         //判断用户
         if (!$msg_arr['user_id']) {
-            $return['msg'] .= '多个用户订单，';
+            $return['msg'] .= error_code(13323,true);
         }
         //判断多个收货地址
         if (!$msg_arr['ship_info']) {
-            $return['msg'] .= '多个收货地址，';
+            $return['msg'] .= error_code(13324,true);
         }
         //是否有警告
         if ($return['msg'] != '') {
             $return['msg'] = rtrim($return['msg'], '，');
-            $return['msg'] = '请注意！合并发货订单中存在：' . $return['msg'] . '。确定发货吗？';
+            $return['msg'] = error_code(13325,true,$return['msg']);//'请注意！合并发货订单中存在：' . $return['msg'] . '。确定发货吗？';
         }
 
         $return['data'] = $newOrder;
@@ -1358,11 +1354,7 @@ class Order extends Common
      */
     public function pay($order_id, $payment_code)
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '订单支付失败',
-            'data' => []
-        ];
+        $return_data = error_code(13007);
 
         $w[] = ['order_id', 'eq', $order_id];
         $w[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
@@ -1370,11 +1362,11 @@ class Order extends Common
             ->find();
 
         if (!$order) {
-            return $return_data;
+            return error_code(13101);
         }
 
         if ($order['pay_status'] == self::PAY_STATUS_YES || $order['pay_status'] == self::PAY_STATUS_PARTIAL_NO || $order['pay_status'] == self::PAY_STATUS_REFUNDED) {
-            $return_data['msg'] = '订单支付失败，该订单已支付';
+            $return_data['msg'] = error_code(13008,true);
             $return_data['data'] = $order;
             $data = "订单" . $order_id . "支付失败，订单已经支付";
         } else {
@@ -1459,9 +1451,9 @@ class Order extends Common
             //修改订单
             $re = $this->save($data, $where);
             if (!$re) {
-                $result['msg'] = "确认收货失败";
+//                $result['msg'] = "确认收货失败";
                 Db::rollback();
-                return $result;
+                return error_log(13230);
             }else{
                 //订单记录
                 $orderLog = new OrderLog();
@@ -1639,8 +1631,7 @@ class Order extends Common
                     $bo_re = $bargainRecordModel->updateRecord($params['record_id'], ['order_id'=>$order['order_id'],'status'=>$bargainRecordModel::STATUS_HAVE_ORDER]);
                     if (!$bo_re) {
                         Db::rollback();
-                        $result['msg'] = '砍价活动订单更新失败';
-                        return $result;
+                        return error_code(13231);
                     }
                     break;
                 default:
@@ -1907,18 +1898,10 @@ class Order extends Common
                     'data' => $res
                 ];
             } else {
-                $data = [
-                    'status' => false,
-                    'msg' => '订单状态存在问题，不能评价',
-                    'data' => $res
-                ];
+                return error_code(13405);
             }
         } else {
-            $data = [
-                'status' => false,
-                'msg' => '不存在这个订单',
-                'data' => $res
-            ];
+            return error_code(13009);
         }
         return $data;
     }
@@ -2121,11 +2104,7 @@ class Order extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出订单'
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $orderData = $this->getListFromAdmin($post, false);
         if ($orderData['count'] > 0) {
@@ -2172,7 +2151,7 @@ class Order extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
             $result['data'] = $body;
             return $result;
         } else {
@@ -2297,7 +2276,7 @@ class Order extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '备注失败',
+            'msg' => error_code(13310,true),
             'data' => $mark
         ];
 
@@ -2333,7 +2312,7 @@ class Order extends Common
             ],
         ];
         if(!$product_id){
-            return $return;
+            return error_code(14011);
         }
         //计算订单总量
         $where   = [];
@@ -2424,7 +2403,7 @@ class Order extends Common
         }
 
 
-        $return['msg']  = error_code(10026,true);
+        $return['msg']  = '查询成功';
         $return['data'] = [
             'total_orders'      => $total_orders,
             'total_user_orders' => $total_user_orders,

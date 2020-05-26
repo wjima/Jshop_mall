@@ -44,7 +44,7 @@ class Payments extends Common
 
         if($this->allowField(true)->save($data,$where)){
             $result['status'] = true;
-            $result['msg'] = error_code(10016,true);
+            $result['msg'] = '保存成功';
         }
         return $result;
 

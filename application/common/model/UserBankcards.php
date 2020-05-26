@@ -155,7 +155,7 @@ class UserBankcards extends Common
                     $this->save($new_data);
                     $this->commit();
                     $return['status'] = true;
-                    $return['msg'] = error_code(10016,true);
+                    $return['msg'] = '保存成功';
                 } catch (\Exception $e) {
                     $this->rollback();
                     $return['msg'] = error_code(10004,true);
@@ -164,13 +164,13 @@ class UserBankcards extends Common
                 // 不是默认的直接添加
                 if ($this->allowField(true)->save($new_data)) {
                     $return[ 'status' ] = true;
-                    $return[ 'msg' ] = error_code(10016,true);
+                    $return[ 'msg' ] = '保存成功';
                 }
             }
         } else {
             if ($this->allowField(true)->save($new_data)) {
                 $return[ 'status' ] = true;
-                $return[ 'msg' ] = error_code(10016,true);
+                $return[ 'msg' ] = '保存成功';
             }
         }
 
@@ -215,7 +215,7 @@ class UserBankcards extends Common
                         $this->where([ 'id' => $id, 'user_id' => $user_id ])->delete();
                         $this->commit();
                         $return[ 'status' ] = true;
-                        $return[ 'msg' ] = error_code(10022,true);
+                        $return[ 'msg' ] = '删除成功';
                     } catch ( \Exception $e ) {
                         $this->rollback();
                         $return[ 'msg' ] = error_code(10023,true);
@@ -223,13 +223,13 @@ class UserBankcards extends Common
                 } else {
                     if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
                         $return[ 'status' ] = true;
-                        $return[ 'msg' ] = error_code(10022,true);
+                        $return[ 'msg' ] = '删除成功';
                     }
                 }
             } else {
                 if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
                     $return[ 'status' ] = true;
-                    $return[ 'msg' ] = error_code(10022,true);
+                    $return[ 'msg' ] = '删除成功';
                 }
             }
         } else {
@@ -254,7 +254,7 @@ class UserBankcards extends Common
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $where[] = ['user_id','eq',$user_id];
@@ -358,7 +358,7 @@ class UserBankcards extends Common
                 $this->save(['is_default'=>self::DEFAULT_YES],['id'=>$data['id'],'user_id'=>$user_id]);
                 $this->commit();
                 $return['status'] = true;
-                $return['msg'] = error_code(10016,true);
+                $return['msg'] = '保存成功';
             } catch (\Exception $e){
                 $this->rollback();
                 $return['msg'] = error_code(10004,true);
@@ -404,7 +404,7 @@ class UserBankcards extends Common
         if($res)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
         return $return;
     }
@@ -419,7 +419,7 @@ class UserBankcards extends Common
      */
     public function bankCardsOrganization ($card_code)
     {
-        $result = ['status' => true, 'msg' => error_code(10024,true), 'data' => ''];
+        $result = ['status' => true, 'msg' => '获取成功', 'data' => ''];
         $curl = new Curl();
         $url = 'https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo='.$card_code.'&cardBinCheck=true';
         $res = $curl->get($url);

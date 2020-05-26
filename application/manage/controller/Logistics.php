@@ -56,14 +56,14 @@ class Logistics extends Manage
             {
                 $return_data = [
                     'status' => true,
-                    'msg'    => error_code(10018,true),
+                    'msg'    => '添加成功',
                     'data'   => $result
                 ];
             }
             return $return_data;
         }
         $return_data['status'] = true;
-        $return_data['msg'] = error_code(10038,true);
+        $return_data['msg'] = '成功';
         $return_data['data'] = $this->fetch('add');
         return $return_data;
     }
@@ -89,7 +89,7 @@ class Logistics extends Manage
         $data = $logModel->getInfo(input('param.id/d'));
         $this->assign('data',$data);
         $return['status'] = true;
-        $return['msg'] = error_code(10038,true);
+        $return['msg'] = '成功';
         $return['data'] = $this->fetch('edit');
         return $return;
     }
@@ -116,7 +116,7 @@ class Logistics extends Manage
         }
         if($logModel->where(['id'=>$id])->delete())
         {
-            $return_data['msg'] = error_code(10022,true);
+            $return_data['msg'] = '删除成功';
             $return_data['status'] = true;
         }
         return $return_data;

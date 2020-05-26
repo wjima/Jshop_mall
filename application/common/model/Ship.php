@@ -113,7 +113,7 @@ class Ship extends Common
 
         if ($this->save($data, ['id' => $id]) !== false) {
             $result['status'] = true;
-            $result['msg']    = error_code(10016,true);
+            $result['msg']    = '保存成功';
         }
         return $result;
     }

@@ -131,7 +131,7 @@ class User
                 }
 
                 $uData['status'] = $ietaskModle::IMPORT_SUCCESS_STATUS;
-                $uData['message'] = error_code(11042,true);
+                $uData['message'] = '导入成功';
                 if($message){
                     $uData['message'] .= json_encode($message);
                 }

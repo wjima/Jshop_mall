@@ -16,17 +16,12 @@ class Label extends Common
      */
     public function addData($data)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '参数丢失',
-        ];
+        $result = error_code(10018);
         if (!isset($data['ids'])) {
-            return $result;
+            return error_code(10051);
         }
         if (!isset($data['label'])) {
-            $result['msg'] = '请先选择标签';
-            return $result;
+            return error_code(10064);
         }
         $labels = $ids = [];
         foreach ($data['label'] as $key => $val) {
@@ -143,13 +138,9 @@ class Label extends Common
 
     public function delData($data)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '参数丢失',
-        ];
+        $result = error_code(10023);
         if (!isset($data['ids'])) {
-            return $result;
+            return error_code(10051);
         }
         $labels = $ids = [];
         foreach ((array)$data['label'] as $key => $val) {

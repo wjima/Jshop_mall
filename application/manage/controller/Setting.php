@@ -24,7 +24,7 @@ class Setting extends Manage
             $result = array(
                 'status' => true,
                 'data' => [],
-                'msg' => error_code(10016,true)
+                'msg' => '保存成功'
             );
             //配置保存后，清理缓存
             Cache::clear();//TODO 如果开启其他缓存，记得这里要配置缓存配置信息
@@ -74,7 +74,7 @@ class Setting extends Manage
         $videosModel = new VideosModel();
         $result  = [
             'status' => true,
-            'msg'    => error_code(10022,true)
+            'msg'    => '删除成功'
         ];
         $id = input('param.id/d');
         $url = input('param.path');

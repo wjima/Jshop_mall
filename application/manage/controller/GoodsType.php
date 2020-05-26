@@ -158,7 +158,7 @@ class GoodsType extends Manage
                 Db::commit();
                 $return_data = [
                     'status' => true,
-                    'msg'    => error_code(10018,true),
+                    'msg'    => '添加成功',
                     'data'   => $result,
                     'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
                 ];
@@ -169,7 +169,7 @@ class GoodsType extends Manage
         }
         //获取添加页面
         $return['status'] = true;
-        $return['msg'] = error_code(10038,true);
+        $return['msg'] = '成功';
         $return['data'] = $this->fetch('add');
         return $return;
     }
@@ -211,7 +211,7 @@ class GoodsType extends Manage
             }
             $this->assign('typeSids', $typeSids);
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch('addRel');
             return $return;
         }
@@ -234,7 +234,7 @@ class GoodsType extends Manage
             {
                 $return_data = [
                     'status' => true,
-                    'msg' => error_code(10016,true),
+                    'msg' => '保存成功',
                     'data' => $result,
                 ];
             }
@@ -272,13 +272,13 @@ class GoodsType extends Manage
             $goodsTypeModel::update($data, ['id' => $data['id']]);
             $result = [
                 'status' => true,
-                'msg' => error_code(10016,true),
+                'msg' => '保存成功',
                 'data' => '',
             ];
             return $result;
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -312,13 +312,13 @@ class GoodsType extends Manage
                 {
                     $goodsTypeModel->commit();
                     $result['status'] = true;
-                    $result['msg'] = error_code(10022,true);
+                    $result['msg'] = '删除成功';
                     return $result;
                 }
                 if($typeSpecRelModel->where(['type_id' => $id])->delete())
                 {
                     $result['status'] = true;
-                    $result['msg'] = error_code(10022,true);
+                    $result['msg'] = '删除成功';
                     $goodsTypeModel->commit();
                 }
                 else
@@ -376,7 +376,7 @@ class GoodsType extends Manage
             $this->assign('typePids', $typePids);
 
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch('addParams');
             return $return;
         }
@@ -394,7 +394,7 @@ class GoodsType extends Manage
             if ($result !== false) {
                 $return = [
                     'status' => true,
-                    'msg' => error_code(10016,true),
+                    'msg' => '保存成功',
                     'data' => $result,
                 ];
             }
@@ -423,7 +423,7 @@ class GoodsType extends Manage
         {
             $result['data'] = $typeList->toArray();
             $result['status'] = true;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
         }
         return $result;
     }

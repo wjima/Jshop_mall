@@ -90,7 +90,7 @@ class User extends Manage
         $user_info = $User->where($where)->find();
         $this->assign('point', $user_info['point']);
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $this->fetch('editPoint');
         return $result;
     }
@@ -166,7 +166,7 @@ class User extends Manage
             {
                 $return = [
                     'status' => true,
-                    'msg'    => error_code(10024,true),
+                    'msg'    => '获取成功',
                     'data'   => $res['data']['list'],
                     'count'  => $res['data']['count']
                 ];
@@ -204,7 +204,7 @@ class User extends Manage
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $this->fetch('addUser');
         return $result;
     }
@@ -241,7 +241,7 @@ class User extends Manage
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $this->fetch('editUser');
         return $result;
     }
@@ -267,7 +267,7 @@ class User extends Manage
 //        }
 //        $this->assign('info', $info);
 //        $result['status'] = true;
-//        $result['msg'] = error_code(10024,true);
+//        $result['msg'] = '获取成功';
 //        $result['data'] = $this->fetch('details');
 //        return $result;
 //    }
@@ -358,13 +358,13 @@ class User extends Manage
             $info = $userGradeModel->where('id', input('param.id'))->find();
             if(!$info)
             {
-                $result['msg'] = "没有此条记录";
+                $result['msg'] = error_code(10002,true);
                 return $result;
             }
             $this->assign('data', $info);
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('grade_edit');
         return $result;
     }
@@ -396,7 +396,7 @@ class User extends Manage
         $info = $userGradeModel->where('id', input('param.id'))->find();
         if(!$info)
         {
-            $result['msg'] = "没有此用户等级";
+            $result['msg'] = error_code(11030,true);
             return $result;
         }
         $re = $userGradeModel->where('id', input('param.id'))->delete();
@@ -406,7 +406,7 @@ class User extends Manage
         }
         else
         {
-            $result['msg'] = "删除失败";
+            $result['msg'] = error_code(10023,true);
         }
         return $result;
     }
@@ -437,7 +437,7 @@ class User extends Manage
             $userWxModel = new UserWx();
             $userWxModel->where([['user_id','in', $ids]])->delete();
             hook('deleteUserAfter',$ids);
-            $result['msg'] = error_code(10022,true);
+            $result['msg'] = '删除成功';
             $result['status'] = true;
         }
         return $result;

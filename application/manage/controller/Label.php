@@ -38,7 +38,7 @@ class Label extends Manage
         return [
             'status'=>true,
             'data'=>$content,
-            'msg'=>error_code(10024,true),
+            'msg'=>'获取成功',
         ];
     }
 
@@ -73,7 +73,7 @@ class Label extends Manage
         return [
             'status'=>true,
             'data'=>$content,
-            'msg'=>error_code(10024,true),
+            'msg'=>'获取成功',
         ];
     }
 

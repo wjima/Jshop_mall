@@ -109,7 +109,7 @@ class Pintuan extends Manage
         $pintuanRuleModel = new PintuanRule();
         $rel = $pintuanRuleModel->where('id','eq',$id)->update([$field => $value]);
         if ($rel) {
-            $result['msg']    = error_code(10020,true);
+            $result['msg']    = '更新成功';
             $result['status'] = true;
         } else {
             $result['msg']    = error_code(10021,true);
@@ -143,7 +143,7 @@ class Pintuan extends Manage
         if ($pintuanRuleModel->save(['status'=>$status], ['id' => $id]))
         {
             $result['status'] = true;
-            $result['msg'] = error_code(10020,true);
+            $result['msg'] = '设置成功';
         } else {
             $result['msg'] = error_code(10021,true);
         }

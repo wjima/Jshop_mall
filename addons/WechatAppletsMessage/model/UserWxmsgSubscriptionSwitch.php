@@ -64,7 +64,7 @@ class UserWxmsgSubscriptionSwitch extends Model
             $return['data'] = false;
         }
         $return['status'] = true;
-        $return['msg'] = error_code(10024,true);
+        $return['msg'] = '获取成功';
 
         return $return;
     }

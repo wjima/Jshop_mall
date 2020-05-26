@@ -59,7 +59,7 @@ class Form extends Api
                 return $return_data;
             }
         }
-        $return_data['msg']    = error_code(10024,true);
+        $return_data['msg']    = '获取成功';
         $return_data['data']   = $info['data'];
         $return_data['status'] = true;
         return $return_data;
@@ -165,12 +165,12 @@ class Form extends Api
             foreach ($tempData as $key => $value) {
                 $formitem = $formItem->where(['id' => $key])->find();
                 if (!$formItem->validateField($formitem, $value)) {
-                    $return_data['msg'] = $formitem['name'] . error_code(18004,true);
+                    $return_data['msg'] =  error_code(18004,true,$formitem['name']);   //格式错误，请重新输入
                     Db::rollback();
                     return $return_data;
                 }
                 if ($formitem['required'] == $formItem::REQUIRED_YES && !$value) {
-                    $return_data['msg'] = error_code(18006,true) . $formitem['name'];
+                    $return_data['msg'] = error_code(18006,true, $formitem['name']);    //'请输入' . $formitem['name']
                     Db::rollback();
                     return $return_data;
                 }
@@ -237,7 +237,7 @@ class Form extends Api
 
         Db::commit();
 
-        $return_data['msg']    = $form['data']['return_msg'] ? $form['data']['return_msg'] : $form['data']['button_name'] . error_code(10038,true);
+        $return_data['msg']    = $form['data']['return_msg'] ? $form['data']['return_msg'] : $form['data']['button_name'] . '成功';
         $return_data['status'] = true;
         return $return_data;
     }

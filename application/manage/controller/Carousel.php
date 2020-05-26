@@ -114,7 +114,7 @@ class Carousel extends Manage
         if ($carouselModel->where('id',input('param.id/d'))->delete())
         {
             $result['status'] = true;
-            $result['msg'] = error_code(10022,true);
+            $result['msg'] = '删除成功';
         }
         return $result;
     }

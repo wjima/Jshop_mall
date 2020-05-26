@@ -52,7 +52,7 @@ class Files extends Manage
             if ($files->save($iData)) {
                 $result['data']   = $iData;
                 $result['status'] = true;
-                $result['msg']    = error_code(10034,true);
+                $result['msg']    = '上传成功';
                 return $result;
             }
         } else {

@@ -588,14 +588,10 @@ class Goods extends Common
      */
     public function changeStock($product_id, $type = 'order', $num = 0)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '库存更新失败'
-        ];
+        $result = error_code(12703);
         if ($product_id === '') {
-            $result['msg'] = '货品ID不能为空';
-            return $result;
+//            $result['msg'] = '货品ID不能为空';
+            return error_code(14011);
         }
 
         $productModel = new Products();
@@ -615,7 +611,7 @@ class Goods extends Common
                 if ($res !== false) {
                     $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 } else {
-                    $result['msg'] = '库存更新失败';
+//                    $result['msg'] = '库存更新失败';
                     return $result;
                 }
                 break;
@@ -640,7 +636,8 @@ class Goods extends Common
             $result['status'] = true;
             return $result;
         } else {
-            $result['msg'] = '库存不足';
+//            $result['msg'] = '库存不足';
+            return error_code(12702);
         }
 
         return $result;
@@ -657,11 +654,7 @@ class Goods extends Common
      */
     public function getOne($goods_id, $fields = '*')
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '商品不存在'
-        ];
+        $result = error_code(12700);
         $data   = $this->where(['id' => $goods_id])->field($fields)->find();
         if ($data) {
             $goodsImagesModel = new goodsImages();
@@ -691,7 +684,7 @@ class Goods extends Common
 
             $data['images']   = $images['data'];
             $result['data']   = $data;
-            $result['msg']    = error_code(10026,true);
+            $result['msg']    = '查询成功';
             $result['status'] = true;
         }
         return $result;
@@ -728,11 +721,7 @@ class Goods extends Common
      */
     public function delGoods($goods_id = 0)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '商品不存在'
-        ];
+        $result = error_code(12700);
         $goods  = $this::get($goods_id);
         if (!$goods) {
             return $result;
@@ -743,8 +732,8 @@ class Goods extends Common
         $res = $this->where(['id' => $goods_id])->delete();
         if (!$res) {
             $this->rollback();
-            $result['msg'] = '商品删除失败';
-            return $result;
+//            $result['msg'] = '商品删除失败';
+            return error_code(12704);
         }
         $productsModel = new Products();
         $delProduct    = $productsModel->where(['goods_id' => $goods_id])->delete(true);
@@ -752,7 +741,7 @@ class Goods extends Common
         hook('deletegoodsafter', $goods);//删除商品后增加钩子
 
         $result['status'] = true;
-        $result['msg']    = error_code(10022,true);
+        $result['msg']    = '删除成功';
         return $result;
     }
 
@@ -787,11 +776,7 @@ class Goods extends Common
      */
     public function getCsvData($post)
     {
-        $result    = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '无可导出商品'
-        ];
+        $result    = error_code(10083);
         $header    = $this->csvHeader();
         $goodsData = $this->tableData($post, false);
         if ($goodsData['count'] > 0) {
@@ -870,7 +855,7 @@ class Goods extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg']    = error_code(10040,true);
+            $result['msg']    = '导出成功';
             $result['data']   = $body;
             return $result;
         } else {
@@ -1099,11 +1084,7 @@ class Goods extends Common
      */
     public function getGoodsCatHotGoods($cat_id, $limit = 6)
     {
-        $return                 = [
-            'status' => false,
-            'msg'    => error_code(10025,true),
-            'data'   => []
-        ];
+        $return                 = error_code(10025);
         $where[]                = ['is_hot', 'eq', self::HOT_YES];
         $where[]                = ['marketable', 'eq', self::MARKETABLE_UP];
         $where[]                = ['goods_cat_id', 'eq', $cat_id];
@@ -1124,7 +1105,7 @@ class Goods extends Common
                 }
             }
             $return['status'] = true;
-            $return['msg']    = error_code(10024,true);
+            $return['msg']    = '获取成功';
         }
         return $return;
     }
@@ -1208,11 +1189,7 @@ class Goods extends Common
      */
     public function getSingleGoodsList($field)
     {
-        $return = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return = error_code(10037);
 
         $where[] = ['marketable', 'eq', self::MARKETABLE_UP];
         $where[] = ['spes_desc', 'eq', ''];
@@ -1224,7 +1201,7 @@ class Goods extends Common
 
         if ($return['data'] !== false) {
             $return['status'] = true;
-            $return['msg']    = error_code(10038,true);
+            $return['msg']    = '成功';
         }
 
         return $return;
@@ -1236,11 +1213,7 @@ class Goods extends Common
      * */
     public function goods_all($page, $limit, $order)
     {
-        $return              = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return              = error_code(10037);
         $where['marketable'] = '1';
         $goodsData           = $this->where($where)
             ->order($order)
@@ -1256,7 +1229,7 @@ class Goods extends Common
                 ->select();
             $v['image'] = $image[0]['url'];
         }
-        $return['msg']    = error_code(10024,true);
+        $return['msg']    = '获取成功';
         $return['status'] = true;
         $return['data']   = $goodsData;
         return $return;
@@ -1268,11 +1241,7 @@ class Goods extends Common
      * */
     public function newgoods($page, $limit, $order)
     {
-        $return              = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return              = error_code(10037);
         $where['marketable'] = '1';
         $goodsData           = $this->where($where)
             ->order($order)
@@ -1288,7 +1257,7 @@ class Goods extends Common
                 ->select();
             $v['image'] = $image[0]['url'];
         }
-        $return['msg']    = error_code(10024,true);
+        $return['msg']    = '获取成功';
         $return['status'] = true;
         $return['data']   = $goodsData;
         return $return;
@@ -1300,11 +1269,7 @@ class Goods extends Common
      * */
     public function promotiongoods($page, $limit, $order)
     {
-        $return                = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return                = error_code(10037);
         $where['marketable']   = '1';
         $where['is_recommend'] = '1';
         $goodsData             = $this->field('id,name,price,image_id')
@@ -1313,7 +1278,7 @@ class Goods extends Common
             ->page($page, $limit)
             ->select();
         if (!$goodsData) {
-            return $return['msg'] = '获取促销商品失败';
+            return error_code(12705);
         }
         foreach ($goodsData as &$v) {
             $image      = Db::table('jshop_images')

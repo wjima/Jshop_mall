@@ -70,7 +70,7 @@ class Invoice extends Manage
             $this->assign('info', $info['data']);
             $return['data'] = $this->fetch();
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
         } else {
             $return['msg'] = $info['msg'];
         }
@@ -102,7 +102,7 @@ class Invoice extends Manage
             $this->assign('info', $info['data']);
             $return['data'] = $this->fetch();
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
         } else {
             $return['msg'] = $info['msg'];
         }

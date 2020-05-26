@@ -1339,7 +1339,7 @@ function validateJshopToken()
             \think\facade\Cache::set($form . '_token', $new_token, 86400);   //1天过期
             $return = [
                 'data'   => '',
-                'msg'    => '已超时或重复提交，请重试或刷新页面',
+                'msg'    => error_code(10082,true),
                 'status' => false,
                 'token'  => $new_token
             ];

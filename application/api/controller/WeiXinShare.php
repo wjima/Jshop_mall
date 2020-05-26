@@ -53,7 +53,7 @@ class WeiXinShare extends Api
         ];
 
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $signPackage;
         return $result;
     }

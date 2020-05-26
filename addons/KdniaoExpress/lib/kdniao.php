@@ -119,7 +119,7 @@ class kdniao
         }
         $return['data']['order']         = $result['Order'];
         $return['data']['printTemplate'] = $result['PrintTemplate'];
-        $return['msg']                   = error_code(10024,true);
+        $return['msg']                   = '获取成功';
         $return['status']                = true;
 
         return $return;
@@ -272,7 +272,7 @@ class kdniao
                 $traces[$key]['context'] = $value['AcceptStation'];
             }
             $return['data']    = $traces;
-            $return['message'] = error_code(10024,true);
+            $return['message'] = '获取成功';
             $return['nu']      = $result['LogisticCode'];
             $return['state']   = $result['State'];
             $return['status']  = '200';

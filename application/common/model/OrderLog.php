@@ -125,7 +125,7 @@ class OrderLog extends Common
                 $v['type'] = $this->log_type[$v['type']];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
             }
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
         return $return;
     }

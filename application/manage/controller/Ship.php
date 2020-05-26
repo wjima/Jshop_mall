@@ -35,7 +35,7 @@ class Ship extends Manage
         if (Request::isPost()) {
             $return_data = [
                 'status' => false,
-                'msg'    => '添加失败',
+                'msg'    => '',
                 'data'   => '',
             ];
 
@@ -56,8 +56,8 @@ class Ship extends Manage
                     }
                 }
                 if (count($area_fee) <= 0) {
-                    $return_data['msg'] = '请选择配送地区';
-                    return $return_data;
+//                    $return_data['msg'] = '请选择配送地区';
+                    return error_code(13316);
                 }
             }
             $status = input('post.status');
@@ -102,7 +102,6 @@ class Ship extends Manage
         $logisticsModel = new Logistics();
         $logisticsList  = $logisticsModel->getAll();
         $this->assign('logisticsList', $logisticsList);
-
         $shiModel = new ShipModel();
         if (Request::isPost()) {
             //保存编辑后的数据
@@ -134,8 +133,8 @@ class Ship extends Manage
                     }
                 }
                 if (count($area_fee) <= 0) {
-                    $return_data['msg'] = '请选择配送地区';
-                    return $return_data;
+//                    $return_data['msg'] = '请选择配送地区';
+                    return error_code(13316);
                 }
             }
             $status = input('post.status');
@@ -164,7 +163,7 @@ class Ship extends Manage
             if ($result['status'] !== false) {
                 $return_data = [
                     'status' => true,
-                    'msg'    => error_code(10016,true),
+                    'msg'    => '保存成功',
                     'data'   => $result,
                 ];
             } else {
@@ -198,7 +197,7 @@ class Ship extends Manage
         if (!$res) {
             return $return_data;
         }
-        $return_data['msg']    = error_code(10022,true);
+        $return_data['msg']    = '删除成功';
         $return_data['status'] = true;
         return $return_data;
     }
@@ -207,7 +206,7 @@ class Ship extends Manage
     {
         $return_data    = [
             'code' => 0,
-            'msg'  => error_code(10024,true),
+            'msg'  => '获取成功',
             'data' => [],
         ];
         $parent_id      = input('nodeId', '0');

@@ -537,7 +537,7 @@ class Operation extends Common
             if($re){
                 $status['status'] = true;
             }else{
-                $status['msg'] = "删除失败";
+               return  error_code(10023);
             }
             return $status;
         }else{

@@ -404,7 +404,7 @@ class User extends Common
             $where[] = ['username', 'like', '%' . $post['username'] . '%'];
         }
         if (isset($post['mobile']) && $post['mobile'] != "") {
-            $where[] = ['mobile', 'eq', $post['mobile']];
+            $where[] = ['mobile|username', 'eq', $post['mobile']];
         }
         if (isset($post['birthday']) && $post['birthday'] != "") {
             $where[] = ['birthday', 'eq', $post['birthday']];
@@ -416,11 +416,20 @@ class User extends Common
             $where[] = ['status', 'eq', $post['status']];
         }
         if (isset($post['pmobile']) && $post['pmobile'] != "") {
-            if ($puser_id = get_user_id($post['pmobile'])) {
-                $where[] = ['pid', 'eq', $puser_id];
-            } else {
+            $pwhere[] = ['mobile|username', 'like', "%".$post['pmobile']."%"];
+            $user      = $this->field('id')->where($pwhere)->select();
+            if(!$user->isEmpty()){
+                $user = array_column($user->toArray(),'id');
+                $where[] = ['pid','in',$user];
+            }else{
                 $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
+
+//            if ($puser_id = get_user_id($post['pmobile'])) {
+//                $where[] = ['pid', 'eq', $puser_id];
+//            } else {
+//                $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+//            }
         }
         if (isset($post['grade']) && $post['grade'] != "") {
             $where[] = ['grade', 'in', $post['grade']];
@@ -482,6 +491,7 @@ class User extends Common
 
         if ($isPage) {
             $list        = $this->with(['grade','userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $re['sql'] = $this->getLastSql();
             $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
         } else {

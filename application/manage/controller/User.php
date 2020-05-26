@@ -24,6 +24,10 @@ class User extends Manage
             $userModel = new UserModel();
             return $userModel->tableData(input('param.'));
         }
+        //所有用户等级
+        $gradeModel = new UserGrade();
+        $gradeList = $gradeModel->select();
+        $this->assign('grade', $gradeList);
         return $this->fetch('index');
     }
 

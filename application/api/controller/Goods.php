@@ -61,7 +61,7 @@ class Goods extends Api
             }
         }
         $return_data['status'] = true;
-        $return_data['msg']    = error_code(10030,true);
+        $return_data['msg']    = '字段校检通过';
         return $return_data;
     }
 
@@ -111,7 +111,7 @@ class Goods extends Api
         //            }
         //        }
         $return_data['status'] = true;
-        $return_data['msg']    = error_code(10032,true);
+        $return_data['msg']    = '排序校检通过';
         return $return_data;
     }
 
@@ -210,7 +210,7 @@ class Goods extends Api
 
         $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit, $whereOr);
         if ($returnGoods['status']) {
-            $return_data['msg']                = error_code(10026,true);
+            $return_data['msg']                = '查询成功';
             $return_data['data']['list']       = $returnGoods['data'];
             $return_data['data']['total_page'] = $returnGoods['total'];
             $return_data['data']['filter']      = isset($returnGoods['filter']) ? array_merge($returnGoods['filter'], $filter) : [];
@@ -250,7 +250,7 @@ class Goods extends Api
         $goodsModel  = new GoodsModel();
         $returnGoods = $goodsModel->getGoodsDetial($goods_id, $field, $token);
         if ($returnGoods['status']) {
-            $return_data['msg']  = error_code(10026,true);
+            $return_data['msg']  = '查询成功';
             $return_data['data'] = $returnGoods['data'];
         } else {
             $return_data['msg']    = $returnGoods['msg'];
@@ -325,7 +325,7 @@ class Goods extends Api
                         $val['price']          = $goodsModel->getPrice($val);
                         $val['stock']          = $goodsModel->getStock($val);
                         $return_data['data']   = $val;
-                        $return_data['msg']    = error_code(10024,true);
+                        $return_data['msg']    = '获取成功';
                         $return_data['status'] = true;
                     }
                 }
@@ -378,7 +378,7 @@ class Goods extends Api
             }
             $return_data['data']   = $params;
             $return_data['status'] = true;
-            $return_data['msg']    = error_code(10026,true);
+            $return_data['msg']    = '查询成功';
         }
         return $return_data;
     }
@@ -579,7 +579,7 @@ class Goods extends Api
             $returnGoods['data'] = array_merge($returnGoods['data'], $otherGoods['data']);
         }
         if ($returnGoods['status']) {
-            $return_data['msg']                = error_code(10026,true);
+            $return_data['msg']                = '查询成功';
             $return_data['data']['list']       = $returnGoods['data'];
             $return_data['data']['total_page'] = $returnGoods['total'];
             $return_data['data']['filter']      = isset($returnGoods['filter']) ? array_merge($returnGoods['filter'], $filter) : [];

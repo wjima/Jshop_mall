@@ -40,7 +40,7 @@ class Coupon extends Api
         {
             $result['status'] = true;
             $result['data'] = $res;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
         }
         return $result;
     }
@@ -72,7 +72,7 @@ class Coupon extends Api
         {
             $result['status'] = true;
             $result['data'] = $res;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
         }
         return $result;
     }

@@ -134,7 +134,7 @@ class Goods extends Manage
 
             return [
                 'data'   => $catList,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'status' => true,
             ];
         } else {
@@ -306,7 +306,7 @@ class Goods extends Manage
         array_push($data, ['goods_id' => $goods_id]);
         hook('addgoodsafter', $data);//添加商品后增加钩子
 
-        $result['msg']    = error_code(10016,true);
+        $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;
     }
@@ -524,7 +524,7 @@ class Goods extends Manage
                 $this->assign('typeParams', $typeParams);
                 $html             = $this->fetch('getSpec');
                 $result['status'] = true;
-                $result['msg']    = error_code(10024,true);
+                $result['msg']    = '获取成功';
                 $result['data']   = $html;
             }
         }
@@ -601,7 +601,7 @@ class Goods extends Manage
         $html             = $this->fetch('getSpecHtml');
         $result['data']   = $html;
         $result['status'] = true;
-        $result['msg']    = error_code(10024,true);
+        $result['msg']    = '获取成功';
         return $result;
 
     }
@@ -930,7 +930,7 @@ class Goods extends Manage
 
         $goodsModel->commit();
         hook('editgoodsafter', $data);//编辑商品后增加钩子
-        $result['msg']    = error_code(10016,true);
+        $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;
     }
@@ -959,7 +959,7 @@ class Goods extends Manage
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = error_code(10022,true);
+        $result['msg']    = '删除成功';
         return $result;
     }
 
@@ -967,7 +967,7 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => '',
         ];
         if (!$type_id) {
@@ -1243,7 +1243,7 @@ class Goods extends Manage
             }
         }
         $result['status'] = true;
-        $result['msg']    = error_code(10022,true);
+        $result['msg']    = '删除成功';
         return $result;
     }
 
@@ -1262,7 +1262,7 @@ class Goods extends Manage
         $this->_common();
         $this->view->engine->layout(false);
         $result['status'] = true;
-        $result['msg']    = error_code(10038,true);
+        $result['msg']    = '成功';
         $result['data']   = $this->fetch('goodsSearch');
         return $result;
     }
@@ -1334,7 +1334,7 @@ class Goods extends Manage
         }
         $goodsModel = new goodsModel();
         if ($goodsModel->updateGoods($id, [$field => $value])) {
-            $result['msg']    = error_code(10020,true);
+            $result['msg']    = '更新成功';
             $result['status'] = true;
         } else {
             $result['msg']    = error_code(10021,true);
@@ -1375,7 +1375,7 @@ class Goods extends Manage
         return [
             'status' => true,
             'data'   => $content,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
         ];
     }
 
@@ -1488,7 +1488,7 @@ class Goods extends Manage
         return [
             'status' => true,
             'data'   => $content,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
         ];
     }
 

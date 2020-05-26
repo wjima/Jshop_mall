@@ -89,7 +89,7 @@ class Addons extends Manage
             $hooks_update = $hookModel->updateHooks($addon_name);//更新钩子
             if ($hooks_update) {
                 Cache::set('hooks', null);
-                $result['msg']    = error_code(10701,true);
+                $result['msg']    = '安装成功';
                 $result['status'] = true;
                 return $result;
             } else {
@@ -143,7 +143,7 @@ class Addons extends Manage
             $result['msg'] = error_code(10704,true);
             return $result;
         } else {
-            $result['msg']    = error_code(10703,true);
+            $result['msg']    = '卸载成功';
             $result['status'] = true;
             return $result;
         }
@@ -205,7 +205,7 @@ class Addons extends Manage
 
         if ($addonsModel->doSetting($uData, $addonName)) {
             $result['status'] = true;
-            $result['msg']    = error_code(10710,true);
+            $result['msg']    = '配置信息保存成功';
         }
         return $result;
     }
@@ -225,7 +225,7 @@ class Addons extends Manage
         $addonsModel = new addonsModel();
         if ($addonsModel->changeStatus($name)) {
             $result['status'] = true;
-            $result['msg']    = error_code(10714,true);
+            $result['msg']    = '操作成功';
         }
         return $result;
     }
@@ -275,7 +275,7 @@ class Addons extends Manage
             $hooks_update = $hookModel->updateHooks($addon_name);//更新钩子
             if ($hooks_update) {
                 Cache::set('hooks', null);
-                $result['msg']    = error_code(10712,true);
+                $result['msg']    = '刷新成功';
                 $result['status'] = true;
                 return $result;
             } else {

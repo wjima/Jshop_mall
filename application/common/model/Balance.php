@@ -48,7 +48,7 @@ class Balance extends Common
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '操作成功'
+            'msg' => error_code(10016,true)
         ];
 
         if($money != 0)
@@ -390,7 +390,7 @@ class Balance extends Common
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '无可导出数据',
+            'msg' => error_code(10083,true),    //无可导出数据
 
         ];
         $header = $this->csvHeader();

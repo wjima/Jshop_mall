@@ -62,7 +62,7 @@ class GoodsParams extends Manage
             {
                 $return_data = [
                     'status' => true,
-                    'msg' => error_code(10016,true),
+                    'msg' => '保存成功',
                     'data' => $result,
                 ];
             }
@@ -111,7 +111,7 @@ class GoodsParams extends Manage
             {
                 $return_data = [
                     'status' => true,
-                    'msg' => error_code(10016,true),
+                    'msg' => '保存成功',
                     'data' => $result,
                 ];
             }
@@ -126,7 +126,7 @@ class GoodsParams extends Manage
         $this->assign($data->toArray());
         //获取添加页面
         $return_data['status'] = true;
-        $return_data['msg'] = error_code(10038,true);
+        $return_data['msg'] = '成功';
         $return_data['data'] = $this->fetch('edit');
         return $return_data;
     }
@@ -151,7 +151,7 @@ class GoodsParams extends Manage
             $res = $goodsParamsModel->doDel($filter);
             if($res)
             {
-                $result['msg'] = error_code(10022,true);
+                $result['msg'] = '删除成功';
                 $result['status'] = true;
             }
         }
@@ -172,7 +172,7 @@ class GoodsParams extends Manage
         ];
         $this->view->engine->layout(false);
         $return['status'] = true;
-        $return['msg'] = error_code(10038,true);
+        $return['msg'] = '成功';
         $return['data'] = $this->fetch('getlist');
         return $return;
     }

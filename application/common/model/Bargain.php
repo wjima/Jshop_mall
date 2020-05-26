@@ -184,7 +184,7 @@ class Bargain extends Common
             $goodsModel = new Goods();
             $goodsInfo  = $goodsModel->field('name')->get($re['goods_id']);
             if ($goodsInfo) {
-                $result['msg'] = "商品：" . $goodsInfo['name'] . " 参加过砍价了";
+                $result['msg'] = error_code(1);//"商品：" . $goodsInfo['name'] . " 参加过砍价了"
                 return $result;
             } else {
                 return error_code(10000);

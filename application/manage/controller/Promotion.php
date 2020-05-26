@@ -260,7 +260,7 @@ class Promotion extends Manage
             $return['msg']    = error_code(10037,true);
         }
         $return['status'] = true;
-        $return['msg']    = error_code(10038,true);
+        $return['msg']    = '成功';
         return $return;
     }
 
@@ -737,7 +737,7 @@ class Promotion extends Manage
 
         if ($promotionModel->save($iData, ['id' => $id])) {
             $result['status'] = true;
-            $result['msg']    = error_code(10020,true);
+            $result['msg']    = '设置成功';
         } else {
             $result['msg'] = error_code(10021,true);
         }

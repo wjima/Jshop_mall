@@ -112,7 +112,7 @@ class ArticleType extends Common
                 'id' => $data['id']
             ];
         if(!$this->checkDie($data['id'],$data['pid'])){
-            $result['msg']    = '无法选择自己和自己的子级为父级';
+            $result['msg']    = error_code(10802,true);//无法选择自己和自己的子级为父级
             return $result;
         }
         $validate = new Validate($this->rule, $this->msg);

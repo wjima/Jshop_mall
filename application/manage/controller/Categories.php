@@ -84,7 +84,7 @@ class Categories extends Manage
             $this->assign('data',$info);
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -128,7 +128,7 @@ class Categories extends Manage
         {
             $result['data'] = $catList->toArray();
             $result['status'] = true;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
         }
         return $result;
     }
@@ -154,7 +154,7 @@ class Categories extends Manage
         {
             $result['data'] = $cat->toArray();
             $result['status'] = true;
-            $result['msg'] = error_code(10024,true);
+            $result['msg'] = '获取成功';
         }
         return $result;
     }
@@ -191,7 +191,7 @@ class Categories extends Manage
         $model = new GoodsCat();
         if($model->save($iData, ['id' => $id]) !== false)
         {
-            $result['msg'] = error_code(10016,true);
+            $result['msg'] = '设置成功';
             $result['status'] = true;
         }
         else
@@ -213,7 +213,7 @@ class Categories extends Manage
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $goodsCatModel = new GoodsCat();

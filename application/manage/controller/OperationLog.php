@@ -72,7 +72,7 @@ class OperationLog extends Manage
         $res = $logModel->where([['id','in',$ids]])->delete();
         if($res !== false)
         {
-            $result['msg'] = error_code(10022,true);
+            $result['msg'] = '删除成功';
             $result['status'] = true;
         }
         return $result;

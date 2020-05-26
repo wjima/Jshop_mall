@@ -35,7 +35,7 @@ class Area extends Manage
             if ($result) {
                 $return_data = array(
                     'status' => true,
-                    'msg'    => error_code(10024,true),
+                    'msg'    => '获取成功',
                     'data'   => $result
                 );
             } else {
@@ -98,7 +98,7 @@ class Area extends Manage
         if ($info) {
             $return_data = array(
                 'status' => true,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'data'   => $info
             );
         } else {

@@ -344,8 +344,8 @@ class Area extends Common
         if ($is_parent) {
             $result = array(
                 'status' => false,
-                'msg'    => '该地区下存在关联地区，无法删除',
-                'data'   => array(),
+                'msg'    => error_code(10840,true), //该地区下存在关联地区，无法删除
+                'data'   => []
             );
         } else {
             $res = $this->destroy($id);
@@ -353,13 +353,13 @@ class Area extends Common
                 $result = array(
                     'status' => true,
                     'msg'    => error_code(10022,true),
-                    'data'   => array(),
+                    'data'   => [],
                 );
             } else {
                 $result = array(
                     'status' => false,
                     'msg'    => error_code(10023,true),
-                    'data'   => array(),
+                    'data'   => [],
                 );
             }
         }

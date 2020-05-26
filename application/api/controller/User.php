@@ -182,7 +182,7 @@ class User extends Api
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => error_code(10037,true)
+            'msg' => '成功'
         ];
         $userModel = new UserModel();
         if (!input("?param.mobile")) {
@@ -300,7 +300,7 @@ class User extends Api
         if ($userModel->changeAvatar($this->userId, input('param.avatar'))) {
             $result['status'] = true;
             $result['data']['avatar'] = input('param.avatar');
-            $result['msg'] = error_code(10016,true);
+            $result['msg'] = '保存成功';
         }
         return $result;
     }
@@ -535,7 +535,7 @@ class User extends Api
             $result['area_name'] = get_area($result['area_id']);
             $res = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $result
             ];
         } else {
@@ -624,13 +624,13 @@ class User extends Api
         if ($list) {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取用户收货地址成功',
                 'data' => $list
             );
         } else {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(11056,true),
+                'msg' => '用户暂无收货地址',
                 'data' => $list
             );
         }
@@ -670,7 +670,7 @@ class User extends Api
         if ($area_id) {
             $res = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $area_id
             ];
         } else {
@@ -1105,7 +1105,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => 2
         ];
         $settingModel = new Setting();
@@ -1122,7 +1122,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         //我的邀请码
@@ -1190,7 +1190,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $area = config('jshop.area_list');

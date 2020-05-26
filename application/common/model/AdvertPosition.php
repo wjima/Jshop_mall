@@ -90,7 +90,7 @@ class AdvertPosition extends Common
             // 判断该模板是否已经添加
             if ($this->where('code', $data['code'])->find()) {
                 $result[ 'status' ] = false;
-                $result[ 'msg' ] = '该广告位模板已经添加';
+                $result[ 'msg' ] = error_code(10820,true);  //该广告位模板已经添加
             } else {
                 // 写入数据
                 if (!$this->allowField(true)->save($data)) {
@@ -142,7 +142,7 @@ class AdvertPosition extends Common
         $result = ['status' => true,'msg' => error_code(10022,true),'data'=>''];
         if ($this->advert()->where('position_id', $id)->find()) {
             $result['status'] = false;
-            $result['msg'] = '该广告位下有广告删除失败';
+            $result['msg'] = error_code(10821,true);    //该广告位下有广告删除失败
         } else {
             if (!$this->where('id', $id)->delete()) {
                 $result['status'] = false;

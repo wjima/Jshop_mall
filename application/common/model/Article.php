@@ -109,7 +109,11 @@ class Article extends Common
     public function saveData($data)
     {
         $validate = new Validate($this->rule,$this->msg);
-        $result = ['status'=>true,'msg'=>error_code(10016,true),'data'=>''];
+        $result = [
+            'status'=>true,
+            'msg'=>error_code(10016,true),
+            'data'=>''
+        ];
         if(!$validate->check($data))
         {
             $result['status'] = false;
@@ -176,7 +180,7 @@ class Article extends Common
         ];
         $articleTypeModel = new ArticleType();
 
-        $type_name = "文章分类";
+        $type_name = error_code(10080,true);
         if($type_id != 0){
             $info = $articleTypeModel->where('id',$type_id)->find();
             if($info){
@@ -292,7 +296,7 @@ class Article extends Common
     {
         $result = [
             'status' =>  false,
-            'msg'    =>  '文章不存在或已删除',
+            'msg'    =>  error_code('10801',true),//文章不存在或已删除
             'data'   =>  [],
         ];
 

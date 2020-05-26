@@ -34,7 +34,7 @@ class Bargain extends Api
     {
         $return_data      = [
             'status' => true,
-            'msg'    => error_code(10026,true),
+            'msg'    => '查询成功',
             'data'   => []
         ];
         $bargainModel     = new bargainModel();
@@ -46,7 +46,7 @@ class Bargain extends Api
             $return_data['status']        = true;
             $return_data['data']['list']  = $list['data'];
             $return_data['data']['count'] = $list['count'];
-            $return_data['msg']           = error_code(10026,true);
+            $return_data['msg']           = '查询成功';
         }
         return $return_data;
     }

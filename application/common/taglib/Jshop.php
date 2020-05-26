@@ -216,7 +216,7 @@ class Jshop extends TagLib
                             var str = "";
                             $.each(data, function(i,n){
                                 str += "<select lay-ignore name=\''.$tag['name'].'_"+(i+1)+"\' dep=\'"+(i+1)+"\' '.$class.$style.'>";
-                                str += "<option value=\'\' >'.error_code(20000,true).'</option>";
+                                str += "<option value=\'\' >请选择</option>";
                                 $.each(n.list,function(h,z){
                                     if(n.hasOwnProperty(\'info\') && n.info.id == z.id){
                                         str += "<option value=\'"+z.id+"\' selected=\'selected\'>"+z.name+"</option>";
@@ -255,7 +255,7 @@ class Jshop extends TagLib
                                     if(data.length > 0){
                                         var str = "";
                                         str += "<select lay-ignore name=\''.$tag['name'].'_"+(i+1)+"\' dep=\'"+(i+1)+"\' '.$class.$style.'>";
-                                        str += "<option value=\'\' >'.error_code(20000,true).'</option>";
+                                        str += "<option value=\'\' >请选择</option>";
                                         $.each(data,function(h,z){
                                            str += "<option value=\'"+z.id+"\' >"+z.name+"</option>";
                                         });

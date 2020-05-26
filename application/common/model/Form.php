@@ -93,7 +93,7 @@ class Form extends common
         foreach ((array)$list as $key => $value) {
             $list[$key]['type']      = config('params.form')['type'][$value['type']];
             $list[$key]['head_type'] = config('params.form')['head_type'][$value['head_type']];
-            $list[$key]['is_login']  = ($value['is_login'] == self::NEED_LOGIN) ? '是' : '否';
+            $list[$key]['is_login']  = ($value['is_login'] == self::NEED_LOGIN) ? '是': '否';
             $list[$key]['ctime']     = ($value['ctime'] > 0) ? date('Y-m-d H:i:s', $value['ctime']) : '';
             $list[$key]['utime']     = ($value['utime'] > 0) ? date('Y-m-d H:i:s', $value['utime']) : '';
         }

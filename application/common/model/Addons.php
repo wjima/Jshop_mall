@@ -40,13 +40,13 @@ class Addons extends Common
         ];
 
         if (!defined('ADDON_PATH')) {
-            $result['msg'] = '插件路径缺失';
-            return $result;
+//            $result['msg'] = '插件路径缺失';
+            return error_code(10718);
         }
         $dirs = array_map('basename', glob(ADDON_PATH . '*', GLOB_ONLYDIR));
         if ($dirs === FALSE || !file_exists(ADDON_PATH)) {
-            $result['msg'] = '插件目录不可读或者不存在';
-            return $result;
+//            $result['msg'] = '插件目录不可读或者不存在';
+            return error_code(10719);
         }
         $addons  = [];
         $where[] = ['name', 'in', $dirs];

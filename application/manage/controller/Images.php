@@ -327,7 +327,7 @@ class Images extends Manage
             return $return_data;
         }
         if (delImage($id)) {
-            $return_data['msg']    = error_code(10022,true);
+            $return_data['msg']    = '删除成功';
             $return_data['status'] = true;
         }
         return $return_data;

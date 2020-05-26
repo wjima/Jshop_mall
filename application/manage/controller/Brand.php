@@ -46,7 +46,7 @@ class Brand extends Manage
 
         return [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => $this->fetch()
         ];
     }
@@ -74,7 +74,7 @@ class Brand extends Manage
 
         return [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => $this->fetch('edit',['data' => $data])
         ];
     }
@@ -95,7 +95,7 @@ class Brand extends Manage
         $brandModel = new BrandsModel();
         if ($brandModel::destroy(input('post.id/d'))) {
             $result['status'] = true;
-            $result['msg'] = error_code(10022,true);
+            $result['msg'] = '删除成功';
         }
         return $result;
     }
@@ -115,7 +115,7 @@ class Brand extends Manage
         if (!$brandList->isEmpty()) {
             $result['data']   = $brandList->toArray();
             $result['status'] = true;
-            $result['msg']    = error_code(10024,true);
+            $result['msg']    = '获取成功';
         }
         return $result;
     }

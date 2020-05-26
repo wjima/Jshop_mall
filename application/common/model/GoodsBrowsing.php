@@ -69,7 +69,7 @@ class GoodsBrowsing extends Common
             $v->delete();               //为什么这么删，因为软删除只能这样删
         }
         $result['data'] = count($info);
-        $result['msg'] = "删除成功";
+        $result['msg'] = error_code(10022,true);
         $result['status'] = true;
         return $result;
     }

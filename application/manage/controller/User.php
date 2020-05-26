@@ -187,22 +187,6 @@ class User extends Manage
 
 
     /**
-     * 修改邀请人
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function editInvite()
-    {
-        $id = Request::param('id');
-        $mobile = Request::param('mobile');
-        $model = new UserModel();
-        return $model->editInvite($id, $mobile);
-    }
-
-
-    /**
      * 添加用户
      * @return array
      */

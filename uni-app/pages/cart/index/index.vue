@@ -16,18 +16,18 @@
 			<view class="img-list cart-list">
 				<checkbox-group class="cart-checkbox" v-for="(item, index) in cartData.list" :key="index" :val="item.id" @change="checkboxChange(item.id)">
 					<view class="">
-						<label class="uni-list-cell uni-list-cell-pd">
-							<view class="cart-checkbox-c">
+						<label class="uni-list-cell uni-list-cell-pd" v-show="item.type != 7">
+							<view class="cart-checkbox-c"  >
 								<checkbox color="#FF7159" :checked="item.is_select" :value="item.id" :disabled="item.stockNo" v-if="item.stockNo" class="checkboxNo" />
-								<checkbox color="#FF7159" :checked="item.is_select" :value="item.id" v-else />
+								<checkbox color="#FF7159" :checked="item.is_select" :value="item.id"  v-else />
 							</view>
 						</label>
 						<view class="img-list-item">
 							<image class="img-list-item-l little-img have-none" :src="item.products.image_path" mode="aspectFill"></image>
 							<view class="img-list-item-r little-right">
 								<view class="little-right-t">
-									<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">{{ item.products.name }}</view>
-									<view class="goods-price red-price">￥{{ item.products.price }}</view>
+									<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">{{ item.products.name }} <text class="gift" v-if="item.type == 7">[赠品]</text></view>
+									<view class="goods-price red-price" v-show="item.type != 7">￥{{ item.products.price }}</view>
 								</view>
 								<view class="romotion-tip" v-if="item.products.promotion_list">
 									<!-- <view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k" :class="v.type !== 2 ? 'bg-gray' : ''">
@@ -50,9 +50,10 @@
 												:min="1"
 												:max="item.maxStock"
 												:value="item.nums"
-												v-if="!editStatus"
+												:disabled="item.type == 7"
+												v-if="!editStatus || item.type == 7"
 											></uni-number-box>
-											<view v-else="" @click="del(index, item.id)" class="click-del">
+											<view  @click="del(index, item.id)" class="click-del" v-if="editStatus && item.type != 7">
 												<image class="icon" src="/static/image/delete.png" mode=""></image>
 											</view>
 										</view>
@@ -399,24 +400,28 @@ export default {
 		},
 
 		//删除事件
-		del: function(index, id) {
+		del: function(index, ids) {
+			
 			let _this = this;
-			let cartid = id; //cart_id
+			// let cartid = id; //cart_id
+			// console.log(cartid)
+			// return
 			//移除渲染
-			_this.cartData.list.splice(index, 1);
-			_this.cartData = _this.cartData;
-			_this.isLoad = true;
+			// _this.cartData.list.splice(index, 1);
+			// _this.cartData = _this.cartData;
+			// _this.isLoad = true;
 
 			//移除数据库
 			let data = {
-				ids: cartid
+				ids
 			};
 			_this.$api.removeCart(data, function(res) {
 				if (res.status) {
 					_this.$common.successToShow(res.msg);
 				}
-				_this.setNumsData();
-				_this.isAllCheckbox();
+				// _this.setNumsData();
+				// _this.isAllCheckbox();
+				_this.getCartData()
 			});
 		},
 
@@ -456,7 +461,7 @@ export default {
 				let cartData = _this.cartData.list;
 				let newData = '';
 				for (let key in cartData) {
-					if (cartData[key].is_select == true) {
+					if (cartData[key].is_select == true && cartData[key].type != 7) {
 						newData += ',' + cartData[key].id;
 					}
 				}
@@ -663,5 +668,9 @@ label {
 }
 .right-img .cell-item-ft {
 	right: 26rpx;
+}
+/deep/ .uni-numbox--disabled {
+	visibility: hidden !important;
+	display: inline-block !important;
 }
 </style>

@@ -52,11 +52,12 @@
 												:max="item.maxStock"
 												:value="item.nums"
 												:disabled="item.type == 7"
-												v-if="!editStatus || item.type == 7"
+												v-if="!editStatus && item.type != 7"
 											></uni-number-box>
 											<view  @click="del(index, item.id)" class="click-del" v-if="editStatus && item.type != 7">
 												<image class="icon" src="/static/image/delete.png" mode=""></image>
 											</view>
+											<view v-if="item.type == 7" class="goods-num"> x {{item.nums}}</view>
 										</view>
 									</view>
 								</view>
@@ -670,8 +671,8 @@ label {
 .right-img .cell-item-ft {
 	right: 26rpx;
 }
-/deep/ .uni-numbox--disabled {
+/* /deep/ .uni-numbox--disabled {
 	visibility: hidden !important;
 	display: inline-block !important;
-}
+} */
 </style>

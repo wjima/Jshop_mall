@@ -339,6 +339,13 @@ class Cart extends Common
             return $result;
         } else {
             $result['data']['list'] = $cartList['data']['list'];
+
+            //如果没有商品，那么就返回
+            if(count($result['data']['list']) == 0){
+                $result['status'] = true;
+                return $result;
+            }
+
         }
 
         //算订单总金额

@@ -691,22 +691,6 @@ class Order extends Common
             ];
         }
 
-        //赠品处理
-        if ($order_info['giveaway']) {
-            $order_info['giveaway'] = json_decode($order_info['giveaway'], true);
-        } else {
-            $order_info['giveaway'] = [];
-        }
-        if (count($order_info['items']) > 0) {
-            foreach ($order_info['items'] as &$v) {
-                if ($v['giveaway']) {
-                    $v['giveaway'] = json_decode($v['giveaway'], true);
-                } else {
-                    $v['giveaway'] = [];
-                }
-            }
-        }
-
         return $order_info;
     }
 
@@ -1545,36 +1529,36 @@ class Order extends Common
                     return $sflag;
                 }
 
-                //商品赠品更改库存
-                if ($v['giveaway']) {
-                    $giveaway = json_decode($v['giveaway'], true);
-                    if (count($giveaway) > 0) {
-                        foreach ($giveaway as $vv) {
-                            $sflag = $goodsModel->changeStock($vv['product_id'], 'order', $vv['num']);
-                            if (!$sflag['status']) {
-                                Db::rollback();
-                                return $sflag;
-                            }
-                        }
-                    }
-                }
+//                //商品赠品更改库存
+//                if ($v['giveaway']) {
+//                    $giveaway = json_decode($v['giveaway'], true);
+//                    if (count($giveaway) > 0) {
+//                        foreach ($giveaway as $vv) {
+//                            $sflag = $goodsModel->changeStock($vv['product_id'], 'order', $vv['num']);
+//                            if (!$sflag['status']) {
+//                                Db::rollback();
+//                                return $sflag;
+//                            }
+//                        }
+//                    }
+//                }
             }
             $orderItemsModel = new OrderItems();
             $orderItemsModel->saveAll($items);
 
-            //订单赠品更改库存
-            if ($order['giveaway']) {
-                $giveaway2 = json_decode($order['giveaway'], true);
-                if (count($giveaway2) > 0) {
-                    foreach ($giveaway2 as $v) {
-                        $sflag = $goodsModel->changeStock($v['product_id'], 'order', $v['num']);
-                        if (!$sflag['status']) {
-                            Db::rollback();
-                            return $sflag;
-                        }
-                    }
-                }
-            }
+//            //订单赠品更改库存
+//            if ($order['giveaway']) {
+//                $giveaway2 = json_decode($order['giveaway'], true);
+//                if (count($giveaway2) > 0) {
+//                    foreach ($giveaway2 as $v) {
+//                        $sflag = $goodsModel->changeStock($v['product_id'], 'order', $v['num']);
+//                        if (!$sflag['status']) {
+//                            Db::rollback();
+//                            return $sflag;
+//                        }
+//                    }
+//                }
+//            }
 
             //优惠券核销
             if ($coupon_code) {
@@ -1733,20 +1717,20 @@ class Order extends Common
         $order['coupon'] = json_encode($cartInfo['data']['coupon']);
         $order['ip'] = get_client_ip(0, true);
 
-        //订单赠品
-        $giveaway = [];
-        if (isset($cartInfo['data']['giveaway']) && count($cartInfo['data']['giveaway']) > 0) {
-            foreach ($cartInfo['data']['giveaway'] as $v) {
-                $giveaway[] = [
-                    'goods_id' => $v['id'],
-                    'name' => $v['name'],
-                    'product_id' => $v['product']['id'],
-                    'bn' => $v['bn'],
-                    'num' => $v['nums']
-                ];
-            }
-        }
-        $order['giveaway'] = json_encode($giveaway);
+//        //订单赠品
+//        $giveaway = [];
+//        if (isset($cartInfo['data']['giveaway']) && count($cartInfo['data']['giveaway']) > 0) {
+//            foreach ($cartInfo['data']['giveaway'] as $v) {
+//                $giveaway[] = [
+//                    'goods_id' => $v['id'],
+//                    'name' => $v['name'],
+//                    'product_id' => $v['product']['id'],
+//                    'bn' => $v['bn'],
+//                    'num' => $v['nums']
+//                ];
+//            }
+//        }
+//        $order['giveaway'] = json_encode($giveaway);
 
         //以上保存了订单主体表信息，以下生成订单明细表
         $items = $this->formatOrderItems($cartInfo['data']['list'], $order['order_id']);
@@ -1778,20 +1762,20 @@ class Order extends Common
                 continue;
             }
 
-            //赠品处理
-            $giveaway = [];
-            if (isset($v['giveaway']) && count($v['giveaway']) > 0) {
-                foreach ($v['giveaway'] as $vv) {
-                    $giveaway[] = [
-                        'goods_id' => $vv['id'],
-                        'name' => $vv['name'],
-                        'product_id' => $vv['product']['id'],
-                        'bn' => $vv['bn'],
-                        'num' => $vv['nums']
-                    ];
-                }
-            }
-            $item['giveaway'] = json_encode($giveaway);
+//            //赠品处理
+//            $giveaway = [];
+//            if (isset($v['giveaway']) && count($v['giveaway']) > 0) {
+//                foreach ($v['giveaway'] as $vv) {
+//                    $giveaway[] = [
+//                        'goods_id' => $vv['id'],
+//                        'name' => $vv['name'],
+//                        'product_id' => $vv['product']['id'],
+//                        'bn' => $vv['bn'],
+//                        'num' => $vv['nums']
+//                    ];
+//                }
+//            }
+//            $item['giveaway'] = json_encode($giveaway);
 
             $item['order_id'] = $order_id;
             $item['goods_id'] = $v['products']['goods_id'];

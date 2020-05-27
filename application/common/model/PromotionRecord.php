@@ -86,11 +86,7 @@ class PromotionRecord extends Common
     //生成订单的时候，增加信息
     public function orderAdd($order, $items, $params, $type = 1)
     {
-        $result     = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => ''
-        ];
+
         $order_item = current($items);
 
         if (isInGroup($order_item['goods_id'], $params['group_id'], $promotion, $order['order_type'])) {
@@ -99,15 +95,15 @@ class PromotionRecord extends Common
             $check_order      = $orderModel->findLimitOrder($order_item['product_id'], $order['user_id'], $promotion, $order['order_type']);
             if (isset($promotion_params['max_goods_nums']) && $promotion_params['max_goods_nums'] != 0) {
                 if (($check_order['data']['total_orders'] + 1) > $promotion_params['max_goods_nums']) {
-                    $result['msg'] = '该商品已超过当前活动最大购买量';
-                    return $result;
+//                    $result['msg'] = '该商品已超过当前活动最大购买量';
+                    return error_code(15610);
                 }
             }
 
             if (isset($promotion_params['max_nums']) && $promotion_params['max_nums'] != 0) {
                 if ((1 + $check_order['data']['total_user_orders']) > $promotion_params['max_nums']) {
-                    $result['msg'] = '您已超过该活动最大购买量';
-                    return $result;
+//                    $result['msg'] = '您已超过该活动最大购买量';
+                    return error_code(17611);
                 }
             }
         }
@@ -122,10 +118,14 @@ class PromotionRecord extends Common
         ];
 
         if (!$this->save($recData)) {
-            $result['msg'] = error_code(10004,true);
-            return $result;
+            return error_code(10004);
+
         }
-        $result['status'] = true;
+        $result     = [
+            'status' => true,
+            'data'   => [],
+            'msg'    => ''
+        ];
         return $result;
     }
 
@@ -140,7 +140,7 @@ class PromotionRecord extends Common
      */
     public function getList($fields = '*', $where = [], $order = ['ctime' => 'desc'], $page = 1, $limit = 10)
     {
-        $result                  = [
+        $result  = [
             'status' => true,
             'msg'    => '',
             'data'   => [],

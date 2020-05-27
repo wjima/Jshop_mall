@@ -23,11 +23,7 @@ class PagesItems extends Common
      */
     public function saveItems($data, $code)
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10004,true),
-            'data'   => [],
-        ];
+        $result = error_code(10004);
         Db::startTrans();
         $this->where([['page_code', '=', $code]])->delete();//先删除
         $iData = [];

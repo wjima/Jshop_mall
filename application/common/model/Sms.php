@@ -278,7 +278,7 @@ class Sms extends Common
 //                $result['msg'] = '发送成功';
             } else {
                 $result['status'] = false;
-                $result['msg'] = isset($re[0]['msg']) ? $re[0]['msg'] : '发送失败';
+                $result['msg'] = isset($re[0]['msg']) ? $re[0]['msg'] : error_code(10065,true);
             }
         }
         return $result;

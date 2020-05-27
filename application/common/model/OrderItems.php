@@ -36,7 +36,7 @@ class OrderItems extends Common
                 $max_num = $max_num - $reship_nums;
 
                 if($item[$v['product_id']] > $max_num){     //如果发超了怎么办
-                    exception($order_id."的".$v['sn']."发超了",10000);
+                    exception(error_code(13326,true,$order_id,$v['sn']),13326);  //$order_id."的".$v['sn']."发超了"
                 }
                 if($isOver && $item[$v['product_id']] < $max_num){          //判断是否订单发完了，有一个没发完，就是未发完
                     $isOver = false;
@@ -52,7 +52,7 @@ class OrderItems extends Common
         }
         //如果没发完，也报错
         if($item){
-            exception('发货明细里包含订单之外的商品',13008);
+            exception(error_code(13008,true),13308);
         }
         return $isOver;
     }

@@ -98,7 +98,6 @@ class PintuanRule extends Common{
             $result['msg'] = $validate->getError();
             return $result;
         }
-        $theDate = explode(' 到 ', $data['date']);
 
         $pGoods = new PintuanGoods();
         //判断商品是否有参加过拼团
@@ -111,13 +110,13 @@ class PintuanRule extends Common{
             $goodsModel = new Goods();
             $goodsInfo = $goodsModel->getGoodsDetial($re['goods_id']);
             if($goodsInfo['status']){
-                $result['msg'] = "商品：".$goodsInfo['data']['name']." 参加过拼团了";
-                return $result;
+//                $result['msg'] = error_code(15612,true,$goodsInfo['data']['name']); //"商品：".$goodsInfo['data']['name']." 参加过拼团了";
+                return error_code(15612,false,$goodsInfo['data']['name']);
             }else{
                 return error_code(10000);
             }
         }
-
+        $theDate = explode(' 到 ', $data['date']);
         if (count($theDate) != 2) {
             return error_code(15002);
         }
@@ -236,7 +235,7 @@ class PintuanRule extends Common{
             ->order('sort asc')
             ->find();
         if (!$pinfo) {
-            return error_code(10000);
+            return error_code(15603);
         }
         if ($pinfo['stime'] > time()) {
             return error_code(15601);

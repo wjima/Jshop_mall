@@ -37,7 +37,7 @@ class WeixinMessage extends Common
             'msg'    => '保存成功',
             'data'   => [],
         ];
-        $id     = 0;
+//        $id     = 0;
         if (!isset($params['enable'])) {
             $params['enable'] = self::ENABLE_YES;
         }
@@ -60,16 +60,14 @@ class WeixinMessage extends Common
         }
         if ($params['id']) {
             if ($this->save($params, ['id' => $params['id']]) === false) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
                 Db::rollback();
+                return  error_code(10004);
             }
             $id = $params['id'];
         } else {
             if (!$this->save($params)) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
                 Db::rollback();
+                return  error_code(10004);
             }
             $id = $this->getLastInsID();
         }
@@ -77,6 +75,7 @@ class WeixinMessage extends Common
             $res = $this->where([['id', 'neq', $id]])->update(['is_attention' => self::ATTENTION_NO]);
             if ($res === false) {
                 Db::rollback();
+                return  error_code(10004);
             }
         }
         Db::commit();

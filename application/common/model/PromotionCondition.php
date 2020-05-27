@@ -238,7 +238,7 @@ class PromotionCondition extends Common
                 if ($this->allowField(true)->save($data, ['id' => $data['id']]) !== false) {
                     $result['status'] = true;
                 } else {
-                    $result['msg'] = "保存失败";
+                    $result['msg'] = error_code(10004,true);
                 }
                 return $result;
 
@@ -253,11 +253,11 @@ class PromotionCondition extends Common
                 if($this->allowField(true)->save($data)){
                     $result['status'] = true;
                 }else{
-                    $result['msg'] = "保存失败";
+                    $result['msg'] = error_code(10004,true);
                 }
                 return $result;
             }else{
-                $result['msg'] = '没有找到此促销记录';
+                $result['msg'] = error_code(15019,true);
                 return $result;
             }
         }
@@ -282,19 +282,17 @@ class PromotionCondition extends Common
 
     public function toDel($id)
     {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
         $info = $this->getInfo($id);
         if($info){
             $this->where(['id'=>$info['id'],'promotion_id'=>$info['promotion_id']])->delete();
-            $result['status'] = true;
+            $result = [
+                'status' => true,
+                'data' => '',
+                'msg' => ''
+            ];
             return $result;
         }else{
-            $result['msg'] = '没有找到此促销记录';
-            return $result;
+            return error_code(15019);
         }
     }
 

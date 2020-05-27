@@ -15,26 +15,28 @@
 						</view>
 					</view>
 					<view class='img-list'>
-						<view class='img-list-item' v-for="(goods, key) in item.items" :key="key">
-							<image class='img-list-item-l little-img have-none' :src='goods.image_url' mode='aspectFill'></image>
-							<view class='img-list-item-r little-right'>
-								<view class='little-right-t'>
-									<view class='goods-name list-goods-name' @click="orderDetail(item.order_id)">{{ goods.name }}</view>
-									<view class='goods-price'>￥{{ goods.price }}</view>
-								</view>
-								<view class="romotion-tip">
-									<view class="romotion-tip-item" v-for="(promotion, k) in goods.promotion_list" :key="k">
-										{{ promotion }}
+						<block  v-for="(goods, key) in item.items" :key="key"  >
+							<view class='img-list-item' v-if="tab != 4 || goods.name.indexOf('赠品') < 0">
+									<image class='img-list-item-l little-img have-none' :src='goods.image_url' mode='aspectFill'></image>
+									<view class='img-list-item-r little-right'>
+										<view class='little-right-t'>
+											<view class='goods-name list-goods-name' @click="orderDetail(item.order_id)">{{ goods.name }}</view>
+											<view class='goods-price'>￥{{ goods.price }}</view>
+										</view>
+										<view class="romotion-tip">
+											<view class="romotion-tip-item" v-for="(promotion, k) in goods.promotion_list" :key="k">
+												{{ promotion }}
+											</view>
+										</view>
+										<view class='goods-item-c'>
+											<view class='goods-buy'>
+												<view class='goods-salesvolume' v-if="goods.addon !== null">{{ goods.addon }}</view>
+												<view class='goods-num'>× {{ goods.nums }}</view>
+											</view>
+										</view>
 									</view>
-								</view>
-								<view class='goods-item-c'>
-									<view class='goods-buy'>
-										<view class='goods-salesvolume' v-if="goods.addon !== null">{{ goods.addon }}</view>
-										<view class='goods-num'>× {{ goods.nums }}</view>
-									</view>
-								</view>
 							</view>
-						</view>
+						</block>
 					</view>
 					<view class='cell-group'>
 						<view class='cell-item'>

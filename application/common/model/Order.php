@@ -1782,7 +1782,12 @@ class Order extends Common
             $item['product_id'] = $v['products']['id'];
             $item['sn'] = $v['products']['sn'];
             $item['bn'] = $v['products']['bn'];
-            $item['name'] = $v['products']['name'];
+            if($v['type'] == Cart::TYPE_GIVEAWAY){
+                $item['name'] = $v['products']['name']."[赠品]";
+            }else{
+                $item['name'] = $v['products']['name'];
+            }
+
             $item['price'] = $v['products']['price'];
             $item['costprice'] = $v['products']['costprice'];
             $item['mktprice'] = $v['products']['mktprice'];

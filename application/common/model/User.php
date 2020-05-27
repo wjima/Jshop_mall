@@ -1018,9 +1018,6 @@ class User extends Common
         $newData['grade']    = $data['grade'];
         $newData['remarks'] = isset($data['remarks']) ? $data['remarks'] : '';
         $result         = $this->save($newData);
-        dump($newData);
-        dump($this->getLastSql());
-        die();
         $return['data'] = $this->id;
         if ($result) {
             $newData['id'] = $this->id;

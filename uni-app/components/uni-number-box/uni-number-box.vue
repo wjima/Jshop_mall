@@ -1,8 +1,8 @@
 <template>
 	<view class="uni-numbox">
-		<view class="uni-numbox__minus" v-show="!disabled" :class="{'uni-numbox--disabled': disableSubtract||disabled}" @click="_calcValue('subtract')">-</view>
+		<view class="uni-numbox__minus"  :class="{'uni-numbox--disabled': disableSubtract||disabled}" @click="_calcValue('subtract')">-</view>
 		<input class="uni-numbox__value" type="number" :disabled="disabled" :value="inputValue" @blur="_onBlur">
-		<view class="uni-numbox__plus" v-show="!disabled" :class="{'uni-numbox--disabled': disableAdd||disabled}" @click="_calcValue('add')">+</view>
+		<view class="uni-numbox__plus"  :class="{'uni-numbox--disabled': disableAdd||disabled}" @click="_calcValue('add')">+</view>
 	</view>
 </template>
 <script>

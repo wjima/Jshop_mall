@@ -17,6 +17,7 @@
 				<checkbox-group class="cart-checkbox" v-for="(item, index) in cartData.list" :key="index" :val="item.id" @change="checkboxChange(item.id)">
 					<view class="">
 						<label class="uni-list-cell uni-list-cell-pd" v-show="item.type != 7">
+							
 							<view class="cart-checkbox-c"  >
 								<checkbox color="#FF7159" :checked="item.is_select" :value="item.id" :disabled="item.stockNo" v-if="item.stockNo" class="checkboxNo" />
 								<checkbox color="#FF7159" :checked="item.is_select" :value="item.id"  v-else />

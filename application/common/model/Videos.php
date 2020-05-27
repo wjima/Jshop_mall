@@ -87,8 +87,7 @@ class Videos extends Common
         } else {
             $data['ctime'] = time();
             if (!$this->allowField(true)->save($data)) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                return error_code(10004);
             }
         }
         return $result;
@@ -113,8 +112,7 @@ class Videos extends Common
                 'id' => $data['id']
             ];
             if (!$this->where($where)->update($data)) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                return error_code(10004);
             }
         }
         return $result;

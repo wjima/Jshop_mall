@@ -33,7 +33,7 @@ class Payments extends Common
      */
     public function editData($data)
     {
-        $result = ['status' => true, 'msg'   => error_code(10004,true), 'data'  => ''];
+        $result = error_code(10004);
         $data['params'] = json_encode($data['params']);
         if(isset($data['status']) && $data['status'] == 1){
         }else{
@@ -72,8 +72,7 @@ class Payments extends Common
                 $result['msg'] = '已'.config('params.payments')['status'][self::PAYMENT_STATUS_NO];
                 break;
             default:
-                $result['status'] = false;
-                $result['msg'] = '非法操作';
+                $result = error_code(10022);
                 break;
         }
 

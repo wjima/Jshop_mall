@@ -45,14 +45,10 @@ class UserToken extends Common
                 }
                 return $result;
             }else{
-                $result['msg'] = "生成token失败";
-                return $result;
+                return error_code(14005);
             }
         }else{
-            if(!$userInfo){
-                $result['msg'] = "用户不存在";
-            }
-            return $result;
+            return error_code(11004);
         }
     }
 
@@ -114,8 +110,7 @@ class UserToken extends Common
             $result['data'] = $tokenInfo;
             return $result;
         }else{
-            $result['msg'] = "不是有效的token";
-            return $result;
+            return error_code(14016);
         }
 
     }

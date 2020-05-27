@@ -40,11 +40,6 @@ class UserPointLog extends Common
      */
     public function setPoint($user_id, $num, $type = self::POINT_TYPE_SIGN, $remarks = '')
     {
-        $return = [
-            'status' => false,
-            'msg'    => ''
-        ];
-
         if ($num != 0) {
             //获取积分账号信息
             $user_model = new User();
@@ -53,8 +48,7 @@ class UserPointLog extends Common
             $new_point = $user_info['point'] + $num;
             //积分余额判断
             if ($new_point < 0) {
-                $return['msg'] = '积分余额不足';
-                return $return;
+                return error_code(11601);
             }
 
             //插入记录
@@ -103,8 +97,7 @@ class UserPointLog extends Common
         //判断是否已经签到
         $res = $this->isSign($user_id);
         if ($res['status']) {
-            $return['msg'] = '今天已经签到，无需重复签到';
-            return $return;
+            return error_code(11602);
         }
 
         //获取店铺签到积分设置
@@ -141,10 +134,7 @@ class UserPointLog extends Common
      */
     public function isSign($user_id)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '今天还没有签到'
-        ];
+        $return = error_code(11603);
 
         $where[]    = ['user_id', 'eq', $user_id];
         $where[]    = ['type', 'eq', self::POINT_TYPE_SIGN];

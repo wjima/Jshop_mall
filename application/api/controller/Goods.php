@@ -235,11 +235,7 @@ class Goods extends Api
      */
     public function getDetial()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10026),
-            'data'   => []
-        ];
+        $return_data = error_code(10027);
         $goods_id    = input('id/d', 0); //商品ID
         $token       = input('token', ''); //token值 会员登录后传
         if (!$goods_id) {

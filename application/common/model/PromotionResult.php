@@ -42,11 +42,12 @@ class PromotionResult extends Common
             'sort' => 100,
             'class' => 'GoodsHalfPrice'
         ],
-//        'ORDER_GIVEAWAY' => [
-//            'name' => '订单满赠商品',
-//            'type' => 'order',
-//            'class' => 'OrderGiveaway'
-//        ],
+        'GIVEAWAY' => [
+            'name' => '满足条件送赠品',
+            'type' => 'order',
+            'sort' => 100,
+            'class' => 'Giveaway'
+        ],
 //        'GOODS_GIVEAWAY' => [
 //            'name' => '商品满赠商品',
 //            'type' => 'goods',

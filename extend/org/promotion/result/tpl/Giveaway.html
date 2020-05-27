@@ -1,0 +1,27 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="resultEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="promotion_id" value="{$promotion_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">结果名称：</label>
+        <div class="layui-form-mid">满足条件即送赠品</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品id：</label>
+        <div class="layui-input-block">
+            {Jshop:sellergoods value="$params.goods_id" num="100" name="params[goods_id]" /}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">数量：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input name="params[nums]" lay-verify="title" autocomplete="off" value="{:setDefault($params.nums,1)}" placeholder="数量" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">每个赠品的数量</div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

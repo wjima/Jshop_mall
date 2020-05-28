@@ -320,6 +320,7 @@
 			gotoBargain(id, type, record_id) {
 				if (id && id != '' && type && record_id && record_id != 0) {
 					let url = '/pages/bargain/index?id=' + id + '&type=' + type + '&record_id=' + record_id;
+					// console.log(url);
 					this.$common.redirectTo(url);
 				} else {
 					this.gotoIndex();

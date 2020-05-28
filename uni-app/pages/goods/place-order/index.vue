@@ -111,7 +111,7 @@
 
 			<view class="cell-group">
 				<!-- 订单促销信息 -->
-					<view class="cell-item" v-if="cartData.promotion_list">
+					<view class="cell-item" v-if="cartData.promotion_list && cartData.promotion_list.length > 0">
 						<view class="cell-item-hd">
 							订单优惠
 						</view>

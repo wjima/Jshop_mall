@@ -362,6 +362,10 @@ class Cart extends Common
             if ($v['is_select']) {
                 //算订单总商品价格
                 $result['data']['goods_amount'] = bcadd($result['data']['goods_amount'], $result['data']['list'][$k]['products']['amount'], 2);
+
+                //计算促销应用之前的商品优惠
+                $result['data']['goods_pmt'] = bcadd($result['data']['goods_pmt'], $result['data']['list'][$k]['products']['promotion_amount'], 2);
+
                 //算订单总价格
                 $result['data']['amount'] = bcadd($result['data']['amount'], $result['data']['list'][$k]['products']['amount'], 2);
                 //计算总重量

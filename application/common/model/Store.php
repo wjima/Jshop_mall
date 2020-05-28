@@ -83,8 +83,7 @@ class Store extends Common
         {
             if(!$this->allowField(true)->save($data))
             {
-                $result['status'] = false;
-                $result['msg'] = error_code(10004,true);
+                return error_code(10004);
             }
         }
         return $result;
@@ -113,8 +112,7 @@ class Store extends Common
         {
             if(!$this->allowField(true)->save($data,['id' => $data['id']]))
             {
-                $result['status'] = false;
-                $result['msg'] = error_code(10004,true);
+                return error_code(10004);
             }
         }
         return $result;
@@ -174,11 +172,7 @@ class Store extends Common
         }
         else
         {
-            $result = [
-                'status'=> false,
-                'msg'   => error_code(10025,true),
-                'data'  => ''
-            ];
+            return  error_code(10025);
         }
         return $result;
     }
@@ -238,11 +232,7 @@ class Store extends Common
      */
     public function getDefaultStore()
     {
-        $return = [
-            'status' => true,
-            'msg' => '获取成功',
-            'data' => []
-        ];
+        $return = error_code(10025);
         $return['data'] = $this->order('ctime desc')->find();
         if($return['data'])
         {

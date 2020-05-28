@@ -212,22 +212,18 @@ class Pages extends Common
 
     public function addData($data = [])
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10004,true),
-            'data'   => []
-        ];
+        $result = error_code(10004);
 
         if (!$data['name']) {
-            $result['msg'] = '请输入名称';
-            return $result;
+//            $result['msg'] = '请输入名称';
+            return error_code(10900);
         }
 
 
         // 判断该编码是否已经添加
         if ($this->where('code', $data['code'])->find()) {
-            $result['msg'] = '该编码已存在,勿重复添加!';
-            return $result;
+//            $result['msg'] = '该编码已存在,勿重复添加!';
+            return error_code(10901);
         }
 
         if ($this->allowField(true)->save($data)) {

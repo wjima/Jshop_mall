@@ -150,11 +150,7 @@ class UserLog extends Common
      */
     public function getCsvData($post)
     {
-        $result   = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '无可导出数据'
-        ];
+        $result   = error_code(10083);
         $header   = $this->csvHeader();
         $userData = $this->tableDatas($post, false);
 

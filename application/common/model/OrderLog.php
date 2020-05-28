@@ -104,9 +104,9 @@ class OrderLog extends Common
         ];
         if(!$order_id)
         {
-            $return['status'] = false;
-            $return['msg'] = '没有订单号';
-            return $return;
+//            $return['status'] = false;
+//            $return['msg'] = '没有订单号';
+            return error_code(13100);
         }
         $where[] = ['order_id', 'eq', $order_id];
         $res = $this->field('id, order_id, user_id, type, msg, ctime')

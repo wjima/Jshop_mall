@@ -295,6 +295,12 @@ class GoodsComment extends Common
                     continue;       //说明没有此条记录，就不需要评论了
                 }
 
+                //如果是赠品，就跳过
+                if(strstr($item_info['name'],$orderModel::GIVEAWAY_STR) !== false){
+                    continue;
+                }
+
+
                 $score = 5;
                 if($v['score'] >= 1 &&   $v['score'] <= 5){
                     $score = $v['score'];

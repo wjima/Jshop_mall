@@ -85,7 +85,7 @@
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
-            url: "{:get_addon_url('StockControl://index/index')}?_ajax=1",
+            url: "{:get_addon_url('StockControl://index/index')}?_ajax=1&sn={$sn}",
             id:'hbTable',
             cols: [[
 				{field:'type', width:100,title:'类型', align: 'center',templet:function(data){

@@ -42,11 +42,12 @@ class PromotionResult extends Common
             'sort' => 100,
             'class' => 'GoodsHalfPrice'
         ],
-//        'ORDER_GIVEAWAY' => [
-//            'name' => '订单满赠商品',
-//            'type' => 'order',
-//            'class' => 'OrderGiveaway'
-//        ],
+        'GIVEAWAY' => [
+            'name' => '满足条件送赠品',
+            'type' => 'order',
+            'sort' => 100,
+            'class' => 'Giveaway'
+        ],
 //        'GOODS_GIVEAWAY' => [
 //            'name' => '商品满赠商品',
 //            'type' => 'goods',
@@ -110,7 +111,7 @@ class PromotionResult extends Common
         $re['msg'] = '';
         $re['count'] = count($list);
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+//        $re['sql'] = $this->getLastSql();
 
         return $re;
     }
@@ -210,7 +211,7 @@ class PromotionResult extends Common
                 if($this->allowField(true)->save($data,['id'=>$data['id']])){
                     $result['status'] = true;
                 }else{
-                    $result['msg'] = "保存失败";
+                    return error_code(10004);
                 }
                 return $result;
 
@@ -225,23 +226,18 @@ class PromotionResult extends Common
                 if($this->allowField(true)->save($data)){
                     $result['status'] = true;
                 }else{
-                    $result['msg'] = "保存失败";
+                    error_code(10004);
                 }
                 return $result;
             }else{
-                $result['msg'] = '没有找到此促销记录';
-                return $result;
+//                $result['msg'] = '没有找到此促销记录';
+                return error_code(10519);
             }
         }
     }
 
     private function addCheck($data)
     {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
         if(!isset($data['code']) || !isset($data['promotion_id']) || !isset($data['params'])){
             return error_code(10003);
         }
@@ -258,19 +254,17 @@ class PromotionResult extends Common
 
     public function toDel($id)
     {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
         $info = $this->getInfo($id);
         if($info){
             $this->where(['id'=>$info['id'],'promotion_id'=>$info['promotion_id']])->delete();
-            $result['status'] = true;
+            $result = [
+                'status' => true,
+                'data' => '',
+                'msg' => ''
+            ];
             return $result;
         }else{
-            $result['msg'] = '没有找到此促销记录';
-            return $result;
+            return error_code(15019);
         }
     }
 

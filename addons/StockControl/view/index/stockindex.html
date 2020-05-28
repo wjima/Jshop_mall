@@ -31,6 +31,9 @@
 
 </form>
 <div class="table-body">
+	<div style="margin-top: 10px">
+		<span style="color: red">说明：</span>库存列可直接修改哦。
+	</div>
 	<table id="hbTable" lay-filter="test"></table>
 </div>
 <script>
@@ -73,7 +76,6 @@
 			var value = obj.value //得到修改后的值
 					,data = obj.data //得到所在行所有键值
 					,field = obj.field; //得到字段
-			console.log(data)
 			if(value < 0) {
 				layer.msg('库存不能为负数');
 				layui.table.reload('hbTable');

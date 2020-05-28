@@ -25,6 +25,7 @@ class Cart extends Common
     const TYPE_GROUP = 3;      //团购模式
     const TYPE_SKILL = 4;      //秒杀模式
     const TYPE_BARGAIN = 6;      //砍价模式
+    const TYPE_GIVEAWAY = 7;        //赠品，在cart表里不会存在，但是会在计算促销过之后，动态的加上去
 
     /**
      * 关联货品
@@ -329,7 +330,6 @@ class Cart extends Common
                 'point'          => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money'    => 0,              //积分可以抵扣多少金额
                 'params'         => [],              //一些可以放到购物车中的参数
-                'giveaway'       => []
             ],
             'msg'    => ""
         ];
@@ -339,6 +339,13 @@ class Cart extends Common
             return $result;
         } else {
             $result['data']['list'] = $cartList['data']['list'];
+
+            //如果没有商品，那么就返回
+            if(count($result['data']['list']) == 0){
+                $result['status'] = true;
+                return $result;
+            }
+
         }
 
         //算订单总金额
@@ -355,6 +362,10 @@ class Cart extends Common
             if ($v['is_select']) {
                 //算订单总商品价格
                 $result['data']['goods_amount'] = bcadd($result['data']['goods_amount'], $result['data']['list'][$k]['products']['amount'], 2);
+
+                //计算促销应用之前的商品优惠
+                $result['data']['goods_pmt'] = bcadd($result['data']['goods_pmt'], $result['data']['list'][$k]['products']['promotion_amount'], 2);
+
                 //算订单总价格
                 $result['data']['amount'] = bcadd($result['data']['amount'], $result['data']['list'][$k]['products']['amount'], 2);
                 //计算总重量

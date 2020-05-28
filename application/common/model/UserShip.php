@@ -84,11 +84,7 @@ class UserShip extends Common
     public function vueSaveShip($data)
     {
 
-        $result = [
-            'status' => false,
-            'msg' => error_code(10004,true),
-            'data' => []
-        ];
+        $result = error_code(10004);
 
         $checkStatus = $this->checkData($data);
 
@@ -207,11 +203,7 @@ class UserShip extends Common
      */
     public function editShip ($data,$user_id)
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10004,true),
-            'data' => ''
-        ];
+        $result = error_code(10004);
 
 
         // 收货地址验证
@@ -253,7 +245,7 @@ class UserShip extends Common
         }
         else
         {
-            $result['msg'] = '该地址不存在';
+            return error_code(11062);
         }
         return $result;
     }
@@ -272,7 +264,7 @@ class UserShip extends Common
      */
     public function removeShip($id, $user_id)
     {
-        $res = ['status' => false, 'msg' => error_code(10023,true), 'data' => ''];
+        $res = error_code(10023);
         $data = $this->where(['id'=>$id,'user_id'=>$user_id])->find();
         //判断收货地址是否存在
         if($data)
@@ -314,7 +306,7 @@ class UserShip extends Common
         }
         else
         {
-            $res['msg'] = '该收货地址不存在';
+            return error_code(11062);
         }
         return $res;
     }
@@ -332,7 +324,7 @@ class UserShip extends Common
      */
     public function setDefaultShip($id, $user_id)
     {
-        $res = ['status' => false, 'msg' => error_code(10004,true), 'data' => ''];
+        $res = error_code(10004);
         $data = $this->where(['id' => $id, 'user_id' => $user_id])->find();
         if($data)
         {
@@ -364,7 +356,7 @@ class UserShip extends Common
         }
         else
         {
-            $res['msg'] = '该地址不存在';
+            return error_code(11062);
         }
         return $res;
     }
@@ -440,11 +432,7 @@ class UserShip extends Common
         }
         else
         {
-            $return = [
-                'status' => false,
-                'msg' => error_code(10025,true),
-                'data' => $res
-            ];
+            return error_code(10025);
         }
         return $return;
     }

@@ -60,8 +60,8 @@ class User extends Common
         );
 
         if (!isset($data['mobile']) || !isset($data['password'])) {
-            $result['msg'] = '请输入手机号码或者密码';
-            return $result;
+//            $result['msg'] = '请输入手机号码或者密码';
+            return error_code(11031);
         }
         //校验验证码
         if (session('?login_fail_num')) {
@@ -77,8 +77,7 @@ class User extends Common
 
         $userInfo = $this->where(array('username' => $data['mobile']))->whereOr(array('mobile' => $data['mobile']))->find();
         if (!$userInfo) {
-            $result['msg'] = '没有找到此账号';
-            return $result;
+            return error_code(11032);
         }
 
 
@@ -98,7 +97,7 @@ class User extends Common
             } else {
                 session('login_fail_num', 1);
             }
-            $result['msg'] = '密码错误，请重试';
+            return error_code(11033);
         }
 
         return $result;
@@ -115,18 +114,11 @@ class User extends Common
      */
     public function smsLogin($data, $loginType = 1, $platform = 1)
     {
-        $result = array(
-            'status' => false,
-            'data'   => '',
-            'msg'    => ''
-        );
         if (!isset($data['mobile'])) {
-            $result['msg'] = '请输入手机号码';
-            return $result;
+            return error_code(11051);
         }
         if (!isset($data['code'])) {
-            $result['msg'] = '请输入验证码';
-            return $result;
+            return error_code(10013);
         }
 
         //判断是否是用户名登陆
@@ -134,8 +126,7 @@ class User extends Common
         $userWxModel = new UserWx();
 
         if (!$smsModel->check($data['mobile'], $data['code'], 'login')) {
-            $result['msg'] = '短信验证码错误';
-            return $result;
+            return error_code(11046);
         }
 
         $userInfo = $this->where(array('mobile' => $data['mobile']))->find();
@@ -198,7 +189,7 @@ class User extends Common
 
             $user_id = $this->insertGetId($userData);
             if (!$user_id) {
-                return error_code(10000);
+                return error_code(10019);
             }
             $userInfo = $this->where(array('id' => $user_id))->find();
         } else {
@@ -244,8 +235,7 @@ class User extends Common
         $smsModel    = new Sms();
 
         if (!$smsModel->check($mobile, $code, 'bind')) {
-            $result['msg'] = '短信验证码错误';
-            return $result;
+            return error_code(11046);
         }
         //校验手机号码是否已经绑定用户
         $info = $this->where('mobile',$mobile)->find();
@@ -260,7 +250,7 @@ class User extends Common
             $result['status'] = true;
             return $result;
         } else {
-            return error_code(10000);
+            return error_code(11081);
         }
     }
 
@@ -279,8 +269,7 @@ class User extends Common
         if ($code == 'reg') {
             //注册，目前暂时没有走注册流程，注册和登陆是一样的接口，都是login，这里要尤其注意
             if ($userInfo) {
-                $result['msg'] = '此账号已经注册过，请直接登陆';
-                return $result;
+                return error_code(11047);
             }
             //判断账号状态
 //            if($userInfo->status != self::STATUS_NORMAL) {
@@ -295,8 +284,7 @@ class User extends Common
             // 账户绑定手机号码
         } else {
             //其他业务逻辑
-            $result['msg'] = '无此业务类型';
-            return $result;
+            return error_code(10080);
         }
 
         //没问题了，就去发送短信验证码
@@ -323,8 +311,7 @@ class User extends Common
         ];
         //判断账号状态
         if ($userInfo->status != self::STATUS_NORMAL) {
-            $result['msg'] = '此账号已停用';
-            return $result;
+            return error_code(11006);
         }
 
 
@@ -348,11 +335,6 @@ class User extends Common
 
     public function editInfo($id, $sex = '', $birthday = '', $nickname = '', $avatar = '')
     {
-        $result = [
-            'status' => false,
-            'data'   => '',
-            'msg'    => ''
-        ];
         $data   = [];
 
         if ($sex != '') {
@@ -373,6 +355,7 @@ class User extends Common
             //$userLogModel->setLog($id,$userLogModel::USER_EDIT);
             $result['status'] = true;
             $result['msg']    = '保存成功';
+            $result['data'] = '';
             return $result;
         } else {
             return error_code(10005);
@@ -568,7 +551,7 @@ class User extends Common
             $result['data'] = $userInfo;
             $result['status'] = true;
         } else {
-            $result['msg'] = '未找到此用户';
+            return  error_code(11004);
         }
         return $result;
     }
@@ -592,7 +575,7 @@ class User extends Common
         $userInfo = $this->where(['mobile'=>$mobile])->find();
         if(!$userInfo){
             $result['msg'] = '没有此手机号码';
-            return $result;
+            return error_code(11032);
         }
         return $this->editPwd($userInfo['id'], $newPwd,$userInfo['ctime']);
     }
@@ -612,12 +595,10 @@ class User extends Common
 
         if($user['password']){
             if(!$password){
-                $result['msg'] = "请输入原密码";
-                return $result;
+                return error_code(11012);
             }
             if ($user['password'] !== $this->enPassword($password, $user['ctime'])) {
-                $result['msg']    = '原密码不正确!';
-                return $result;
+                return error_code(11045);
             }
         }
         return $this->editPwd($user_id, $newPwd,$user['ctime']);
@@ -647,9 +628,7 @@ class User extends Common
         ], ['id' => $user_id]);
 
         if (!$res_pwd) {
-            $result['status'] = false;
-            $result['msg']    = '原密码和新密码一样!';
-            return $result;
+            return error_code(11044);
         }
 
         $result['msg'] = '密码修改成功!';
@@ -812,40 +791,34 @@ class User extends Common
      */
     public function setMyInvite($user_id, $superior_id)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '填写邀请码失败',
-            'data'   => ''
-        ];
         if ($user_id == $superior_id) {
-            $return['msg'] = '自己不能邀请自己';
-            return $return;
+            return error_code(11049);
         }
 
         $userInfo = $this->get($user_id);
         if ($userInfo['pid'] && $userInfo['pid'] != 0) {
-            $return['msg'] = '已有上级邀请，不能绑定其他的邀请';
-            return $return;
+            return error_code(11053);
         }
 
         $superior = $this->get($superior_id);
         if (!$superior) {
-            $return['msg'] = '不存在这个邀请码';
-            return $return;
+            return error_code(11052);
         }
 
         $flag = $this->isInvited($user_id, $superior_id);
         if ($flag) {
-            $return['msg'] = '不允许填写下级的邀请码';
-            return $return;
+            return error_code(11054);
         }
 
         $data['pid']    = $superior_id;
         $where[]        = ['id', 'eq', $user_id];
+        $return = [];
         $return['data'] = $this->save($data, $where);
         if ($return['data'] !== false) {
             $return['status'] = true;
             $return['msg']    = '填写邀请码成功';
+        }else{
+            return error_code(11048);
         }
 
         return $return;
@@ -917,17 +890,15 @@ class User extends Common
         ];
 
         if ($id == $pid) {
-            $return['msg'] = '自己不能邀请自己';
-            return $return;
+            return error_code(11049);
         }
 
         $isInvited = $this->isInvited($id,$pid);
         if ($isInvited) {
-            $return['msg'] = '不能关联这个邀请人，因为他是你的下级或者下下级';
-            return $return;
+            return error_code(11054);
         }
         $return['status'] = true;
-        $return['msg']    = '操作成功';
+        $return['msg']    = '';
 
         return $return;
     }
@@ -940,32 +911,23 @@ class User extends Common
      */
     public function manageAdd($data)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '添加失败',
-            'data'   => ''
-        ];
 
         if (isset($data['mobile'])) {
             if ($data['mobile'] == '') {
-                $return['msg'] = '手机号不能为空';
-                return $return;
+                return error_code(11051);
             }
             if (!isMobile($data['mobile'])) {
-                $return['msg'] = '请输入正确的手机号';
-                return $return;
+                return error_code(11057);
             }
             $flag = $this->checkUserByMobile($data['mobile']);
             if ($flag) {
-                $return['msg'] = '手机号已经存在，请更换手机号重新添加';
-                return $return;
+                return error_code(11058);
             }
         }
 
         if (isset($data['username']) && $data['username'] != "") {
             if ($this->where('username', $data['username'])->find()) {
-                $return['msg'] = '用户名已经存在，请确认';
-                return $return;
+                return error_code(11059);
             }
         }
 
@@ -975,8 +937,7 @@ class User extends Common
             }
             //密码效验
             if ($data['password'] !== $data['repassword']) {
-                $return['msg'] = '两次输入的密码不一致，请重新输入。';
-                return $return;
+                return error_code(11025);
             }
         }
         if (!isset($data['pid']) || $data['pid'] == '') {
@@ -1018,9 +979,6 @@ class User extends Common
         $newData['grade']    = $data['grade'];
         $newData['remarks'] = isset($data['remarks']) ? $data['remarks'] : '';
         $result         = $this->save($newData);
-        dump($newData);
-        dump($this->getLastSql());
-        die();
         $return['data'] = $this->id;
         if ($result) {
             $newData['id'] = $this->id;
@@ -1032,6 +990,8 @@ class User extends Common
             $return['status'] = true;
             $return['msg']    = '添加成功';
 
+        }else{
+            return error_code(10038);
         }
 
         return $return;
@@ -1045,11 +1005,7 @@ class User extends Common
      */
     public function manageEdit($data)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '修改失败',
-            'data'   => ''
-        ];
+        $return = error_code(10024);
 
         //校验数据
         $validate = new Validate($this->rule, $this->msg);
@@ -1069,13 +1025,11 @@ class User extends Common
         //输入密码时修改密码
         if (isset($data['password']) && $data['password'] != '') {
             if (strlen($data['password']) < 6 || strlen($data['password']) > 20) {
-                $return['msg'] = '密码长度为6-20位';
-                return $return;
+                return error_code(11009);
             }
             //密码效验
             if ($data['password'] !== $data['repassword']) {
-                $return['msg'] = '两次输入的密码不一致，请重新输入。';
-                return $return;
+                return error_code(11025);
             }
             $userInfo            = $this->get($data['id']);
             $newData['password'] = $this->enPassword($data['password'], $userInfo['ctime']);
@@ -1185,11 +1139,7 @@ class User extends Common
  */
     public function getCsvData($post)
     {
-        $result   = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '无可导出商品'
-        ];
+        $result   = error_code(10083);
         $header   = $this->csvHeader();
         $userData = $this->tableData($post, false);
 

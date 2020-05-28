@@ -63,12 +63,6 @@ class Promotion extends Common
     //购物车的数据传过来，然后去算优惠券
     public function toCoupon(&$cart, $promotion_arr)
     {
-        $result = [
-            'status' => false,
-            'data'   => '',
-            'msg'    => ''
-
-        ];
         foreach ($promotion_arr as $k => $v) {
             //按照权重取所有已生效的促销列表
             $where   = [];
@@ -88,7 +82,11 @@ class Promotion extends Common
                 return error_code(15014);
             }
         }
-        $result['status'] = true;
+        $result = [
+            'status' => true,
+            'data'   => '',
+            'msg'    => ''
+        ];
         return $result;
     }
 
@@ -305,18 +303,14 @@ class Promotion extends Common
      */
     public function getGroupDetial($goods_id = 0, $token = '', $fields = '*', $group_id = 0)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '',
-        ];
+
         if (!$goods_id) {
-            return $result;
+            return error_code(12009);
         }
 
         if (!isInGroup($goods_id, $group_id, $condition)) {
-            $result['msg'] = '活动不存在';
-            return $result;
+//            $result['msg'] = '活动不存在';
+            return error_code(17639);
         }
 
         $goodsModel = new Goods();
@@ -327,12 +321,12 @@ class Promotion extends Common
         $goods = $goodsModel->getGoodsDetial($goods_id, $fields, $token, $goods_type, ['group_id' => $group_id]);
 
         if (!$goods['data']) {
-            $result['msg'] = '商品不存在';
-            return $result;
+//            $result['msg'] = '商品不存在';
+            return error_code(12700);
         }
         if ($goods['data']['marketable'] == $goodsModel::MARKETABLE_DOWN) {
-            $result['msg'] = '商品已下架';
-            return $result;
+//            $result['msg'] = '商品已下架';
+            return error_code(12706);
         }
         $extendParams = json_decode($condition['params'], true);
         //调整前台显示数量
@@ -401,11 +395,7 @@ class Promotion extends Common
      */
     public function getCouponList($field)
     {
-        $return = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return = error_code(10037);
 
         $where[]        = ['status', 'eq', self::STATUS_OPEN];
         $where[]        = ['type', 'eq', self::TYPE_COUPON];

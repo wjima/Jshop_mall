@@ -1,10 +1,10 @@
 <template>
 	<view class="content">
 		<view class="content-top">
-			<view class='img-list'>
+			<block v-for="item in info.items"
+				:key="item.id" >
+			<view class='img-list' v-if="item.name.indexOf('赠品') < 0">
 				<view class='img-list-item'
-				v-for="item in info.items"
-				:key="item.id"
 				>
 					<view class="img-list-item-gray">
 						<image class='img-list-item-l small-img' :src='item.image_url' mode='aspectFill'></image>
@@ -51,7 +51,7 @@
 					
 				</view>
 			</view>
-			
+			</block>
 		</view>
 
 		<view class="button-bottom">
@@ -319,5 +319,16 @@ export default {
 }
 .button-bottom .btn{
 	width: 100%;
+}
+.evaluate-c-t {
+	padding-left: 20rpx;
+	font-size: 24rpx;
+}
+/deep/ .uni-input-input {
+	font-size: 26rpx !important;
+}
+.uni-input-placeholder {
+	font-size: 24rpx;
+	color: #ccc;
 }
 </style>

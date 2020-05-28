@@ -131,12 +131,7 @@
 					<tbody>
 					{foreach $order.items as $key=>$vo}
 					<tr>
-						<td>{$vo.name} {if $vo.addon}- {$vo.addon} {/if}<br />
-							{if $vo.giveaway}
-							{foreach $vo.giveaway as $v}
-							<span class="zhsp">商品赠品：{$v.name}({$v.bn}) x {$v.num}</span>
-							{/foreach}
-							{/if}
+						<td>{$vo.name} {if $vo.addon}- {$vo.addon} {/if}
 						</td>
 						<td>{$vo.price}</td>
 						<td>
@@ -156,26 +151,6 @@
 					</tbody>
 				</table>
 
-				{if $order.giveaway}
-				<table class="layui-table" lay-size="sm">
-					<thead>
-					<tr>
-						<th>赠品名称</th>
-						<th>赠品编码</th>
-						<th>赠品数量</th>
-					</tr>
-					</thead>
-					<tbody>
-					{foreach $order.giveaway as $key=>$vo}
-					<tr>
-						<td>{$vo.name}</td>
-						<td>{$vo.bn}</td>
-						<td>{$vo.num}</td>
-					</tr>
-					{/foreach}
-					</tbody>
-				</table>
-				{/if}
 				<div class="layui-form-item" style="color:red;">
 					<div class="layui-form-mid">说明：<br />1. 如果数量为0会删除此列，请谨慎操作。<br />2. 目前没有实现加商品的操作。<br />3. 商品数量修改仅限于未支付订单 </div>
 				</div>

@@ -67,6 +67,7 @@ class Giveaway implements Result
 
 
         $productInfo['data']['price'] = 0;
+        $productInfo['data']['amount'] = 0;
         //$productInfo['data']['name'] .= "[赠品]";
 
         $result['data']['products'] = $productInfo['data'];

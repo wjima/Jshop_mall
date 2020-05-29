@@ -262,7 +262,11 @@ class Addons extends Manage
             $hookModel = new Hooks();
             $config    = $addons->getConfig();
             $oldConfig = json_decode($data['config'], true);
-            $config    = array_merge($config, $oldConfig);
+            $menu      = isset($config['menu']) ? $config['menu'] : [];
+
+            $config         = array_merge($config, $oldConfig);
+            $config['menu'] = $menu;//菜单使用最新的
+
             $iData     = [
                 'title'       => $info['title'],
                 'description' => $info['description'],

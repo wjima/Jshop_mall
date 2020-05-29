@@ -1,2 +1,2 @@
-INSERT INTO jshop_operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (NULL, '238', '第三方账号', 'userwx', 'a', '238', '1', '100');
-INSERT INTO jshop_operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (NULL, '238', '第三方账号删除', 'userwxdel', 'a', '238', '2', '100');
+INSERT INTO jshop_operation (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (NULL, '238', '第三方账号', 'userwx', 'a', '238', '1', '100');
+INSERT INTO jshop_operation (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (NULL, '238', '第三方账号删除', 'userwxdel', 'a', '238', '2', '100');

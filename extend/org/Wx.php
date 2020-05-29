@@ -114,9 +114,9 @@ class Wx
      * @param string $secret
      * @return mixed
      */
-    public function getAccessToken($appid = '', $secret = '')
+    public function getAccessToken($appid, $secret)
     {
-        //todo::$appid和$secret从配置文件获取
+
         //查询是否有缓存的access_token todo::改成mysql数据库存储
         $key = $appid.'_'.$secret;
         $val = Cache::get($key);
@@ -134,6 +134,89 @@ class Wx
         }
         //返回access_token
         return $val;
+    }
+
+    /**
+     * 获取jsapi_ticket,用于前端调用微信公众号中调用js-sdk
+     * @param string $appid
+     * @param string $secret
+     * @return mixed
+     */
+    public function getJsapiTicket()
+    {
+        $appid = getSetting('wx_official_appid');
+        $secret = getSetting('wx_official_app_secret');
+
+        //查询是否有缓存的access_token todo::改成mysql数据库存储
+        $key = $appid.'_'.$secret.'_jsapi_ticket';
+        $val = Cache::get($key);
+        if(!$val)
+        {
+            //先取token
+            $access_token = $this->getAccessToken($appid,$secret);
+            if($access_token == ''){
+                return '';
+            }
+
+            //没有缓存的，去微信接口获取access_token
+            $curl = new Curl();
+            $url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi';
+            $res = $curl->get($url);
+            $res = json_decode($res, true);
+            $val = $res['ticket'];
+
+            //存储缓存获取的access_token todo::改成mysql数据库存储
+            Cache::set($key, $val, 3600);
+        }
+        return $val;
+    }
+
+    /**
+     * 微信公众号js-sdk配置
+     * @param $url
+     * @return array|mixed
+     */
+    public function jssdk($url){
+        $result = [
+            'status' => true,
+            'data' => [],
+            'msg' => ''
+        ];
+        $ticket = $this->getJsapiTicket();
+        if($ticket == ''){
+            return error_code(10200);
+        }
+        $timestamp = time();
+        $nonceStr = $this->createNonceStr();
+
+        // 这里参数的顺序要按照 key 值 ASCII 码升序排序
+        $string = "jsapi_ticket=$ticket&noncestr=$nonceStr&timestamp=$timestamp&url=$url";
+        $signature = sha1($string);
+        $signPackage = [
+            'appId'     => getSetting('wx_official_appid'),
+            'nonceStr'  => $nonceStr,
+            'timestamp' => $timestamp,
+            'url'       => $url,
+            'signature' => $signature,
+            'rawString' => $string
+        ];
+        $result['data'] = $signPackage;
+        return $result;
+    }
+
+    /**
+     *
+     *  生成随机字符串
+     * @param int $length
+     * @return string
+     */
+    private function createNonceStr($length = 16) {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $str = "";
+        for ($i = 0; $i < $length; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
     }
 
 

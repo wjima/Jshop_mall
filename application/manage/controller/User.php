@@ -437,9 +437,33 @@ class User extends Manage
             $userWxModel = new UserWx();
             $userWxModel->where([['user_id','in', $ids]])->delete();
             hook('deleteUserAfter',$ids);
-            $result['msg'] = '删除成功';
+            $result['msg'] = '';
             $result['status'] = true;
         }
         return $result;
+    }
+    public function userwx(){
+        if(Request::isAjax())
+        {
+            $userModel = new UserWx();
+            return $userModel->tableData(input('param.'));
+        }
+        return $this->fetch('userwx');
+    }
+    public function userwxdel(){
+        if(!input('?param.id')){
+            return error_code(14017);
+        }
+        $userWxModel = new UserWx();
+        $re = $userWxModel->where([['id','=', input('param.id')]])->delete();
+        if($re){
+            return [
+                'status' => true,
+                'data' => '',
+                'msg' => ''
+            ];
+        }else{
+            return error_code(10023);
+        }
     }
 }

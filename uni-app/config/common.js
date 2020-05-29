@@ -27,6 +27,8 @@ function jumpToLogin(method) {
 		// 将当前页面route存vuex中 登录注册后跳转
 		let pages = getCurrentPages()
 		let page = pages[pages.length - 1]
+		// console.log(page);
+		// console.log(page.route);
 		// 获取页面参数信息
 		let pagePath = ''
 		// #ifdef H5 || MP-WEIXIN || APP-PLUS	 || APP-PLUS-NVUE
@@ -57,6 +59,14 @@ function jumpToLogin(method) {
 			}
 		}
 		
+		if (page.route.indexOf('pages/bargain/index') !== -1) {
+			//砍价
+			if (page.id && page.id != '' && page.type && page.record_id && page.record_id != 0) {
+				pagePath = '/' + page.route + '?id=' + page.id + '&type=' + page.type + '&record_id=' + page.record_id;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
 		// #endif
 
 		// #ifdef MP-ALIPAY
@@ -84,8 +94,16 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
+		if (page.__proto__.route.indexOf('pages/bargain/index') !== -1) {
+			//砍价
+			if (page.data.id && page.data.id != '' && page.data.type && page.data.record_id && page.data.record_id != 0) {
+				pagePath = '/' + page.__proto__.route + '?id=' + page.data.id + '&type=' + page.data.type + '&record_id=' + page.data.record_id;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
 		// #endif
-		console.log(pagePath);
+		// console.log(pagePath);
 		if (pagePath) {
 			store.commit({
 				type: 'redirect',

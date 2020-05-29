@@ -889,3 +889,6 @@ export const getShareCoupon = (data, callback) => post('api.coupon.WelfarePro', 
 
 //团购秒杀获取货品信息
 export const getGroupProductInfo = (data, callback) => post('group.getproductinfo', data, callback);
+
+// 分享配置
+export const getShareInfo = (data, callback) => post('weixinshare.share', data, callback);

@@ -309,7 +309,9 @@
 	import shareByApp from '@/components/share/shareByApp.vue'
 	// #endif
 	import jshopContent from '@/components/jshop/jshop-content.vue' //视频和文本解析组件
-	
+	import {
+		h5Url
+	} from '@/config/config.js'
 
 	export default {
 		components: {
@@ -413,7 +415,6 @@
 					});
 				});
 			}
-
 			// 获取购物车数量
 			this.getCartNums();
 			this.$api.shopConfig(res => {
@@ -438,12 +439,7 @@
 			};
 			this.ifwxl();
 			
-			// 分享朋友和朋友圈
-			// #ifdef H5
-			if (this.$common.isWeiXinBrowser()) {
-				this.shareAll()
-			}
-			// #endif
+		
 		},
 		onShow() {
 			this.submitStatus = false;
@@ -536,9 +532,15 @@
 						this.goodsInfo = info;
 						this.isfav = this.goodsInfo.isfav === 'true' ? true : false;
 						this.product = this.spesClassHandle(products);
-
-
-
+						
+						// 分享朋友和朋友圈
+						// #ifdef H5
+						if (this.$common.isWeiXinBrowser()) {
+							this.shareAll()
+						}
+						// #endif
+						
+						
 						// 判断如果登录用户添加商品浏览足迹
 						if (userToken) {
 							this.goodsBrowsing();
@@ -842,32 +844,51 @@
 				// 微信浏览器里面
 				// console.log(window.location.href);
 				let data = {
-					url: window.location.href
+					client: 1,
+					url: h5Url + 'pages/share/jump',
+					type: 1,
+					page: 2,
+					params: {
+						goods_id: this.goodsId,
+					}
+				};
+				let userToken = this.$db.get('userToken');
+				if (userToken && userToken != '') {
+					data['token'] = userToken;
 				}
-				let _this = this;
-				this.$api.getShareInfo(data, res => {
-					if (res.status) {
-						_this.$wx.config({
-							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
-							appId: res.data.appId, // 必填，公众号的唯一标识  
-							timestamp: res.data.timestamp, // 必填，生成签名的时间戳  
-							nonceStr: res.data.nonceStr, // 必填，生成签名的随机串  
-							signature: res.data.signature, // 必填，签名，见附录1  
-							jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"]
-						});
-						_this.$wx.ready(function() {
-							let shareInfo = {
-								title: _this.product.name,
-								desc: _this.goodsInfo.brief,
-								imgUrl: _this.goodsInfo.album[0]
+				this.$api.share(data, res => {
+					if(res.status){
+						let data1 = {
+							url: res.data
+						}
+						let _this = this;
+						_this.$api.getShareInfo(data1, res => {
+							if (res.status) {
+								_this.$wx.config({
+									debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
+									appId: res.data.appId, // 必填，公众号的唯一标识  
+									timestamp: res.data.timestamp, // 必填，生成签名的时间戳  
+									nonceStr: res.data.nonceStr, // 必填，生成签名的随机串  
+									signature: res.data.signature, // 必填，签名，见附录1  
+									jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"]
+								});
+								_this.$wx.ready(function() {
+									let shareInfo = {
+										title: _this.product.name,
+										desc: _this.goodsInfo.brief,
+										imgUrl: _this.goodsInfo.album[0]
+									}
+									// 分享朋友
+									_this.$wx.updateAppMessageShareData(shareInfo);
+									// 分享朋友圈
+									_this.$wx.updateTimelineShareData(shareInfo);
+								})
 							}
-							// 分享朋友
-							_this.$wx.updateAppMessageShareData(shareInfo);
-							// 分享朋友圈
-							_this.$wx.updateTimelineShareData(shareInfo);
-						})
+						});
 					}
 				});
+				
+			
 			}
 		},
 		watch: {

@@ -102,7 +102,7 @@
             <li lay-id="warn">库存报警<span class="layui-badge">{$statics.totalWarn|default=0}</span></li>
         </ul>
         <div class="layui-tab-content" >
-            <table id="goodsTable" lay-filter="test"></table>
+            <table id="goodsTable" lay-filter="goodsTable"></table>
         </div>
 	</div>
 </div>
@@ -191,7 +191,7 @@
             ]]
         });
 
-        layui.table.on('edit(test)', function(obj){
+        layui.table.on('edit(goodsTable)', function(obj){
 
             JsPost("{:url('goods/updateSort')}",{'field':obj.field,'value':obj.value,'id':obj.data.id},function(res){
                     layer.msg(res.msg, {time:1500}, function(){

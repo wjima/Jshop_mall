@@ -72,7 +72,9 @@
                 <select name="batchOperate" id="batchOperate" lay-filter="batchOperate">
                     <option value=""></option>
                     <option value="modify_price">修改价格</option>
+                    {if !get_addons_status('StockControl')}
                     <option value="modify_stock">调整库存</option>
+                    {/if}
                     <option value="marketable_up">批量上架</option>
                     <option value="marketable_down">批量下架</option>
                     <option value="label">打标签</option>

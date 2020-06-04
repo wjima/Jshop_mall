@@ -81,14 +81,10 @@ return [
                 'code'     => 'goodsCollectionList',
                 'is_login' => true
             ],
-            'saveusership'            => [
-                'code'     => 'saveUserShip',
-                'is_login' => true
-            ],
-            'vuesaveusership'         => [
-                'code'     => 'vueSaveUserShip',
-                'is_login' => true
-            ],
+            // 'saveusership'            => [
+            //     'code'     => 'saveUserShip',
+            //     'is_login' => true
+            // ],
             'getshipdetail'           => [
                 'code'     => 'getShipDetail',
                 'is_login' => true

@@ -40,8 +40,8 @@ class Setting extends Manage
 
 
     /*
-        * 弹出层视频列表
-        * */
+    * 弹出层视频列表
+    * */
     public function videos(){
         $videosModel = new VideosModel();
 
@@ -77,11 +77,10 @@ class Setting extends Manage
             'msg'    => '删除成功'
         ];
         $id = input('param.id/d');
-        $url = input('param.path');
         $res = $videosModel->destroy($id);
-        if (!unlink($url) && !$res) { // 删除视频文件
+        if (!$res) { // 删除视频文件
             $result['status'] = false;
-            $result['msg']    = error_code(10023,true);
+            $result['msg']    = '删除失败';
         }
         return $result;
     }

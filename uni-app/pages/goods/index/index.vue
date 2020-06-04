@@ -438,8 +438,8 @@
 				})
 			};
 			this.ifwxl();
-			
-		
+
+
 		},
 		onShow() {
 			this.submitStatus = false;
@@ -532,15 +532,15 @@
 						this.goodsInfo = info;
 						this.isfav = this.goodsInfo.isfav === 'true' ? true : false;
 						this.product = this.spesClassHandle(products);
-						
+
 						// 分享朋友和朋友圈
 						// #ifdef H5
 						if (this.$common.isWeiXinBrowser()) {
 							this.shareAll()
 						}
 						// #endif
-						
-						
+
+
 						// 判断如果登录用户添加商品浏览足迹
 						if (userToken) {
 							this.goodsBrowsing();
@@ -857,12 +857,15 @@
 					data['token'] = userToken;
 				}
 				this.$api.share(data, res => {
-					if(res.status){
+					if (res.status) {
 						let data1 = {
-							url: res.data
+							url: window.location.href
 						}
+						let link = res.data;
+						// console.log(link);
 						let _this = this;
 						_this.$api.getShareInfo(data1, res => {
+
 							if (res.status) {
 								_this.$wx.config({
 									debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。  
@@ -876,7 +879,8 @@
 									let shareInfo = {
 										title: _this.product.name,
 										desc: _this.goodsInfo.brief,
-										imgUrl: _this.goodsInfo.album[0]
+										imgUrl: _this.goodsInfo.album[0],
+										link: link
 									}
 									// 分享朋友
 									_this.$wx.updateAppMessageShareData(shareInfo);
@@ -887,8 +891,8 @@
 						});
 					}
 				});
-				
-			
+
+
 			}
 		},
 		watch: {

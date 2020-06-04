@@ -11,155 +11,159 @@ class UserShip extends Common
     const SHIP_DEFAULT = 1;
     const SHIP_DEFAULT_NO = 2;
 
+        //时间自动存储
+        protected $autoWriteTimestamp = true;
+        protected $createTime = false;
+        protected $updateTime = 'utime';
 
-    /**
-     * 存储收货地址
-     * @param $data
-     * @return int|mixed|string
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
-     */
-    public function saveShip($data)
-    {
-        $character = ["\r\n", "\n", "\r"];
-        $data['address'] = str_replace($character, '', $data['address']);
+    // /**
+    //  * 存储收货地址
+    //  * @param $data
+    //  * @return int|mixed|string
+    //  * @throws \think\Exception
+    //  * @throws \think\db\exception\DataNotFoundException
+    //  * @throws \think\db\exception\ModelNotFoundException
+    //  * @throws \think\exception\DbException
+    //  * @throws \think\exception\PDOException
+    //  */
+    // public function saveShip($data)
+    // {
+    //     $character = ["\r\n", "\n", "\r"];
+    //     $data['address'] = str_replace($character, '', $data['address']);
 
-        $where[] = ['user_id', 'eq', $data['user_id']];
-        $where[] = ['area_id', 'eq', $data['area_id']];
-        $where[] = ['address', 'eq', $data['address']];
-        $where[] = ['name', 'eq', $data['name']];
-        $where[] = ['mobile', 'eq', $data['mobile']];
+    //     $where[] = ['user_id', 'eq', $data['user_id']];
+    //     $where[] = ['area_id', 'eq', $data['area_id']];
+    //     $where[] = ['address', 'eq', $data['address']];
+    //     $where[] = ['name', 'eq', $data['name']];
+    //     $where[] = ['mobile', 'eq', $data['mobile']];
 
-        $res = $this->where($where)
-            ->find();
-        if($res)
-        {
-            $data['utime'] = time();
-            $this->where($where)->update($data);
-            $ship_id = $res['id'];
-        }
-        else
-        {
-            $awhere[] = ['user_id', 'eq', $data['user_id']];
-            $awhere[] = ['is_def', 'eq', self::SHIP_DEFAULT];
-            $flag = $this->where($awhere)->find();
-            if(!$flag)
-            {
-                //没有默认
-                $ship_data['is_def'] = self::SHIP_DEFAULT;
-            }
-            else
-            {
-                //有默认
-                $ship_data['is_def'] = $data['is_def']?$data['is_def']:self::SHIP_DEFAULT_NO;
-            }
+    //     $res = $this->where($where)
+    //         ->find();
+    //     if($res)
+    //     {
+    //         $data['utime'] = time();
+    //         $this->where($where)->update($data);
+    //         $ship_id = $res['id'];
+    //     }
+    //     else
+    //     {
+    //         $awhere[] = ['user_id', 'eq', $data['user_id']];
+    //         $awhere[] = ['is_def', 'eq', self::SHIP_DEFAULT];
+    //         $flag = $this->where($awhere)->find();
+    //         if(!$flag)
+    //         {
+    //             //没有默认
+    //             $ship_data['is_def'] = self::SHIP_DEFAULT;
+    //         }
+    //         else
+    //         {
+    //             //有默认
+    //             $ship_data['is_def'] = $data['is_def']?$data['is_def']:self::SHIP_DEFAULT_NO;
+    //         }
 
-            $ship_data['user_id'] = $data['user_id'];
-            $ship_data['area_id'] = $data['area_id'];
-            $ship_data['address'] = $data['address'];
-            $ship_data['name'] = $data['name'];
-            $ship_data['mobile'] = $data['mobile'];
-            $ship_data['utime'] = time();
-            $ship_id = $this->insertGetId($ship_data);
-        }
-        return $ship_id;
-    }
+    //         $ship_data['user_id'] = $data['user_id'];
+    //         $ship_data['area_id'] = $data['area_id'];
+    //         $ship_data['address'] = $data['address'];
+    //         $ship_data['name'] = $data['name'];
+    //         $ship_data['mobile'] = $data['mobile'];
+    //         $ship_data['utime'] = time();
+    //         $ship_id = $this->insertGetId($ship_data);
+    //     }
+    //     return $ship_id;
+    // }
 
 
-    /**
-     *
-     *
-     *  添加收货地址
-     * @param $data
-     * @return array
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
-     */
-    public function vueSaveShip($data)
-    {
+    // /**
+    //  *
+    //  *
+    //  *  添加收货地址
+    //  * @param $data
+    //  * @return array
+    //  * @throws \think\Exception
+    //  * @throws \think\db\exception\DataNotFoundException
+    //  * @throws \think\db\exception\ModelNotFoundException
+    //  * @throws \think\exception\DbException
+    //  * @throws \think\exception\PDOException
+    //  */
+    // public function vueSaveShip($data)
+    // {
 
-        $result = error_code(10004);
+    //     $result = error_code(10004);
 
-        $checkStatus = $this->checkData($data);
+    //     $checkStatus = $this->checkData($data);
 
-        if (!$checkStatus['status'])
-        {
-            return $checkStatus;
-        }
+    //     if (!$checkStatus['status'])
+    //     {
+    //         return $checkStatus;
+    //     }
 
-        $character = ["\r\n", "\n", "\r"];
-        $data['address'] = str_replace($character, '', $data['address']);
+    //     $character = ["\r\n", "\n", "\r"];
+    //     $data['address'] = str_replace($character, '', $data['address']);
 
-        $where = [];
-        $where[] = ['user_id', 'eq', $data['user_id']];
-        $where[] = ['area_id', 'eq', $data['area_id']];
-        $where[] = ['address', 'eq', $data['address']];
-        $where[] = ['name', 'eq', $data['name']];
-        $where[] = ['mobile', 'eq', $data['mobile']];
+    //     $where = [];
+    //     $where[] = ['user_id', 'eq', $data['user_id']];
+    //     $where[] = ['area_id', 'eq', $data['area_id']];
+    //     $where[] = ['address', 'eq', $data['address']];
+    //     $where[] = ['name', 'eq', $data['name']];
+    //     $where[] = ['mobile', 'eq', $data['mobile']];
 
-        $res_data = $this->where($where)->find();
-        if($res_data)
-        {
-            if($data['is_def'] === self::SHIP_DEFAULT)
-            {
-                //查找该用户是否有默认的地址
-                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
-                if(count($defData)>0)
-                {
-                    foreach($defData as $k => $v)
-                    {
-                        $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
-                    }
-                }
-            }
-            $setData['is_def'] = $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO;
-            $setData['utime'] = time();
-            $this->where($where)->update($setData);
+    //     $res_data = $this->where($where)->find();
+    //     if($res_data)
+    //     {
+    //         if($data['is_def'] === self::SHIP_DEFAULT)
+    //         {
+    //             //查找该用户是否有默认的地址
+    //             $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
+    //             if(count($defData)>0)
+    //             {
+    //                 foreach($defData as $k => $v)
+    //                 {
+    //                     $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+    //                 }
+    //             }
+    //         }
+    //         $setData['is_def'] = $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO;
+    //         $setData['utime'] = time();
+    //         $this->where($where)->update($setData);
 
-            if ($this->allowField(true)->save($setData)) {
-                $result['status'] = true;
-                $result['msg'] = '保存成功';
-            }
-        }
-        else
-        {
-            //如果设置的地址是默认的
-            if($data['is_def'] == self::SHIP_DEFAULT)
-            {
-                //查找该用户是否有默认的地址
-                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
-                if(count($defData)>0)
-                {
-                    foreach($defData as $k => $v)
-                    {
-                        $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
-                    }
-                }
-            }
-            $ship_data = [
-                'user_id' => $data['user_id'],
-                'area_id' => $data['area_id'],
-                'address' => htmlentities($data['address']),
-                'name' => htmlentities($data['name']),
-                'mobile' => $data['mobile'],
-                'utime' => time(),
-                'is_def' => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO
-            ];
+    //         if ($this->allowField(true)->save($setData)) {
+    //             $result['status'] = true;
+    //             $result['msg'] = '保存成功';
+    //         }
+    //     }
+    //     else
+    //     {
+    //         //如果设置的地址是默认的
+    //         if($data['is_def'] == self::SHIP_DEFAULT)
+    //         {
+    //             //查找该用户是否有默认的地址
+    //             $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
+    //             if(count($defData)>0)
+    //             {
+    //                 foreach($defData as $k => $v)
+    //                 {
+    //                     $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+    //                 }
+    //             }
+    //         }
+    //         $ship_data = [
+    //             'user_id' => $data['user_id'],
+    //             'area_id' => $data['area_id'],
+    //             'address' => htmlentities($data['address']),
+    //             'name' => htmlentities($data['name']),
+    //             'mobile' => $data['mobile'],
+    //             'utime' => time(),
+    //             'is_def' => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO
+    //         ];
 
-            if ($this->allowField(true)->save($ship_data)) {
-                $result['status'] = true;
-                $result['msg'] = '保存成功';
-            }
-        }
+    //         if ($this->allowField(true)->save($ship_data)) {
+    //             $result['status'] = true;
+    //             $result['msg'] = '保存成功';
+    //         }
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
 
     /**
@@ -191,7 +195,7 @@ class UserShip extends Common
 
 
     /**
-     * 编辑收货地址
+     * 新增&编辑收货地址
      * @param $data
      * @param $user_id
      * @return array
@@ -203,7 +207,11 @@ class UserShip extends Common
      */
     public function editShip ($data,$user_id)
     {
-        $result = error_code(10004);
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
 
 
         // 收货地址验证
@@ -213,40 +221,73 @@ class UserShip extends Common
         {
             return $checkStatus;
         }
-
-
-        $where[] = ['id', 'eq', $data['id']];
-        $where[] = ['user_id', 'eq', $user_id];
-        $oldData = $this->where($where)->find();
-        if($oldData)
+        if($data['address'])
         {
+            $character = ["\r\n", "\n", "\r"];
+            $data['address'] = str_replace($character, '', $data['address']);
+        }
+
+        $ship_data = [
+            'user_id' => $user_id,
+            'area_id' => $data['area_id'],
+            'address' => htmlentities($data['address']),
+            'name' => htmlentities($data['name']),
+            'mobile' => $data['mobile'],
+            'utime' => time(),
+            'is_def' => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO
+        ];
+
+        if(isset($data['id'])){
+            //编辑
+            $where[] = ['id', 'eq', $data['id']];
+            $where[] = ['user_id', 'eq', $user_id];
+            $oldData = $this->where($where)->find();
+            if($oldData)
+            {
+                if($data['is_def'] == self::SHIP_DEFAULT)
+                {
+                    $where1[] = ['user_id', 'eq', $user_id];
+                    $where1[] = ['is_def', 'eq', self::SHIP_DEFAULT];
+                    $defData = $this->where($where1)->select();
+                    foreach($defData as $k => $v)
+                    {
+                        $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    }
+                }
+                if($this->allowField(true)->save($ship_data,['id'=>$data['id'],'user_id'=>$user_id]))
+                {
+                    $result['status'] = true;
+                }else{
+                    return error_code(10004);
+                }
+            }
+            else
+            {
+                return error_code(11062);
+            }
+        }else{
+            //新增
+            //如果设置的地址是默认的
             if($data['is_def'] == self::SHIP_DEFAULT)
             {
-                $where1[] = ['user_id', 'eq', $user_id];
-                $where1[] = ['is_def', 'eq', self::SHIP_DEFAULT];
-                $defData = $this->where($where1)->select();
-                foreach($defData as $k => $v)
+                //查找该用户是否有默认的地址
+                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
+                if(count($defData)>0)
                 {
-                    $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    foreach($defData as $k => $v)
+                    {
+                        $this->where('id',$v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    }
                 }
             }
 
-            if($data['address'])
-            {
-                $character = ["\r\n", "\n", "\r"];
-                $data['address'] = str_replace($character, '', $data['address']);
-            }
-
-            if($this->allowField(true)->save($data,['id'=>$data['id'],'user_id'=>$user_id]))
-            {
+            if ($this->allowField(true)->save($ship_data)) {
                 $result['status'] = true;
-                $result['msg'] = '保存成功';
+            }else{
+                return error_code(10004);
             }
         }
-        else
-        {
-            return error_code(11062);
-        }
+        
         return $result;
     }
 

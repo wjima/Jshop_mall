@@ -80,22 +80,17 @@ class Products extends Common
      */
     public function getProductInfo($id, $isPromotion = true, $user_id = 0, $type = 'goods',$params = [])
     {
-        $result  = [
-            'status' => false,
-            'msg'    => error_code(10025,true),
-            'data'   => [],
-        ];
         $product = $this->where(['id' => $id])->field('*')->find();
 
         if (!$product) {
-            return $result;
+            return error_code(12501);
         }
         $goodsModel = new Goods();
 
         $goods = $goodsModel->where(['id' => $product['goods_id']])->field('name,image_id,bn,marketable,spes_desc')->find(); //后期调整
         //判断如果没有商品，就返回false
         if (!($goods)) {
-            return $result;
+            return error_code(12700);
         }
 
         $product['name']     = $goods['name'];
@@ -252,7 +247,7 @@ class Products extends Common
 
         $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => $product
         ];
         return $result;
@@ -293,12 +288,6 @@ class Products extends Common
      */
     public function getShelfStatus($products_id)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '商品已下架',
-            'data'   => ''
-        ];
-
         $where[]        = ['p.id', 'eq', $products_id];
         $return['data'] = $this->alias('p')
             ->field('p.id,g.marketable')
@@ -309,8 +298,10 @@ class Products extends Common
         if ($return['data'] && $return['data']['marketable'] == 1) {
             $return['status'] = true;
             $return['msg']    = '上架';
+            $return['data'] = '';
+        }else{
+            return  error_code(12706);
         }
-
         return $return;
     }
 }

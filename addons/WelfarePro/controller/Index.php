@@ -102,7 +102,7 @@ class Index extends AddonController
                 $this->assign('info',$info);
             }
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch();
             return $return;
         }
@@ -189,7 +189,7 @@ class Index extends AddonController
 //            }
             $this->assign('couponlist',$couponList);
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch();
             return $return;
         }

@@ -76,7 +76,7 @@ class Order extends Manage
                 }
                 $return_data = array(
                     'status' => true,
-                    'msg' => error_code(10026,true),
+                    'msg' => '查询成功',
                     'count' => $data['count'],
                     'data' => $data['data']
                 );
@@ -122,7 +122,7 @@ class Order extends Manage
         }
 
         $return['status'] = true;
-        $return['msg'] = error_code(10038,true);
+        $return['msg'] = '成功';
         $return['data'] = $this->fetch('view');
         return $return;
     }
@@ -269,7 +269,7 @@ class Order extends Manage
         if ($result) {
             $return_data = [
                 'status' => true,
-                'msg' => error_code(10038,true),
+                'msg' => '操作成功',
                 'data' => $result
             ];
         } else {
@@ -300,7 +300,7 @@ class Order extends Manage
         if ($result) {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(10038,true),
+                'msg' => '操作成功',
                 'data' => $result
             );
         } else {
@@ -326,7 +326,7 @@ class Order extends Manage
         if ($result) {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(10022,true),
+                'msg' => '删除成功',
                 'data' => $result
             );
         } else {
@@ -360,7 +360,7 @@ class Order extends Manage
 //        $id = Request::param('order_id', '');
 //        $data = $billDeliveryModel->getLogisticsInformation($id);
 //        $return['status'] = true;
-//        $return['msg'] = error_code(10038,true);
+//        $return['msg'] = '成功';
 //        $return['data'] = $this->fetch('logistics', ['data' => $data]);
 //        return $return;
 //    }
@@ -382,7 +382,7 @@ class Order extends Manage
 
         $data = [
             'legend' => [
-                'data' => [error_code(13007,true), error_code(13008,true)]
+                'data' => ['已支付', '已发货']
             ],
             'xAxis' => [
                 [
@@ -392,12 +392,12 @@ class Order extends Manage
             ],
             'series' => [
                 [
-                    'name' => error_code(13007,true),
+                    'name' => '已支付',
                     'type' => 'line',
                     'data' => $payres['data']
                 ],
                 [
-                    'name' => error_code(13008,true),
+                    'name' => '已发货',
                     'type' => 'line',
                     'data' => $deliveryres
                 ]
@@ -507,7 +507,7 @@ class Order extends Manage
             $logi_info = $logisticsModel->getAll();
             $this->assign('logi', $logi_info);
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch('print_form');
             return $return;
         }

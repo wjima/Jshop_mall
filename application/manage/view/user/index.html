@@ -24,17 +24,15 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                <input type="text" name="mobile" lay-verify="title" placeholder="手机号码或用户名" autocomplete="off"
                     class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">性别：</label>
             <div class="layui-input-inline seller-inline-2">
                 <select name="sex" lay-verify="">
-                    <option value=""></option>
+                    <option value="">性别</option>
                     <option value="1">男</option>
                     <option value="2">女</option>
                     <option value="3">其他</option>
@@ -42,26 +40,33 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">昵称：</label>
             <div class="layui-input-inline seller-inline-2">
                 <input type="text" name="nickname" lay-verify="title" placeholder="用户昵称" autocomplete="off"
                     class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline seller-inline-3">
+            <div class="layui-input-inline seller-inline-2">
                 <select name="status" lay-verify="">
-                    <option value=""></option>
+                    <option value="">状态</option>
                     <option value="1">正常</option>
                     <option value="2">停用</option>
                 </select>
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">推荐人：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="pmobile" lay-verify="title" placeholder="推荐人手机号" autocomplete="off"
+            <div class="layui-input-inline seller-inline-2">
+                <select name="grade" lay-verify="">
+                    <option value="">用户等级</option>
+                    {volist name="grade" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline seller-inline-3" style="width:168px;">
+                <input type="text" name="pmobile" lay-verify="title" placeholder="推荐人手机号码或用户名" autocomplete="off"
                     class="layui-input">
             </div>
         </div>

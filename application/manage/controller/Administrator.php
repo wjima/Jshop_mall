@@ -74,7 +74,7 @@ class Administrator extends ManageController
         }
         $this->assign('roleList', $manageRoleList);
         $result['status'] = true;
-        $result['msg']    = error_code(10018,true);
+        $result['msg']    = '成功';
         $result['data']   = $this->fetch('edit');
         return $result;
     }
@@ -131,7 +131,7 @@ class Administrator extends ManageController
         $this->assign('roleList', $manageRoleList);
         $this->assign('manageInfo', $manageInfo);
         $result['status'] = true;
-        $result['msg']    = error_code(10020,true);
+        $result['msg']    = '成功';
         $result['data']   = $this->fetch('edit');
         return $result;
     }
@@ -163,7 +163,7 @@ class Administrator extends ManageController
         $re          = $manageModel->where($where)->delete();
         if ($re) {
             $result['status'] = true;
-            $result['msg']    = error_code(10022,true);
+            $result['msg']    = '删除成功';
         } else {
             $result['msg'] = error_code(10023,true);
         }
@@ -243,14 +243,14 @@ class Administrator extends ManageController
             $return['data']['version']          = $version;
             $return['data']['product']          = $product;
             $return['data']['changeLog']        = $data['data']['changeLog'];
-            $return['msg']                      = error_code(10026,true);
+            $return['msg']                      = '授权查询成功';
             $return['status']                   = true;
             return $return;
         }
         //未授权
         $return['data']['product']          = $product;
         $return['data']['version']          = $version;
-        $return['data']['changeLog']        = error_code(10073);
+        $return['data']['changeLog']        = '未查询到授权信息';
         $return['data']['is_authorization'] = false;
         return $return;
     }

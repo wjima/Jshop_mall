@@ -26,7 +26,7 @@ class Common extends Base
         $shop_name = getSetting('shop_name');
         $this->assign('shop_name',$shop_name);
         if (session('?manage')) {
-            $this->success(error_code(20100,true),redirect_url(url('Index/index')));
+            $this->success('已经登录成功，跳转中...',redirect_url(url('Index/index')));
         }
         if(Request::isPost()){
             $manageModel = new Manage();
@@ -57,6 +57,6 @@ class Common extends Base
             $userLogModel->setLog(session('manage.id'),$userLogModel::USER_LOGOUT);
         }
         session('manage', null);
-        $this->success(error_code(20101,true),url('Index/index'));
+        $this->success('退出成功',url('Index/index'));
     }
 }

@@ -26,7 +26,7 @@ class WelfareproHb extends Common
         //如果是方法，code换成小写
         $theDate = explode(' 到 ', input('param.date'));
         if (count($theDate) != 2) {
-            return error_code(10000);
+            return error_code(15002);
         }
         $data['date_start'] = strtotime($theDate[0]);
         $data['date_end'] = strtotime($theDate[1]);

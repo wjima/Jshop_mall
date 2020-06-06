@@ -7,6 +7,7 @@ use addons\WelfarePro\model\WelfareproHb;
 use app\common\model\User;
 use myxland\addons\Addons;
 use app\common\model\Addons as addonsModel;
+use think\Db;
 
 /**
  * 领红包和领优惠券功能
@@ -29,6 +30,21 @@ class WelfarePro extends Addons
      */
     public function install()
     {
+        //先判断表是否存在，如果存在，就不安装了
+        $db = new Db();
+        $sql = "show tables like '" . config('database.prefix') . "welfarepro_hb';";
+        if($db::execute($sql)){
+            return true;
+        }
+        //表不存在，开始安装
+        $sql = file_get_contents(ADDON_PATH . 'WelfarePro/sql/install.sql');
+        $sql = str_replace("`jshop_",'`'.config('database.prefix'),$sql);
+        $list = explode(';', $sql);
+        for ($i = 0; $i < count($list); $i++) {
+            if (trim($list[$i])) {
+                $db::execute(trim($list[$i]));
+            }
+        }
         return true;
     }
 
@@ -38,6 +54,7 @@ class WelfarePro extends Addons
      */
     public function uninstall()
     {
+        //卸载就不去删除表了，防止数据丢失
         return true;
     }
 

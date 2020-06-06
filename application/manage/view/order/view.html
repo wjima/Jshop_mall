@@ -186,13 +186,7 @@
 					<tbody>
 					{foreach $order.items as $key=>$vo}
 					<tr>
-						<td>{$vo.name} - {$vo.addon}<br />
-							{if $vo.giveaway}
-								{foreach $vo.giveaway as $v}
-									<span class="zhsp">商品赠品：{$v.name}({$v.bn}) x {$v.num}</span>
-								{/foreach}
-							{/if}
-						</td>
+						<td>{$vo.name} - {$vo.addon}</td>
 						<td>{$vo.price}</td>
 						<td>{$vo.nums}</td>
 						<td>{$vo.amount}</td>
@@ -206,30 +200,6 @@
 					{/foreach}
 					</tbody>
 				</table>
-
-				{if $order.giveaway}
-				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-					<legend style="font-size:14px;">订单赠品</legend>
-				</fieldset>
-				<table class="layui-table" lay-size="sm">
-					<thead>
-					<tr>
-						<th>赠品名称</th>
-						<th>赠品编码</th>
-						<th>赠品数量</th>
-					</tr>
-					</thead>
-					<tbody>
-					{foreach $order.giveaway as $key=>$vo}
-					<tr>
-						<td>{$vo.name}</td>
-						<td>{$vo.bn}</td>
-						<td>{$vo.num}</td>
-					</tr>
-					{/foreach}
-					</tbody>
-				</table>
-				{/if}
 			</div>
 
 			<!--支付单/退款单-->

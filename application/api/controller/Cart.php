@@ -73,7 +73,7 @@ class Cart extends Api
         {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(14013,true),
+                'msg' => '移除购物车成功',
                 'data' => $result
             );
         }
@@ -163,7 +163,7 @@ class Cart extends Api
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $type = input('param.order_type',1);

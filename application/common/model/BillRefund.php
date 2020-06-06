@@ -160,12 +160,12 @@ class BillRefund extends Common
         $billPaymentModel = new BillPayments();
         $paymentsInfo = $billPaymentModel->getSuccessPaymentInfo($info['source_id'],$info['type']);
         if(!$paymentsInfo){
-            $result['msg'] = '没有找到支付成功的支付单号';
-            return $result;
+//            $result['msg'] = '没有找到支付成功的支付单号';
+            return error_code(13550);
         }
         if($info['payment_code'] != $paymentsInfo['payment_code']){
-            $result['msg'] = '退款单退款方式和支付方式不一样，原路退还失败';
-            return $result;
+//            $result['msg'] = '退款单退款方式和支付方式不一样，原路退还失败';
+            return error_code(13551);
         }
 
         //取此支付方式的信息
@@ -431,12 +431,7 @@ class BillRefund extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -460,7 +455,7 @@ class BillRefund extends Common
                 }
             }
             $result['status'] = true;
-            $result['msg'] = error_code(10040,true);
+            $result['msg'] = '导出成功';
             $result['data'] = $body;
             return $result;
         } else {
@@ -509,7 +504,7 @@ class BillRefund extends Common
             $list        = $this->tableFormat($list->toArray());
             $return_data = [
                 'status' => true,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'data'   => $list,
                 'count'  => $count
             ];

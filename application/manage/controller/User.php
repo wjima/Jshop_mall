@@ -24,6 +24,10 @@ class User extends Manage
             $userModel = new UserModel();
             return $userModel->tableData(input('param.'));
         }
+        //所有用户等级
+        $gradeModel = new UserGrade();
+        $gradeList = $gradeModel->select();
+        $this->assign('grade', $gradeList);
         return $this->fetch('index');
     }
 
@@ -86,7 +90,7 @@ class User extends Manage
         $user_info = $User->where($where)->find();
         $this->assign('point', $user_info['point']);
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $this->fetch('editPoint');
         return $result;
     }
@@ -162,7 +166,7 @@ class User extends Manage
             {
                 $return = [
                     'status' => true,
-                    'msg'    => error_code(10024,true),
+                    'msg'    => '获取成功',
                     'data'   => $res['data']['list'],
                     'count'  => $res['data']['count']
                 ];
@@ -179,22 +183,6 @@ class User extends Manage
             return $return;
         }
         return $this->fetch('comment');
-    }
-
-
-    /**
-     * 修改邀请人
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function editInvite()
-    {
-        $id = Request::param('id');
-        $mobile = Request::param('mobile');
-        $model = new UserModel();
-        return $model->editInvite($id, $mobile);
     }
 
 
@@ -216,7 +204,7 @@ class User extends Manage
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $this->fetch('addUser');
         return $result;
     }
@@ -253,7 +241,7 @@ class User extends Manage
         $userGrade = $gradeModel->getAll();
         $this->assign('grade', $userGrade);
         $result['status'] = true;
-        $result['msg'] = error_code(10024,true);
+        $result['msg'] = '获取成功';
         $result['data'] = $this->fetch('editUser');
         return $result;
     }
@@ -279,7 +267,7 @@ class User extends Manage
 //        }
 //        $this->assign('info', $info);
 //        $result['status'] = true;
-//        $result['msg'] = error_code(10024,true);
+//        $result['msg'] = '获取成功';
 //        $result['data'] = $this->fetch('details');
 //        return $result;
 //    }
@@ -370,13 +358,13 @@ class User extends Manage
             $info = $userGradeModel->where('id', input('param.id'))->find();
             if(!$info)
             {
-                $result['msg'] = "没有此条记录";
+                $result['msg'] = error_code(10002,true);
                 return $result;
             }
             $this->assign('data', $info);
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('grade_edit');
         return $result;
     }
@@ -408,7 +396,7 @@ class User extends Manage
         $info = $userGradeModel->where('id', input('param.id'))->find();
         if(!$info)
         {
-            $result['msg'] = "没有此用户等级";
+            $result['msg'] = error_code(11030,true);
             return $result;
         }
         $re = $userGradeModel->where('id', input('param.id'))->delete();
@@ -418,7 +406,7 @@ class User extends Manage
         }
         else
         {
-            $result['msg'] = "删除失败";
+            $result['msg'] = error_code(10023,true);
         }
         return $result;
     }
@@ -449,9 +437,33 @@ class User extends Manage
             $userWxModel = new UserWx();
             $userWxModel->where([['user_id','in', $ids]])->delete();
             hook('deleteUserAfter',$ids);
-            $result['msg'] = error_code(10022,true);
+            $result['msg'] = '';
             $result['status'] = true;
         }
         return $result;
+    }
+    public function userwx(){
+        if(Request::isAjax())
+        {
+            $userModel = new UserWx();
+            return $userModel->tableData(input('param.'));
+        }
+        return $this->fetch('userwx');
+    }
+    public function userwxdel(){
+        if(!input('?param.id')){
+            return error_code(14017);
+        }
+        $userWxModel = new UserWx();
+        $re = $userWxModel->where([['id','=', input('param.id')]])->delete();
+        if($re){
+            return [
+                'status' => true,
+                'data' => '',
+                'msg' => ''
+            ];
+        }else{
+            return error_code(10023);
+        }
     }
 }

@@ -68,10 +68,10 @@ class BargainLog extends Common
         foreach ($list as $key => $value) {
             $list[$key]['avatar']   = _sImage(get_user_info($value['user_id'], 'avatar'));
             $list[$key]['ctime']    = getTime($value['ctime'], false);
-            $list[$key]['nickname'] = get_user_info($value['user_id'], nickname);
+            $list[$key]['nickname'] = get_user_info($value['user_id'], 'nickname');
             if(isset($value['record_id'])&& $value['record_id']){
                 $record = $recordModel->field('name,goods_name,image_url,user_id')->get($value['record_id']);
-                $list[$key]['bargain_user'] = get_user_info($record['user_id'], nickname);
+                $list[$key]['bargain_user'] = get_user_info($record['user_id'], 'nickname');
                 $list[$key]['bargain_name'] = $record['name'];
             }
         }

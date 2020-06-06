@@ -58,6 +58,10 @@ export default {
 	padding-right: 0;
 	vertical-align: top;
 	position: relative;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: baseline;
 }
 .index-article .article-title{
 	font-size: 28upx;
@@ -75,8 +79,8 @@ export default {
 	display: inline-block;
 	min-width: 220upx;
 	min-height: 32upx;
-	position: absolute;
-	bottom: 0;
+/* 	position: absolute;
+	bottom: 0; */
 }
 
 </style>

@@ -98,8 +98,8 @@ class GoodsCollection extends Common
         $goodsInfo = $goodsModel->where(array('id'=>$goodsId))->find();
         if(!$goodsInfo)
         {
-            $result['msg'] = '没有此商品';
-            return $result;
+//            $result['msg'] = '没有此商品';
+            return error_code(12700);
         }
         $data['user_id'] = $userId;
         $data['goods_id'] = $goodsId;

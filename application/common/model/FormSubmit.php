@@ -104,14 +104,10 @@ class FormSubmit extends common
      */
     public function deleteFormSubmit($id)
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10023,true),
-            'data'   => ''
-        ];
+        $result = error_code(10023);
         if (!$id) {
-            $result['msg'] = '关键参数丢失';
-            return $result;
+//            $result['msg'] = '关键参数丢失';
+            return error_code(10051);
         }
         //先删除明细
         $formSubmitDetail = new FormSubmitDetail();
@@ -119,15 +115,15 @@ class FormSubmit extends common
         $res = $formSubmitDetail->where(['submit_id' => $id])->delete();
         if (!$res) {
             Db::rollback();
-            return false;
+            return $result;
         }
         $res = $this->where(['id' => $id])->delete();
         if (!$res) {
             Db::rollback();
-            return false;
+            return $result;
         }
         Db::commit();
-        $result['msg']    = error_code(10022,true);
+        $result['msg']    = '删除成功';
         $result['status'] = true;
         return $result;
     }
@@ -153,21 +149,17 @@ class FormSubmit extends common
      */
     public function getDetail($id = 0)
     {
-        $result = [
-            'status' => true,
-            'msg'    => error_code(10025,true),
-            'data'   => []
-        ];
+        $result = error_code(10025);
         if (!$id) {
-            $result['msg']    = '关键参数丢失';
-            $result['status'] = false;
-            return $result;
+//            $result['msg']    = '关键参数丢失';
+//            $result['status'] = false;
+            return error_code(10051);
         }
         $formSubmitInfo = $this->get($id);
         if (!$formSubmitInfo) {
-            $result['status'] = false;
-            $result['msg']    = '无此提交';
-            return $result;
+//            $result['status'] = false;
+//            $result['msg']    = '无此提交';
+            return error_code(18011);
         }
         $formModel = new Form();
         $formInfo  = $formModel->getFormInfo($formSubmitInfo['form_id']);
@@ -220,7 +212,7 @@ class FormSubmit extends common
             }
         }
         $result['data']   = $formInfo['data'];
-        $result['msg']    = error_code(10024,true);
+        $result['msg']    = '获取成功';
         $result['status'] = true;
         return $result;
     }

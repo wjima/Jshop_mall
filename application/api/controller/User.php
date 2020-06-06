@@ -182,7 +182,7 @@ class User extends Api
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => error_code(10037,true)
+            'msg' => '成功'
         ];
         $userModel = new UserModel();
         if (!input("?param.mobile")) {
@@ -300,7 +300,7 @@ class User extends Api
         if ($userModel->changeAvatar($this->userId, input('param.avatar'))) {
             $result['status'] = true;
             $result['data']['avatar'] = input('param.avatar');
-            $result['msg'] = error_code(10016,true);
+            $result['msg'] = '保存成功';
         }
         return $result;
     }
@@ -434,89 +434,90 @@ class User extends Api
     }
 
 
-    /**
-     * 存储用户收货地址接口
-     * @return array
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
-     */
-    public function saveUserShip()
-    {
-        //传入进来的数据
-        $area_id = input('area_id');
-        $user_name = input('user_name');
-        $detail_info = input('detail_info');
-        $tel_number = input('tel_number');
-        $is_def = input('is_def');
-        $user_id = $this->userId;
+    // /**
+    //  * 存储用户收货地址接口
+    //  * @return array
+    //  * @throws \think\Exception
+    //  * @throws \think\db\exception\DataNotFoundException
+    //  * @throws \think\db\exception\ModelNotFoundException
+    //  * @throws \think\exception\DbException
+    //  * @throws \think\exception\PDOException
+    //  */
+    // public function saveUserShip()
+    // {
+    //     //传入进来的数据
+    //     $area_id = input('area_id');
+    //     $user_name = input('user_name');
+    //     $detail_info = input('detail_info');
+    //     $tel_number = input('tel_number');
+    //     $is_def = input('is_def');
+    //     $user_id = $this->userId;
 
-        $data['user_id'] = $user_id;
-        $data['area_id'] = $area_id;
-        $data['address'] = $detail_info;
-        $data['name'] = $user_name;
-        $data['mobile'] = $tel_number;
-        $data['is_def'] = $is_def;
+    //     $data['user_id'] = $user_id;
+    //     $data['area_id'] = $area_id;
+    //     $data['address'] = $detail_info;
+    //     $data['name'] = $user_name;
+    //     $data['mobile'] = $tel_number;
+    //     $data['is_def'] = $is_def;
 
-        //存储收货地址
-        $model = new UserShip();
-        $result = $model->saveShip($data);
-        if ($result !== false) {
-            $return_data = array(
-                'status' => true,
-                'msg' => error_code(10016,true),
-                'data' => $result
-            );
-        } else {
-            $return_data = array(
-                'status' => false,
-                'msg' => error_code(10004,true),
-                'data' => $result
-            );
-        }
-        return $return_data;
-    }
+    //     //存储收货地址
+    //     $model = new UserShip();
+    //     $result = $model->saveShip($data);
+    //     if ($result !== false) {
+    //         $return_data = array(
+    //             'status' => true,
+    //             'msg' => '保存成功',
+    //             'data' => $result
+    //         );
+    //     } else {
+    //         $return_data = array(
+    //             'status' => false,
+    //             'msg' => error_code(10004,true),
+    //             'data' => $result
+    //         );
+    //     }
+    //     return $return_data;
+    // }
 
 
-    /**
-     * H5 添加收货地址
-     * @return array
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
-     */
-    public function vueSaveUserShip()
-    {
-        $data['user_id'] = $this->userId;
-        $data['area_id'] = input('param.area_id');
-        $data['address'] = input('param.address');
-        $data['name'] = input('param.name');
-        $data['mobile'] = input('param.mobile');
-        $data['is_def'] = input('param.is_def');
-        $model = new UserShip();
-        return $model->vueSaveShip($data);
-//        if($result)
-//        {
-//            $return_data = [
-//                'status' => true,
-//                'msg' => '存储收货地址成功',
-//                'data' => $result
-//            ];
-//        }
-//        else
-//        {
-//            $return_data = [
-//                'status' => false,
-//                'msg' => '存储收货地址失败',
-//                'data' => $result
-//            ];
-//        }
-//        return $return_data;
-    }
+//     /**
+//      * 废弃，所有收货地址新增编辑都走   editShip 方法     
+//      * H5 添加收货地址
+//      * @return array
+//      * @throws \think\Exception
+//      * @throws \think\db\exception\DataNotFoundException
+//      * @throws \think\db\exception\ModelNotFoundException
+//      * @throws \think\exception\DbException
+//      * @throws \think\exception\PDOException
+//      */
+//     public function vueSaveUserShip()
+//     {
+//         $data['user_id'] = $this->userId;
+//         $data['area_id'] = input('param.area_id');
+//         $data['address'] = input('param.address');
+//         $data['name'] = input('param.name');
+//         $data['mobile'] = input('param.mobile');
+//         $data['is_def'] = input('param.is_def');
+//         $model = new UserShip();
+//         return $model->vueSaveShip($data);
+// //        if($result)
+// //        {
+// //            $return_data = [
+// //                'status' => true,
+// //                'msg' => '存储收货地址成功',
+// //                'data' => $result
+// //            ];
+// //        }
+// //        else
+// //        {
+// //            $return_data = [
+// //                'status' => false,
+// //                'msg' => '存储收货地址失败',
+// //                'data' => $result
+// //            ];
+// //        }
+// //        return $return_data;
+//     }
 
 
     /**
@@ -535,7 +536,7 @@ class User extends Api
             $result['area_name'] = get_area($result['area_id']);
             $res = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $result
             ];
         } else {
@@ -624,13 +625,13 @@ class User extends Api
         if ($list) {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取用户收货地址成功',
                 'data' => $list
             );
         } else {
             $return_data = array(
                 'status' => true,
-                'msg' => error_code(11056,true),
+                'msg' => '用户暂无收货地址',
                 'data' => $list
             );
         }
@@ -670,7 +671,7 @@ class User extends Api
         if ($area_id) {
             $res = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $area_id
             ];
         } else {
@@ -1105,7 +1106,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => 2
         ];
         $settingModel = new Setting();
@@ -1122,7 +1123,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         //我的邀请码
@@ -1190,7 +1191,7 @@ class User extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $area = config('jshop.area_list');

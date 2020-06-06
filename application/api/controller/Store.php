@@ -30,7 +30,7 @@ class Store extends Api
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => 2
         ];
         $settingModel = new Setting();
@@ -184,7 +184,7 @@ class Store extends Api
         $recommend_keys = explode(' ', $recommend_keys);
         $result = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => $recommend_keys
         ];
         return $result;

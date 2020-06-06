@@ -173,12 +173,12 @@ class PosterShare extends QrShare implements BaseShare
                 ],
             ]
         ],
-        'page_4' => [
-            //邀请好友（店铺页面,params里需要传store）
-        ],
-        'page_5' => [
-            //文章页面
-        ],
+//        'page_4' => [
+//            //邀请好友（店铺页面,params里需要传store）
+//        ],
+//        'page_5' => [
+//            //文章页面
+//        ],
         'page_6' => [
             //参团页面
             //拼团详情页

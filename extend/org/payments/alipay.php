@@ -238,6 +238,7 @@ class alipay implements Payment
             'version' => "1.0",
             'biz_content' => [
                 'out_trade_no' => $paymentInfo['payment_id'],
+                'out_request_no' => $refundInfo['refund_id'],
                 'refund_amount' => $refundInfo['money']
             ]
         ];

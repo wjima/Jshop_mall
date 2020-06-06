@@ -23,11 +23,7 @@ class TemplateMessage extends Common
      */
     public function addSend($data)
     {
-        $return = [
-            'status' => false,
-            'msg' => '创建失败',
-            'data' => ''
-        ];
+        $return = error_code(10026);
         $return['data'] = $this->save($data);
         if($return['data'] !== false)
         {
@@ -46,11 +42,7 @@ class TemplateMessage extends Common
      */
     public function sendSuccess($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '操作失败',
-            'data' => ''
-        ];
+        $return = error_code(10018);
         $data['status'] = self::SEND_STATUS_YES;
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->save($data, $where);
@@ -73,18 +65,14 @@ class TemplateMessage extends Common
      */
     public function getInfo($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => []
-        ];
+        $return = error_code(10025);
 
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->where($where)->find();
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
 
         return $return;
@@ -113,7 +101,7 @@ class TemplateMessage extends Common
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
         return $return;
     }
@@ -126,11 +114,7 @@ class TemplateMessage extends Common
      */
     public function delMessage($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '删除消息失败',
-            'data' => ''
-        ];
+        $return = error_code(10034);
 
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->where($where)->delete();

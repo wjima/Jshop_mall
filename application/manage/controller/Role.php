@@ -32,11 +32,11 @@ class Role extends Manage
      */
     public function add()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+//        $result = [
+//            'status' => false,
+//            'msg' => error_code(10037,true),
+//            'data' => ''
+//        ];
         $this->view->engine->layout(false);
         $manageRoleModel = new ManageRole();
         if(Request::isPost())
@@ -53,7 +53,7 @@ class Role extends Manage
             return $result;
         }
         $result['status'] = true;
-        $result['msg'] = error_code(10038,true);
+        $result['msg'] = '成功';
         $result['data'] = $this->fetch('edit');
         return $result;
     }
@@ -81,7 +81,7 @@ class Role extends Manage
     {
         $return_data = [
             'code' => 0,
-            'msg'  => error_code(10024,true),
+            'msg'  => '获取成功',
             'data' => [],
         ];
 

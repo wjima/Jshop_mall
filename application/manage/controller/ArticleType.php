@@ -49,7 +49,7 @@ class  ArticleType extends Manage
         }
         return [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => $this->fetch('', ['list' => $articleTypeModel->getTree()])
         ];
     }
@@ -72,7 +72,7 @@ class  ArticleType extends Manage
         if (!$typeInfo) return error_code(10002);
         return [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => $this->fetch('addson', ['typeInfo' => $typeInfo])
         ];
     }
@@ -98,7 +98,7 @@ class  ArticleType extends Manage
         if (!$typeInfo) return error_code(10002);
         return [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => $this->fetch('', ['typeInfo' => $typeInfo,'list' => $articleTypeModel->getTree()])
         ];
     }
@@ -113,7 +113,7 @@ class  ArticleType extends Manage
     public function del()
     {
         $articleTypeModel = new ArticleTypeModel();
-        $result           = ['status' => true, 'msg' => error_code(10022,true), 'data' => ''];
+        $result           = ['status' => true, 'msg' => '删除成功', 'data' => ''];
         //判断该分类下是否有子分类
         if ($articleTypeModel->where('pid', input('param.id/d'))->find()) {
             $result['status'] = false;

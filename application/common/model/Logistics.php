@@ -49,16 +49,12 @@ class Logistics extends Common
      */
     public function saveData($data = [])
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => error_code(10004,true),
-        ];
+        $result = error_code(10004);
         if ($data['id']) {
             $res = $this->save($data, ['id' => $data['id']]);
             if ($res !== false) {
                 $result['status'] = true;
-                $result['msg']    = error_code(10016,true);
+                $result['msg']    = '保存成功';
             }
         }
         return $result;

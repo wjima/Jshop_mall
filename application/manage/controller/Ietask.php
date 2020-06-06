@@ -85,7 +85,7 @@ class Ietask extends Manage
         $res            = $ietaskModle->addExportTask($data, $job);
         if ($res !== false) {
             $result['status'] = true;
-            $result['msg']    = error_code(10046,true);
+            $result['msg']    = '导出任务加入成功，请到任务列表中下载文件';
         }
 
         return $result;
@@ -153,7 +153,7 @@ class Ietask extends Manage
             $res               = $ietaskModle->addImportTask($data, $model);
             if ($res !== false) {
                 $result['status'] = true;
-                $result['msg']    = error_code(10047,true);
+                $result['msg']    = '导入任务加入成功，请到任务列表中查看进度';
             }
             return $result;
         } else {
@@ -177,7 +177,7 @@ class Ietask extends Manage
         }
         //todo 判断能否下载
         $result['status']      = true;
-        $result['msg']         = error_code(10102);
+        $result['msg']         = '开始下载';
         $result['data']['url'] = url('ietask/dodown', ['id' => $id]);
         return $result;
     }
@@ -219,7 +219,7 @@ class Ietask extends Manage
         $rel   = $model->where('id', 'eq', $id)->delete();
         if ($rel) {
             $result['status'] = true;
-            $result['msg']    = error_code(10022,true);
+            $result['msg']    = '删除成功';
         }
         return $result;
     }

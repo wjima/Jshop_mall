@@ -1339,7 +1339,7 @@ function validateJshopToken()
             \think\facade\Cache::set($form . '_token', $new_token, 86400);   //1天过期
             $return = [
                 'data'   => '',
-                'msg'    => '已超时或重复提交，请重试或刷新页面',
+                'msg'    => error_code(10082,true),
                 'status' => false,
                 'token'  => $new_token
             ];
@@ -1800,18 +1800,22 @@ function imgSecCheck($img, $type = 1)
     return $res;
 }
 
+
 /**
  * 递归删除文件
- * @param $dirName 目录名称
- * @param bool|true $subdir 是否删除文件夹
+ * @param $dirName
+ * @param bool|true $subdir
+ * @return bool
  */
 function del_dir_and_file($dirName,$subdir = true)
 {
+    if(!is_dir($dirName)) return true;
     if ($handle = opendir("$dirName")) {
         while (false !== ($item = readdir($handle))) {
             if ($item != "." && $item != "..") {
-                if (is_dir("$dirName/$item"))
+                if (is_dir("$dirName/$item")){
                     del_dir_and_file("$dirName/$item", false);
+                }
                 else
                     @unlink("$dirName/$item");
             }

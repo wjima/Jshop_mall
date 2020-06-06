@@ -104,9 +104,9 @@ class OrderLog extends Common
         ];
         if(!$order_id)
         {
-            $return['status'] = false;
-            $return['msg'] = '没有订单号';
-            return $return;
+//            $return['status'] = false;
+//            $return['msg'] = '没有订单号';
+            return error_code(13100);
         }
         $where[] = ['order_id', 'eq', $order_id];
         $res = $this->field('id, order_id, user_id, type, msg, ctime')
@@ -125,7 +125,7 @@ class OrderLog extends Common
                 $v['type'] = $this->log_type[$v['type']];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
             }
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
         return $return;
     }

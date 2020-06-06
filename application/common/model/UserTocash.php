@@ -23,9 +23,9 @@ class UserTocash extends Common
             'data' => ''
         ];
         //最低提现金额
-        if($money < getSetting('tocash_money_low')){
-            $result['msg'] = "提现最低不能少于".getSetting('tocash_money_low')."元";
-            return $result;
+        $tocash_money_low = getSetting('tocash_money_low');
+        if($money < $tocash_money_low){
+            return error_code(11063,false,$tocash_money_low);
         }
         //判断历史提现金额
         $where[] = ['ctime','>=',strtotime(date('Y-m-d').' 00:00:00')];
@@ -34,8 +34,7 @@ class UserTocash extends Common
         $todayMoney = $todayMoney + $money;//历史今天提现加上本次提现
         $tocash_money_limit = getSetting('tocash_money_limit');
         if($tocash_money_limit && $todayMoney > $tocash_money_limit){
-            $result['msg'] = "每日提现不能超过".getSetting('tocash_money_limit')."元";
-            return $result;
+            return error_code(11064,false,$tocash_money_limit);
         }
 
         $userModel = new User();
@@ -75,8 +74,7 @@ class UserTocash extends Common
             $balanceModel = new Balance();
             return $balanceModel->change($user_id,$balanceModel::TYPE_TOCASH,$money,$this->id, $cateMoney);
         }else{
-            $result['msg'] = "提现失败";
-            return $result;
+            return error_code(11065);
         }
     }
     //提现审核
@@ -90,8 +88,7 @@ class UserTocash extends Common
         $where['type'] = self::TYPE_WITE;
         $info = $this->where($where)->find();
         if(!$info){
-            $result['msg'] = "没有此记录或不是待审核状态";
-            return $result;
+            return error_code(11066);
         }
         if(isset(config('params.user_tocash.type')[$type])){
             $res = $this->save(['type'=>$type],$where);
@@ -128,7 +125,7 @@ class UserTocash extends Common
             }
             return $result;
         }else{
-            return error_code(10000);
+            return error_code(10008);
         }
     }
 
@@ -172,7 +169,7 @@ class UserTocash extends Common
         $re[ 'msg' ] = '';
         $re[ 'count' ] = $list->total();
         $re[ 'data' ] = $data;
-        $re[ 'sql' ] = $this->getLastSql();
+//        $re[ 'sql' ] = $this->getLastSql();
 
         return $re;
     }
@@ -180,11 +177,12 @@ class UserTocash extends Common
     protected function tableWhere( $post )
     {
         $where = [];
-        if ( isset($post[ 'user_id' ]) && $post[ 'user_id' ] != "" ) {
-            $where[] = [ 'user_id', 'eq', $post[ 'user_id' ] ];
+        if ( isset($post['user_id']) && $post['user_id'] != "" ) {
+            $where[] = ['user_id', 'eq', $post['user_id'] ];
         } else {
-            if ( isset($post[ 'mobile' ]) && $post[ 'mobile' ] != "" ) {
-                if ( $user_id = get_user_id($post[ 'mobile' ]) ) {
+            if ( isset($post['mobile']) && $post['mobile'] != "" ) {
+                $user_id = get_user_id($post['mobile']);
+                if ( $user_id ) {
                     $where[] = [ 'user_id', 'eq', $user_id ];
                 } else {
                     $where[] = [ 'user_id', 'eq', '99999999' ];       //如果没有此用户，那么就赋值个数值，让他查不出数据
@@ -193,7 +191,7 @@ class UserTocash extends Common
 
         }
 
-        if ( isset($post[ 'type' ]) && $post[ 'type' ] != "" ) {
+        if ( isset($post['type']) && $post['type'] != "" ) {
             $where[] = [ 'type', 'eq', $post[ 'type' ] ];
         }
         $result[ 'where' ] = $where;
@@ -251,7 +249,7 @@ class UserTocash extends Common
     {
         $result = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
 

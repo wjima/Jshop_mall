@@ -99,7 +99,7 @@ class BillAftersales extends Common
                 $status_arr = [self::STATUS_SUCCESS];
                 break;
             default:
-                $result['msg'] = 'aftersale_level值类型不对';
+                $result['msg'] = error_code(13600,true);//aftersale_level值类型不对
                 return $result;    
         }
         //算已经退过款的金额，取已经完成的售后单的金额汇总
@@ -514,13 +514,13 @@ class BillAftersales extends Common
                     if($type == self::TYPE_REFUND){
                         $n = $v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']); 
                         if($n < $num){
-                            $result['msg'] = "未发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+                            $result['msg'] = error_code(13601,false,$v['name'],$v['addon'],$n);//"未发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
                             return $result;
                         }
                     }else{
                         $n = $v['sendnums'] - $v['reship_nums_ed'];
                         if($n < $num){
-                            $result['msg'] = "已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+                            $result['msg'] = error_code(13602,false,$v['name'],$v['addon'],$n);//"已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
                             return $result;
                         }
                     }
@@ -872,7 +872,7 @@ class BillAftersales extends Common
         $result   = [
             'status' => false,
             'data'   => [],
-            'msg'    => '无可导出数据',
+            'msg'    => error_code(10083,true),
 
         ];
         $header   = $this->csvHeader();
@@ -939,7 +939,7 @@ class BillAftersales extends Common
 
             }
             $result['status'] = true;
-            $result['msg']    = error_code(10040,true);
+            $result['msg']    = '导出成功';
             $result['data']   = $body;
             return $result;
         } else {
@@ -1028,7 +1028,7 @@ class BillAftersales extends Common
             }
             $return_data = [
                 'status' => true,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'data'   => $list,
                 'count'  => $count
             ];

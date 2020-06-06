@@ -38,7 +38,7 @@ class Clerk extends Common
             $userModel = new User();
             $return['data']['user_mobile'] = $userModel->getUserMobile($return['data']['user_id']);
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
         return $return;
     }
@@ -89,7 +89,7 @@ class Clerk extends Common
                 $v['ctime'] = getTime($v['ctime']);
             }
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
 
         return $return;
@@ -107,26 +107,22 @@ class Clerk extends Common
      */
     public function add($store_id, $user_mobile)
     {
-        $return = [
-            'status' => false,
-            'msg' => '添加失败',
-            'data' => ''
-        ];
+        $return = error_code(10038);
 
         $userModel = new User();
         $user_id = $userModel->getUserIdByMobile($user_mobile);
         if(!$user_id)
         {
-            $return['msg'] = '这个手机号没有对应的店铺用户';
-            return $return;
+//            $return['msg'] = '这个手机号没有对应的店铺用户';
+            return error_code(11502);
         }
 
         $storeModel = new Store();
         $store_flag = $storeModel->storeExist($store_id);
         if(!$store_flag)
         {
-            $return['msg'] = '这个店铺不存在';
-            return $return;
+//            $return['msg'] = '这个店铺不存在';
+            return error_code(11500);
         }
 
         $where[] = ['store_id', 'eq', $store_id];
@@ -134,8 +130,8 @@ class Clerk extends Common
         $flag = $this->where($where)->find();
         if($flag)
         {
-            $return['msg'] = '已经存在这个店员，无需重复添加';
-            return $return;
+//            $return['msg'] = '已经存在这个店员，无需重复添加';
+            return error_code(11503);
         }
 
         $data['store_id'] = $store_id;
@@ -159,16 +155,12 @@ class Clerk extends Common
      */
     public function del($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10023,true),
-            'data' => ''
-        ];
+        $return = error_code(10023);
         $return['data'] = $this->destroy($id);
         if($return['data'] !== false)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10022,true);
+            $return['msg'] = '删除成功';
         }
         return $return;
     }
@@ -186,7 +178,7 @@ class Clerk extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '不是店员',
+            'msg' => error_code(11504,true),
             'data' => [],
             'flag' => false,
         ];

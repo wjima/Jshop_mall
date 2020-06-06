@@ -81,8 +81,8 @@
 					<image class="img-list-item-l little-img have-none" :src="item.products.image_path" mode="aspectFill"></image>
 					<view class="img-list-item-r little-right">
 						<view class="little-right-t">
-							<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">{{ item.products.name || '' }}</view>
-							<view class="goods-price">￥{{ item.products.price || '' }}</view>
+							<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">{{ item.products.name || '' }} <text class="gift" v-if="item.type == 7">[赠品]</text></view>
+							<view class="goods-price" v-if="item.type != 7">￥{{ item.products.price || '' }}</view>
 						</view>
 						<view class="romotion-tip" v-if="item.products.promotion_list">
 							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
@@ -98,20 +98,12 @@
 							</view>
 						</view>
 					</view>
-					<view>
-						<view class="giveaway2" v-for="(v, k) in item.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
-					</view>
 				</view>
-			</view>
-			
-		
-			<view class="giveaway" v-if="cartData.giveaway">
-				<view v-for="(v, k) in cartData.giveaway">赠品： {{v.name}} x{{v.nums}}</view>
 			</view>
 
 			<view class="cell-group">
 				<!-- 订单促销信息 -->
-					<view class="cell-item" v-if="cartData.promotion_list">
+					<view class="cell-item" v-if="cartData.promotion_list && cartData.promotion_list.length > 0">
 						<view class="cell-item-hd">
 							订单优惠
 						</view>
@@ -1043,16 +1035,6 @@ export default {
 .delete image{
     width: 40rpx;
     height: 40rpx;
-}
-.giveaway{
-    margin-bottom: 10px;
-    margin-left: 10px;
-    font-size: 14px;
-    color: #666666;
-}
-.giveaway2{
-    font-size: 14px;
-    color: #666666;
 }
 
 .margin-cell-group {

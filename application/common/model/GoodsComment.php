@@ -88,7 +88,7 @@ class GoodsComment extends Common
             $res->hidden(['goods_id', 'images', 'user_id', 'user' => ['id', 'isdel', 'password', 'status', 'username', 'ctime', 'utime','balance','point','pid']]);
             $data = [
                 'status' => true,
-                'msg'    => error_code(10024,true),
+                'msg'    => '获取成功',
                 'data'   => [
                     'list'  => $res,
                     'count' => $count,
@@ -97,11 +97,7 @@ class GoodsComment extends Common
                 ]
             ];
         } else {
-            $data = [
-                'status' => false,
-                'msg'    => error_code(10025,true),
-                'data'   => []
-            ];
+            $data = error_code(10025);
         }
         return $data;
     }
@@ -162,7 +158,7 @@ class GoodsComment extends Common
             $res->hidden(['images','user'=>['id','isdel','password','status','username','ctime','utime']]);
             $data = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => [
                     'list' => $res,
                     'count' => $count,
@@ -173,11 +169,7 @@ class GoodsComment extends Common
         }
         else
         {
-            $data = [
-                'status' => false,
-                'msg' => error_code(10025,true),
-                'data' => []
-            ];
+            $data = error_code(10025);
         }
         return $data;
     }
@@ -198,17 +190,13 @@ class GoodsComment extends Common
         {
             $return_data = [
                 'status' => true,
-                'msg' => error_code(10016,true),
+                'msg' => '保存成功',
                 'data' => $res
             ];
         }
         else
         {
-            $return_data = [
-                'status' => false,
-                'msg' => error_code(10004,true),
-                'data' => $res
-            ];
+            $return_data = error_code(10004);
         }
         return $return_data;
     }
@@ -238,11 +226,7 @@ class GoodsComment extends Common
         }
         else
         {
-            $return_data = [
-                'status' => false,
-                'msg' => '修改失败',
-                'data' => $res
-            ];
+            $return_data = error_code(10024);
         }
         return $return_data;
     }
@@ -264,17 +248,13 @@ class GoodsComment extends Common
         {
             $return = [
                 'status' => true,
-                'msg' => error_code(10024,true),
+                'msg' => '获取成功',
                 'data' => $res
             ];
         }
         else
         {
-            $return = [
-                'status' => false,
-                'msg' => error_code(10025,true),
-                'data' => $res
-            ];
+            $return = error_code(10025);
         }
         return $return;
     }
@@ -314,6 +294,12 @@ class GoodsComment extends Common
                 if(!$item_info){
                     continue;       //说明没有此条记录，就不需要评论了
                 }
+
+                //如果是赠品，就跳过
+                if(strstr($item_info['name'],$orderModel::GIVEAWAY_STR) !== false){
+                    continue;
+                }
+
 
                 $score = 5;
                 if($v['score'] >= 1 &&   $v['score'] <= 5){
@@ -357,7 +343,7 @@ class GoodsComment extends Common
             Db::rollback();
             $return_data = [
                 'status' => false,
-                'msg' => '评价失败11.'.$e->getMessage(),
+                'msg' => error_code(13404,true,$e->getMessage()),
                 'data' => $goods_data
             ];
         }

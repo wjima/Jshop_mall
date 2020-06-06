@@ -16,11 +16,7 @@ class WeixinMenu extends Common
      */
     public function toSave($data = [])
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '参数错误',
-        ];
+        $result = error_code(10004);
 
         $data['params'] = json_encode($data['params']);
         $info           = $this->where(['menu_id' => $data['menu_id'],'pid'=>$data['pid']])->find();
@@ -30,11 +26,10 @@ class WeixinMenu extends Common
             $res = $this->save($data, ['id' => $info['id']]);
         }
         if ($res === false) {
-            $result['msg'] = error_code(10004,true);
             return $result;
         }
         $result['status'] = true;
-        $result['msg']    = error_code(10016,true);
+        $result['msg']    = '保存成功';
         return $result;
     }
 

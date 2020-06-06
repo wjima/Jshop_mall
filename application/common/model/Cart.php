@@ -25,6 +25,7 @@ class Cart extends Common
     const TYPE_GROUP = 3;      //团购模式
     const TYPE_SKILL = 4;      //秒杀模式
     const TYPE_BARGAIN = 6;      //砍价模式
+    const TYPE_GIVEAWAY = 7;        //赠品，在cart表里不会存在，但是会在计算促销过之后，动态的加上去
 
     /**
      * 关联货品
@@ -110,14 +111,14 @@ class Cart extends Common
                     //应该里面方法判断，以后优化吧
                     if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
                         if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
-                            $result['msg'] = '该商品已超过当前活动最大购买量';
-                            return $result;
+//                            $result['msg'] = '该商品已超过当前活动最大购买量';
+                            return error_code(15610);
                         }
                     }
                     if (isset($params['max_nums']) && $params['max_nums'] != 0) {
                         if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
-                            $result['msg'] = '您已超过该活动最大购买量';
-                            return $result;
+//                            $result['msg'] = '您已超过该活动最大购买量';
+                            return error_code(15611);
                         }
                     }
                     unset($cat_info);
@@ -150,16 +151,16 @@ class Cart extends Common
             }
 
             if ($cat_info->nums > $canBuyNum) {
-                $result['msg'] = '库存不足';
-                return $result;
+//                $result['msg'] = '库存不足';
+                return error_code(12702);
             }
             $cat_info->save();
 
             $result['data'] = $cat_info->id;
         } else {
             if ($nums > $canBuyNum) {
-                $result['msg'] = '库存不足';
-                return $result;
+//                $result['msg'] = '库存不足';
+                return error_code(12702);
             }
 
             $data['product_id'] = $product_id;
@@ -329,7 +330,6 @@ class Cart extends Common
                 'point'          => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money'    => 0,              //积分可以抵扣多少金额
                 'params'         => [],              //一些可以放到购物车中的参数
-                'giveaway'       => []
             ],
             'msg'    => ""
         ];
@@ -339,6 +339,13 @@ class Cart extends Common
             return $result;
         } else {
             $result['data']['list'] = $cartList['data']['list'];
+
+            //如果没有商品，那么就返回
+            if(count($result['data']['list']) == 0){
+                $result['status'] = true;
+                return $result;
+            }
+
         }
 
         //算订单总金额
@@ -355,6 +362,10 @@ class Cart extends Common
             if ($v['is_select']) {
                 //算订单总商品价格
                 $result['data']['goods_amount'] = bcadd($result['data']['goods_amount'], $result['data']['list'][$k]['products']['amount'], 2);
+
+                //计算促销应用之前的商品优惠
+                $result['data']['goods_pmt'] = bcadd($result['data']['goods_pmt'], $result['data']['list'][$k]['products']['promotion_amount'], 2);
+
                 //算订单总价格
                 $result['data']['amount'] = bcadd($result['data']['amount'], $result['data']['list'][$k]['products']['amount'], 2);
                 //计算总重量
@@ -377,7 +388,7 @@ class Cart extends Common
             $checkRes       = $promotionModel->setPromotion($promotionInfo, $result['data']);
             //如果依然可以下单，但是是正常销售价，请注释下面的判断
             if (!$checkRes) {
-                $result['msg'] = '活动已结束';
+                $result['msg'] = error_code(15600,true);
                 return $result;
             }
         } elseif ($order_type == self::TYPE_PINTUAN) {//拼团也计算促销信息
@@ -507,7 +518,7 @@ class Cart extends Common
             $userModel = new User();
             $oPoint    = $userModel->getUserPoint($userId);
             if ($oPoint['data'] < $point) {
-                $result['msg'] = "积分不足，无法使用积分";
+                $result['msg'] = error_code(11600,true);
                 return false;
             }
             //判断积分值多少钱
@@ -517,7 +528,7 @@ class Cart extends Common
             $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
             $point_deducted_money        = (int)$point / (int)$point_discounted_proportion; //积分可以抵扣的钱
             if ($max_point_deducted_money < $point_deducted_money) {
-                $result['msg'] = "积分超过订单可使用的积分数量";
+                $result['msg'] = error_code(11601,true);
                 return false;
             }
 
@@ -580,7 +591,7 @@ class Cart extends Common
                     if ($list['status']) {
                         $return['data'] = $list['data'];
                     }
-                    $return['msg'] = '商品库存不足';
+                    $return['msg'] = error_code(12702,true);
                     return $return;
                 }
 
@@ -615,10 +626,10 @@ class Cart extends Common
                 $list['data']['amount'] = bcadd($list['data']['amount'], bcmul($v['nums'], $v['products']['amount'], 2), 2);
             }
 
-            $return['msg']  = error_code(10038,true);
+            $return['msg']  = '成功';
             $return['data'] = $list['data'];
         } else {
-            $return['msg']  = '出了点小状况，请刷新重试~';
+            $return['msg']  = error_code(10020,true);
             $return['data'] = $list['data'];
         }
 

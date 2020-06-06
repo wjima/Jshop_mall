@@ -255,7 +255,7 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
                         $kdniao->build_form($printData, $setting['print_name'], $setting['is_priview']);
                         exit();
                     }
-                    $return['msg']    = error_code(10024,true);
+                    $return['msg']    = '获取成功';
                     $return['status'] = true;
                     return $return;
                 } else {
@@ -292,7 +292,7 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
         }
         $return['data']   = $print_template;
         $return['status'] = true;
-        $return['msg']    = error_code(10024,true);
+        $return['msg']    = '获取成功';
         return $return;
     }
 

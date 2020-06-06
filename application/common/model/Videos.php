@@ -9,14 +9,14 @@ class Videos extends Common
     //验证规则
     protected $rule = [
         'name'        => 'require|max:50',
-        'video_url'   => 'require',
+        'video_id'    => 'require',
         'video_cover' => 'require'
     ];
 
     protected $msg = [
         'name.require'        => '视频标题必须填写',
         'name.max'            => '标题名称最多不能超过50个字符',
-        'video_url.require'   => '请上传视频',
+        'video_id.require'    => '请上传视频',
         'video_cover.require' => '请上传视频封面',
     ];
 
@@ -36,8 +36,10 @@ class Videos extends Common
         $tableWhere = $this->tableWhere($post);
         $list       = $this->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
         foreach ($list as &$v) {
+            $v['video_cover_id'] = $v['video_cover'];
             $v['video_cover'] = _sImage($v['video_cover']);
-            $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
+            $v['ctime']       = getTime($v['ctime']);
+            $v['video_url']   = _sFile($v['video_id']);
         }
         $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
         $re['code']  = 0;
@@ -62,14 +64,9 @@ class Videos extends Common
         if (isset($post['name']) && $post['name'] != "") {
             $where[] = ['name', 'like', '%' . $post['name'] . '%'];
         }
-        if (isset($post['ctime']) && $post['ctime'] != "") {
-            $date_array = explode('到', $post['ctime']);
-            $sutime     = strtotime($date_array[0] . '00:00:00', time());
-            $eutime     = strtotime($date_array[1] . '23:59:59', time());
-            $where[]    = ['ctime', ['EGT', $sutime], ['ELT', $eutime], 'and'];
-        }
         $result['where'] = $where;
         $result['field'] = "*";
+        $result['order'] = ['id desc'];
         return $result;
     }
 
@@ -80,7 +77,7 @@ class Videos extends Common
     public function addData($data)
     {
         $validate = new Validate($this->rule, $this->msg);
-        $result   = ['status' => true, 'msg' => error_code(10016,true), 'data' => ''];
+        $result   = ['status' => true, 'msg' => '保存成功', 'data' => ''];
         if (!$validate->check($data)) {
             $result['status'] = false;
             $result['msg']    = $validate->getError();
@@ -88,7 +85,7 @@ class Videos extends Common
             $data['ctime'] = time();
             if (!$this->allowField(true)->save($data)) {
                 $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                $result['msg']    = '保存失败';
             }
         }
         return $result;
@@ -101,7 +98,7 @@ class Videos extends Common
     public function videoEdit($data)
     {
         $validate = new Validate($this->rule, $this->msg);
-        $result   = ['status' => true, 'msg' => error_code(10016,true), 'data' => ''];
+        $result   = ['status' => true, 'msg' => '保存成功', 'data' => ''];
         if (!$validate->check($data)) {
             $result['status'] = false;
             $result['msg']    = $validate->getError();
@@ -114,7 +111,7 @@ class Videos extends Common
             ];
             if (!$this->where($where)->update($data)) {
                 $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                $result['msg']    = '保存失败';
             }
         }
         return $result;

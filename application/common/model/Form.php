@@ -93,7 +93,7 @@ class Form extends common
         foreach ((array)$list as $key => $value) {
             $list[$key]['type']      = config('params.form')['type'][$value['type']];
             $list[$key]['head_type'] = config('params.form')['head_type'][$value['head_type']];
-            $list[$key]['is_login']  = ($value['is_login'] == self::NEED_LOGIN) ? '是' : '否';
+            $list[$key]['is_login']  = ($value['is_login'] == self::NEED_LOGIN) ? '是': '否';
             $list[$key]['ctime']     = ($value['ctime'] > 0) ? date('Y-m-d H:i:s', $value['ctime']) : '';
             $list[$key]['utime']     = ($value['utime'] > 0) ? date('Y-m-d H:i:s', $value['utime']) : '';
         }
@@ -107,18 +107,14 @@ class Form extends common
      */
     public function getFormInfo($id = 0)
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10025,true),
-            'data'   => []
-        ];
+        $result = error_code(10025);
         if (!$id) {
-            return $result;
+            return error_code(10051);
         }
         $form = $this->where(['id' => $id])->find();
         if (!$form) {
-            $result['msg'] = '暂无表单';
-            return $result;
+//            $result['msg'] = '暂无表单';
+            return error_code(18008);
         }
         $form = $form->toArray();
         if (isset($form['end_date'])) {
@@ -190,7 +186,7 @@ class Form extends common
         $form['items']    = $items;
         $result['data']   = $form;
         $result['status'] = true;
-        $result['msg']    = error_code(10026,true);
+        $result['msg']    = '查询成功';
         return $result;
     }
 
@@ -201,21 +197,17 @@ class Form extends common
      */
     public function deleteForm($id = 0)
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10023,true),
-            'data'   => ''
-        ];
+        $result = error_code(10023);
         if (!$id) {
-            $result['msg'] = '关键参数丢失';
-            return $result;
+//            $result['msg'] = '关键参数丢失';
+            return error_code(10051);
         }
         //查询是否有表单结果
         $formSubmit = new FormSubmit();
         $userForm   = $formSubmit->where(['form_id' => $id])->count();
         if ($userForm > 0) {
-            $result['msg'] = '请先删除该表单下用户的提交记录';
-            return $result;
+//            $result['msg'] = '请先删除该表单下用户的提交记录';
+            return error_code(18009);
         }
         Db::startTrans();
         $res = $this->where(['id' => $id])->delete();
@@ -230,7 +222,7 @@ class Form extends common
             return false;
         }
         Db::commit();
-        $result['msg']    = error_code(10022,true);
+        $result['msg']    = '删除成功';
         $result['status'] = true;
         return $result;
     }
@@ -330,8 +322,8 @@ class Form extends common
         $where[]  = ['form_id', '=', $filter['id'][0]];
         $items    = $formItem->where($where)->select();
         if ($items->isEmpty()) {
-            $result['msg'] = '请先添加表单项';
-            return $result;
+//            $result['msg'] = '请先添加表单项';
+            return error_code(18010);
         }
         $header = [];
         foreach ($items->toArray() as $key => $val) {
@@ -369,7 +361,7 @@ class Form extends common
             'desc' => '提交ip'
         ];
         $result ['status'] = true;
-        $result ['msg']    = error_code(10024,true);
+        $result ['msg']    = '获取成功';
         $result ['data']   = $header;
         return $result;
     }
@@ -381,15 +373,11 @@ class Form extends common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '无可导出表单项'
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader($post);
         if (!isset($post['id']) || (isset($post['id']) && !$post['id'][0])) {
-            $result['msg'] = '关键参数丢失';
-            return $result;
+//            $result['msg'] = '关键参数丢失';
+            return error_code(10051);
         }
         $formSubmit = new FormSubmit();
         $formData   = $formSubmit->where('form_id', '=', $post['id'][0])->select();
@@ -429,7 +417,7 @@ class Form extends common
                 }
             }
             $result['status'] = true;
-            $result['msg']    = error_code(10040,true);
+            $result['msg']    = '导出成功';
             $result['data']   = $body;
             return $result;
         } else {

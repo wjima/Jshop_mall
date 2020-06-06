@@ -523,10 +523,10 @@ export const userShip = (data, callback) => post('user.getusership', data, callb
 // 获取用户默认收货地址
 export const userDefaultShip = (data, callback) => post('user.getuserdefaultship', data, callback);
 
-// 存储用户收货地址
+// 存储用户收货地址 废弃
 export const saveUserShip = (data, callback, complete) => post('user.vuesaveusership', data, callback, complete);
 
-// 微信存储收货地址
+// 微信存储收货地址 废弃
 export const saveUserShipWx = (data, callback) => post('user.saveusership', data, callback);
 
 //获取区域ID
@@ -889,3 +889,6 @@ export const getShareCoupon = (data, callback) => post('api.coupon.WelfarePro', 
 
 //团购秒杀获取货品信息
 export const getGroupProductInfo = (data, callback) => post('group.getproductinfo', data, callback);
+
+// 分享配置
+export const getShareInfo = (data, callback) => post('weixinshare.share', data, callback);

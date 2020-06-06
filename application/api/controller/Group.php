@@ -18,7 +18,7 @@ class Group extends Api
     public function getList(){
         $return_data = [
             'status' => true,
-            'msg'    => error_code(10026,true),
+            'msg'    => '查询成功',
             'data'   => []
         ];
         $promotion = new Promotion();
@@ -55,7 +55,7 @@ class Group extends Api
         $promotion   = new Promotion();
         $returnGoods = $promotion->getGroupDetial($goods_id, $token,'*',$group_id);
         if ($returnGoods['status']) {
-            $return_data ['msg']  = error_code(10026,true);
+            $return_data ['msg']  = '查询成功';
             $return_data ['data'] = $returnGoods['data'];
         } else {
             $return_data['msg']    = $returnGoods['msg'];

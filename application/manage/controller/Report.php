@@ -430,7 +430,7 @@ class Report extends Manage
                 $data['end'] = strtotime($theDate[1])+60*60*24;
                 $data['section'] = 1;
             }else{
-                $result['msg'] = '时间段格式不正确';
+                $result['msg'] = error_code(10076,true);
                 return $result;
             }
         }else{
@@ -506,7 +506,7 @@ class Report extends Manage
 
                 default:
                     $result['status'] = false;
-                    $result['msg'] = '没有此时间维度';
+                    $result['msg'] = error_code(10077,true);
                     return $result;
             }
             return $result;
@@ -649,7 +649,7 @@ class Report extends Manage
             'msg'    => '',
         ];
         if($date_arr['end'] <= $date_arr['start']){
-            $result['msg']='开始时间必须小于结束时间';
+            $result['msg'] = error_code(10078,true);
             return $result;
         }
 
@@ -662,7 +662,7 @@ class Report extends Manage
                 $result['data']['section'] = 60*60*24;
                 break;
             default:
-                $result['msg'] = '没有此时间粒度';
+                $result['msg'] = error_code(10079,true);
                 return $result;
         }
         //算x轴数据个数

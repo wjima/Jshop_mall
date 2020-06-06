@@ -74,7 +74,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10016,true),
+            'msg'    => '保存成功',
             'data'   => []
         ];
 
@@ -105,14 +105,14 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10016,true),
+            'msg'    => '保存成功',
             'data'   => []
         ];
         $where = [
                 'id' => $data['id']
             ];
         if(!$this->checkDie($data['id'],$data['pid'])){
-            $result['msg']    = '无法选择自己和自己的子级为父级';
+            $result['msg']    = error_code(10802,true);//无法选择自己和自己的子级为父级
             return $result;
         }
         $validate = new Validate($this->rule, $this->msg);
@@ -203,7 +203,7 @@ class ArticleType extends Common
     {
         $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => []
         ];
 
@@ -325,7 +325,7 @@ class ArticleType extends Common
 
         $result = [
             'status' => true,
-            'msg'    => error_code(10024,true),
+            'msg'    => '获取成功',
             'data'   => [
                 'list' => $type,
                 'hot' => $hot

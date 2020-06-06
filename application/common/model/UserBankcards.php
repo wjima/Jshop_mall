@@ -109,11 +109,7 @@ class UserBankcards extends Common
      */
     public function addBankcards($user_id, $data)
     {
-        $return = [
-            'status' => false,
-            'msg' => '添加失败',
-            'data' => ''
-        ];
+        $return = error_code(10038);
 
         //数据验证
         $flag = $this->checkData($data);
@@ -129,8 +125,7 @@ class UserBankcards extends Common
         ])->find();
 
         if ($card) {
-            $return['msg'] = '该卡片已经添加';
-            return $return;
+            return error_code(11060);
         }
         $new_data = [
             'user_id' => $user_id,
@@ -155,7 +150,7 @@ class UserBankcards extends Common
                     $this->save($new_data);
                     $this->commit();
                     $return['status'] = true;
-                    $return['msg'] = error_code(10016,true);
+                    $return['msg'] = '保存成功';
                 } catch (\Exception $e) {
                     $this->rollback();
                     $return['msg'] = error_code(10004,true);
@@ -164,13 +159,13 @@ class UserBankcards extends Common
                 // 不是默认的直接添加
                 if ($this->allowField(true)->save($new_data)) {
                     $return[ 'status' ] = true;
-                    $return[ 'msg' ] = error_code(10016,true);
+                    $return[ 'msg' ] = '保存成功';
                 }
             }
         } else {
             if ($this->allowField(true)->save($new_data)) {
                 $return[ 'status' ] = true;
-                $return[ 'msg' ] = error_code(10016,true);
+                $return[ 'msg' ] = '保存成功';
             }
         }
 
@@ -192,11 +187,7 @@ class UserBankcards extends Common
      */
     public function delBankcards($user_id, $id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10023,true),
-            'data' => ''
-        ];
+        $return = error_code(10023);
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
         // 先判断该银行卡是否存在
@@ -215,7 +206,7 @@ class UserBankcards extends Common
                         $this->where([ 'id' => $id, 'user_id' => $user_id ])->delete();
                         $this->commit();
                         $return[ 'status' ] = true;
-                        $return[ 'msg' ] = error_code(10022,true);
+                        $return[ 'msg' ] = '删除成功';
                     } catch ( \Exception $e ) {
                         $this->rollback();
                         $return[ 'msg' ] = error_code(10023,true);
@@ -223,17 +214,17 @@ class UserBankcards extends Common
                 } else {
                     if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
                         $return[ 'status' ] = true;
-                        $return[ 'msg' ] = error_code(10022,true);
+                        $return[ 'msg' ] = '删除成功';
                     }
                 }
             } else {
                 if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
                     $return[ 'status' ] = true;
-                    $return[ 'msg' ] = error_code(10022,true);
+                    $return[ 'msg' ] = '删除成功';
                 }
             }
         } else {
-            $return['msg'] = '该卡片不存在';
+            return error_code(11060);
         }
 
         return $return;
@@ -254,7 +245,7 @@ class UserBankcards extends Common
     {
         $return = [
             'status' => true,
-            'msg' => error_code(10024,true),
+            'msg' => '获取成功',
             'data' => []
         ];
         $where[] = ['user_id','eq',$user_id];
@@ -289,11 +280,7 @@ class UserBankcards extends Common
      */
     public function editBankcards($user_id, $id, $data)
     {
-        $return = [
-            'status' => false,
-            'msg' => '修改失败',
-            'data' => ''
-        ];
+        $return = error_code(10024);
 
         //数据验证
         $flag = $this->checkData($data);
@@ -342,11 +329,7 @@ class UserBankcards extends Common
      */
     public function setDefault($user_id, $id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '设置失败',
-            'data' => ''
-        ];
+        $return = error_code(10081);
 
         $data = $this->where(['id'=>$id,'user_id'=>$user_id])->find();
         if ($data) {
@@ -358,13 +341,13 @@ class UserBankcards extends Common
                 $this->save(['is_default'=>self::DEFAULT_YES],['id'=>$data['id'],'user_id'=>$user_id]);
                 $this->commit();
                 $return['status'] = true;
-                $return['msg'] = error_code(10016,true);
+                $return['msg'] = '保存成功';
             } catch (\Exception $e){
                 $this->rollback();
                 $return['msg'] = error_code(10004,true);
             }
         } else {
-            $res['msg'] = '该银行卡不存在';
+            return error_code(11061);
         }
         return $return;
     }
@@ -380,11 +363,7 @@ class UserBankcards extends Common
      */
     public function getBankcardInfo($user_id, $id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => ''
-        ];
+        $return = error_code(10025);
 
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
@@ -404,7 +383,7 @@ class UserBankcards extends Common
         if($res)
         {
             $return['status'] = true;
-            $return['msg'] = error_code(10024,true);
+            $return['msg'] = '获取成功';
         }
         return $return;
     }
@@ -419,7 +398,7 @@ class UserBankcards extends Common
      */
     public function bankCardsOrganization ($card_code)
     {
-        $result = ['status' => true, 'msg' => error_code(10024,true), 'data' => ''];
+        $result = ['status' => true, 'msg' => '获取成功', 'data' => ''];
         $curl = new Curl();
         $url = 'https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo='.$card_code.'&cardBinCheck=true';
         $res = $curl->get($url);

@@ -95,7 +95,7 @@ class Operation extends Manage
             $this->assign('menuTree',$menuTree);
 
             $return['status'] = true;
-            $return['msg'] = error_code(10038,true);
+            $return['msg'] = '成功';
             $return['data'] = $this->fetch('add');
             return $return;
         }

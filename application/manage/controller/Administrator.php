@@ -52,7 +52,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10019,true),
+            'msg'    => error_code(10019, true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -93,7 +93,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10021,true),
+            'msg'    => error_code(10021, true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -147,7 +147,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10023,true),
+            'msg'    => error_code(10023, true),
             'data'   => ''
         ];
         if (!input('?param.id')) {
@@ -165,7 +165,7 @@ class Administrator extends ManageController
             $result['status'] = true;
             $result['msg']    = '删除成功';
         } else {
-            $result['msg'] = error_code(10023,true);
+            $result['msg'] = error_code(10023, true);
         }
 
         return $result;
@@ -214,7 +214,11 @@ class Administrator extends ManageController
      */
     public function getVersion()
     {
-        $return  =  error_code(10027);
+        $return  =  [
+            'msg' => error_code(10027, true),
+            'status' => false,
+            'data' => []
+        ];
         $product = config('jshop.product');
         $version = config('jshop.version');
         $url     = config('jshop.authorization_url') . '/b2c/Authorization/verification';
@@ -248,7 +252,6 @@ class Administrator extends ManageController
     public function userLogList()
     {
         $userLogModel = new UserLog();
-        return $userLogModel->getList(0,$userLogModel::MANAGE_TYPE);
+        return $userLogModel->getList(0, $userLogModel::MANAGE_TYPE);
     }
-
 }

@@ -207,11 +207,7 @@ class UserShip extends Common
      */
     public function editShip ($data,$user_id)
     {
-        $result = [
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        ];
+        $result = error_code(10004);
 
 
         // 收货地址验证

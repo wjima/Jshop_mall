@@ -742,8 +742,8 @@ class Goods extends Manage
         $goods_id  = $data['goods']['id'];
         if ($updateRes === false) {
             $goodsModel->rollback();
-            $result['msg'] = '商品数据保存失败';
-            return $result;
+            // $result['msg'] = '商品数据保存失败';
+            return error_code(12002);
         }
         $productIds = [];
         $products   = $productsModel->field('id')->where(['goods_id' => $goods_id])->select()->toArray();
@@ -808,8 +808,8 @@ class Goods extends Manage
                 }
                 if ($productRes === false) {
                     $goodsModel->rollback();
-                    $result['msg'] = '货品数据保存失败';
-                    return $result;
+                    // $result['msg'] = '货品数据保存失败';
+                    return error_code(12003);
                 }
 
                 //$total_stock = $total_stock + $tmp_product['goods']['stock'];
@@ -820,9 +820,9 @@ class Goods extends Manage
                 }
             }
             if (!$isExitDefalut) {
-                $result['msg'] = '请选择默认货品';
+                // $result['msg'] = '请选择默认货品';
                 $goodsModel->rollback();
-                return $result;
+                return error_code(12004);
             }
             //更新商品信息
             //$upData['stock']     = $total_stock;
@@ -861,8 +861,8 @@ class Goods extends Manage
 
             if ($updateRes === false) {
                 $goodsModel->rollback();
-                $result['msg'] = '货品数据保存失败';
-                return $result;
+                // $result['msg'] = '货品数据保存失败';
+                return error_code(12003);
             }
         }
         //删除多余货品数据
@@ -884,8 +884,8 @@ class Goods extends Manage
             $goodsGrade->where(['goods_id' => $goods_id])->delete();
             if (!$goodsGrade->saveAll($grade_price_arr)) {
                 $goodsModel->rollback();
-                $result['msg'] = '会员价保存失败';
-                return $result;
+                // $result['msg'] = '会员价保存失败';
+                return error_code(12005);
             }
         }
 
@@ -905,16 +905,16 @@ class Goods extends Manage
             $goodsImagesModel = new GoodsImages();
             if (!$goodsImagesModel->batchAdd($imgRelData, $goods_id)) {
                 $goodsModel->rollback();
-                $result['msg'] = '商品图片保存失败';
-                return $result;
+                // $result['msg'] = '商品图片保存失败';
+                return error_code(12006);
             }
         }
         //保存商品扩展分类
         $goodsExtendCat = new GoodsExtendCat();
         if (!$goodsExtendCat->saveCat($data['extend_cat'], $goods_id)) {
             $goodsModel->rollback();
-            $result['msg'] = '扩展分类保存失败';
-            return $result;
+            // $result['msg'] = '扩展分类保存失败';
+            return error_code(12007);
         }
 
         //更新商品总库存
@@ -924,8 +924,8 @@ class Goods extends Manage
         $res = $goodsModel->updateGoods($goods_id, $upDataGoods);
         if ($res === false) {
             $goodsModel->rollback();
-            $result['msg'] = '总库存更新失败';
-            return $result;
+            // $result['msg'] = '总库存更新失败';
+            return error_code(12008);
         }
 
         $goodsModel->commit();
@@ -945,13 +945,13 @@ class Goods extends Manage
     {
         $result     = [
             'status' => false,
-            'msg'    => '关键参数丢失',
+            'msg'    => '',
             'data'   => '',
         ];
         $goods_id   = input("post.id");
         $goodsModel = new goodsModel();
         if (!$goods_id) {
-            return $result;
+            return error_code(10051);
         }
         $delRes = $goodsModel->delGoods($goods_id);
         if (!$delRes['status']) {
@@ -967,11 +967,11 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '获取成功',
+            'msg'    => '',
             'data'   => '',
         ];
         if (!$type_id) {
-            return $result;
+            return error_code(10051);
         }
         $spes_desc = unserialize($goods['spes_desc']);
         $new_spec  = unserialize($goods['new_spec']);
@@ -1141,7 +1141,7 @@ class Goods extends Manage
             } else {
                 $return_data = [
                     'status' => false,
-                    'msg'    => '获取评价失败',
+                    'msg'    => error_code(12018, true),
                     'count'  => $res['count'],
                     'data'   => $res['data'],
                 ];
@@ -1200,12 +1200,12 @@ class Goods extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $ids    = input('ids/a', []);
         $type   = input('type/s', 'up');
         if (count($ids) <= 0) {
-            return $result;
+            return error_code(10051);
         }
         $goodsModel = new goodsModel();
         $res        = $goodsModel->batchMarketable($ids, $type);
@@ -1213,7 +1213,8 @@ class Goods extends Manage
             $result['status'] = true;
             $result['msg']    = '操作成功';
         } else {
-            $result['msg'] = '操作失败';
+            // $result['msg'] = '操作失败';
+            return error_code(10018);
         }
         return $result;
     }
@@ -1232,7 +1233,7 @@ class Goods extends Manage
         ];
         $ids    = input('ids/a', []);
         if (count($ids) <= 0) {
-            return $result;
+            return error_code(10051);
         }
         $goodsModel = new goodsModel();
         foreach ($ids as $goods_id) {
@@ -1256,7 +1257,7 @@ class Goods extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10037,true),
+            'msg'    => error_code(10037, true),
             'data'   => ''
         ];
         $this->_common();
@@ -1277,14 +1278,14 @@ class Goods extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $id     = input('post.id/d', 0);
         $state  = input('post.state/s', 'true');
         $type   = input('post.type/s', 'hot');
 
         if (!$id) {
-            return $result;
+            return error_code(10051);
         }
         $iData = [];
         if ($state == 'true') {
@@ -1307,8 +1308,9 @@ class Goods extends Manage
             $result['msg']    = '设置成功';
             $result['status'] = true;
         } else {
-            $result['msg']    = '设置失败';
-            $result['status'] = false;
+            // $result['msg']    = '设置失败';
+            // $result['status'] = false;
+            return error_code(10081);
         }
         return $result;
     }
@@ -1323,22 +1325,23 @@ class Goods extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $field  = input('post.field/s');
         $value  = input('post.value/d');
         $id     = input('post.id/d', '0');
         if (!$field || !$value || !$id) {
-            $result['msg']    = '参数丢失';
-            $result['status'] = false;
+            // $result['msg']    = '参数丢失';
+            // $result['status'] = false;
+            return error_code(10081);
         }
         $goodsModel = new goodsModel();
         if ($goodsModel->updateGoods($id, [$field => $value])) {
             $result['msg']    = '更新成功';
             $result['status'] = true;
         } else {
-            $result['msg']    = error_code(10021,true);
-            $result['status'] = false;
+            return error_code(10021);
+            // $result['status'] = false;
         }
         return $result;
     }
@@ -1353,10 +1356,12 @@ class Goods extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $ids    = input('ids/a', []);
-
+        if (count($ids) <= 0) {
+            return error_code(10051);
+        }
         $price_type = [
             'price'     => '销售价',
             'mktprice'  => '市场价',
@@ -1389,7 +1394,7 @@ class Goods extends Manage
         $result      = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $ids         = input('ids/s', '');
         $price_type  = input('price_type/s', '');
@@ -1397,11 +1402,11 @@ class Goods extends Manage
         $price_value = input('price_value', '0');
         $ids         = explode(',', $ids);
         if (!$ids) {
-            return $result;
+            return error_code(10051);
         }
         if (!$price_value) {
-            $result['msg'] = '请输入调整值';
-            return $result;
+            // $result['msg'] = '请输入调整值';
+            return error_code(12019);
         }
 
         $goodsModel    = new goodsModel();
@@ -1477,9 +1482,12 @@ class Goods extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $ids    = input('ids/a', []);
+        if (count($ids) <= 0) {
+            return error_code(10051);
+        }
 
         $this->assign('total_goods', count($ids));
         $this->assign('ids', implode(',', $ids));
@@ -1502,18 +1510,18 @@ class Goods extends Manage
         $result      = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数丢失',
+            'msg'    => '',
         ];
         $ids         = input('ids/s', '');
         $modify_type = input('modify_type/s', '');
         $stock_value = input('stock_value', '0');
         $ids         = explode(',', $ids);
         if (!$ids) {
-            return $result;
+            return error_code(10051);
         }
         if (!$stock_value) {
-            $result['msg'] = '请输入调整值';
-            return $result;
+            // $result['msg'] = '请输入调整值';
+            return error_code(12019);
         }
 
         $goodsModel    = new goodsModel();

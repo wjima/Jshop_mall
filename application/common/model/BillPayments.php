@@ -607,12 +607,7 @@ class BillPayments extends Common
     //导出格式
     public function getExportList($post = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => '',
-            'count' => 0
-        ];
+        $return_data =  error_code(10025);
         $where = [];
         if(isset($post['payment_id']) && $post['payment_id'] != ""){
             $where[] = ['payment_id', 'like', '%'.$post['payment_id'].'%'];

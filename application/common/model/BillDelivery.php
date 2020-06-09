@@ -327,12 +327,13 @@ class BillDelivery extends Common
                 'count' => $count
             ];
         } else {
-            $return_data = [
-                'status' => false,
-                'msg' => error_code(10025,true),
-                'data' => $res,
-                'count' => $count
-            ];
+            // $return_data = [
+            //     'status' => false,
+            //     'msg' => error_code(10025,true),
+            //     'data' => $res,
+            //     'count' => $count
+            // ];
+            return error_code(10025);
         }
         return $return_data;
     }
@@ -348,7 +349,7 @@ class BillDelivery extends Common
     public function getDeliveryInfo($delivery_id)
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => [],
             'msg' => ''
         ];
@@ -508,12 +509,7 @@ class BillDelivery extends Common
     //导出格式
     public function getExportList($input = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => '',
-            'count' => 0
-        ];
+        $return_data = error_code(10025);
 
         $where = [];
         if ($input['delivery_id']) {

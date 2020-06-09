@@ -194,20 +194,14 @@ class Administrator extends ManageController
      */
     public function editPwd()
     {
-        $result      = [
-            'status' => false,
-            'msg'    => error_code(10021,true),
-            'data'   => ''
-        ];
+
         $manageModel = new ManageModel();
 
         if (!input('?param.newPwd') || !input('?param.password') || !input('?param.rePwd')) {
-            $result['msg'] = error_code(11009,true);
-            return $result;
+            return error_code(11009);
         }
         if (input('param.newPwd') != input('param.rePwd')) {
-            $result['msg'] = error_code(11025,true);
-            return $result;
+            return  error_code(11025);
         }
 
         return $manageModel->chengePwd(session('manage.id'), input('param.password'), input('param.newPwd'));
@@ -220,11 +214,7 @@ class Administrator extends ManageController
      */
     public function getVersion()
     {
-        $return  = [
-            'status' => false,
-            'msg'    => error_code(10027,true),
-            'data'   => []
-        ];
+        $return  =  error_code(10027);
         $product = config('jshop.product');
         $version = config('jshop.version');
         $url     = config('jshop.authorization_url') . '/b2c/Authorization/verification';

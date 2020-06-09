@@ -60,11 +60,7 @@ class Operation extends Manage
      */
     public function add()
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $return =  error_code(10037);
         $this->view->engine->layout(false);
         $operationModel = new OperationModel();
         if(Request::isPost())

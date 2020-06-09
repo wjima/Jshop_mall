@@ -103,11 +103,7 @@ class Order extends Manage
      */
     public function view($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $return = error_code(10037);
         $this->view->engine->layout(false);
         $orderModel = new OrderModel();
         $order_info = $orderModel->getOrderInfoByOrderID($id);
@@ -148,9 +144,9 @@ class Order extends Manage
         $orderModel = new OrderModel();
         if (!Request::isPost()) {
             //订单信息
-            if(!input('?param.id')){
-                $result['msg'] = error_code(13100);
-                return $result;
+            if (!input('?param.id')) {
+                // $result['msg'] = error_code(13100);
+                return error_code(13100);
             }
             $order_info = $orderModel->getOrderInfoByOrderID(input('param.id'));
             if(!$order_info){
@@ -273,11 +269,7 @@ class Order extends Manage
                 'data' => $result
             ];
         } else {
-            $return_data = [
-                'status' => false,
-                'msg' => error_code(10037),
-                'data' => $result
-            ];
+            return error_code(10037);
         }
         return $return_data;
     }
@@ -304,11 +296,7 @@ class Order extends Manage
                 'data' => $result
             );
         } else {
-            $return_data = array(
-                'status' => false,
-                'msg' => error_code(10037,true),
-                'data' => $result
-            );
+            return  error_code(10037);
         }
         return $return_data;
     }
@@ -330,11 +318,7 @@ class Order extends Manage
                 'data' => $result
             );
         } else {
-            $return_data = array(
-                'status' => false,
-                'msg' => error_code(10023,true),
-                'data' => $result
-            );
+            return  error_code(10023);
         }
         return $return_data;
     }
@@ -438,17 +422,13 @@ class Order extends Manage
         } elseif ($type == self::UNION) {
             return $this->fetch('union');
         } elseif ($type == self::EXPRESS) {
-            $return = [
-                'msg' => error_code(10717,true),
-                'data' => '',
-                'status' => false
-            ];
+            $return = error_code(10717);
             $logi_code = Request::param('logi_code/s', '');
             $logi_no = Request::param('logi_no/s', '');
             $bt = Request::param('bt/s', '1'); //按钮类型
             if (!$logi_code) {
-                $return['msg'] = error_code(13229,true);
-                return $return;
+                // $return['msg'] = error_code(13229, true);
+                return error_code(13229);
             }
             $order_info['logi_code'] = $logi_code;
             $order_info['logi_no'] = $logi_no;

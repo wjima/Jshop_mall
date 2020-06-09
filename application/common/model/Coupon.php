@@ -398,14 +398,8 @@ class Coupon extends Common
                 'msg' => '核销使用优惠券成功',
                 'data' => $coupon_code
             ];
-        }
-        else
-        {
-            $return_data = [
-                'status' => false,
-                'msg' => error_code(15022,true),
-                'data' => $coupon_code
-            ];
+        } else {
+            return error_code(15022);
         }
         return $return_data;
     }

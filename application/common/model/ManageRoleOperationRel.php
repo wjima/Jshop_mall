@@ -212,9 +212,9 @@ class ManageRoleOperationRel extends Common
                 }
             }
         }
-        if($cont_id == ""){
-            $result['msg'] = "没有找到此控制器";
-            return $result;
+        if ($cont_id == "") {
+            // $result['msg'] = "没有找到此控制器";
+            return error_code(11102);
         }
         $cont_id = strtolower($cont_id);
 
@@ -228,9 +228,9 @@ class ManageRoleOperationRel extends Common
                 }
             }
         }
-        if(count($act_info) == 0){
-            $result['msg'] = "没有找到此方法";
-            return $result;
+        if (count($act_info) == 0) {
+            // $result['msg'] = "没有找到此方法";
+            return error_code(11103);
         }
         //看当前权限是否是关联权限
         if($act_info['perm_type'] == 3){
@@ -243,8 +243,8 @@ class ManageRoleOperationRel extends Common
                 }
             }
         }
-        if($act_info['perm_type'] == 3){
-            $result['msg'] = "只找到关联关系，没有权限";        //可能没有找到所关联的节点，也可能关联节点也是关联关系，不做详细判断了
+        if ($act_info['perm_type'] == 3) {
+            $result['msg'] = jshop_m_l(11104);        //可能没有找到所关联的节点，也可能关联节点也是关联关系，不做详细判断了
             return $result;
         }
         //去manage_list里看是否有这个节点
@@ -257,8 +257,8 @@ class ManageRoleOperationRel extends Common
                 }
             }
         }
-        $result['msg'] = "没有权限";
-        return $result;
+        // $result['msg'] = "没有权限";
+        return error_code(11105);
     }
 
     /**

@@ -40,7 +40,7 @@ class Group extends Api
     {
         $return_data = [
             'status' => true,
-            'msg'    => error_code(10027,true),
+            'msg'    => '',
             'data'   => [],
         ];
         $goods_id    = input('id/d', 0);
@@ -48,9 +48,8 @@ class Group extends Api
         $token       = input('token', '');//token值 会员登录后传
 
         if (!$goods_id) {
-            $return_data['msg']    = error_code(10051,true);
-            $return_data['status'] = false;
-            return $return_data;
+
+            return error_code(10051);
         }
         $promotion   = new Promotion();
         $returnGoods = $promotion->getGroupDetial($goods_id, $token,'*',$group_id);

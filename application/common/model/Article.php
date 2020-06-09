@@ -290,11 +290,8 @@ class Article extends Common
      */
     public function articleDetail($article_id)
     {
-        $result = [
-            'status' =>  false,
-            'msg'    =>  error_code('10801',true),//文章不存在或已删除
-            'data'   =>  [],
-        ];
+        $result = error_code(10801); //文章不存在或已删除
+
 
         $where[] = ['id', 'eq', $article_id];
         $where[] = ['is_pub', 'eq', self::IS_PUB_YES];
@@ -309,10 +306,9 @@ class Article extends Common
             $typeModel = new ArticleType();
             $data['article_type'] = $typeModel->getArticleTypeFather($data['type_id']);
             $data['ctime'] = time_ago($data['ctime']);
-            $add_pv = $this->where(['id'=>$article_id])->update(['pv'=>$data['pv']+1]);
-            if(!$add_pv){
-                $result['msg'] = error_code(10037,true);
-                return $result;
+            $add_pv = $this->where(['id' => $article_id])->update(['pv' => $data['pv'] + 1]);
+            if (!$add_pv) {
+                return error_code(10037);
             }
             //上一篇，下一篇
             $data['up'] = [];

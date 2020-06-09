@@ -332,12 +332,12 @@ class Form extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '关键参数错误',
+            'msg'    => '',
             'data'   => ''
         ];
         $id     = input('id/d', '0');
         if (!$id) {
-            return $result;
+            return error_code(20096);
         }
         $formSubmit     = new FormSubmit();
         $formSubmitInfo = $formSubmit->getDetail($id);
@@ -362,12 +362,12 @@ class Form extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '关键参数错误',
+            'msg'    => '',
             'data'   => ''
         ];
         $id     = input('id/d', '0');
         if (!$id) {
-            return $result;
+            return error_code(20096);
         }
         $this->assign('id', $id);
         if (Request::isPost()) {
@@ -379,8 +379,8 @@ class Form extends Manage
                 $result['msg']    = '操作成功';
                 return $result;
             } else {
-                $result['msg'] = '操作失败';
-                return $result;
+                // $result['msg'] = '操作失败';
+                return error_code(10018);
             }
         } else {
             $this->view->engine->layout(false);

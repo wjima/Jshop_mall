@@ -41,7 +41,7 @@ class UserToken extends Common
                     $result['status'] = false;
                     $result['token'] = $data['token'];
                     $result['data'] = '11027';
-                    $result['msg'] = '请绑定手机号码';
+                    $result['msg'] = error_code(11027, true);
                 }
                 return $result;
             }else{

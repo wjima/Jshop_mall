@@ -387,12 +387,7 @@ class Balance extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => error_code(10083,true),    //无可导出数据
-
-        ];
+        $result =  error_code(10083);
         $header = $this->csvHeader();
         $data = $this->getExportList($post);
 

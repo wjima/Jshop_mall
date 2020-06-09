@@ -388,8 +388,7 @@ class Cart extends Common
             $checkRes       = $promotionModel->setPromotion($promotionInfo, $result['data']);
             //如果依然可以下单，但是是正常销售价，请注释下面的判断
             if (!$checkRes) {
-                $result['msg'] = error_code(15600,true);
-                return $result;
+                return error_code(15600);
             }
         } elseif ($order_type == self::TYPE_PINTUAN) {//拼团也计算促销信息
             $promotionModel = new Promotion();
@@ -431,11 +430,7 @@ class Cart extends Common
      */
     public function setNums($user_id, $id, $nums, $type = 1)
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => ''
-        ];
+        $result =  error_code(10037);
 
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
@@ -551,11 +546,7 @@ class Cart extends Common
      */
     public function batchSetCart($user_id, $input)
     {
-        $return = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return =  error_code(10037);
 
         Db::startTrans();
         try {
@@ -591,8 +582,7 @@ class Cart extends Common
                     if ($list['status']) {
                         $return['data'] = $list['data'];
                     }
-                    $return['msg'] = error_code(12702,true);
-                    return $return;
+                    return error_code(12702);
                 }
 
                 $data[] = [
@@ -629,8 +619,7 @@ class Cart extends Common
             $return['msg']  = '成功';
             $return['data'] = $list['data'];
         } else {
-            $return['msg']  = error_code(10020,true);
-            $return['data'] = $list['data'];
+            return error_code(10020);
         }
 
         return $return;

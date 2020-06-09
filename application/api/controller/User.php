@@ -90,8 +90,8 @@ class User extends Api
     public function wxappLogin1()
     {
         if (!input("?param.code")) {
-            $result['msg'] = error_code(10068,true);
-            return $result;
+            // $result['msg'] = error_code(10068, true);
+            return error_code(10068);
         }
         $wxapp = new Wxapp();
         return $wxapp->codeToInfo(input('param.code'));
@@ -118,13 +118,13 @@ class User extends Api
             return $result;
         }
         if (!input("?param.iv")) {
-            $result['msg'] = error_code(10070,true);
-            return $result;
+            // $result['msg'] = error_code(10070, true);
+            return error_code(10070);
         }
         if (!input("?param.edata")) {
             //加密的encryptedData数据，这是个加密的字符串
-            $result['msg'] = error_code(10071,true);
-            return $result;
+            // $result['msg'] = error_code(10071, true);
+            return error_code(10071);
         }
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
         $invitecode = Request::param('invitecode', false);
@@ -135,7 +135,7 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                error_code(10014);
+                return error_code(10014);
             }
         } else {
             $pid = 0;
@@ -165,8 +165,8 @@ class User extends Api
         $user_info = Request::param('user_info', false);
 
         if (!$code) {
-            $result['msg'] = error_code(10068,true);
-            return $result;
+            // $result['msg'] = error_code(10068, true);
+            return error_code(10068);
         }
         $aliPayApp = new Alipayapp();
         return $aliPayApp->codeToInfo($code, $user_info);
@@ -186,13 +186,13 @@ class User extends Api
         ];
         $userModel = new UserModel();
         if (!input("?param.mobile")) {
-            $result['msg'] = error_code(11051,true);
-            return $result;
+            // $result['msg'] = error_code(11051, true);
+            return error_code(11051);
         }
         //code的值可以为loign，reg，veri
         if (!input("?param.code")) {
-            $result['msg'] = error_code(10068,true);
-            return $result;
+            // $result['msg'] = error_code(10068, true);
+            return error_code(10068);
         }
         $code = input('param.code');
         $type = input('param.type');
@@ -215,8 +215,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.token")) {
-            $result['msg'] = error_code(11001,true);
-            return $result;
+            // $result['msg'] = error_code(11001, true);
+            return error_code(11001);
         }
         $userTokenModel = new UserToken();
         return $userTokenModel->delToken(input("param.token"));
@@ -258,7 +258,7 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                error_code(10014);
+                return error_code(10014);
             }
         } else {
             $pid = 0;
@@ -291,7 +291,7 @@ class User extends Api
         $result = [
             'status' => false,
             'data' => input('param.'),
-            'msg' => error_code(10004,true)
+            'msg' => error_code(10004, true)
         ];
         if (!input("?param.avatar")) {
             return error_code(11003);
@@ -332,8 +332,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_id")) {
-            $result['msg'] = error_code(10013,true);
-            return $result;
+            // $result['msg'] = error_code(10013, true);
+            return error_code(10013);
         }
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toAdd($this->userId, input("param.goods_id"));
@@ -355,8 +355,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_ids")) {
-            $result['msg'] = error_code(10013,true);
-            return $result;
+            // $result['msg'] = error_code(10013, true);
+            return error_code(10013);
         }
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toDel($this->userId, input("param.goods_ids"));
@@ -402,8 +402,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_id")) {
-            $result['msg'] = error_code(10013,true);
-            return $result;
+            // $result['msg'] = error_code(10013, true);
+            return error_code(10013);
         }
         $goodsCollectionModel = new GoodsCollection();
         return $goodsCollectionModel->toDo($this->userId, input("param.goods_id"));
@@ -539,11 +539,12 @@ class User extends Api
                 'data' => $result
             ];
         } else {
-            $res = [
-                'status' => false,
-                'msg' => error_code(10002,true),
-                'data' => ''
-            ];
+            // $res = [
+            //     'status' => false,
+            //     'msg' => error_code(10002, true),
+            //     'data' => ''
+            // ];
+            return error_code(10002);
         }
         return $res;
     }
@@ -1195,9 +1196,9 @@ class User extends Api
         ];
         $area = config('jshop.area_list');
         if (!file_exists($area)) {
-            $return['status'] = false;
-            $return['msg'] = error_code(10072,true);
-            return $return;
+            // $return['status'] = false;
+            // $return['msg'] = error_code(10072, true);
+            return error_code((10072));
         }
         $data = file_get_contents($area);
         echo $data;
@@ -1309,8 +1310,8 @@ class User extends Api
         ];
 
         if (!input("?param.type")) {
-            $result['msg'] = error_code(10003,true);
-            return $result;
+            // $result['msg'] = error_code(10003, true);
+            return error_code(10003);
         }
         $data = input('param.');
 //        $userWxModel = new UserWx();
@@ -1324,7 +1325,7 @@ class User extends Api
             if ($pinfo) {
                 $data['pid'] = $pinfo['id'];
             } else {
-                error_code(10014);
+                return error_code(10014);
             }
         } else {
             $data['pid'] = 0;
@@ -1393,8 +1394,8 @@ class User extends Api
         $user_info = Request::param('user_info', false);
 
         if (!$code) {
-            $result['msg'] = error_code(10003,true);
-            return $result;
+            // $result['msg'] = error_code(10003, true);
+            return error_code(10003);
         }
         $ttApp = new Ttapp();
         return $ttApp->codeToInfo($code, $user_info);

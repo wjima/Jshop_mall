@@ -26,18 +26,14 @@ class Form extends Api
      */
     public function getFormDetial()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(18001,true),
-            'data'   => [],
-        ];
+        $return_data = error_code(18001);
         $id          = input('id/d', 0);
         $token       = input('token', '');//token值 会员登录后传
 
         if (!$id) {
-            $return_data['msg']    = error_code(10051,true);
-            $return_data['status'] = false;
-            return $return_data;
+            // $return_data['msg']    = error_code(10051,true);
+            // $return_data['status'] = false;
+            return error_code(10051);
         }
         $formModel = new FormModel();
         $info      = $formModel->getFormInfo($id);
@@ -72,11 +68,7 @@ class Form extends Api
      */
     public function addSubmit()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(18001,true),
-            'data'   => [],
-        ];
+        $return_data = error_code(18001);
         $id          = input('id/d', 0);
         $token       = input('token', '');
         $data        = input('param.',[],'remove_xss');
@@ -128,8 +120,8 @@ class Form extends Api
         if ($form['data']['times'] && $token) {
             $count = $formSubmit->where([['user_id', '=', $user_id],['form_id','=',$id]])->count();
             if ($count >= $form['data']['times']) {
-                $return_data['msg'] = error_code(18003,true);
-                return $return_data;
+                // $return_data['msg'] = error_code(18003, true);
+                return error_code(18003);
             }
         }
         $formData = [
@@ -165,14 +157,14 @@ class Form extends Api
             foreach ($tempData as $key => $value) {
                 $formitem = $formItem->where(['id' => $key])->find();
                 if (!$formItem->validateField($formitem, $value)) {
-                    $return_data['msg'] =  error_code(18004,true,$formitem['name']);   //格式错误，请重新输入
+                    // $return_data['msg'] =  error_code(18004, true, $formitem['name']);   //格式错误，请重新输入
                     Db::rollback();
-                    return $return_data;
+                    return error_code(18004, false, $formitem['name']);
                 }
                 if ($formitem['required'] == $formItem::REQUIRED_YES && !$value) {
-                    $return_data['msg'] = error_code(18006,true, $formitem['name']);    //'请输入' . $formitem['name']
+                    // $return_data['msg'] = error_code(18006, true, $formitem['name']);    //'请输入' . $formitem['name']
                     Db::rollback();
-                    return $return_data;
+                    return error_code(18006, false, $formitem['name']);
                 }
                 //地区
                 if ($formitem['type'] == 'area' && $value) {
@@ -196,9 +188,9 @@ class Form extends Api
                     foreach ($value as $k => $v) {
                         $productData = $productModel->getProductInfo($v['productId']);
                         if (!$productData['status']) {
-                            $return_data['msg'] = error_code(12501,true);
+                            // $return_data['msg'] = error_code(12501, true);
                             Db::rollback();
-                            return $return_data;
+                            return error_code(12501);
                         }
                         $product        = $productData['data'];
                         $form_item_name = ($product['spes_desc']) ? $product['spes_desc'] . ':' . $product['sn'] : $product['sn'];
@@ -223,9 +215,9 @@ class Form extends Api
                 }
             }
             if (!$subimtDetail->saveAll($item)) {
-                $return_data['msg'] = error_code(18007,true);
+                // $return_data['msg'] = error_code(18007, true);
                 Db::rollback();
-                return $return_data;
+                return error_code(18007);
             }
         }
         //支付类型

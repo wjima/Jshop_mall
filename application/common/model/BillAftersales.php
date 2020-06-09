@@ -519,9 +519,9 @@ class BillAftersales extends Common
                         }
                     }else{
                         $n = $v['sendnums'] - $v['reship_nums_ed'];
-                        if($n < $num){
-                            $result['msg'] = error_code(13602,false,$v['name'],$v['addon'],$n);//"已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
-                            return $result;
+                        if ($n < $num) {
+                            return error_code(13602, false, $v['name'], $v['addon'], $n); //"已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+
                         }
                     }
                     

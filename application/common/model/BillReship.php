@@ -31,7 +31,7 @@ class BillReship extends Common
     public function toAdd($user_id,$order_id,$aftersales_id,$aftersalesItems)
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => [],
             'msg' => ''
         ];
@@ -61,11 +61,11 @@ class BillReship extends Common
                 $itemsData[] = $row;
             }
             $billReshipItemsModel = new BillReshipItems();
-            if(!$billReshipItemsModel->saveAll($itemsData)){
-                return error_code(10000);
+            if (!$billReshipItemsModel->saveAll($itemsData)) {
+                return error_code(10004);
             }
-        }else{
-            return error_code(10000);
+        } else {
+            return error_code(10004);
         }
         $result['status'] = true;
         $result['data'] = $data;
@@ -407,12 +407,7 @@ class BillReship extends Common
      */
     public function getExportList($post = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => '',
-            'count' => 0
-        ];
+        $return_data =  error_code(10025);
         $where = [];
 
         if(isset($post['reship_id']) && $post['reship_id'] != ""){

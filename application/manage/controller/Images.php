@@ -319,12 +319,12 @@ class Images extends Manage
     {
         $return_data = [
             'status' => false,
-            'msg'    => error_code(10023,true),
+            'msg'    => '',
             'data'   => ''
         ];
         $id          = input('param.id/s', '');
         if (!$id) {
-            return $return_data;
+            return error_code(10023);
         }
         if (delImage($id)) {
             $return_data['msg']    = '删除成功';

@@ -26,11 +26,7 @@ class Clerk extends Common
      */
     public function getInfo($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => []
-        ];
+        $return = error_code(10025);
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->where($where)->find();
         if($return['data'] !== false)
@@ -56,12 +52,7 @@ class Clerk extends Common
      */
     public function getList($id = false, $page = 1, $limit = 20)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => [],
-            'count' => 0
-        ];
+        $return =  error_code(10025);
 
         $where = [];
         if($id)
@@ -176,12 +167,7 @@ class Clerk extends Common
      */
     public function isClerk($user_id)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(11504,true),
-            'data' => [],
-            'flag' => false,
-        ];
+        $return =  error_code(11504);
 
         $settingModel = new Setting();
         $switch = $settingModel->getValue('store_switch');
@@ -195,11 +181,10 @@ class Clerk extends Common
                 $return['msg'] = '是店员';
                 $return['flag'] = true;
             }
-        }
-        else
-        {
-            $return['status'] = true;
-            $return['msg'] = '未开启到店自提';
+        } else {
+            // $return['status'] = false;
+            // $return['msg'] = '未开启到店自提';
+            return error_code(11505);
         }
 
         return $return;

@@ -78,12 +78,7 @@ class BillLading extends Common
      */
     public function getList($post, $page = 1, $limit = 20)
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => [],
-            'count' => 0
-        ];
+        $return =  error_code(10025);
 
         $where = [];
         if($post['id'])
@@ -514,12 +509,7 @@ class BillLading extends Common
     //导出格式
     public function getExportList($post = [])
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => [],
-            'count' =>0
-        ];
+        $return =  error_code(10025);
 
         $where = [];
         if($post['id'])

@@ -42,12 +42,12 @@ class Cart extends Api
         ];
 
         if (!input("?param.product_id")) {
-            $result['msg'] = error_code(14011,true);
-            return $result;
+            // $result['msg'] = error_code(14011);
+            return error_code(14011);
         }
         if (!input("?param.nums")) {
-            $result['msg'] = error_code(14012,true);
-            return $result;
+            // $result['msg'] = error_code(14012, true);
+            return error_code(14012);
         }
         $type      = input('param.type', 1);          //1是累加，2是覆盖
         $cart_type = input('param.order_type', 1);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
@@ -76,14 +76,8 @@ class Cart extends Api
                 'msg' => '移除购物车成功',
                 'data' => $result
             );
-        }
-        else
-        {
-            $return_data = array(
-                'status' => false,
-                'msg' => error_code(14014,true),
-                'data' => $result
-            );
+        } else {
+            return error_code(14014);
         }
         return $return_data;
     }
@@ -131,13 +125,10 @@ class Cart extends Api
             'data' => [],
             'msg' => ''
         ];
-        if(!input('?param.id'))
-        {
-            $result['msg'] = error_code(14011,true);
-            return $result;
-        }
-        else
-        {
+        if (!input('?param.id')) {
+            // $result['msg'] = error_code(14011, true);
+            return error_code(14011);
+        } else {
             $id = input('param.id');
         }
         $nums = input('nums', 1);

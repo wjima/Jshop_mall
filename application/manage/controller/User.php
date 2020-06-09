@@ -67,11 +67,7 @@ class User extends Manage
      */
     public function editPoint()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $result =  error_code(10037);
         $this->view->engine->layout(false);
         $user_id = input('user_id');
         $flag = input('flag', 'false');
@@ -216,11 +212,7 @@ class User extends Manage
      */
     public function editUser()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $result = error_code(10037);
         $this->view->engine->layout(false);
         $userModel = new UserModel();
 
@@ -282,11 +274,7 @@ class User extends Manage
      */
     public function editMoney()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $result =  error_code(10037, true);
         $this->view->engine->layout(false);
         $user_id = input('user_id');
         $flag = input('flag', 'false');
@@ -334,11 +322,7 @@ class User extends Manage
      */
     public function gradeAdd()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $result = error_code(10037);
         $this->view->engine->layout(false);
 
         $userGradeModel = new UserGrade();
@@ -356,10 +340,9 @@ class User extends Manage
         if(input('?param.id'))
         {
             $info = $userGradeModel->where('id', input('param.id'))->find();
-            if(!$info)
-            {
-                $result['msg'] = error_code(10002,true);
-                return $result;
+            if (!$info) {
+                // $result['msg'] = error_code(10002, true);
+                return error_code(10002);
             }
             $this->assign('data', $info);
         }
@@ -381,11 +364,7 @@ class User extends Manage
      */
     public function gradeDel()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $result = error_code(10037);
 
         $userGradeModel = new UserGrade();
         if(!input('?param.id'))
@@ -394,19 +373,17 @@ class User extends Manage
         }
 
         $info = $userGradeModel->where('id', input('param.id'))->find();
-        if(!$info)
-        {
-            $result['msg'] = error_code(11030,true);
-            return $result;
+        if (!$info) {
+            // $result['msg'] = error_code(11030, true);
+            return error_code(11030);
         }
         $re = $userGradeModel->where('id', input('param.id'))->delete();
         if($re)
         {
             $result['status'] = true;
-        }
-        else
-        {
-            $result['msg'] = error_code(10023,true);
+        } else {
+            // $result['msg'] = error_code(10023, true);
+            return error_code(10023);
         }
         return $result;
     }
@@ -418,11 +395,7 @@ class User extends Manage
      */
     public function delUser()
     {
-        $result = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $result = error_code(10037);
 
         $ids = input('ids/a', []);
         if(!$ids)

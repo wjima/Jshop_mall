@@ -162,14 +162,8 @@ class Store extends Api
         {
             $style['width'] = 300;
             return $wx->getParameterQRCode($accessToken, $page, $invite, $goods, $style, $wx_appid);
-        }
-        else
-        {
-            return $return = [
-                'status' => false,
-                'msg' => error_code(10069,true),
-                'data' => ''
-            ];
+        } else {
+            return error_code(10069);
         }
     }
 

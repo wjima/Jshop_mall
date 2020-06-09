@@ -95,8 +95,7 @@ class Carousel extends Common
             $data['code']      = $carouselSeatModel->where('id', $data['position_id'])->value('code');
 
             if (!$this->allowField(true)->save($this->formatAdVal($data))) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                return error_code(10004);
             }
         }
         return $result;
@@ -123,8 +122,7 @@ class Carousel extends Common
             $data['code']      = $carouselSeatModel->where('id', $data['position_id'])->value('code');
 
             if (!$this->allowField(true)->save($this->formatAdVal($data), ['id' => $data['id']])) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                return error_code(10004);
             }
         }
         return $result;

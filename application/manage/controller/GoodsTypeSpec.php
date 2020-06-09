@@ -155,10 +155,9 @@ class GoodsTypeSpec extends Manage
                 'sort' => input('post.sort', 100)
             ];
             $value = input('post.value/a', []);
-            if(!$value)
-            {
-                $result['msg'] = error_code(12011,true);
-                return $result;
+            if (!$value) {
+                // $result['msg'] = error_code(12011, true);
+                return error_code(12011);
             }
             $goodsTypeModel->startTrans();
             if($specValueModel::get(['spec_id' => $data['id']]))
@@ -166,8 +165,8 @@ class GoodsTypeSpec extends Manage
                 if(!$specValueModel::destroy(['spec_id' => $data['id']]))
                 {
                     $goodsTypeModel->rollback();
-                    $result['msg'] = error_code(12012,true);
-                    return $result;
+                    // $result['msg'] = error_code(12012, true);
+                    return error_code(12012);
                 }
             }
             $goodsTypeModel::update($data, $filter);
@@ -183,8 +182,8 @@ class GoodsTypeSpec extends Manage
             if(!$specValueModel->saveAll($valueData))
             {
                 $goodsTypeModel->rollback();
-                $result['msg'] = error_code(12013,true);
-                return $result;
+                // $result['msg'] = error_code(12013, true);
+                return error_code(12013);
             }
             $goodsTypeModel->commit();
             $result = [

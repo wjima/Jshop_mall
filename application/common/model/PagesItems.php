@@ -43,8 +43,8 @@ class PagesItems extends Common
         }
         if (!$this->saveAll($iData)) {
             Db::rollback();
-            $result['msg'] = error_code(10004,true);
-            return $result;
+            // $result['msg'] = error_code(10004,true);
+            return error_code(10004);
         }
         Db::commit();
         $result['status'] = true;

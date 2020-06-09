@@ -87,8 +87,7 @@ class Notice extends Manage
         $result      = ['status' => true, 'msg' => '删除成功', 'data' => ''];
         $noticeModel = new noticeModel();
         if (!$noticeModel->destroy(input('post.id/d'))) {
-            $result['status'] = false;
-            $result['msg']    = error_code(10023,true);
+            return error_code(10023);
         }
 
         return $result;

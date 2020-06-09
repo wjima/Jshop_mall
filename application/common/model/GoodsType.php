@@ -218,10 +218,8 @@ class GoodsType extends Common
                 'msg' => '获取成功',
                 'data' => $res
             ];
-        }
-        else
-        {
-            $return = error_code(10025);
+        } else {
+            return error_code(10025);
         }
         return $return;
     }

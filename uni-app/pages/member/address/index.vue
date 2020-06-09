@@ -243,7 +243,7 @@ export default {
 			}else{
 				//添加
 				if (this.checkData(data)) {
-					this.$api.saveUserShip(data, res => {
+					this.$api.editShip(data, res => {
 						if(res.status){
 							this.$common.successToShow(res.msg, ress => {
 								// this.submitStatus = false;

@@ -58,7 +58,7 @@ class Giveaway implements Result
         }
 
         //判断库存是否够
-        if($nums > ($productInfo['data']['stock'] - $productInfo['data']['freeze_stock'])){
+        if($nums > ($productInfo['data']['stock'])){
             return error_code(12702);
         }
 

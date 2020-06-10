@@ -130,14 +130,21 @@ export default {
 							if (res1.status) {
 								//存储用户收货信息
 								let userShipId = 0;
+								// let userShipData = {
+								// 	area_id: res1.data,
+								// 	user_name: res.userName,
+								// 	detail_info: res.detailInfo,
+								// 	tel_number: res.telNumber,
+								// 	is_def: 2
+								// }
 								let userShipData = {
 									area_id: res1.data,
-									user_name: res.userName,
-									detail_info: res.detailInfo,
-									tel_number: res.telNumber,
+									name: res.userName,
+									address: res.detailInfo,
+									mobile: res.telNumber,
 									is_def: 2
 								}
-								this.$api.saveUserShipWx(userShipData, res2 => {
+								this.$api.editShip(userShipData, res2 => {
 									if (res2.status) {
 										this.$common.errorToShow('存储微信地址成功', r => {
 											setTimeout(rp => {

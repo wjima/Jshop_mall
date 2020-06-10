@@ -34,15 +34,11 @@ class Goods extends Api
 
     private function allowedField($data, $type = 'goods')
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10028,true),
-            'data'   => []
-        ];
+        $return_data = error_code(10028);
 
         if ($data == '' && $data != '*') {
-            $return_data['msg'] = error_code(10029,true);
-            return $return_data;
+            // $return_data['msg'] = error_code(10029,true);
+            return error_code(10029);
         }
         if ($data != '*') {
             $tmpData = explode(',', $data);
@@ -75,11 +71,7 @@ class Goods extends Api
      */
     private function allowedOrder($order)
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10031,true),
-            'data'   => []
-        ];
+        $return_data = error_code(10031);
         //        if(is_array($order)) {
         //            $return_data['msg'] = '排序字段不能为数组';
         //            return $return_data;
@@ -127,11 +119,7 @@ class Goods extends Api
      */
     public function getList()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10027,true),
-            'data'   => []
-        ];
+        $return_data = error_code(10027);
         $field       = input('field', '*');
         $page        = input('page/d', 1);
         $limit       = input('limit/d');
@@ -294,11 +282,7 @@ class Goods extends Api
      */
     public function getSkuDetial()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(12701,true),
-            'data'   => []
-        ];
+        $return_data = error_code(12701);
         $spec_value  = input('spec', '');
         $goods_id    = input('id/d', 0); //商品ID
         $token       = input('token', ''); //token值 会员登录后传
@@ -339,11 +323,7 @@ class Goods extends Api
      */
     public function getGoodsParams()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10033,true),
-            'data'   => []
-        ];
+        $return_data = error_code(10033);
         $goods_id    = input('id/d', 0); //商品ID
         $goodsModel  = new GoodsModel();
         $brandModel  = new Brand();
@@ -386,17 +366,13 @@ class Goods extends Api
      */
     public function getProductInfo()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10033,true),
-            'data'   => []
-        ];
+        $return_data = error_code(10033);
         $product_id  = input('id/d', 0); //货品ID
         $token       = input('token', ''); //token值 会员登录后传
         $type       = input('type', 'goods'); //商品类型,默认是商品
         if (!$product_id) {
-            $return_data['msg'] = error_code(14011,true);
-            return $return_data;
+            // $return_data['msg'] = error_code(14011, true);
+            return error_code(14011);
         }
 
         $productsModel      = new Products();

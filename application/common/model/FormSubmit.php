@@ -57,13 +57,12 @@ class FormSubmit extends common
     public function pay($id, $payment_code = '')
     {
         $return_data = [
-            'status' => false,
-            'msg'    => '支付失败',
+            'status' => true,
+            'msg'    => '',
             'data'   => [],
         ];
         if (!$id) {
-            $return_data['msg'] = '支付失败';
-            return $return_data;
+            return error_code(18012);
         }
         $this->update(['pay_status' => self::FORM_PAY_STATUS_YES], ['id' => $id, 'pay_status' => self::FORM_PAY_STATUS_NO]);
         $return_data['status'] = true;

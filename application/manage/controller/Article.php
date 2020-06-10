@@ -89,8 +89,7 @@ class Article extends Manage
             'data'   => ''
         ];
         if (!$article->destroy(input('param.id/d'))) {
-            $result['status'] = false;
-            $result['msg']    = error_code(10023,true);
+            return error_code(10023);
         }
         return $result;
     }

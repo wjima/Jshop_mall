@@ -285,9 +285,9 @@ class PintuanRecord extends Model{
             //根据订单id取teamid
             $where_order[] = ['order_id','eq', $order_id];
             $info = $this->where($where_order)->find();
-            if(!$info){
-                $result['msg'] = "没有找到拼团记录";
-                return $result;
+            if (!$info) {
+                // $result['msg'] = "没有找到拼团记录";
+                return error_code(15605);
             }
             $team_id = $info['team_id'];
         }

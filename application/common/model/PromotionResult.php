@@ -197,9 +197,9 @@ class PromotionResult extends Common
         $result['status'] = false;          //重新置成false
 
         //判断如果是商品促销结果，在params里必须要有condition_id信息
-        if(!isset($this->code[$data['code']])){
-            $result['msg'] = '没有此促销结果代码';
-            return $result;
+        if (!isset($this->code[$data['code']])) {
+            // $result['msg'] = '没有此促销结果代码';
+            return error_code(15029);
         }
 
         $data['sort'] = $this->code[$data['code']]['sort'];

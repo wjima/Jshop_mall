@@ -340,11 +340,7 @@ class GoodsType extends Manage
      */
     public function addParams()
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $return = error_code(10037)
         $this->view->engine->layout(false);
         if(!Request::isPost())
         {

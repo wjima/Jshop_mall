@@ -166,11 +166,7 @@ class Categories extends Manage
      */
     public function changeState()
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => error_code(10003,true),
-        ];
+        $result =  error_code(10003);
         $id = input('post.id/d', 0);
         $state = input('post.status/s', 'false');
 

@@ -52,7 +52,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10019,true),
+            'msg'    => error_code(10019, true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -93,7 +93,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10021,true),
+            'msg'    => error_code(10021, true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -147,7 +147,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => error_code(10023,true),
+            'msg'    => error_code(10023, true),
             'data'   => ''
         ];
         if (!input('?param.id')) {
@@ -165,7 +165,7 @@ class Administrator extends ManageController
             $result['status'] = true;
             $result['msg']    = '删除成功';
         } else {
-            $result['msg'] = error_code(10023,true);
+            $result['msg'] = error_code(10023, true);
         }
 
         return $result;
@@ -194,20 +194,14 @@ class Administrator extends ManageController
      */
     public function editPwd()
     {
-        $result      = [
-            'status' => false,
-            'msg'    => error_code(10021,true),
-            'data'   => ''
-        ];
+
         $manageModel = new ManageModel();
 
         if (!input('?param.newPwd') || !input('?param.password') || !input('?param.rePwd')) {
-            $result['msg'] = error_code(11009,true);
-            return $result;
+            return error_code(11009);
         }
         if (input('param.newPwd') != input('param.rePwd')) {
-            $result['msg'] = error_code(11025,true);
-            return $result;
+            return  error_code(11025);
         }
 
         return $manageModel->chengePwd(session('manage.id'), input('param.password'), input('param.newPwd'));
@@ -220,10 +214,10 @@ class Administrator extends ManageController
      */
     public function getVersion()
     {
-        $return  = [
+        $return  =  [
+            'msg' => error_code(10027, true),
             'status' => false,
-            'msg'    => error_code(10027,true),
-            'data'   => []
+            'data' => []
         ];
         $product = config('jshop.product');
         $version = config('jshop.version');
@@ -258,7 +252,6 @@ class Administrator extends ManageController
     public function userLogList()
     {
         $userLogModel = new UserLog();
-        return $userLogModel->getList(0,$userLogModel::MANAGE_TYPE);
+        return $userLogModel->getList(0, $userLogModel::MANAGE_TYPE);
     }
-
 }

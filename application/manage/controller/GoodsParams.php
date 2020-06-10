@@ -85,17 +85,12 @@ class GoodsParams extends Manage
      */
     public function edit()
     {
-        $return_data = [
-            'status' => false,
-            'msg' => error_code(10021,true),
-            'data' => '',
-        ];
+        $return_data = error_code(10021);
         $goodsParamsModel = new GPmodel();
-        $id = input('id/d','0');
-        if(!$id)
-        {
-            $return_data['msg'] = error_code(10003,true);
-            return $return_data;
+        $id = input('id/d', '0');
+        if (!$id) {
+            // $return_data['msg'] = error_code(10003, true);
+            return error_code(10013);
         }
         $this->view->engine->layout(false);
         if(Request::isPost())

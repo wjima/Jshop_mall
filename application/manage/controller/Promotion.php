@@ -256,8 +256,7 @@ class Promotion extends Manage
         ];
         $couponModel->where($where)->delete();
         if (!$promotionModel::destroy($info['id'])) {
-            $return['status'] = false;
-            $return['msg']    = error_code(10037,true);
+            return error_code(10037);
         }
         $return['status'] = true;
         $return['msg']    = '成功';
@@ -614,12 +613,8 @@ class Promotion extends Manage
 
 
             $goods_id   = input('post.goods_id');
-            if(!$goods_id){
-                $result = [
-                    'status' => false,
-                    'data'   => 0,
-                    'msg'    => error_code(12009,true)
-                ];
+            if (!$goods_id) {
+                $result =  error_code(12009);
                 return $result;
             }
             $goods_ids  = explode(',', $goods_id);
@@ -739,7 +734,7 @@ class Promotion extends Manage
             $result['status'] = true;
             $result['msg']    = '设置成功';
         } else {
-            $result['msg'] = error_code(10021,true);
+            return error_code(10021);
         }
 
         return $result;

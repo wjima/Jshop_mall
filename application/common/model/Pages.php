@@ -88,8 +88,8 @@ class Pages extends Common
             $data     = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
         }
         if ($data->isEmpty()) {
-            $result['msg'] = '请先配置该页面';
-            return $result;
+            // $result['msg'] = '请先配置该页面';
+            return error_code(34800);
         }
         try {
             $data = $data->toArray();

@@ -42,12 +42,8 @@ class Message extends ManageController
                 'data' => '',
                 'msg' => '删除成功'
             ];
-        }else{
-            return [
-                'status' => false,
-                'data' => '',
-                'msg' => error_code(10023,true)
-            ];
+        } else {
+            return error_code(10023);
         }
     }
 

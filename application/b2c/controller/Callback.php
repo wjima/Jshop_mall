@@ -27,8 +27,8 @@ class Callback extends Base
             'data' => [],
             'msg' => ''
         ];
-        if(!input('?param.code')){
-            return error_code(10051,true);
+        if (!input('?param.code')) {
+            return error_code(10051);
         }
         //判断支付方式合法性
         $paymentsModel = new Payments();

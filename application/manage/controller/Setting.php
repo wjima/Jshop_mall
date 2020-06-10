@@ -78,9 +78,8 @@ class Setting extends Manage
         ];
         $id = input('param.id/d');
         $res = $videosModel->destroy($id);
-        if (!$res) { // 删除视频文件
-            $result['status'] = false;
-            $result['msg']    = '删除失败';
+        if (!unlink($url) && !$res) { // 删除视频文件
+            return error_code(10023);
         }
         return $result;
     }

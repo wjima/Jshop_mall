@@ -192,6 +192,7 @@ class User extends Common
                 return error_code(10019);
             }
             $userInfo = $this->where(array('id' => $user_id))->find();
+            hook('newuserreg', $userInfo);
         } else {
             //如果有这个账号的话，判断一下是不是传密码了，如果传密码了，就是注册，这里就有问题，因为已经注册过
             if (isset($data['password'])) {
@@ -445,7 +446,7 @@ class User extends Common
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
             }
             if ($v['pid']) {
-                $list[$k]['pid_name'] = get_user_info($v['pid']);
+                $list[$k]['pid_name'] = get_user_info($v['pid'],'nickname');
             }
             if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);

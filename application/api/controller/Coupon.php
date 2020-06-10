@@ -28,11 +28,7 @@ class Coupon extends Api
      */
     public function couponList()
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => error_code(10025,true)
-        ];
+        $result =  error_code(10025);
         $promotionModel = new Promotion();
         $limit = Request::param('limit', 3);
         $res = $promotionModel->receiveCouponList($limit);
@@ -55,13 +51,8 @@ class Coupon extends Api
      */
     public function couponDetail()
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => error_code(10025,true)
-        ];
-        if(!input('promotion_id'))
-        {
+        $result =  error_code(10025);
+        if (!input('promotion_id')) {
             return error_code(15006);
         }
         $promotionModel = new Promotion();

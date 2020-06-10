@@ -505,9 +505,7 @@ class Report extends Manage
                     break;
 
                 default:
-                    $result['status'] = false;
-                    $result['msg'] = error_code(10077,true);
-                    return $result;
+                    return error_code(10077);
             }
             return $result;
         }else{

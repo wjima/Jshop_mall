@@ -1333,8 +1333,10 @@ function validateJshopToken()
     $form        = input('validate_form/s', '');
 
     $cache_token = \think\facade\Cache::get($form . '_token');
+
     if (!$_token || $_token != $cache_token) {
         if (\think\facade\Request::isAjax()) {
+
             $new_token = \think\facade\Request::token('__Jshop_Token__', 'sha1');
             \think\facade\Cache::set($form . '_token', $new_token, 86400);   //1天过期
             $return = [
@@ -1343,7 +1345,7 @@ function validateJshopToken()
                 'status' => false,
                 'token'  => $new_token
             ];
-            \think\facade\Cache::rm($form . '_token');//删除缓存
+            //\think\facade\Cache::rm($form . '_token');//删除旧缓存
             header('Content-type:text/json');
             echo json_encode($return);
             exit;

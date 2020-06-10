@@ -210,7 +210,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($userId, $ids, $type = 1)
+    public function getList($userId, $ids, $type = 1, $display = false)
     {
         $result  = array(
             'status' => false,
@@ -219,6 +219,9 @@ class Cart extends Common
         );
         $where[] = ['user_id', 'eq', $userId];
         $where[] = ['type', 'eq', $type];
+        if(!$display){
+            $where[] = ['id', 'in',$ids];
+        }
         $list    = $this->where($where)->select();
 
         if (!$list->isEmpty()) {
@@ -299,6 +302,7 @@ class Cart extends Common
      * @param $userId
      * @param $ids
      * @param string $order_type //订单类型
+     * @param bool $display         //是否显示所有购物车信息
      * @param int $area_id //收货地址id
      * @param int $point //消费的积分
      * @param string $coupon_code
@@ -310,7 +314,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($userId, $ids, $order_type = '1', $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1,$params = [])
+    public function info($userId, $ids, $order_type = '1',$display = false, $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1,$params = [])
     {
         $result   = [
             'status' => false,
@@ -333,7 +337,7 @@ class Cart extends Common
             ],
             'msg'    => ""
         ];
-        $cartList = $this->getList($userId, $ids, $order_type);
+        $cartList = $this->getList($userId, $ids, $order_type, $display);
         if (!$cartList['status']) {
             $result['msg'] = $cartList['msg'];
             return $result;
@@ -388,8 +392,7 @@ class Cart extends Common
             $checkRes       = $promotionModel->setPromotion($promotionInfo, $result['data']);
             //如果依然可以下单，但是是正常销售价，请注释下面的判断
             if (!$checkRes) {
-                $result['msg'] = error_code(15600,true);
-                return $result;
+                return error_code(15600);
             }
         } elseif ($order_type == self::TYPE_PINTUAN) {//拼团也计算促销信息
             $promotionModel = new Promotion();
@@ -431,11 +434,7 @@ class Cart extends Common
      */
     public function setNums($user_id, $id, $nums, $type = 1)
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => ''
-        ];
+        $result =  error_code(10037);
 
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
@@ -551,11 +550,7 @@ class Cart extends Common
      */
     public function batchSetCart($user_id, $input)
     {
-        $return = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => []
-        ];
+        $return =  error_code(10037);
 
         Db::startTrans();
         try {
@@ -591,8 +586,7 @@ class Cart extends Common
                     if ($list['status']) {
                         $return['data'] = $list['data'];
                     }
-                    $return['msg'] = error_code(12702,true);
-                    return $return;
+                    return error_code(12702);
                 }
 
                 $data[] = [
@@ -629,8 +623,7 @@ class Cart extends Common
             $return['msg']  = '成功';
             $return['data'] = $list['data'];
         } else {
-            $return['msg']  = error_code(10020,true);
-            $return['data'] = $list['data'];
+            return error_code(10020);
         }
 
         return $return;

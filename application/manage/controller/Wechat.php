@@ -50,11 +50,7 @@ class Wechat extends Manage
      */
     public function doEdit()
     {
-        $result       = [
-            'status' => false,
-            'data'   => '',
-            'msg'    => error_code(10004,true),
-        ];
+        $result       =  error_code(10004);
         $settingModel = new Setting();
 
         if (Request::isAjax()) {
@@ -338,11 +334,7 @@ class Wechat extends Manage
      */
     public function delMessage()
     {
-        $result       = [
-            'status' => false,
-            'msg'    => error_code(10023,true),
-            'data'   => [],
-        ];
+        $result       = error_code(10023);
         $messageModel = new WeixinMessage();
         $id           = input('param.id/d', 0);
         if (!$id) {
@@ -365,11 +357,7 @@ class Wechat extends Manage
      */
     public function editMessage()
     {
-        $return = [
-            'status' => false,
-            'msg'    => error_code(10037,true),
-            'data'   => ''
-        ];
+        $return =  error_code(10037);
         $this->view->engine->layout(false);
         $messageModel = new WeixinMessage();
         if (Request::isPost()) {

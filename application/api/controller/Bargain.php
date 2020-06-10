@@ -57,19 +57,15 @@ class Bargain extends Api
      */
     public function getBargainDetial()
     {
-        $return_data = [
-            'status' => true,
-            'msg'    => error_code(10027,true),
-            'data'   => [],
-        ];
+        $return_data = error_code(10027);
         $bargain_id  = input('id/d', 0);
         $record_id   = input('record_id/d', 0);//发起人id
         $type        = input('type', 1);//自己访问还是别人访问
 
         if (!$bargain_id) {
-            $return_data['msg']    = error_code(10003,true);
-            $return_data['status'] = false;
-            return $return_data;
+            // $return_data['msg']    = error_code(10003,true);
+            // $return_data['status'] = false;
+            return error_code(10003);
         }
         $bargainModel = new bargainModel();
         return $bargainModel->getBargainDetial($bargain_id, $type, $record_id, $this->userId);;
@@ -83,7 +79,7 @@ class Bargain extends Api
     {
         $bargain_id = input('id/d', 0);
         $record_id  = input('record_id/d', 0);
-        $type       = input('type', 1);//默认发起砍价
+        $type       = input('type', 1); //默认发起砍价
 
         $bargainModel = new bargainModel();
         return $bargainModel->doBargain($bargain_id, $type, $this->userId, $record_id);
@@ -97,7 +93,7 @@ class Bargain extends Api
     {
         $return_data = [
             'status' => true,
-            'msg'    => error_code(10027,true),
+            'msg'    => '',
             'data'   => [],
         ];
         $bargain_id  = input('id/d', 0);

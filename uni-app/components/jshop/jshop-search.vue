@@ -12,7 +12,7 @@
 			</view>
 		</view>
 		<!-- 搜索框 -->
-		<view class="search search-fixed" v-show="searchFixed">
+		<!-- <view class="search search-fixed" v-show="searchFixed">
 			<view class='search-c' @click='goSearch()' v-bind:class="jdata.params.style">
 				<view class='search-input search-input-p'>
 					<view class="search-input-p-c">
@@ -21,7 +21,7 @@
 				</view>
 				<image class='icon search-icon' src='/static/image/zoom.png'></image>
 			</view>
-		</view>	
+		</view>	 -->
 	</view>
 </template>
 <script>

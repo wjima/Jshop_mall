@@ -42,11 +42,7 @@ class Invoice extends Manage
      */
     public function edit()
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $return =  error_code(10037);
 
         $this->view->engine->layout(false);
         $invoiceModel = new InvoiceModel();
@@ -88,11 +84,7 @@ class Invoice extends Manage
      */
     public function show()
     {
-        $return = [
-            'status' => false,
-            'msg' => error_code(10037,true),
-            'data' => ''
-        ];
+        $return =  error_code(10037);
 
         $this->view->engine->layout(false);
         $invoiceModel = new InvoiceModel();

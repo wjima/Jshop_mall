@@ -42,12 +42,12 @@ class Cart extends Api
         ];
 
         if (!input("?param.product_id")) {
-            $result['msg'] = error_code(14011,true);
-            return $result;
+            // $result['msg'] = error_code(14011);
+            return error_code(14011);
         }
         if (!input("?param.nums")) {
-            $result['msg'] = error_code(14012,true);
-            return $result;
+            // $result['msg'] = error_code(14012, true);
+            return error_code(14012);
         }
         $type      = input('param.type', 1);          //1是累加，2是覆盖
         $cart_type = input('param.order_type', 1);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
@@ -76,14 +76,8 @@ class Cart extends Api
                 'msg' => '移除购物车成功',
                 'data' => $result
             );
-        }
-        else
-        {
-            $return_data = array(
-                'status' => false,
-                'msg' => error_code(14014,true),
-                'data' => $result
-            );
+        } else {
+            return error_code(14014);
         }
         return $return_data;
     }
@@ -105,17 +99,20 @@ class Cart extends Api
         $coupon_code = Request::param('coupon_code', '');
         $receipt_type = Request::param('receipt_type', 1);      //配送方式是否包邮   1=快递配送（要去算运费）生成订单记录快递方式  2=门店自提（不需要计算运费）生成订单记录门店自提信息
         $params = Request::param('params', '');//购物车扩展信息,json对象，传团购秒杀id或其他信息
-        if($receipt_type == 1)
-        {
+        if($receipt_type == 1){
             $free_freight = false;
-        }
-        else
-        {
+        }else{
             $free_freight = true;
+        }
+        //是否显示完整的购物车，用在购物车页面
+        if(input('?param.display')){
+            $display = true;
+        }else{
+            $display = false;
         }
 
         $params = json_decode($params,true);
-        $result = $this->cartModel->info($this->userId, $ids, $type, $area_id, $point, $coupon_code, $free_freight,1,$params);
+        $result = $this->cartModel->info($this->userId, $ids, $type, $display, $area_id, $point, $coupon_code, $free_freight,1,$params);
         return $result;
     }
 
@@ -131,13 +128,10 @@ class Cart extends Api
             'data' => [],
             'msg' => ''
         ];
-        if(!input('?param.id'))
-        {
-            $result['msg'] = error_code(14011,true);
-            return $result;
-        }
-        else
-        {
+        if (!input('?param.id')) {
+            // $result['msg'] = error_code(14011, true);
+            return error_code(14011);
+        } else {
             $id = input('param.id');
         }
         $nums = input('nums', 1);

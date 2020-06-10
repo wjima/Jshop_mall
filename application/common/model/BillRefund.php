@@ -467,12 +467,7 @@ class BillRefund extends Common
     //导出格式
     public function getExportList($post = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10025,true),
-            'data'   => '',
-            'count'  => 0
-        ];
+        $return_data = error_code(10025);
         $where       = [];
         if (isset($post['source_id']) && $post['source_id'] != "") {
             $where[] = ['source_id', 'like', '%' . $post['source_id'] . '%'];

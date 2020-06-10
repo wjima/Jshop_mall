@@ -49,9 +49,10 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg'    => error_code(13003,true),
+                'msg'    => error_code(13003, true),
                 'data'   => $order_ids
             );
+            // return error_code(13003);
         }
         return $return_data;
     }
@@ -81,7 +82,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg'    => error_code(10023,true),
+                'msg'    => error_code(10023, true),
                 'data'   => $order_ids
             );
         }
@@ -114,7 +115,7 @@ class Order extends Api
         {
             $return_data = [
                 'status' => false,
-                'msg'    => error_code(10025,true),
+                'msg'    => error_code(10025, true),
                 'data'   => $result
             ];
         }
@@ -223,11 +224,7 @@ class Order extends Api
     public function getShip()
     {
         $area_id     = input('area_id', 0);
-        $return_data = [
-            'status' => false,
-            'data'   => '',
-            'msg'    => error_code(13004,true),
-        ];
+        $return_data = error_code(13004);
         $model       = new Ship();
         $ship        = $model->getShip($area_id);
         if($ship)

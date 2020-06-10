@@ -72,7 +72,7 @@ class Pintuan extends Api
         $rule_id = input('param.rule_id');
 
         if(!input('?param.goods_id')){
-            return error_code(15605);
+            return error_code(12009);
         }
         $goods_id = input('param.goods_id');
 

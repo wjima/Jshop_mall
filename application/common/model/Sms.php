@@ -45,9 +45,9 @@ class Sms extends Common
             $where[] = ['status', 'eq', self::STATUS_UNUSED];
 
             $smsInfo = $this->where($where)->order('id desc')->find();
-            if($smsInfo){
-                if(time() - $smsInfo['ctime'] < 60){
-                    return array('status'=>false,'msg'=>"两次发送时间间隔小于60秒");
+            if ($smsInfo) {
+                if (time() - $smsInfo['ctime'] < 60) {
+                    return error_code(16003);
                 }
                 $params = json_decode($smsInfo['params'],true);
             }else{

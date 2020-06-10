@@ -117,7 +117,7 @@ class Pages extends Manage
         $info = \app\common\model\Pages::get($id, 'items');
         $info->together('items')->delete();
 
-        return $result = [
+        return  [
             'status' => true,
             'msg'    => '删除成功',
             'data'   => []

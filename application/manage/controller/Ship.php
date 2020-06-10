@@ -105,11 +105,7 @@ class Ship extends Manage
         $shiModel = new ShipModel();
         if (Request::isPost()) {
             //保存编辑后的数据
-            $return_data = [
-                'status' => false,
-                'msg'    => error_code(10004,true),
-                'data'   => '',
-            ];
+            $return_data =  error_code(10004);
             $id          = input('post.id/d', '0');
             if (!$id) {
                 $return_data['msg'] = error_code(10004,true);
@@ -183,11 +179,7 @@ class Ship extends Manage
 
     public function del()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10023,true),
-            'data'   => '',
-        ];
+        $return_data =  error_code(10023);
         $shiModel    = new ShipModel();
         $id          = input('post.id/d');
         $filter      = [

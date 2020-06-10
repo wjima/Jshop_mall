@@ -1220,7 +1220,7 @@ class Goods extends Common
             ->page($page, $limit)
             ->select();
         if (!$goodsData) {
-            return $return['msg'] = error_code(10025,true);
+            return error_code(10025);
         }
         foreach ($goodsData as &$v) {
             $image      = Db::table('jshop_images')
@@ -1248,7 +1248,7 @@ class Goods extends Common
             ->page($page, $limit)
             ->select();
         if (!$goodsData) {
-            return $return['msg'] = error_code(10025,true);
+            return  error_code(10025);
         }
         foreach ($goodsData as &$v) {
             $image      = Db::table('jshop_images')

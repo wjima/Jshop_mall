@@ -43,18 +43,14 @@ class Ietask extends Manage
      */
     public function export()
     {
-        $result     = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => error_code(10051,true),
-        ];
+        $result     = error_code(10051);
         $taskname   = input('taskname/s', '');
         $filter     = input('filter/s', '');
         $job        = input('model/s', '');
-        if(empty($taskname)){
-            $result['status'] = false;
-            $result['msg']    = error_code(10045,true);
-            return $result;
+        if (empty($taskname)) {
+            // $result['status'] = false;
+            // $result['msg']    = error_code(10045,true);
+            return error_code(10045);
         }
         if (!$taskname) {
             $taskname = md5(time());
@@ -121,11 +117,7 @@ class Ietask extends Manage
 
     public function import()
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => error_code(10035,true)
-        ];
+        $result = error_code(10035);
         $file   = request()->file('importFile');
         if (!$file) {
             return $result;
@@ -206,14 +198,11 @@ class Ietask extends Manage
     //删除
     public function del()
     {
-        $result = [
-            'status' => false,
-            'msg'    => error_code(10023,true)
-        ];
+        $result = error_code(10023);
         $id     = input('id/d', '');
         if (!$id) {
-            $result['msg'] = '关键参数丢失';
-            return $result;
+            // $result['msg'] = '关键参数丢失';
+            return error_code(10051);
         }
         $model = new \app\common\model\Ietask();
         $rel   = $model->where('id', 'eq', $id)->delete();

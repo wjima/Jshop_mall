@@ -27,11 +27,7 @@ class Images extends Api
             ];
             return $data;
         } else {
-            return [
-                'data'   => '',
-                'status' => false,
-                'msg'    => error_code(10035,false)
-            ];
+            return error_code(10035);
         }
     }
 }

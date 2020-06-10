@@ -446,7 +446,7 @@ class User extends Common
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
             }
             if ($v['pid']) {
-                $list[$k]['pid_name'] = get_user_info($v['pid']);
+                $list[$k]['pid_name'] = get_user_info($v['pid'],'nickname');
             }
             if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);

@@ -210,7 +210,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($userId, $ids, $type = 1)
+    public function getList($userId, $ids, $type = 1, $display = false)
     {
         $result  = array(
             'status' => false,
@@ -219,6 +219,9 @@ class Cart extends Common
         );
         $where[] = ['user_id', 'eq', $userId];
         $where[] = ['type', 'eq', $type];
+        if(!$display){
+            $where[] = ['id', 'in',$ids];
+        }
         $list    = $this->where($where)->select();
 
         if (!$list->isEmpty()) {
@@ -299,6 +302,7 @@ class Cart extends Common
      * @param $userId
      * @param $ids
      * @param string $order_type //订单类型
+     * @param bool $display         //是否显示所有购物车信息
      * @param int $area_id //收货地址id
      * @param int $point //消费的积分
      * @param string $coupon_code
@@ -310,7 +314,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($userId, $ids, $order_type = '1', $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1,$params = [])
+    public function info($userId, $ids, $order_type = '1',$display = false, $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1,$params = [])
     {
         $result   = [
             'status' => false,
@@ -333,7 +337,7 @@ class Cart extends Common
             ],
             'msg'    => ""
         ];
-        $cartList = $this->getList($userId, $ids, $order_type);
+        $cartList = $this->getList($userId, $ids, $order_type, $display);
         if (!$cartList['status']) {
             $result['msg'] = $cartList['msg'];
             return $result;

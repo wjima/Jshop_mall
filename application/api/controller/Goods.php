@@ -34,7 +34,11 @@ class Goods extends Api
 
     private function allowedField($data, $type = 'goods')
     {
-        $return_data = error_code(10028);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(10028, true),
+            'data'   => []
+        ];
 
         if ($data == '' && $data != '*') {
             // $return_data['msg'] = error_code(10029,true);
@@ -71,7 +75,11 @@ class Goods extends Api
      */
     private function allowedOrder($order)
     {
-        $return_data = error_code(10031);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(10031, true),
+            'data'   => []
+        ];
         //        if(is_array($order)) {
         //            $return_data['msg'] = '排序字段不能为数组';
         //            return $return_data;
@@ -119,7 +127,11 @@ class Goods extends Api
      */
     public function getList()
     {
-        $return_data = error_code(10027);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(10027, true),
+            'data'   => []
+        ];
         $field       = input('field', '*');
         $page        = input('page/d', 1);
         $limit       = input('limit/d');
@@ -223,7 +235,11 @@ class Goods extends Api
      */
     public function getDetial()
     {
-        $return_data = error_code(10027);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(10027, true),
+            'data'   => []
+        ];
         $goods_id    = input('id/d', 0); //商品ID
         $token       = input('token', ''); //token值 会员登录后传
         if (!$goods_id) {
@@ -282,7 +298,11 @@ class Goods extends Api
      */
     public function getSkuDetial()
     {
-        $return_data = error_code(12701);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(12701, true),
+            'data'   => []
+        ];
         $spec_value  = input('spec', '');
         $goods_id    = input('id/d', 0); //商品ID
         $token       = input('token', ''); //token值 会员登录后传
@@ -323,7 +343,11 @@ class Goods extends Api
      */
     public function getGoodsParams()
     {
-        $return_data = error_code(10033);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(10033, true),
+            'data'   => []
+        ];
         $goods_id    = input('id/d', 0); //商品ID
         $goodsModel  = new GoodsModel();
         $brandModel  = new Brand();
@@ -366,7 +390,11 @@ class Goods extends Api
      */
     public function getProductInfo()
     {
-        $return_data = error_code(10033);
+        $return_data = [
+            'status' => false,
+            'msg'    => error_code(10033, true),
+            'data'   => []
+        ];
         $product_id  = input('id/d', 0); //货品ID
         $token       = input('token', ''); //token值 会员登录后传
         $type       = input('type', 'goods'); //商品类型,默认是商品
@@ -377,7 +405,7 @@ class Goods extends Api
 
         $productsModel      = new Products();
         $user_id            = getUserIdByToken($token); //获取user_id
-        $product            = $productsModel->getProductInfo($product_id, true, $user_id,$type);
+        $product            = $productsModel->getProductInfo($product_id, true, $user_id, $type);
         $return_data['msg'] = $product['msg'];
         if (!$product['status']) {
             return $return_data;
@@ -461,7 +489,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => error_code(10027,true),
+            'msg'    => error_code(10027, true),
             'data'   => []
         ];
         $field       = input('field', 'id,bn,name,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,stock,unit,spes_desc,view_count,buy_count,label_ids');
@@ -526,7 +554,7 @@ class Goods extends Api
             }
             //标签筛选
             if (isset($postWhere['label_id']) && $postWhere['label_id']) {
-                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . remove_xss($postWhere['label_id']). ',g.label_ids)')];
+                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . remove_xss($postWhere['label_id']) . ',g.label_ids)')];
             }
         }
 

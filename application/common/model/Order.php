@@ -1860,7 +1860,8 @@ class Order extends Common
         $where[] = ['pay_status', 'eq', self::PAY_STATUS_NO];
         $where[] = ['status', 'eq', self::ORDER_STATUS_NORMAL];
         $where[] = ['ctime', '<=', time() - $setting * 86400];
-        $where[] = ['order_type', 'eq', self::ORDER_TYPE_COMMON];
+//        $where[] = ['order_type', 'eq', self::ORDER_TYPE_COMMON];
+        $where[] = ['order_type', 'in', self::ORDER_TYPE_COMMON.','.self::ORDER_TYPE_PINTUAN.','.self::ORDER_TYPE_GROUP.','.self::ORDER_TYPE_SKILL];
 
         $order_info = $this->field('order_id,pay_status,status,ctime,order_type')
             ->where($where)

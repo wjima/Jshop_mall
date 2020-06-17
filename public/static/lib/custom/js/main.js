@@ -471,6 +471,9 @@ Vue.component('select-link', {
       if (newVal == 1) {
         this.linkUrl = this.id
       }
+    },
+    id(newVal, oldVal) {
+      this.linkUrl = newVal
     }
   },
   mounted(){
@@ -993,6 +996,8 @@ new Vue({
             pageCode: pageCode,
             data: this.$refs.layout.pageData
           }
+          console.log(data)
+          return
           JsPost(this.saveUrl, data, function (res) {
             if (res.status) {
               layer.msg(res.msg, { time: 1300 }, function () {

@@ -996,8 +996,6 @@ new Vue({
             pageCode: pageCode,
             data: this.$refs.layout.pageData
           }
-          console.log(data)
-          return
           JsPost(this.saveUrl, data, function (res) {
             if (res.status) {
               layer.msg(res.msg, { time: 1300 }, function () {

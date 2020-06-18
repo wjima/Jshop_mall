@@ -1,5 +1,0 @@
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (600, 2, '砍价列表', 'Bargain', 'c', 356, 1, 100);
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (601, 600, '砍价列表', 'index', 'a', 600, 3, 100);
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (602, 600, '编辑砍价', 'edit', 'a', 600, 3, 100);
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (603, 600, '排序更改', 'updatesort', 'a', 600, 3, 100);
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (604, 600, '更改状态', 'changestate', 'a', 600, 3, 100);

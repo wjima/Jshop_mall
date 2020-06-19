@@ -16,7 +16,7 @@
 							<text class="num fsz24">可砍至: <text>{{item.end_price||'0.00'}}</text>元</text>
 						</view>
 						<navigator :url="'/pages/bargain/index?id='+item.id">
-							<text class="btn fsz24">点击砍价</text>
+							<text class="btn fsz24">发起砍价</text>
 						</navigator>
 					</view>
 				</view>

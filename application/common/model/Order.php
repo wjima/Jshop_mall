@@ -1661,7 +1661,7 @@ class Order extends Common
     private function formatOrder(&$order, $user_id, $cart_ids, $area_id, $point, $coupon_code, $free_freight = false, $delivery_type = '1',$params = [])
     {
         $cartModel = new Cart();
-        $cartInfo = $cartModel->info($user_id, $cart_ids, $order['order_type'], $area_id, $point, $coupon_code, $free_freight, $delivery_type,$params);
+        $cartInfo = $cartModel->info($user_id, $cart_ids, $order['order_type'],false, $area_id, $point, $coupon_code, $free_freight, $delivery_type,$params);
         if (!$cartInfo['status']) {
             return $cartInfo;
         }

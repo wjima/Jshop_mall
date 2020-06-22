@@ -380,11 +380,15 @@ class User extends Manage
      */
     public function delUser()
     {
-        $result = error_code(10037);
+        $result = [
+            'status' => false,
+            'data' => '',
+            'msg' => ''
+        ];
 
         $ids = input('ids/a', []);
         if (!$ids) {
-            return $result;
+            return error_code(10051);
         }
         $userModel = new UserModel();
         $res = $userModel::destroy($ids);
@@ -393,7 +397,6 @@ class User extends Manage
             $userWxModel = new UserWx();
             $userWxModel->where([['user_id', 'in', $ids]])->delete();
             hook('deleteUserAfter', $ids);
-            $result['msg'] = '';
             $result['status'] = true;
         }
         return $result;

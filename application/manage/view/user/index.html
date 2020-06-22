@@ -234,7 +234,7 @@
             }, function () {
                 JsPost("{:url('User/delUser')}", {'ids': ids}, function (res) {
                         if (res.status) {
-                            layer.msg(res.msg);
+                            layer.msg("操作成功");
                             layui.table.reload('userTable');
                         } else {
                             layer.msg(res.msg);

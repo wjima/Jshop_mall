@@ -144,8 +144,8 @@
 					<view class="cell-item-hd">
 						<view class="cell-hd-title">发票</view>
 					</view>
-					<view class="cell-item-ft" @click="goInvoice()">
-						<text class="cell-ft-text">{{ invoice.name || '' }}</text>
+					<view class="cell-item-ft" @click="goInvoice()"> 
+						<text class="cell-bd-input">{{ invoice.name || '' }}</text>
 						<image class="cell-ft-next icon" src="/static/image/right.png"></image>
 					</view>
 				</view>
@@ -1116,6 +1116,13 @@ export default {
 	/* top: 4upx; */
 	color: #666;
 	font-size: 24upx;
+}
+.cell-item-ft .cell-bd-input{
+    text-align: right;
+    width: 250px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 }
 .pop-t {
 	border-bottom: 2upx solid #f4f4f4;

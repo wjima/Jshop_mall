@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class='cell-group margin-cell-group cell-header'>
+		<view class='cell-group margin-cell-group cell-header' style="margin-left: 0;padding-left: 20rpx;">
 			请选择退货商品和数量
 		</view>
 		<form @submit="submit" report-submit='true'>
@@ -374,11 +374,11 @@ export default {
 				return false;
 			}
 			 console.log(this.item_ids)
-			/* if(this.item_ids.length<=0){
-				this.$common.errorToShow('请处理要售后的商品');
+			if(this.item_ids.length<=0){
+				this.$common.errorToShow('请选择要售后的商品');
 				this.submitStatus = false;
 				return false;
-			} */
+			}
 			//组装数据，提交数据
 			let data = {
 				order_id:this.order_id,

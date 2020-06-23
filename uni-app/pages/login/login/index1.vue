@@ -194,10 +194,10 @@ export default {
 		// 重定向跳转 或者返回上一个页面
 		redirectHandler() {
 			this.$db.del('invitecode');
-			this.handleBack();
-			// uni.navigateBack({
-			//     delta: 1
-			// });
+			// this.handleBack();
+			uni.navigateBack({
+			    delta: 1
+			});
 		},
 		// 登录方式切换
 		selectLoginType() {

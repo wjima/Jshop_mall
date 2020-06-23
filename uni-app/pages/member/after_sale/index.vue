@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class='cell-group margin-cell-group cell-header'>
+		<view class='cell-group margin-cell-group cell-header' style="margin-left: 0;padding-left: 20rpx;">
 			请选择退货商品和数量
 		</view>
 		<form @submit="submit" report-submit='true'>

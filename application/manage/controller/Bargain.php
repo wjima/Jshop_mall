@@ -69,7 +69,7 @@ class Bargain extends Manage
         $bargainModel->where(['id' => input('param.id')])->delete();
 
         $bargainLogModel = new BargainLog();
-        $bargainLogModel->where(['bargain' => input('param.id')])->delete();
+        $bargainLogModel->where(['bargain_id' => input('param.id')])->delete();
 
         return [
             'status' => true,

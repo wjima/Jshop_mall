@@ -176,21 +176,23 @@
 			},
 			// 向上个页面赋值并返回
 			setPageData(data) {
+				console.log(data);
 				let pages = getCurrentPages(); //当前页
 				let beforePage = pages[pages.length - 2]; //上个页面
 				if (beforePage != undefined) {
-					// #ifdef MP-ALIPAY || MP-TOUTIAO
+					// // #ifdef MP-ALIPAY || MP-TOUTIAO
+					// this.$db.set('user_invoice', data, true);
+					// // #endif
+
+					// // #ifdef MP-WEIXIN
+					// beforePage.$vm.invoice = data;
+					// // #endif
+
+					// // #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+					// // beforePage.invoice = data;
+					// this.$store.commit('invoice',data)
+					// // #endif
 					this.$db.set('user_invoice', data, true);
-					// #endif
-
-					// #ifdef MP-WEIXIN
-					beforePage.$vm.invoice = data;
-					// #endif
-
-					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-					// beforePage.invoice = data;
-					this.$store.commit('invoice',data)
-					// #endif
 
 					uni.navigateBack({
 						delta: 1

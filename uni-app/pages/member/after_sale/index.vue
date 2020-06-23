@@ -125,7 +125,7 @@
 						</view>
 				</view>
 			</view>
-			<view class="button-bottom">
+			<view class="button-bottom" style="z-index: 200;">
 				<button class="btn btn-b btn-square" formType="submit" :disabled='submitStatus' :loading='submitStatus'>提交</button>
 			</view>
 		</form>

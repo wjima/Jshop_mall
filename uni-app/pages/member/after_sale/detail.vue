@@ -83,7 +83,7 @@
 						<view class='cell-hd-title'>退货邮寄信息</view>
 					</view>
 				</view>
-				<view class='cell-item add-title-item right-img'>
+				<!-- <view class='cell-item add-title-item right-img'>
 					<view class='cell-item-hd' style="min-width: 50rpx;">
 						<image class='cell-hd-icon' src='/static/image/location.png'></image>
 					</view>
@@ -94,6 +94,22 @@
 						</view>
 						<view class="cell-bd-view">
 							<text class="cell-bd-text address">{{ reship_info.reship_area + reship_info.reship_address }}</text>
+						</view>
+					</view>
+				</view> -->
+				<view class="cell-group margin-cell-group" style="margin-top: 0;">
+					<view class="cell-item add-title-item right-img cell-item-mid">
+						<view class="cell-item-hd">
+							<image class="cell-hd-icon" src="/static/image/location.png"></image>
+						</view>
+						<view class="cell-item-bd cell-item-bd-block" style="width: 100%;padding-right: 0;">
+							<view class="cell-bd-view" style="justify-content: space-between;">
+								<text class="cell-bd-text">收货人：{{ reship_info.reship_name }}</text>
+								<text class="cell-bd-text-right">{{ reship_info.reship_mobile|| '' }}</text>
+							</view>
+							<view class="cell-bd-view">
+								<text class="cell-bd-text address">{{ reship_info.reship_area + reship_info.reship_address }}</text>
+							</view>
 						</view>
 					</view>
 				</view>

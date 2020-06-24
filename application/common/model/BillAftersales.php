@@ -448,6 +448,7 @@ class BillAftersales extends Common
         //订单上的退款金额和数量只包含已经售后的，这里要把当次售后单的商品信息保存到订单明细表上
         foreach ($orderInfo['items'] as $k => $v) {
             unset($orderInfo['items'][$k]['promotion_list']);       //此字段会影响前端表格显示，所以删掉
+            $orderInfo['items'][$k]['addon'] = $v['addon'] ? $v['addon'] : '';
             $orderInfo['items'][$k]['the_reship_nums'] = 0;
             foreach ($info['items'] as $i => $j) {
                 if ($v['id'] == $j['order_items_id']) {

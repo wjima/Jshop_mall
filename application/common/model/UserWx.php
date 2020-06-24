@@ -97,9 +97,10 @@ class UserWx extends Common
         if (isset($post['type']) && $post['type'] != "") {
             $where[] = ['type', 'eq', $post['type']];
         }
-        if (isset($post['user_mobile']) && $post['user_pmobile'] != "") {
+        if (isset($post['user_mobile']) && $post['user_mobile'] != "") {
             $pwhere[] = ['mobile|username', 'like', "%".$post['user_mobile']."%"];
-            $user      = $this->field('id')->where($pwhere)->select();
+            $userModel = new User();
+            $user      = $userModel->field('id')->where($pwhere)->select();
             if(!$user->isEmpty()){
                 $user = array_column($user->toArray(),'id');
                 $where[] = ['user_id','in',$user];

@@ -103,6 +103,7 @@
         layui.table.render({
             elem: '#billAftersalesItems',
             size: 'sm',
+            limit: '10000',
             cols: [[ //标题栏
                 { field: 'id', title: '', width: 50, templet: function (data) {
                     if(data.the_reship_nums > 0){

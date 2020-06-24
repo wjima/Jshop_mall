@@ -44,7 +44,7 @@ CREATE TABLE `jshop_welfarepro_hblog` (
 CREATE TABLE `jshop_welfarepro_hbuser` (
   `hb_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
-  `type` tinyint(1) unsigned NOT NULL COMMENT '1，红包，2优惠券',
+  `type` TINYINT (2) UNSIGNED NOT NULL DEFAULT 1 COMMENT '1 红包 2优惠券';
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='红包表';
 
 --

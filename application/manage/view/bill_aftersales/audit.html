@@ -127,7 +127,8 @@
                 }
             ]],
             data: stringToJson(htmlDecodeByRegExp('{$order_info.items}')),
-            even: true
+            even: true,
+            limit: 100 //每页默认显示的数量
         });
     });
 </script>

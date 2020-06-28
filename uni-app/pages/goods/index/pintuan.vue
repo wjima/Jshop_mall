@@ -566,7 +566,7 @@
 			this.goodsId = e.id - 0;
 			if (e.team_id) {
 				this.teamId = e.team_id - 0;
-				this.getTeam(this.teamId);
+				// this.getTeam(this.teamId);
 			}
 			if (this.goodsId) {
 				this.getGoodsInfo();
@@ -582,6 +582,11 @@
 
 			// 获取购物车数量
 			this.getCartNums();
+		},
+		onShow() {
+			if(this.teamId){
+				this.getTeam(this.teamId);
+			}
 		},
 		computed: {
 			// 规格切换计算规格商品的 可购买数量
@@ -713,11 +718,13 @@
 			},
 			// 获取通过分享进来的拼团数据
 			getTeam(id) {
+				// console.log(id);
 				this.$api.getOrderPintuanTeamInfo({
 						team_id: id
 					},
 					res => {
 						if (res.status) {
+							console.log(res);
 							this.teamInfo = {
 								list: res.data.teams,
 								current_count: res.data.teams.length,

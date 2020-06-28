@@ -27,7 +27,7 @@ function jumpToLogin(method) {
 		// 将当前页面route存vuex中 登录注册后跳转
 		let pages = getCurrentPages()
 		let page = pages[pages.length - 1]
-		// console.log(page);
+		console.log(page);
 		// console.log(page.route);
 		// 获取页面参数信息
 		let pagePath = ''

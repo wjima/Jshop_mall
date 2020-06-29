@@ -129,7 +129,10 @@
 					<view class='img-grids-item' v-for="item in jdata.params.list" :key="item.id" @click="goodsDetail(item.id)">
 						<image class='img-grids-item-t have-none' :src='item.image_url' mode='aspectFill'></image>
 						<view class='img-grids-item-b'>
-							<view class='goods-name grids-goods-name' >
+							<!-- <view class='goods-name grids-goods-name' >
+								{{ item.name|substr }}
+							</view> -->
+							<view class='grids-goods-name' >
 								{{ item.name|substr }}
 							</view>
 							<view class='goods-item-c'>
@@ -268,7 +271,11 @@ export default {
 }
 .slide3 .grids-goods-name{
 	font-size: 24rpx;
-	height: 66rpx;
+	/* height: 66rpx; */
+	height: 50rpx;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 .index-goods .img-grids-item{
 	display: inline-block;

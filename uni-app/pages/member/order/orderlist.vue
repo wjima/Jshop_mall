@@ -207,7 +207,9 @@ export default {
 			});
 			for(let i in orderList){
 				for(let j in orderList[i].items){
-					orderList[i].items[j].promotion_list = JSON.parse(orderList[i].items[j].promotion_list);
+					if(orderList[i].items[j].promotion_list){
+						orderList[i].items[j].promotion_list = JSON.parse(orderList[i].items[j].promotion_list);
+					}
 				}
 			}
 			return orderList

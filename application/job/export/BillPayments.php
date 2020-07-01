@@ -19,12 +19,12 @@ class BillPayments
     public function exec(Job $job, $params)
     {
         $ietaskModle = new Ietask();
-        $userModel = new \app\common\model\BillPayments();
-        $header = $userModel->csvHeader();
+        $billPaymentsModel = new \app\common\model\BillPayments();
+        $header = $billPaymentsModel->csvHeader();
 
-        $user = [];
+        $payments = [];
         foreach ($header as $key => $val) {
-            $user['header'][$key] = $val['desc'];
+            $payments['header'][$key] = $val['desc'];
         }
         $filter = json_decode($params['params'], true);
 
@@ -35,11 +35,11 @@ class BillPayments
             unset($filter['ids']);
         }
 
-        $userData = $userModel->getCsvData($filter);
-        if ($userData['status']) {
-            $body = $userData['data'];
-            $user['body'] = $body;
-            $csv = new \org\Csv($user);
+        $paymentsData = $billPaymentsModel->getCsvData($filter);
+        if ($paymentsData['status']) {
+            $body = $paymentsData['data'];
+            $payments['body'] = $body;
+            $csv = new \org\Csv($payments);
             $resCsv = $csv->export('billPayments');
             if ($resCsv['status']) {
                 $uData['file_name'] = $resCsv['data']['filename'];
@@ -53,7 +53,7 @@ class BillPayments
         } else {
             //失败，导出失败
             $uData['status'] = $ietaskModle::EXPORT_FAIL_STATUS;
-            $uData['message'] = $userData['msg'];
+            $uData['message'] = $paymentsData['msg'];
             $uData['utime'] = time();
             $ietaskModle->update($uData, ['id' => $params['task_id']]);
         }

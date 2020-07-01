@@ -612,9 +612,10 @@ class BillPayments extends Common
         if(isset($post['payment_id']) && $post['payment_id'] != ""){
             $where[] = ['payment_id', 'like', '%'.$post['payment_id'].'%'];
         }
+
         if(isset($post['date']) && $post['date'] != "")
         {
-            $date = explode(' 到 ', $post['date']);
+            $date = explode(' 到 ', urldecode($post['date']));
             $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
         }
         if(isset($post['mobile']) && $post['mobile'] != ""){

@@ -91,9 +91,9 @@ class wechatpay implements Payment
                 $open_id = $openid_re['data'];
             }
             if($this->config['type'] == 1){
-                $data['sub_openid'] = $openid;
+                $data['sub_openid'] = $open_id;
             }else{
-                $data['appid'] = $openid; 
+                $data['appid'] = $open_id; 
             }
         }
         if($trade_type == 'MWEB'){

@@ -41,6 +41,7 @@ class wechatpay implements Payment
         $data['body'] = mb_substr($paymentInfo['pay_title'], 0, 42, 'utf-8');       //商品描述，不能超过128个字符，所以这里要截取，防止超过
         $data['out_trade_no'] = $paymentInfo['payment_id'];                    //商户订单号
         $data['total_fee'] = $paymentInfo['money']*100;                        //总金额
+        $data['fee_type'] = 'CNY';
         $data['spbill_create_ip'] = $paymentInfo['ip'];                 //终端ip
         $data['notify_url'] = url('b2c/Callback/pay',['code'=>'wechatpay','payment_id'=>$paymentInfo['payment_id']],'html',true);                       //异步通知地址
 
@@ -79,11 +80,20 @@ class wechatpay implements Payment
         //当时JSAPI的时候，也就是小程序的时候，openid必传
         if($trade_type == 'JSAPI'){
             //取open_id
+            $open_id = "";
             if($params['trade_type'] == 'JSAPI_OFFICIAL' && isset($params['openid'])){      //如果是公众号，并且前台传过来了openid就用前台的。
-                $data['openid'] = $params['openid'];
+                $open_id = $params['openid'];
             }else{
                 $openid_re = $this->getOpenId($paymentInfo['user_id'],$params['trade_type']);
-                $data['openid'] = $openid_re['data'];
+                if(!$openid_re['status']){
+                    return $openid_re;
+                }
+                $open_id = $openid_re['data'];
+            }
+            if($this->config['type'] == 1){
+                $data['sub_openid'] = $openid;
+            }else{
+                $data['appid'] = $openid; 
             }
         }
         if($trade_type == 'MWEB'){

@@ -244,6 +244,9 @@ export default {
 		if (option.type && option.type != 0) {
 			this.type = option.type;
 		}
+		// this.getUserInfo();
+	},
+	onShow() {
 		this.getUserInfo();
 	},
 	computed: {

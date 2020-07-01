@@ -3,7 +3,7 @@ header('Content-type:text/html;charset=utf-8');
 session_start();
 
 //检测是否已安装
-if (!file_exists(dirname(dirname(dirname(__FILE__))) . '/config/install.lock') || !file_exists(dirname(dirname(dirname(__FILE__))) . '/runtime/install.lock')) {
+if (!file_exists(dirname(dirname(dirname(__FILE__))) . '/config/install.lock') && !file_exists(dirname(dirname(dirname(__FILE__))) . '/runtime/install.lock')) {
     header('Location:/install/');
     exit;
 }

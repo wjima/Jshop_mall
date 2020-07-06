@@ -245,7 +245,7 @@ class PromotionResult extends Common
             return error_code(15005);
         }
 
-        $code = '\\org\\promotion\\result\\'.$this->code[$data['code']]['class'];;
+        $code = '\\org\\promotion\\result\\'.$this->code[$data['code']]['class'];
         $result =  new $code();
         return $result->manageCheck($data['params']);
     }

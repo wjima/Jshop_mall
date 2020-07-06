@@ -23,7 +23,7 @@ class Orders
     {
 
         $ietaskModle = new Ietask();
-        $orderModel = new Order();;
+        $orderModel = new Order();
         $orderItemModel = new OrderItems();
 
         $goodsModel = new goodsModel();

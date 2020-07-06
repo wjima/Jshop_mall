@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -40,7 +41,7 @@ class Bargain extends Api
         $bargainModel     = new bargainModel();
         $params           = input('param.');
         $params['status'] = $bargainModel::STATUS_ON;
-        $list             = $bargainModel->tableData($params,true);
+        $list             = $bargainModel->tableData($params, true);
 
         if ($list) {
             $return_data['status']        = true;
@@ -57,10 +58,9 @@ class Bargain extends Api
      */
     public function getBargainDetial()
     {
-        $return_data = error_code(10027);
         $bargain_id  = input('id/d', 0);
-        $record_id   = input('record_id/d', 0);//发起人id
-        $type        = input('type', 1);//自己访问还是别人访问
+        $record_id   = input('record_id/d', 0); //发起人id
+        $type        = input('type', 1); //自己访问还是别人访问
 
         if (!$bargain_id) {
             // $return_data['msg']    = error_code(10003,true);
@@ -68,7 +68,7 @@ class Bargain extends Api
             return error_code(10003);
         }
         $bargainModel = new bargainModel();
-        return $bargainModel->getBargainDetial($bargain_id, $type, $record_id, $this->userId);;
+        return $bargainModel->getBargainDetial($bargain_id, $type, $record_id, $this->userId);
     }
 
     /**
@@ -98,7 +98,7 @@ class Bargain extends Api
         ];
         $bargain_id  = input('id/d', 0);
         $record_id   = input('record_id/d', 0);
-        $type        = input('type', 1);//默认发起砍价
+        $type        = input('type', 1); //默认发起砍价
         if ($type == '2') {
             $record_id = $this->userId;
         }
@@ -132,5 +132,4 @@ class Bargain extends Api
         $bargainRecordModel = new BargainRecord();
         return $bargainRecordModel->cancleBargain($record_id, $this->userId);
     }
-
 }

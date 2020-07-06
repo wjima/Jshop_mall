@@ -74,7 +74,7 @@
 }
 .media-add-content{
     border: 2px dotted #d9dadc;
-    #font-size: 0;
+    font-size: 0;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -214,9 +214,6 @@
                     <div class="add-tools">
                         <ul class="ul-tools">
                             <li data-type="add"><i></i>写新图文</li>
-<!--
-                            <li data-type="select"><i></i>选择图文</li>
--->
                         </ul>
                     </div>
                 </div>
@@ -295,6 +292,7 @@
 
         var messageData = {$mediaData|raw};
         var last_id = 0;
+        console.log(messageData);
         if(Object.getOwnPropertyNames(messageData).length){
             last_id = Object.getOwnPropertyNames(messageData).length;
         }else{
@@ -342,10 +340,9 @@
                 if (type == 'add') {
                     $("#message").find(".media-item").attr("id", "message_" + last_id);
                     $(".media-add").before($("#message").html());
-                    if($(".media-item").length>8){
+                    if($(".media-item").length>5){
                         $(".media-add").hide();
                     }
-                } else if (type == 'select') {
                 }
             });
             $('#message_title').bind('input propertychange', function () {
@@ -379,10 +376,11 @@
         })
         $(document).on("click", ".media-pop-right", function () {
             var mi = $(".media-item")
-            mpr = $(".media-pop-right");
+            var mpr = $(".media-pop-right");
             var id = $(this).parent().parent().attr("id");
             var num = id.split("_");
             var data = messageData[num[1]];
+           
             //数据库暂时不删除
             if (mpr.parent().parent().parent().children().length > 3) {
                 $(this).closest(mi).remove();
@@ -414,7 +412,6 @@
          */
         function setInfo() {
             var current_edit = $("#current_message_id").val();
-
             if (messageData[current_edit]) {
                 $('#message_title').val(messageData[current_edit].title);
                 $('#media_id').val(messageData[current_edit].id);

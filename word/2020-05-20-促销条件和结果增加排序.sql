@@ -1,2 +1,0 @@
-ALTER TABLE `jshop_promotion_condition` ADD `sort` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '100' COMMENT '排序' AFTER `promotion_id`;
-ALTER TABLE `jshop_promotion_result` ADD `sort` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '100' COMMENT '排序' AFTER `promotion_id`;

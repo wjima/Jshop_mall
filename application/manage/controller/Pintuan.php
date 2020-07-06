@@ -33,8 +33,8 @@ class Pintuan extends Manage
     public function del()
     {
 
-        if(!input('?param.id')){
-            return error_code(10000);
+        if (!input('?param.id')) {
+            return error_code(10051);
         }
         $pintuanRuleModel = new PintuanRule();
         $pintuanRuleModel->where(['id'=>input('param.id')])->delete();
@@ -93,18 +93,14 @@ class Pintuan extends Manage
         return $result;
     }
     //排序更改
-    public function updateSort(){
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '参数丢失',
-        ];
+    public function updateSort()
+    {
+        $result =  error_code(10051);
         $field  = input('post.field/s');
         $value  = input('post.value/d');
         $id     = input('post.id/d', '0');
         if (!$field || !$value || !$id) {
-            $result['msg']    = '参数丢失';
-            $result['status'] = false;
+            return $result;
         }
 
         $pintuanRuleModel = new PintuanRule();
@@ -113,8 +109,7 @@ class Pintuan extends Manage
             $result['msg']    = '更新成功';
             $result['status'] = true;
         } else {
-            $result['msg']    = '更新失败';
-            $result['status'] = false;
+            return error_code(10021);
         }
         return $result;
     }
@@ -125,11 +120,7 @@ class Pintuan extends Manage
      */
     public function changeState()
     {
-        $result = [
-            'status' => false,
-            'msg' => '关键参数丢失',
-            'data' => []
-        ];
+        $result =  error_code(10051);
         $pintuanRuleModel = new PintuanRule();
         $id = input('param.id/d', 0);
 
@@ -146,7 +137,7 @@ class Pintuan extends Manage
             $result['status'] = true;
             $result['msg'] = '设置成功';
         } else {
-            $result['msg'] = '设置失败';
+            return error_code(10021);
         }
         return $result;
     }

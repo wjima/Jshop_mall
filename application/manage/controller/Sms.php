@@ -41,12 +41,8 @@ class Sms extends ManageController
                 'data' => '',
                 'msg' => '删除成功'
             ];
-        }else{
-            return [
-                'status' => false,
-                'data' => '',
-                'msg' => '删除失败'
-            ];
+        } else {
+            return  error_code(10023);
         }
     }
 

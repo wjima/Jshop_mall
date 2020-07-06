@@ -7,6 +7,7 @@
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\Manage\controller;
+
 use app\common\controller\Manage;
 use Request;
 use app\common\model\GoodsType as typeModel;
@@ -33,8 +34,7 @@ class GoodsType extends Manage
      */
     public function index()
     {
-        if (Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $typeModel = new typeModel();
             $filter = input('request.');
             return $typeModel->tableData($filter);
@@ -53,15 +53,14 @@ class GoodsType extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037, true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $return_data = [
                 'status' => false,
-                'msg' => '添加失败',
+                'msg' => error_code(10019, true),
                 'data' => '',
                 'token' => \think\facade\Request::token('__Jshop_Token__', 'sha1')
             ];
@@ -71,10 +70,8 @@ class GoodsType extends Manage
             ];
             $params_name = input('post.params_name/a', []);
             $paramsData = [];
-            foreach($params_name as $key => $val)
-            {
-                if($val)
-                {
+            foreach ($params_name as $key => $val) {
+                if ($val) {
                     $paramsData[$key]['id'] = input('post.params_id.' . $key);
                     $paramsData[$key]['name'] = input('post.params_name.' . $key);
                     $paramsData[$key]['type'] = input('post.params_type.' . $key);
@@ -84,10 +81,8 @@ class GoodsType extends Manage
             //属性值
             $typeSpecData = [];
             $type_name = input('post.type_name/a', []);
-            foreach($type_name as $key => $val)
-            {
-                if($val)
-                {
+            foreach ($type_name as $key => $val) {
+                if ($val) {
                     $typeSpecData[$key]['id'] = input('post.type_id.' . $key);
                     $typeSpecData[$key]['name'] = input('post.type_name.' . $key);
                     $typeSpecData[$key]['sort'] = input('post.type_sort.' . $key);
@@ -183,16 +178,14 @@ class GoodsType extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037, true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
-        if(!Request::isPost())
-        {
+        if (!Request::isPost()) {
             $id = input('get.id/d');
-            if(!$id)
-            {
-                $this->error("关键参数错误"); //todo 统一错误页面
+            if (!$id) {
+                $this->error(error_code(10051, true)); //todo 统一错误页面
             }
             $typeModel = new typeModel();
             $spec = $typeModel::get($id);
@@ -205,8 +198,7 @@ class GoodsType extends Manage
             $typeSpec = $typeSpecRelModel->getRelTypeSpec($id);
             $this->assign('typeSpec', $typeSpec);
             $typeSids = [];
-            if($typeSpec)
-            {
+            if ($typeSpec) {
                 $typeSids = array_column($typeSpec, 'spec_id');
             }
             $this->assign('typeSids', $typeSids);
@@ -214,12 +206,10 @@ class GoodsType extends Manage
             $return['msg'] = '成功';
             $return['data'] = $this->fetch('addRel');
             return $return;
-        }
-        else
-        {
+        } else {
             $return_data = [
                 'status' => false,
-                'msg' => '保存失败',
+                'msg' => error_code(10004, true),
                 'data' => '',
             ];
             //存储添加内容
@@ -230,8 +220,7 @@ class GoodsType extends Manage
             $typeSpecRelModel = new GoodsTypeSpecRel();
 
             $result = $typeSpecRelModel->updateTypeSpec($data['type_id'], $data['spec_id']);
-            if($result !== false)
-            {
+            if ($result !== false) {
                 $return_data = [
                     'status' => true,
                     'msg' => '保存成功',
@@ -254,7 +243,7 @@ class GoodsType extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037, true),
             'data' => ''
         ];
         $this->view->engine->layout(false);
@@ -262,8 +251,7 @@ class GoodsType extends Manage
         $goodsTypeModel = new typeModel();
         $typeSpec = $goodsTypeModel::get($id);
         $this->assign('typeSpec', $typeSpec);
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $goodsTypeModel = new typeModel();
             $data = [
                 'id' => input('post.id', 0),
@@ -297,32 +285,26 @@ class GoodsType extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023, true),
             'data' => '',
         ];
         $id = input('post.id', 0);
-        if($id)
-        {
+        if ($id) {
             $goodsTypeModel = new typeModel();
             $goodsTypeModel->startTrans();
-            if($goodsTypeModel->where(['id' => $id])->delete())
-            {
+            if ($goodsTypeModel->where(['id' => $id])->delete()) {
                 $typeSpecRelModel = new GoodsTypeSpecRel();
-                if(!$typeSpecRelModel::get(['type_id' => $id]))
-                {
+                if (!$typeSpecRelModel::get(['type_id' => $id])) {
                     $goodsTypeModel->commit();
                     $result['status'] = true;
                     $result['msg'] = '删除成功';
                     return $result;
                 }
-                if($typeSpecRelModel->where(['type_id' => $id])->delete())
-                {
+                if ($typeSpecRelModel->where(['type_id' => $id])->delete()) {
                     $result['status'] = true;
                     $result['msg'] = '删除成功';
                     $goodsTypeModel->commit();
-                }
-                else
-                {
+                } else {
                     $goodsTypeModel->rollback();
                 }
             }
@@ -340,18 +322,12 @@ class GoodsType extends Manage
      */
     public function addParams()
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $return = error_code(10037);
         $this->view->engine->layout(false);
-        if(!Request::isPost())
-        {
+        if (!Request::isPost()) {
             $id = input('id/d');
-            if(!$id)
-            {
-                return '关键参数错误';
+            if (!$id) {
+                return error_code(10051, true);
             }
             $typeModel = new typeModel();
 
@@ -369,8 +345,7 @@ class GoodsType extends Manage
             $this->assign('typeParams', $typeParams);
 
             $typePids = [];
-            if($typeParams)
-            {
+            if ($typeParams) {
                 $typePids = array_column($typeParams, 'params_id');
             }
             $this->assign('typePids', $typePids);
@@ -379,9 +354,7 @@ class GoodsType extends Manage
             $return['msg'] = '成功';
             $return['data'] = $this->fetch('addParams');
             return $return;
-        }
-        else
-        {
+        } else {
             //存储添加内容
             $data = array(
                 'type_id'   => input('post.type_id/d'),
@@ -414,13 +387,12 @@ class GoodsType extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025, true),
             'data' => [],
         ];
         $typeModel = new typeModel();
         $typeList = $typeModel->field('id,name')->where([])->select();
-        if(!$typeList->isEmpty())
-        {
+        if (!$typeList->isEmpty()) {
             $result['data'] = $typeList->toArray();
             $result['status'] = true;
             $result['msg'] = '获取成功';

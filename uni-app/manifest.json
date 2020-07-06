@@ -1,5 +1,5 @@
 {
-    "name" : "Jshop",
+    "name" : "ljyp",
     "appid" : "__UNI__8AA8302",
     "description" : "Jshop小程序商城",
     "versionName" : "2.0",
@@ -73,6 +73,12 @@
             "minified" : true,
             "es6" : true
         },
+        // "plugins": {
+        //        "live-player-plugin": {
+        //            "version": "1.0.7",
+        //            "provider": "wx2b03c6e691cd7370"
+        //        }
+        //    },
         "permission" : {
             "scope.userLocation" : {
                 "desc" : "用于获取您附近的门店列表"
@@ -106,7 +112,7 @@
             "postcss" : true,
             "minified" : true
         },
-        "appid" : "tt63241599fc0e9ee3"
+        "appid" : "ttfb828d3f64a89680"
     },
     "mp-qq" : {
         "setting" : {

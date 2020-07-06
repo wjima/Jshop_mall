@@ -38,7 +38,7 @@ class Logistics extends Manage
     {
         $return_data = [
             'status' => false,
-            'msg'    => '添加失败',
+            'msg'    => error_code(10019,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -75,11 +75,7 @@ class Logistics extends Manage
      */
     public function edit()
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $return = error_code(10037);
         $this->view->engine->layout(false);
         $logModel = new LogisticsModel();
         if(Request::isPost())
@@ -103,11 +99,7 @@ class Logistics extends Manage
      */
     public function del()
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '删除失败',
-            'data' => ''
-        ];
+        $return_data = error_code(10023);
         $logModel = new LogisticsModel();
         $id = input('post.id/d',0);
         if(!$id)

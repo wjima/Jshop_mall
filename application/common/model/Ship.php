@@ -55,11 +55,6 @@ class Ship extends Common
      */
     public function add($data = [])
     {
-        $result = [
-            'status' => false,
-            'msg'    => '添加失败',
-            'data'   => '',
-        ];
         if ($data['free_postage'] != self::FREE_POSTAGE_YES) {
             $data['exp'] = $this->getExp($data['firstunit'], $data['continueunit'], $data['firstunit_price'], $data['continueunit_price']);
         }
@@ -73,14 +68,17 @@ class Ship extends Common
         $logistics      = $logisticsModel->where(['logi_code' => $data['logi_code']])->find();
 
         if (!$logistics) {
-            $result['msg'] = '物流公司不存在';
-            return $result;
+//            $result['msg'] = '物流公司不存在';
+            return error_code(13232);
         }
         $data['logi_name'] = $logistics['logi_name'];
 
         if ($this->insert($data)) {
             $result['status'] = true;
             $result['msg']    = '添加成功';
+            $result['data'] = '';
+        }else{
+            return error_code(10038);
         }
         return $result;
     }
@@ -88,11 +86,6 @@ class Ship extends Common
 
     public function toSave($data = [], $id = 0)
     {
-        $result = [
-            'status' => false,
-            'msg'    => '保存失败',
-            'data'   => '',
-        ];
         if ($data['free_postage'] != self::FREE_POSTAGE_YES) {
             $data['exp'] = $this->getExp($data['firstunit'], $data['continueunit'], $data['firstunit_price'], $data['continueunit_price']);
         }
@@ -106,14 +99,17 @@ class Ship extends Common
         $logistics      = $logisticsModel->where(['logi_code' => $data['logi_code']])->find();
 
         if (!$logistics) {
-            $result['msg'] = '物流公司不存在';
-            return $result;
+            $result['msg'] = '';
+            return error_code(13232);
         }
         $data['logi_name'] = $logistics['logi_name'];
 
         if ($this->save($data, ['id' => $id]) !== false) {
             $result['status'] = true;
             $result['msg']    = '保存成功';
+            $result['data'] = '';
+        }else{
+            return error_code(10004);
         }
         return $result;
     }

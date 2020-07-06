@@ -1,0 +1,220 @@
+<style>
+    #container{
+        padding: 0px;
+        border-radius:0px;
+        border-width:0px;
+    }
+
+    #fixed-block {
+        position: fixed;
+        width: 100%;
+        bottom: 0px;
+        left: 0px;
+        z-index: 99999;
+        background: #eeeeee;
+        /*padding-left:40px;*/
+        padding-bottom: 5px;
+        text-align: center;
+    }
+
+</style>
+<form class="layui-form seller-alone-form" id="bargainAdd" action="">
+    {if $info.id}
+    <input type="hidden" name="id" value="{$info.id}"/>
+    {/if}
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>活动名称：</label>
+
+        <div class="layui-input-inline seller-inline-7">
+            <input type="text" name="name" value="{$info.name}" required placeholder="请输入活动名称" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>活动简介：</label>
+
+        <div class="layui-input-inline seller-inline-7">
+            <textarea class="layui-textarea" name="intro" id="" cols="30" rows="5"
+                      placeholder="请输入活动简介">{$info.intro}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style="margin-top: 10px;">
+        <label class="layui-form-label"><i class="required-color">*</i>商品id：</label>
+
+        <div class="layui-input-block">
+            {Jshop:sellergoods value="$info.goods_id" num="1" name="goods_id" /}
+        </div>
+        <div class="layui-form-mid layui-word-aux">请选择单规格商品</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">启用状态：</label>
+
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" {if $info['status'] == 1} checked {/if} value="1"
+            lay-text="启用|禁用">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">起止时间：</label>
+
+        <div class="layui-input-inline seller-inline-6">
+            <input type="text" name="date" value="{$info.date}" id="date1" placeholder="请输入起止时间" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">总量：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            {php}
+            if($info&&isset($info['max_goods_nums'])){
+            $max_goods_nums = $info['max_goods_nums'];
+            }else{
+            $max_goods_nums = 0;
+            }
+            {/php}
+            <input type="number" name="max_goods_nums" required lay-verify="required" value="{$max_goods_nums}"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">每个活动商品总量。</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>起始金额：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="start_price" value="{$info.start_price}" lay-verify="required" placeholder="砍价起始金额"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">砍价起始金额</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>成交金额：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="end_price" value="{$info.end_price}" lay-verify="required" placeholder="砍价成交金额"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">砍价最终价格</div>
+    </div>
+    <!--<div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>最大价：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="bargain_max_price" value="{$info.bargain_max_price}" lay-verify="required" placeholder="最大价"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">砍价每次最大金额，必须大于0</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>最小价：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="bargain_min_price" value="{$info.bargain_min_price}" lay-verify="required" placeholder="最小价"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">砍价每次最小金额，必须大于0</div>
+    </div>-->
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>有效时长：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="significant_interval" value="{$info.significant_interval|default='0'}" lay-verify="required"
+                   autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">单位 小时，0为以活动结束时间为有效时长</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>总砍价次数：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="total_times" value="{$info.total_times|default='0'}" lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">不能为0</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权重：</label>
+
+        <div class="layui-input-inline seller-inline-2">
+            <input type="text" name="sort" value="{$info.sort|default='100'}" lay-verify="required" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">越小越靠前</div>
+    </div>
+
+
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">活动规则：</label>
+    </div>
+    <div class="layui-form-item" style="margin-bottom: 32px;">
+        <div class="layui-input-block">
+            <div id="bargain_desc" style="display: none;">{$info.desc|default=''}</div>
+            <script id="container" name="desc" type="text/plain" class="layui-textarea"></script>
+        </div>
+    </div>
+    <div class="layui-form-item" id="fixed-block">
+        <div>
+            {:jshopToken('bargain_edit')}
+            <button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
+            <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</a>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    var ue = UE.getEditor('container', {
+        initialFrameWidth: 'auto'
+    });
+    var bargain_desc=$("#bargain_desc").text();
+
+    ue.ready(function(){
+        ue.setContent(bargain_desc);
+    })
+</script>
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.render();
+        //时间插件
+        layui.laydate.render({
+            elem: '#date1',
+            range: '到',
+            type: 'datetime',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+
+        form.on('submit(save)', function(data) {
+            var formData = data.field;
+            if (!formData) {
+                layer.msg('请先完善数据', {
+                    time: 1300
+                });
+                return false;
+            }
+            JsPost('{:url("edit")}', formData, function(e) {
+                if (e.status === true) {
+                    layer.msg(e.msg, {
+                        time: 1300
+                    }, function() {
+                        window.location.href = '{:url("index")}';
+                    });
+                } else {
+                    layer.msg(e.msg, {
+                        time: 1300
+                    });
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+
+    

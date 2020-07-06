@@ -143,7 +143,14 @@ export default {
             return false
           }
         } else {
-          _this.$common.errorToShow('登录失败，请重试')
+          // _this.$common.errorToShow('登录失败，请重试')
+					_this.$common.errorToShow(res.msg, () => {
+						// 绑定手机号
+						if (res.data === '11027') {
+							_this.$db.set('userToken', res.token);
+							_this.$common.navigateTo("/pages/login/mobile/index")
+						}
+					});
         }
       })
     },

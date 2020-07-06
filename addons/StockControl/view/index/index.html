@@ -1,0 +1,179 @@
+
+<form class="layui-form seller-form" action="">
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<label class="layui-form-label">关联单号：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="relation_id" placeholder="请输入关联单号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">商品编号：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="bn" placeholder="请输入商品编号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">货品编号：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="sn" placeholder="请输入货品编号" autocomplete="off" class="layui-input" value="{$sn}">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">时间：</label>
+			<div class="layui-input-inline">
+				<input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
+					   class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">类型：</label>
+			<div class="layui-input-inline">
+				<select name="type" id="type">
+					<option value="">请选择</option>
+					<option value="1">入库</option>
+					<option value="2">出库</option>
+					<option value="3">库存盘点</option>
+					<option value="4">发货</option>
+					<option value="5">退货</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="layui-inline" id="layui--group-container">
+			<button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+					class="iconfont icon-chaxun"></i>筛选</button>
+			<button type="reset" class="layui-btn layui-btn-sm">重置</button>
+		</div>
+	</div>
+	<!-- <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">手机号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="tel" name="ship_mobile" placeholder="收货人手机号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button class="layui-btn layui-btn-sm" id="pay-order-array"><i class="iconfont icon-zhifu-01"></i>批量支付</button>
+            <button class="layui-btn layui-btn-sm" id="cancel-order-array"><i class="iconfont icon-cancel"></i>取消</button>
+            <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-order"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
+            {:hook('orderExtBtn')}
+        </div>
+    </div> -->
+</form>
+<div class="table-body">
+	<table id="hbTable" lay-filter="test"></table>
+</div>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+		//时间插件
+		layui.laydate.render({
+			elem: '#date',
+			range: '到',
+			format: 'yyyy-MM-dd',
+			trigger: 'click' //自动弹出控件的事件，采用click弹出
+		});
+        table = layui.table.render({
+            elem: '#hbTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:get_addon_url('StockControl://index/index')}?_ajax=1&sn={$sn}",
+            id:'hbTable',
+            cols: [[
+				{field:'type', width:100,title:'类型', align: 'center',templet:function(data){
+						var type = {
+							1:"入库",
+							2:"出库",
+							3:"库存盘点",
+							4:"发货",
+							5:"退货",
+						}
+						return type[data.type];
+					}},
+				{field:'relation_id', width:200,title:'关联单号', align: 'center'},
+				{field:'goods_name', title:'商品名称', align: 'center'},
+				{field:'spes_desc', width:200,title:'货品规格', align: 'center'},
+				{field:'bn', width:200,title:'商品编号', align: 'center'},
+				{field:'sn', width:200,title:'货品编号', align: 'center'},
+				{field:'nums', width:100, title:'数量', align: 'center'},
+				{field:'unit', width:80, title:'单位', align: 'center'},
+				{field:'ctime', width:200,title:'时间', align: 'center'},
+
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('hbTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        //添加
+        $(document).on('click', '.add-class', function(){
+            JsGet("{:get_addon_url('StockControl://index/stock1Add')}", function(tpl){
+				if(tpl.status){
+					layer.open({
+						type: 1,
+						area: setpage(600,500),
+						data:'',
+						title: '新增入库单',
+						content: tpl.data,
+						btn:['保存','关闭'],
+						yes:function (index,layero) {
+							var data1 = form.val("stock1");
+							JsPost("{:get_addon_url('StockControl://index/stock1Add')}",data1,function (re) {
+								if(re.status){
+									layer.msg('保存成功');
+									layer.close(index);
+									//userTables.reload();
+									layui.table.reload('hbTable');
+								}else{
+									layer.msg(re.msg);
+								}
+							});
+						}
+					});
+				}else{
+					layer.msg(tpl.msg);
+				}
+			});
+            return false;
+        });
+        //查看详情
+		$(document).on('click', '.option-view', function(){
+			var id = $(this).attr('data-id');
+			JsGet("{:get_addon_url('StockControl://index/stockView')}?id="+id+"&type="+1, function(tpl){
+				if(tpl.status){
+					layer.open({
+						type: 1,
+						area: setpage(600,500),
+						data:'',
+						title: '查看入库单详情',
+						content: tpl.data,
+						// btn:['关闭'],
+
+					});
+				}else{
+					layer.msg(tpl.msg);
+				}
+			});
+			return false;
+		});
+
+    });
+
+
+
+</script>

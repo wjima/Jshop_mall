@@ -93,6 +93,10 @@
                     <option value="">请选择</option>
                     <option value="1">普通订单</option>
                     <option value="2">拼团订单</option>
+                    <option value="3">团购订单</option>
+                    <option value="4">秒杀订单</option>
+                    <option value="5">抽奖订单</option>
+                    <option value="6">砍价订单</option>
                 </select>
             </div>
         </div>
@@ -101,7 +105,7 @@
             <div class="layui-input-inline">
                 <select name="source" id="source">
                     <option value="">-- 全部 --</option>
-                    {foreach $source as $key=>$vo}
+                    {foreach $params['order']['source'] as $key=>$vo}
                     <option value="{$key}">{$vo}</option>
                     {/foreach}
                 </select>
@@ -316,8 +320,38 @@
                     window_box = layer.open({
                         type: 1,
                         title: '编辑订单',
-                        area: setpage(660,280), //宽高
+                        area: setpage(660,350), //宽高
                         content: e.data
+                    });
+                } else {
+                    layer.msg(e.msg);
+                }
+            });
+        });
+
+        //新编辑订单
+        $(document).on('click', '.edit-order2', function () {
+            var id = $(this).attr('data-id');
+            JsGet("{:url('order/edit')}?id=" + $(this).attr('data-id'), function(e){
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: setpage(800,650),
+                        title: '订单编辑',
+                        btn: ['确认', '取消'],
+                        yes: function (index, layero) {
+                            JsPost("{:url('order/edit')}", $('#order_edit_form').serialize(), function(res){
+                                if (res.status) {
+                                    layer.msg(res.msg, { time: 1000 }, function () {
+                                        layer.closeAll();
+                                        table.reload();
+                                    });
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            });
+                        }
                     });
                 } else {
                     layer.msg(e.msg);
@@ -335,7 +369,9 @@
             var ship_name = $("#ship_name").val();
             var ship_mobile = $("#ship_mobile").val();
             var order_amount = $("#order_amount").val();
+            var cost_freight = $("#cost_freight").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
 
             JsPost('{:url("order/edit")}', {
                 'order_id': order_id,
@@ -346,7 +382,9 @@
                 'ship_name': ship_name,
                 'ship_mobile': ship_mobile,
                 'order_amount': order_amount,
-                __Jshop_Token__:__Jshop_Token__
+                'cost_freight': cost_freight,
+                __Jshop_Token__:__Jshop_Token__,
+                validate_form:validate_form
             }, function(e){
                 layer.close(window_box);
                 layer.msg(e.msg, { time: 1300 }, function () {
@@ -484,10 +522,12 @@
             var type = $("#input_type").val();
             var payment_code = $("#payment_code").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
             JsPost('{:url("bill_payments/toPay")}', {'order_id': order_id,
                 'type': type,
                 'payment_code': payment_code,
-                __Jshop_Token__:__Jshop_Token__
+                __Jshop_Token__:__Jshop_Token__,
+                validate_form:validate_form
             }, function(e){
                 layer.close(window_box);
                 layer.msg(e.msg, { time: 1300 }, function () {

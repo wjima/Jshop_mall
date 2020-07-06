@@ -281,7 +281,7 @@ class Area extends Common
             if (!$this->insert($data))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -322,7 +322,7 @@ class Area extends Common
             if (!$this->where('id', 'eq', $id)->update($data))
             {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -344,8 +344,8 @@ class Area extends Common
         if ($is_parent) {
             $result = array(
                 'status' => false,
-                'msg'    => '该地区下存在关联地区，无法删除',
-                'data'   => array(),
+                'msg'    => error_code(10840,true), //该地区下存在关联地区，无法删除
+                'data'   => []
             );
         } else {
             $res = $this->destroy($id);
@@ -358,8 +358,8 @@ class Area extends Common
             } else {
                 $result = array(
                     'status' => false,
-                    'msg'    => '删除失败',
-                    'data'   => array(),
+                    'msg'    => error_code(10023,true),
+                    'data'   => [],
                 );
             }
         }
@@ -427,7 +427,7 @@ class Area extends Common
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027,true),
             'data'   => [],
         ];
        /* $area_tree = Cache::get('area_tree');

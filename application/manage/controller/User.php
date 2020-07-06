@@ -1,4 +1,5 @@
 <?php
+
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
@@ -19,11 +20,14 @@ class User extends Manage
      */
     public function index()
     {
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $userModel = new UserModel();
             return $userModel->tableData(input('param.'));
         }
+        //所有用户等级
+        $gradeModel = new UserGrade();
+        $gradeList = $gradeModel->select();
+        $this->assign('grade', $gradeList);
         return $this->fetch('index');
     }
 
@@ -37,26 +41,18 @@ class User extends Manage
      */
     public function pointLog()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
-        $this->view->engine->layout(false);
-        $user_id = input('user_id');
+        $user_id = input('user_id', '0');
         $flag = input('flag', 'false');
 
-        if($flag == 'true')
-        {
+        if ($flag == 'true') {
+            $params = input();
             $userPointLog = new UserPointLog();
-            return $userPointLog->pointLogList($user_id, false, input('page', 1), input('limit', 20));
+            return $userPointLog->pointLogList($user_id, $params['type'], input('page', 1), input('limit', 20), $params);
         }
-
+        $type = config('params.user_point_log.type');
+        $this->assign('type', $type);
         $this->assign('user_id', $user_id);
-        $result['status'] = true;
-        $result['msg'] = '获取成功';
-        $result['data'] = $this->fetch('pointLog');
-        return $result;
+        return $this->fetch('pointLog');
     }
 
 
@@ -70,17 +66,12 @@ class User extends Manage
      */
     public function editPoint()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $result =  error_code(10037);
         $this->view->engine->layout(false);
         $user_id = input('user_id');
         $flag = input('flag', 'false');
 
-        if($flag == 'true')
-        {
+        if ($flag == 'true') {
             $point        = input('point');
             $memo         = input('memo');
             $userPointLog = new UserPointLog();
@@ -156,8 +147,7 @@ class User extends Manage
      */
     public function comment()
     {
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $page = input('page', 1);
             $limit = input('limit', 20);
             $order_id = input('order_id', '');
@@ -165,20 +155,17 @@ class User extends Manage
             $mobile = input('mobile', false);
             $goodsCommentModel = new GoodsComment();
             $res = $goodsCommentModel->getListComments($page, $limit, $order_id, $evaluate, 'all', $mobile);
-            if($res['status'])
-            {
+            if ($res['status']) {
                 $return = [
                     'status' => true,
                     'msg'    => '获取成功',
                     'data'   => $res['data']['list'],
                     'count'  => $res['data']['count']
                 ];
-            }
-            else
-            {
+            } else {
                 $return = [
                     'status' => false,
-                    'msg'    => '获取失败',
+                    'msg'    => error_code(10025, true),
                     'data'   => $res['data']['list'],
                     'count'  => $res['data']['count']
                 ];
@@ -190,30 +177,13 @@ class User extends Manage
 
 
     /**
-     * 修改邀请人
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function editInvite()
-    {
-        $id = Request::param('id');
-        $mobile = Request::param('mobile');
-        $model = new UserModel();
-        return $model->editInvite($id, $mobile);
-    }
-
-
-    /**
      * 添加用户
      * @return array
      */
     public function addUser()
     {
         $this->view->engine->layout(false);
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $input = Request::param();
             $userModel = new UserModel();
             $result = $userModel->manageAdd($input);
@@ -235,16 +205,11 @@ class User extends Manage
      */
     public function editUser()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $result = error_code(10037);
         $this->view->engine->layout(false);
         $userModel = new UserModel();
 
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $input = Request::param();
             $result = $userModel->manageEdit($input);
             return $result;
@@ -252,7 +217,7 @@ class User extends Manage
 
         $user_id = Request::param('user_id');
         $info = $userModel->getUserInfo($user_id);
-        if(!$info['status']){
+        if (!$info['status']) {
             return error_code(10000);
         }
         $this->assign('info', $info['data']);
@@ -266,30 +231,30 @@ class User extends Manage
     }
 
 
-//    /**
-//     * 用户详情
-//     * @return mixed
-//     */
-//    public function details()
-//    {
-//        $result = [
-//            'status' => false,
-//            'msg' => '失败',
-//            'data' => ''
-//        ];
-//        $this->view->engine->layout(false);
-//        $user_id = Request::param('user_id');
-//        $model = new UserModel();
-//        $info = $model->getUserInfo($user_id);
-//        if(!$info['status']){
-//            return error_code(10000);
-//        }
-//        $this->assign('info', $info);
-//        $result['status'] = true;
-//        $result['msg'] = '获取成功';
-//        $result['data'] = $this->fetch('details');
-//        return $result;
-//    }
+    //    /**
+    //     * 用户详情
+    //     * @return mixed
+    //     */
+    //    public function details()
+    //    {
+    //        $result = [
+    //            'status' => false,
+    //            'msg' => error_code(10037,true),
+    //            'data' => ''
+    //        ];
+    //        $this->view->engine->layout(false);
+    //        $user_id = Request::param('user_id');
+    //        $model = new UserModel();
+    //        $info = $model->getUserInfo($user_id);
+    //        if(!$info['status']){
+    //            return error_code(10000);
+    //        }
+    //        $this->assign('info', $info);
+    //        $result['status'] = true;
+    //        $result['msg'] = '获取成功';
+    //        $result['data'] = $this->fetch('details');
+    //        return $result;
+    //    }
 
 
     /**
@@ -301,17 +266,12 @@ class User extends Manage
      */
     public function editMoney()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $result =  error_code(10037);
         $this->view->engine->layout(false);
         $user_id = input('user_id');
         $flag = input('flag', 'false');
 
-        if($flag == 'true')
-        {
+        if ($flag == 'true') {
             $money = input('money');
             $balanceMoney = new Balance();
             return $balanceMoney->change($user_id, $balanceMoney::TYPE_ADMIN, $money, 0);
@@ -335,8 +295,7 @@ class User extends Manage
      */
     public function grade()
     {
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $userGradeModel = new UserGrade();
             return $userGradeModel->tableData(input('param.'));
         }
@@ -353,32 +312,24 @@ class User extends Manage
      */
     public function gradeAdd()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $result = error_code(10037);
         $this->view->engine->layout(false);
 
         $userGradeModel = new UserGrade();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             $validate = new \app\common\validate\UserGrade();
-            if (!$validate->check(input('param.')))
-            {
+            if (!$validate->check(input('param.'))) {
                 $result['msg'] = $validate->getError();
                 return $result;
             }
             return $userGradeModel->toEdit(input('param.id'), input('param.name'), input('param.is_def', 2));
         }
 
-        if(input('?param.id'))
-        {
+        if (input('?param.id')) {
             $info = $userGradeModel->where('id', input('param.id'))->find();
-            if(!$info)
-            {
-                $result['msg'] = "没有此条记录";
-                return $result;
+            if (!$info) {
+                // $result['msg'] = error_code(10002, true);
+                return error_code(10002);
             }
             $this->assign('data', $info);
         }
@@ -400,32 +351,24 @@ class User extends Manage
      */
     public function gradeDel()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $result = error_code(10037);
 
         $userGradeModel = new UserGrade();
-        if(!input('?param.id'))
-        {
+        if (!input('?param.id')) {
             return error_code(10000);
         }
 
         $info = $userGradeModel->where('id', input('param.id'))->find();
-        if(!$info)
-        {
-            $result['msg'] = "没有此用户等级";
-            return $result;
+        if (!$info) {
+            // $result['msg'] = error_code(11030, true);
+            return error_code(11030);
         }
         $re = $userGradeModel->where('id', input('param.id'))->delete();
-        if($re)
-        {
+        if ($re) {
             $result['status'] = true;
-        }
-        else
-        {
-            $result['msg'] = "删除失败";
+        } else {
+            // $result['msg'] = error_code(10023, true);
+            return error_code(10023);
         }
         return $result;
     }
@@ -439,26 +382,48 @@ class User extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '失败',
-            'data' => ''
+            'data' => '',
+            'msg' => ''
         ];
 
         $ids = input('ids/a', []);
-        if(!$ids)
-        {
-            return $result;
+        if (!$ids) {
+            return error_code(10051);
         }
         $userModel = new UserModel();
         $res = $userModel::destroy($ids);
-        if($res !== false)
-        {
+        if ($res !== false) {
             //同步删除user_wx
             $userWxModel = new UserWx();
-            $userWxModel->where([['user_id','in', $ids]])->delete();
-            hook('deleteUserAfter',$ids);
-            $result['msg'] = '删除成功';
+            $userWxModel->where([['user_id', 'in', $ids]])->delete();
+            hook('deleteUserAfter', $ids);
             $result['status'] = true;
         }
         return $result;
+    }
+    public function userwx()
+    {
+        if (Request::isAjax()) {
+            $userModel = new UserWx();
+            return $userModel->tableData(input('param.'));
+        }
+        return $this->fetch('userwx');
+    }
+    public function userwxdel()
+    {
+        if (!input('?param.id')) {
+            return error_code(14017);
+        }
+        $userWxModel = new UserWx();
+        $re = $userWxModel->where([['id', '=', input('param.id')]])->delete();
+        if ($re) {
+            return [
+                'status' => true,
+                'data' => '',
+                'msg' => ''
+            ];
+        } else {
+            return error_code(10023);
+        }
     }
 }

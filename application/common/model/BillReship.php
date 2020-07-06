@@ -31,7 +31,7 @@ class BillReship extends Common
     public function toAdd($user_id,$order_id,$aftersales_id,$aftersalesItems)
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => [],
             'msg' => ''
         ];
@@ -61,11 +61,11 @@ class BillReship extends Common
                 $itemsData[] = $row;
             }
             $billReshipItemsModel = new BillReshipItems();
-            if(!$billReshipItemsModel->saveAll($itemsData)){
-                return error_code(10000);
+            if (!$billReshipItemsModel->saveAll($itemsData)) {
+                return error_code(10004);
             }
-        }else{
-            return error_code(10000);
+        } else {
+            return error_code(10004);
         }
         $result['status'] = true;
         $result['data'] = $data;
@@ -159,8 +159,8 @@ class BillReship extends Common
             foreach ($items as $key => $val) {
                 $goodsRes = $goodsModel->changeStock($val['product_id'], 'return', $val['nums']);
                 if (!$goodsRes['status']) {
-                    return $goodsRes;
                     Db::rollback();
+                    return $goodsRes;
                 }
             }
         }
@@ -347,12 +347,7 @@ class BillReship extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -412,12 +407,7 @@ class BillReship extends Common
      */
     public function getExportList($post = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => '',
-            'count' => 0
-        ];
+        $return_data =  error_code(10025);
         $where = [];
 
         if(isset($post['reship_id']) && $post['reship_id'] != ""){

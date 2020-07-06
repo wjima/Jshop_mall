@@ -3,14 +3,19 @@
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">消息名称：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="name" lay-verify="title" placeholder="请输入品牌名称关键字" autocomplete="off" class="layui-input">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入消息名称" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">消息类型：</label>
-            <div class="layui-input-inline">
-                <input type="text" id="utime" name="utime" lay-verify="title" placeholder="请选择更新时间" autocomplete="off" class="layui-input">
+            <div class="layui-input-inline seller-inline-4">
+                <select name="type" lay-filter="message-type">
+                    <option value=""></option>
+                    <option value="1">文字消息</option>
+                    <option value="3">图文消息</option>
+                </select>
             </div>
+            
         </div>
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="brand-search"><i class="iconfont icon-chaxun"></i>筛选</button>

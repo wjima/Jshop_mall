@@ -24,17 +24,15 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">手机号码：</label>
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                <input type="text" name="mobile" lay-verify="title" placeholder="手机号码或用户名" autocomplete="off"
                     class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">性别：</label>
             <div class="layui-input-inline seller-inline-2">
                 <select name="sex" lay-verify="">
-                    <option value=""></option>
+                    <option value="">性别</option>
                     <option value="1">男</option>
                     <option value="2">女</option>
                     <option value="3">其他</option>
@@ -42,26 +40,33 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">昵称：</label>
             <div class="layui-input-inline seller-inline-2">
                 <input type="text" name="nickname" lay-verify="title" placeholder="用户昵称" autocomplete="off"
                     class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">状态：</label>
-            <div class="layui-input-inline seller-inline-3">
+            <div class="layui-input-inline seller-inline-2">
                 <select name="status" lay-verify="">
-                    <option value=""></option>
+                    <option value="">状态</option>
                     <option value="1">正常</option>
                     <option value="2">停用</option>
                 </select>
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">推荐人：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="pmobile" lay-verify="title" placeholder="推荐人手机号" autocomplete="off"
+            <div class="layui-input-inline seller-inline-2">
+                <select name="grade" lay-verify="">
+                    <option value="">用户等级</option>
+                    {volist name="grade" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline seller-inline-3" style="width:168px;">
+                <input type="text" name="pmobile" lay-verify="title" placeholder="推荐人手机号码或用户名" autocomplete="off"
                     class="layui-input">
             </div>
         </div>
@@ -151,6 +156,7 @@
                 },
                 { field: 'id', title: 'ID', width:90, align: 'center' },
                 { field: 'mobile', title: '手机号码', width: 150, align: 'center'},
+                { field: 'username', title: '用户名', width: 120, align: 'center'},
                 { field: 'grade_name', title: '等级', width: 150, align: 'center'},
                 { field: 'sex', title: '性别', align: 'center' },
                 {
@@ -167,14 +173,13 @@
                     field: 'userWx', title: '第三方账号',
                     templet: function (d) {
                         var the_name = new Array(5)
-                        the_name[1] = "微信公众号"
-                        the_name[2] = "微信小程序"
+                        the_name[1] = "微信小程序"
+                        the_name[2] = "微信公众号"
                         the_name[3] = "支付宝小程序"
                         the_name[4] = "微信APP快捷登陆"
                         the_name[5] = "QQ在APP中快捷登陆"
                         the_name[6] = "头条系小程序"
                         var html = "";
-                        console.log(d.user_wx);
                         for(wx in d.user_wx){
                             html = html + "<img src='/static/images/userwx_"+d.user_wx[wx].type+".jpg' style='width:28px;' title='" +the_name[d.user_wx[wx].type]+"' />";
                         }
@@ -229,7 +234,7 @@
             }, function () {
                 JsPost("{:url('User/delUser')}", {'ids': ids}, function (res) {
                         if (res.status) {
-                            layer.msg(res.msg);
+                            layer.msg("操作成功");
                             layui.table.reload('userTable');
                         } else {
                             layer.msg(res.msg);
@@ -262,6 +267,7 @@
             var point = $("#point").val();
             var memo = $("#memo").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
             if ($.trim(point) == '') {
                 layer.msg('积分变更不能为空');
                 return false;
@@ -271,7 +277,8 @@
                 'flag': 'true',
                 'point': point,
                 'memo': memo,
-                '__Jshop_Token__': __Jshop_Token__
+                '__Jshop_Token__': __Jshop_Token__,
+                validate_form:validate_form
             }, function (e) {
                 if (e.status) {
                     layer.msg(e.msg, {time: 1500}, function () {
@@ -286,18 +293,7 @@
         //积分记录
         $(document).on('click', '.point', function () {
             var id = $(this).attr('data-id');
-            JsGet("{:url('manage/user/pointLog')}?user_id="+id+"&flag=false", function(e){
-                if(e.status){
-                    layer.open({
-                        type: 1,
-                        title: '用户积分记录',
-                        area: setpage(800,525), //宽高
-                        content: e.data
-                    });
-                }else{
-                    layer.msg(e.msg);
-                }
-            });
+            window.location.href = "{:url('manage/user/pointLog')}" + '?user_id=' + id;
         });
         //添加
         layui.form.on('submit(user-add)', function () {
@@ -306,7 +302,7 @@
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: setpage(700,550),
+                        area: setpage(700,600),
                         title: '添加用户',
                         btn: ['确定', '取消'],
                         zIndex: 1800,
@@ -381,6 +377,8 @@
         $(document).on('click', '.edit-money-save', function () {
             var user_id = $("#user_id").val();
             var money = $("#money").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
             if ($.trim(money) == '') {
                 layer.msg('余额变更不能为空');
                 return false;
@@ -388,7 +386,9 @@
             JsPost("{:url('manage/user/editMoney')}",{
                 'user_id': user_id,
                 'flag': 'true',
-                'money': money
+                'money': money,
+                __Jshop_Token__:__Jshop_Token__,
+                validate_form:validate_form
             },function(e){
                 if (e.status) {
                     layer.msg(e.msg, { time: 1500 }, function () {

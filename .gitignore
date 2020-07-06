@@ -14,3 +14,5 @@ uni-app/unpackage/
 .history
 .idea
 themes/pc/node_modules/*
+public/static/poster/*
+public/static/qrcode/*

@@ -57,13 +57,12 @@ class FormSubmit extends common
     public function pay($id, $payment_code = '')
     {
         $return_data = [
-            'status' => false,
-            'msg'    => '支付失败',
+            'status' => true,
+            'msg'    => '',
             'data'   => [],
         ];
         if (!$id) {
-            $return_data['msg'] = '支付失败';
-            return $return_data;
+            return error_code(18012);
         }
         $this->update(['pay_status' => self::FORM_PAY_STATUS_YES], ['id' => $id, 'pay_status' => self::FORM_PAY_STATUS_NO]);
         $return_data['status'] = true;
@@ -104,14 +103,10 @@ class FormSubmit extends common
      */
     public function deleteFormSubmit($id)
     {
-        $result = [
-            'status' => false,
-            'msg'    => '删除失败',
-            'data'   => ''
-        ];
+        $result = error_code(10023);
         if (!$id) {
-            $result['msg'] = '关键参数丢失';
-            return $result;
+//            $result['msg'] = '关键参数丢失';
+            return error_code(10051);
         }
         //先删除明细
         $formSubmitDetail = new FormSubmitDetail();
@@ -119,12 +114,12 @@ class FormSubmit extends common
         $res = $formSubmitDetail->where(['submit_id' => $id])->delete();
         if (!$res) {
             Db::rollback();
-            return false;
+            return $result;
         }
         $res = $this->where(['id' => $id])->delete();
         if (!$res) {
             Db::rollback();
-            return false;
+            return $result;
         }
         Db::commit();
         $result['msg']    = '删除成功';
@@ -153,21 +148,17 @@ class FormSubmit extends common
      */
     public function getDetail($id = 0)
     {
-        $result = [
-            'status' => true,
-            'msg'    => '获取失败',
-            'data'   => []
-        ];
+        $result = error_code(10025);
         if (!$id) {
-            $result['msg']    = '关键参数丢失';
-            $result['status'] = false;
-            return $result;
+//            $result['msg']    = '关键参数丢失';
+//            $result['status'] = false;
+            return error_code(10051);
         }
         $formSubmitInfo = $this->get($id);
         if (!$formSubmitInfo) {
-            $result['status'] = false;
-            $result['msg']    = '无此提交';
-            return $result;
+//            $result['status'] = false;
+//            $result['msg']    = '无此提交';
+            return error_code(18011);
         }
         $formModel = new Form();
         $formInfo  = $formModel->getFormInfo($formSubmitInfo['form_id']);

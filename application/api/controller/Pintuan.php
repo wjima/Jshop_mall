@@ -22,14 +22,19 @@ class Pintuan extends Api
     public function getList()
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => [],
             'msg' => ''
         ];
 
         $pintuanRuleModel = new PintuanRule();
-        //dump($pintuanRuleModel->getPintuanList(input('param.id',0)));
-        return $pintuanRuleModel->getPintuanList(input('param.id',0));
+        $goodsModel = new PintuanGoods();
+        $input = input('param.');
+        $data = $goodsModel->tableData($input,true);
+
+        $result['data']['list'] = $data['data'];
+        $result['data']['count'] = $data['count'];
+        return $result;
     }
 
     /**
@@ -67,7 +72,7 @@ class Pintuan extends Api
         $rule_id = input('param.rule_id');
 
         if(!input('?param.goods_id')){
-            return error_code(15605);
+            return error_code(12009);
         }
         $goods_id = input('param.goods_id');
 

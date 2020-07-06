@@ -52,7 +52,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10019, true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -93,7 +93,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10021, true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -147,7 +147,7 @@ class Administrator extends ManageController
     {
         $result = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10023, true),
             'data'   => ''
         ];
         if (!input('?param.id')) {
@@ -165,7 +165,7 @@ class Administrator extends ManageController
             $result['status'] = true;
             $result['msg']    = '删除成功';
         } else {
-            $result['msg'] = '删除失败，请重试';
+            $result['msg'] = error_code(10023, true);
         }
 
         return $result;
@@ -181,11 +181,6 @@ class Administrator extends ManageController
      */
     public function information()
     {
-        $result      = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => ''
-        ];
         $manageModel = new ManageModel();
         $manageInfo  = $manageModel->where(['id' => session('manage.id')])->find();
         $this->assign('manage_info', $manageInfo);
@@ -199,20 +194,14 @@ class Administrator extends ManageController
      */
     public function editPwd()
     {
-        $result      = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => ''
-        ];
+
         $manageModel = new ManageModel();
 
         if (!input('?param.newPwd') || !input('?param.password') || !input('?param.rePwd')) {
-            $result['msg'] = "密码不能为空";
-            return $result;
+            return error_code(11009);
         }
         if (input('param.newPwd') != input('param.rePwd')) {
-            $result['msg'] = "两次密码不一致";
-            return $result;
+            return  error_code(11025);
         }
 
         return $manageModel->chengePwd(session('manage.id'), input('param.password'), input('param.newPwd'));
@@ -225,10 +214,10 @@ class Administrator extends ManageController
      */
     public function getVersion()
     {
-        $return  = [
+        $return  =  [
+            'msg' => error_code(10027, true),
             'status' => false,
-            'msg'    => '授权查询失败',
-            'data'   => []
+            'data' => []
         ];
         $product = config('jshop.product');
         $version = config('jshop.version');
@@ -263,7 +252,6 @@ class Administrator extends ManageController
     public function userLogList()
     {
         $userLogModel = new UserLog();
-        return $userLogModel->getList(0,$userLogModel::MANAGE_TYPE);
+        return $userLogModel->getList(0, $userLogModel::MANAGE_TYPE);
     }
-
 }

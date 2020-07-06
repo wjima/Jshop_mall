@@ -26,18 +26,14 @@ class Form extends Api
      */
     public function getFormDetial()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => '表单不存在',
-            'data'   => [],
-        ];
+        $return_data = error_code(18001);
         $id          = input('id/d', 0);
         $token       = input('token', '');//token值 会员登录后传
 
         if (!$id) {
-            $return_data['msg']    = '关键参数缺失';
-            $return_data['status'] = false;
-            return $return_data;
+            // $return_data['msg']    = error_code(10051,true);
+            // $return_data['status'] = false;
+            return error_code(10051);
         }
         $formModel = new FormModel();
         $info      = $formModel->getFormInfo($id);
@@ -46,7 +42,7 @@ class Form extends Api
             return $return_data;
         }
         if ($info['data']['is_login'] == $formModel::NEED_LOGIN && !$token) {
-            $return_data['msg']  = '请先登录';
+            $return_data['msg']  = error_code(14006,true);
             $return_data['data'] = [
                 'need_login' => true,
             ];
@@ -55,7 +51,7 @@ class Form extends Api
         //检查过期时间
         if (isset($info['data']['end_date']) && $info['data']['end_date'] != 0) {
             if (time() > strtotime($info['data']['end_date'])) {
-                $return_data['msg'] = '表单已过期';
+                $return_data['msg'] = error_code(18002,true);
                 return $return_data;
             }
         }
@@ -72,11 +68,7 @@ class Form extends Api
      */
     public function addSubmit()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => '表单不存在',
-            'data'   => [],
-        ];
+        $return_data = error_code(18001);
         $id          = input('id/d', 0);
         $token       = input('token', '');
         $data        = input('param.',[],'remove_xss');
@@ -86,7 +78,7 @@ class Form extends Api
             return $return_data;
         }
         if ($form['data']['is_login'] == $formModel::NEED_LOGIN && !$token) {
-            $return_data['msg']  = '请先登录';
+            $return_data['msg']  = error_code(14006,true);
             $return_data['data'] = [
                 'need_login' => true,
             ];
@@ -95,7 +87,7 @@ class Form extends Api
         //检查过期时间
         if (isset($form['data']['end_date']) && $form['data']['end_date'] != 0) {
             if (time() > strtotime($form['data']['end_date'])) {
-                $return_data['msg'] = '表单已过期';
+                $return_data['msg'] = error_code(18002,true);
                 return $return_data;
             }
         }
@@ -128,8 +120,8 @@ class Form extends Api
         if ($form['data']['times'] && $token) {
             $count = $formSubmit->where([['user_id', '=', $user_id],['form_id','=',$id]])->count();
             if ($count >= $form['data']['times']) {
-                $return_data['msg'] = '您已达到最大提交次数，请忽继续提交。';
-                return $return_data;
+                // $return_data['msg'] = error_code(18003, true);
+                return error_code(18003);
             }
         }
         $formData = [
@@ -144,7 +136,7 @@ class Form extends Api
 
         Db::startTrans();
         if ($formSubmit->add($formData) === false) {
-            $return_data['msg'] = '提交失败，请重试';
+            $return_data['msg'] = error_code(18005,true);
             Db::rollback();
             return $return_data;
         }
@@ -165,14 +157,14 @@ class Form extends Api
             foreach ($tempData as $key => $value) {
                 $formitem = $formItem->where(['id' => $key])->find();
                 if (!$formItem->validateField($formitem, $value)) {
-                    $return_data['msg'] = $formitem['name'] . '格式错误，请重新输入';
+                    // $return_data['msg'] =  error_code(18004, true, $formitem['name']);   //格式错误，请重新输入
                     Db::rollback();
-                    return $return_data;
+                    return error_code(18004, false, $formitem['name']);
                 }
                 if ($formitem['required'] == $formItem::REQUIRED_YES && !$value) {
-                    $return_data['msg'] = '请输入' . $formitem['name'];
+                    // $return_data['msg'] = error_code(18006, true, $formitem['name']);    //'请输入' . $formitem['name']
                     Db::rollback();
-                    return $return_data;
+                    return error_code(18006, false, $formitem['name']);
                 }
                 //地区
                 if ($formitem['type'] == 'area' && $value) {
@@ -196,9 +188,9 @@ class Form extends Api
                     foreach ($value as $k => $v) {
                         $productData = $productModel->getProductInfo($v['productId']);
                         if (!$productData['status']) {
-                            $return_data['msg'] = '货品不存在';
+                            // $return_data['msg'] = error_code(12501, true);
                             Db::rollback();
-                            return $return_data;
+                            return error_code(12501);
                         }
                         $product        = $productData['data'];
                         $form_item_name = ($product['spes_desc']) ? $product['spes_desc'] . ':' . $product['sn'] : $product['sn'];
@@ -223,9 +215,9 @@ class Form extends Api
                 }
             }
             if (!$subimtDetail->saveAll($item)) {
-                $return_data['msg'] = '表单明细提交失败，请重试';
+                // $return_data['msg'] = error_code(18007, true);
                 Db::rollback();
-                return $return_data;
+                return error_code(18007);
             }
         }
         //支付类型

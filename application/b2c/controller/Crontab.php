@@ -9,6 +9,8 @@
 namespace app\b2c\controller;
 
 use app\common\controller\Base;
+use app\common\model\Bargain;
+use app\common\model\BargainRecord;
 use app\common\model\OperationLog;
 use app\common\model\Order;
 use app\common\model\PintuanRecord;
@@ -152,5 +154,15 @@ class Crontab extends Base
         $where[] = ['ctime', '<=', time() - 86400 * 7];
         $operateLog->where($where)->delete();
         return json_encode(['status' => true, 'msg' => '清理完成']);
+    }
+
+    /**
+     * 砍价活动过期的状态变更
+     */
+    public function bargainCancle()
+    {
+        $bargainRecordModel = new BargainRecord();
+        $bargainRecordModel->bargainCancle();
+        return json_encode(['status' => true, 'msg' => '取消成功']);
     }
 }

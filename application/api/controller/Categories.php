@@ -44,10 +44,9 @@ class Categories extends Api
         {
             $return['status'] = true;
             $return['data'] = $data;
-        }
-        else
-        {
-            $return['msg'] = '获取顶级分类失败';
+        } else {
+            // $return['msg'] = error_code(12001,true);
+            return error_code((12001));
         }
         return $return;
     }
@@ -74,10 +73,8 @@ class Categories extends Api
         {
             $return['status'] = true;
             $return['data'] = $data;
-        }
-        else
-        {
-            $return['msg'] = '获取顶级分类失败';
+        } else {
+            return error_code((12001));
         }
         return $return;
     }
@@ -105,10 +102,8 @@ class Categories extends Api
         {
             $return['status'] = true;
             $return['data']   = $data;
-        }
-        else
-        {
-            $return['msg'] = '获取顶级分类失败';
+        } else {
+            return error_code((12001));
         }
         return $return;
     }

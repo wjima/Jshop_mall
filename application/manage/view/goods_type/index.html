@@ -137,6 +137,8 @@
             var name = $("#type_name").val();
             var id = $("#type_id").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
+			var validate_form = $("input[name='validate_form']").val();
+
             var error = false;
             if(name.length > 6 || name.length < 1){
                 error = true;
@@ -151,7 +153,8 @@
             	JsPost('{:url("GoodsType/edit")}', {
 					'name': name,
 					'id':id,
-					__Jshop_Token__:__Jshop_Token__
+					__Jshop_Token__:__Jshop_Token__,
+					validate_form:validate_form
 				}, function(e){
 					if(e.status === true){
 						layer.close(window_box);

@@ -70,7 +70,8 @@
 			return {
 				payments: [],
 				openid: '',
-				popShow: false
+				popShow: false,
+				payStatus: true
 			}
 		},
 		mounted() {
@@ -196,11 +197,17 @@
 								tempForm.dispatchEvent(new Event('submit'))
 								tempForm.submit()
 								document.body.removeChild(tempForm)
+							}else{
+								this.$common.errorToShow(res.msg)
 							}
 						})
 						break
 					case 'wechatpay':
-
+						if(this.payStatus == false) {
+							return
+						}
+						this.payStatus = false
+						let _this = this
 						/**
 						 * 微信支付有两种
 						 * 判断是否在微信浏览器
@@ -252,12 +259,18 @@
 								// }
 							} else if ((this.type == 5 || this.type == 6) && this.recharge) {
 								data['params'] = {
-									formid: this.orderId
+									formid: this.orderId,
+									trade_type: 'JSAPI_OFFICIAL',
+									url: transitUrl
 								}
 							}
 							this.$api.pay(data, res => {
 								if (!res.status && res.data == '10066') {
 									window.location.href = res.msg
+									return;
+								}
+								if(!res.status){
+									this.$common.errorToShow(res.msg);
 									return;
 								}
 								const data = res.data
@@ -279,11 +292,14 @@
 								}
 							} else if ((this.type == 5 || this.type == 6) && this.recharge) {
 								data['params'] = {
-									formid: this.orderId
+									formid: this.orderId,
+									trade_type: 'MWEB',
+									return_url: baseUrl + 'wap/pages/goods/payment/result'
 								}
 							}
 							// 微信h5支付
 							this.$api.pay(data, res => {
+								_this.payStatus = true
 								if (res.status) {
 									location.href = res.data.mweb_url
 								} else {

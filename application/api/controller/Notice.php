@@ -62,11 +62,7 @@ class Notice extends Api
      */
     public function noticeInfo()
     {
-        $result = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => []
-        ];
+        $result = error_code(10025);
         $noticeModel = new NoticeModel;
         $data = $noticeModel->getNoticeInfo(input('param.id/d'));
 

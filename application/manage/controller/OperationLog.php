@@ -56,16 +56,12 @@ class OperationLog extends Manage
      */
     public function delLog()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $result = error_code(10075);
+        return $result;
 
         $ids = input('ids/a', []);
-        if(!$ids)
-        {
-            return $result;
+        if (!$ids) {
+            return error_code(10051);
         }
         $logModel = new LogModel();
         $res = $logModel->where([['id','in',$ids]])->delete();

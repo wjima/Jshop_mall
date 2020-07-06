@@ -63,13 +63,15 @@ class Pages extends Common
         return $list;
     }
 
-    /***
+
+    /**
      * 获取页面配置详情
-     * @param $page_code
+     * @param $page_code 页面编码
      * @param string $token
+     * @param bool|false $api 是否接口访问，接口为前台
      * @return array
      */
-    public function getDetails($page_code, $token = '')
+    public function getDetails($page_code, $token = '', $api = false)
     {
         $result          = [
             'status' => true,
@@ -77,12 +79,17 @@ class Pages extends Common
             'data'   => [],
         ];
         $pageModel       = new Pages();
-        $pageinfo        = $pageModel->where([['code', '=', $page_code]])->find();
         $pagesItemsModel = new PagesItems();
-        $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
+        if ($api) {
+            $pageinfo = $pageModel->where([['code', '=', $page_code]])->cache(86400)->find();
+            $data     = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->cache(86400)->select();
+        } else {
+            $pageinfo = $pageModel->where([['code', '=', $page_code]])->find();
+            $data     = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
+        }
         if ($data->isEmpty()) {
-            $result['msg'] = '请先配置该页面';
-            return $result;
+            // $result['msg'] = '请先配置该页面';
+            return error_code(34800);
         }
         try {
             $data = $data->toArray();
@@ -91,7 +98,7 @@ class Pages extends Common
 
                 $data[$i]['params'] = json_decode($value['params'], true);
                 if ($value['widget_code'] == 'notice') {
-                    if ($data[$i]['params']['type'] == 'auto') {
+                    if ($data[$i]['params']['type'] == 'auto' && $api) {
                         $noticeModel                = new Notice();
                         $list                       = $noticeModel->getNoticeList();
                         $data[$i]['params']['list'] = $list;
@@ -103,7 +110,7 @@ class Pages extends Common
                 } elseif ($value['widget_code'] == 'goods') {
                     $list       = $where = $whereOr = [];
                     $goodsModel = new Goods();
-                    if ($data[$i]['params']['type'] == 'auto') {
+                    if ($data[$i]['params']['type'] == 'auto' && $api) {
                         //商品分类,同时取所有子分类 todo 无限极分类时要注意
                         if (isset($data[$i]['params']['classifyId']) && trim($data[$i]['params']['classifyId'])) {
                             $goodsCatModel = new GoodsCat();
@@ -127,44 +134,36 @@ class Pages extends Common
                         $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
                         $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
                         $data[$i]['params']['list'] = $returnGoods['data'];
-                    } else {
+                    } elseif ($api) {
                         foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
                             $goods                           = $goodsModel->getGoodsDetial($gv['id'], 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $token);
                             $data[$i]['params']['list'][$gk] = $goods['data'];
                         }
                     }
-                } elseif ($value['widget_code'] == 'articleClassify') {
+                } elseif ($value['widget_code'] == 'articleClassify' && $api) {
                     $article                    = new Article();
                     $type_id                    = $data[$i]['params']['articleClassifyId'];
                     $limit                      = $data[$i]['params']['limit'];
                     $res                        = $article->articleList($type_id, 1, $limit);
                     $data[$i]['params']['list'] = $res['data']['list'];
-                } elseif ($value['widget_code'] == 'groupPurchase') {
-                    $filter         = [];
-                    $promotion      = new Promotion();
-                    $conditionModel = new PromotionCondition();
-                    if ($data[$i]['params']['list']) {
+                } elseif ($value['widget_code'] == 'groupPurchase' && $api) {
+                    $promotion = new Promotion();
+                    if (isset($data[$i]['params']['list']) && $data[$i]['params']['list']) {
                         foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                            if (!isset($v['id'])) {
-                                $data[$i]['params']['list'][$k] = [];
-                            }
-                            $filter['promotion_id'] = $v['id'];
-                            $condition              = $conditionModel->field('*')->where($filter)->find();
-                            $condition['params']    = json_decode($condition['params'], true);
-                            if (isset($condition['params']['goods_id']) && $condition['params']['goods_id']) {
-                                $goods = $promotion->getGroupDetial($condition['params']['goods_id'], $token);
-                                if ($goods['status']) {
-                                    $data[$i]['params']['list'][$k]['goods'] = $goods['data'];
-                                } else {
-                                    $data[$i]['params']['list'][$k] = [];
+                            if ($api) {
+                                if (isset($v['goods_id']) && $v['goods_id']) {
+                                    $goods = $promotion->getGroupDetial($v['goods_id'], $token, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $v['id']);
+                                    if ($goods['status']) {
+                                        $data[$i]['params']['list'][$k] = $goods['data'];
+                                    } else {
+                                        $data[$i]['params']['list'][$k] = [];
+                                    }
                                 }
                             }
                         }
-
                     }
                     $data[$i]['params']['list'] = array_values(array_filter((array)$data[$i]['params']['list']));
-                } elseif ($value['widget_code'] == 'pintuan') {
-                    $goodsModel   = new Goods();
+                } elseif ($value['widget_code'] == 'pintuan' && $api) {
                     $pintuanModel = new PintuanRule();
                     $pi           = 0;
                     $pintuan      = [];
@@ -185,8 +184,7 @@ class Pages extends Common
                                 } else {
                                     $pintuan[$pi]['pintuan_start_status'] = 3;//已过期
                                 }
-                                $pintuan_price                 = bcsub(floatval($goodsinfo['price']), floatval($goodsinfo['discount_amount']), 2);
-                                $pintuan[$pi]['pintuan_price'] = ($pintuan_price > 0) ? $pintuan_price : 0;
+                                $pintuan[$pi]['pintuan_price'] = $goodsinfo['pintuan_price'];
                             } else {
                                 $pintuan[$pi] = [];
                             }
@@ -203,7 +201,7 @@ class Pages extends Common
             }
         } catch (Exception $e) {
             $result['status'] = false;
-            $result['msg'] = $e->getMessage();
+            $result['msg']    = $e->getMessage();
             return $result;
         }
         $pageinfo['items'] = $data;
@@ -214,22 +212,18 @@ class Pages extends Common
 
     public function addData($data = [])
     {
-        $result = [
-            'status' => false,
-            'msg'    => '保存失败',
-            'data'   => []
-        ];
+        $result = error_code(10004);
 
         if (!$data['name']) {
-            $result['msg'] = '请输入名称';
-            return $result;
+//            $result['msg'] = '请输入名称';
+            return error_code(10900);
         }
 
 
         // 判断该编码是否已经添加
         if ($this->where('code', $data['code'])->find()) {
-            $result['msg'] = '该编码已存在,勿重复添加!';
-            return $result;
+//            $result['msg'] = '该编码已存在,勿重复添加!';
+            return error_code(10901);
         }
 
         if ($this->allowField(true)->save($data)) {

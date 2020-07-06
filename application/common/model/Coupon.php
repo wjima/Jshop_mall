@@ -50,7 +50,7 @@ class Coupon extends Common
      */
     public function addData($user_id,$promotion_id)
     {
-        $result = ['status'=>false,'msg'=>'领取失败','data'=>'' ];
+        $result = error_code(15021);
 
         $data = [
             'coupon_code' => $this->generate_promotion_code()[0],
@@ -73,7 +73,7 @@ class Coupon extends Common
      */
     public function del($coupon_code)
     {
-        $result = ['status'=>false,'msg'=>'删除失败','data'=>''];
+        $result = error_code(10023);
         if ($this->where('coupon_code',$coupon_code)->delete())
         {
             $result['status'] = true;
@@ -149,6 +149,34 @@ class Coupon extends Common
     }
 
     /**
+     * @param $user_id
+     */
+    public function getMyCouponCount($user_id,$display = 'all'){
+        $where = [];
+        $where[] = ['p.type', 'eq', 2]; //优惠券
+        $where[] = ['p.status','eq',Promotion::STATUS_OPEN];
+        $where[] = ['c.user_id', 'eq', $user_id];   //领取者是$user_id
+        if($display == 'no_used')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_NO];
+            $where[] = ['p.etime', '>=', time()];
+        }
+        if($display == 'yes_used')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_YES];
+        }
+        if($display == 'invalid')
+        {
+            $where[] = ['c.is_used', 'eq', self::USED_NO];
+            $where[] = ['p.etime', '<', time()];
+        }
+        return $this->alias('c')
+            ->join('promotion p', 'p.id = c.promotion_id')
+            ->where($where)
+            ->count();
+    }
+
+    /**
      * 获取 我的优惠券
      * @param $user_id
      * @param string $promotion_id
@@ -162,7 +190,7 @@ class Coupon extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [
                 'list' => [],
                 'count' => 0,
@@ -370,14 +398,8 @@ class Coupon extends Common
                 'msg' => '核销使用优惠券成功',
                 'data' => $coupon_code
             ];
-        }
-        else
-        {
-            $return_data = [
-                'status' => false,
-                'msg' => '核销使用优惠券失败',
-                'data' => $coupon_code
-            ];
+        } else {
+            return error_code(15022);
         }
         return $return_data;
     }
@@ -400,8 +422,8 @@ class Coupon extends Common
 
 
         if($nums > 5000){
-            $result['msg'] = '一次最多可以生生5000张';
-            return $result;
+//            $result['msg'] = '一次最多可以生生5000张';
+            return error_code(15023);
         }
 
 
@@ -419,7 +441,8 @@ class Coupon extends Common
             $result['status'] = true;
             $result['data'] = $re->hidden(['promotion_id','is_used','user_id','used_id','ctime','utime'])->toArray();//array_column($re->toArray(),'coupon_code');
         }else{
-            $result['msg'] = '一张都没生成';
+//            $result['msg'] = '一张都没生成';
+            return error_code(15024);
         }
         return $result;
     }
@@ -444,24 +467,20 @@ class Coupon extends Common
      */
     public function receiveCoupon($user_id, $coupon_code)
     {
-        $return = [
-            'status' => false,
-            'data' => '',
-            'msg' => '领取失败',
-        ];
+        $return = error_code(15021);
 
         $where[] = ['coupon_code', 'eq', $coupon_code];
         $flag = $this->where($where)->find();
 
         if($flag['used_id'])
         {
-            $return['msg'] = '该优惠券已被使用';
-            return $return;
+//            $return['msg'] = '该优惠券已被使用';
+            return error_code(15025);
         }
         if($flag['user_id'])
         {
-            $return['msg'] = '该优惠券已被其他人领取';
-            return $return;
+//            $return['msg'] = '该优惠券已被其他人领取';
+            return error_code(15026);
         }
 
         $data['user_id'] = $user_id;
@@ -491,7 +510,7 @@ class Coupon extends Common
      */
     public function bindUser($user_id, $coupon_code)
     {
-        $result = ['status' => false, 'msg' => '绑定失败', 'data' => ''];
+        $result = error_code(15027);
         if ($this->where('coupon_code', $coupon_code)->update(['user_id' => $user_id]) !== false) {
             $result['status'] = true;
             $result['msg']    = '绑定成功';
@@ -513,16 +532,16 @@ class Coupon extends Common
 
         $receive_count = $this->where([['promotion_id', '=', $where['id']]])->count();
         if (!$info) {
-            $result['msg'] = '优惠券不存在';
-            return $result;
+//            $result['msg'] = '优惠券不存在';
+            return error_code(15007);
         }
         $info['params'] = json_decode($info['params'], true);
         if ($info['params']) {
             //判断最大领取数量
             if (isset($info['params']['max_nums']) && $info['params']['max_nums'] != 0) {
                 if ($info['params']['max_nums'] < ($where['nums'] + $receive_count)) {
-                    $result['msg'] = '优惠券超过最大领取数量';
-                    return $result;
+//                    $result['msg'] = '优惠券超过最大领取数量';
+                    return error_code(15028);
                 }
             }
         }

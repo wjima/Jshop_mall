@@ -44,7 +44,7 @@
 </div>
 <div id="no_spec">
 <div class="layui-form-item">
-    <label class="layui-form-label"><i class="required-color">*</i>销售价：</label>
+    <label class="layui-form-label">销售价：</label>
     <div class="layui-input-inline">
         <input type="text" name="goods[price]" placeholder="￥" autocomplete="off" class="layui-input">
     </div>
@@ -68,17 +68,29 @@
         <input type="text" name="goods[sn]" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
     </div>
 </div>
-    {if !$erp_syn_on}
-<div class="layui-form-item">
-    <label class="layui-form-label">库存：</label>
-    <div class="layui-input-inline">
-        <input type="text" name="goods[stock]" placeholder="数量" lay-verify="title" autocomplete="off"  class="layui-input goods-stock">
-    </div>
-    <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">
-        为正数时，添加库存，负数时减少库存。
-    </div>
-</div>
+
+    {if get_addons_status('StockControl')}
+        <div class="layui-form-item" style="display: none">
+            <label class="layui-form-label">库存：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="goods[stock]" placeholder="数量" lay-verify="title" autocomplete="off"  class="layui-input goods-stock">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">
+                为正数时，添加库存，负数时减少库存。
+            </div>
+        </div>
+    {else /}
+        <div class="layui-form-item">
+            <label class="layui-form-label">库存：</label>
+            <div class="layui-input-inline">
+                <input type="text" name="goods[stock]" placeholder="数量" lay-verify="title" autocomplete="off"  class="layui-input goods-stock">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">
+                为正数时，添加库存，负数时减少库存。
+            </div>
+        </div>
     {/if}
+
 </div>
 </form>
 

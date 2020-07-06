@@ -8,16 +8,19 @@
 // +----------------------------------------------------------------------
 namespace app\api\controller;
 
+use app\common\controller\Api;
 use app\common\model\Area;
 use app\common\controller\Base;
+use think\facade\Hook;
 
 
 /**
- * 此控制器不用api校验，不需要token登陆，就是单纯的标准的接口数据,用于取一些通用的信息
+ * old 此控制器不用api校验，不需要token登陆，就是单纯的标准的接口数据,用于取一些通用的信息
+ * new 此控制器不校验token登陆但是最好也放到api体系了里面吧
  * Class Common
  * @package app\api\controller
  */
-class Common extends Base
+class Common extends Api
 {
     /**
      * 加载方法
@@ -118,6 +121,7 @@ class Common extends Base
         $conf['user_agreement_id'] = $config['user_agreement_id']; //用户协议
         $conf['privacy_policy_id'] = $config['privacy_policy_id']; //隐私政策
         $conf['shop_beian']        = $config['shop_beian']; //备案
+        $conf['language']          = getSetting('language');        //语言包，预留的口
 
         //手机端商品详情页文字说明，如果为空就不显示
         $goods_show_word = [];
@@ -131,5 +135,18 @@ class Common extends Base
 
 
         return $conf;
+    }
+
+    //插件配置列表，插件是否开启，也通过此接口判断
+    public function addons(){
+        $result = [
+            'status' => true,
+            'data' => [],
+            'msg' => ''
+        ];
+        $obj = new \stdClass;
+        Hook('apiAddonsConf', $obj);
+        $result['data'] = $obj->data;
+        return $result;
     }
 }

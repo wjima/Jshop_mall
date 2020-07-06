@@ -60,7 +60,7 @@ class Clear extends Command
             if ('.' != $file && '..' != $file && is_dir($path . $file)) {
                 array_map('unlink', glob($path . $file . DIRECTORY_SEPARATOR . '*.*'));
                 if ($rmdir) {
-                    rmdir($path . $file);
+                    @rmdir($path . $file);
                 }
             } elseif ('.gitignore' != $file && is_file($path . $file)) {
                 unlink($path . $file);

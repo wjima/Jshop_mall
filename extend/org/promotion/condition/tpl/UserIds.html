@@ -1,0 +1,20 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="conditionEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="promotion_id" value="{$promotion_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">条件名称：</label>
+        <div class="layui-form-mid">指定某些用户</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>请选择：</label>
+        <div class="layui-input-block">
+            {Jshop:selectuser value="$params.user_id" num="100" name="params[user_id]" /}
+        </div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

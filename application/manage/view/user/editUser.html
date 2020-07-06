@@ -9,10 +9,9 @@
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">昵称：</label>
-
+            <label class="layui-form-label">用户名：</label>
             <div class="layui-input-inline">
-                <input type="text" name="nickname" class="layui-input" value="{$info.nickname}">
+                <span style="display:block;height: 38px;line-height: 38px;">{$info.username}</span>
             </div>
         </div>
     </div>
@@ -72,24 +71,36 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
+            <label class="layui-form-label">昵称：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="nickname" class="layui-input" value="{$info.nickname}">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">邀请人：</label>
+
+            <div class="layui-input-inline">
+                {Jshop:selectuser value="$info.pid" num="1" name="pid" /}
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
             <label class="layui-form-label">头像：</label>
 
             <div class="layui-input-inline">
                 {Jshop:image id="avatar" name="avatar" value="$info.avatar"}
             </div>
         </div>
-    </div>
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">邀请人修改：</label>
-
+        <div class="layui-inline" style="margin-top: -50px">
+            <label class="layui-form-label">备注：</label>
             <div class="layui-input-inline">
-                <input type="text" name="p_mobile" class="layui-input" value="{$info.pid|get_user_info}"
-                       placeholder="请输入邀请人的手机号码">
+                <textarea name="remarks" maxlength="100" cols="10" rows="3" placeholder="用户备注" class="layui-textarea" style="resize: none">{$info.remarks}</textarea>
             </div>
         </div>
     </div>
-    {:jshopToken()}
+    {:jshopToken('edit_user')}
 </form>
 <script>
     layui.use(['form', 'laydate'], function () {

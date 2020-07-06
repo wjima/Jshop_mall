@@ -67,10 +67,10 @@
         <div class="layui-form-mid">订单支付金额：{$order_info.payed},已退款金额：{$order_info.refunded}</div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">收货与否：</label>
+        <label class="layui-form-label">是否发货：</label>
         <div class="layui-input-inline seller-inline-8">
-            <input name="type" value="1" title="未收到货" {if $info['type'] == 1} checked="" {/if} type="radio">
-            <input name="type" value="2" title="已收到货" {if $info['type'] == 2} checked="" {/if} type="radio">
+            <input name="type" value="1" title="未发货" {if $info['type'] == 1} checked="" {/if} type="radio">
+            <input name="type" value="2" title="已发货" {if $info['type'] == 2} checked="" {/if} type="radio">
         </div>
     </div>
     <div class="layui-form-item">
@@ -94,7 +94,7 @@
             2. "售后数量"里的数字包含已提交的售后和审核通过的售后的商品数量，后面如果有括号，表示已发货的商品的退货数量。
         </div>
     </div>
-    {:jshopToken()}
+    {:jshopToken('bill_audit')}
 </form>
 
 <script>
@@ -103,6 +103,7 @@
         layui.table.render({
             elem: '#billAftersalesItems',
             size: 'sm',
+            limit: '10000',
             cols: [[ //标题栏
                 { field: 'id', title: '', width: 50, templet: function (data) {
                     if(data.the_reship_nums > 0){
@@ -126,7 +127,8 @@
                 }
             ]],
             data: stringToJson(htmlDecodeByRegExp('{$order_info.items}')),
-            even: true
+            even: true,
+            limit: 100 //每页默认显示的数量
         });
     });
 </script>

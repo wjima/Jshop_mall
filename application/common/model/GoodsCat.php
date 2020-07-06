@@ -400,14 +400,14 @@ class GoodsCat extends Common
             //父类判断是否有子类
             $result = $this->where('parent_id', 'eq', $id)->count();
             if($result>0){
-                $status['msg'] = "存在下级分类，不允许删除";
+                $status['msg'] = error_code(12010,true);
             }else{
                 $status['status'] = true;
             }
             return $status;
         }else{
-            $status['msg'] = "没有找到此商品分类";
-            return $status;
+//            $status['msg'] = "没有找到此商品分类";
+            return error_code(12017);
         }
     }
 
@@ -546,11 +546,7 @@ class GoodsCat extends Common
      */
     public function getNameById($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => ''
-        ];
+        $return = error_code(10025);
         $where[] = ['id', 'eq', $id];
         $info = $this->field('name')->where($where)->find();
         if($info)

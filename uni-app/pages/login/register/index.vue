@@ -110,7 +110,7 @@ export default {
 				this.$common.loadToShow('发送中...');
 				setTimeout(() => {
 					this.$common.loadToHide();
-					this.$api.sms({ mobile: this.mobile, code: 'reg' }, res => {
+					this.$api.sms({ mobile: this.mobile, code: 'login' }, res => {
 						if (res.status) {
 							this.timer = 60;
 							this.verification = false;
@@ -182,7 +182,7 @@ export default {
 			}
 		},
 		toLogin() {
-			this.$common.navigateTo('/pages/login/login/index1');
+			this.$common.redirectTo('/pages/login/login/index1');
 		},
 		// 跳转到用户协议
 		goAgreement() {
@@ -244,7 +244,7 @@ export default {
 }
 
 .reg-b .btn {
-	color: #999;
+	color: #fff;
 }
 
 .registered-item {

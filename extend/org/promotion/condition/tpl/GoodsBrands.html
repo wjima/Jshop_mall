@@ -1,0 +1,21 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="conditionEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="promotion_id" value="{$promotion_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">条件名称：</label>
+        <div class="layui-form-mid">指定商品品牌</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品品牌：</label>
+        <div class="layui-input-inline seller-inline-2">
+            {Jshop:sellerbrands value="$params.brand_id" name="params[brand_id]" /}
+        </div>
+        <div class="layui-form-mid layui-word-aux">选择指定商品品牌</div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

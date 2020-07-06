@@ -27,6 +27,8 @@ function jumpToLogin(method) {
 		// 将当前页面route存vuex中 登录注册后跳转
 		let pages = getCurrentPages()
 		let page = pages[pages.length - 1]
+		// console.log(page);
+		// console.log(page.route);
 		// 获取页面参数信息
 		let pagePath = ''
 		// #ifdef H5 || MP-WEIXIN || APP-PLUS	 || APP-PLUS-NVUE
@@ -41,7 +43,26 @@ function jumpToLogin(method) {
 		if (page.route.indexOf('pages/goods/index/group') !== -1) {
 			//团购秒杀详情页
 			if (page.goodsId && page.groupId) {
-				pagePath = '/' + page.route + '?id=' + page.goodsId + '&group_id' + page.groupId;
+				pagePath = '/' + page.route + '?id=' + page.goodsId + '&group_id=' + page.groupId;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
+		if (page.route.indexOf('pages/share/jump') !== -1) {
+			//分享领取红包优惠券
+			// console.log(page.$mp.query);
+			if (page.$mp.query) {
+				pagePath = '/' + page.route + '?scene=' + page.$mp.query.scene;
+				// console.log(pagePath);
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
+		
+		if (page.route.indexOf('pages/bargain/index') !== -1) {
+			//砍价
+			if (page.id && page.id != '' && page.type && page.record_id && page.record_id != 0) {
+				pagePath = '/' + page.route + '?id=' + page.id + '&type=' + page.type + '&record_id=' + page.record_id;
 			} else {
 				pagePath = '/pages/index/index';
 			}
@@ -65,7 +86,24 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
+		if (page.__proto__.route.indexOf('pages/share/jump') !== -1) {
+			//分享领取红包优惠券
+			if (page.data.$mp.query) {
+				pagePath = '/' + page.__proto__.route + '?scene=' + page.data.$mp.query.scene;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
+		if (page.__proto__.route.indexOf('pages/bargain/index') !== -1) {
+			//砍价
+			if (page.data.id && page.data.id != '' && page.data.type && page.data.record_id && page.data.record_id != 0) {
+				pagePath = '/' + page.__proto__.route + '?id=' + page.data.id + '&type=' + page.data.type + '&record_id=' + page.data.record_id;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
 		// #endif
+		// console.log(pagePath);
 		if (pagePath) {
 			store.commit({
 				type: 'redirect',
@@ -77,24 +115,24 @@ function jumpToLogin(method) {
 			icon: 'none',
 			duration: 1000,
 			success: function(res) {
-				// #ifdef H5 || APP-PLUS
 				setTimeout(() => {
 					uni.hideToast();
+					let current =  getCurrentPages()
+					current = current[current.length - 1]
+					if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+						return
+					}
 					uni.navigateTo({
-						url: '/pages/login/login/index1'
-					})
-				}, 1000)
-				// #endif
-				// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
-				setTimeout(() => {
-					uni.hideToast();
-					uni.navigateTo({
+						// #ifdef H5 || APP-PLUS
+						url: '/pages/login/login/index1',
+						// #endif
+						// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 						url: '/pages/login/choose/index',
+						// #endif
 						animationType: 'pop-in',
 						animationDuration: 200
 					})
 				}, 500)
-				// #endif
 			}
 		})
 	}
@@ -151,7 +189,7 @@ function errorToShow(msg = '操作失败', callback = function() {}) {
 				}, 1500)
 			}
 		})
-	},100)
+	},1000)
 
 }
 

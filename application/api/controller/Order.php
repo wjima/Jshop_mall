@@ -49,9 +49,10 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg'    => '取消订单失败',
+                'msg'    => error_code(13003, true),
                 'data'   => $order_ids
             );
+            // return error_code(13003);
         }
         return $return_data;
     }
@@ -81,7 +82,7 @@ class Order extends Api
         {
             $return_data = array(
                 'status' => false,
-                'msg'    => '删除失败',
+                'msg'    => error_code(10023, true),
                 'data'   => $order_ids
             );
         }
@@ -114,7 +115,7 @@ class Order extends Api
         {
             $return_data = [
                 'status' => false,
-                'msg'    => '获取失败',
+                'msg'    => error_code(10025, true),
                 'data'   => $result
             ];
         }
@@ -223,11 +224,7 @@ class Order extends Api
     public function getShip()
     {
         $area_id     = input('area_id', 0);
-        $return_data = [
-            'status' => false,
-            'data'   => '',
-            'msg'    => '暂未设置配送方式',
-        ];
+        $return_data = error_code(13004);
         $model       = new Ship();
         $ship        = $model->getShip($area_id);
         if($ship)
@@ -252,6 +249,7 @@ class Order extends Api
             'status'  => Request::param('status'),
             'page'    => Request::param('page'),
             'limit'   => Request::param('limit'),
+            'keyword' => Request::param('keyword'),
             'user_id' => $this->userId
         ];
         $model = new orderModel();
@@ -286,6 +284,9 @@ class Order extends Api
         $data  = $model->getOrderStatusNum($input);
         if($data)
         {
+            $couponModel = new \app\common\model\Coupon();
+            $couponCount = $couponModel->getMyCouponCount($this->userId,'no_used');
+            $data['coupon'] = $couponCount;
             $return_data = [
                 'status' => true,
                 'msg'    => '获取成功',
@@ -294,9 +295,10 @@ class Order extends Api
         }
         else
         {
+            $data['coupon'] = 0;
             $return_data = [
                 'status' => false,
-                'msg'    => '没有符合的数据',
+                'msg'    => error_code(10036,true),
                 'data'   => $data
             ];
         }

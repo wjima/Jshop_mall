@@ -41,7 +41,7 @@ class Area extends Manage
             } else {
                 $return_data = array(
                     'status' => false,
-                    'msg'    => '获取失败',
+                    'msg'    => error_code(10025,true),
                     'data'   => $result
                 );
             }
@@ -104,7 +104,7 @@ class Area extends Manage
         } else {
             $return_data = array(
                 'status' => false,
-                'msg'    => '获取失败',
+                'msg'    => error_code(10025,true),
                 'data'   => $info
             );
         }

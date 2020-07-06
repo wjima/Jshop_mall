@@ -35,31 +35,33 @@ class Addons extends Common
     {
         $result = [
             'code'   => 0,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'status' => false,
         ];
 
         if (!defined('ADDON_PATH')) {
-            $result['msg'] = '插件路径缺失';
-            return $result;
+//            $result['msg'] = '插件路径缺失';
+            return error_code(10718);
         }
         $dirs = array_map('basename', glob(ADDON_PATH . '*', GLOB_ONLYDIR));
         if ($dirs === FALSE || !file_exists(ADDON_PATH)) {
-            $result['msg'] = '插件目录不可读或者不存在';
-            return $result;
+//            $result['msg'] = '插件目录不可读或者不存在';
+            return error_code(10719);
         }
         $addons  = [];
         $where[] = ['name', 'in', $dirs];
         $list    = $this->where($where)->field('*')->select();
         if (!$list->isEmpty()) {
             $list = $list->toArray();
-            foreach ($list as $addon) {
-                $addon['install']       = $addon['status'];
-                $addons[$addon['name']] = $addon;
-            }
         }
 
         foreach ($dirs as $value) {
+            foreach ($list as $addon) {
+                if($addon['name'] == $value){
+                    $addon['install']       = $addon['status'];
+                    $addons[$addon['name']] = $addon;
+                }
+            }
             if (!isset($addons[$value])) {
                 $class = get_addon_class($value);
                 if (!class_exists($class)) { // 实例化插件失败忽略执行
@@ -126,23 +128,23 @@ class Addons extends Common
 
     /**
      * 保存插件信息
-     * @param $params
+     * @param $params 插件参数
+     * @param string $name 插件名称
      * @return bool
      */
-    public function doSetting($params)
+    public function doSetting($params, $name)
     {
-        if (!$params['name']) {
+        if (!$name) {
             return false;
         }
-        $addon = $this->where(['name' => $params['name']])->cache('addon_'.$params['name'])->find();
+        $addon = $this->where(['name' => $name])->cache('addon_' . $name)->find();
         if (!$addon) {
             return false;
         }
         $uData = [
-            'config' => json_encode($params['setting']),
+            'config' => json_encode($params),
         ];
-
-        $res   = $this->where(['id' => $addon['id']])->cache('addon_'.$params['name'])->update($uData);
+        $res   = $this->where(['id' => $addon['id']])->cache('addon_' . $name)->update($uData);
         if ($res !== false) {
             return true;
         } else {

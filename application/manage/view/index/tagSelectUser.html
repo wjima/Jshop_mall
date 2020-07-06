@@ -2,12 +2,24 @@
 <div class="layui-form seller-form"  action="" >
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label" style="width:80px;">手机号：</label>
+<!--            <label class="layui-form-label" style="width:80px;">手机号：</label>-->
             <div class="layui-input-inline">
-                <input type="text" name="mobile" lay-verify="title" style="width:200px;" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                <input type="text" name="mobileOrUser" lay-verify="title" style="width:200px;" placeholder="请输入手机号或用户名" autocomplete="off" class="layui-input">
             </div>
         </div>
-
+        {eq name="grade" value=""}
+            <div class="layui-inline">
+<!--                <label class="layui-form-label" style="width:80px;">用户等级：</label>-->
+                <div class="layui-input-inline">
+                <select name="grade" >
+                    <option value="">用户等级</option>
+                    {volist name="userGrade" id="vo"}
+                    <option value="{$vo.id}">{$vo.name}</option>
+                    {/volist}
+                </select>
+                </div>
+            </div>
+        {/eq}
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm" lay-submit lay-filter="user-search">查询</button>
         </div>
@@ -20,48 +32,51 @@
 <script>
     var ids = {};
     var table_data=new Array();
+    var grade = "{$grade}";
     layui.use(['form', 'laydate','table'], function(){
+        layui.form.render();
         layui.table.render({
             elem: '#tagUserTable',
             height: '420',
             page: 'true',
             limit:'10',
-            url: "{:url('index/tagSelectUser')}?_ajax=1",
+            url: "{:url('index/tagSelectUser')}?_ajax=1&grade="+grade,
             id:'tagUserTable',
             cols: [[
                 {type:'checkbox'},
                 { field: 'id', title: 'ID', width:80 },
+                { field: 'username', title: '用户名', width: 150 },
                 { field: 'mobile', title: '手机号码', width: 150 },
-                { field: 'grade_name', title: '等级', width: 150 },
-                { field: 'sex', title: '性别' },
-                { field: 'birthday', title: '生日', width: 150 },
-                {
-                    field: 'avatar', title: '头像',
-                    templet: function (d) {
-                        if (d.avatar) {
-                            return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:30px;max-height:30px;" src="' + d.avatar + '"/></a>';
-                        } else {
-                            return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
-                        }
-                    }, width: 80
-                },
                 { field: 'nickname', title: '昵称' },
-                {
-                    title: '余额', templet: function (data) {
-                    var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
-                    return html;
-                }
-                },
-                {
-                    title: '积分', templet: function (data) {
-                    var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';
-                    return html;
-                }
-                },
-
-                { field: 'status', title: '状态' },
-                { field: 'pid_name', title: '邀请人' },
-                { field: 'ctime', title: '创建时间', width: 200 }
+                { field: 'grade_name', title: '等级', width: 150 },
+                // { field: 'sex', title: '性别' },
+                // { field: 'birthday', title: '生日', width: 150 },
+                // {
+                //     field: 'avatar', title: '头像',
+                //     templet: function (d) {
+                //         if (d.avatar) {
+                //             return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:30px;max-height:30px;" src="' + d.avatar + '"/></a>';
+                //         } else {
+                //             return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
+                //         }
+                //     }, width: 80
+                // },
+                // {
+                //     title: '余额', templet: function (data) {
+                //     var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
+                //     return html;
+                // }
+                // },
+                // {
+                //     title: '积分', templet: function (data) {
+                //     var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';
+                //     return html;
+                // }
+                // },
+                //
+                // { field: 'status', title: '状态' },
+                // { field: 'pid_name', title: '邀请人' },
+                // { field: 'ctime', title: '创建时间', width: 200 }
             ]],
             done: function(res, curr, count){
                 table_data=res.data;

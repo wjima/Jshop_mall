@@ -187,4 +187,25 @@ class Curl
         fclose($fp);
         return $res;
     }
+
+
+    /**
+     * 发送文件内容
+     * @param $url
+     * @param $post_data
+     * @return bool|string
+     */
+    static public function postFile($url, $post_data)
+    {
+        $curl = curl_init();
+        curl_setopt ( $curl, CURLOPT_URL, $url );
+        curl_setopt ( $curl, CURLOPT_POST, 1 );
+        curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt ( $curl, CURLOPT_SSL_VERIFYPEER, FALSE );
+        curl_setopt ( $curl, CURLOPT_SSL_VERIFYHOST, FALSE );
+        curl_setopt ( $curl, CURLOPT_POSTFIELDS, $post_data);
+        $data = curl_exec($curl);
+        curl_close($curl);
+        return $data;
+    }
 }

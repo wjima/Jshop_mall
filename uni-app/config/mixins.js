@@ -98,7 +98,19 @@ export const goBack = {
 			})
 			return true
 		}
-	}
+	},
+	backBtn() {
+		var pages = getCurrentPages();
+		if (pages.length > 1) {
+			uni.navigateBack({
+				delta: 1
+			});
+		} else {
+			uni.switchTab({
+				url: '/pages/index/index'
+			});
+		}
+	},
 }
 
 /* Function Info
@@ -112,7 +124,8 @@ export const goBack = {
 export const jumpBackPage = {
 	methods: {
 		handleBack() {
-			let redirect = this.$store.state.redirectPage
+			let redirect = this.$store.state.redirectPage;
+			console.log(redirect);
 			this.$store.commit({
 				type: 'redirect',
 				page: ''

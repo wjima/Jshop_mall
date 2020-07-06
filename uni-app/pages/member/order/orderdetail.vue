@@ -30,7 +30,7 @@
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{v.logi_name|| ''}} : {{v.logi_no|| ''}}</text>
 								</view>
-								<view class="cell-bd-view">
+								<view class="cell-bd-view" style="margin-left: 20rpx;">
 									<text class="cell-bd-text">{{ v.ctime || ''}}</text>
 								</view>
 						</view>
@@ -77,17 +77,17 @@
 			</view>
 			
 			<!-- 团购分享拼单 -->
-			<view class="cell-group margin-cell-group" v-if="orderInfo.order_type==2 && orderInfo.status != 3 && orderInfo.pay_status==1">
+			<view class="cell-group margin-cell-group" v-if="orderInfo.order_type==2 && orderInfo.status != 3 && orderInfo.pay_status != 1">
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
 						<view v-if="teamInfo.status==1" class='cell-hd-title'>待拼团，还差{{ teamInfo.team_nums || ''}}人</view>
-						<view v-else-if="teamInfo.status==2" class='cell-hd-title'>拼团成功，待发货</view>
-						<view v-else-if="teamInfo.status==3" class='cell-hd-title'>拼团失败</view>
+						<view v-else-if="teamInfo.status==2" class='cell-hd-title'>拼团成功</view>
+						<view v-else-if="teamInfo.status==3" class='cell-hd-title'>拼团失败，拼团已结束</view>
 					</view>
 				</view>
 				<view class="group-swiper">
 					<view class='cell-item' v-if="teamInfo.current_count">
-						<view class='cell-item-hd'>
+						<view class='cell-item-hd' style="flex-wrap: wrap;">
 							<view class="user-head-img-c" v-for="(item, index) in teamInfo.list" :key="index">
 								<view class="user-head-img-tip" v-if="item.id == item.team_id">拼主</view>
 								<image class="user-head-img cell-hd-icon have-none" :src='item.user_avatar' mode=""></image>
@@ -114,6 +114,7 @@
 						<view class='little-right-t'>
 							<view class='goods-name list-goods-name' @click="goodsDetail(item.goods_id)" v-if="orderInfo.order_type == 1">{{ item.name || ''}}</view>
 							<view class='goods-name list-goods-name' @click="pintuanDetail(item.goods_id)" v-else-if="orderInfo.order_type == 2">{{ item.name || ''}}</view>
+							<view class='goods-name list-goods-name'  v-else>{{ item.name || ''}}</view>
 							<view class='goods-price'>￥{{ item.price }}</view>
 						</view>
 						<view class="romotion-tip">
@@ -133,7 +134,7 @@
 
 			<view class='cell-group margin-cell-group' v-if="orderInfo.invoice && orderInfo.invoice.type != 1">
 				<view class='cell-item add-title-item' @click="goTaxList()">
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block' style="padding-right: 0;">
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">发票信息</text>
 						</view>
@@ -564,6 +565,7 @@
 		display: inline-block;
 		float: left;
 		border: 1px solid #f3f3f3;
+		margin-bottom: 20rpx;
 	}
 
 	.user-head-img-tip {

@@ -23,11 +23,7 @@ class PagesItems extends Common
      */
     public function saveItems($data, $code)
     {
-        $result = [
-            'status' => false,
-            'msg'    => '保存失败',
-            'data'   => [],
-        ];
+        $result = error_code(10004);
         Db::startTrans();
         $this->where([['page_code', '=', $code]])->delete();//先删除
         $iData = [];
@@ -47,8 +43,8 @@ class PagesItems extends Common
         }
         if (!$this->saveAll($iData)) {
             Db::rollback();
-            $result['msg'] = '保存失败';
-            return $result;
+            // $result['msg'] = error_code(10004,true);
+            return error_code(10004);
         }
         Db::commit();
         $result['status'] = true;

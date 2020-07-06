@@ -92,13 +92,15 @@ class CarouselSeat extends Common
         } else {
             // 判断该模板是否已经添加
             if ($this->where('code', $data['code'])->find()) {
-                $result['status'] = false;
-                $result['msg']    = '该广告位模板已经添加';
+//                $result['status'] = false;
+//                $result['msg']    = '该广告位模板已经添加';
+                return error_code(10820);
             } else {
                 // 写入数据
                 if (!$this->allowField(true)->save($data)) {
-                    $result['status'] = false;
-                    $result['msg']    = '保存失败';
+//                    $result['status'] = false;
+//                    $result['msg']    = '保存失败';
+                      return  error_code(10004);
                 }
             }
         }
@@ -123,8 +125,9 @@ class CarouselSeat extends Common
             $result['msg']    = $validate->getError();
         } else {
             if (!$this->allowField(true)->save($data, ['id' => $data['id']])) {
-                $result['status'] = false;
-                $result['msg']    = '保存失败';
+//                    $result['status'] = false;
+//                    $result['msg']    = '保存失败';
+                return  error_code(10004);
             }
         }
         return $result;
@@ -147,12 +150,14 @@ class CarouselSeat extends Common
         //广告位下有广告禁止删除
         $result = ['status' => true, 'msg' => '删除成功', 'data' => ''];
         if ($this->carousel()->where('position_id', $id)->find()) {
-            $result['status'] = false;
-            $result['msg']    = '该广告位下有广告删除失败';
+//            $result['status'] = false;
+//            $result['msg']    = '该广告位下有广告删除失败';
+            return error_code(10821);
         } else {
             if (!$this->where('id', $id)->delete()) {
-                $result['status'] = false;
-                $result['msg']    = '删除失败';
+//                    $result['status'] = false;
+//                    $result['msg']    = '删除失败';
+                return  error_code(10023);
             }
         }
         return $result;

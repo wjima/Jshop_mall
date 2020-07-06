@@ -169,6 +169,7 @@
 								<image class='cell-hd-icon' :src='item.icon'></image>
 							</view>
 							<view class="text">
+								<view class="badge color-f coupon" v-if="item.nums">{{ item.nums }}</view>
 								<text class="">{{item.name}}</text>
 							</view>
 						</view>
@@ -311,7 +312,8 @@
 						name: '我的优惠券',
 						icon: '/static/image/ic-me-coupon.png',
 						router: '../coupon/index',
-						unshowItem: false
+						unshowItem: false,
+						nums:0
 					},
 					balance: {
 						name: '我的余额',
@@ -364,6 +366,12 @@
 					}
 				],
 				order: {
+					// bargain: {
+					// 	name: '砍价记录',
+					// 	icon: '/static/image/me-ic-sendout.png',
+					// 	router: '../bargain/list',
+					// 	unshowItem: false
+					// },
 					invite: {
 						name: '邀请好友',
 						icon: '/static/image/ic-me-invite.png',
@@ -552,6 +560,8 @@
 										res.data.isAfterSale :
 										0
 								}
+								// console.log(res);
+								this.utilityMenus.coupon.nums=res.data.coupon
 							})
 							//判断是否是店员
 							this.$api.isStoreUser({}, res => {
@@ -614,7 +624,7 @@
 
 				// 打开客服页面
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
-				this.$common.navigateTo('../customer_service/index');
+				this.$common.navigateTo('/pages/member/customer_service/index');
 				// #endif
 				
 				// 头条系客服
@@ -792,6 +802,7 @@
 					margin-top: 12upx;
 					color: #4d4d4d;
 					font-size: 24rpx;
+					position: relative;
 				}
 			}
 			.tc {
@@ -804,5 +815,9 @@
 				}
 			}
 		}
+	}
+	.coupon{
+		top: -40px;
+		left: 50px;
 	}
 </style>

@@ -129,7 +129,7 @@ class Cos
             if (isset($result['Location'])) {
                 return true;
             } else {
-                $this->error = '上传失败';
+                $this->error = error_code(10035,true);
             }
         } catch (OssException $e) {
             $this->error = $e->getMessage();

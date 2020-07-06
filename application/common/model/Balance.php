@@ -194,34 +194,37 @@ class Balance extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if(isset($post['user_id']) && $post['user_id'] != "" )
-        {
+        if (isset($post['user_id']) && $post['user_id'] != "") {
             $where[] = ['user_id', 'eq', $post['user_id']];
-        }
-        else
-        {
-            if(isset($post['mobile']) && $post['mobile'] != "")
-            {
-                if($user_id = get_user_id($post['mobile']))
-                {
+        } else {
+            if (isset($post['mobile']) && $post['mobile'] != "") {
+                if ($user_id = get_user_id($post['mobile'])) {
                     $where[] = ['user_id', 'eq', $user_id];
-                }
-                else
-                {
+                } else {
                     $where[] = ['user_id', 'eq', '99999999'];   //如果没有此用户，那么就赋值个数值，让他查不出数据
                 }
             }
         }
-        if(isset($post['type']) && $post['type'] != "")
-        {
+        if (isset($post['nickname']) && $post['nickname'] != "") {
+            $userModel = new User();
+            $user_list = $userModel->where([['nickname', 'like', '%' . $post['nickname'] . '%']])->field('id')->select();
+            if (!$user_list->isEmpty()) {
+                $user_list = $user_list->toArray();
+                $user_ids  = array_column($user_list, 'id');
+                $where[]   = ['user_id', 'in', $user_ids];
+            }else{
+                // 没有的时候给个不会存在的值
+                $where[]   = ['user_id', 'in', 0];
+            }
+        }
+        if (isset($post['type']) && $post['type'] != "") {
             $where[] = ['type', 'eq', $post['type']];
         }
-        if(isset($post['datetime']) && $post['datetime'] != "")
-        {
+        if (isset($post['datetime']) && $post['datetime'] != "") {
             $datetime = explode(' 到 ', $post['datetime']);
-            $sd = strtotime($datetime[0].' 00:00:00');
-            $ed = strtotime($datetime[1].' 23:59:59');
-            $where[] = ['ctime', 'BETWEEN', [$sd, $ed]];
+            $sd       = strtotime($datetime[0] . ' 00:00:00');
+            $ed       = strtotime($datetime[1] . ' 23:59:59');
+            $where[]  = ['ctime', 'BETWEEN', [$sd, $ed]];
         }
         $result['where'] = $where;
         $result['field'] = "*";
@@ -318,7 +321,7 @@ class Balance extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => 0
         ];
 
@@ -387,12 +390,7 @@ class Balance extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result =  error_code(10083);
         $header = $this->csvHeader();
         $data = $this->getExportList($post);
 
@@ -448,7 +446,7 @@ class Balance extends Common
     {
         $return_data = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => '',
             'count' => 0
         ];

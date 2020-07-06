@@ -1,6 +1,16 @@
 <?php
 header('Content-type:text/html;charset=utf-8');
 session_start();
+
+if (!empty($_GET)) {
+    $_GET = remove_xss($_GET);
+}
+if (!empty($_POST)) {
+    $_POST = remove_xss($_POST);
+}
+$_COOKIE  = remove_xss($_COOKIE);
+$_REQUEST = remove_xss($_REQUEST);
+
 //配置信息
 $config = array(
     'version'     => 'v2.2.0',        //版本号
@@ -18,7 +28,7 @@ $config = array(
     'account'     => 'admin',         //默认账号
     'password'    => '123456',         //默认密码
     //'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
-    'limit'       =>'50',   //安装时多少条数据一次翻页
+    'limit'       => '50',   //安装时多少条数据一次翻页
     'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
 );
 
@@ -39,12 +49,11 @@ $errorMsg   = '';
 //引入页面
 $get = @$_GET['type'] ? $_GET['type'] : $config['indexPage'];
 //检测是否已安装
-if($get!='step5-1'){
-    if (file_exists('./install.lock')||file_exists(dirname(dirname(dirname(__FILE__))).'/runtime/install.lock')) {
-        $errorTitle = '系统已安装';
-        $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或runtime/install.lock 文件';
-        die(require $config['errorPage'] . '.html');
-    }
+if (file_exists(dirname(dirname(dirname(__FILE__))) . '/config/install.lock') || file_exists(dirname(dirname(dirname(__FILE__))) . '/runtime/install.lock')) {
+    $errorTitle = '系统已安装';
+    $errorMsg   = '你已经安装过该系统，如需重新安装需要先删除 public/install/install.lock或runtime/install.lock 文件';
+    header("Location: /install/install_error.php?errorTitle=" . urlencode($errorTitle) . '&errorMsg=' . $errorMsg);
+    exit();
 }
 
 //数据库配置
@@ -55,7 +64,9 @@ if ($get == $config['importPage']) {
         $error = $link->connect_error;
         if (!is_null($error)) {
             $errorMsg = addslashes($error);
-            die(require $config['errorPage'] . '.html');
+            header("Location: /install/install_error.php?errorTitle=" . urlencode($errorTitle) . '&errorMsg=' . $errorMsg);
+            exit();
+
         } else {
             $link->query("SET NAMES 'utf8'");
             $link->server_info > 5.0 or die("<script>alert('请将您的mysql升级到5.0以上');history.go(-1)</script>");
@@ -75,27 +86,25 @@ if ($get == $config['importPage']) {
 if ($get == $config['endPage']) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $return = [
-            'status'=>false,
-            'msg'=>'安装失败',
-            'data'=>[]
+            'status' => false,
+            'msg'    => '安装失败',
+            'data'   => []
         ];
 
-
-        if($_POST['type']=='1'){
+        if ($_POST['type'] == '1') {
             //连接数据库
-            $db = $_SESSION['db'];
+            $db   = $_SESSION['db'];
             $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
             //获取错误信息
             $error = $link->connect_error;
             if (!is_null($error)) {
-                $errorMsg = addslashes($error);
+                $errorMsg      = addslashes($error);
                 $return['msg'] = $errorMsg;
                 echoJson($return);
-                //die(require $config['errorPage'] . '.html');
             }
             //设置字符集
             $link->query("SET NAMES 'utf8'");
-            if($link->server_info < 5.5){
+            if ($link->server_info < 5.5) {
                 $return['msg'] = '请将您的mysql升级到5.0以上';
                 echoJson($return);
             }
@@ -114,18 +123,18 @@ if ($get == $config['endPage']) {
                 echoJson($return);
             }
             // 获取数据
-            $sql_str = file_get_contents($sqlPath);
-            $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
-            $total_page = ceil(count($sql_array)/$config['limit']);
-            $return['data']['page']=1;
-            $return['data']['totalPage']=$total_page;
-            $return['status'] = true;
-            $return['msg'] = '安装中';
+            $sql_str                     = file_get_contents($sqlPath);
+            $sql_array                   = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
+            $total_page                  = ceil(count($sql_array) / $config['limit']);
+            $return['data']['page']      = 1;
+            $return['data']['totalPage'] = $total_page;
+            $return['status']            = true;
+            $return['msg']               = '安装中';
             $link->close();
             echoJson($return);
 
-        }elseif($_POST['type']=='2'){
-            $db = $_SESSION['db'];
+        } elseif ($_POST['type'] == '2') {
+            $db   = $_SESSION['db'];
             $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
             //设置字符集
             $link->query("SET NAMES 'utf8'");
@@ -135,54 +144,56 @@ if ($get == $config['endPage']) {
             $sql_str = file_get_contents($sqlPath);
             //修改表前缀
             $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
-            $start = ($_POST['page']-1)*$config['limit'];
-            $end = $start+$config['limit'];
-			
+            $start     = ($_POST['page'] - 1) * $config['limit'];
+            $end       = $start + $config['limit'];
+
             //循环query
-            $total_page = ceil(count($sql_array)/$config['limit']);
-            if($_POST['page']<=$total_page){
+            $total_page = ceil(count($sql_array) / $config['limit']);
+            if ($_POST['page'] <= $total_page) {
                 foreach ($sql_array as $k => $v) {
-                    if($k>=$start && $k<$end){
+                    if ($k >= $start && $k < $end) {
                         if (!empty($v)) {
                             $link->query($v);
                         }
                     }
                 }
             }
-            $return['status'] = true;
-            $return['msg'] = '安装中';
+            $return['status']            = true;
+            $return['msg']               = '安装中';
             $return['data']['page']      = $_POST['page'] + 1;
             $return['data']['totalPage'] = $total_page;
             $return['data']['percent']   = sprintf("%.2f", ($_POST['page'] / $total_page) * 100);
             $link->close();
             echoJson($return);
-        }elseif($_POST['type']=='3'){//插入默认管理员账号
+        } elseif ($_POST['type'] == '3') {//插入默认管理员账号
 
-            $_SESSION['admin_account'] = $_POST['admin_account'];//账号
+            $_SESSION['admin_account']  = $_POST['admin_account'];//账号
             $_SESSION['admin_password'] = $_POST['admin_password'];//密码
 
-            $db = $_SESSION['db'];
+            $db   = $_SESSION['db'];
             $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
             //设置字符集
             $link->query("SET NAMES 'utf8'");
             $link->select_db($db['DB_NAME']);
             //插入数据库默认账号密码
-            $account  = $_POST['admin_account'];
-            $time     = time();
-            $password = md5(md5($_POST['admin_password']) . $time);
+            $account      = $_POST['admin_account'];
+            $time         = time();
+            $password     = md5(md5($_POST['admin_password']) . $time);
             $add_user_sql = "INSERT INTO `" . $db['DB_PREFIX'] . "manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES (13, '" . $account . "', '" . $password . "', '', NULL, NULL, " . $time . ", " . $time . ", 1);";
             $link->query($add_user_sql);
 
-            $return['data']['page']=1;
-            $return['data']['totalPage']=1000;//临时给一个随便默认值
-            $return['status'] = true;
-            $return['msg'] = '安装中';
+            $return['data']['page']      = 1;
+            $return['data']['totalPage'] = 1000;//临时给一个随便默认值
+            $return['status']            = true;
+            $return['msg']               = '安装中';
             $link->close();
-            doWrite($config);
+            if ($_POST['demo'] == 'false') {
+                doWrite($config);
+            }
             echoJson($return);
 
-        }elseif($_POST['type']=='4'){//安装演示数据
-            $db = $_SESSION['db'];
+        } elseif ($_POST['type'] == '4') {//安装演示数据
+            $db   = $_SESSION['db'];
             $link = @new mysqli("{$db['DB_HOST']}:{$db['DB_PORT']}", $db['DB_USER'], $db['DB_PASS']);
             //设置字符集
             $link->query("SET NAMES 'utf8'");
@@ -192,28 +203,32 @@ if ($get == $config['endPage']) {
             $demo_sql = file_get_contents($demoPath);
             //修改表前缀
             $demo_sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $demo_sql));
-            $total_page = ceil(count($demo_sql_array)/$config['limit']);
-            $start = ($_POST['page']-1)*$config['limit'];
-            $end = $start+$config['limit'];
+            $total_page     = ceil(count($demo_sql_array) / $config['limit']);
+            $start          = ($_POST['page'] - 1) * $config['limit'];
+            $end            = $start + $config['limit'];
             //循环query
-            if($_POST['page']<=$total_page){
+            if ($_POST['page'] <= $total_page) {
                 foreach ($demo_sql_array as $k => $v) {
-                    if($k>=$start && $k<$end){
+                    if ($k >= $start && $k < $end) {
                         if (!empty($v)) {
                             $link->query($v);
                         }
                     }
                 }
-                $return['status'] = true;
-                $return['msg'] = '安装中';
+                $return['status']            = true;
+                $return['msg']               = '安装中';
                 $return['data']['page']      = $_POST['page'] + 1;
                 $return['data']['totalPage'] = $total_page;
                 $return['data']['percent']   = sprintf("%.2f", ($_POST['page'] / $total_page) * 100);
                 $link->close();
+                if ($_POST['demo'] == 'true' && $total_page <= $_POST['page']) {
+                    doWrite($config);
+                }
                 echoJson($return);
-            }else{
-                $return['status'] = true;
-                $return['msg'] = '安装中';
+
+            } else {
+                $return['status']            = true;
+                $return['msg']               = '安装中';
                 $return['data']['page']      = $_POST['page'] + 1;
                 $return['data']['totalPage'] = $total_page;
                 $return['data']['percent']   = sprintf("%.2f", ($_POST['page'] / $total_page) * 100);
@@ -224,18 +239,17 @@ if ($get == $config['endPage']) {
 }
 
 //判断是否有该页面
-if(file_exists($url = $get . '.html'))
-{
+if (file_exists($url = $get . '.html')) {
     require $url;
-}
-else
-{
+} else {
     $errorMsg = '没有该安装页面:' . $url;
-    die(require $config['errorPage'].'.html');
+    header("Location: /install/install_error.php?errorTitle=" . urlencode($errorTitle) . '&errorMsg=' . urlencode($errorMsg));
+    exit();
 }
 //写入文件
-function doWrite($config){
-    $db = $_SESSION['db'];
+function doWrite($config)
+{
+    $db     = $_SESSION['db'];
     $db_str = <<<php
 <?php
 // +----------------------------------------------------------------------
@@ -308,11 +322,71 @@ php;
 window.host = '{$host_url}';
 h5;
     @file_put_contents($config['h5ConfigUrl'], $h5config);*/
-    @touch(dirname(dirname(dirname(__FILE__))).'/runtime/install.lock');
+    @touch(dirname(dirname(dirname(__FILE__))) . '/runtime/install.lock');
 }
 
 
 function echoJson($data)
 {
-    echo json_encode($data,true);die();
+    echo json_encode($data, true);
+    die();
+}
+
+
+/**
+ * 过滤XSS攻击
+ */
+function remove_xss($val)
+{
+    // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
+    // this prevents some character re-spacing such as <java\0script>
+    // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
+    $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
+
+    // straight replacements, the user should never need these since they're normal characters
+    // this prevents like <IMG SRC=@avascript:alert('XSS')>
+    $search = 'abcdefghijklmnopqrstuvwxyz';
+    $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $search .= '1234567890!@#$%^&*()';
+    $search .= '~`";:?+/={}[]-_|\'\\';
+    for ($i = 0; $i < strlen($search); $i++) {
+        // ;? matches the ;, which is optional
+        // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
+
+        // @ @ search for the hex values
+        $val = preg_replace('/(&#[xX]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', $search[$i], $val); // with a ;
+        // @ @ 0{0,7} matches '0' zero to seven times
+        $val = preg_replace('/(&#0{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val); // with a ;
+    }
+
+    // now the only remaining whitespace attacks are \t, \n, and \r
+    $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
+    $ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
+    $ra  = array_merge($ra1, $ra2);
+
+    $found = true; // keep replacing as long as the previous round replaced something
+    while ($found == true) {
+        $val_before = $val;
+        for ($i = 0; $i < sizeof($ra); $i++) {
+            $pattern = '/';
+            for ($j = 0; $j < strlen($ra[$i]); $j++) {
+                if ($j > 0) {
+                    $pattern .= '(';
+                    $pattern .= '(&#[xX]0{0,8}([9ab]);)';
+                    $pattern .= '|';
+                    $pattern .= '|(&#0{0,8}([9|10|13]);)';
+                    $pattern .= ')*';
+                }
+                $pattern .= $ra[$i][$j];
+            }
+            $pattern .= '/i';
+            $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2); // add in <> to nerf the tag
+            $val         = preg_replace($pattern, $replacement, $val); // filter out the hex tags
+            if ($val_before == $val) {
+                // no replacements were made, so exit the loop
+                $found = false;
+            }
+        }
+    }
+    return $val;
 }

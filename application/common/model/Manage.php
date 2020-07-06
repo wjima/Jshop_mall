@@ -14,13 +14,14 @@ class Manage extends Common
 
     protected $rule = [
         'username' => 'length:3,20|alphaDash',
-        'mobile'   => ['regex' => '^1[3|4|5|6|7|8][0-9]\d{4,8}$'],
+        'mobile'   => 'require|mobile',
         'nickname' => 'length:2,50',
     ];
     protected $msg = [
         'username.length'    => '用户名长度6~20位',
         'username.alphaDash' => '用户名只能是字母、数字或下划线组成',
-        'mobile'             => '请输入一个合法的手机号码',
+        'mobile.mobile'             => '请输入一个合法的手机号码',
+        'mobile.require'        => '手机号码必填',
         'nickname'           => '昵称长度为2-50个字符',
     ];
 
@@ -153,8 +154,8 @@ class Manage extends Common
             'msg'    => ''
         );
         if (!isset($data['mobile']) || !isset($data['password'])) {
-            $result['msg'] = '请输入手机号码或者密码';
-            return $result;
+//            $result['msg'] = '请输入手机号码或者密码';
+            return error_code(11031);
         }
 
         //校验验证码
@@ -171,15 +172,13 @@ class Manage extends Common
 
         $userInfo = $this->where(array('username' => $data['mobile']))->whereOr(array('mobile' => $data['mobile']))->find();
         if (!$userInfo) {
-            $result['msg'] = '没有找到此账号';
-            return $result;
+            return error_code(11032);
         }
 
 
         //判断账号状态
         if ($userInfo->status != self::STATUS_NORMAL) {
-            $result['msg'] = '此账号已停用';
-            return $result;
+            return error_code(11022);
         }
 
         //判断是否是用户名登陆
@@ -193,7 +192,7 @@ class Manage extends Common
             } else {
                 session('manage_login_fail_num', 1);
             }
-            $result['msg'] = '密码错误，请重试';
+            return error_code(11033);
         }
         return $result;
 
@@ -215,17 +214,16 @@ class Manage extends Common
         ];
         $info   = $this->where(['id' => $manage_id])->find();
         if (!$info) {
-            $result['msg'] = "没有找到此账号";
-            return $result;
+
+            return error_code(11032);
         }
         if ($oldPassword == $newPassword) {
-            $result['msg'] = "新密码和旧密码一致";
-            return $result;
+
+            return error_code(11044);
         }
 
         if ($info['password'] != $this->enPassword($oldPassword, $info['ctime'])) {
-            $result['msg'] = "旧密码不正确";
-            return $result;
+            return error_code(11045);
         }
 
         $re = $this->save(['password' => $this->enPassword($newPassword, $info['ctime'])], ['id' => $info['id']]);
@@ -233,7 +231,7 @@ class Manage extends Common
             $result['status'] = true;
             $result['msg']    = "修改成功";
         } else {
-            return $result['msg'] = "更新失败";
+            return error_code(10024);
         }
         return $result;
 

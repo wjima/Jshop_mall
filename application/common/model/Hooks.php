@@ -147,8 +147,7 @@ class Hooks extends Common
             'data' => []
         ];
         if (!$this->allowField(true)->save($data)) {
-            $result['status'] = false;
-            $result['msg'] = '保存失败';
+            return  error_code(10004);
         }
         return $result;
     }
@@ -167,8 +166,7 @@ class Hooks extends Common
             'data' => []
         ];
         if (!$this->allowField(true)->save($data, ['id' => $data['id']])) {
-            $result['status'] = false;
-            $result['msg'] = '保存失败';
+            return  error_code(10004);
         }
         return $result;
     }

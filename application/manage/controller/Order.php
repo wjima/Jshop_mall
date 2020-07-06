@@ -35,10 +35,6 @@ class Order extends Manage
     public function index()
     {
         if (!Request::isAjax()) {
-            //订单来源
-            $source = config('params.order')['source'];
-            $this->assign('source', $source);
-
             //数据统计
             $input = [
                 'ids' => '0,1,2,3,4,5,6,7'
@@ -87,7 +83,7 @@ class Order extends Manage
             } else {
                 $return_data = array(
                     'status' => false,
-                    'msg' => '没有符合的订单',
+                    'msg' => error_code(10036,true),
                     'count' => $data['count'],
                     'data' => $data['data']
                 );
@@ -107,11 +103,7 @@ class Order extends Manage
      */
     public function view($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $return = error_code(10037);
         $this->view->engine->layout(false);
         $orderModel = new OrderModel();
         $order_info = $orderModel->getOrderInfoByOrderID($id);
@@ -143,46 +135,33 @@ class Order extends Manage
      */
     public function edit()
     {
-        $return_data = [
+        $result = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => '',
             'data' => ''
         ];
         $this->view->engine->layout(false);
         $orderModel = new OrderModel();
         if (!Request::isPost()) {
             //订单信息
-            $id = Request::param('id');
-            $order_info = $orderModel->getOrderInfoByOrderID($id);
+            if (!input('?param.id')) {
+                // $result['msg'] = error_code(13100);
+                return error_code(13100);
+            }
+            $order_info = $orderModel->getOrderInfoByOrderID(input('param.id'));
+            if(!$order_info){
+                return error_code(10002);
+            }
             $this->assign('order', $order_info);
-
-            $order_type = Request::param('order_type');
-            $this->assign('order_type', $order_type);
 
             $storeModel = new Store();
             $store_list = $storeModel->getAllList();
             $this->assign('store_list', $store_list);
-            $return_data['status'] = true;
-            $return_data['msg'] = '成功';
-            $return_data['data'] = $this->fetch('edit');
-            return $return_data;
+            $result['status'] = true;
+            $result['data'] = $this->fetch('edit2');
+            return $result;
         } else {
-            $data = Request::param();
-            $result = $orderModel->edit($data);
-            if ($result) {
-                $return_data = array(
-                    'status' => true,
-                    'msg' => '编辑成功',
-                    'data' => $result
-                );
-            } else {
-                $return_data = array(
-                    'status' => false,
-                    'msg' => '编辑失败',
-                    'data' => $result
-                );
-            }
-            return $return_data;
+            return $orderModel->edit(input('param.'));
         }
     }
 
@@ -220,7 +199,7 @@ class Order extends Manage
         }
         //订单发货信息
         if(!input('?param.order_id')){
-            return error_code(10000);
+            return error_code(13100);
         }else{
             $id = input('param.order_id');
         }
@@ -277,7 +256,7 @@ class Order extends Manage
         if (!$id) {
             return [
                 'status' => false,
-                'msg' => '操作失败',
+                'msg' => error_code(13100,true),
                 'data' => ''
             ];
         }
@@ -290,11 +269,7 @@ class Order extends Manage
                 'data' => $result
             ];
         } else {
-            $return_data = [
-                'status' => false,
-                'msg' => '操作失败',
-                'data' => $result
-            ];
+            return error_code(10037);
         }
         return $return_data;
     }
@@ -321,11 +296,7 @@ class Order extends Manage
                 'data' => $result
             );
         } else {
-            $return_data = array(
-                'status' => false,
-                'msg' => '操作失败',
-                'data' => $result
-            );
+            return  error_code(10037);
         }
         return $return_data;
     }
@@ -347,11 +318,7 @@ class Order extends Manage
                 'data' => $result
             );
         } else {
-            $return_data = array(
-                'status' => false,
-                'msg' => '删除失败',
-                'data' => $result
-            );
+            return  error_code(10023);
         }
         return $return_data;
     }
@@ -369,7 +336,7 @@ class Order extends Manage
 //    {
 //        $return = [
 //            'status' => false,
-//            'msg' => '失败',
+//            'msg' => error_code(10037,true),
 //            'data' => ''
 //        ];
 //        $this->view->engine->layout(false);
@@ -437,7 +404,7 @@ class Order extends Manage
         $type = Request::param('type/d', self::SHOPPING);
 
         if (!$order_id) {
-            $this->error("关键参数丢失");
+            $this->error(error_code(10051,true));
         }
         $orderModel = new OrderModel();
         $order_info = $orderModel->getOrderInfoByOrderID($order_id);
@@ -455,17 +422,13 @@ class Order extends Manage
         } elseif ($type == self::UNION) {
             return $this->fetch('union');
         } elseif ($type == self::EXPRESS) {
-            $return = [
-                'msg' => '请先安装快递打印插件',
-                'data' => '',
-                'status' => false
-            ];
+            $return = error_code(10717);
             $logi_code = Request::param('logi_code/s', '');
             $logi_no = Request::param('logi_no/s', '');
             $bt = Request::param('bt/s', '1'); //按钮类型
             if (!$logi_code) {
-                $return['msg'] = '快递公司编码不能为空';
-                return $return;
+                // $return['msg'] = error_code(13229, true);
+                return error_code(13229);
             }
             $order_info['logi_code'] = $logi_code;
             $order_info['logi_no'] = $logi_no;
@@ -491,7 +454,7 @@ class Order extends Manage
     public function print_form()
     {
         $return = [
-            'msg' => '关键参数错误',
+            'msg' => error_code(10051,true),
             'data' => '',
             'status' => false
         ];
@@ -509,7 +472,7 @@ class Order extends Manage
             $ship['logi_no'] = '';
             //获取是否获取电子面板
             if (!checkAddons('getPrintExpressInfo')) {
-                $this->error("请先安装快递打印插件");
+                $this->error(error_code(10717,true));
                 return;
             }
             $print_express = hook('getPrintExpressInfo', ['order_id' => $order_id]);

@@ -89,12 +89,7 @@ class OperationLog extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -145,7 +140,7 @@ class OperationLog extends Common
     {
         $return_data = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => '',
             'count' => 0
         ];

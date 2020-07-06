@@ -103,7 +103,7 @@
 
 <script>
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
-	import { h5Url } from '@/config/config.js'
+    import { h5Url } from '@/config/config.js'
 	import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
 	import {
 		apiBaseUrl
@@ -266,48 +266,48 @@
 					}
 				});
 			},
-			// 生成邀请海报
-			createPoster() {
-				let data = {
-					page: 4,
-					params: {
-						store: this.info.store
-					},
-					type: 3,//海报
-				}
-				let userToken = this.$db.get('userToken')
-				if (userToken) {
-					data.token = userToken
-				}
-
-				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-				data.client = 1;
-				data.url = h5Url + 'pages/share/jump'
-				// #endif
-
-				// #ifdef MP-WEIXIN
-				data.client = 2;
-				data.url = 'pages/share/jump'
-				// #endif
-
-				// #ifdef MP-TOUTIAO
-				data.client = 4;
-				data.url = '/pages/share/jump'
-				// #endif
-
-				// #ifdef MP-ALIPAY
-				data.client = 6;
-				data.url = '/pages/share/jump'
-				// #endif
-
-				this.$api.share(data, res => {
-					if (res.status) {
-						this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
-					} else {
-						this.$common.errorToShow(res.msg)
-					}
-				});
-			},
+            // 生成邀请海报
+            createPoster() {
+                let data = {
+                    page: 4,
+                    params: {
+                        store: this.info.store
+                    },
+                    type: 3,//海报
+                }
+                let userToken = this.$db.get('userToken')
+                if (userToken) {
+                    data.token = userToken
+                }
+                
+                // #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+                data.client = 1;
+                data.url = h5Url + 'pages/share/jump'
+                // #endif
+                
+                // #ifdef MP-WEIXIN
+                data.client = 2;
+                data.url = 'pages/share/jump'
+                // #endif
+                
+                // #ifdef MP-TOUTIAO
+                data.client = 4;
+                data.url = '/pages/share/jump'
+                // #endif
+                
+                // #ifdef MP-ALIPAY
+                data.client = 6;
+                data.url = '/pages/share/jump'
+                // #endif
+                
+                this.$api.share(data, res => {
+                	if (res.status) {
+                		this.$common.navigateTo('/pages/share?poster=' + encodeURIComponent(res.data))
+                	} else {
+                		this.$common.errorToShow(res.msg)
+                	}
+                });
+            },
             //获取分享URL
             getShareUrl() {
                 let data = {
@@ -326,14 +326,6 @@
                 this.$api.share(data, res => {
                     this.shareUrl = res.data
                 });
-            }
-		},
-        watch:{
-            storeCode: {
-                handler () {
-                    this.getShareUrl();
-                },
-                deep: true
             }
         },
 		//上拉加载

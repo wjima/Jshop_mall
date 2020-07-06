@@ -22,7 +22,10 @@ class Cart extends Common
 {
     const TYPE_COMMON = 1;      //普通模式          //这些都是系统内置的type类型，如果二开新增购物车类型的话，建议从二位数开始
     const TYPE_PINTUAN = 2;      //拼团模式
-
+    const TYPE_GROUP = 3;      //团购模式
+    const TYPE_SKILL = 4;      //秒杀模式
+    const TYPE_BARGAIN = 6;      //砍价模式
+    const TYPE_GIVEAWAY = 7;        //赠品，在cart表里不会存在，但是会在计算促销过之后，动态的加上去
 
     /**
      * 关联货品
@@ -41,6 +44,7 @@ class Cart extends Common
      * @param $nums //数量
      * @param $num_type //数量类型，1是直接增加，2是赋值
      * @param int $type
+     * @param array $params //扩展参数
      * @return array|mixed
      * @throws \think\Exception
      * @throws \think\db\exception\DataNotFoundException
@@ -48,7 +52,7 @@ class Cart extends Common
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
-    public function add($user_id, $product_id, $nums, $num_type, $type = 1)
+    public function add($user_id, $product_id, $nums, $num_type, $type = 1,$params = [])
     {
         $result        = [
             'status' => false,
@@ -69,38 +73,14 @@ class Cart extends Common
 
         $canBuyNum = $productInfo['data']['stock'];
 
-        $where[] = array('product_id', 'eq', $product_id);
-        $where[] = array('user_id', 'eq', $user_id);
-        $where[] = ['type', 'eq', $type];
+        $where[]  = array('product_id', 'eq', $product_id);
+        $where[]  = array('user_id', 'eq', $user_id);
+        $where[]  = ['type', 'eq', $type];
         $cat_info = $this->where($where)->find();
+
         switch ($type) {
             case self::TYPE_COMMON:
-                //标准模式不需要做什么判断
-                //判断商品是否做团购秒杀
-                if (isInGroup($productInfo['data']['goods_id'], $promotion_id, $promotion)) {
-                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                    $delwhere[] = ['user_id', 'eq', $user_id];
-                    $delWhere[] = ['type', 'eq', 1];
-                    $delWhere[] = ['product_id', 'eq', $product_id];
-                    $this->where($delWhere)->delete();
-                    unset($cat_info);
 
-                    $params      = json_decode($promotion['params'], true);
-                    $orderModel  = new Order();
-                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion);
-                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
-                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
-                            $result['msg'] = '该商品已超过当前活动最大购买量';
-                            return $result;
-                        }
-                    }
-                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
-                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
-                            $result['msg'] = '您已超过该活动最大购买量';
-                            return $result;
-                        }
-                    }
-                }
                 break;
             case self::TYPE_PINTUAN:
                 $num_type = 2;
@@ -111,17 +91,57 @@ class Cart extends Common
                     return $re;
                 }
                 //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
-                $delwhere[] = ['user_id', 'eq', $user_id];
+                $delWhere[] = ['user_id', 'eq', $user_id];
                 $delWhere[] = ['type', 'eq', 2];
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
+            case self::TYPE_GROUP || self::TYPE_SKILL:
+                //判断商品是否做团购秒杀
+                if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion)) {
+                    //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
+                    $delWhere[] = ['user_id', 'eq', $user_id];
+                    $delWhere[] = ['type', 'in', [self::TYPE_GROUP,self::TYPE_SKILL]];
+                    $delWhere[] = ['product_id', 'eq', $product_id];
+                    $this->where($delWhere)->delete();
+
+                    $params      = json_decode($promotion['params'], true);
+                    $orderModel  = new Order();
+                    $check_order = $orderModel->findLimitOrder($product_id, $user_id, $promotion, self::TYPE_GROUP);
+                    //应该里面方法判断，以后优化吧
+                    if (isset($params['max_goods_nums']) && $params['max_goods_nums'] != 0) {
+                        if (($check_order['data']['total_orders'] + $nums) > $params['max_goods_nums']) {
+//                            $result['msg'] = '该商品已超过当前活动最大购买量';
+                            return error_code(15610);
+                        }
+                    }
+                    if (isset($params['max_nums']) && $params['max_nums'] != 0) {
+                        if (($nums + $check_order['data']['total_user_orders']) > $params['max_nums']) {
+//                            $result['msg'] = '您已超过该活动最大购买量';
+                            return error_code(15611);
+                        }
+                    }
+                    unset($cat_info);
+                }
+                break;
+            case self::TYPE_BARGAIN://砍价
+                $num_type = 2;
+                //砍价
+                $bargainModel = new Bargain();
+                $re           = $bargainModel->addCart($product_id, $user_id, $nums);
+                if (!$re['status']) {
+                    return $re;
+                }
+                //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品
+                $delWhere[] = ['user_id', 'eq', $user_id];
+                $delWhere[] = ['type', 'eq', self::TYPE_BARGAIN];
+                $this->where($delWhere)->delete();
+                unset($cat_info);
+                break;
+
             default:
                 return error_code(10000);
         }
-
-
-
 
         if ($cat_info) {
             if ($num_type == 1) {
@@ -131,16 +151,16 @@ class Cart extends Common
             }
 
             if ($cat_info->nums > $canBuyNum) {
-                $result['msg'] = '库存不足';
-                return $result;
+//                $result['msg'] = '库存不足';
+                return error_code(12702);
             }
             $cat_info->save();
 
             $result['data'] = $cat_info->id;
         } else {
             if ($nums > $canBuyNum) {
-                $result['msg'] = '库存不足';
-                return $result;
+//                $result['msg'] = '库存不足';
+                return error_code(12702);
             }
 
             $data['product_id'] = $product_id;
@@ -190,7 +210,7 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($userId, $ids, $type = 1)
+    public function getList($userId, $ids, $type = 1, $display = false)
     {
         $result  = array(
             'status' => false,
@@ -199,6 +219,9 @@ class Cart extends Common
         );
         $where[] = ['user_id', 'eq', $userId];
         $where[] = ['type', 'eq', $type];
+        if(!$display){
+            $where[] = ['id', 'in',$ids];
+        }
         $list    = $this->where($where)->select();
 
         if (!$list->isEmpty()) {
@@ -251,11 +274,22 @@ class Cart extends Common
                     return $result;
                 }
                 break;
+            case self::TYPE_GROUP:
+                //团购模式不需要修改订单数据和商品数据
+                break;
+            case self::TYPE_SKILL:
+                //秒杀模式不需要修改订单数据和商品数据
+                break;
+            case self::TYPE_BARGAIN:
+                $bargainModel = new Bargain();
+                $result       = $bargainModel->bargainInfo($list, $userId);
+                if (!$result['status']) {
+                    return $result;
+                }
+                break;
             default:
                 return error_code(10000);
         }
-
-
         $data['list']     = $list;
         $result['data']   = $data;
         $result['status'] = true;
@@ -268,17 +302,19 @@ class Cart extends Common
      * @param $userId
      * @param $ids
      * @param string $order_type //订单类型
+     * @param bool $display         //是否显示所有购物车信息
      * @param int $area_id //收货地址id
      * @param int $point //消费的积分
      * @param string $coupon_code
      * @param bool $free_freight //是否免运费
      * @param int $delivery_type
+     * @param array $params 扩展字段信息，传数组
      * @return array|mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function info($userId, $ids, $order_type = '1', $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1)
+    public function info($userId, $ids, $order_type = '1',$display = false, $area_id = 0, $point = 0, $coupon_code = "", $free_freight = false, $delivery_type = 1,$params = [])
     {
         $result   = [
             'status' => false,
@@ -297,16 +333,23 @@ class Cart extends Common
                 'coupon'         => [],
                 'point'          => $point,              //在刚开始一定要校验积分是否可以使用，
                 'point_money'    => 0,              //积分可以抵扣多少金额
-                'params'         => []              //一些可以放到购物车中的参数
+                'params'         => [],              //一些可以放到购物车中的参数
             ],
             'msg'    => ""
         ];
-        $cartList = $this->getList($userId, $ids, $order_type);
+        $cartList = $this->getList($userId, $ids, $order_type, $display);
         if (!$cartList['status']) {
             $result['msg'] = $cartList['msg'];
             return $result;
         } else {
             $result['data']['list'] = $cartList['data']['list'];
+
+            //如果没有商品，那么就返回
+            if(count($result['data']['list']) == 0){
+                $result['status'] = true;
+                return $result;
+            }
+
         }
 
         //算订单总金额
@@ -323,6 +366,10 @@ class Cart extends Common
             if ($v['is_select']) {
                 //算订单总商品价格
                 $result['data']['goods_amount'] = bcadd($result['data']['goods_amount'], $result['data']['list'][$k]['products']['amount'], 2);
+
+                //计算促销应用之前的商品优惠
+                $result['data']['goods_pmt'] = bcadd($result['data']['goods_pmt'], $result['data']['list'][$k]['products']['promotion_amount'], 2);
+
                 //算订单总价格
                 $result['data']['amount'] = bcadd($result['data']['amount'], $result['data']['list'][$k]['products']['amount'], 2);
                 //计算总重量
@@ -330,23 +377,32 @@ class Cart extends Common
             }
         }
 
-        //echo json_encode($result['data']['list']);exit;
-
         //门店订单，强制无运费
         if ($delivery_type == 2) {
             $free_freight = true;
         }
+        //接下来算订单促销金额,有些模式不需要计算促销信息，这里就增加判断
+        if ($order_type == self::TYPE_COMMON) {
+            $promotionModel = new Promotion();
+            $promotionModel->toPromotion($result['data']);
+        } elseif (($order_type == self::TYPE_SKILL || $order_type == self::TYPE_GROUP) && $params) {
+            //团购秒杀默认时间过期后，不可以下单
+            $promotionModel = new Promotion();
+            $promotionInfo  = $promotionModel->getInfo($params['group_id'], true);
+            $checkRes       = $promotionModel->setPromotion($promotionInfo, $result['data']);
+            //如果依然可以下单，但是是正常销售价，请注释下面的判断
+            if (!$checkRes) {
+                return error_code(15600);
+            }
+        } elseif ($order_type == self::TYPE_PINTUAN) {//拼团也计算促销信息
+            $promotionModel = new Promotion();
+            $promotionModel->toPromotion($result['data']);
+        }
+
         //运费判断
         if (!$this->cartFreight($result, $area_id, $free_freight)) {
             return $result;
         }
-
-        //接下来算订单促销金额,有些模式不需要计算促销信息，这里就增加判断
-        if ($order_type == self::TYPE_COMMON) {
-            $promotionModel = new Promotion();
-            $result['data'] = $promotionModel->toPromotion($result['data']);
-        }
-
 
         //使用优惠券，判断优惠券是否可用
         if (!$this->cartCoupon($result, $coupon_code)) {
@@ -378,11 +434,7 @@ class Cart extends Common
      */
     public function setNums($user_id, $id, $nums, $type = 1)
     {
-        $result = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => ''
-        ];
+        $result =  error_code(10037);
 
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
@@ -411,7 +463,7 @@ class Cart extends Common
         if (!$free) {
             if ($area_id) {
                 $shipModel                      = new Ship();
-                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount']);
+                $result['data']['cost_freight'] = $shipModel->getShipCost($area_id, $result['data']['weight'], $result['data']['goods_amount'] - $result['data']['goods_pmt']);//运费是商品金额-优惠有金额
                 $result['data']['amount']       = bcadd($result['data']['amount'], $result['data']['cost_freight'], 2);
             }
         }
@@ -465,7 +517,7 @@ class Cart extends Common
             $userModel = new User();
             $oPoint    = $userModel->getUserPoint($userId);
             if ($oPoint['data'] < $point) {
-                $result['msg'] = "积分不足，无法使用积分";
+                $result['msg'] = error_code(11600,true);
                 return false;
             }
             //判断积分值多少钱
@@ -473,9 +525,9 @@ class Cart extends Common
             $orders_point_proportion     = $settingModel->getValue('orders_point_proportion'); //订单积分使用比例
             $max_point_deducted_money    = $result['data']['amount'] * ($orders_point_proportion / 100); //最大积分抵扣的钱
             $point_discounted_proportion = $settingModel->getValue('point_discounted_proportion'); //积分兑换比例
-            $point_deducted_money        = (int) $point / (int) $point_discounted_proportion; //积分可以抵扣的钱
+            $point_deducted_money        = (int)$point / (int)$point_discounted_proportion; //积分可以抵扣的钱
             if ($max_point_deducted_money < $point_deducted_money) {
-                $result['msg'] = "积分超过订单可使用的积分数量";
+                $result['msg'] = error_code(11601,true);
                 return false;
             }
 
@@ -498,11 +550,7 @@ class Cart extends Common
      */
     public function batchSetCart($user_id, $input)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => []
-        ];
+        $return =  error_code(10037);
 
         Db::startTrans();
         try {
@@ -538,8 +586,7 @@ class Cart extends Common
                     if ($list['status']) {
                         $return['data'] = $list['data'];
                     }
-                    $return['msg'] = '商品库存不足';
-                    return $return;
+                    return error_code(12702);
                 }
 
                 $data[] = [
@@ -576,8 +623,7 @@ class Cart extends Common
             $return['msg']  = '成功';
             $return['data'] = $list['data'];
         } else {
-            $return['msg']  = '出了点小状况，请刷新重试~';
-            $return['data'] = $list['data'];
+            return error_code(10020);
         }
 
         return $return;

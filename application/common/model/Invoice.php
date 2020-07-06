@@ -45,11 +45,7 @@ class Invoice extends Common
      */
     public function process($id, $data)
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => []
-        ];
+        $return = error_code(10037);
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->save($data, $where);
         if ($return['data']) {
@@ -70,11 +66,7 @@ class Invoice extends Common
      */
     public function getOrderInvoiceInfo($order_id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => []
-        ];
+        $return = error_code(10037);
 
         $where[] = ['class', 'eq', self::TAX_CLASS_ORDER];
         $where[] = ['source_id', 'eq', $order_id];
@@ -149,15 +141,10 @@ class Invoice extends Common
      */
     public function getInfo($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => []
-        ];
+        $return = error_code(10037);
 
         if (!$id) {
-            $return['msg'] = '缺少参数';
-            return $return;
+            return error_code(10051);
         }
 
         $where[] = ['id', 'eq', $id];
@@ -181,11 +168,7 @@ class Invoice extends Common
      */
     public function del($id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+        $return = error_code(10037);
 
         $where[] = ['id', 'eq', $id];
         $return['data'] = $this->where($where)
@@ -215,7 +198,7 @@ class Invoice extends Common
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => [
                 'list' => [],
                 'count' => 0,

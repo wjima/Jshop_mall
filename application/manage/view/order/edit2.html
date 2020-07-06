@@ -1,0 +1,337 @@
+<style>
+	.layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+		margin: 0;
+	}
+
+	#aftersales_form .layui-table-view {
+		margin: 0;
+	}
+	.seller-alone-form .layui-form-radio * {
+		font-size:12px;
+	}
+</style>
+<form class="layui-form seller-alone-form" id="order_edit_form">
+	<input type="hidden" name="order_id" value="{$order.order_id}" />
+	<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+		<ul class="layui-tab-title">
+			<li class="layui-this">基本信息</li>
+			<li>商品信息</li>
+			<li>收货信息</li>
+			<li>发票信息</li>
+			<li>订单备注</li>
+		</ul>
+		<div class="layui-tab-content">
+
+			<!--订单信息-->
+			<div class="layui-tab-item layui-show">
+				<div class="layui-form-item" lay-size="sm">
+					<label class="layui-form-label">订单号：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.order_id}</div>
+
+					<label class="layui-form-label">订单总金额：</label>
+					{if $order.status == 1 && $order.pay_status == 1}
+						<div class="layui-input-inline seller-inline-2">
+							<input type="text" name="order_amount" value="{$order.order_amount}" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					{else /}
+						<div class="layui-form-mid seller-inline-2">￥{$order.order_amount}元</div>
+					{/if}
+
+
+					<label class="layui-form-label">支付状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.pay_status')[$order.pay_status]}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发货状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.ship_status')[$order.ship_status]}</div>
+
+					<label class="layui-form-label">订单状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.status')[$order.status]}</div>
+
+					<label class="layui-form-label">已支付金额：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.payed}元</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">支付方式：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.payment_type')[$order.payment_code]}</div>
+
+					<label class="layui-form-label">配送方式：</label>
+					<div class="layui-form-mid seller-inline-2">{if $order.logistics}{$order.logistics['logi_name']}{/if}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">订单优惠金额：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.order_pmt}</div>
+
+					<label class="layui-form-label">商品优惠金额：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.goods_pmt}</div>
+
+					<label class="layui-form-label">优惠券优惠：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.coupon_pmt}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">积分优惠：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.point_money}</div>
+
+					<label class="layui-form-label">商品总重量：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.weight}</div>
+
+					<label class="layui-form-label">商品总价：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.goods_amount}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">下单人：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.username}</div>
+
+					<label class="layui-form-label">订单来源：</label>
+					<div class="layui-input-inline seller-inline-2">
+						<select name="source">
+							{foreach $params['order']['source'] as $key=>$vo}
+							<option value="{$key}" {if $order.source == $key} selected=""{/if}>{$vo}</option>
+							{/foreach}
+						</select>
+					</div>
+					<label class="layui-form-label">下单时间：</label>
+					<div class="layui-form-mid seller-inline-2" style="width: auto">{:date('Y-m-d H:i:s', $order.ctime)}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">配送费用：</label>
+					{if $order.status == 1 && $order.pay_status == 1}
+					<div class="layui-input-inline seller-inline-2">
+						<input type="text" name="cost_freight" value="{$order.cost_freight}" lay-verify="required" autocomplete="off" class="layui-input">
+					</div>
+					{else /}
+					<div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
+					{/if}
+					<label class="layui-form-label">收货状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.confirm')[$order.confirm]}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">买家备注</label>
+					<div class="layui-form-mid">
+						{$order.memo}
+					</div>
+				</div>
+			</div>
+
+			<!--商品详情-->
+			<div class="layui-tab-item">
+				<table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>商品名称</th>
+						<th>商品单价</th>
+						<th>购买数量</th>
+						<th>商品总价</th>
+						<th>货品编码</th>
+						<th>商品编码</th>
+						{:hook('orderviewinfo', ['type'=>'title'])}
+						<th>商品总重量</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.items as $key=>$vo}
+					<tr>
+						<td>{$vo.name} {if $vo.addon}- {$vo.addon} {/if}
+						</td>
+						<td>{$vo.price}</td>
+						<td>
+							{if $order.pay_status == 1}
+								<input name="items[{$vo.id}]" style="width:50px;" value="{$vo.nums}"  type="text" readonly>
+							{else /}
+								{$vo.nums}
+							{/if}
+						</td>
+						<td>{$vo.amount}</td>
+						<td>{$vo.sn}</td>
+						<td>{$vo.bn}</td>
+						{:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
+						<td>{$vo.weight}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table>
+
+				<div class="layui-form-item" style="color:red;">
+					<div class="layui-form-mid">说明：<br />1. 如果数量为0会删除此列，请谨慎操作。<br />2. 目前没有实现加商品的操作。<br />3. 商品数量修改仅限于未支付订单 </div>
+				</div>
+			</div>
+			<!--收货人信息-->
+			<div class="layui-tab-item">
+				<div class="layui-form-item">
+					<label class="layui-form-label">收货方式</label>
+					<div class="layui-input-block">
+						<input type="radio"  lay-filter="order_delivery_type" name="delivery_type" value="1" title="快递" {if $order.store}{else/}checked=""{/if} >
+						<input type="radio"  lay-filter="order_delivery_type" name="delivery_type" value="2" title="门店自提"  {if $order.store}checked=""{else/}{/if}>
+					</div>
+				</div>
+				<div class="layui-form-item order_delivery">
+					<div class="layui-inline">
+						<label class="layui-form-label">收货人姓名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="ship_name" value="{$order.ship_name}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">收货人电话</label>
+						<div class="layui-input-inline">
+							<input type="text" name="ship_mobile" value="{$order.ship_mobile}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item order_delivery">
+					<label class="layui-form-label">收货地区</label>
+					<div class="layui-input-block">
+						{Jshop:area name='ship_area_id' class="select-address" lay-verify="required" value="$order.ship_area_id" }
+					</div>
+				</div>
+				<div class="layui-form-item order_delivery">
+					<label class="layui-form-label">详细地址</label>
+					<div class="layui-input-block">
+						<input type="text" name="ship_address" value="{$order.ship_address}" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item order_store">
+					<label class="layui-form-label">自提门店</label>
+					<div class="layui-input-block">
+						<select name="store_id">
+							{foreach $store_list as $vo}
+							<option value="{$vo.id}">{$vo.store_name}</option>
+							{/foreach}
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item order_store">
+					<div class="layui-inline">
+						<label class="layui-form-label">提货人姓名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="tship_name" value="{$order.ship_name}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">提货人电话</label>
+						<div class="layui-input-inline">
+							<input type="text" name="tship_mobile" value="{$order.ship_mobile}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--发票信息-->
+			<div class="layui-tab-item">
+				{if $order.pay_status == 1}
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票类型</label>
+						<div class="layui-input-block">
+							<input type="radio"  lay-filter="order_tax_type" name="tax_type" value="1" title="不开发票" {if $order['invoice']['type'] == 1 }checked=""{/if} />
+							<input type="radio"  lay-filter="order_tax_type" name="tax_type" value="3" title="企业"  {if $order['invoice']['type'] == 3 }checked=""{/if} />
+							<input type="radio"  lay-filter="order_tax_type" name="tax_type" value="2" title="个人"  {if $order['invoice']['type'] == 2 }checked=""{/if} />
+						</div>
+					</div>
+					<div class="layui-form-item tax_title">
+						<label class="layui-form-label">发票抬头</label>
+						<div class="layui-input-block">
+							<input type="text" name="tax_title" value="{$order.invoice.title}" autocomplete="off" placeholder="请输入发票抬头" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item tax_code">
+						<label class="layui-form-label">税号</label>
+						<div class="layui-input-inline seller-inline-5">
+							<input type="text" name="tax_code" value="{$order.invoice.tax_number}" autocomplete="off" placeholder="请输入公司税号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item tax_con">
+						<label class="layui-form-label">发票内容</label>
+						<div class="layui-form-mid">商品明细</div>
+					</div>
+				{else /}
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票类型</label>
+						<div class="layui-form-mid">
+							{:config('params.order.tax_type')[$order.invoice.type]}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票抬头</label>
+						<div class="layui-form-mid">
+							{$order.invoice.title}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">税号</label>
+						<div class="layui-form-mid">
+							{$order.invoice.tax_number}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票内容</label>
+						<div class="layui-form-mid">商品明细</div>
+					</div>
+					<div class="layui-form-item" style="color:red;">
+						<label class="layui-form-label">说明</label>
+						<div class="layui-form-mid">已经支付过后的订单，发票信息请到 后台》财务管理》发票管理 里面进行修改</div>
+					</div>
+
+				{/if}
+			</div>
+			<!--订单备注-->
+			<div class="layui-tab-item">
+				<textarea name="mark" id="mark" class="layui-input" style="padding:10px;height:190px;">{$order.mark}</textarea>
+			</div>
+		</div>
+	</div>
+	{:jshopToken()}
+</form>
+
+<script>
+	layui.use(['form', 'table'], function () {
+		layui.form.render();
+		layui.form.on('radio(order_delivery_type)', function(data){
+			if(data.value == 1){
+				$('.order_store').hide();
+				$('.order_delivery').show();
+			}else{
+				$('.order_store').show();
+				$('.order_delivery').hide();
+			}
+		});
+		{if $order.store}
+			$('.order_store').show();
+			$('.order_delivery').hide();
+		{else /}
+			$('.order_store').hide();
+			$('.order_delivery').show();
+		{/if}
+			layui.form.on('radio(order_tax_type)', function(data){
+				if(data.value == 1){
+					$('.tax_title').hide();
+					$('.tax_code').hide();
+					$('.tax_con').hide();
+				}
+				if(data.value == 3){
+					$('.tax_title').show();
+					$('.tax_code').show();
+					$('.tax_con').show();
+				}
+				if(data.value == 2){
+					$('.tax_title').show();
+					$('.tax_code').hide();
+					$('.tax_con').show();
+				}
+			});
+			{if $order['invoice']['type'] == 1}
+				$('.tax_title').hide();
+				$('.tax_code').hide();
+				$('.tax_con').hide();
+			{/if}
+				{if $order['invoice']['type'] == 3}
+				$('.tax_title').show();
+				$('.tax_code').show();
+				$('.tax_con').show();
+			{/if}
+			{if $order['invoice']['type'] == 2}
+				$('.tax_title').show();
+				$('.tax_code').hide();
+				$('.tax_con').show();
+			{/if}
+	});
+</script>

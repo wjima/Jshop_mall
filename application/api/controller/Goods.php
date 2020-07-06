@@ -36,13 +36,13 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '有非法查询字段',
+            'msg'    => error_code(10028, true),
             'data'   => []
         ];
 
         if ($data == '' && $data != '*') {
-            $return_data['msg'] = '查询字段错误';
-            return $return_data;
+            // $return_data['msg'] = error_code(10029,true);
+            return error_code(10029);
         }
         if ($data != '*') {
             $tmpData = explode(',', $data);
@@ -77,7 +77,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '排序错误',
+            'msg'    => error_code(10031, true),
             'data'   => []
         ];
         //        if(is_array($order)) {
@@ -129,7 +129,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027, true),
             'data'   => []
         ];
         $field       = input('field', '*');
@@ -141,6 +141,7 @@ class Goods extends Api
         $where = $whereOr = [];
         if (input('?param.where')) {
             $postWhere = json_decode(input('param.where'), true);
+
             //判断商品搜索,
             if (isset($postWhere['search_name']) && $postWhere['search_name']) {
                 $where[] = ['g.name|g.bn|g.brief', 'LIKE', '%' . $postWhere['search_name'] . '%'];
@@ -187,7 +188,7 @@ class Goods extends Api
             }
             //标签筛选
             if (isset($postWhere['label_id']) && $postWhere['label_id']) {
-                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . $postWhere['label_id'] . ',g.label_ids)')];
+                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . remove_xss($postWhere['label_id']) . ',g.label_ids)')];
             }
         }
 
@@ -236,7 +237,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027, true),
             'data'   => []
         ];
         $goods_id    = input('id/d', 0); //商品ID
@@ -299,7 +300,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '无此规格信息',
+            'msg'    => error_code(12701, true),
             'data'   => []
         ];
         $spec_value  = input('spec', '');
@@ -344,7 +345,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '无参数相关信息',
+            'msg'    => error_code(10033, true),
             'data'   => []
         ];
         $goods_id    = input('id/d', 0); //商品ID
@@ -391,20 +392,20 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '无参数相关信息',
+            'msg'    => error_code(10033, true),
             'data'   => []
         ];
         $product_id  = input('id/d', 0); //货品ID
         $token       = input('token', ''); //token值 会员登录后传
         $type       = input('type', 'goods'); //商品类型,默认是商品
         if (!$product_id) {
-            $return_data['msg'] = '货品ID缺失';
-            return $return_data;
+            // $return_data['msg'] = error_code(14011, true);
+            return error_code(14011);
         }
 
         $productsModel      = new Products();
         $user_id            = getUserIdByToken($token); //获取user_id
-        $product            = $productsModel->getProductInfo($product_id, true, $user_id,$type);
+        $product            = $productsModel->getProductInfo($product_id, true, $user_id, $type);
         $return_data['msg'] = $product['msg'];
         if (!$product['status']) {
             return $return_data;
@@ -488,7 +489,7 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => '查询失败',
+            'msg'    => error_code(10027, true),
             'data'   => []
         ];
         $field       = input('field', 'id,bn,name,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,stock,unit,spes_desc,view_count,buy_count,label_ids');
@@ -553,7 +554,7 @@ class Goods extends Api
             }
             //标签筛选
             if (isset($postWhere['label_id']) && $postWhere['label_id']) {
-                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . $postWhere['label_id'] . ',g.label_ids)')];
+                $where[] = ['', 'exp', Db::raw('FIND_IN_SET(' . remove_xss($postWhere['label_id']) . ',g.label_ids)')];
             }
         }
 

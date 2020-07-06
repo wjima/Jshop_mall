@@ -109,11 +109,7 @@ class UserBankcards extends Common
      */
     public function addBankcards($user_id, $data)
     {
-        $return = [
-            'status' => false,
-            'msg' => '添加失败',
-            'data' => ''
-        ];
+        $return = error_code(10038);
 
         //数据验证
         $flag = $this->checkData($data);
@@ -129,8 +125,7 @@ class UserBankcards extends Common
         ])->find();
 
         if ($card) {
-            $return['msg'] = '该卡片已经添加';
-            return $return;
+            return error_code(11060);
         }
         $new_data = [
             'user_id' => $user_id,
@@ -158,7 +153,7 @@ class UserBankcards extends Common
                     $return['msg'] = '保存成功';
                 } catch (\Exception $e) {
                     $this->rollback();
-                    $return['msg'] = '保存失败';
+                    $return['msg'] = error_code(10004,true);
                 }
             } else {
                 // 不是默认的直接添加
@@ -192,11 +187,7 @@ class UserBankcards extends Common
      */
     public function delBankcards($user_id, $id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '删除失败',
-            'data' => ''
-        ];
+        $return = error_code(10023);
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];
         // 先判断该银行卡是否存在
@@ -218,7 +209,7 @@ class UserBankcards extends Common
                         $return[ 'msg' ] = '删除成功';
                     } catch ( \Exception $e ) {
                         $this->rollback();
-                        $return[ 'msg' ] = '删除失败';
+                        $return[ 'msg' ] = error_code(10023,true);
                     }
                 } else {
                     if ($this->where([ 'id' => $id, 'user_id' => $user_id ])->delete()) {
@@ -233,7 +224,7 @@ class UserBankcards extends Common
                 }
             }
         } else {
-            $return['msg'] = '该卡片不存在';
+            return error_code(11060);
         }
 
         return $return;
@@ -289,11 +280,7 @@ class UserBankcards extends Common
      */
     public function editBankcards($user_id, $id, $data)
     {
-        $return = [
-            'status' => false,
-            'msg' => '修改失败',
-            'data' => ''
-        ];
+        $return = error_code(10024);
 
         //数据验证
         $flag = $this->checkData($data);
@@ -342,11 +329,7 @@ class UserBankcards extends Common
      */
     public function setDefault($user_id, $id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '设置失败',
-            'data' => ''
-        ];
+        $return = error_code(10081);
 
         $data = $this->where(['id'=>$id,'user_id'=>$user_id])->find();
         if ($data) {
@@ -361,10 +344,10 @@ class UserBankcards extends Common
                 $return['msg'] = '保存成功';
             } catch (\Exception $e){
                 $this->rollback();
-                $return['msg'] = '保存失败';
+                $return['msg'] = error_code(10004,true);
             }
         } else {
-            $res['msg'] = '该银行卡不存在';
+            return error_code(11061);
         }
         return $return;
     }
@@ -380,11 +363,7 @@ class UserBankcards extends Common
      */
     public function getBankcardInfo($user_id, $id)
     {
-        $return = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => ''
-        ];
+        $return = error_code(10025);
 
         $where[] = ['id', 'eq', $id];
         $where[] = ['user_id', 'eq', $user_id];

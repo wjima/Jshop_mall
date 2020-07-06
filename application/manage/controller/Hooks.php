@@ -95,11 +95,7 @@ class Hooks extends Manage
      */
     public function del()
     {
-        $result     = [
-            'status' => false,
-            'msg'    => '删除失败',
-            'data'   => []
-        ];
+        $result     = error_code(10023);
         $hooksModel = new hooksModel();
         if ($hooksModel::destroy(input('param.id/d'))) {
             $result['status'] = true;

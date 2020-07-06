@@ -6,24 +6,24 @@
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>旧密码</view>
 					</view>
-					<view class='cell-item-bd'>
-						<input class='cell-bd-input' placeholder='输入旧密码' v-model="pwd"></input>
+					<view class='cell-item-bd' style="width: 75%;">
+						<input class='cell-bd-input' placeholder='输入旧密码' v-model="pwd" style="width: 100%;"></input>
 					</view>
 				</view>
 				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>新密码</view>
 					</view>
-					<view class='cell-item-bd'>
-						<input class='cell-bd-input' placeholder='输入6-16位新密码' v-model="newPwd"></input>
+					<view class='cell-item-bd' style="width: 75%;">
+						<input class='cell-bd-input' placeholder='输入6-16位新密码' v-model="newPwd" style="width: 100%;"></input>
 					</view>
 				</view>
 				<view class='cell-item cell-item-mid'>
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>确认密码</view>
 					</view>
-					<view class='cell-item-bd'>
-						<input class='cell-bd-input' placeholder='输入6-16位新密码' v-model="rePwd"></input>
+					<view class='cell-item-bd' style="width: 75%;">
+						<input class='cell-bd-input' placeholder='输入6-16位新密码' v-model="rePwd" style="width: 100%;"></input>
 					</view>
 				</view>
 			</view>

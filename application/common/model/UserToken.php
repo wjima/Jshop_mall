@@ -34,16 +34,21 @@ class UserToken extends Common
                 $result['data'] = $data['token'];
                 $result['status'] = true;
 
+                hook('loginAfter',$userInfo);//登录后事件
+
+                //如果需要绑定手机号码，但是用户的手机号码为空，那么就需要绑定手机号码
+                if(getSetting('is_bind_mobile') == 1 && !$userInfo['mobile']){
+                    $result['status'] = false;
+                    $result['token'] = $data['token'];
+                    $result['data'] = '11027';
+                    $result['msg'] = error_code(11027, true);
+                }
                 return $result;
             }else{
-                $result['msg'] = "生成token失败";
-                return $result;
+                return error_code(14005);
             }
         }else{
-            if(!$userInfo){
-                $result['msg'] = "用户不存在";
-            }
-            return $result;
+            return error_code(11004);
         }
     }
 
@@ -105,8 +110,7 @@ class UserToken extends Common
             $result['data'] = $tokenInfo;
             return $result;
         }else{
-            $result['msg'] = "不是有效的token";
-            return $result;
+            return error_code(14016);
         }
 
     }

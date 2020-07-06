@@ -335,17 +335,16 @@ class Goods extends Common
         return $result;
     }
 
-    /**
+    /***
      * 获取商品详情
      * @param $gid
      * @param string $fields
      * @param string $token
+     * @param string $type goods:商品 pintuan:拼团 group:团购 skill:秒杀 bargain:砍价
+     * @param array $params 扩展字段，可传团购秒杀id等
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
      */
-    public function getGoodsDetial($gid, $fields = '*', $token = '')
+    public function getGoodsDetial($gid, $fields = '*', $token = '', $type = 'goods',$params = [])
     {
         $result        = [
             'status' => true,
@@ -364,7 +363,7 @@ class Goods extends Common
         $list = $this::with($preModel)->field($fields)->where(['id' => $gid])->find();
 
         if ($list) {
-            if(isset($list['brand_id']) && $list['brand_id']){
+            if (isset($list['brand_id']) && $list['brand_id']) {
                 $list->brand;
             }
             //$list = $list->toArray();
@@ -386,7 +385,7 @@ class Goods extends Common
                 return error_code(10000);
             }
             $user_id      = getUserIdByToken($token);//获取user_id
-            $product_info = $productsModel->getProductInfo($default_product['id'], true, $user_id);
+            $product_info = $productsModel->getProductInfo($default_product['id'], true, $user_id, $type,$params);
             if (!$product_info['status']) {
                 return $product_info;
             }
@@ -589,14 +588,10 @@ class Goods extends Common
      */
     public function changeStock($product_id, $type = 'order', $num = 0)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '库存更新失败'
-        ];
+        $result = error_code(12703);
         if ($product_id === '') {
-            $result['msg'] = '货品ID不能为空';
-            return $result;
+//            $result['msg'] = '货品ID不能为空';
+            return error_code(14011);
         }
 
         $productModel = new Products();
@@ -616,7 +611,7 @@ class Goods extends Common
                 if ($res !== false) {
                     $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 } else {
-                    $result['msg'] = '库存更新失败';
+//                    $result['msg'] = '库存更新失败';
                     return $result;
                 }
                 break;
@@ -641,7 +636,8 @@ class Goods extends Common
             $result['status'] = true;
             return $result;
         } else {
-            $result['msg'] = '库存不足';
+//            $result['msg'] = '库存不足';
+            return error_code(12702);
         }
 
         return $result;
@@ -658,11 +654,7 @@ class Goods extends Common
      */
     public function getOne($goods_id, $fields = '*')
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '商品不存在'
-        ];
+        $result = error_code(12700);
         $data   = $this->where(['id' => $goods_id])->field($fields)->find();
         if ($data) {
             $goodsImagesModel = new goodsImages();
@@ -729,11 +721,7 @@ class Goods extends Common
      */
     public function delGoods($goods_id = 0)
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '商品不存在'
-        ];
+        $result = error_code(12700);
         $goods  = $this::get($goods_id);
         if (!$goods) {
             return $result;
@@ -744,8 +732,8 @@ class Goods extends Common
         $res = $this->where(['id' => $goods_id])->delete();
         if (!$res) {
             $this->rollback();
-            $result['msg'] = '商品删除失败';
-            return $result;
+//            $result['msg'] = '商品删除失败';
+            return error_code(12704);
         }
         $productsModel = new Products();
         $delProduct    = $productsModel->where(['goods_id' => $goods_id])->delete(true);
@@ -788,11 +776,7 @@ class Goods extends Common
      */
     public function getCsvData($post)
     {
-        $result    = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '无可导出商品'
-        ];
+        $result    = error_code(10083);
         $header    = $this->csvHeader();
         $goodsData = $this->tableData($post, false);
         if ($goodsData['count'] > 0) {
@@ -1100,11 +1084,7 @@ class Goods extends Common
      */
     public function getGoodsCatHotGoods($cat_id, $limit = 6)
     {
-        $return                 = [
-            'status' => false,
-            'msg'    => '获取失败',
-            'data'   => []
-        ];
+        $return                 = error_code(10025);
         $where[]                = ['is_hot', 'eq', self::HOT_YES];
         $where[]                = ['marketable', 'eq', self::MARKETABLE_UP];
         $where[]                = ['goods_cat_id', 'eq', $cat_id];
@@ -1209,11 +1189,7 @@ class Goods extends Common
      */
     public function getSingleGoodsList($field)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => []
-        ];
+        $return = error_code(10037);
 
         $where[] = ['marketable', 'eq', self::MARKETABLE_UP];
         $where[] = ['spes_desc', 'eq', ''];
@@ -1235,30 +1211,27 @@ class Goods extends Common
     /*
      * 获取全部商品
      * */
-    public function goods_all($page, $limit, $order){
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => []
-        ];
+    public function goods_all($page, $limit, $order)
+    {
+        $return              = error_code(10037);
         $where['marketable'] = '1';
-        $goodsData = $this->where($where)
-                        ->order($order)
-                        ->page($page,$limit)
-                        ->select();
-        if(!$goodsData){
-            return $return['msg'] = '获取失败';
+        $goodsData           = $this->where($where)
+            ->order($order)
+            ->page($page, $limit)
+            ->select();
+        if (!$goodsData) {
+            return error_code(10025);
         }
-        foreach($goodsData as &$v){
-            $image        =     Db::table('jshop_images')
-                                ->field('id,url,ctime')
-                                ->where('id',$v['image_id'])
-                                ->select();
-            $v['image']  =   $image[0]['url'];
+        foreach ($goodsData as &$v) {
+            $image      = Db::table('jshop_images')
+                ->field('id,url,ctime')
+                ->where('id', $v['image_id'])
+                ->select();
+            $v['image'] = $image[0]['url'];
         }
-        $return['msg']      = '获取成功';
-        $return['status']   = true;
-        $return['data']     = $goodsData;
+        $return['msg']    = '获取成功';
+        $return['status'] = true;
+        $return['data']   = $goodsData;
         return $return;
     }
 
@@ -1266,30 +1239,27 @@ class Goods extends Common
     /*
      * 获取上新商品
      * */
-    public function newgoods($page, $limit, $order){
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => []
-        ];
+    public function newgoods($page, $limit, $order)
+    {
+        $return              = error_code(10037);
         $where['marketable'] = '1';
-        $goodsData = $this->where($where)
-                    ->order($order)
-                    ->page($page,$limit)
-                    ->select();
-        if(!$goodsData){
-            return $return['msg'] = '获取失败';
+        $goodsData           = $this->where($where)
+            ->order($order)
+            ->page($page, $limit)
+            ->select();
+        if (!$goodsData) {
+            return  error_code(10025);
         }
-        foreach($goodsData as &$v){
-            $image        =   Db::table('jshop_images')
-                                ->field('id,url,ctime')
-                                ->where('id',$v['image_id'])
-                                ->select();
-            $v['image']  =   $image[0]['url'];
+        foreach ($goodsData as &$v) {
+            $image      = Db::table('jshop_images')
+                ->field('id,url,ctime')
+                ->where('id', $v['image_id'])
+                ->select();
+            $v['image'] = $image[0]['url'];
         }
-        $return['msg']      = '获取成功';
-        $return['status']   = true;
-        $return['data']     = $goodsData;
+        $return['msg']    = '获取成功';
+        $return['status'] = true;
+        $return['data']   = $goodsData;
         return $return;
     }
 
@@ -1297,33 +1267,30 @@ class Goods extends Common
     /*
      * 促销商品
      * */
-    public function promotiongoods($page, $limit, $order){
-        $return = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => []
-        ];
-        $where['marketable']    = '1';
-        $where['is_recommend']  = '1';
-        $goodsData = $this->field('id,name,price,image_id')
+    public function promotiongoods($page, $limit, $order)
+    {
+        $return                = error_code(10037);
+        $where['marketable']   = '1';
+        $where['is_recommend'] = '1';
+        $goodsData             = $this->field('id,name,price,image_id')
             ->where($where)
             ->order($order)
-            ->page($page,$limit)
+            ->page($page, $limit)
             ->select();
-        if(!$goodsData){
-            return $return['msg'] = '获取促销商品失败';
+        if (!$goodsData) {
+            return error_code(12705);
         }
-        foreach($goodsData as &$v){
-            $image        =   Db::table('jshop_images')
+        foreach ($goodsData as &$v) {
+            $image      = Db::table('jshop_images')
                 ->field('id,url,ctime')
-                ->where('id',$v['image_id'])
-                ->page($page,$limit)
+                ->where('id', $v['image_id'])
+                ->page($page, $limit)
                 ->select();
-            $v['image']  =   $image[0]['url'];
+            $v['image'] = $image[0]['url'];
         }
-        $return['msg']      = '获取促销商品成功';
-        $return['status']   = true;
-        $return['data']     = $goodsData;
+        $return['msg']    = '获取促销商品成功';
+        $return['status'] = true;
+        $return['data']   = $goodsData;
         return $return;
     }
 
@@ -1331,17 +1298,17 @@ class Goods extends Common
     /*
      * 关联动态商品
      * */
-    public function assocGoods($article_id){
+    public function assocGoods($article_id)
+    {
         $data = $this->field('id,name,price,image_id')
-                    ->where([
-                        'id' => [$article_id]
-                    ])->select();
+            ->where([
+                'id' => [$article_id]
+            ])->select();
         foreach ($data as &$v) {
             $v['image'] = _sImage($v['image_id']);
         }
         return $data;
     }
-
 
 
 }

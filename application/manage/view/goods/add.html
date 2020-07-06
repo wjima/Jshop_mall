@@ -42,7 +42,7 @@
     }
     .grade_price input{
         display: inline;
-        width: 190px;;
+        width: 190px;
     }
     .goods-stock{
         width: 80px;
@@ -73,7 +73,7 @@
         margin-right: 5px;
     }
     .extend-goods-cat>.layui-btn,.extend-goods-cat>.layui-form-select{
-        float: left;;
+        float: left;
     }
     #fixed-block{
         position: fixed;
@@ -93,7 +93,7 @@
     }
     #add_extend_cat>.layui-form-select{
         float: left;
-        margin-right: 5px;;
+        margin-right: 5px;
     }
     #add_extend_cat>.layui-form-select .layui-edge{
         margin-top: -8px;
@@ -197,7 +197,7 @@
 	</fieldset>
 	<div id="product-info">
 		<div class="layui-form-item">
-			<label class="layui-form-label"><i class="required-color">*</i>销售价：</label>
+			<label class="layui-form-label">销售价：</label>
 			<div class="layui-input-inline">
 				<input type="text" name="goods[price]" placeholder="￥" autocomplete="off" class="layui-input">
 			</div>
@@ -220,7 +220,17 @@
 				<input type="text" name="goods[sn]" lay-verify="title" autocomplete="off" placeholder="请输入货号" class="layui-input">
 			</div>
 		</div>
-		{if !$erp_syn_on}
+		{if get_addons_status('StockControl')}
+		<div class="layui-form-item have-add" style="display: none">
+			<label class="layui-form-label">库存：</label>
+			<div class="layui-input-inline">
+				<input type="text" name="goods[stock]" placeholder="数量" lay-verify="required|number" autocomplete="off" class="layui-input goods-stock">
+			</div>
+			<div class="layui-form-mid layui-word-aux" style="margin-left: 110px;">
+				为正数时，添加库存，负数时减少库存。
+			</div>
+		</div>
+		{else /}
 		<div class="layui-form-item have-add">
 			<label class="layui-form-label">库存：</label>
 			<div class="layui-input-inline">
@@ -290,7 +300,7 @@
 	<div class="layui-form-item" id="fixed-block">
 		<div>
 			<input type="hidden" name="open_spec" value="0">
-			{:jshopToken()}
+			{:jshopToken('goods_add')}
 			<button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
 			<a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</a>
 		</div>

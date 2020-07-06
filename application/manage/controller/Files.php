@@ -22,11 +22,7 @@ class Files extends Manage
 {
     public function uploadVideo()
     {
-        $result = [
-            'status' => false,
-            'msg'    => '上传失败',
-            'data'   => []
-        ];
+        $result = error_code(10035);
         // 获取表单上传文件 例如上传了001.jpg
         $file = request()->file('file');
         // 移动到框架应用根目录/uploads/ 目录下

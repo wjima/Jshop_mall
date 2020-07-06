@@ -43,18 +43,14 @@ class Ietask extends Manage
      */
     public function export()
     {
-        $result     = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '参数丢失',
-        ];
+        $result     = error_code(10051);
         $taskname   = input('taskname/s', '');
         $filter     = input('filter/s', '');
         $job        = input('model/s', '');
-        if(empty($taskname)){
-            $result['status'] = false;
-            $result['msg']    = '请输入任务名称,防止混淆';
-            return $result;
+        if (empty($taskname)) {
+            // $result['status'] = false;
+            // $result['msg']    = error_code(10045,true);
+            return error_code(10045);
         }
         if (!$taskname) {
             $taskname = md5(time());
@@ -121,11 +117,7 @@ class Ietask extends Manage
 
     public function import()
     {
-        $result = [
-            'status' => false,
-            'data'   => [],
-            'msg'    => '上传失败'
-        ];
+        $result = error_code(10035);
         $file   = request()->file('importFile');
         if (!$file) {
             return $result;
@@ -168,11 +160,11 @@ class Ietask extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '下载失败'
+            'msg'    => error_code(10101,true)
         ];
         $id     = input('id/d', 0);
         if (!$id) {
-            $result['msg'] = '关键参数缺失';
+            $result['msg'] = error_code(10051,true);
             return $result;
         }
         //todo 判断能否下载
@@ -186,7 +178,7 @@ class Ietask extends Manage
     {
         $id = input('id/d', 0);
         if (!$id) {
-            $this->error("关键参数丢失");
+            $this->error(error_code(10051,true));
         }
         $ietaskModle = new ietaskModel();
         $task        = $ietaskModle->where(['id' => $id])->find();
@@ -196,24 +188,21 @@ class Ietask extends Manage
                 $fileDownload->sendDownload($task['file_name']);
             } catch (\Exception $e) {
                 Log::record('文件下载失败，错误信息：' . json_encode($e->getMessage()));
-                $this->error("文件不存在");
+                $this->error(error_code(10103,true));
             }
         } else {
-            $this->error("文件不存在");
+            $this->error(error_code(10103,true));
         }
     }
 
     //删除
     public function del()
     {
-        $result = [
-            'status' => false,
-            'msg'    => '删除失败'
-        ];
+        $result = error_code(10023);
         $id     = input('id/d', '');
         if (!$id) {
-            $result['msg'] = '关键参数丢失';
-            return $result;
+            // $result['msg'] = '关键参数丢失';
+            return error_code(10051);
         }
         $model = new \app\common\model\Ietask();
         $rel   = $model->where('id', 'eq', $id)->delete();

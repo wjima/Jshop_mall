@@ -71,7 +71,8 @@
 		data() {
 			return {
 				payments: [],
-				popShow: false
+				popShow: false,
+				payStatus: true
 			}
 		},
 		mounted() {
@@ -105,6 +106,10 @@
 			},
 			// 用户点击支付方式处理
 			toPayHandler(e) {
+				if(this.payStatus == false) {
+					return
+				}
+				this.payStatus = false
 				this.popShow = true;
 				let code = e.target.value.code;
 				let formId = e.detail.formId;
@@ -141,14 +146,21 @@
 									signType: res.data.signType,
 									paySign: res.data.paySign,
 									success: function(e) {
+										_this.payStatus = true
 										if (e.errMsg === 'requestPayment:ok') {
 											_this.$common.successToShow(res.msg, () => {
 												_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id)
 											})
+										},
+										fail() {
+											_this.payStatus = true
 										}
+									},
+									fail() {
 									}
 								});
 							} else {
+								_this.payStatus = true
 								this.$common.errorToShow(res.msg)
 							}
 						})

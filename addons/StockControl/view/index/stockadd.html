@@ -1,0 +1,98 @@
+<style>
+    .clearfix:after,.clearfix:before{
+        content: "";
+        display: table;
+    }
+    .clearfix:after{
+        clear: both;
+    }
+    .clearfix{
+        *zoom: 1;
+    }
+</style>
+<form class="layui-form  seller-alone-form" lay-filter="stock1" id="userAdd" style="padding:20px;">
+    <br>
+    <div class="layui-form-item " id="father">
+        <div id="element" class="clearfix">
+            <label class="layui-form-label">货品ID</label>
+            <div class="pro clearfix">
+                <div class="layui-input-inline seller-inline-7">
+                    <select name="product_id[0]" lay-verify="" lay-search>
+                        <option value="">根据商品名称、货品编号搜索</option>
+                        {volist name="products" id="val"}
+                        <option value="{$val.id}">商品名称：{$val.name|mb_substr=0,10}{if !empty($val.spes_desc)}-{/if}{$val.spes_desc}，货品编号：{$val.sn}，当前库存：{$val.stock}</option>
+                        {/volist}
+                    </select>
+                </div>
+                <div class="layui-input-inline seller-inline-2">
+                    <input type="number" placeholder="数量" name="nums[0]" class="layui-input">
+                </div>
+                <div class="layui-input-inline seller-inline-3">
+                    <div class="layui-btn-group">
+                        <button type="button" class="layui-btn layui-btn-primary layui-btn-sm add">
+                            <i class="layui-icon">&#xe654;</i>
+                        </button>
+<!--                        <button type="button" class="layui-btn layui-btn-primary layui-btn-sm del">-->
+<!--                            <i class="layui-icon">&#xe640;</i>-->
+<!--                        </button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">备注</label>
+        <div class="layui-input-inline seller-inline-7">
+            <textarea name="memo" placeholder="请输入内容" maxlength="200" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    {:jshopToken()}
+</form>
+<script>
+    var i = 0
+    $("#father").on("click", ".add", function () {
+        i++;
+        var element = '<div id="element" class="clearfix">' +
+            '<label class="layui-form-label">货品ID</label>' +
+            '<div class="pro clearfix">' +
+            '<div class="layui-input-inline seller-inline-7">' +
+            '<select name="product_id[' + [i] + ']" lay-verify="" lay-search>' +
+            '<option value="">根据商品名称、货品编号搜索</option>' +
+            '{volist name="products" id="val"}' +
+            '<option value="{$val.id}">商品名称：{$val.name|mb_substr=0,10}{if !empty($val.spes_desc)}-{/if}{$val.spes_desc}，货品编号：{$val.sn}，当前库存：{$val.stock}</option>' +
+            '{/volist}' +
+            '</select>' +
+            '</div>' +
+            ' <div class="layui-input-inline seller-inline-2">' +
+            ' <input type="number" name="nums[' + [i] + ']" placeholder="数量" class="layui-input">' +
+            '</div>' +
+            ' <div class="layui-input-inline seller-inline-3">' +
+            '<div class="layui-btn-group">' +
+            '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm add">' +
+            '<i class="layui-icon">&#xe654;</i>' +
+            '</button>' +
+            '<button type="button" class="layui-btn layui-btn-primary layui-btn-sm del" >' +
+            '<i class="layui-icon">&#xe640;</i>' +
+            ' </button>' +
+            '</div>' +
+            '</div></div>'
+        $("#father").append(element)
+
+        layui.form.render('select')
+    })
+    $("#father").on("click", ".del", function () {
+        $(this).parents("#element").remove();
+    })
+    layui.use(['form', 'laydate'], function () {
+        var form = layui.form, laydate = layui.laydate;
+        form.render();
+
+        laydate.render({
+            elem: '#birthday',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+    });
+</script>

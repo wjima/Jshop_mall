@@ -99,6 +99,11 @@ class BillPayments extends Common
         if(isset($post['trade_no']) && $post['trade_no'] != ""){
             $where[] = ['trade_no', 'eq', $post['trade_no']];
         }
+        if(isset($post['source_id']) && $post['source_id'] != ""){
+            $billPaymentsRelModel = new BillPaymentsRel();
+            $payment = $billPaymentsRelModel->where([['source_id','=', $post['source_id']]])->cache(86400)->find();
+            $where[] = ['payment_id', 'eq', $payment['payment_id']];
+        }
         if(isset($post['status']) && $post['status'] != ""){
             $where[] = ['status', 'eq', $post['status']];
         }
@@ -118,6 +123,7 @@ class BillPayments extends Common
      */
     protected function tableFormat($list)
     {
+        $billPaymentsRelModel = new BillPaymentsRel();
         foreach($list as $k => $v) {
             if($v['status']) {
                 $list[$k]['status'] = config('params.bill_payments')['status'][$v['status']];
@@ -134,6 +140,8 @@ class BillPayments extends Common
             if($v['type']) {
                 $list[$k]['type'] = config('params.bill_payments')['type'][$v['type']];
             }
+            $payment = $billPaymentsRelModel->where([['payment_id','=', $v['payment_id']]])->cache(86400)->find();
+            $list[$k]['source_id'] = $payment['source_id'];
         }
         return $list;
     }
@@ -288,8 +296,8 @@ class BillPayments extends Common
         $where[] = ['status','neq',self::STATUS_PAYED];
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
-            $result['msg'] = '没有找到此未支付的支付单号';
-            return $result;
+//            $result['msg'] = '没有找到此未支付的支付单号';
+            return error_code(13500);
         }
 
         Db::startTrans();
@@ -371,8 +379,8 @@ class BillPayments extends Common
                     );
                     $data['money'] += $order_info->order_amount;
                 } else {
-                    $result['msg'] = '订单号：' . $v . '没有找到,或不是未支付状态';
-                    return $result;
+//                    $result['msg'] = '订单号：' . $v . '没有找到,或不是未支付状态';
+                    return error_code(13501,false,$v);
                 }
             }
             $result['status'] = true;
@@ -380,8 +388,8 @@ class BillPayments extends Common
         } elseif ($type == self::TYPE_RECHARGE) { //账户充值
             $data['money'] = (float)$params['money'];//充值金额
             if (!$data['money']) {
-                $result['msg'] = '请输入正确的充值金额';
-                return $result;
+//                $result['msg'] = '请输入正确的充值金额';
+                return error_code(13502);
             }
             foreach ($source_arr as $k => $v) {
                 $data['rel'][] = array(
@@ -405,8 +413,8 @@ class BillPayments extends Common
                     );
                     $data['money'] += $form_info->money;
                 } else {
-                    $result['msg'] = '表单：' . $v . '没有找到,或不是未支付状态';
-                    return $result;
+//                    $result['msg'] = '表单：' . $v . '没有找到,或不是未支付状态';
+                    return error_code(13503,false,$v);
                 }
             }
             $result['status'] = true;
@@ -439,8 +447,8 @@ class BillPayments extends Common
         }
         $billPaymentInfo = $this->where($where)->find();
         if(!$billPaymentInfo){
-            $result['msg'] = '没有找到此支付记录';
-            return error_code(10002);
+//            $result['msg'] = '没有找到此支付记录';
+            return error_code(13504);
         }
         $billPaymentInfo['rel'] = $billPaymentInfo->rel;
         $result['data'] = $billPaymentInfo;
@@ -506,6 +514,11 @@ class BillPayments extends Common
                 'modify'=>'convertString'
             ],
             [
+                'id' => 'source_id',
+                'desc' => '支付对象',
+                'modify'=>'convertString'
+            ],
+            [
                 'id' => 'status',
                 'desc' => '状态',
             ],
@@ -517,8 +530,6 @@ class BillPayments extends Common
                 'id' => 'type',
                 'desc' => '单据类型',
             ],
-
-
             [
                 'id' => 'user_id',
                 'desc' => '用户',
@@ -547,12 +558,7 @@ class BillPayments extends Common
      */
     public function getCsvData($post)
     {
-        $result = [
-            'status' => false,
-            'data' => [],
-            'msg' => '无可导出数据',
-
-        ];
+        $result = error_code(10083);
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
 
@@ -601,19 +607,15 @@ class BillPayments extends Common
     //导出格式
     public function getExportList($post = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => '',
-            'count' => 0
-        ];
+        $return_data =  error_code(10025);
         $where = [];
         if(isset($post['payment_id']) && $post['payment_id'] != ""){
             $where[] = ['payment_id', 'like', '%'.$post['payment_id'].'%'];
         }
+
         if(isset($post['date']) && $post['date'] != "")
         {
-            $date = explode(' 到 ', $post['date']);
+            $date = explode(' 到 ', urldecode($post['date']));
             $where[] = ['ctime', 'between time', [$date[0].' 00:00:00', $date[1].' 23:59:59']];
         }
         if(isset($post['mobile']) && $post['mobile'] != ""){
@@ -639,7 +641,7 @@ class BillPayments extends Common
         $list = $this->where($where)
             ->order('utime desc')
             ->select();
-
+        $billPaymentsRelModel = new BillPaymentsRel();
         if($list){
             $count = $this->where($where)->count();
             foreach($list as $k => $v) {
@@ -658,6 +660,8 @@ class BillPayments extends Common
                 if($v['type']) {
                     $list[$k]['type'] = config('params.bill_payments')['type'][$v['type']];
                 }
+                $payment = $billPaymentsRelModel->where([['payment_id','=', $v['payment_id']]])->cache(86400)->find();
+                $list[$k]['source_id'] = $payment['source_id'];
             }
             $return_data = [
                 'status' => true,

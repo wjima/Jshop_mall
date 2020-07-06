@@ -114,9 +114,9 @@ class Wx
      * @param string $secret
      * @return mixed
      */
-    public function getAccessToken($appid = '', $secret = '')
+    public function getAccessToken($appid, $secret)
     {
-        //todo::$appid和$secret从配置文件获取
+
         //查询是否有缓存的access_token todo::改成mysql数据库存储
         $key = $appid.'_'.$secret;
         $val = Cache::get($key);
@@ -134,6 +134,89 @@ class Wx
         }
         //返回access_token
         return $val;
+    }
+
+    /**
+     * 获取jsapi_ticket,用于前端调用微信公众号中调用js-sdk
+     * @param string $appid
+     * @param string $secret
+     * @return mixed
+     */
+    public function getJsapiTicket()
+    {
+        $appid = getSetting('wx_official_appid');
+        $secret = getSetting('wx_official_app_secret');
+
+        //查询是否有缓存的access_token todo::改成mysql数据库存储
+        $key = $appid.'_'.$secret.'_jsapi_ticket';
+        $val = Cache::get($key);
+        if(!$val)
+        {
+            //先取token
+            $access_token = $this->getAccessToken($appid,$secret);
+            if($access_token == ''){
+                return '';
+            }
+
+            //没有缓存的，去微信接口获取access_token
+            $curl = new Curl();
+            $url = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token='.$access_token.'&type=jsapi';
+            $res = $curl->get($url);
+            $res = json_decode($res, true);
+            $val = $res['ticket'];
+
+            //存储缓存获取的access_token todo::改成mysql数据库存储
+            Cache::set($key, $val, 3600);
+        }
+        return $val;
+    }
+
+    /**
+     * 微信公众号js-sdk配置
+     * @param $url
+     * @return array|mixed
+     */
+    public function jssdk($url){
+        $result = [
+            'status' => true,
+            'data' => [],
+            'msg' => ''
+        ];
+        $ticket = $this->getJsapiTicket();
+        if($ticket == ''){
+            return error_code(10200);
+        }
+        $timestamp = time();
+        $nonceStr = $this->createNonceStr();
+
+        // 这里参数的顺序要按照 key 值 ASCII 码升序排序
+        $string = "jsapi_ticket=$ticket&noncestr=$nonceStr&timestamp=$timestamp&url=$url";
+        $signature = sha1($string);
+        $signPackage = [
+            'appId'     => getSetting('wx_official_appid'),
+            'nonceStr'  => $nonceStr,
+            'timestamp' => $timestamp,
+            'url'       => $url,
+            'signature' => $signature,
+            'rawString' => $string
+        ];
+        $result['data'] = $signPackage;
+        return $result;
+    }
+
+    /**
+     *
+     *  生成随机字符串
+     * @param int $length
+     * @return string
+     */
+    private function createNonceStr($length = 16) {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $str = "";
+        for ($i = 0; $i < $length; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
     }
 
 
@@ -154,7 +237,7 @@ class Wx
     {
         $return = [
             'status' => false,
-            'msg' => '获取失败',
+            'msg' => error_code(10025,true),
             'data' => ''
         ];
 
@@ -436,4 +519,138 @@ class Wx
         }
     }
 
+
+    /**
+     * 文字内容安全检测
+     * 微信免费
+     * @param $content
+     * @return bool
+     */
+    public function msgSecCheck($content)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+
+        $curl = new Curl();
+        $url = 'https://api.weixin.qq.com/wxa/msg_sec_check?access_token='.$access_token;
+        $data = [
+            'content' => $content
+        ];
+        $data = json_encode($data);
+        $res = $curl->post($url, $data);
+        $flag = json_decode($res, true);
+        if ($flag['errcode'] == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 文字内容安全检测
+     * 珊瑚收费
+     * @param $content
+     * @return bool
+     */
+    public function msgSecCheckPay($content)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+        $curl = new Curl();
+        $url = 'https://api.weixin.qq.com/wxa/servicemarket?access_token='.$access_token;
+        $data = [
+            'service' => 'wxee446d7507c68b11',
+            'api' => 'msgSecCheck',
+            'client_msg_id' => md5($content.time().mt_rand(10000,99999)),
+            'data' => [
+                'Action' => 'TextApproval',
+                'Text' => $content
+            ]
+        ];
+        $data = json_encode($data);
+        $res = $curl->post($url, $data);
+        $flag = json_decode($res, true);
+        if ($flag['errcode'] == 0) {
+            $data = json_decode($flag['data'], true);
+            if(count($data['Response']['EvilTokens']) <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 图片内容安全检测
+     * 微信免费
+     * @param $img
+     * @return bool
+     */
+    public function imgSecCheck($img)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+        $curl = new Curl();
+
+        $file = file_get_contents($img);
+        $filePath = $_SERVER['DOCUMENT_ROOT'].'/uploads/'.time().rand().'.jpg';
+        file_put_contents($filePath, $file);
+        $obj = new \CURLFile($filePath);
+        $obj->setMimeType("image/jpeg");
+        $obj->setPostFilename(basename($filePath));
+        $filedata['media'] = $obj;
+
+        $url = "https://api.weixin.qq.com/wxa/img_sec_check?access_token=".$access_token;
+        $res = $curl->postFile($url, $filedata);
+        $flag = json_decode($res,true);
+        if ($flag['errcode'] == 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 图片内容安全检测
+     * 珊瑚收费
+     * @param $img
+     * @return bool
+     */
+    public function imgSecCheckPay($img)
+    {
+        $wx_appid = getSetting('wx_appid');
+        $wx_app_secret = getSetting('wx_app_secret');
+        $access_token = $this->getAccessToken($wx_appid, $wx_app_secret);
+        $curl = new Curl();
+        $url = 'https://api.weixin.qq.com/wxa/servicemarket?access_token='.$access_token;
+        $data = [
+            'service' => 'wxee446d7507c68b11',
+            'api' => 'imgSecCheck',
+            'client_msg_id' => md5(time().mt_rand(1000000,9999999)),
+            'data' => [
+                'Action' => 'ImageModeration',
+                'Scenes' => [
+                    'PORN',
+                    'TERRORISM',
+                    'POLITICS',
+                    'TEXT'
+                ],
+                'ImageUrl' => $img
+            ]
+        ];
+        $data = json_encode($data);
+        $res = $curl->post($url, $data);
+        $flag = json_decode($res, true);
+        if ($flag['errcode'] == 0) {
+            $data = json_decode($flag['data'], true);
+            if ($data['Response']['Suggestion'] == 'PASS') {
+                return true;
+            }
+        }
+        return false;
+    }
 }

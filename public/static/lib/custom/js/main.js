@@ -471,6 +471,9 @@ Vue.component('select-link', {
       if (newVal == 1) {
         this.linkUrl = this.id
       }
+    },
+    id(newVal, oldVal) {
+      this.linkUrl = newVal
     }
   },
   mounted(){

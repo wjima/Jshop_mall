@@ -74,7 +74,7 @@ class Images extends Manage
                 $response = [
                     'data'   => '',
                     'status' => false,
-                    'msg'    => "保存失败"
+                    'msg'    => error_code(10004,true)
                 ];
                 echo json_encode($response);
                 exit;
@@ -134,7 +134,7 @@ class Images extends Manage
                 break;
             default:
                 $result = json_encode(array(
-                    'state' => '请求地址出错'
+                    'state' => error_code(10048,true)
                 ));
                 break;
         }
@@ -145,7 +145,7 @@ class Images extends Manage
                 echo htmlspecialchars($callback) . '(' . $result . ')';
             } else {
                 echo json_encode(array(
-                    'state' => 'callback参数不合法'
+                    'state' => error_code(10049,true)
                 ));
             }
         } else {
@@ -161,7 +161,7 @@ class Images extends Manage
         $response = [
             'data'   => '',
             'status' => 'fail',
-            'msg'    => "裁剪失败"
+            'msg'    => error_code(10104,true)
         ];
 
         if (!Request::isPost()) {
@@ -197,7 +197,7 @@ class Images extends Manage
             if ($tmp_img['error'] > 0) {
                 $response = Array(
                     "status"  => 'error',
-                    "message" => '裁剪失败'
+                    "message" => error_code(10104,true)
                 );
             }
             $imgUrl = $tmp_img['save_path'];
@@ -231,7 +231,7 @@ class Images extends Manage
 
         if (!is_writable(dirname($output_filename))) {
             $response = [
-                'msg' => '裁剪失败',
+                'msg' => error_code(10104,true),
             ];
             return $response;
         } else {
@@ -319,12 +319,12 @@ class Images extends Manage
     {
         $return_data = [
             'status' => false,
-            'msg'    => '删除失败',
+            'msg'    => '',
             'data'   => ''
         ];
         $id          = input('param.id/s', '');
         if (!$id) {
-            return $return_data;
+            return error_code(10023);
         }
         if (delImage($id)) {
             $return_data['msg']    = '删除成功';

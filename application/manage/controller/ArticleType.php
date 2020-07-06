@@ -116,15 +116,14 @@ class  ArticleType extends Manage
         $result           = ['status' => true, 'msg' => '删除成功', 'data' => ''];
         //判断该分类下是否有子分类
         if ($articleTypeModel->where('pid', input('param.id/d'))->find()) {
-            $result['status'] = false;
-            $result['msg']    = '该分类下有子分类无法删除';
+            return    error_code(10803);
         } else if ($articleTypeModel->comments()->where('type_id', input('param.id/d'))->find()) {
-            $result['status'] = false;
-            $result['msg']    = '该分类下有文章无法删除';
+            return error_code(10804);
         } else {
             if (!$articleTypeModel->where('id', input('param.id/d'))->delete()) {
-                $result['status'] = false;
-                $result['msg']    = '删除失败';
+                //$result['status'] = false;
+               // $result['msg']    = error_code(10023, true);
+		return error_code(10023);
             }
         }
 

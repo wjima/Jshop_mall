@@ -1,12 +1,12 @@
 <template>
 	<view class="content">
-		<view class='cell-group margin-cell-group cell-header'>
+		<view class='cell-group margin-cell-group cell-header' style="margin-left: 0;padding-left: 20rpx;">
 			请选择退货商品和数量
 		</view>
 		<form @submit="submit" report-submit='true'>
 			<view class="content-top">
 				<view class="img-list cart-list">
-					<checkbox-group class="cart-checkbox" v-for="(item, key) in items" :key="key" @change="checkboxChange">
+					<checkbox-group class="cart-checkbox" v-for="(item, key) in items" :key="key" @change="checkboxChange" :data-idx="key" :data-itemid="item.id">
 						<view class="cart-checkbox-item">
 							<label class="uni-list-cell uni-list-cell-pd">
 								<view class="cart-checkbox-c">
@@ -56,7 +56,7 @@
 				<view class='cell-group margin-cell-group'>
 					<view class='cell-item'>
 						<view class='cell-item-hd'>
-							<view class='cell-hd-title'>是否收到商品</view>
+							<view class='cell-hd-title'>是否发货</view>
 						</view>
 						<view class='cell-item-ft'>
 							<view class="uni-form-item uni-column invoice-type">
@@ -125,7 +125,7 @@
 						</view>
 				</view>
 			</view>
-			<view class="button-bottom">
+			<view class="button-bottom" style="z-index: 200;">
 				<button class="btn btn-b btn-square" formType="submit" :disabled='submitStatus' :loading='submitStatus'>提交</button>
 			</view>
 		</form>
@@ -138,8 +138,8 @@ export default {
     data() {
         return {
 			type_list: [
-				{ value: '1', name: '未收到', checked: true, disabled: false },
-				{ value: '2', name: '已收到', checked: false, disabled:false },
+				{ value: '1', name: '未发货', checked: true, disabled: false },
+				{ value: '2', name: '已发货', checked: false, disabled:false },
 			],
 			order_id:'',
 			items:[],   //退货明细
@@ -226,8 +226,9 @@ export default {
 							}
 						}		
 						this.items = res.data.items;
-						
-						this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
+	
+						this.refund = this.$common.moneySum((res.data.order_amount - res.data.refunded),0);
+						//this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.maxRefund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.cost_freight = res.data.cost_freight;//运费
 						this.refund_show = res.data.payed - res.data.refunded;
@@ -243,21 +244,33 @@ export default {
 		
 		//退货商品选择
 		checkboxChange (e) {
-			let nums = 0;
-			this.item_ids = [];
-			for (var i = 0; i < e.detail.value.length; i++) {
-				let k = e.detail.value[i];
-				for(var j = 0; j < this.items.length; j++){
-					if(this.items[j].id == k) {
-						if(this.items[j].nums > this.items[j].reship_nums) {
-							// nums = this.items[j].sendnums - this.items[j].reship_nums;
-							nums=this.$refs.input[i].value
-							this.item_ids = this.item_ids.concat({ id: k, nums: nums });
-							console.log(this.item_ids)
-						}
-					}
-				}
+			let id = e.target.dataset.itemid
+			let idx = this.checkedItems.findIndex(item => item == id)
+			if(idx >=0) {
+				this.checkedItems.splice(idx, 1)
+			} else {
+				this.checkedItems.push(id);
 			}
+			this.getReturnData();
+			// return 
+			// this.checkedItems.push(v);
+			// console.log(e)
+			// return
+			// let nums = 0;
+			// this.item_ids = [];
+			// for (var i = 0; i < e.detail.value.length; i++) {
+			// 	let k = e.detail.value[i];
+			// 	for(var j = 0; j < this.items.length; j++){
+			// 		if(this.items[j].id == k) {
+			// 			if(this.items[j].nums > this.items[j].reship_nums) {
+			// 				// nums = this.items[j].sendnums - this.items[j].reship_nums;
+			// 				nums=this.$refs.input[i].value
+			// 				this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+			// 				console.log(this.item_ids)
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 			
 			// let _this = this;
@@ -276,7 +289,6 @@ export default {
 			// console.log(cartData)
 			// this.getReturnData();
 		},
-		
 		// 点击输入框的事件
 		onFocus(item,key){
 			item.returnNums = '';
@@ -344,29 +356,29 @@ export default {
 			}
 
 			//判断退款金额
-			let reg = /^[0-9]+(.[0-9]{1,2})?$/;
-			if (!reg.test(this.refund)) {
-				this.$common.errorToShow('请输入正确金额');
-				this.submitStatus = false;
-				return false;
-			} else {
-				if (this.refund > this.refund_show) {
-					this.$common.errorToShow('退款金额过大');
-					this.submitStatus = false;
-					return false;
-				} 
-			}
+			// let reg = /^[0-9]+(.[0-9]{1,2})?$/;
+			// if (!reg.test(this.refund)) {
+			// 	this.$common.errorToShow('请输入正确金额');
+			// 	this.submitStatus = false;
+			// 	return false;
+			// } else {
+			// 	if (this.refund > this.refund_show) {
+			// 		this.$common.errorToShow('退款金额过大');
+			// 		this.submitStatus = false;
+			// 		return false;
+			// 	} 
+			// }
 			if(!this.isFlag) {
 				this.$common.errorToShow('您填写的数量不对！');
 				this.submitStatus = false;
 				return false;
 			}
 			 console.log(this.item_ids)
-			/* if(this.item_ids.length<=0){
-				this.$common.errorToShow('请处理要售后的商品');
+			if(this.item_ids.length<=0){
+				this.$common.errorToShow('请选择要售后的商品');
 				this.submitStatus = false;
 				return false;
-			} */
+			}
 			//组装数据，提交数据
 			let data = {
 				order_id:this.order_id,
@@ -540,7 +552,7 @@ export default {
 	text-align: center;
 	font-size: 24rpx;
 	vertical-align: middle;
-	margin-bottom: 22rpx;
+	margin-bottom: 8rpx;
 }
 /* #ifdef MP-ALIPAY */
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 use think\Model;
@@ -13,9 +14,9 @@ class Common extends Model
      */
     public function tableData($post)
     {
-        if(isset($post['limit'])){
+        if (isset($post['limit'])) {
             $limit = $post['limit'];
-        }else{
+        } else {
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);

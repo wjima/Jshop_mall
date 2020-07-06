@@ -19,14 +19,10 @@ class GoodsGrade extends Common
      */
     public function getGradePrice($goods_id = 0, $grade_id = 0)
     {
-        $returnData = [
-            'data'   => [],
-            'msg'    => '获取失败',
-            'status' => false,
-        ];
+        $returnData =  error_code(10025);
         if (!$goods_id) {
-            $returnData['msg'] = '关键参数失败';
-            return $returnData;
+//            $returnData['msg'] = '关键参数失败';
+            return error_code(12009);
         }
         $where   = [];
         $where[] = ['goods_id', '=', $goods_id];
@@ -59,14 +55,10 @@ class GoodsGrade extends Common
      */
     public function setGradePrice($goods_id = 0, $grade_id = 0, $price = 0.00)
     {
-        $returnData = [
-            'data'   => [],
-            'msg'    => '获取失败',
-            'status' => false,
-        ];
+        $returnData = error_code(10021);
         if (!$goods_id || !$grade_id) {
-            $returnData['msg'] = '关键参数失败';
-            return $returnData;
+//            $returnData['msg'] = '关键参数失败';
+            return error_code(10051);
         }
 
         $where   = [];
@@ -78,8 +70,8 @@ class GoodsGrade extends Common
             $uData['grade_price'] = $price;
             $res                  = $this->where($where)->update($uData);
             if (!$res) {
-                $returnData['msg'] = '更新失败';
-                return $returnData;
+                // $returnData['msg'] = error_code(10021, true);
+                return error_code(10021);
             }
         } else {
             $iData['goods_id']    = $goods_id;
@@ -87,8 +79,8 @@ class GoodsGrade extends Common
             $iData['grade_price'] = $price;
             $res                  = $this->where($where)->insertGetId($iData);
             if (!$res) {
-                $returnData['msg'] = '更新失败';
-                return $returnData;
+                return error_code(10021);
+                //return $returnData;
             }
         }
         $returnData['status'] = true;

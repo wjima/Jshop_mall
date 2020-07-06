@@ -120,7 +120,7 @@ class User
                         }
                         if(!$user_id) {
                             $userModel->rollback();
-                            $message[] = '用户数据保存失败';
+                            $message[] = error_code(11029,true);
                             Log::record($user['username'].'用户数据保存失败');
                             continue;
                         }else{
@@ -148,7 +148,7 @@ class User
         }
         if ($job->attempts() > 3) {
             $uData['status'] = $ietaskModle::IMPORT_FAIL_STATUS;
-            $uData['message'] = '导入执行失败';
+            $uData['message'] = error_code(11041,true);
             $uData['utime'] = time();
             $ietaskModle->update($uData, ['id' => $params['task_id']]);
             $job->delete();

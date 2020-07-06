@@ -314,7 +314,11 @@ class Setting extends Common
         'goods_show_word2' => [
             'name' => '商品显示文字2',
             'value' => '7天无理由退款'
-        ]
+        ],
+        'language' => [
+            'name' => '语言包',
+            'value' => 'cn',
+        ],
     ];
 
 
@@ -408,20 +412,13 @@ class Setting extends Common
     //参数校验
     public function check($skey, $value)
     {
-        $result = array(
-            'status' => false,
-            'data' => '',
-            'msg' => ''
-        );
         if (!isset($this->skeys[$skey])) {
             return error_code(10008);
         }
-
-
         if($skey == 'shop_name'){
             if($value == ''){
-                $result['msg'] = "平台名称不能为空";
-                return $result;
+//                $result['msg'] = "平台名称不能为空";
+                return error_code(10084);
             }
         }
 
@@ -429,13 +426,16 @@ class Setting extends Common
             if($value != ''){
                 if(!isMobile($value))
                 {
-                    $result['msg'] = '联系方式号码格式错误';
-                    return $result;
+//                    $result['msg'] = '联系方式号码格式错误';
+                    return error_code(10085);
                 }
             }
         }
-
-        $result['status'] = true;
+        $result = [
+            'status' => true,
+            'data' => '',
+            'msg' => ''
+        ];
         return $result;
     }
 
@@ -479,7 +479,7 @@ class Setting extends Common
         $re['msg'] = '';
         $re['count'] = $list->total();
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+//        $re['sql'] = $this->getLastSql();
 
         return $re;
     }

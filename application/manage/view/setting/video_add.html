@@ -27,8 +27,7 @@
             <video class="edui-faked video-js"  controls src="" id="toVideo" style="width:300px;height:200px;" poster="">
             </video>
         </div>
-        <input type="text" style="display: none" name="video_url" class="video" />
-        <input type="text" style="display: none" name="path" class="path" />
+        <input type="hidden" name="video_id" class="video" id="video_id"/>
         <div id="fileName">
         </div>
     </div>
@@ -61,8 +60,7 @@
                 layer.msg(res.msg);
                 if (res.status) {
                     $('#toVideo').attr('src',res.data.url);
-                    $('.video').attr('value',res.data.url);
-                    $('.path').attr('value',res.data.path);
+                    $('#video_id').attr('value',res.data.id);
                     $('#toVideo').show();
                     $('.layui-progress').hide();
                 }

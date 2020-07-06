@@ -1,27 +1,27 @@
 <form class="layui-form  seller-alone-form" id="userAdd" style="padding:20px;">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">手机号：</label>
+            <label class="layui-form-label"><i class="required-color">*</i>手机号：</label>
             <div class="layui-input-inline">
                 <input type="text" name="mobile" required lay-verify="required|phone"  class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">昵称：</label>
+            <label class="layui-form-label">用户名：</label>
             <div class="layui-input-inline">
-                <input type="text" name="nickname" class="layui-input">
+                <input type="text" name="username" class="layui-input">
             </div>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">密码：</label>
+            <label class="layui-form-label"><i class="required-color">*</i>密码：</label>
             <div class="layui-input-inline">
                 <input type="password" name="password" class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">确认密码：</label>
+            <label class="layui-form-label"><i class="required-color">*</i>确认密码：</label>
             <div class="layui-input-inline">
                 <input type="password" name="repassword" class="layui-input">
             </div>
@@ -66,13 +66,38 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
+            <label class="layui-form-label">昵称：</label>
+
+            <div class="layui-input-inline">
+                <input type="text" name="nickname" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">邀请人：</label>
+            <div class="layui-input-inline">
+                {Jshop:selectuser value="0" num="1" name="pid" /}
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
             <label class="layui-form-label">头像：</label>
             <div class="layui-input-inline">
                 {Jshop:image id="avatar" name="avatar"}
             </div>
         </div>
+        <div class="layui-inline" style="margin-top: -50px">
+            <label class="layui-form-label">备注：</label>
+            <div class="layui-input-inline">
+                <textarea name="remarks" maxlength="100" cols="10" rows="3" placeholder="用户备注" class="layui-textarea" style="resize: none"></textarea>
+            </div>
+        </div>
     </div>
-    {:jshopToken()}
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">注意:</label>
+        <div class="layui-form-mid">用户名不是必填的，但是账号一经创建成功，用户名不允许修改。</div>
+    </div>
+    {:jshopToken('add_user')}
 </form>
 <script>
     layui.use(['form', 'laydate'], function () {

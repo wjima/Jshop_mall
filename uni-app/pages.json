@@ -20,6 +20,24 @@
 	    "enablePullDownRefresh": true
 	  }
 	},
+	{
+	  "path": "pages/bargain/index",
+	  "style": {
+	    "navigationBarTitleText": "好友帮砍价"
+	  }
+	},
+	{
+	  "path": "pages/bargain/details",
+	  "style": {
+	    "navigationBarTitleText": "商品详情"
+	  }
+	},
+	{
+	  "path": "pages/bargain/list",
+	  "style": {
+	    "navigationBarTitleText": "砍价列表"
+	  }
+	},
     {
       "path": "pages/index/search",
       "style": {
@@ -141,6 +159,12 @@
 	  "path": "pages/member/setting/user_info/password",
 	  "style": {
 	    "navigationBarTitleText": "修改密码"
+	  }
+	},
+	{
+	  "path": "pages/member/setting/user_info/resetpassword",
+	  "style": {
+	    "navigationBarTitleText": "重置密码"
 	  }
 	},
     {
@@ -442,7 +466,50 @@
     	"style": {
     		"navigationBarTitleText": "消息订阅"
     	}
+    },
+    {
+    	"path" : "pages/login/mobile/index",
+    	"style": {
+    		"navigationBarTitleText": "绑定手机号"
+    	}
     }
+        ,{
+            "path" : "pages/member/bargain/list",
+            "style" : {
+				"navigationBarTitleText": "砍价记录"
+			}
+        },
+		{
+		    "path" : "pages/promotion/seckill",
+		    "style" : {
+				"navigationBarTitleText": "秒杀列表"
+			}
+		},
+		{
+		    "path" : "pages/promotion/group",
+		    "style" : {
+				"navigationBarTitleText": "团购列表"
+			}
+		},
+		{
+		    "path" : "pages/promotion/pintuan",
+		    "style" : {
+				"navigationBarTitleText": "拼团列表"
+			}
+		},
+		{
+		    "path" : "pages/login/login/mobile",
+		    "style" : {
+				"navigationBarTitleText": "绑定手机号"
+			}
+		}
+		// ,
+		// {
+		//     "path" : "pages/promotion/pintuan",
+		//     "style" : {
+		// 		"navigationBarTitleText": "拼团列表"
+		// 	}
+		// }
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

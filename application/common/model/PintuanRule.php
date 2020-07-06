@@ -98,7 +98,6 @@ class PintuanRule extends Common{
             $result['msg'] = $validate->getError();
             return $result;
         }
-        $theDate = explode(' 到 ', $data['date']);
 
         $pGoods = new PintuanGoods();
         //判断商品是否有参加过拼团
@@ -111,13 +110,13 @@ class PintuanRule extends Common{
             $goodsModel = new Goods();
             $goodsInfo = $goodsModel->getGoodsDetial($re['goods_id']);
             if($goodsInfo['status']){
-                $result['msg'] = "商品：".$goodsInfo['data']['name']." 参加过拼团了";
-                return $result;
+//                $result['msg'] = error_code(15612,true,$goodsInfo['data']['name']); //"商品：".$goodsInfo['data']['name']." 参加过拼团了";
+                return error_code(15612,false,$goodsInfo['data']['name']);
             }else{
                 return error_code(10000);
             }
         }
-
+        $theDate = explode(' 到 ', $data['date']);
         if (count($theDate) != 2) {
             return error_code(15002);
         }
@@ -143,7 +142,7 @@ class PintuanRule extends Common{
 //    public function getInfo($id){
 //        $result  = [
 //            'status' => false,
-//            'msg' => '获取失败',
+//            'msg' => error_code(10025,true),
 //            'data' => []
 //        ];
 //        $rel = $this->with('goods')->where('id','eq',$id)->find();
@@ -236,7 +235,7 @@ class PintuanRule extends Common{
             ->order('sort asc')
             ->find();
         if (!$pinfo) {
-            return error_code(10000);
+            return error_code(15603);
         }
         if ($pinfo['stime'] > time()) {
             return error_code(15601);
@@ -248,7 +247,7 @@ class PintuanRule extends Common{
         $orderModel         = new Order();
         $condition['stime'] = $pinfo['stime'];
         $condition['etime'] = $pinfo['etime'];
-        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $condition, $orderModel::ORDER_TYPE_PINTUAN);
+        $check_order        = $orderModel->findLimitOrder($product_id, $user_id, $pinfo, $orderModel::ORDER_TYPE_PINTUAN);
        
         if (isset($pinfo['max_goods_nums']) && $pinfo['max_goods_nums'] != 0) {
             if (($check_order['data']['total_orders'] + $nums) > $pinfo['max_goods_nums']) {
@@ -296,7 +295,7 @@ class PintuanRule extends Common{
 
             $list[$k]['products']['price'] -= $pinfo['discount_amount'];
             if($list[$k]['products']['price'] < 0){
-                return error_code(10000);
+                $list[$k]['products']['price'] = 0;
             }
         }
         $result['status'] = true;
@@ -308,19 +307,30 @@ class PintuanRule extends Common{
      * @param $goods_id
      * @return array|null|\PDOStatement|string|Model
      */
-    public function getPintuanInfo($goods_id){
+    public function getPintuanInfo($goods_id)
+    {
         $where = [];
         //取得规则id
-        $where[] = ['status','eq',$this::STATUS_ON];
-        $where[] = ['goods_id', 'eq', $goods_id];
-        $where[] = ['etime','>',time()];
+        $where[]           = ['pr.status', 'eq', $this::STATUS_ON];
+        $where[]           = ['pg.goods_id', 'eq', $goods_id];
+        $where[]           = ['pr.etime', '>', time()];
         $pintuanGoodsModel = new PintuanGoods();
-        $pinfo = $pintuanGoodsModel
+        $pinfo             = $pintuanGoodsModel
             ->alias('pg')
-            ->join('pintuan_rule pr','pr.id = pg.rule_id')
-            ->join('goods g','pg.goods_id = g.id')
+            ->join('pintuan_rule pr', 'pr.id = pg.rule_id')
+            ->join('goods g', 'pg.goods_id = g.id')
+            ->field('pg.*,pr.*,g.name,g.image_id')
             ->where($where)
             ->find();
+
+        if ($pinfo) {
+            $goodsModel             = new Goods();
+            $info                   = $goodsModel->getGoodsDetial($goods_id, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids');
+
+            $nowPrice               = bcsub($info['data']['product']['price'], $pinfo['discount_amount'], 2);
+            $pinfo['pintuan_price'] = $nowPrice > 0 ? $nowPrice : 0;
+            $pinfo['original_price'] = $info['data']['product']['price'];//原价
+        }
         return $pinfo;
     }
 

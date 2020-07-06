@@ -95,16 +95,18 @@
 					<div class="layui-form-mid seller-inline-2">￥{$order.goods_amount}</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">下单人：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.username}</div>
+
 					<label class="layui-form-label">下单来源：</label>
 					<div class="layui-form-mid seller-inline-2">{:config('params.order.source')[$order.source]}</div>
 
 					<label class="layui-form-label">下单时间：</label>
-					<div class="layui-form-mid seller-inline-2">{:date('Y-m-d H:i:s', $order.ctime)}</div>
-
-					<label class="layui-form-label">配送费用：</label>
-					<div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
+					<div class="layui-form-mid seller-inline-2" style="width: auto">{:date('Y-m-d H:i:s', $order.ctime)}</div>
 				</div>
 				<div class="layui-form-item">
+					<label class="layui-form-label">配送费用：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
 					<label class="layui-form-label">收货状态：</label>
 					<div class="layui-form-mid seller-inline-2">{:config('params.order.confirm')[$order.confirm]}</div>
 				</div>
@@ -163,6 +165,9 @@
 
 			<!--商品详情-->
 			<div class="layui-tab-item">
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+					<legend style="font-size:14px;">商品信息</legend>
+				</fieldset>
 				<table class="layui-table" lay-size="sm">
 					<thead>
 					<tr>

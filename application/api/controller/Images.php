@@ -27,11 +27,7 @@ class Images extends Api
             ];
             return $data;
         } else {
-            return [
-                'data'   => '',
-                'status' => false,
-                'msg'    => "上传失败"
-            ];
+            return error_code(10035);
         }
     }
 }

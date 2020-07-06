@@ -32,7 +32,7 @@
         <div class="layui-input-inline seller-inline-1">
             <input type="number" name="max_nums" required  lay-verify="required" value="{$info.params.max_nums}" autocomplete="off" class="layui-input">
         </div>
-        <div class="layui-form-mid layui-word-aux">优惠券可领取数量,0为无限制</div>
+        <div class="layui-form-mid layui-word-aux">优惠券所有用户可领取总数量,0为无限制</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">用户领取：</label>
@@ -68,7 +68,7 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            {:jshopToken()}
+            {:jshopToken('coupon_edit')}
             <button class="layui-btn" lay-submit lay-filter="promotion">提交</button>
             <a href="{:url('Promotion/coupon')}" class="layui-btn layui-btn-primary">返回</a>
         </div>

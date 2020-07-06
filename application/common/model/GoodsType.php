@@ -154,11 +154,7 @@ class GoodsType extends Common
      */
     public function getTypeValue($type_id = 0)
     {
-        $result   = [
-            'status' => false,
-            'msg'    => '无相关类型',
-            'data'   => '',
-        ];
+        $result   = error_code(12017);
         $typeInfo = $this->field('id,name,params')->where([ 'id' => $type_id ])->find();
         if($typeInfo) {
             $typeInfo['params'] = unserialize($typeInfo['params']);
@@ -222,14 +218,8 @@ class GoodsType extends Common
                 'msg' => '获取成功',
                 'data' => $res
             ];
-        }
-        else
-        {
-            $return = [
-                'status' => false,
-                'msg' => '获取失败',
-                'data' => $res
-            ];
+        } else {
+            return error_code(10025);
         }
         return $return;
     }

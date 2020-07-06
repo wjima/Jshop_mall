@@ -94,8 +94,8 @@ class BillDelivery extends Common
             $ship_address = $info['address'];
         }
         if(!$ship_name || !$ship_mobile || !$ship_area_id || !$ship_address){
-            $result['msg'] = "收货地址信息不全";
-            return $result;
+//            $result['msg'] = "收货地址信息不全";
+            return error_code(13309);
         }
 
         $bill_delivery = [
@@ -114,14 +114,14 @@ class BillDelivery extends Common
         $tNum = 0;
         foreach($items as $product_id => $num){
             if(!isset($dinfo['items'][$product_id])){
-                return error_code(10000);       //发货的商品不在发货明细里，肯定有问题
+                return error_code(13308);       //发货的商品不在发货明细里，肯定有问题
             }
             //判断总发货数量
             $tNum = $tNum + $num;
             //判断是否超发
             if(($dinfo['items'][$product_id]['nums'] - $dinfo['items'][$product_id]['sendnums'] - ($dinfo['items'][$product_id]['reship_nums'] - $dinfo['items'][$product_id]['reship_nums_ed'])) < $num){
-                $result['msg'] = $dinfo['items'][$product_id]['name']." 发超了";
-                return $result;
+//                $result['msg'] = error_code(13310,false,$dinfo['items'][$product_id]['name']);//$dinfo['items'][$product_id]['name']." 发超了";
+                return error_code(13310,false,$dinfo['items'][$product_id]['name']);
             }
             //构建发货单明细
             $bdRel[] = [
@@ -138,8 +138,8 @@ class BillDelivery extends Common
         }
 
         if ($tNum < 1) {
-            $result['msg'] = '请至少发生一件商品！';
-            return $result;
+//            $result['msg'] = '请至少发生一件商品！';
+            return error_code(13311);
         }
 
         Db::startTrans();
@@ -197,7 +197,7 @@ class BillDelivery extends Common
 //    {
 //        $result = [
 //            'status' => false,
-//            'msg' => '获取失败',
+//            'msg' => error_code(10025,true),
 //            'data' => []
 //        ];
 //        $deliveryInfo = $this->where('order_id', $order_id)->find();
@@ -256,7 +256,7 @@ class BillDelivery extends Common
             ];
         } else {
             $result['status'] = false;
-            $result['msg'] = $logisticsInfo['message'] ? $logisticsInfo['message'] : "暂无消息";
+            $result['msg'] = $logisticsInfo['message'] ? $logisticsInfo['message'] : error_code(10099,true);
         }
 
         return $result;
@@ -307,7 +307,7 @@ class BillDelivery extends Common
             $where[] = ['d.ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
         }
         $res = $this->alias('d')
-            ->field('d.*')
+            ->field('d.*,r.order_id')
             ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
             ->where($where)
             ->group('r.delivery_id')
@@ -327,12 +327,13 @@ class BillDelivery extends Common
                 'count' => $count
             ];
         } else {
-            $return_data = [
-                'status' => false,
-                'msg' => '获取失败',
-                'data' => $res,
-                'count' => $count
-            ];
+            // $return_data = [
+            //     'status' => false,
+            //     'msg' => error_code(10025,true),
+            //     'data' => $res,
+            //     'count' => $count
+            // ];
+            return error_code(10025);
         }
         return $return_data;
     }
@@ -348,7 +349,7 @@ class BillDelivery extends Common
     public function getDeliveryInfo($delivery_id)
     {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => [],
             'msg' => ''
         ];
@@ -356,8 +357,8 @@ class BillDelivery extends Common
         $where[] = ['delivery_id', 'eq', $delivery_id];
         $info = $this::with(['items','orders'])->where($where)->find();
         if(!$info){
-            $result['msg'] = "无此记录";
-            return $result;
+//            $result['msg'] = "无此记录";
+            return error_code(10002);
         }
         $info = $info->toArray();
 
@@ -418,6 +419,7 @@ class BillDelivery extends Common
             [
                 'id' => 'logi_no',
                 'desc' => '快递单号',
+                'modify' => 'convertString'
             ],
             [
                 'id' => 'ship_address',
@@ -456,7 +458,7 @@ class BillDelivery extends Common
         $result = [
             'status' => false,
             'data' => [],
-            'msg' => '无可导出数据'
+            'msg' => ''
         ];
         $header = $this->csvHeader();
         $userData = $this->getExportList($post);
@@ -485,7 +487,7 @@ class BillDelivery extends Common
             return $result;
         } else {
             //失败，导出失败
-            return $result;
+            return error_code(10083);
         }
     }
 
@@ -507,41 +509,41 @@ class BillDelivery extends Common
     //导出格式
     public function getExportList($input = [])
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '获取失败',
-            'data' => '',
-            'count' => 0
-        ];
+        $return_data = error_code(10025);
+
         $where = [];
-
-        if (isset($input['id']) && $input['id'] != "") {
-            $where[] = ['delivery_id', 'in', $input['id']];
-        }
-
         if ($input['delivery_id']) {
-            $where[] = ['delivery_id', 'like', '%' . $input['delivery_id'] . '%'];
+            $where[] = ['d.delivery_id', 'like', '%' . $input['delivery_id'] . '%'];
+        }
+        if ($input['order_id']) {
+            $where[] = ['r.order_id', 'like', '%' . $input['order_id'] . '%'];
+        }
+        if ($input['logi_no']) {
+            $where[] = ['d.logi_no', 'like', '%' . $input['logi_no'] . '%'];
+        }
+        if ($input['mobile']) {
+            $where[] = ['d.ship_mobile', 'like', '%' . $input['mobile'] . '%'];
         }
         if ($input['date']) {
             $date = explode(' 到 ', $input['date']);
-            $where[] = ['ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
+            $where[] = ['d.ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
         }
-        if ($input['order_id']) {
-            $where[] = ['order_id', 'like', '%' . $input['order_id'] . '%'];
-        }
-        if ($input['logi_no']) {
-            $where[] = ['logi_no', 'like', '%' . $input['logi_no'] . '%'];
-        }
-        if ($input['mobile']) {
-            $where[] = ['ship_mobile', 'like', '%' . $input['mobile'] . '%'];
-        }
-
-        $res = $this->where($where)
+        $res = $this->alias('d')
+            ->field('d.*,r.order_id')
+            ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
+            ->where($where)
+            ->group('r.delivery_id')
             ->order('ctime desc')
             ->select();
 
         if ($res) {
-            $count = $this->where($where)->count();
+
+            $count = $this->alias('d')
+                ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
+                ->group('r.delivery_id')
+                ->where($where)
+                ->count();
+
             foreach ($res as $k => &$v) {
                 if(isset($v['user_id']) && $v['user_id']){
                     $v['username'] = get_user_info($v['user_id'], 'nickname');

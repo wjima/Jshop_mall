@@ -32,11 +32,11 @@ class Role extends Manage
      */
     public function add()
     {
-        $result = [
-            'status' => false,
-            'msg' => '失败',
-            'data' => ''
-        ];
+//        $result = [
+//            'status' => false,
+//            'msg' => error_code(10037,true),
+//            'data' => ''
+//        ];
         $this->view->engine->layout(false);
         $manageRoleModel = new ManageRole();
         if(Request::isPost())

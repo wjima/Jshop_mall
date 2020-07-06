@@ -87,7 +87,14 @@ const methodsToken = [
     'wechat_applets_message-api-tmpl',
     'wechat_applets_message-api-settip',
     'wechat_applets_message-api-closetip',
-    'wechat_applets_message-api-istip'
+    'wechat_applets_message-api-istip',
+	'bargain.dobargain',
+	'bargain.goodsinfo',
+	'bargain.add',
+	'bargain.getuserbargainlog',
+	'bargain.canclebargain',
+	'api.hb.WelfarePro',
+	'api.coupon.WelfarePro'
 ];
 
 const post = (method, data, callback,complete) => {
@@ -132,6 +139,11 @@ const post = (method, data, callback,complete) => {
 						complete: function() {
 							setTimeout(function() {
 								uni.hideToast();
+								let current =  getCurrentPages()
+								current = current[current.length - 1]
+								if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+									return
+								}
 								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
 									url: '/pages/login/login/index1'
@@ -214,6 +226,11 @@ const pluginsPost = (method, data, callback) => {
 						duration: 1000,
 						complete: function() {
 							setTimeout(function() {
+								let current =  getCurrentPages()
+								current = current[current.length - 1]
+								if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+									return
+								}
 								uni.hideToast();
 								// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
 								uni.navigateTo({
@@ -227,7 +244,7 @@ const pluginsPost = (method, data, callback) => {
 									animationDuration: 200
 								});
 								// #endif
-							}, 1000);
+							}, 500);
 						}
 					});
 				}
@@ -506,10 +523,10 @@ export const userShip = (data, callback) => post('user.getusership', data, callb
 // 获取用户默认收货地址
 export const userDefaultShip = (data, callback) => post('user.getuserdefaultship', data, callback);
 
-// 存储用户收货地址
+// 存储用户收货地址 废弃
 export const saveUserShip = (data, callback, complete) => post('user.vuesaveusership', data, callback, complete);
 
-// 微信存储收货地址
+// 微信存储收货地址 废弃
 export const saveUserShipWx = (data, callback) => post('user.saveusership', data, callback);
 
 //获取区域ID
@@ -842,3 +859,36 @@ export const share = (data, callback) => post('user.share', data, callback);
 
 //统一分享解码
 export const deshare = (data, callback) => post('user.deshare', data, callback);
+
+//绑定手机号
+export const bindMobile = (data, callback) => post('user.bindMobile', data, callback);
+
+//获取砍价商品列表
+export const getBargainList = (data, callback) => post('bargain.list', data, callback);
+
+//获取砍价商品详情
+export const getBargainDetial = (data, callback) => post('bargain.goodsinfo', data, callback);
+
+//砍一刀
+export const doBargain = (data, callback) => post('bargain.dobargain', data, callback);
+
+//砍一刀
+export const addBargain = (data, callback) => post('bargain.add', data, callback);
+//砍一刀参与活动记录
+export const getUserBargainLog = (data, callback) => post('bargain.getuserbargainlog', data, callback);
+
+//取消砍一刀活动
+export const cancleBargain = (data, callback) => post('bargain.canclebargain', data, callback);
+
+//分享领取红包
+export const getShareHb = (data, callback) => post('api.hb.WelfarePro', data, callback);
+
+//分享领取优惠券
+export const getShareCoupon = (data, callback) => post('api.coupon.WelfarePro', data, callback);
+
+
+//团购秒杀获取货品信息
+export const getGroupProductInfo = (data, callback) => post('group.getproductinfo', data, callback);
+
+// 分享配置
+export const getShareInfo = (data, callback) => post('weixinshare.share', data, callback);

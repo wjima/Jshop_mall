@@ -7,11 +7,11 @@
 			<view class="adbrathing-l">
 				<image class="user-head-img" :src="log.avatar" mode="aspectFill"></image>
 				<view class="user-name">
-					{{log.nickname}}
+					{{log.nickname||''}}
 				</view>
 			</view>
 			<view class="adbrathing-r">
-				 {{log.ctime}}{{log.desc}}
+				 {{log.ctime||''}}{{log.desc||''}}
 			</view>
 		</view>
 	</view>
@@ -87,13 +87,13 @@ export default {
 				success: (response) => {
 					var res = response.data;
 					if(res.status == true){
-						if(res.data){
+						if(res.data && res.data.nickname && res.data.ctime && res.data.desc){
 							_this.log = res.data;
 							_this.adbshow = true;
 							_this.hideanimation = false;
-							_this.hideLog();
 						}
 					}
+                    _this.hideLog();
 				}
 			});
 		}

@@ -40,11 +40,6 @@ class UserPointLog extends Common
      */
     public function setPoint($user_id, $num, $type = self::POINT_TYPE_SIGN, $remarks = '')
     {
-        $return = [
-            'status' => false,
-            'msg'    => ''
-        ];
-
         if ($num != 0) {
             //获取积分账号信息
             $user_model = new User();
@@ -53,8 +48,7 @@ class UserPointLog extends Common
             $new_point = $user_info['point'] + $num;
             //积分余额判断
             if ($new_point < 0) {
-                $return['msg'] = '积分余额不足';
-                return $return;
+                return error_code(11601);
             }
 
             //插入记录
@@ -103,8 +97,7 @@ class UserPointLog extends Common
         //判断是否已经签到
         $res = $this->isSign($user_id);
         if ($res['status']) {
-            $return['msg'] = '今天已经签到，无需重复签到';
-            return $return;
+            return error_code(11602);
         }
 
         //获取店铺签到积分设置
@@ -141,10 +134,7 @@ class UserPointLog extends Common
      */
     public function isSign($user_id)
     {
-        $return = [
-            'status' => false,
-            'msg'    => '今天还没有签到'
-        ];
+        $return = error_code(11603);
 
         $where[]    = ['user_id', 'eq', $user_id];
         $where[]    = ['type', 'eq', self::POINT_TYPE_SIGN];
@@ -283,11 +273,11 @@ class UserPointLog extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function pointLogList($user_id, $type = false, $page = 1, $limit = 20)
+    public function pointLogList($user_id, $type = false, $page = 1, $limit = 20,$params = [])
     {
         $return = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => [],
             'total'  => 0,
             'count'  => 0
@@ -295,9 +285,28 @@ class UserPointLog extends Common
         if ($type) {
             $where[] = ['type', 'eq', $type];
         }
-        $where[] = ['user_id', 'eq', $user_id];
+        if($user_id){
+            $where[] = ['user_id', 'eq', $user_id];
+        }
 
-        $res = $this->field('id, type, num, balance, remarks, ctime')
+        if($params){
+            if(isset($params['mobile']) && !empty($params['mobile']) && !$user_id){
+                $user_id_search = get_user_id($params['mobile']);
+                if($user_id_search){
+                    $where[] = ['user_id', 'eq', $user_id_search];
+                }
+            }
+            if(isset($params['date']) && !empty($params['date'])){
+                $date_string = $params['date'];
+                $date_array = explode(' 到 ', urldecode($date_string));
+                $sdate = strtotime($date_array[0] . ' 00:00:00');
+                $edate = strtotime($date_array[1] . ' 23:59:59');
+                $where[] = ['ctime', ['>=', $sdate], ['<=', $edate], 'and'];
+            }
+
+        }
+
+        $res = $this->field('id, type, num, balance, remarks, ctime,user_id')
             ->where($where)
             ->order('ctime', 'desc')
             ->page($page, $limit)
@@ -315,6 +324,7 @@ class UserPointLog extends Common
                 foreach ($return['data'] as &$v) {
                     $v['type']  = config('params.user_point_log')['type'][$v['type']];
                     $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
+                    $v['username'] = get_user_info($v['user_id'],'showname');
                 }
             } else {
                 $return['msg'] = '暂无积分记录';

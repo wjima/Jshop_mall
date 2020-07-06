@@ -31,6 +31,13 @@
             </div>
         </div>
         <div class="layui-inline">
+            <label class="layui-form-label">支付对象：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="source_id" lay-verify="title" placeholder="请输入支付对象单号" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
             <label class="layui-form-label">下单时间：</label>
             <div class="layui-input-inline seller-inline-4">
                 <input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
@@ -82,7 +89,7 @@
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
-                    请先选中或筛选要导出的订单
+                    请先选中或筛选要导出的支付单
                 </blockquote>
             </div>
             <div class="layui-inline">
@@ -112,6 +119,7 @@
             id: 'billPayments',
             cols: [[
                 { field: 'payment_id', width: 140, sort: true, title: '支付单号', align: 'center' },
+                { field: 'source_id', width: 140, sort: true, title: '支付对象', align: 'center' },
                 { field: 'status', width: 100, title: '状态', align: 'center' },
                 { field: 'payment_code', width: 120, title: '支付方式', align: 'center' },
                 { field: 'type', width: 100, title: '单据类型', align: 'center' },

@@ -26,8 +26,12 @@
 		},
         watch:{
             spesData: function (val) {
-                let d = JSON.parse(val);
-                this.specList = d;
+				if(typeof val == 'object'){
+					this.specList = val;
+				}else{
+					let d = JSON.parse(val);
+					this.specList = d;
+				}
             }
         },
 		methods: {

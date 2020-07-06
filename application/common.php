@@ -21,6 +21,7 @@ use app\common\model\Operation;
 use app\common\model\Area;
 use app\common\model\Payments;
 use app\common\model\Logistics;
+use org\Wx;
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
@@ -316,6 +317,12 @@ function get_user_info($user_id, $field = 'mobile')
                 $nickname = format_mobile($user['mobile']);
             }
             return $nickname;
+        }elseif($field == 'showname'){
+            $str = $user['mobile'];
+            if($user['username']){
+                $str .= "(".$user['username'].")";
+            }
+            return $str;
         } else {
             return $user->$field;
         }
@@ -337,7 +344,7 @@ function get_user_info($user_id, $field = 'mobile')
 function get_goods_info($goods_id, $field = 'name')
 {
     $goodsModel = new \app\common\model\Goods();
-    $info       = $goodsModel->where(['id' => $goods_id])->find();
+    $info       = $goodsModel->where(['id' => $goods_id])->cache(86400)->find();
     if ($info) {
         if ($field == 'image_id') {
             return _sImage($info[$field]);
@@ -457,18 +464,54 @@ function error_code($code, $mini = false)
 {
     $result = [
         'status' => false,
-        'data'   => 10000,
+        'data'   => $code,
         'msg'    => config('error.10000')
     ];
-    if (config('?error.' . $code)) {
-        $result['data'] = $code;
-        $result['msg']  = config('error.' . $code);
+    //有语言包就应用语言包
+    $data = func_get_args();
+    array_splice($data,1,1);
+    $msg = jshop_l(...$data);
+    if($msg == ""){
+        if (config('?error.' . $code)) {
+            $msg = config('error.' . $code);
+        }
     }
+    $result['msg'] = $msg;
     if ($mini) {
         return $result['msg'];
     } else {
         return $result;
     }
+}
+//语言包，前端和数据
+function jshop_l($code){
+    $data = func_get_args();
+    $str = "";
+    if (!config('?language_'.getSetting('language').'.' . $code)) {
+        return $str;
+    }
+    $str = config('language_'.getSetting('language').'.' . $code);
+    $count = count($data);
+    $count--;
+    for($i=1;$i<=$count;$i++){
+        $str = str_replace("{JSHOP".$i."}",$data[$i],$str);
+    }
+    return $str;
+}
+//后端语言包,所有的后端的显示放到这里
+function jshop_m_l($code){
+    $data = func_get_args();
+    $str = "";
+    if (!config('?language_'.config('jshop.language').'.' . $code)) {
+        return $str;
+    }
+    $str = config('language_'.config('jshop.language').'.' . $code);
+    $count = count($data);
+    $count--;
+    for($i=1;$i<=$count;$i++){
+        $str = str_replace("{JSHOP".$i."}",$data[$i],$str);
+    }
+    return $str;
 }
 
 
@@ -628,11 +671,16 @@ function getBool($value = '1')
 /**
  * 时间格式化
  * @param int $time
- * @return false|string
+ * @param bool|true $year
+ * @return bool|string
  */
-function getTime($time = 0)
+function getTime($time = 0,$year=true)
 {
-    return date('Y-m-d H:i:s', $time);
+    if($year){
+        return date('Y-m-d H:i:s', $time);
+    }else{
+        return date('m-d H:i:s', $time);
+    }
 }
 
 
@@ -1057,18 +1105,24 @@ function isInGroup($gid = 0, &$promotion_id = 0,&$condition = [])
     $promotion = new app\common\model\Promotion();
 
     $where[]   = ['p.status', 'eq', $promotion::STATUS_OPEN];
+
+    if($promotion_id){
+        $where[]   = ['p.id', 'eq', $promotion_id];//团购秒杀id
+    }
+    /*
     $where[]   = ['p.stime', 'lt', time()];
-    $where[]   = ['p.etime', 'gt', time()];
-    $where[]   = ['pc.params', 'like', '%"' . $gid . '"%'];
+    $where[]   = ['p.etime', 'gt', time()];*/
+    $where[]   = ['gg.goods_id', '=',  $gid];
     $where[]   = ['p.type', 'in', [$promotion::TYPE_GROUP, $promotion::TYPE_SKILL]];
-    $condition = $promotion->field('p.id as id,p.params as params,p.stime as stime,p.etime as etime')
+
+    $condition = $promotion->field('p.id as id,p.type,p.status,p.params as params,p.stime as stime,p.etime as etime')
         ->alias('p')
         ->join('promotion_condition pc', 'pc.promotion_id = p.id')
+        ->join('group_goods gg', 'gg.rule_id = p.id')
         ->where($where)
         ->find();
 
     if ($condition) {
-        $promotion_id = $condition['id'];
         return true;
     }
     return false;
@@ -1187,7 +1241,7 @@ function isEmail($email)
  */
 function convertString($value = '')
 {
-    return $value . "\t";
+    return  '="'.$value.'"';
 }
 
 
@@ -1197,7 +1251,7 @@ function convertString($value = '')
 function mobile_string($user_id = 0)
 {
     $mobile = get_user_info($user_id);
-    return $mobile . "\t";
+    return '="'.$mobile.'"';
 }
 
 
@@ -1207,7 +1261,7 @@ function mobile_string($user_id = 0)
 function nickname_string($user_id = 0)
 {
     $nickname = get_user_info($user_id, 'nickname');
-    return $nickname . "\t";
+    return '="'.$nickname.'"';
 }
 
 
@@ -1275,15 +1329,23 @@ function secondConversionArray($second = 0)
  */
 function validateJshopToken()
 {
-    $_token = input('__Jshop_Token__/s', '');
-    if (!$_token || $_token != session('__Jshop_Token__')) {
+    $_token      = input('__Jshop_Token__/s', '');
+    $form        = input('validate_form/s', '');
+
+    $cache_token = \think\facade\Cache::get($form . '_token');
+
+    if (!$_token || $_token != $cache_token) {
         if (\think\facade\Request::isAjax()) {
+
+            $new_token = \think\facade\Request::token('__Jshop_Token__', 'sha1');
+            \think\facade\Cache::set($form . '_token', $new_token, 86400);   //1天过期
             $return = [
                 'data'   => '',
-                'msg'    => '已超时或重复提交，请重试或刷新页面',
+                'msg'    => error_code(10082,true),
                 'status' => false,
-                'token'  => \think\facade\Request::token('__Jshop_Token__', 'sha1')
+                'token'  => $new_token
             ];
+            //\think\facade\Cache::rm($form . '_token');//删除旧缓存
             header('Content-type:text/json');
             echo json_encode($return);
             exit;
@@ -1295,11 +1357,14 @@ function validateJshopToken()
 
 /**
  * 生成令牌
+ * @param string $form
+ * @return string
  */
-function jshopToken()
+function jshopToken($form = 'form')
 {
     $data = \think\facade\Request::token('__Jshop_Token__', 'sha1');
-    return '<input type="hidden" name="__Jshop_Token__" value="' . $data . '" class="Jshop_Token">';
+    \think\facade\Cache::set($form . '_token', $data, 86400);   //1天过期
+    return '<input type="hidden" name="validate_form" value="' . $form . '"><input type="hidden" name="__Jshop_Token__" value="' . $data . '" class="Jshop_Token">';
 }
 
 
@@ -1638,7 +1703,17 @@ function alphaID($in, $to_num = false, $pad_up = false)
 /**
  * 过滤XSS攻击
  */
-function remove_xss($val) {
+function remove_xss($val)
+{
+
+    if (is_array($val)) {
+        foreach ($val as $k => $v) {
+            $val[$k] = remove_xss($v);
+        }
+    }
+
+    $sqlstring = array('select', 'insert', 'and', 'or', 'update', 'delete', '\'', '\/\*', '\*', '\.\.\/', '\.\/', 'union', 'into', 'load_file', 'outfile');
+    $val       = str_ireplace($sqlstring, '', $val);
     // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
     // this prevents some character re-spacing such as <java\0script>
     // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
@@ -1655,16 +1730,16 @@ function remove_xss($val) {
         // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
 
         // @ @ search for the hex values
-        $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); // with a ;
+        $val = preg_replace('/(&#[xX]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', $search[$i], $val); // with a ;
         // @ @ 0{0,7} matches '0' zero to seven times
-        $val = preg_replace('/(&#0{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ;
+        $val = preg_replace('/(&#0{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val); // with a ;
     }
 
     // now the only remaining whitespace attacks are \t, \n, and \r
     $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
     $ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
-    $ra = array_merge($ra1, $ra2);
 
+    $ra    = array_merge($ra1, $ra2);
     $found = true; // keep replacing as long as the previous round replaced something
     while ($found == true) {
         $val_before = $val;
@@ -1681,13 +1756,73 @@ function remove_xss($val) {
                 $pattern .= $ra[$i][$j];
             }
             $pattern .= '/i';
-            $replacement = substr($ra[$i], 0, 2).'<x>'.substr($ra[$i], 2); // add in <> to nerf the tag
-            $val = preg_replace($pattern, $replacement, $val); // filter out the hex tags
+            $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2); // add in <> to nerf the tag
+            $val         = preg_replace($pattern, $replacement, $val); // filter out the hex tags
             if ($val_before == $val) {
                 // no replacements were made, so exit the loop
                 $found = false;
             }
         }
     }
+
     return $val;
+}
+
+/**
+ * 检查文字
+ * @param $content
+ * @param int $type //1微信免费 2珊瑚收费
+ * @return bool
+ */
+function msgSecCheck($content, $type = 1)
+{
+    $wx = new Wx();
+    if ($type == 1) {
+        $res = $wx->msgSecCheck($content);
+    } else {
+        $res = $wx->msgSecCheckPay($content);
+    }
+    return $res;
+}
+
+/**
+ * 检查图片
+ * @param $img
+ * @param int $type //1微信免费 2珊瑚收费
+ * @return bool
+ */
+function imgSecCheck($img, $type = 1)
+{
+    $wx = new Wx();
+    if ($type == 1) {
+        $res = $wx->imgSecCheck($img);
+    } else {
+        $res = $wx->imgSecCheckPay($img);
+    }
+    return $res;
+}
+
+
+/**
+ * 递归删除文件
+ * @param $dirName
+ * @param bool|true $subdir
+ * @return bool
+ */
+function del_dir_and_file($dirName,$subdir = true)
+{
+    if(!is_dir($dirName)) return true;
+    if ($handle = opendir("$dirName")) {
+        while (false !== ($item = readdir($handle))) {
+            if ($item != "." && $item != "..") {
+                if (is_dir("$dirName/$item")){
+                    del_dir_and_file("$dirName/$item", false);
+                }
+                else
+                    @unlink("$dirName/$item");
+            }
+        }
+        closedir($handle);
+        if (!$subdir) @rmdir($dirName);
+    }
 }

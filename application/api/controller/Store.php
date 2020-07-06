@@ -162,14 +162,8 @@ class Store extends Api
         {
             $style['width'] = 300;
             return $wx->getParameterQRCode($accessToken, $page, $invite, $goods, $style, $wx_appid);
-        }
-        else
-        {
-            return $return = [
-                'status' => false,
-                'msg' => '后台小程序配置的APPID和APPSECRET错误，无法生成海报',
-                'data' => ''
-            ];
+        } else {
+            return error_code(10069);
         }
     }
 

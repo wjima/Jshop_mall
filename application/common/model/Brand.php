@@ -76,10 +76,10 @@ class Brand extends Common
             $result['status'] = false;
             $result['msg'] = $validate->getError();
         } else {
-            if (!$this->allowField(true)->save($data))
-            {
-                $result['status'] = false;
-                $result['msg'] = '保存失败';
+            if (!$this->allowField(true)->save($data)) {
+                //                $result['status'] = false;
+                //                $result['msg'] = '保存失败';
+                return error_code(10004);
             }
         }
         return $result;
@@ -104,10 +104,10 @@ class Brand extends Common
             $result['status'] = false;
             $result['msg'] = $validate->getError();
         } else {
-            if (!$this->allowField(true)->save($data,['id'=>$data['id']]))
-            {
-                $result['status'] = false;
-                $result['msg'] = '保存失败';
+            if (!$this->allowField(true)->save($data, ['id' => $data['id']])) {
+                //                $result['status'] = false;
+                //                $result['msg'] = '保存失败';
+                return error_code(10004);
             }
         }
         return $result;

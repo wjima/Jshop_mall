@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 use think\Validate;
@@ -24,53 +25,53 @@ class BillAftersales extends Common
     protected $deleteTime = 'isdel';
 
 
-//    废弃的方法，建议用orderToAftersales方法吧。
-//    /**
-//     * 订单售后状态，返回退款的金额和退货的明细
-//     * @param $order_id
-//     * @param bool $user_id
-//     * @return array|mixed
-//     * @throws \think\db\exception\DataNotFoundException
-//     * @throws \think\db\exception\ModelNotFoundException
-//     * @throws \think\exception\DbException
-//     */
-//    public function orderAftersalesSatatus($order_id, $user_id = false)
-//    {
-//        $result = [
-//            'status' => false,
-//            'data'   => [],
-//            'msg'    => ''
-//        ];
-//
-//        //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
-//        $orderModel = new Order();
-//        $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
-//        if (!$orderInfo) {
-//            return error_code(13101);
-//        }
-//
-//        //算已经退过款的金额，取已经完成的售后单的金额汇总
-//        $where[]               = ['order_id', 'eq', $order_id];
-//        $where[]               = ['status', 'eq', self::STATUS_SUCCESS];
-//        $orderInfo['refunded'] = $this->where($where)->sum('refund');   //已经退过款的金额
-//
-//        //算已经退过的订单里的商品的数量
-//        $afterSalesItemsModel = new BillAftersalesItems();
-//        foreach ($orderInfo['items'] as $k => $v) {
-//            $orderInfo['items'][$k]['reship_nums'] = $afterSalesItemsModel
-//                ->alias('asi')
-//                ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
-//                ->where([
-//                    ['asi.order_items_id', 'eq', $v['id']],
-//                    ['a.status', 'eq', self::STATUS_SUCCESS]
-//                ])
-//                ->sum('asi.nums');
-//        }
-//        $result['data'] = $orderInfo;
-//        $result['status'] = true;
-//
-//        return $result;
-//    }
+    //    废弃的方法，建议用orderToAftersales方法吧。
+    //    /**
+    //     * 订单售后状态，返回退款的金额和退货的明细
+    //     * @param $order_id
+    //     * @param bool $user_id
+    //     * @return array|mixed
+    //     * @throws \think\db\exception\DataNotFoundException
+    //     * @throws \think\db\exception\ModelNotFoundException
+    //     * @throws \think\exception\DbException
+    //     */
+    //    public function orderAftersalesSatatus($order_id, $user_id = false)
+    //    {
+    //        $result = [
+    //            'status' => false,
+    //            'data'   => [],
+    //            'msg'    => ''
+    //        ];
+    //
+    //        //查看订单是否在可售后的状态,只有已支付的，并且不是已完成和已取消的才可以售后
+    //        $orderModel = new Order();
+    //        $orderInfo  = $orderModel->getOrderInfoByOrderID($order_id, $user_id);
+    //        if (!$orderInfo) {
+    //            return error_code(13101);
+    //        }
+    //
+    //        //算已经退过款的金额，取已经完成的售后单的金额汇总
+    //        $where[]               = ['order_id', 'eq', $order_id];
+    //        $where[]               = ['status', 'eq', self::STATUS_SUCCESS];
+    //        $orderInfo['refunded'] = $this->where($where)->sum('refund');   //已经退过款的金额
+    //
+    //        //算已经退过的订单里的商品的数量
+    //        $afterSalesItemsModel = new BillAftersalesItems();
+    //        foreach ($orderInfo['items'] as $k => $v) {
+    //            $orderInfo['items'][$k]['reship_nums'] = $afterSalesItemsModel
+    //                ->alias('asi')
+    //                ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
+    //                ->where([
+    //                    ['asi.order_items_id', 'eq', $v['id']],
+    //                    ['a.status', 'eq', self::STATUS_SUCCESS]
+    //                ])
+    //                ->sum('asi.nums');
+    //        }
+    //        $result['data'] = $orderInfo;
+    //        $result['status'] = true;
+    //
+    //        return $result;
+    //    }
 
     /**
      * 根据订单号查询已经售后的内容
@@ -78,7 +79,8 @@ class BillAftersales extends Common
      * @param bool $aftersale_level      取售后单的时候，售后单的等级，0：待审核的和审核通过的售后单，1未审核的，2审核通过的
      * @return array
      */
-    public function orderToAftersales($order_id, $aftersale_level = 0){
+    public function orderToAftersales($order_id, $aftersale_level = 0)
+    {
         $result = [
             'status' => false,
             'data' => [
@@ -88,9 +90,9 @@ class BillAftersales extends Common
             ],
             'msg' => ''
         ];
-        switch($aftersale_level){
+        switch ($aftersale_level) {
             case 0:
-                $status_arr = [self::STATUS_SUCCESS,self::STATUS_WAITAUDIT];
+                $status_arr = [self::STATUS_SUCCESS, self::STATUS_WAITAUDIT];
                 break;
             case 1:
                 $status_arr = [self::STATUS_WAITAUDIT];
@@ -99,8 +101,8 @@ class BillAftersales extends Common
                 $status_arr = [self::STATUS_SUCCESS];
                 break;
             default:
-                $result['msg'] = 'aftersale_level值类型不对';
-                return $result;    
+                return error_code(13600); //aftersale_level值类型不对
+
         }
         //算已经退过款的金额，取已经完成的售后单的金额汇总
         $where[] = ['order_id', 'eq', $order_id];
@@ -116,22 +118,21 @@ class BillAftersales extends Common
             ->join(config('database.prefix') . 'bill_aftersales a', 'asi.aftersales_id = a.aftersales_id')
             ->where($where)
             ->select();
-        if(!$list->isEmpty()){
+        if (!$list->isEmpty()) {
             $list = $list->toArray();
-            
+
             $reship_goods = [];
-            foreach($list as $v){
-                if(!isset($reship_goods[$v['order_items_id']])){
+            foreach ($list as $v) {
+                if (!isset($reship_goods[$v['order_items_id']])) {
                     $reship_goods[$v['order_items_id']] = [
-                        'reship_nums' => 0,                         //售后商品数量，包含申请中和审核通过的
+                        'reship_nums' => 0,                         //售后商品数量
                         'reship_nums_ed' => 0,                      //已发货的商品进行退货的数量
                     ];
                 }
                 $reship_goods[$v['order_items_id']]['reship_nums'] += $v['nums'];
-                if($v['type'] == self::TYPE_RESHIP){
+                if ($v['type'] == self::TYPE_RESHIP) {
                     $reship_goods[$v['order_items_id']]['reship_nums_ed'] += $v['nums'];
                 }
-
             }
             $result['data']['reship_goods'] = $reship_goods;
         }
@@ -174,14 +175,14 @@ class BillAftersales extends Common
             return error_code(13101);
         }
 
-        if(!$orderInfo['add_aftersales_status']){
+        if (!$orderInfo['add_aftersales_status']) {
             return error_code(13200);
         }
 
         $data['aftersales_id'] = get_sn(5);
 
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
-        $verify = $this->verify($type, $orderInfo, $refund,$items);
+        $verify = $this->verify($type, $orderInfo, $refund, $items);
         if (!$verify['status']) {
             return $verify;
         }
@@ -199,7 +200,7 @@ class BillAftersales extends Common
         }
 
         //做个简单校验，防止乱传值
-        if($type != self::TYPE_REFUND && $type != self::TYPE_RESHIP){
+        if ($type != self::TYPE_REFUND && $type != self::TYPE_RESHIP) {
             return error_code(10000);
         }
 
@@ -240,7 +241,6 @@ class BillAftersales extends Common
                 ];
                 $templateMessageModel->addSend($message);
             }
-
         } catch (\Exception $e) {
             Db::rollback();
             $result['msg'] = $e->getMessage();
@@ -266,7 +266,7 @@ class BillAftersales extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function audit($aftersales_id, $status,$type, $refund = 0, $mark = "", $items = [])
+    public function audit($aftersales_id, $status, $type, $refund = 0, $mark = "", $items = [])
     {
         $result = [
             'status' => false,
@@ -274,43 +274,29 @@ class BillAftersales extends Common
             'msg'    => ''
         ];
         $re = $this->preAudit($aftersales_id);
-        if(!$re['status']){
+        if (!$re['status']) {
             return $re;
         }
         $info = $re['data']['info'];
         $orderInfo = $re['data']['orderInfo'];
 
         //校验订单是否可以进行此售后，并且校验订单价格是否合理
-        $verify = $this->verify($info['type'], $orderInfo, $refund,$items);
+        $verify = $this->verify($type, $orderInfo, $refund, $items);
         if (!$verify['status'] && $status == self::STATUS_SUCCESS) {
             return $verify;
         }
 
-        $orderModel = new Order();
-        //如果订单未发货，那么用户不能选择已收到货
-        if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
-            return error_code(13227);
-        }
-
-        //如果是退货单，必须选择退货明细
-        if ($info['type'] == self::TYPE_RESHIP && !$items) {
-            return error_code(13205);
-        }
-        //如果是退货，判断退货明细，数量是否超出可退的数量
+        //根据退货的明细，生成售后单明细表的数据
         if ($items) {
             $aftersalesItems = $this->formatAftersalesItems($orderInfo, $items, $info['aftersales_id']);
             if (!$aftersalesItems['status']) {
                 return $aftersalesItems;
             }
+        } else {
+            $aftersalesItems['data'] = [];
         }
 
-        //判断退款金额不能超了
-        if (($refund + $orderInfo['refunded']) > $orderInfo['payed']) {
-            return error_code(13206);
-        }
-
-
-
+        $orderModel = new Order();
         Db::startTrans();
         try {
             $where['aftersales_id'] = $aftersales_id;
@@ -324,7 +310,7 @@ class BillAftersales extends Common
 
             //更新售后单明细表，先删除，然后全新插入
             $afterSalesItemsModel = new BillAftersalesItems();
-            $afterSalesItemsModel->where('aftersales_id',$aftersales_id)->delete();
+            $afterSalesItemsModel->where('aftersales_id', $aftersales_id)->delete();
             if ($aftersalesItems['data']) {
                 $afterSalesItemsModel = new BillAftersalesItems();
                 $afterSalesItemsModel->saveAll($aftersalesItems['data']);
@@ -353,11 +339,46 @@ class BillAftersales extends Common
                 //更新订单状态
 
                 //如果是退款，退完了就变成已退款并且订单类型变成已完成，如果未退完，就是部分退款
-                if (($refund + $orderInfo['refunded']) == $orderInfo['payed']) {
-                    $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
-                    $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
-                }else{
-                    $order_data['pay_status'] = $orderModel::PAY_STATUS_PARTIAL_NO;
+                //判断退款金额不能超
+                if ($refund > 0) {
+                    if (($refund + $orderInfo['refunded']) == $orderInfo['payed']) {
+                        $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
+                        $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
+                    } else {
+                        $order_data['pay_status'] = $orderModel::PAY_STATUS_PARTIAL_NO;
+                    }
+                }
+
+
+                //判断货物发完没，如果货已发完了，订单发货就变成已发货,为了判断在有退款的情况下，当
+                $all_deliveryed = true;     //商品该发货状态，默认发货了,为了判断部分发货的情况下，的订单发货状态
+                $no_deliveryed = true;      //是否都没发货,默认都没发货
+                $all_sened = true;          //商品退货状态（所有退货，包含已发的退货和未发的退货），默认都退货了,为了判断都退了的话，订单状态变成已完成
+                foreach ($orderInfo['items'] as $k => $v) {
+                    if (isset($items[$v['id']])) {
+                        $v['reship_nums'] += $items[$v['id']];      //把本次退货数量加上去
+                        if ($type == self::TYPE_RESHIP) {
+                            $v['reship_nums_ed'] += $items[$v['id']];
+                        }
+                    }
+                    //有任何商品发货，都不是未发货状态
+                    if ($no_deliveryed && ($v['sendnums'] > 0)) {
+                        $no_deliveryed = false;
+                    }
+                    if ($all_deliveryed && ($v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']) > 0)) {
+                        //说明该发货的商品没发完
+                        $all_deliveryed = false;
+                    }
+                    if ($all_sened && ($v['reship_nums'] < $v['nums'])) {
+                        //说明未退完商品
+                        $all_sened = false;
+                    }
+                }
+                if ($all_deliveryed && !$no_deliveryed) {
+                    $order_data['ship_status'] = $orderModel::SHIP_STATUS_YES;
+                }
+                if ($all_sened) {
+                    $order_data['status'] = $orderModel::ORDER_STATUS_COMPLETE;
                 }
 
                 //未发货的商品库存调整,如果订单未发货或者部分发货，并且用户未收到商品的情况下，需要解冻冻结库存
@@ -365,35 +386,14 @@ class BillAftersales extends Common
                     ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
                     $type == self::TYPE_REFUND &&
                     $aftersalesItems['data']
-                ){
+                ) {
+                    //未发货商品解冻库存
                     $goodsModel = new Goods();
                     foreach ($aftersalesItems['data'] as $key => $val) {
                         $goodsModel->changeStock($val['product_id'], 'refund', $val['nums']);
                     }
                 }
 
-
-                //已发货的商品库存调整，如果是订单已发货或部分发货的时候，并且用户收到商品的情况下的处理
-                if (
-                    ($orderInfo['ship_status'] == $orderModel::SHIP_STATUS_YES || $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_PARTIAL_YES) &&
-                    $type == self::TYPE_RESHIP
-                ){
-                    //判断货物退完了没有，如果货已发完了，订单就已完成
-                    $all_sened = true;
-                    foreach ($orderInfo['items'] as $k => $v) {
-                        if (isset($items[$v['id']])) {
-                            $v['reship_nums'] += $items[$v['id']];      //把本次退货数量加上去，然后再判断是否已经退完货了
-                        }
-                        if ($v['reship_nums'] < $v['nums']) {
-                            //说明未退完商品
-                            $all_sened = false;
-                            break;
-                        }
-                    }
-                    if ($all_sened) {
-                        $order_data['status'] = $orderModel::ORDER_STATUS_COMPLETE;
-                    }
-                }
                 $orderModel->where(['order_id' => $orderInfo['order_id'], 'status' => $orderModel::ORDER_STATUS_NORMAL])->data($order_data)->update();
             }
 
@@ -401,8 +401,7 @@ class BillAftersales extends Common
 
 
             //售后单审核过后的锚点
-            if($status == self::STATUS_SUCCESS)
-            {
+            if ($status == self::STATUS_SUCCESS) {
                 hook('aftersalesreview', $aftersales_id);           //此钩子名称不妥，会修改掉。
             }
 
@@ -424,7 +423,8 @@ class BillAftersales extends Common
     }
 
     //后端进行审核的时候，前置操作，1取出页面的数据，2在提交过来的表单的时候，进行校验
-    public function preAudit($aftersales_id){
+    public function preAudit($aftersales_id)
+    {
         $result = [
             'status' => true,
             'data'   => [],
@@ -434,25 +434,24 @@ class BillAftersales extends Common
         $where['aftersales_id'] = $aftersales_id;
         $where['status'] = self::STATUS_WAITAUDIT;
         $info = $this::with('images,items')->where($where)->find();
-        if(!$info){
+        if (!$info) {
             return error_code(13207);
         }
 
         //取订单的信息
         $orderModel = new Order();
-        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'],$info['user_id'],2);
-        if(!$orderInfo){
+        $orderInfo = $orderModel->getOrderInfoByOrderID($info['order_id'], $info['user_id'], 2);
+        if (!$orderInfo) {
             return error_code(10000);
         }
 
         //订单上的退款金额和数量只包含已经售后的，这里要把当次售后单的商品信息保存到订单明细表上
         foreach ($orderInfo['items'] as $k => $v) {
             unset($orderInfo['items'][$k]['promotion_list']);       //此字段会影响前端表格显示，所以删掉
+            $orderInfo['items'][$k]['addon'] = $v['addon'] ? $v['addon'] : '';
             $orderInfo['items'][$k]['the_reship_nums'] = 0;
-            foreach($info['items'] as $i => $j){
-                if($v['id'] == $j['order_items_id']){
-                    if($info['type'] == self::TYPE_RESHIP){
-                    }
+            foreach ($info['items'] as $i => $j) {
+                if ($v['id'] == $j['order_items_id']) {
                     $orderInfo['items'][$k]['the_reship_nums'] = $j['nums'];
                 }
             }
@@ -472,18 +471,18 @@ class BillAftersales extends Common
      * @param $items
      * @return array|mixed
      */
-    private function verify($type, $orderInfo, $refund = 0,$items = [])
+    private function verify($type, $orderInfo, $refund = 0, $items = [])
     {
         //判断订单是否是可以售后
         $orderModel = new Order();
 
         //只有活动订单才能售后
-        if($orderInfo['status'] != $orderModel::ORDER_STATUS_NORMAL){
+        if ($orderInfo['status'] != $orderModel::ORDER_STATUS_NORMAL) {
             return error_code(13200);
         }
 
         //未付款订单和已退款订单不能售后
-        if ($orderInfo['pay_status'] == $orderModel::PAY_STATUS_NO || $orderInfo['pay_status'] == $orderModel::PAY_STATUS_REFUNDED){
+        if ($orderInfo['pay_status'] == $orderModel::PAY_STATUS_NO || $orderInfo['pay_status'] == $orderModel::PAY_STATUS_REFUNDED) {
             return error_code(13203);
         }
 
@@ -492,9 +491,6 @@ class BillAftersales extends Common
         if ($type == self::TYPE_RESHIP && $orderInfo['ship_status'] == $orderModel::SHIP_STATUS_NO) {
             return error_code(13227);
         }
-
-        
-
 
 
         //判断退款金额不能超
@@ -507,33 +503,32 @@ class BillAftersales extends Common
     }
 
     //判断退货数量是否超标
-    private function verifyNums($type, $orderInfo, $items){
+    private function verifyNums($type, $orderInfo, $items)
+    {
         $result = [
-            'status' => false,
+            'status' => true,
             'data' => '',
             'msg' => ''
         ];
-        foreach($items as $k => $num){
-            foreach($orderInfo['items'] as $v){
-                if($v['id'] == $k){
-                    if($type == self::TYPE_REFUND){
-                        $n = $v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']); 
-                        if($n < $num){
-                            $result['msg'] = "未发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
-                            return $result;
+        foreach ($items as $k => $num) {
+            foreach ($orderInfo['items'] as $v) {
+                if ($v['id'] == $k) {
+                    if ($type == self::TYPE_REFUND) {
+                        $n = $v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']);
+                        if ($n < $num) {
+                            return error_code(13601, false, $v['name'], $v['addon'], $n); //"未发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+
                         }
-                    }else{
+                    } else {
                         $n = $v['sendnums'] - $v['reship_nums_ed'];
-                        if($n < $num){
-                            $result['msg'] = "已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
-                            return $result;
+                        if ($n < $num) {
+                            return error_code(13602, false, $v['name'], $v['addon'], $n); //"已发货商品-".$v['name'].$v['addon']."最多能退".$n."个";
+
                         }
                     }
-                    
                 }
             }
         }
-        $result['status'] = true;
         return $result;
     }
 
@@ -555,9 +550,9 @@ class BillAftersales extends Common
             foreach ($orderInfo['items'] as $v) {
                 if ($v['id'] == $oi_id) {
                     //判断已经退过的加上本次退的，是否超过了购买的数量,具体取nums（购买数量）还是取sendnums(已发货数量),以后再说吧。要取购买数量，因为未发货的，也可以退的
-                    if ($num + $v['reship_nums'] > $v['nums']) {
-                        return error_code(13201);
-                    }
+                    //                    if ($num + $v['reship_nums'] > $v['nums']) {
+                    //                        return error_code(13201);
+                    //                    }
                     $row['aftersales_id']  = $aftersales_id;
                     $row['order_items_id'] = $v['id'];
                     $row['goods_id']       = $v['goods_id'];
@@ -697,12 +692,12 @@ class BillAftersales extends Common
         ];
 
         $where['user_id']             = $data['user_id'];
-        if(isset($data['order_id']) && $data['order_id'] != ""){
+        if (isset($data['order_id']) && $data['order_id'] != "") {
             $where['order_id'] = $data['order_id'];
         }
 
 
-        $list = $this::with(['items','images'])
+        $list = $this::with(['items', 'images'])
             ->where($where)
             ->order('utime desc')
             ->page($data['page'], $data['limit'])
@@ -735,8 +730,7 @@ class BillAftersales extends Common
             'msg'    => ''
         ];
         $where['aftersales_id'] = $aftersales_id;
-        if($user_id)
-        {
+        if ($user_id) {
             $where['user_id']       = $user_id;
         }
         $info = $this::with(['billReship' => ['items'], 'items', 'images', 'billRefund'])
@@ -834,17 +828,34 @@ class BillAftersales extends Common
             ],
             [
                 'id'   => 'refund',
-                'desc' => '退款金额',
+                'desc' => '退款总金额',
             ],
             [
                 'id'   => 'reason',
                 'desc' => '原因',
-
             ],
             [
                 'id'   => 'ctime',
                 'desc' => '申请时间',
-
+            ],
+            [
+                'id' => 'item_name',
+                'desc' => '商品名称',
+                'modify' => 'convertString'
+            ],
+            [
+                'id' => 'item_sn',
+                'desc' => '货品编码',
+                'modify' => 'convertString'
+            ],
+            [
+                'id' => 'item_bn',
+                'desc' => '商品编码',
+                'modify' => 'convertString'
+            ],
+            [
+                'id' => 'item_nums',
+                'desc' => '退货数量',
             ],
         ];
     }
@@ -860,12 +871,11 @@ class BillAftersales extends Common
         $result   = [
             'status' => false,
             'data'   => [],
-            'msg'    => '无可导出数据',
+            'msg'    => error_code(10083, true),
 
         ];
         $header   = $this->csvHeader();
         $userData = $this->getExportList($post);
-
         if ($userData['count'] > 0) {
             $tempBody = $userData['data'];
             $body     = [];
@@ -873,15 +883,56 @@ class BillAftersales extends Common
 
             foreach ($tempBody as $key => $val) {
                 $i++;
-                foreach ($header as $hk => $hv) {
-                    if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
-                        if (function_exists($hv['modify'])) {
-                            $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                if (empty($val['items'])) {
+                    foreach ($header as $hk => $hv) {
+                        if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                            if (function_exists($hv['modify'])) {
+                                $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                            }
+                        } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
+                            $body[$i][$hk] = $val[$hv['id']];
+                        } else {
+                            $body[$i][$hk] = '';
                         }
-                    } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
-                        $body[$i][$hk] = $val[$hv['id']];
-                    } else {
-                        $body[$i][$hk] = '';
+                    }
+                } else {
+                    foreach ($val['items'] as $k => $item) {
+                        if ($k == 0) {
+                            $val['item_name'] = $item['name'] . $item['addon'];
+                            $val['item_sn'] = $item['sn'];
+                            $val['item_bn'] = $item['bn'];
+                            $val['item_nums'] = $item['nums'];
+                            foreach ($header as $hk => $hv) {
+                                if (isset($val[$hv['id']]) && $val[$hv['id']] && isset($hv['modify'])) {
+                                    if (function_exists($hv['modify'])) {
+                                        $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
+                                    }
+                                } elseif (isset($val[$hv['id']]) && !empty($val[$hv['id']])) {
+                                    $body[$i][$hk] = $val[$hv['id']];
+                                } else {
+                                    $body[$i][$hk] = '';
+                                }
+                            }
+                        } else {
+                            $tmp = [];
+                            $tmp['item_name'] = $item['name'] . $item['addon'];
+                            $tmp['item_sn'] = $item['sn'];
+                            $tmp['item_bn'] = $item['bn'];
+                            $tmp['item_nums'] = $item['nums'];
+                            foreach ($header as $hk => $hv) {
+                                if (isset($tmp[$hv['id']]) && $tmp[$hv['id']] && isset($hv['modify'])) {
+                                    if (function_exists($hv['modify'])) {
+                                        $body[$i][$hk] = $hv['modify']($tmp[$hv['id']]);
+                                    }
+                                } elseif (isset($tmp[$hv['id']]) && !empty($tmp[$hv['id']])) {
+                                    $body[$i][$hk] = $tmp[$hv['id']];
+                                } else {
+                                    $body[$i][$hk] = '';
+                                }
+                            }
+                            $tmp = [];
+                        }
+                        $i++;
                     }
                 }
             }
@@ -917,7 +968,7 @@ class BillAftersales extends Common
     {
         $return_data = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025, true),
             'data'   => '',
             'count'  => 0
         ];
@@ -950,9 +1001,11 @@ class BillAftersales extends Common
             $where[] = ['type', 'eq', $post['type']];
         }
 
-        $list = $this->where($where)
+        $list = $this->with(['items' => function ($query) {
+            return $query->field(['sn', 'bn', 'name', 'addon', 'nums', 'aftersales_id']);
+        }])->where($where)
             ->order('aftersales_id desc')
-            ->select();
+            ->select()->toArray();
 
         if ($list) {
             $count = $this->where($where)->count();

@@ -509,7 +509,7 @@
 									:options="{group:{ name:'selectGoodsList'}, ghostClass: 'ghost',animation: 150}">
 									<li v-for="(goods,key) in selectWg.value.list" :key="key">
 										<i class="layui-icon layui-icon-close-fill icon-delete" @click="handleDeleteGoods(key)"></i>
-										<p>{{goods.name}}</p>
+										<img :src="goods.image_url" :alt="goods.name">
 									</li>
 								</draggable>
 							</ul>

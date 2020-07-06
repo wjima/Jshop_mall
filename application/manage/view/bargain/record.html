@@ -1,0 +1,104 @@
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+
+        <div class="layui-inline">
+            <label class="layui-form-label">状态：</label>
+            <div class="layui-input-inline seller-inline-2">
+                <select name="status" lay-verify="">
+                    <option value=""></option>
+                    <option value="1">砍价中</option>
+                    <option value="2">砍价成功</option>
+                    <option value="3">已下单</option>
+                    <option value="4">砍价失败</option>
+                    <option value="5">砍价取消</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">活动ID：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="bargain_id" lay-verify="bargain_id" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label" style="width:120px;">会员手机号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="mobile" lay-verify="mobile" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <label class="layui-form-label" >订单号：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="order_id" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
+    </div>
+</form>
+<div class="table-body">
+    <table id="bargain" lay-filter="bargain"></table>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var table = layui.table;
+        //时间插件
+        layui.laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+
+        //表格渲染
+        layui.table.render({
+            elem: '#bargain',
+            height: 'full-220',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:url('record')}",
+            id:'bargain',
+            cols: [[
+                {field:'id', width:90, title:'ID', align: 'center'},
+                {field: 'operating',width:120,  title: '操作',  align: 'center',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-log" data-id="' + data.id + '">砍价记录</a>';
+                    return html;
+                }},
+                {field:'name',title:'砍价活动',align: 'center',width:180},
+                {field:'nickname' ,title:'发起用户', align: 'center', width: 130},
+                {field:'status_name',title:'状态', align: 'center', width: 110},
+                {field:'order_id',title:'订单号', align: 'center', width: 150},
+                {field:'start_price',title:'开始价', align: 'center', width: 170},
+                {field:'end_price',title:'底价', align: 'center', width: 170},
+                {field:'price',title:'当前价', align: 'center', width: 170},
+                {field:'stime',title:'开始时间', align: 'center', width: 170},
+                {field:'etime',title:'结束时间', align: 'center', width: 170},
+                {field:'ctime',title:'创建时间', align: 'center', width: 170},
+                {field:'utime',title:'更新时间', align: 'center', width: 170}
+            ]]
+        });
+
+        //搜索
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('bargain', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //查看日志
+        $(document).on('click','.option-log',function(){
+            var id = $(this).attr('data-id');
+            window.location.href="{:url('recordLog')}?record_id="+id;
+        });
+
+    });
+</script>

@@ -80,7 +80,7 @@ class Form extends Manage
                 return $result;
             }
             if (!$form->add($data)) {
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
                 return $result;
             }
             $result['msg']    = '保存成功';
@@ -149,7 +149,7 @@ class Form extends Manage
             }
             $where[] = ['id', '=', $data['id']];
             if (!$form->edit($where, $data)) {
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
                 return $result;
             }
             $result['msg']    = '保存成功';
@@ -206,7 +206,7 @@ class Form extends Manage
         $id     = input('id/d', 0);
         $result = [
             'status' => false,
-            'msg'    => '参数错误',
+            'msg'    => error_code(10003,true),
             'data'   => ''
         ];
         if (!$id) {
@@ -248,8 +248,8 @@ class Form extends Manage
     {
         $id     = input('id/d', 0);
         $result = [
-            'status' => false,
-            'msg'    => '参数错误',
+            'status' => true,
+            'msg'    => '',
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -263,7 +263,7 @@ class Form extends Manage
         $this->assign('id', $id);
         $result['data']   = $this->fetch('report');
         $result['status'] = true;
-        $result['msg']    = '参数错误';
+        $result['msg']    = '获取成功';
         return $result;
 
     }
@@ -332,12 +332,12 @@ class Form extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '关键参数错误',
+            'msg'    => '',
             'data'   => ''
         ];
         $id     = input('id/d', '0');
         if (!$id) {
-            return $result;
+            return error_code(20096);
         }
         $formSubmit     = new FormSubmit();
         $formSubmitInfo = $formSubmit->getDetail($id);
@@ -362,12 +362,12 @@ class Form extends Manage
     {
         $result = [
             'status' => false,
-            'msg'    => '关键参数错误',
+            'msg'    => '',
             'data'   => ''
         ];
         $id     = input('id/d', '0');
         if (!$id) {
-            return $result;
+            return error_code(20096);
         }
         $this->assign('id', $id);
         if (Request::isPost()) {
@@ -379,8 +379,8 @@ class Form extends Manage
                 $result['msg']    = '操作成功';
                 return $result;
             } else {
-                $result['msg'] = '操作失败';
-                return $result;
+                // $result['msg'] = '操作失败';
+                return error_code(10018);
             }
         } else {
             $this->view->engine->layout(false);

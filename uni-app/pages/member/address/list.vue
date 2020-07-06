@@ -57,6 +57,7 @@ export default {
 			this.$api.userShip({}, res => {
                 if (res.status) {
                     this.list = res.data
+										
                 }
             })
 		},
@@ -88,22 +89,23 @@ export default {
 		//选择
 		isSelect(data) {
 			if(this.type == 'order'){
-				let pages = getCurrentPages();//当前页
-				let beforePage = pages[pages.length - 2];//上个页面
+		// 		let pages = getCurrentPages();//当前页
+		// 		let beforePage = pages[pages.length - 2];//上个页面
 				
-				// #ifdef MP-ALIPAY || MP-TOUTIAO
-				this.$db.set('address_user_ship', data, true);
-				// #endif
+		// 		// #ifdef MP-ALIPAY || MP-TOUTIAO
+		// 		this.$db.set('address_user_ship', data, true);
+		// 		// #endif
 		
-				// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-				this.$store.commit("userShip",data)
-				// #endif
+		// 		// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
+		// 		this.$store.commit("userShip",data)
+		// 		// #endif
 
-				// #ifdef MP-WEIXIN
-				beforePage.$vm.userShip = data;
-				beforePage.$vm.params.area_id = data.area_id;
-				// #endif
-				
+		// 		// #ifdef MP-WEIXIN
+		// 		beforePage.$vm.userShip = data;
+		// 		beforePage.$vm.params.area_id = data.area_id;
+		// 		// #endif
+		
+				this.$db.set('address_user_ship', data, true);
 				uni.navigateBack({
 					delta: 1
 				});
@@ -128,14 +130,21 @@ export default {
 							if (res1.status) {
 								//存储用户收货信息
 								let userShipId = 0;
+								// let userShipData = {
+								// 	area_id: res1.data,
+								// 	user_name: res.userName,
+								// 	detail_info: res.detailInfo,
+								// 	tel_number: res.telNumber,
+								// 	is_def: 2
+								// }
 								let userShipData = {
 									area_id: res1.data,
-									user_name: res.userName,
-									detail_info: res.detailInfo,
-									tel_number: res.telNumber,
+									name: res.userName,
+									address: res.detailInfo,
+									mobile: res.telNumber,
 									is_def: 2
 								}
-								this.$api.saveUserShipWx(userShipData, res2 => {
+								this.$api.editShip(userShipData, res2 => {
 									if (res2.status) {
 										this.$common.errorToShow('存储微信地址成功', r => {
 											setTimeout(rp => {

@@ -49,7 +49,7 @@
 		},
 		data() {
 			return {
-				items: ['未使用','已使用','已失效'],
+				items: ['未使用','已使用'],
 				current: 0,
 				page: 1,
 				limit: 10,
@@ -129,7 +129,7 @@
 
 <style>
 .coupon-c-item{
-	margin: 30upx 50upx;
+	margin: 30upx 20upx;
 	height: 150upx;
 	margin-bottom: 20upx;
 }
@@ -180,7 +180,7 @@
 }
 .ccirc-b-l{
 	display: inline-block;
-	max-width: 400upx;
+	max-width: 500rpx;
 }
 .ccirc-b-tip{
 	font-size: 28upx;

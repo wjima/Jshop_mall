@@ -60,7 +60,7 @@ class User extends Api
      * code         手机验证码，必填
      * invitecode   邀请码，推荐人的邀请码 选填
      * password     注册的时候，可以传密码 选填
-     * user_wx_id   第三方登录，微信公众号里的登陆，微信小程序登陆等需要绑定账户的时候，要传这个参数，这是第一次的时候需要这样绑定，以后就不需要了  选填
+     * user_wx_id   第三方账号，绑定当前已有账号，第三方登录，微信公众号里的登陆，微信小程序登陆等需要绑定账户的时候，要传这个参数，这是第一次的时候需要这样绑定，以后就不需要了  选填
      * @return array
      */
     public function smsLogin()
@@ -71,6 +71,17 @@ class User extends Api
         return $userModel->smsLogin($data, 2, $platform);
     }
 
+    public function bindMobile(){
+        $userModel = new UserModel();
+        if (!input('?param.mobile')){
+            return error_code(11051);
+        }
+        if (!input('?param.code')) {
+            return error_code(10013);
+        }
+        return $userModel->bindMobile($this->userId,input('param.mobile'), input('param.code'));
+    }
+
 
     /**
      * 微信小程序创建用户，不登陆，只是保存登录态
@@ -79,8 +90,8 @@ class User extends Api
     public function wxappLogin1()
     {
         if (!input("?param.code")) {
-            $result['msg'] = 'code参数缺失';
-            return $result;
+            // $result['msg'] = error_code(10068, true);
+            return error_code(10068);
         }
         $wxapp = new Wxapp();
         return $wxapp->codeToInfo(input('param.code'));
@@ -107,13 +118,13 @@ class User extends Api
             return $result;
         }
         if (!input("?param.iv")) {
-            $result['msg'] = 'iv参数缺失';
-            return $result;
+            // $result['msg'] = error_code(10070, true);
+            return error_code(10070);
         }
         if (!input("?param.edata")) {
             //加密的encryptedData数据，这是个加密的字符串
-            $result['msg'] = '加密参数缺失';
-            return $result;
+            // $result['msg'] = error_code(10071, true);
+            return error_code(10071);
         }
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
         $invitecode = Request::param('invitecode', false);
@@ -124,7 +135,7 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                error_code(10014);
+                return error_code(10014);
             }
         } else {
             $pid = 0;
@@ -154,8 +165,8 @@ class User extends Api
         $user_info = Request::param('user_info', false);
 
         if (!$code) {
-            $result['msg'] = 'code参数缺失';
-            return $result;
+            // $result['msg'] = error_code(10068, true);
+            return error_code(10068);
         }
         $aliPayApp = new Alipayapp();
         return $aliPayApp->codeToInfo($code, $user_info);
@@ -175,13 +186,13 @@ class User extends Api
         ];
         $userModel = new UserModel();
         if (!input("?param.mobile")) {
-            $result['msg'] = '请输入手机号码';
-            return $result;
+            // $result['msg'] = error_code(11051, true);
+            return error_code(11051);
         }
         //code的值可以为loign，reg，veri
         if (!input("?param.code")) {
-            $result['msg'] = '缺少核心参数';
-            return $result;
+            // $result['msg'] = error_code(10068, true);
+            return error_code(10068);
         }
         $code = input('param.code');
         $type = input('param.type');
@@ -204,8 +215,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.token")) {
-            $result['msg'] = '请输入token';
-            return $result;
+            // $result['msg'] = error_code(11001, true);
+            return error_code(11001);
         }
         $userTokenModel = new UserToken();
         return $userTokenModel->delToken(input("param.token"));
@@ -247,7 +258,7 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                error_code(10014);
+                return error_code(10014);
             }
         } else {
             $pid = 0;
@@ -280,7 +291,7 @@ class User extends Api
         $result = [
             'status' => false,
             'data' => input('param.'),
-            'msg' => '保存失败'
+            'msg' => error_code(10004, true)
         ];
         if (!input("?param.avatar")) {
             return error_code(11003);
@@ -321,8 +332,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_id")) {
-            $result['msg'] = '请输入goods_id';
-            return $result;
+            // $result['msg'] = error_code(10013, true);
+            return error_code(10013);
         }
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toAdd($this->userId, input("param.goods_id"));
@@ -344,8 +355,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_ids")) {
-            $result['msg'] = '请输入ids';
-            return $result;
+            // $result['msg'] = error_code(10013, true);
+            return error_code(10013);
         }
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toDel($this->userId, input("param.goods_ids"));
@@ -391,8 +402,8 @@ class User extends Api
             'msg' => ''
         ];
         if (!input("?param.goods_id")) {
-            $result['msg'] = '请输入goods_id';
-            return $result;
+            // $result['msg'] = error_code(10013, true);
+            return error_code(10013);
         }
         $goodsCollectionModel = new GoodsCollection();
         return $goodsCollectionModel->toDo($this->userId, input("param.goods_id"));
@@ -423,89 +434,90 @@ class User extends Api
     }
 
 
-    /**
-     * 存储用户收货地址接口
-     * @return array
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
-     */
-    public function saveUserShip()
-    {
-        //传入进来的数据
-        $area_id = input('area_id');
-        $user_name = input('user_name');
-        $detail_info = input('detail_info');
-        $tel_number = input('tel_number');
-        $is_def = input('is_def');
-        $user_id = $this->userId;
+    // /**
+    //  * 存储用户收货地址接口
+    //  * @return array
+    //  * @throws \think\Exception
+    //  * @throws \think\db\exception\DataNotFoundException
+    //  * @throws \think\db\exception\ModelNotFoundException
+    //  * @throws \think\exception\DbException
+    //  * @throws \think\exception\PDOException
+    //  */
+    // public function saveUserShip()
+    // {
+    //     //传入进来的数据
+    //     $area_id = input('area_id');
+    //     $user_name = input('user_name');
+    //     $detail_info = input('detail_info');
+    //     $tel_number = input('tel_number');
+    //     $is_def = input('is_def');
+    //     $user_id = $this->userId;
 
-        $data['user_id'] = $user_id;
-        $data['area_id'] = $area_id;
-        $data['address'] = $detail_info;
-        $data['name'] = $user_name;
-        $data['mobile'] = $tel_number;
-        $data['is_def'] = $is_def;
+    //     $data['user_id'] = $user_id;
+    //     $data['area_id'] = $area_id;
+    //     $data['address'] = $detail_info;
+    //     $data['name'] = $user_name;
+    //     $data['mobile'] = $tel_number;
+    //     $data['is_def'] = $is_def;
 
-        //存储收货地址
-        $model = new UserShip();
-        $result = $model->saveShip($data);
-        if ($result !== false) {
-            $return_data = array(
-                'status' => true,
-                'msg' => '存储收货地址成功',
-                'data' => $result
-            );
-        } else {
-            $return_data = array(
-                'status' => false,
-                'msg' => '存储收货地址失败',
-                'data' => $result
-            );
-        }
-        return $return_data;
-    }
+    //     //存储收货地址
+    //     $model = new UserShip();
+    //     $result = $model->saveShip($data);
+    //     if ($result !== false) {
+    //         $return_data = array(
+    //             'status' => true,
+    //             'msg' => '保存成功',
+    //             'data' => $result
+    //         );
+    //     } else {
+    //         $return_data = array(
+    //             'status' => false,
+    //             'msg' => error_code(10004,true),
+    //             'data' => $result
+    //         );
+    //     }
+    //     return $return_data;
+    // }
 
 
-    /**
-     * H5 添加收货地址
-     * @return array
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     * @throws \think\exception\PDOException
-     */
-    public function vueSaveUserShip()
-    {
-        $data['user_id'] = $this->userId;
-        $data['area_id'] = input('param.area_id');
-        $data['address'] = input('param.address');
-        $data['name'] = input('param.name');
-        $data['mobile'] = input('param.mobile');
-        $data['is_def'] = input('param.is_def');
-        $model = new UserShip();
-        return $model->vueSaveShip($data);
-//        if($result)
-//        {
-//            $return_data = [
-//                'status' => true,
-//                'msg' => '存储收货地址成功',
-//                'data' => $result
-//            ];
-//        }
-//        else
-//        {
-//            $return_data = [
-//                'status' => false,
-//                'msg' => '存储收货地址失败',
-//                'data' => $result
-//            ];
-//        }
-//        return $return_data;
-    }
+//     /**
+//      * 废弃，所有收货地址新增编辑都走   editShip 方法     
+//      * H5 添加收货地址
+//      * @return array
+//      * @throws \think\Exception
+//      * @throws \think\db\exception\DataNotFoundException
+//      * @throws \think\db\exception\ModelNotFoundException
+//      * @throws \think\exception\DbException
+//      * @throws \think\exception\PDOException
+//      */
+//     public function vueSaveUserShip()
+//     {
+//         $data['user_id'] = $this->userId;
+//         $data['area_id'] = input('param.area_id');
+//         $data['address'] = input('param.address');
+//         $data['name'] = input('param.name');
+//         $data['mobile'] = input('param.mobile');
+//         $data['is_def'] = input('param.is_def');
+//         $model = new UserShip();
+//         return $model->vueSaveShip($data);
+// //        if($result)
+// //        {
+// //            $return_data = [
+// //                'status' => true,
+// //                'msg' => '存储收货地址成功',
+// //                'data' => $result
+// //            ];
+// //        }
+// //        else
+// //        {
+// //            $return_data = [
+// //                'status' => false,
+// //                'msg' => '存储收货地址失败',
+// //                'data' => $result
+// //            ];
+// //        }
+// //        return $return_data;
+//     }
 
 
     /**
@@ -528,11 +540,12 @@ class User extends Api
                 'data' => $result
             ];
         } else {
-            $res = [
-                'status' => false,
-                'msg' => '该收货地址不存在',
-                'data' => ''
-            ];
+            // $res = [
+            //     'status' => false,
+            //     'msg' => error_code(10002, true),
+            //     'data' => ''
+            // ];
+            return error_code(10002);
         }
         return $res;
     }
@@ -665,7 +678,7 @@ class User extends Api
         } else {
             $res = [
                 'status' => false,
-                'msg' => '获取失败',
+                'msg' => error_code(10025,true),
                 'data' => $area_id
             ];
         }
@@ -1036,7 +1049,7 @@ class User extends Api
      */
     public function cash()
     {
-        $money = input('param.money');
+        $money = input('param.money/f','0','remove_xss');
         $bankcard_id = input('param.cardId');
         if (!$money) return error_code(11018);
         if (!$bankcard_id) return error_code(11017);
@@ -1184,9 +1197,9 @@ class User extends Api
         ];
         $area = config('jshop.area_list');
         if (!file_exists($area)) {
-            $return['status'] = false;
-            $return['msg'] = '地址库不存在，请重新生成';
-            return $return;
+            // $return['status'] = false;
+            // $return['msg'] = error_code(10072, true);
+            return error_code((10072));
         }
         $data = file_get_contents($area);
         echo $data;
@@ -1224,24 +1237,25 @@ class User extends Api
 
     /**
      * 新的分享，不管是二维码，还是地址，都走这个
-     * page	场景值		1店铺首页，2商品详情页，3拼团详情页,4邀请好友（店铺页面,params里需要传store）,5文章页面,6参团页面，7自定义页面，8智能表单，9团购秒杀
-    url	 	前端地址
-    params	参数，根据场景值不一样而内容不一样
-     *      1
-     *      2 goods_id:商品ID
-     *      3 goods_id:商品ID，team_id:拼团ID
-     *      4 store:店铺code
-     *      5 article_id:文章ID，article_type:文章类型
-     *      6 goods_id:商品ID，group_id:参团ID，team_id:拼团ID
-     *      7 page_code:自定义页面code
-     *      8 id：智能表单ID
-     *      9 goods_id:商品ID，group_id:团购秒杀ID
-    type	类型，1url，2二维码，3海报
-    token	可以保存推荐人的信息
-    client	终端，1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序,5pc，6阿里小程序
-     * @return array
+     * page	场景值 1店铺首页，2商品详情页，3拼团详情页，4邀请好友（店铺页面,params里需要传store），5文章页面，6参团页面，7自定义页面，8智能表单，9团购秒杀
+     * url 前端地址
+     * params 参数，根据场景值不一样而内容不一样
+     *  1
+     *  2 goods_id:商品ID
+     *  3 goods_id:商品ID
+     *  4 store:店铺code
+     *  5 article_id:文章ID，article_type:文章类型
+     *  6 goods_id:商品ID，group_id:参团ID，team_id:拼团ID
+     *  7 page_code:自定义页面code
+     *  8 id:智能表单ID
+     *  9 goods_id:商品ID，group_id:团购秒杀ID
+     * type 类型，1url，2二维码，3海报
+     * token 可以保存推荐人的信息
+     * client 终端，1普通h5，2微信小程序，3微信公众号（h5），4头条系小程序，5pc网站，6阿里小程序
+     * @return array|mixed
      */
-    public function share(){
+    public function share()
+    {
         $token = Request::param('token', false);
         if (input('?param.token')) {
             $user_id = getUserIdByToken($token);
@@ -1250,20 +1264,34 @@ class User extends Api
         }
         $page = input('param.page');
         $url = input('param.url');
-
         $params = input('param.params', []);//json_decode(input('param.params', ""), true);
         $type = input('param.type');
         $client = input('param.client');
-
         $share = new Share();
         return $share->get($client, $page, $type, $user_id, $url, $params);
     }
-    public function deshare(){
-        if(!input('?param.code')){
+
+
+    /**
+     * @return array|mixed
+     */
+    public function deshare()
+    {
+        if (!input('?param.code')) {
             return error_code(10000);
         }
         $share = new UrlShare();
-        return $share->de_url(input('param.code'));
+        $re = $share->de_url(input('param.code'));
+        if(!$re['status']){
+            return $re;
+        }
+
+        $obj = new \stdClass;
+        $obj->data = $re['data'];
+        Hook('deshare', $obj);
+        $re['data'] = $obj->data;
+
+        return $re;
     }
 
 
@@ -1283,11 +1311,11 @@ class User extends Api
         ];
 
         if (!input("?param.type")) {
-            $result['msg'] = 'type参数缺失';
-            return $result;
+            // $result['msg'] = error_code(10003, true);
+            return error_code(10003);
         }
         $data = input('param.');
-        $userWxModel = new UserWx();
+//        $userWxModel = new UserWx();
         $uniapp = new Uniapp();
 
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
@@ -1298,7 +1326,7 @@ class User extends Api
             if ($pinfo) {
                 $data['pid'] = $pinfo['id'];
             } else {
-                error_code(10014);
+                return error_code(10014);
             }
         } else {
             $data['pid'] = 0;
@@ -1367,8 +1395,8 @@ class User extends Api
         $user_info = Request::param('user_info', false);
 
         if (!$code) {
-            $result['msg'] = 'code参数缺失';
-            return $result;
+            // $result['msg'] = error_code(10003, true);
+            return error_code(10003);
         }
         $ttApp = new Ttapp();
         return $ttApp->codeToInfo($code, $user_info);

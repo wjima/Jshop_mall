@@ -76,7 +76,7 @@ class Notice extends Common
         } else {
             if (!$this->allowField(true)->save($data)) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -98,8 +98,7 @@ class Notice extends Common
             $result['msg']    = $validate->getError();
         } else {
             if ($this->allowField(true)->save($data, ['id' => $data['id']]) === false) {
-                $result['status'] = false;
-                $result['msg']    = '保存失败';
+               return error_code(10004);
             }
         }
         return $result;

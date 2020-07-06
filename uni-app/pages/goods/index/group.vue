@@ -17,20 +17,22 @@
 
 			<view class="cell-group">
 				<!-- 倒计时 -->
-				<view class="price-salesvolume" v-if="lasttime.hour !== false">
+				<view class="price-salesvolume" v-if="goodsInfo.activity_status">
 					<view class="commodity-price">
 						<text class="current-price">￥{{ product.price || '0.00' }}</text>
 						<text class="cost-price" v-if="parseFloat(product.mktprice) > 0">￥{{ product.mktprice || '0.00' }}</text>
 					</view>
 					<view class="commodity-salesvolume">
-						<text>已售{{ goodsInfo.buy_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
+						<text>已售{{ goodsInfo.buy_promotion_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
 					<view class="commodity-time-img"></view>
 					<view class="commodity-time">
-						<text>距结束仅剩</text>
-						<view class="commodity-day">
-							<uni-countdown :show-day="false" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+						<text v-if="goodsInfo.activity_status == '1'">活动即将开始</text>
+						<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
+						<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
+						<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
+							<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
 						</view>
 					</view>
 				</view>
@@ -53,7 +55,8 @@
 					<view class="cell-item-hd"><view class="cell-hd-title">促销</view></view>
 					<view class="cell-item-bd">
 						<view class="romotion-tip">
-							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion" :key="index">{{ item.name || '' }}</view>
+							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''"
+							 v-for="(item, index) in promotion" :key="index">{{ item.name || item ||'' }}</view>
 						</view>
 					</view>
 				</view>
@@ -72,9 +75,9 @@
 				<view class="cell-item goods-title-item cell-item-mid" v-if="goodsShowWord && goodsShowWord != ''">
 					<view class="cell-item-hd"><view class="cell-hd-title">说明</view></view>
 					<view class="cell-item-bd">
-						<view class="cell-bd-view" v-for="(item,index) in goodsShowWord" :key="index">
+						<view class="cell-bd-view" v-for="(item, index) in goodsShowWord" :key="index">
 							<image class="goods-title-item-ic" src="/static/image/ic-dui.png" mode=""></image>
-							<view class="cell-bd-text">{{item}}</view>
+							<view class="cell-bd-text">{{ item }}</view>
 						</view>
 					</view>
 				</view>
@@ -141,58 +144,68 @@
 			</view>
 		</view>
 
-		<lvv-popup position="bottom" ref="share">
+		<lvv-popup position="bottom" ref="share" v-if="goodsId">
 			<!-- #ifdef H5 -->
 			<shareByH5
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByH5>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-WEIXIN -->
 			<shareByWx
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByWx>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-ALIPAY -->
 			<shareByAli
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByAli>
 			<!-- #endif -->
 
 			<!-- #ifdef MP-TOUTIAO -->
 			<shareByTt
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByTt>
 			<!-- #endif -->
 
 			<!-- #ifdef APP-PLUS || APP-PLUS-NVUE -->
 			<shareByApp
-				:goodsId="goodsInfo.id"
+				:goodsId="goodsId"
+				:groupId="groupId"
 				:shareImg="goodsInfo.image_url"
 				:shareTitle="goodsInfo.name"
 				:shareContent="goodsInfo.brief"
 				:shareHref="shareHref"
+				:shareType="9"
 				@close="closeShare()"
 			></shareByApp>
 			<!-- #endif -->
@@ -265,14 +278,14 @@
 				<view v-if="!isfav">收藏</view>
 				<view v-if="isfav">已收藏</view>
 			</view>
-
 			<view class="goods-bottom-ic" @click="redirectCart">
 				<view class="badge color-f" v-if="cartNums">{{ cartNums || '' }}</view>
 				<image class="icon" src="/static/image/ic-me-car.png" mode=""></image>
 				<view>购物车</view>
 			</view>
-
-			<button class="btn btn-square btn-b tl" @click="toshow(2)" hover-class="btn-hover2">立即{{ typeName || '' }}</button>
+			<button class="btn btn-square btn-b tl btn-hover2" v-if="goodsInfo.activity_status == '1'">即将开始</button>
+			<button class="btn btn-square btn-b tl btn-hover2" v-else-if="goodsInfo.activity_status == '3'">已结束</button>
+			<button class="btn btn-square btn-b tl" @click="toshow(2)" hover-class="btn-hover2" v-else>立即{{ typeName || '' }}</button>
 		</view>
 		<!-- 底部按钮end -->
 
@@ -309,8 +322,9 @@ import shareByApp from '@/components/share/shareByApp.vue';
 // #endif
 
 import jshopContent from '@/components/jshop/jshop-content.vue'; //视频和文本解析组件
-
+import { goBack } from '@/config/mixins.js';
 export default {
+	mixins: [goBack],
 	components: {
 		uniSegmentedControl,
 		lvvPopup,
@@ -399,12 +413,12 @@ export default {
 				minute: 0,
 				second: 0
 			},
-            shareUrl: '/pages/share/jump'
+			shareUrl: '/pages/share/jump'
 		};
 	},
 	onLoad(e) {
-		this.goodsId = e.id;
-		this.groupId = e.group_id;
+		this.goodsId = e.id - 0;
+		this.groupId = e.group_id - 0;
 
 		if (this.goodsId && this.groupId) {
 			this.getGoodsInfo();
@@ -464,7 +478,7 @@ export default {
 		},
 		goodsShowWord() {
 			return this.$store.state.config.goods_show_word;
-		},
+		}
 	},
 	onReachBottom() {
 		if (this.current === 2 && this.goodsComments.loadStatus === 'more') {
@@ -524,6 +538,10 @@ export default {
 							this.goodsBrowsing();
 						}
 					}
+				} else {
+					this.$common.errorToShow(res.msg, () => {
+						goBack.backBtn();
+					});
 				}
 			});
 		},
@@ -553,15 +571,17 @@ export default {
 			let index = obj.v;
 			let key = obj.k;
 			if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index][key].product_id) {
+				let type = this.goodsInfo.group_type == 3 ? 'group' : 'skill';
 				let data = {
 					id: this.product.default_spes_desc[index][key].product_id,
-					type: 'group' //商品类型
+					type: type, //商品类型
+					group_id: this.groupId
 				};
 				let userToken = this.$db.get('userToken');
 				if (userToken) {
 					data['token'] = userToken;
 				}
-				this.$api.getProductInfo(data, res => {
+				this.$api.getGroupProductInfo(data, res => {
 					if (res.status == true) {
 						// 切换规格判断可购买数量
 						this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
@@ -678,17 +698,22 @@ export default {
 		},
 		// 立即购买
 		buyNow() {
+			let order_type = this.goodsInfo.group_type == 3 ? 3 : 4;
 			if (this.buyNum > 0) {
 				let data = {
 					product_id: this.product.id,
 					nums: this.buyNum,
-					order_type: 1
+					order_type: order_type
 				};
+				//团购秒杀
+				if (this.groupId != 0) {
+					data['params'] = JSON.stringify({ group_id: this.groupId }); //砍价信息
+				}
 				this.$api.addCart(data, res => {
 					if (res.status) {
 						this.toclose();
 						let cartIds = res.data;
-						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds));
+						this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(cartIds) + '&order_type=' + order_type + '&group_id=' + this.groupId);
 					} else {
 						this.$common.errorToShow(res.msg);
 					}
@@ -782,35 +807,35 @@ export default {
 			}
 			// #endif
 		},
-        //获取分享URL
-        getShareUrl() {
-            let data = {
-                client: 2,
-                url: "/pages/share/jump",
-                type: 1,
-                page: 9,
-                params: {
-                    goods_id: this.goodsId,
-                    group_id: this.groupId
-                }
-            };
-            let userToken = this.$db.get('userToken');
-            if (userToken && userToken != '') {
-            	data['token'] = userToken;
-            }
-            this.$api.share(data, res => {
-                this.shareUrl = res.data
-            });
-        }
+		//获取分享URL
+		getShareUrl() {
+			let data = {
+				client: 2,
+				url: '/pages/share/jump',
+				type: 1,
+				page: 9,
+				params: {
+					goods_id: this.goodsId,
+					group_id: this.groupId
+				}
+			};
+			let userToken = this.$db.get('userToken');
+			if (userToken && userToken != '') {
+				data['token'] = userToken;
+			}
+			this.$api.share(data, res => {
+				this.shareUrl = res.data;
+			});
+		}
 	},
-    watch:{
-        goodsId: {
-            handler () {
-                this.getShareUrl();
-            },
-            deep: true
-        }
-    },
+	watch: {
+		goodsId: {
+			handler() {
+				this.getShareUrl();
+			},
+			deep: true
+		}
+	},
 	//分享
 	onShareAppMessage() {
 		return {

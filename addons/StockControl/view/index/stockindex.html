@@ -1,0 +1,108 @@
+
+<form class="layui-form seller-form" action="">
+	<div class="layui-form-item">
+		<div class="layui-inline">
+			<label class="layui-form-label">商品名称：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="goods_name" placeholder="请输入商品名称" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">商品编号：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="bn" placeholder="请输入商品编号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-inline">
+			<label class="layui-form-label">货品编号：</label>
+			<!-- <div class="layui-input-inline seller-inline-3"> -->
+			<div class="layui-input-inline">
+				<input type="text" name="sn" placeholder="请输入货品编号" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+
+		<div class="layui-inline" id="layui-btn-group-container">
+			<button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
+					class="iconfont icon-chaxun"></i>筛选</button>
+		</div>
+	</div>
+
+</form>
+<div class="table-body">
+	<div style="margin-top: 10px">
+		<span style="color: red">说明：</span>库存列可直接修改哦。
+	</div>
+	<table id="hbTable" lay-filter="test"></table>
+</div>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+        table = layui.table.render({
+            elem: '#hbTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:get_addon_url('StockControl://index/stockindex')}?_ajax=1",
+            id:'hbTable',
+            cols: [[
+				{field:'id', width:100,title:'ID', align: 'center'},
+				{field:'goods_name',  title:'商品名称', align: 'center'},
+				{field:'spes_desc', width:200,title:'货品规格', align: 'center'},
+				{field:'bn',width:200,title:'商品编号', align: 'center'},
+				{field:'sn',width:200,title:'货品编号',event: 'setSign', align: 'center',templet:function(data){
+						return '<span class="link-hot option-show" data-id="' + data.id + '">'+data.sn+'</span>';
+					}},
+				{field:'stock', width:150, title:'总库存',edit: 'number', align: 'center'},
+				{field:'freeze_stock', width:150, title:'冻结库存', align: 'center'},
+				{field:'unit', width:100, title:'单位', align: 'center'},
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('hbTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+		//监听单元格编辑
+		layui.table.on('edit(test)', function(obj){
+			var value = obj.value //得到修改后的值
+					,data = obj.data //得到所在行所有键值
+					,field = obj.field; //得到字段
+			if(value < 0) {
+				layer.msg('库存不能为负数');
+				layui.table.reload('hbTable');
+				return false;
+			}
+			JsPost("{:get_addon_url('StockControl://index/editStock')}",{id:data.id,stock:value},function (e) {
+				if(e.status){
+					layer.msg(e.msg);
+				}else{
+					obj.update({
+						stock:e.data
+					})
+					layer.msg('库存修改失败');
+				}
+			})
+		});
+		//监听单元格事件
+		layui.table.on('tool(test)', function(obj){
+			var data = obj.data;
+			if(obj.event === 'setSign'){
+				location.href = "{:get_addon_url('StockControl://index/index')}?sn="+data.sn;
+				return false;
+			}
+		});
+
+    });
+
+
+
+</script>

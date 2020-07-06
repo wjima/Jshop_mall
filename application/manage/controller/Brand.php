@@ -89,7 +89,7 @@ class Brand extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => []
         ];
         $brandModel = new BrandsModel();
@@ -107,7 +107,7 @@ class Brand extends Manage
     {
         $result     = [
             'status' => false,
-            'msg'    => '获取失败',
+            'msg'    => error_code(10025,true),
             'data'   => [],
         ];
         $brandModel = new BrandsModel();

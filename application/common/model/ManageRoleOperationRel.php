@@ -194,12 +194,97 @@ class ManageRoleOperationRel extends Common
             'data' => '',
             'msg' => ''
         ];
+        $addon_name = strtolower($addon_name);
+        $cont_name = strtolower($cont_name);
+        $act_name = strtolower($act_name);
 
-        //::todo  去校验是否有权限
-        $result['status'] = true;
-        return $result;
+        $operationModel = new Operation();
+        $manage_list = $operationModel->getManageAddonsMenu($manage_id);        //当前用户插件节点
+        $list = $operationModel->addonsOperations();//所有插件节点
+        //先查找控制器
+        $cont_id = "";
+
+        foreach($list as $v){
+            if(isset($v['addons']) && $this->checkAddonsName($v['addons'], $addon_name)){
+                if($v['type'] == 'c' && $this->checkAddonsName($v['code'], $cont_name)){
+                    $cont_id = $v['id'];
+                    break;
+                }
+            }
+        }
+        if ($cont_id == "") {
+            // $result['msg'] = "没有找到此控制器";
+            return error_code(11102);
+        }
+        $cont_id = strtolower($cont_id);
+
+        //再查找方法
+        $act_info = [];
+        foreach($list as $v){
+            if(isset($v['addons']) && $this->checkAddonsName($v['addons'], $addon_name)){
+                if($v['type'] == 'a' && strtolower($v['code']) == $act_name && strtolower($v['parent_id']) == $cont_id ){
+                    $act_info = $v;
+                    break;
+                }
+            }
+        }
+        if (count($act_info) == 0) {
+            // $result['msg'] = "没有找到此方法";
+            return error_code(11103);
+        }
+        //看当前权限是否是关联权限
+        if($act_info['perm_type'] == 3){
+            foreach($list as $v){
+                if(isset($v['addons']) && $this->checkAddonsName($v['addons'], $addon_name)){
+                    if($v['id'] == $act_info['parent_menu_id'] ){
+                        $act_info = $v;
+                        break;
+                    }
+                }
+            }
+        }
+        if ($act_info['perm_type'] == 3) {
+            $result['msg'] = jshop_m_l(11104);        //可能没有找到所关联的节点，也可能关联节点也是关联关系，不做详细判断了
+            return $result;
+        }
+        //去manage_list里看是否有这个节点
+        foreach($manage_list as $v){
+            if(isset($v['addons']) && $this->checkAddonsName($v['addons'], $addon_name)){
+                if($v['id'] == $act_info['id'] ){
+                    $result['status'] = true;
+                    return $result;
+                    break;
+                }
+            }
+        }
+        // $result['msg'] = "没有权限";
+        return error_code(11105);
     }
 
-
-
+    /**
+     * 比对插件名称和控制器名臣个是否是一个，会对code的驼峰写法转化成下划线写法,然后在进行比对
+     * @param $code
+     * @param $name
+     * @return bool
+     */
+    private function checkAddonsName($code,$name){
+        //把code从驼峰法转变成匈牙利法
+        $code2 = "";
+        for($i = 0;$i<strlen($code);$i++) {
+            if (
+                $i != 0 &&
+                ord($code[$i]) >= 65 &&
+                ord($code[$i]) <= 90
+            ) {
+                $code2 .= "_" . chr(ord($code[$i]) + 32);
+            } else {
+                $code2 .= $code[$i];
+            }
+        }
+        if(strtolower($code2) == strtolower($name)){
+            return true;
+        }{
+            return false;
+        }
+    }
 }

@@ -50,11 +50,7 @@ class Wechat extends Manage
      */
     public function doEdit()
     {
-        $result       = [
-            'status' => false,
-            'data'   => '',
-            'msg'    => '保存失败',
-        ];
+        $result       =  error_code(10004);
         $settingModel = new Setting();
 
         if (Request::isAjax()) {
@@ -144,13 +140,13 @@ class Wechat extends Manage
         $result = [
             'status' => false,
             'data'   => '',
-            'msg'    => '参数错误',
+            'msg'    => '', //参数错误
         ];
         $this->view->engine->layout(false);
         $id  = input('id/d');
         $pid = input('pid/d');
         if (!$id) {
-            return $result;
+            return error_code(10051);
         }
         $weixinMenu = new WeixinMenu();
         $menu       = $weixinMenu->where(['menu_id' => $id, 'pid' => $pid])->find();
@@ -187,7 +183,7 @@ class Wechat extends Manage
         $result   = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数错误',
+            'msg'    => '',
         ];
         $data     = input('param.');
         $validate = new weixinMenuValidate();
@@ -215,12 +211,12 @@ class Wechat extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数错误',
+            'msg'    => '',//参数错误
         ];
         $id     = input('id/d', 0);
         $pid    = input('pid/d', 0);
         if (!$id) {
-            return $result;
+            return error_code(10051);
         }
         $weixinMenu = new WeixinMenu();
         $info       = $weixinMenu->where(['pid' => $pid, 'menu_id' => $id])->find();
@@ -234,13 +230,13 @@ class Wechat extends Manage
         if ($pid == 0) {
             $nums = $weixinMenu->where(['pid' => $id])->count();
             if ($nums > 0) {
-                $result['msg'] = '请先删除子节点菜单';
+                $result['msg'] = error_code(11100,true);
                 return $result;
             }
         }
         $res = $weixinMenu->where(['pid' => $pid, 'menu_id' => $id])->delete();
         if (!$res) {
-            $result['msg'] = '删除失败';
+            $result['msg'] = error_code(10023,true);
             return $result;
         }
         $result['status'] = true;
@@ -258,7 +254,7 @@ class Wechat extends Manage
         $returnData = [
             'status' => false,
             'data'   => [],
-            'msg'    => '参数错误',
+            'msg'    => '',
         ];
 
         $menu = load_wechat('menu');
@@ -315,7 +311,7 @@ class Wechat extends Manage
     {
         $return = [
             'status' => false,
-            'msg'    => '失败',
+            'msg'    => error_code(10037,true),
             'data'   => ''
         ];
         $this->view->engine->layout(false);
@@ -338,11 +334,7 @@ class Wechat extends Manage
      */
     public function delMessage()
     {
-        $result       = [
-            'status' => false,
-            'msg'    => '删除失败',
-            'data'   => [],
-        ];
+        $result       = error_code(10023);
         $messageModel = new WeixinMessage();
         $id           = input('param.id/d', 0);
         if (!$id) {
@@ -365,11 +357,7 @@ class Wechat extends Manage
      */
     public function editMessage()
     {
-        $return = [
-            'status' => false,
-            'msg'    => '失败',
-            'data'   => ''
-        ];
+        $return =  error_code(10037);
         $this->view->engine->layout(false);
         $messageModel = new WeixinMessage();
         if (Request::isPost()) {
@@ -395,7 +383,7 @@ class Wechat extends Manage
     {
         $id = input('id/d', 0);
         if (!$id) {
-            $this->error("关键参数丢失");
+            $this->error(error_code(10051,true));
         }
         $weixinMessage = new WeixinMessage();
         $message       = $weixinMessage->getInfo($id);

@@ -55,7 +55,7 @@
         margin: 0px 0px 0 0;
     }
     .layui-table .layui-btn{
-        margin-top: 0px;;
+        margin-top: 0px;
     }
 </style>
 <form class="layui-form seller-alone-form" action="{:url('form/add')}" method="post">
@@ -331,7 +331,7 @@
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <input type="hidden" name="id" value="{$form.id}">
-                {:jshopToken()}
+                {:jshopToken('form_edit')}
                 <button class="layui-btn" lay-submit="" lay-filter="save">保存</button>
                 <a href="javascript:history.back(-1);" class="layui-btn layui-btn-primary">返回</a>
             </div>

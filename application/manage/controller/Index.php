@@ -9,6 +9,7 @@ use app\common\model\Order;
 use app\common\model\PintuanGoods;
 use app\common\model\Promotion;
 use app\common\model\User;
+use app\common\model\UserGrade;
 use think\Console;
 use think\facade\Cache;
 use app\common\model\WeixinAuthor;
@@ -91,6 +92,8 @@ class Index extends Manage
         Cache::clear();//TODO 如果开启其他缓存，记得这里要配置缓存配置信息
         Console::call('clear', ['--cache', '--dir']);//清除缓存文件
         Console::call('clear', ['--path', ROOT_PATH . '\\runtime\\temp\\']); //清除模板缓存
+        //删除海报
+        del_dir_and_file(ROOT_PATH.'public'.DS.'static'.DS.'poster');
         $this->success('清除缓存成功', 'index/welcome');
     }
 
@@ -119,7 +122,7 @@ class Index extends Manage
             $request         = input('param.');
             $promotionModel  = new Promotion();
             $request['type'] = [$promotionModel::TYPE_GROUP, $promotionModel::TYPE_SKILL];
-            return $promotionModel->tableData($request);
+            return $promotionModel->tableGroupData($request);
         } else {
             return $this->fetch('tagSelectGroup');
         }
@@ -153,6 +156,12 @@ class Index extends Manage
             $userModel = new User();
             return $userModel->tableData($request);
         } else {
+            $grade = input('grade','');
+            if(empty($grade)){
+                $userGrade = UserGrade::field(['id','name'])->select()->toArray();
+                $this->assign('userGrade',$userGrade);
+            }
+            $this->assign('grade',$grade);
             return $this->fetch('tagSelectUser');
         }
     }

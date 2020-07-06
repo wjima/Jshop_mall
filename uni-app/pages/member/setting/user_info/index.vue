@@ -18,6 +18,22 @@
 						<input class='cell-bd-input' placeholder='' v-model="nickname" ></input>
 					</view>
 				</view>
+				<view class='cell-item cell-item-mid'>
+					<view class='cell-item-hd'>
+						<view class='cell-hd-title'>用户名</view>
+					</view>
+					<view class='cell-item-bd'>
+						<input class='cell-bd-input' placeholder='' v-model="username" disabled="true"></input>
+					</view>
+				</view>
+				<view class='cell-item cell-item-mid'>
+					<view class='cell-item-hd'>
+						<view class='cell-hd-title'>手机号</view>
+					</view>
+					<view class='cell-item-bd'>
+						<input class='cell-bd-input' placeholder='' v-model="mobile" disabled="true"></input>
+					</view>
+				</view>
 				<!-- #ifndef MP-TOUTIAO || MP-ALIPAY -->
 					<view class='cell-item cell-item-mid right-img'>
 						<view class='cell-item-hd'>
@@ -71,6 +87,7 @@ export default {
 			objectSex: ['男', '女', '未知'],
 			index: 2,
 			nickname: '',
+			username:"",
 			mobile: '',
 			date: '1990-01-01',
 			birthday: '请选择',
@@ -106,7 +123,7 @@ export default {
             } else if (type === 'end') {
                 year = year + 2;
             }
-            month = month > 9 ? month : '0' + month;;
+            month = month > 9 ? month : '0' + month;
             day = day > 9 ? day : '0' + day;
             return `${year}-${month}-${day}`;
         },
@@ -173,6 +190,11 @@ export default {
 				_this.index = the_sex;
 				_this.birthday = res.data.birthday;
 				_this.avatar = res.data.avatar;
+				if(res.data.username){
+					_this.username=res.data.username;
+				}else{
+					_this.username="暂无用户名"
+				}
 				if(_this.birthday!='请选择'){
 					_this.date = _this.birthday;
 				}

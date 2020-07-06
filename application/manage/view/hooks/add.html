@@ -10,7 +10,7 @@
     <div class="layui-form-item layui-upload">
         <label class="layui-form-label"><i class="required-color">*</i> 描述：</label>
         <div class="layui-input-inline seller-inline-4">
-            <textarea name="description" placeholder="请输入钩子描述" class="layui-textarea"></textarea>
+            <textarea name="description" placeholder="请输入钩子描述" lay-verify="required" class="layui-textarea"></textarea>
         </div>
     </div>
     <div class="layui-form-item layui-upload">
@@ -20,7 +20,7 @@
             <input type="radio" name="type" value="2" title="视图" >
         </div>
     </div>
-    {:jshopToken()}
+    {:jshopToken('hooks_add')}
     <button class="layui-btn layui-btn-fluid save-hooks" lay-submit lay-filter="add-hooks">保存</button>
 </div>
 <script>

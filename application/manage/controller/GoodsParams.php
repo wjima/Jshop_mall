@@ -47,11 +47,6 @@ class GoodsParams extends Manage
      */
     public function add()
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '添加失败',
-            'data' => '',
-        ];
         $this->view->engine->layout(false);
         if (Request::isPost())
         {
@@ -75,7 +70,7 @@ class GoodsParams extends Manage
         }
         //获取添加页面
         $return_data['status'] = true;
-        $return_data['msg'] = '失败';
+        $return_data['msg'] = error_code(10037,true);
         $return_data['data'] = $this->fetch('add');
         return $return_data;
     }
@@ -90,17 +85,12 @@ class GoodsParams extends Manage
      */
     public function edit()
     {
-        $return_data = [
-            'status' => false,
-            'msg' => '添加失败',
-            'data' => '',
-        ];
+        $return_data = error_code(10021);
         $goodsParamsModel = new GPmodel();
-        $id = input('id/d','0');
-        if(!$id)
-        {
-            $return_data['msg'] = '参数错误';
-            return $return_data;
+        $id = input('id/d', '0');
+        if (!$id) {
+            // $return_data['msg'] = error_code(10003, true);
+            return error_code(10013);
         }
         $this->view->engine->layout(false);
         if(Request::isPost())
@@ -125,7 +115,7 @@ class GoodsParams extends Manage
         $data = $goodsParamsModel->where(['id'=>$id])->find();
         if(!$data)
         {
-            $return_data['msg'] = '无数据';
+            $return_data['msg'] = error_code(10002,true);
             return $return_data;
         }
         $this->assign($data->toArray());
@@ -145,7 +135,7 @@ class GoodsParams extends Manage
     {
         $result = [
             'status' => false,
-            'msg' => '删除失败',
+            'msg' => error_code(10023,true),
             'data' => ''
         ];
         $id = input('post.id', 0);
@@ -172,7 +162,7 @@ class GoodsParams extends Manage
     {
         $return = [
             'status' => false,
-            'msg' => '失败',
+            'msg' => error_code(10037,true),
             'data' => ''
         ];
         $this->view->engine->layout(false);

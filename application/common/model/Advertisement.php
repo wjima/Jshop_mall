@@ -108,7 +108,7 @@ class Advertisement extends Common
             }
             if (!$this->allowField(true)->save($data)) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;
@@ -150,7 +150,7 @@ class Advertisement extends Common
             }
             if (!$this->allowField(true)->save($data,['id'=>$data['id']])) {
                 $result['status'] = false;
-                $result['msg'] = '保存失败';
+                $result['msg'] = error_code(10004,true);
             }
         }
         return $result;

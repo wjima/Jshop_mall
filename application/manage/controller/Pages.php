@@ -51,8 +51,9 @@ class Pages extends Manage
             }
         }
         $pageConfig = json_encode($pageConfig, 320);
-        $pageConfig = str_replace('"true', 'true', $pageConfig);
-        $pageConfig = str_replace('true"', 'true', $pageConfig);
+        $pageConfig = str_replace(['"true','true"'], 'true', $pageConfig);
+        $pageConfig = str_replace(['"false','false"'], 'false', $pageConfig);
+
         $this->assign('page_config', $pageConfig);
 
         //取出所有品牌
@@ -116,7 +117,7 @@ class Pages extends Manage
         $info = \app\common\model\Pages::get($id, 'items');
         $info->together('items')->delete();
 
-        return $result = [
+        return  [
             'status' => true,
             'msg'    => '删除成功',
             'data'   => []

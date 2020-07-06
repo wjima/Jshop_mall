@@ -25,7 +25,6 @@ class Bargain extends Manage
             return $bargainModel->tableData($request);
         }
         return $this->fetch();
-
     }
 
 
@@ -56,7 +55,7 @@ class Bargain extends Manage
             $info['date'] = date('Y-m-d H:i:s', $info['stime']) . " 到 " . date('Y-m-d H:i:s', $info['etime']);
             $this->assign('info', $info);
         }
-        return $this->fetch();;
+        return $this->fetch();
     }
 
     public function del()
@@ -84,14 +83,13 @@ class Bargain extends Manage
         $result = [
             'status' => false,
             'data'   => [],
-            'msg'    => error_code(10003,true),
+            'msg'    => '',
         ];
         $field  = input('post.field/s');
         $value  = input('post.value/d');
         $id     = input('post.id/d', '0');
         if (!$field || !$value || !$id) {
-            $result['msg']    = error_code(10003,true);
-            $result['status'] = false;
+            return error_code(10003);
         }
 
         $bargainModel = new BargainModel();
@@ -100,8 +98,7 @@ class Bargain extends Manage
             $result['msg']    = '更新成功';
             $result['status'] = true;
         } else {
-            $result['msg']    = error_code(10021,true);
-            $result['status'] = false;
+            return error_code(10021);
         }
         return $result;
     }
@@ -114,7 +111,7 @@ class Bargain extends Manage
     {
         $result       = [
             'status' => false,
-            'msg'    => error_code(10003,true),
+            'msg'    => '',
             'data'   => []
         ];
         $bargainModel = new BargainModel();
@@ -122,7 +119,7 @@ class Bargain extends Manage
 
         $state = input('param.state/s', 'true');
 
-        if (!$id) return $result;
+        if (!$id) return error_code(10003);
         if ($state == 'true') {
             $status = $bargainModel::STATUS_ON;
         } else {
@@ -132,7 +129,7 @@ class Bargain extends Manage
             $result['status'] = true;
             $result['msg']    = '设置成功';
         } else {
-            $result['msg'] = error_code(10021,true);
+            return error_code(10021);
         }
         return $result;
     }
@@ -149,14 +146,14 @@ class Bargain extends Manage
             return $bargainRecordModel->tableData($request);
         }
         return $this->fetch();
-
     }
 
     /**
      * 砍价日志
      */
-    public function recordLog(){
-        $this->assign('record_id',input('record_id'));
+    public function recordLog()
+    {
+        $this->assign('record_id', input('record_id'));
         if (Request::isAjax()) {
             $bargainLogModel = new BargainLog();
             $request      = input('param.');

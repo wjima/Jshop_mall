@@ -93,7 +93,7 @@ class wechatpay implements Payment
             if($this->config['type'] == 1){
                 $data['sub_openid'] = $open_id;
             }else{
-                $data['appid'] = $open_id; 
+                $data['openid'] = $open_id; 
             }
         }
         if($trade_type == 'MWEB'){

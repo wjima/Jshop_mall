@@ -37,7 +37,7 @@ class WeixinMessage extends Common
             'msg'    => '保存成功',
             'data'   => [],
         ];
-//        $id     = 0;
+        //        $id     = 0;
         if (!isset($params['enable'])) {
             $params['enable'] = self::ENABLE_YES;
         }
@@ -90,7 +90,9 @@ class WeixinMessage extends Common
         if (isset($post['name']) && $post['name'] != "") {
             $where[] = ['name', 'like', '%' . $post['name'] . '%'];
         }
-
+        if (isset($post['type']) && $post['type'] != "") {
+            $where[] = ['type', '=', $post['type']];
+        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['id desc'];
@@ -148,7 +150,6 @@ class WeixinMessage extends Common
             if ($data['type'] == self::TYPE_TEXT || $data['type'] == self::TYPE_IMAGE) {
                 $data['params'] = json_decode($data['params'], true);
                 return $wechat->text($data['params']['content'])->reply();
-
             } elseif ($data['type'] == self::TYPE_IMAGE_TEXT) {
                 $data['params'] = json_decode($data['params'], true);
                 if (isset($data['params']['media_id']) && $data['params']['media_id']) {
@@ -159,10 +160,10 @@ class WeixinMessage extends Common
                     $newsdata = [];
                     foreach ($data['media'] as $key => $val) {
                         //未填写url时，自动输出前台页面当前站点地址
-                        if(!$val['url']){
+                        if (!$val['url']) {
                             $host = \request()->host();
                             $host = (\request()->isSsl() ? 'https://' : 'http://') . $host; //增加洗衣判断
-                            $val['url'] = $host.'/wap/#/pages/article/index?id='.$val['id'].'&id_type=3';
+                            $val['url'] = $host . '/wap/#/pages/article/index?id=' . $val['id'] . '&id_type=3';
                         }
                         $newsdata[] = [
                             'Title'       => $val['title'],
@@ -175,7 +176,7 @@ class WeixinMessage extends Common
                 }
             }
         }
-        return $wechat->text('欢迎光临')->reply();//没有默认的时候返回这个
+        return $wechat->text('欢迎光临')->reply(); //没有默认的时候返回这个
     }
 
     /**
@@ -187,6 +188,4 @@ class WeixinMessage extends Common
     {
         return $this->get($id);
     }
-
-
 }

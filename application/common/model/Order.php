@@ -1686,7 +1686,7 @@ class Order extends Common
         $order['point'] = $cartInfo['data']['point'];
         $order['point_money'] = $cartInfo['data']['point_money'];
 
-        $order['weight'] = $cartInfo['data']['weight'];;
+        $order['weight'] = $cartInfo['data']['weight'];
         $order['order_pmt'] = isset($cartInfo['data']['order_pmt']) ? $cartInfo['data']['order_pmt'] : 0;
         $order['goods_pmt'] = isset($cartInfo['data']['goods_pmt']) ? $cartInfo['data']['goods_pmt'] : 0;
         $order['coupon_pmt'] = $cartInfo['data']['coupon_pmt'];

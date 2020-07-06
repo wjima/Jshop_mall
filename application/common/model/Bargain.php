@@ -42,12 +42,12 @@ class Bargain extends Common
     const STATUS_ON = 1; //启用
     const STATUS_OFF = 2; //禁用
 
-    const PROGRESS_STATUS_ING = '2';//进行中
-    const PROGRESS_STATUS_SUCCESS = '3';//砍价成功
-    const PROGRESS_STATUS_END = '4';//砍价结束
+    const PROGRESS_STATUS_ING = '2'; //进行中
+    const PROGRESS_STATUS_SUCCESS = '3'; //砍价成功
+    const PROGRESS_STATUS_END = '4'; //砍价结束
 
-    const TYPE_SELF = 1;//自己砍
-    const TYPE_OTHER = 2;//给别人砍
+    const TYPE_SELF = 1; //自己砍
+    const TYPE_OTHER = 2; //给别人砍
 
     /**
      * 返回layui的table所需要的格式
@@ -87,7 +87,6 @@ class Bargain extends Common
                 ->order($tableWhere['order'])
                 ->count();
             $data  = $this->tableFormat($list, $api);
-
         } else {
             $tableWhere = $this->tableWhere($post);
 
@@ -184,7 +183,7 @@ class Bargain extends Common
             $goodsModel = new Goods();
             $goodsInfo  = $goodsModel->field('name')->get($re['goods_id']);
             if ($goodsInfo) {
-                $result['msg'] = error_code(17632,true,$goodsInfo['name']);//"商品：" . $goodsInfo['name'] . " 参加过砍价了"
+                $result['msg'] = error_code(17632, true, $goodsInfo['name']); //"商品：" . $goodsInfo['name'] . " 参加过砍价了"
                 return $result;
             } else {
                 return error_code(10000);
@@ -219,7 +218,7 @@ class Bargain extends Common
             'data'   => [],
         ];
         if (!$bargain_id || !$user_id) {
-//            $result['msg'] = '参数丢失';
+            //            $result['msg'] = '参数丢失';
             return error_code(10051);
         }
         $info       = $this->field('id,name,intro,desc,sales_num,goods_id,max_goods_nums,start_price,end_price,etime')->get($bargain_id);
@@ -227,7 +226,7 @@ class Bargain extends Common
 
         $goods = $goodsModel->getGoodsDetial($info['goods_id']);
         if (!$goods['status']) {
-//            $result['msg'] = '参数丢失';
+            //            $result['msg'] = '参数丢失';
             return error_code(10051);
         }
         $info['goods'] = $goods['data'];
@@ -237,7 +236,7 @@ class Bargain extends Common
 
         $bargainRecordModel   = new BargainRecord();
         $aWhere['bargain_id'] = $bargain_id;
-        $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime,status,etime,stime', $aWhere, ['ctime' => 'desc'], 1, 50);//todo 参与活动记录要拆分开
+        $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime,status,etime,stime', $aWhere, ['ctime' => 'desc'], 1, 50); //todo 参与活动记录要拆分开
 
         $info['attendance_record'] = $attendance_record['data'];
         $aWhere['id']              = $record_id;
@@ -252,13 +251,13 @@ class Bargain extends Common
         }
         $fWhere['bargain_id']   = $bargain_id;
         $fWhere['record_id']    = $record_id;
-        $friends_record         = $logModel->getList('*', $fWhere, ['ctime' => 'asc'], 1, 50);//todo 亲友参与记录要拆分开
+        $friends_record         = $logModel->getList('*', $fWhere, ['ctime' => 'asc'], 1, 50); //todo 亲友参与记录要拆分开
         $info['friends_record'] = $friends_record['data'];
 
         $info['lasttime'] = secondConversionArray($record['etime'] - time());
 
         //已经砍的价格
-        $info['cut_off_price'] = bcsub($record['start_price'], $record['price'], 2);//砍掉多少钱
+        $info['cut_off_price'] = bcsub($record['start_price'], $record['price'], 2); //砍掉多少钱
         $dvalue                = bcsub($record['start_price'], $record['end_price'], 2);
 
         if ($dvalue == 0) {
@@ -266,7 +265,7 @@ class Bargain extends Common
         } else {
             $progress = bcdiv($info['cut_off_price'], $dvalue, 2);
         }
-        $info['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100;//砍价进度条
+        $info['cut_off_progress'] = ($progress > 1 ? 1 : $progress) * 100; //砍价进度条
         $info['status_progress']  = $record['status'];
         $info['current_price']    = $record['price'];
 
@@ -306,7 +305,7 @@ class Bargain extends Common
         $bargainRecordModel = new BargainRecord();
         $record             = $bargainRecordModel->where([['bargain_id', '=', $bargain_id], ['user_id', '=', $user_id], ['status', 'in', [$bargainRecordModel::STATUS_ING, $bargainRecordModel::STATUS_SUCCESS]]])->find();
         if (!$record) {
-//            $result['msg'] = '砍价记录不存在，请先参加活动';
+            //            $result['msg'] = '砍价记录不存在，请先参加活动';
             return error_code(17633);
         }
 
@@ -343,40 +342,40 @@ class Bargain extends Common
 
         $info = $this->get($id);
         if (!$info) {
-//            $result['msg'] = '砍价活动不存在';
+            //            $result['msg'] = '砍价活动不存在';
             return error_code(17612);
         }
         $current_time = time();
         if ($current_time < $info['stime']) {
-//            $result['msg'] = '砍价活动暂未开始';
+            //            $result['msg'] = '砍价活动暂未开始';
             return error_code(17601);
         }
         if ($current_time > $info['etime']) {
-//            $result['msg'] = '砍价活动已结束';
+            //            $result['msg'] = '砍价活动已结束';
             return error_code(17602);
         }
         $logModel           = new BargainLog();
         $bargainRecordModel = new BargainRecord();
         //查看当前用户是否参加过
-        $section_price = $last_goods_price = 0;//剩余砍价区间
+        $section_price = $last_goods_price = 0; //剩余砍价区间
         $where         = [];
         $where[]       = ['id', '=', $record_id];
         $record        = $bargainRecordModel->where($where)->find();
         if (!$record) {
-//            $result['msg'] = '砍价活动不存在';
+            //            $result['msg'] = '砍价活动不存在';
             return error_code(17612);
         }
 
         if ($record['status'] == $bargainRecordModel::STATUS_SUCCESS) {
-//            $result['msg'] = '该砍价已成功，请先支付后再继续参与活动';
+            //            $result['msg'] = '该砍价已成功，请先支付后再继续参与活动';
             return error_code(17616);
         }
         if ($current_time > $record['etime']) {
-//            $result['msg'] = '该用户砍价活动已结束';
+            //            $result['msg'] = '该用户砍价活动已结束';
             return error_code(17602);
         }
         if ($record['status'] != $bargainRecordModel::STATUS_ING) {
-//            $result['msg'] = '该用户砍价活动已结束';
+            //            $result['msg'] = '该用户砍价活动已结束';
             return error_code(17602);
         }
         $where   = [];
@@ -387,17 +386,17 @@ class Bargain extends Common
         if ($record) {
             $info['start_price'] = $record['price'];
         }
-        $section_price = bcsub($info['start_price'], $info['end_price'], 2);//剩余砍价区间
+        $section_price = bcsub($info['start_price'], $info['end_price'], 2); //剩余砍价区间
 
         //已砍价次数
         $totalRecord = $logModel->where([['record_id', '=', $record_id]])->count();
         if ($totalRecord >= $info['total_times'] && $info['total_times']) {
-//            $result['msg'] = '此商品只能砍价' . $info['total_times'] . '次';
-            return error_code(17634,false,$info['total_times']);
+            //            $result['msg'] = '此商品只能砍价' . $info['total_times'] . '次';
+            return error_code(17634, false, $info['total_times']);
         }
 
         if ($record && $record['price'] <= $info['end_price']) {
-//            $result['msg'] = '此商品只能已砍到底价了';
+            //            $result['msg'] = '此商品只能已砍到底价了';
             return error_code(17635);
         }
         //当前次数够了,直接成功吧
@@ -407,20 +406,19 @@ class Bargain extends Common
                 $lastRecord['goods_price'] = $info['start_price'];
             }
             $bargain_price = abs($lastRecord['goods_price'] - $info['end_price']);
-
         } else {
             //砍一刀金额计算
             $bargain_price = self::k($section_price, $info['total_times'], 900, $totalRecord + 1, 50);
         }
 
 
-        if ($nums >= 1) {//暂时限定一个人只能参加1次 todo 以后考虑接入任务
-//            $result['msg'] = '您已超过该活动最大参加次数，看看别的活动吧~';
+        if ($nums >= 1) { //暂时限定一个人只能参加1次 todo 以后考虑接入任务
+            //            $result['msg'] = '您已超过该活动最大参加次数，看看别的活动吧~';
             return error_code(17636);
         }
-        $last_goods_price = $record['price'];//砍价前金额
+        $last_goods_price = $record['price']; //砍价前金额
 
-        $last_goods_price = $last_goods_price - $bargain_price;//砍价后金额
+        $last_goods_price = $last_goods_price - $bargain_price; //砍价后金额
         //计算砍价金额
         $newLog               = [];
         $newLog['record_id']  = $record_id;
@@ -429,7 +427,7 @@ class Bargain extends Common
         $newLog['type']       = $type;
         $newLog['ctime']      = $current_time;
         $newLog['ip']         = get_client_ip(0, true);
-        if ($section_price < $info['bargain_min_price']) {//区间金额都小于最小砍价金额了，直接砍价成功吧
+        if ($section_price < $info['bargain_min_price']) { //区间金额都小于最小砍价金额了，直接砍价成功吧
             $bargain_price         = $section_price;
             $newLog['goods_price'] = $info['end_price'];
         } elseif ($last_goods_price < $info['end_price']) {
@@ -443,14 +441,14 @@ class Bargain extends Common
 
         if ($logModel->save($newLog)) {
 
-            if ($record['price'] - $bargain_price < $record['end_price']) {//避免出现最后金额低于最低金额情况
+            if ($record['price'] - $bargain_price < $record['end_price']) { //避免出现最后金额低于最低金额情况
                 $bargain_price = $record['end_price'] - ($record['price'] - $bargain_price);
             }
 
             $bargainRecordModel->where([['id', '=', $record_id]])->setDec('price', $bargain_price);
             //判断是否砍价成功
             if ($record['price'] - $bargain_price <= $record['end_price']) {
-                $bargainRecordModel->updateRecord($record_id, ['status' => $bargainRecordModel::STATUS_SUCCESS]);//砍价成功
+                $bargainRecordModel->updateRecord($record_id, ['status' => $bargainRecordModel::STATUS_SUCCESS]); //砍价成功
             }
         }
         //累计砍掉多少钱
@@ -561,7 +559,7 @@ class Bargain extends Common
         if ($binfo['etime'] < time()) {
             return error_code(17602);
         }
-        $this->where([['id', '=', $binfo['id']]])->setInc('sales_num', 1);//销量加1
+        $this->where([['id', '=', $binfo['id']]])->setInc('sales_num', 1); //销量加1
         $result['status'] = true;
         return $result;
     }
@@ -608,4 +606,3 @@ class Bargain extends Common
         return $result;
     }
 }
-

@@ -99,7 +99,7 @@ class Payments extends Common
     {
         foreach($list as $key => $val)
         {
-            $list[$key]['is_online'] = config('params.payments')['is_online'][$val['is_online']];;
+            $list[$key]['is_online'] = config('params.payments')['is_online'][$val['is_online']];
         }
         return $list;
     }

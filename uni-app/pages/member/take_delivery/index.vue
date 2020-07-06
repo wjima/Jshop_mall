@@ -214,7 +214,7 @@
 	left: 20upx;	
 }
 .search-input {
-	padding: 10upx 30upx 10upx 70upx;
+	padding: 10upx 30upx 10upx 30upx;
 }
 .search-input-p{
 	padding: 0 !important;

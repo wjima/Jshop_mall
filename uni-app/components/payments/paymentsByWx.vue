@@ -155,6 +155,8 @@
 										fail() {
 											_this.payStatus = true
 										}
+									},
+									fail() {
 									}
 								});
 							} else {

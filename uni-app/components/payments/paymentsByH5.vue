@@ -70,7 +70,8 @@
 			return {
 				payments: [],
 				openid: '',
-				popShow: false
+				popShow: false,
+				payStatus: true
 			}
 		},
 		mounted() {
@@ -202,7 +203,11 @@
 						})
 						break
 					case 'wechatpay':
-
+						if(this.payStatus == false) {
+							return
+						}
+						this.payStatus = false
+						let _this = this
 						/**
 						 * 微信支付有两种
 						 * 判断是否在微信浏览器
@@ -294,6 +299,7 @@
 							}
 							// 微信h5支付
 							this.$api.pay(data, res => {
+								_this.payStatus = true
 								if (res.status) {
 									location.href = res.data.mweb_url
 								} else {

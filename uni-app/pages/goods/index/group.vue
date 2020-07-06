@@ -55,7 +55,8 @@
 					<view class="cell-item-hd"><view class="cell-hd-title">促销</view></view>
 					<view class="cell-item-bd">
 						<view class="romotion-tip">
-							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion" :key="index">{{ item.name || '' }}</view>
+							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''"
+							 v-for="(item, index) in promotion" :key="index">{{ item.name || item ||'' }}</view>
 						</view>
 					</view>
 				</view>

@@ -895,3 +895,8 @@ radio .wx-radio-input.wx-radio-input-checked::before {
 	font-size: 24rpx;
 	margin: 0 10rpx;
 }
+
+.gift {
+	font-size: 24rpx;
+	color: #FF7159;
+}

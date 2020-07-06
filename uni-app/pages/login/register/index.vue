@@ -244,7 +244,7 @@ export default {
 }
 
 .reg-b .btn {
-	color: #999;
+	color: #fff;
 }
 
 .registered-item {

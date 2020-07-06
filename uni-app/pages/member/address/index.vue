@@ -25,8 +25,8 @@
 					</view>
 
 					<view class='cell-item-bd'>
-						<input :value="pickerValue" @focus="showThreePicker"></input>
-						<area-picker ref="areaPicker" :areaId="areaId" :defaultIndex="defaultIndex" @onConfirm="onConfirm" class="fsz26"></area-picker>
+						<input :value="pickerValue" readonly   @focus="showThreePicker"></input>
+						<area-picker ref="areaPicker" :areaId="areaId" :defaultIndex="defaultIndex"  @onConfirm="onConfirm" class="fsz26"></area-picker>
 					</view>
 					
 					<view class='cell-item-ft'>

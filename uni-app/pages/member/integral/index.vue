@@ -20,21 +20,17 @@
 						</view>
 					</view>
 				</view>
-				<view 
-				class='cell-item add-title-item'
-				v-for="item in pointList"
-				:key="item.id"
-				>
+				<view  class='cell-item add-title-item jf-list-item' v-for="item in pointList" :key="item.id" >
 					<view class='cell-item-bd'>
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">{{ item.remarks }}</text>
 						</view>
 						<view class="cell-bd-view">
-							<text class="cell-bd-text">{{ item.ctime }}</text>
+							<text class="cell-ft-p">{{ item.num > 0 ? '+' + item.num : item.num }}</text>
 						</view>
 					</view>
-					<view class="cell-item-ft">
-						<text class="cell-ft-p">{{ item.num > 0 ? '+' + item.num : item.num }}</text>
+					<view class='cell-item-bd'>		
+						<text class="cell-bd-text">{{ item.ctime }}</text>
 					</view>
 				</view>
 				<uni-load-more
@@ -104,7 +100,18 @@ export default {
 }	
 </script>
 
-<style>
+<style lang="scss" scoped>
+.jf-list-item {
+	display: flex;
+	flex-direction: column;
+	justify-content: initial;
+	align-items: initial;
+	.cell-item-bd {
+		display: flex;
+		justify-content: space-between;
+		padding-right: 10rpx;
+	}
+}
 .content{
 	background-color: #fff;
 	padding-top: 20upx;

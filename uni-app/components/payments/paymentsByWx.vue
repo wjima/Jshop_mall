@@ -71,7 +71,8 @@
 		data() {
 			return {
 				payments: [],
-				popShow: false
+				popShow: false,
+				payStatus: true
 			}
 		},
 		mounted() {
@@ -105,6 +106,7 @@
 			},
 			// 用户点击支付方式处理
 			toPayHandler(e) {
+				
 				this.popShow = true;
 				let code = e.target.value.code;
 				let formId = e.detail.formId;
@@ -146,6 +148,8 @@
 												_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id)
 											})
 										}
+									},
+									fail() {
 									}
 								});
 							} else {

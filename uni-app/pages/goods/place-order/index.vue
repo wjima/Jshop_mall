@@ -124,9 +124,9 @@
 
 				<!-- 商户开启积分 并且用户有积分情况下 -->
 				<view class="cell-item add-title-item right-img" v-if="isOpenPoint === 1 && userPointNums > 0">
-					<view class="cell-item-bd">
+					<view class="cell-item-bd" style="margin-left:0 ;">
 						<view class="cell-bd-view">积分抵扣</view>
-						<view class="cell-bd-view">
+						<view class="cell-bd-view" style="margin-bottom: 4rpx;">
 							<text class="cell-bd-text address color-9">
 								可用 {{ canUsePoint || '' }} 积分，可抵扣 {{ pointMoney || '' }} 元，共有 {{ userPointNums || '' }} 积分。
 							</text>

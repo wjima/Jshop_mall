@@ -552,7 +552,7 @@ export default {
 	text-align: center;
 	font-size: 24rpx;
 	vertical-align: middle;
-	margin-bottom: 22rpx;
+	margin-bottom: 8rpx;
 }
 /* #ifdef MP-ALIPAY */
 

@@ -734,13 +734,19 @@ page {
 }
 .scroll-Y {
 	/*  #ifdef  H5  */
-	height: calc(100vh - 44px - 186upx);
-	margin-top: 186rpx;
+	height: calc(100vh - 52rpx - 40rpx);
+	padding-top: calc(52rpx + 140rpx);
+	box-sizing: border-box;
 	/*  #endif  */
 	/*  #ifndef H5 */
 	height: calc(100vh - 186upx);
 	padding-top: 186rpx;
 	/*  #endif  */
+}
+
+.uni-scroll-view {
+	width: 100%;
+	height: initail !important;
 }
 .search-input-p {
 	color: #888;

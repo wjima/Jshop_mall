@@ -2,7 +2,7 @@
 	<view class="content" style="padding-top: 0upx;">
 
 		<!-- #ifdef MP-WEIXIN -->
-		<view class="subscription-notice" v-if="suTip">
+		<!-- <view class="subscription-notice" v-if="suTip">
 			<view>
 				<image class="icon" src="/static/image/subscription-tip.png" mode=""></image>
 				<text>订阅消息，及时获取订单最新动态</text>
@@ -11,7 +11,7 @@
 				<text class="subscription-notice-btn red-price" @click="toSubscription()">消息订阅</text>
 				<text class="subscription-notice-btn-close" @click="toClose()">×</text>
 			</view>
-		</view>
+		</view> -->
 		<!-- #endif -->
 
 		<jshop :jdata="pageData"></jshop>

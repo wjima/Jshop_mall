@@ -53,7 +53,7 @@ class Promotion extends Manage
     {
 
         if (Request::isPost()) {
-            if (!input('?param.name')) {
+            if (!input('?param.name') || input('param.name') == "") {
                 return error_code(15001);
             }
             if (!input('?param.date') || !input('param.date')) {
@@ -132,7 +132,7 @@ class Promotion extends Manage
         $info['params'] = json_decode($info['params']);
 
         if (Request::isPost()) {
-            if (!input('?param.name')) {
+            if (!input('?param.name') || input('param.name') == "") {
                 return error_code(15001);
             }
             if (!input('?param.date') || !input('param.date')) {

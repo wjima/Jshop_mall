@@ -30,7 +30,7 @@
 								<view class="cell-bd-view">
 									<text class="cell-bd-text">{{v.logi_name|| ''}} : {{v.logi_no|| ''}}</text>
 								</view>
-								<view class="cell-bd-view">
+								<view class="cell-bd-view" style="margin-left: 20rpx;">
 									<text class="cell-bd-text">{{ v.ctime || ''}}</text>
 								</view>
 						</view>
@@ -134,7 +134,7 @@
 
 			<view class='cell-group margin-cell-group' v-if="orderInfo.invoice && orderInfo.invoice.type != 1">
 				<view class='cell-item add-title-item' @click="goTaxList()">
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd cell-item-bd-block' style="padding-right: 0;">
 						<view class="cell-bd-view black-text">
 							<text class="cell-bd-text">发票信息</text>
 						</view>

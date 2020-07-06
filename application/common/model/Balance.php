@@ -212,6 +212,9 @@ class Balance extends Common
                 $user_list = $user_list->toArray();
                 $user_ids  = array_column($user_list, 'id');
                 $where[]   = ['user_id', 'in', $user_ids];
+            }else{
+                // 没有的时候给个不会存在的值
+                $where[]   = ['user_id', 'in', 0];
             }
         }
         if (isset($post['type']) && $post['type'] != "") {

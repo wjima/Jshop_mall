@@ -151,12 +151,10 @@
 											_this.$common.successToShow(res.msg, () => {
 												_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id)
 											})
-										},
-										fail() {
-											_this.payStatus = true
 										}
 									},
 									fail() {
+										_this.payStatus = true
 									}
 								});
 							} else {

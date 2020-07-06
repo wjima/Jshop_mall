@@ -151,12 +151,10 @@
 											_this.$common.successToShow(res.msg, () => {
 												_this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id)
 											})
-										},
-										fail() {
-											_this.payStatus = true
 										}
 									},
 									fail() {
+										_this.payStatus = true
 									}
 								});
 							} else {
@@ -171,6 +169,7 @@
 						 * 
 						 */
 						this.$api.pay(data, res => {
+							_this.payStatus = true
 							if (res.status) {
 								this.$common.redirectTo('/pages/goods/payment/result?id=' + res.data.payment_id)
 							} else {
@@ -182,6 +181,7 @@
 						/**
 						 * 线下支付
 						 */
+						_this.payStatus = true
 						this.$common.modelShow('线下支付说明', '请联系客服进行线下支付', () => {}, false, '取消', '确定')
 						break
 				}

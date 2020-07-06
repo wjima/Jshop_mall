@@ -1142,7 +1142,7 @@ export default {
 	box-sizing: border-box;
 }
 .coupon-c-item {
-	margin: 30upx 50upx;
+	margin: 30upx;
 	/* width: 100%; */
 	height: 150upx;
 	margin-bottom: 20upx;
@@ -1210,6 +1210,10 @@ export default {
 }
 .ccirc-b-time {
 	font-size: 24upx;
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .ccirc-b-r {
 	display: inline-block;

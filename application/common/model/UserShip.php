@@ -262,7 +262,7 @@ class UserShip extends Common
             //如果设置的地址是默认的
             if ($data['is_def'] == self::SHIP_DEFAULT) {
                 //查找该用户是否有默认的地址
-                $defData = $this->where(['user_id' => $data['user_id'], 'is_def' => self::SHIP_DEFAULT])->select();
+                $defData = $this->where(['user_id' => $user_id, 'is_def' => self::SHIP_DEFAULT])->select();
                 if (count($defData) > 0) {
                     foreach ($defData as $k => $v) {
                         $this->where('id', $v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);

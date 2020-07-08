@@ -189,11 +189,8 @@ class Categories extends Manage
         {
             $result['msg'] = '设置成功';
             $result['status'] = true;
-        }
-        else
-        {
-            $result['msg'] = error_code(10004,true);
-            $result['status'] = false;
+        } else {
+            return  error_code(10004);
         }
         return $result;
     }

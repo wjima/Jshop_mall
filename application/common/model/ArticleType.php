@@ -85,11 +85,10 @@ class ArticleType extends Common
         } else {
             if (!$this->allowField(true)->save($data)) {
                 $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                $result['msg']    = error_code(10004, true);
             }
         }
         return $result;
-
     }
 
 
@@ -109,11 +108,12 @@ class ArticleType extends Common
             'data'   => []
         ];
         $where = [
-                'id' => $data['id']
-            ];
-        if(!$this->checkDie($data['id'],$data['pid'])){
-            $result['msg']    = error_code(10802,true);//无法选择自己和自己的子级为父级
-            return $result;
+            'id' => $data['id']
+        ];
+        if (!$this->checkDie($data['id'], $data['pid'])) {
+            return error_code(10802);
+            // $result['msg']    = error_code(10802, true); //无法选择自己和自己的子级为父级
+            // return $result;
         }
         $validate = new Validate($this->rule, $this->msg);
         if (!$validate->check($data)) {
@@ -121,8 +121,9 @@ class ArticleType extends Common
             $result['msg']    = $validate->getError();
         } else {
             if ($this->allowField(true)->save($data, $where) === false) {
-                $result['status'] = false;
-                $result['msg']    = error_code(10004,true);
+                // $result['status'] = false;
+                // $result['msg']    = error_code(10004, true);
+                return error_code(10004);
             }
         }
         return $result;
@@ -141,9 +142,9 @@ class ArticleType extends Common
      */
     public function getTree($arr = [], $pid = 0, $step = 0)
     {
-        if(!$arr){
+        if (!$arr) {
             $arr = $this->order('sort asc')->select();
-            if(!$arr->isEmpty()){
+            if (!$arr->isEmpty()) {
                 $arr = $arr->toArray();
             }
         }
@@ -153,7 +154,7 @@ class ArticleType extends Common
                 $flg              = str_repeat('└─', $step);
                 $val['type_name'] = $flg . $val['type_name'];
                 $tree[]           = $val;
-                $tree = array_merge($tree,$this->getTree($arr, $val['id'], $step + 1));
+                $tree = array_merge($tree, $this->getTree($arr, $val['id'], $step + 1));
             }
         }
         return $tree;
@@ -167,27 +168,27 @@ class ArticleType extends Common
      * @param int $n    循环次数
      * @return bool     如果为true就是通过了，否则就是未通过
      */
-    private function checkDie($id,$pid,$n=10)
+    private function checkDie($id, $pid, $n = 10)
     {
         //设置计数器，防止极端情况下陷入死循环了（其他地方如果设置的有问题死循环的话，这里就报错了）
-        if($n <= 0){
+        if ($n <= 0) {
             return false;
         }
-        if($id == $pid){
+        if ($id == $pid) {
             return false;
         }
-        if($pid == self::TOP_CLASS_PARENT_ID){
+        if ($pid == self::TOP_CLASS_PARENT_ID) {
             return true;
         }
-        $pinfo = $this->where(['id'=>$pid])->find();
-        if(!$pinfo){
+        $pinfo = $this->where(['id' => $pid])->find();
+        if (!$pinfo) {
             return false;
         }
-        if($pinfo['pid'] == $id){
+        if ($pinfo['pid'] == $id) {
             return false;
         }
         $n--;
-        return $this->checkDie($id,$pinfo['pid'],$n);
+        return $this->checkDie($id, $pinfo['pid'], $n);
     }
 
 
@@ -293,32 +294,32 @@ class ArticleType extends Common
      *
      * @param $type_id
      */
-    public function leftInfo($type_id){
-        if($type_id != self::TOP_CLASS_PARENT_ID){
-            $info = $this->where(['id'=>$type_id])->find();
-            if($info){
+    public function leftInfo($type_id)
+    {
+        if ($type_id != self::TOP_CLASS_PARENT_ID) {
+            $info = $this->where(['id' => $type_id])->find();
+            if ($info) {
                 $pid = $info['pid'];
-            }else{
+            } else {
                 $pid = self::TOP_CLASS_PARENT_ID;
             }
-        }else{
+        } else {
             $pid = self::TOP_CLASS_PARENT_ID;
         }
-        $type = $this->where(['pid'=>$pid])->order('sort asc')->select();
-        foreach($type as $k => $v){
-            $type[$k]['child'] = $this->where(['pid'=>$v['id']])->order('sort asc')->select();
+        $type = $this->where(['pid' => $pid])->order('sort asc')->select();
+        foreach ($type as $k => $v) {
+            $type[$k]['child'] = $this->where(['pid' => $v['id']])->order('sort asc')->select();
         }
 
         //取热销文章
         $articleModel = new Article();
         $hot = $articleModel
             ->field('id,title,cover,ctime,pv')
-            ->where(['is_pub'=>$articleModel::IS_PUB_YES])
+            ->where(['is_pub' => $articleModel::IS_PUB_YES])
             ->order("pv desc")
             ->limit(5)
             ->select();
-        foreach ($hot as $k => $v)
-        {
+        foreach ($hot as $k => $v) {
             $hot[$k]['cover'] = _sImage($v['cover']);
             $hot[$k]['ctime'] = getTime($v['ctime']);
         }
@@ -333,5 +334,4 @@ class ArticleType extends Common
         ];
         return $result;
     }
-
 }

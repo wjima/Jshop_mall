@@ -111,11 +111,7 @@ class GoodsTypeSpec extends Manage
             else
             {
                 $specModel::rollback();
-                $return = [
-                    'status' => false,
-                    'msg' => error_code(10019,true),
-                    'data' => $result,
-                ];
+                return error_code(10019);
             }
             return $return;
         }

@@ -312,7 +312,7 @@ class User extends Common
         ];
         //判断账号状态
         if ($userInfo->status != self::STATUS_NORMAL) {
-            return error_code(11006);
+            return error_code(11022);
         }
 
 

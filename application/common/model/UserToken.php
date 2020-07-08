@@ -21,7 +21,7 @@ class UserToken extends Common
         $userModel = new User();
         $userInfo = $userModel->where(array('id' => $user_id))->find();
         if ($userInfo) {
-            if ($userInfo['status'] == $userModel::STATUS_DISABLE) return error_code(11006);
+            if ($userInfo['status'] == $userModel::STATUS_DISABLE) return error_code(11022);
 
             $data['user_id'] = $user_id;
             $data['platform'] = $platform;

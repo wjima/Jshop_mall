@@ -282,6 +282,7 @@
             var type = this.getAttribute('lay-id');
             if (type == 'all') {
                 filter = {};
+                filter['warn'] = '';
             } else if (type == 'up') {
                 filter['marketable'] = '1';
                 filter['warn'] = 'false';

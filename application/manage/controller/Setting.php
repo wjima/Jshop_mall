@@ -77,6 +77,7 @@ class Setting extends Manage
             'msg'    => '删除成功'
         ];
         $id = input('param.id/d');
+        $url = input('param.path');
         $res = $videosModel->destroy($id);
         if (!unlink($url) && !$res) { // 删除视频文件
             return error_code(10023);

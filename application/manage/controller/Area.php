@@ -41,7 +41,7 @@ class Area extends Manage
             } else {
                 $return_data = array(
                     'status' => false,
-                    'msg'    => error_code(10025,true),
+                    'msg'    => error_code(10025, true),
                     'data'   => $result
                 );
             }
@@ -60,7 +60,7 @@ class Area extends Manage
     {
         $areaModel         = new AreaModel();
         $data['name']      = trim(input('name'));
-        $data['postal_code']= trim(input('postal_code'));
+        $data['postal_code'] = trim(input('postal_code'));
         $id                = $areaModel->max('id');
         $data['id']        = $id + 1;
         $data['parent_id'] = input('parent_id');
@@ -88,7 +88,7 @@ class Area extends Manage
         if (Request::isPost()) {
             $id           = input('id');
             $data['name'] = trim(input('name'));
-            $data['postal_code']= trim(input('postal_code'));
+            $data['postal_code'] = trim(input('postal_code'));
             $data['sort'] = input('sort');
             return $areaModel->edit($id, $data);
         }
@@ -102,11 +102,12 @@ class Area extends Manage
                 'data'   => $info
             );
         } else {
-            $return_data = array(
-                'status' => false,
-                'msg'    => error_code(10025,true),
-                'data'   => $info
-            );
+            //$return_data = array(
+            //    'status' => false,
+            //    'msg'    => error_code(10025, true),
+            //   'data'   => $info
+            //);
+            return error_code(10025);
         }
         return $return_data;
     }
@@ -228,7 +229,6 @@ class Area extends Manage
         //Db::name('d_area')->where('id LIKE "__0000"')->update(array('pid'=>0));
         /*Db::name('area')->where('id LIKE "____00"')->select();
         print_r(Db::name('d_area')->getLastSql());die();*/
-
     }
 
     /**

@@ -44,7 +44,7 @@ class Pages extends Manage
         $pageModel  = new \app\common\model\Pages();
         $result     = $pageModel->getDetails($page_code);
         $pageConfig = [];
-        if ($result['data']) {
+        if ($result['data'] && $result['data']['items']) {
             foreach ($result['data']['items'] as $key => $value) {
                 $pageConfig[$key]['type']  = $value['widget_code'];
                 $pageConfig[$key]['value'] = $value['params'];

@@ -80,9 +80,8 @@ export default {
 							this.$db.set('userToken', res.token);
 							// this.$common.navigateTo("/pages/login/mobile/index")
 							uni.redirectTo({
-									url: '/pages/login/login/mobile'
-								});
-							}
+								url: '/pages/login/login/mobile'
+							});
 						}
 					});
 				}

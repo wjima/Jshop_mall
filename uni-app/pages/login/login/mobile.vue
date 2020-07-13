@@ -88,7 +88,15 @@ export default {
 				this.$common.loadToShow('发送中...');
 				setTimeout(() => {
 					this.$common.loadToHide();
-					this.$api.sms({ mobile: this.mobile, code: 'login' }, res => {
+					let data={
+						mobile: this.mobile
+					}
+					if(this.user_wx_id){
+						data.code="login"
+					}else{
+						data.code="bind"
+					}
+					this.$api.sms(data, res => {
 						if (res.status) {
 							this.timer = 60;
 							this.verification = false;

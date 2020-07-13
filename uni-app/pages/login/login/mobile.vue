@@ -129,26 +129,43 @@ export default {
 				this.$common.errorToShow('请输入验证码');
 				return false;
 			}
-			let data = {
-				mobile: this.mobile,
-				code: this.code,
-				user_wx_id: this.user_wx_id
-			};
-			
-			// 获取邀请码
-			let invicode = this.$db.get('invitecode');
-			if (invicode) {
-				data.invitecode = invicode;
-			}
-			
-			this.$api.smsLogin(data, res => {
-				if (res.status) {
-					this.$db.set('userToken', res.data);
-					this.redirectHandler();
-				} else {
-					this.$common.errorToShow(res.msg);
+			if(this.user_wx_id){
+				let data = {
+					mobile: this.mobile,
+					code: this.code,
+					user_wx_id: this.user_wx_id
+				};
+				
+				// 获取邀请码
+				let invicode = this.$db.get('invitecode');
+				if (invicode) {
+					data.invitecode = invicode;
 				}
-			});
+				
+				this.$api.smsLogin(data, res => {
+					if (res.status) {
+						this.$db.set('userToken', res.data);
+						this.redirectHandler();
+					} else {
+						this.$common.errorToShow(res.msg);
+					}
+				});
+			}else{
+				let token=this.$db.get('userToken');
+				let data = {
+					mobile: this.mobile,
+					code: this.code,
+					token:token
+				};
+				
+				this.$api.bindMobile(data, res => {
+					if (res.status) {
+						this.redirectHandler();
+					} else {
+						this.$common.errorToShow(res.msg);
+					}
+				});
+			}
 		},
 		// 重定向跳转 或者返回上一个页面
 		redirectHandler() {

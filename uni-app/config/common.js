@@ -130,7 +130,10 @@ function jumpToLogin(method) {
 						url: '/pages/login/choose/index',
 						// #endif
 						animationType: 'pop-in',
-						animationDuration: 200
+						animationDuration: 200,
+						complete() {
+							uni.hideLoading()
+						}
 					})
 				}, 500)
 			}

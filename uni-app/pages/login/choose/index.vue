@@ -4,12 +4,19 @@
 			<view class="login-item">
 				
 				<view class="logo">
-					<!-- #ifndef MP-TOUTIAO -->
-					<open-data type="userAvatarUrl"></open-data>
+					<!-- #ifdef MP-ALIPAY -->
+					<image class="toutiao-logo" :src="logoImage"></image>
 					<!-- #endif -->
+					
 					<!-- #ifdef MP-TOUTIAO -->
 					<image class="toutiao-logo" :src="logoImage"></image>
 					<!-- #endif -->
+					
+					
+					<!-- #ifndef MP-TOUTIAO || MP-ALIPAY -->
+					<open-data type="userAvatarUrl"></open-data>
+					<!-- #endif -->
+					
 				</view>
 				
 			</view>
@@ -173,15 +180,15 @@ export default {
 							}
 						},
 						fail: function (errorRes) {
-							this.$common.errorToShow('未取得用户昵称头像信息');
+							that.$common.errorToShow('未取得用户昵称头像信息');
 						}
 					});
 				}else{
-					this.$common.errorToShow('未取得code');
+					that.$common.errorToShow('未取得code');
 				}
 			},
 			fail: function(res) {
-				this.$common.errorToShow('用户授权失败my.login');
+				that.$common.errorToShow('用户授权失败my.login');
 			}
 		});
 	},

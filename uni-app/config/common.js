@@ -186,10 +186,10 @@ function errorToShow(msg = '操作失败', callback = function() {}) {
 			success() {
 				setTimeout(function() {
 					callback()
-				}, 1500)
+				}, 500)
 			}
 		})
-	},1000)
+	},100)
 
 }
 

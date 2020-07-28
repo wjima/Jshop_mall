@@ -561,8 +561,8 @@ export default {
 		},
 		//确认筛选
 		filterOk() {
+			this.searchData.page = 1
 			let data = this.searchData;
-
 			//获取分类
 			// data.where.cat_id = '';
 			for (let i = 0; i < this.cat_list.length; i++) {

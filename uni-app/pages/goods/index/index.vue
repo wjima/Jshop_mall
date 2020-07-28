@@ -915,6 +915,9 @@
 				imageUrl: this.goodsInfo.album[0],
 				path: this.shareUrl
 			}
+		},
+		onHide() {
+			uni.hideLoading()
 		}
 	}
 </script>

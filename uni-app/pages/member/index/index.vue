@@ -436,15 +436,16 @@
 									}
 								},
 								fail: function(errorRes) {
-									this.$common.errorToShow('未取得用户昵称头像信息');
+									that.$common.errorToShow('未取得用户昵称头像信息');
 								}
 							});
 						} else {
-							this.$common.errorToShow('未取得code');
+							that.$common.errorToShow('未取得code');
 						}
 					},
 					fail: function(res) {
-						this.$common.errorToShow('用户授权失败my.login');
+						console.log(res)
+						that.$common.errorToShow('用户授权失败my.login');
 					}
 				});
 			},
@@ -490,7 +491,7 @@
 						this.open_id = res.data.user_wx_id
 						//判断是否返回了token，如果没有，就说明没有绑定账号，跳转到绑定页面
 						if (!res.data.hasOwnProperty('token')) {
-							this.$common.redirectTo('/pages/login/login/index?user_wx_id=' + res.data.user_wx_id);
+							this.$common.navigateTo('/pages/login/login/index?user_wx_id=' + res.data.user_wx_id);
 						} else {
 							this.$db.set('userToken', res.data.token)
 							this.initData()

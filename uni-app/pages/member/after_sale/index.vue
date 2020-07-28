@@ -374,11 +374,11 @@ export default {
 				return false;
 			}
 			 console.log(this.item_ids)
-			if(this.item_ids.length<=0){
-				this.$common.errorToShow('请选择要售后的商品');
-				this.submitStatus = false;
-				return false;
-			}
+			// if(this.item_ids.length<=0){
+			// 	this.$common.errorToShow('请选择要售后的商品');
+			// 	this.submitStatus = false;
+			// 	return false;
+			// }
 			//组装数据，提交数据
 			let data = {
 				order_id:this.order_id,

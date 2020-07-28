@@ -153,7 +153,10 @@ const post = (method, data, callback,complete) => {
 								uni.navigateTo({
 									url: '/pages/login/choose/index',
 									animationType: 'pop-in',
-									animationDuration: 200
+									animationDuration: 200,
+									complete() {
+										uni.hideLoading()
+									}
 								});
 								// #endif
 							}, 1000)
@@ -163,19 +166,20 @@ const post = (method, data, callback,complete) => {
 			}
 			callback(result);
 		},
+		
 		complete: (response) => {
-			setTimeout(function() {
+			// setTimeout(function() {
 				uni.hideLoading();
-			}, 1000)
+			// }, 1000)
 			complete?complete(): "";
 		},
 		fail: (error) => {
 			uni.showLoading({
 				title: '网络开小差了'
 			});
-			setTimeout(function() {
+			// setTimeout(function() {
 				uni.hideLoading();
-			}, 1000)
+			// }, 1000)
 			if (error && error.response) {
 				showError(error.response);
 			} else {

@@ -120,5 +120,9 @@
             "postcss" : true,
             "minified" : true
         }
+    },
+    "mp-alipay" : {
+        "usingComponents" : true,
+        "appid" : "2019031963584394"
     }
 }

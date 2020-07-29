@@ -43,6 +43,9 @@
                 <option value="{$vi.id}" {if $info.parent_menu_id == $vi.id} selected=""{/if}> |—|— {$vi.name}({$vi.code})</option>
                 {volist name='vi["children"]' id='vj'}
                 <option value="{$vj.id}" {if $info.parent_menu_id == $vj.id} selected=""{/if}> |—|—|— {$vj.name}({$vj.code})</option>
+                {volist name='vj["children"]' id='vk'}
+                <option value="{$vk.id}" {if $info.parent_menu_id == $vk.id} selected=""{/if}> |—|—|—|— {$vk.name}({$vk.code})</option>
+                {/volist}
                 {/volist}
                 {/volist}
                 {/volist}

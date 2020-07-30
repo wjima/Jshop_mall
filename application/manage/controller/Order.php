@@ -158,7 +158,7 @@ class Order extends Manage
             $store_list = $storeModel->getAllList();
             $this->assign('store_list', $store_list);
             $result['status'] = true;
-            $result['data'] = $this->fetch('edit2');
+            $result['data'] = $this->fetch('edit');
             return $result;
         } else {
             return $orderModel->edit(input('param.'));

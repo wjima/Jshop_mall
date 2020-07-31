@@ -362,8 +362,9 @@ class PintuanRecord extends Model{
         }
 
         //结束掉的拼团活动里的拼团记录，也需要关闭掉
+        $where = [];
         $where[] = ['pre.status', 'eq', self::STATUS_COMM];
-        $whereOr[] = ['pru.etime', '<', $time];//结束掉的拼团活动里面的拼团记录，也需要关闭掉
+        $where[] = ['pru.etime', '<', $time];//结束掉的拼团活动里面的拼团记录，也需要关闭掉
 
         $list = $this
             ->alias('pre')

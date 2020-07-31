@@ -75,7 +75,7 @@
 					<view class="cell-item-bd">
 						<view class="romotion-tip">
 							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion"
-							 :key="index">{{ item.name || '' }}</view>
+							 :key="index">{{ item.name || item ||'' }}</view>
 						</view>
 					</view>
 				</view>

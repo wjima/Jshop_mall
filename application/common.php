@@ -474,6 +474,11 @@ function error_code($code, $mini = false)
     if($msg == ""){
         if (config('?error.' . $code)) {
             $msg = config('error.' . $code);
+            $count = count($data);
+            $count--;
+            for($i=1;$i<=$count;$i++){
+                $msg = str_replace("{JSHOP".$i."}",$data[$i],$msg);
+            }
         }
     }
     $result['msg'] = $msg;

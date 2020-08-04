@@ -115,7 +115,11 @@
 
 			<!--商品详情-->
 			<div class="layui-tab-item">
-				<table class="layui-table" lay-size="sm">
+				{if $order['status'] == 1 && $order['ship_status'] == 1}
+				<button class="layui-btn layui-btn-primary layui-btn-xs orderedit_product_add" style="margin-bottom:10px;" >添加商品</button>
+				{/if}
+				<table id="order_edit_items" lay-filter="order_edit_items"></table>
+				<!-- <table class="layui-table" lay-size="sm">
 					<thead>
 					<tr>
 						<th>商品名称</th>
@@ -149,11 +153,19 @@
 					</tr>
 					{/foreach}
 					</tbody>
-				</table>
-
+				</table> -->
+				{if $order['status'] == 1 && $order['ship_status'] == 1}
 				<div class="layui-form-item" style="color:red;">
-					<div class="layui-form-mid">说明：<br />1. 如果数量为0会删除此列，请谨慎操作。<br />2. 目前没有实现加商品的操作。<br />3. 商品数量修改仅限于未支付订单 </div>
+					<div class="layui-form-mid">
+						说明：<br />
+						1. 订单明细只允许在未支付或者已支付未发货的时候编辑。<br />
+						2. 点击“添加商品”按钮可添加1个或者多个商品到订单明细上。<br />
+						3. 添加商品，编辑商品和删除商品都是实时生效的，即使不点下面的“确定”按钮，所以请谨慎操作。<br />
+						4. 列上的商品单价、购买数量、商品优惠总金额可修改，直接点击即可修改，焦点离开，立即保存。<br />
+						5. 添加、编辑和商品商品之后，会更新订单主体表上的商品总价，商品总重量，商品优惠总金额三个字段，但是不会修改订单总价字段，需要自行修改。
+					</div>
 				</div>
+				{/if}
 			</div>
 			<!--收货人信息-->
 			<div class="layui-tab-item">
@@ -294,6 +306,155 @@
 				$('.order_delivery').hide();
 			}
 		});
+		
+		//订单明细表格渲染
+		var orderItemsTables = layui.table.render({
+			elem: '#order_edit_items'
+			,size: 'sm'
+			,url: "{:url('Order/editItemsList',['order_id'=>$order.order_id])}?_ajax=1"
+			,cols: [[ //标题栏
+				{field: 'name',width:140, title: '商品名称',templet:function(data){
+					var html = data.name;
+					if(data.addon){
+						html += data.addon;
+					}
+					return html;
+				}},
+				{if $order['status'] == 1 && $order['ship_status'] == 1}
+					{field: 'price',width:80,edit:'text', title: '商品单价'}
+					,{field: 'nums',width:80,edit:'text', title: '购买数量'}
+					,{field: 'amount',width:80, title: '商品总价'}
+					,{field: 'sn',width:140, title: '货品编码'}
+					,{field: 'bn',width:140, title: '商品编码'}
+					,{field: 'promotion_amount',width:120,edit:'text', title: '商品优惠总金额'}
+					,{field: 'weight',width:68, title: '总重量'}
+					,{field: 'operating', title: '操作', width:65, align: 'center',templet:function(data){
+						var html = '';
+						html += '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>';
+						return html;
+					}}
+				{else /}
+					{field: 'price',width:80, title: '商品单价'}
+					,{field: 'nums',width:80, title: '购买数量'}
+					,{field: 'amount',width:80, title: '商品总价'}
+					,{field: 'sn',width:140, title: '货品编码'}
+					,{field: 'bn',width:140, title: '商品编码'}
+					,{field: 'promotion_amount',width:120,edit:'text', title: '商品优惠总金额'}
+					,{field: 'weight',width:68, title: '总重量'}
+				{/if}
+				
+				
+			]]
+			//,skin: 'line' //表格风格
+			,even: true
+			//,page: true //是否显示分页
+			//,limits: [5, 7, 10]
+			//,limit: 5 //每页默认显示的数量
+		});
+		//监听删除事件
+		layui.table.on('tool(order_edit_items)', function(obj){
+			console.log(obj);
+			switch(obj.event){
+				case 'delete':
+					layer.confirm('确定要删除此记录吗？', {
+						btn: ['确定','取消'] //按钮
+					}, function(index){
+						$.ajax({
+							type:"get",
+							url:"{:url('Order/editItemsDel')}",
+							data:"order_id={$order.order_id}&items_id="+obj.data.id,
+							success:function(re){
+								if (re.status) {
+									layer.msg("删除成功", { time: 400 }, function () {
+										orderItemsTables.reload();
+									});
+								} else {
+									layer.msg(re.msg);
+								}
+							}
+						});
+						//layer.close(index);
+						//orderItemsTables.reload();
+					}, function(){
+						//取消不做任何操作
+					});
+					break;
+			};
+		});
+		//监听单元格编辑
+		layui.table.on('edit(order_edit_items)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+			var str = "";
+			switch(obj.field){
+				case 'nums':
+					str = "&nums="+obj.value;
+					break;
+				case 'price':
+					str = "&price="+obj.value;
+					break;
+				case 'promotion_amount':
+					str = "&promotion_amount="+obj.value;
+					break;
+			}
+			$.ajax({
+				type:"get",
+				url:"{:url('Order/editItemsEdit')}",
+				data:"order_id={$order.order_id}&items_id="+obj.data.id+str,
+				success:function(re){
+					if (re.status) {
+						orderItemsTables.reload();
+					} else {
+						layer.msg(re.msg);
+					}
+				}
+			});
+		});
+		//添加商品
+		$(document).on('click', '.orderedit_product_add', function () {
+			$.ajax({
+				type:"get",
+				url:"{:url('Index/tagSelectProducts',['type'=>'show'])}",
+				data:"",
+				success:function(e){
+					layui.layer.open({
+						type: 1,
+						content: e,
+						area: ["800px", "600px"],
+						title:"选择货品",
+						btn: ["完成","取消"],
+						yes: function(index, layero){
+							if(Object.getOwnPropertyNames(ids).length <= 0){
+								layer.msg("请选择要添加的货品！");
+								return false;
+							}
+							var the_val = "";
+							for(var key in ids){
+								the_val += "," + key;
+							}
+							the_val = the_val.slice(1);
+							//ajax去添加到订单明细里
+							$.ajax({
+								type:"get",
+								url:"{:url('Order/editItemsAdd')}",
+								data:"order_id={$order.order_id}&ids="+the_val,
+								success:function(re){
+									if (re.status) {
+										layer.msg("添加成功", { time: 1000 }, function () {
+											orderItemsTables.reload();
+										});
+									} else {
+										layer.msg(re.msg);
+									}
+								}
+							});
+							layer.close(index);
+						}
+					});
+				}
+			});
+			
+			return false;
+        });
+
 		{if $order.store}
 			$('.order_store').show();
 			$('.order_delivery').hide();

@@ -409,7 +409,7 @@
 			});
 		});
 		//添加商品
-		$(document).on('click', '.orderedit_product_add', function () {
+		$('.orderedit_product_add').on('click', function () {
 			$.ajax({
 				type:"get",
 				url:"{:url('Index/tagSelectProducts',['type'=>'show'])}",

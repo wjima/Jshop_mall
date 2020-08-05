@@ -1082,11 +1082,7 @@ class Order extends Common
         $orderLog->addLog($data['order_id'],0, $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $udata);
 
         $result['status'] = true;
-        if($re_items){
-            $result['msg'] = "操作成功";
-        }else{
-            $result['msg'] = "提交成功，但订单明细数量编辑失败";
-        }
+        $result['msg'] = "操作成功";
 
         return $result;
     }

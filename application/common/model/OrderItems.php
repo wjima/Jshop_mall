@@ -2,6 +2,8 @@
 
 namespace app\common\model;
 
+use think\Db;
+
 /**
  * 订单子表
  * Class OrderItems
@@ -93,7 +95,7 @@ class OrderItems extends Common
     //后台订单编辑的时候，增加订单明细记录
     public function orderEditItemsAdd($order_id,$ids){
         $result = [
-            'status' => true,
+            'status' => false,
             'data' => '',
             'msg' => ''
         ];
@@ -110,39 +112,54 @@ class OrderItems extends Common
 
         $ids = explode(',', $ids);
         $productsModel = new Products();
-
+        $goodsModel = new Goods();
         $itemsData = [];
-        foreach($ids as $v){
-            $productInfo = $productsModel->getProductInfo($v, false, $orderInfo['user_id']);
-            if (!$productInfo['status']) {
-                return error_code(13012, false,$v);
+
+        Db::startTrans();
+        try {
+            foreach($ids as $v){
+                $productInfo = $productsModel->getProductInfo($v, false, $orderInfo['user_id']);
+                if (!$productInfo['status']) {
+                    return error_code(13012, false,$v);
+                }
+                $productInfo = $productInfo['data'];
+                //下单，冻结库存
+                $re = $goodsModel->changeStock($productInfo['id'], 'order', 1);
+                if(!$re['status']){
+                    return $re;
+                }
+    
+                $one = [];
+                $one['order_id'] = $order_id;
+                $one['goods_id'] = $productInfo['goods_id'];
+                $one['product_id'] = $productInfo['id'];
+                $one['sn'] = $productInfo['sn'];
+                $one['bn'] = $productInfo['bn'];
+                $one['name'] = $productInfo['name'];
+                $one['price'] = $productInfo['price'];
+                $one['costprice'] = $productInfo['costprice'];
+                $one['mktprice'] = $productInfo['mktprice'];
+                $one['image_url'] = $productInfo['image_path'];
+                $one['nums'] = 1;
+                $one['amount'] = $productInfo['price'];
+                $one['promotion_amount'] = $productInfo['promotion_amount'];
+                $one['promotion_list'] = $productInfo['promotion_list'];
+                $one['weight'] = 0;
+                $one['sendnums'] = 0;
+                $one['addon'] = $productInfo['spes_desc'];
+                $itemsData[] = $one;
             }
-            $productInfo = $productInfo['data'];
-            $one = [];
-            $one['order_id'] = $order_id;
-            $one['goods_id'] = $productInfo['goods_id'];
-            $one['product_id'] = $productInfo['id'];
-            $one['sn'] = $productInfo['sn'];
-            $one['bn'] = $productInfo['bn'];
-            $one['name'] = $productInfo['name'];
-            $one['price'] = $productInfo['price'];
-            $one['costprice'] = $productInfo['costprice'];
-            $one['mktprice'] = $productInfo['mktprice'];
-            $one['image_url'] = $productInfo['image_path'];
-            $one['nums'] = 1;
-            $one['amount'] = $productInfo['price'];
-            $one['promotion_amount'] = $productInfo['promotion_amount'];
-            $one['promotion_list'] = $productInfo['promotion_list'];
-            $one['weight'] = 0;
-            $one['sendnums'] = 0;
-            $one['addon'] = $productInfo['spes_desc'];
-            $itemsData[] = $one;
+            $this->saveAll($itemsData);
+    
+            //更新订单主体表
+            $this->orderEditOrderUpdate($order_id);
+            Db::commit();
+            $result['status'] = true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            $result['msg'] = $e->getMessage();
+            return $result;
         }
-        $this->saveAll($itemsData);
-
-        //更新订单主体表
-        $this->orderEditOrderUpdate($order_id);
-
         return $result;
 
     }
@@ -150,7 +167,7 @@ class OrderItems extends Common
     //后台订单编辑的时候，删除订单明细记录
     public function orderEditItemsDel($order_id,$id){
         $result = [
-            'status' => true,
+            'status' => false,
             'data' => '',
             'msg' => ''
         ];
@@ -165,17 +182,35 @@ class OrderItems extends Common
 
         $where2[] = ['id', '=',$id];
         $where2[] = ['order_id', '=', $order_id];
-        $this->where($where2)->delete();
+        $info = $this->where($where2)->find();
+        if(!$info){
+            return error_code(13013);
+        }
+        Db::startTrans();
+        try {
+            //删除明细，解冻库存
+            $goodsModel = new Goods();
+            $re = $goodsModel->changeStock($info['product_id'], 'cancel', $info['nums']);
+            if(!$re['status']){
+                return $re;
+            }
+            $info->delete();
+            //更新订单主体表
+            $this->orderEditOrderUpdate($order_id);
 
-        //更新订单主体表
-        $this->orderEditOrderUpdate($order_id);
-
+            Db::commit();
+            $result['status'] = true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            $result['msg'] = $e->getMessage();
+            return $result;
+        }
         return $result;
     }
     //后台订单编辑的时候，更新订单明细记录
     public function orderEditItemsEdit($order_id,$id,$data){
         $result = [
-            'status' => true,
+            'status' => false,
             'data' => '',
             'msg' => ''
         ];
@@ -195,27 +230,57 @@ class OrderItems extends Common
         if(!$info){
             return error_code(10000);
         }
-        if(isset($data['nums'])){
-            $info->nums = $data['nums'];
-        }
-        if(isset($data['price'])){
-            $info->price = $data['price'];
-        }
-        if(isset($data['promotion_amount'])){
-            $info->promotion_amount = $data['promotion_amount'];
-        }
-        $info->amount = $info->nums * $info->price;
-        // //计算重量
-        $goodsModel = new Goods();
-        $goodsInfo = $goodsModel->where('bn',$info->bn)->find();
-        if($goodsInfo){
-            $info->weight = $info->nums * $goodsInfo['weight'];
-        }
-        $info->save();
 
-        //更新订单主体表
-        $this->orderEditOrderUpdate($order_id);
+        Db::startTrans();
+        try {
+            if(isset($data['nums'])){
+                $data['nums'] = abs((int)$data['nums']);
+                if($data['nums'] === 0){
+                    return error_code(13014);
+                }
+                if($info->nums != $data['nums']){
+                    $goodsModel = new Goods();
+                    //冻结或者解冻库存
+                    if($info->nums > $data['nums']){
+                        //数量减少要释放库存
+                        $re = $goodsModel->changeStock($info['product_id'], 'cancel', $info->nums - $data['nums']);
+                    }else{
+                        //数量增加要冻结库存
+                        $re = $goodsModel->changeStock($info['product_id'], 'order', $data['nums'] - $info->nums);
+                    }
+                    if(!$re['status']){
+                        return $re;
+                    }
+    
+    
+                    $info->nums = $data['nums'];
+                }
+            }
+            if(isset($data['price'])){
+                $info->price = $data['price'];
+            }
+            if(isset($data['promotion_amount'])){
+                $info->promotion_amount = $data['promotion_amount'];
+            }
+            $info->amount = $info->nums * $info->price;
+            // //计算重量
+            $goodsModel = new Goods();
+            $goodsInfo = $goodsModel->where('bn',$info->bn)->find();
+            if($goodsInfo){
+                $info->weight = $info->nums * $goodsInfo['weight'];
+            }
+            $info->save();
+    
+            //更新订单主体表
+            $this->orderEditOrderUpdate($order_id);
 
+            Db::commit();
+            $result['status'] = true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            $result['msg'] = $e->getMessage();
+            return $result;
+        }
         return $result;
     }
 

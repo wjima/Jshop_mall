@@ -305,6 +305,11 @@ class OrderItems extends Common
         $where[] = ['status', '=', $orderModel::ORDER_STATUS_NORMAL];
         $where[] = ['ship_status', '=', $orderModel::SHIP_STATUS_NO];
         $orderModel->save($data, $where);
+
+        //订单记录
+        $orderLog = new OrderLog();
+        $orderLog->addLog($order_id,0, $orderLog::LOG_TYPE_EDIT, '后台订单明细编辑修改', $data);
+
         return $result;
     }
 

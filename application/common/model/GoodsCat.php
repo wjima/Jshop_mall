@@ -157,62 +157,20 @@ class GoodsCat extends Common
         return $return_data;
     }
 
-
     /**
-     * API使用的树装
-     * @param $data
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * 根据数组去返回树状结构
      */
-    protected function getTreeApi($data)
+    protected function getTreeApi($data,$parent_id=self::TOP_CLASS_PARENT_ID)
     {
-        $new_data = array();
-        foreach($data as $v)
-        {
-            if($v['parent_id'] == self::TOP_CLASS_PARENT_ID)
-            {
-                $new_data[$v['id']]['id'] = $v['id'];
-                $new_data[$v['id']]['name'] = $v['name'];
-                $new_data[$v['id']]['image_id'] = $v['image_id'];
-                if ($v['image_id'])
-                {
-                    $new_data[$v['id']]['image_url'] = _sImage($v['image_id']);
-                }
-                else
-                {
-                    $new_data[$v['id']]['image_url'] = _sImage();
-                }
-                $new_data[$v['id']]['sort'] = $v['sort'];
-                $new_data[$v['id']]['child'] = [];
+        $children = [];
+        foreach($data as $v){
+            if($v['parent_id'] == $parent_id){
+                $v['image_url'] = _sImage($v['image_id']);
+                $v['child'] = $this->getTreeApi($data,$v['id']);
+                $children[] = $v;
             }
         }
-        foreach($data as $v)
-        {
-            if($v['parent_id'] != self::TOP_CLASS_PARENT_ID)
-            {
-                if(isset($new_data[$v['parent_id']]))
-                {
-                    $new_data[$v['parent_id']]['child'][] = array(
-                        'id' => $v['id'],
-                        'name' => $v['name'],
-                        'image_id' => $v['image_id'],
-                        'image_url' => _sImage($v['image_id']),
-                        'sort' => $v['sort']
-                    );
-                }
-            }
-        }
-
-        $edition = [];
-        foreach ((array)$new_data as $key => $val)
-        {
-            $edition[] = $val['sort'];
-        }
-        array_multisort($edition, SORT_ASC, $new_data);
-
-        return $new_data;
+        return $children;
     }
 
 

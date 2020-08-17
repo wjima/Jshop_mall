@@ -361,6 +361,7 @@ class Stock extends Common
                     join jshop_bill_reship r
                     on r.reship_id = ri.reship_id)
 heredoc;
+        $sql = str_replace("jshop_",  config('database.prefix'), $sql);
         return Db::table($sql)->alias('u')
             ->leftJoin(app(Goods::class)->getTable() . ' g', 'u.bn=g.bn')
             //            ->leftJoin(app(Products::class)->getTable().' p','u.product_id=p.id')

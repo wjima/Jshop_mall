@@ -11,6 +11,7 @@ namespace app\common\taglib;
 use app\common\model\GoodsCat;
 use think\template\TagLib;
 use app\common\model\Goods;
+use app\common\model\Products;
 
 
 class Jshop extends TagLib
@@ -34,13 +35,18 @@ class Jshop extends TagLib
             'attr' => 'name,value,class,style',
             'close' => 0
         ],
-        //此标签增加了权限判断，只供商户端（seller）使用
+        //品牌列表
         'sellerbrands' => [
             'attr' => 'name,value,num',
             'close' => 0
         ],
-        //此标签增加了权限判断，只供商户端（seller）使用
+        //商品列表
         'sellergoods' => [
+            'attr' => 'name,value,num,key',
+            'close' => 0
+        ],
+        //货品列表
+        'products' => [
             'attr' => 'name,value,num,key',
             'close' => 0
         ],
@@ -299,7 +305,7 @@ class Jshop extends TagLib
     }
 
     /**
-     * 商户平台的选择品牌标签，总后台不能用，总后台会做另外一个tab标签
+     * 选择品牌标签
      * @param $tag
      * @return string
      */
@@ -394,7 +400,7 @@ class Jshop extends TagLib
     }
 
     /**
-     * 商户平台的选择商品标签，总后台不能用，总后台会做另外一个tab标签
+     * 选择商品标签
      * @param $tag
      * @return string
      */
@@ -499,6 +505,118 @@ class Jshop extends TagLib
         ';
         return $parse;
     }
+
+    /**
+     * 选择货品标签
+     * @param $tag
+     * @return string
+     */
+    public function tagProducts($tag)
+    {
+        if(isset($tag['value'])){
+            $tag['value'] = $this->autoBuildVar($tag['value']);
+        }else{
+            $tag['value'] = "";
+        }
+
+
+        if(isset($tag['num'])){
+            $tag['num'] = $this->autoBuildVar($tag['num']);
+            $num = "<?php echo (" . $tag['num'] . ");?>";
+        }else{
+            $num = "1";
+        }
+        $time = "g".time().rand(1,4);
+
+        //增加变量key，解决同时存在多个选择货品时的问题
+        if (isset($tag['key']) && $tag['key']) {
+            $tag['key']  = $this->autoBuildVar($tag['key']);
+            $tag['key']  = "<?php echo (" . $tag['key'] . ");?>";
+            $tag['name'] = $tag['name'] . '[' . $tag['key'] . ']';
+            $time        = $time . '_' . $tag['key'];
+        } else {
+            $tag['key'] = "";
+        }
+
+        $parse = '
+            <div id="'.$time.'_box" class="select_seller_goods_box">
+                <div>
+                    <a href="javascript:;" class="layui-btn layui-btn-primary layui-btn-sm" onclick="'.$time.'_show();"><i class="iconfont icon-choose1"></i>选择货品</a>
+                </div>
+                <?php
+                    $productsModel = new app\common\model\Products();
+                    $list = $productsModel->where("id","IN",'. $tag['value'] .')->select()->toArray();
+                ?>
+                <input type="hidden" name="'.$tag['name'].'" id="'.$time.'" value="<?php echo implode(",",array_column($list,"id")) ?>" />
+                <ul id="'.$time.'_list" class="sellect_seller_goods_list">
+                    <?php
+                        foreach($list as $k => $v){
+                            echo \'<li><span id="\'.$v["id"].\'"  >×</span>\'.$v["name"].\'</li>\';
+                        }
+                    ?>
+                </ul>
+            </div>
+        ';
+
+        $parse .= '
+            <script>
+                var obj_'.$time.'_ids = {};
+                var num_'.$time.' = "'.$num.'";
+                function '.$time.'_show(){
+                    layui.use([\'form\', \'table\'], function(){
+                        $.ajax({
+                            type:"get",
+                            url:"<?php echo url("manage/index/tagSelectProducts",array("type"=>"show"));  ?>",
+                            data:"",
+                            success:function(e){
+                                layui.layer.open({
+                                    type: 1,
+                                    content: e,
+                                    area: ["800px", "600px"],
+                                    title:"选择货品",
+                                    btn: ["完成","取消"],
+                                    yes: function(index, layero){
+                                        //判断个数是否满足
+                                        if(Object.getOwnPropertyNames(ids).length > num_'.$time.'){
+                                            layer.msg("最多只能选择"+num_'.$time.'+"个");
+                                            return false;
+                                        }
+
+                                        $("#'.$time.'_list").empty();
+                                        var the_val = "";
+                                        console.log(ids);
+                                        for(var key in ids){
+                                            var spes_desc = "";
+                                            if(ids[key].spes_desc){
+                                                spes_desc = ids[key].spes_desc;
+                                            }
+                                            $("#'.$time.'_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name +\' \' + spes_desc +\'</li>\');
+                                            the_val += "," + key;
+                                        }
+                                        $("#'.$time.'").val(the_val.slice(1));
+                                        layer.close(index);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                $("#'.$time.'_list").delegate("span","click",function(){
+                    var ids_array = $("#'.$time.'").val().split(",");
+                    for (var i=0;i<ids_array.length ;i++ )
+                    {
+                        if(ids_array[i] == $(this).attr("id")){
+                            ids_array.splice(i,1);
+                        }
+                    }
+                    $("#'.$time.'").val(ids_array.join(","));
+                    $(this).parent().remove();
+                });
+            </script>
+        ';
+        return $parse;
+    }
+
 
     public function tagUploadImage(){
 

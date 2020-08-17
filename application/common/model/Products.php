@@ -304,4 +304,55 @@ class Products extends Common
         }
         return $return;
     }
+
+        /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post)
+    {
+        if (isset($post['limit'])) {
+            $limit = $post['limit'];
+        } else {
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = $this
+            ->alias('p')
+            ->join('Goods g', 'p.goods_id = g.id')
+            ->field($tableWhere['field'])
+            ->where($tableWhere['where'])
+            ->order($tableWhere['order'])
+            ->paginate($limit);
+        $data = $this->tableFormat($list->getCollection());
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $list->total();
+        $re['data'] = $data;
+
+        return $re;
+    }
+
+    /**
+     * 根据输入的查询条件，返回所需要的where
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    protected function tableWhere($post)
+    {
+        $where = [];
+        if (isset($post['name']) && $post['name'] != "") {
+            $where[] = ['g.name', 'like', '%' . $post['name'] . '%'];
+        }
+        $result['where'] = $where;
+        $result['field'] = "p.*,g.name,g.bn";
+        $result['order'] = "p.goods_id desc";
+        return $result;
+    }
+
+
 }

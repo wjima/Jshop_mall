@@ -6,6 +6,7 @@ use app\common\controller\Manage;
 use app\common\model\BillDelivery;
 use app\common\model\BillPayments;
 use app\common\model\Order as OrderModel;
+use app\common\model\OrderItems;
 use app\common\model\OrderLog;
 use app\common\model\Ship;
 use app\common\model\Logistics;
@@ -158,13 +159,74 @@ class Order extends Manage
             $store_list = $storeModel->getAllList();
             $this->assign('store_list', $store_list);
             $result['status'] = true;
-            $result['data'] = $this->fetch('edit2');
+            $result['data'] = $this->fetch('edit');
             return $result;
         } else {
             return $orderModel->edit(input('param.'));
         }
     }
 
+    //订单编辑的时候，显示订单明细商品
+    public function editItemsList(){
+        if(!input('?param.order_id')){
+            return error_code(10000);
+        }
+        $orderItemsModel = new OrderItems();
+        return $orderItemsModel->tableData(input('param.'));
+    }
+
+    //订单编辑的时候，添加订单明细
+    public function editItemsAdd(){
+        if(!input('?param.order_id')){
+            return error_code(10000);
+        }
+        //货品编号ids
+        if(!input('?param.ids')){
+            return error_code(10000);
+        }
+
+        $orderItemsModel = new OrderItems();
+        return $orderItemsModel->orderEditItemsAdd(input('param.order_id'), input('param.ids'));
+    }
+    //订单编辑的时候，删除订单明细
+    public function editItemsDel(){
+        if(!input('?param.order_id')){
+            return error_code(10000);
+        }
+        //货品编号id
+        if(!input('?param.items_id')){
+            return error_code(10000);
+        }
+
+        $orderItemsModel = new OrderItems();
+        return $orderItemsModel->orderEditItemsDel(input('param.order_id'), input('param.items_id'));
+    }
+    //订单编辑的时候，更新单价或者数量
+    public function editItemsEdit(){
+        if(!input('?param.order_id')){
+            return error_code(10000);
+        }
+        //货品编号id
+        if(!input('?param.items_id')){
+            return error_code(10000);
+        }
+        if(!input('?param.price') && !input('?param.nums') && !input('?param.promotion_amount')){
+            return error_code(10000);
+        }
+        $data = [];
+        if(input('?param.price')){
+            $data['price'] = input('param.price');
+        }
+        if(input('?param.nums')){
+            $data['nums'] = input('param.nums');
+        }
+        if(input('?param.promotion_amount')){
+            $data['promotion_amount'] = input('param.promotion_amount');
+        }
+
+        $orderItemsModel = new OrderItems();
+        return $orderItemsModel->orderEditItemsEdit(input('param.order_id'), input('param.items_id'),$data);
+    }
 
     /**
      * 订单发货

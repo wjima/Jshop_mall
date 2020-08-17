@@ -15,6 +15,7 @@ use think\facade\Cache;
 use app\common\model\WeixinAuthor;
 use app\common\model\Goods;
 use app\common\model\Brand;
+use app\common\model\Products;
 
 
 class Index extends Manage
@@ -80,6 +81,23 @@ class Index extends Manage
 
         } else {
             return $this->fetch('tagSelectGoods');
+        }
+    }
+    /**
+     * 供tag标签选择货品的时候使用
+     */
+    public function tagSelectProducts()
+    {
+        $this->view->engine->layout(false);
+        if (input('param.type') != 'show') {
+            $request               = input('param.');
+            $goodModel             = new Products();
+            $request['marketable'] = $goodModel::MARKETABLE_UP;     //必须是上架的商品
+            $request['field'] = '*';
+            return $goodModel->tableData($request);
+
+        } else {
+            return $this->fetch('tagSelectProducts');
         }
     }
 

@@ -1077,68 +1077,14 @@ class Order extends Common
 
         $re = $this->save($udata,['order_id'=>$data['order_id']]);
 
-        //处理订单明细
-        if(isset($data['items'])){
-            $re_items = $this->editItems($data['order_id'],$data['items']);
-        }else{
-            $re_items = true;
-        }
-
-
         //订单记录
         $orderLog = new OrderLog();
         $orderLog->addLog($data['order_id'],0, $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $udata);
 
         $result['status'] = true;
-        if($re_items){
-            $result['msg'] = "操作成功";
-        }else{
-            $result['msg'] = "提交成功，但订单明细数量编辑失败";
-        }
+        $result['msg'] = "操作成功";
 
         return $result;
-    }
-
-    //处理订单明细，处理库存
-    private function editItems($order_id,$items){
-        //判断订单是否是未付款状态，极端情况，可能订单已经付款了,所以这个订单一定是正常，未支付，未发货的订单
-        $where[] = ['order_id', '=', $order_id];
-        $where[] = ['pay_status', '=', self::PAY_STATUS_NO];
-        $where[] = ['status', '=', self::ORDER_STATUS_NORMAL];
-        $where[] = ['ship_status', '=', self::SHIP_STATUS_NO];
-        $orderInfo = $this->where($where)->find();
-        if(!$orderInfo){
-            return false;
-        }
-
-        $orderItemsModel = new OrderItems();
-        $goodsModel = new Goods();
-        foreach($items as $k => $v){
-            $oiInfo = $orderItemsModel->where('id',$k)->where('order_id',$order_id)->find();
-            if(!$oiInfo){
-                continue;
-            }
-            $v = intval($v);
-            $oldNums = $oiInfo['nums'];
-            $changeNums = $v - $oldNums;
-
-            if($v == 0){
-                $orderItemsModel->where('id',$k)->where('order_id',$order_id)->delete();
-            }else{
-                $orderItemsModel->save(
-                    [
-                        'nums' => $v
-                    ],[
-                    'id' => $k,
-                    'order_id' => $order_id
-                ]);
-            }
-            //加或减冻结库存
-            $goodsModel->changeStock($oiInfo['product_id'], 'default', $changeNums);
-
-        }
-
-        return true;
     }
 
 

@@ -333,18 +333,13 @@ class PintuanRecord extends Model{
     public function autoCancle()
     {
         $time = time();
-
         $where[] = ['pre.close_time', '<', $time];
         $where[] = ['pre.status', 'eq', self::STATUS_COMM];
 
-        $whereOr[] = ['pru.etime', '<', $time];//结束掉的拼团活动里面的拼团记录，也需要关闭掉
-
         $list = $this
             ->alias('pre')
-            ->join('pintuan_rule pru', 'pru.id = pre.rule_id')
             ->where($where)
             ->where("pre.id = pre.team_id")
-            ->whereOr($whereOr)
             ->field('pre.*')
             ->select();
 
@@ -365,6 +360,38 @@ class PintuanRecord extends Model{
                 }
             }
         }
+
+        //结束掉的拼团活动里的拼团记录，也需要关闭掉
+        $where = [];
+        $where[] = ['pre.status', 'eq', self::STATUS_COMM];
+        $where[] = ['pru.etime', '<', $time];//结束掉的拼团活动里面的拼团记录，也需要关闭掉
+
+        $list = $this
+            ->alias('pre')
+            ->join('pintuan_rule pru', 'pru.id = pre.rule_id')
+            ->where($where)
+            ->where("pre.id = pre.team_id")
+            ->field('pre.*')
+            ->select();
+
+        if (!$list->isEmpty()) {
+            foreach ($list as $v) {
+                $team_list = $this->where('team_id', $v['id'])->select();
+                //更新拼团状态为失败
+                $data['status']     = self::STATUS_FAIL;
+                $pintuanRecordModel = new PintuanRecord();
+                $pintuanRecordModel->save($data, ['team_id' => $v['id']]);
+
+                if (!$team_list->isEmpty()) {
+                    foreach ($team_list as $j) {
+
+                        //给这个订单作废，如果有支付，并退款
+                        $this->cancleOrder($j['order_id']);
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -374,6 +401,11 @@ class PintuanRecord extends Model{
     private function cancleOrder($order_id){
         $orderModel = new Order();
         $order_info = $orderModel->getOrderInfoByOrderID($order_id);
+        //如果订单已经完成或者已经取消就不做任何操作了
+        if($order_info['status'] != $orderModel::ORDER_STATUS_NORMAL){
+            return true;
+        }
+
         if($order_info['ship_status'] != $orderModel::SHIP_STATUS_NO){
             //如果已经发货了，就不管了，手动退款吧
             return error_code(10000);

@@ -37,6 +37,11 @@
 <script>
     var ids = {};
     var table_data=new Array();
+    var select_type = {type:'checkbox'};
+    var allow_num = "{$allow_mul}";
+    if(allow_num == "2"){
+        select_type = {type:'radio'}
+    }
     layui.use(['form', 'laydate','table'], function(){
         var form = layui.form;
         form.render();
@@ -48,7 +53,7 @@
             url: "{:url('index/tagSelectGroup')}?_ajax=1",
             id:'tagGroupTable',
             cols: [[
-                {type:'checkbox'},
+                select_type,
                 {field: 'goods_id',width:80, title: '商品ID',align:'center'},
                 {field: 'name', width:200, title: '活动名称',align:'center'},
                 {field:'goods_name',title:'商品',minWidth:200,align: 'center',unresize:true},
@@ -118,6 +123,11 @@
                     }
                 }
             }
+            $('#tagGoodsNum').html(Object.getOwnPropertyNames(ids).length);
+        });
+        layui.table.on('radio(tagGroupTable)', function(obj){
+            ids = {}
+            ids[obj.data.id] = obj.data
             $('#tagGoodsNum').html(Object.getOwnPropertyNames(ids).length);
         });
         layui.form.on('submit(group-search)', function(data){

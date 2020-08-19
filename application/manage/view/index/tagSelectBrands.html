@@ -20,6 +20,11 @@
 <script>
     var ids = {};
     var table_data=new Array();
+    var select_type = {type:'checkbox'};
+    var allow_num = "{$allow_mul}";
+    if(allow_num == "2"){
+        select_type = {type:'radio'}
+    }
     layui.use(['form', 'laydate','table'], function(){
         layui.table.render({
             elem: '#tagBrandTable',
@@ -29,7 +34,7 @@
             url: "{:url('index/tagSelectBrands')}?_ajax=1",
             id:'tagBrandTable',
             cols: [[
-                {type:'checkbox'},
+                select_type,
                 {field: 'name', title: '品牌名',align:'center'},
                 {field: 'logo', title: 'LOGO',align:'center',width:120, templet: function(data){
                     //return '<a href="javascript:void(0);" onclick=viewImage("'+data.logo+'")><image style="max-width:30px;max-height:30px;" src="'+data.logo+'"/></a>';
@@ -86,6 +91,11 @@
                     }
                 }
             }
+            $('#tagBrandNum').html(Object.getOwnPropertyNames(ids).length);
+        });
+        layui.table.on('radio(tagBrandTable)', function(obj){
+            ids = {}
+            ids[obj.data.id] = obj.data
             $('#tagBrandNum').html(Object.getOwnPropertyNames(ids).length);
         });
         layui.form.on('submit(goods-search)', function(data){

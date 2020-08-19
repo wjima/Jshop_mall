@@ -10,6 +10,11 @@
 <script>
     var ids = {};
     var table_data=new Array();
+    var allow_num = "{$allow_mul}";
+    var select_type = {type:'checkbox'};
+    if(allow_num == "2"){
+        select_type = {type:'radio'}
+    }
     layui.use(['form', 'laydate','table'], function(){
         layui.table.render({
             elem: '#tagNoticeTable',
@@ -19,7 +24,7 @@
             url: "{:url('index/tagSelectNotice')}?_ajax=1",
             id:'tagNoticeTable',
             cols: [[
-                {type:'checkbox'},
+                select_type,
                 {field: 'title', title: '公告标题'},
                 {field: 'content', title: '公告描述内容',align:'center'},
                 {field: 'ctime', title: '更新时间', width: 200, sort: true,align:'center'},
@@ -73,6 +78,11 @@
                     }
                 }
             }
+            $('#tagNoticeNum').html(Object.getOwnPropertyNames(ids).length);
+        });
+        layui.table.on('radio(tagNoticeTable)', function(obj){
+            ids = {}
+            ids[obj.data.id] = obj.data
             $('#tagNoticeNum').html(Object.getOwnPropertyNames(ids).length);
         });
         layui.form.on('submit(goods-search)', function(data){

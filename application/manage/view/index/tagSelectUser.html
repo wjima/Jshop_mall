@@ -33,6 +33,11 @@
     var ids = {};
     var table_data=new Array();
     var grade = "{$grade}";
+    var select_type = {type:'checkbox'};
+    var allow_num = "{$allow_mul}";
+    if(allow_num == "2"){
+        select_type = {type:'radio'}
+    }
     layui.use(['form', 'laydate','table'], function(){
         layui.form.render();
         layui.table.render({
@@ -43,7 +48,7 @@
             url: "{:url('index/tagSelectUser')}?_ajax=1&grade="+grade,
             id:'tagUserTable',
             cols: [[
-                {type:'checkbox'},
+                select_type,
                 { field: 'id', title: 'ID', width:80 },
                 { field: 'username', title: '用户名', width: 150 },
                 { field: 'mobile', title: '手机号码', width: 150 },
@@ -115,6 +120,11 @@
                     }
                 }
             }
+            $('#tagUserNum').html(Object.getOwnPropertyNames(ids).length);
+        });
+        layui.table.on('radio(tagUserTable)', function(obj){
+            ids = {}
+            ids[obj.data.id] = obj.data
             $('#tagUserNum').html(Object.getOwnPropertyNames(ids).length);
         });
         layui.form.on('submit(user-search)', function(data){

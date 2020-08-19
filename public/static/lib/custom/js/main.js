@@ -843,7 +843,7 @@ Vue.component('layout-config', {
       layui.use(['form', 'table'], function () {
         $.ajax({
           type: "get",
-          url: "/manage/index/tagselectnotice/type/show.html",
+          url: "/manage/index/tagselectnotice?type=show&num="+that.maxNoticeNums,
           data: "",
           success: function (e) {
             layui.layer.open({
@@ -875,7 +875,7 @@ Vue.component('layout-config', {
       layui.use(['form', 'table'], function () {
         $.ajax({
           type: "get",
-          url: "/manage/index/tagselectgroup/type/show.html",
+          url: "/manage/index/tagselectgroup/type/show.html?num="+that.maxSelectGoods,
           data: "",
           success: function (e) {
             layui.layer.open({
@@ -908,7 +908,7 @@ Vue.component('layout-config', {
       layui.use(['form', 'table'], function () {
         $.ajax({
           type: "get",
-          url: "/manage/index/tagpintuan/type/show.html",
+          url: "/manage/index/tagpintuan/type/show.html?num="+that.maxSelectGoods,
           data: "",
           success: function (e) {
             layui.layer.open({
@@ -942,7 +942,7 @@ Vue.component('layout-config', {
       layui.use(['form', 'table'], function () {
         $.ajax({
           type: "get",
-          url: "/manage/index/tagselectgoods/type/show.html",
+          url: "/manage/index/tagselectgoods/type/show.html?num="+that.maxSelectGoods,
           data: "",
           success: function (e) {
             layui.layer.open({

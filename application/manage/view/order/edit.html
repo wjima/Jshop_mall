@@ -419,7 +419,7 @@
 		$('.orderedit_product_add').on('click', function () {
 			$.ajax({
 				type:"get",
-				url:"{:url('Index/tagSelectProducts',['type'=>'show'])}",
+				url:"{:url('Index/tagSelectProducts',['type'=>'show','num'=>100])}",
 				data:"",
 				success:function(e){
 					layui.layer.open({

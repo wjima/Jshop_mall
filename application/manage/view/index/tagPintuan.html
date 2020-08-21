@@ -18,7 +18,11 @@
 <table id="tagGoodsTable" lay-filter="tagGoodsTable"></table>
 
 <script>
+    var time = "{$Think.get.time}";
     var ids = {};
+    if(time){
+        ids = eval(''+time+'_list');
+    }
     var table_data=new Array();
     layui.use(['form', 'laydate','table'], function(){
         layui.table.render({
@@ -63,6 +67,8 @@
                     $('#tagGoodsTable + div .layui-table-header th[data-field="0"] input[type="checkbox"]').prop('checked', true);
                     $('#tagGoodsTable + div .layui-table-header th[data-field="0"] input[type="checkbox"]').next().addClass('layui-form-checked');
                 }
+            $('#tagGoodsNum').html(Object.getOwnPropertyNames(ids).length);
+
             }
         });
         //监听表格复选框选择

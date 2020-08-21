@@ -14,7 +14,7 @@ use app\common\model\GoodsCat;
 use think\template\TagLib;
 use app\common\model\Goods;
 use app\common\model\Products;
-
+use app\common\model\User;
 
 class Jshop extends TagLib
 {
@@ -351,11 +351,23 @@ class Jshop extends TagLib
             <script>
                 var obj_' . $time . '_ids = {};
                 var num_' . $time . ' = "' . $num . '";
+                var list_json = {};
+                <?php
+                $list = model("Brand")->where("id","IN",' . $tag['value'] . ')->select()->toArray();
+                    foreach($list as $k => $v){
+                       ?>
+                       list_json[<?php echo $v["id"];?>] = [];
+                       <?php
+    
+                    }
+               
+                ?>
+                var ' . $time . '_list = list_json;
                 function ' . $time . '_show(){
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("index/tagSelectBrands",array("type"=>"show","num"=>"' . $tag['num'] . '"));  ?>",
+                            url:"<?php echo url("index/tagSelectBrands",array("type"=>"show","num"=>"' . $tag['num'] . '"));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -365,6 +377,7 @@ class Jshop extends TagLib
                                     title:"选择品牌",
                                     btn: ["完成","取消"],
                                     yes: function(index, layero){
+                                    
                                         //判断个数是否满足
                                         if(Object.getOwnPropertyNames(ids).length > num_' . $time . '){
                                             layer.msg("最多只能选择"+num_' . $time . '+"个");
@@ -374,7 +387,9 @@ class Jshop extends TagLib
 
                                         $("#' . $time . '_list").empty();
                                         var the_val = "";
+                                        ' . $time . '_list = {};
                                         for(var key in ids){
+                                            ' . $time . '_list[key] = ids[key];
                                             $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name+\'</li>\');
                                             the_val += "," + key;
                                         }
@@ -391,7 +406,9 @@ class Jshop extends TagLib
                     for (var i=0;i<ids_array.length ;i++ )
                     {
                         if(ids_array[i] == $(this).attr("id")){
+                            delete ' . $time . '_list[ids_array[i]];
                             ids_array.splice(i,1);
+                            break
                         }
                     }
                     $("#' . $time . '").val(ids_array.join(","));
@@ -459,11 +476,25 @@ class Jshop extends TagLib
             <script>
                 var obj_' . $time . '_ids = {};
                 var num_' . $time . ' = "' . $num . '";
+                var list_json = {};
+                <?php
+                    $userModel = new app\common\model\Goods();
+                    $where[] = ["id","in",' . $tag['value'] . '];
+                    $list = $userModel->where($where)->select()->toArray();
+                    foreach($list as $k => $v){
+                       ?>
+                       list_json[<?php echo $v["id"];?>] = [];
+                       <?php
+    
+                    }
+               
+                ?>
+                var ' . $time . '_list = list_json;
                 function ' . $time . '_show(){
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("manage/index/tagSelectGoods",array("type"=>"show","num"=>"' . $tag['num'] .  '"));  ?>",
+                            url:"<?php echo url("manage/index/tagSelectGoods",array("type"=>"show","num"=>"' . $tag['num'] .  '"));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -482,7 +513,9 @@ class Jshop extends TagLib
 
                                         $("#' . $time . '_list").empty();
                                         var the_val = "";
+                                        ' . $time . '_list = {};
                                         for(var key in ids){
+                                            ' . $time . '_list[key] = ids[key];
                                             $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name+\'</li>\');
                                             the_val += "," + key;
                                         }
@@ -499,7 +532,9 @@ class Jshop extends TagLib
                     for (var i=0;i<ids_array.length ;i++ )
                     {
                         if(ids_array[i] == $(this).attr("id")){
+                            delete ' . $time . '_list[ids_array[i]];
                             ids_array.splice(i,1);
+                        break;
                         }
                     }
                     $("#' . $time . '").val(ids_array.join(","));
@@ -567,11 +602,24 @@ class Jshop extends TagLib
             <script>
                 var obj_' . $time . '_ids = {};
                 var num_' . $time . ' = "' . $num . '";
+                var list_json = {};
+                <?php
+                    $productsModel = new app\common\model\Products();
+                    $list = $productsModel->where("id","IN",' . $tag['value'] . ')->select()->toArray();
+                    foreach($list as $k => $v){
+                       ?>
+                       list_json[<?php echo $v["id"];?>] = [];
+                       <?php
+    
+                    }
+               
+                ?>
+                var ' . $time . '_list = list_json;
                 function ' . $time . '_show(){
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("manage/index/tagSelectProducts",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>",
+                            url:"<?php echo url("manage/index/tagSelectProducts",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -589,8 +637,9 @@ class Jshop extends TagLib
 
                                         $("#' . $time . '_list").empty();
                                         var the_val = "";
-                                        console.log(ids);
+                                        ' . $time . '_list = {};
                                         for(var key in ids){
+                                            ' . $time . '_list[key] = ids[key];
                                             var spes_desc = "";
                                             if(ids[key].spes_desc){
                                                 spes_desc = ids[key].spes_desc;
@@ -611,7 +660,9 @@ class Jshop extends TagLib
                     for (var i=0;i<ids_array.length ;i++ )
                     {
                         if(ids_array[i] == $(this).attr("id")){
+                            delete ' . $time . '_list[ids_array[i]];
                             ids_array.splice(i,1);
+                            break;
                         }
                     }
                     $("#' . $time . '").val(ids_array.join(","));
@@ -750,11 +801,23 @@ goodscat' . $id . '();
             <script>
                 var obj_' . $time . '_ids = {};
                 var num_' . $time . ' = "' . $num . '";
+                var list_json = {};
+                <?php
+                   $list = model("Notice")->where("id","IN",' . $tag['value'] . ')->select()->toArray();
+                    foreach($list as $k => $v){
+                       ?>
+                       list_json[<?php echo $v["id"];?>] = [];
+                       <?php
+    
+                    }
+               
+                ?>
+                var ' . $time . '_list = list_json;
                 function ' . $time . '_show(){
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("index/tagSelectNotice",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>",
+                            url:"<?php echo url("index/tagSelectNotice",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -773,7 +836,9 @@ goodscat' . $id . '();
 
                                         $("#' . $time . '_list").empty();
                                         var the_val = "";
+                                        ' . $time . '_list = {};
                                         for(var key in ids){
+                                            ' . $time . '_list[key] = ids[key];
                                             $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].title+\'</li>\');
                                             the_val += "," + key;
                                         }
@@ -790,7 +855,9 @@ goodscat' . $id . '();
                     for (var i=0;i<ids_array.length ;i++ )
                     {
                         if(ids_array[i] == $(this).attr("id")){
+                            delete ' . $time . '_list[ids_array[i]];
                             ids_array.splice(i,1);
+                            break;
                         }
                     }
                     $("#' . $time . '").val(ids_array.join(","));
@@ -874,11 +941,25 @@ goodscat' . $id . '();
             <script>
                 var obj_' . $time . '_ids = {};
                 var num_' . $time . ' = "' . $num . '";
+                var list_json = {};
+                <?php
+                    $where[] = ["id","in",' . $tag['value'] . '];
+                    $where[] = ["type","in","3,4"];
+                    $list = model("promotion")->where($where)->select()->toArray();
+                    foreach($list as $k => $v){
+                       ?>
+                       list_json[<?php echo $v["id"];?>] = [];
+                       <?php
+    
+                    }
+               
+                ?>
+                var ' . $time . '_list = list_json;
                 function ' . $time . '_show(){
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("index/tagSelectGroup",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>",
+                            url:"<?php echo url("index/tagSelectGroup",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -897,7 +978,9 @@ goodscat' . $id . '();
 
                                         $("#' . $time . '_list").empty();
                                         var the_val = "";
+                                        ' . $time . '_list = {};
                                         for(var key in ids){
+                                            ' . $time . '_list[key] = ids[key];
                                             $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name+\'</li>\');
                                             the_val += "," + key;
                                         }
@@ -914,7 +997,9 @@ goodscat' . $id . '();
                     for (var i=0;i<ids_array.length ;i++ )
                     {
                         if(ids_array[i] == $(this).attr("id")){
+                            delete ' . $time . '_list[ids_array[i]];
                             ids_array.splice(i,1);
+                            break;
                         }
                     }
                     $("#' . $time . '").val(ids_array.join(","));
@@ -987,11 +1072,33 @@ goodscat' . $id . '();
         $parse .= '
             <script>
                 var obj_' . $time . '_ids = {};
+                var list_json = {};
+                <?php
+                    $pintuanGoodsModel = new app\common\model\PintuanGoods();
+                    $where[] = ["pg.goods_id", "in", ' . $tag['value'] . '];
+                    $where[] = ["g.marketable","eq", 1];
+                    $where[] = ["pr.status", "eq", 1];
+                    $list = $pintuanGoodsModel
+                        ->alias("pg")
+                        ->field("pr.*,pg.goods_id,g.name as goods_name,g.image_id as goods_image_id")
+                        ->join("pintuan_rule pr","pg.rule_id = pr.id")
+                        ->join("goods g", "g.id = pg.goods_id")
+                        ->where($where)
+                        ->select()->toArray();
+                    foreach($list as $k => $v){
+                       ?>
+                       list_json[<?php echo $v["id"];?>] = [];
+                       <?php
+    
+                    }
+               
+                ?>
+                var ' . $time . '_list = list_json;
                 function ' . $time . '_show(){
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("manage/index/tagPintuan",array("type"=>"show"));  ?>",
+                            url:"<?php echo url("manage/index/tagPintuan",array("type"=>"show"));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({
@@ -1005,7 +1112,9 @@ goodscat' . $id . '();
                                         console.log(ids);
                                         $("#' . $time . '_list").empty();
                                         var the_val = "";
+                                        ' . $time . '_list = {};
                                         for(var key in ids){
+                                            ' . $time . '_list[key] = ids[key];
                                             $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].goods_name+\'</li>\');
                                             the_val += "," + key;
                                         }
@@ -1022,7 +1131,9 @@ goodscat' . $id . '();
                     for (var i=0;i<ids_array.length ;i++ )
                     {
                         if(ids_array[i] == $(this).attr("id")){
+                            delete ' . $time . '_list[ids_array[i]];
                             ids_array.splice(i,1);
+                            break;
                         }
                     }
                     $("#' . $time . '").val(ids_array.join(","));
@@ -1046,7 +1157,6 @@ goodscat' . $id . '();
         } else {
             $tag['value'] = "";
         }
-
         //选择的数量
         if (isset($tag['num'])) {
             $tag['num'] = $this->autoBuildVar($tag['num']);
@@ -1075,7 +1185,6 @@ goodscat' . $id . '();
         } else {
             $grade = "";
         }
-
         $parse = '
         <div id="' . $time . '_box" class="select_userlist_box">
             <div>
@@ -1113,11 +1222,25 @@ goodscat' . $id . '();
             var obj_' . $time . '_ids = {};
             var num_' . $time . ' = "' . $num . '";
             var grade = "' . '' . $tag['grade'] . '";
+            var list_json = {};
+            <?php
+                $userModel = new app\common\model\User();
+                $where[] = ["id","in",' . $tag['value'] . '];
+                $list = $userModel->where($where)->select()->toArray();
+                foreach($list as $k => $v){
+                   ?>
+                   list_json[<?php echo $v["id"];?>] = [];
+                   <?php
+
+                }
+           
+            ?>
+            var ' . $time . '_list = list_json;
             function ' . $time . '_show(){
                 layui.use([\'form\', \'table\'], function(){
                     $.ajax({
                         type:"post",
-                        url:"<?php echo url("manage/index/tagSelectUser",array("type"=>"show","num"=>"' . $tag['num'] .  '"));  ?>?grade="+grade,
+                        url:"<?php echo url("manage/index/tagSelectUser",array("type"=>"show","num"=>"' . $tag['num'] .  '"));  ?>?grade="+grade+"&time=' . $time . '",
                         success:function(e){
                             layui.layer.open({
                                 type: 1,
@@ -1126,7 +1249,6 @@ goodscat' . $id . '();
                                 title:"选择用户",
                                 btn: ["完成","取消"],
                                 yes: function(index, layero){
-                                
                                     //判断个数是否满足
                                     if(Object.getOwnPropertyNames(ids).length > num_' . $time . '){
                                         layer.msg("最多只能选择"+num_' . $time . '+"个");
@@ -1135,10 +1257,11 @@ goodscat' . $id . '();
                                   
                                     $("#' . $time . '_list").empty();
                                     var the_val = "";
-                                    console.log(ids);
-
+                                    ' . $time . '_list = {};
                                     for(var key in ids){
-                                        console.log(key);
+
+                                        if(key){
+                                        ' . $time . '_list[key] = ids[key];
                                         let str = "";
                                         if(ids[key].username != null) str+=ids[key].username
                                         str+="("
@@ -1146,7 +1269,10 @@ goodscat' . $id . '();
                                         str+=")"
                                         $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+str+\'</li>\');
                                         the_val += "," + key;
+                                        }
                                     }
+
+
                                   
                                     $("#' . $time . '").val(the_val.slice(1));
                                     layer.close(index);
@@ -1162,7 +1288,9 @@ goodscat' . $id . '();
                 for (var i=0;i<ids_array.length ;i++ )
                 {
                     if(ids_array[i] == $(this).attr("id")){
+                        delete ' . $time . '_list[ids_array[i]];
                         ids_array.splice(i,1);
+                        break;
                     }
                 }
                 $("#' . $time . '").val(ids_array.join(","));

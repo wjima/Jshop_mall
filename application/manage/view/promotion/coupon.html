@@ -57,6 +57,7 @@
                 {field:'name',title:'优惠券名称', align: 'center'},
                 {field:'sort', width:100, sort: true,title:'权重', align: 'center'},
                 {field:'status', width:100,title:'启用状态', templet: '#status', align: 'center'},
+                {field:'exclusive', width:100,title:'是否排他', templet: '#exclusive', align: 'center'},
                 {field:'stime',width:170,title:'开始时间', align: 'center'},
                 {field:'etime',width:170,title:'结束时间', align: 'center'},
                 {field: 'operating', title: '操作', width:230, align: 'center',templet:function(data){
@@ -165,4 +166,7 @@
 
 <script type="text/html" id="status">
     <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="change" {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="exclusive">
+    <input type="checkbox" name="exclusive" value="{{d.id}}" lay-skin="switch" lay-text="是|否" lay-filter="change" {{ d.exclusive == 2 ? 'checked' : '' }}>
 </script>

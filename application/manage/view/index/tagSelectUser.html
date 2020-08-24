@@ -30,7 +30,11 @@
 <table id="tagUserTable" lay-filter="tagUserTable"></table>
 
 <script>
+    var time = "{$Think.get.time}";
     var ids = {};
+    if(time){
+        ids = eval(''+time+'_list');
+    }
     var table_data=new Array();
     var grade = "{$grade}";
     var select_type = {type:'checkbox'};
@@ -54,43 +58,22 @@
                 { field: 'mobile', title: '手机号码', width: 150 },
                 { field: 'nickname', title: '昵称' },
                 { field: 'grade_name', title: '等级', width: 150 },
-                // { field: 'sex', title: '性别' },
-                // { field: 'birthday', title: '生日', width: 150 },
-                // {
-                //     field: 'avatar', title: '头像',
-                //     templet: function (d) {
-                //         if (d.avatar) {
-                //             return '<a href="javascript:void(0);" onclick=viewImage("' + d.avatar + '")><image style="max-width:30px;max-height:30px;" src="' + d.avatar + '"/></a>';
-                //         } else {
-                //             return '<a href="javascript:void(0);" onclick=viewImage("<?php echo config('jshop.default_image'); ?>")><image style="max-width:30px;max-height:30px;" src="<?php echo config('jshop.default_image');?>"/></a>';
-                //         }
-                //     }, width: 80
-                // },
-                // {
-                //     title: '余额', templet: function (data) {
-                //     var html = '<a class="link-hot option-show balance" data-id="' + data.id + '">' + data.balance + '</a>';
-                //     return html;
-                // }
-                // },
-                // {
-                //     title: '积分', templet: function (data) {
-                //     var html = '<a class="link-hot option-show point" data-id="' + data.id + '">' + data.point + '</a>';
-                //     return html;
-                // }
-                // },
-                //
-                // { field: 'status', title: '状态' },
-                // { field: 'pid_name', title: '邀请人' },
-                // { field: 'ctime', title: '创建时间', width: 200 }
             ]],
             done: function(res, curr, count){
                 table_data=res.data;
                 for(var i=0;i< res.data.length;i++){
                     if(ids[res.data[i].id]){
-                        res.data[i]["LAY_CHECKED"]='true';
+                        ids[res.data[i].id] = res.data[i];
                         var index= res.data[i]['LAY_TABLE_INDEX'];
-                        $('#tagUserTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
-                        $('#tagUserTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                        if (allow_num == '2') {
+                            // console.log($('#tagUserTable + div .layui-table-body tr[data-index=' + index + '] input[type="radio"]'));                        
+                            $("#tagUserTable + div .layui-table-body tr[data-index = "+ index +" ] .layui-form-radio").click();
+                            break
+                        } else {
+                            res.data[i]["LAY_CHECKED"]='true';
+                            $('#tagUserTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                            $('#tagUserTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                        }
                     }
                 }
                 var checkStatus = layui.table.checkStatus('tagUserTable');
@@ -98,6 +81,7 @@
                     $('#tagUserTable + div .layui-table-header th[data-field="0"] input[type="checkbox"]').prop('checked', true);
                     $('#tagUserTable + div .layui-table-header th[data-field="0"] input[type="checkbox"]').next().addClass('layui-form-checked');
                 }
+                $('#tagUserNum').html(Object.getOwnPropertyNames(ids).length);
             }
         });
         //监听表格复选框选择
@@ -123,8 +107,12 @@
             $('#tagUserNum').html(Object.getOwnPropertyNames(ids).length);
         });
         layui.table.on('radio(tagUserTable)', function(obj){
-            ids = {}
-            ids[obj.data.id] = obj.data
+            if(ids[obj.data.id]){
+
+            }else{
+                ids = {}
+                ids[obj.data.id] = obj.data
+            }
             $('#tagUserNum').html(Object.getOwnPropertyNames(ids).length);
         });
         layui.form.on('submit(user-search)', function(data){

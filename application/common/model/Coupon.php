@@ -288,43 +288,70 @@ class Coupon extends Common
             'msg' => '',
             'data' => []
         ];
+        $promotionModel = new Promotion();
 
         $code_arr = explode(',',$code);
-
-        foreach($code_arr as $v){
-            $where['coupon_code'] = $v;
-            $info = $this::with('promotion')->where($where)->find();
-            if($info){
-                if($check){
-                    //判断规则是否开启
-                    $promotionModel = new Promotion();
-                    if($info['status'] != $promotionModel::STATUS_OPEN){
-                        return error_code(15012);       //优惠券规则不是可用状态
-                    }
-                    //判断优惠券规则是否到达开始时间
-                    if($info['stime']>time()){
-                        return error_code(15010);
-                    }
-                    //判断优惠券规则是否已经到结束时间了，也就是是否过期了
-                    if($info['etime']<time()){
-                        return error_code(15011);
-                    }
-                    //判断是否已经使用过了
-                    if($info['is_used'] != self::USED_NO){
-                        return error_code(15013);
-                    }
-                    //判断此类优惠券是否已经使用过,防止一类优惠券使用多张
-                    foreach($result['data'] as $j){
-                        if($j['promotion_id'] == $info['promotion_id']){
-                            return error_code(15015);
-                        }
-                    }
-
-                }
-                $result['data'][$v] = $info;
-            }else{
-                return error_code(15009);
+        $where1[] = ['c.coupon_code', 'in', $code_arr];
+        $where1[] = ['p.type', '=', $promotionModel::TYPE_COUPON];
+        $list = $this->alias('c')
+            ->field('c.*,name,stime,etime,status,exclusive')
+            ->join('promotion p', 'c.promotion_id = p.id')
+            ->where($where1)
+            ->order('p.sort asc')
+            ->select();
+        //如果取出来的条数和优惠券的条数不一致，就说明有些优惠券不能用
+        if(count($code_arr) != count($list)){
+            return error_code(15009);
+        }
+        $exclusive_code = "";     //默认是不排他的，如果排他，第一个排他的优惠券码
+        $exclusive_name = "";       //第一个排他的名称
+        $exclusive_arr = [];    //根据权重，从前到后，第一个排他之后的优惠券列表
+        foreach($list as $info){
+            //判断规则是否开启
+            if($info['status'] != $promotionModel::STATUS_OPEN){
+                return error_code(15012);       //优惠券规则不是可用状态
             }
+            //判断优惠券规则是否到达开始时间
+            if($info['stime']>time()){
+                return error_code(15010);
+            }
+            //判断优惠券规则是否已经到结束时间了，也就是是否过期了
+            if($info['etime']<time()){
+                return error_code(15011);
+            }
+            //判断是否已经使用过了
+            if($info['is_used'] != self::USED_NO){
+                return error_code(15013);
+            }
+            //判断此类优惠券是否已经使用过,防止一类优惠券使用多张
+            foreach($list as $j){
+                if($j['coupon_code'] != $info['coupon_code']){
+                    if($j['promotion_id'] == $info['promotion_id']){
+                        return error_code(15015);
+                    }
+                }
+            }
+            //如果前面是排他，那么这里就放到排他列表里
+            if($exclusive_code != ""){
+                $exclusive_arr[] = [
+                    'code' => $info['coupon_code'],
+                    'name' => $info['name']
+                ];
+            }else{
+                if($info['exclusive'] == $promotionModel::EXCLUSIVE_YES){
+                    $exclusive_code = $info['coupon_code'];
+                    $exclusive_name = $info['name'];
+                }
+            }
+            $result['data'][$info['coupon_code']] = $info;
+        }
+        //如果有排他记录，就返回报错，
+        if($exclusive_arr){
+            $result = error_code(15030);
+            $result['exclusive_arr'] = $exclusive_arr;
+            $result['exclusive_code'] = $exclusive_code;
+            $result['exclusive_name'] = $exclusive_name;
+            return $result;
         }
         $result['status'] = true;
         return $result;

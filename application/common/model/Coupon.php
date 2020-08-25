@@ -333,7 +333,10 @@ class Coupon extends Common
             }
             //如果前面是排他，那么这里就放到排他列表里
             if($exclusive_code != ""){
-                $exclusive_arr[$info['coupon_code']] = $info['name'];
+                $exclusive_arr[] = [
+                    'code' => $info['coupon_code'],
+                    'name' => $info['name']
+                ];
             }else{
                 if($info['exclusive'] == $promotionModel::EXCLUSIVE_YES){
                     $exclusive_code = $info['coupon_code'];

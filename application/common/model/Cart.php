@@ -486,13 +486,13 @@ class Cart extends Common
             $couponModel = new Coupon();
             $couponInfo  = $couponModel->codeToInfo($coupon_code, true);
             if (!$couponInfo['status']) {
-                $result['msg'] = $couponInfo['msg'];
+                $result = $couponInfo;
                 return false;
             }
             $promotionModel = new Promotion();
             $re             = $promotionModel->toCoupon($result['data'], $couponInfo['data']);
             if (!$re['status']) {
-                $result['msg'] = $re['msg'];
+                $result = $re;
                 return false;
             }
         }

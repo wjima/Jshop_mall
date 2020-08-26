@@ -509,6 +509,10 @@ class Order extends Common
         $order_info->ladingItem; //提货单
         $order_info->returnItem; //退货单
         $order_info->aftersalesItem; //售后单
+
+        //平摊商品价格
+        $this->avePrice($order_info);
+
         //发货单
         $billDeliveryModel = new BillDelivery();
         $deliveryResult = $billDeliveryModel->getDeliveryList($id);
@@ -694,6 +698,13 @@ class Order extends Common
         }
 
         return $order_info;
+    }
+
+    //平摊优惠，计算一下订单的实际价格
+    private function avePrice(&$orderInfo){
+        foreach($orderInfo['items'] as &$v){
+            $v['ave_price'] = round(($v['amount'] - $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount'])) / $v['nums'],2);
+        }
     }
 
 

@@ -51,7 +51,7 @@ class Goods
                     foreach ($resCsv['data'] as $key => $val) {
                         foreach ($fields as $fkey => $fval) {
                             $iData[$i][$fval['value']] = $val[$fval['index']];
-                            if ($iData[$i]['is_spec'] == '是' && !$iData[$i]['bn'] && $iData[$i - 1]['is_spec'] =='是') {
+                            if ($iData[$i]['is_spec'] == '是' && !$iData[$i]['bn'] && $iData[$i - 1]['is_spec'] == '是') {
                                 $iData[$i]['bn'] = $iData[$i - 1]['bn'];
                             }
                         }
@@ -67,7 +67,7 @@ class Goods
                         $lastData[$val['bn']] = $val;
                     }
                 }
-
+                #print_r($lastData);die();
                 /**
                  * 组装多规格数据
                  */
@@ -94,32 +94,34 @@ class Goods
                     $goods['unit']             = $val['unit'];
                     $goods['intro']            = $val['intro'];
                     if (isset($val['spes_desc']) && $val['spes_desc']) {
-                        $spec_desc_array          = explode('|', $val['spes_desc']);
-                        foreach((array)$spec_desc_array as $ssk=>$ssv){
-                            $spec_desc          = explode(':', $ssv);
+                        $spec_desc_array = explode('|', $val['spes_desc']);
+                        foreach ((array)$spec_desc_array as $ssk => $ssv) {
+                            $spec_desc                 = explode(':', $ssv);
                             $spec_value[$spec_desc[0]] = explode(',', $spec_desc[1]);
                         }
                         $goods['spes_desc'] = serialize($spec_value);
                     } else {
                         $goods['spes_desc'] = $val['spes_desc'];
                     }
-                    $goods['params']           = $val['params'];
-                    $goods['sort']             = $val['sort'];
-                    $goods['is_recommend']     = ($val['is_recommend'] == '是') ? '1' : '2';
-                    $goods['is_hot']           = ($val['is_hot'] == '是') ? '1' : '2';
-                    $goods['label_ids']        = model('common/Label')->getIdsByName($val['label_ids'], true);//todo 标签分隔
-                    $product = [];
-                    $product[0]['spes_desc']   = $val['product_spes_desc'];
-                    $product[0]['sn']          = $val['sn'];
-                    $product[0]['price']       = $val['price'];
-                    $product[0]['costprice']   = $val['costprice'];
-                    $product[0]['mktprice']    = $val['mktprice'];
-                    $product[0]['stock']       = $val['stock'];
-                    $product[0]['is_defalut']  = ($val['is_defalut'] == '是') ? $productModel::DEFALUT_YES : $productModel::DEFALUT_NO;
+                    $goods['params']          = $val['params'];
+                    $goods['sort']            = $val['sort'];
+                    $goods['is_recommend']    = ($val['is_recommend'] == '是') ? '1' : '2';
+                    $goods['is_hot']          = ($val['is_hot'] == '是') ? '1' : '2';
+                    $goods['label_ids']       = model('common/Label')->getIdsByName($val['label_ids'], true);//todo 标签分隔
+                    $product                  = [];
+                    $product[0]['spes_desc']  = $val['product_spes_desc'];
+                    $val['sn']                = (isset($val['sn']) && $val['sn']) ? $val['sn'] : get_sn(4);
+                    $product[0]['sn']         = $val['sn'];
+                    $product[0]['price']      = $val['price'];
+                    $product[0]['costprice']  = $val['costprice'];
+                    $product[0]['mktprice']   = $val['mktprice'];
+                    $product[0]['stock']      = $val['stock'];
+                    $product[0]['is_defalut'] = ($val['is_defalut'] == '是') ? $productModel::DEFALUT_YES : $productModel::DEFALUT_NO;
                     if ($val['product']) {
                         $keyIndex = count($product);
                         foreach ($val['product'] as $pk => $pv) {
                             $product[$keyIndex]['spes_desc']  = isset($pv['product_spes_desc']) ? $pv['product_spes_desc'] : '';
+                            $pv['sn']                         = (isset($pv['sn']) && $pv['sn']) ? $pv['sn'] : get_sn(4);
                             $product[$keyIndex]['sn']         = $pv['sn'];
                             $product[$keyIndex]['price']      = $pv['price'];
                             $product[$keyIndex]['costprice']  = $pv['costprice'];
@@ -142,6 +144,7 @@ class Goods
                     }
                     Log::record($goods);
 
+
                     $validate = new GoodsValidate();
                     if (!$validate->scene('import')->check($goods)) {
                         $message[] = $validate->getError();
@@ -163,7 +166,7 @@ class Goods
 
                         if (!$goods_id) {
                             $goodsModel->rollback();
-                            $message[] = error_code(12002,true);
+                            $message[] = error_code(12002, true);
                             Log::record($goods['name'] . '商品数据保存失败');
                             continue;
                         } else {
@@ -177,11 +180,15 @@ class Goods
                                     $message[] = $productValidate->getError();
                                     Log::record($goods['name'] . implode(',', $message));
                                 }
-                                $productData = $productModel->field('id')->where(['sn' => $pval['sn']])->find();
-                                if (isset($productData) && $productData['id'] != '') {
+                                $productModel = new Products();
 
+                                $productData = $productModel->field('id')->where(['sn' => $pval['sn']])->find();
+
+                                if (isset($productData) && $productData['id'] != '') {
+                                    #print_r($pval);echo '---';
                                     $res = $productModel->updateProduct($productData['id'], $pval);
                                 } else {
+                                    #print_r($pval);
                                     $res = $productModel->doAdd($pval);
                                 }
                                 if ($res === false) {
@@ -212,7 +219,7 @@ class Goods
         }
         if ($job->attempts() > 3) {
             $uData['status']  = $ietaskModle::IMPORT_FAIL_STATUS;
-            $uData['message'] = error_code(10041,true);
+            $uData['message'] = error_code(10041, true);
             $uData['utime']   = time();
             $ietaskModle->update($uData, ['id' => $params['task_id']]);
             $job->delete();

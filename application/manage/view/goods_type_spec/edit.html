@@ -1,4 +1,4 @@
-<div style="padding:30px" class="layui-form layui-form-pane">
+<div style="padding:30px" class="layui-form layui-form-pane" lay-filter="edit_goods_type_spec">
     <div class="layui-form-item">
         <label class="layui-form-label">属性名称：</label>
         <div class="layui-input-block">
@@ -40,7 +40,6 @@
         </div>
     {php} } {/php}
     {:jshopToken('goods_type_edit')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="type_spec_add">保存</button>
 </div>
 
 <script>
@@ -48,12 +47,7 @@
     layui.use('form', function(){
         var form = layui.form;
         form.render();
-        //监听提交
-        form.on('submit(type_spec_add)', function(data){
-            formData = data.field;
-            editSpec(formData);
-            return false;
-        });
+       
     });
     $(".layui-form-pane").on('click','.add_value',function(){
         var html=

@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form seller-alone-form">
+<div style="padding: 30px;" class="layui-form seller-alone-form" lay-filter="edit_brand">
 
     <input type="hidden" name="id" value="{$data.id}">
 
@@ -26,8 +26,6 @@
         </div>
     </div>
     {:jshopToken('brand_edit')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="brand-edit">保存</button>
-
 </div>
 
 <script>

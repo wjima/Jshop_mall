@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding: 30px;" class="layui-form layui-form-pane" lay-filter="add_carouset_seat"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <div class="layui-form-item">
         <label class="layui-form-label seller-inline-2"><i class="required-color">*</i> 名称：</label>
@@ -24,8 +24,6 @@
             <input type="text" name="sort" required lay-verify="required" value="100" placeholder="请输入顺序" autocomplete="off" class="layui-input">
         </div>
     </div>
-
-    <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="add">保存</button>
     <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
 </div>
 <script>

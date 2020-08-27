@@ -548,12 +548,13 @@ export default {
 					this.usedCoupons = data.coupon;
 					// 优惠券码
 					if (this.inputCouponCode) {
-						this.inputCouArr=[]
 						for (let key in this.usedCoupons) {
-							let item = {};
-							item.code = key;
-							item.name = this.usedCoupons[key];
-							this.inputCouArr.push(item);
+							if(key==this.inputCouponCode){
+								let item = {};
+								item.code = key;
+								item.name = this.usedCoupons[key];
+								this.inputCouArr.push(item);
+							}
 						}
 					}
 					// 手动输入的优惠券使用成功后关闭弹窗并清除输入的优惠券码

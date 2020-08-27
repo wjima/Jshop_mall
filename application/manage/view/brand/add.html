@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding: 30px;" class="layui-form layui-form-pane" lay-filter="add_brand"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i> 品牌名称：</label>
@@ -24,8 +24,6 @@
         </div>
     </div>
     {:jshopToken('brand_add')}
-    <button class="layui-btn layui-btn-fluid save-brand" lay-submit lay-filter="add-brand">保存</button>
-
 </div>
 
 <script>

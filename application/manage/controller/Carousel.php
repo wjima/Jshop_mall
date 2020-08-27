@@ -25,8 +25,7 @@ class Carousel extends Manage
      */
     public function index()
     {
-        if(Request::isAjax())
-        {
+        if (Request::isAjax()) {
             $carouselModel = new CarouselModel();
             return  $carouselModel->tableData(input('param.'));
         }
@@ -40,16 +39,16 @@ class Carousel extends Manage
      */
     public function add()
     {
+        $this->view->engine->layout(false);
         $carouselModel = new CarouselModel();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $carouselModel->addData(input('param.'));
         }
         $carouselSeatModel = new CarouselSeat();
         $positionList = $carouselSeatModel->select();
-        return $this->fetch('add',[
+        return $this->fetch('add', [
             'list' => $positionList,
-            'type'=>config('params.carousel')['type']
+            'type' => config('params.carousel')['type']
         ]);
     }
 
@@ -64,24 +63,23 @@ class Carousel extends Manage
      */
     public function edit()
     {
+        $this->view->engine->layout(false);
         $carouselModel = new CarouselModel();
-        if(Request::isPost())
-        {
+        if (Request::isPost()) {
             return $carouselModel->saveData(input('param.'));
         }
         $carouselModel = new CarouselModel();
-        $info = $carouselModel->where('id',input('param.id/d'))->find();
-        if (!$info)
-        {
+        $info = $carouselModel->where('id', input('param.id/d'))->find();
+        if (!$info) {
             return error_code(10002);
         }
         $carouselSeatModel = new CarouselSeat();
         $positionList = $carouselSeatModel->select();
-        return $this->fetch('edit',[
-                'positionList' => $positionList,
-                'info' => $info,
-                'type' => config('params.carousel')['type']
-            ]);
+        return $this->fetch('edit', [
+            'positionList' => $positionList,
+            'info' => $info,
+            'type' => config('params.carousel')['type']
+        ]);
     }
 
 
@@ -161,7 +159,7 @@ class Carousel extends Manage
     public function articleInfo()
     {
         $articleModel = new Article();
-        return $articleModel->field('id,title')->where('id',input('param.id'))->find();
+        return $articleModel->field('id,title')->where('id', input('param.id'))->find();
     }
 
 
@@ -174,7 +172,7 @@ class Carousel extends Manage
     public function goodsInfo()
     {
         $goodsModel = new Goods();
-        return $goodsModel->field('id,name')->where('id',input('param.id'))->find();
+        return $goodsModel->field('id,name')->where('id', input('param.id'))->find();
     }
 
 
@@ -187,10 +185,10 @@ class Carousel extends Manage
     public function articleTypeInfo()
     {
         $articleType = new \app\common\model\ArticleType();
-        return $articleType->field('id,type_name')->where('id',input('param.id'))->find();
+        return $articleType->field('id,type_name')->where('id', input('param.id'))->find();
     }
 
- 
+
     /**
      *  加载表单列表模板
      * User:mark
@@ -205,8 +203,6 @@ class Carousel extends Manage
     public function formInfo()
     {
         $formModel = new Form();
-        return $formModel->field('id,name')->where('id',input('param.id'))->find();
+        return $formModel->field('id,name')->where('id', input('param.id'))->find();
     }
-
-
 }

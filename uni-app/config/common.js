@@ -166,11 +166,11 @@ function successToShow(msg = '保存成功', callback = function() {}) {
 		uni.showToast({
 			title: msg,
 			icon: 'success',
-			duration: 1000,
+			duration: 2000,
 			success() {
 				setTimeout(function() {
 					callback()
-				}, 500)
+				}, 2000)
 			}
 		})
 	}, 100)
@@ -187,11 +187,11 @@ function errorToShow(msg = '操作失败', callback = function() {}) {
 		uni.showToast({
 			title: msg,
 			icon: 'none',
-			duration: 1500,
+			duration: 2000,
 			success() {
 				setTimeout(function() {
 					callback()
-				}, 500)
+				}, 2000)
 			}
 		})
 	}, 100)

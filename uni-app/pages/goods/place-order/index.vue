@@ -548,12 +548,13 @@ export default {
 					this.usedCoupons = data.coupon;
 					// 优惠券码
 					if (this.inputCouponCode) {
-						let item = {};
+						this.inputCouArr=[]
 						for (let key in this.usedCoupons) {
+							let item = {};
 							item.code = key;
 							item.name = this.usedCoupons[key];
+							this.inputCouArr.push(item);
 						}
-						this.inputCouArr.push(item);
 					}
 					// 手动输入的优惠券使用成功后关闭弹窗并清除输入的优惠券码
 					// this.current === 1 && this.$refs.lvvpopref.popshow && this.inputCouponCode ? this.toclose() : ''
@@ -563,14 +564,17 @@ export default {
 
 					this.optCoupon = '';
 				} else {
-					// 优惠券排他，使用权重大的优惠券
+					// 优惠券排他
 					if(res.data=="15030"){
 						// console.log(this.userCoupons);
 						// console.log(this.optCoupon);
+						// console.log(this.inputCouponCode);
+						// console.log(res.exclusive_code);
+						// console.log(this.inputCouArr);
 						// 分两种情况
 						// 第一种 当前选择的优惠券权重最大
 						let _this=this;
-						if(this.optCoupon==res.exclusive_code){
+						if(this.optCoupon==res.exclusive_code || this.inputCouponCode==res.exclusive_code){
 							// 排斥的优惠券(权重小的)
 							let exclusive_arr = res.exclusive_arr;
 							let nameArr=[]
@@ -580,8 +584,8 @@ export default {
 							})
 							let nameList=nameArr.join("，")
 							// console.log(nameList);
-							res.msg=res.msg+"，当前选择的‘"+res.exclusive_name+"’优惠券与"+nameList+"冲突，若确定使用，将只能使用该优惠券，不能使用"+nameList+"优惠券。"
-							this.$common.modelShow('提示', res.msg, function(){
+							let msg="此优惠券与"+nameList+"冲突，确定使用吗？"
+							this.$common.modelShow('提示', msg, function(){
 								// 从使用中的优惠券去掉排他的优惠券
 								let exclusive_arr = res.exclusive_arr;
 								let paramsCodes = _this.params.coupon_code.split(',');
@@ -595,19 +599,25 @@ export default {
 											item2.checked=true;
 										}
 									});
+									// 从手输的列表中去掉排他的优惠券
+									_this.inputCouArr.forEach((item3,index1)=>{
+										if (item1.code==item3.code) {
+											_this.inputCouArr.splice(index1, 1);
+										}
+									})
 									// 从params中去掉排他的优惠券
-									paramsCodes.forEach((item3,index) => {
-										if (item1.code==item3) {
-											paramsCodes.splice(index, 1);
+									paramsCodes.forEach((item4,index2) => {
+										if (item1.code==item4) {
+											paramsCodes.splice(index2, 1);
 										}
 									});
 									_this.params.coupon_code = paramsCodes.join();
 								})
 							});
 						}else{
-							// 第一种 已经选择的优惠券中权重大于当前使用的优惠券
-							res.msg=res.msg+"，‘"+res.exclusive_name+"’和当前要使用的优惠券冲突，若确定使用，将只能使用该优惠券，不能使用‘"+res.exclusive_name+"’优惠券。"
-							this.$common.modelShow('提示', res.msg, function(){
+							// 第二种 已经选择的优惠券中权重大于当前选择的优惠券
+							let msg="此优惠券与‘"+res.exclusive_name+"’冲突，确定使用吗？"
+							this.$common.modelShow('提示', msg, function(){
 								// console.log(_this.userCoupons);
 								// console.log(_this.params.coupon_code);
 								// 从使用中的优惠券去掉权重最大优惠券,添加当前优惠券
@@ -619,6 +629,13 @@ export default {
 										item.checked=false;
 									}
 								});
+								// console.log(_this.userCoupons);
+								// 从手输的列表中去掉排他的优惠券
+								_this.inputCouArr.forEach((item,index)=>{
+									if (item.code==res.exclusive_code) {
+										_this.inputCouArr.splice(index, 1);
+									}
+								})
 								// // 从params中去掉权重最大优惠券,添加当前优惠券
 								let paramsCodes = _this.params.coupon_code.split(',');
 								paramsCodes.forEach((item,index) => {

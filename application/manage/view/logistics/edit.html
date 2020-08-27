@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding: 30px;" class="layui-form layui-form-pane" lay-filter="edit_logistic"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
     <input type="hidden" name="id" value="{$data.id}">
     <div class="layui-form-item">
         <label class="layui-form-label">公司名称：</label>
@@ -19,7 +19,6 @@
         </div>
     </div>
     {:jshopToken('logistics_edit')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="logistics-edit">立即提交</button>
     <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
 </div>
 <script>

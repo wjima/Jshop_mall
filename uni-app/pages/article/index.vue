@@ -166,6 +166,7 @@ export default {
 
 .article {
 	padding: 20upx;
+	background-color: #fff;
 }
 
 .article-title {

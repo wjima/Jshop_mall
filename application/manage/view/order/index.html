@@ -65,7 +65,8 @@
             width: 800px !important;
         }
     }
-    .layui-layer-page .layui-layer-content{
+
+    .layui-layer-page .layui-layer-content {
         overflow: initial;
     }
 </style>
@@ -157,7 +158,8 @@
 <div class="table-body">
     <div class="layui-tab layui-tab-card" lay-filter="order-tab">
         <ul class="layui-tab-title">
-            <li class="layui-this" lay-id="all">全部订单<span class="layui-badge layui-bg-gray">{$count.all|default=0}</span></li>
+            <li class="layui-this" lay-id="all">全部订单<span
+                    class="layui-badge layui-bg-gray">{$count.all|default=0}</span></li>
             <li lay-id="payment">待支付<span class="layui-badge layui-bg-green">{$count.payment|default=0}</span></li>
             <li lay-id="delivered">待发货<span class="layui-badge layui-bg-black">{$count.delivered|default=0}</span></li>
             <li lay-id="receive">待收货<span class="layui-badge layui-bg-blue">{$count.receive|default=0}</span></li>
@@ -204,7 +206,7 @@
             elem: '#date',
             range: '到',
             format: 'yyyy-MM-dd',
-						trigger: 'click' //自动弹出控件的事件，采用click弹出
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
         //获取订单数据
@@ -223,7 +225,7 @@
             },
             cols: [[
                 { type: 'checkbox' },
-				{ field: 'operating', title: '操作', width: 200, align: 'center' },
+                { field: 'operating', title: '操作', width: 200, align: 'center' },
                 { field: 'order_id_k', title: '订单号', width: 140, align: 'center' },
                 { field: 'type', title: '订单类型', width: 90, align: 'center' },
                 {
@@ -241,11 +243,13 @@
                 },
                 { field: 'ctime', title: '下单时间', width: 160, align: 'center' },
                 { field: 'status_text', title: '订单状态', width: 90, align: 'center' },
-                { field: 'after_sale_status', title: '售后状态', width: 150, align: 'center',templet: function(data){
-                    return '<a href="{:url('/manage/bill_aftersales/index')}?order_id=' + data.order_id + '" style="color:red">'+data.after_sale_status+'</a>';
-                }},
+                {
+                    field: 'after_sale_status', title: '售后状态', width: 150, align: 'center', templet: function (data) {
+                        return '<a href="{:url(' / manage / bill_aftersales / index')}?order_id=' + data.order_id + '" style="color:red">' + data.after_sale_status + '</a>';
+                    }
+                },
                 { field: 'username', title: '用户', width: 120, align: 'center' },
-                { field: 'ship_mobile', title: '收货人手机号', width: 120, align: 'center',sort: true},
+                { field: 'ship_mobile', title: '收货人手机号', width: 120, align: 'center', sort: true },
                 { field: 'area_name', title: '收货地址', width: 110, align: 'center' },
                 { field: 'pay_status', title: '支付状态', width: 90, align: 'center' },
                 { field: 'ship_status', title: '发货状态', width: 90, align: 'center' },
@@ -297,16 +301,16 @@
         //查看订单
         $(document).on('click', '.view-order', function () {
             var id = $(this).attr('data-id');
-            JsGet('{:url("order/view")}?id='+id, function(e){
-                if(e.status){
+            JsGet('{:url("order/view")}?id=' + id, function (e) {
+                if (e.status) {
                     window_box = layer.open({
                         type: 1,
                         title: '订单详情',
-                        area: setpage(800,450), //宽高
+                        area: setpage(800, 450), //宽高
                         content: e.data,
                         moveOut: true
                     });
-                }else{
+                } else {
                     layer.msg(e.msg);
                 }
             });
@@ -315,16 +319,16 @@
         //新编辑订单
         $(document).on('click', '.edit-order2', function () {
             var id = $(this).attr('data-id');
-            JsGet("{:url('order/edit')}?id=" + $(this).attr('data-id'), function(e){
+            JsGet("{:url('order/edit')}?id=" + $(this).attr('data-id'), function (e) {
                 if (e.status) {
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: setpage(800,650),
+                        area: setpage(800, 650),
                         title: '订单编辑',
                         btn: ['确认', '取消'],
                         yes: function (index, layero) {
-                            JsPost("{:url('order/edit')}", $('#order_edit_form').serialize(), function(res){
+                            JsPost("{:url('order/edit')}", $('#order_edit_form').serialize(), function (res) {
                                 if (res.status) {
                                     layer.msg(res.msg, { time: 1000 }, function () {
                                         layer.closeAll();
@@ -345,13 +349,34 @@
         //单个去支付订单页面展示
         $(document).on('click', '.pay-order', function () {
             var id = $(this).attr('data-id');
-            JsGet('{:url("bill_payments/pay")}?order_id='+id+"&type=1", function(e){
+            JsGet('{:url("bill_payments/pay")}?order_id=' + id + "&type=1", function (e) {
                 if (e.status) {
                     window_box = layer.open({
                         type: 1,
                         title: '支付订单',
-                        area: setpage(500,420), //宽高
-                        content: e.data.tpl
+                        area: setpage(500, 420), //宽高
+                        content: e.data.tpl,
+                        btn: ['保存', '关闭'],
+                        yes: function () {
+                            var order_id = $("#input_order_id").val();
+                            var type = $("#input_type").val();
+                            var payment_code = $("#payment_code").val();
+                            var __Jshop_Token__ = $(".Jshop_Token:last").val();
+                            var validate_form = $("input[name='validate_form']").val();
+                            JsPost('{:url("bill_payments/toPay")}', {
+                                'order_id': order_id,
+                                'type': type,
+                                'payment_code': payment_code,
+                                __Jshop_Token__: __Jshop_Token__,
+                                validate_form: validate_form
+                            }, function (e) {
+                                layer.close(window_box);
+                                layer.msg(e.msg, { time: 1300 }, function () {
+                                    table.reload();
+                                });
+                            });
+                            return false;
+                        }
                     });
                 } else {
                     layer.msg(e.msg, { time: 1300 }, function () {
@@ -369,13 +394,34 @@
             });
             ids = ids.substring(0, ids.length - 1);
             if (ids) {
-                JsGet('{:url("bill_payments/pay")}?order_id='+ids+"&type=1", function(e){
+                JsGet('{:url("bill_payments/pay")}?order_id=' + ids + "&type=1", function (e) {
                     if (e.status) {
                         window_box = layer.open({
                             type: 1,
                             title: '支付订单',
-                            area: setpage(530,520), //宽高
-                            content: e.data.tpl
+                            area: setpage(530, 520), //宽高
+                            content: e.data.tpl,
+                            btn: ['保存', '关闭'],
+                            yes: function () {
+                                var order_id = $("#input_order_id").val();
+                                var type = $("#input_type").val();
+                                var payment_code = $("#payment_code").val();
+                                var __Jshop_Token__ = $(".Jshop_Token:last").val();
+                                var validate_form = $("input[name='validate_form']").val();
+                                JsPost('{:url("bill_payments/toPay")}', {
+                                    'order_id': order_id,
+                                    'type': type,
+                                    'payment_code': payment_code,
+                                    __Jshop_Token__: __Jshop_Token__,
+                                    validate_form: validate_form
+                                }, function (e) {
+                                    layer.close(window_box);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        table.reload();
+                                    });
+                                });
+                                return false;
+                            }
                         });
                     } else {
                         layer.msg(e.msg, { time: 1300 });
@@ -415,26 +461,26 @@
 
         //发货请求
         var order_ship = function (ids) {
-            JsGet('{:url("order/ship")}?order_id='+ids, function(e){
+            JsGet('{:url("order/ship")}?order_id=' + ids, function (e) {
                 if (e.status) {
-                    if(e.msg != ''){
+                    if (e.msg != '') {
                         layer.confirm(e.msg, {
                             title: '请注意！',
                             btn: ['确定', '取消'],
-                        }, function(){
+                        }, function () {
                             layer.closeAll();
                             to_ship(e.data);
-                        }, function(){
+                        }, function () {
                             layer.closeAll();
                         });
-                    }else{
+                    } else {
                         to_ship(e.data);
                     }
                 } else {
                     layer.alert(e.msg, {
                         closeBtn: 0,
                         title: '发货失败',
-                    }, function(){
+                    }, function () {
                         layer.closeAll();
                     });
                 }
@@ -442,15 +488,15 @@
         };
 
         //发货提交保存
-        function to_ship(tpl){
+        function to_ship(tpl) {
             window.box = layer.open({
                 type: 1,
                 content: tpl,
-                area: setpage(800,650),
+                area: setpage(800, 650),
                 title: '订单发货',
                 btn: ['确认', '取消'],
                 yes: function (index, layero) {
-                    JsPost('{:url("order/ship")}', $('#all_ship_form').serialize(), function(res){
+                    JsPost('{:url("order/ship")}', $('#all_ship_form').serialize(), function (res) {
                         if (res.status) {
                             layer.msg('发货成功', { time: 1300 }, function () {
                                 layer.close(index);
@@ -472,12 +518,13 @@
             var payment_code = $("#payment_code").val();
             var __Jshop_Token__ = $(".Jshop_Token:last").val();
             var validate_form = $("input[name='validate_form']").val();
-            JsPost('{:url("bill_payments/toPay")}', {'order_id': order_id,
+            JsPost('{:url("bill_payments/toPay")}', {
+                'order_id': order_id,
                 'type': type,
                 'payment_code': payment_code,
-                __Jshop_Token__:__Jshop_Token__,
-                validate_form:validate_form
-            }, function(e){
+                __Jshop_Token__: __Jshop_Token__,
+                validate_form: validate_form
+            }, function (e) {
                 layer.close(window_box);
                 layer.msg(e.msg, { time: 1300 }, function () {
                     table.reload();
@@ -542,7 +589,7 @@
             layer.confirm('确认取消订单号：' + id + ' 的订单吗？', {
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
-                JsPost('{:url("order/cancel")}', {id: id}, function(e){
+                JsPost('{:url("order/cancel")}', { id: id }, function (e) {
                     layer.msg(e.msg, { time: 1300 }, function () {
                         table.reload();
                     });
@@ -563,7 +610,7 @@
                 layer.confirm('确认取消这些订单吗？', {
                     title: '提示', btn: ['确认', '取消'] //按钮
                 }, function () {
-                    JsPost('{:url("order/cancel")}', {id: ids}, function(e){
+                    JsPost('{:url("order/cancel")}', { id: ids }, function (e) {
                         layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
@@ -585,7 +632,7 @@
             layer.confirm('确认设置订单号：' + id + ' 为完成吗？<br /><font style="color:#f00">完成订单后将不能再对订单进行任何操作。</font>', {
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
-                JsPost('{:url("order/complete")}', {id: id}, function(e){
+                JsPost('{:url("order/complete")}', { id: id }, function (e) {
                     layer.msg(e.msg, { time: 1300 }, function () {
                         table.reload();
                     });
@@ -599,7 +646,7 @@
             layer.confirm('确认删除订单号：' + id + ' 的订单吗？', {
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
-                JsPost('{:url("order/del")}', {id:id}, function(e){
+                JsPost('{:url("order/del")}', { id: id }, function (e) {
                     layer.msg(e.msg, { time: 1300 }, function () {
                         table.reload();
                     });
@@ -611,14 +658,14 @@
         $(document).on('click', '.order-logistics', function () {
             var id = $(this).attr('data-id');
             JsGet("{:url('order/logistics')}?order_id=" + id, function (res) {
-                if(res.status){
+                if (res.status) {
                     window_box = layer.open({
                         type: 1,
                         title: '物流信息',
-                        area: setpage(700,400), //宽高
+                        area: setpage(700, 400), //宽高
                         content: res.data
                     });
-                }else{
+                } else {
                     layer.msg(res.msg);
                 }
             })
@@ -630,7 +677,7 @@
             layer.open({
                 type: 1,
                 title: '订单导出',
-                area: setpage(400,290), //宽高
+                area: setpage(400, 290), //宽高
                 btn: ['确定', '取消'],
                 content: $("#exportOrder").html(),
                 yes: function () {
@@ -681,11 +728,11 @@
                 if ((e.hasOwnProperty('status') && !e.status) || (e.hasOwnProperty('code') && e.code == 0)) {
                     layer.msg(e.msg); return false;
                 }
-                if(e.status){
+                if (e.status) {
                     window_box = layer.open({
                         type: 1,
                         title: '选择快递',
-                        area: setpage(450,305), //宽高
+                        area: setpage(450, 305), //宽高
                         content: e.data,
                         btnAlign: 'c',
                         btn: ['直接打单', '只获取单号', '只打单', '关闭'],
@@ -718,12 +765,12 @@
                             }
                         }
                     });
-                }else{
+                } else {
                     layer.msg(e.msg);
                 }
             });
         };
-        {:hook('orderExtJs') }
+        {: hook('orderExtJs') }
 
         //保存卖家备注
         $(document).on('click', '.mark-save', function () {
@@ -735,7 +782,7 @@
                 JsPost('{:url("order/saveMark")}', {
                     'mark': mark,
                     'id': id
-                }, function(e){
+                }, function (e) {
                     layer.msg(e.msg, { time: 1500 }, function () {
                         layer.close(window_box);
                     });

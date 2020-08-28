@@ -303,10 +303,10 @@
             var id = $(this).attr('data-id');
             JsGet('{:url("order/view")}?id=' + id, function (e) {
                 if (e.status) {
-                    window_box = layer.open({
+                    window_box = parent.layer.open({
                         type: 1,
                         title: '订单详情',
-                        area: setpage(800, 450), //宽高
+                        area: setpage(800, 600), //宽高
                         content: e.data,
                         moveOut: true
                     });
@@ -321,21 +321,22 @@
             var id = $(this).attr('data-id');
             JsGet("{:url('order/edit')}?id=" + $(this).attr('data-id'), function (e) {
                 if (e.status) {
-                    window.box = layer.open({
+                    window.box = parent.layer.open({
                         type: 1,
                         content: e.data,
-                        area: setpage(800, 650),
+                        area: setpage(800, 600), //宽高
                         title: '订单编辑',
                         btn: ['确认', '取消'],
                         yes: function (index, layero) {
-                            JsPost("{:url('order/edit')}", $('#order_edit_form').serialize(), function (res) {
+                            var formData=parent.layui.form.val('order_edit_form')
+                            JsPost("{:url('order/edit')}", formData, function (res) {
                                 if (res.status) {
-                                    layer.msg(res.msg, { time: 1000 }, function () {
-                                        layer.closeAll();
+                                    parent.layer.msg(res.msg, { time: 1000 }, function () {
+                                        parent.layer.close(index);
                                         table.reload();
                                     });
                                 } else {
-                                    layer.msg(res.msg);
+                                    parent.layer.msg(res.msg);
                                 }
                             });
                         }
@@ -359,23 +360,23 @@
                         btn: ['保存', '关闭'],
                         yes: function () {
                             var order_id = $("#input_order_id").val();
-            var type = $("#input_type").val();
-            var payment_code = $("#payment_code").val();
-            var __Jshop_Token__ = $(".Jshop_Token:last").val();
-            var validate_form = $("input[name='validate_form']").val();
-            JsPost('{:url("bill_payments/toPay")}', {
-                'order_id': order_id,
-                'type': type,
-                'payment_code': payment_code,
-                __Jshop_Token__: __Jshop_Token__,
-                validate_form: validate_form
-            }, function (e) {
-                layer.close(window_box);
-                layer.msg(e.msg, { time: 1300 }, function () {
-                    table.reload();
-                });
-            });
-            return false;
+                            var type = $("#input_type").val();
+                            var payment_code = $("#payment_code").val();
+                            var __Jshop_Token__ = $(".Jshop_Token:last").val();
+                            var validate_form = $("input[name='validate_form']").val();
+                            JsPost('{:url("bill_payments/toPay")}', {
+                                'order_id': order_id,
+                                'type': type,
+                                'payment_code': payment_code,
+                                __Jshop_Token__: __Jshop_Token__,
+                                validate_form: validate_form
+                            }, function (e) {
+                                layer.close(window_box);
+                                layer.msg(e.msg, { time: 1300 }, function () {
+                                    table.reload();
+                                });
+                            });
+                            return false;
                         }
                     });
                 } else {

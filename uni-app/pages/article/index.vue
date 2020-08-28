@@ -159,14 +159,13 @@ export default {
 <style>
 .content {
 	/*  #ifndef  H5  */
-	height: 100vh;
+	/* height: 100vh; */
 	/*  #endif  */
 	background-color: #fff;
 }
 
 .article {
 	padding: 20upx;
-	background-color: #fff;
 }
 
 .article-title {

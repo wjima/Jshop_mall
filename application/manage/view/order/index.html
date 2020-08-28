@@ -773,22 +773,6 @@
         };
         {:hook('orderExtJs')}
 
-        //保存卖家备注
-        $(document).on('click', '.mark-save', function () {
-            var mark = $("#mark").val();
-            var id = $("#mark-order-id").val();
-            if (mark.length > 500) {
-                layer.msg('备注内容不能大于500字');
-            } else {
-                JsPost('{:url("order/saveMark")}', {
-                    'mark': mark,
-                    'id': id
-                }, function (e) {
-                    layer.msg(e.msg, { time: 1500 }, function () {
-                        layer.close(window_box);
-                    });
-                });
-            }
-        });
+       
     });
 </script>

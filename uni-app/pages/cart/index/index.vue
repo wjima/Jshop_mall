@@ -490,7 +490,10 @@
 						return true;
 					} else {
 						//没有选择不跳转
+						this.$common.errorToShow("请先选择商品")
 					}
+				}else{
+					this.$common.errorToShow("请先选择商品")
 				}
 			},
 

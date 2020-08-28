@@ -302,31 +302,31 @@ class Order extends Common
     }
 
 
-    /**
-     * 总后台获取数据
-     * @param $input
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getListFromManage($input)
-    {
-        $result = $this->getListByWhere($input);
+    // /**
+    //  * 总后台获取数据
+    //  * @param $input
+    //  * @return array
+    //  * @throws \think\db\exception\DataNotFoundException
+    //  * @throws \think\db\exception\ModelNotFoundException
+    //  * @throws \think\exception\DbException
+    //  */
+    // public function getListFromManage($input)
+    // {
+    //     $result = $this->getListByWhere($input);
 
-        if (count($result['data']) > 0) {
-            foreach ($result['data'] as $k => &$v) {
-                $v['status_text'] = config('params.order')['status'][$v['status']];
-                $v['username'] = get_user_info($v['user_id'], 'nickname');
-                $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status'], 'manage');
-                $v['area_name'] = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
-                $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
-                $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
-                $v['source'] = config('params.order')['source'][$v['source']];
-            }
-        }
-        return $result;
-    }
+    //     if (count($result['data']) > 0) {
+    //         foreach ($result['data'] as $k => &$v) {
+    //             $v['status_text'] = config('params.order')['status'][$v['status']];
+    //             $v['username'] = get_user_info($v['user_id'], 'nickname');
+    //             $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status'], 'manage');
+    //             $v['area_name'] = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
+    //             $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
+    //             $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
+    //             $v['source'] = config('params.order')['source'][$v['source']];
+    //         }
+    //     }
+    //     return $result;
+    // }
 
 
     /**
@@ -437,17 +437,17 @@ class Order extends Common
      * @param string $from
      * @return string
      */
-    protected function getOperating($id, $order_status, $pay_status, $ship_status, $from = 'seller')
+    protected function getOperating($id, $order_status, $pay_status, $ship_status)
     {
         $html = '<a class="layui-btn layui-btn-primary layui-btn-xs view-order" data-id="' . $id . '">查看</a>';
-
         if ($order_status == self::ORDER_STATUS_NORMAL) {
             //正常
-            if ($pay_status == self::PAY_STATUS_NO && $from == 'seller') {
+            if ($pay_status == self::PAY_STATUS_NO) {
                 $html .= '<a class="layui-btn layui-btn-xs pay-order" data-id="' . $id . '">支付</a>';
-            }
-            if ($pay_status != self::PAY_STATUS_NO) {
-                if (($ship_status == self::SHIP_STATUS_NO || $ship_status == self::SHIP_STATUS_PARTIAL_YES) && $from == 'seller') {
+                $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '" data-type="1">编辑</a>';
+                $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="' . $id . '">取消</a>';
+            }else{
+                if ($ship_status == self::SHIP_STATUS_NO || $ship_status == self::SHIP_STATUS_PARTIAL_YES) {
                     $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '">编辑</a>';
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="' . $id . '">发货</a>';
                 }
@@ -457,21 +457,11 @@ class Order extends Common
 //                    $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
 //                }
             }
-            if ($pay_status == self::PAY_STATUS_NO) {
-                if ($from == 'seller') {
-                    $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '" data-type="1">编辑</a>';
-                }
-                $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="' . $id . '">取消</a>';
-            }
         }
-//        if ($order_status == self::ORDER_STATUS_COMPLETE)
-//        {
-//            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
-//        }
+        //取消
         if ($order_status == self::ORDER_STATUS_CANCEL) {
             $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-order" data-id="' . $id . '">删除</a>';
         }
-
         return $html;
     }
 

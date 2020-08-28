@@ -359,23 +359,23 @@
                         btn: ['保存', '关闭'],
                         yes: function () {
                             var order_id = $("#input_order_id").val();
-                            var type = $("#input_type").val();
-                            var payment_code = $("#payment_code").val();
-                            var __Jshop_Token__ = $(".Jshop_Token:last").val();
-                            var validate_form = $("input[name='validate_form']").val();
-                            JsPost('{:url("bill_payments/toPay")}', {
-                                'order_id': order_id,
-                                'type': type,
-                                'payment_code': payment_code,
-                                __Jshop_Token__: __Jshop_Token__,
-                                validate_form: validate_form
-                            }, function (e) {
-                                layer.close(window_box);
-                                layer.msg(e.msg, { time: 1300 }, function () {
-                                    table.reload();
-                                });
-                            });
-                            return false;
+            var type = $("#input_type").val();
+            var payment_code = $("#payment_code").val();
+            var __Jshop_Token__ = $(".Jshop_Token:last").val();
+            var validate_form = $("input[name='validate_form']").val();
+            JsPost('{:url("bill_payments/toPay")}', {
+                'order_id': order_id,
+                'type': type,
+                'payment_code': payment_code,
+                __Jshop_Token__: __Jshop_Token__,
+                validate_form: validate_form
+            }, function (e) {
+                layer.close(window_box);
+                layer.msg(e.msg, { time: 1300 }, function () {
+                    table.reload();
+                });
+            });
+            return false;
                         }
                     });
                 } else {
@@ -770,7 +770,7 @@
                 }
             });
         };
-        {: hook('orderExtJs') }
+        {:hook('orderExtJs')}
 
         //保存卖家备注
         $(document).on('click', '.mark-save', function () {

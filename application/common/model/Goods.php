@@ -218,12 +218,11 @@ class Goods extends Common
      * @param string $order 查询排序
      * @param int $page 当前页码
      * @param int $limit 每页数量
-     * @param array $whereOr
+     * @param string $whereRaw
      * @return array
      */
-    public function getList($fields = '*', $where = [], $order = 'id desc', $page = 1, $limit = 10, $whereOr = [])
+    public function getList($fields = '*', $where = [], $order = 'id desc', $page = 1, $limit = 10, $whereRaw = '')
     {
-
 
         $result = [
             'status' => true,
@@ -253,15 +252,16 @@ class Goods extends Common
             ->alias('g')
             ->field($fields)
             ->where($where)
-            ->whereOr($whereOr)
+            ->whereRaw($whereRaw)
             ->order($order_desc)
             ->page($page, $limit)
             ->select();
+
         $total = $this
             ->alias('g')
             ->field($fields)
             ->where($where)
-            ->whereOr($whereOr)
+            ->whereRaw($whereRaw)
             ->count();
 
 
@@ -272,7 +272,7 @@ class Goods extends Common
                 ->alias('g')
                 ->field('label_ids')
                 ->where($where)
-                ->whereOr($whereOr)
+                ->whereRaw($whereRaw)
                 ->group('label_ids')
                 ->select();
             if (!$label_ids->isEmpty()) {
@@ -293,7 +293,7 @@ class Goods extends Common
                 ->alias('g')
                 ->leftJoin('brand b', 'b.id = g.brand_id')
                 ->where($where)
-                ->whereOr($whereOr)
+                ->whereRaw($whereRaw)
                 ->where([['g.brand_id', '<>', '0']])
                 ->group('g.brand_id')
                 ->select();
@@ -312,7 +312,7 @@ class Goods extends Common
                 ->alias('g')
                 ->leftJoin('goods_cat gc', 'g.goods_cat_id = gc.id')
                 ->where($where)
-                ->whereOr($whereOr)
+                ->whereRaw($whereRaw)
                 ->where([['g.goods_cat_id', '<>', '0']])
                 ->group('goods_cat_id')
                 ->select();

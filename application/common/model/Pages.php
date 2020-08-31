@@ -108,22 +108,29 @@ class Pages extends Common
                     $list                       = $promotionModel->receiveCouponList($data[$i]['params']['limit']);
                     $data[$i]['params']['list'] = $list;
                 } elseif ($value['widget_code'] == 'goods') {
-                    $list       = $where = $whereOr = [];
+                    $list       = $where = [];
+                    $whereRaw = ' 1=1 ';
                     $goodsModel = new Goods();
                     if ($data[$i]['params']['type'] == 'auto' && $api) {
                         //商品分类,同时取所有子分类 todo 无限极分类时要注意
-                        if (isset($data[$i]['params']['classifyId']) && trim($data[$i]['params']['classifyId'])) {
+                        if (isset($postWhere['cat_id']) && $postWhere['cat_id']) {
                             $goodsCatModel = new GoodsCat();
-                            $catIds        = [];
-                            $childCats     = $goodsCatModel->getCatByParentId($data[$i]['params']['classifyId']);
-                            $catIds        = array_column($childCats->toArray(), 'id');
-                            $catIds[]      = $data[$i]['params']['classifyId'];
-                            $where[]       = ['g.goods_cat_id', 'in', $catIds];
-                            //扩展分类
+                            $cat_ids        = [];
+                            $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
+                            if (!$childCats->isEmpty()) {
+                                $filter['child_cats'] = $childCats;
+                            }
+                            $cat_ids   = array_column($childCats->toArray(), 'id');
+                            $cat_ids[] = $postWhere['cat_id'];
+                            //$where[]  = ['g.goods_cat_id', 'in', $catIds];
+                            $class_name = $goodsCatModel->getNameById($postWhere['cat_id']);
+
                             $goodsExtendCat = new GoodsExtendCat();
-                            $gids           = $goodsExtendCat->getGoodsIdByCat($catIds, true);
-                            if ($gids) {
-                                $whereOr[] = ['g.id', 'in', $gids];
+                            $goods_ids = $goodsExtendCat->getGoodsIdByCat($cat_ids, true);
+                            if($goods_ids){
+                                $whereRaw .= ' and (g.goods_cat_id  in ('.implode(',',$cat_ids).') or g.id in ('.implode(',',$goods_ids).') ) ';
+                            }else{
+                                $whereRaw .= ' and (g.goods_cat_id  in ('.implode(',',$cat_ids).') ) ';
                             }
                         }
                         //品牌筛选
@@ -132,7 +139,7 @@ class Pages extends Common
                         }
                         $where[]                    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
                         $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
-                        $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
+                        $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereRaw);
                         $data[$i]['params']['list'] = $returnGoods['data'];
                     } elseif ($api) {
                         foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {

@@ -26,6 +26,7 @@ class BillPayments
         foreach ($header as $key => $val) {
             $payments['header'][$key] = $val['desc'];
         }
+        $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
 
         if (isset($filter['ids'])) {

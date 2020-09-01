@@ -26,6 +26,7 @@ class BillRefund
         foreach ($header as $key => $val) {
             $user['header'][$key] = $val['desc'];
         }
+        $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
 
         if (isset($filter['ids'])) {

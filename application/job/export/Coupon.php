@@ -23,16 +23,16 @@ class Coupon
         $couponModel = new CouponModel();
         $header = [
             [
-            'id' => 'coupon',
-            'desc' => 'coupon_number'
+                'id' => 'coupon',
+                'desc' => 'coupon_number'
             ]
         ];
         foreach ($header as $key => $val) {
             $goods['header'][$key] = $val['desc'];
         }
-
+        $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
-        $goodsData = $couponModel->createCoupon($filter['id'],$filter['nums']);
+        $goodsData = $couponModel->createCoupon($filter['id'], $filter['nums']);
 
         if ($goodsData['status']) {
             $body = $goodsData['data'];
@@ -64,7 +64,6 @@ class Coupon
         }
 
         /*$job->release($delay); //$delay为延迟时间*/
-
     }
 
     public function failed($data)

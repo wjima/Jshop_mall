@@ -19,6 +19,7 @@ class Form
     //执行导出任务
     public function exec(Job $job, $params)
     {
+        $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
 
         if (isset($filter['ids'])) {

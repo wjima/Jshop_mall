@@ -2,7 +2,14 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label">商品分类：</label>
-        {Jshop:goodscat id='goods_cat_id' name="goods_cat_id"/}
+        <div class="layui-input-inline">
+            <select name="goods_cat_id">
+                <option value="">请选择</option>
+                {volist name="goodsCatTree" id="vo"}
+                <option value="{$vo.id}" {if condition="$data.goods_cat_id eq $vo.id"}selected {/if} >{$vo.name}</option>
+                {/volist}
+            </select>
+        </div>
     </div>
 
     <div class="layui-form-item">

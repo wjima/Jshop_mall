@@ -870,10 +870,13 @@ export default {
 			let data = {
 				cart_ids: this.params.ids,
 				memo: this.memo,
-				coupon_code: this.params.coupon_code,
+				// coupon_code: this.params.coupon_code,
 				point: this.params.point,
 				receipt_type: this.receiptType
 			};
+			if(this.params.coupon_code!="-1"){
+				data.coupon_code=this.params.coupon_code
+			}
 			data['order_type'] = this.params.order_type; //订单类型
 			if (this.team_id != 0) {
 				data['params'] = JSON.stringify({ team_id: this.team_id }); //团id

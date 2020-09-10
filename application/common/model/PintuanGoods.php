@@ -187,7 +187,7 @@ class PintuanGoods extends Common
             $goodsInfo['data']['pintuan_rule']['pintuan_start_status'] = 3;//已过期
         }
         //拼团记录
-        $re                                  = $recordModel->getRecord($info['id'], $gid, 1);
+        $re                                  = $recordModel->getRecord($info['id'], $gid, $recordModel::STATUS_COMM);
         $goodsInfo['data']['pintuan_record'] = $re['data'];
 
         //调整前台显示数量

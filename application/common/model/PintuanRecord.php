@@ -10,8 +10,9 @@ use think\Db;
 class PintuanRecord extends Model{
 
     const STATUS_COMM = 1; //拼团中
-    const STATUS_FINISH = 2; //开团成功
-    const STATUS_FAIL = 3; //开团失败
+    const STATUS_FULL = 2;  //团满了
+    const STATUS_FINISH = 3; //开团成功
+    const STATUS_FAIL = 4; //开团失败
 
     protected $autoWriteTimestamp = true;
     protected $createTime = 'ctime';
@@ -112,7 +113,7 @@ class PintuanRecord extends Model{
             //参加别人拼团
             $pr_where[] = ['id', 'eq',$params['team_id']];
             $pr_where[] = ['close_time','>',time()];
-            $pr_where[] = ['status','eq',self::STATUS_COMM];
+            //$pr_where[] = ['status','eq',self::STATUS_COMM];
             $info = $this->where('id',$params['team_id'])->find();
             if(!$info){
                 return error_code(15607);
@@ -121,74 +122,114 @@ class PintuanRecord extends Model{
             if($info['goods_id'] != $order_item['goods_id']){
                 return error_code(15608);
             }
+            if($info['status'] == self::STATUS_COMM){
+                //参加团
+                $model = new PintuanRecord();
+                $model->team_id = $info['team_id'];
+                $model->user_id = $order['user_id'];
+                $model->rule_id = $info['rule_id'];
+                $model->status = self::STATUS_COMM;
+                $model->order_id = $order['order_id'];
+                $model->goods_id = $order_item['goods_id'];
 
-            $model = new PintuanRecord();
-            $model->team_id = $info['team_id'];
-            $model->user_id = $order['user_id'];
-            $model->rule_id = $info['rule_id'];
-            $model->status = self::STATUS_COMM;
-            $model->order_id = $order['order_id'];
-            $model->goods_id = $order_item['goods_id'];
+                $model->close_time = $info['close_time'];
 
-            $model->close_time = $info['close_time'];
+                $model->save();
 
-            $model->save();
-
-            //判断团是否满了，如果满了，就更新状态
-            $params = json_decode($info['params'],true);
-            if(isset($params['people_number'])){
-                $team_where[] = ['team_id','eq',$info['team_id']];
-                $team_count = $this->where($team_where)->count();
-                if($team_count >= $params['people_number']){
-                    $team_data['status'] = self::STATUS_FINISH;
-                    $this->save($team_data,$team_where);
+                //判断团是否满了，如果满了，就更新状态
+                $params = json_decode($info['params'],true);
+                if(isset($params['people_number'])){
+                    $team_where[] = ['team_id','eq',$info['team_id']];
+                    $team_count = $this->where($team_where)->count();
+                    if($team_count >= $params['people_number']){
+                        $team_data['status'] = self::STATUS_FULL;       //如果如果团满了，就做状态
+                        $this->save($team_data,$team_where);
+                    }
                 }
+            }else{
+                //开新团
+                $this->openTeam($order, $order_item['goods_id']);
             }
-
         }else{
-            // 自己创建拼团
-            $where = [];
-            //取得规则id
-            $where[] = ['status','eq',$pintuanRuleModel::STATUS_ON];
-            $where[] = ['goods_id', 'eq', $order_item['goods_id']];
-
-            $pinfo = $pintuanGoodsModel
-                ->alias('pg')
-                ->join('pintuan_rule pr','pr.id = pg.rule_id')
-                ->where($where)
-                ->find();
-
-            if(!$pinfo){
-                return error_code(10000);
-            }
-            $model = new PintuanRecord();
-            $model->user_id = $order['user_id'];
-            $model->rule_id = $pinfo['id'];
-            $model->status = self::STATUS_COMM;
-            $model->order_id = $order['order_id'];
-            $model->goods_id = $order_item['goods_id'];
-
-            //冗余拼团人数，拼团结束时间字段
-            $model->close_time = time() + $pinfo['significant_interval'] * 3600;
-            $params = [
-                'people_number' => $pinfo['people_number']
-            ];
-            $model->params = json_encode($params);
-
-//            $model->save();
-//
-//            $data['team_id'] =  $model->id;
-//            $the_there['id'] = $model->id;
-//            $model->save($data,$the_there);
-            $model->save();
-            $model->team_id = $model->id;
-            $model->save();
-
+            //去开团
+            $this->openTeam($order, $order_item['goods_id']);
         }
-
 
         $result['status'] = true;
         return $result;
+    }
+
+    //订单支付之后，更新拼团状态，如果拼团满了，
+    public function pay($order_id){
+        $where[] = ['order_id','=', $order_id];
+        $where[] = ['status', 'in',[self::STATUS_COMM,self::STATUS_FULL]];
+        $info = $this->where($where)->find();
+        if(!$info){
+            return false;
+        }
+
+        //去取开团人的开团记录，取里面的拼团人数
+        $finfo = $this->where('id',$info['team_id'])->find();
+        if(!$finfo){
+            return false;
+        }
+        $params = json_decode($finfo['params'],true);
+        if(!isset($params['people_number'])){
+            return false;
+        }
+
+        //去取参加拼团的人数
+        $team_where[] = ['pr.team_id','eq',$info['team_id']];
+        $team_where[] = ['pr.status', 'in', [self::STATUS_COMM,self::STATUS_FULL]];
+        $team_where[] = ['o.pay_status', '>', 1];
+        $team_count = $this
+            ->alias('pr')
+            ->join('order o', 'o.order_id = pr.order_id')
+            ->where($team_where)
+            ->count();
+        if($team_count >= $params['people_number']){
+            $team_data['status'] = self::STATUS_FINISH;       //如果拼团成功
+            $this->save($team_data,['team_id'=>$info['team_id']]);
+        }
+
+        return true;
+    }
+
+    //开团
+    private function openTeam($order,$goods_id){
+        $pintuanGoodsModel = new PintuanGoods();
+        $pintuanRuleModel = new PintuanRule();
+        // 自己创建拼团
+        $where = [];
+        //取得规则id
+        $where[] = ['status','eq',$pintuanRuleModel::STATUS_ON];
+        $where[] = ['goods_id', 'eq', $goods_id];
+
+        $pinfo = $pintuanGoodsModel
+            ->alias('pg')
+            ->join('pintuan_rule pr','pr.id = pg.rule_id')
+            ->where($where)
+            ->find();
+
+        if(!$pinfo){
+            return error_code(10000);
+        }
+        $model = new PintuanRecord();
+        $model->user_id = $order['user_id'];
+        $model->rule_id = $pinfo['id'];
+        $model->status = self::STATUS_COMM;
+        $model->order_id = $order['order_id'];
+        $model->goods_id = $goods_id;
+
+        //冗余拼团人数，拼团结束时间字段
+        $model->close_time = time() + $pinfo['significant_interval'] * 3600;
+        $params = [
+            'people_number' => $pinfo['people_number']
+        ];
+        $model->params = json_encode($params);
+        $model->save();
+        $model->team_id = $model->id;
+        $model->save();
     }
 
     /**
@@ -216,25 +257,18 @@ class PintuanRecord extends Model{
         $orderModel = new Order();
 
         if ($status != 0) {
-            $where[] = ['pr.status', 'eq', $status];
+            $where[] = ['status', 'eq', $status];
             if ($status == 1) {       //如果取的是当前正在进行的团的话，这里取还没有结束的团记录，
-                $where[] = ['pr.close_time', '>', time()];
+                $where[] = ['close_time', '>', time()];
             }
         }
-        $where[] = ['pr.rule_id', 'eq', $rule_id];
-        $where[] = ['pr.goods_id', 'eq', $goods_id];
-        $where[] = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
+        $where[] = ['rule_id', 'eq', $rule_id];
+        $where[] = ['goods_id', 'eq', $goods_id];
 
 
-        $data = $this
-            ->alias('pr')
-            ->join('order o', 'pr.order_id = o.order_id')
-            ->where($where)->where("pr.id = pr.team_id")->page($page, $limit)->select();
+        $data = $this->where($where)->where("id = team_id")->page($page, $limit)->select();
 
-        $count = $this
-            ->alias('pr')
-            ->join('order o', 'pr.order_id = o.order_id')
-            ->where($where)->count();
+        $count = $this->where($where)->where("id = team_id")->count();
 
         if (!$data->isEmpty()) {
             foreach ($data as $k => $v) {
@@ -334,7 +368,7 @@ class PintuanRecord extends Model{
     {
         $time = time();
         $where[] = ['pre.close_time', '<', $time];
-        $where[] = ['pre.status', 'eq', self::STATUS_COMM];
+        $where[] = ['pre.status', 'in', [self::STATUS_COMM,self::STATUS_FULL]];
 
         $list = $this
             ->alias('pre')
@@ -363,7 +397,7 @@ class PintuanRecord extends Model{
 
         //结束掉的拼团活动里的拼团记录，也需要关闭掉
         $where = [];
-        $where[] = ['pre.status', 'eq', self::STATUS_COMM];
+        $where[] = ['pre.status', 'in', [self::STATUS_COMM,self::STATUS_FULL]];
         $where[] = ['pru.etime', '<', $time];//结束掉的拼团活动里面的拼团记录，也需要关闭掉
 
         $list = $this

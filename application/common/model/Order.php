@@ -1315,6 +1315,27 @@ class Order extends Common
                 $return_data['status'] = true;
                 $return_data['msg'] = '订单支付成功';
 
+                //不同的订单类型会有不同的支付后的操作
+            switch ($order['order_type']) {
+                case self::ORDER_TYPE_COMMON:
+                    //标准模式
+                    break;
+                case self::ORDER_TYPE_PINTUAN;
+                    //拼团模式如果拼团满足拼团成功条件，做拼团成功状态的改变
+                    $pintuanRecordModel = new PintuanRecord();
+                    $pintuanRecordModel->pay($order_id);
+
+                    break;
+                case self::ORDER_TYPE_GROUP:
+                    break;
+                case self::ORDER_TYPE_SKILL:
+                    break;
+                case self::ORDER_TYPE_BARGAIN:
+                    break;
+
+            }
+                
+
                 //发票存储
                 $invoiceModel = new Invoice();
                 if ($order['tax_type'] != $invoiceModel::TAX_TYPE_NO) {

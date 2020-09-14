@@ -914,3 +914,9 @@ radio .wx-radio-input.wx-radio-input-checked::before {
 	/* *zoom: 1; */
 	/*ie6清除浮动的方式 *号只有IE6-IE7执行，其他浏览器不执行*/
 }
+
+.one-line {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}

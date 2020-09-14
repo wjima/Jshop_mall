@@ -236,9 +236,4 @@
 		height: 274upx;
 	}
 
-	.one-line {
-		text-overflow: ellipsis;
-		overflow: hidden;
-		white-space: nowrap;
-	}
 </style>

@@ -14,7 +14,7 @@
 				<!-- <image src="/static/image/welfarepro/del-jump.png" mode="" class="del_icon"></image> -->
 			</view>
 			<view class="logo">
-				<image :src='$store.state.config.shop_logo'></image>
+				<image :src='logoImg'></image>
 			</view>
 			<view class="word">
 				<view class="title">
@@ -38,7 +38,7 @@
 				<!-- <image src="/static/image/welfarepro/del-jump.png" mode="" class="del_icon"></image> -->
 			</view>
 			<view class="logo">
-				<image :src='$store.state.config.shop_logo'></image>
+				<image :src='logoImg'></image>
 			</view>
 			<view class="word">
 				<view class="title">
@@ -67,6 +67,11 @@
 				welfarepro: ["hb", "coupon"],
 				url: ''
 			};
+		},
+		computed: {
+			logoImg() {
+				return this.$store.state.config.shop_logo;
+			}
 		},
 		onLoad(e) {
 			this.url=apiBaseUrl

@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="bg" v-if="hasHb">
+		<view class="bg">
 			<image :src="`${url}static/images/welfarepro/bgi.png`" mode="" class="img"></image>
 			<!-- <image src="/static/image/welfarepro/bgi.png" mode="" class="img"></image> -->
 		</view>

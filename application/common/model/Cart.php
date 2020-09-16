@@ -555,8 +555,8 @@ class Cart extends Common
         Db::startTrans();
         try {
             //删除用户的所有购物车数据
-            $where[] = ['user_id', 'eq', $user_id];
-            $this->where($where)->delete();
+            //$where[] = ['user_id', 'eq', $user_id];
+            //$this->where($where)->delete();
 
             //判断数量是否可以加入购物车
             $product_ids = [];

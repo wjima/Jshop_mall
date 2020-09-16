@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 use org\Curl;
@@ -19,6 +20,22 @@ class UserWx extends Common
     const TYPE_UNIAPP_QQ = 5;            //类型3，appQQ快捷登录
     const TYPE_TOUTIAO = 6;             //头条小程序
 
+    /**
+     * 根据unionid获取用户ID
+     *  wgg
+     *  1490100895@qq.com
+     * @param string $unionid
+     * @return int
+     */
+    private function getUserIdByUnionid($unionid)
+    {
+        $user_id = $this->where([
+            ['unionid', '=', $unionid],
+            ['type', 'in', [self::TYPE_MINIPROGRAM, self::TYPE_OFFICIAL]]
+        ])->value('user_id');
+        if ($user_id) return $user_id;
+        return 0;
+    }
 
     //第三方登录保存&创建记录，并判断是否手机号码绑定，并返回前端最终状态
     public function toAdd($data, $pid)
@@ -36,6 +53,11 @@ class UserWx extends Common
             //如果是新用户，并且外面没有传进来user_id的话，这里就赋个初始值
             if (!isset($data['user_id'])) {
                 $data['user_id'] = 0;
+                //如果是微信小程序或公众号登录，且有绑定开发平台
+                //则根据union_id 取是否其他方式登录过
+                if (in_array($data['type'], [self::TYPE_MINIPROGRAM, self::TYPE_OFFICIAL])  && $data['unionid']) {
+                    $data['user_id'] = $this->getUserIdByUnionid($data['unionid']);
+                }
             }
             $this->save($data);
             $id = $this->id;
@@ -98,13 +120,13 @@ class UserWx extends Common
             $where[] = ['type', 'eq', $post['type']];
         }
         if (isset($post['user_mobile']) && $post['user_mobile'] != "") {
-            $pwhere[] = ['mobile|username', 'like', "%".$post['user_mobile']."%"];
+            $pwhere[] = ['mobile|username', 'like', "%" . $post['user_mobile'] . "%"];
             $userModel = new User();
             $user      = $userModel->field('id')->where($pwhere)->select();
-            if(!$user->isEmpty()){
-                $user = array_column($user->toArray(),'id');
-                $where[] = ['user_id','in',$user];
-            }else{
+            if (!$user->isEmpty()) {
+                $user = array_column($user->toArray(), 'id');
+                $where[] = ['user_id', 'in', $user];
+            } else {
                 $where[] = ['user_id', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
         }
@@ -130,7 +152,7 @@ class UserWx extends Common
             if (isset($v['gender'])) {
                 $list[$k]['gender'] = config('params.user_wx')['gender'][$v['gender']];
             }
-            $list[$k]['user_name'] = get_user_info($v['user_id'],'showname');
+            $list[$k]['user_name'] = get_user_info($v['user_id'], 'showname');
             if ($v['type']) {
                 $list[$k]['type_name'] = config('params.user_wx')['type'][$v['type']];
             }
@@ -146,6 +168,4 @@ class UserWx extends Common
         }
         return $list;
     }
-
-
 }

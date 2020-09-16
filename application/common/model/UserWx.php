@@ -29,12 +29,13 @@ class UserWx extends Common
      */
     private function getUserIdByUnionid($unionid)
     {
-        $user_id = $this->where([
+        $info = $this->where([
             ['unionid', '=', $unionid],
-            ['type', 'in', [self::TYPE_MINIPROGRAM, self::TYPE_OFFICIAL]]
-        ])->value('user_id');
-        if ($user_id) return $user_id;
-        return 0;
+            ['type', 'in', [self::TYPE_MINIPROGRAM, self::TYPE_OFFICIAL]],
+            ['user_id', 'neq', '0']
+        ])->find();
+        if (!$info) return 0;
+        return $info['user_id'];
     }
 
     //第三方登录保存&创建记录，并判断是否手机号码绑定，并返回前端最终状态
@@ -45,6 +46,14 @@ class UserWx extends Common
             'data'   => [],
             'msg'    => ''
         ];
+        // 如果是微信小程序或公众号登录，且有绑定开发平台
+        if (in_array($data['type'], [self::TYPE_MINIPROGRAM, self::TYPE_OFFICIAL]) && $data['unionid']) {
+            // 且当前的第三方账号没有绑定用户ID
+            if (!isset($data['user_id']) || $data['user_id'] == '0') {
+                // 则根据union_id 取是否其他方式登录过
+                $data['user_id'] = $this->getUserIdByUnionid($data['unionid']);
+            }
+        }
 
         if (isset($data['id'])) {
             $this->save($data, ['id' => $data['id']]);
@@ -53,11 +62,6 @@ class UserWx extends Common
             //如果是新用户，并且外面没有传进来user_id的话，这里就赋个初始值
             if (!isset($data['user_id'])) {
                 $data['user_id'] = 0;
-                //如果是微信小程序或公众号登录，且有绑定开发平台
-                //则根据union_id 取是否其他方式登录过
-                if (in_array($data['type'], [self::TYPE_MINIPROGRAM, self::TYPE_OFFICIAL])  && $data['unionid']) {
-                    $data['user_id'] = $this->getUserIdByUnionid($data['unionid']);
-                }
             }
             $this->save($data);
             $id = $this->id;

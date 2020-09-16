@@ -71,8 +71,10 @@ class Wxofficial
         $where[] = ['type', 'eq', $userWxModel::TYPE_OFFICIAL];
         $where[] = ['openid', 'eq', $data['openid']];
         $info = $userWxModel->where($where)->find();
+        $data['user_id'] = 0;
         if ($info) {
             $data['id'] = $info['id'];
+            $data['user_id'] = $info['user_id'];
         }
 
         if (isset($data['headimgurl']) && !$info['avatar']) {

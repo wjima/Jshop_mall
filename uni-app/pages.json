@@ -23,43 +23,64 @@
 	{
 	  "path": "pages/bargain/index",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "好友帮砍价"
 	  }
 	},
 	{
 	  "path": "pages/bargain/details",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "商品详情"
 	  }
 	},
 	{
 	  "path": "pages/bargain/list",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "砍价列表"
 	  }
 	},
     {
       "path": "pages/index/search",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "搜索"
       }
     },
     {
       "path": "pages/classify/classify",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "分类"
       }
     },
     {
       "path": "pages/classify/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "商品列表"
       }
     },
     {
       "path": "pages/cart/index/index",
       "style": {
-        "navigationBarTitleText": "购物车"
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
+			"navigationBarTitleText": "购物车"
       }
     },
     {
@@ -74,132 +95,198 @@
     {
       "path": "pages/member/coupon/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "我的优惠券"
       }
     },
     {
       "path": "pages/member/balance/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "我的余额"
       }
     },
     {
       "path": "pages/member/balance/recharge",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "充值"
       }
     },
     {
       "path": "pages/member/balance/withdraw_cash",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "提现"
       }
     },
     {
       "path": "pages/member/balance/details",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "余额明细"
       }
     },
     {
       "path": "pages/member/balance/cashlist",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "提现记录"
       }
     },
     {
       "path": "pages/member/balance/bankcard",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "我的银行卡"
       }
     },
     {
       "path": "pages/member/balance/add_bankcard",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "添加银行卡"
       }
     },
     {
       "path": "pages/member/collection/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "我的收藏"
       }
     },
     {
       "path": "pages/member/history/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "我的足迹"
       }
     },
     {
       "path": "pages/member/address/list",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "地址管理"
       }
     },
     {
       "path": "pages/member/address/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "修改地址"
       }
     },
     {
       "path": "pages/member/setting/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "设置"
       }
     },
     {
       "path": "pages/member/setting/user_info/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "个人信息"
       }
     },
 	{
 	  "path": "pages/member/setting/user_info/password",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "修改密码"
 	  }
 	},
 	{
 	  "path": "pages/member/setting/user_info/resetpassword",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "重置密码"
 	  }
 	},
     {
       "path": "pages/member/integral/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "我的积分"
       }
     },
     {
       "path": "pages/member/invite/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "邀请好友"
       }
     },
     {
       "path": "pages/member/invite/list",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "邀请列表"
       }
     },
 	{
 	  "path": "pages/member/invoice/index",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "我的发票"
 	  }
 	},
     {
       "path": "pages/member/take_delivery/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "提货单核销"
       }
     },
     {
       "path": "pages/member/take_delivery/list",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "提货单列表"
       }
     },
@@ -216,6 +303,9 @@
     {
       "path": "pages/goods/index/group",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "促销详情",
 		"navigationStyle": "custom"
       }
@@ -223,126 +313,189 @@
     {
       "path": "pages/goods/place-order/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "提交订单"
       }
     },
     {
       "path": "pages/goods/place-order/invoice",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "发票"
       }
     },
     {
       "path": "pages/goods/place-order/storelist",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "门店列表"
       }
     },
     {
       "path": "pages/goods/payment/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "支付"
       }
     },
     {
       "path": "pages/goods/payment/auth",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "等待支付"
       }
     },
     {
       "path": "pages/goods/payment/result",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "支付结果"
       }
     },
     {
       "path": "pages/member/order/orderlist",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "订单列表"
       }
     },
     {
       "path": "pages/member/order/orderdetail",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "订单详情"
       }
     },
     {
       "path": "pages/member/order/invitation_group",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "邀请拼单"
       }
     },
     {
       "path": "pages/member/after_sale/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "申请售后"
       }
     },
     {
       "path": "pages/member/after_sale/list",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "售后列表"
       }
     },
     {
       "path": "pages/member/after_sale/detail",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "售后详情"
       }
     },
     {
       "path": "pages/member/order/evaluate",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "订单评价"
       }
     },
     {
       "path": "pages/member/order/express_delivery",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "物流信息"
       }
     },
     {
       "path": "pages/article/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "文章详情"
       }
     },
     {
       "path": "pages/article/list",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "文章列表"
       }
     },
     {
       "path": "pages/login/choose/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "授权登录"
       }
     },
     {
       "path": "pages/login/login/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "登录"
       }
     },
     {
       "path": "pages/login/login/index1",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "登录"
       }
     },
 	{
 	  "path": "pages/login/forget/forget",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "忘记密码"
 	  }
 	},
     {
       "path": "pages/share",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "分享"
       }
     },
@@ -358,18 +511,27 @@
     {
       "path": "pages/login/register/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "注册"
       }
     },
 	{
 	  "path": "pages/classify/pintuan_list",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "拼团列表"
 	  }
 	},
     {
       "path": "pages/goods/index/pintuan",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "拼团详情",
 		"navigationStyle": "custom"
       }
@@ -377,66 +539,99 @@
     {
       "path": "pages/form/detail/form",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "万能表单"
       }
     },
 	{
 	  "path": "pages/member/distribution/index",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "分销中心"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/apply",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "申请成为分销"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/apply_state",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "审核状态"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/user",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "分销中心"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/agreement",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "分销协议"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/order",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "推广订单"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/popularize",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "我要推广"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/my_store",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "我的店铺"
 	  }
 	},
 	{
 	  "path": "pages/member/distribution/store_setting",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "店铺设置"
 	  }
 	},
     {
       "path": "pages/activity/index",
       "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
         "navigationBarTitleText": "转盘抽奖"
       }
     },
@@ -452,54 +647,81 @@
 	{
 	  "path": "pages/store_map/index",
 	  "style": {
+		  // #ifdef H5
+		  "titleNView": false,
+		  // #endif
 	    "navigationBarTitleText": "门店列表"
 	  }
 	},
 	{
 		"path" : "pages/member/customer_service/index",
 		"style": {
+			// #ifdef H5
+			"titleNView": false,
+			// #endif
 			"navigationBarTitleText": "在线咨询"
 		}
 	},
     {
     	"path" : "pages/member/setting/subscription/index",
     	"style": {
+			// #ifdef H5
+			"titleNView": false,
+			// #endif
     		"navigationBarTitleText": "消息订阅"
     	}
     },
     {
     	"path" : "pages/login/mobile/index",
     	"style": {
+			// #ifdef H5
+			"titleNView": false,
+			// #endif
     		"navigationBarTitleText": "绑定手机号"
     	}
     }
         ,{
             "path" : "pages/member/bargain/list",
             "style" : {
+				// #ifdef H5
+				"titleNView": false,
+				// #endif
 				"navigationBarTitleText": "砍价记录"
 			}
         },
 		{
 		    "path" : "pages/promotion/seckill",
 		    "style" : {
+				// #ifdef H5
+				"titleNView": false,
+				// #endif
 				"navigationBarTitleText": "秒杀列表"
 			}
 		},
 		{
 		    "path" : "pages/promotion/group",
 		    "style" : {
+				// #ifdef H5
+				"titleNView": false,
+				// #endif
 				"navigationBarTitleText": "团购列表"
 			}
 		},
 		{
 		    "path" : "pages/promotion/pintuan",
 		    "style" : {
+				// #ifdef H5
+				"titleNView": false,
+				// #endif
 				"navigationBarTitleText": "拼团列表"
 			}
 		},
 		{
 		    "path" : "pages/login/login/mobile",
 		    "style" : {
+				// #ifdef H5
+				"titleNView": false,
+				// #endif
 				"navigationBarTitleText": "绑定手机号"
 			}
 		}

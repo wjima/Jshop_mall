@@ -583,7 +583,7 @@
 				let userToken = this.$db.get('userToken');
 				let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
 				if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
-					this.$refs.spec.changeSpecData();
+					// this.$refs.spec.changeSpecData();
 					this.$api.getProductInfo({
 						id: tmp_default_spes_desc[index][key].product_id,
 						token: userToken

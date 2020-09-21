@@ -2,6 +2,17 @@
     <div class="layui-form-item">
 
         <div class="layui-inline">
+            <label class="layui-form-label">促销名称：</label>
+            <div class="layui-input-inline">
+                <select name="promotion" id="source">
+                    <option value="">-- 全部 --</option>
+                    {foreach $promotion as $key=>$vo}
+                    <option value="{$vo['id']}">{$vo["name"]}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
             <label class="layui-form-label">优惠券码：</label>
             <div class="layui-input-inline seller-inline-5">
                 <input type="text" name="code" value="" placeholder="请输入优惠券号码" autocomplete="off" class="layui-input">

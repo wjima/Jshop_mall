@@ -5,8 +5,10 @@
 				<img :src="shopLogo" alt="" class="shop-logo" />
 				<text class="shop-name">{{ shopName }}</text>
 				<text class="fsz24 color-9 article-time">{{ info.ctime }}</text>
+				<image src="/static/image/yuedu.png" mode="scaleToFill"
+					v-if="idType != 2"
+					style="width: 30rpx;height: 30rpx;vertical-align: middle; margin-left: 20rpx;"></image>
 				<text class="color-9 article-time" style="font-size:24rpx" v-if="idType != 2">
-					<image src="../../static/image/yuedu.png" mode="" style="width: 30rpx;height: 30rpx;vertical-align: middle;"></image>
 					{{ info.pv }}
 				</text>
 			</view>

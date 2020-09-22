@@ -6,7 +6,7 @@
 				<slot></slot>
 			<!-- </view> -->
 		<!-- </view> -->
-	<!-- </view> -->
+	</view>
 </template>
 <script>
 	export default {

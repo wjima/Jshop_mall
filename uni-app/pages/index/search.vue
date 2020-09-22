@@ -3,7 +3,8 @@
 		<view class='search'>
 			<view class='search-c' v-bind:class="$store.state.searchStyle">
 				<image class='icon search-icon' src='/static/image/zoom.png'></image>
-				<input class='search-input' placeholder-class='search-input-p' placeholder='请输入关键字搜索' v-model="key" focus :auto-focus="focus" :fixed="focus"></input>
+				<input class='search-input' placeholder-class='search-input-p' placeholder='请输入关键字搜索' v-model="key" focus :auto-focus="focus" :fixed="focus" @confirm="search"></input>
+				<image src="/static/image/del-g.png" mode="" class="del-icon" v-if="key" @click="del"></image>
 			</view>
 			<button class="btn btn-g" @click="search" hover-class="btn-hover2">搜索</button>
 		</view>
@@ -97,6 +98,10 @@ export default {
 			this.$db.set('search_key', search_key);
 			this.$common.navigateTo('/pages/classify/index?key=' + keys);
 		},
+		// 清空输入框
+		del(){
+			this.key=''
+		}
 	},
 	//加载触发
 	onShow(e) {
@@ -167,5 +172,13 @@ export default {
 }
 .radius{
 	border-radius: 12upx;
+}
+.del-icon{
+	position: absolute;
+	right: 20rpx;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 40rpx;
+	height: 40rpx;
 }
 </style>

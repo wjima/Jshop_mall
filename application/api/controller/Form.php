@@ -26,9 +26,13 @@ class Form extends Api
      */
     public function getFormDetial()
     {
-        $return_data = error_code(18001);
+        $return_data = [
+            'status' => false,
+            'msg' => error_code(18001, true),
+            'data' => [],
+        ];
         $id          = input('id/d', 0);
-        $token       = input('token', '');//token值 会员登录后传
+        $token       = input('token', ''); //token值 会员登录后传
 
         if (!$id) {
             // $return_data['msg']    = error_code(10051,true);
@@ -42,7 +46,7 @@ class Form extends Api
             return $return_data;
         }
         if ($info['data']['is_login'] == $formModel::NEED_LOGIN && !$token) {
-            $return_data['msg']  = error_code(14006,true);
+            $return_data['msg']  = error_code(14006, true);
             $return_data['data'] = [
                 'need_login' => true,
             ];
@@ -51,7 +55,7 @@ class Form extends Api
         //检查过期时间
         if (isset($info['data']['end_date']) && $info['data']['end_date'] != 0) {
             if (time() > strtotime($info['data']['end_date'])) {
-                $return_data['msg'] = error_code(18002,true);
+                $return_data['msg'] = error_code(18002, true);
                 return $return_data;
             }
         }
@@ -68,17 +72,21 @@ class Form extends Api
      */
     public function addSubmit()
     {
-        $return_data = error_code(18001);
+        $return_data = [
+            'status' => false,
+            'msg' => error_code(18001, true),
+            'data' => [],
+        ];
         $id          = input('id/d', 0);
         $token       = input('token', '');
-        $data        = input('param.',[],'remove_xss');
+        $data        = input('param.', [], 'remove_xss');
         $formModel = new FormModel();
         $form      = $formModel->getFormInfo($id);
         if (!$form['status']) {
             return $return_data;
         }
         if ($form['data']['is_login'] == $formModel::NEED_LOGIN && !$token) {
-            $return_data['msg']  = error_code(14006,true);
+            $return_data['msg']  = error_code(14006, true);
             $return_data['data'] = [
                 'need_login' => true,
             ];
@@ -87,7 +95,7 @@ class Form extends Api
         //检查过期时间
         if (isset($form['data']['end_date']) && $form['data']['end_date'] != 0) {
             if (time() > strtotime($form['data']['end_date'])) {
-                $return_data['msg'] = error_code(18002,true);
+                $return_data['msg'] = error_code(18002, true);
                 return $return_data;
             }
         }
@@ -98,7 +106,7 @@ class Form extends Api
 
         $money = 0;
         //todo 金额促销
-        if ($form['data']['type'] == $formModel::FORM_TYPE_PAY) {//付款码
+        if ($form['data']['type'] == $formModel::FORM_TYPE_PAY) { //付款码
             $items = $formItem->where(['form_id' => $id, 'type' => 'money'])->select();
             if (!$items->isEmpty()) {
                 foreach ((array)$items->toArray() as $key => $val) {
@@ -118,7 +126,7 @@ class Form extends Api
         }
         //判断提交次数
         if ($form['data']['times'] && $token) {
-            $count = $formSubmit->where([['user_id', '=', $user_id],['form_id','=',$id]])->count();
+            $count = $formSubmit->where([['user_id', '=', $user_id], ['form_id', '=', $id]])->count();
             if ($count >= $form['data']['times']) {
                 // $return_data['msg'] = error_code(18003, true);
                 return error_code(18003);
@@ -136,7 +144,7 @@ class Form extends Api
 
         Db::startTrans();
         if ($formSubmit->add($formData) === false) {
-            $return_data['msg'] = error_code(18005,true);
+            $return_data['msg'] = error_code(18005, true);
             Db::rollback();
             return $return_data;
         }
@@ -178,7 +186,6 @@ class Form extends Api
                     unset($value);
                     $area_id = $areaModel->getThreeAreaId($county_name, $city_name, $province_name, '0');
                     $value   = $area_id;
-
                 } elseif ($formitem['type'] == 'image' && $value) { //处理图片
                     $value = implode(',', (array)$value);
                 } elseif ($formitem['type'] == 'checbox' && $value) { //处理复选
@@ -221,7 +228,7 @@ class Form extends Api
             }
         }
         //支付类型
-        if ($form['data']['type'] == $formModel::FORM_TYPE_ORDER) {//订单类型时，更新提交表单金额
+        if ($form['data']['type'] == $formModel::FORM_TYPE_ORDER) { //订单类型时，更新提交表单金额
             $res = $formSubmit->save(['money' => $money], ['id' => $formSubmitId]);
         }
         $return_data['data']['id']    = $formSubmitId;
@@ -239,7 +246,6 @@ class Form extends Api
      */
     public function getUserFormSubmit()
     {
-
     }
 
     /**
@@ -247,7 +253,5 @@ class Form extends Api
      */
     public function getUserFormSubmitDetial()
     {
-
     }
-
 }

@@ -614,12 +614,6 @@
 					}
 					return
 				}
-				// if (!this.hasLogin) {
-				// 	delay(() => {
-				// 		return this.checkIsLogin()
-				// 	}, 500)
-				// 	return
-				// }
 				this.$store.commit('orderTab', tab)
 				this.$common.navigateTo(url)
 			},
@@ -632,12 +626,6 @@
 					}
 					return
 				}
-				// if (!this.hasLogin) {
-				// 	delay(() => {
-				// 		return this.checkIsLogin()
-				// 	}, 500)
-				// 	return
-				// }
 				this.$common.navigateTo('../after_sale/list')
 			},
 			//在线客服,只有手机号的，请自己替换为手机号

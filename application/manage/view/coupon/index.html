@@ -91,7 +91,7 @@
             var tr = obj.tr; //获得当前行 tr 的DOM对象
             if(layEvent === 'del'){ //删除
                 layer.confirm('确认删除该条记录?', function(index){
-                    JsPost('{:url("Coupon/del")}?coupon_code='+data.coupon_code,function(res){
+                    JsGet('{:url("Coupon/del")}?coupon_code='+data.coupon_code,function(res){
                         if (res.status === true) {
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令

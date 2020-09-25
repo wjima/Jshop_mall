@@ -1065,6 +1065,9 @@
 </script>
 
 <style>
+	.content-top {
+		padding-bottom: 40rpx;
+	}
 	.swiper {
 		height: 750upx;
 	}

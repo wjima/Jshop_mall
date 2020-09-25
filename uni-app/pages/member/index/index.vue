@@ -259,6 +259,13 @@
 
 
 <script>
+	const delay = (function() {
+		let timer = 0
+		return function(callback, ms) {
+			clearTimeout(timer)
+			timer = setTimeout(callback, ms)
+		}
+	})()
 	import jihaiCopyright from '@/components/jihai-copyright/jihaiCopyright.vue'
 	import {
 		checkLogin
@@ -581,20 +588,29 @@
 			},
 			navigateToHandle(pageUrl) {
 				if (!this.hasLogin) {
-					return this.checkIsLogin()
+					delay(() => {
+						return this.checkIsLogin()
+					}, 500)
+					return
 				}
 				this.$common.navigateTo(pageUrl)
 			},
 			orderNavigateHandle(url, tab = 0) {
 				if (!this.hasLogin) {
-					return this.checkIsLogin()
+					delay(() => {
+						return this.checkIsLogin()
+					}, 500)
+					return
 				}
 				this.$store.commit('orderTab', tab)
 				this.$common.navigateTo(url)
 			},
 			goAfterSaleList() {
 				if (!this.hasLogin) {
-					return this.checkIsLogin()
+					delay(() => {
+						return this.checkIsLogin()
+					}, 500)
+					return
 				}
 				this.$common.navigateTo('../after_sale/list')
 			},

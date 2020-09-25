@@ -170,7 +170,7 @@ export const checkLogin = {
 						uni.navigateTo({
 							url: '/pages/login/login/index1'
 						})
-					}, 800)
+					}, 200)
 					// #endif
 					// #ifdef MP-WEIXIN || MP-ALIPAY || MP-TOUTIAO
 					setTimeout(() => {
@@ -180,7 +180,7 @@ export const checkLogin = {
 							animationType: 'pop-in',
 							animationDuration: 200
 						})
-					}, 500)
+					}, 200)
 					// #endif
 				}
 			})

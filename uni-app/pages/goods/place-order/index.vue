@@ -553,20 +553,22 @@ export default {
 					this.usedCoupons = data.coupon;
 					// 默认选中一张优惠券
 					// console.log(this.params);
-					if(this.coupon_code==""){
-						let usedCouponsList=[]
-						for (let key in this.usedCoupons) {
-								let item = {};
-								item.code = key;
-								item.name = this.usedCoupons[key];
-								usedCouponsList.push(item);
-						}
-						this.userCoupons.forEach(item => {
-							if (item.coupon_code==usedCouponsList[0].code) {
-								item.checked = true;
-								item.checked1 = true;
+					if(this.params.coupon_code==""){
+						if(this.usedCoupons.length!=0){
+							let usedCouponsList=[]
+							for (let key in this.usedCoupons) {
+									let item = {};
+									item.code = key;
+									item.name = this.usedCoupons[key];
+									usedCouponsList.push(item);
 							}
-						});
+							this.userCoupons.forEach(item => {
+								if (item.coupon_code==usedCouponsList[0].code) {
+									item.checked = true;
+									item.checked1 = true;
+								}
+							});
+						}
 					}
 					// 优惠券码
 					if (this.inputCouponCode) {
@@ -942,7 +944,10 @@ export default {
 			};
 			if(this.params.coupon_code!="-1"){
 				data.coupon_code=this.params.coupon_code
+			}else{
+				data.coupon_code=""
 			}
+			// 默认使用一张
 			if(this.params.coupon_code==""){
 				this.userCoupons.forEach(item => {
 					if (item.checked) {

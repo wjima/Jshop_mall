@@ -26,15 +26,18 @@
 						<text>已售{{ goodsInfo.buy_promotion_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
-					<view class="commodity-time-img"></view>
-					<view class="commodity-time">
-						<text v-if="goodsInfo.activity_status == '1'">活动即将开始</text>
-						<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
-						<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
-						<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
-							<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+					<view class="commodity-time-wrap">
+						<view class="commodity-time-img"></view>
+						<view class="commodity-time">
+							<text v-if="goodsInfo.activity_status == '1'">活动即将开始</text>
+							<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
+							<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
+							<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
+								<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+							</view>
 						</view>
 					</view>
+					
 				</view>
 				<!-- 倒计时end -->
 
@@ -851,6 +854,9 @@ export default {
 </script>
 
 <style>
+	.content-top {
+		padding-bottom: 40rpx;
+	}
 .swiper {
 	height: 750upx;
 }
@@ -1282,8 +1288,10 @@ export default {
 	border-color: transparent #ff7159 transparent transparent;
 	/*透明 黄 透明 透明 */
 	position: absolute;
-	top: 0px;
-	left: 462upx;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 260rpx;
+	/* left: 460upx; */
 }
 
 .commodity-time {
@@ -1294,6 +1302,7 @@ export default {
 	background-color: #ff7159;
 	padding: 16upx 0 18upx;
 	color: #ff7159;
+	/* float: right; */
 }
 
 .commodity-time > text {
@@ -1416,4 +1425,8 @@ export default {
 	transform: translateX(-50%);
 }
 /* #endif */
+
+.commodity-time-wrap{
+	float: right;
+}
 </style>

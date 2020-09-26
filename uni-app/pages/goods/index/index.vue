@@ -1,14 +1,8 @@
 <template>
 	<view class="content">
-		<hx-navbar
-			:fixed="true"
-			:title="barTitle"
-			barPlaceholder="hidden"
-			transparent="auto"
-			color="#000000"
-			:background-color="[[255, 255, 255],[255, 255, 255]]"
-			:pageScroll.sync="scrollData">
-		</hx-navbar>	
+		<hx-navbar :fixed="true" :title="barTitle" barPlaceholder="hidden" transparent="auto" color="#000000"
+		 :background-color="[[255, 255, 255],[255, 255, 255]]" :pageScroll.sync="scrollData">
+		</hx-navbar>
 		<!-- <view class="nav-back">
 			<view class="back-btn" @click="backBtn()">
 				<image class="icon" src="/static/image/back-black.png" mode=""></image>
@@ -940,6 +934,7 @@
 	.content-top {
 		padding-bottom: 40rpx;
 	}
+
 	.swiper {
 		height: 750upx;
 	}

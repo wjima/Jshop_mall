@@ -165,7 +165,7 @@
 			_this.$api.getDistributioninfo({}, function(res) {
 				if (res.status) {
 					_this.info = res.data;
-					if (res.data.verify != 1) { //审核通过
+					if (res.data.verify != 1 && !(!_this.condition.need_apply && _this.condition_status)) { //审核通过
 						_this.$common.redirectTo('/pages/member/distribution/index');
 					}
 					_this.orderItems.freeze.nums = _this.info.freeze_amount;

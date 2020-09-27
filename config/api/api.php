@@ -550,10 +550,13 @@ return [
             'newgoods'            => [
                 'code'     => 'newgoods',
                 'is_login' => false
-            ]
-            ,
+            ],
             'promotiongoods'      => [
                 'code'     => 'promotiongoods',
+                'is_login' => false
+            ],
+            'salesRanking' => [
+                'code' => 'salesRanking',
                 'is_login' => false
             ]
         ]
@@ -647,7 +650,7 @@ return [
                 'code'     => 'getGoodsDetial',
                 'is_login' => false
             ],
-            'getproductinfo'=>[
+            'getproductinfo' => [
                 'code'     => 'getProductInfo',
                 'is_login' => false
             ]
@@ -689,7 +692,7 @@ return [
             ]
         ]
     ],
-    'pages'       => [//首页布局可视化接口
+    'pages'       => [ //首页布局可视化接口
         'code'   => 'Pages',
         'method' => [
             'getpageconfig' => [

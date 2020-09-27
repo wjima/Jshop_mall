@@ -629,4 +629,14 @@ class Goods extends Api
         $goodsModel = new GoodsModel();
         return $goodsModel->promotiongoods($page, $limit, $order);
     }
+
+    /**
+     * 获取销量排名前十的商品
+     */
+    public function salesRanking()
+    {
+        $goodsModel = new GoodsModel();
+        return $goodsModel->salesRanking();
+    }
+}
 }

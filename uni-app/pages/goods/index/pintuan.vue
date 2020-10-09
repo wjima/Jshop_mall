@@ -1,10 +1,13 @@
 <template>
 	<view class="content">
-		<view class="nav-back">
+		<hx-navbar :fixed="true" :title="barTitle" barPlaceholder="hidden" transparent="auto" color="#000000"
+		 :background-color="[[255, 255, 255],[255, 255, 255]]" :pageScroll.sync="scrollData">
+		</hx-navbar>
+		<!-- <view class="nav-back">
 			<view class="back-btn" @click="backBtn()">
 				<image class="icon" src="/static/image/back-black.png" mode=""></image>
 			</view>
-		</view>
+		</view> -->
 
 		<view class="content-top">
 			<!-- 轮播图 -->
@@ -473,6 +476,8 @@
 		},
 		data() {
 			return {
+				scrollData: {},
+				barTitle: '',
 				swiper: {
 					indicatorDots: true,
 					autoplay: true,
@@ -1060,7 +1065,11 @@
 				imageUrl: this.goodsInfo.album[0],
 				path: this.shareUrl
 			};
-		}
+		},
+		onPageScroll(e) {
+			this.barTitle = e.scrollTop > 100 ? '商品详情' : ''
+			this.scrollData = e
+		},
 	};
 </script>
 

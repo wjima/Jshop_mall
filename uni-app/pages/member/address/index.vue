@@ -15,7 +15,7 @@
 						<view class='cell-hd-title'>手机号</view>
 					</view>
 					<view class='cell-item-bd' style="width: 70%;">
-						<input type="text" class='cell-bd-input' placeholder='请填写收货人手机号' v-model="mobile" ></input>
+						<input type="number" class='cell-bd-input' placeholder='请填写收货人手机号' v-model="mobile" ></input>
 					</view>
 				</view>
 				

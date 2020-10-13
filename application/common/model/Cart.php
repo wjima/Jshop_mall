@@ -538,7 +538,7 @@ class Cart extends Common
         return true;
     }
 
-
+    
     /**
      * 购物车数据
      * @param $user_id
@@ -548,14 +548,14 @@ class Cart extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function batchSetCart($user_id, $input)
+    public function batchSetCart($user_id, $input, $type = 1, $display = false)
     {
-        $return =  error_code(10037);
-
+        $return = error_code(10037);
+        $ids    = [];
         Db::startTrans();
         try {
             //删除用户的所有购物车数据
-            //$where[] = ['user_id', 'eq', $user_id];
+            $where[] = ['user_id', 'eq', $user_id];
             //$this->where($where)->delete();
 
             //判断数量是否可以加入购物车
@@ -565,39 +565,47 @@ class Cart extends Common
             }
             $productsModel    = new Products();
             $products_where[] = ['id', 'in', $product_ids];
-            $products_where[] = ['marketable', 'eq', $productsModel::MARKETABLE_UP];
-            $productsList     = $productsModel->field('id,marketable,stock,freeze_stock')
+            //$products_where[] = ['marketable', 'eq', $productsModel::MARKETABLE_UP];
+            $productsList    = $productsModel->field('id,marketable,stock,freeze_stock')
                 ->where($products_where)
                 ->select();
-            $newProductsList  = [];
+            $newProductsList = [];
             foreach ($productsList as $v) {
                 $newProductsList[$v['id']] = $v;
             }
 
             //添加购物车数据
-            $data = [];
+            $insert_data = [];
             foreach ($input as $v) {
                 $stock = $newProductsList[$v['product_id']]['stock'] - $newProductsList[$v['product_id']]['freeze_stock'];
                 if ($stock < $v['nums']) {
                     //数量不足回滚sql
                     Db::rollback();
-                    //查询购物车数据
-                    $list = $this->getList($user_id, '');
-                    if ($list['status']) {
-                        $return['data'] = $list['data'];
-                    }
                     return error_code(12702);
                 }
+                unset($where);
+                $where[]  = array('product_id', 'eq', $v['product_id']);
+                $where[]  = array('user_id', 'eq', $user_id);
+                $where[]  = ['type', 'eq', $type];
+                $cat_info = $this->where($where)->find();
 
-                $data[] = [
-                    'user_id'    => $user_id,
-                    'product_id' => $v['product_id'],
-                    'nums'       => $v['nums'],
-                    'type'       => 1
-                ];
+                if (!$cat_info) {
+                    $insert_data[] = [
+                        'user_id'    => $user_id,
+                        'product_id' => $v['product_id'],
+                        'nums'       => $v['nums'],
+                        'type'       => $type
+                    ];
+                } else {
+                    $cat_info->nums = $v['nums'] + $cat_info['nums'];
+                    $cat_info->save();
+                    $ids[] = ['id' => $cat_info->id];
+                }
             }
-            $this->saveAll($data);
-
+            if ($insert_data) {
+                $ids = $this->saveAll($insert_data);
+                $ids = $ids->toArray();
+            }
             //提交数据库
             Db::commit();
         } catch (\Exception $e) {
@@ -607,11 +615,12 @@ class Cart extends Common
         }
 
         //查询购物车数据
-        $list             = $this->getList($user_id, '');
+        $list             = $this->getList($user_id, '', $type, $display);
         $return['status'] = true;
         if ($list['status']) {
             $list['data']['count']  = 0;
             $list['data']['amount'] = 0;
+            $list['data']['ids']    = $ids ? array_column($ids, 'id') : [];
             foreach ($list['data']['list'] as $v) {
                 //总数量
                 $list['data']['count'] += $v['nums'];

@@ -260,7 +260,16 @@ return [
             'deshare'                 => [
                 'code'     => 'deshare',
                 'is_login' => false
-            ]
+            ],
+            //腾讯地图H5获取地图信息接口
+            'addressmap'=>[
+                'code'     => 'addressMap',
+                'is_login' => false
+            ],
+            'mapsearch'=>[
+                'code'     => 'mapSearch',
+                'is_login' => false
+            ],
         ]
     ],
 

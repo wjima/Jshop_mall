@@ -38,37 +38,5 @@ class Index extends Base
         return $this->fetch();
     }
 
-    /**
-     * 收货地址地图经纬度逆向解析
-     */
-    public function addressMap()
-    {
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
-        header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
-        $key      = input('key');
-        $location = input('location');
-        $poi      = input('get_poi');
-        $url      = 'https://apis.map.qq.com/ws/geocoder/v1/?location=' . $location . '&key=' . $key . '&get_poi=' . $poi;
-        $data     = $this->map_curl($url);
-        echo json_encode($data, 320);
-        exit();
-    }
 
-    /**
-     * 收货地址地图curl方法，增加来源页面
-     * @param $url
-     * @return mixed
-     */
-    private function map_curl($url)
-    {
-        $ch = curl_init(); //初始化
-        curl_setopt($ch, CURLOPT_URL, $url); //你要访问的页面
-        curl_setopt($ch, CURLOPT_REFERER, $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']); //伪造来路页面
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //是否显示内容
-        $output = curl_exec($ch);
-        curl_close($ch);
-        $output = json_decode($output, true);
-        return $output;
-    }
 }

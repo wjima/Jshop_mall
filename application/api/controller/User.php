@@ -1402,4 +1402,57 @@ class User extends Api
         $ttApp = new Ttapp();
         return $ttApp->codeToInfo($code, $user_info);
     }
+
+
+    /**
+     * 收货地址地图经纬度逆向解析
+     */
+    public function addressMap()
+    {
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
+        $key      = input('key');
+        $location = input('location');
+        $poi      = input('get_poi');
+        $url      = 'https://apis.map.qq.com/ws/geocoder/v1/?location=' . $location . '&key=' . $key . '&get_poi=' . $poi;
+        $data     = $this->curl($url);
+        echo json_encode($data, 320);
+        exit();
+    }
+
+    /***
+     * 地图关键词搜索
+     */
+    public function mapSearch()
+    {
+        $key        = input('key');
+        $keyword    = input('keyword');
+        $boundary   = input('boundary');
+        $orderby    = input('orderby', '_distance');
+        $page_size  = input('page_size', 20);
+        $page_index = input('page_index', 1);
+        $url        = 'https://apis.map.qq.com/ws/place/v1/search?keyword=' . urlencode($keyword) . '&key=' . $key . '&boundary=' . $boundary . '&page_size=' . $page_size . '&page_index=' . $page_index . '&orderby=' . $orderby;
+        $data       = $this->curl($url);
+        echo json_encode($data, 320);
+        exit();
+    }
+
+    /**
+     * 收货地址地图curl方法，增加来源页面
+     * @param $url
+     * @return mixed
+     */
+    private function map_curl($url)
+    {
+        $ch = curl_init(); //初始化
+        curl_setopt($ch, CURLOPT_URL, $url); //你要访问的页面
+        curl_setopt($ch, CURLOPT_REFERER, $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']); //伪造来路页面
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //是否显示内容
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $output = json_decode($output, true);
+        return $output;
+    }
+
 }

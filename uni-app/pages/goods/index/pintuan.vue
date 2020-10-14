@@ -564,7 +564,9 @@
 						second: 0
 					} //被邀请拼团倒计时
 				},
-				shareUrl: '/pages/share/jump'
+				shareUrl: '/pages/share/jump',
+				userInfo: {}, // 用户信息
+				kefupara: '', //客服传递资料
 			};
 		},
 		onLoad(e) {

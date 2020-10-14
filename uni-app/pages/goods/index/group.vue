@@ -421,7 +421,9 @@ export default {
 				minute: 0,
 				second: 0
 			},
-			shareUrl: '/pages/share/jump'
+			shareUrl: '/pages/share/jump',
+			userInfo: {}, // 用户信息
+			kefupara: '', //客服传递资料
 		};
 	},
 	onLoad(e) {

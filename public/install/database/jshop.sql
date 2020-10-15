@@ -1531,6 +1531,7 @@ CREATE TABLE `jshop_user`  (
   `status` tinyint(1) UNSIGNED NULL DEFAULT 1 COMMENT '1 = 正常 2 = 停用',
   `pid` int(10) UNSIGNED NULL DEFAULT 0 COMMENT '推荐人',
   `isdel` bigint(12) UNSIGNED NULL DEFAULT NULL COMMENT '删除标志 有数据就是删除',
+  `remarks` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表';
 

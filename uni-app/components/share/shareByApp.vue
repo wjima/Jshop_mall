@@ -206,11 +206,11 @@ export default {
 // 				})
 // 				return;
 // 			}
-			
+			let shareType = 0;
 			let shareOPtions = {
 				provider: e.id,
 				scene: e.type && e.type === 'WXSenceTimeline' ? 'WXSenceTimeline' : 'WXSceneSession', //WXSceneSession”分享到聊天界面，“WXSenceTimeline”分享到朋友圈，“WXSceneFavorite”分享到微信收藏     
-				type: this.shareType,
+				type: shareType,
 				success: (e) => {
 					uni.showModal({
 						content: '分享成功',
@@ -234,7 +234,7 @@ export default {
 			shareOPtions.href = this.shareHref ? this.shareHref : ''
 			
 			if(shareOPtions.type === 0 && plus.os.name === 'iOS'){//如果是图文分享，且是ios平台，则压缩图片 
-				shareOPtions.imageUrl = await this.compress()
+				shareOPtions.imageUrl = this.shareImg//await this.compress() //目前压缩失败暂时不压缩，保证商品图片大小在20k以内
 			}
 			if(shareOPtions.type === 1 && shareOPtions.provider === 'qq'){//如果是分享文字到qq，则必须加上href和title
 				shareOPtions.href = this.shareHref

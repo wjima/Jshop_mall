@@ -89,7 +89,7 @@
 					<view class="cell-item-hd">
 						<view class="cell-hd-title">规格</view>
 					</view>
-					<view class="cell-item-bd" @click="toshow()">
+					<view class="cell-item-bd" @click="toshow(1)">
 						<text class="cell-bd-text">{{ product.spes_desc || '' }}</text>
 					</view>
 				</view>
@@ -564,7 +564,9 @@
 						second: 0
 					} //被邀请拼团倒计时
 				},
-				shareUrl: '/pages/share/jump'
+				shareUrl: '/pages/share/jump',
+				userInfo: {}, // 用户信息
+				kefupara: '', //客服传递资料
 			};
 		},
 		onLoad(e) {
@@ -809,7 +811,8 @@
 								this.product.mktprice = this.product.price;//原价
 								this.price = this.pintuanPrice = this.$common.moneySub(this.product.price, this.discount_amount);
 							} else {
-								this.price = this.pintuanPrice = this.product.price;
+								// this.price = this.pintuanPrice = this.product.price;
+								this.price = this.product.price;
 							}
 						}
 					});

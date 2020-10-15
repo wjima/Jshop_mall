@@ -399,7 +399,9 @@
 				submitStatus: false,
 				config: '', //配置信息
 				goodsShowWord: [],
-				shareUrl: '/pages/share/jump'
+				shareUrl: '/pages/share/jump',
+				userInfo: {}, // 用户信息
+				kefupara: '', //客服传递资料
 			}
 		},
 		onLoad(options) {

@@ -69,12 +69,12 @@
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
 		<!--商品详情-->
-		<view class="tab tab-list-wrap" v-show="current == 1">
+		<view class="tab tab-list-wrap" v-if="current == 1">
 			<jshopContent :content="info.goods.intro" v-if="info.goods"></jshopContent>
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
 		<!--活动规则-->
-		<view class="tab tab-list-wrap" v-show="current == 2">
+		<view class="tab tab-list-wrap" v-if="current == 2">
 			<jshopContent :content="info.desc" v-if="info.desc"></jshopContent>
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>

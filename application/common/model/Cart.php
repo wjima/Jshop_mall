@@ -96,7 +96,8 @@ class Cart extends Common
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
-            case self::TYPE_GROUP || self::TYPE_SKILL:
+            case self::TYPE_GROUP:
+            case self::TYPE_SKILL:
                 //判断商品是否做团购秒杀
                 if (isInGroup($productInfo['data']['goods_id'], $params['group_id'], $promotion)) {
                     //此人的购物车中的所有购物车拼团商品都删掉，因为立即购买也是要加入购物车的，所以需要清空之前历史的加入过购物车的商品

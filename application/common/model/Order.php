@@ -693,7 +693,14 @@ class Order extends Common
     //平摊优惠，计算一下订单的实际价格
     private function avePrice(&$orderInfo){
         foreach($orderInfo['items'] as &$v){
-            $v['ave_price'] = round(($v['amount'] - $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount'])) / $v['nums'],2);
+            // $v['ave_price'] = round(($v['amount'] - $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount'])) / $v['nums'],2);
+            if (!$orderInfo['goods_amount'] || $orderInfo['goods_amount'] == 0) {
+                $order_pmt = 0;
+            } else {
+                $order_pmt = $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount']);
+            }
+            $v['ave_price'] = round(($v['amount'] - $order_pmt) / $v['nums'], 2);
+        
         }
     }
 

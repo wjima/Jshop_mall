@@ -619,7 +619,7 @@ class Jshop extends TagLib
                     layui.use([\'form\', \'table\'], function(){
                         $.ajax({
                             type:"get",
-                            url:"<?php echo url("manage/index/tagSelectProducts",array("type"=>"show","num"=>"' . $tag['num'] .  '));  ?>?time=' . $time . '",
+                            url:"<?php echo url("manage/index/tagSelectProducts",array("type"=>"show","num"=>"' . $tag['num'] .  '"));  ?>?time=' . $time . '",
                             data:"",
                             success:function(e){
                                 layui.layer.open({

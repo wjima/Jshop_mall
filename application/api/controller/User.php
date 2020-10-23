@@ -1409,14 +1409,11 @@ class User extends Api
      */
     public function addressMap()
     {
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
-        header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE,OPTIONS,PATCH');
         $key      = input('key');
         $location = input('location');
         $poi      = input('get_poi');
         $url      = 'https://apis.map.qq.com/ws/geocoder/v1/?location=' . $location . '&key=' . $key . '&get_poi=' . $poi;
-        $data     = $this->curl($url);
+        $data     = $this->map_curl($url);
         echo json_encode($data, 320);
         exit();
     }
@@ -1433,7 +1430,7 @@ class User extends Api
         $page_size  = input('page_size', 20);
         $page_index = input('page_index', 1);
         $url        = 'https://apis.map.qq.com/ws/place/v1/search?keyword=' . urlencode($keyword) . '&key=' . $key . '&boundary=' . $boundary . '&page_size=' . $page_size . '&page_index=' . $page_index . '&orderby=' . $orderby;
-        $data       = $this->curl($url);
+        $data       = $this->map_curl($url);
         echo json_encode($data, 320);
         exit();
     }

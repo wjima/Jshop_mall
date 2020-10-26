@@ -840,6 +840,7 @@
 							}
 						}
 					}
+					spes = JSON.stringify(spes).replace(/\./g,'====');
 					products.default_spes_desc = spes;
 				}
 				return products;

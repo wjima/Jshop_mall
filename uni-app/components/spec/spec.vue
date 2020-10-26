@@ -4,7 +4,7 @@
 			<text class="pop-m-title">{{ index }}</text>
 			<view class="pop-m-bd">
 				<view :class="spes.cla" v-for="(spes, key) in item" :key="key" @click="specChangeSpes(index, key)">
-					{{ spes.name }}
+					{{ spes.name.replace(/====/g,'.') }}
 				</view>
 			</view>
 		</view>

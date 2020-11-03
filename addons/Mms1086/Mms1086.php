@@ -64,7 +64,7 @@ class Mms1086 extends Addons
         $content = urlencode($content);      //内容
         $curl = new Curl();
 
-        $str     = "http://sms.mms1086.com:8868/sms.aspx?action=send&userid=" . $setting['sms_user_id'] . "&account=" . $setting['sms_account'] . "&password=" . $sms_password . "&mobile=" . $params['params']['mobile'] . "&content=" . $content . "&sendTime=&extno=";
+        $str     = "http://39.98.112.204:8088/sms.aspx?action=send&userid=" . $setting['sms_user_id'] . "&account=" . $setting['sms_account'] . "&password=" . $sms_password . "&mobile=" . $params['params']['mobile'] . "&content=" . $content . "&sendTime=&extno=";
         //$re      = file_get_contents($str);
         $re      = $curl->get($str);
         $data    = xmlToArray($re);

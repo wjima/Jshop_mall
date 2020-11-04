@@ -53,7 +53,31 @@ class BargainLog extends Common
         if (isset($post['record_id']) && $post['record_id'] != "") {
             $where[] = ['record_id', 'eq', $post['record_id']];
         }
-
+        if (isset($post['username']) && $post['username'] != "") {
+            $userModel = new User();
+            $user_ids = $userModel->where('nickname|mobile', 'like', '%' . $post['username'] . '%')->column('id');
+            if ($user_ids) {
+                $where[] = ['user_id', 'in', $user_ids];
+            }
+        }
+        if (isset($post['recordname']) && $post['recordname'] != "") {
+            $userModel = new User();
+            $user_ids = $userModel->where('nickname|mobile', 'like', '%' . $post['recordname'] . '%')->column('id');
+            if ($user_ids) {
+                $where[] = ['record_id', 'in', $user_ids];
+            }
+        }
+        if (isset($post['name']) && $post['name'] != "") {
+            $bargainRecordModel = new BargainRecord();
+            $bargain_ids = $bargainRecordModel->where('name', 'like', '%' . $post['name'] . '%')->column('bargain_id');
+            if ($bargain_ids) {
+                $where[] = ['bargain_id', 'in', $bargain_ids];
+            }
+        }
+        if (isset($post['date']) && $post['date'] != "") {
+            $date    = explode(' 到 ', $post['date']);
+            $where[] = ['ctime', 'between time', [$date[0] . ' 00:00:00', $date[1] . ' 23:59:59']];
+        }
         $result['where'] = $where;
         $result['field'] = "*";
         $result['order'] = ['ctime'=>'desc'];

@@ -12,7 +12,41 @@
         }
     }
 </style>
-
+<form class="layui-form seller-form"  action="" >
+    <div class="layui-form-item">
+        {if !isset($_GET['record_id'])}
+        <div class="layui-inline">
+            <label class="layui-form-label">发起人：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="recordname" lay-verify="title" placeholder="根据发起人的用户名、手机号筛选" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        {/if}
+        <div class="layui-inline">
+            <label class="layui-form-label">砍价人：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="username" lay-verify="title" placeholder="根据砍价人的用户名、手机号筛选" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        {if !isset($_GET['record_id'])}
+        <div class="layui-inline">
+            <label class="layui-form-label">活动名称：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入活动名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        {/if}
+        <div class="layui-inline">
+            <label class="layui-form-label" >砍价时间：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input  type="text" name="date" value="" id="date" placeholder="请输入砍价时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
+    </div>
+</form>
 <div class="table-body">
     <input type="hidden" id="record_id" value="{$record_id}">
     <?php
@@ -47,7 +81,7 @@
 
         //时间插件
         laydate.render({
-            elem: '#datetime',
+            elem: '#date',
             range: '到',
             format: 'yyyy-MM-dd',
             trigger: 'click' //自动弹出控件的事件，采用click弹出
@@ -66,13 +100,17 @@
             cols: [[
                 {field:'id', width:90, title:'ID', align:'center'},
                 {
-                    field: 'bargain_user', width: 120, title: '发起用户', align: 'center', templet: function (data) {
+                    field: 'bargain_user', width: 180, title: '发起用户', align: 'center',templet:function(data){
                         var html = '';
-                        html += data.nickname;
+                        html += data.bargain_user;
                         return html;
                     }
                 },
-                { field: 'nickname', align: 'center', width: 120, title: '砍价人' },
+                { field: 'nickname', align: 'center', width: 180, title: '砍价人' ,templet:function(data){
+                        var html = '('+data.user_id+')';
+                        html += data.nickname;
+                        return html;
+                }},
                 { field: 'bargain_name', align: 'center', width: 170, title: '砍价活动名称' },
                 { field: 'bargain_price', align: 'center', width: 160, title: '砍掉金额'},
                 { field: 'goods_price', align: 'center', width: 160, title: '砍掉后商品金额' },

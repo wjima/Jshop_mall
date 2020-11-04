@@ -329,15 +329,22 @@ class Sms extends Common
      */
     protected function tableFormat($list)
     {
-        foreach($list as $k => $v) {
-            if($v['status']) {
+        $tpl = $this->sms_tpl;
+        $msgCenterModel = new MessageCenter();
+        $msg_tpl = $msgCenterModel->tpl;
+        foreach ($list as $k => $v) {
+            if ($v['status']) {
                 $list[$k]['status'] = config('params.sms')['status'][$v['status']];
             }
 
-            if($v['ctime']) {
+            if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);
             }
-
+            if (isset($tpl[$v['code']])) {
+                $list[$k]['code'] = $tpl[$v['code']]['name'] . '(' . $v['code'] . ')';
+            } else  if (isset($msg_tpl[$v['code']])) {
+                $list[$k]['code'] = $msg_tpl[$v['code']]['name'] . '(' . $v['code'] . ')';
+            }
         }
         return $list;
     }

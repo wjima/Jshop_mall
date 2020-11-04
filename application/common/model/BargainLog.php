@@ -63,8 +63,11 @@ class BargainLog extends Common
         if (isset($post['recordname']) && $post['recordname'] != "") {
             $userModel = new User();
             $user_ids = $userModel->where('nickname|mobile', 'like', '%' . $post['recordname'] . '%')->column('id');
+            $bargainRecordModel = new BargainRecord();
+            $record_ids = $bargainRecordModel->where('user_id', 'in', $user_ids)->column('id');
+            
             if ($user_ids) {
-                $where[] = ['record_id', 'in', $user_ids];
+                $where[] = ['record_id', 'in', $record_ids];
             }
         }
         if (isset($post['name']) && $post['name'] != "") {

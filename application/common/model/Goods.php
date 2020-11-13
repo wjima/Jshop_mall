@@ -163,7 +163,7 @@ class Goods extends Common
         $result['where']   = $where;
         $result['whereOr'] = $whereOr;
         $result['field']   = $post['field'];
-        $result['order']   = ['id' => 'desc'];
+        $result['order']   = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

@@ -62,7 +62,7 @@ class PintuanRule extends Common{
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort Asc'];
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
     /**

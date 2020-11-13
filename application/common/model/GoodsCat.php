@@ -454,7 +454,7 @@ class GoodsCat extends Common
 
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = "sort asc";
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

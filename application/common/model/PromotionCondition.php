@@ -135,7 +135,7 @@ class PromotionCondition extends Common
             ->alias('pc')
             ->join(config('database.prefix').'promotion p','p.id = pc.promotion_id')
             ->where($tableWhere['where'])
-            ->order('sort', 'asc')
+            ->order(['sort'=>'ASC','id'=>'DESC'])
             ->select();
 
         $data = $this->tableFormat($list);

@@ -193,7 +193,7 @@ class AdvertPosition extends Common
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort ASC'];
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

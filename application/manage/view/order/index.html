@@ -371,10 +371,14 @@
                                 __Jshop_Token__: __Jshop_Token__,
                                 validate_form: validate_form
                             }, function (e) {
-                                layer.close(window_box);
-                                layer.msg(e.msg, { time: 1300 }, function () {
-                                    table.reload();
-                                });
+                                if(e.status){
+                                    layer.close(window_box);
+                                    layer.msg('支付成功', { time: 1300 }, function () {
+                                        table.reload();
+                                    });
+                                }else{
+                                        layer.msg(e.msg, { time: 1300});
+                                }
                             });
                             return false;
                         }
@@ -416,10 +420,14 @@
                                     __Jshop_Token__: __Jshop_Token__,
                                     validate_form: validate_form
                                 }, function (e) {
-                                    layer.close(window_box);
-                                    layer.msg(e.msg, { time: 1300 }, function () {
-                                        table.reload();
-                                    });
+                                    if (e.status) {
+                                            layer.close(window_box);
+                                            layer.msg('支付成功', { time: 1300 }, function () {
+                                                table.reload();
+                                            });
+                                    } else {
+                                        layer.msg(e.msg, { time: 1300 });
+                                    }
                                 });
                                 return false;
                             }

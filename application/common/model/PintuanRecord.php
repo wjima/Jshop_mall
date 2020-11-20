@@ -269,9 +269,13 @@ class PintuanRecord extends Model{
         $data = $this->where($where)->where("id = team_id")->page($page, $limit)->select();
 
         $count = $this->where($where)->where("id = team_id")->count();
-
+        $ruleModel = new PintuanRule();
         if (!$data->isEmpty()) {
             foreach ($data as $k => $v) {
+                $ruleInfo = $ruleModel->where("id","eq",$v["rule_id"])->find();
+                if($data[$k]['close_time'] >= $ruleInfo['etime']){
+                    $data[$k]['close_time'] = $ruleInfo['etime'];
+                }
                 $data[$k]['user_avatar'] = _sImage(get_user_info($v['user_id'], 'avatar'));
                 $data[$k]['nickname']    = get_user_info($v['user_id'], 'nickname');
                 //获取拼团团队记录

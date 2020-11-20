@@ -624,7 +624,8 @@
 							}
 						}
 					}
-					spes = JSON.stringify(spes)
+					spes = JSON.stringify(spes).replace(/\./g,'====');
+					/* spes = JSON.stringify(spes) */
 					products.default_spes_desc = spes;
 				}
 				return products;

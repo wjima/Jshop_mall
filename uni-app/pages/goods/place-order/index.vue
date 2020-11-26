@@ -936,6 +936,7 @@ export default {
 		},
 		// 去支付
 		toPay(e) {
+            const _this = this
 			if (this.submitStatus) {
 				return false;
 			}
@@ -1072,7 +1073,7 @@ export default {
 			    		console.log(res);
 			    	},
 			        complete(){
-						this.$api.createOrder(
+						_this.$api.createOrder(
 							data,
 							res => {
 								if (res.status) {
@@ -1080,22 +1081,22 @@ export default {
 									// this.submitStatus = false;
 									// 判断是否为0元订单,如果是0元订单直接支付成功
 									if (res.data.pay_status == '2') {
-										this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
+										_this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
 									} else {
-										this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType);
+										_this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + _this.orderType);
 									}
 								} else {
-									this.$common.errorToShow(res.msg);
+									_this.$common.errorToShow(res.msg);
 								}
 							},
 							res => {
-								this.submitStatus = false;
+								_this.submitStatus = false;
 							}
 						);
 					}
 				})
 			} else {
-				this.$api.createOrder(
+				_this.$api.createOrder(
 					data,
 					res => {
 						if (res.status) {
@@ -1103,23 +1104,23 @@ export default {
 							// this.submitStatus = false;
 							// 判断是否为0元订单,如果是0元订单直接支付成功
 							if (res.data.pay_status == '2') {
-								this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
+								_this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
 							} else {
-								this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType);
+								_this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + _this.orderType);
 							}
 						} else {
-							this.$common.errorToShow(res.msg);
+							_this.$common.errorToShow(res.msg);
 						}
 					},
 					res => {
-						this.submitStatus = false;
+						_this.submitStatus = false;
 					}
 				);
 			}
 			// #endif
 			
 			// #ifndef MP-WEIXIN
-			this.$api.createOrder(
+			_this.$api.createOrder(
 				data,
 				res => {
 					if (res.status) {
@@ -1127,16 +1128,16 @@ export default {
 						// this.submitStatus = false;
 						// 判断是否为0元订单,如果是0元订单直接支付成功
 						if (res.data.pay_status == '2') {
-							this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
+							_this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
 						} else {
-							this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType);
+							_this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + _this.orderType);
 						}
 					} else {
-						this.$common.errorToShow(res.msg);
+						_this.$common.errorToShow(res.msg);
 					}
 				},
 				res => {
-					this.submitStatus = false;
+					_this.submitStatus = false;
 				}
 			);
 			// #endif

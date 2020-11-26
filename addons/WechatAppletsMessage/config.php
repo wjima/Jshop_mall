@@ -144,6 +144,60 @@ return [
                         'code' => 'ctime'
                     ]
                 ]
+            ],
+            'pintuan_success' => [
+                'title' => '拼团成功',
+                'data' => [
+                    [
+                        'title' => '模板ID',
+                        'code' => 'template_id'
+                    ],
+                    [
+                        'title' => '活动名称',
+                        'code' => 'name'
+                    ],
+                    [
+                        'title' => '拼团价格',
+                        'code' => 'order_amount'
+                    ],
+                    [
+                        'title' => '参团人数',
+                        'code' => 'people_number'
+                    ],
+                    [
+                        'title' => '成团时间',
+                        'code' => 'time'
+                    ]
+                ]
+            ],
+            'pintuan_refund' => [
+                'title' => '拼团失败',
+                'data' => [
+                    [
+                        'title' => '模板ID',
+                        'code' => 'template_id'
+                    ],
+                    [
+                        'title' => '订单编号',
+                        'code' => 'order_id'
+                    ],
+                    [
+                        'title' => '订单内容',
+                        'code' => 'name'
+                    ],
+                    [
+                        'title' => '退款金额',
+                        'code' => 'money'
+                    ],
+                    [
+                        'title' => '退款原因',
+                        'code' => 'refundInfo'
+                    ],
+                    [
+                        'title' => '退款时间',
+                        'code' => 'time'
+                    ]
+                ]
             ]
         ]
     ]

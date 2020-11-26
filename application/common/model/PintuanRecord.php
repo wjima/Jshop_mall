@@ -161,6 +161,7 @@ class PintuanRecord extends Model{
 
     //订单支付之后，更新拼团状态，如果拼团满了，
     public function pay($order_id){
+        $Promotion = new PromotionRecord();
         $where[] = ['order_id','=', $order_id];
         $where[] = ['status', 'in',[self::STATUS_COMM,self::STATUS_FULL]];
         $info = $this->where($where)->find();
@@ -190,6 +191,7 @@ class PintuanRecord extends Model{
         if($team_count >= $params['people_number']){
             $team_data['status'] = self::STATUS_FINISH;       //如果拼团成功
             $this->save($team_data,['team_id'=>$info['team_id']]);
+            $Promotion->sendmessage($team_where);//拼团成功发送消息
         }
 
         return true;
@@ -438,6 +440,7 @@ class PintuanRecord extends Model{
      */
     private function cancleOrder($order_id){
         $orderModel = new Order();
+        $promotionRecord = new PromotionRecord();
         $order_info = $orderModel->getOrderInfoByOrderID($order_id);
         //如果订单已经完成或者已经取消就不做任何操作了
         if($order_info['status'] != $orderModel::ORDER_STATUS_NORMAL){
@@ -473,6 +476,7 @@ class PintuanRecord extends Model{
             $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
             $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
             $orderModel->save($order_data,['order_id'=>$order_info['order_id']]);
+            $promotionRecord->hookdata($order_id);//拼团失败发送消息
         }
         return true;
     }

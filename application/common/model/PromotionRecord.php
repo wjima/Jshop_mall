@@ -160,5 +160,65 @@ class PromotionRecord extends Common
         $result['data']['count'] = $total;
         return $result;
     }
+    /**
+     * 拼团失败，发送订阅消息，处理数据
+     * @param $order_id
+     */
+    public function hookdata($order_id){
+        $orderModel=new Order();
+        $recordModel=new PintuanRecord();
+        $ruleModel=new PintuanRule();
+        $orderInfo=$orderModel->where("order_id",'eq',$order_id)->find();
+        $recordInfo=$recordModel->where("order_id",'eq',$order_id)->find();
+        $ruleInfo=$ruleModel->where("id",'eq',$recordInfo["rule_id"])->find();
+        $hookdata['params']['order_id']=$order_id;
+        $hookdata['params']['name']=$ruleInfo["name"];
+        $hookdata['params']['money']=$orderInfo["order_amount"];
+        $hookdata['params']['refundInfo']="拼团失败，退还金额";
+        $hookdata['params']['time']=date("Y-m-d H:i:s");
+        $hookdata['user_id']=$orderInfo['user_id'];
+        $hookdata['code']="pintuan_refund";
+        hook('sendwxmessage', ['params' => [
+            'user_id'   => $hookdata["user_id"],
+            'code'      => $hookdata["code"],
+            'params'    => $hookdata["params"],
+        ]]);
+        return $hookdata;
+    }
+    /**
+     * 拼团成功，发送订阅消息，处理数据
+     * @param $order_id
+     */
+    public function sendmessage($where){
+        $recordModel=new PintuanRecord();
+        $ruleModel=new PintuanRule();
+        $orderModel=new Order();
+        $record=$recordModel->where($where)->order('id', 'asc')->select();
+        $people_number = '5';
+        foreach($record as $k=>$v){
+            $hookdata = [];
+            if ($v['params']) {
+                $params = json_decode($v['params'], true);
+                $people_number = isset($params['people_number']) ? $params['people_number'] : 5;
+            }
+            //$people_number = isset($v['people_number'])?$v['people_number']:5;
+            $hookdata['params']['order_id']=$v["order_id"];
+            $hookdata['params']['people_number']=$people_number;
+            $ruleInfo=$ruleModel->where("id",'eq',$v['rule_id'])->find();
+            $hookdata['params']['name']=$ruleInfo["name"];
+            $orderInfo=$orderModel->where("order_id",'eq',$v["order_id"])->find();
+            $hookdata['params']['order_amount']=$orderInfo["order_amount"];
+            $hookdata['params']['time']=date("Y-m-d H:i:s");
+            $hookdata['user_id']=$v['user_id'];
+            $hookdata['code']="pintuan_success";
+            error_log(var_export([$hookdata,$where,$record],true),3,__FILE__.'.log');
+            hook('sendwxmessage', ['params' => [
+                'user_id'   => $hookdata["user_id"],
+                'code'      => $hookdata["code"],
+                'params'    => $hookdata["params"],
+            ]]);
+        }
+        return true;
+    }
 }
 

@@ -151,6 +151,13 @@ class WechatAppletsMessage extends Addons
             case 'refund':
                 $this->refundTip($params, $template_id);
                 break;
+            case 'pintuan_success':
+
+                $this->pintuansuccessTip($params, $template_id);
+                break;
+            case 'pintuan_refund':
+                $this->pintuanrefundTip($params, $template_id);
+                break;
         }
         return true;
     }
@@ -459,7 +466,93 @@ class WechatAppletsMessage extends Addons
         return $flag;
     }
 
+    /**
+     * 拼团成功通知
+     * @param $params
+     * @param $template_id
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    protected function pintuansuccessTip($params, $template_id)
+    {
+        $user_id = $params['params']['user_id'];
+        $info = $params['params']['params'];
+        $data = [
+            'name' => [
+                'value' => $info['name']
+            ],
+            'order_id' => [
+                'value' => $info['order_id']
+            ],
+            'order_amount' => [
+                'value' => $info['order_amount']
+            ],
+            'people_number' => [
+                'value' => $info['people_number']
+            ],
+            'time' => [
+                'value' => $info['time']
+            ]
+        ];
 
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['pintuan_success'][$k] && $con['pintuan_success'][$k] != ''){
+                $con['pintuan_success'][$k] = trim($con['pintuan_success'][$k]);
+                $con['pintuan_success'][$k] = ltrim($con['pintuan_success'][$k], "{{");
+                $con['pintuan_success'][$k] = rtrim($con['pintuan_success'][$k], ".DATA}}");
+                $newData[$con['pintuan_success'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
+    }
+    /**
+     * 拼团失败退款通知
+     * @param $params
+     * @param $template_id
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    protected function pintuanrefundTip($params, $template_id)
+    {
+        $user_id = $params['params']['user_id'];
+        $info = $params['params']['params'];
+        $data = [
+            'name' => [
+                'value' => $info['name']
+            ],
+            'money' => [
+                'value' => $info['money']
+            ],
+            'refundInfo' => [
+                'value' => $info['refundInfo']
+            ],
+            'time' => [
+                'value' => $info['time']
+            ]
+        ];
+
+        $addonModel = new addonsModel();
+        $con = $addonModel->getSetting('WechatAppletsMessage');
+
+        $newData = [];
+        foreach($data as $k => $v) {
+            if($con['pintuan_refund'][$k] && $con['pintuan_refund'][$k] != ''){
+                $con['pintuan_refund'][$k] = trim($con['pintuan_refund'][$k]);
+                $con['pintuan_refund'][$k] = ltrim($con['pintuan_refund'][$k], "{{");
+                $con['pintuan_refund'][$k] = rtrim($con['pintuan_refund'][$k], ".DATA}}");
+                $newData[$con['pintuan_refund'][$k]] = $v;
+            }
+        }
+
+        $this->send($user_id, $template_id, $newData);
+    }
     /**
      * 发送信息
      * @param $user_id

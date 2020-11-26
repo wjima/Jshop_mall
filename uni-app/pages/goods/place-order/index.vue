@@ -361,6 +361,24 @@ export default {
 			bargain_id: 0, //砍价活动id
 			record_id: 0 ,//砍价活动id
 			group_id:0,//团购活动id
+			msgList: [
+			    {
+					name: '拼团成功',
+			        desc: '拼团成功后通知我',
+					func: 'pintuan_success',
+			        tmpl: '',
+			        status: false,
+			        is: false
+				},
+				{
+					name: '拼团失败',
+			        desc: '拼团失败后通知我',
+					func: 'pintuan_refund',
+			        tmpl: '',
+			        status: false,
+			        is: false
+				}
+			]
 		};
 	},
 	components: { lvvPopup, uniSegmentedControl },
@@ -401,38 +419,12 @@ export default {
 
 		//获取默认门店信息
 		this.getDefaultStore();
+		
+		// #ifdef MP-WEIXIN
+		this.getSubscriptionTmplIds();
+		// #endif
 	},
 	onShow() {
-		// // #ifdef MP-ALIPAY || MP-TOUTIAO
-		// let user_ship = this.$db.get('address_user_ship', true);
-		// if (user_ship) {
-		// 	this.userShip = user_ship;
-		// 	this.params.area_id = user_ship.area_id;
-		// 	this.$db.del('address_user_ship', true);
-		// }
-		// let user_invoice = this.$db.get('user_invoice', true);
-		// if (user_invoice) {
-		// 	this.invoice = user_invoice;
-		// 	this.$db.del('user_invoice', true);
-		// }
-		// let user_store = this.$db.get('user_store', true);
-		// if (user_store) {
-		// 	this.store = user_store;
-		// 	this.$db.del('user_store', true);
-		// }
-		// // #endif
-		// // #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
-		// let user_ship = this.$store.state.userShip;
-		// // console.log(user_ship);
-		// if (user_ship) {
-		// 	this.userShip = user_ship;
-		// 	this.params.area_id = user_ship.area_id;
-		// }
-		// let user_invoice = this.$store.state.invoice;
-		// if (user_invoice) {
-		// 	this.invoice = user_invoice;
-		// }
-		// // #endif
 		let user_ship = this.$db.get('address_user_ship', true);
 		if (user_ship) {
 			this.userShip = user_ship;
@@ -454,6 +446,25 @@ export default {
 		}
 	},
 	methods: {
+		// #ifdef MP-WEIXIN
+		//获取模板
+		getSubscriptionTmplIds: function () {
+			this.$api.getSubscriptionTmplIds(res => {
+				console.log('res', res)
+				if (res.status) {
+					for (let i = 0; i < this.msgList.length; i++) {
+						this.msgList[i].tmpl = res.data[this.msgList[i].func].template_id;
+						this.msgList[i].is = res.data[this.msgList[i].func].is;
+						if (this.msgList[i].tmpl != '') {
+							this.msgList[i].status = true;
+						}
+					}
+				} else {
+					this.$common.errorToShow('消息订阅配置信息获取失败');
+				}
+			});
+		},
+		// #endif
 		// 切换门店
 		onTypeItem(index) {
 			if (this.type_current !== index) {
@@ -1028,6 +1039,86 @@ export default {
 			data['source'] = 6;
 			// #endif
 			data = Object.assign(data, delivery);
+			
+			// #ifdef MP-WEIXIN
+			// 发起订阅
+			if(this.params.order_type==2){
+			    let tmplIds = []
+				this.msgList.forEach(function(element, index) {
+					if(element.status && !element.is){
+					  tmplIds.push(element.tmpl)
+					}
+				});
+			    uni.requestSubscribeMessage({
+			        tmplIds:tmplIds,
+			        success (res) {
+			            if (res.errMsg == "requestSubscribeMessage:ok" ) {
+			                tmplIds.forEach(function(element, index) {
+			                        let data = {
+			                            'template_id': element,
+			                            'status': res[element]
+			                        }
+			                        _this.$api.setSubscriptionStatus(data, e => {
+			                            _this.getSubscriptionTmplIds();
+			                        });
+			                       });
+			                } else {
+			                _this.$common.errorToShow('操作失败，请稍候重试！', r => {
+			                    _this.getSubscriptionTmplIds();
+			                });
+			            }
+			        },
+			    	fail(res){
+			    		console.log(res);
+			    	},
+			        complete(){
+						this.$api.createOrder(
+							data,
+							res => {
+								if (res.status) {
+									// 创建订单成功 去支付
+									// this.submitStatus = false;
+									// 判断是否为0元订单,如果是0元订单直接支付成功
+									if (res.data.pay_status == '2') {
+										this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
+									} else {
+										this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType);
+									}
+								} else {
+									this.$common.errorToShow(res.msg);
+								}
+							},
+							res => {
+								this.submitStatus = false;
+							}
+						);
+					}
+				})
+			} else {
+				this.$api.createOrder(
+					data,
+					res => {
+						if (res.status) {
+							// 创建订单成功 去支付
+							// this.submitStatus = false;
+							// 判断是否为0元订单,如果是0元订单直接支付成功
+							if (res.data.pay_status == '2') {
+								this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
+							} else {
+								this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + this.orderType);
+							}
+						} else {
+							this.$common.errorToShow(res.msg);
+						}
+					},
+					res => {
+						this.submitStatus = false;
+					}
+				);
+			}
+			// #endif
+			
+			// #ifndef MP-WEIXIN
 			this.$api.createOrder(
 				data,
 				res => {
@@ -1042,13 +1133,14 @@ export default {
 						}
 					} else {
 						this.$common.errorToShow(res.msg);
-						// this.submitStatus = false;
 					}
 				},
 				res => {
 					this.submitStatus = false;
 				}
 			);
+			// #endif
+			
 		},
 		// 跳转发票页面
 		goInvoice() {

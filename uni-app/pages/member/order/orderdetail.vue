@@ -634,4 +634,8 @@
 		margin-left: 20rpx;
 		padding-right: 0;
 	}
+	
+	.content-top{
+		padding-bottom: 116rpx;
+	}
 </style>

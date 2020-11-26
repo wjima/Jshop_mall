@@ -422,4 +422,8 @@ export default {
 .add-title-item .cell-item-bd{
 	margin-left: 0;
 }
+
+.content-top{
+	padding-bottom: 116rpx;
+}
 </style>

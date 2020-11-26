@@ -1,5 +1,8 @@
 // export const apiBaseUrl = window.location.origin + '/'//如果有调整，这里需要改为固定url
+
 export const apiBaseUrl = "http://www.jshop.cn/"//如果有调整，这里需要改为固定url
+
+// export const apiBaseUrl = 'https://demo.jihainet.com/'//如果有调整，这里需要改为固定url
 export const h5Url = apiBaseUrl + "wap/" //H5端网站地址,
 // export const h5Url = "http://localhost:8080/wap/" //H5端网站地址,
 

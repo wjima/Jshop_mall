@@ -67,6 +67,16 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
+		
+		if (page.route.indexOf('pages/member/order/orderdetail') !== -1) {
+			//订单详情
+			if (page.orderId && page.orderId != '') {
+				pagePath = '/' + page.route + '?order_id=' + page.orderId;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+			console.log(pagePath);
+		}
 		// #endif
 
 		// #ifdef MP-ALIPAY

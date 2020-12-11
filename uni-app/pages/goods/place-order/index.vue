@@ -362,22 +362,9 @@ export default {
 			record_id: 0 ,//砍价活动id
 			group_id:0,//团购活动id
 			msgList: [
-			    {
-					name: '拼团成功',
-			        desc: '拼团成功后通知我',
-					func: 'pintuan_success',
-			        tmpl: '',
-			        status: false,
-			        is: false
-				},
-				{
-					name: '拼团失败',
-			        desc: '拼团失败后通知我',
-					func: 'pintuan_refund',
-			        tmpl: '',
-			        status: false,
-			        is: false
-				}
+			    { name: '拼团成功', desc: '拼团成功后通知我', func: 'pintuan_success', tmpl: '', status: false,  is: false },
+				{ name: '拼团失败', desc: '拼团失败后通知我', func: 'pintuan_refund', tmpl: '', status: false,  is: false },
+				{ name: '下单成功', desc: '下单成功通知我', func: 'order', tmpl: '', status: false,  is: false },
 			]
 		};
 	},
@@ -1043,7 +1030,6 @@ export default {
 			
 			// #ifdef MP-WEIXIN
 			// 发起订阅
-			if(this.params.order_type==2){
 			    let tmplIds = []
 				this.msgList.forEach(function(element, index) {
 					if(element.status && !element.is){
@@ -1069,9 +1055,6 @@ export default {
 			                });
 			            }
 			        },
-			    	fail(res){
-			    		console.log(res);
-			    	},
 			        complete(){
 						_this.$api.createOrder(
 							data,
@@ -1095,28 +1078,6 @@ export default {
 						);
 					}
 				})
-			} else {
-				_this.$api.createOrder(
-					data,
-					res => {
-						if (res.status) {
-							// 创建订单成功 去支付
-							// this.submitStatus = false;
-							// 判断是否为0元订单,如果是0元订单直接支付成功
-							if (res.data.pay_status == '2') {
-								_this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
-							} else {
-								_this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + _this.orderType);
-							}
-						} else {
-							_this.$common.errorToShow(res.msg);
-						}
-					},
-					res => {
-						_this.submitStatus = false;
-					}
-				);
-			}
 			// #endif
 			
 			// #ifndef MP-WEIXIN

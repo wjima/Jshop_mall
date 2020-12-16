@@ -63,10 +63,11 @@ class BillAftersales extends Manage
             return $re;
         }
 
-        $re['data']['orderInfo']['items'] = json_encode($re['data']['orderInfo']['items']);
+        // $re['data']['orderInfo']['items'] = json_encode($re['data']['orderInfo']['items']);
 
         $this->assign('info',$re['data']['info']);
         $this->assign('order_info',$re['data']['orderInfo']);
+        $this->assign('order_item',$re['data']['orderInfo']['items']);
 
         return [
             'status' => true,

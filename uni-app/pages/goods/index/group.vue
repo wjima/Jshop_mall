@@ -580,10 +580,11 @@ export default {
 		changeSpes(obj) {
 			let index = obj.v;
 			let key = obj.k;
-			if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index][key].product_id) {
+			let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+			if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
 				let type = this.goodsInfo.group_type == 3 ? 'group' : 'skill';
 				let data = {
-					id: this.product.default_spes_desc[index][key].product_id,
+					id: tmp_default_spes_desc[index][key].product_id,
 					type: type, //商品类型
 					group_id: this.groupId
 				};
@@ -622,6 +623,7 @@ export default {
 						}
 					}
 				}
+				spes = JSON.stringify(spes).replace(/\./g,'====');
 				products.default_spes_desc = spes;
 			}
 			return products;

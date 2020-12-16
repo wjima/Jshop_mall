@@ -790,10 +790,11 @@
 				let index = obj.v;
 				let key = obj.k;
 				//type = 1是立即购买，2是拼团购买
-				if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index]
+				let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+				if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index]
 					[key].product_id) {
 					let data = {
-						id: this.product.default_spes_desc[index][key].product_id,
+						id: tmp_default_spes_desc[index][key].product_id,
 						type: 'pintuan' //商品类型
 					};
 					let userToken = this.$db.get('userToken');
@@ -840,6 +841,7 @@
 							}
 						}
 					}
+					spes = JSON.stringify(spes).replace(/\./g,'====');
 					products.default_spes_desc = spes;
 				}
 				return products;

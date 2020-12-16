@@ -67,7 +67,7 @@ class BillAftersales extends Manage
 
         $this->assign('info',$re['data']['info']);
         $this->assign('order_info',$re['data']['orderInfo']);
-        $this->assign('order_item',$re['data']['orderInfo']['items']);
+        $this->assign('order_items',$re['data']['orderInfo']['items']);
 
         return [
             'status' => true,

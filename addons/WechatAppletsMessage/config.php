@@ -1,9 +1,13 @@
 <?php
+/***
+ * 一个操作最多只能有3个订阅消息，所以定义的时候，请约束数量
+ */
 return [
     'template' => [
         'title' => '模板配置',
         'value' => [
             'order' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '下单通知',
                 'data' => [
                     [
@@ -32,7 +36,8 @@ return [
                     ]
                 ]
             ],
-            'cancel' => [
+            'remind' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '催付通知',
                 'data' => [
                     [
@@ -53,7 +58,30 @@ return [
                     ]
                 ]
             ],
+            'cancel'=>[
+                'type'=>'order',//哪个地方使用
+                'title' => '取消订单',
+                'data' => [
+                    [
+                        'title' => '模板ID',
+                        'code' => 'template_id'
+                    ],
+                    [
+                        'title' => '订单编号',
+                        'code' => 'order_id'
+                    ],
+                    [
+                        'title' => '下单时间',
+                        'code' => 'ctime'
+                    ],
+                    [
+                        'title' => '取消原因',
+                        'code' => 'reason'
+                    ],
+                ]
+            ],
             'pay' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '支付通知',
                 'data' => [
                     [
@@ -75,11 +103,16 @@ return [
                 ]
             ],
             'ship' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '发货通知',
                 'data' => [
                     [
                         'title' => '模板ID',
                         'code' => 'template_id'
+                    ],
+                    [
+                        'title' => '订单编号',
+                        'code' => 'order_id'
                     ],
                     [
                         'title' => '快递公司',
@@ -92,6 +125,7 @@ return [
                 ]
             ],
             'after_sale' => [
+                'type'=>'after',//申请售后时使用
                 'title' => '售后通知',
                 'data' => [
                     [
@@ -117,6 +151,7 @@ return [
                 ]
             ],
             'refund' => [
+                'type'=>'after',//申请售后时使用
                 'title' => '退款通知',
                 'data' => [
                     [
@@ -142,60 +177,6 @@ return [
                     [
                         'title' => '退款时间',
                         'code' => 'ctime'
-                    ]
-                ]
-            ],
-            'pintuan_success' => [
-                'title' => '拼团成功',
-                'data' => [
-                    [
-                        'title' => '模板ID',
-                        'code' => 'template_id'
-                    ],
-                    [
-                        'title' => '活动名称',
-                        'code' => 'name'
-                    ],
-                    [
-                        'title' => '拼团价格',
-                        'code' => 'order_amount'
-                    ],
-                    [
-                        'title' => '参团人数',
-                        'code' => 'people_number'
-                    ],
-                    [
-                        'title' => '成团时间',
-                        'code' => 'time'
-                    ]
-                ]
-            ],
-            'pintuan_refund' => [
-                'title' => '拼团失败',
-                'data' => [
-                    [
-                        'title' => '模板ID',
-                        'code' => 'template_id'
-                    ],
-                    [
-                        'title' => '订单编号',
-                        'code' => 'order_id'
-                    ],
-                    [
-                        'title' => '订单内容',
-                        'code' => 'name'
-                    ],
-                    [
-                        'title' => '退款金额',
-                        'code' => 'money'
-                    ],
-                    [
-                        'title' => '退款原因',
-                        'code' => 'refundInfo'
-                    ],
-                    [
-                        'title' => '退款时间',
-                        'code' => 'time'
                     ]
                 ]
             ]

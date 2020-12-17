@@ -249,7 +249,7 @@ class kdniao
         $requestData = json_encode($requestData, JSON_UNESCAPED_UNICODE);
         $datas       = array(
             'EBusinessID' => $this->ebusinessid,
-            'RequestType' => '1002',
+            'RequestType' => '8001',
             'RequestData' => urlencode($requestData),
             'DataType'    => '2',
         );

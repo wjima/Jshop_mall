@@ -161,6 +161,11 @@ class Sms extends Common
                 // $params['user_name'] = 买家昵称
                 $msg = "恭喜您，订单支付成功,祝您购物愉快。";
                 break;
+            case 'order_cancle':
+                // $params['order_id'] = 订单号
+                // $params['memo'] = 下单买家备注
+                $msg = "您的订单：".$params['order_id']."已取消";
+                break;
             case 'remind_order_pay':
                 // 未支付催单
                 // $params['order_id'] = 订单号

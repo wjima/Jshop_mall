@@ -981,6 +981,11 @@ class Order extends Common
 
                 $result = true;
                 Db::commit();
+                //再循环一遍，批量发送消息
+                foreach($order_info as $key=>$val){
+                    $val['reason'] = $msg;//取消原因
+                    sendMessage($val['user_id'], 'order_cancle',$val);
+                }
                 hook('cancelorder', $order_info); // 订单取消的钩子
             } catch (\Exception $e) {
                 $result = false;

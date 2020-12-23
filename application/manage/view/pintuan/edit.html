@@ -53,7 +53,7 @@
             $max_nums = 0;
             }
             {/php}
-            <input type="number" name="max_nums" required  lay-verify="required" value="{$max_nums}" autocomplete="off" class="layui-input">
+            <input type="number" min="0" name="max_nums" required  lay-verify="required" value="{$max_nums}" autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">每人限购数量，0为不限制</div>
     </div>
@@ -67,7 +67,7 @@
             $max_goods_nums = 0;
             }
             {/php}
-            <input type="number" name="max_goods_nums" required  lay-verify="required" value="{$max_goods_nums}" autocomplete="off" class="layui-input">
+            <input type="number" min="0" name="max_goods_nums" required  lay-verify="required" value="{$max_goods_nums}" autocomplete="off" class="layui-input">
         </div>
         <div class="layui-form-mid layui-word-aux">每个活动商品总量。0为不限制，以商品库存准</div>
     </div>

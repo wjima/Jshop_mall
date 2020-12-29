@@ -254,19 +254,21 @@ class Products extends Common
     }
 
     //后台是实际库存，实际库存变动时，需要加上冻结库存
-    public function updateProduct($product_id, $data = [])
+    public function updateProduct($product_id, $data = [], &$error_code = '')
     {
         $stock = isset($data['stock']) ? $data['stock'] : 0;
         unset($data['stock']);
-        $res     = $this->allowField(true)->update($data, ['id' => $product_id]);
-        $where[] = ['id', '=', $product_id];
+        $res        = $this->allowField(true)->update($data, ['id' => $product_id]);
+        $where[]    = ['id', '=', $product_id];
+        $error_code = ($res == false) ? 12003 : '';
         if ($stock != 0) {
             //$this->where($where)->setInc('stock', $stock);
             $exp     = Db::raw('cast(stock as signed) + ' . $stock . '>= 0');
             $where[] = [0, 'exp', $exp];
             $re      = $this->where($where)->setInc('stock', $stock);
             if (!$re) {
-                $res = false;
+                $error_code = 12020;
+                $res        = false;
             }
         }
         return $res;

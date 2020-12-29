@@ -790,8 +790,7 @@ class Goods extends Manage
                 $data['product'] = $checkData['data']['product'];
 
                 if (isset($val['id']) && $val['id']) {
-
-                    $productRes = $productsModel->updateProduct($val['id'], $data['product']);
+                    $productRes = $productsModel->updateProduct($val['id'], $data['product'],$error_code);
                     if (in_array($val['id'], $productIds)) {
                         $productIds = unsetByValue($productIds, $val['id']);
                     }
@@ -807,8 +806,7 @@ class Goods extends Manage
                 }
                 if ($productRes === false) {
                     $goodsModel->rollback();
-                    // $result['msg'] = '货品数据保存失败';
-                    return error_code(12003);
+                    return error_code($error_code);
                 }
 
                 //$total_stock = $total_stock + $tmp_product['goods']['stock'];
@@ -853,7 +851,7 @@ class Goods extends Manage
                 if (in_array($data['product']['id'], $productIds)) {
                     $productIds = unsetByValue($productIds, $data['product']['id']);
                 }
-                $updateRes = $productsModel->updateProduct($data['product']['id'], $data['product']);
+                $updateRes = $productsModel->updateProduct($data['product']['id'], $data['product'],$error_code);
             } else {
                 $updateRes = $productsModel->doAdd($data['product']);
             }
@@ -861,7 +859,7 @@ class Goods extends Manage
             if ($updateRes === false) {
                 $goodsModel->rollback();
                 // $result['msg'] = '货品数据保存失败';
-                return error_code(12003);
+                return error_code($error_code);
             }
         }
         //删除多余货品数据

@@ -204,19 +204,6 @@
 					</view>
 				</view>
 				<view class="flc sale-list">
-					<!-- 微信小程序消息订阅 -->
-					<!-- #ifdef MP-WEIXIN -->
-					<view class="item tc" v-if="isTip">
-						<view class="" @click="navigateToHandle('../setting/subscription/index')">
-							<view class="">
-								<image class='cell-hd-icon' src='/static/image/subscription.png'></image>
-							</view>
-							<view class="text">
-								<text class="">消息订阅</text>
-							</view>
-						</view>
-					</view>
-					<!-- #endif -->
 					<view class="item tc" v-for="(item,i) in order" :key="i" v-if="!item.unshowItem">
 						<view class="" @click="navigateToHandle(item.router)">
 							<view class="">
@@ -585,8 +572,6 @@
 					this.getWxCode()
 					// #endif
 				}
-
-				this.userIsSubscription();
 			},
 			navigateToHandle(pageUrl) {
 				if (!this.hasLogin) {
@@ -683,25 +668,6 @@
 
 			// 	}
 			// },
-			//查询用户订阅
-			userIsSubscription() {
-				let userToken = this.$db.get("userToken");
-				if (userToken && userToken != '') {
-					this.$api.subscriptionIsTip(res => {
-						if (res.status) {
-							if (res.switch) {
-								this.suTipStatus = true;
-							} else {
-								this.suTipStatus = false;
-							}
-						} else {
-							this.suTipStatus = true;
-						}
-					});
-				} else {
-					this.suTipStatus = true;
-				}
-			},
 		},
 		computed: {
 			// 获取店铺联系人手机号
@@ -713,9 +679,6 @@
 			},
 			store_switch() {
 				return this.$store.state.config.store_switch || 0;
-			},
-			isTip() {
-				return this.suTipStatus;
 			}
 		},
 		watch: {}

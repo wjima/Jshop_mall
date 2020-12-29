@@ -346,10 +346,13 @@ class UserPointLog extends Common
      */
     public function orderComplete($user_id, $money, $order_id)
     {
-        $orders_reward_proportion = getSetting('orders_reward_proportion');
-        if ($orders_reward_proportion != 0) {
-            $point = floor($money / $orders_reward_proportion);
-            $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单：' . $order_id . ' 积分奖励');
+        $point_switch = getSetting('point_switch');
+        if($point_switch == 1){
+            $orders_reward_proportion = getSetting('orders_reward_proportion');
+            if ($orders_reward_proportion != 0) {
+                $point = floor($money / $orders_reward_proportion);
+                $this->setPoint($user_id, $point, self::POINT_TYPE_REBATE, '订单：' . $order_id . ' 积分奖励');
+            }
         }
     }
 

@@ -138,18 +138,21 @@ export default {
 		_this.$api.getDistributioninfo({}, function(res) {
 			if (res.status) {
 				_this.info = res.data;
-				if (_this.info.hasOwnProperty('verify')) {
-					if (_this.info.verify == 1) {
-						//审核通过
-					} else if (!_this.info.need_apply && _this.info.condition_status) {
-						//无需审核，并且满足审核条件
-						_this.$common.redirectTo('/pages/member/distribution/apply_state'); //待审核
-					} else if (_this.info.need_apply && _this.info.condition_status) {
-						//需要审核，并且条件满足
-						_this.$common.redirectTo('/pages/member/distribution/apply'); //待审核
-					} else {
-						//条件不满足 或者审核不通过
-						_this.$common.redirectTo('/pages/member/distribution/apply_state'); //待审核
+				if (_this.condition.hasOwnProperty('verify')) {
+					if(_this.condition.verify == 1){//审核通过
+					
+					}else if(_this.condition.verify == 2 || _this.condition.verify == 3){//等等审核
+						_this.$common.redirectTo('/pages/member/distribution/apply_state');
+					}else{//检查条件是否满足
+						if(_this.condition.need_apply &&  _this.condition.condition_status){//需要审核，并且条件满足
+							_this.$common.redirectTo('/pages/member/distribution/apply'); 
+						}else if(_this.condition.need_apply && !_this.condition.condition_status){//需要审核，并且条件不满足
+							_this.$common.redirectTo('/pages/member/distribution/index');
+						}else if(!_this.condition.need_apply && _this.condition.condition_status){//不需要审核，并且条件满足
+							
+						}else if(!_this.condition.need_apply && !_this.condition.condition_status){//不需要审核，并且条件不满足
+							_this.$common.redirectTo('/pages/member/distribution/index');
+						}
 					}
 				}
 				_this.orderItems.freeze.nums = _this.info.freeze_amount;

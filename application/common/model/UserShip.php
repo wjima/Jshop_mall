@@ -220,7 +220,7 @@ class UserShip extends Common
             return $checkStatus;
         }
         if ($data['address']) {
-            $character = ["\r\n", "\n", "\r"];
+            $character = ["\r\n", "\n", "\r","\t","+","\\"];
             $data['address'] = str_replace($character, '', $data['address']);
         }
 

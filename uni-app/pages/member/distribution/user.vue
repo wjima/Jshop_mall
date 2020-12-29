@@ -159,7 +159,7 @@ export default {
 				_this.orderItems.settlement.nums = _this.info.settlement_amount;
 				_this.orderItems.current_month_order.nums = _this.info.current_month_order;
 				if (_this.$store.state.config.distribution_store == '1') {
-					_this.utilityMenus.my_store.router = './my_store?store=' + _this.info.store;
+					_this.utilityMenus.my_store.router = './my_store?store=' + _this.info.store+'&self=true';
 				}
 			} else {
 				//报错了

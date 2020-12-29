@@ -55,6 +55,9 @@ class UserLog extends Common
         if (isset($post['id']) && $post['id'] != "") {
             $where[] = ['id', 'eq', $post['id']];
         }
+        if(isset($post['type']) && $post['type']){
+            $where[] = ['type','=', $post['type']];
+        }
         if(!empty($post['date']))
         {
             $date_string = $post['date'];
@@ -77,6 +80,15 @@ class UserLog extends Common
     protected function tableFormat($list)
     {
         foreach($list as $k => $v) {
+            if ($v['type'] == self::USER_TYPE) {
+                $userModel              = new UserModel();
+                $userInfo               = $userModel->field('id,username,nickname,mobile')->where(['id' => $v['user_id']])->find();
+                $list[$k]['username'] = isset($userInfo['mobile']) ? $userInfo['mobile'] : $userInfo['nickname'];
+            } else {
+                $manageModel            = new Manage();
+                $manageInfo             = $manageModel->field('id,username,nickname,mobile')->where(['id' => $v['user_id']])->find();
+                $list[$k]['username'] = (isset($manageInfo['mobile'])&&$manageInfo['mobile']) ? $manageInfo['mobile'] : $manageInfo['username'];
+            }
             $list[$k]['state'] = config('params.user')['state'][$v['state']];
             $list[$k]['ctime'] = getTime($v['ctime']);
         }

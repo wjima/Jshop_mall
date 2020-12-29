@@ -522,15 +522,13 @@
 				// 获取用户信息
 				var _this = this
 				//判断是开启分销还是原始推广
-				this.$api.shopConfig(res => {
-					this.config = res;
-					if (res.open_distribution) {
-						this.order.invite.unshowItem = true
-					} else {
-						this.utilityMenus.distribution.unshowItem = true
-						this.order.invite.unshowItem = false
-					}
-				})
+				if (this.$store.state.config.open_distribution) {
+					this.order.invite.unshowItem = true
+				} else {
+					this.utilityMenus.distribution.unshowItem = true
+					this.order.invite.unshowItem = false
+				}
+				
 				if (this.$db.get('userToken')) {
 					this.hasLogin = true
 					this.$api.userInfo({}, res => {

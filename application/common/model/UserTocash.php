@@ -30,6 +30,7 @@ class UserTocash extends Common
         //判断历史提现金额
         $where[] = ['ctime','>=',strtotime(date('Y-m-d').' 00:00:00')];
         $where[] = ['ctime','<=',strtotime(date('Y-m-d').' 23:59:59')];
+        $where[] = ["type",'neq',self::TYPE_FAIL];
         $todayMoney = $this->where($where)->sum('money');
         $todayMoney = $todayMoney + $money;//历史今天提现加上本次提现
         $tocash_money_limit = getSetting('tocash_money_limit');

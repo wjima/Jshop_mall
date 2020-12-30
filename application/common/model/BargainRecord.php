@@ -86,15 +86,16 @@ class BargainRecord extends Common
     {
         foreach ($list as $k => $v) {
             $list[$k]['nickname']    = get_user_info($v['user_id'], 'nickname');
+            if ($v['status'] == self::STATUS_ING) {
+                $list[$k]['lasttime'] = secondConversionArray($v['etime'] - time());
+            }
             $list[$k]['stime']       = getTime($v['stime']);
             $list[$k]['etime']       = getTime($v['etime']);
             $list[$k]['ctime']       = getTime($v['ctime']);
             $list[$k]['utime']       = getTime($v['utime']);
             $list[$k]['status_name'] = config('params.bargain')['status'][$v['status']];
             $list[$k]['avatar']      = _sImage(get_user_info($v['user_id'], 'avatar'));
-            if ($v['status'] == self::STATUS_ING) {
-                $list[$k]['lasttime'] = secondConversionArray($v['etime'] - time());
-            }
+           
         }
         return $list;
     }

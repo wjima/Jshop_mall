@@ -54,7 +54,7 @@ class Common extends Base
         //增加退出日志
         if(session('manage.id')){
             $userLogModel = new UserLog();
-            $userLogModel->setLog(session('manage.id'),$userLogModel::USER_LOGOUT);
+            $userLogModel->setLog(session('manage.id'),$userLogModel::USER_LOGOUT,[],$userLogModel::MANAGE_TYPE);
         }
         session('manage', null);
         $this->success('退出成功',url('Index/index'));

@@ -377,7 +377,7 @@
                                         table.reload();
                                     });
                                 }else{
-                                        layer.msg(e.msg, { time: 1300});
+                                    layer.msg(e.msg, { time: 1300});
                                 }
                             });
                             return false;
@@ -385,7 +385,7 @@
                     });
                 } else {
                     layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload();
+                        // table.reload();
                     });
                 }
             });
@@ -534,10 +534,14 @@
                 __Jshop_Token__: __Jshop_Token__,
                 validate_form: validate_form
             }, function (e) {
-                layer.close(window_box);
-                layer.msg(e.msg, { time: 1300 }, function () {
-                    table.reload();
-                });
+                if (e.status) {
+                    layer.close(window_box);
+                    layer.msg('支付成功', { time: 1300 }, function () {
+                        table.reload();
+                    });
+                } else {
+                    layer.msg(e.msg, { time: 1300 });
+                }
             });
             return false;
         });
@@ -599,9 +603,13 @@
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
                 JsPost('{:url("order/cancel")}', { id: id }, function (e) {
-                    layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload();
-                    });
+                    if (e.status) {
+                        layer.msg('取消成功', { time: 1300 }, function () {
+                            table.reload();
+                        });
+                    } else {
+                        layer.msg(e.msg, { time: 1300 });
+                    }
                 });
             });
             return false;
@@ -620,10 +628,14 @@
                     title: '提示', btn: ['确认', '取消'] //按钮
                 }, function () {
                     JsPost('{:url("order/cancel")}', { id: ids }, function (e) {
-                        layer.msg(e.msg, { time: 1300 }, function () {
-                            table.reload();
+                            if (e.status) {
+                                layer.msg('取消成功', { time: 1300 }, function () {
+                                    table.reload();
+                                });
+                            } else {
+                                layer.msg(e.msg, { time: 1300 });
+                            }
                         });
-                    });
                 });
             } else {
                 layer.msg('请勾选要取消的订单');
@@ -642,9 +654,13 @@
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
                 JsPost('{:url("order/complete")}', { id: id }, function (e) {
-                    layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload();
-                    });
+                    if (e.status) {
+                        layer.msg('完成订单成功', { time: 1300 }, function () {
+                            table.reload();
+                        });
+                    } else {
+                        layer.msg(e.msg, { time: 1300 });
+                    }
                 });
             });
         });
@@ -656,9 +672,13 @@
                 title: '提示', btn: ['确认', '取消'] //按钮
             }, function () {
                 JsPost('{:url("order/del")}', { id: id }, function (e) {
-                    layer.msg(e.msg, { time: 1300 }, function () {
-                        table.reload();
-                    });
+                    if (e.status) {
+                        layer.msg('删除成功', { time: 1300 }, function () {
+                            table.reload();
+                        });
+                    } else {
+                        layer.msg(e.msg, { time: 1300 });
+                    }
                 });
             });
         });
@@ -709,12 +729,14 @@
 
                     data.push({ 'name': 'model', 'value': 'Orders' });
                     JsPost("{:url('Ietask/export')}", data, function (res) {
-                        layer.msg(res.msg, { time: 1500 }, function () {
-                            if (res.status) {
+                        if (res.status) {
+                            layer.msg('导出成功', { time: 1300 }, function () {
                                 table.reload();
                                 layer.closeAll();
-                            }
-                        });
+                            });
+                        } else {
+                            layer.msg(res.msg, { time: 1500 });
+                        }
                     }
                     );
                 }, btn2: function () {
@@ -756,13 +778,15 @@
                             var data = getFormData();
                             if (data) {
                                 var url = "{:url('order/print_tpl')}?type=4&bt=2&" + data;
-                                JsGet(url, function (res) {
-                                    layer.msg(res.msg, { time: 1500 }, function () {
-                                        if (res.status) {
+                                JsGet(url, function (e) {
+                                    if (e.status) {
+                                        layer.msg('打印成功', { time: 1500 }, function () {
                                             table.reload();
                                             layer.closeAll();
-                                        }
-                                    });
+                                        });
+                                    } else {
+                                        layer.msg(e.msg, { time: 1500 });
+                                    }
                                 });
                             }
                         },

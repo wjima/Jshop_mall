@@ -33,18 +33,13 @@ class OperationLog extends Manage
         return $logModel->tableData($request);
     }
 
-    public function userLog(){
+    public function userLog()
+    {
         $logModel = new UserLog();
-        if(Request::isAjax())
-        {
-            $request = input('param.');
-            $userInfo = $logModel->tableData($request);
-            foreach ($userInfo['data'] as &$v){
-                $userModel = new UserModel();
-                $data = $userModel->field('id,username,nickname,mobile')->where(['id' => $v['user_id']])->select();
-                $v['username'] = $data[0]['mobile'];
-            }
-            return $userInfo;
+        if (Request::isAjax()) {
+            $request         = input('param.');
+            $request['type'] = $logModel::MANAGE_TYPE;
+            return $logModel->tableData($request);
         }
         return $this->fetch('user_list');
     }

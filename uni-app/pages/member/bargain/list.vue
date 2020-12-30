@@ -9,7 +9,7 @@
 							<view class="list-title">{{ item.name }}</view>
 							<view class="count-down" v-if="item.status == 1 && item.lasttime">
 								<text class="count-down-text">倒计时</text>
-								<uniCountdown :show-colon="false" splitor-color="#868686" color="#FF7159" :day="10" />
+								<uniCountdown :show-colon="false" splitor-color="#868686" color="#FF7159" :day="item.lasttime.day" :hour="item.lasttime.hour" :minute="item.lasttime.minute" :second="item.lasttime.second"/>
 							</view>
 							<view class="red-price">
 								<text class="price-txt">已砍至</text>

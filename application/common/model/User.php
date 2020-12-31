@@ -382,7 +382,7 @@ class User extends Common
             $where[] = ['sex', 'eq', $post['sex']];
         }
         if (isset($post['id']) && $post['id'] != "") {
-            $where[] = ['id', 'eq', $post['id']];
+            $where[] = ['id', 'in', $post['id']];
         }
         if (isset($post['username']) && $post['username'] != "") {
             $where[] = ['username', 'like', '%' . $post['username'] . '%'];

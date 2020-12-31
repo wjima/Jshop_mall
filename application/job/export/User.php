@@ -30,10 +30,11 @@ class User
         $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
 
-        if (isset($filter['ids'])) {
+        if (isset($filter['ids']) && $filter['ids']) {
             $filter['id'] = explode(',', $filter['ids']);
             unset($filter['ids']);
         }
+        
         $userData = $userModel->getCsvData($filter);
         if ($userData['status']) {
             $body = $userData['data'];

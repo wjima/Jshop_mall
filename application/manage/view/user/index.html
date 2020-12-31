@@ -415,8 +415,21 @@
                 btn: ['确定', '取消'],
                 content: $("#exportUser").html(),
                 yes: function () {
+
+                    //判断是否有选中
+                    var checkStatus = layui.table.checkStatus('userTable');
+                    var checkData = checkStatus.data;
+                    var length = checkStatus.data.length;
+                    var ids = [];
+                    if(length){
+                        $.each(checkData,function (i,obj) {
+                            ids.push(obj.id);
+                        });
+                    }
+
                     //判断是否有选中
                     var filter = $(".seller-form").serialize();
+                    filter+='&ids='+ids;
                     $(".export-form:last").append("<input type='hidden' name='filter' value='" + filter + "'>");
                     var data = $(".export-form:last").serializeArray();
                     data.push({ 'name': 'model', 'value': 'User' });

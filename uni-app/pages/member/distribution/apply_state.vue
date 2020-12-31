@@ -71,13 +71,24 @@ export default {
 		var _this = this;
 		_this.$api.getDistributioninfo({check_condition:true}, function(res) {
 			if (res.status) {
-				if(res.data.need_apply && res.data.condition_status ==false){
-					_this.$common.redirectTo('/pages/member/distribution/index');
-				}
-				if(res.data.verify == 1){//审核通过
-					_this.$common.redirectTo('/pages/member/distribution/user');
-				}
 				_this.info = res.data;
+				if (_this.info.hasOwnProperty('verify')) {
+					if(_this.info.verify == 1){//审核通过
+						_this.$common.redirectTo('/pages/member/distribution/user');
+					}else if(_this.info.verify == 2 || _this.info.verify == 3){//等等审核
+					}else{//检查条件是否满足
+						if(_this.info.need_apply &&  _this.info.condition_status){//需要审核，并且条件满足
+							_this.$common.redirectTo('/pages/member/distribution/apply');
+						}else if(_this.info.need_apply && !_this.info.condition_status){//需要审核，并且条件不满足
+							_this.$common.redirectTo('/pages/member/distribution/index');
+						}else if(!_this.info.need_apply && _this.info.condition_status){//不需要审核，并且条件满足
+							_this.$common.redirectTo('/pages/member/distribution/user');
+						}else if(!_this.info.need_apply && !_this.info.condition_status){//不需要审核，并且条件不满足
+							_this.$common.redirectTo('/pages/member/distribution/index');
+						}
+					}
+				}
+				
 			} else {
 				//报错了
 				_this.$common.errorToShow(res.msg);

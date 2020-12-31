@@ -60,7 +60,7 @@ class Goods extends Common
             $limit = config('paginate.list_rows');
         }
         $tableWhere = $this->tableWhere($post);
-        $query      = $this::with('defaultImage,brand,goodsCat,goodsType')
+        $query      = $this::with('defaultImage,goodsCat,goodsType')
             ->field($tableWhere['field'])->where($tableWhere['where'])->whereOr($tableWhere['whereOr'])->order($tableWhere['order']);
 
         if ($isPage) {
@@ -192,6 +192,10 @@ class Goods extends Common
             $stock               = $productModel->where([['goods_id', '=', $val['id']]])->sum('stock');
             $freeze_stock        = $productModel->where([['goods_id', '=', $val['id']]])->sum('freeze_stock');
             $list[$key]['stock'] = ($stock - $freeze_stock) > 0 ? ($stock - $freeze_stock) : 0;
+            if (isset($val['brand_id']) && $val['brand_id']) {
+                $brand = $val->brand;
+                $list[$key]['brand_name'] =$brand['name'];
+            }
         }
         return $list;
     }
@@ -801,8 +805,9 @@ class Goods extends Common
                     }
                     $spes_desc        = substr($spes_desc, 1);
                     $val['spes_desc'] = $spes_desc;
+
                 }
-                if (count($product) > 1) { //多规格
+                if (count($product) > 1) {//多规格
                     foreach ($product as $productKey => $productVal) {
                         $i++;
                         if ($productKey != 0) {
@@ -815,20 +820,21 @@ class Goods extends Common
                         $val['stock']             = $productVal['stock'];
                         $val['product_spes_desc'] = $productVal['spes_desc'];
                         $val['is_defalut']        = $productVal['is_defalut'];
-                        $val['is_spec']           = '1'; //多规格
+                        $val['is_spec']           = '1';//多规格
                         foreach ($header as $hk => $hv) {
-                            if ($val[$hv['id']] && isset($hv['modify'])) {
-                                if (function_exists($hv['modify'])) {
+                            if (isset($val[$hv['id']]) && isset($hv['modify'])) {
+                                if ($val[$hv['id']] && function_exists($hv['modify'])) {
                                     $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
                                 }
-                            } elseif ($val[$hv['id']]) {
+                            } elseif (isset($val[$hv['id']])) {
                                 $body[$i][$hk] = $val[$hv['id']];
                             } else {
                                 $body[$i][$hk] = '';
                             }
                         }
+
                     }
-                } else { //单规格
+                } else {//单规格
                     $val['is_spec'] = '2';
                     $i++;
                     $val['sn']                = $product[0]['sn'];
@@ -839,11 +845,11 @@ class Goods extends Common
                     $val['product_spes_desc'] = $product[0]['spes_desc'];
                     $val['is_defalut']        = $product[0]['is_defalut'];
                     foreach ($header as $hk => $hv) {
-                        if ($val[$hv['id']] && isset($hv['modify'])) {
-                            if (function_exists($hv['modify'])) {
+                        if (isset($val[$hv['id']]) && isset($hv['modify'])) {
+                            if ($val[$hv['id']] && function_exists($hv['modify'])) {
                                 $body[$i][$hk] = $hv['modify']($val[$hv['id']]);
                             }
-                        } elseif ($val[$hv['id']]) {
+                        } elseif (isset($val[$hv['id']])) {
                             $body[$i][$hk] = $val[$hv['id']];
                         } else {
                             $body[$i][$hk] = '';

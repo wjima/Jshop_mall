@@ -4,6 +4,7 @@ namespace org\promotion\condition;
 
 use app\common\model\Goods;
 use app\common\model\GoodsCat;
+use app\common\model\GoodsExtendCat;
 
 class GoodsCats implements Condition
 {
@@ -11,12 +12,23 @@ class GoodsCats implements Condition
         $re = false;
         $goodsModel = new Goods();
         $goodsCatModel = new GoodsCat();
+        $goodsextendModel = new GoodsExtendCat();
         foreach($cart['list'] as $k => &$v){
             $goodsInfo = $goodsModel->find($v['products']['goods_id']);
             if(!$goodsInfo || !$goodsInfo['goods_cat_id']){
                 continue;
             }
+
             if($goodsCatModel->isChild($params['cat_id'],$goodsInfo['goods_cat_id'])){
+                if(!$re){
+                    $re = true;
+                }
+                if(!isset($v['products']['promotion_list'][$promotionInfo['id']])){
+                    $v['products']['promotion_list'][$promotionInfo['id']] = $promotionInfo['name'];
+                }
+            }
+
+            if($goodsextendModel->where("goods_id","eq",$goodsInfo["id"])->where("goods_cat_id","eq",$params["cat_id"])->find()){
                 if(!$re){
                     $re = true;
                 }

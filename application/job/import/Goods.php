@@ -186,7 +186,7 @@ class Goods
 
                                 if (isset($productData) && $productData['id'] != '') {
                                     #print_r($pval);echo '---';
-                                    $res = $productModel->updateProduct($productData['id'], $pval);
+                                    $res = $productModel->updateProduct($productData['id'], $pval,$error_code);
                                 } else {
                                     #print_r($pval);
                                     $res = $productModel->doAdd($pval);

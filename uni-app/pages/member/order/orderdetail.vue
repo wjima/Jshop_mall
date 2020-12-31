@@ -214,9 +214,13 @@
 					</view>
 				</view>
 				<view class='cell-item add-title-item' v-if="orderInfo.coupon_pmt > 0">
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd' style="overflow: inherit;">
 						<view class="cell-bd-view">
-							<text class="cell-bd-text">其他优惠</text>
+							<text class="cell-bd-text">优惠券优惠</text>
+							<image src="/static/image/tip.png" mode="" class="tips" @click="tips"></image>
+							<view class="tip" v-if="tipsShow">
+								订单优惠包括优惠券优惠
+							</view>
 						</view>
 					</view>
 					<view class='cell-item-ft'>
@@ -283,6 +287,7 @@
 					status: false,
 					code: ''
 				}, //提货信息
+				tipsShow:false
 			}
 		},
 		onLoad(options) {
@@ -484,6 +489,9 @@
 						url: '/pages/member/invoice/index?id=' + this.orderInfo.invoice.id
 					});
 				}
+			},
+			tips(){
+				this.tipsShow = !this.tipsShow;
 			}
 		}
 	}
@@ -638,4 +646,35 @@
 	.content-top{
 		padding-bottom: 116rpx;
 	}
+	.tips{
+		width: 25rpx;
+		height: 25rpx;
+		vertical-align: middle;
+		margin-left: 6rpx;
+		margin-top: 4rpx;
+	}
+	.tip{
+		position: absolute;
+		padding: 10rpx;
+		left: 104rpx;
+		bottom: 40rpx;
+		width: 288rpx;
+		font-size: 22rpx;
+		color: #999;
+		border-radius: 8rpx;
+		border: 2rpx solid #999;
+	}
+	/* .tip::before {
+	  content: " ";
+	  position: absolute;
+	  left: 44rpx;
+	  bottom: -18rpx;
+	  transform: translateX(-50%);
+	  width: 0;
+	  height: 0;
+	  border-left: 12rpx solid transparent;
+	  border-right: 12rpx solid transparent;
+	  border-top: 18rpx solid #999;
+	} */
+	
 </style>

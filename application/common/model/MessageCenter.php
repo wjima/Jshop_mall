@@ -27,6 +27,12 @@ class MessageCenter extends Common
             'message' => self::SEND_TRUE,
             'wx_tpl_message' => self::SEND_FALSE,           //当type是2的时候，这个字段可能没用
         ],
+        'order_cancle' => [
+            'name' => '订单取消时',
+            'sms' => self::SEND_FALSE,
+            'message' => self::SEND_TRUE,
+            'wx_tpl_message' => self::SEND_FALSE,           //当type是2的时候，这个字段可能没用
+        ],
         'remind_order_pay' =>[                              //订单快关闭的时候，提醒用户去支付
             'name' => '订单催付提醒',
             'sms' => self::SEND_FALSE,

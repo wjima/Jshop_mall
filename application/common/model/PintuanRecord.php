@@ -191,7 +191,7 @@ class PintuanRecord extends Model{
         if($team_count >= $params['people_number']){
             $team_data['status'] = self::STATUS_FINISH;       //如果拼团成功
             $this->save($team_data,['team_id'=>$info['team_id']]);
-            $Promotion->sendmessage($team_where);//拼团成功发送消息
+//            $Promotion->sendmessage($team_where);//拼团成功发送消息
         }
 
         return true;
@@ -476,7 +476,7 @@ class PintuanRecord extends Model{
             $order_data['pay_status'] = $orderModel::PAY_STATUS_REFUNDED;
             $order_data['status']     = $orderModel::ORDER_STATUS_COMPLETE;
             $orderModel->save($order_data,['order_id'=>$order_info['order_id']]);
-            $promotionRecord->hookdata($order_id);//拼团失败发送消息
+//            $promotionRecord->hookdata($order_id);//拼团失败发送消息
         }
         return true;
     }

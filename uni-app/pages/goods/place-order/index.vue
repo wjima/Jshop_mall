@@ -306,9 +306,9 @@
 <script>
 import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
 import uniSegmentedControl from '@/components/uni-segmented-control/uni-segmented-control.vue';
-import { goods } from '@/config/mixins.js';
+import { goods,subscription } from '@/config/mixins.js';
 export default {
-	mixins: [goods],
+	mixins: [goods,subscription],
 	data() {
 		return {
 			type_items: ['快递配送', '门店自提'], //门店自提切换
@@ -362,22 +362,9 @@ export default {
 			record_id: 0 ,//砍价活动id
 			group_id:0,//团购活动id
 			msgList: [
-			    {
-					name: '拼团成功',
-			        desc: '拼团成功后通知我',
-					func: 'pintuan_success',
-			        tmpl: '',
-			        status: false,
-			        is: false
-				},
-				{
-					name: '拼团失败',
-			        desc: '拼团失败后通知我',
-					func: 'pintuan_refund',
-			        tmpl: '',
-			        status: false,
-			        is: false
-				}
+			    { name: '拼团成功', desc: '拼团成功后通知我', func: 'pintuan_success', tmpl: '', status: false,  is: false },
+				{ name: '拼团失败', desc: '拼团失败后通知我', func: 'pintuan_refund', tmpl: '', status: false,  is: false },
+				{ name: '下单成功', desc: '下单成功通知我', func: 'order', tmpl: '', status: false,  is: false },
 			]
 		};
 	},
@@ -425,6 +412,9 @@ export default {
 		// #endif
 	},
 	onShow() {
+		// #ifdef MP-WEIXIN
+		this.getSubscriptionTmplIds('order')
+		// #endif
 		let user_ship = this.$db.get('address_user_ship', true);
 		if (user_ship) {
 			this.userShip = user_ship;
@@ -1040,65 +1030,9 @@ export default {
 			data['source'] = 6;
 			// #endif
 			data = Object.assign(data, delivery);
-			
-			// #ifdef MP-WEIXIN
-			// 发起订阅
-			if(this.params.order_type==2){
-			    let tmplIds = []
-				this.msgList.forEach(function(element, index) {
-					if(element.status && !element.is){
-					  tmplIds.push(element.tmpl)
-					}
-				});
-			    uni.requestSubscribeMessage({
-			        tmplIds:tmplIds,
-			        success (res) {
-			            if (res.errMsg == "requestSubscribeMessage:ok" ) {
-			                tmplIds.forEach(function(element, index) {
-			                        let data = {
-			                            'template_id': element,
-			                            'status': res[element]
-			                        }
-			                        _this.$api.setSubscriptionStatus(data, e => {
-			                            _this.getSubscriptionTmplIds();
-			                        });
-			                       });
-			                } else {
-			                _this.$common.errorToShow('操作失败，请稍候重试！', r => {
-			                    _this.getSubscriptionTmplIds();
-			                });
-			            }
-			        },
-			    	fail(res){
-			    		console.log(res);
-			    	},
-			        complete(){
-						_this.$api.createOrder(
-							data,
-							res => {
-								if (res.status) {
-									// 创建订单成功 去支付
-									// this.submitStatus = false;
-									// 判断是否为0元订单,如果是0元订单直接支付成功
-									if (res.data.pay_status == '2') {
-										_this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
-									} else {
-										_this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + _this.orderType);
-									}
-								} else {
-									_this.$common.errorToShow(res.msg);
-								}
-							},
-							res => {
-								_this.submitStatus = false;
-							}
-						);
-					}
-				})
-			} else {
-				_this.$api.createOrder(
-					data,
-					res => {
+		
+			this.subAction(() => {
+				 _this.$api.createOrder(data, res => {
 						if (res.status) {
 							// 创建订单成功 去支付
 							// this.submitStatus = false;
@@ -1116,32 +1050,7 @@ export default {
 						_this.submitStatus = false;
 					}
 				);
-			}
-			// #endif
-			
-			// #ifndef MP-WEIXIN
-			_this.$api.createOrder(
-				data,
-				res => {
-					if (res.status) {
-						// 创建订单成功 去支付
-						// this.submitStatus = false;
-						// 判断是否为0元订单,如果是0元订单直接支付成功
-						if (res.data.pay_status == '2') {
-							_this.$common.redirectTo('/pages/goods/payment/result?order_id=' + res.data.order_id);
-						} else {
-							_this.$common.redirectTo('/pages/goods/payment/index?order_id=' + res.data.order_id + '&type=' + _this.orderType);
-						}
-					} else {
-						_this.$common.errorToShow(res.msg);
-					}
-				},
-				res => {
-					_this.submitStatus = false;
-				}
-			);
-			// #endif
-			
+			})
 		},
 		// 跳转发票页面
 		goInvoice() {

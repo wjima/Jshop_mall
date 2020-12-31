@@ -27,6 +27,9 @@
     {/empty}
     {notempty name="$template_params"}
         <div style="padding: 30px;" class="layui-form layui-form-pane">
+            <div>
+                保存的时候，请检查下配置项前是否有空格，一定不能有空格哦~
+            </div>
             <div class="layui-tab layui-tab-brief">
                 <ul class="layui-tab-title">
                     {volist name="template" id="vo"}
@@ -51,11 +54,14 @@
             </div>
         </div>
     {/notempty}
+
+
     <script>
         layui.use('element', function () {
             //监听提交
             var $ = layui.jquery
                 , element = layui.element;
+            element.render();
         });
     </script>
 </form>

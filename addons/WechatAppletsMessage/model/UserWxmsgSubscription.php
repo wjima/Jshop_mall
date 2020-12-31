@@ -21,37 +21,31 @@ class UserWxmsgSubscription extends Model
     /**
      * 获取模板信息
      * @param $user_id
+     * @param $type 模板消息类型，一个地方最多只能有3个消息订阅提醒
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function tmpl($user_id)
+    public function tmpl($user_id, $type = 'order')
     {
-        $return = [
+        $return         = [
             'status' => false,
-            'msg' => error_code(10025,true),
-            'data' => []
+            'msg'    => error_code(10025, true),
+            'data'   => []
         ];
-
-        $addonModel = new addonsModel();
+        $addonModel     = new addonsModel();
         $return['data'] = $addonModel->getSetting('WechatAppletsMessage');
+        $template       = $return['data']['template'];
+
         if ($return['data']) {
-            $userArr = $this->where('user_id', '=', $user_id)
-                ->select();
-            foreach ($return['data'] as &$v) {
-                $v['is'] = false;
-                if ($v['template_id'] != "") {
-                    foreach ($userArr as $vv) {
-                        if ($v['template_id'] == $vv['template_id']) {
-                            $v['is'] = true;
-                        }
-                    }
+            foreach ($return['data'] as $key => &$v) {
+                if (!isset($v['template_id']) || !$v['template_id'] || (isset($template[$key]) && $template[$key]['type'] != $type)) {
+                    unset($return['data'][$key]);
                 }
             }
-
             $return['status'] = true;
-            $return['msg'] = '获取成功';
+            $return['msg']    = '获取成功';
         }
         return $return;
     }

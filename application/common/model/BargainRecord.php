@@ -144,7 +144,12 @@ class BargainRecord extends Common
         $recData['end_price']   = $info['end_price'];
         $recData['price']       = $info['start_price'];
         $recData['stime']       = time();
-        $recData['etime']       = time() + $info['significant_interval'] * 3600;
+        if($info['significant_interval']){
+            $recData['etime']       = time() + $info['significant_interval'] * 3600;
+        }else{
+            $recData['etime']       = $info['etime'];
+        }
+
         if (!$this->save($recData)) {
             $result['msg'] = error_log(17618,true);//'发起砍价活动失败';
             return $result;

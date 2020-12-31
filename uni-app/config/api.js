@@ -847,7 +847,7 @@ export const ttlogin = (data, callback) => post('user.ttlogin', data, callback);
 export const getTaxInfo = (data, callback) => post('order.gettaxcode', data, callback);
 
 //获取订阅模板
-export const getSubscriptionTmplIds = callback => pluginsPost('wechat_applets_message-api-tmpl', {}, callback);
+export const getSubscriptionTmplIds = (data, callback) => pluginsPost('wechat_applets_message-api-tmpl', data, callback);
 
 //订阅状态修改
 export const setSubscriptionStatus = (data, callback) => pluginsPost('wechat_applets_message-api-settip', data, callback);

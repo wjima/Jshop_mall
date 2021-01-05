@@ -994,7 +994,7 @@ new Vue({
         savePage: function () {
           var data = {
             pageCode: pageCode,
-            data: this.$refs.layout.pageData
+            data: JSON.stringify(this.$refs.layout.pageData)//改为json形式往后台传，避免表单项过多问题以及布尔转字符串问题
           }
           JsPost(this.saveUrl, data, function (res) {
             if (res.status) {

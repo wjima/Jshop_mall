@@ -240,6 +240,7 @@ class Balance extends Common
      */
     protected function tableFormat($list)
     {
+        $paymentRelModel = new BillPaymentsRel();
         foreach($list as $k => $v)
         {
             if($v['ctime'])
@@ -249,6 +250,12 @@ class Balance extends Common
             if($v['type'])
             {
                 $list[$k]['type'] = config('params.balance')['type'][$v['type']];
+            }
+            $rel = $paymentRelModel->where([['payment_id','=',$v['source_id']]])->cache(true)->find();
+            if($rel){
+                $list[$k]['order_id'] = $rel['source_id'];
+            }else{
+                $list[$k]['order_id'] = '';
             }
         }
         return $list;
@@ -293,7 +300,7 @@ class Balance extends Common
         {
             $where[] = ['type', 'eq', $type];
         }
-
+        $paymentRelModel = new BillPaymentsRel();
         $data = $this->where($where)->order($order)->page($page, $limit)->select();
         if(!$data->isEmpty())
         {
@@ -301,6 +308,12 @@ class Balance extends Common
             {
                 $v['type'] = config('params.balance')['type'][$v['type']];
                 $v['ctime'] = getTime($v['ctime']);
+                $rel = $paymentRelModel->where([['payment_id','=',$v['source_id']]])->cache(true)->find();
+                if($rel){
+                    $v['order_id'] = $rel['source_id'];
+                }else{
+                    $v['order_id'] = '';
+                }
             }
             $result['data'] = $data;
         }
@@ -366,6 +379,11 @@ class Balance extends Common
             [
                 'id' => 'source_id',
                 'desc' => '外部ID',
+                'modify'=>'convertString'
+            ],
+            [
+                'id' => 'order_id',
+                'desc' => '订单号',
                 'modify'=>'convertString'
             ],
             [

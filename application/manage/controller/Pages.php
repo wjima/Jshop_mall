@@ -21,6 +21,7 @@ use think\facade\Cache;
 class Pages extends Manage
 {
 
+
     public function index()
     {
         $page = new pagesModel();
@@ -121,5 +122,28 @@ class Pages extends Manage
             'msg'    => '删除成功',
             'data'   => []
         ];
+    }
+
+    /**
+     * 设置首页
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function setHome()
+    {
+        $result     = [
+            'status' => true,
+            'msg'    => '设置成功',
+            'data'   => [],
+        ];
+        $id         = input('id', '');
+        $pagesModel = new pagesModel();
+        $res        = $pagesModel->where([['id', '=', $id]])->update(['is_main' => $pagesModel::MAIN_YES]);
+        $pagesModel->where([['id', 'neq', $id]])->update(['is_main' => $pagesModel::MAIN_NO]);
+        if (!$res) {
+            return error_code(10081);
+        }
+        Cache::clear();
+        return $result;
     }
 }

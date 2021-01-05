@@ -21,13 +21,14 @@
             id: 'pagesTable',
             url: "{:url('Pages/index')}",
             cols: [[ //标题栏
+                { title: '操作', toolbar: '#pagesBar', align: 'center', width: 200 },
                 { field: 'id', width: 90, title: 'ID', align: 'center' },
                 { field: 'name', title: '名称', align: 'center', width: 160 },
+                { field: 'main', title: '首页', align: 'center', width: 160 },
                 { field: 'code', title: '编码', align: 'center', width: 160 },
                 { field: 'desc', sort: true, title: '描述', align: 'center' },
                 { field: 'layout', sort: true, title: '布局样式', align: 'center', width: 110 },
-                { field: 'type', sort: true, title: '布局类型', align: 'center', width: 110 },
-                { title: '操作', toolbar: '#pagesBar', align: 'center', width: 120 }
+                { field: 'type', sort: true, title: '布局类型', align: 'center', width: 110 }
             ]]
         });
 
@@ -56,6 +57,13 @@
                         }
                         layer.msg(res.msg);
                     });
+                });
+            }else if(layEvent === 'setHome'){
+                JsPost("{:url('Pages/setHome')}" ,{'id':data.id}, function (res) {
+                    layer.msg(res.msg);
+                    if (res.status) {
+                        table.reload('pagesTable');
+                    }
                 });
             }
         });
@@ -93,7 +101,8 @@
 </script>
 <script type="text/html" id="pagesBar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    {{# if (d.code != 'mobile_home') { }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# if (d.is_main != '1') { }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setHome">设为首页</a>
     {{# }; }}
 </script>

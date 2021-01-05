@@ -896,3 +896,6 @@ export const getGroupProductInfo = (data, callback) => post('group.getproductinf
 
 // 分享配置
 export const getShareInfo = (data, callback) => post('weixinshare.share', data, callback);
+
+// 获取首页配置
+export const getHomePageConfig = (data, callback) => post('pages.gethomepageconfig', data, callback);

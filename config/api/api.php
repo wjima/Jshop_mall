@@ -712,7 +712,11 @@ return [
             'getrecod'      => [
                 'code'     => 'getRecod',
                 'is_login' => false
-            ]
+            ],
+            'gethomepageconfig' => [
+                'code'     => 'getHomePageConfig',
+                'is_login' => false
+            ],
         ]
     ],
     'pintuan'     => [

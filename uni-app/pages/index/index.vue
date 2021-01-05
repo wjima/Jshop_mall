@@ -118,9 +118,11 @@
 			// 首页初始化获取数据
 			initData() {
 				//获取首页配置
-				this.$api.getPageConfig({
-						code: this.pageCode
-					},
+				let data = {};
+				if (this.$db.get('userToken')) {
+					data.token = this.$db.get('userToken');
+				}
+				this.$api.getHomePageConfig(data,
 					res => {
 						if (res.status == true) {
 							this.pageData = res.data.items;

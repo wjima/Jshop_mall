@@ -12,6 +12,9 @@ namespace app\common\model;
 class Pages extends Common
 {
 
+    const MAIN_YES = 1;//首页
+    const MAIN_NO = 2;//主页
+
     /**
      * @param $post
      *
@@ -59,6 +62,7 @@ class Pages extends Common
         foreach ($list as &$val) {
             $val['layout'] = config('params.pages.layout')[$val['layout']];
             $val['type']   = config('params.pages.type')[$val['type']];
+            $val['main']   = config('params.pages.is_main')[$val['is_main']];
         }
         return $list;
     }
@@ -94,7 +98,7 @@ class Pages extends Common
      * @param bool|false $api 是否接口访问，接口为前台
      * @return array
      */
-    public function getDetails($page_code, $token = '')
+    public function getHomeDetails($token = '')
     {
         $result          = [
             'status' => true,
@@ -103,12 +107,29 @@ class Pages extends Common
         ];
         $pageModel       = new Pages();
         $pagesItemsModel = new PagesItems();
-        $pageinfo        = $pageModel->where([['code', '=', $page_code]])->cache(86400)->find();
-        $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->cache(86400)->select();
+        $result['data']  = $pageModel->where([['is_main', '=', 1]])->cache(86400)->find();
+        if(!$result['data']){
+            return error_code(34800);
+        }
+        $data            = $pagesItemsModel->where([['page_code', '=', $result['data']['code']]])->order('sort asc')->cache(86400)->select();
 
         if ($data->isEmpty()) {
             return error_code(34800);
         }
+        $contentRes = $this->getContent($data,$token);
+        if (!$contentRes['status']) {
+            return $contentRes;
+        }
+        $result['data']['items'] = $contentRes['data'];
+        return $result;
+    }
+
+    public function getContent($data,$token = ''){
+        $result            = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [],
+        ];
         try {
             $data = $data->toArray();
             $i    = 0;
@@ -223,10 +244,41 @@ class Pages extends Common
             $result['msg']    = $e->getMessage();
             return $result;
         }
-        $pageinfo['items'] = $data;
-        $result['data']    = $pageinfo;
+        $result['data'] = $data;
         return $result;
     }
+    /**
+     * 获取页面配置详情
+     * 调整为只前台获取用
+     * @param $page_code 页面编码
+     * @param string $token
+     * @param bool|false $api 是否接口访问，接口为前台
+     * @return array
+     */
+    public function getDetails($page_code, $token = '')
+    {
+        $result          = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [],
+        ];
+        $pageModel       = new Pages();
+        $pagesItemsModel = new PagesItems();
+        $result['data']  = $pageModel->where([['code', '=', $page_code]])->cache(86400)->find();
+
+        $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->cache(86400)->select();
+
+        if ($data->isEmpty()) {
+            return error_code(34800);
+        }
+        $contentRes = $this->getContent($data,$token);
+        if (!$contentRes['status']) {
+            return $contentRes;
+        }
+        $result['data']['items'] = $contentRes['data'];
+        return $result;
+    }
+
 
 
     public function addData($data = [])

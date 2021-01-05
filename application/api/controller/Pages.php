@@ -11,6 +11,23 @@ use app\common\model\User;
  */
 class Pages extends Api
 {
+    /***
+     * 获取首页配置
+     * @return array
+     */
+    public function getHomePageConfig()
+    {
+        $result             = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => []
+        ];
+        $token              = input('token/s', '');
+        $pageModel          = new \app\common\model\Pages();
+        $result             = $pageModel->getHomeDetails($token);
+        return $result;
+    }
+
     public function getPageConfig()
     {
         $result             = [
@@ -19,8 +36,9 @@ class Pages extends Api
             'data'   => []
         ];
         $input['page_code'] = input('code/s', 'mobile_home');
+        $token              = input('token/s', '');
         $pageModel          = new \app\common\model\Pages();
-        $result             = $pageModel->getDetails($input['page_code'],'',true);
+        $result             = $pageModel->getDetails($input['page_code'], $token, true);
         return $result;
     }
 

@@ -22,7 +22,7 @@
 				<view class="footer-button">
 					<text class="txt" v-if="item.status == 1">活动进行中</text>
 					<text class="txt" v-if="item.status == 2">砍价成功</text>
-					<text class="txt" v-if="item.status == 3">活动已成交</text>
+					<text class="txt" v-if="item.status == 3">活动已生成订单</text>
 					<text class="txt" v-if="item.status == 4">活动结束</text>
 					<text class="txt" v-if="item.status == 5">活动已取消</text>
 					<view class="btn-wrap">

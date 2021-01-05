@@ -266,8 +266,8 @@ class BargainRecord extends Common
         $current_time = time();
         $where        = [];
         $where[]      = ['etime', '<', $current_time];
-        $where[]      = ['status', '=', self::STATUS_END];
-        $this->where($where)->update(['status' => self::STATUS_END]);
+        $where[]      = ['status', 'in', [self::STATUS_ING, self::STATUS_END]];
+        $this->where($where)->update(['status' => self::STATUS_CANCLE]);
     }
 
 }

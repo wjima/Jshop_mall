@@ -360,12 +360,12 @@
 					}
 				],
 				order: {
-					// bargain: {
-					// 	name: '砍价记录',
-					// 	icon: '/static/image/me-ic-sendout.png',
-					// 	router: '../bargain/list',
-					// 	unshowItem: false
-					// },
+					bargain: {
+						name: '砍价记录',
+						icon: '/static/image/me-ic-sendout.png',
+						router: '../bargain/list',
+						unshowItem: false
+					},
 					invite: {
 						name: '邀请好友',
 						icon: '/static/image/ic-me-invite.png',

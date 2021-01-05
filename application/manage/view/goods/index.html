@@ -170,8 +170,8 @@
                     html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'goods/commentList\')}?goods_id=' + data.id + '">查看评价</a>';
                     return html;
                 }},
-                {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
-                {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},
+              /*  {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
+                {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},*/
                 {field:'marketable', width:100,title:'上下架', align: 'center',templet: "#is_able", unresize: true},
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';

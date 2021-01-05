@@ -318,7 +318,7 @@ export const clickUrl = {
 
 					// #ifndef H5
 					uni.navigateTo({
-						url: '/pageactivity/webview/index.vue?src=' + val
+						url: '/pages/webview/index.vue?src=' + val
 					})
 					// #endif
 				} else {
@@ -329,8 +329,8 @@ export const clickUrl = {
 							url: val
 						});
 						return;
-					} else if (val.indexOf('/pageactivity/coupon/coupon') > -1) {
-						var id = val.replace('/pageactivity/coupon/coupon?id=', "");
+					} else if (val.indexOf('/pages/coupon/coupon') > -1) {
+						var id = val.replace('/pages/coupon/coupon?id=', "");
 						this.receiveCoupon(id)
 					} else {
 						navigateTo(val);
@@ -343,10 +343,10 @@ export const clickUrl = {
 				this.goodsDetail(val)
 			} else if (type == 3) {
 				// 文章详情
-				this.$common.navigateTo('/pageactivity/article/index?id=' + val + '&id_type=1')
+				this.$common.navigateTo('/pages/article/index?id=' + val + '&id_type=1')
 			} else if (type == 4) {
 				// 文章列表
-				this.$common.navigateTo('/pageactivity/article/list?cid=' + val)
+				this.$common.navigateTo('/pages/article/list?cid=' + val)
 			} else if (type == 5) {
 				//智能表单 
 				this.$common.navigateTo('/pages/form/detail/form?id=' + val)

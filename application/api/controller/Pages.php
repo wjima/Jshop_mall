@@ -96,7 +96,12 @@ class Pages extends Api
             $orderModel = new Order();
             $orders     = $orderModel->order('ctime','desc')->field('order_id,user_id,ctime')->limit(0, 5)->select();
             if (!$orders->isEmpty()) {
-                $order     = $orders[rand(0, 4)];
+                $total = $orderModel->where('1','=','1')->cache(86400)->count();
+                if($total>5){
+                    $order     = $orders[rand(0, 4)];
+                }else{
+                    $order     = $orders[rand(0, $total-1)];
+                }
                 $info      = [];
                 $userModel = new User();
                 if (isset($order['user_id']) && $order['user_id']) {

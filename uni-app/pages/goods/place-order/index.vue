@@ -81,8 +81,10 @@
 					<image class="img-list-item-l little-img have-none" :src="item.products.image_path" mode="aspectFill"></image>
 					<view class="img-list-item-r little-right">
 						<view class="little-right-t">
-							<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">{{ item.products.name || '' }}
-								<text class="gift" v-if="item.type == 7">[赠品]</text></view>
+							<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">
+								<text class="gift" v-if="item.type == 7">[赠品]</text>
+								{{ item.products.name || '' }}
+							</view>
 							<view class="goods-price" v-if="item.type != 7">￥{{ item.products.price || '' }}</view>
 						</view>
 						<view class="romotion-tip" v-if="item.products.promotion_list">

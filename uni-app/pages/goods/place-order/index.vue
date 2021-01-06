@@ -91,8 +91,10 @@
 							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
 							 :key="k">{{ v.name || '' }}
 							</view> -->
-							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k">{{ v || '' }}
-							</view>
+							<block v-for="(v, k) in item.products.promotion_list">
+								<view class="romotion-tip-item"  :key="k" v-if="v">{{ v || '' }}
+								</view>
+							</block>
 						</view>
 						<view class="goods-item-c">
 							<view class="goods-buy">

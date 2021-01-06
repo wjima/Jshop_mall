@@ -138,7 +138,8 @@ class Goods extends Api
         $order       = input('order', 'sort asc,id desc');
         $filter      = []; //过滤条件
         $class_name['data']  = '';
-        $where = $whereOr = [];
+        $where  = [];
+        $whereRaw = ' 1=1 '; //扩展sql
         if (input('?param.where')) {
             $postWhere = json_decode(input('param.where'), true);
 
@@ -152,21 +153,22 @@ class Goods extends Api
             //商品分类,同时取所有子分类 todo 无限极分类时要注意
             if (isset($postWhere['cat_id']) && $postWhere['cat_id']) {
                 $goodsCatModel = new GoodsCat();
-                $catIds        = [];
+                $cat_ids        = [];
                 $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
                 if (!$childCats->isEmpty()) {
                     $filter['child_cats'] = $childCats;
                 }
-                $catIds   = array_column($childCats->toArray(), 'id');
-                $catIds[] = $postWhere['cat_id'];
-                $where[]  = ['g.goods_cat_id', 'in', $catIds];
+                $cat_ids   = array_column($childCats->toArray(), 'id');
+                $cat_ids[] = $postWhere['cat_id'];
+                //$where[]  = ['g.goods_cat_id', 'in', $catIds];
                 $class_name = $goodsCatModel->getNameById($postWhere['cat_id']);
 
-
                 $goodsExtendCat = new GoodsExtendCat();
-                $gids = $goodsExtendCat->getGoodsIdByCat($catIds, true);
-                if ($gids) {
-                    $whereOr[] = ['g.id', 'in', $gids];
+                $goods_ids = $goodsExtendCat->getGoodsIdByCat($cat_ids, true);
+                if ($goods_ids) {
+                    $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') or g.id in (' . implode(',', $goods_ids) . ') ) ';
+                } else {
+                    $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') ) ';
                 }
             }
             //价格区间
@@ -208,7 +210,7 @@ class Goods extends Api
         $page_limit = config('jshop.page_limit');
         $limit      = $limit ? $limit : $page_limit;
 
-        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit, $whereOr);
+        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit, $whereRaw);
         if ($returnGoods['status']) {
             $return_data['msg']                = '查询成功';
             $return_data['data']['list']       = $returnGoods['data'];
@@ -235,28 +237,30 @@ class Goods extends Api
      */
     public function getDetial()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10027, true),
-            'data'   => []
-        ];
+        //$return_data = [
+        //  'status' => false,
+        //  'msg'    => error_code(10027, true),
+        //  'data'   => []
+        // ];
         $goods_id    = input('id/d', 0); //商品ID
         $token       = input('token', ''); //token值 会员登录后传
         if (!$goods_id) {
-            return $return_data;
+            return error_code(10027);
         }
         $field       = input('field', '*');
         $return_data = $this->allowedField($field);
         $goodsModel  = new GoodsModel();
         $returnGoods = $goodsModel->getGoodsDetial($goods_id, $field, $token);
-        if ($returnGoods['status']) {
-            $return_data['msg']  = '查询成功';
-            $return_data['data'] = $returnGoods['data'];
-        } else {
-            $return_data['msg']    = $returnGoods['msg'];
-            $return_data['status'] = false;
-        }
-        return $return_data;
+
+        // if ($returnGoods['status']) {
+        //     // $return_data['msg']  = '';
+        //     // $return_data['data'] = $returnGoods['data'];
+        //     return $returnGoods;
+        // } else {
+        //     $return_data['msg']    = $returnGoods['msg'];
+        //     $return_data['status'] = false;
+        // }
+        return $returnGoods;
     }
 
     //app版的获取商品明细接口，因为多规格的传值问题，导致java解析不了多规格数据，在此做了转化
@@ -300,19 +304,17 @@ class Goods extends Api
     {
         $return_data = [
             'status' => false,
-            'msg'    => error_code(12701, true),
-            'data'   => []
+            'data' => [],
+            'msg' => ''
         ];
         $spec_value  = input('spec', '');
         $goods_id    = input('id/d', 0); //商品ID
         $token       = input('token', ''); //token值 会员登录后传
 
-        if (!$goods_id) {
-            return $return_data;
+        if (!$goods_id || !$spec_value) {
+            return error_code(12701);
         }
-        if (!$spec_value) {
-            return $return_data;
-        }
+
         $goodsModel  = new GoodsModel();
         $returnGoods = $goodsModel->getGoodsDetial($goods_id, 'id,bn,name,image_id,goods_cat_id,goods_type_id,brand_id,spes_desc', $token);
         if ($returnGoods['status']) {
@@ -390,11 +392,7 @@ class Goods extends Api
      */
     public function getProductInfo()
     {
-        $return_data = [
-            'status' => false,
-            'msg'    => error_code(10033, true),
-            'data'   => []
-        ];
+        // $return_data = error_code(10033);
         $product_id  = input('id/d', 0); //货品ID
         $token       = input('token', ''); //token值 会员登录后传
         $type       = input('type', 'goods'); //商品类型,默认是商品
@@ -406,13 +404,13 @@ class Goods extends Api
         $productsModel      = new Products();
         $user_id            = getUserIdByToken($token); //获取user_id
         $product            = $productsModel->getProductInfo($product_id, true, $user_id, $type);
-        $return_data['msg'] = $product['msg'];
-        if (!$product['status']) {
-            return $return_data;
-        }
-        $return_data['data']   = $product['data'];
-        $return_data['status'] = true;
-        return $return_data;
+        // $return_data['msg'] = $product['msg'];
+        // if (!$product['status']) {
+        //     return $return_data;
+        // }
+        // $return_data['data']   = $product['data'];
+        // $return_data['status'] = true;
+        return $product;
     }
 
     //app版的获取商品明细接口，因为多规格的传值问题，导致java解析不了多规格数据，在此做了转化
@@ -513,6 +511,7 @@ class Goods extends Api
         }
         $filter      = []; //过滤条件
         $class_name['data']  = '';
+        $whereRaw = '1 = 1';
         if (input('?param.where')) {
             $postWhere = json_decode(input('param.where'), true);
             //判断商品搜索,
@@ -525,15 +524,23 @@ class Goods extends Api
             //商品分类,同时取所有子分类 todo 无限极分类时要注意
             if (isset($postWhere['cat_id']) && $postWhere['cat_id']) {
                 $goodsCatModel = new GoodsCat();
-                $catIds        = [];
+                $cat_ids        = [];
                 $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
                 if (!$childCats->isEmpty()) {
                     $filter['child_cats'] = $childCats;
                 }
-                $catIds   = array_column($childCats->toArray(), 'id');
-                $catIds[] = $postWhere['cat_id'];
-                $where[]  = ['g.goods_cat_id', 'in', $catIds];
+                $cat_ids   = array_column($childCats->toArray(), 'id');
+                $cat_ids[] = $postWhere['cat_id'];
+                //$where[]  = ['g.goods_cat_id', 'in', $catIds];
                 $class_name = $goodsCatModel->getNameById($postWhere['cat_id']);
+
+                $goodsExtendCat = new GoodsExtendCat();
+                $goods_ids = $goodsExtendCat->getGoodsIdByCat($cat_ids, true);
+                if ($goods_ids) {
+                    $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') or g.id in (' . implode(',', $goods_ids) . ') ) ';
+                } else {
+                    $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') ) ';
+                }
             }
             //价格区间
             if (isset($postWhere['price_f']) && $postWhere['price_f']) {
@@ -572,10 +579,10 @@ class Goods extends Api
 
         $page_limit = config('jshop.page_limit');
         $limit      = $limit ? $limit : $page_limit;
-        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit);
+        $returnGoods = $goodsModel->getList($field, $where, $order, $page, $limit, $whereRaw);
         if ($lastLimit > 0) {
             $where[]    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
-            $otherGoods = $goodsModel->getList($field, $where, $order, $page, $lastLimit);
+            $otherGoods = $goodsModel->getList($field, $where, $order, $page, $lastLimit, $whereRaw);
             $returnGoods['data'] = array_merge($returnGoods['data'], $otherGoods['data']);
         }
         if ($returnGoods['status']) {
@@ -629,5 +636,14 @@ class Goods extends Api
         $order      = input('order', 10);
         $goodsModel = new GoodsModel();
         return $goodsModel->promotiongoods($page, $limit, $order);
+    }
+
+    /**
+     * 获取销量排名前十的商品
+     */
+    public function salesRanking()
+    {
+        $goodsModel = new GoodsModel();
+        return $goodsModel->salesRanking();
     }
 }

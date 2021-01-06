@@ -1,10 +1,13 @@
 <template>
 	<view class="content">
-		<view class="nav-back">
+		<hx-navbar :fixed="true" :title="barTitle" barPlaceholder="hidden" transparent="auto" color="#000000"
+		 :background-color="[[255, 255, 255],[255, 255, 255]]" :pageScroll.sync="scrollData">
+		</hx-navbar>
+		<!-- <view class="nav-back">
 			<view class="back-btn" @click="backBtn()">
 				<image class="icon" src="/static/image/back-black.png" mode=""></image>
 			</view>
-		</view>
+		</view> -->
 
 		<view class="content-top">
 			<!-- 轮播图 -->
@@ -75,7 +78,7 @@
 					<view class="cell-item-bd">
 						<view class="romotion-tip">
 							<view class="romotion-tip-item" :class="item.type !== 2 ? 'bg-gray' : ''" v-for="(item, index) in promotion"
-							 :key="index">{{ item.name || '' }}</view>
+							 :key="index">{{ item.name || item ||'' }}</view>
 						</view>
 					</view>
 				</view>
@@ -86,7 +89,7 @@
 					<view class="cell-item-hd">
 						<view class="cell-hd-title">规格</view>
 					</view>
-					<view class="cell-item-bd" @click="toshow()">
+					<view class="cell-item-bd" @click="toshow(1)">
 						<text class="cell-bd-text">{{ product.spes_desc || '' }}</text>
 					</view>
 				</view>
@@ -270,7 +273,7 @@
 						<text class="red-price">{{ teamInfo.team_nums || '' }}</text>
 						人，赶快拼单吧
 					</view>
-					<view class="igtb-mid"><button class="btn" @click="toshow(2, teamInfo.id)">参与拼团</button></view>
+					<view class="igtb-mid"><button class="btn" @click="toshow(2, teamInfo.id)" v-if="teamInfo.team_nums && teamInfo.team_nums > 0">参与拼团</button></view>
 				</view>
 			</view>
 		</lvv-popup>
@@ -473,6 +476,8 @@
 		},
 		data() {
 			return {
+				scrollData: {},
+				barTitle: '',
 				swiper: {
 					indicatorDots: true,
 					autoplay: true,
@@ -559,7 +564,9 @@
 						second: 0
 					} //被邀请拼团倒计时
 				},
-				shareUrl: '/pages/share/jump'
+				shareUrl: '/pages/share/jump',
+				userInfo: {}, // 用户信息
+				kefupara: '', //客服传递资料
 			};
 		},
 		onLoad(e) {
@@ -783,10 +790,11 @@
 				let index = obj.v;
 				let key = obj.k;
 				//type = 1是立即购买，2是拼团购买
-				if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index]
+				let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+				if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index]
 					[key].product_id) {
 					let data = {
-						id: this.product.default_spes_desc[index][key].product_id,
+						id: tmp_default_spes_desc[index][key].product_id,
 						type: 'pintuan' //商品类型
 					};
 					let userToken = this.$db.get('userToken');
@@ -804,7 +812,8 @@
 								this.product.mktprice = this.product.price;//原价
 								this.price = this.pintuanPrice = this.$common.moneySub(this.product.price, this.discount_amount);
 							} else {
-								this.price = this.pintuanPrice = this.product.price;
+								// this.price = this.pintuanPrice = this.product.price;
+								this.price = this.product.price;
 							}
 						}
 					});
@@ -832,6 +841,7 @@
 							}
 						}
 					}
+					spes = JSON.stringify(spes).replace(/\./g,'====');
 					products.default_spes_desc = spes;
 				}
 				return products;
@@ -1060,11 +1070,18 @@
 				imageUrl: this.goodsInfo.album[0],
 				path: this.shareUrl
 			};
-		}
+		},
+		onPageScroll(e) {
+			this.barTitle = e.scrollTop > 100 ? '商品详情' : ''
+			this.scrollData = e
+		},
 	};
 </script>
 
 <style>
+	.content-top {
+		padding-bottom: 40rpx;
+	}
 	.swiper {
 		height: 750upx;
 	}

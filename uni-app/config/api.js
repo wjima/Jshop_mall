@@ -153,7 +153,10 @@ const post = (method, data, callback,complete) => {
 								uni.navigateTo({
 									url: '/pages/login/choose/index',
 									animationType: 'pop-in',
-									animationDuration: 200
+									animationDuration: 200,
+									complete() {
+										uni.hideLoading()
+									}
 								});
 								// #endif
 							}, 1000)
@@ -163,19 +166,20 @@ const post = (method, data, callback,complete) => {
 			}
 			callback(result);
 		},
+		
 		complete: (response) => {
-			setTimeout(function() {
+			// setTimeout(function() {
 				uni.hideLoading();
-			}, 1000)
+			// }, 1000)
 			complete?complete(): "";
 		},
 		fail: (error) => {
 			uni.showLoading({
 				title: '网络开小差了'
 			});
-			setTimeout(function() {
+			// setTimeout(function() {
 				uni.hideLoading();
-			}, 1000)
+			// }, 1000)
 			if (error && error.response) {
 				showError(error.response);
 			} else {
@@ -843,7 +847,7 @@ export const ttlogin = (data, callback) => post('user.ttlogin', data, callback);
 export const getTaxInfo = (data, callback) => post('order.gettaxcode', data, callback);
 
 //获取订阅模板
-export const getSubscriptionTmplIds = callback => pluginsPost('wechat_applets_message-api-tmpl', {}, callback);
+export const getSubscriptionTmplIds = (data, callback) => pluginsPost('wechat_applets_message-api-tmpl', data, callback);
 
 //订阅状态修改
 export const setSubscriptionStatus = (data, callback) => pluginsPost('wechat_applets_message-api-settip', data, callback);
@@ -892,3 +896,6 @@ export const getGroupProductInfo = (data, callback) => post('group.getproductinf
 
 // 分享配置
 export const getShareInfo = (data, callback) => post('weixinshare.share', data, callback);
+
+// 获取首页配置
+export const getHomePageConfig = (data, callback) => post('pages.gethomepageconfig', data, callback);

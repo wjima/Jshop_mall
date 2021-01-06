@@ -40,7 +40,7 @@ class GoodsTypeSpec extends Common
         $where = [];
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['id'=>'desc'];
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

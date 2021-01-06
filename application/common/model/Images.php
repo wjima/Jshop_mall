@@ -91,7 +91,7 @@ class Images extends Common
         $config        = [
             'rootPath' => ROOT_PATH . 'public',
             'savePath' => '/static/uploads/images',
-            'subName'  => ['get_date_dir'],
+            'subName'  => ['get_date_dir',''],
             'maxSize'  => config('jshop.upload_filesize'),
             'exts'     => 'jpg,jpeg,png,gif,bmp4',
             'saveName' => ['uniqid', time()],

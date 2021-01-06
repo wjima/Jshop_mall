@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 use org\QRcode;
@@ -60,7 +61,7 @@ class User extends Common
         );
 
         if (!isset($data['mobile']) || !isset($data['password'])) {
-//            $result['msg'] = '请输入手机号码或者密码';
+            //            $result['msg'] = '请输入手机号码或者密码';
             return error_code(11031);
         }
         //校验验证码
@@ -89,7 +90,6 @@ class User extends Common
             } else {
                 return error_code(11022);
             }
-
         } else {
             //写失败次数到session里
             if (session('?login_fail_num')) {
@@ -101,8 +101,6 @@ class User extends Common
         }
 
         return $result;
-
-
     }
 
     /**
@@ -144,6 +142,10 @@ class User extends Common
                     if (!isset($data['nickname'])) {
                         $data['nickname'] = $user_wx_info['nickname'];
                     }
+                    //取性别
+                    if (!isset($data['sex'])) {
+                        $uData['sex'] = $user_wx_info['gender'] == 0 ? 3 : $user_wx_info['gender'];
+                    }
                 }
             }
             //如果没有头像和昵称，那么就取系统头像和昵称吧
@@ -164,7 +166,8 @@ class User extends Common
                 if ($pinfo) {
                     $userData['pid'] = $pid;
                 } else {
-                    error_code(10014);
+                    //error_code(10014);
+                    $userData['pid'] = 0;
                 }
             }
 
@@ -175,7 +178,7 @@ class User extends Common
                     return error_code(11009);
                 }
                 $userData['password'] = $this->enPassword($data['password'], $userData['ctime']);
-            }else{
+            } else {
                 $userData['password'] = "";
             }
 
@@ -211,8 +214,6 @@ class User extends Common
         }
 
         return $result;
-
-
     }
 
     /**
@@ -225,7 +226,7 @@ class User extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function bindMobile($user_id,$mobile,$code)
+    public function bindMobile($user_id, $mobile, $code)
     {
         $result = array(
             'status' => false,
@@ -239,12 +240,12 @@ class User extends Common
             return error_code(11046);
         }
         //校验手机号码是否已经绑定用户
-        $info = $this->where('mobile',$mobile)->find();
-        if($info){
+        $info = $this->where('mobile', $mobile)->find();
+        if ($info) {
             return error_code(11028);
         }
 
-        $userInfo = $this->where('id',$user_id)->find();
+        $userInfo = $this->where('id', $user_id)->find();
         if ($userInfo) {
             $userInfo->mobile = $mobile;
             $userInfo->save();
@@ -273,10 +274,10 @@ class User extends Common
                 return error_code(11047);
             }
             //判断账号状态
-//            if($userInfo->status != self::STATUS_NORMAL) {
-//                $result['msg'] = '此账号已停用';
-//                return $result;
-//            }
+            //            if($userInfo->status != self::STATUS_NORMAL) {
+            //                $result['msg'] = '此账号已停用';
+            //                return $result;
+            //            }
         } elseif ($code == 'login') {
             //登陆
         } elseif ($code === 'veri') {
@@ -312,7 +313,7 @@ class User extends Common
         ];
         //判断账号状态
         if ($userInfo->status != self::STATUS_NORMAL) {
-            return error_code(11006);
+            return error_code(11022);
         }
 
 
@@ -329,7 +330,7 @@ class User extends Common
 
         if ($type == 1) {
             $userLogModel = new UserLog();        //添加登录日志
-            $userLogModel->setLog($userInfo['id'],$userLogModel::USER_LOGIN);
+            $userLogModel->setLog($userInfo['id'], $userLogModel::USER_LOGIN);
         }
         return $result;
     }
@@ -382,7 +383,7 @@ class User extends Common
             $where[] = ['sex', 'eq', $post['sex']];
         }
         if (isset($post['id']) && $post['id'] != "") {
-            $where[] = ['id', 'eq', $post['id']];
+            $where[] = ['id', 'in', $post['id']];
         }
         if (isset($post['username']) && $post['username'] != "") {
             $where[] = ['username', 'like', '%' . $post['username'] . '%'];
@@ -400,26 +401,26 @@ class User extends Common
             $where[] = ['status', 'eq', $post['status']];
         }
         if (isset($post['pmobile']) && $post['pmobile'] != "") {
-            $pwhere[] = ['mobile|username', 'like', "%".$post['pmobile']."%"];
+            $pwhere[] = ['mobile|username', 'like', "%" . $post['pmobile'] . "%"];
             $user      = $this->field('id')->where($pwhere)->select();
-            if(!$user->isEmpty()){
-                $user = array_column($user->toArray(),'id');
-                $where[] = ['pid','in',$user];
-            }else{
+            if (!$user->isEmpty()) {
+                $user = array_column($user->toArray(), 'id');
+                $where[] = ['pid', 'in', $user];
+            } else {
                 $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
             }
 
-//            if ($puser_id = get_user_id($post['pmobile'])) {
-//                $where[] = ['pid', 'eq', $puser_id];
-//            } else {
-//                $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
-//            }
+            //            if ($puser_id = get_user_id($post['pmobile'])) {
+            //                $where[] = ['pid', 'eq', $puser_id];
+            //            } else {
+            //                $where[] = ['pid', 'eq', '99999999'];       //如果没有此用户，那么就赋值个数值，让他查不出数据
+            //            }
         }
         if (isset($post['grade']) && $post['grade'] != "") {
             $where[] = ['grade', 'in', $post['grade']];
         }
         if (isset($post['mobileOrUser']) && $post['mobileOrUser'] != "") {
-            $where[] = ['username|mobile', 'like', '%'.$post['mobileOrUser'].'%'];
+            $where[] = ['username|mobile', 'like', '%' . $post['mobileOrUser'] . '%'];
         }
 
         $result['where'] = $where;
@@ -446,7 +447,7 @@ class User extends Common
                 $list[$k]['status'] = config('params.user')['status'][$v['status']];
             }
             if ($v['pid']) {
-                $list[$k]['pid_name'] = get_user_info($v['pid'],'nickname');
+                $list[$k]['pid_name'] = get_user_info($v['pid'], 'nickname');
             }
             if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);
@@ -474,7 +475,7 @@ class User extends Common
         $tableWhere = $this->tableWhere($post);
 
         if ($isPage) {
-            $list        = $this->with(['grade','userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+            $list        = $this->with(['grade', 'userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
             $re['sql'] = $this->getLastSql();
             $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
@@ -510,20 +511,21 @@ class User extends Common
      * 获取用户的信息
      * @return array|null|\PDOStatement|string|\think\Model
      */
-//    public function getUserInfo($user_id)
-//    {
-//        $data = $this->where('id', $user_id)->find();
-//        if ($data) {
-//            $data['state']    = $data['status'];
-//            $data['status']   = config('params.user')['status'][$data['status']];
-//            $data['p_mobile'] = $this->getUserMobile($data['pid']);
-//            return $data;
-//        } else {
-//            return "";
-//        }
-//    }
+    //    public function getUserInfo($user_id)
+    //    {
+    //        $data = $this->where('id', $user_id)->find();
+    //        if ($data) {
+    //            $data['state']    = $data['status'];
+    //            $data['status']   = config('params.user')['status'][$data['status']];
+    //            $data['p_mobile'] = $this->getUserMobile($data['pid']);
+    //            return $data;
+    //        } else {
+    //            return "";
+    //        }
+    //    }
 
-    public function getUserInfo($user_id){
+    public function getUserInfo($user_id)
+    {
         $result = [
             'status' => false,
             'data' => [],
@@ -543,9 +545,9 @@ class User extends Common
                 $userInfo['grade_name'] = "";
             }
             //判断是否有密码，如果有就是true，没有就是false
-            if($userInfo['password']){
+            if ($userInfo['password']) {
                 $userInfo['password'] = true;
-            }else{
+            } else {
                 $userInfo['password'] = false;
             }
 
@@ -558,7 +560,7 @@ class User extends Common
     }
 
     //忘记密码，找回密码
-    public function forgetPassword($mobile,$code,$newPwd)
+    public function forgetPassword($mobile, $code, $newPwd)
     {
         $result = [
             'status' => false,
@@ -566,23 +568,24 @@ class User extends Common
             'data' => ''
         ];
 
-        if(empty($code)){
+        if (empty($code)) {
             return error_code(10013);
         }
         $smsModel = new Sms();
         if (!$smsModel->check($mobile, $code, 'veri')) {
             return error_code(10012);
         }
-        $userInfo = $this->where(['mobile'=>$mobile])->find();
-        if(!$userInfo){
+        $userInfo = $this->where(['mobile' => $mobile])->find();
+        if (!$userInfo) {
             $result['msg'] = '没有此手机号码';
             return error_code(11032);
         }
-        return $this->editPwd($userInfo['id'], $newPwd,$userInfo['ctime']);
+        return $this->editPwd($userInfo['id'], $newPwd, $userInfo['ctime']);
     }
 
     //修改用户密码，如果用户之前没有密码，那么就不校验原密码
-    public function changePassword($user_id,$newPwd,$password = ""){
+    public function changePassword($user_id, $newPwd, $password = "")
+    {
         $result = [
             'status' => false,
             'msg' => '',
@@ -590,19 +593,19 @@ class User extends Common
         ];
         //修改密码验证原密码
         $user = $this->get($user_id);
-        if(!$user){
+        if (!$user) {
             return error_code(10000);
         }
 
-        if($user['password']){
-            if(!$password){
+        if ($user['password']) {
+            if (!$password) {
                 return error_code(11012);
             }
             if ($user['password'] !== $this->enPassword($password, $user['ctime'])) {
                 return error_code(11045);
             }
         }
-        return $this->editPwd($user_id, $newPwd,$user['ctime']);
+        return $this->editPwd($user_id, $newPwd, $user['ctime']);
     }
 
 
@@ -612,7 +615,7 @@ class User extends Common
      * @param $pwd
      * @return array
      */
-    private function editPwd($user_id, $newPwd,$ctime)
+    private function editPwd($user_id, $newPwd, $ctime)
     {
         $result = [
             'status' => true,
@@ -688,7 +691,7 @@ class User extends Common
     {
         $return = [
             'status'          => false,
-            'msg'             => error_code(10025,true),
+            'msg'             => error_code(10025, true),
             'data'            => 0,
             'available_point' => 0,
             'point_rmb'       => 0,
@@ -818,7 +821,7 @@ class User extends Common
         if ($return['data'] !== false) {
             $return['status'] = true;
             $return['msg']    = '填写邀请码成功';
-        }else{
+        } else {
             return error_code(11048);
         }
 
@@ -845,7 +848,6 @@ class User extends Common
                 return $this->isInvited($user_id, $info['pid']);
             }
         }
-
     }
 
 
@@ -856,7 +858,7 @@ class User extends Common
      */
     public function getShareCodeByUserId($user_id)
     {
-        $code = ((int)$user_id + 1234) * 3;
+        $code = ((int) $user_id + 1234) * 3;
         return $code;
     }
 
@@ -868,7 +870,7 @@ class User extends Common
      */
     public function getUserIdByShareCode($code)
     {
-        $user_id = ((int)$code / 3) - 1234;
+        $user_id = ((int) $code / 3) - 1234;
         return $user_id;
     }
 
@@ -894,7 +896,7 @@ class User extends Common
             return error_code(11049);
         }
 
-        $isInvited = $this->isInvited($id,$pid);
+        $isInvited = $this->isInvited($id, $pid);
         if ($isInvited) {
             return error_code(11054);
         }
@@ -932,7 +934,7 @@ class User extends Common
             }
         }
 
-        if(isset($data['password'])){
+        if (isset($data['password'])) {
             if ($data['password'] == '' || strlen($data['password']) < 6 || strlen($data['password']) > 16) {
                 return error_code(11009);
             }
@@ -946,21 +948,21 @@ class User extends Common
         }
 
         //默认用户等级
-        if(!isset($data['grade'])){
+        if (!isset($data['grade'])) {
             $userGradeModel = new UserGrade();
-            $gradeInfo = $userGradeModel->where('is_def','1')->find();
-            if($gradeInfo){
+            $gradeInfo = $userGradeModel->where('is_def', '1')->find();
+            if ($gradeInfo) {
                 $data['grade'] = $gradeInfo['id'];
-            }else{
+            } else {
                 $data['grade'] = 0;
             }
         }
 
         //用户备注只取前100个字符
-        if(isset($data['remarks'])){
+        if (isset($data['remarks'])) {
             $data['remarks'] = trim($data['remarks']);
-            if(mb_strlen($data['remarks']) > 100){
-                $data['remarks'] = substr($data['remarks'],0,99);
+            if (mb_strlen($data['remarks']) > 100) {
+                $data['remarks'] = substr($data['remarks'], 0, 99);
             }
         }
         $time                = time();
@@ -983,15 +985,14 @@ class User extends Common
         $return['data'] = $this->id;
         if ($result) {
             $newData['id'] = $this->id;
-            hook('addUserAfter', $newData);//添加用户后钩子
+            hook('addUserAfter', $newData); //添加用户后钩子
             if (session('manage.id')) {
                 $userLogModel = new UserLog();
                 $userLogModel->setLog(session('manage.id'), $userLogModel::USER_REG);
             }
             $return['status'] = true;
             $return['msg']    = '添加成功';
-
-        }else{
+        } else {
             return error_code(10038);
         }
 
@@ -1020,7 +1021,7 @@ class User extends Common
                 $return['msg'] = $p['msg'];
                 return $return;
             }
-        }else{
+        } else {
             $data['pid'] = 0;
         }
         //输入密码时修改密码
@@ -1037,10 +1038,10 @@ class User extends Common
         }
 
         //用户备注只取前100个字符
-        if(isset($data['remarks'])){
+        if (isset($data['remarks'])) {
             $data['remarks'] = trim($data['remarks']);
-            if(mb_strlen($data['remarks']) > 100){
-                $data['remarks'] = substr($data['remarks'],0,99);
+            if (mb_strlen($data['remarks']) > 100) {
+                $data['remarks'] = substr($data['remarks'], 0, 99);
             }
             $newData['remarks'] = $data['remarks'];
         }
@@ -1116,28 +1117,28 @@ class User extends Common
                 'desc' => '状态',
                 //'modify'=>'getMarketable',
             ],
-//            [
-//                'id' => 'pid_name',
-//                'desc' => '邀请人',
-//            ],
-//            [
-//                'id' => 'ctime',
-//                'desc' => '创建时间',
-//            ],
+            //            [
+            //                'id' => 'pid_name',
+            //                'desc' => '邀请人',
+            //            ],
+            //            [
+            //                'id' => 'ctime',
+            //                'desc' => '创建时间',
+            //            ],
             [
                 'id'   => 'username',
                 'desc' => '用户名',
             ],
-//
+            //
         ];
     }
 
 
     /**
- * 获取csv数据
- * @param $post
- * @return array
- */
+     * 获取csv数据
+     * @param $post
+     * @return array
+     */
     public function getCsvData($post)
     {
         $result   = error_code(10083);

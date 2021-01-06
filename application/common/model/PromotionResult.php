@@ -102,7 +102,7 @@ class PromotionResult extends Common
             ->alias('pr')
             ->join(config('database.prefix').'promotion p','p.id = pr.promotion_id')
             ->where($tableWhere['where'])
-            ->order('sort', 'asc')
+            ->order(['sort'=>'ASC','id'=>'DESC'])
             ->select();
 
         $data = $this->tableFormat($list);

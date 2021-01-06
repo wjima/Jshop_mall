@@ -1,20 +1,24 @@
-<form class="layui-form seller-form"  action="" >
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">品牌名称：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="name" lay-verify="title" placeholder="请输入名称关键字" autocomplete="off" class="layui-input">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入名称关键字" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">更新时间：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" id="utime" name="utime" placeholder="开始时间 到 结束时间" autocomplete="off" class="layui-input">
+                <input type="text" id="utime" name="utime" placeholder="开始时间 到 结束时间" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
-            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="brand-search"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button type="button" class="layui-btn layui-btn-sm add-brand"><i class="layui-icon">&#xe608;</i> 添加</button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="brand-search"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button type="button" class="layui-btn layui-btn-sm add-brand"><i class="layui-icon">&#xe608;</i>
+                添加</button>
         </div>
     </div>
 </form>
@@ -22,27 +26,28 @@
     <table id="brandTable" lay-filter="brandTable"></table>
 </div>
 <script>
-    layui.use(['table','form','layer','laydate'],function(){
-        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+    layui.use(['table', 'form', 'layer', 'laydate'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, date = layui.laydate;
         //执行渲染
         table.render({
             elem: '#brandTable', //指定原始表格元素选择器（推荐id选择器）
             height: 'full-99',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
-            id:'brandTable',
+            limit: '20',
+            id: 'brandTable',
             url: "{:url('brand/index')}",
             cols: [[ //标题栏
-                {field:'id', width:90, title:'ID', align: 'center'},
-                {field: 'name', title: '品牌名', minWidth:200, align:'center'},
-                {field: 'logo', title: 'LOGO',align:'center',width:140, templet: function(data){
-                        return '<a href="javascript:void(0);" onclick=viewImage("'+data.logo+'")><image style="max-width:30px;max-height:30px;" src="'+data.logo+'"/></a>';
+                { field: 'id', width: 90, title: 'ID', align: 'center' },
+                { field: 'name', title: '品牌名', minWidth: 200, align: 'center' },
+                {
+                    field: 'logo', title: 'LOGO', align: 'center', width: 140, templet: function (data) {
+                        return '<a href="javascript:void(0);" onclick=viewImage("' + data.logo + '")><image style="max-width:30px;max-height:30px;" src="' + data.logo + '"/></a>';
                     }
                 },
-                {field: 'utime',sort: true, title: '更新时间' ,align:'center', width: 200},
-                {field: 'sort', sort: true, title: '排序',align:'center',width: 100},
-                {title:'操作', toolbar:'#brandBar', width: 140, align:'center'}
+                { field: 'utime', sort: true, title: '更新时间', align: 'center', width: 200 },
+                { field: 'sort', sort: true, title: '排序', align: 'center', width: 100 },
+                { title: '操作', toolbar: '#brandBar', width: 140, align: 'center' }
             ]] //设置表头
             //,…… //更多参数参考右侧目录：基本参数选项
         });
@@ -50,85 +55,86 @@
         date.render({
             elem: '#utime',
             range: '到',
-						trigger: 'click' //自动弹出控件的事件，采用click弹出
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
-        form.on('submit(brand-search)', function(data){
+        form.on('submit(brand-search)', function (data) {
             layui.table.reload('brandTable', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
-        $(document).on('click','.add-brand',function(){
-            JsGet("{:url('Brand/add')}", function(e){
+        $(document).on('click', '.add-brand', function () {
+            JsGet("{:url('Brand/add')}", function (e) {
                 if (e.status) {
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: setpage(400,450),
-                        title: '添加品牌'
+                        area: setpage(400, 500),
+                        title: '添加品牌',
+                        btn: ['保存', '关闭'],
+                        yes: function () {
+                            var formData = form.val("add_brand");
+                            JsPost("{:url('Brand/add')}", formData, function (res) {
+                                if (res.status) {
+                                    layer.close(window.box);
+                                    layer.msg(res.msg, { time: 1300 }, function () {
+                                        table.reload('brandTable');
+                                    });
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            })
+                        }
                     });
-                }else{
+                } else {
                     layer.msg(e.msg);
                 }
             })
         });
 
-        //ajax提交商品的添加
-        form.on('submit(add-brand)', function(data){
-            JsPost("{:url('Brand/add')}", data.field, function(res){
-                if(res.status){
-                    layer.close(window.box);
-                    layer.msg(res.msg,{time:1300},function(){
-                        table.reload('brandTable');
-                    });
-                }else{
-                    layer.msg(res.msg);
-                }
-            })
-        });
-
-        form.on('submit(brand-edit)',function(data){
-            JsPost("{:url('Brand/edit')}", data.field, function(res){
-                if(res.status){
-                    layer.close(window.box);
-                    layer.msg(res.msg,{time:1300},function(){
-                        table.reload('brandTable');
-                    });
-                }else{
-                    layer.msg(res.msg,{time:1300});
-                }
-            })
-        });
-
         //监听工具条
-        table.on('tool(brandTable)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(brandTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            if(layEvent === 'del'){ //删除
-                layer.confirm('真的要删除么',{icon: 3}, function(index){
-                    JsPost("{:url('Brand/del')}",{id:data.id}, function (res) {
-                        if(res.status){
+            if (layEvent === 'del') { //删除
+                layer.confirm('真的要删除么', { icon: 3 }, function (index) {
+                    JsPost("{:url('Brand/del')}", { id: data.id }, function (res) {
+                        if (res.status) {
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
                         }
                         layer.msg(res.msg);
                     });
                 });
-            } else if(layEvent === 'edit'){ //编辑
-                JsGet("{:url('Brand/edit')}?id=" + data.id, function(e){
+            } else if (layEvent === 'edit') { //编辑
+                JsGet("{:url('Brand/edit')}?id=" + data.id, function (e) {
                     if (e.status) {
                         window.box = layer.open({
                             type: 1,
                             content: e.data,
-                            area: setpage(400,450),
-                            title: '编辑品牌'
+                            area: setpage(400, 500),
+                            title: '编辑品牌',
+                            btn: ['保存', '关闭'],
+                            yes: function () {
+                                var formData = form.val("edit_brand");
+                                JsPost("{:url('Brand/edit')}", formData, function (res) {
+                                    if (res.status) {
+                                        layer.close(window.box);
+                                        layer.msg(res.msg, { time: 1300 }, function () {
+                                            table.reload('brandTable');
+                                        });
+                                    } else {
+                                        layer.msg(res.msg);
+                                    }
+                                })
+                            }
                         })
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
                 })

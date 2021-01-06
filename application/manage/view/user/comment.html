@@ -1,31 +1,45 @@
 <style>
-    @media screen and (max-width: 500px) {
-        .layui-table-view {
-            width: 100% !important;
-            overflow-x: scroll !important;
-            left: 0 !important;
-        }
-        .layui-table-box {
-            width: 1500px !important;
-            box-sizing: border-box;
-        }
+    {if $goods_id == 0}
+    .seller-form {
+        padding: 10px 10px 10px 10px;
     }
+    {/if}
 </style>
 <form class="layui-form seller-form" action="">
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label style="width:100px" class="layui-form-label">用户手机号码：</label>
+
+        <div class="layui-form-item">
+            {if $goods_id != 0}
+            <div class="layui-inline seller-inline-3" style="text-align: left !important;">
+                <a onclick="window.history.back();" href="#" class="layui-btn layui-btn-sm layui-btn-primary">返回</a>
+            </div> 
+            {else /}
             <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off"
+                <input type="text" name="goods_name" lay-verify="title" placeholder="商品名称" autocomplete="off"
                     class="layui-input">
             </div>
+            {/if}
+
+        
+        <div class="layui-input-inline seller-inline-3">
+            <input type="text" name="mobile" lay-verify="title" placeholder="用户手机号码" autocomplete="off"
+                class="layui-input">
         </div>
-        <div class="layui-inline">
-            <label style="width:100px" class="layui-form-label">订单号：</label>
-            <div class="layui-input-inline seller-inline-3">
-                <input type="text" name="order_id" placeholder="请输入订单号" autocomplete="off" class="layui-input">
-            </div>
+
+        <div class="layui-input-inline seller-inline-3">
+            <input type="text" name="order_id" placeholder="订单号" autocomplete="off" class="layui-input">
         </div>
+        <div class="layui-input-inline">
+            <select name="status" lay-verify="">
+                <option value="">状态</option>
+                <option value="1">显示</option>
+                <option value="2">隐藏</option>
+            </select>
+        </div>
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="date" id="date" placeholder="评价时间" autocomplete="off"
+                class="layui-input">
+        </div>
+
         <!--<div class="layui-inline">-->
         <!--<label class="layui-form-label">评价类型：</label>-->
         <!--<div class="layui-input-inline seller-inline-2">-->
@@ -37,11 +51,8 @@
         <!--</select>-->
         <!--</div>-->
         <!--</div>-->
-        <div class="layui-inline" style="margin-left: 17px;">
-            <div class="layui-input-inline">
-                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="*"><i
-                        class="iconfont icon-chaxun"></i>筛选</button>
-            </div>
+        <div class="layui-input-inline seller-inline-2">
+            <button  lay-submit lay-filter="*" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon layui-icon-search"></i></button>
         </div>
     </div>
 </form>
@@ -52,30 +63,53 @@
 
 <script>
     layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var $ = layui.$,laydate = layui.laydate;
+         //时间插件
+         laydate.render({
+            elem: '#date',
+            range: '到',
+            format: 'yyyy-MM-dd',
+						trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
         layui.table.render({
             elem: '#CommentTable',
             height: 'full-99',
             cellMinWidth: '80',
-            page: 'true',
+            page: true,
+            even: true,
             limit: '20',
-            url: "{:url('user/comment')}",
+            url: "{:url('user/comment')}?goods_id={$goods_id}",
             id: 'CommentTable',
             method: 'post',
-            response: {
-                statusName: 'status',
-                statusCode: true
-            },
             cols: [[
                 {field:'id', width:90, title:'ID', align: 'center'},
-                { field: 'nickname', width: 150,  title: '用户', align: 'center', templet: function (data) {
-                        if (data.user) {
-                            return data.user.nickname ? data.user.nickname : data.user.mobile;
-                        }
-                        else {
-                            return data.user_id;
+                { field: 'operating', title: '操作', align: 'center', width: 110, templet: function (data) {
+                        var html = '';
+                        html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
+                        return html;
+                    }
+                },
+                { field: 'display', sort: true, title: '前台显示状态', width: 130, align: 'center', templet: function (data) {
+                        if (data.display === 1) {
+                            return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">隐藏</a>';
+                        } else {
+                            return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">显示</a>';
                         }
                     }
                 },
+                { field: 'username', width: 150,  title: '用户', align: 'center'},
+                { field: 'order_id', title: '订单号', align: 'center', width: 160 },
+                {field:'goods', width:180, title:'评价商品', align: 'center', templet: function (data) {
+                                var html = '';
+                                if(data.name){
+                                    html += data.name;
+                                }
+                                if(data.addon){
+                                    html += ' - '+ data.addon;
+                                }
+                                return html;
+                            }
+                        },
                 { field: 'evaluate', width: 110, sort: true, title: '评价星数', align: 'center', templet: function (data) {
                         // if (data.score == 1) {
                         //     return '好评';
@@ -89,7 +123,7 @@
                 },
                 { field: 'content', title: '评价内容', minWidth: 150, align: 'center' },
                 { field: 'content', title: '评价图片', width: 150, align: 'center', templet: function (d) {
-                        if (d.images_url) {
+                        if (d.images != '') {
                             var html = '';
                             for (var i = 0; i < d.images_url.length; i++) {
                                 html += '<a href="javascript:void(0);" onclick=viewImage("' + d.images_url[i] + '")><image style="max-width:30px;max-height:30px;" src="' + d.images_url[i] + '"/></a>';
@@ -100,22 +134,9 @@
                         }
                     }
                 },
-                { field: 'order_id', title: '订单号', align: 'center', width: 160 },
                 { field: 'ctime', sort: true, title: '评价时间', width:170, align: 'center' },
-                { field: 'display', sort: true, title: '前台显示', width: 110, align: 'center', templet: function (data) {
-                        if (data.display === 1) {
-                            return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">隐藏</a>';
-                        } else {
-                            return '<a href="javascript:void(0);" class="display" data-id="' + data.id + '">显示</a>';
-                        }
-                    }
-                },
-                { field: 'operating', title: '操作', align: 'center', width: 110, templet: function (data) {
-                        var html = '';
-                        html += '<a class="layui-btn layui-btn-xs comment-return" data-id="' + data.id + '">评价回复</a>';
-                        return html;
-                    }
-                }
+  
+
             ]]
         });
         layui.form.on('submit(*)', function (data) {
@@ -142,6 +163,12 @@
             }, function () {
                 layer.closeAll();
             });
+        });
+
+        //返回上个页面
+        $(document).on("click", '.return-goods', function () {
+            console.log("{:url('goods/index')}");
+            self.location = "{:url('goods/index')}";
         });
 
         //回复

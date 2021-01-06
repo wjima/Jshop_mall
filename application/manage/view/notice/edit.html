@@ -1,4 +1,4 @@
-<div style="padding:30px;" class="layui-form  seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding:30px;" class="layui-form  seller-alone-form"  lay-filter="edit_notice"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <input type="hidden" name="id" value="{$noticeInfo.id}">
 
@@ -23,7 +23,7 @@
         </div>
     </div>
     {:jshopToken('notice_edit')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="edit-notice">保存</button>
+
     <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
 </div>
 <script>

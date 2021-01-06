@@ -104,6 +104,8 @@ class Promotion extends Manage
             $data['auto_receive'] = input('param.auto_receive/d', 2);
             $data['sort']         = input('param.sort/d', 100);
             $data['type']         = $promotionModel::TYPE_COUPON;
+            $data['exclusive'] = input('param.exclusive/d', 1);
+
 
             //优惠券领取条件
             $parmas['max_nums'] = input('param.max_nums', 0);

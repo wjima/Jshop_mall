@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding: 30px;" class="layui-form layui-form-pane" lay-filter="edit_carouset_seat"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <input type="hidden" name="id" value="{$info.id}">
 
@@ -22,8 +22,6 @@
             <input type="text" name="sort" value="{$info.sort}" required lay-verify="required" placeholder="请输入顺序" autocomplete="off" class="layui-input">
         </div>
     </div>
-
-    <button type="button" class="layui-btn layui-btn-fluid" lay-submit lay-filter="edit">保存</button>
 </div>
 <script>
     layui.use('form', function(){

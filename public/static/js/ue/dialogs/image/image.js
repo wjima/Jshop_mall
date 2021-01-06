@@ -760,7 +760,11 @@
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
                     if (json.state == 'SUCCESS') {
-                        _this.imageList.push(json);
+                        // 解决多张图片上传乱序 
+                        // _this.imageList.push(json);
+                        _this.imageList[$file.index()] = json;
+                        // 解决多张图片上传乱序
+                        // console.log( "imageList",_this.imageList);
                         $file.append('<span class="success"></span>');
                     } else {
                         $file.find('.error').text(json.state).show();
@@ -814,6 +818,11 @@
                 prefix = editor.getOpt('imageUrlPrefix');
             for (i = 0; i < this.imageList.length; i++) {
                 data = this.imageList[i];
+                // 解决多张图片上传乱序
+                if(data == undefined){
+                    continue
+                }
+                // 解决多张图片上传乱序
                 list.push({
                     src: prefix + data.url,
                     _src: prefix + data.url,
@@ -832,6 +841,7 @@
     function OnlineImage(target) {
         this.container = utils.isString(target) ? document.getElementById(target) : target;
         this.init();
+        this.imgList=[]
     }
     OnlineImage.prototype = {
         init: function () {
@@ -869,8 +879,31 @@
                 if (li.tagName.toLowerCase() == 'li') {
                     if (domUtils.hasClass(li, 'selected')) {
                         domUtils.removeClasses(li, 'selected');
+                        // 解决上传图片顺序错乱问题
+                        var reImg = e.path[1].children[0];
+                        var reImgId = reImg.getAttribute('image_id');
+                        _this.imgList.forEach((item,index)=>{
+                            if(item.image_id == reImgId){
+                                _this.imgList.splice(index,1)
+                            }
+                        })
+                        // 解决上传图片顺序错乱问题
                     } else {
                         domUtils.addClass(li, 'selected');
+                        // 解决上传图片顺序错乱问题
+                        var img = e.path[1].children[0],
+                            src = img.getAttribute('_src');
+                            align = getAlign();
+                        var image_id = img.getAttribute('image_id');
+                        var imgItem={
+                            src: src,
+                            _src: src,
+                            image_id: image_id,
+                            alt: src.substr(src.lastIndexOf('/') + 1),
+                            floatStyle: align
+                        }
+                        _this.imgList.push(imgItem)
+                        // 解决上传图片顺序错乱问题
                     }
                 }
             });
@@ -895,7 +928,6 @@
         /* 向后台拉取图片列表数据 */
         getImageData: function () {
             var _this = this;
-
             if(!_this.listEnd && !this.isLoadingData) {
                 this.isLoadingData = true;
                 var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
@@ -1010,23 +1042,27 @@
             }
         },
         getInsertList: function () {
-            var i, lis = this.list.children, list = [], align = getAlign();
-            for (i = 0; i < lis.length; i++) {
-                if (domUtils.hasClass(lis[i], 'selected')) {
-                    var img = lis[i].firstChild,
-                        src = img.getAttribute('_src');
-                    var image_id = img.getAttribute('image_id');
-                    list.push({
-                        src: src,
-                        _src: src,
-                        image_id: image_id,
-                        alt: src.substr(src.lastIndexOf('/') + 1),
-                        floatStyle: align
-                    });
-                }
+            // 解决上传图片顺序错乱问题
+            // console.log(this.imgList);
+            // var i, lis = this.list.children, list = [], align = getAlign();
+            // for (i = 0; i < lis.length; i++) {
+            //     if (domUtils.hasClass(lis[i], 'selected')) {
+            //         var img = lis[i].firstChild,
+            //             src = img.getAttribute('_src');
+            //         var image_id = img.getAttribute('image_id');
+            //         list.push({
+            //             src: src,
+            //             _src: src,
+            //             image_id: image_id,
+            //             alt: src.substr(src.lastIndexOf('/') + 1),
+            //             floatStyle: align
+            //         });
+            //     }
 
-            }
-            return list;
+            // }
+            // return list;
+            return this.imgList;
+            // 解决上传图片顺序错乱问题
         }
     };
 

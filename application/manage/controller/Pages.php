@@ -15,10 +15,12 @@ use Request;
 use app\common\controller\Manage;
 use app\common\model\ArticleType as articleTypeModel;
 use app\common\model\Pages as pagesModel;
+use think\facade\Cache;
 
 
 class Pages extends Manage
 {
+
 
     public function index()
     {
@@ -38,35 +40,32 @@ class Pages extends Manage
         $page_code = input('page_code/s', 'mobile_home');
         $linkType  = config('params.carousel')['type'];
 
-        $this->assign('linkType', json_encode($linkType, JSON_UNESCAPED_UNICODE));
+        $this->assign('linkType', json_encode($linkType, 320));
         $this->assign('page_code', $page_code);
         //取出页面配置信息
         $pageModel  = new \app\common\model\Pages();
-        $result     = $pageModel->getDetails($page_code);
+        $result     = $pageModel->getInfo($page_code);
+        //重新组装数据
         $pageConfig = [];
-        if ($result['data']) {
+        if ($result['data'] && $result['data']['items']) {
             foreach ($result['data']['items'] as $key => $value) {
                 $pageConfig[$key]['type']  = $value['widget_code'];
-                $pageConfig[$key]['value'] = $value['params'];
+                $pageConfig[$key]['value'] = json_decode($value['params'],true);
             }
         }
         $pageConfig = json_encode($pageConfig, 320);
-        $pageConfig = str_replace(['"true','true"'], 'true', $pageConfig);
-        $pageConfig = str_replace(['"false','false"'], 'false', $pageConfig);
-
         $this->assign('page_config', $pageConfig);
-
         //取出所有品牌
         $brandModel = new Brand();
         $brandList  = $brandModel->getAllBrand();
-        $this->assign('brandList', json_encode($brandList, JSON_UNESCAPED_UNICODE));
+        $this->assign('brandList', json_encode($brandList, 320));
         //取出所有分类
         $goodsCatModel = new GoodsCat();
         $catList       = $goodsCatModel->getAllCat();
-        $this->assign('catList', json_encode($catList, JSON_UNESCAPED_UNICODE));
+        $this->assign('catList', json_encode($catList, 320));
         //文章分类
         $articleTypeModel = new articleTypeModel();
-        $this->assign('articleTypeList', json_encode($articleTypeModel->getTree(), JSON_UNESCAPED_UNICODE));
+        $this->assign('articleTypeList', json_encode($articleTypeModel->getTree(), 320));
         return $this->fetch('custom');
     }
 
@@ -80,13 +79,14 @@ class Pages extends Manage
             'msg'    => '保存成功',
             'data'   => [],
         ];
-        $data            = input('post.data/a', []);
+        $data            = input('post.data/s', '');
         $code            = input('post.pageCode/s', 'mobile_home');
         $pagesItemsModel = new PagesItems();
         $res             = $pagesItemsModel->saveItems($data, $code);
         if (!$res['status']) {
             return $res;
         }
+        Cache::clear();
         return $result;
     }
 
@@ -122,5 +122,28 @@ class Pages extends Manage
             'msg'    => '删除成功',
             'data'   => []
         ];
+    }
+
+    /**
+     * 设置首页
+     * @return array|bool
+     * @throws \Exception
+     */
+    public function setHome()
+    {
+        $result     = [
+            'status' => true,
+            'msg'    => '设置成功',
+            'data'   => [],
+        ];
+        $id         = input('id', '');
+        $pagesModel = new pagesModel();
+        $res        = $pagesModel->where([['id', '=', $id]])->update(['is_main' => $pagesModel::MAIN_YES]);
+        $pagesModel->where([['id', 'neq', $id]])->update(['is_main' => $pagesModel::MAIN_NO]);
+        if (!$res) {
+            return error_code(10081);
+        }
+        Cache::clear();
+        return $result;
     }
 }

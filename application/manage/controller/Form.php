@@ -80,8 +80,7 @@ class Form extends Manage
                 return $result;
             }
             if (!$form->add($data)) {
-                $result['msg'] = error_code(10004,true);
-                return $result;
+                return error_code(10004);
             }
             $result['msg']    = '保存成功';
             $result['status'] = true;
@@ -149,8 +148,7 @@ class Form extends Manage
             }
             $where[] = ['id', '=', $data['id']];
             if (!$form->edit($where, $data)) {
-                $result['msg'] = error_code(10004,true);
-                return $result;
+                return error_code(10004);
             }
             $result['msg']    = '保存成功';
             $result['status'] = true;

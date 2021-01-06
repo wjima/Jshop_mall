@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2020-07-06 23:22:41
+-- Generation Time: 2021-01-06 15:20:59
 -- 服务器版本： 5.5.57-log
 -- PHP Version: 7.0.19
 
@@ -3805,7 +3805,7 @@ CREATE TABLE IF NOT EXISTS `jshop_bargain` (
   `desc` text COMMENT '活动规则描述',
   `ctime` int(12) unsigned DEFAULT NULL COMMENT '创建时间',
   `utime` int(12) unsigned DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='砍价活动表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='砍价活动表';
 
 -- --------------------------------------------------------
 
@@ -3823,7 +3823,7 @@ CREATE TABLE IF NOT EXISTS `jshop_bargain_log` (
   `product_id` int(10) unsigned DEFAULT '0' COMMENT '砍价货品id',
   `ctime` int(12) unsigned DEFAULT NULL COMMENT '创建时间',
   `ip` varchar(15) DEFAULT NULL COMMENT '砍价人ip地址'
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='砍价记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='砍价记录表';
 
 -- --------------------------------------------------------
 
@@ -3849,7 +3849,7 @@ CREATE TABLE IF NOT EXISTS `jshop_bargain_record` (
   `order_id` varchar(30) CHARACTER SET utf8 DEFAULT NULL COMMENT '订单号',
   `ctime` int(12) unsigned DEFAULT '0' COMMENT '创建时间',
   `utime` int(12) unsigned DEFAULT '0' COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='砍价活动订单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='砍价活动订单表';
 
 -- --------------------------------------------------------
 
@@ -4326,7 +4326,9 @@ CREATE TABLE IF NOT EXISTS `jshop_goods_comment` (
   `score` tinyint(1) DEFAULT '5' COMMENT '评价1-5星',
   `user_id` int(10) unsigned NOT NULL COMMENT '评价用户ID',
   `goods_id` int(10) unsigned DEFAULT NULL COMMENT '商品ID 关联goods.id',
+  `product_id` int(10) NOT NULL DEFAULT '0' COMMENT '货品ID 关联products.id',
   `order_id` bigint(20) unsigned NOT NULL COMMENT '评价订单ID',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT '商品名称',
   `addon` text COMMENT '货品规格序列号存储',
   `images` varchar(200) DEFAULT NULL COMMENT '评价图片逗号分隔最多五张',
   `content` text COMMENT '评价内容',
@@ -4619,7 +4621,7 @@ CREATE TABLE IF NOT EXISTS `jshop_ietask` (
 
 CREATE TABLE IF NOT EXISTS `jshop_images` (
   `id` char(32) NOT NULL COMMENT '图片ID',
-  `name` varchar(50) DEFAULT NULL COMMENT '图片名称',
+  `name` varchar(500) DEFAULT NULL COMMENT '图片名称',
   `url` varchar(255) DEFAULT NULL COMMENT '绝对地址',
   `path` varchar(255) DEFAULT NULL COMMENT '物理地址',
   `type` enum('web','Local','Aliyun','COS') DEFAULT 'Local' COMMENT '存储引擎',
@@ -5948,7 +5950,7 @@ CREATE TABLE IF NOT EXISTS `jshop_operation` (
   `parent_menu_id` int(10) unsigned NOT NULL COMMENT '菜单id',
   `perm_type` int(1) unsigned NOT NULL DEFAULT '3' COMMENT '权限许可类型，如果为1就是主体权限，， 如果为2就是半主体权限，在左侧菜单不显示，但是在权限菜单上有体现，如果为3就是关联权限',
   `sort` smallint(5) unsigned DEFAULT '100' COMMENT '操作排序 越小越靠前'
-) ENGINE=InnoDB AUTO_INCREMENT=591 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=603 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='权限表';
 
 --
 -- 转存表中的数据 `jshop_operation`
@@ -6262,7 +6264,19 @@ INSERT INTO `jshop_operation` (`id`, `parent_id`, `name`, `code`, `type`, `paren
 (587, 586, '发票管理', 'index', 'a', 399, 1, 200),
 (588, 263, '变更领取者', 'binduser', 'a', 361, 2, 100),
 (589, 238, '第三方账号', 'userwx', 'a', 238, 1, 100),
-(590, 238, '第三方账号删除', 'userwxdel', 'a', 238, 2, 100);
+(590, 238, '第三方账号删除', 'userwxdel', 'a', 238, 2, 100),
+(591, 296, '订单编辑-订单明细显示', 'edititemslist', 'a', 299, 3, 100),
+(592, 296, '订单编辑-订单明细添加', 'edititemsadd', 'a', 299, 3, 100),
+(593, 296, '订单编辑-订单明细删除', 'edititemsdel', 'a', 299, 3, 100),
+(594, 296, '订单编辑-订单明细编辑', 'edititemsedit', 'a', 299, 3, 100),
+(595, 2, '砍价管理', 'Bargain', 'c', 356, 1, 100),
+(596, 595, '砍价列表', 'index', 'a', 595, 1, 1),
+(597, 595, '添加编辑砍价', 'edit', 'a', 596, 2, 100),
+(598, 595, '删除砍价', 'del', 'a', 596, 2, 100),
+(599, 595, '更改排序', 'updatesort', 'a', 596, 2, 100),
+(600, 595, '更改状态', 'changestate', 'a', 596, 2, 100),
+(601, 595, '参与记录', 'record', 'a', 595, 1, 2),
+(602, 595, '砍价日志', 'recordlog', 'a', 595, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -6320,7 +6334,7 @@ CREATE TABLE IF NOT EXISTS `jshop_order` (
   `goods_pmt` decimal(10,2) unsigned DEFAULT '0.00' COMMENT '商品优惠金额',
   `coupon_pmt` decimal(10,2) unsigned DEFAULT '0.00' COMMENT '优惠券优惠额度',
   `coupon` varchar(5000) DEFAULT NULL COMMENT '优惠券信息',
-  `promotion_list` varchar(255) DEFAULT NULL COMMENT '优惠信息',
+  `promotion_list` longtext COMMENT '优惠信息',
   `memo` varchar(255) DEFAULT NULL COMMENT '买家备注',
   `ip` varchar(50) DEFAULT NULL COMMENT '下单IP',
   `mark` varchar(510) DEFAULT NULL COMMENT '卖家备注',
@@ -6387,15 +6401,16 @@ CREATE TABLE IF NOT EXISTS `jshop_pages` (
   `name` varchar(50) CHARACTER SET utf8 DEFAULT '' COMMENT '可编辑区域名称',
   `desc` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '描述',
   `layout` tinyint(2) unsigned DEFAULT '1' COMMENT '布局样式编码，1，手机端',
-  `type` tinyint(1) unsigned DEFAULT '1' COMMENT '1手机端，2PC端'
+  `type` tinyint(1) unsigned DEFAULT '1' COMMENT '1手机端，2PC端',
+  `is_main` tinyint(1) unsigned DEFAULT '2' COMMENT '是否首页，1是，2不是'
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `jshop_pages`
 --
 
-INSERT INTO `jshop_pages` (`id`, `code`, `name`, `desc`, `layout`, `type`) VALUES
-(1, 'mobile_home', '移动端首页', '移动端首页相关操作，可视化移动端、小程序端首页布局', 1, 1);
+INSERT INTO `jshop_pages` (`id`, `code`, `name`, `desc`, `layout`, `type`, `is_main`) VALUES
+(1, 'mobile_home', '移动端首页', '移动端首页相关操作，可视化移动端、小程序端首页布局', 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -6579,7 +6594,7 @@ CREATE TABLE IF NOT EXISTS `jshop_promotion_record` (
   `type` tinyint(1) unsigned DEFAULT '1' COMMENT '1团购，2秒杀',
   `ctime` bigint(12) unsigned DEFAULT NULL COMMENT '创建时间',
   `utime` bigint(12) unsigned DEFAULT NULL COMMENT '更新时间'
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='促销活动记录表，目前主要记录团购秒杀记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='促销活动记录表，目前主要记录团购秒杀记录';
 
 -- --------------------------------------------------------
 
@@ -6641,7 +6656,7 @@ CREATE TABLE IF NOT EXISTS `jshop_ship` (
 
 CREATE TABLE IF NOT EXISTS `jshop_sms` (
   `id` int(10) unsigned NOT NULL,
-  `mobile` varchar(15) NOT NULL COMMENT '手机号码',
+  `mobile` varchar(60) NOT NULL COMMENT '手机号码，允许同时存在多个手机号码，英文逗号分隔',
   `code` varchar(60) NOT NULL,
   `params` varchar(5000) NOT NULL COMMENT '参数',
   `content` varchar(200) NOT NULL COMMENT '内容',
@@ -6741,15 +6756,15 @@ CREATE TABLE IF NOT EXISTS `jshop_user` (
   `birthday` date DEFAULT NULL COMMENT '生日',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
   `nickname` varchar(50) DEFAULT NULL COMMENT '昵称',
-  `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
-  `point` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
-  `grade` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '用户等级',
+  `balance` decimal(10,2) DEFAULT '0.00' COMMENT '余额',
+  `point` int(11) unsigned DEFAULT '0' COMMENT '积分',
+  `grade` tinyint(2) unsigned DEFAULT '0' COMMENT '用户等级',
   `ctime` bigint(12) unsigned DEFAULT NULL,
   `utime` bigint(12) unsigned DEFAULT NULL,
   `status` tinyint(1) unsigned DEFAULT '1' COMMENT '1 = 正常 2 = 停用',
   `pid` int(10) unsigned DEFAULT '0' COMMENT '推荐人',
   `isdel` bigint(12) unsigned DEFAULT NULL COMMENT '删除标志 有数据就是删除',
-  `remarks` varchar(100) NOT NULL DEFAULT '' COMMENT '备注'
+  `remarks` varchar(100) DEFAULT '' COMMENT '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='用户表';
 
 -- --------------------------------------------------------
@@ -7299,12 +7314,6 @@ ALTER TABLE `jshop_goods_comment`
   ADD KEY `goods_id` (`goods_id`) USING BTREE;
 
 --
--- Indexes for table `jshop_goods_extend_cat`
---
-ALTER TABLE `jshop_goods_extend_cat`
-  ADD PRIMARY KEY (`id`) USING BTREE;
-
---
 -- Indexes for table `jshop_goods_grade`
 --
 ALTER TABLE `jshop_goods_grade`
@@ -7735,17 +7744,17 @@ ALTER TABLE `jshop_balance`
 -- AUTO_INCREMENT for table `jshop_bargain`
 --
 ALTER TABLE `jshop_bargain`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_bargain_log`
 --
 ALTER TABLE `jshop_bargain_log`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_bargain_record`
 --
 ALTER TABLE `jshop_bargain_record`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_bill_aftersales_items`
 --
@@ -7825,11 +7834,6 @@ ALTER TABLE `jshop_goods_collection`
 -- AUTO_INCREMENT for table `jshop_goods_comment`
 --
 ALTER TABLE `jshop_goods_comment`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `jshop_goods_extend_cat`
---
-ALTER TABLE `jshop_goods_extend_cat`
   MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_goods_grade`
@@ -7925,7 +7929,7 @@ ALTER TABLE `jshop_notice`
 -- AUTO_INCREMENT for table `jshop_operation`
 --
 ALTER TABLE `jshop_operation`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=591;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=603;
 --
 -- AUTO_INCREMENT for table `jshop_operation_log`
 --
@@ -7985,7 +7989,7 @@ ALTER TABLE `jshop_promotion_condition`
 -- AUTO_INCREMENT for table `jshop_promotion_record`
 --
 ALTER TABLE `jshop_promotion_record`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_promotion_result`
 --

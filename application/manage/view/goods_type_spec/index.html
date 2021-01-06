@@ -11,6 +11,7 @@
 <script>
     var table;
     layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
         table = layui.table.render({
             elem: '#typeTable',
             height: 'full-99',
@@ -62,7 +63,26 @@
 						type: 1,
 						title: '添加属性',
 						area: setpage(420,420), //宽高
-						content: e.data
+						content: e.data,
+                        btn: ['保存', '关闭'],
+                        yes: function () {
+                            var formData = form.val("add_goods_type_spec");
+                            if (!formData) {
+                                layer.msg('请先完善数据', { time: 1300 });
+                                return false;
+                            }
+                            JsPost('{:url("GoodsTypeSpec/add")}', formData, function (e) {
+                                if (e.status === true) {
+                                    layer.close(window_box);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        table.reload('typeTable');
+                                    });
+                                } else {
+                                    layer.msg(e.msg, { time: 1300 });
+                                }
+                            });
+
+                        }
 					});
 				}else{
 					layer.msg(e.msg);
@@ -75,16 +95,35 @@
         $(document).on('click', '.edit-class', function(){
             var id = $(this).attr('data-id');
             JsGet('{:url("GoodsTypeSpec/edit")}?id='+id, function(e){
-				if(e.status){
-					window_box = layer.open({
-						type: 1,
-						title: '编辑属性',
-						area: setpage(440,550), //宽高
-						content: e.data
-					});
-				}else{
-					layer.msg(e.msg);
-				}
+				if (e.status) {
+                    window_box = layer.open({
+                        type: 1,
+                        title: '编辑属性',
+                        area: setpage(440, 550), //宽高
+                        content: e.data,
+                        btn: ['保存', '关闭'],
+                        yes: function () {
+                            var formData = form.val("edit_goods_type_spec");
+                            if (!formData) {
+                                layer.msg('请先完善数据', { time: 1300 });
+                                return false;
+                            }
+                            JsPost('{:url("GoodsTypeSpec/edit")}', formData, function (e) {
+                                if (e.status === true) {
+                                    layer.close(window_box);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        table.reload('typeTable');
+                                    });
+                                } else {
+                                    layer.msg(e.msg, { time: 1300 });
+                                }
+                            });
+
+                        }
+                    });
+                } else {
+                    layer.msg(e.msg);
+                }
 			});
             return false;
         });
@@ -110,37 +149,6 @@
         }
     });
 
-    function saveSpec(data){
-        if(!data){
-            layer.msg('请先完善数据', {time: 1300});
-            return false;
-        }
-        JsPost('{:url("GoodsTypeSpec/add")}', data, function(e){
-			if(e.status === true){
-				layer.close(window_box);
-				layer.msg(e.msg, {time: 1300}, function(){
-					table.reload('typeTable');
-				});
-			}else{
-				layer.msg(e.msg, {time: 1300});
-			}
-		});
-    }
 
-    function editSpec(data){
-        if(!data){
-            layer.msg('请先完善数据', {time: 1300});
-            return false;
-        }
-        JsPost('{:url("GoodsTypeSpec/edit")}', data, function(e){
-			if(e.status === true){
-				layer.close(window_box);
-				layer.msg(e.msg, {time: 1300}, function(){
-					table.reload('typeTable');
-				});
-			}else{
-				layer.msg(e.msg, {time: 1300});
-			}
-		});
-    }
+
 </script>

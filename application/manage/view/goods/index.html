@@ -132,7 +132,8 @@
         <div class="layui-form-item">
             <div class="layui-margin-10">
                 <blockquote class="layui-elem-quote layui-text">
-                    请先下载<a href="{:url('ietask/importTemplete',['tplName'=>'goods'])}">导入模板</a>
+                    请先下载<a href="{:url('ietask/importTemplete',['tplName'=>'goods'])}">导入模板</a><br/>
+                    商品导入，请务必填写商品编码。
                 </blockquote>
             </div>
             <div class="layui-inline">
@@ -166,16 +167,18 @@
                     var html = '';
                     html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
                     html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
-                    html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'goods/commentList\')}?goods_id=' + data.id + '">查看评价</a>';
+                    html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'user/comment\')}?goods_id=' + data.id + '">查看评价</a>';
                     return html;
                 }},
-                {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
-                {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},
+              /*  {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
+                {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},*/
+                {field:'bn', width:150,title:'商品编码', align: 'left'},
                 {field:'marketable', width:100,title:'上下架', align: 'center',templet: "#is_able", unresize: true},
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
                 {field:'name', minWidth:250,title:'名称', align: 'center'},
+                {field:'bn', minWidth:200,title:'商品编码', align: 'center'},
                 {field:'brand_name', width:100,title:'品牌', align: 'center'},
                 {field:'stock', width:100,title:'库存', align: 'center'},
                 {field:'sort', edit: 'text', width:80,title:'排序', align: 'center',templet: function (data) {
@@ -282,6 +285,7 @@
             var type = this.getAttribute('lay-id');
             if (type == 'all') {
                 filter = {};
+                filter['warn'] = '';
             } else if (type == 'up') {
                 filter['marketable'] = '1';
                 filter['warn'] = 'false';

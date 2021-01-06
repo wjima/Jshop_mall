@@ -6,7 +6,7 @@
 				<input type="number" v-model="mobile" :maxlength="maxMobile" placeholder="请输入手机号码" focus placeholder-class="login-item-i-p fsz26" />
 			</view>
 			<view class="reg-item flc">
-				<input class="reg-item-input" placeholder-class="login-item-i-p fsz26" type="text" v-model="code" placeholder="请输入验证码" />
+				<input class="reg-item-input" placeholder-class="login-item-i-p fsz26" type="number" v-model="code" placeholder="请输入验证码" />
 				<view :class="sendCodeBtn" @click="sendCode" v-if="verification">发送验证码</view>
 				<view class="btn btn-g" v-if="!verification">{{ timer }} 秒后重新获取</view>
 			</view>

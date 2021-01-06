@@ -161,6 +161,11 @@ class Sms extends Common
                 // $params['user_name'] = 买家昵称
                 $msg = "恭喜您，订单支付成功,祝您购物愉快。";
                 break;
+            case 'order_cancle':
+                // $params['order_id'] = 订单号
+                // $params['memo'] = 下单买家备注
+                $msg = "您的订单：".$params['order_id']."已取消";
+                break;
             case 'remind_order_pay':
                 // 未支付催单
                 // $params['order_id'] = 订单号
@@ -329,15 +334,22 @@ class Sms extends Common
      */
     protected function tableFormat($list)
     {
-        foreach($list as $k => $v) {
-            if($v['status']) {
+        $tpl = $this->sms_tpl;
+        $msgCenterModel = new MessageCenter();
+        $msg_tpl = $msgCenterModel->tpl;
+        foreach ($list as $k => $v) {
+            if ($v['status']) {
                 $list[$k]['status'] = config('params.sms')['status'][$v['status']];
             }
 
-            if($v['ctime']) {
+            if ($v['ctime']) {
                 $list[$k]['ctime'] = getTime($v['ctime']);
             }
-
+            if (isset($tpl[$v['code']])) {
+                $list[$k]['code'] = $tpl[$v['code']]['name'] . '(' . $v['code'] . ')';
+            } else  if (isset($msg_tpl[$v['code']])) {
+                $list[$k]['code'] = $msg_tpl[$v['code']]['name'] . '(' . $v['code'] . ')';
+            }
         }
         return $list;
     }

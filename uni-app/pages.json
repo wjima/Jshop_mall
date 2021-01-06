@@ -462,12 +462,6 @@
 		}
 	},
     {
-    	"path" : "pages/member/setting/subscription/index",
-    	"style": {
-    		"navigationBarTitleText": "消息订阅"
-    	}
-    },
-    {
     	"path" : "pages/login/mobile/index",
     	"style": {
     		"navigationBarTitleText": "绑定手机号"
@@ -501,6 +495,12 @@
 		    "path" : "pages/login/login/mobile",
 		    "style" : {
 				"navigationBarTitleText": "绑定手机号"
+			}
+		},
+		{
+		    "path" : "pages/webview/index",
+		    "style" : {
+				"navigationBarTitleText": ""
 			}
 		}
 		// ,

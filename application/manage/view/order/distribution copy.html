@@ -1,0 +1,161 @@
+<div class="content">
+     <table class="table">
+        <colgroup>
+            <col width="100%">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td class="text-center" >配货清单</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <colgroup>
+            <col width="50%">
+            <col width="50%">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td class="fsz12">
+                <p>订单号:{$order.order_id}</p>
+            </td>
+            <td class="fsz12">
+                <p>日期:{$order.ctime|date="Y-m-d"}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <colgroup>
+            <col width="100%">
+        </colgroup>
+        <tbody>
+        <tr>
+            <td class="fsz12">
+                <p>客户:{$order.user.nickname}</p>
+                <p>电话:{$order.user.mobile}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table text-left">
+        <colgroup>
+            <col width="30%">
+            <col width="20%">
+            <col width="20%">
+            <col width="10%">
+            <col width="10%">
+            <col width="10%">
+        </colgroup>
+        <tbody>
+        <tr>
+            <th>商品名称</th>
+            <th>货号</th>
+            <th>单价</th>
+            {:hook('orderviewinfo', ['type'=>'title'])}
+            <th>数量</th>
+            <th>小计</th>
+        </tr>
+        {volist name='order.items' id='vo'}
+        <tr>
+            <td class="fsz12">
+                {$vo.name}{if $vo.addon} - {$vo.addon}{/if}
+            </td>
+            <td class="fsz12" style="font-weight: bold;">{$vo.sn}</td>
+            <td class="fsz12" >￥{$vo.price}</td>
+            {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
+            <td class="fsz12"style="font-weight: bold;" >
+                {$vo.nums-$vo.sendnums-$vo.reship_nums+$vo.reship_nums_ed}
+            </td class="fsz12">
+            <td class="fsz12">￥{php} echo $vo['price'] * ($vo['nums']-$vo['sendnums']-$vo['reship_nums']+$vo['reship_nums_ed']); {/php}</td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+
+    <table class="table">
+        <colgroup>
+            <col width="50%">
+            <col width="50%">
+        </colgroup>
+        <tr>
+            <td>地址：{$order.ship_area_name} - {$order.ship_address}</td>
+            <td>收货人：{$order.ship_name}</td>
+        </tr>
+        <tr>
+            <td>手机：{$order.ship_mobile}</td>
+            <td>订单备注：{$order.mark}</td>
+        </tr>
+    </table>
+    <table class="table">
+        <colgroup>
+            <col width="50%">
+            <col width="50%">
+        </colgroup>
+        <tr>
+            <td>订单附言： {$order.memo}</td>
+            <td>配送： {if $order.logistics_name}{$order.logistics_name}{/if}</td>
+        </tr>
+    </table>
+
+    <table class="table table-condensed">
+        <tr>
+            <td><h4><strong>签字：</strong></h4></td>
+        </tr>
+    </table>
+    <input type="submit" class="btn btn-print" onclick="window.print()" value="打印"/>
+</div>
+
+<style>
+    /*打印时隐藏打印按钮*/
+    @media print {
+        .btn-print {
+            display: none
+        }
+    }
+    .content{
+        width: 90%;
+        margin: 0 auto;
+    }
+    .fsz12 {
+        font-size: 12px;
+    }
+    table{
+        width: 100%;
+        border-spacing: 0;
+        /*margin-bottom: 20px;*/
+    }
+    td,th{
+        padding: 10px 5px;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+        vertical-align: top;
+    }
+    .text-left{
+        text-align: left;
+    }
+    .text-center{
+        text-align: center;
+    }
+    .text-right{
+        text-align: right;
+    }
+    .btn-print{
+        width: 100%;
+        margin-top: 20px;
+        height: 50px;
+        color: #fff;
+        background-color: #009688;
+        border: none;
+    }
+    table tr td {
+        word-break: break-all;
+        font-size: 12px;
+    }
+    th {
+        font-size: 12px;
+    }
+</style>

@@ -45,7 +45,6 @@
 				this.closeAd = false
 			},
 			showSliderInfo(type, val) {
-				console.log(type);
 				if (!val) {
 					return;
 				}
@@ -53,6 +52,11 @@
 					if (val.indexOf('http') != -1) {
 						// #ifdef H5 
 						window.location.href = val
+						// #endif
+						// #ifndef H5
+						uni.navigateTo({
+							url: '/pages/webview/index.vue?src=' + val
+						})
 						// #endif
 					} else {
 						// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP
@@ -117,6 +121,11 @@
 					if (val.indexOf('http') != -1) {
 						// #ifdef H5 
 						window.location.href = val
+						// #endif
+						// #ifndef H5
+						uni.navigateTo({
+							url: '/pages/webview/index.vue?src=' + val
+						})
 						// #endif
 					} else {
 						// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP

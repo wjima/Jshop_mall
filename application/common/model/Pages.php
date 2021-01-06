@@ -12,6 +12,9 @@ namespace app\common\model;
 class Pages extends Common
 {
 
+    const MAIN_YES = 1;//首页
+    const MAIN_NO = 2;//主页
+
     /**
      * @param $post
      *
@@ -59,19 +62,43 @@ class Pages extends Common
         foreach ($list as &$val) {
             $val['layout'] = config('params.pages.layout')[$val['layout']];
             $val['type']   = config('params.pages.type')[$val['type']];
+            $val['main']   = config('params.pages.is_main')[$val['is_main']];
         }
         return $list;
     }
 
+    /**
+     * 获取保存的页面配置信息
+     * 后台获取配置项方法
+     * @param $page_code
+     */
+    public function getInfo($page_code = '')
+    {
+        $result            = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [],
+        ];
+        $pageModel         = new Pages();
+        $pagesItemsModel   = new PagesItems();
+        $pageinfo          = $pageModel->where([['code', '=', $page_code]])->find();
+        $pageinfo['items'] = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
+        if ($pageinfo['items']->isEmpty()) {
+            return error_code(34800);
+        }
+        $result['data'] = $pageinfo;
+        return $result;
+    }
 
     /**
      * 获取页面配置详情
+     * 调整为只前台获取用
      * @param $page_code 页面编码
      * @param string $token
      * @param bool|false $api 是否接口访问，接口为前台
      * @return array
      */
-    public function getDetails($page_code, $token = '', $api = false)
+    public function getHomeDetails($token = '')
     {
         $result          = [
             'status' => true,
@@ -80,25 +107,36 @@ class Pages extends Common
         ];
         $pageModel       = new Pages();
         $pagesItemsModel = new PagesItems();
-        if ($api) {
-            $pageinfo = $pageModel->where([['code', '=', $page_code]])->cache(86400)->find();
-            $data     = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->cache(86400)->select();
-        } else {
-            $pageinfo = $pageModel->where([['code', '=', $page_code]])->find();
-            $data     = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->select();
-        }
-        if ($data->isEmpty()) {
-            // $result['msg'] = '请先配置该页面';
+        $result['data']  = $pageModel->where([['is_main', '=', 1]])->cache(86400)->find();
+        if(!$result['data']){
             return error_code(34800);
         }
+        $data            = $pagesItemsModel->where([['page_code', '=', $result['data']['code']]])->order('sort asc')->cache(86400)->select();
+
+        if ($data->isEmpty()) {
+            return error_code(34800);
+        }
+        $contentRes = $this->getContent($data,$token);
+        if (!$contentRes['status']) {
+            return $contentRes;
+        }
+        $result['data']['items'] = $contentRes['data'];
+        return $result;
+    }
+
+    public function getContent($data,$token = ''){
+        $result            = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [],
+        ];
         try {
             $data = $data->toArray();
             $i    = 0;
             foreach ($data as $key => $value) {
-
                 $data[$i]['params'] = json_decode($value['params'], true);
                 if ($value['widget_code'] == 'notice') {
-                    if ($data[$i]['params']['type'] == 'auto' && $api) {
+                    if ($data[$i]['params']['type'] == 'auto') {
                         $noticeModel                = new Notice();
                         $list                       = $noticeModel->getNoticeList();
                         $data[$i]['params']['list'] = $list;
@@ -108,22 +146,27 @@ class Pages extends Common
                     $list                       = $promotionModel->receiveCouponList($data[$i]['params']['limit']);
                     $data[$i]['params']['list'] = $list;
                 } elseif ($value['widget_code'] == 'goods') {
-                    $list       = $where = $whereOr = [];
+                    $list       = $where = [];
+                    $whereRaw   = ' 1=1 ';
                     $goodsModel = new Goods();
-                    if ($data[$i]['params']['type'] == 'auto' && $api) {
+                    if ($data[$i]['params']['type'] == 'auto') {
                         //商品分类,同时取所有子分类 todo 无限极分类时要注意
-                        if (isset($data[$i]['params']['classifyId']) && trim($data[$i]['params']['classifyId'])) {
+                        if (isset($postWhere['cat_id']) && $postWhere['cat_id']) {
                             $goodsCatModel = new GoodsCat();
-                            $catIds        = [];
-                            $childCats     = $goodsCatModel->getCatByParentId($data[$i]['params']['classifyId']);
-                            $catIds        = array_column($childCats->toArray(), 'id');
-                            $catIds[]      = $data[$i]['params']['classifyId'];
-                            $where[]       = ['g.goods_cat_id', 'in', $catIds];
-                            //扩展分类
+                            $cat_ids       = [];
+                            $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
+                            if (!$childCats->isEmpty()) {
+                                $filter['child_cats'] = $childCats;
+                            }
+                            $cat_ids   = array_column($childCats->toArray(), 'id');
+                            $cat_ids[] = $postWhere['cat_id'];
+
                             $goodsExtendCat = new GoodsExtendCat();
-                            $gids           = $goodsExtendCat->getGoodsIdByCat($catIds, true);
-                            if ($gids) {
-                                $whereOr[] = ['g.id', 'in', $gids];
+                            $goods_ids      = $goodsExtendCat->getGoodsIdByCat($cat_ids, true);
+                            if ($goods_ids) {
+                                $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') or g.id in (' . implode(',', $goods_ids) . ') ) ';
+                            } else {
+                                $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') ) ';
                             }
                         }
                         //品牌筛选
@@ -132,38 +175,36 @@ class Pages extends Common
                         }
                         $where[]                    = ['g.marketable', 'eq', $goodsModel::MARKETABLE_UP];
                         $limit                      = isset($data[$i]['params']['limit']) ? $data[$i]['params']['limit'] : config('jshop.page_limit');
-                        $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereOr);
+                        $returnGoods                = $goodsModel->getList('id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $where, 'sort asc', 1, $limit, $whereRaw);
                         $data[$i]['params']['list'] = $returnGoods['data'];
-                    } elseif ($api) {
+                    } else {
                         foreach ((array)$data[$i]['params']['list'] as $gk => $gv) {
                             $goods                           = $goodsModel->getGoodsDetial($gv['id'], 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $token);
                             $data[$i]['params']['list'][$gk] = $goods['data'];
                         }
                     }
-                } elseif ($value['widget_code'] == 'articleClassify' && $api) {
+                } elseif ($value['widget_code'] == 'articleClassify') {
                     $article                    = new Article();
                     $type_id                    = $data[$i]['params']['articleClassifyId'];
                     $limit                      = $data[$i]['params']['limit'];
                     $res                        = $article->articleList($type_id, 1, $limit);
                     $data[$i]['params']['list'] = $res['data']['list'];
-                } elseif ($value['widget_code'] == 'groupPurchase' && $api) {
+                } elseif ($value['widget_code'] == 'groupPurchase') {
                     $promotion = new Promotion();
                     if (isset($data[$i]['params']['list']) && $data[$i]['params']['list']) {
                         foreach ((array)$data[$i]['params']['list'] as $k => $v) {
-                            if ($api) {
-                                if (isset($v['goods_id']) && $v['goods_id']) {
-                                    $goods = $promotion->getGroupDetial($v['goods_id'], $token, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $v['id']);
-                                    if ($goods['status']) {
-                                        $data[$i]['params']['list'][$k] = $goods['data'];
-                                    } else {
-                                        $data[$i]['params']['list'][$k] = [];
-                                    }
+                            if (isset($v['goods_id']) && $v['goods_id']) {
+                                $goods = $promotion->getGroupDetial($v['goods_id'], $token, 'id,name,bn,brief,price,mktprice,image_id,goods_cat_id,goods_type_id,brand_id,is_nomal_virtual,marketable,stock,weight,unit,spes_desc,params,comments_count,view_count,buy_count,sort,is_recommend,is_hot,label_ids', $v['id']);
+                                if ($goods['status']) {
+                                    $data[$i]['params']['list'][$k] = $goods['data'];
+                                } else {
+                                    $data[$i]['params']['list'][$k] = [];
                                 }
                             }
                         }
                     }
                     $data[$i]['params']['list'] = array_values(array_filter((array)$data[$i]['params']['list']));
-                } elseif ($value['widget_code'] == 'pintuan' && $api) {
+                } elseif ($value['widget_code'] == 'pintuan') {
                     $pintuanModel = new PintuanRule();
                     $pi           = 0;
                     $pintuan      = [];
@@ -192,7 +233,6 @@ class Pages extends Common
                         }
                     }
                     $data[$i]['params']['list'] = array_values(array_filter((array)$pintuan));
-
                 } elseif ($value['widget_code'] == 'textarea') {
                     $data[$i]['params'] = clearHtml($data[$i]['params'], ['width', 'height']);//清除文章中宽高
                     $data[$i]['params'] = str_replace("<img", "<img style='max-width: 100%'", $data[$i]['params']);
@@ -204,10 +244,41 @@ class Pages extends Common
             $result['msg']    = $e->getMessage();
             return $result;
         }
-        $pageinfo['items'] = $data;
-        $result['data']    = $pageinfo;
+        $result['data'] = $data;
         return $result;
     }
+    /**
+     * 获取页面配置详情
+     * 调整为只前台获取用
+     * @param $page_code 页面编码
+     * @param string $token
+     * @param bool|false $api 是否接口访问，接口为前台
+     * @return array
+     */
+    public function getDetails($page_code, $token = '')
+    {
+        $result          = [
+            'status' => true,
+            'msg'    => '获取成功',
+            'data'   => [],
+        ];
+        $pageModel       = new Pages();
+        $pagesItemsModel = new PagesItems();
+        $result['data']  = $pageModel->where([['code', '=', $page_code]])->cache(86400)->find();
+
+        $data            = $pagesItemsModel->where([['page_code', '=', $page_code]])->order('sort asc')->cache(86400)->select();
+
+        if ($data->isEmpty()) {
+            return error_code(34800);
+        }
+        $contentRes = $this->getContent($data,$token);
+        if (!$contentRes['status']) {
+            return $contentRes;
+        }
+        $result['data']['items'] = $contentRes['data'];
+        return $result;
+    }
+
 
 
     public function addData($data = [])

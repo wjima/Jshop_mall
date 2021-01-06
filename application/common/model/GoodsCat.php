@@ -50,82 +50,6 @@ class GoodsCat extends Common
     }
 
 
-//    /**
-//     * 转换成树状
-//     * @param $data
-//     * @return array
-//     * @throws \think\db\exception\DataNotFoundException
-//     * @throws \think\db\exception\ModelNotFoundException
-//     * @throws \think\exception\DbException
-//     */
-//    protected function getTree($data)
-//    {
-//        $new_data = array();
-//        foreach($data as $v)
-//        {
-//            if($v['parent_id'] == self::TOP_CLASS_PARENT_ID)
-//            {
-//                $new_data[$v['id']]['id'] = $v['id'];
-//                $new_data[$v['id']]['name_1'] = $v['name'];
-//                $new_data[$v['id']]['name_2'] = '';
-//                $new_data[$v['id']]['type_id'] = $v['type_id'];
-//                $new_data[$v['id']]['image_id'] = $v['image_id'];
-//                $new_data[$v['id']]['sort'] = $v['sort'];
-//                $new_data[$v['id']]['operating'] = $this->getOperating($v['id'], self::TOP_CLASS);
-//            }
-//            else
-//            {
-//                $new_data[$v['parent_id']]['subclass'][] = array(
-//                    'id' => $v['id'],
-//                    'name_1' => '',
-//                    'name_2' => $v['name'],
-//                    'type_id' => $v['type_id'],
-//                    'image_id' => $v['image_id'],
-//                    'sort' => $v['sort'],
-//                    'operating' => $this->getOperating($v['id'], self::SUB_CLASS)
-//                );
-//            }
-//        }
-//
-//        $edition = [];
-//        foreach ((array)$new_data as $key => $val)
-//        {
-//            $edition[] = $val['sort'];
-//        }
-//        array_multisort($edition, SORT_ASC, $new_data);
-//
-//        $return_data = array();
-//        foreach($new_data as $v)
-//        {
-//            $return_data[] = array(
-//                'id' => $v['id'],
-//                'name_1' => $v['name_1'],
-//                'name_2' => $v['name_2'],
-//                'type_id' => $this->getTypeName($v['type_id']),
-//                'image_id' => $this->getImage($v['image_id']),
-//                'sort' => $v['sort'],
-//                'operating' => $v['operating']
-//            );
-//            if(isset($v['subclass']) && count($v['subclass']) > 0)
-//            {
-//                foreach($v['subclass'] as $vv)
-//                {
-//                    $return_data[] = array(
-//                        'id' => $vv['id'],
-//                        'name_1' => $vv['name_1'],
-//                        'name_2' => $vv['name_2'],
-//                        'type_id' => $this->getTypeName($vv['type_id']),
-//                        'image_id' => $this->getImage($vv['image_id']),
-//                        'sort' => $vv['sort'],
-//                        'operating' => $vv['operating']
-//                    );
-//                }
-//            }
-//        }
-//        return $return_data;
-//    }
-
-
     /**
      * 获取全部分类
      * @param bool $id //排除分类ID
@@ -157,62 +81,20 @@ class GoodsCat extends Common
         return $return_data;
     }
 
-
     /**
-     * API使用的树装
-     * @param $data
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * 根据数组去返回树状结构
      */
-    protected function getTreeApi($data)
+    protected function getTreeApi($data,$parent_id=self::TOP_CLASS_PARENT_ID)
     {
-        $new_data = array();
-        foreach($data as $v)
-        {
-            if($v['parent_id'] == self::TOP_CLASS_PARENT_ID)
-            {
-                $new_data[$v['id']]['id'] = $v['id'];
-                $new_data[$v['id']]['name'] = $v['name'];
-                $new_data[$v['id']]['image_id'] = $v['image_id'];
-                if ($v['image_id'])
-                {
-                    $new_data[$v['id']]['image_url'] = _sImage($v['image_id']);
-                }
-                else
-                {
-                    $new_data[$v['id']]['image_url'] = _sImage();
-                }
-                $new_data[$v['id']]['sort'] = $v['sort'];
-                $new_data[$v['id']]['child'] = [];
+        $children = [];
+        foreach($data as $v){
+            if($v['parent_id'] == $parent_id){
+                $v['image_url'] = _sImage($v['image_id']);
+                $v['child'] = $this->getTreeApi($data,$v['id']);
+                $children[] = $v;
             }
         }
-        foreach($data as $v)
-        {
-            if($v['parent_id'] != self::TOP_CLASS_PARENT_ID)
-            {
-                if(isset($new_data[$v['parent_id']]))
-                {
-                    $new_data[$v['parent_id']]['child'][] = array(
-                        'id' => $v['id'],
-                        'name' => $v['name'],
-                        'image_id' => $v['image_id'],
-                        'image_url' => _sImage($v['image_id']),
-                        'sort' => $v['sort']
-                    );
-                }
-            }
-        }
-
-        $edition = [];
-        foreach ((array)$new_data as $key => $val)
-        {
-            $edition[] = $val['sort'];
-        }
-        array_multisort($edition, SORT_ASC, $new_data);
-
-        return $new_data;
+        return $children;
     }
 
 
@@ -254,29 +136,6 @@ class GoodsCat extends Common
         }
     }
 
-
-//    /**
-//     * 生成操作按钮
-//     * @param $id
-//     * @param int $type
-//     * @return string
-//     */
-//    protected function getOperating($id, $type = self::TOP_CLASS)
-//    {
-//        $html = '';
-//        if($type == self::TOP_CLASS)
-//        {
-//            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs add-class" data-id="'.$id.'">添加</a>';
-//            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
-//            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
-//        }
-//        elseif($type == self::SUB_CLASS)
-//        {
-//            $html .= '<a class="layui-btn layui-btn-xs edit-class" data-id="'.$id.'">编辑</a>';
-//            $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-id="'.$id.'">删除</a>';
-//        }
-//        return $html;
-//    }
 
 
     /**
@@ -595,7 +454,7 @@ class GoodsCat extends Common
 
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = "sort asc";
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

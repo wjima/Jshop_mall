@@ -1,0 +1,2 @@
+INSERT INTO `jshop_operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (NULL, '296', '订单编辑-订单明细显示', 'edititemslist', 'a', '299', '3', '100'), (NULL, '296', '订单编辑-订单明细添加', 'edititemsadd', 'a', '299', '3', '100');
+INSERT INTO `jshop_operation` (`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (NULL, '296', '订单编辑-订单明细删除', 'edititemsdel', 'a', '299', '3', '100'), (NULL, '296', '订单编辑-订单明细编辑', 'edititemsedit', 'a', '299', '3', '100');

@@ -6,7 +6,7 @@
 				<input type="number" v-model="mobile" :maxlength="maxMobile" placeholder="请输入手机号码" focus placeholder-class="login-item-i-p fsz26" />
 			</view>
 			<view class="login-item flc">
-				<input class="login-item-input" placeholder-class="login-item-i-p fsz26" type="text" v-model="code" placeholder="请输入验证码" />
+				<input class="login-item-input" placeholder-class="login-item-i-p fsz26" type="number" v-model="code" placeholder="请输入验证码" />
 				<view :class="sendCodeBtn" @click="sendCode" v-if="verification">发送验证码</view>
 				<view class="btn btn-g" v-if="!verification">{{ timer }} 秒后重新获取</view>
 			</view>
@@ -88,7 +88,15 @@ export default {
 				this.$common.loadToShow('发送中...');
 				setTimeout(() => {
 					this.$common.loadToHide();
-					this.$api.sms({ mobile: this.mobile, code: 'login' }, res => {
+					let data={
+						mobile: this.mobile
+					}
+					if(this.user_wx_id){
+						data.code="login"
+					}else{
+						data.code="bind"
+					}
+					this.$api.sms(data, res => {
 						if (res.status) {
 							this.timer = 60;
 							this.verification = false;
@@ -129,26 +137,43 @@ export default {
 				this.$common.errorToShow('请输入验证码');
 				return false;
 			}
-			let data = {
-				mobile: this.mobile,
-				code: this.code,
-				user_wx_id: this.user_wx_id
-			};
-			
-			// 获取邀请码
-			let invicode = this.$db.get('invitecode');
-			if (invicode) {
-				data.invitecode = invicode;
-			}
-			
-			this.$api.smsLogin(data, res => {
-				if (res.status) {
-					this.$db.set('userToken', res.data);
-					this.redirectHandler();
-				} else {
-					this.$common.errorToShow(res.msg);
+			if(this.user_wx_id){
+				let data = {
+					mobile: this.mobile,
+					code: this.code,
+					user_wx_id: this.user_wx_id
+				};
+				
+				// 获取邀请码
+				let invicode = this.$db.get('invitecode');
+				if (invicode) {
+					data.invitecode = invicode;
 				}
-			});
+				
+				this.$api.smsLogin(data, res => {
+					if (res.status) {
+						this.$db.set('userToken', res.data);
+						this.redirectHandler();
+					} else {
+						this.$common.errorToShow(res.msg);
+					}
+				});
+			}else{
+				let token=this.$db.get('userToken');
+				let data = {
+					mobile: this.mobile,
+					code: this.code,
+					token:token
+				};
+				
+				this.$api.bindMobile(data, res => {
+					if (res.status) {
+						this.redirectHandler();
+					} else {
+						this.$common.errorToShow(res.msg);
+					}
+				});
+			}
 		},
 		// 重定向跳转 或者返回上一个页面
 		redirectHandler() {

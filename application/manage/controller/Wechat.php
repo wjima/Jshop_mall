@@ -416,13 +416,13 @@ class Wechat extends Manage
         $data       = input('data/a');
         $message_id = input('id/d', 0);
         if (!$message_id) {
-            error_code(10003);
+            return error_code(10003);
         }
         $mediaData = [];
         foreach ((array)$data as $key => $val) {
             if ($val) {
                 if (!$val['title']) {
-                    error_code(16001);
+                    return  error_code(16001);
                 }
                 $mediaData[] = [
                     'id'      => $val['id'],
@@ -438,7 +438,7 @@ class Wechat extends Manage
             }
         }
         if (!$mediaData) {
-            error_code(16002);
+            return error_code(16002);
         }
 
         $weixinMedia = new WeixinMediaMessage();

@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding: 30px;" class="layui-form seller-alone-form" lay-filter="add_pages"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i> 名称：</label>
@@ -23,8 +23,6 @@
     </div>
 
     {:jshopToken('pages_add')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="add_submit">保存</button>
-
 </div>
 
 <script>

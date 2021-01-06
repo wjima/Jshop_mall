@@ -1,8 +1,11 @@
 <template>
 	<view class="content">
-		<view class="nav-back">
+		<hx-navbar :fixed="true" :title="barTitle" barPlaceholder="hidden" transparent="auto" color="#000000"
+		 :background-color="[[255, 255, 255],[255, 255, 255]]" :pageScroll.sync="scrollData">
+		</hx-navbar>
+		<!-- <view class="nav-back">
 			<view class="back-btn" @click="backBtn()"><image class="icon" src="/static/image/back-black.png" mode=""></image></view>
-		</view>
+		</view> -->
 
 		<view class="content-top">
 			<!-- 轮播图 -->
@@ -26,15 +29,20 @@
 						<text>已售{{ goodsInfo.buy_promotion_count || '0' }}件/剩余{{ product.stock || '0' }}件</text>
 						<text>累计销售{{ goodsInfo.buy_count || '0' }}件</text>
 					</view>
-					<view class="commodity-time-img"></view>
-					<view class="commodity-time">
-						<text v-if="goodsInfo.activity_status == '1'">活动即将开始</text>
-						<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
-						<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
-						<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
-							<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+					<view class="commodity-time-wrap">
+						<view class="commodity-time-img"></view>
+						<view class="commodity-time">
+							<text v-if="goodsInfo.activity_status == '1'">活动即将开始</text>
+							<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
+							<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
+							<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
+								<uni-countdown :day="lasttime.day" :hour="lasttime.hour" 
+								textColor="#fce250"
+								:minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+							</view>
 						</view>
 					</view>
+					
 				</view>
 				<!-- 倒计时end -->
 
@@ -353,6 +361,8 @@ export default {
 	},
 	data() {
 		return {
+			scrollData: {},
+			barTitle: '',
 			swiper: {
 				indicatorDots: true,
 				autoplay: true,
@@ -413,7 +423,9 @@ export default {
 				minute: 0,
 				second: 0
 			},
-			shareUrl: '/pages/share/jump'
+			shareUrl: '/pages/share/jump',
+			userInfo: {}, // 用户信息
+			kefupara: '', //客服传递资料
 		};
 	},
 	onLoad(e) {
@@ -570,10 +582,11 @@ export default {
 		changeSpes(obj) {
 			let index = obj.v;
 			let key = obj.k;
-			if (this.product.default_spes_desc[index][key].hasOwnProperty('product_id') && this.product.default_spes_desc[index][key].product_id) {
+			let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+			if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
 				let type = this.goodsInfo.group_type == 3 ? 'group' : 'skill';
 				let data = {
-					id: this.product.default_spes_desc[index][key].product_id,
+					id: tmp_default_spes_desc[index][key].product_id,
 					type: type, //商品类型
 					group_id: this.groupId
 				};
@@ -612,6 +625,7 @@ export default {
 						}
 					}
 				}
+				spes = JSON.stringify(spes).replace(/\./g,'====');
 				products.default_spes_desc = spes;
 			}
 			return products;
@@ -846,11 +860,18 @@ export default {
 			imageUrl: this.goodsInfo.album[0],
 			path: this.shareUrl
 		};
-	}
+	},
+	onPageScroll(e) {
+		this.barTitle = e.scrollTop > 100 ? '商品详情' : ''
+		this.scrollData = e
+	},
 };
 </script>
 
 <style>
+	.content-top {
+		padding-bottom: 40rpx;
+	}
 .swiper {
 	height: 750upx;
 }
@@ -1282,8 +1303,10 @@ export default {
 	border-color: transparent #ff7159 transparent transparent;
 	/*透明 黄 透明 透明 */
 	position: absolute;
-	top: 0px;
-	left: 462upx;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 260rpx;
+	/* left: 460upx; */
 }
 
 .commodity-time {
@@ -1294,6 +1317,7 @@ export default {
 	background-color: #ff7159;
 	padding: 16upx 0 18upx;
 	color: #ff7159;
+	/* float: right; */
 }
 
 .commodity-time > text {
@@ -1416,4 +1440,8 @@ export default {
 	transform: translateX(-50%);
 }
 /* #endif */
+
+.commodity-time-wrap{
+	float: right;
+}
 </style>

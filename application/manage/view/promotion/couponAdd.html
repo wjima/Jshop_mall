@@ -1,8 +1,8 @@
 <form class="layui-form seller-alone-form" action="" style="min-height:600px;">
     <div class="layui-form-item">
-        <label class="layui-form-label">优惠券名称：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>优惠券名称：</label>
         <div class="layui-input-inline seller-inline-5">
-            <input name="name" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" type="text">
+            <input name="name" lay-verify="title" autocomplete="off" placeholder="请输入名称" class="layui-input" type="text">
         </div>
         <div class="layui-form-mid layui-word-aux">优惠券名称会显示到前台，请合理输入此名称</div>
     </div>
@@ -20,6 +20,13 @@
         <div class="layui-form-mid layui-word-aux">数字越小，权重越大</div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">是否排他：</label>
+        <div class="layui-input-inline seller-inline-1">
+            <input type="checkbox" name="exclusive" lay-skin="switch"   value="2" lay-text="是|否">
+        </div>
+        <div class="layui-form-mid layui-word-aux">当设置排他之后，权重小于此优惠券的不能使用了</div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">可领取数量：</label>
         <div class="layui-input-inline seller-inline-1">
             <input type="number" name="max_nums" required  lay-verify="required" value="0" autocomplete="off" class="layui-input">
@@ -34,7 +41,7 @@
         <div class="layui-form-mid layui-word-aux">启用后，用户可在前台直接领取</div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">起止时间：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>起止时间：</label>
         <div class="layui-input-inline seller-inline-6">
             <input  type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
         </div>

@@ -27,7 +27,7 @@ class PintuanRule extends Common{
         'goods' => '请选择商品',
         'date' => '起止时间必须',
         'sort.integer' => '权重请给定一个合理的数值',
-        'sort.gt' => '权重数值不能小于零',
+        'sort.gt' => '权重数值必须大于零',
         'people_number.require'=>'开团人数必须',
         'people_number.integer' => '开团人数请给定一个合理的数值',
         'people_number.between' => '开团人数范围，2-8人之间',
@@ -62,7 +62,7 @@ class PintuanRule extends Common{
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = ['sort Asc'];
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
     /**

@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form seller-alone-form">
+<form style="padding: 30px;" class="layui-form seller-alone-form" lay-filter="edit_hook">
 
     <input type="hidden" name="id" value="{$data.id}">
 
@@ -23,8 +23,7 @@
         </div>
     </div>
     {:jshopToken('hooks_edit')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="hooks-edit">保存</button>
-</div>
+</form>
 
 <script>
     layui.use('form', function(){

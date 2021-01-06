@@ -1,6 +1,6 @@
 <template>
 	<view class="video bottom-cell-group" >
-		<video :src="jdata.params.list[0].url" :poster="jdata.params.list[0].image" controls></video>
+		<video :src="jdata.params.list[0].url" :poster="jdata.params.list[0].image" :autoplay="jdata.params.autoplay" controls></video>
 	</view>
 </template>
 

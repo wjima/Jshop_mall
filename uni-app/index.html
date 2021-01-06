@@ -10,6 +10,7 @@
     <title>
         <%= htmlWebpackPlugin.options.title %>
     </title>
+		<!--以下为判断PC还是移动端，按需开启-->
 <!-- 	<script type="text/javascript">
 		let url = window.location.origin;
 		if(!/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
@@ -20,9 +21,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px'
         })
-    </script>
-    <script src="https://cdn.bootcss.com/vConsole/3.3.2/vconsole.min.js"></script> -->
-   <!-- <script>
+    </script>-->
+
+	<!--以下vConsole引入注释可以在调试app时开启-->
+    <!-- <script src="https://cdn.bootcss.com/vConsole/3.3.2/vconsole.min.js"></script> 
+   <script>
         var vConsole = new VConsole();
     </script> -->
     <link rel="stylesheet" href="<%= BASE_URL %>static/index.css" />

@@ -7,6 +7,7 @@
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\job\export;
+
 use think\queue\Job;
 use app\common\model\Ietask;
 
@@ -30,17 +31,16 @@ class Balance
         foreach ($header as $key => $val) {
             $balance['header'][$key] = $val['desc'];
         }
+        $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
 
         $data = $model->getCsvData($filter);
-        if ($data['status'])
-        {
+        if ($data['status']) {
             $body = $data['data'];
             $balance['body'] = $body;
             $csv = new \org\Csv($balance);
             $resCsv = $csv->export('balance');
-            if($resCsv['status'])
-            {
+            if ($resCsv['status']) {
                 $bData['file_name'] = $resCsv['data']['filename'];
                 $bData['file_size'] = $resCsv['data']['filesize'];
                 $bData['file_path'] = $resCsv['data']['file'] . $resCsv['data']['filename'];
@@ -49,19 +49,16 @@ class Balance
                 $ietaskModle->update($bData, ['id' => $params['task_id']]);
             }
             $job->delete();
-        }
-        else
-        {
+        } else {
             //失败，导出失败
             $bData['status'] = $ietaskModle::EXPORT_FAIL_STATUS;
             $bData['message'] = $balance['msg'];
             $bData['utime'] = time();
             $ietaskModle->update($bData, ['id' => $params['task_id']]);
         }
-        if($job->attempts() > 3)
-        {
+        if ($job->attempts() > 3) {
             $bData['status'] = $ietaskModle::EXPORT_FAIL_STATUS;
-            $bData['message'] = error_code(10039,true);
+            $bData['message'] = error_code(10039, true);
             $bData['utime'] = time();
             $ietaskModle->update($bData, ['id' => $params['task_id']]);
             $job->delete();

@@ -158,6 +158,9 @@
 			this.storeCode = store;
 			this.getDistribution(store);
 			this.getGoods();
+			if(!options.self){
+				uni.hideHomeButton();
+			}
 		},
 		mounted() {
 			// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE

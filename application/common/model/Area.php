@@ -503,7 +503,7 @@ class Area extends Common
         }
         $result['where'] = $where;
         $result['field'] = "*";
-        $result['order'] = [];
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

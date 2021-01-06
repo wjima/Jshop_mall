@@ -67,6 +67,9 @@ class Message extends Common
             case 'order_payed':
                 $msg = "恭喜您，订单支付成功,祝您购物愉快。";
                 break;
+            case 'order_cancle':
+                $msg = "您的订单：".$params['order_id']."已取消";
+                break;
             case 'remind_order_pay':
                 $msg = "您的订单还有3个小时就要取消了，请立即进行支付。";
                 break;

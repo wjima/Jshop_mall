@@ -561,7 +561,7 @@ UE.I18N['zh-cn'] = {
             'lang_input_target':'是否在新窗口打开：'
         },
         'validLink':'只支持选中一个链接时生效',
-        'httpPrompt':'您输入的超链接中不包含http等协议名称，默认将为您添加http://前缀'
+        'httpPrompt':'您输入的超链接中不包含http、self等协议名称，默认将为您添加self://前缀，self://前缀是站内打开，http是打开站外，小程序请确保http的超链接已加入业务域名。'
     },
     'map':{
         'static':{

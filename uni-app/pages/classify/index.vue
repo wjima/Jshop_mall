@@ -62,7 +62,7 @@
 		</view>
 
 		<!-- 高级赛选 -->
-		<lvv-popup position="top" ref="lvvpopref" style="background: none;">
+		<lvv-popup-c position="top" ref="lvvpopref" style="background: none;">
 			<view class="fliter-c">
 				<scroll-view scroll-y="true" style="height: 100%;">
 					<view class="fliter-item">
@@ -126,7 +126,7 @@
 					<button class="btn btn-b btn-square" @click="filterOk()">确定</button>
 				</view>
 			</view>
-		</lvv-popup>
+		</lvv-popup-c>
 
 		<!-- 商品列表 -->
 		<scroll-view scroll-y="true" :scroll-into-view="toView" class="scroll-Y" @scrolltolower="lower" enable-back-to-top="true" lower-threshold="45">
@@ -173,7 +173,7 @@
 </template>
 
 <script>
-import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
+// import lvvPopup from '@/components/lvv-popup/lvv-popup.vue';
 export default {
 	data() {
 		return {
@@ -257,7 +257,7 @@ export default {
 		this.getGoods();
 	},
 
-	components: { lvvPopup },
+	// components: { lvvPopup },
 	methods: {
 		listGrid() {
 			if (this.current == 0) {
@@ -561,8 +561,8 @@ export default {
 		},
 		//确认筛选
 		filterOk() {
+			this.searchData.page = 1
 			let data = this.searchData;
-
 			//获取分类
 			// data.where.cat_id = '';
 			for (let i = 0; i < this.cat_list.length; i++) {

@@ -41,7 +41,7 @@ class Giveaway implements Result
                 'id' => 0,
                 'user_id' => 0,
                 'product_id' => $product_id,
-                'nums' => $nums,
+                'nums' => (int)$nums,
                 'type' => Cart::TYPE_GIVEAWAY,
                 'weight' => 0,
                 'products' => [],

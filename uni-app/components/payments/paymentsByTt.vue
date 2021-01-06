@@ -19,7 +19,7 @@
 				</view>
 			</button>
 		</form>
-		<view class="payment-pop" v-show="popShow">
+		<!-- <view class="payment-pop" v-show="popShow">
 			<view class="payment-pop-c">
 				<image src="/static/image/wait-pay.png"></image>
 				<view class="text">支付中，请稍后...</view>
@@ -28,7 +28,7 @@
 				<button class="btn btn-c" @click="popBtn">支付失败</button>
 				<button class="btn btn-o" @click="popBtn">支付成功</button>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 

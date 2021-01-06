@@ -1710,7 +1710,7 @@ class Order extends Common
             $item['sn'] = $v['products']['sn'];
             $item['bn'] = $v['products']['bn'];
             if($v['type'] == Cart::TYPE_GIVEAWAY){
-                $item['name'] = $v['products']['name'].self::GIVEAWAY_STR;
+                $item['name'] =self::GIVEAWAY_STR.$v['products']['name'];
             }else{
                 $item['name'] = $v['products']['name'];
             }

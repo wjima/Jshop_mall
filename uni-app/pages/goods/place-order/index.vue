@@ -87,11 +87,12 @@
 							</view>
 							<view class="goods-price" v-if="item.type != 7">￥{{ item.products.price || '' }}</view>
 						</view>
-						<view class="romotion-tip" v-if="item.products.promotion_list1.length">
+						<view class="romotion-tip" v-if="item.type != 7 && item.products.promotion_list1.length">
 							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
 							 :key="k">{{ v.name || '' }}
 							</view> -->
-							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list1" :key="k">{{ v.name || '' }}
+							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list1" :key="k">
+								{{ v.name || '' }}
 							</view>
 						</view>
 						<view class="goods-item-c">
@@ -510,17 +511,17 @@ export default {
 					this.cartData = data;
 					// 商品详情
 					this.products = data.list;
-					let promotion = []
 					this.products.forEach(item=>{
-						let val = {}
+						let promotion = []
 						for(let key in item.products.promotion_list){
+							let val = {}
 							val.code = key;
 							val.name = item.products.promotion_list[key]
+							if(val.code){
+								promotion.push(val)
+							}
 						}
-						if(val.code){
-							promotion.push(val)
-						}
-						item.products.promotion_list1 = promotion
+						item.products.promotion_list1 = promotion;
 					})
 					//判断是否有库存
 					let noStock = true;

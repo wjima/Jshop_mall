@@ -187,7 +187,8 @@
 						res.data.birthday = '请选择';
 					}
 					_this.nickname = res.data.nickname;
-					_this.mobile = res.data.mobile;
+					_this.mobile = res.data.mobile||'暂无手机号';
+					console.log(_this.mobile);
 					_this.sex = the_sex;
 					_this.index = the_sex;
 					_this.birthday = res.data.birthday;

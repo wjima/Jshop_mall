@@ -116,10 +116,10 @@ return [
                     ],
                     [
                         'title' => '快递公司',
-                        'code' => 'ship_name'
+                        'code' => 'logistics_name'
                     ],
                     [
-                        'title' => '快递编号',
+                        'title' => '快递单号',
                         'code' => 'logi_no'
                     ]
                 ]

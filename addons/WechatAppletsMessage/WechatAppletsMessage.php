@@ -125,7 +125,6 @@ class WechatAppletsMessage extends Addons
             //商家不通知
             return true;
         }
-
         $template_id = $this->getUserIsTip($params['params']['user_id'], $params['params']['code']);
         if (!$template_id) {
             //不需要通知
@@ -345,8 +344,8 @@ class WechatAppletsMessage extends Addons
         $user_id = $params['params']['user_id'];
         $info    = $params['params']['params'];
         $data    = [
-            'ship_name' => [
-                'value' => $info['ship_name']
+            'logistics_name' => [
+                'value' => $info['logistics_name']
             ],
             'logi_no'   => [
                 'value' => $info['logi_no']

@@ -1935,19 +1935,34 @@ class Order extends Common
         //查询评价商品
         unset($goods_comment);
         $goods_comment = [];
+        $gid = [];
         foreach ($order_items as $vo) {
             $goods_comment[] = [
                 'score' => 5,
                 'user_id' => $vo['user_id'],
                 'goods_id' => $vo['goods_id'],
+                'product_id' => $vo['product_id'],
                 'order_id' => $vo['order_id'],
+                'name' => $vo['name'],
                 'addon' => $vo['addon'],
                 'content' => '用户' . $setting . '天内未对商品做出评价，已由系统自动评价。',
                 'ctime' => time(),
             ];
+            if (isset($gid[$vo['goods_id']])) {
+                $gid[$vo['goods_id']] += 1;
+            } else {
+                $gid[$vo['goods_id']] = 1;
+            }
         }
         $goodsCommentModel = new GoodsComment();
         $goodsCommentModel->insertAll($goods_comment);
+
+        // 统计到商品评论总条数
+        //商品表更新评论数量
+        foreach ($gid as $goods_id => $inc) {
+            $goodsModel = new Goods();
+            $goodsModel->where('id', $goods_id)->setInc('comments_count', $inc);
+        }
     }
 
 

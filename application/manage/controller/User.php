@@ -147,31 +147,13 @@ class User extends Manage
      */
     public function comment()
     {
-        if (Request::isPost()) {
-            $page = input('page', 1);
-            $limit = input('limit', 20);
-            $order_id = input('order_id', '');
-            $evaluate = input('evaluate', 'all');
-            $mobile = input('mobile', false);
+        if (request()->isPost()) {
+            $post = input();
             $goodsCommentModel = new GoodsComment();
-            $res = $goodsCommentModel->getListComments($page, $limit, $order_id, $evaluate, 'all', $mobile);
-            if ($res['status']) {
-                $return = [
-                    'status' => true,
-                    'msg'    => '获取成功',
-                    'data'   => $res['data']['list'],
-                    'count'  => $res['data']['count']
-                ];
-            } else {
-                $return = [
-                    'status' => false,
-                    'msg'    => error_code(10025, true),
-                    'data'   => $res['data']['list'],
-                    'count'  => $res['data']['count']
-                ];
-            }
-            return $return;
+            return $goodsCommentModel->tableData($post);
         }
+        $goods_id = input('goods_id',0);
+        $this->assign('goods_id',$goods_id);
         return $this->fetch('comment');
     }
 

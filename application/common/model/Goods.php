@@ -196,6 +196,7 @@ class Goods extends Common
                 $brand = $val->brand;
                 $list[$key]['brand_name'] =$brand['name'];
             }
+            $list[$key]['sku_num'] = $productModel->where([['goods_id', '=', $val['id']]])->count();//判断是多规格还是单规格
         }
         return $list;
     }

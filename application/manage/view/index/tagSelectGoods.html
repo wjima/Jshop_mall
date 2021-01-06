@@ -39,7 +39,13 @@
             id:'tagGoodsTable',
             cols: [[
                 select_type,
-                {field: 'name', title: '商品名称',align:'center'},
+                {field: 'name', title: '商品名称',align:'center',templet:function(data){
+                    if(data.sku_num>1){
+                        return '[多规格]'+data.name;
+                    }else{
+                        return '[单规格]'+data.name;
+                    }
+                }},
                 {field:'price', width:100,title:'销售价', align: 'center', templet:function(data){return '￥'+data.price}},
 //                {field:'cat_name', width:150,title:'分类', align: 'center'},
                 {field:'type_name', width:150,title:'类型', align: 'center'},

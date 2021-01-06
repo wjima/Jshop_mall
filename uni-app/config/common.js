@@ -172,7 +172,7 @@ function jumpToLogin(method) {
 function successToShow(msg = '保存成功', callback = function() {}) {
 
 
-	setTimeout(function() {
+	// setTimeout(function() {
 		uni.showToast({
 			title: msg,
 			icon: 'success',
@@ -183,7 +183,7 @@ function successToShow(msg = '保存成功', callback = function() {}) {
 				}, 2000)
 			}
 		})
-	}, 100)
+	// }, 100)
 	/*  uni.showToast({
 	    title: msg,
 	    icon: 'success',
@@ -193,7 +193,7 @@ function successToShow(msg = '保存成功', callback = function() {}) {
 
 //操作失败的提示信息
 function errorToShow(msg = '操作失败', callback = function() {}) {
-	setTimeout(function() {
+	// setTimeout(function() {
 		uni.showToast({
 			title: msg,
 			icon: 'none',
@@ -204,7 +204,7 @@ function errorToShow(msg = '操作失败', callback = function() {}) {
 				}, 2000)
 			}
 		})
-	}, 100)
+	// }, 100)
 
 }
 

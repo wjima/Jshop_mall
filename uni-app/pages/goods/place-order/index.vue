@@ -362,12 +362,7 @@ export default {
 			clickIndex: Number ,//当前点击的优惠券
 			bargain_id: 0, //砍价活动id
 			record_id: 0 ,//砍价活动id
-			group_id:0,//团购活动id
-			msgList: [
-			    { name: '拼团成功', desc: '拼团成功后通知我', func: 'pintuan_success', tmpl: '', status: false,  is: false },
-				{ name: '拼团失败', desc: '拼团失败后通知我', func: 'pintuan_refund', tmpl: '', status: false,  is: false },
-				{ name: '下单成功', desc: '下单成功通知我', func: 'order', tmpl: '', status: false,  is: false },
-			]
+			group_id:0//团购活动id
 		};
 	},
 	components: { lvvPopup, uniSegmentedControl },

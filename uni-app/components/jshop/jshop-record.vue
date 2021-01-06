@@ -114,7 +114,7 @@ export default {
 	background-color: rgba(0,0,0,.5);
 	border-radius: 10upx;
 	padding: 10upx;
-	z-index: 666;
+	z-index: 669;
 	.adbrathing-c{
 		width: 100%;
 		height: 100%;

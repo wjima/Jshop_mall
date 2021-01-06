@@ -150,6 +150,9 @@ class BargainRecord extends Common
         }else{
             $recData['etime']       = $info['etime'];
         }
+        if($recData['stime'] > $recData['etime']){
+            return error_code(17640);
+        }
 
         if (!$this->save($recData)) {
             $result['msg'] = error_log(17618,true);//'发起砍价活动失败';

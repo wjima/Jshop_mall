@@ -273,7 +273,7 @@
 						<text class="red-price">{{ teamInfo.team_nums || '' }}</text>
 						人，赶快拼单吧
 					</view>
-					<view class="igtb-mid"><button class="btn" @click="toshow(2, teamInfo.id)">参与拼团</button></view>
+					<view class="igtb-mid"><button class="btn" @click="toshow(2, teamInfo.id)" v-if="teamInfo.team_nums && teamInfo.team_nums > 0">参与拼团</button></view>
 				</view>
 			</view>
 		</lvv-popup>

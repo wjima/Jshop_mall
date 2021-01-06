@@ -36,7 +36,9 @@
 							<text v-if="goodsInfo.activity_status == '2'">距结束仅剩</text>
 							<text v-if="goodsInfo.activity_status == '3'">活动已结束</text>
 							<view class="commodity-day" v-if="goodsInfo.activity_status == '2' || goodsInfo.activity_status == '1' || goodsInfo.activity_status == '3'">
-								<uni-countdown :day="lasttime.day" :hour="lasttime.hour" :minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
+								<uni-countdown :day="lasttime.day" :hour="lasttime.hour" 
+								textColor="#fce250"
+								:minute="lasttime.minute" :second="lasttime.second"></uni-countdown>
 							</view>
 						</view>
 					</view>

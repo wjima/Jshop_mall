@@ -215,7 +215,8 @@
 						<view class="goods-number">
 							<text class="pop-m-title">数量</text>
 							<view class="pop-m-bd-in">
-								<uni-number-box :min="minNums" :max="product.stock" :value="buyNum" @change="bindChange"></uni-number-box>
+								<uni-number-box :min="minNums" :max="product.stock" 
+								:value="buyNum" @change="bindChange"></uni-number-box>
 							</view>
 						</view>
 					</scroll-view>
@@ -453,7 +454,12 @@
 		computed: {
 			// 规格切换计算规格商品的 可购买数量
 			minNums() {
-				return this.product.stock > this.minBuyNum ? this.minBuyNum : this.product.stock;
+				if(this.product.stock == 0) {
+					this.buyNum = 0
+					return 0
+				} else {
+					return this.product.stock > this.minBuyNum ? this.minBuyNum : this.product.stock;
+				}
 			},
 			// 判断商品是否是多规格商品  (为了兼容小程序 只能写在计算属性里面了)
 			isSpes() {

@@ -212,7 +212,7 @@
 								this.isShow = true
 								this.chequeLisit = res.data
 							} else {
-								// this.isShow = false
+								this.isShow = false
 							}
 						} else {
 							this.$common.errorToShow(res.msg)

@@ -126,7 +126,7 @@ const post = (method, data, callback,complete) => {
 		},
 		method: 'POST',
 		success: (response) => {
-			uni.hideLoading();
+			// uni.hideLoading();
 			const result = response.data
 			if (!result.status) {
 				// 登录信息过期或者未登录
@@ -168,9 +168,9 @@ const post = (method, data, callback,complete) => {
 		},
 		
 		complete: (response) => {
-			// setTimeout(function() {
+			setTimeout(function() {
 				uni.hideLoading();
-			// }, 1000)
+			}, 1000)
 			complete?complete(): "";
 		},
 		fail: (error) => {

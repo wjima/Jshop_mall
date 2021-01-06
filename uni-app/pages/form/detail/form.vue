@@ -552,9 +552,13 @@
 				this.submitStatus = true;
 				this.$api.addSubmitForm(obj, res => {
 					if (res.status) {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+						// that.$common.successToShow(res.msg);
 						//表单类型判断是否需要支付，支付金额多少
 						if (that.form.type == '1' || that.form.type == '2') {
-							that.$common.successToShow(res.msg);
 							//跳转首页
 							setTimeout(function() {
 								//出来支付按钮
@@ -563,7 +567,7 @@
 							}, 1000)
 						} else {
 							that.formReset()
-							that.$common.successToShow(res.msg)
+							// that.$common.successToShow(res.msg)
 							//跳转首页
 							setTimeout(function() {
 								wx.switchTab({
@@ -763,7 +767,7 @@
 </script>
 <style>
 	.content {
-		margin-bottom: 200rpx;
+		padding-bottom: 200rpx;
 		background-color: #eeeeee;
 	}
 

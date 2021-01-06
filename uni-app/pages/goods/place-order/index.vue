@@ -87,11 +87,12 @@
 							</view>
 							<view class="goods-price" v-if="item.type != 7">￥{{ item.products.price || '' }}</view>
 						</view>
-						<view class="romotion-tip" v-if="item.products.promotion_list">
+						<view class="romotion-tip" v-if="item.type != 7 && item.products.promotion_list1.length">
 							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
 							 :key="k">{{ v.name || '' }}
 							</view> -->
-							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k">{{ v || '' }}
+							<view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list1" :key="k">
+								{{ v.name || '' }}
 							</view>
 						</view>
 						<view class="goods-item-c">
@@ -362,12 +363,7 @@ export default {
 			clickIndex: Number ,//当前点击的优惠券
 			bargain_id: 0, //砍价活动id
 			record_id: 0 ,//砍价活动id
-			group_id:0,//团购活动id
-			msgList: [
-			    { name: '拼团成功', desc: '拼团成功后通知我', func: 'pintuan_success', tmpl: '', status: false,  is: false },
-				{ name: '拼团失败', desc: '拼团失败后通知我', func: 'pintuan_refund', tmpl: '', status: false,  is: false },
-				{ name: '下单成功', desc: '下单成功通知我', func: 'order', tmpl: '', status: false,  is: false },
-			]
+			group_id:0//团购活动id
 		};
 	},
 	components: { lvvPopup, uniSegmentedControl },
@@ -515,6 +511,18 @@ export default {
 					this.cartData = data;
 					// 商品详情
 					this.products = data.list;
+					this.products.forEach(item=>{
+						let promotion = []
+						for(let key in item.products.promotion_list){
+							let val = {}
+							val.code = key;
+							val.name = item.products.promotion_list[key]
+							if(val.code){
+								promotion.push(val)
+							}
+						}
+						item.products.promotion_list1 = promotion;
+					})
 					//判断是否有库存
 					let noStock = true;
 					for (let i = 0; i < data.list.length; i++) {

@@ -14,6 +14,11 @@ MODIFY COLUMN `grade` tinyint(2) UNSIGNED NULL DEFAULT 0 COMMENT '用户等级' 
 MODIFY COLUMN `remarks` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '备注' AFTER `isdel`;
 
 
+ALTER TABLE `jshop_goods_comment`
+ADD COLUMN `product_id` int(10) NOT NULL DEFAULT '0' COMMENT '货品ID 关联products.id' AFTER `goods_id`,
+ADD COLUMN `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '商品名称' AFTER `order_id`;
+
+
 ALTER TABLE `jshop_pages`
 ADD COLUMN `is_main` tinyint(1) UNSIGNED NULL DEFAULT 2 COMMENT '是否首页' AFTER `type`;
 

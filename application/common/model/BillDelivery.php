@@ -409,10 +409,6 @@ class BillDelivery extends Common
                 'modify' => 'convertString'
             ],
             [
-                'id' => 'username',
-                'desc' => '用户名',
-            ],
-            [
                 'id' => 'logi_name',
                 'desc' => '快递公司',
             ],
@@ -545,11 +541,6 @@ class BillDelivery extends Common
                 ->count();
 
             foreach ($res as $k => &$v) {
-                if(isset($v['user_id']) && $v['user_id']){
-                    $v['username'] = get_user_info($v['user_id'], 'nickname');
-                }else{
-                    $v['username'] = '';
-                }
                 $v['logi_name'] = get_logi_info($v['logi_code']);
                 $v['ship_address'] = get_area($v['ship_area_id']) . '- ' . $v['ship_address'];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);

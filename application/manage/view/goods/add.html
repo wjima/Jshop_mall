@@ -49,7 +49,7 @@
         display: inline;
     }
     .layui-form{
-        position: relative;
+        /* position: relative; */
     }
     .spec-item .layui-form-checkbox{
         margin-top: 0 !important;
@@ -549,7 +549,7 @@
 		$(document).on('click', '.add-type', function() {
 			JsGet('{:url("GoodsType/add")}', function(e) {
 				if (e.status) {
-					window_box = layer.open({
+					layer.open({
 						type: 1,
 						title: '添加类型',
 						area: setpage(750,440), //宽高
@@ -565,7 +565,6 @@
 								JsPost("{:url('GoodsType/add')}", data.field, function(res) {
 									if (res.status) {
 										layer.close(window_box);
-
 										JsGet("{:url('GoodsType/getAll')}", function(e) {
 											if (e.data.length > 0) {
 												var getTpl = type_tpl.innerHTML,

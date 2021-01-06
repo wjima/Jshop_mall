@@ -449,10 +449,12 @@ export const subscription = {
 					tmplIds.push(element.tmpl);
 				}
 			});
+			
 			let subscriptionsSetting = {};
 			uni.getSetting({
 				withSubscriptions: true,
 				success(res) {
+					
 					if (res.subscriptionsSetting.itemSettings) {
 						subscriptionsSetting = res.subscriptionsSetting.itemSettings;
 						for (let index in res.subscriptionsSetting.itemSettings) {
@@ -463,6 +465,7 @@ export const subscription = {
 							}
 						}
 					}
+					
 					if (tmplIds.length > 0) {
 						uni.requestSubscribeMessage({
 							tmplIds: tmplIds,

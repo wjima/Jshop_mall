@@ -408,7 +408,7 @@ export default {
 		this.getDefaultStore();
 		
 		// #ifdef MP-WEIXIN
-		this.getSubscriptionTmplIds();
+		//this.getSubscriptionTmplIds();
 		// #endif
 	},
 	onShow() {
@@ -436,25 +436,6 @@ export default {
 		}
 	},
 	methods: {
-		// #ifdef MP-WEIXIN
-		//获取模板
-		getSubscriptionTmplIds: function () {
-			this.$api.getSubscriptionTmplIds(res => {
-				console.log('res', res)
-				if (res.status) {
-					for (let i = 0; i < this.msgList.length; i++) {
-						this.msgList[i].tmpl = res.data[this.msgList[i].func].template_id;
-						this.msgList[i].is = res.data[this.msgList[i].func].is;
-						if (this.msgList[i].tmpl != '') {
-							this.msgList[i].status = true;
-						}
-					}
-				} else {
-					this.$common.errorToShow('消息订阅配置信息获取失败');
-				}
-			});
-		},
-		// #endif
 		// 切换门店
 		onTypeItem(index) {
 			if (this.type_current !== index) {

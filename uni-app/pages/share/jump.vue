@@ -1,10 +1,10 @@
 <template>
 	<view class="container">
-		<view class="bg">
+		<view class="bg" v-if="hasHb || hasCoupon">
 			<image :src="`${url}static/images/welfarepro/bgi.png`" mode="" class="img"></image>
 			<!-- <image src="/static/image/welfarepro/bgi.png" mode="" class="img"></image> -->
 		</view>
-		<view class="red">
+		<view class="red" v-if="hasHb">
 			<view class="red_bgi">
 				<image :src="`${url}static/images/welfarepro/center.png`" mode="" class="img"></image>
 				<!-- <image src="/static/image/welfarepro/center.png" mode="" class="img"></image> -->

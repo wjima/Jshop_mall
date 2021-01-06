@@ -89,7 +89,7 @@
 	.imgnavbar {
 		width: 100%;
 		background-color: #fff;
-		margin-bottom: 20rpx;
+		/* margin-bottom: 20rpx; */
 	}
 
 	.imgnavbar-list {

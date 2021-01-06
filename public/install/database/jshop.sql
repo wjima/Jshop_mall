@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2021-01-05 18:00:17
+-- Generation Time: 2021-01-06 15:20:59
 -- 服务器版本： 5.5.57-log
 -- PHP Version: 7.0.19
 
@@ -6401,15 +6401,16 @@ CREATE TABLE IF NOT EXISTS `jshop_pages` (
   `name` varchar(50) CHARACTER SET utf8 DEFAULT '' COMMENT '可编辑区域名称',
   `desc` varchar(255) CHARACTER SET utf8 DEFAULT '' COMMENT '描述',
   `layout` tinyint(2) unsigned DEFAULT '1' COMMENT '布局样式编码，1，手机端',
-  `type` tinyint(1) unsigned DEFAULT '1' COMMENT '1手机端，2PC端'
+  `type` tinyint(1) unsigned DEFAULT '1' COMMENT '1手机端，2PC端',
+  `is_main` tinyint(1) unsigned DEFAULT '2' COMMENT '是否首页，1是，2不是'
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `jshop_pages`
 --
 
-INSERT INTO `jshop_pages` (`id`, `code`, `name`, `desc`, `layout`, `type`) VALUES
-(1, 'mobile_home', '移动端首页', '移动端首页相关操作，可视化移动端、小程序端首页布局', 1, 1);
+INSERT INTO `jshop_pages` (`id`, `code`, `name`, `desc`, `layout`, `type`, `is_main`) VALUES
+(1, 'mobile_home', '移动端首页', '移动端首页相关操作，可视化移动端、小程序端首页布局', 1, 1, 1);
 
 -- --------------------------------------------------------
 

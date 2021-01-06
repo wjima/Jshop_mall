@@ -218,9 +218,14 @@
 						<view class="cell-bd-view">
 							<text class="cell-bd-text">优惠券优惠</text>
 							<image src="/static/image/tip.png" mode="" class="tips" @click="tips"></image>
-							<view class="tip" v-if="tipsShow">
-								订单优惠包括优惠券优惠
-							</view>
+							<lvv-popup position="center" ref="cover" class="cover">
+							<!-- <view class="cover"> -->
+								<view class="tip" v-if="tipsShow">
+									订单优惠包括优惠券优惠
+								</view>
+							<!-- </view> -->
+								
+							</lvv-popup>
 						</view>
 					</view>
 					<view class='cell-item-ft'>
@@ -491,7 +496,13 @@
 				}
 			},
 			tips(){
-				this.tipsShow = !this.tipsShow;
+				if(this.tipsShow){
+					this.$refs.cover.close();
+					this.tipsShow = false;
+				}else{
+					this.$refs.cover.show();
+					this.tipsShow = true;
+				}
 			}
 		}
 	}
@@ -656,8 +667,8 @@
 	.tip{
 		position: absolute;
 		padding: 10rpx;
-		left: 104rpx;
-		bottom: 40rpx;
+		left: 20%;
+		bottom: 40%;
 		width: 288rpx;
 		font-size: 22rpx;
 		color: #999;
@@ -676,5 +687,7 @@
 	  border-right: 12rpx solid transparent;
 	  border-top: 18rpx solid #999;
 	} */
-	
+	/deep/.lvv-popup .lvv-popupmark{
+		background:transparent!important;
+	}
 </style>

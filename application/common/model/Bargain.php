@@ -30,7 +30,7 @@ class Bargain extends Common
         'name'                      => '请填写活动名称',
         'goods_id'                  => '请选择商品',
         'sort.integer'              => '权重请给定一个合理的数值',
-        'sort.gt'                   => '权重数值不能小于零',
+        'sort.gt'                   => '权重数值必须大于零',
         'start_price.require'       => '砍价起始金额必填',
         'end_price.require'         => '砍价成交金额必填',
         'bargain_max_price.require' => '砍价每次最大金额必填',

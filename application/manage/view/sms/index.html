@@ -37,8 +37,9 @@
             <div class="layui-input-inline ">
                 <select name="status" lay-verify="">
                     <option value=""></option>
-                    <option value="1">未读</option>
-                    <option value="2">已读</option>
+                    {volist name="params.sms.status" id="val"}
+                    <option value="{$key}">{$val}</option>
+                    {/volist}
                 </select>
             </div>
         </div>

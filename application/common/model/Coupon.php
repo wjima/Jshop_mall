@@ -132,9 +132,12 @@ class Coupon extends Common
     {
         foreach ($list as $key => $val) {
             $list[$key]['ctime'] = date('Y-m-d H:i:s',$val['ctime']);
+            if($val['user_id']){
+                $list[$key]['nickname'] =get_user_info($val['user_id'],'showname');
+            }
             if ($val['is_used'] == self::USED_YES)
             {
-                $list[$key]['used_name'] = model('User')->where('id',$val['used_id'])->value('nickname');
+                $list[$key]['used_name'] = get_user_info($val['used_id'],'showname');
             }
             $list[$key]['is_used'] = config('params.coupon')['is_used'][$val['is_used']];
         }

@@ -1,11 +1,11 @@
 <form class="layui-form seller-alone-form" action="" style="min-height:600px;">
     <input type="hidden" id="id" name="id" value="{$info.id}" />
     <div class="layui-form-item">
-        <label class="layui-form-label">活动名称：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>活动名称：</label>
         <div class="layui-input-inline seller-inline-5">
             <input name="name" lay-verify="title" autocomplete="off" value="{$info.name}" placeholder="请输入标题" class="layui-input" type="text">
         </div>
-        <div class="layui-form-mid layui-word-aux">团购名称会显示到前台，请合理输入此名称</div>
+        <div class="layui-form-mid layui-word-aux">名称会显示到前台，请合理输入此名称</div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">启用状态：</label>
@@ -49,7 +49,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">起止时间：</label>
+        <label class="layui-form-label"><i class="required-color">*</i>起止时间：</label>
         <div class="layui-input-inline seller-inline-6">
             <input  type="text" name="date" value="{:getTime($info['stime'])} 到 {:getTime($info['etime'])}" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
         </div>

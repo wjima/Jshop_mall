@@ -25,7 +25,7 @@
             <td><label for="title"> <var id="lang_input_title"></var></label></td>
             <td><input class="txt" id="title" type="text"/></td>
         </tr>
-        <tr>
+        <tr style="display:none;">
              <td colspan="2">
                  <label for="target"><var id="lang_input_target"></var></label>
                  <input id="target" type="checkbox"/>
@@ -72,8 +72,9 @@
     function handleDialogOk(){
         var href =$G('href').value.replace(/^\s+|\s+$/g, '');
         if(href){
-            if(!hrefStartWith(href,["http","/","ftp://",'#'])) {
-                href  = "http://" + href;
+
+            if(!hrefStartWith(href,["http","/","self:",'#'])) {
+                href  = "self://" + href;
             }
             var obj = {
                 'href' : href,

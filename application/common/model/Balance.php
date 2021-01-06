@@ -508,6 +508,7 @@ class Balance extends Common
         if($list)
         {
             $count = $this->where($where)->count();
+            $paymentRelModel = new BillPaymentsRel();
             foreach($list as $k => $v)
             {
                 if($v['user_id'])
@@ -526,6 +527,12 @@ class Balance extends Common
                 else
                 {
                     $list[$k]['ctime'] = '';
+                }
+                $rel = $paymentRelModel->where([['payment_id','=',$v['source_id']]])->cache(true)->find();
+                if($rel){
+                    $list[$k]['order_id'] = $rel['source_id'];
+                }else{
+                    $list[$k]['order_id'] = '';
                 }
             }
 

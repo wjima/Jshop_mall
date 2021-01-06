@@ -15,7 +15,7 @@
 						<text class="color-9">|</text>
 						<text class="color-9">已售:{{ info.sales_num || '0' }}</text>
 					</view>
-					<view class="time" v-show="info.lasttime && info.status_progress == 2">
+					<view class="time" v-show="info.lasttime && (info.status_progress == 1 ||info.status_progress == 2)">
 						<uni-countdown
 							:day="info.lasttime.day"
 							:hour="info.lasttime.hour"
@@ -164,7 +164,7 @@
 			></shareByApp>
 			<!-- #endif -->
 		</lvv-popup>
-		<view class="flot-btn" v-if="type == 2" @click="friendsAddBargain()">我也要砍</view>
+		<view class="flot-btn" v-if="(info.status_progress == 1 || info.status_progress == 2) && type == 2" @click="friendsAddBargain()">我也要砍</view>
 		<view class="flot-btn" v-if="type == 1 && info.status_progress == 1" @click="buyNow()">立即购买</view>
 	</view>
 </template>

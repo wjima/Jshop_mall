@@ -136,7 +136,8 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                return error_code(10014);
+                //return error_code(10014);
+                $pid = 0;
             }
         } else {
             $pid = 0;
@@ -259,7 +260,8 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                return error_code(10014);
+                $pid = 0;
+                //return error_code(10014);
             }
         } else {
             $pid = 0;
@@ -1327,7 +1329,8 @@ class User extends Api
             if ($pinfo) {
                 $data['pid'] = $pinfo['id'];
             } else {
-                return error_code(10014);
+                $data['pid'] = 0;
+                //return error_code(10014);
             }
         } else {
             $data['pid'] = 0;

@@ -166,7 +166,8 @@ class User extends Common
                 if ($pinfo) {
                     $userData['pid'] = $pid;
                 } else {
-                    error_code(10014);
+                    //error_code(10014);
+                    $userData['pid'] = 0;
                 }
             }
 

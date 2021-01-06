@@ -597,7 +597,7 @@ class BillDelivery extends Common
         $item = [];
         foreach($orderInfo['items'] as $k => $v){
             if(isset($items[$v['product_id']])){
-                $max_num = $v['nums'] - $v['reship_num'] - $v['sendnums'];
+                $max_num = $v['nums'] - $v['reship_nums'] - $v['sendnums'];
                 if($max_num > 0){       //如果此条订单明细需要发货的话
                     if($items[$v['product_id']] > $max_num){
                         //足够发此条记录的话

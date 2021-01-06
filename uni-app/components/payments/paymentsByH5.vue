@@ -17,7 +17,7 @@
 				<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 			</view>
 		</view>
-		<view class="payment-pop" v-show="popShow">
+		<!-- <view class="payment-pop" v-show="popShow">
 			<view class="payment-pop-c">
 				<image src="/static/image/wait-pay.png" style="width: 30px;
 		height: 30px;"></image>
@@ -27,7 +27,7 @@
 				<button class="btn btn-c" @click="popBtn">支付失败</button>
 				<button class="btn btn-o" @click="popBtn">支付成功</button>
 			</view>
-		</view>
+		</view> -->
 	</view>
 </template>
 

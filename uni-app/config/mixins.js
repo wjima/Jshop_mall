@@ -436,7 +436,7 @@ export const subscription = {
 						}
 					}
 				} else {
-					this.$common.errorToShow('消息订阅配置信息获取失败');
+					//this.$common.errorToShow('消息订阅配置信息获取失败');
 				}
 			});
 		},

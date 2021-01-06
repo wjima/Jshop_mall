@@ -48,7 +48,7 @@ class UserPointLog extends Common
             $new_point = $user_info['point'] + $num;
             //积分余额判断
             if ($new_point < 0) {
-                return error_code(11601);
+                return error_code(11604);
             }
 
             //插入记录

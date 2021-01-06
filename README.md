@@ -417,7 +417,7 @@ wwwroot  WEB部署目录（或者子目录）
 ~~~
 
 
-### 如果H5中保存图片有跨域问题
+#### 如果H5中保存图片有跨域问题
 nginx中添加以下配置
 ```
     location ~ .*\.(gif|jpg|jpeg|png)$ {  

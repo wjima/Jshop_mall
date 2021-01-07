@@ -23,7 +23,7 @@ ALTER TABLE `jshop_pages`
 ADD COLUMN `is_main` tinyint(1) UNSIGNED NULL DEFAULT 2 COMMENT '是否首页' AFTER `type`;
 
 -- 更新首页配置
-UPDATE `jshop_pages` SET `is_main` = 1 WHERE `code` = 'mobile_home'
+UPDATE `jshop_pages` SET `is_main` = 1 WHERE `code` = 'mobile_home';
 
 
 INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (589, 238, '第三方账号', 'userwx', 'a', 238, 1, 100);

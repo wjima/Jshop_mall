@@ -208,20 +208,14 @@ class Sms extends Common
             case 'aftersales_pass':
                 // 售后审核通过
                 // $params['order_id'] = 订单号
-                // $params['goods_amount'] = 商品总价
-                // $params['cost_freight'] = 快递费
-                // $params['order_amount'] = 订单总价
-                // $params['money'] = 支付金额
-                // $params['pay_time'] = 支付时间
-                // $params['point'] = 使用抵扣积分单位个
-                // $params['point_money'] = 积分抵扣金额单位元
-                // $params['order_pmt'] = 订单优惠单位元
-                // $params['goods_pmt'] = 商品优惠单位元
-                // $params['coupon_pmt'] = 优惠券优惠单位元
-                // $params['memo'] = 下单买家备注
-                // $params['user_name'] = 买家昵称
+                // $params['refund'] = 退款价格
+                // $params['aftersales_status'] = 售后状态文本 如审核通过、审核拒绝
+                // $params['mark'] = 平台备注   
+                // $params['status'] = 售后状态  1 拒绝 2 同意
+                // $params['type'] = 发货的状态
+                // $params['items'] = 处理售后的商品和数量
                 // $params['aftersales_id'] = 售后单号
-                $msg = "您好，您的售后已经通过。";
+                $msg = "你好，您的售后单".$params['aftersales_id']."平台已处理。";
                 break;
             case 'refund_success':
                 // 退款已处理

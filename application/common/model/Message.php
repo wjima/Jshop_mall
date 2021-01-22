@@ -77,7 +77,7 @@ class Message extends Common
                 $msg = "你好，你的订单已经发货。";
                 break;
             case 'aftersales_pass':
-                $msg = "你好，您的售后已经通过。";
+                $msg = "你好，您的售后单".$params['aftersales_id']."平台已处理。";
                 break;
             case 'refund_success':
                 $msg = "用户你好，你的退款已经处理，请确认。";

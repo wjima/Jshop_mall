@@ -418,10 +418,6 @@ class BillAftersales extends Common
             }
 
             //发送售后审核消息
-            $eventData                      = $orderInfo->toArray();
-            $eventData['aftersales_status'] = ($status == self::STATUS_SUCCESS) ? '审核通过' : '审核拒绝';
-            $eventData['aftersales_id']     = $aftersales_id;
-            $eventData['mark']              = $mark;
             // 售后审核消息传参数的话就用申请售后传过来的参数比较好
             $paramsData = [
                 'aftersales_status'=>($status == self::STATUS_SUCCESS) ? '审核通过' : '审核拒绝',

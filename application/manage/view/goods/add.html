@@ -560,11 +560,11 @@
 							layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');
 							form.render();
 						},
-						yes: function() {
+						yes: function(index) {
 							form.on('submit(fromContent)', function(data) {
 								JsPost("{:url('GoodsType/add')}", data.field, function(res) {
 									if (res.status) {
-										layer.close(window_box);
+										layer.close(index);
 										JsGet("{:url('GoodsType/getAll')}", function(e) {
 											if (e.data.length > 0) {
 												var getTpl = type_tpl.innerHTML,

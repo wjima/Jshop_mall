@@ -223,7 +223,7 @@
 											<view class="ccirc-b">
 												<view class="ccirc-b-l">
 													<view class="ccirc-b-tip">{{ item.expression1 + item.expression2 }}</view>
-													<view class="ccirc-b-time color-9">有效期：{{ item.stime + ' - ' + item.etime }}</view>
+													<view class="ccirc-b-time color-9">有效期至：{{ item.etime }}</view>
 												</view>
 												<view class="ccirc-b-r color-f" @click="couponHandle(index)" v-if="!item.checked && !item.disabled">立即使用</view>
 												<view class="ccirc-b-r color-f" @click="couponHandle(index)" v-else-if="item.checked && !item.disabled">取消使用</view>

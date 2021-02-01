@@ -189,7 +189,7 @@
 
 	.ccirc-b-l {
 		display: inline-block;
-		max-width: 500rpx;
+		max-width: 540rpx;
 	}
 
 	.ccirc-b-tip {
@@ -215,8 +215,8 @@
 		padding: 4upx 10upx;
 		border-radius: 4upx;
 		position: absolute;
-		right: 20upx;
-		bottom: 16upx;
+		right: 12upx;
+		bottom: 44upx;
 	}
 
 	.color-b {

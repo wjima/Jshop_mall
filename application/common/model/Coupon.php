@@ -51,11 +51,31 @@ class Coupon extends Common
     public function addData($user_id,$promotion_id)
     {
         $result = error_code(15021);
-
+        //取优惠券的结束时间
+        $promotionModel = new Promotion();
+        $where[] = ['status', '=', 1];
+        $where[] = ['type', '=',2];
+        $where[] = ['id','=', $promotion_id];
+        $info = $promotionModel->where($where)->find();
+        if(!$info){
+            return $result;
+        }
+        $params = json_decode($info['params'],true);
+        if(isset($params['term_day']) && $params['term_day'] > 0){
+            $endtime = time();
+            $endtime = $endtime + $params['term_day'] * 60*60*24;
+            //如果计算之后的时间大于优惠券结束的时间了，那就以优惠券的时间为准
+            if ($info['etime'] < $endtime) {
+                $endtime = 0;           //就写0吧。
+            }
+        }else{
+            $endtime = 0;
+        }
         $data = [
             'coupon_code' => $this->generate_promotion_code()[0],
             'promotion_id' => $promotion_id,
-            'user_id' => $user_id
+            'user_id' => $user_id,
+            'endtime' => $endtime
         ];
         if($this->allowField(true)->save($data))
         {
@@ -104,7 +124,7 @@ class Coupon extends Common
         if(isset($post['date']) && $post['date'] != ""){
             $theDate = explode(' 到 ',$post['date']);
             if(count($theDate) == 2){
-                $where[] = ['utime', ['EGT',strtotime($theDate[0])],['ELT',strtotime($theDate[1])],'and'];
+                $where[] = ['ctime', ['EGT',strtotime($theDate[0])],['ELT',strtotime($theDate[1])],'and'];
             }
         }
         if(isset($post['promotion']) && $post['promotion'] != ""){
@@ -138,6 +158,11 @@ class Coupon extends Common
             if ($val['is_used'] == self::USED_YES)
             {
                 $list[$key]['used_name'] = get_user_info($val['used_id'],'showname');
+            }
+            if($val['endtime'] > 0){
+                $list[$key]['endtime'] = date('Y-m-d H:i:s', $val['endtime']);
+            }else{
+                $list[$key]['endtime'] = date('Y-m-d H:i:s', $val['etime']);
             }
             $list[$key]['is_used'] = config('params.coupon')['is_used'][$val['is_used']];
         }
@@ -173,7 +198,7 @@ class Coupon extends Common
         if($display == 'no_used')
         {
             $where[] = ['c.is_used', 'eq', self::USED_NO];
-            $where[] = ['p.etime', '>=', time()];
+            // $where[] = ['p.etime', '>=', time()];
         }
         if($display == 'yes_used')
         {
@@ -182,12 +207,20 @@ class Coupon extends Common
         if($display == 'invalid')
         {
             $where[] = ['c.is_used', 'eq', self::USED_NO];
-            $where[] = ['p.etime', '<', time()];
+            // $where[] = ['p.etime', '<', time()];
         }
-        return $this->alias('c')
+        $m = $this->alias('c')
             ->join('promotion p', 'p.id = c.promotion_id')
-            ->where($where)
-            ->count();
+            ->where($where);
+
+        if ($display == 'no_used') {
+            $m->where('(c.endtime = 0 and p.etime >= '.time().') or (c.endtime >='.time().')');
+        }
+        if ($display == 'invalid') {
+            $m->where('(c.endtime = 0 and p.etime < '.time().') or (c.endtime <'.time().')');
+        }
+
+        return $m->count();
     }
 
     /**
@@ -203,8 +236,8 @@ class Coupon extends Common
     public function getMyCoupon($user_id, $promotion_id = '', $display = 'all', $page = 1, $limit = 10)
     {
         $return = [
-            'status' => false,
-            'msg' => error_code(10025,true),
+            'status' => true,
+            'msg' => '',
             'data' => [
                 'list' => [],
                 'count' => 0,
@@ -218,7 +251,7 @@ class Coupon extends Common
         if($display == 'no_used')
         {
             $where[] = ['c.is_used', 'eq', self::USED_NO];
-            $where[] = ['p.etime', '>=', time()];
+            // $where[] = ['p.etime', '>=', time()];
         }
         if($display == 'yes_used')
         {
@@ -227,7 +260,7 @@ class Coupon extends Common
         if($display == 'invalid')
         {
             $where[] = ['c.is_used', 'eq', self::USED_NO];
-            $where[] = ['p.etime', '<', time()];
+            // $where[] = ['p.etime', '<', time()];
         }
         if($promotion_id)
         {
@@ -238,18 +271,32 @@ class Coupon extends Common
             $where[] = ['p.status', 'eq', 1];
         }
 
-        $return['data']['list'] = $this->alias('c')
+        $m1 = $this->alias('c')
             ->join('promotion p', 'p.id = c.promotion_id')
-            ->where($where)
-            ->order('c.ctime asc')
+            ->where($where);
+        if ($display == 'no_used') {
+            $m1->where('(c.endtime = 0 and p.etime >= '.time().') or (c.endtime >='.time().')');
+        }
+        if ($display == 'invalid') {
+            $m1->where('(c.endtime = 0 and p.etime < '.time().') or (c.endtime <'.time().')');
+        }
+
+        $return['data']['list'] = $m1->order('c.ctime asc')
             ->page($page, $limit)
             ->select();
+        
 
-        $return['data']['count'] = $this->alias('c')
+        $m2 = $this->alias('c')
             ->join('promotion p', 'p.id = c.promotion_id')
-            ->where($where)
-            ->count();
+            ->where($where);
+        if ($display == 'no_used') {
+            $m2->where('(c.endtime = 0 and p.etime >= '.time().') or (c.endtime >='.time().')');
+        }
+        if ($display == 'invalid') {
+            $m2->where('(c.endtime = 0 and p.etime < '.time().') or (c.endtime <'.time().')');
+        }
 
+        $return['data']['count'] = $m2->count();
         if($return['data']['list'] !== false)
         {
             $return['status'] = true;
@@ -275,10 +322,12 @@ class Coupon extends Common
                     $return['data']['list'][$k]['expression1'] = $expression1;
                     $return['data']['list'][$k]['expression2'] = $expression2;
                     $return['data']['list'][$k]['is_expire'] = $v['etime'] > time() ? 1 : 2;
-                    $return['data']['list'][$k]['start_time'] = $v['stime'];
-                    $return['data']['list'][$k]['end_time'] = $v['etime'];
-                    $return['data']['list'][$k]['stime'] = date('Y-m-d', $v['stime']);
-                    $return['data']['list'][$k]['etime'] = date('Y-m-d', $v['etime']);
+                    $return['data']['list'][$k]['stime'] = date('Y-m-d H:i', $v['stime']);
+                    if($v['endtime'] > 0 ){
+                        $return['data']['list'][$k]['etime'] = date('Y-m-d H:i', $v['endtime']);
+                    }else{
+                        $return['data']['list'][$k]['etime'] = date('Y-m-d H:i', $v['etime']);
+                    }
                 }
 
             }
@@ -459,7 +508,26 @@ class Coupon extends Common
             'data' => []
         ];
         //判断promotin_id是否是合法的
-        //::todo
+        $promotionModel = new Promotion();
+        $where[] = ['status', '=', 1];
+        $where[] = ['type', '=',2];
+        $where[] = ['id','=', $promotion_id];
+        $info = $promotionModel->where($where)->find();
+        if(!$info){
+            $result['msg'] = '没有此优惠券活动';
+            return $result;
+        }
+        $params = json_decode($info['params'],true);
+        if(isset($params['term_day']) && $params['term_day'] > 0){
+            $endtime = time();
+            $endtime = $endtime + $params['term_day'] * 60*60*24;
+            //如果结算之后的时间大于优惠券结束的时间了，那就以优惠券的时间为准
+            if($info['etime'] < $endtime){
+                $endtime = 0;           //就写0吧。
+            }
+        }else{
+            $endtime = 0;
+        }
 
 
         if($nums > 5000){
@@ -473,7 +541,8 @@ class Coupon extends Common
         for($i = 0 ;$i<$nums;$i++){
             $data[] = [
                 'coupon_code' => $this->getCouponNumber($promotion_id),
-                'promotion_id' => $promotion_id
+                'promotion_id' => $promotion_id,
+                'endtime' => $endtime
             ];
         }
         $re = $this->saveAll($data);

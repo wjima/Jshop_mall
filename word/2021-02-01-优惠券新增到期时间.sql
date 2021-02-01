@@ -1,0 +1,1 @@
+ALTER TABLE `jshop_coupon` ADD `endtime` BIGINT(12) UNSIGNED NOT NULL DEFAULT '0' COMMENT '到期时间' AFTER `used_id`;

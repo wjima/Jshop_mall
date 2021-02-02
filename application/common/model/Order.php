@@ -879,8 +879,7 @@ class Order extends Common
 
         if ($info) {
             unset($result);
-            $result = $this->where($where)
-                ->update($data);
+            $result = $info->save($data);
             //计算订单实际支付金额（要减去售后退款的金额）
             unset($money);
             unset($bawhere);

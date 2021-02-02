@@ -1412,10 +1412,12 @@ class Order extends Common
         $data['confirm'] = self::CONFIRM_RECEIPT;
         $data['confirm_time'] = time();
 
+        $info = $this->where($where)->find();
+        if(!$info) return error_code(10000);
         Db::startTrans();
         try {
             //修改订单
-            $re = $this->save($data, $where);
+            $re = $info->save($data, $where);
             if (!$re) {
 //                $result['msg'] = "确认收货失败";
                 Db::rollback();

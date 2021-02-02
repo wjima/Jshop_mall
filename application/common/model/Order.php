@@ -1389,7 +1389,7 @@ class Order extends Common
      * 确认签收
      * @param $order_id
      * @param bool $user_id
-     * @return bool
+     * @return array
      */
     public function confirm($order_id, $user_id = false)
     {

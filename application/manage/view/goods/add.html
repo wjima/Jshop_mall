@@ -766,16 +766,46 @@
 	function addBrand() {
 		JsGet("{:url('Brand/add')}", function(e) {
 			if (e.status) {
-				window.box = layer.open({
+				layer.open({
 					type: 1,
 					content: e.data,
 					area: setpage(400,480),
-					title: '添加品牌'
+					title: '添加品牌',
+					btn: ['保存', '关闭'],
+                    yes: function (index) {
+                        var formData = layui.form.val("add_brand");
+                        JsPost("{:url('Brand/add')}", formData, function (res) {
+                            if (res.status) {
+								var getTpl = brand_tpl.innerHTML,
+								view = document.getElementById('brand_view');
+								layer.close(index);
+								layer.msg(res.msg, {
+									time: 1300
+								}, function() {
+									JsGet("{:url('Brand/getAll')}", function(e) {
+										if (e.data.length > 0) {
+											var getTpl = brand_tpl.innerHTML,
+												view = document.getElementById('brand_view');
+											var tmpData = {};
+											tmpData.list = e.data;
+											laytpl(getTpl).render(tmpData, function(html) {
+												view.innerHTML = html;
+											});
+											layui.form.render();
+										}
+									})
+								});
+                            } else {
+                                layer.msg(res.msg);
+                            }
+						})
+					}
 				});
 			} else {
 				layer.msg(e.msg);
 			}
 		})
+		return false;
 	}
 
 	//商品图片排序

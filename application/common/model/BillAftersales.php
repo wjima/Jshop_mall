@@ -619,7 +619,7 @@ class BillAftersales extends Common
         $re['msg']   = '';
         $re['count'] = $list->total();
         $re['data']  = $data;
-        $re['sql']   = $this->getLastSql();
+        // $re['sql']   = $this->getLastSql();
 
         return $re;
     }

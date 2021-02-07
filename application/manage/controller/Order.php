@@ -567,4 +567,11 @@ class Order extends Manage
         $mark = Request::param('mark', '');
         return $orderModel->saveMark($order_id, $mark);
     }
+
+    public function aftersales(){
+        $order_id = input('order_id','');
+        if(!$order_id) return error_code(10003);
+        $orderModel = new OrderModel();
+        return $orderModel->createAftersales($order_id);
+    }
 }

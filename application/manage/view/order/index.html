@@ -245,7 +245,7 @@
                 { field: 'status_text', title: '订单状态', width: 90, align: 'center' },
                 {
                     field: 'after_sale_status', title: '售后状态', width: 150, align: 'center', templet: function (data) {
-                        return '<a href="{:url(' / manage / bill_aftersales / index')}?order_id=' + data.order_id + '" style="color:red">' + data.after_sale_status + '</a>';
+                        return '<a href="{:url('/manage/bill_aftersales/index')}?order_id=' + data.order_id + '" style="color:red">' + data.after_sale_status + '</a>';
                     }
                 },
                 { field: 'username', title: '用户', width: 120, align: 'center' },
@@ -663,6 +663,23 @@
                     }
                 });
             });
+        });
+        //订单申请售后
+        $(document).on('click', '.aftersales-order', function () {
+            var id = $(this).attr('data-id');
+            layer.confirm('确定对此单申请售后吗？具体的退货商品和金额请在处理售后时处理', {
+                     btn: ['确认', '取消'] //按钮
+                }, function () {
+                    JsPost('{:url("order/aftersales")}', { order_id: id }, function (e) {
+                        if (e.status) {
+                            layer.msg('申请售后成功，去处理售后吧', { time: 1300 }, function () {
+                                table.reload();
+                            });
+                        } else {
+                            layer.msg(e.msg, { time: 1300 });
+                        }
+                    });
+                });
         });
 
         //删除订单

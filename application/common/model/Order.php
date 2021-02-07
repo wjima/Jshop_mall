@@ -451,6 +451,7 @@ class Order extends Common
                     $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '">编辑</a>';
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="' . $id . '">发货</a>';
                 }
+                $html .= '<a class="layui-btn layui-btn-xs aftersales-order" data-id="' . $id . '">售后</a>';
                 $html .= '<a class="layui-btn layui-btn-xs complete-order" data-id="' . $id . '">完成</a>';
 //                if($ship_status == self::SHIP_STATUS_YES)
 //                {
@@ -2342,5 +2343,16 @@ class Order extends Common
             'total_user_orders' => $total_user_orders,
         ];
         return $return;
+    }
+    public function createAftersales($order_id){
+        $order = $this->get($order_id);
+        if($order['status'] != self::ORDER_STATUS_NORMAL || $order['pay_status'] == self::PAY_STATUS_NO) return error_code(10000);
+        if($order['ship_status'] == self::SHIP_STATUS_NO){
+            $type = 1;
+        }else{
+            $type = 2;
+        }
+        $aftersalesModel = new BillAftersales();
+        return $aftersalesModel->toAdd($order['user_id'],$order_id,$type,[],[],'后台创建售后单',0);
     }
 }

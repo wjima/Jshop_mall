@@ -385,7 +385,7 @@ class Order extends Common
     public function getOrderStatusNum($input)
     {
         $ids = explode(",", $input['ids']);
-        if ($input['user_id']) {
+        if (isset($input['user_id']) && $input['user_id']) {
             $user_id = $input['user_id'];
         } else {
             $user_id = false;
@@ -397,8 +397,7 @@ class Order extends Common
         }
 
         //售后状态查询
-        $isAfterSale = $input['isAfterSale'];
-        if ($isAfterSale) {
+        if (isset($input['isAfterSale']) && $input['isAfterSale']) {
             $model = new BillAftersales();
             $number = $model->getUserAfterSalesNum($user_id, $model::STATUS_WAITAUDIT);
             $data['isAfterSale'] = $number;

@@ -151,22 +151,20 @@ class Pages extends Common
                     $goodsModel = new Goods();
                     if ($data[$i]['params']['type'] == 'auto') {
                         //商品分类,同时取所有子分类 todo 无限极分类时要注意
-                        if (isset($postWhere['cat_id']) && $postWhere['cat_id']) {
+                        if (isset($data[$i]['params']['classifyId']) && trim($data[$i]['params']['classifyId'])) {
                             $goodsCatModel = new GoodsCat();
-                            $cat_ids       = [];
-                            $childCats     = $goodsCatModel->getCatByParentId($postWhere['cat_id']);
-                            if (!$childCats->isEmpty()) {
-                                $filter['child_cats'] = $childCats;
-                            }
-                            $cat_ids   = array_column($childCats->toArray(), 'id');
-                            $cat_ids[] = $postWhere['cat_id'];
-
+                            $catIds        = [];
+                            $childCats     = $goodsCatModel->getCatByParentId($data[$i]['params']['classifyId']);
+                            $catIds        = array_column($childCats->toArray(), 'id');
+                            $catIds[]      = $data[$i]['params']['classifyId'];
+                            //$where[]       = ['g.goods_cat_id', 'in', $catIds];
+                            //扩展分类
                             $goodsExtendCat = new GoodsExtendCat();
-                            $goods_ids      = $goodsExtendCat->getGoodsIdByCat($cat_ids, true);
+                            $goods_ids     = $goodsExtendCat->getGoodsIdByCat($catIds, true);
                             if ($goods_ids) {
-                                $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') or g.id in (' . implode(',', $goods_ids) . ') ) ';
+                                $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $catIds) . ') or g.id in (' . implode(',', $goods_ids) . ') ) ';
                             } else {
-                                $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $cat_ids) . ') ) ';
+                                $whereRaw .= ' and (g.goods_cat_id  in (' . implode(',', $catIds) . ') ) ';
                             }
                         }
                         //品牌筛选

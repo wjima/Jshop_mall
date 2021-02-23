@@ -1071,7 +1071,7 @@ class User extends Common
     public function checkUserByMobile($mobile)
     {
         $where[] = ['mobile', 'eq', $mobile];
-        $where[] = ['status', 'eq', self::STATUS_NORMAL];
+        // $where[] = ['status', 'eq', self::STATUS_NORMAL];
         $res     = $this->field('id')->where($where)->find();
         return $res;
     }

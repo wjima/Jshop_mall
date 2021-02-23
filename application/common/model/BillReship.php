@@ -108,6 +108,7 @@ class BillReship extends Common
         $data['status'] = self::STATUS_SHIPPED;
 
         $this->where($where)->data($data)->update();
+        hook("adminmessage",array('user_id'=>$user_id,"code"=>"after_ship","params"=>$reship_id));
         $result['status'] = true;
         $result['msg'] = '保存成功';
         return $result;

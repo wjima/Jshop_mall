@@ -274,7 +274,7 @@
                 let data = {
                     page: 4,
                     params: {
-                        store: this.info.store
+                        store: this.storeCode
                     },
                     type: 3,//海报
                 }

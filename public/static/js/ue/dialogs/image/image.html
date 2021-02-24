@@ -62,9 +62,9 @@
         <div style="display: flex;">
 
             <div class="btn-group">
-                <div class="btn-item" :class="{active: btnCurrent == 0}" @click="diaShow('show')"> 新增分组 </div>
-                <div class="btn-item" :class="{active: btnCurrent == 1}" @click="movePic"> 移动到分组 </div>
-                <div class="btn-item" :class="{active: btnCurrent == 2}" @click="groupItemCLick('', 2)" > 全部 </div>
+                <div class="btn-item"  @click="diaShow('show')"> 新增分组 </div>
+                <div class="btn-item"  @click="movePic"> 移动到分组 </div>
+                <div class="btn-item" :class="{active: btnCurrent == 2}" @click="groupItemCLick({id: 0}, 2)" > 默认分组 </div>
                 <div class="btn-item" v-for="(item, index) in group_list"  :class="{active: btnCurrent == index + 3}" :key="item.id" 
                 @click="groupItemCLick(item, index + 3)">{{item.name}}</div>
             </div>
@@ -193,7 +193,10 @@
     <script>
         var groupList = '/manage/images/groupList.html' // 分组列表
         var addGroup =  '/manage/images/addGroup.html' // 添加分组
-        var currentId = ''
+        var moveGroup= '/manage/images/moveGroup.html' // 移动分组
+
+
+        var currentId = 0
 
         var app = new Vue({
             el: '#app',
@@ -228,26 +231,27 @@
                         groupData() {
                             const _this = this
                             $.ajax({
-                                    type: "get",
-                                    url: groupList,
-                                    success: function(res) {
-                                        _this.group_list= res.data
-                                    }
-                                })
+                                type: "get",
+                                url: groupList,
+                                success: function(res) {
+                                    _this.group_list= res.data
+                                }
+                            })
                         },
                         diaShow(val) {
-                            this.btnCurrent = 0
+                            // this.btnCurrent = 0
                             this.$set(this.$data, val, true)
                         },
                         // 移动分组的确定事件
                         submitMove() {
+                            var _this = this
                             let selectTab = $('#tabhead .tab.focus').attr('data-content-id')
                             let arr = []
                             switch (selectTab) {
                                 case 'online': // 在线管理
                                     var liArr = $('#imageList ul .selected')
                                     liArr.each(function() {
-                                        arr.push($(this).find("img").attr('src'))
+                                        arr.push($(this).find("img").attr('image_id'))
                                     })
                                     break;
                                 case 'search': // 图片搜索
@@ -255,29 +259,47 @@
 
                                     console.log('searchListUl', searchList)
                                     searchList.each(function() {
-                                        arr.push($(this).find("img").attr('src'))
+                                        arr.push($(this).find("img").attr('image_id'))
                                     })
                                     break;
                             }
-
-                            console.log(arr)
                             if(arr.length == 0) {
                                 this.$message({
                                     message: '请先选择图片'
                                 })
                                 return
+                            } else {
+                                console.log('currentId---', this.moveValue, arr)
+                                $.ajax({
+                                    type: "post",
+                                    url: moveGroup,
+                                    data: {
+                                        images_ids: arr,
+                                        group_id: this.moveValue
+                                    },
+                                    success: function(res) {
+                                        _this.moveshow = false
+                                        _this.$message({
+                                            message: res.msg,
+                                            type: 'success'
+                                        })
+                                        setTabFocus('online')
+                                    }
+                                })
+
+
+                                
                             }
                         },
                         // 图片移动到分组
                         movePic() {
-                            this.btnCurrent = 1
+                            // this.btnCurrent = 1
                             this.moveshow = true
                         },
                         // 分组点击
                         groupItemCLick(type, index) {
-                            console.log(index)
                             this.btnCurrent = index
-                            currentId =  type.id
+                            currentId =  type.id || 0
                             setTabFocus('online')
                         },
                         // 添加分组

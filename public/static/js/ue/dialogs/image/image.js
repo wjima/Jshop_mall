@@ -739,9 +739,9 @@
                         /* 添加额外的GET参数 */
                         var params = utils.serializeParam(editor.queryCommandValue('serverparam')) || '',
                             url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?':'&') + 'encode=utf-8&' + params);
-                        if(currentId) {
+                        // if(currentId != '') {
                             url += '&group_id=' + currentId
-                        }
+                        // }
                         uploader.option('server', url);
                         setState('uploading', files);
                         break;
@@ -912,13 +912,13 @@
                 var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
                     isJsonp = utils.isCrossDomainUrl(url);
 
-                if(currentId) {
+                // if(currentId ) {
                     url +=  '&group_id=' + currentId
 
 
-                } else {
-                    url
-                }
+                // } else {
+                //     url
+                // }
 
 
                 ajax.request(url , {

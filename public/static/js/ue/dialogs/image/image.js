@@ -5,7 +5,7 @@
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
 
-(function () {
+// (function () {
 
     var remoteImage,
         uploadImage,
@@ -18,8 +18,11 @@
         initButtons();
     };
 
+    
+
     /* 初始化tab标签 */
     function initTabs() {
+
         var tabs = $G('tabhead').children;
         for (var i = 0; i < tabs.length; i++) {
             domUtils.on(tabs[i], "click", function (e) {
@@ -66,6 +69,11 @@
             case 'search':
                 setAlign(editor.getOpt('imageManagerInsertAlign'));
                 searchImage = searchImage || new SearchImage();
+                break;
+            case 'add' :
+                onlineImage = onlineImage || new OnlineImage('imageList');
+                // onlineImage.reset();
+                console.log('onlineImage', onlineImage.getInsertList())
                 break;
         }
     }
@@ -731,6 +739,9 @@
                         /* 添加额外的GET参数 */
                         var params = utils.serializeParam(editor.queryCommandValue('serverparam')) || '',
                             url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?':'&') + 'encode=utf-8&' + params);
+                        if(currentId) {
+                            url += '&group_id=' + currentId
+                        }
                         uploader.option('server', url);
                         setState('uploading', files);
                         break;
@@ -760,11 +771,7 @@
                     var responseText = (ret._raw || ret),
                         json = utils.str2json(responseText);
                     if (json.state == 'SUCCESS') {
-                        // 解决多张图片上传乱序 
-                        // _this.imageList.push(json);
-                        _this.imageList[$file.index()] = json;
-                        // 解决多张图片上传乱序
-                        // console.log( "imageList",_this.imageList);
+                        _this.imageList.push(json);
                         $file.append('<span class="success"></span>');
                     } else {
                         $file.find('.error').text(json.state).show();
@@ -818,11 +825,6 @@
                 prefix = editor.getOpt('imageUrlPrefix');
             for (i = 0; i < this.imageList.length; i++) {
                 data = this.imageList[i];
-                // 解决多张图片上传乱序
-                if(data == undefined){
-                    continue
-                }
-                // 解决多张图片上传乱序
                 list.push({
                     src: prefix + data.url,
                     _src: prefix + data.url,
@@ -841,7 +843,6 @@
     function OnlineImage(target) {
         this.container = utils.isString(target) ? document.getElementById(target) : target;
         this.init();
-        this.imgList=[]
     }
     OnlineImage.prototype = {
         init: function () {
@@ -879,31 +880,8 @@
                 if (li.tagName.toLowerCase() == 'li') {
                     if (domUtils.hasClass(li, 'selected')) {
                         domUtils.removeClasses(li, 'selected');
-                        // 解决上传图片顺序错乱问题
-                        var reImg = e.path[1].children[0];
-                        var reImgId = reImg.getAttribute('image_id');
-                        _this.imgList.forEach((item,index)=>{
-                            if(item.image_id == reImgId){
-                                _this.imgList.splice(index,1)
-                            }
-                        })
-                        // 解决上传图片顺序错乱问题
                     } else {
                         domUtils.addClass(li, 'selected');
-                        // 解决上传图片顺序错乱问题
-                        var img = e.path[1].children[0],
-                            src = img.getAttribute('_src');
-                            align = getAlign();
-                        var image_id = img.getAttribute('image_id');
-                        var imgItem={
-                            src: src,
-                            _src: src,
-                            image_id: image_id,
-                            alt: src.substr(src.lastIndexOf('/') + 1),
-                            floatStyle: align
-                        }
-                        _this.imgList.push(imgItem)
-                        // 解决上传图片顺序错乱问题
                     }
                 }
             });
@@ -928,16 +906,27 @@
         /* 向后台拉取图片列表数据 */
         getImageData: function () {
             var _this = this;
+
             if(!_this.listEnd && !this.isLoadingData) {
                 this.isLoadingData = true;
                 var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
                     isJsonp = utils.isCrossDomainUrl(url);
-                ajax.request(url, {
+
+                if(currentId) {
+                    url +=  '&group_id=' + currentId
+
+
+                } else {
+                    url
+                }
+
+
+                ajax.request(url , {
                     'timeout': 100000,
                     'dataType': isJsonp ? 'jsonp':'',
                     'data': utils.extend({
                             start: this.listIndex,
-                            size: this.listSize
+                            size: this.listSize,
                         }, editor.queryCommandValue('serverparam')),
                     'method': 'get',
                     'onsuccess': function (r) {
@@ -1042,27 +1031,23 @@
             }
         },
         getInsertList: function () {
-            // 解决上传图片顺序错乱问题
-            // console.log(this.imgList);
-            // var i, lis = this.list.children, list = [], align = getAlign();
-            // for (i = 0; i < lis.length; i++) {
-            //     if (domUtils.hasClass(lis[i], 'selected')) {
-            //         var img = lis[i].firstChild,
-            //             src = img.getAttribute('_src');
-            //         var image_id = img.getAttribute('image_id');
-            //         list.push({
-            //             src: src,
-            //             _src: src,
-            //             image_id: image_id,
-            //             alt: src.substr(src.lastIndexOf('/') + 1),
-            //             floatStyle: align
-            //         });
-            //     }
+            var i, lis = this.list.children, list = [], align = getAlign();
+            for (i = 0; i < lis.length; i++) {
+                if (domUtils.hasClass(lis[i], 'selected')) {
+                    var img = lis[i].firstChild,
+                        src = img.getAttribute('_src');
+                    var image_id = img.getAttribute('image_id');
+                    list.push({
+                        src: src,
+                        _src: src,
+                        image_id: image_id,
+                        alt: src.substr(src.lastIndexOf('/') + 1),
+                        floatStyle: align
+                    });
+                }
 
-            // }
-            // return list;
-            return this.imgList;
-            // 解决上传图片顺序错乱问题
+            }
+            return list;
         }
     };
 
@@ -1244,4 +1229,4 @@
         }
     };
 
-})();
+// })();

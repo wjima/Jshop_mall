@@ -241,6 +241,7 @@ class BillAftersales extends Common
                 ];
                 $templateMessageModel->addSend($message);
             }
+            hook("adminmessage",array('user_id'=>$user_id,"code"=>"after_order","params"=>$data));
         } catch (\Exception $e) {
             Db::rollback();
             $result['msg'] = $e->getMessage();

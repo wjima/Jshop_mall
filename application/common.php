@@ -875,6 +875,7 @@ function get_lately_days($day, $data)
 function sendMessage($user_id, $code, $params)
 {
     $messageCenter = new \app\common\model\MessageCenter();
+    hook("adminmessage",array('user_id'=>$user_id,"code"=>$code,"params"=>$params));
     return $messageCenter->sendMessage($user_id, $code, $params);
 }
 

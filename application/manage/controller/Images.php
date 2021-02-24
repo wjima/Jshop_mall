@@ -391,5 +391,33 @@ class Images extends Manage
         return $return_data;
     }
 
+    /**
+     * 移入分组
+     * @return array|mixed|string
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function moveGroup(){
+        $return_data  = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $data['images_ids'] = input('param.images_ids/a',[]);
+        $data['group_id'] = input('param.group_id');
+        $imagesModel = new imageModel();
+        if(!$data['images_ids']){
+            return error_code(50004);
+        }
+        if(!$data['group_id']){
+            return error_code(50005);
+        }
+        $imagesModel->where('id','in',$data['images_ids'])->update([
+            'group_id'=>$data['group_id']
+        ]);
+        $return_data['status'] = true;
+        $return_data['msg']    = '保存成功';
+        return $return_data;
+    }
 
 }

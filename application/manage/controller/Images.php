@@ -353,7 +353,6 @@ class Images extends Manage
         if (!$group->isEmpty()) {
             $group = $group->toArray();
         }
-        $group[]               = ['id' => '0', 'name' => '默认分组'];
         $return_data['status'] = true;
         $return_data['data']   = $group;
         return $return_data;
@@ -416,7 +415,37 @@ class Images extends Manage
             'group_id'=>$data['group_id']
         ]);
         $return_data['status'] = true;
-        $return_data['msg']    = '保存成功';
+        $return_data['msg']    = '操作成功';
+        return $return_data;
+    }
+
+
+    /**
+     * 删除分组
+     * @return array|mixed|string
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function deleteGroup()
+    {
+        $return_data = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $group_id    = input('param.group_id');
+        if (!$group_id) {
+            return error_code(50005);
+        }
+        $imagesModel = new imageModel();
+        $groupModel  = new ImagesGroup();
+        if ($groupModel->where('id', '=', $group_id)->delete()) {
+            $imagesModel->where('id', '=', $group_id)->update([
+                'group_id' => 0
+            ]);
+        }
+        $return_data['status'] = true;
+        $return_data['msg']    = '操作成功';
         return $return_data;
     }
 

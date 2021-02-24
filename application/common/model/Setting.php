@@ -291,6 +291,22 @@ class Setting extends Common
             'name' => '客服ID',
             'value' => ''
         ],
+        'Web_channeid' => [
+            'name' => '网页channelId',
+            'value' => ''
+        ],
+        'App_channeid' => [
+            'name' => 'APPchannelId',
+            'value' => ''
+        ],
+        'Official_channeid' => [
+            'name' => '微信公众号channelId',
+            'value' => ''
+        ],
+        'Smallapp_channeid' => [
+            'name' => '微信小程序channelId',
+            'value' => ''
+        ],
         'user_agreement_id' => [
             'name' => '用户协议',
             'value' => '2'

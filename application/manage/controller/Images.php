@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace app\Manage\controller;
 
+use app\common\model\ImagesGroup;
 use Request;
 use app\common\controller\Manage;
 use app\common\model\Images as imageModel;
@@ -330,6 +331,63 @@ class Images extends Manage
             $return_data['msg']    = '删除成功';
             $return_data['status'] = true;
         }
+        return $return_data;
+    }
+
+    /**
+     * 分组列表
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function groupList()
+    {
+        $return_data = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $groupModel  = new ImagesGroup();
+        $group       = $groupModel->where('show', '=', '1')->select();
+        if (!$group->isEmpty()) {
+            $group = $group->toArray();
+        }
+        $group[]               = ['id' => '0', 'name' => '默认分组'];
+        $return_data['status'] = true;
+        $return_data['data']   = $group;
+        return $return_data;
+    }
+
+    /**
+     * 添加图片分组
+     * @return array|mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function addGroup()
+    {
+        $return_data  = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $data['name'] = input('post.name', '');
+        if (!$data['name']) {
+            return error_code(50001);
+        }
+        $groupModel = new ImagesGroup();
+
+        $res = $groupModel->where('name', '=', $data['name'])->find();
+        if ($res) {
+            return error_code(50002);
+        }
+        if (!$groupModel->save($data)) {
+            return error_code(50003);
+        }
+        $return_data['status'] = true;
+        $return_data['msg']    = '保存成功';
         return $return_data;
     }
 

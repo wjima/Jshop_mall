@@ -20,6 +20,13 @@
     <!-- image dialog -->
     <link rel="stylesheet" href="image.css" type="text/css" />
     <link rel="stylesheet" href="/static/lib/custom/element/index.css">
+    <link rel="stylesheet" href="/static/css/iconfont.css" media="all">
+    <link rel="stylesheet" href="/install/style/layui/css/layui.css" >
+
+
+    
+
+    
     <style>
         .img-wrap{
             display: flex;
@@ -40,12 +47,35 @@
             text-align: center;
             line-height: 40px;
             height: 40px;
+            /* white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .btn-group .btn-item .text {
+            width: 60px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            position: relative;
         }
         .btn-group .btn-item.active {
             color: #00b7ee;
+        }
+        .btn-group .btn-item .layui-tab-close {
+            display: none;
+        }
+        .btn-group .btn-item:hover .layui-tab-close {
+            display: block;
+            position: absolute;
+            right: -4px;
+        }
+        .el-button{
+            padding: 4px 20px;
         }
     </style>
 </head>
@@ -65,8 +95,10 @@
                 <div class="btn-item"  @click="diaShow('show')"> 新增分组 </div>
                 <div class="btn-item"  @click="movePic"> 移动到分组 </div>
                 <div class="btn-item" :class="{active: btnCurrent == 2}" @click="groupItemCLick({id: 0}, 2)" > 默认分组 </div>
-                <div class="btn-item" v-for="(item, index) in group_list"  :class="{active: btnCurrent == index + 3}" :key="item.id" 
-                @click="groupItemCLick(item, index + 3)">{{item.name}}</div>
+                <div class="btn-item" v-for="(item, index) in group_list"  :class="{active: btnCurrent == index + 3}" :key="item.id" >
+                <div class="text"  @click="groupItemCLick(item, index + 3)">{{item.name}}</div>
+                <i class="layui-icon layui-unselect layui-tab-close" @click="remove(item)">ဆ</i>
+            </div>
             </div>
             <el-dialog title="分组名" :visible="show" @close="show = false">
                 <el-input autocomplete="off" v-model='groupName'></el-input>
@@ -93,6 +125,16 @@
             </el-dialog> 
 
 
+            <el-dialog
+                title="删除分组"
+                :visible="remoShow"
+                @close="remoShow = false">
+                <span>确认删除分组：{{remoName}}吗</span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="remoShow = false">取 消</el-button>
+                    <el-button type="primary" @click="remoSubmit">确 定</el-button>
+                </span>
+            </el-dialog>
 
             <div class="wrapper">
                 <div id="tabhead" class="tabhead">
@@ -194,10 +236,8 @@
         var groupList = '/manage/images/groupList.html' // 分组列表
         var addGroup =  '/manage/images/addGroup.html' // 添加分组
         var moveGroup= '/manage/images/moveGroup.html' // 移动分组
-
-
+        var deleteGroup= '/manage/images/deleteGroup.html' // 删除分组
         var currentId = 0
-
         var app = new Vue({
             el: '#app',
 
@@ -212,21 +252,45 @@
                             groupName: '', // 新增分组名
                             show: false, // 弹窗
                             moveshow: false, // 移动分组弹窗
+                            remoShow: false, // 删除分组弹窗
                             moveValue: '',
-                            options: [
-                                {value: '选项1', label: '黄金糕'}, 
-                                {value: '选项2', label: '双皮奶'}, 
-                                {value: '选项3', label: '蚵仔煎'},
-                                {value: '选项4', label: '龙须面'}, 
-                                {value: '选项5', label: '北京烤鸭'}
-                            ],
-                            btnCurrent: 2
+                            options: [],
+                            btnCurrent: 2,
+                            remoName: ''
+
                         }
                     },
                     mounted() {
                         this.groupData()
                     },
                     methods: {
+                        // 删除确认
+                        remoSubmit(val) {
+                            const _this = this
+                            $.ajax({
+                                type: "post",
+                                url: deleteGroup,
+                                data: {
+                                    group_id: val.id
+                                },
+                                success: function(res) {
+                                    _this.remoShow = false
+                                    _this.groupData()
+                                },
+                                fail: function(err) {
+                                    _this.$message({
+                                        message: err.msg,
+                                        type: 'error'
+                                    });
+                                }
+                            })
+                        },
+                        // 删除分组
+                        remove(val) {
+                            console.log(val)
+                            this.remoShow = true
+                            this.remoName = val.name
+                        },
                         // 分组数据
                         groupData() {
                             const _this = this
@@ -286,9 +350,6 @@
                                         setTabFocus('online')
                                     }
                                 })
-
-
-                                
                             }
                         },
                         // 图片移动到分组

@@ -440,8 +440,8 @@ class Images extends Manage
         $imagesModel = new imageModel();
         $groupModel  = new ImagesGroup();
         if ($groupModel->where('id', '=', $group_id)->delete()) {
-            $imagesModel->where('id', '=', $group_id)->update([
-                'group_id' => 0
+            $imagesModel->where('group_id', '=', $group_id)->update([
+                'group_id' => '0'
             ]);
         }
         $return_data['status'] = true;

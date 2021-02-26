@@ -7314,6 +7314,12 @@ ALTER TABLE `jshop_goods_comment`
   ADD KEY `goods_id` (`goods_id`) USING BTREE;
 
 --
+-- Indexes for table `jshop_goods_extend_cat`
+--
+ALTER TABLE `jshop_goods_extend_cat`
+  ADD PRIMARY KEY (`id`) USING BTREE;
+
+--
 -- Indexes for table `jshop_goods_grade`
 --
 ALTER TABLE `jshop_goods_grade`

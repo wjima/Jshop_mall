@@ -129,7 +129,7 @@
                 title="删除分组"
                 :visible="remoShow"
                 @close="remoShow = false">
-                <span>确认删除分组：{{remoName}}吗</span>
+                <span>确认删除分组：{{remoName}}吗? 删除后该分组下所有图片将自动移动到默认分组里面</span>
                 <span slot="footer" class="dialog-footer">
                     <el-button @click="remoShow = false">取 消</el-button>
                     <el-button type="primary" @click="remoSubmit">确 定</el-button>
@@ -256,7 +256,8 @@
                             moveValue: '',
                             options: [],
                             btnCurrent: 2,
-                            remoName: ''
+                            remoName: '',
+                            remoId: ''
 
                         }
                     },
@@ -271,7 +272,7 @@
                                 type: "post",
                                 url: deleteGroup,
                                 data: {
-                                    group_id: val.id
+                                    group_id: _this.remoId
                                 },
                                 success: function(res) {
                                     _this.remoShow = false
@@ -290,6 +291,7 @@
                             console.log(val)
                             this.remoShow = true
                             this.remoName = val.name
+                            this.remoId = val.id
                         },
                         // 分组数据
                         groupData() {

@@ -20,7 +20,8 @@ class Images extends Manage
     public function index()
     {
         $imageModel = new imageModel();
-
+        $group = $this->groupList();
+        $this->assign('group',$group['data']);
         if (Request::isAjax()) {
             $filter = input('request.');
             return $imageModel->tableData($filter);

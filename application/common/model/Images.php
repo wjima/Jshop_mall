@@ -65,10 +65,16 @@ class Images extends Common
     protected function tableFormat($list)
     {
         if (!$list->isEmpty()) {
-            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-
+            $http_type  = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+            $groupModel = new ImagesGroup();
             foreach ($list as $key => $val) {
                 $list[$key]['ctime'] = date('Y-m-d H:i:s', $val['ctime']);
+                if (!$val['group_id']) {
+                    $list[$key]['group_name'] = '默认分组';
+                } else {
+                    $group                    = $groupModel->where('id', '=', $val['group_id'])->find();
+                    $list[$key]['group_name'] = $group['name'];
+                }
             }
         }
         return $list;

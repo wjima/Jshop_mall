@@ -157,7 +157,6 @@ class Images extends Common
             $iData['id']       = md5(get_hash($first['name']));
             $iData['group_id'] = input('param.group_id', $group_id);
             $iData['type']     = $image_storage['type'];
-            $iData['type']     = $image_storage['type'];
             $iData['name']     = $first['name'];
             $iData['url']      = $url;
             $iData['ctime']    = time();

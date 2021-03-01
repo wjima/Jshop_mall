@@ -10,105 +10,391 @@
 
     <!-- webuploader -->
     <script src="../../third-party/webuploader/webuploader.min.js"></script>
+
+    <script type="text/javascript" src="/static/lib/layuiadmin/layui/layui.all.js"></script>
+    <script src="/static/lib/custom/js/vue.min.js"></script>
+    <script src="/static/lib/custom/element/index.js"></script>
+
     <link rel="stylesheet" type="text/css" href="../../third-party/webuploader/webuploader.css">
 
     <!-- image dialog -->
     <link rel="stylesheet" href="image.css" type="text/css" />
+    <link rel="stylesheet" href="/static/lib/custom/element/index.css">
+    <link rel="stylesheet" href="/static/css/iconfont.css" media="all">
+    <link rel="stylesheet" href="/install/style/layui/css/layui.css" >
+
+
+    
+
+    
+    <style>
+        .img-wrap{
+            display: flex;
+        }
+        .wrapper{
+            width: 512px;
+        }
+        .btn-group{
+            flex:  0 0 80px;
+            width: 80px;
+            padding: 10px;
+            height: 370px;
+            overflow-y: auto;
+        }
+
+        .btn-group .btn-item {
+            cursor: pointer;
+            text-align: center;
+            line-height: 40px;
+            height: 40px;
+            /* white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .btn-group .btn-item .text {
+            width: 60px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+        }
+        .btn-group .btn-item.active {
+            color: #00b7ee;
+        }
+        .btn-group .btn-item .layui-tab-close {
+            display: none;
+        }
+        .btn-group .btn-item:hover .layui-tab-close {
+            display: block;
+            position: absolute;
+            right: -4px;
+        }
+        .el-button{
+            padding: 4px 20px;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="wrapper">
-        <div id="tabhead" class="tabhead">
-            <span class="tab" data-content-id="remote" style="display: none;"><var id="lang_tab_remote"></var></span>
-            <span class="tab focus" data-content-id="upload"><var id="lang_tab_upload"></var></span>
-            <span class="tab" data-content-id="online"><var id="lang_tab_online"></var></span>
-            <span class="tab" data-content-id="search"><var id="lang_tab_search"></var></span>
-        </div>
-        <div class="alignBar" style="display: none;">
-            <label class="algnLabel"><var id="lang_input_align"></var></label>
-                    <span id="alignIcon">
-                        <span id="noneAlign" class="none-align focus" data-align="none"></span>
-                        <span id="leftAlign" class="left-align" data-align="left"></span>
-                        <span id="rightAlign" class="right-align" data-align="right"></span>
-                        <span id="centerAlign" class="center-align" data-align="center"></span>
-                    </span>
-            <input id="align" name="align" type="hidden" value="none"/>
-        </div>
-        <div id="tabbody" class="tabbody">
-
-            <!-- 远程图片 -->
-            <div id="remote" class="panel">
-                <div class="top">
-                    <div class="row">
-                        <label for="url"><var id="lang_input_url"></var></label>
-                        <span><input class="text" id="url" type="text"/></span>
-                    </div>
-                </div>
-                <div class="left">
-                    <div class="row">
-                        <label><var id="lang_input_size"></var></label>
-                        <span><var id="lang_input_width">&nbsp;&nbsp;</var><input class="text" type="text" id="width"/>px </span>
-                        <span><var id="lang_input_height">&nbsp;&nbsp;</var><input class="text" type="text" id="height"/>px </span>
-                        <span><input id="lock" type="checkbox" disabled="disabled"><span id="lockicon"></span></span>
-                    </div>
-                    <div class="row">
-                        <label><var id="lang_input_border"></var></label>
-                        <span><input class="text" type="text" id="border"/>px </span>
-                    </div>
-                    <div class="row">
-                        <label><var id="lang_input_vhspace"></var></label>
-                        <span><input class="text" type="text" id="vhSpace"/>px </span>
-                    </div>
-                    <div class="row">
-                        <label><var id="lang_input_title"></var></label>
-                        <span><input class="text" type="text" id="title"/></span>
-                    </div>
-                </div>
-                <div class="right"><div id="preview"></div></div>
-            </div>
-
-            <!-- 上传图片 -->
-            <div id="upload" class="panel focus">
-                <div id="queueList" class="queueList">
-                    <div class="statusBar element-invisible">
-                        <div class="progress">
-                            <span class="text">0%</span>
-                            <span class="percentage"></span>
-                        </div><div class="info"></div>
-                        <div class="btns">
-                            <div id="filePickerBtn"></div>
-                            <div class="uploadBtn"><var id="lang_start_upload"></var></div>
-                        </div>
-                    </div>
-                    <div id="dndArea" class="placeholder">
-                        <div class="filePickerContainer">
-                            <div id="filePickerReady"></div>
-                        </div>
-                    </div>
-                    <ul class="filelist element-invisible">
-                        <li id="filePickerBlock" class="filePickerBlock"></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- 在线图片 -->
-            <div id="online" class="panel">
-                <div id="imageList"><var id="lang_imgLoading"></var></div>
-            </div>
-
-            <!-- 搜索图片 -->
-            <div id="search" class="panel">
-                <div class="searchBar">
-                    <input id="searchTxt" class="searchTxt text" type="text" />
-                    <input id="searchReset" type="button"  style="display: none;"/>
-                    <input id="searchBtn" type="button"  style="float: left;margin-left: 10px;"/>
-                </div>
-                <div id="searchList" class="searchList"><ul id="searchListUl"></ul></div>
-            </div>
-
-        </div>
+    <div class="img-wrap">
+    
+    <div id='app'>
+        <home></home>
     </div>
-    <script type="text/javascript" src="image.js"></script>
+   
+    </div>
+    <template id="home">
+        <div style="display: flex;">
 
+            <div class="btn-group">
+                <div class="btn-item"  @click="diaShow('show')"> 新增分组 </div>
+                <div class="btn-item"  @click="movePic"> 移动到分组 </div>
+                <div class="btn-item" :class="{active: btnCurrent == 2}" @click="groupItemCLick({id: 0}, 2)" > 默认分组 </div>
+                <div class="btn-item" v-for="(item, index) in group_list"  :class="{active: btnCurrent == index + 3}" :key="item.id" >
+                <div class="text"  @click="groupItemCLick(item, index + 3)">{{item.name}}</div>
+                <i class="layui-icon layui-unselect layui-tab-close" @click="remove(item)">ဆ</i>
+            </div>
+            </div>
+            <el-dialog title="分组名" :visible="show" @close="show = false">
+                <el-input autocomplete="off" v-model='groupName'></el-input>
+                <div slot="footer" class="dialog-footer">
+                   <el-button @click ="show = false">取 消</el-button>
+                  <el-button type="primary" @click="submitAdd">确 定</el-button>
+                </div>
+            </el-dialog> 
+
+            <el-dialog title="移动分组" :visible="moveshow" @close="moveshow = false">
+
+                <el-select v-model="moveValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in group_list"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                </el-select>
+                <div slot="footer" class="dialog-footer">
+                   <el-button @click ="moveshow = false">取 消</el-button>
+                  <el-button type="primary" @click="submitMove">确 定</el-button>
+                </div>
+            </el-dialog> 
+
+
+            <el-dialog
+                title="删除分组"
+                :visible="remoShow"
+                @close="remoShow = false">
+                <span>确认删除分组：{{remoName}}吗? 删除后该分组下所有图片将自动移动到默认分组里面</span>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="remoShow = false">取 消</el-button>
+                    <el-button type="primary" @click="remoSubmit">确 定</el-button>
+                </span>
+            </el-dialog>
+
+            <div class="wrapper">
+                <div id="tabhead" class="tabhead">
+                    <span class="tab" data-content-id="remote" style="display: none;"><var id="lang_tab_remote"></var></span>
+                    <span class="tab focus" data-content-id="upload"><var id="lang_tab_upload"></var></span>
+                    <span class="tab" data-content-id="online"><var id="lang_tab_online"></var></span>
+                    <span class="tab" data-content-id="search"><var id="lang_tab_search"></var></span>
+                    <!-- <span class="tab" data-content-id="add">添加分组</span> -->
+                </div>
+                <div class="alignBar" style="display: none;">
+                    <label class="algnLabel"><var id="lang_input_align"></var></label>
+                            <span id="alignIcon">
+                                <span id="noneAlign" class="none-align focus" data-align="none"></span>
+                                <span id="leftAlign" class="left-align" data-align="left"></span>
+                                <span id="rightAlign" class="right-align" data-align="right"></span>
+                                <span id="centerAlign" class="center-align" data-align="center"></span>
+                            </span>
+                    <input id="align" name="align" type="hidden" value="none"/>
+                </div>
+                <div id="tabbody" class="tabbody">
+                    
+        
+                    <!-- 远程图片 -->
+                    <div id="remote" class="panel">
+                        <div class="top">
+                            <div class="row">
+                                <label for="url"><var id="lang_input_url"></var></label>
+                                <span><input class="text" id="url" type="text"/></span>
+                            </div>
+                        </div>
+                        <div class="left">
+                            <div class="row">
+                                <label><var id="lang_input_size"></var></label>
+                                <span><var id="lang_input_width">&nbsp;&nbsp;</var><input class="text" type="text" id="width"/>px </span>
+                                <span><var id="lang_input_height">&nbsp;&nbsp;</var><input class="text" type="text" id="height"/>px </span>
+                                <span><input id="lock" type="checkbox" disabled="disabled"><span id="lockicon"></span></span>
+                            </div>
+                            <div class="row">
+                                <label><var id="lang_input_border"></var></label>
+                                <span><input class="text" type="text" id="border"/>px </span>
+                            </div>
+                            <div class="row">
+                                <label><var id="lang_input_vhspace"></var></label>
+                                <span><input class="text" type="text" id="vhSpace"/>px </span>
+                            </div>
+                            <div class="row">
+                                <label><var id="lang_input_title"></var></label>
+                                <span><input class="text" type="text" id="title"/></span>
+                            </div>
+                        </div>
+                        <div class="right"><div id="preview"></div></div>
+                    </div>
+        
+                    <!-- 上传图片 -->
+                    <div id="upload" class="panel focus">
+                        <div id="queueList" class="queueList">
+                            <div class="statusBar element-invisible">
+                                <div class="progress">
+                                    <span class="text">0%</span>
+                                    <span class="percentage"></span>
+                                </div><div class="info"></div>
+                                <div class="btns">
+                                    <div id="filePickerBtn"></div>
+                                    <div class="uploadBtn"><var id="lang_start_upload"></var></div>
+                                </div>
+                            </div>
+                            <div id="dndArea" class="placeholder">
+                                <div class="filePickerContainer">
+                                    <div id="filePickerReady"></div>
+                                </div>
+                            </div>
+                            <ul class="filelist element-invisible">
+                                <li id="filePickerBlock" class="filePickerBlock"></li>
+                            </ul>
+                        </div>
+                    </div>
+        
+                    <!-- 在线图片 -->
+                    <div id="online" class="panel">
+                        <div id="imageList"><var id="lang_imgLoading"></var></div>
+                    </div>
+        
+                    <!-- 搜索图片 -->
+                    <div id="search" class="panel">
+                        <div class="searchBar">
+                            <input id="searchTxt" class="searchTxt text" type="text" />
+                            <input id="searchReset" type="button"  style="display: none;"/>
+                            <input id="searchBtn" type="button"  style="float: left;margin-left: 10px;"/>
+                        </div>
+                        <div id="searchList" class="searchList"><ul id="searchListUl"></ul></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </template>
+    
+    <script>
+        var groupList = '/manage/images/groupList.html' // 分组列表
+        var addGroup =  '/manage/images/addGroup.html' // 添加分组
+        var moveGroup= '/manage/images/moveGroup.html' // 移动分组
+        var deleteGroup= '/manage/images/deleteGroup.html' // 删除分组
+        var currentId = 0
+        var app = new Vue({
+            el: '#app',
+
+            components: {
+                "home": {
+                    template: "#home",
+                    data() {
+                        return {
+                            group_list: [
+                                {name: '测试', id: 2}
+                            ],
+                            groupName: '', // 新增分组名
+                            show: false, // 弹窗
+                            moveshow: false, // 移动分组弹窗
+                            remoShow: false, // 删除分组弹窗
+                            moveValue: '',
+                            options: [],
+                            btnCurrent: 2,
+                            remoName: '',
+                            remoId: ''
+
+                        }
+                    },
+                    mounted() {
+                        this.groupData()
+                    },
+                    methods: {
+                        // 删除确认
+                        remoSubmit(val) {
+                            const _this = this
+                            $.ajax({
+                                type: "post",
+                                url: deleteGroup,
+                                data: {
+                                    group_id: _this.remoId
+                                },
+                                success: function(res) {
+                                    _this.remoShow = false
+                                    _this.groupData()
+                                },
+                                fail: function(err) {
+                                    _this.$message({
+                                        message: err.msg,
+                                        type: 'error'
+                                    });
+                                }
+                            })
+                        },
+                        // 删除分组
+                        remove(val) {
+                            console.log(val)
+                            this.remoShow = true
+                            this.remoName = val.name
+                            this.remoId = val.id
+                        },
+                        // 分组数据
+                        groupData() {
+                            const _this = this
+                            $.ajax({
+                                type: "get",
+                                url: groupList,
+                                success: function(res) {
+                                    _this.group_list= res.data
+                                }
+                            })
+                        },
+                        diaShow(val) {
+                            // this.btnCurrent = 0
+                            this.$set(this.$data, val, true)
+                        },
+                        // 移动分组的确定事件
+                        submitMove() {
+                            var _this = this
+                            let selectTab = $('#tabhead .tab.focus').attr('data-content-id')
+                            let arr = []
+                            switch (selectTab) {
+                                case 'online': // 在线管理
+                                    var liArr = $('#imageList ul .selected')
+                                    liArr.each(function() {
+                                        arr.push($(this).find("img").attr('image_id'))
+                                    })
+                                    break;
+                                case 'search': // 图片搜索
+                                    var searchList = $('#searchList ul .selected')
+
+                                    console.log('searchListUl', searchList)
+                                    searchList.each(function() {
+                                        arr.push($(this).find("img").attr('image_id'))
+                                    })
+                                    break;
+                            }
+                            if(arr.length == 0) {
+                                this.$message({
+                                    message: '请先选择图片'
+                                })
+                                return
+                            } else {
+                                console.log('currentId---', this.moveValue, arr)
+                                $.ajax({
+                                    type: "post",
+                                    url: moveGroup,
+                                    data: {
+                                        images_ids: arr,
+                                        group_id: this.moveValue
+                                    },
+                                    success: function(res) {
+                                        _this.moveshow = false
+                                        _this.$message({
+                                            message: res.msg,
+                                            type: 'success'
+                                        })
+                                        setTabFocus('online')
+                                    }
+                                })
+                            }
+                        },
+                        // 图片移动到分组
+                        movePic() {
+                            // this.btnCurrent = 1
+                            this.moveshow = true
+                        },
+                        // 分组点击
+                        groupItemCLick(type, index) {
+                            this.btnCurrent = index
+                            currentId =  type.id || 0
+                            setTabFocus('online')
+                        },
+                        // 添加分组
+                        submitAdd() {
+                            if(this.groupName) {
+                               const _this = this
+
+
+                                $.ajax({
+                                    type: "post",
+                                    url: addGroup,
+                                    data: {
+                                        name: _this.groupName
+                                    },
+                                    success: function(res) {
+                                        _this.show = false
+                                        _this.group_list.push({
+                                            name: _this.groupName,
+                                            id: _this.groupName
+                                        })
+                                        _this.groupName = ''
+                                        _this.groupData()
+                                    }
+                                })
+                            }
+                        },
+                    }
+                }
+            }
+        })
+    </script>
+
+    <script type="text/javascript" src="image.js"></script>
 </body>
 </html>

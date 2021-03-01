@@ -1,0 +1,95 @@
+<form class="layui-form seller-form" action="">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label style="width:120px" class="layui-form-label">用户手机号码：</label>
+            <div class="layui-input-inline seller-inline-3">
+                <input type="text" name="mobile" lay-verify="title" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">起止时间：</label>
+            <div class="layui-input-inline seller-inline-6">
+                <input  type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="*"><i class="iconfont icon-chaxun"></i>筛选</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-body">
+    <table id="logTable" lay-filter="logTable"></table>
+</div>
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont.css" media="all"/>
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.css">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/style/admin.css" media="all">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.seller.css">
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__style.css"/>
+<script src="__STATIC_JS__jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC_LIB__layuiadmin/layui/layui.js"></script>
+<script src="__STATIC_JS__jshop.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.all.min.js"> </script>
+
+<script>
+    var table, window_box;
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        layui.laydate.render({
+            elem: '#date',
+            range: '到',
+            type: 'datetime',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+        table = layui.table.render({
+            elem: '#logTable',
+            height: 'full-150',
+            cellMinWidth: '80',
+            page: 'true',
+            limit: '20',
+            url: "{:get_addon_url('MiniManage://index/getlist')}",
+            id: 'logTable',
+            cols: [[
+                {type:'numbers'},
+                {field:'user_mobile',width:140,title:'用户'},
+                {field:'code',width:150,title:'类型'},
+                {field:'content', title:'内容'},
+                {field:'ctime', width:180, title:'时间', align:'center'},
+                {field:'operating', title:'操作', width:90, align:'center',templet:function(data){
+                        var html = '';
+                        html += '<a  class="layui-btn layui-btn-xs option-del" data-id="' + data.id + '">删除</a>';
+                        return html;
+                    }}
+            ]]
+        });
+        //搜索
+        layui.form.on('submit(*)', function (data) {
+            layui.table.reload('logTable', {
+                where: data.field
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        //删除操作
+        $(document).on('click', '.option-del', function(){
+            var id = $(this).attr('data-id');
+            layer.confirm('确定要删除此消息吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                JsGet("{:get_addon_url('MiniManage://index/delmessage')}?id="+id, function(e){
+                    layer.msg(e.msg);
+                    if(e.status){
+                        layui.table.reload('logTable');
+                    }
+                });
+            }, function(){
+
+            });
+        });
+
+    });
+</script>

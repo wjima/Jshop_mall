@@ -149,7 +149,7 @@ class Images extends Common
             $first             = array_shift($info);
             $url               = getRealUrl($first['savepath'] . $first['savename']);
             $iData['id']       = md5(get_hash($first['name']));
-            $iData['group_id'] = input('post.group_id', $group_id);
+            $iData['group_id'] = input('param.group_id', $group_id);
             $iData['type']     = $image_storage['type'];
             $iData['type']     = $image_storage['type'];
             $iData['name']     = $first['name'];

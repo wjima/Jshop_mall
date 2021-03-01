@@ -177,4 +177,14 @@ class Label extends Common
         }
         return $result;
     }
+    public function del($id){
+        if($id){
+            $res = $this->where("id","eq",$id)->delete();
+            if($res){
+                return true;
+            }
+        }else{
+            return false;
+        }
+    }
 }

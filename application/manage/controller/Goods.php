@@ -1576,6 +1576,34 @@ class Goods extends Manage
         }
         return $spec;
     }
+    /**
+     * 标签列表
+     */
+
+    public function labellist()
+    {
+        $label = new \app\common\model\Label();
+        if (Request::isAjax()) {
+            return $label->tableData(input('param.'));
+        }
+        return $this->fetch();
+    }
+
+    /**
+     * 标签删除
+     */
+    public function  labeldel(){
+        $label = new \app\common\model\Label();
+        $result  = [
+            'status' => true,
+            'msg'    => '删除成功',
+            'data'   => ''
+        ];
+        if (!$label->del(input('param.id/d'))) {
+            return error_code(10023);
+        }
+        return $result;
+    }
 
 
 }

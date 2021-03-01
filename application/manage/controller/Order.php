@@ -3,6 +3,7 @@
 namespace app\Manage\controller;
 
 use app\common\controller\Manage;
+use app\common\model\BillAftersales;
 use app\common\model\BillDelivery;
 use app\common\model\BillPayments;
 use app\common\model\Order as OrderModel;
@@ -569,9 +570,35 @@ class Order extends Manage
     }
 
     public function aftersales(){
+        $this->view->engine->layout(false);
         $order_id = input('order_id','');
         if(!$order_id) return error_code(10003);
-        $orderModel = new OrderModel();
-        return $orderModel->createAftersales($order_id);
+        $aftersalesModel = new BillAftersales();
+        if(request()->isPost()){
+            $data = input('post.');
+            $items = [];
+            if(input('?post.order_items_id') && input('?post.aftersaleeItems')){
+                $order_items_id = input('post.order_items_id/a');
+                $aftersaleeItems = input('post.aftersaleeItems/a');
+                foreach($order_items_id as $k => $v){
+                    if($aftersaleeItems[$k]){
+                        $items[$k] = $aftersaleeItems[$k];
+                    }
+                }
+            }
+            return $aftersalesModel->manageSave($order_id,$data,$items);
+        }
+        $info = $aftersalesModel->manageAdd($order_id);
+        if(!$info['status']) return $info;
+        $info = $info['data'];
+        $this->assign("info",$info);
+        $this->assign('order_items',$info['items']);
+        return [
+            'data'=>$this->fetch('bill_aftersales/add',[
+                'info'=>$info,
+                'order_items'=>$info['items']
+            ]),
+            'status'=>true
+        ];
     }
 }

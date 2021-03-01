@@ -12,7 +12,7 @@
             even: true,
             limit:'{:config("jshop.page_limit")}',
             cols: [[ //表头
-                {type:'numbers'},
+                {field: 'id', title: 'ID',align:'center',width:100},
                 {title: '操作',width:150, align:'center', toolbar: '#couponBar'} ,//这里的toolbar值是模板元素的选择器
                 {field: 'name', title: '名称',align:'center'},
                 {field: 'style', title: '样式',align:'center'},

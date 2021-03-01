@@ -103,8 +103,8 @@
             <el-dialog title="分组名" :visible="show" @close="show = false">
                 <el-input autocomplete="off" v-model='groupName'></el-input>
                 <div slot="footer" class="dialog-footer">
-                   <el-button @click ="show = false">取 消</el-button>
-                  <el-button type="primary" @click="submitAdd">确 定</el-button>
+                    <el-button type="primary" @click="submitAdd">确 定</el-button>
+                    <el-button @click ="show = false">取 消</el-button>
                 </div>
             </el-dialog> 
 
@@ -119,8 +119,8 @@
                     </el-option>
                 </el-select>
                 <div slot="footer" class="dialog-footer">
-                   <el-button @click ="moveshow = false">取 消</el-button>
-                  <el-button type="primary" @click="submitMove">确 定</el-button>
+                    <el-button type="primary" @click="submitMove">确 定</el-button>
+                    <el-button @click ="moveshow = false">取 消</el-button>
                 </div>
             </el-dialog> 
 
@@ -131,8 +131,8 @@
                 @close="remoShow = false">
                 <span>确认删除分组：{{remoName}}吗? 删除后该分组下所有图片将自动移动到默认分组里面</span>
                 <span slot="footer" class="dialog-footer">
-                    <el-button @click="remoShow = false">取 消</el-button>
                     <el-button type="primary" @click="remoSubmit">确 定</el-button>
+                    <el-button @click="remoShow = false">取 消</el-button>
                 </span>
             </el-dialog>
 
@@ -350,12 +350,14 @@
                                             type: 'success'
                                         })
                                         setTabFocus('online')
+                                        this.moveValue = ''
                                     }
                                 })
                             }
                         },
                         // 图片移动到分组
                         movePic() {
+                            this.moveValue = ''
                             // this.btnCurrent = 1
                             this.moveshow = true
                         },

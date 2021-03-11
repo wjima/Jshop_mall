@@ -9,22 +9,10 @@
 			</div>
 		</div>
 		<div class="layui-inline">
-			<label class="layui-form-label">时间：</label>
+			<label class="layui-form-label">兑换时间：</label>
 			<div class="layui-input-inline">
 				<input type="text" name="date" id="date" placeholder="开始时间 到 结束时间" autocomplete="off"
 					   class="layui-input">
-			</div>
-		</div>
-		<div class="layui-inline">
-			<label class="layui-form-label">状态：</label>
-			<div class="layui-input-inline">
-				<select name="status" id="status">
-					<option value="">请选择</option>
-					<option value="4">未满足条件</option>
-					<option value="1">待兑换</option>
-					<option value="2">已兑换</option>
-					<option value="3">已过期</option>
-				</select>
 			</div>
 		</div>
 
@@ -55,37 +43,18 @@
             cellMinWidth: '80',
             page: 'true',
             limit:'20',
-            url: "{:get_addon_url('WeRun://index/index')}?_ajax=1",
+            url: "{:get_addon_url('WeRun://index/log')}?_ajax=1",
             id:'hbTable',
             cols: [[
 				{field:'id', width:200,title:'ID', align: 'center'},
 				{field:'ninkname', width:200,title:'用户昵称', align: 'center',templet:function(data){
                     return data.username + '('+data.user_id+')';
                 }},
-				{field:'step', title:'状态', align: 'center',templet:function(data){
-					let html = '';
-					switch (data.status) {
-						case 1:
-							html = '未兑换';
-							break;
-						case 2:
-							html = '已兑换'+data.point+'个积分';
-							break;
-						case 3:
-							html = '已过期';
-							break;
-						case 4:
-							html = '未满足条件';
-							break;
-						default:
-							break;
-					}
-                    return html;
-                }},
-				{field:'step', title:'运动步数', align: 'center',},
-				{field:'date_str', width:200,title:'日期', align: 'center'},
-				{field:'ctime', width:200,title:'同步时间', align: 'center'},
-				{field:'utime', width:200,title:'最后一次更新时间', align: 'center'},
+
+				{field:'steps', title:'运动步数', align: 'center'},
+				{field:'points', title:'兑换积分', align: 'center'},
+				{field:'date_str', width:200,title:'日期范围', align: 'center'},
+				{field:'ctime', width:200,title:'兑换时间', align: 'center'}
             ]]
         });
         layui.form.on('submit(*)', function(data){

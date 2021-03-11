@@ -2,6 +2,7 @@
 
 namespace addons\WeRun\controller;
 
+use addons\WeRun\model\Werun;
 use addons\WeRun\model\WerunLog;
 use myxland\addons\library\AddonController;
 use think\Container;
@@ -54,6 +55,15 @@ class Index extends AddonController
     }
 
     public function index()
+    {
+        if ($this->request->isAjax()) {
+            $params = input();
+            $stockModel = new Werun();
+            return $stockModel->getList($params);
+        }
+        return $this->fetch();
+    }
+    public function log()
     {
         if ($this->request->isAjax()) {
             $params = input();

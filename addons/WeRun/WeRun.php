@@ -16,7 +16,9 @@ class WeRun extends Addons
         'description' => '每日运动，同步微信运动的数据',	// 插件简介
         'status' => 0,	// 状态
         'author' => 'wgg',
-        'version' => '1.0'
+        'version' => '1.0',
+        'dialog_width'  => '750px',//配置弹窗宽
+        'dialog_height' => '520px',//配置弹窗高
     ];
 
     /**
@@ -29,12 +31,24 @@ class WeRun extends Addons
         // CREATE TABLE `jshop_werun_log` (
         //     `id` int(10) NOT NULL AUTO_INCREMENT,
         //     `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
-        //       `step` int(10) UNSIGNED DEFAULT 0 NOT NULL COMMENT '当日步数',
-        //     `date` bigint(12) unsigned NOT NULL COMMENT '日期',
-        //       `ctime` bigint(12) unsigned NOT NULL COMMENT '首次更新时间',
-        //       `utime` bigint(12) unsigned NOT NULL COMMENT '最新更新时间',
+        //     `steps` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '兑换总步数',
+        //     `points` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '兑换总积分',
+        //     `date_str` char(25) NOT NULL DEFAULT '' COMMENT '日期格式 2021-03-05 到 2021-03-08',
+        //     `ctime` bigint(12) unsigned NOT NULL COMMENT '兑换时间',
         //     PRIMARY KEY (`id`) USING BTREE
-        //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信运动记录';
+        //   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信运动积分兑换记录';
+        // CREATE TABLE `jshop_werun` (
+        //     `id` int(10) NOT NULL AUTO_INCREMENT,
+        //     `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
+        //     `step` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '当日步数',
+        //     `date` bigint(12) unsigned NOT NULL COMMENT '日期',
+        //     `date_str` char(10) NOT NULL COMMENT '日期格式 2021-03-05',
+        //     `status` tinyint(1) NOT NULL COMMENT '兑换状态：1 待兑换 2 已兑换 3 已无效',
+        //     `point` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '兑换积分',
+        //     `ctime` bigint(12) unsigned NOT NULL COMMENT '首次更新时间',
+        //     `utime` bigint(12) unsigned NOT NULL COMMENT '最新更新时间',
+        //     PRIMARY KEY (`id`) USING BTREE
+        //   ) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='微信运动记录';
         return true;
     }
 

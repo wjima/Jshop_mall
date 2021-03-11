@@ -22,15 +22,15 @@ class Page extends AddonController
         $this->view->engine->layout('../../../application/manage/view/layout');     //此处引入后台的样式，其实插件不仅仅局限于后台，他是一个单独的模块，可以做成独立的功能
     }
 
-    public function index()
-    {
-        if ($this->request->isAjax()) {
-            $params = input();
-            $stockModel = new WerunLog();
-            return $stockModel->getList($params);
-        }
-        return $this->fetch();
-    }
+    // public function index()
+    // {
+    //     if ($this->request->isAjax()) {
+    //         $params = input();
+    //         $stockModel = new WerunLog();
+    //         return $stockModel->getList($params);
+    //     }
+    //     return $this->fetch();
+    // }
     /**
      * 今日步数及今日天气
      *
@@ -41,11 +41,12 @@ class Page extends AddonController
     public function today()
     {
         if ($this->request->isPost()) {
-            $token = input('token','');
-            $userId = getUserIdByToken($token);
-            if(!$userId) return error_code(10000);
+            $token = input('token', '');
+            // $userId = getUserIdByToken($token);
+            // if(!$userId) return error_code(10000);
+            $userId = 1;
             $stockModel = new WerunLog();
-            return $stockModel->getInfo($userId,input('city'));
+            return $stockModel->getInfo($userId, input('city'));
         }
         return $this->fetch();
     }
@@ -59,12 +60,17 @@ class Page extends AddonController
     public function log()
     {
         if ($this->request->isPost()) {
-            $token = input('token','');
-            $userId = getUserIdByToken($token);
-            if(!$userId) return error_code(10000);
-            $params = input('post.');
-            $stockModel = new WerunLog();
-            return $stockModel->getLog($userId,$params);
+            $token = input('token', '');
+            // $userId = getUserIdByToken($token);
+            // if(!$userId) return error_code(10000);
+            $userId = 1;
+            $werunModel = new WerunLog();
+            $type = input('post.type',1);
+            $year = input('post.year',date('Y'));
+            $month = input('post.month',date('m'));
+            $day = input('post.day',date('d'));
+
+            return  $werunModel->statistic($userId, $type, $year, $month, $day);
         }
         return $this->fetch();
     }
@@ -78,14 +84,16 @@ class Page extends AddonController
     public function update()
     {
         if ($this->request->isPost()) {
-            $token = input('token','');
+            $token = input('token', '');
             $userId = getUserIdByToken($token);
-            if(!$userId) return error_code(10000);
-            $encryptedData = input('post.encryptedData','');
-            $iv = input('post.iv','');
-            if(!$encryptedData || !$iv) return \error_code(10003);
+            $userId = 1;
+
+            if (!$userId) return error_code(10000);
+            $encryptedData = input('post.encryptedData', '');
+            $iv = input('post.iv', '');
+            if (!$encryptedData || !$iv) return \error_code(10003);
             $werunModel = new WerunLog();
-            return $werunModel->updateLog($userId,$encryptedData,$iv);
+            return $werunModel->updateLog($userId, $encryptedData, $iv);
         }
         return '';
     }

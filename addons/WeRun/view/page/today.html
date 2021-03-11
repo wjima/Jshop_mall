@@ -1,0 +1,142 @@
+<style>
+    html{
+        background-color: white;
+    }
+</style>
+<!-- //第一步：编写模版。你可以使用一个script标签存放模板，如： -->
+<img src="__STATIC_IMAGES__/werun/timg(1).jpg" alt="">
+<script id="demo" type="text/html">
+  <div class="weather">
+    {{#  if(JSON.stringify(d.weather) == "[]" || JSON.stringify(d.weather) == "{}"){ }}
+        获取天气信息失败,请刷新后重试
+    {{#  }else{ }} 
+        所属城市: {{ d.weather.city || '' }},<br>
+        提示信息: {{ d.weather.ganmao || '' }},<br>
+        温度: {{ d.weather.wendu }},<br>
+        日期: {{ d.weather.today.date }},<br>
+        类型: {{ d.weather.today.type }},<br>
+        风向: {{ d.weather.today.fengxiang }},<br>
+        范围: {{ d.weather.today.low }} ~ {{ d.weather.today.high }},<br>
+    {{#  }}} 
+
+  </div>
+  <br><br><br>
+  <div id="step">
+    今日步数: {{ d.log.step }},<br>
+    最近更新时间: {{ d.log.utime }},<br>
+    参与人数: {{ d.total_count }},<br>
+    超过人数百分比: {{ d.persent }},<br>
+  </div>
+  <br><br><br>
+  <div id="rank1">
+    <ul>
+        {{#  layui.each(d.today_rank, function(index, item){ }}
+          <li>
+            <span>用户: ({{ item.user_id }})   {{ item.nickname || ''}}</span>   
+            <span>头像地址:{{ item.image }}</span> 
+            <span>步数:{{ item.step || 0 }}</span> 
+          </li>
+        {{#  }); }}
+         
+        {{#  if(d.today_rank.length === 0){ }}
+          暂无今日排行榜数据
+        {{#  } }} 
+        </ul>
+  </div>
+  <br><br><br>
+  <div id="rank2">
+    <ul>
+        {{#  layui.each(d.total_rank, function(index, item){ }}
+          <li>
+            <span>用户: ({{ item.user_id }})   {{ item.nickname }}</span>
+            <span>头像地址:{{ item.image }}</span>
+            <span>步数:{{ item.steps || '' }}</span>
+          </li>
+        {{#  }); }}
+         
+        {{#  if(d.total_rank.length === 0){ }}
+        暂无累计排行榜数据
+        {{#  } }} 
+        </ul>
+  </div>
+
+</script>
+<!-- //第二步：建立视图。用于呈现渲染结果。 -->
+<div id="view"></div>
+
+<br>
+<button><a href="{:get_addon_url('WeRun://page/log')}">点击调整到统计页面</a></button>
+<button><a href="{:get_addon_url('WeRun://page/reset')}">点击重置</a></button>
+<button><a href="{:get_addon_url('WeRun://page/exchangepoint')}">兑换积分</a></button>
+
+
+<br><br><br>
+<button id="update">更新我的步数</button>
+<!-- //第三步：渲染模版 -->
+<script>
+    layui.use(['laytpl','layer'], function(){
+        var laytpl = layui.laytpl;
+        var getTpl = demo.innerHTML
+                ,view = document.getElementById('view');
+
+        var data = { //数据
+            log: {
+                ctime: "2021-03-03 19:03:19",
+                date: 1614787200,
+                date_str: "2021-03-04",
+                id: 4,
+                step: 9180,
+                user_id: 1,
+                utime: "2021-03-03 19:04:08",
+                persent: "-100%",
+                total_count: 1,
+            },
+            weather: {
+                city: "郑州",
+                ganmao: "感冒易发期，外出请适当调整衣物，注意补充水分。",
+                today: {date: "4日星期四", high: "高温 20℃", fengli: "<![CDATA[2级]]>", low: "低温 6℃", fengxiang: "南风", type: "多云"},
+                wendu: "16"
+            },
+            total_count:0,
+            persent:'100%',
+            total_rank:[],
+            tadya_rank:[]
+
+        }
+        getPageData();
+        function getPageData() { 
+            JsPost("{:get_addon_url('WeRun://page/today')}",{
+                'token':'ssssssssssss',
+                'city':'郑州'
+            },function (re) {
+                if(re.status){
+                    data = re.data;
+                    console.log("计步数据:",data)
+                    laytpl(getTpl).render(data, function(html){
+                        view.innerHTML = html;
+                    });
+                }else{
+                    layer.msg(re.msg);
+                }
+                return;
+            });
+        }
+        $("#update").on('click',function(){
+            JsPost("{:get_addon_url('WeRun://page/update')}",{
+                'token':'ssssssssssss',
+                'encryptedData':'郑州',
+                'iv':'1111'
+            },function (re) {
+                if(re.status){
+                    getPageData();
+                }else{
+                    layer.msg(re.msg);
+                }
+                return;
+            });
+            return false;
+        })
+    })
+
+</script>
+

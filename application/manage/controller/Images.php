@@ -409,7 +409,7 @@ class Images extends Manage
         if(!$data['images_ids']){
             return error_code(50004);
         }
-        if(!$data['group_id']){
+        if(isset($data['group_id']) && $data['group_id'] === ''){
             return error_code(50005);
         }
         $imagesModel->where('id','in',$data['images_ids'])->update([

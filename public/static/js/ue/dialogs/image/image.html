@@ -281,8 +281,11 @@
                                     group_id: _this.remoId
                                 },
                                 success: function(res) {
-                                    _this.remoShow = false
-                                    _this.groupData()
+                                    if(res.status) {
+                                        _this.remoShow = false
+                                        _this.groupData()
+                                        _this.groupItemCLick({id: 0}, 2)
+                                    }
                                 },
                                 fail: function(err) {
                                     _this.$message({

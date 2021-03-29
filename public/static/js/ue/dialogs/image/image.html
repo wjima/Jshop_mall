@@ -112,7 +112,13 @@
 
                 <el-select v-model="moveValue" placeholder="请选择">
                     <el-option
-                      v-for="item in group_list"
+                        v-if="btnCurrent != 2"
+                        label="默认分组"
+                        :value="0">
+                    </el-option>
+                    <el-option
+                      v-for="(item, index) in group_list"
+                      v-if="(index + 3) != btnCurrent"
                       :key="item.id"
                       :label="item.name"
                       :value="item.id">
@@ -300,7 +306,7 @@
                                 type: "get",
                                 url: groupList,
                                 success: function(res) {
-                                    _this.group_list= res.data
+                                    _this.group_list=  res.data
                                 }
                             })
                         },
@@ -310,6 +316,43 @@
                         },
                         // 移动分组的确定事件
                         submitMove() {
+                            var _this = this
+                            let arr = this.getImgArr()
+                            if(arr.length == 0) {
+                                this.$message({
+                                    message: '请先选择图片'
+                                })
+                                return
+                            } else {
+                                console.log('currentId---', this.moveValue, arr)
+                                $.ajax({
+                                    type: "post",
+                                    url: moveGroup,
+                                    data: {
+                                        images_ids: arr,
+                                        group_id: this.moveValue
+                                    },
+                                    success: function(res) {
+                                        if(res.status) {
+                                            _this.moveshow = false
+                                            _this.$message({
+                                                message: res.msg,
+                                                type: 'success'
+                                            })
+                                            setTabFocus('online')
+                                            this.moveValue = ''
+                                        } else {
+                                            _this.$message({
+                                                message: res.msg
+                                            })
+                                        }
+                                        
+                                    }
+                                })
+                            }
+                        },
+                        // 获取图片数量
+                        getImgArr() {
                             var _this = this
                             let selectTab = $('#tabhead .tab.focus').attr('data-content-id')
                             let arr = []
@@ -329,34 +372,26 @@
                                     })
                                     break;
                             }
+                            return  arr
+
+                            // if(arr.length == 0) {
+                            //     this.$message({
+                            //         message: '请先选择图片'
+                            //     })
+                            // }
+                        },
+                        // 图片移动到分组
+                        movePic() {
+
+                            console.log(this.$data)
+                            let arr = this.getImgArr()
+
                             if(arr.length == 0) {
                                 this.$message({
                                     message: '请先选择图片'
                                 })
                                 return
-                            } else {
-                                console.log('currentId---', this.moveValue, arr)
-                                $.ajax({
-                                    type: "post",
-                                    url: moveGroup,
-                                    data: {
-                                        images_ids: arr,
-                                        group_id: this.moveValue
-                                    },
-                                    success: function(res) {
-                                        _this.moveshow = false
-                                        _this.$message({
-                                            message: res.msg,
-                                            type: 'success'
-                                        })
-                                        setTabFocus('online')
-                                        this.moveValue = ''
-                                    }
-                                })
                             }
-                        },
-                        // 图片移动到分组
-                        movePic() {
                             this.moveValue = ''
                             // this.btnCurrent = 1
                             this.moveshow = true
@@ -369,26 +404,49 @@
                         },
                         // 添加分组
                         submitAdd() {
-                            if(this.groupName) {
+                            
+                            if(this.groupName ) {
                                const _this = this
 
-
-                                $.ajax({
-                                    type: "post",
-                                    url: addGroup,
-                                    data: {
-                                        name: _this.groupName
-                                    },
-                                    success: function(res) {
-                                        _this.show = false
-                                        _this.group_list.push({
-                                            name: _this.groupName,
-                                            id: _this.groupName
-                                        })
-                                        _this.groupName = ''
-                                        _this.groupData()
-                                    }
-                                })
+                               if(this.groupName == '默认分组') {
+                                    _this.$message({
+                                        message: '图片分组名称不能重复'
+                                    })
+                                    return
+                                }
+                               let has =  _this.group_list.find(item => {
+                                    return item.name == this.groupName
+                               })
+                               if(!has) {
+                                    $.ajax({
+                                        type: "post",
+                                        url: addGroup,
+                                        data: {
+                                            name: _this.groupName
+                                        },
+                                        success: function(res) {
+                                            if(res.status) {
+                                                _this.show = false
+                                                _this.group_list.push({
+                                                    name: _this.groupName,
+                                                    id: _this.groupName
+                                                })
+                                                _this.groupName = ''
+                                                _this.groupData()
+                                            } else {
+                                                _this.$message({
+                                                    message: res.msg
+                                                })
+                                            }
+                                            
+                                        }
+                                    })
+                               } else {
+                                    _this.$message({
+                                        message: '图片分组名称不能重复'
+                                    })
+                               }
+                                
                             }
                         },
                     }

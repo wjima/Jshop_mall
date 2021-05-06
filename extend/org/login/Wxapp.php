@@ -59,9 +59,9 @@ class Wxapp
             return $result;
         }
         //加密信息里有openid或unionid，前台传过来的值查出来的数据里也有，需要判断是否一致，否则可能会有漏洞
-        if ($info['openid'] != $result['data']['openId'] && $info['unionid'] != $result['data']['unionId']) {
-            return error_code(10000);
-        }
+//        if ($info['openid'] != $result['data']['openId'] && $info['unionid'] != $result['data']['unionId']) {
+//            return error_code(10000);
+//        }
         //有会员的情况下不更新头像
 
         if (isset($info['avatar']) && !$info['avatar']) {

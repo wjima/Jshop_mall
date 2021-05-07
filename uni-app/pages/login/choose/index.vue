@@ -113,8 +113,8 @@ export default {
 	getUserProfile() {
 		let _this = this
 	    wx.getUserProfile({
-	      desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-	      success: (res) => {
+			desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+			success: (res) => {
 			  var data = {
 			    open_id: _this.open_id,
 			    iv: res.iv,
@@ -129,7 +129,7 @@ export default {
 			  _this.toLogin(data)
 	      },
 		  fail:(res)=>{
-			_this.$common.errorToShow(_this.$t("unauthorized"))
+			_this.$common.errorToShow('未授权')
 			}
 	    })
 	  },

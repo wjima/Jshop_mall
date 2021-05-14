@@ -48,7 +48,7 @@ class Index extends AddonController
             for ($i = 0; $i < 16; $i++) {
                 $output .= $chars[mt_rand(0, $charsLen)];
             }
-            \think\facade\Cache::set("sign", $output, 3600 * 24);
+            \think\facade\Cache::set("sign", $output, 3600 * 24 * 15);
         } else {
             $output = $data;
         }

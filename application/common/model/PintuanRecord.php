@@ -113,8 +113,8 @@ class PintuanRecord extends Model{
             //参加别人拼团
             $pr_where[] = ['id', 'eq',$params['team_id']];
             $pr_where[] = ['close_time','>',time()];
-            //$pr_where[] = ['status','eq',self::STATUS_COMM];
-            $info = $this->where('id',$params['team_id'])->find();
+            $pr_where[] = ['status','eq',self::STATUS_COMM];
+            $info = $this->where($pr_where)->find();
             if(!$info){
                 return error_code(15607);
             }

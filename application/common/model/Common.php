@@ -53,17 +53,6 @@ class Common extends Model
      */
     protected function tableFormat($list)
     {
-        foreach ($list as $k => $v) {
-            if ($v['style'] == "green") {
-                $list[$k]['style'] = "绿色";
-            }elseif ($v['style'] == "red"){
-                $list[$k]['style'] = "红色";
-            }elseif ($v['style'] == "orange"){
-                $list[$k]['style'] = "橙色";
-            }elseif ($v['style'] == "blue"){
-                $list[$k]['style'] = "蓝色";
-            }
-        }
         return $list;
     }
 }

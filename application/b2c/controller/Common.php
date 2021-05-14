@@ -17,7 +17,6 @@ use org\share\PosterShare;
 use Request;
 use app\common\model\User;
 use app\common\controller\Base;
-use org\Backup;
 
 class Common extends Base
 {
@@ -208,68 +207,4 @@ class Common extends Base
         echo $posterShare->poster($url, $code, $client);
     }
 
-        /**
-     * 定时还原
-     *
-     * @Author WGG 1490100895@qq.com
-     * @DateTime 2021-02-20
-     * @return void
-     */
-    public function reset()
-    {
-        $type = input('get.type/s', '');
-        $config = array(
-            'path'     => './../word/back/', //数据库备份路径
-            'part'     => 20971520, //数据库备份卷大小
-            'compress' => 0, //数据库备份文件是否启用压缩 0不压缩 1 压缩
-            'level'    => 9 //数据库备份文件压缩级别 1普通 4 一般  9最高
-        );
-        // $table_name = 'jshop_addons';
-        $db = new Backup($config);
-        switch ($type) {
-            case 'import':
-                $start = 0;
-                $file = ['name' => '20210222-155441', 'part' => 1];
-                $array = $db->setTimeout(0)->setFile($file)->import($start);
-                while ($array[0]) {
-                    $array = $db->setTimeout(0)->setFile($file)->import($array[0]);
-                }
-                return getTime(time()) . '还原标准版数据库成功';
-                break;
-                // case 'backup':
-                //     // $file = ['name' => date('Ymd-His'), 'part' => 1];
-                //     $tables = $db->dataList(); //获取数据库所有表的信息
-                //     foreach ($tables as $k => $v) {
-                //         $db->backup($v['name'], 0); //循环所有表备份表和数据
-                //     }
-                //     break;
-            case 'filelist':
-                dump($db->fileList());
-                die;
-                break;
-            case 'datalist':
-                dump($db->dataList());
-                break;
-                // case 'delFile':
-                // 删除备份文件
-                //     dump($db->delFile($time));
-                //     break;
-                // case 'downloadFile':
-                // 下载备份文件
-                //     dump($db->downloadFile($time));
-                //     break;
-                // case 'repair':
-                // 修复表
-                //     dump($db->repair($table_name));
-                //     break;
-                // case 'optimize':
-                // 优化表
-                //     dump($db->optimize($table_name));
-                //     break;
-            default:
-                return '哈哈哈哈哈';
-                break;
-        }
-        die;
-    }
 }

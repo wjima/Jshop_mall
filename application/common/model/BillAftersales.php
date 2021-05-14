@@ -760,6 +760,9 @@ class BillAftersales extends Common
         if (!$info) {
             return error_code(13223);
         }
+        if($info["bill_reship"]["logi_code"] != ""){
+            $info["bill_reship"]["logi_code"] = get_logi_info($info["bill_reship"]["logi_code"] );
+        }
         foreach ($info['images'] as $k => $v) {
             $info['images'][$k]['url'] = _sImage($v['image_id']);
         }

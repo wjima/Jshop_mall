@@ -37,7 +37,7 @@ class BillReship extends Manage
             $data = [];
             $data['logi_code'] = $logi_code;
             $data['logi_no'] = $logi_no;
-            // $data['status'] = $billReshipModel::STATUS_SHIPPED;
+             $data['status'] = $billReshipModel::STATUS_SHIPPED;
             if($billReshipModel->where('reship_id',$reship_id)->update($data)){
                 return [
                     'status'=>true,

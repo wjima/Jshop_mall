@@ -186,8 +186,8 @@
                             JsPost("{:url('billReship/reship')}", formData, function (res) {
                                 if (res.status) {
                                     layer.msg('填写退货信息成功', { time: 1000 }, function () {
-                                        layer.close(index);
-                                        table.reload();
+                                        layer.closeAll();
+                                        layui.table.reload('billReship');
                                     });
                                 } else {
                                     layer.msg(res.msg);

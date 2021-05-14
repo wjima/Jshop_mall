@@ -196,6 +196,7 @@ class User extends Common
             }
             $userInfo = $this->where(array('id' => $user_id))->find();
             hook('newuserreg', $userInfo);
+            hook("adminmessage",array('user_id'=>$user_id,"code"=>"user_register","params"=>$userInfo));
         } else {
             //如果有这个账号的话，判断一下是不是传密码了，如果传密码了，就是注册，这里就有问题，因为已经注册过
             if (isset($data['password'])) {
@@ -476,7 +477,7 @@ class User extends Common
 
         if ($isPage) {
             $list        = $this->with(['grade', 'userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
-            $re['sql'] = $this->getLastSql();
+            // $re['sql'] = $this->getLastSql();
             $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
         } else {

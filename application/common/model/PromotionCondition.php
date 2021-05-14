@@ -144,7 +144,7 @@ class PromotionCondition extends Common
         $re['msg'] = '';
         $re['count'] = count($list);
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+        // $re['sql'] = $this->getLastSql();
 
         return $re;
     }

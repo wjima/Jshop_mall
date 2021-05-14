@@ -24,4 +24,5 @@ return [
 
     //api级别日志单独保存
     'apart_level'   =>  ['api'],
+    'max_files'	=>	10,
 ];

@@ -32,7 +32,7 @@
 		<view class="login-b flc">
 			<!-- #ifdef MP-WEIXIN -->
 			<button class="auth-btn refuse" @click="handleRefuse">拒绝</button>
-			<button class="auth-btn " open-type="getUserInfo" @getuserinfo="getUserInfo" hover-class="btn-hover">允许</button>
+			<button class="auth-btn " @click="getUserProfile" hover-class="btn-hover">允许</button>
 			<!-- #endif -->
 			<!-- #ifdef MP-ALIPAY -->
 			<button class="auth-btn " @click="getALICode" hover-class="btn-hover">授权登录</button>
@@ -110,27 +110,29 @@ export default {
         uni.navigateBack(-1);
       }, 1000);
     },
-    getUserInfo: function(e) {
-      //console.log(e);
-      let _this = this
-      //return false;
-      if (e.detail.errMsg == 'getUserInfo:fail auth deny') {
-        _this.$common.errorToShow('未授权')
-      } else {
-        var data = {
-          open_id: _this.open_id,
-          iv: e.detail.iv,
-          edata: e.detail.encryptedData,
-          signature: e.detail.signature
-        }
-        //有推荐码的话，带上
-        var invitecode = _this.$db.get('invitecode')
-        if (invitecode) {
-          data.invitecode = invitecode
-        }
-        _this.toLogin(data)
-      }
-    },
+	getUserProfile() {
+		let _this = this
+	    wx.getUserProfile({
+			desc: '用于完善会员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+			success: (res) => {
+			  var data = {
+			    open_id: _this.open_id,
+			    iv: res.iv,
+			    edata: res.encryptedData,
+			    signature: res.signature
+			  }
+			  //有推荐码的话，带上
+			  var invitecode = _this.$db.get('invitecode')
+			  if (invitecode) {
+			    data.invitecode = invitecode
+			  }
+			  _this.toLogin(data)
+	      },
+		  fail:(res)=>{
+			_this.$common.errorToShow('未授权')
+			}
+	    })
+	  },
     //实际的去登陆
     toLogin: function(data) {
       let _this = this

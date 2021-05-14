@@ -249,7 +249,7 @@ class kdniao
         $requestData = json_encode($requestData, JSON_UNESCAPED_UNICODE);
         $datas       = array(
             'EBusinessID' => $this->ebusinessid,
-            'RequestType' => '8001',
+            'RequestType' => '1002',// 使用快递鸟付费查询请改为 8001
             'RequestData' => urlencode($requestData),
             'DataType'    => '2',
         );

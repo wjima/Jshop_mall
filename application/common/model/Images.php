@@ -33,7 +33,7 @@ class Images extends Common
         $re['msg']   = '';
         $re['count'] = $list->total();
         $re['data']  = $data;
-        $re['sql']   = $this->getLastSql();
+        // $re['sql']   = $this->getLastSql();
 
         return $re;
     }
@@ -46,6 +46,9 @@ class Images extends Common
         }
         if (isset($post['id']) && $post['id'] != "") {
             $where[] = ['id', 'eq', $post['id']];
+        }
+        if (isset($post['group_id']) && $post['group_id'] != "") {
+            $where[] = ['group_id', 'eq', $post['group_id']];
         }
         $result['where'] = $where;
         $result['field'] = "*";
@@ -62,26 +65,33 @@ class Images extends Common
     protected function tableFormat($list)
     {
         if (!$list->isEmpty()) {
-            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
-
+            $http_type  = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+            $groupModel = new ImagesGroup();
             foreach ($list as $key => $val) {
                 $list[$key]['ctime'] = date('Y-m-d H:i:s', $val['ctime']);
+                if (!$val['group_id']) {
+                    $list[$key]['group_name'] = '默认分组';
+                } else {
+                    $group                    = $groupModel->where('id', '=', $val['group_id'])->find();
+                    $list[$key]['group_name'] = $group['name'];
+                }
             }
         }
         return $list;
     }
 
-    /***
+    /**
      * 保存图片
      * @param string $url
-     * @param bool|false $remote
-     * @return array
+     * @param false $remote
+     * @param int $group_id 分组id
+     * @return array|mixed|string
      */
-    public function saveImage($url = '', $remote = false)
+    public function saveImage($url = '', $remote = false, $group_id = 0)
     {
         $return_data = [
             'status' => false,
-            'msg'    => error_code(10004,true),
+            'msg'    => error_code(10004, true),
             'data'   => ''
         ];
         if (!is_dir(ROOT_PATH . 'public/static/uploads/images/')) {
@@ -91,7 +101,7 @@ class Images extends Common
         $config        = [
             'rootPath' => ROOT_PATH . 'public',
             'savePath' => '/static/uploads/images',
-            'subName'  => ['get_date_dir',''],
+            'subName'  => ['get_date_dir', ''],
             'maxSize'  => config('jshop.upload_filesize'),
             'exts'     => 'jpg,jpeg,png,gif,bmp4',
             'saveName' => ['uniqid', time()],
@@ -114,10 +124,10 @@ class Images extends Common
 //                $return_data['msg'] = '图片保存失败';
                 return error_code(10042);
             }
-            if(isset($data['save_dir']) && $data['save_dir']){
+            if (isset($data['save_dir']) && $data['save_dir']) {
                 $savepath = $data['save_dir'];
             }
-            if(isset($data['file_name']) && $data['file_name']){
+            if (isset($data['file_name']) && $data['file_name']) {
                 $filename = $data['file_name'];
             }
             $raw = [
@@ -142,16 +152,17 @@ class Images extends Common
             $info   = $upload->upload();
         }
         if ($info) {
-            $first          = array_shift($info);
-            $url            = getRealUrl($first['savepath'] . $first['savename']);
-            $iData['id']    = md5(get_hash($first['name']));
-            $iData['type']  = $image_storage['type'];
-            $iData['name']  = $first['name'];
-            $iData['url']   = $url;
-            $iData['ctime'] = time();
-            $iData['path']  = ROOT_PATH . 'public' . $first['savepath'] . $first['savename'];
+            $first             = array_shift($info);
+            $url               = getRealUrl($first['savepath'] . $first['savename']);
+            $iData['id']       = md5(get_hash($first['name']));
+            $iData['group_id'] = input('param.group_id', $group_id);
+            $iData['type']     = $image_storage['type'];
+            $iData['name']     = $first['name'];
+            $iData['url']      = $url;
+            $iData['ctime']    = time();
+            $iData['path']     = ROOT_PATH . 'public' . $first['savepath'] . $first['savename'];
             if (!$this->save($iData)) {
-                $return_data['msg'] = error_code(10004,true);
+                $return_data['msg'] = error_code(10004, true);
                 return $return_data;
             }
             $return_data['status'] = true;

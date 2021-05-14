@@ -206,4 +206,5 @@ class Common extends Base
         $posterShare = new PosterShare();
         echo $posterShare->poster($url, $code, $client);
     }
+
 }

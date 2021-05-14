@@ -225,7 +225,7 @@
             },
             cols: [[
                 { type: 'checkbox' },
-                { field: 'operating', title: '操作', width: 200, align: 'center' },
+                { field: 'operating', title: '操作',minWidth:260, align: 'center' },
                 { field: 'order_id_k', title: '订单号', width: 140, align: 'center' },
                 { field: 'type', title: '订单类型', width: 90, align: 'center' },
                 {
@@ -245,7 +245,7 @@
                 { field: 'status_text', title: '订单状态', width: 90, align: 'center' },
                 {
                     field: 'after_sale_status', title: '售后状态', width: 150, align: 'center', templet: function (data) {
-                        return '<a href="{:url(' / manage / bill_aftersales / index')}?order_id=' + data.order_id + '" style="color:red">' + data.after_sale_status + '</a>';
+                        return '<a href="{:url('/manage/bill_aftersales/index')}?order_id=' + data.order_id + '" style="color:red">' + data.after_sale_status + '</a>';
                     }
                 },
                 { field: 'username', title: '用户', width: 120, align: 'center' },
@@ -663,6 +663,36 @@
                     }
                 });
             });
+        });
+        //订单申请售后
+        $(document).on('click', '.aftersales-order', function () {
+            var id = $(this).attr('data-id');
+            JsGet('{:url("order/aftersales")}?order_id='+id, function (e) {
+                if(e.status){
+                    layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: setpage(800,650),
+                            title: '申请售后',
+                            btn: ['确认', '取消'],
+                            yes: function (index, layero) {
+                                var data = form.val('bill_aftersales_add');
+                                data['order_id'] = id
+                                JsPost('{:url("order/aftersales")}', data, function (e) {
+                                    if (e.status) {
+                                        layer.msg('申请售后成功');
+                                        window.setTimeout("window.location.reload();", 500);     //如果想做的更好就关掉弹出框，然后表格重新加载即可
+                                    } else {
+                                        layer.msg(e.msg);
+                                    }
+                                });
+                            }
+                        });
+                }else{
+                    layer.msg(e.msg);
+                }
+            });
+            return false;
         });
 
         //删除订单

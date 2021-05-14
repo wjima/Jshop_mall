@@ -274,7 +274,7 @@
                 let data = {
                     page: 4,
                     params: {
-                        store: this.info.store
+                        store: this.storeCode
                     },
                     type: 3,//海报
                 }
@@ -329,6 +329,14 @@
                 this.$api.share(data, res => {
                     this.shareUrl = res.data
                 });
+            }
+		},
+        watch:{
+            storeCode: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
             }
         },
 		//上拉加载

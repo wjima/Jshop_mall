@@ -179,6 +179,7 @@ abstract class Addons extends Controller
         $info = $this->info;
         $dialog['width'] = $info['dialog_width']?$info['dialog_width']:'600px';
         $dialog['height'] = $info['dialog_height']?$info['dialog_height']:'520px';
+        $dialog['btn'] = isset($info['dialog_btn']) ?$info['dialog_btn']:['保存','关闭'];
         return $dialog;
     }
 

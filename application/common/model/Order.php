@@ -385,7 +385,7 @@ class Order extends Common
     public function getOrderStatusNum($input)
     {
         $ids = explode(",", $input['ids']);
-        if ($input['user_id']) {
+        if (isset($input['user_id']) && $input['user_id']) {
             $user_id = $input['user_id'];
         } else {
             $user_id = false;
@@ -397,8 +397,7 @@ class Order extends Common
         }
 
         //售后状态查询
-        $isAfterSale = $input['isAfterSale'];
-        if ($isAfterSale) {
+        if (isset($input['isAfterSale']) && $input['isAfterSale']) {
             $model = new BillAftersales();
             $number = $model->getUserAfterSalesNum($user_id, $model::STATUS_WAITAUDIT);
             $data['isAfterSale'] = $number;
@@ -451,6 +450,7 @@ class Order extends Common
                     $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '">编辑</a>';
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="' . $id . '">发货</a>';
                 }
+                $html .= '<a class="layui-btn layui-btn-xs aftersales-order" data-id="' . $id . '">售后</a>';
                 $html .= '<a class="layui-btn layui-btn-xs complete-order" data-id="' . $id . '">完成</a>';
 //                if($ship_status == self::SHIP_STATUS_YES)
 //                {
@@ -879,8 +879,7 @@ class Order extends Common
 
         if ($info) {
             unset($result);
-            $result = $this->where($where)
-                ->update($data);
+            $result = $info->save($data);
             //计算订单实际支付金额（要减去售后退款的金额）
             unset($money);
             unset($bawhere);
@@ -1389,7 +1388,7 @@ class Order extends Common
      * 确认签收
      * @param $order_id
      * @param bool $user_id
-     * @return bool
+     * @return array
      */
     public function confirm($order_id, $user_id = false)
     {
@@ -1412,10 +1411,12 @@ class Order extends Common
         $data['confirm'] = self::CONFIRM_RECEIPT;
         $data['confirm_time'] = time();
 
+        $info = $this->where($where)->find();
+        if(!$info) return error_code(10000);
         Db::startTrans();
         try {
             //修改订单
-            $re = $this->save($data, $where);
+            $re = $info->save($data, $where);
             if (!$re) {
 //                $result['msg'] = "确认收货失败";
                 Db::rollback();
@@ -2341,5 +2342,16 @@ class Order extends Common
             'total_user_orders' => $total_user_orders,
         ];
         return $return;
+    }
+    public function createAftersales($order_id){
+        $order = $this->get($order_id);
+        if($order['status'] != self::ORDER_STATUS_NORMAL || $order['pay_status'] == self::PAY_STATUS_NO) return error_code(10000);
+        if($order['ship_status'] == self::SHIP_STATUS_NO){
+            $type = 1;
+        }else{
+            $type = 2;
+        }
+        $aftersalesModel = new BillAftersales();
+        return $aftersalesModel->toAdd($order['user_id'],$order_id,$type,[],[],'后台创建售后单',0);
     }
 }

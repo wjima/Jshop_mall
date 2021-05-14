@@ -1,0 +1,64 @@
+
+<table id="label" lay-filter="label"></table>
+<script>
+    layui.use(['table','form','laydate'], function(){
+        var table = layui.table, form = layui.form, date = layui.laydate;
+        //第一个实例
+        table.render({
+            elem: '#label',
+            height: 'full-35',
+            url: '{:url("Goods/labellist")}', //数据接口
+            page: true,
+            even: true,
+
+            limit:'{:config("jshop.page_limit")}',
+            cols: [[ //表头
+                {field: 'id', title: 'ID',align:'center',width:100},
+                {title: '操作',width:150, align:'center', toolbar: '#couponBar'} ,//这里的toolbar值是模板元素的选择器
+                {field: 'name', title: '名称',align:'center'},
+                {field: 'style', title: '样式',align:'center'},
+            ]]
+        })
+
+        //search
+        date.render({
+            elem:'#date',
+            type: 'datetime',
+            range: '到', //或 range: '~' 来自定义分割字符
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+
+        form.on('submit(coupon-search)', function(data){
+            layui.table.reload('coupon', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //监听工具条
+        table.on('tool(label)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if(layEvent === 'del'){ //删除
+                layer.confirm('确认删除该条记录?', function(index){
+                    JsGet('{:url("Goods/labeldel")}?id='+data.id,function(res){
+                        if (res.status === true) {
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                        }
+                        layer.msg(res.msg)
+                    })
+                });
+            }
+        });
+
+    });
+</script>
+<script type="text/html" id="couponBar">
+    <a class="layui-btn layui-btn-danger layui-btn-xs del-class " lay-event="del" >删除</a>
+    <!--<a class="layui-btn layui-btn-jshop " lay-event="change" title="变更领取者"><i class="iconfont">&#xe6dc;</i></a>-->
+</script>

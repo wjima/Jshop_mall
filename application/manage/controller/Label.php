@@ -21,24 +21,22 @@ class Label extends Manage
      */
     public function setLabel()
     {
-        $ids = input('ids/a', []);
-        $model = input('model', '');//要设置的模型
+        $ids        = input('ids/a', []);
+        $model      = input('model', '');//要设置的模型
         $total_item = count($ids);
 
         $this->assign('total_item', $total_item);
         $this->assign('model', $model);
         //已存在标签
         $labelModel = new labelModel();
-
-        $labels = $labelModel->getAllLabel();
+        $labels     = $labelModel->getAllLabel();
         $this->assign('labels', $labels);
-
         $this->view->engine->layout(false);
         $content = $this->fetch('setLabel');
         return [
-            'status'=>true,
-            'data'=>$content,
-            'msg'=>'获取成功',
+            'status' => true,
+            'data'   => $content,
+            'msg'    => '获取成功',
         ];
     }
 

@@ -9,6 +9,25 @@
 namespace app\common\model;
 class Label extends Common
 {
+
+    public $default_label = [
+        [
+            'name'  => '热卖',
+            'style' => 'red',
+        ],
+        [
+            'name'  => '新品',
+            'style' => 'green',
+        ],
+        [
+            'name'  => '推荐',
+            'style' => 'orange',
+        ],
+        [
+            'name'  => '促销',
+            'style' => 'blue',
+        ]
+    ];
     /**
      * 保存label数据
      * @param $data ['ids'=>'模型主键id数组','label'=>'标签数组','model'=>'打标签模型']
@@ -69,7 +88,16 @@ class Label extends Common
     public function getAllLabel()
     {
         if (!$this->select()->isEmpty()) {
-            return $this->select()->toArray();
+            $templabels = $this->select()->toArray();
+            foreach ($templabels as $key => $value) {
+                foreach($this->default_label as $k=>$v){
+                    if($value['name'] == $v['name'] && $value['style'] == $v['style']){
+                        unset($this->default_label[$k]);
+                    }
+                }
+            }
+            $labels = $templabels + $this->default_label;
+            return $labels;
         }
         return [];
     }

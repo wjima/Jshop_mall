@@ -28,8 +28,8 @@ class MiniManage extends Addons
     // 该插件的基础信息
     public $info = [
         'name' => 'MiniManage',
-        'title' => '前端后台管理',
-        'description' => '用于前端管理后台订单信息',
+        'title' => '小超超前端后台管理',
+        'description' => 'app管理后台，可处理订单发货、售后以及查看经营情况',
         'status' => 0,
         'author' => 'lzc',
         'version' => '1.0',

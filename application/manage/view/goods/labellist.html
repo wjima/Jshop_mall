@@ -6,10 +6,11 @@
         //第一个实例
         table.render({
             elem: '#label',
-            height: 'full-220',
+            height: 'full-35',
             url: '{:url("Goods/labellist")}', //数据接口
             page: true,
             even: true,
+
             limit:'{:config("jshop.page_limit")}',
             cols: [[ //表头
                 {field: 'id', title: 'ID',align:'center',width:100},

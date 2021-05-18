@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace app\Manage\controller;
 
+use app\common\model\ImagesGroup;
 use Request;
 use app\common\controller\Manage;
 use app\common\model\Images as imageModel;
@@ -19,7 +20,8 @@ class Images extends Manage
     public function index()
     {
         $imageModel = new imageModel();
-
+        $group = $this->groupList();
+        $this->assign('group',$group['data']);
         if (Request::isAjax()) {
             $filter = input('request.');
             return $imageModel->tableData($filter);
@@ -333,5 +335,119 @@ class Images extends Manage
         return $return_data;
     }
 
+    /**
+     * 分组列表
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function groupList()
+    {
+        $return_data = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $groupModel  = new ImagesGroup();
+        $group       = $groupModel->where('show', '=', '1')->select();
+        if (!$group->isEmpty()) {
+            $group = $group->toArray();
+        }
+        $return_data['status'] = true;
+        $return_data['data']   = $group;
+        return $return_data;
+    }
+
+    /**
+     * 添加图片分组
+     * @return array|mixed|string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function addGroup()
+    {
+        $return_data  = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $data['name'] = input('post.name', '');
+        if (!$data['name']) {
+            return error_code(50001);
+        }
+        $groupModel = new ImagesGroup();
+
+        $res = $groupModel->where('name', '=', $data['name'])->find();
+        if ($res) {
+            return error_code(50002);
+        }
+        if (!$groupModel->save($data)) {
+            return error_code(50003);
+        }
+        $return_data['status'] = true;
+        $return_data['msg']    = '保存成功';
+        return $return_data;
+    }
+
+    /**
+     * 移入分组
+     * @return array|mixed|string
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function moveGroup(){
+        $return_data  = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $data['images_ids'] = input('param.images_ids/a',[]);
+        $data['group_id'] = input('param.group_id');
+        $imagesModel = new imageModel();
+        if(!$data['images_ids']){
+            return error_code(50004);
+        }
+        if(isset($data['group_id']) && $data['group_id'] === ''){
+            return error_code(50005);
+        }
+        $imagesModel->where('id','in',$data['images_ids'])->update([
+            'group_id'=>$data['group_id']
+        ]);
+        $return_data['status'] = true;
+        $return_data['msg']    = '操作成功';
+        return $return_data;
+    }
+
+
+    /**
+     * 删除分组
+     * @return array|mixed|string
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function deleteGroup()
+    {
+        $return_data = [
+            'status' => false,
+            'msg'    => '',
+            'data'   => ''
+        ];
+        $group_id    = input('param.group_id');
+        if (!$group_id) {
+            return error_code(50005);
+        }
+        $imagesModel = new imageModel();
+        $groupModel  = new ImagesGroup();
+        if ($groupModel->where('id', '=', $group_id)->delete()) {
+            $imagesModel->where('group_id', '=', $group_id)->update([
+                'group_id' => '0'
+            ]);
+        }
+        $return_data['status'] = true;
+        $return_data['msg']    = '操作成功';
+        return $return_data;
+    }
 
 }

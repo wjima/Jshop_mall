@@ -50,9 +50,14 @@
                 {field: 'file_name', title: '文件名称',align:'center'},
                 {field: 'type', title: '任务类型',align:'center', width: 90},
                 {field: 'status', title: '状态',align:'center', width: 100},
+                {field: 'message', title: '反馈',align:'center', width: 120},
                 {field: 'file_size', title: '文件大小',align:'center', width: 120},
                 {field: 'file_path', title: '文件下载',align:'center',templet:function (data) {
-                    return '<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="downfile('+data.id+')">下载文件</button>';
+                    if(data.status == '导出成功' || data.status =='导入成功'){
+                        return '<button class="layui-btn layui-btn-sm layui-btn-normal" onclick="downfile('+data.id+')">下载文件</button>';
+                    }else{
+                        return '';
+                    }
                 }, width: 120},
                 {field: 'ctime',sort: true, title: '创建时间' ,align:'center', width: 170},
                 {field: 'operating', title: '操作', width:90, align: 'center',templet:function(data){

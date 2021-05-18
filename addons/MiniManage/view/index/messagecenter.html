@@ -1,0 +1,78 @@
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont.css" media="all"/>
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.css">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/style/admin.css" media="all">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.seller.css">
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__style.css"/>
+<script src="__STATIC_JS__jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC_LIB__layuiadmin/layui/layui.js"></script>
+<script src="__STATIC_JS__jshop.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__STATIC_JS__ue/ueditor.all.min.js"> </script>
+<div class="table-body">
+    <div style="margin-top: 10px">
+        <span style="color: red">说明：</span>
+        <span>开通公众号信息通道需微信扫码绑定公众号！</span>
+        <a class="layui-btn layui-btn-xs dianji" >
+            获取二维码
+        </a>
+    </div>
+    <table id="userTable" lay-filter="userTable"></table>
+</div>
+
+<script type="text/html" id="messageTpl">
+    <input type="checkbox" name="message" value="{{d.code}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.message == 1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="wxTpl">
+    <input type="checkbox" name="wx_tpl_message" value="{{d.code}}" lay-skin="switch" lay-text="启用|禁用" lay-filter="smsDemo" {{ d.wx_tpl_message == 1 ? 'checked' : '' }}>
+</script>
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        layui.table.render({
+            elem: '#userTable',
+            height: 'full-62',
+            cellMinWidth: '80',
+            page: false,
+            limit:'20',
+            url: "{:get_addon_url('MiniManage://index/messagecenter')}?_ajax=1",
+            id:'userTable',
+            cols: [[
+                {type:'numbers'},
+                {field: 'code', title: '消息节点',templet:function(data){
+                        var html = '';
+                        html += data.name + '('+data.code+')';
+                        return html;
+                    }, align: 'center'},
+                {field:'message', title:'站内消息', width:110, templet: '#messageTpl', unresize: true, align: 'center'},
+                {field:'wx_tpl_message', title:'公众号消息', width:110, templet: '#wxTpl', unresize: true, align: 'center'}
+            ]]
+        });
+        //监听操作
+        layui.form.on('switch(smsDemo)', function(obj){
+            var data = {
+                code:this.value
+            };
+            if(obj.elem.checked){
+                data[this.name] = 1;
+            }else{
+                data[this.name] = 2;
+            }
+            JsPost("{:get_addon_url('MiniManage://index/edit')}", data, function(e){
+                if(e.status){
+                    layer.msg('修改成功');
+                }else{
+                    layer.msg(e.msg);
+                }
+            });
+        })
+        $(".dianji").click(function(){
+                layer.open({
+                    type: 1,
+                    shadeClose: true,
+                    area: ['280px', '330px']
+                    ,title: '二维码'
+                    ,content: '<img style="width: 280px;height: 280px" src="{$url}"></div>'
+                });
+            }
+        )
+    });
+</script>

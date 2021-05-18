@@ -7926,7 +7926,7 @@
             getContentLength: function (ingoneHtml, tagNames) {
                 var count = this.getContent(false,false,true).length;
                 if (ingoneHtml) {
-                    tagNames = (tagNames || []).concat([ 'hr', 'img', 'iframe']);
+                    tagNames = (tagNames || []).concat([ 'hr', 'img', 'iframe','video']);
                     count = this.getContentTxt().replace(/[\t\r\n]+/g, '').length;
                     for (var i = 0, ci; ci = tagNames[i++];) {
                         count += this.document.getElementsByTagName(ci).length;
@@ -17661,7 +17661,7 @@
                     }else {
                         var ext = url.substr(url.lastIndexOf('.') + 1);
                         "ogv" == ext && (ext = "ogg");
-                        str = '<video' + (id ? ' id="' + id + '"':'')+' class="' + classname.trim() + ' video-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '" poster="' + posterUrl + '"/></video>';
+                        str = '<video' + (id ? ' id="' + id + '"':'')+' class="' + classname.trim() + ' video-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '" poster="' + posterUrl + '"/></video><p><br></p>';
                     }
                     break;
                 case 'video':
@@ -17671,7 +17671,7 @@
                         str = '<audio' + (id ? ' id="' + id + '"' : '') + ' class=" audio-js" ' + (align ? ' style="float:' + align + '"': '') +
                             ' controls preload="none" width="' + width + '" height="' + height + '" src="' + url + '" poster="' + posterUrl + '">" /></audio>';
                     }else{
-                        str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname.trim() + ' video-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '"  poster="' + posterUrl + '"/></video>';
+                        str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname.trim() + ' video-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '"  poster="' + posterUrl + '"/></video><p><br></p>';
                     }
 
                     break

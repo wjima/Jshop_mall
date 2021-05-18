@@ -58,7 +58,7 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
-		
+
 		if (page.route.indexOf('pages/bargain/index') !== -1) {
 			//砍价
 			if (page.id && page.id != '' && page.type && page.record_id && page.record_id != 0) {
@@ -66,6 +66,16 @@ function jumpToLogin(method) {
 			} else {
 				pagePath = '/pages/index/index';
 			}
+		}
+		
+		if (page.route.indexOf('pages/member/order/orderdetail') !== -1) {
+			//订单详情
+			if (page.orderId && page.orderId != '') {
+				pagePath = '/' + page.route + '?order_id=' + page.orderId;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+			console.log(pagePath);
 		}
 		// #endif
 
@@ -97,7 +107,8 @@ function jumpToLogin(method) {
 		if (page.__proto__.route.indexOf('pages/bargain/index') !== -1) {
 			//砍价
 			if (page.data.id && page.data.id != '' && page.data.type && page.data.record_id && page.data.record_id != 0) {
-				pagePath = '/' + page.__proto__.route + '?id=' + page.data.id + '&type=' + page.data.type + '&record_id=' + page.data.record_id;
+				pagePath = '/' + page.__proto__.route + '?id=' + page.data.id + '&type=' + page.data.type + '&record_id=' + page.data
+					.record_id;
 			} else {
 				pagePath = '/pages/index/index';
 			}
@@ -117,9 +128,10 @@ function jumpToLogin(method) {
 			success: function(res) {
 				setTimeout(() => {
 					uni.hideToast();
-					let current =  getCurrentPages()
+					let current = getCurrentPages()
 					current = current[current.length - 1]
-					if (current.route.indexOf('pages/login/choose/index') > -1 ||  current.route.indexOf('/pages/login/login/index1') > -1 ) {
+					if (current.route.indexOf('pages/login/choose/index') > -1 || current.route.indexOf(
+							'/pages/login/login/index1') > -1) {
 						return
 					}
 					uni.navigateTo({
@@ -130,7 +142,10 @@ function jumpToLogin(method) {
 						url: '/pages/login/choose/index',
 						// #endif
 						animationType: 'pop-in',
-						animationDuration: 200
+						animationDuration: 200,
+						complete() {
+							uni.hideLoading()
+						}
 					})
 				}, 500)
 			}
@@ -161,11 +176,11 @@ function successToShow(msg = '保存成功', callback = function() {}) {
 		uni.showToast({
 			title: msg,
 			icon: 'success',
-			duration: 1000,
+			duration: 2000,
 			success() {
 				setTimeout(function() {
 					callback()
-				}, 500)
+				}, 2000)
 			}
 		})
 	}, 100)
@@ -182,15 +197,14 @@ function errorToShow(msg = '操作失败', callback = function() {}) {
 		uni.showToast({
 			title: msg,
 			icon: 'none',
-			duration: 1500,
+			duration: 2000,
 			success() {
 				setTimeout(function() {
 					callback()
-				}, 1500)
+				}, 2000)
 			}
 		})
-	},1000)
-
+	}, 100)
 }
 
 //加载显示
@@ -332,10 +346,10 @@ function formatMoney(number, places, symbol, thousand, decimal) {
 	)
 }
 //金额格式化还原
-function rmoney(s)
-{
+function rmoney(s) {
 	return parseFloat(s.replace(/[^\d\.-]/g, ""));
 }
+
 function throttle(fn, context, delay) {
 	clearTimeout(fn.timeoutId)
 	fn.timeoutId = setTimeout(function() {
@@ -514,6 +528,7 @@ function shareParameterDecode(url) {
 		allParameter.id_type + '-' + allParameter.page_code + '-' + allParameter.group_id;
 	return newUrl;
 }
+
 
 export {
 	deepCopy,

@@ -81,8 +81,9 @@
 				<view class='cell-item right-img'>
 					<view class='cell-item-hd'>
 						<view v-if="teamInfo.status==1" class='cell-hd-title'>待拼团，还差{{ teamInfo.team_nums || ''}}人</view>
-						<view v-else-if="teamInfo.status==2" class='cell-hd-title'>拼团成功</view>
-						<view v-else-if="teamInfo.status==3" class='cell-hd-title'>拼团失败，拼团已结束</view>
+						<view v-else-if="teamInfo.status==2" class='cell-hd-title'>团已满，请督促小伙伴尽快付款哦</view>
+						<view v-else-if="teamInfo.status==3" class='cell-hd-title'>拼团成功</view>
+						<view v-else-if="teamInfo.status==4" class='cell-hd-title'>拼团失败，拼团已结束，如果有付款的订单，会退款并原路返回</view>
 					</view>
 				</view>
 				<view class="group-swiper">
@@ -213,9 +214,18 @@
 					</view>
 				</view>
 				<view class='cell-item add-title-item' v-if="orderInfo.coupon_pmt > 0">
-					<view class='cell-item-bd'>
+					<view class='cell-item-bd' style="overflow: inherit;">
 						<view class="cell-bd-view">
-							<text class="cell-bd-text">其他优惠</text>
+							<text class="cell-bd-text">优惠券优惠</text>
+							<image src="/static/image/tip.png" mode="" class="tips" @click="tips"></image>
+							<lvv-popup position="center" ref="cover" class="cover">
+							<!-- <view class="cover"> -->
+								<view class="tip" v-if="tipsShow">
+									订单优惠包括优惠券优惠
+								</view>
+							<!-- </view> -->
+								
+							</lvv-popup>
 						</view>
 					</view>
 					<view class='cell-item-ft'>
@@ -282,6 +292,7 @@
 					status: false,
 					code: ''
 				}, //提货信息
+				tipsShow:false
 			}
 		},
 		onLoad(options) {
@@ -483,6 +494,15 @@
 						url: '/pages/member/invoice/index?id=' + this.orderInfo.invoice.id
 					});
 				}
+			},
+			tips(){
+				if(this.tipsShow){
+					this.$refs.cover.close();
+					this.tipsShow = false;
+				}else{
+					this.$refs.cover.show();
+					this.tipsShow = true;
+				}
 			}
 		}
 	}
@@ -632,5 +652,42 @@
 		flex: 1;
 		margin-left: 20rpx;
 		padding-right: 0;
+	}
+	
+	.content-top{
+		padding-bottom: 116rpx;
+	}
+	.tips{
+		width: 25rpx;
+		height: 25rpx;
+		vertical-align: middle;
+		margin-left: 6rpx;
+		margin-top: 4rpx;
+	}
+	.tip{
+		position: absolute;
+		padding: 10rpx;
+		left: 20%;
+		bottom: 40%;
+		width: 288rpx;
+		font-size: 22rpx;
+		color: #999;
+		border-radius: 8rpx;
+		border: 2rpx solid #999;
+	}
+	/* .tip::before {
+	  content: " ";
+	  position: absolute;
+	  left: 44rpx;
+	  bottom: -18rpx;
+	  transform: translateX(-50%);
+	  width: 0;
+	  height: 0;
+	  border-left: 12rpx solid transparent;
+	  border-right: 12rpx solid transparent;
+	  border-top: 18rpx solid #999;
+	} */
+	/deep/.lvv-popup .lvv-popupmark{
+		background:transparent!important;
 	}
 </style>

@@ -8,8 +8,17 @@
 <table id="tagNoticeTable" lay-filter="tagNoticeTable"></table>
 
 <script>
+    var time = "{$Think.get.time}";
     var ids = {};
+    if(time){
+        ids = eval(''+time+'_list');
+    }
     var table_data=new Array();
+    var allow_num = "{$allow_mul}";
+    var select_type = {type:'checkbox'};
+    if(allow_num == "2"){
+        select_type = {type:'radio'}
+    }
     layui.use(['form', 'laydate','table'], function(){
         layui.table.render({
             elem: '#tagNoticeTable',
@@ -19,7 +28,7 @@
             url: "{:url('index/tagSelectNotice')}?_ajax=1",
             id:'tagNoticeTable',
             cols: [[
-                {type:'checkbox'},
+                select_type,
                 {field: 'title', title: '公告标题'},
                 {field: 'content', title: '公告描述内容',align:'center'},
                 {field: 'ctime', title: '更新时间', width: 200, sort: true,align:'center'},
@@ -37,12 +46,21 @@
                 //循环所有数据，找出对应关系，设置checkbox选中状态
                 for(var i=0;i< res.data.length;i++){
                     if(ids[res.data[i].id]){
+                        ids[res.data[i].id] = res.data[i];
+
                         //这里才是真正的有效勾选
-                        res.data[i]["LAY_CHECKED"]='true';
+                        res.data[i]["LAY_CHECKED"] = 'true';
                         //找到对应数据改变勾选样式，呈现出选中效果
-                        var index= res.data[i]['LAY_TABLE_INDEX'];
-                        $('#tagNoticeTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
-                        $('#tagNoticeTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+                        var index = res.data[i]['LAY_TABLE_INDEX'];
+                        if (allow_num == '2') {
+                            // console.log($('#tagNoticeTable + div .layui-table-body tr[data-index=' + index + '] input[type="radio"]'));                        
+                            $("#tagNoticeTable + div .layui-table-body tr[data-index = " + index + " ] .layui-form-radio").click();
+                            break
+                        } else {
+                            $('#tagNoticeTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').prop('checked', true);
+                            $('#tagNoticeTable + div .layui-table-body tr[data-index=' + index + '] input[type="checkbox"]').next().addClass('layui-form-checked');
+
+                        }
                     }
                 }
                 //设置全选checkbox的选中状态，只有改变LAY_CHECKED的值， table.checkStatus才能抓取到选中的状态
@@ -51,6 +69,8 @@
                     $('#tagNoticeTable + div .layui-table-header th[data-field="0"] input[type="checkbox"]').prop('checked', true);
                     $('#tagNoticeTable + div .layui-table-header th[data-field="0"] input[type="checkbox"]').next().addClass('layui-form-checked');
                 }
+            $('#tagNoticeNum').html(Object.getOwnPropertyNames(ids).length);
+
             }
         });
         //监听表格复选框选择
@@ -72,6 +92,15 @@
                         delete ids[table_data[i].id];
                     }
                 }
+            }
+            $('#tagNoticeNum').html(Object.getOwnPropertyNames(ids).length);
+        });
+        layui.table.on('radio(tagNoticeTable)', function(obj){
+            if (ids[obj.data.id]) {
+
+            } else {
+                ids = {}
+                ids[obj.data.id] = obj.data
             }
             $('#tagNoticeNum').html(Object.getOwnPropertyNames(ids).length);
         });

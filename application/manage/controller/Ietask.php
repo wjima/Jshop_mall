@@ -43,13 +43,11 @@ class Ietask extends Manage
      */
     public function export()
     {
-        $result     = error_code(10051);
+        $result     = error_code(10039);
         $taskname   = input('taskname/s', '');
         $filter     = input('filter/s', '');
         $job        = input('model/s', '');
         if (empty($taskname)) {
-            // $result['status'] = false;
-            // $result['msg']    = error_code(10045,true);
             return error_code(10045);
         }
         if (!$taskname) {
@@ -60,7 +58,6 @@ class Ietask extends Manage
         }
         $where = [];
         if ($filter) {
-            //$where = json_decode($filter,true);
             $where = convertUrlQuery($filter);
         }
         //增加条件验证
@@ -81,7 +78,7 @@ class Ietask extends Manage
         $res            = $ietaskModle->addExportTask($data, $job);
         if ($res !== false) {
             $result['status'] = true;
-            $result['msg']    = '导出任务加入成功，请到任务列表中下载文件';
+            $result['msg']    = '导出任务加入成功，请到控制面板->导入导出中下载文件';
         }
 
         return $result;

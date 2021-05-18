@@ -60,7 +60,7 @@ class Api extends AddonController
 
 
     /**
-     * 判断是否需要显示订阅提醒
+     * 判断是否需要显示订阅提醒 废弃！！！
      * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
@@ -99,7 +99,8 @@ class Api extends AddonController
     public function tmpl()
     {
         $suModel = new UserWxmsgSubscription();
-        return json($suModel->tmpl($this->userId));
+        $type = input('post.type');
+        return json($suModel->tmpl($this->userId,$type));
     }
 
 

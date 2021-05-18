@@ -474,6 +474,11 @@ function error_code($code, $mini = false)
     if($msg == ""){
         if (config('?error.' . $code)) {
             $msg = config('error.' . $code);
+            $count = count($data);
+            $count--;
+            for($i=1;$i<=$count;$i++){
+                $msg = str_replace("{JSHOP".$i."}",$data[$i],$msg);
+            }
         }
     }
     $result['msg'] = $msg;
@@ -870,6 +875,7 @@ function get_lately_days($day, $data)
 function sendMessage($user_id, $code, $params)
 {
     $messageCenter = new \app\common\model\MessageCenter();
+    hook("adminmessage",array('user_id'=>$user_id,"code"=>$code,"params"=>$params));
     return $messageCenter->sendMessage($user_id, $code, $params);
 }
 

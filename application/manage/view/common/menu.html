@@ -4,7 +4,7 @@
     </li>
     {if $menu }
     {foreach $menu as $k=>$v}
-    <li data-name="{:strtolower($v['code'])}" class="layui-nav-item">
+    <li data-name="{:strtolower($v['code'])}" class="layui-nav-item ">
         {if isset($v['children']) && !empty($v['children'])}
             <a class="menu-icon-{:strtolower($v['code'])}" href="javascript:;" lay-tips="{$v.name}"  lay-direction="2">
                 <i class="iconfont icon-none icon-{:strtolower($v['code'])}"></i>{$v.name}
@@ -14,14 +14,17 @@
                 {foreach $v['children'] as $x=>$y}
                 <dd data-name="{:strtolower($v['code'])}">
                     {if isset($y['children']) && !empty($y['children'])}
-                        <a href="javascript:;" href="javascript:;" style="padding-left: 44px;">{$y.name}</a>
-                        <dl class="layui-nav-child">
-                            {foreach $y['children'] as $a=>$b}
-                            <dd data-name="{:strtolower($b['code'])}" class="{if $b.selected} layui-this{/if}">
-                                <a lay-href="{$b.url}">{$b.name}</a>
-                            </dd>
-                            {/foreach}
-                        </dl>
+                        <!--<li class="layui-nav-item layui-nav-itemed">--><!--二级菜单默认展开-->
+                            <a href="javascript:;" href="javascript:;" style="padding-left: 44px;">{$y.name}</a>
+                            <dl class="layui-nav-child ">
+
+                                {foreach $y['children'] as $a=>$b}
+                                <dd data-name="{:strtolower($b['code'])}" class="{if $b.selected} layui-this{/if}">
+                                    <a lay-href="{$b.url}">{$b.name}</a>
+                                </dd>
+                                {/foreach}
+                            </dl>
+                        <!--</li>-->
                     {else /}
                         <a href="javascript:;" lay-href="{$y.url}" style="padding-left: 44px;">{$y.name}</a>
                     {/if}

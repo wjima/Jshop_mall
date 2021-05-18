@@ -260,7 +260,16 @@ return [
             'deshare'                 => [
                 'code'     => 'deshare',
                 'is_login' => false
-            ]
+            ],
+            //腾讯地图H5获取地图信息接口
+            'addressmap'=>[
+                'code'     => 'addressMap',
+                'is_login' => false
+            ],
+            'mapsearch'=>[
+                'code'     => 'mapSearch',
+                'is_login' => false
+            ],
         ]
     ],
 
@@ -550,10 +559,13 @@ return [
             'newgoods'            => [
                 'code'     => 'newgoods',
                 'is_login' => false
-            ]
-            ,
+            ],
             'promotiongoods'      => [
                 'code'     => 'promotiongoods',
+                'is_login' => false
+            ],
+            'salesRanking' => [
+                'code' => 'salesRanking',
                 'is_login' => false
             ]
         ]
@@ -647,7 +659,7 @@ return [
                 'code'     => 'getGoodsDetial',
                 'is_login' => false
             ],
-            'getproductinfo'=>[
+            'getproductinfo' => [
                 'code'     => 'getProductInfo',
                 'is_login' => false
             ]
@@ -689,7 +701,7 @@ return [
             ]
         ]
     ],
-    'pages'       => [//首页布局可视化接口
+    'pages'       => [ //首页布局可视化接口
         'code'   => 'Pages',
         'method' => [
             'getpageconfig' => [
@@ -700,7 +712,11 @@ return [
             'getrecod'      => [
                 'code'     => 'getRecod',
                 'is_login' => false
-            ]
+            ],
+            'gethomepageconfig' => [
+                'code'     => 'getHomePageConfig',
+                'is_login' => false
+            ],
         ]
     ],
     'pintuan'     => [

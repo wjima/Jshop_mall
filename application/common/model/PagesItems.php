@@ -27,23 +27,21 @@ class PagesItems extends Common
         Db::startTrans();
         $this->where([['page_code', '=', $code]])->delete();//先删除
         $iData = [];
-        foreach ($data as $key => $value) {
-            /*if (!$value['value']) {
-                $result['msg'] = '组件：' . $value['name'] . '值不能为空';
-                Db::rollback();
-                return $result;
-            }*/
-            $iData[] = [
-                'widget_code' => $value['type'],
-                'page_code'   => $code,
-                'position_id' => $key,
-                'sort'        => $key + 1,
-                'params'      => json_encode($value['value'],297),
-            ];
+
+        $pageconfig = json_decode($data,true);
+        foreach ($pageconfig as $key => $value) {
+            if (isset($value['value']) && $value['value']) {
+                $iData[] = [
+                    'widget_code' => $value['type'],
+                    'page_code'   => $code,
+                    'position_id' => $key,
+                    'sort'        => $key + 1,
+                    'params'      => json_encode($value['value'],320),
+                ];
+            }
         }
         if (!$this->saveAll($iData)) {
             Db::rollback();
-            // $result['msg'] = error_code(10004,true);
             return error_code(10004);
         }
         Db::commit();
@@ -51,6 +49,4 @@ class PagesItems extends Common
         $result['msg']    = '保存成功';
         return $result;
     }
-
-
 }

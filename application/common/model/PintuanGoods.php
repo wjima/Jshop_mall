@@ -162,7 +162,9 @@ class PintuanGoods extends Common
         //多少人在拼
         $rwhere[] = ['pr.rule_id', 'eq', $info['id']];
         $rwhere[] = ['pr.goods_id', 'eq', $gid];
-        $rwhere[] = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
+        // 不管是否支付都统计进来
+        // $rwhere[] = ['o.pay_status', 'eq', $orderModel::PAY_STATUS_YES];
+
 
         //拼团中，未结束的
         $rwhere[] = ['pr.status', 'eq', $recordModel::STATUS_COMM];
@@ -187,7 +189,7 @@ class PintuanGoods extends Common
             $goodsInfo['data']['pintuan_rule']['pintuan_start_status'] = 3;//已过期
         }
         //拼团记录
-        $re                                  = $recordModel->getRecord($info['id'], $gid, 1);
+        $re                                  = $recordModel->getRecord($info['id'], $gid, $recordModel::STATUS_COMM);
         $goodsInfo['data']['pintuan_record'] = $re['data'];
 
         //调整前台显示数量

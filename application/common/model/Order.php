@@ -302,31 +302,31 @@ class Order extends Common
     }
 
 
-    /**
-     * 总后台获取数据
-     * @param $input
-     * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    public function getListFromManage($input)
-    {
-        $result = $this->getListByWhere($input);
+    // /**
+    //  * 总后台获取数据
+    //  * @param $input
+    //  * @return array
+    //  * @throws \think\db\exception\DataNotFoundException
+    //  * @throws \think\db\exception\ModelNotFoundException
+    //  * @throws \think\exception\DbException
+    //  */
+    // public function getListFromManage($input)
+    // {
+    //     $result = $this->getListByWhere($input);
 
-        if (count($result['data']) > 0) {
-            foreach ($result['data'] as $k => &$v) {
-                $v['status_text'] = config('params.order')['status'][$v['status']];
-                $v['username'] = get_user_info($v['user_id'], 'nickname');
-                $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status'], 'manage');
-                $v['area_name'] = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
-                $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
-                $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
-                $v['source'] = config('params.order')['source'][$v['source']];
-            }
-        }
-        return $result;
-    }
+    //     if (count($result['data']) > 0) {
+    //         foreach ($result['data'] as $k => &$v) {
+    //             $v['status_text'] = config('params.order')['status'][$v['status']];
+    //             $v['username'] = get_user_info($v['user_id'], 'nickname');
+    //             $v['operating'] = $this->getOperating($v['order_id'], $v['status'], $v['pay_status'], $v['ship_status'], 'manage');
+    //             $v['area_name'] = get_area($v['ship_area_id']) . '-' . $v['ship_address'];
+    //             $v['pay_status'] = config('params.order')['pay_status'][$v['pay_status']];
+    //             $v['ship_status'] = config('params.order')['ship_status'][$v['ship_status']];
+    //             $v['source'] = config('params.order')['source'][$v['source']];
+    //         }
+    //     }
+    //     return $result;
+    // }
 
 
     /**
@@ -385,7 +385,7 @@ class Order extends Common
     public function getOrderStatusNum($input)
     {
         $ids = explode(",", $input['ids']);
-        if ($input['user_id']) {
+        if (isset($input['user_id']) && $input['user_id']) {
             $user_id = $input['user_id'];
         } else {
             $user_id = false;
@@ -397,8 +397,7 @@ class Order extends Common
         }
 
         //售后状态查询
-        $isAfterSale = $input['isAfterSale'];
-        if ($isAfterSale) {
+        if (isset($input['isAfterSale']) && $input['isAfterSale']) {
             $model = new BillAftersales();
             $number = $model->getUserAfterSalesNum($user_id, $model::STATUS_WAITAUDIT);
             $data['isAfterSale'] = $number;
@@ -437,41 +436,32 @@ class Order extends Common
      * @param string $from
      * @return string
      */
-    protected function getOperating($id, $order_status, $pay_status, $ship_status, $from = 'seller')
+    protected function getOperating($id, $order_status, $pay_status, $ship_status)
     {
         $html = '<a class="layui-btn layui-btn-primary layui-btn-xs view-order" data-id="' . $id . '">查看</a>';
-
         if ($order_status == self::ORDER_STATUS_NORMAL) {
             //正常
-            if ($pay_status == self::PAY_STATUS_NO && $from == 'seller') {
+            if ($pay_status == self::PAY_STATUS_NO) {
                 $html .= '<a class="layui-btn layui-btn-xs pay-order" data-id="' . $id . '">支付</a>';
-            }
-            if ($pay_status != self::PAY_STATUS_NO) {
-                if (($ship_status == self::SHIP_STATUS_NO || $ship_status == self::SHIP_STATUS_PARTIAL_YES) && $from == 'seller') {
+                $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '" data-type="1">编辑</a>';
+                $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="' . $id . '">取消</a>';
+            }else{
+                if ($ship_status == self::SHIP_STATUS_NO || $ship_status == self::SHIP_STATUS_PARTIAL_YES) {
                     $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '">编辑</a>';
                     $html .= '<a class="layui-btn layui-btn-xs ship-order" data-id="' . $id . '">发货</a>';
                 }
+                $html .= '<a class="layui-btn layui-btn-xs aftersales-order" data-id="' . $id . '">售后</a>';
                 $html .= '<a class="layui-btn layui-btn-xs complete-order" data-id="' . $id . '">完成</a>';
 //                if($ship_status == self::SHIP_STATUS_YES)
 //                {
 //                    $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
 //                }
             }
-            if ($pay_status == self::PAY_STATUS_NO) {
-                if ($from == 'seller') {
-                    $html .= '<a class="layui-btn layui-btn-xs edit-order2" data-id="' . $id . '" data-type="1">编辑</a>';
-                }
-                $html .= '<a class="layui-btn layui-btn-xs cancel-order" data-id="' . $id . '">取消</a>';
-            }
         }
-//        if ($order_status == self::ORDER_STATUS_COMPLETE)
-//        {
-//            $html .= '<a class="layui-btn layui-btn-primary layui-btn-xs order-logistics" data-id="'.$id.'">物流信息</a>';
-//        }
+        //取消
         if ($order_status == self::ORDER_STATUS_CANCEL) {
             $html .= '<a class="layui-btn layui-btn-danger layui-btn-xs del-order" data-id="' . $id . '">删除</a>';
         }
-
         return $html;
     }
 
@@ -509,6 +499,10 @@ class Order extends Common
         $order_info->ladingItem; //提货单
         $order_info->returnItem; //退货单
         $order_info->aftersalesItem; //售后单
+
+        //平摊商品价格
+        $this->avePrice($order_info);
+
         //发货单
         $billDeliveryModel = new BillDelivery();
         $deliveryResult = $billDeliveryModel->getDeliveryList($id);
@@ -696,6 +690,20 @@ class Order extends Common
         return $order_info;
     }
 
+    //平摊优惠，计算一下订单的实际价格
+    private function avePrice(&$orderInfo){
+        foreach($orderInfo['items'] as &$v){
+            // $v['ave_price'] = round(($v['amount'] - $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount'])) / $v['nums'],2);
+            if (!$orderInfo['goods_amount'] || $orderInfo['goods_amount'] == 0) {
+                $order_pmt = 0;
+            } else {
+                $order_pmt = $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount']);
+            }
+            $v['ave_price'] = round(($v['amount'] - $order_pmt) / $v['nums'], 2);
+        
+        }
+    }
+
 
     /**
      * 把退款的金额和退货的商品数量保存起来
@@ -871,8 +879,7 @@ class Order extends Common
 
         if ($info) {
             unset($result);
-            $result = $this->where($where)
-                ->update($data);
+            $result = $info->save($data);
             //计算订单实际支付金额（要减去售后退款的金额）
             unset($money);
             unset($bawhere);
@@ -973,6 +980,11 @@ class Order extends Common
 
                 $result = true;
                 Db::commit();
+                //再循环一遍，批量发送消息
+                foreach($order_info as $key=>$val){
+                    $val['reason'] = $msg;//取消原因
+                    sendMessage($val['user_id'], 'order_cancle',$val);
+                }
                 hook('cancelorder', $order_info); // 订单取消的钩子
             } catch (\Exception $e) {
                 $result = false;
@@ -1077,68 +1089,14 @@ class Order extends Common
 
         $re = $this->save($udata,['order_id'=>$data['order_id']]);
 
-        //处理订单明细
-        if(isset($data['items'])){
-            $re_items = $this->editItems($data['order_id'],$data['items']);
-        }else{
-            $re_items = true;
-        }
-
-
         //订单记录
         $orderLog = new OrderLog();
         $orderLog->addLog($data['order_id'],0, $orderLog::LOG_TYPE_EDIT, '后台订单编辑修改', $udata);
 
         $result['status'] = true;
-        if($re_items){
-            $result['msg'] = "操作成功";
-        }else{
-            $result['msg'] = "提交成功，但订单明细数量编辑失败";
-        }
+        $result['msg'] = "操作成功";
 
         return $result;
-    }
-
-    //处理订单明细，处理库存
-    private function editItems($order_id,$items){
-        //判断订单是否是未付款状态，极端情况，可能订单已经付款了,所以这个订单一定是正常，未支付，未发货的订单
-        $where[] = ['order_id', '=', $order_id];
-        $where[] = ['pay_status', '=', self::PAY_STATUS_NO];
-        $where[] = ['status', '=', self::ORDER_STATUS_NORMAL];
-        $where[] = ['ship_status', '=', self::SHIP_STATUS_NO];
-        $orderInfo = $this->where($where)->find();
-        if(!$orderInfo){
-            return false;
-        }
-
-        $orderItemsModel = new OrderItems();
-        $goodsModel = new Goods();
-        foreach($items as $k => $v){
-            $oiInfo = $orderItemsModel->where('id',$k)->where('order_id',$order_id)->find();
-            if(!$oiInfo){
-                continue;
-            }
-            $v = intval($v);
-            $oldNums = $oiInfo['nums'];
-            $changeNums = $v - $oldNums;
-
-            if($v == 0){
-                $orderItemsModel->where('id',$k)->where('order_id',$order_id)->delete();
-            }else{
-                $orderItemsModel->save(
-                    [
-                        'nums' => $v
-                    ],[
-                    'id' => $k,
-                    'order_id' => $order_id
-                ]);
-            }
-            //加或减冻结库存
-            $goodsModel->changeStock($oiInfo['product_id'], 'default', $changeNums);
-
-        }
-
-        return true;
     }
 
 
@@ -1368,6 +1326,27 @@ class Order extends Common
                 $return_data['status'] = true;
                 $return_data['msg'] = '订单支付成功';
 
+                //不同的订单类型会有不同的支付后的操作
+            switch ($order['order_type']) {
+                case self::ORDER_TYPE_COMMON:
+                    //标准模式
+                    break;
+                case self::ORDER_TYPE_PINTUAN;
+                    //拼团模式如果拼团满足拼团成功条件，做拼团成功状态的改变
+                    $pintuanRecordModel = new PintuanRecord();
+                    $pintuanRecordModel->pay($order_id);
+
+                    break;
+                case self::ORDER_TYPE_GROUP:
+                    break;
+                case self::ORDER_TYPE_SKILL:
+                    break;
+                case self::ORDER_TYPE_BARGAIN:
+                    break;
+
+            }
+                
+
                 //发票存储
                 $invoiceModel = new Invoice();
                 if ($order['tax_type'] != $invoiceModel::TAX_TYPE_NO) {
@@ -1409,7 +1388,7 @@ class Order extends Common
      * 确认签收
      * @param $order_id
      * @param bool $user_id
-     * @return bool
+     * @return array
      */
     public function confirm($order_id, $user_id = false)
     {
@@ -1432,10 +1411,12 @@ class Order extends Common
         $data['confirm'] = self::CONFIRM_RECEIPT;
         $data['confirm_time'] = time();
 
+        $info = $this->where($where)->find();
+        if(!$info) return error_code(10000);
         Db::startTrans();
         try {
             //修改订单
-            $re = $this->save($data, $where);
+            $re = $info->save($data, $where);
             if (!$re) {
 //                $result['msg'] = "确认收货失败";
                 Db::rollback();
@@ -1730,7 +1711,7 @@ class Order extends Common
             $item['sn'] = $v['products']['sn'];
             $item['bn'] = $v['products']['bn'];
             if($v['type'] == Cart::TYPE_GIVEAWAY){
-                $item['name'] = $v['products']['name'].self::GIVEAWAY_STR;
+                $item['name'] =self::GIVEAWAY_STR.$v['products']['name'];
             }else{
                 $item['name'] = $v['products']['name'];
             }
@@ -1955,19 +1936,34 @@ class Order extends Common
         //查询评价商品
         unset($goods_comment);
         $goods_comment = [];
+        $gid = [];
         foreach ($order_items as $vo) {
             $goods_comment[] = [
                 'score' => 5,
                 'user_id' => $vo['user_id'],
                 'goods_id' => $vo['goods_id'],
+                'product_id' => $vo['product_id'],
                 'order_id' => $vo['order_id'],
+                'name' => $vo['name'],
                 'addon' => $vo['addon'],
                 'content' => '用户' . $setting . '天内未对商品做出评价，已由系统自动评价。',
                 'ctime' => time(),
             ];
+            if (isset($gid[$vo['goods_id']])) {
+                $gid[$vo['goods_id']] += 1;
+            } else {
+                $gid[$vo['goods_id']] = 1;
+            }
         }
         $goodsCommentModel = new GoodsComment();
         $goodsCommentModel->insertAll($goods_comment);
+
+        // 统计到商品评论总条数
+        //商品表更新评论数量
+        foreach ($gid as $goods_id => $inc) {
+            $goodsModel = new Goods();
+            $goodsModel->where('id', $goods_id)->setInc('comments_count', $inc);
+        }
     }
 
 
@@ -2346,5 +2342,16 @@ class Order extends Common
             'total_user_orders' => $total_user_orders,
         ];
         return $return;
+    }
+    public function createAftersales($order_id){
+        $order = $this->get($order_id);
+        if($order['status'] != self::ORDER_STATUS_NORMAL || $order['pay_status'] == self::PAY_STATUS_NO) return error_code(10000);
+        if($order['ship_status'] == self::SHIP_STATUS_NO){
+            $type = 1;
+        }else{
+            $type = 2;
+        }
+        $aftersalesModel = new BillAftersales();
+        return $aftersalesModel->toAdd($order['user_id'],$order_id,$type,[],[],'后台创建售后单',0);
     }
 }

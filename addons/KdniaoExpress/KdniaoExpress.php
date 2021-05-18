@@ -22,7 +22,7 @@ class KdniaoExpress extends Addons
         'description'  => '快递鸟快递查询以及订单打印插件，请勿和其它打印插件一起使用。',    // 插件简介
         'status'       => 0,    // 状态
         'author'       => 'mark',
-        'version'      => '0.3',
+        'version'      => '0.4',
         'dialog_width' => '600px',
     ];
 

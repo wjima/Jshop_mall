@@ -33,6 +33,13 @@
                     return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
                 }},
                 {field:'name', width:370,title:'名称', align: 'center'},
+                {field:'marketable', width:100,title:'上下架', align: 'center',templet:function(data){
+                    if(data.marketable == 1){
+                        return '上架'
+                    }else{
+                        return '已下架'
+                    }
+                }},
                 {field:'stock', width:80,title:'库存', align: 'center'},
                 {width:100, title:'操作',align:'center', toolbar:'#goodsBar'}
             ]]

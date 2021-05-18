@@ -281,7 +281,7 @@ class Report extends Manage
             $limit = input('param.limit',5000);
             $sort = input('param.thesort','desc');
             $filter = input('param.filter','nums');
-            $filter_sed = $filter=='nums'?'amount':nums;
+            $filter_sed = $filter=='nums'?'rnums':'nums';
 
             if(input('?param.date')){
                 $theDate = explode(' 到 ',input('param.date'));
@@ -296,23 +296,48 @@ class Report extends Manage
                 $start = strtotime(date('Y-m-d'));
                 $end = $start+60*60*24;
             }
+
             $sql = "
-                from ".config('database.prefix')."order_items oi
-                left join `".config('database.prefix')."order` o on oi.order_id = o.order_id
-                where o.pay_status <> 1
-                and o.payment_time > ".$start."
-                and o.payment_time <= ".$end."
-                group by oi.sn
-                order by sum(oi.".$filter.") ".$sort.",sum(oi.".$filter_sed.") ".$sort."
+                from 
+                (   (
+                        select oi.nums,oi.amount,oi.sn,oi.name,oi.addon,0 as rnums,1 as type,oi.id
+                        from ".config('database.prefix')."order_items oi
+                        left join `".config('database.prefix')."order` o on oi.order_id = o.order_id
+                        where o.pay_status <> 1
+                        and o.payment_time > ".$start."
+                        and o.payment_time <= ".$end." 
+                    )
+                    union
+                    (
+                        select 0 as nums,0 as amount,bai.sn,bai.name,bai.addon,bai.nums as rnums,2 as type,bai.id
+                        from ".config('database.prefix')."bill_aftersales_items bai
+                        left join `".config('database.prefix')."bill_aftersales` ba on bai.aftersales_id = ba.aftersales_id
+                        where ba.status = 2
+                        and ba.utime > ".$start."
+                        and ba.utime <= ".$end."
+                    )
+                ) t
+                group by t.sn
+                order by sum(t.".$filter.") ".$sort.",sum(t.".$filter_sed.") ".$sort."
             ";
+
+            // $sql = "
+            //     from ".config('database.prefix')."order_items oi
+            //     left join `".config('database.prefix')."order` o on oi.order_id = o.order_id
+            //     where o.pay_status <> 1
+            //     and o.payment_time > ".$start."
+            //     and o.payment_time <= ".$end."
+            //     group by oi.sn
+            //     order by sum(oi.".$filter.") ".$sort.",sum(oi.".$filter_sed.") ".$sort."
+            // ";
             $orderItemModel = new OrderItems();
             $count = $orderItemModel->query("select 1 ".$sql); 
             if(!$count){
-               return $result; 
+               return $result;
             }
             $result['count'] = count($count);
 
-            $select = "select sum(oi.nums) as nums,sum(oi.amount) as amount,oi.sn,oi.name,oi.image_url,oi.addon ";
+            $select = "select sum(nums) as nums,sum(amount) as amount,sn,name,addon,sum(rnums) as rnums ";
             $limit_sql = " limit ".($page-1)*$limit.",".$limit;
             $result['data'] = $orderItemModel->query($select.$sql.$limit_sql); 
             if($sort == "desc"){

@@ -104,9 +104,13 @@ class Promotion extends Manage
             $data['auto_receive'] = input('param.auto_receive/d', 2);
             $data['sort']         = input('param.sort/d', 100);
             $data['type']         = $promotionModel::TYPE_COUPON;
+            $data['exclusive'] = input('param.exclusive/d', 1);
+
 
             //优惠券领取条件
             $parmas['max_nums'] = input('param.max_nums', 0);
+            $parmas['term_day'] = input('param.term_day/d', 0);
+
             $data['params']     = json_encode($parmas);
 
             $id = $promotionModel->insertGetId($data);
@@ -173,10 +177,14 @@ class Promotion extends Manage
         if (!$info) {
             $this->error(error_code(15020,true));
         }
+        $info = $info->toArray();
         //优惠券条件
         $info['params'] = json_decode($info['params'], true);
         if (!isset($info['params']['max_nums'])) {
             $info['params']['max_nums'] = 0;
+        }
+        if (!isset($info['params']['term_day'])) {
+            $info['params']['term_day'] = 0;
         }
 
         if (Request::isPost()) {
@@ -200,6 +208,7 @@ class Promotion extends Manage
             $data['auto_receive'] = input('param.auto_receive/d', 2);
             //优惠券领取条件
             $parmas['max_nums'] = input('param.max_nums', 0);
+            $parmas['term_day'] = input('param.term_day/d', 0);
             $data['params']     = json_encode($parmas);
 
             $promotionModel = new PromotionModel();

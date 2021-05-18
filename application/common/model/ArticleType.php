@@ -57,7 +57,7 @@ class ArticleType extends Common
     {
         $result['where'] = [];
         $result['field'] = "*";
-        $result['order'] = 'sort asc';
+        $result['order'] = ['sort'=>'ASC','id'=>'DESC'];
         return $result;
     }
 

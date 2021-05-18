@@ -254,19 +254,21 @@ class Products extends Common
     }
 
     //后台是实际库存，实际库存变动时，需要加上冻结库存
-    public function updateProduct($product_id, $data = [])
+    public function updateProduct($product_id, $data = [], &$error_code = '')
     {
         $stock = isset($data['stock']) ? $data['stock'] : 0;
         unset($data['stock']);
-        $res     = $this->allowField(true)->update($data, ['id' => $product_id]);
-        $where[] = ['id', '=', $product_id];
+        $res        = $this->allowField(true)->update($data, ['id' => $product_id]);
+        $where[]    = ['id', '=', $product_id];
+        $error_code = ($res == false) ? 12003 : '';
         if ($stock != 0) {
             //$this->where($where)->setInc('stock', $stock);
             $exp     = Db::raw('cast(stock as signed) + ' . $stock . '>= 0');
             $where[] = [0, 'exp', $exp];
             $re      = $this->where($where)->setInc('stock', $stock);
             if (!$re) {
-                $res = false;
+                $error_code = 12020;
+                $res        = false;
             }
         }
         return $res;
@@ -304,4 +306,55 @@ class Products extends Common
         }
         return $return;
     }
+
+        /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post)
+    {
+        if (isset($post['limit'])) {
+            $limit = $post['limit'];
+        } else {
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = $this
+            ->alias('p')
+            ->join('Goods g', 'p.goods_id = g.id')
+            ->field($tableWhere['field'])
+            ->where($tableWhere['where'])
+            ->order($tableWhere['order'])
+            ->paginate($limit);
+        $data = $this->tableFormat($list->getCollection());
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $list->total();
+        $re['data'] = $data;
+
+        return $re;
+    }
+
+    /**
+     * 根据输入的查询条件，返回所需要的where
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    protected function tableWhere($post)
+    {
+        $where = [];
+        if (isset($post['name']) && $post['name'] != "") {
+            $where[] = ['g.name', 'like', '%' . $post['name'] . '%'];
+        }
+        $result['where'] = $where;
+        $result['field'] = "p.*,g.name,g.bn";
+        $result['order'] = "p.goods_id desc";
+        return $result;
+    }
+
+
 }

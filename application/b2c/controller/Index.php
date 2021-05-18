@@ -37,4 +37,6 @@ class Index extends Base
         $this->assign('ent_id', $ent_id);
         return $this->fetch();
     }
+
+
 }

@@ -1,19 +1,5 @@
 <template>
 	<view class="content" style="padding-top: 0upx;">
-
-		<!-- #ifdef MP-WEIXIN -->
-		<!-- <view class="subscription-notice" v-if="suTip">
-			<view>
-				<image class="icon" src="/static/image/subscription-tip.png" mode=""></image>
-				<text>订阅消息，及时获取订单最新动态</text>
-			</view>
-			<view>
-				<text class="subscription-notice-btn red-price" @click="toSubscription()">消息订阅</text>
-				<text class="subscription-notice-btn-close" @click="toClose()">×</text>
-			</view>
-		</view> -->
-		<!-- #endif -->
-
 		<jshop :jdata="pageData"></jshop>
 		<jihaiCopyright v-if="copy"></jihaiCopyright>
 		<!-- #ifdef H5 || APP-PLUS-NVUE || APP-PLUS -->
@@ -100,9 +86,6 @@
 			// #endif
 		},
 		onShow() {
-			// #ifdef MP-WEIXIN
-			this.userIsSubscription();
-			// #endif
 		},
 		methods: {
 			//领取红包
@@ -118,9 +101,11 @@
 			// 首页初始化获取数据
 			initData() {
 				//获取首页配置
-				this.$api.getPageConfig({
-						code: this.pageCode
-					},
+				let data = {};
+				if (this.$db.get('userToken')) {
+					data.token = this.$db.get('userToken');
+				}
+				this.$api.getHomePageConfig(data,
 					res => {
 						if (res.status == true) {
 							this.pageData = res.data.items;
@@ -153,11 +138,6 @@
 						}
 					});
 				}
-
-				// #ifdef MP-WEIXIN
-				this.userIsSubscription();
-				// #endif
-
 				this.getShareUrl();
 			},
 			//在线客服,只有手机号的，请自己替换为手机号
@@ -203,40 +183,6 @@
 					_this.$common.errorToShow('暂无设置客服电话');
 				}
 				// #endif
-			},
-			//前往订阅
-			toSubscription() {
-				this.$common.navigateTo('/pages/member/setting/subscription/index');
-			},
-			//查询用户订阅
-			userIsSubscription() {
-				let userToken = this.$db.get('userToken');
-				if (userToken && userToken != '') {
-					this.$api.subscriptionIsTip(res => {
-						if (res.status) {
-							if (res.data) {
-								this.suTipStatus = true;
-							} else {
-								this.suTipStatus = false;
-							}
-						} else {
-							this.suTipStatus = true;
-						}
-					});
-				} else {
-					this.suTipStatus = true;
-				}
-			},
-			//关闭订阅
-			toClose() {
-				let userToken = this.$db.get('userToken');
-				if (userToken && userToken != '') {
-					this.$api.subscriptionCloseTip(res => {
-						this.suTipStatus = false;
-					});
-				} else {
-					this.suTipStatus = false;
-				}
 			},
 			//获取分享URL
 			getShareUrl() {

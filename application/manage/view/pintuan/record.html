@@ -11,9 +11,9 @@
             <div class="layui-input-inline seller-inline-2">
                 <select name="status" lay-verify="">
                     <option value=""></option>
-                    <option value="1">拼团中</option>
-                    <option value="2">拼团成功</option>
-                    <option value="3">拼团失败</option>
+                    {volist name="params.pintuan_record.status" id="vo"}
+                        <option value="{$key}">{$vo}</option>
+                    {/volist}
                 </select>
             </div>
         </div>

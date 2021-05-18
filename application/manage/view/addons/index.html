@@ -18,7 +18,7 @@
     }
 </style>
 <div class="layui-form seller-form" style="padding-bottom:10px;">
-     想获取更多插件？请访问<a style="color:#FF7159;" href="https://www.jihainet.com/index/plugins/index.html" target="_blank">插件市场</a>吧。
+     想获取更多插件？请访问<a style="color:#FF7159;" href="https://www.jihainet.com/web" target="_blank">插件市场</a>吧。
 </div>
 <div class="table-body">
 	<table id="typeTable" lay-filter="test"></table>
@@ -92,7 +92,7 @@
                         content: e.data,
                         area: [e.dialog.width, e.dialog.height],
                         title:'插件配置',
-						btn:['保存','取消'],
+						btn:e.dialog.btn,
 						yes:function (index,obj) {
 							var settingForm = obj.find('form');
                             var addonData = settingForm.serializeArray();

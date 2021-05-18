@@ -5,7 +5,7 @@
  * 上传图片对话框逻辑代码,包括tab: 远程图片/上传图片/在线图片/搜索图片
  */
 
-(function () {
+// (function () {
 
     var remoteImage,
         uploadImage,
@@ -18,8 +18,11 @@
         initButtons();
     };
 
+    
+
     /* 初始化tab标签 */
     function initTabs() {
+
         var tabs = $G('tabhead').children;
         for (var i = 0; i < tabs.length; i++) {
             domUtils.on(tabs[i], "click", function (e) {
@@ -66,6 +69,11 @@
             case 'search':
                 setAlign(editor.getOpt('imageManagerInsertAlign'));
                 searchImage = searchImage || new SearchImage();
+                break;
+            case 'add' :
+                onlineImage = onlineImage || new OnlineImage('imageList');
+                // onlineImage.reset();
+                console.log('onlineImage', onlineImage.getInsertList())
                 break;
         }
     }
@@ -731,6 +739,9 @@
                         /* 添加额外的GET参数 */
                         var params = utils.serializeParam(editor.queryCommandValue('serverparam')) || '',
                             url = utils.formatUrl(actionUrl + (actionUrl.indexOf('?') == -1 ? '?':'&') + 'encode=utf-8&' + params);
+                        // if(currentId != '') {
+                            url += '&group_id=' + currentId
+                        // }
                         uploader.option('server', url);
                         setState('uploading', files);
                         break;
@@ -900,12 +911,22 @@
                 this.isLoadingData = true;
                 var url = editor.getActionUrl(editor.getOpt('imageManagerActionName')),
                     isJsonp = utils.isCrossDomainUrl(url);
-                ajax.request(url, {
+
+                // if(currentId ) {
+                    url +=  '&group_id=' + currentId
+
+
+                // } else {
+                //     url
+                // }
+
+
+                ajax.request(url , {
                     'timeout': 100000,
                     'dataType': isJsonp ? 'jsonp':'',
                     'data': utils.extend({
                             start: this.listIndex,
-                            size: this.listSize
+                            size: this.listSize,
                         }, editor.queryCommandValue('serverparam')),
                     'method': 'get',
                     'onsuccess': function (r) {
@@ -1208,4 +1229,4 @@
         }
     };
 
-})();
+// })();

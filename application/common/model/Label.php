@@ -9,6 +9,25 @@
 namespace app\common\model;
 class Label extends Common
 {
+
+    public $default_label = [
+        [
+            'name'  => '热卖',
+            'style' => 'red',
+        ],
+        [
+            'name'  => '新品',
+            'style' => 'green',
+        ],
+        [
+            'name'  => '推荐',
+            'style' => 'orange',
+        ],
+        [
+            'name'  => '促销',
+            'style' => 'blue',
+        ]
+    ];
     /**
      * 保存label数据
      * @param $data ['ids'=>'模型主键id数组','label'=>'标签数组','model'=>'打标签模型']
@@ -69,7 +88,16 @@ class Label extends Common
     public function getAllLabel()
     {
         if (!$this->select()->isEmpty()) {
-            return $this->select()->toArray();
+            $templabels = $this->select()->toArray();
+            foreach ($templabels as $key => $value) {
+                foreach($this->default_label as $k=>$v){
+                    if($value['name'] == $v['name'] && $value['style'] == $v['style']){
+                        unset($this->default_label[$k]);
+                    }
+                }
+            }
+            $labels = $templabels + $this->default_label;
+            return $labels;
         }
         return [];
     }
@@ -176,5 +204,75 @@ class Label extends Common
             return $result;
         }
         return $result;
+    }
+    public function del($id){
+        if($id){
+            $res = $this->where("id","eq",$id)->delete();
+            if($res){
+                return true;
+            }
+        }else{
+            return false;
+        }
+    }
+    /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post)
+    {
+        if (isset($post['limit'])) {
+            $limit = $post['limit'];
+        } else {
+            $limit = config('paginate.list_rows');
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = $this->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
+        $data = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $list->total();
+        $re['data'] = $data;
+
+        return $re;
+    }
+
+    /**
+     * 根据输入的查询条件，返回所需要的where
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    protected function tableWhere($post)
+    {
+        $result['where'] = [];
+        $result['field'] = "*";
+        $result['order'] = [];
+        return $result;
+    }
+
+    /**
+     * 根据查询结果，格式化数据
+     * @author sin
+     * @param $list
+     * @return mixed
+     */
+    protected function tableFormat($list)
+    {
+        foreach ($list as $k => $v) {
+            if ($v['style'] == "green") {
+                $list[$k]['style'] = "绿色";
+            }elseif ($v['style'] == "red"){
+                $list[$k]['style'] = "红色";
+            }elseif ($v['style'] == "orange"){
+                $list[$k]['style'] = "橙色";
+            }elseif ($v['style'] == "blue"){
+                $list[$k]['style'] = "蓝色";
+            }
+        }
+        return $list;
     }
 }

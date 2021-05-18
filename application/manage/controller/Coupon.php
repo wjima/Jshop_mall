@@ -25,6 +25,9 @@ class Coupon extends Manage
         if (!input('param.id')) {
             return $this->error(error_code(15018,true));
         } else {
+            $promotion = new Promotion();
+            $promotionlist = $promotion->field("id,name")->select();
+            $this->assign('promotion', $promotionlist);
             $this->assign('promotion_id', input('param.id'));
             return $this->fetch('');
         }

@@ -150,9 +150,9 @@
 				</view>
 				<!-- #endif -->
 			</view>
-			
+
 		</view>
-		
+
 		<!-- 表格样式 -->
 		<view class="margin-cell-group" v-else>
 			<view class="sale-block bgf">
@@ -204,19 +204,6 @@
 					</view>
 				</view>
 				<view class="flc sale-list">
-                    <!-- 微信小程序消息订阅 -->
-                    <!-- #ifdef MP-WEIXIN -->
-                    <view class="item tc" v-if="isTip">
-                    	<view class="" @click="navigateToHandle('../setting/subscription/index')">
-                    		<view class="">
-                    			<image class='cell-hd-icon' src='/static/image/subscription.png'></image>
-                    		</view>
-                    		<view class="text">
-                    			<text class="">消息订阅</text>
-                    		</view>
-                    	</view>
-                    </view>
-                    <!-- #endif -->
 					<view class="item tc" v-for="(item,i) in order" :key="i" v-if="!item.unshowItem">
 						<view class="" @click="navigateToHandle(item.router)">
 							<view class="">
@@ -251,7 +238,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 其他功能菜单end -->
 		<jihaiCopyright></jihaiCopyright>
 	</view>
@@ -259,6 +246,13 @@
 
 
 <script>
+	const delay = (function() {
+		let timer = 0
+		return function(callback, ms) {
+			clearTimeout(timer)
+			timer = setTimeout(callback, ms)
+		}
+	})()
 	import jihaiCopyright from '@/components/jihai-copyright/jihaiCopyright.vue'
 	import {
 		checkLogin
@@ -279,7 +273,7 @@
 				alipayNoLogin: true,
 				alipayName: '',
 				alipayAvatar: '',
-				config:'',//配置信息
+				config: '', //配置信息
 				orderItems: [{
 						name: '待付款',
 						icon: '/static/image/me-ic-obligation.png',
@@ -313,7 +307,7 @@
 						icon: '/static/image/ic-me-coupon.png',
 						router: '../coupon/index',
 						unshowItem: false,
-						nums:0
+						nums: 0
 					},
 					balance: {
 						name: '我的余额',
@@ -351,7 +345,7 @@
 						router: '../history/index',
 						unshowItem: false
 					},
-					
+
 				},
 				clerk: [{
 						name: '提货单列表',
@@ -366,12 +360,12 @@
 					}
 				],
 				order: {
-					// bargain: {
-					// 	name: '砍价记录',
-					// 	icon: '/static/image/me-ic-sendout.png',
-					// 	router: '../bargain/list',
-					// 	unshowItem: false
-					// },
+					bargain: {
+						name: '砍价记录',
+						icon: '/static/image/me-ic-sendout.png',
+						router: '../bargain/list',
+						unshowItem: false
+					},
 					invite: {
 						name: '邀请好友',
 						icon: '/static/image/ic-me-invite.png',
@@ -386,16 +380,18 @@
 					}
 				},
 				list: 2,
-                suTipStatus: false
+				suTipStatus: false,
+				isNavto: false
 			}
 		},
 		onShow() {
+			this.isNavto = true;
 			this.initData()
 		},
 		methods: {
-			goLogin(){
+			goLogin() {
 				uni.navigateTo({
-					url:'/pages/login/choose/index'
+					url: '/pages/login/choose/index'
 				})
 			},
 			getUserInfo(e) {
@@ -436,15 +432,16 @@
 									}
 								},
 								fail: function(errorRes) {
-									this.$common.errorToShow('未取得用户昵称头像信息');
+									that.$common.errorToShow('未取得用户昵称头像信息');
 								}
 							});
 						} else {
-							this.$common.errorToShow('未取得code');
+							that.$common.errorToShow('未取得code');
 						}
 					},
 					fail: function(res) {
-						this.$common.errorToShow('用户授权失败my.login');
+						console.log(res)
+						that.$common.errorToShow('用户授权失败my.login');
 					}
 				});
 			},
@@ -490,7 +487,7 @@
 						this.open_id = res.data.user_wx_id
 						//判断是否返回了token，如果没有，就说明没有绑定账号，跳转到绑定页面
 						if (!res.data.hasOwnProperty('token')) {
-							this.$common.redirectTo('/pages/login/login/index?user_wx_id=' + res.data.user_wx_id);
+							this.$common.navigateTo('/pages/login/login/index?user_wx_id=' + res.data.user_wx_id);
 						} else {
 							this.$db.set('userToken', res.data.token)
 							this.initData()
@@ -525,15 +522,13 @@
 				// 获取用户信息
 				var _this = this
 				//判断是开启分销还是原始推广
-				this.$api.shopConfig(res => {
-					this.config = res;
-					if (res.open_distribution) {
-						this.order.invite.unshowItem = true
-					} else {
-						this.utilityMenus.distribution.unshowItem = true
-						this.order.invite.unshowItem = false
-					}
-				})
+				if (this.$store.state.config.open_distribution) {
+					this.order.invite.unshowItem = true
+				} else {
+					this.utilityMenus.distribution.unshowItem = true
+					this.order.invite.unshowItem = false
+				}
+				
 				if (this.$db.get('userToken')) {
 					this.hasLogin = true
 					this.$api.userInfo({}, res => {
@@ -561,7 +556,7 @@
 										0
 								}
 								// console.log(res);
-								this.utilityMenus.coupon.nums=res.data.coupon
+								this.utilityMenus.coupon.nums = res.data.coupon
 							})
 							//判断是否是店员
 							this.$api.isStoreUser({}, res => {
@@ -575,25 +570,44 @@
 					this.getWxCode()
 					// #endif
 				}
-                
-                this.userIsSubscription();
 			},
 			navigateToHandle(pageUrl) {
 				if (!this.hasLogin) {
-					return this.checkIsLogin()
+					if(this.isNavto){
+						this.checkIsLogin()
+						this.isNavto=false;
+						return
+					}
+					return
 				}
+				// if (!this.hasLogin) {
+				// 	delay(() => {
+				// 		return this.checkIsLogin()
+				// 	}, 500)
+				// 	return
+				// }
 				this.$common.navigateTo(pageUrl)
 			},
 			orderNavigateHandle(url, tab = 0) {
 				if (!this.hasLogin) {
-					return this.checkIsLogin()
+					if(this.isNavto){
+						this.checkIsLogin()
+						this.isNavto=false;
+						return
+					}
+					return
 				}
 				this.$store.commit('orderTab', tab)
 				this.$common.navigateTo(url)
 			},
 			goAfterSaleList() {
 				if (!this.hasLogin) {
-					return this.checkIsLogin()
+					if(this.isNavto){
+						this.checkIsLogin()
+						this.isNavto=false;
+						return
+					}
+					return
 				}
 				this.$common.navigateTo('../after_sale/list')
 			},
@@ -626,17 +640,17 @@
 				// #ifdef APP-PLUS || APP-PLUS-NVUE
 				this.$common.navigateTo('/pages/member/customer_service/index');
 				// #endif
-				
+
 				// 头条系客服
 				// #ifdef MP-TOUTIAO
-				if(this.shopMobile != 0){
+				if (this.shopMobile != 0) {
 					let _this = this;
 					tt.makePhoneCall({
 						phoneNumber: this.shopMobile.toString(),
 						success(res) {},
 						fail(res) {}
 					});
-				}else{
+				} else {
 					_this.$common.errorToShow('暂无设置客服电话');
 				}
 				// #endif
@@ -652,29 +666,10 @@
 
 			// 	}
 			// },
-            //查询用户订阅
-            userIsSubscription() {
-                let userToken = this.$db.get("userToken");
-                if (userToken && userToken != '') {
-                	this.$api.subscriptionIsTip(res => {
-                        if (res.status) {
-                            if (res.switch) {
-                                this.suTipStatus = true;
-                            } else {
-                                this.suTipStatus = false;
-                            }
-                        } else {
-                            this.suTipStatus = true;
-                        }
-                	});
-                } else {
-                    this.suTipStatus = true;
-                }
-            },
 		},
 		computed: {
 			// 获取店铺联系人手机号
-			shopMobile(){
+			shopMobile() {
 				return this.$store.state.config.shop_mobile || 0;
 			},
 			invoice_switch() {
@@ -682,10 +677,7 @@
 			},
 			store_switch() {
 				return this.$store.state.config.store_switch || 0;
-			},
-            isTip() {
-                return this.suTipStatus;
-            }
+			}
 		},
 		watch: {}
 	}
@@ -768,7 +760,7 @@
 		background: #ff7159;
 		font-size: 12px;
 	}
-	
+
 	.sale-block {
 		padding: 0 20upx;
 		margin-bottom: 20upx;
@@ -779,6 +771,7 @@
 			border-bottom: 2rpx solid #f0f0f0;
 			display: flex;
 			align-items: center;
+
 			.iconfont {
 				margin-right: 12upx;
 				color: $theme-color;
@@ -805,9 +798,11 @@
 					position: relative;
 				}
 			}
+
 			.tc {
-			    text-align: center;
-				.cell-hd-icon{
+				text-align: center;
+
+				.cell-hd-icon {
 					float: none;
 					width: 60rpx;
 					height: 60rpx;
@@ -816,7 +811,8 @@
 			}
 		}
 	}
-	.coupon{
+
+	.coupon {
 		top: -40px;
 		left: 50px;
 	}

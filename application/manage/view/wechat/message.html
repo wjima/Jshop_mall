@@ -1,9 +1,10 @@
-<form class="layui-form seller-form"  action="" >
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label seller-inline-2">消息名称：</label>
             <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="name" lay-verify="title" placeholder="请输入消息名称" autocomplete="off" class="layui-input">
+                <input type="text" name="name" lay-verify="title" placeholder="请输入消息名称" autocomplete="off"
+                    class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
@@ -15,11 +16,13 @@
                     <option value="3">图文消息</option>
                 </select>
             </div>
-            
+
         </div>
         <div class="layui-inline">
-            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="brand-search"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button type="button" class="layui-btn layui-btn-sm add-message"><i class="layui-icon">&#xe608;</i> 添加</button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="brand-search"><i
+                    class="iconfont icon-chaxun"></i>筛选</button>
+            <button type="button" class="layui-btn layui-btn-sm add-message"><i class="layui-icon">&#xe608;</i>
+                添加</button>
         </div>
     </div>
 </form>
@@ -27,69 +30,85 @@
     <table id="messageTable" lay-filter="messageTable"></table>
 </div>
 <script>
-    layui.use(['table','form','layer','laydate'],function(){
-        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+    layui.use(['table', 'form', 'layer', 'laydate'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, date = layui.laydate;
         //执行渲染
         table.render({
             elem: '#messageTable', //指定原始表格元素选择器（推荐id选择器）
             height: 'full-99',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
-            id:'messageTable',
+            limit: '20',
+            id: 'messageTable',
             url: "{:url('wechat/message')}",
             cols: [[ //标题栏
-                {field:'id', width:90, title:'ID', align: 'center'},
-                {field: 'name', title: '消息名称',align:'center'},
-                {field: 'type_name', title: '消息类型',align:'center', width: 100},
-                {field: 'is_attention', title: '关注回复',align:'center', width: 100},
-                {field: 'is_default', title: '默认回复',align:'center', width: 100},
-                {field: 'enable', title: '禁用',align:'center', width: 100},
-                {field: 'utime',sort: true, title: '更新时间' ,align:'center', width: 170},
-                {width:180, title:'操作',align:'center',templet:function(data){
-                    var html = '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>'
-                                +'<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
-                    if(data.type == '3'){
-                        html = '<a class="layui-btn layui-btn-xs" lay-event="edit-media">编辑图文</a>'+html;
+                { field: 'id', width: 90, title: 'ID', align: 'center' },
+                { field: 'name', title: '消息名称', align: 'center' },
+                { field: 'type_name', title: '消息类型', align: 'center', width: 100 },
+                { field: 'is_attention', title: '关注回复', align: 'center', width: 100 },
+                { field: 'is_default', title: '默认回复', align: 'center', width: 100 },
+                { field: 'enable', title: '禁用', align: 'center', width: 100 },
+                { field: 'utime', sort: true, title: '更新时间', align: 'center', width: 170 },
+                {
+                    width: 180, title: '操作', align: 'center', templet: function (data) {
+                        var html = '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>'
+                            + '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>';
+                        if (data.type == '3') {
+                            html = '<a class="layui-btn layui-btn-xs" lay-event="edit-media">编辑图文</a>' + html;
+                        }
+                        return html;
                     }
-                    return html;
-                }}
+                }
             ]]
         });
 
         //search
         date.render({
-            elem:'#utime',
-						trigger: 'click' //自动弹出控件的事件，采用click弹出
+            elem: '#utime',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
         });
 
-        form.on('submit(brand-search)', function(data){
+        form.on('submit(brand-search)', function (data) {
             layui.table.reload('messageTable', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
             return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
         });
 
-        $(document).on('click','.add-message',function(){
-            JsGet("{:url('Wechat/addMessage')}", function(e){
-                if(e.status){
+        $(document).on('click', '.add-message', function () {
+            JsGet("{:url('Wechat/addMessage')}", function (e) {
+                if (e.status) {
                     window.box = layer.open({
                         type: 1,
                         content: e.data,
-                        area: setpage(450,550),
-                        title:'添加消息'
+                        area: setpage(450, 550),
+                        title: '添加消息',
+                        btn: ['保存', '关闭'],
+                        yes: function (index) {
+                            var formData = form.val('add_message');
+                            JsPost("{:url('Wechat/addMessage')}", formData, function (res) {
+                                if (res.status) {
+                                    layer.msg(res.msg, { time: 1300 }, function () {
+                                        layer.close(window.box);
+                                        table.reload('messageTable');
+                                    });
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            })
+                        }
                     });
-                }else{
+                } else {
                     layer.msg(e.msg);
                 }
             })
         });
         form.on('select(message-type)', function (data) {
             $(".message-type").hide();
-            switch(data.value){
+            switch (data.value) {
                 case '1':
                     $(".keyword").show();
                     break;
@@ -104,61 +123,50 @@
             }
         })
 
-        
-        form.on('submit(add-message)', function(data){
-            JsPost("{:url('Wechat/addMessage')}", data.field, function(res){
-                if(res.status){
-                    layer.close(window.box);
-                    layer.msg(res.msg,{time:1300},function(){
-                        table.reload('messageTable');
-                    });
-                }else{
-                    layer.msg(res.msg);
-                }
-            })
-        });
 
-        form.on('submit(message-edit)',function(data){
-            JsPost("{:url('Wechat/editMessage')}", data.field, function(res){
-                if(res.status){
-                    layer.close(window.box);
-                    layer.msg(res.msg,{time:1300},function(){
-                        table.reload('messageTable');
-                    });
-                }else{
-                    layer.msg(res.msg,{time:1300});
-                }
-            })
-        });
 
         //监听工具条
-        table.on('tool(messageTable)', function(obj){
+        table.on('tool(messageTable)', function (obj) {
             var data = obj.data;
             var layEvent = obj.event;
-            if(layEvent === 'del'){
-                layer.confirm('真的要删除么',{icon: 3}, function(index){
-                    JsGet("{:url('Wechat/delMessage')}?id=" + data.id, function(res){
-                        if(res.status){
+            if (layEvent === 'del') {
+                layer.confirm('真的要删除么', { icon: 3 }, function (index) {
+                    JsGet("{:url('Wechat/delMessage')}?id=" + data.id, function (res) {
+                        if (res.status) {
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
                         }
                         layer.msg(res.msg);
                     })
                 });
-            } else if(layEvent === 'edit'){ //编辑
-                JsGet("{:url('Wechat/editMessage')}?id=" + data.id, function(e){
-                    if(e.status){
+            } else if (layEvent === 'edit') { //编辑
+                JsGet("{:url('Wechat/editMessage')}?id=" + data.id, function (e) {
+                    if (e.status) {
                         window.box = layer.open({
-                            type:1,
-                            content:e.data,
-                            area: setpage(450,550) ,
-                            title:'编辑消息'
+                            type: 1,
+                            content: e.data,
+                            area: setpage(450, 550),
+                            title: '编辑消息',
+                            btn: ['保存', '关闭'],
+                            yes: function (index) {
+                                var formData = form.val('edit_message');
+                                JsPost("{:url('Wechat/editMessage')}", formData, function (res) {
+                                    if (res.status) {
+                                        layer.msg(res.msg, { time: 1300 }, function () {
+                                            layer.close(index);
+                                            table.reload('messageTable');
+                                        });
+                                    } else {
+                                        layer.msg(res.msg);
+                                    }
+                                })
+                            }
                         })
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
                 })
-            }else if(layEvent==='edit-media'){
+            } else if (layEvent === 'edit-media') {
                 window.location.href = "{:url('Wechat/editMediaMessage')}?id=" + data.id;
             }
         });

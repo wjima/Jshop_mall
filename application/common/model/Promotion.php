@@ -203,6 +203,14 @@ class Promotion extends Common
             if ($v['stime']) {
                 $list[$k]['stime'] = getTime($v['stime']);
             }
+            if($v['type'] == self::TYPE_COUPON){
+                if($v['etime'] <=  time()){
+                    // 不可下载
+                    $v['allow_download'] = 1;
+                }else{
+                    $v['allow_download'] = 2;
+                }
+            }
             if ($v['etime']) {
                 $list[$k]['etime'] = getTime($v['etime']);
             }

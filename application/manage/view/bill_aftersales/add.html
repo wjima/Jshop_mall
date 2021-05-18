@@ -1,0 +1,104 @@
+<style>
+    .layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+        margin: 0;
+    }
+
+    #aftersales_form .layui-table-view {
+        margin: 0;
+    }
+    .seller-alone-form .layui-form-radio * {
+        font-size:12px;
+    }
+</style>
+<form class="layui-form seller-alone-form" id="aftersales_form" style="padding:20px;" lay-filter="bill_aftersales_add">
+    <div class="layui-form-item">
+
+        <label class="layui-form-label">订单号：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{$info.order_id}</div>
+        </div>
+        <label class="layui-form-label">用户：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <div class="layui-form-mid">{:get_user_info($info.user_id, 'nickname')}</div>
+        </div>
+    </div>
+
+
+    <div class="layui-form-item" style="margin-bottom:10px;">
+        <label class="layui-form-label">退货商品：</label>
+        <div class="layui-input-block">
+                <table id="billAftersalesItems" lay-filter="billAftersalesItems"></table>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">退款金额：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input name="refund" value="" required="" lay-verify="required"
+                   placeholder="退款金额" autocomplete="off" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid">订单支付金额：{$info.payed},已退款金额：{$info.refunded}</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>是否发货：</label>
+        <div class="layui-input-inline seller-inline-8">
+            <input name="type" value="1" title="未发货" type="radio">
+            <input name="type" value="2" title="已发货" type="radio">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">原因：</label>
+        <div class="layui-input-block">
+            <input name="reason" value="" required="" lay-verify="required" placeholder="请输入原因（售后原因）" style="width:100%;"
+                   autocomplete="off" class="layui-input" type="text"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备注：</label>
+        <div class="layui-input-block">
+            <input name="mark" value="" required="" lay-verify="required" placeholder="请输入备注（售后备注）" style="width:100%;"
+                   autocomplete="off" class="layui-input" type="text"></div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">说明：</label>
+        <div class="layui-input-block">
+            1. 选择”未收到货“是退未发货的商品，选择”已收到货“是退已发货的商品，选择”未收到货“不会生成退货单，选择”已收到货“会生成退货单，<span style="color:red;">未发货的商品和已发货的商品不能混合着退</span>。<br />
+            2. "售后数量"里的数字包含已提交的售后和审核通过的售后的商品数量，后面如果有括号，表示已发货的商品的退货数量。
+        </div>
+    </div>
+    {:jshopToken('bill_aftersales_add')}
+</form>
+
+<script>
+    layui.use(['form', 'table'], function () {
+        layui.form.render();
+        layui.table.render({
+            elem: '#billAftersalesItems',
+            size: 'sm',
+            limit: '10000',
+            cols: [[ //标题栏
+                { field: 'id', title: '', width: 50, templet: function (data) {
+                    if(data.the_reship_nums > 0){
+                        return '<input name="order_items_id[' + data.id + ']" lay-skin="primary" checked="" title="" type="checkbox">';
+                    }else{
+                        return '<input name="order_items_id[' + data.id + ']" lay-skin="primary" title="" type="checkbox">';
+                    }
+                }},
+                { field: 'name', title: '商品名称',templet: function(data){
+                    return data.name + ' ' + data.addon;
+                }},
+                { field: 'nums', title: '购买数量', width: 80 },
+                { field: 'sendnums', title: '发货数量', width: 80 },
+                { field: 'reship_nums', title: '售后数量', width: 80 , templet: function (data){
+                    return data.reship_nums + '('+ data.reship_nums_ed +')';
+                }},
+                {
+                    field: 'the_reship_nums', title: '退货数量', width: 80, templet: function (data) {
+                        return '<input name="aftersaleeItems[' + data.id + ']" style="width:50px;" value="' + data.nums + '"  type="text">';
+                    }
+                }
+            ]],
+            data: {$order_items|raw},
+            even: true,
+            limit: 100 //每页默认显示的数量
+        });
+    });
+</script>

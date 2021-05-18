@@ -60,8 +60,8 @@
                 }, align: 'center'},
                 {field:'operating',title:'操作',templet:function(data){
                     var html='';
-                    var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
-                    html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
+                    var html = '<a  class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '" lay-event="edit">编辑</a>';
+                    html += '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
                     return html;
                 }, align: 'center', width: 140}
             ]]
@@ -116,77 +116,73 @@
         });
 
 
-        //编辑属性
-        $(document).on('click', '.edit-class', function(){
-            var id = $(this).attr('data-id');
-            JsGet('{:url("GoodsType/edit")}?id='+id, function(e){
-				if(e.status){
-					window_box = layer.open({
-						type: 1,
-						title: '编辑类型',
-						area: setpage(400,240), //宽高
-						content: e.data
-					});
-				}else{
-					layer.msg(e.msg);
-				}
-			});
-        });
-        //编辑保存数据
-        $(document).on('click', '.add-edit-btn', function(){
-            var name = $("#type_name").val();
-            var id = $("#type_id").val();
-            var __Jshop_Token__ = $(".Jshop_Token:last").val();
-			var validate_form = $("input[name='validate_form']").val();
+        layui.table.on('tool(test)',function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var id = data.id;
+           
+            //编辑属性
+            if(layEvent == 'edit'){
+                JsGet('{:url("GoodsType/edit")}?id='+id, function(e){
+                    if(e.status){
+                        window_box = layer.open({
+                            type: 1,
+                            title: '编辑类型',
+                            area: setpage(400,240), //宽高
+                            content: e.data,
+                            btn:['保存','关闭'],
+                            yes:function () {
+                                var name = $("#type_name").val();
+                                var id = $("#type_id").val();
+                                var __Jshop_Token__ = $(".Jshop_Token:last").val();
+                                var validate_form = $("input[name='validate_form']").val();
 
-            var error = false;
-            if(name.length > 6 || name.length < 1){
-                error = true;
-                layer.msg('分类名称在1-6个字符之间', {time: 1300});
-                return false;
-            }
-            if(!id||id==''){
-                layer.msg('关键参数丢失', {time: 1300});
-                return false;
-            }
-            if(!error){
-            	JsPost('{:url("GoodsType/edit")}', {
-					'name': name,
-					'id':id,
-					__Jshop_Token__:__Jshop_Token__,
-					validate_form:validate_form
-				}, function(e){
-					if(e.status === true){
-						layer.close(window_box);
-						layer.msg(e.msg, {time: 1300}, function(){
-							table.reload('typeTable');
-						});
-					}else{
-						layer.msg(e.msg, {time: 1300});
-					}
-				});
-            }
-        });
-
-        //删除分类
-        $(document).on('click', '.del-class', function(){
-            var id = $(this).attr('data-id');
-            var name = $(this).attr('data-name');
-            layer.confirm('确认删除类型：'+name+' 吗？', {
+                                var error = false;
+                                if(name.length > 6 || name.length < 1){
+                                    error = true;
+                                    layer.msg('分类名称在1-6个字符之间', {time: 1300});
+                                    return false;
+                                }
+                                if(!id||id==''){
+                                    layer.msg('关键参数丢失', {time: 1300});
+                                    return false;
+                                }
+                                if(!error){
+                                    JsPost('{:url("GoodsType/edit")}', {
+                                        'name': name,
+                                        'id':id,
+                                        __Jshop_Token__:__Jshop_Token__,
+                                        validate_form:validate_form
+                                    }, function(e){
+                                        if(e.status === true){
+                                            data.name = name
+                                            layer.msg(e.msg, {time: 1300}, function(){
+                                                obj.update(data)
+                                                layer.close(window_box);
+                                            });
+                                        }else{
+                                            layer.msg(e.msg, {time: 1300});
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }else{
+                        layer.msg(e.msg);
+                    }
+                });
+            }else if(layEvent == 'del'){
+                layer.confirm('确认删除类型：'+data.name+' 吗？', {
                 title: '提示', btn: ['确认', '取消'] //按钮
-            }, function(){
-                delClass(id);
-            });
-        });
-
-        //删除操作
-        function delClass(id){
-        	JsPost('{:url("GoodsType/del")}', {'id': id}, function(e){
-				layer.msg(e.msg, {time: 1300}, function(){
-					table.reload('typeTable');
-				});
-			});
-        }
+                }, function(){
+                    JsPost('{:url("GoodsType/del")}', {'id': id}, function(e){
+                        layer.msg(e.msg, {time: 1300}, function(){
+                            obj.del();
+                        });
+                    });
+                });
+            }
+        })
     });
 
     /**

@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form layui-form-pane"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<form style="padding: 30px;" class="layui-form layui-form-pane" lay-filter="add_hook"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i> 编码：</label>
@@ -21,8 +21,7 @@
         </div>
     </div>
     {:jshopToken('hooks_add')}
-    <button class="layui-btn layui-btn-fluid save-hooks" lay-submit lay-filter="add-hooks">保存</button>
-</div>
+</form>
 <script>
     layui.use('form', function(){
         layui.form.render();

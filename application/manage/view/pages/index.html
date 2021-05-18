@@ -1,4 +1,4 @@
-<form class="layui-form seller-form"  action="" >
+<form class="layui-form seller-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
             <button type="button" class="layui-btn layui-btn-sm add"><i class="layui-icon">&#xe608;</i> 添加</button>
@@ -9,32 +9,33 @@
     <table id="pagesTable" lay-filter="pagesTable"></table>
 </div>
 <script>
-    layui.use(['table','form','layer','laydate'],function(){
-        var layer = layui.layer, table = layui.table,form = layui.form,date = layui.laydate;
+    layui.use(['table', 'form', 'layer', 'laydate'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, date = layui.laydate;
         //执行渲染
         table.render({
             elem: '#pagesTable', //指定原始表格元素选择器（推荐id选择器）
             height: 'full-99',
             cellMinWidth: '80',
             page: 'true',
-            limit:'20',
-            id:'pagesTable',
+            limit: '20',
+            id: 'pagesTable',
             url: "{:url('Pages/index')}",
             cols: [[ //标题栏
-                {field:'id', width:90, title:'ID', align: 'center'},
-                {field: 'name', title: '名称', align:'center', width:160},
-                {field: 'code', title: '编码',align:'center', width:160},
-                {field: 'desc',sort: true, title: '描述' ,align:'center'},
-                {field: 'layout', sort: true, title: '布局样式',align:'center', width:110},
-                {field: 'type', sort: true, title: '布局类型',align:'center', width:110},
-                {title:'操作', toolbar:'#pagesBar',align:'center', width:120}
+                { title: '操作', toolbar: '#pagesBar', align: 'center', width: 200 },
+                { field: 'id', width: 90, title: 'ID', align: 'center' },
+                { field: 'name', title: '名称', align: 'center', width: 160 },
+                { field: 'main', title: '首页', align: 'center', width: 160 },
+                { field: 'code', title: '编码', align: 'center', width: 160 },
+                { field: 'desc', sort: true, title: '描述', align: 'center' },
+                { field: 'layout', sort: true, title: '布局样式', align: 'center', width: 110 },
+                { field: 'type', sort: true, title: '布局类型', align: 'center', width: 110 }
             ]]
         });
 
-        form.on('submit(brand-search)', function(data){
+        form.on('submit(brand-search)', function (data) {
             layui.table.reload('pagesTable', {
                 where: data.field
-                ,page: {
+                , page: {
                     curr: 1
                 }
             });
@@ -48,49 +49,60 @@
                 window.location.href = "{:url('Pages/custom')}?page_code=" + data.code;
             }
             if (layEvent === 'del') {
-                layer.confirm('真的要删除么',{icon: 3}, function(index){
+                layer.confirm('真的要删除么', { icon: 3 }, function (index) {
                     JsGet("{:url('Pages/del')}?id=" + data.id, function (res) {
-                        if(res.status){
+                        if (res.status) {
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令
                         }
                         layer.msg(res.msg);
                     });
                 });
+            }else if(layEvent === 'setHome'){
+                JsPost("{:url('Pages/setHome')}" ,{'id':data.id}, function (res) {
+                    layer.msg(res.msg);
+                    if (res.status) {
+                        table.reload('pagesTable');
+                    }
+                });
             }
         });
 
 
         $(document).on('click', '.add', function () {
-            JsGet("{:url('Pages/add')}", function(e){
+            JsGet("{:url('Pages/add')}", function (e) {
                 window.box = layer.open({
                     type: 1,
                     content: e,
-                    area: setpage(400,450),
-                    title:'添加'
+                    area: setpage(400, 450),
+                    title: '添加',
+                    btn: ['保存', '关闭'],
+                    yes: function () {
+                        var formData = form.val("add_pages");
+                        JsPost("{:url('Pages/add')}", formData, function (res) {
+                            if (res.status) {
+                                layer.msg(res.msg, { time: 1300 }, function () {
+                                    layer.closeAll();
+                                    table.reload('pagesTable');
+                                });
+                            } else {
+                                layer.msg(res.msg);
+                            }
+                        })
+                    }
                 });
             })
         })
 
 
 
-        form.on('submit(add_submit)', function (data) {
-            JsPost("{:url('Pages/add')}", data.field, function (res) {
-                if (res.status) {
-                    layer.close(window.box)
-                    layer.msg(res.msg, {time: 1300}, function () {
-                        table.reload('pagesTable')
-                    })
-                } else {
-                    layer.msg(res.msg)
-                }
-            })
-        })
+     
     })
 </script>
 <script type="text/html" id="pagesBar">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    {{# if (d.code != 'mobile_home') { }}
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{# if (d.is_main != '1') { }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="setHome">设为首页</a>
     {{# }; }}
 </script>

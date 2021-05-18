@@ -1,4 +1,4 @@
-<div style="padding: 30px;" class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding: 30px;" class="layui-form seller-alone-form"  lay-filter="edit_carouset"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <input type="hidden" name="id" value="{$info.id}">
 
@@ -22,7 +22,7 @@
 
     <div class="layui-form-item layui-upload">
         <label class="layui-form-label"><i class="required-color">*</i>广告图片：</label>
-        <div class="layui-input-inline seller-inline-5">
+        <div class="layui-input-inline seller-inline-3">
             {Jshop:image id='img' name="img" value="$info['img']"/}
         </div>
         <div class="layui-form-mid layui-word-aux">首页轮播建议尺寸：375px*188px</div>
@@ -97,15 +97,9 @@
             <input type="text" name="sort" value="{$info.sort}" required lay-verify="required" placeholder="数值越小越靠前" autocomplete="off" class="layui-input">
         </div>
     </div>
+    {:jshopToken('carousel_edit')}
 
-    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            {:jshopToken('carousel_edit')}
-            <button type="button" class="layui-btn" lay-submit lay-filter="edit">保存</button>
-            <button onclick="javascript:history.back(-1);" type="reset" class="layui-btn layui-btn-primary">取消</button>
-        </div>
-    </div>
+
 </div>
 <script>
     layui.use(['form','table'], function(){

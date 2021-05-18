@@ -409,10 +409,6 @@ class BillDelivery extends Common
                 'modify' => 'convertString'
             ],
             [
-                'id' => 'username',
-                'desc' => '用户名',
-            ],
-            [
                 'id' => 'logi_name',
                 'desc' => '快递公司',
             ],
@@ -545,11 +541,6 @@ class BillDelivery extends Common
                 ->count();
 
             foreach ($res as $k => &$v) {
-                if(isset($v['user_id']) && $v['user_id']){
-                    $v['username'] = get_user_info($v['user_id'], 'nickname');
-                }else{
-                    $v['username'] = '';
-                }
                 $v['logi_name'] = get_logi_info($v['logi_code']);
                 $v['ship_address'] = get_area($v['ship_area_id']) . '- ' . $v['ship_address'];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
@@ -606,7 +597,7 @@ class BillDelivery extends Common
         $item = [];
         foreach($orderInfo['items'] as $k => $v){
             if(isset($items[$v['product_id']])){
-                $max_num = $v['nums'] - $v['reship_num'] - $v['sendnums'];
+                $max_num = $v['nums'] - $v['reship_nums'] - $v['sendnums'];
                 if($max_num > 0){       //如果此条订单明细需要发货的话
                     if($items[$v['product_id']] > $max_num){
                         //足够发此条记录的话

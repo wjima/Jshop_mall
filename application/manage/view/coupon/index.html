@@ -2,6 +2,17 @@
     <div class="layui-form-item">
 
         <div class="layui-inline">
+            <label class="layui-form-label" style="width: auto;">优惠券名称：</label>
+            <div class="layui-input-inline">
+                <select name="promotion" id="source">
+                    <option value="">-- 全部 --</option>
+                    {foreach $promotion as $key=>$vo}
+                    <option value="{$vo['id']}">{$vo["name"]}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
             <label class="layui-form-label">优惠券码：</label>
             <div class="layui-input-inline seller-inline-5">
                 <input type="text" name="code" value="" placeholder="请输入优惠券号码" autocomplete="off" class="layui-input">
@@ -20,9 +31,9 @@
         </div>
 
         <div class="layui-inline">
-            <label class="layui-form-label">起止时间：</label>
+            <label class="layui-form-label">生成时间：</label>
             <div class="layui-input-inline seller-inline-6">
-                <input type="text" name="date" value="" id="date" placeholder="请输入起止时间" autocomplete="off" class="layui-input">
+                <input type="text" name="date" value="" id="date" placeholder="请输入生成时间" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -51,6 +62,7 @@
                 {field: 'is_used', title: '是否使用',align:'center'},
                 {field: 'used_name', title: '使用者',align:'center'},
                 {field: 'ctime', title: '生成时间',align:'center'},
+                {field: 'endtime', title: '到期时间',align:'center'},
                 {title: '操作',width:150, align:'center', toolbar: '#couponBar'} //这里的toolbar值是模板元素的选择器
             ]]
         })
@@ -80,7 +92,7 @@
             var tr = obj.tr; //获得当前行 tr 的DOM对象
             if(layEvent === 'del'){ //删除
                 layer.confirm('确认删除该条记录?', function(index){
-                    JsPost('{:url("Coupon/del")}?coupon_code='+data.coupon_code,function(res){
+                    JsGet('{:url("Coupon/del")}?coupon_code='+data.coupon_code,function(res){
                         if (res.status === true) {
                             obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                             layer.close(index);//向服务端发送删除指令

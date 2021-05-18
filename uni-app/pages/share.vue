@@ -68,7 +68,8 @@ export default {
 				url: image,
 				success (res) {
 					uni.saveImageToPhotosAlbum({
-						filePath: res.tempFilePath,
+						filePath: image,
+						// filePath: res.tempFilePath,
 						success() {
 							_this.$common.successToShow('保存成功')
 						},

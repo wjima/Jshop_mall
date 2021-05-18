@@ -5,7 +5,7 @@
 				<view class='cell-item add-title-item'>
 					<view class='cell-item-bd cell-item-bd-block'>
 						<view class="cell-bd-view black-text">
-							<text class="cell-bd-text color-3">退款单状态</text>
+							<text class="cell-bd-text color-3">售后单状态</text>
 						</view>
 						<view class="cell-bd-view">
 							<text class="cell-bd-text color-9">{{status_name}} {{refund_name}} {{reship_name}}...</text>
@@ -421,5 +421,9 @@ export default {
 }
 .add-title-item .cell-item-bd{
 	margin-left: 0;
+}
+
+.content-top{
+	padding-bottom: 116rpx;
 }
 </style>

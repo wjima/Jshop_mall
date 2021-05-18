@@ -67,6 +67,9 @@ class Message extends Common
             case 'order_payed':
                 $msg = "恭喜您，订单支付成功,祝您购物愉快。";
                 break;
+            case 'order_cancle':
+                $msg = "您的订单：".$params['order_id']."已取消";
+                break;
             case 'remind_order_pay':
                 $msg = "您的订单还有3个小时就要取消了，请立即进行支付。";
                 break;
@@ -74,7 +77,7 @@ class Message extends Common
                 $msg = "你好，你的订单已经发货。";
                 break;
             case 'aftersales_pass':
-                $msg = "你好，您的售后已经通过。";
+                $msg = "你好，您的售后单".$params['aftersales_id']."平台已处理。";
                 break;
             case 'refund_success':
                 $msg = "用户你好，你的退款已经处理，请确认。";
@@ -126,7 +129,7 @@ class Message extends Common
         $re['msg'] = '';
         $re['count'] = $list->total();
         $re['data'] = $data;
-        $re['sql'] = $this->getLastSql();
+        // $re['sql'] = $this->getLastSql();
 
         return $re;
     }

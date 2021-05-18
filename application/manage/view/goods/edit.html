@@ -98,7 +98,7 @@
         <label class="layui-form-label"> <i class="required-color">*</i>商品分类：</label>
         <div class="layui-input-inline">
             <select name="goods_cat_id">
-                <option>请选择</option>
+                <option value="">请选择</option>
                 {volist name="goodsCatTree" id="vo"}
                 <option value="{$vo.id}" {if condition="$data.goods_cat_id eq $vo.id"}selected {/if} >{$vo.name}</option>
                 {/volist}

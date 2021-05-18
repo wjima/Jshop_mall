@@ -24,7 +24,7 @@
 </div>
 <script>
     var table = '';
-    layui.use(['form','table'], function(){
+    layui.use(['form', 'table'], function () {
         var form = layui.form, layer = layui.layer, $ = layui.jquery;
         var a_id = 0, b_id = 0, c_id = 0, d_id = 0, depth = 1, action_id;
         var window_box;
@@ -34,81 +34,109 @@
             height: 'full-250',
             cellMinWidth: '80',
             page: 'true',
-            limit:'50',
-            id:'areaTable',
+            limit: '50',
+            id: 'areaTable',
             url: "{:url('area/getlist')}",
             cols: [[
-                {field:'id', width:90, title:'ID', align:'center'},
-                {field: 'name', title: '地区名称',align:'center',templet:function (data) {
-                    var indent = getIndent(data.depth);
-                    if(data.child=='true'){
-                        return "<a href='javascript:void(0);' class='openchild option-show' data-id='" + data.id + "'><i class='layui-icon'></i></a>"+indent+data.name;
-                    }else{
-                        return indent+data.name;
+                { field: 'id', width: 90, title: 'ID', align: 'center' },
+                {
+                    field: 'name', title: '地区名称', align: 'center', templet: function (data) {
+                        var indent = getIndent(data.depth);
+                        if (data.child == 'true') {
+                            return "<a href='javascript:void(0);' class='openchild option-show' data-id='" + data.id + "'><i class='layui-icon'></i></a>" + indent + data.name;
+                        } else {
+                            return indent + data.name;
+                        }
                     }
-                }},
-                {field: 'postal_code', title: '邮编',align:'center'},
-                {field: 'type', title: '添加子地区', width: 110,align:'center',templet:function (data) {
-                    return '<button class="layui-btn  layui-btn-xs add-table-area" data-id="' + data.id + '"><i class="layui-icon"></i>添加</button>';
-                }},
-                {field: 'file_name', title: '编辑', width: 90,align:'center',templet:function (data) {
-                    return '<button class="layui-btn layui-btn-xs edit-table-area" data-id="' + data.id + '">编辑</button>';
-                }},
-                {field: 'status', title: '删除', width: 90, align:'center',templet:function (data) {
-                    return '<button class="layui-btn layui-btn-sm layui-btn-danger layui-btn-xs delete-area"  data-id="' + data.id + '">删除</button>';
-                }}
+                },
+                { field: 'postal_code', title: '邮编', align: 'center' },
+                {
+                    field: 'type', title: '添加子地区', width: 110, align: 'center', templet: function (data) {
+                        return '<button class="layui-btn  layui-btn-xs add-table-area" data-id="' + data.id + '"><i class="layui-icon"></i>添加</button>';
+                    }
+                },
+                {
+                    field: 'file_name', title: '编辑', width: 90, align: 'center', templet: function (data) {
+                        return '<button class="layui-btn layui-btn-xs edit-table-area" data-id="' + data.id + '">编辑</button>';
+                    }
+                },
+                {
+                    field: 'status', title: '删除', width: 90, align: 'center', templet: function (data) {
+                        return '<button class="layui-btn layui-btn-sm layui-btn-danger layui-btn-xs delete-area"  data-id="' + data.id + '">删除</button>';
+                    }
+                }
             ]],
-            done: function(res, curr, count){
+            done: function (res, curr, count) {
                 $("#parent_url").empty();
                 $("#parent_url").append('<a  href="javascript:;" class="option-show" data-id=data.id >返回顶级</a>');
-                $.each( res.parents, function(i, n){
-                    $("#parent_url").append('<span lay-separator="">/</span><a  href="javascript:;" class="option-show" data-id="' + n.id + '" >'+ n.name+'</a>');
+                $.each(res.parents, function (i, n) {
+                    $("#parent_url").append('<span lay-separator="">/</span><a  href="javascript:;" class="option-show" data-id="' + n.id + '" >' + n.name + '</a>');
                     pid = n.id;
                 });
             }
         });
 
-        $(document).on('click','.option-show',function(){
+        $(document).on('click', '.option-show', function () {
             var id = $(this).attr('data-id');
             layui.table.reload('areaTable', {
-                where: {parent_id:id}
-                ,page: {
+                where: { parent_id: id }
+                , page: {
                     curr: 1 //重新从第 1 页开始
                 }
             });
         });
-        $(document).on('click','.add-table-area',function(){
+        $(document).on('click', '.add-table-area', function () {
             action_id = $(this).attr('data-id');
             window_box = layer.open({
                 type: 1,
                 title: '添加',
-                area: setpage(420,350), //宽高
-                content: '<div style="padding:20px;">\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <label class="layui-form-label"><i class="required-color">*</i>地区名称：</label>\n' +
-                '        <div class="layui-input-block">\n' +
-                '          <input type="text" id="area_name" autocomplete="off" placeholder="请输入地区名称" class="layui-input">\n' +
-                '        </div>\n' +
-                '    </div>\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <label class="layui-form-label"><i class="required-color">*</i>地区邮编：</label>\n' +
-                '        <div class="layui-input-block">\n' +
-                '          <input type="text" id="postal_code" autocomplete="off" placeholder="请输入地区邮编" class="layui-input">\n' +
-                '        </div>\n' +
-                '    </div>\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <label class="layui-form-label">排序：</label>\n' +
-                '        <div class="layui-input-block">\n' +
-                '          <input type="number" id="area_sort" autocomplete="off" placeholder="排序数字越小越靠前" class="layui-input">\n' +
-                '        </div>\n' +
-                '    </div>\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <span class="layui-btn layui-btn-fluid add-save">添加</span>\n' +
-                '    </div>\n' +
-                '</div>'
+                area: setpage(420, 350), //宽高
+                content: '<div style="padding:20px;" lay-filter="add_area">\n' +
+                    '    <div class="layui-form-item">\n' +
+                    '        <label class="layui-form-label"><i class="required-color">*</i>地区名称：</label>\n' +
+                    '        <div class="layui-input-block">\n' +
+                    '          <input type="text" id="area_name" autocomplete="off" placeholder="请输入地区名称" class="layui-input">\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '    <div class="layui-form-item">\n' +
+                    '        <label class="layui-form-label"><i class="required-color">*</i>地区邮编：</label>\n' +
+                    '        <div class="layui-input-block">\n' +
+                    '          <input type="text" id="postal_code" autocomplete="off" placeholder="请输入地区邮编" class="layui-input">\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '    <div class="layui-form-item">\n' +
+                    '        <label class="layui-form-label">排序：</label>\n' +
+                    '        <div class="layui-input-block">\n' +
+                    '          <input type="number" id="area_sort" autocomplete="off" placeholder="排序数字越小越靠前" class="layui-input">\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '</div>',
+                btn: ['保存', '关闭'],
+                yes: function (index) {
+                    if ($("#area_name").val().length > 0) {
+                        JsPost('{:url("area/add")}', {
+                            'name': $("#area_name").val(),
+                            'postal_code': $("#postal_code").val(),
+                            'parent_id': action_id,
+                            'depth': depth,
+                            'sort': $("#area_sort").val()
+                        }, function (e) {
+                            if (e.status) {
+                                layer.msg(e.msg, { time: 1300 }, function () {
+                                    layer.close(window_box);
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(e.msg);
+                            }
+                        });
+                    } else {
+                        layer.msg('请填写地区名称');
+                    }
+                }
             });
         });
-        $(document).on('click','.edit-table-area',function(){
+        $(document).on('click', '.edit-table-area', function () {
             action_id = $(this).attr('data-id');
             $.ajax({
                 url: '{:url("area/edit")}',
@@ -117,49 +145,74 @@
                     "id": action_id
                 },
                 dataType: 'json',
-                success: function(e){
-                    if(e.status){
+                success: function (e) {
+                    if (e.status) {
                         window_box = layer.open({
                             type: 1,
                             title: '编辑',
-                            area: setpage(420,350),
+                            area: setpage(420, 350),
                             content: '<div style="padding:20px;">\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <label class="layui-form-label"><i class="required-color">*</i>地区名称：</label>\n' +
-                            '        <div class="layui-input-block">\n' +
-                            '          <input type="text" id="area_name" autocomplete="off" value="'+e.data.name+'" placeholder="请输入地区名称" class="layui-input">\n' +
-                            '        </div>\n' +
-                            '    </div>\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <label class="layui-form-label"><i class="required-color">*</i>地区邮编：</label>\n' +
-                            '        <div class="layui-input-block">\n' +
-                            '          <input type="text" id="postal_code" autocomplete="off" value="'+e.data.postal_code+'" placeholder="请输入地区邮编" class="layui-input">\n' +
-                            '        </div>\n' +
-                            '    </div>\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <label class="layui-form-label">排序：</label>\n' +
-                            '        <div class="layui-input-block">\n' +
-                            '          <input type="number" id="area_sort" autocomplete="off" value="'+e.data.sort+'" placeholder="排序数字越小越靠前" class="layui-input">\n' +
-                            '        </div>\n' +
-                            '    </div>\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <span class="layui-btn layui-btn-fluid edit-save">修改</span>\n' +
-                            '    </div>\n' +
-                            '</div>'
+                                '    <div class="layui-form-item">\n' +
+                                '        <label class="layui-form-label"><i class="required-color">*</i>地区名称：</label>\n' +
+                                '        <div class="layui-input-block">\n' +
+                                '          <input type="text" id="area_name" autocomplete="off" value="' + e.data.name + '" placeholder="请输入地区名称" class="layui-input">\n' +
+                                '        </div>\n' +
+                                '    </div>\n' +
+                                '    <div class="layui-form-item">\n' +
+                                '        <label class="layui-form-label"><i class="required-color">*</i>地区邮编：</label>\n' +
+                                '        <div class="layui-input-block">\n' +
+                                '          <input type="text" id="postal_code" autocomplete="off" value="' + e.data.postal_code + '" placeholder="请输入地区邮编" class="layui-input">\n' +
+                                '        </div>\n' +
+                                '    </div>\n' +
+                                '    <div class="layui-form-item">\n' +
+                                '        <label class="layui-form-label">排序：</label>\n' +
+                                '        <div class="layui-input-block">\n' +
+                                '          <input type="number" id="area_sort" autocomplete="off" value="' + e.data.sort + '" placeholder="排序数字越小越靠前" class="layui-input">\n' +
+                                '        </div>\n' +
+                                '    </div>\n' +
+                                '</div>',
+                            btn: ['保存', '关闭'],
+                            yes: function (index) {
+                                if ($("#area_name").val().length > 0) {
+                                    $.ajax({
+                                        url: '{:url("area/edit")}',
+                                        type: 'post',
+                                        data: {
+                                            'name': $("#area_name").val(),
+                                            'postal_code': $("#postal_code").val(),
+                                            'id': action_id,
+                                            'sort': $("#area_sort").val()
+                                        },
+                                        dataType: 'json',
+                                        success: function (e) {
+                                            if (e.status) {
+                                                layer.msg(e.msg, { time: 1300 }, function () {
+                                                    layer.close(window_box);
+                                                    location.reload();
+                                                });
+                                            } else {
+                                                layer.msg(e.msg);
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    layer.msg('请填写地区名称');
+                                }
+                            }
                         });
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             location.reload();
                         });
                     }
                 }
             });
         });
-        $(document).on('click','.delete-area',function(){
+        $(document).on('click', '.delete-area', function () {
             var id = $(this).attr('data-id');
             layer.confirm('确认删除？', {
                 btn: ['删除', '取消']
-            }, function(){
+            }, function () {
                 $.ajax({
                     url: '{:url("area/del")}',
                     type: 'get',
@@ -167,8 +220,8 @@
                         "id": id
                     },
                     dataType: 'json',
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    success: function (e) {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
@@ -181,8 +234,8 @@
 
         function getIndent(depth) {
             var indent = '';
-            for(var i=0;i<parseInt(depth);i++){
-                indent = indent+'&nbsp;';
+            for (var i = 0; i < parseInt(depth); i++) {
+                indent = indent + '&nbsp;';
             }
             return indent;
         }
@@ -190,7 +243,7 @@
 
         province();
         //省份
-        function province(){
+        function province() {
             $.ajax({
                 url: '{:url("area/index")}',
                 type: 'post',
@@ -199,15 +252,15 @@
                     'id': 0
                 },
                 dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        for(var i = 0; i < e.data.length; i ++){
-                            var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                success: function (e) {
+                    if (e.status) {
+                        for (var i = 0; i < e.data.length; i++) {
+                            var html = '<option value="' + e.data[i].id + '">' + e.data[i].name + '</option>';
                             $("#province").append(html);
                             form.render();
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             location.reload();
                         });
                     }
@@ -215,7 +268,7 @@
             });
         }
         //城市
-        function city(id){
+        function city(id) {
             $.ajax({
                 url: '{:url("area/index")}',
                 type: 'post',
@@ -224,23 +277,23 @@
                     'id': id
                 },
                 dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        if(e.data.length > 0){
+                success: function (e) {
+                    if (e.status) {
+                        if (e.data.length > 0) {
                             var a = '<div class="layui-input-inline" id="city_box">' +
-                                    '<select name="city" lay-filter="city" id="city">' +
-                                    '<option value="0">请选择市</option>' +
-                                    '</select>' +
-                                    '</div>';
+                                '<select name="city" lay-filter="city" id="city">' +
+                                '<option value="0">请选择市</option>' +
+                                '</select>' +
+                                '</div>';
                             $("#province_box").after(a);
-                            for(var i = 0; i < e.data.length; i ++){
-                                var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                            for (var i = 0; i < e.data.length; i++) {
+                                var html = '<option value="' + e.data[i].id + '">' + e.data[i].name + '</option>';
                                 $("#city").append(html);
                                 form.render();
                             }
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             location.reload();
                         });
                     }
@@ -248,7 +301,7 @@
             });
         }
         //地区
-        function area(id){
+        function area(id) {
             $.ajax({
                 url: '{:url("area/index")}',
                 type: 'post',
@@ -257,23 +310,23 @@
                     'id': id
                 },
                 dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        if(e.data.length > 0){
+                success: function (e) {
+                    if (e.status) {
+                        if (e.data.length > 0) {
                             var a = '<div class="layui-input-inline" id="area_box">' +
-                                    '<select name="area" lay-filter="area" id="area">' +
-                                    '<option value="0">请选择县/区</option>' +
-                                    '</select>' +
-                                    '</div>';
+                                '<select name="area" lay-filter="area" id="area">' +
+                                '<option value="0">请选择县/区</option>' +
+                                '</select>' +
+                                '</div>';
                             $("#city_box").after(a);
-                            for(var i = 0; i < e.data.length; i ++){
-                                var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                            for (var i = 0; i < e.data.length; i++) {
+                                var html = '<option value="' + e.data[i].id + '">' + e.data[i].name + '</option>';
                                 $("#area").append(html);
                                 form.render();
                             }
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             location.reload();
                         });
                     }
@@ -281,7 +334,7 @@
             });
         }
         //第四级
-        function four(id){
+        function four(id) {
             $.ajax({
                 url: '{:url("area/index")}',
                 type: 'post',
@@ -290,23 +343,23 @@
                     'id': id
                 },
                 dataType: 'json',
-                success: function(e){
-                    if(e.status){
-                        if(e.data.length > 0){
+                success: function (e) {
+                    if (e.status) {
+                        if (e.data.length > 0) {
                             var a = '<div class="layui-input-inline" id="four_box">' +
-                                    '<select name="four" lay-filter="four" id="four">' +
-                                    '<option value="0">请选择地区</option>' +
-                                    '</select>' +
-                                    '</div>';
+                                '<select name="four" lay-filter="four" id="four">' +
+                                '<option value="0">请选择地区</option>' +
+                                '</select>' +
+                                '</div>';
                             $("#area_box").after(a);
-                            for(var i = 0; i < e.data.length; i ++){
-                                var html = '<option value="'+e.data[i].id+'">'+e.data[i].name+'</option>';
+                            for (var i = 0; i < e.data.length; i++) {
+                                var html = '<option value="' + e.data[i].id + '">' + e.data[i].name + '</option>';
                                 $("#four").append(html);
                                 form.render();
                             }
                         }
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             location.reload();
                         });
                     }
@@ -315,7 +368,7 @@
         }
 
         //改变省份
-        form.on('select(province)', function(e){
+        form.on('select(province)', function (e) {
             $("#area_box").remove();
             $("#city_box").remove();
             $("#four_box").remove();
@@ -324,22 +377,22 @@
             b_id = 0;
             c_id = 0;
             d_id = 0;
-            if(id != 0){
+            if (id != 0) {
                 depth = 2;
-            }else{
+            } else {
                 depth = 1;
             }
             city(id);
         });
         //改变城市
-        form.on('select(city)', function(e){
+        form.on('select(city)', function (e) {
             var id = e.value;
             b_id = id;
             c_id = 0;
             d_id = 0;
-            if(id != 0){
+            if (id != 0) {
                 depth = 3;
-            }else{
+            } else {
                 depth = 2;
             }
             $("#area_box").remove();
@@ -347,36 +400,36 @@
             area(id);
         });
         //改变区域
-        form.on('select(area)', function(e){
+        form.on('select(area)', function (e) {
             var id = e.value;
             c_id = id;
             d_id = 0;
-            if(id != 0){
+            if (id != 0) {
                 depth = 4;
-            }else{
+            } else {
                 depth = 3;
             }
             $("#four_box").remove();
             four(id);
         });
         //改变四级
-        form.on('select(four)', function(e){
+        form.on('select(four)', function (e) {
             d_id = e.value;
         });
 
         //添加
-        $(document).on('click', '.add-area', function(){
+        $(document).on('click', '.add-area', function () {
             action_id = null;
-            if(d_id != 0){
+            if (d_id != 0) {
                 layer.msg('暂不支持在四级地区下面添加五级地区');
                 return false;
-            }else{
-                if(c_id != 0){
+            } else {
+                if (c_id != 0) {
                     action_id = c_id;
-                }else{
-                    if(b_id != 0){
+                } else {
+                    if (b_id != 0) {
                         action_id = b_id;
-                    }else{
+                    } else {
                         action_id = a_id;
                     }
                 }
@@ -385,71 +438,91 @@
             window_box = layer.open({
                 type: 1,
                 title: '添加',
-                area: setpage(420,350), //宽高
+                area: setpage(420, 350), //宽高
                 content: '<div style="padding:20px;">\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <label class="layui-form-label"><i class="required-color">*</i>地区名称：</label>\n' +
-                '        <div class="layui-input-block">\n' +
-                '          <input type="text" id="area_name" autocomplete="off" placeholder="请输入地区名称" class="layui-input">\n' +
-                '        </div>\n' +
-                '    </div>\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <label class="layui-form-label"><i class="required-color">*</i>地区邮编：</label>\n' +
-                '        <div class="layui-input-block">\n' +
-                '          <input type="text" id="postal_code" autocomplete="off" placeholder="请输入地区邮编" class="layui-input">\n' +
-                '        </div>\n' +
-                '    </div>\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <label class="layui-form-label">排序：</label>\n' +
-                '        <div class="layui-input-block">\n' +
-                '          <input type="number" id="area_sort" autocomplete="off" placeholder="排序数字越小越靠前" class="layui-input">\n' +
-                '        </div>\n' +
-                '    </div>\n' +
-                '    <div class="layui-form-item">\n' +
-                '        <span class="layui-btn layui-btn-fluid add-save">添加</span>\n' +
-                '    </div>\n' +
-                '</div>'
+                    '    <div class="layui-form-item">\n' +
+                    '        <label class="layui-form-label"><i class="required-color">*</i>地区名称：</label>\n' +
+                    '        <div class="layui-input-block">\n' +
+                    '          <input type="text" id="area_name" autocomplete="off" placeholder="请输入地区名称" class="layui-input">\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '    <div class="layui-form-item">\n' +
+                    '        <label class="layui-form-label"><i class="required-color">*</i>地区邮编：</label>\n' +
+                    '        <div class="layui-input-block">\n' +
+                    '          <input type="text" id="postal_code" autocomplete="off" placeholder="请输入地区邮编" class="layui-input">\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '    <div class="layui-form-item">\n' +
+                    '        <label class="layui-form-label">排序：</label>\n' +
+                    '        <div class="layui-input-block">\n' +
+                    '          <input type="number" id="area_sort" autocomplete="off" placeholder="排序数字越小越靠前" class="layui-input">\n' +
+                    '        </div>\n' +
+                    '    </div>\n' +
+                    '</div>',
+                btn: ['保存', '关闭'],
+                yes: function (index) {
+                    if ($("#area_name").val().length > 0) {
+                        JsPost('{:url("area/add")}', {
+                            'name': $("#area_name").val(),
+                            'postal_code': $("#postal_code").val(),
+                            'parent_id': action_id,
+                            'depth': depth,
+                            'sort': $("#area_sort").val()
+                        }, function (e) {
+                            if (e.status) {
+                                layer.msg(e.msg, { time: 1300 }, function () {
+                                    layer.close(window_box);
+                                    location.reload();
+                                });
+                            } else {
+                                layer.msg(e.msg);
+                            }
+                        });
+                    } else {
+                        layer.msg('请填写地区名称');
+                    }
+                }
             });
         });
-        $(document).on('click', '.add-save', function(){
-            if($("#area_name").val().length > 0){
-                JsPost('{:url("area/add")}',{
+        $(document).on('click', '.add-save', function () {
+            if ($("#area_name").val().length > 0) {
+                JsPost('{:url("area/add")}', {
                     'name': $("#area_name").val(),
                     'postal_code': $("#postal_code").val(),
                     'parent_id': action_id,
                     'depth': depth,
                     'sort': $("#area_sort").val()
-                },function(e){
-                    if(e.status) {
-                        layer.msg(e.msg, {time: 1300}, function(){
+                }, function (e) {
+                    if (e.status) {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             layer.close(window_box);
                             location.reload();
                         });
-                    }else{
+                    } else {
                         layer.msg(e.msg);
                     }
                 });
-            }else{
+            } else {
                 layer.msg('请填写地区名称');
             }
         });
         //编辑
-        $(document).on('click', '.edit-area', function(){
+        $(document).on('click', '.edit-area', function () {
             action_id = null;
-            if(d_id != 0){
+            if (d_id != 0) {
                 action_id = d_id;
-            }else{
-                if(c_id != 0){
+            } else {
+                if (c_id != 0) {
                     action_id = c_id;
-                }else{
-                    if(b_id != 0){
+                } else {
+                    if (b_id != 0) {
                         action_id = b_id;
-                    }else{
+                    } else {
                         action_id = a_id;
                     }
                 }
             }
-            if(action_id == 0){
+            if (action_id == 0) {
                 layer.msg('请先选择要编辑的地区');
                 return false;
             }
@@ -461,46 +534,71 @@
                     "id": action_id
                 },
                 dataType: 'json',
-                success: function(e){
-                    if(e.status){
+                success: function (e) {
+                    if (e.status) {
                         window_box = layer.open({
                             type: 1,
                             title: '编辑',
-                            area: setpage(420,350),
+                            area: setpage(420, 350),
                             content: '<div style="padding:20px;">\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <label class="layui-form-label">地区名称：</label>\n' +
-                            '        <div class="layui-input-block">\n' +
-                            '          <input type="text" id="area_name" autocomplete="off" value="'+e.data.name+'" placeholder="请输入地区名称" class="layui-input">\n' +
-                            '        </div>\n' +
-                            '    </div>\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <label class="layui-form-label">地区邮编：</label>\n' +
-                            '        <div class="layui-input-block">\n' +
-                            '          <input type="text" id="postal_code" autocomplete="off" value="'+e.data.postal_code+'" placeholder="请输入地区邮编" class="layui-input">\n' +
-                            '        </div>\n' +
-                            '    </div>\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <label class="layui-form-label">排序：</label>\n' +
-                            '        <div class="layui-input-block">\n' +
-                            '          <input type="number" id="area_sort" autocomplete="off" value="'+e.data.sort+'" placeholder="排序数字越小越靠前" class="layui-input">\n' +
-                            '        </div>\n' +
-                            '    </div>\n' +
-                            '    <div class="layui-form-item">\n' +
-                            '        <span class="layui-btn layui-btn-fluid edit-save">修改</span>\n' +
-                            '    </div>\n' +
-                            '</div>'
+                                '    <div class="layui-form-item">\n' +
+                                '        <label class="layui-form-label">地区名称：</label>\n' +
+                                '        <div class="layui-input-block">\n' +
+                                '          <input type="text" id="area_name" autocomplete="off" value="' + e.data.name + '" placeholder="请输入地区名称" class="layui-input">\n' +
+                                '        </div>\n' +
+                                '    </div>\n' +
+                                '    <div class="layui-form-item">\n' +
+                                '        <label class="layui-form-label">地区邮编：</label>\n' +
+                                '        <div class="layui-input-block">\n' +
+                                '          <input type="text" id="postal_code" autocomplete="off" value="' + e.data.postal_code + '" placeholder="请输入地区邮编" class="layui-input">\n' +
+                                '        </div>\n' +
+                                '    </div>\n' +
+                                '    <div class="layui-form-item">\n' +
+                                '        <label class="layui-form-label">排序：</label>\n' +
+                                '        <div class="layui-input-block">\n' +
+                                '          <input type="number" id="area_sort" autocomplete="off" value="' + e.data.sort + '" placeholder="排序数字越小越靠前" class="layui-input">\n' +
+                                '        </div>\n' +
+                                '    </div>\n' +
+                                '</div>',
+                            btn: ['保存', '关闭'],
+                            yes: function (index) {
+                                if ($("#area_name").val().length > 0) {
+                                    $.ajax({
+                                        url: '{:url("area/edit")}',
+                                        type: 'post',
+                                        data: {
+                                            'name': $("#area_name").val(),
+                                            'postal_code': $("#postal_code").val(),
+                                            'id': action_id,
+                                            'sort': $("#area_sort").val()
+                                        },
+                                        dataType: 'json',
+                                        success: function (e) {
+                                            if (e.status) {
+                                                layer.msg(e.msg, { time: 1300 }, function () {
+                                                    layer.close(window_box);
+                                                    location.reload();
+                                                });
+                                            } else {
+                                                layer.msg(e.msg);
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    layer.msg('请填写地区名称');
+                                }
+                            }
                         });
-                    }else{
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    } else {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             location.reload();
                         });
                     }
                 }
             });
         });
-        $(document).on('click', '.edit-save', function(){
-            if($("#area_name").val().length > 0){
+        $(document).on('click', '.edit-save', function () {
+            if ($("#area_name").val().length > 0) {
                 $.ajax({
                     url: '{:url("area/edit")}',
                     type: 'post',
@@ -511,9 +609,9 @@
                         'sort': $("#area_sort").val()
                     },
                     dataType: 'json',
-                    success: function(e){
+                    success: function (e) {
                         if (e.status) {
-                            layer.msg(e.msg, {time: 1300}, function(){
+                            layer.msg(e.msg, { time: 1300 }, function () {
                                 layer.close(window_box);
                                 location.reload();
                             });
@@ -522,34 +620,34 @@
                         }
                     }
                 })
-            }else{
+            } else {
                 layer.msg('请填写地区名称');
             }
         });
         //删除
-        $(document).on('click', '.del-area', function(){
+        $(document).on('click', '.del-area', function () {
             action_id = null;
-            if(d_id != 0){
+            if (d_id != 0) {
                 action_id = d_id;
-            }else{
-                if(c_id != 0){
+            } else {
+                if (c_id != 0) {
                     action_id = c_id;
-                }else{
-                    if(b_id != 0){
+                } else {
+                    if (b_id != 0) {
                         action_id = b_id;
-                    }else{
+                    } else {
                         action_id = a_id;
                     }
                 }
             }
-            if(action_id == 0){
+            if (action_id == 0) {
                 layer.msg('请先选择要删除的地区');
                 return false;
             }
 
             layer.confirm('确认删除？', {
                 btn: ['删除', '取消']
-            }, function(){
+            }, function () {
                 $.ajax({
                     url: '{:url("area/del")}',
                     type: 'get',
@@ -557,8 +655,8 @@
                         "id": action_id
                     },
                     dataType: 'json',
-                    success: function(e){
-                        layer.msg(e.msg, {time: 1300}, function(){
+                    success: function (e) {
+                        layer.msg(e.msg, { time: 1300 }, function () {
                             table.reload();
                         });
                     }
@@ -566,7 +664,7 @@
             });
         });
         //生成地区缓存文件
-        $(document).on('click', '.generate-cache', function(){
+        $(document).on('click', '.generate-cache', function () {
             JsGet('{:url("area/generateCache")}', function (res) {
                 layer.msg(res.msg);
             });
@@ -575,7 +673,7 @@
     });
 </script>
 <style>
-    .seller-alone-form .layui-input{
-        margin-bottom:0px;
+    .seller-alone-form .layui-input {
+        margin-bottom: 0px;
     }
 </style>

@@ -1,106 +1,505 @@
 <style>
-	.layui-form-label{
-		width: 100px;
+	.layui-form-item .layui-form-checkbox[lay-skin="primary"] {
+		margin: 0;
 	}
-	.order-edit-btn{
-		margin: 0 auto;
-		display: block;
-		margin-top: 25px;
+
+	#aftersales_form .layui-table-view {
+		margin: 0;
 	}
-	.seller-alone-form{
-		overflow-y: auto;
-		height:100%;
-		box-sizing: border-box;
+	.seller-alone-form .layui-form-radio * {
+		font-size:12px;
 	}
 </style>
-<div class="layui-form seller-alone-form">
-	{if $order.store}
-	<div class="layui-form-item" lay-size="sm">
-		<label class="layui-form-label">订单号：</label>
-		<div class="layui-form-mid seller-inline-3">{$order.order_id}</div>
-		<input type="hidden" id="order_id" value="{$order.order_id}">
-		<input type="hidden" id="edit_type" value="2">
+<form class="layui-form seller-alone-form" id="order_edit_form" lay-filter="order_edit_form">
+	<input type="hidden" name="order_id" value="{$order.order_id}" />
+	<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+		<ul class="layui-tab-title">
+			<li class="layui-this">基本信息</li>
+			<li>商品信息</li>
+			<li>收货信息</li>
+			<li>发票信息</li>
+			<li>订单备注</li>
+		</ul>
+		<div class="layui-tab-content">
 
-		<label class="layui-form-label">收货门店：</label>
-		<div class="layui-input-inline seller-inline-4 address-class">
-			<select name="store_id" id="store_id">
-				{foreach $store_list as $v}
-				<option value="{$v.id}" {if $order.store.id == $v.id}selected{/if}>{$v.store_name}</option>
-				{/foreach}
-			</select>
+			<!--订单信息-->
+			<div class="layui-tab-item layui-show">
+				<div class="layui-form-item" lay-size="sm">
+					<label class="layui-form-label">订单号：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.order_id}</div>
+
+					<label class="layui-form-label">订单总金额：</label>
+					{if $order.status == 1 && $order.pay_status == 1}
+						<div class="layui-input-inline seller-inline-2">
+							<input type="text" name="order_amount" value="{$order.order_amount}" lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					{else /}
+						<div class="layui-form-mid seller-inline-2">￥{$order.order_amount}元</div>
+					{/if}
+
+
+					<label class="layui-form-label">支付状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.pay_status')[$order.pay_status]}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发货状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.ship_status')[$order.ship_status]}</div>
+
+					<label class="layui-form-label">订单状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.status')[$order.status]}</div>
+
+					<label class="layui-form-label">已支付金额：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.payed}元</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">支付方式：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.payment_type')[$order.payment_code]}</div>
+
+					<label class="layui-form-label">配送方式：</label>
+					<div class="layui-form-mid seller-inline-2">{if $order.logistics}{$order.logistics['logi_name']}{/if}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">订单优惠金额：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.order_pmt}</div>
+
+					<label class="layui-form-label">商品优惠金额：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.goods_pmt}</div>
+
+					<label class="layui-form-label">优惠券优惠：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.coupon_pmt}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">积分优惠：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.point_money}</div>
+
+					<label class="layui-form-label">商品总重量：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.weight}</div>
+
+					<label class="layui-form-label">商品总价：</label>
+					<div class="layui-form-mid seller-inline-2">￥{$order.goods_amount}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">下单人：</label>
+					<div class="layui-form-mid seller-inline-2">{$order.username}</div>
+
+					<label class="layui-form-label">订单来源：</label>
+					<div class="layui-input-inline seller-inline-2">
+						<select name="source">
+							{foreach $params['order']['source'] as $key=>$vo}
+							<option value="{$key}" {if $order.source == $key} selected=""{/if}>{$vo}</option>
+							{/foreach}
+						</select>
+					</div>
+					<label class="layui-form-label">下单时间：</label>
+					<div class="layui-form-mid seller-inline-2" style="width: auto">{:date('Y-m-d H:i:s', $order.ctime)}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">配送费用：</label>
+					{if $order.status == 1 && $order.pay_status == 1}
+					<div class="layui-input-inline seller-inline-2">
+						<input type="text" name="cost_freight" value="{$order.cost_freight}" lay-verify="required" autocomplete="off" class="layui-input">
+					</div>
+					{else /}
+					<div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
+					{/if}
+					<label class="layui-form-label">收货状态：</label>
+					<div class="layui-form-mid seller-inline-2">{:config('params.order.confirm')[$order.confirm]}</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">买家备注</label>
+					<div class="layui-form-mid">
+						{$order.memo}
+					</div>
+				</div>
+			</div>
+
+			<!--商品详情-->
+			<div class="layui-tab-item">
+				{if $order['status'] == 1 && $order['ship_status'] == 1}
+				<button class="layui-btn layui-btn-primary layui-btn-xs orderedit_product_add" style="margin-bottom:10px;" >添加商品</button>
+				{/if}
+				<table id="order_edit_items" lay-filter="order_edit_items"></table>
+				<!-- <table class="layui-table" lay-size="sm">
+					<thead>
+					<tr>
+						<th>商品名称</th>
+						<th>商品单价</th>
+						<th>购买数量</th>
+						<th>商品总价</th>
+						<th>货品编码</th>
+						<th>商品编码</th>
+						{:hook('orderviewinfo', ['type'=>'title'])}
+						<th>商品总重量</th>
+					</tr>
+					</thead>
+					<tbody>
+					{foreach $order.items as $key=>$vo}
+					<tr>
+						<td>{$vo.name} {if $vo.addon}- {$vo.addon} {/if}
+						</td>
+						<td>{$vo.price}</td>
+						<td>
+							{if $order.pay_status == 1}
+								<input name="items[{$vo.id}]" style="width:50px;" value="{$vo.nums}"  type="text" readonly>
+							{else /}
+								{$vo.nums}
+							{/if}
+						</td>
+						<td>{$vo.amount}</td>
+						<td>{$vo.sn}</td>
+						<td>{$vo.bn}</td>
+						{:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
+						<td>{$vo.weight}</td>
+					</tr>
+					{/foreach}
+					</tbody>
+				</table> -->
+				{if $order['status'] == 1 && $order['ship_status'] == 1}
+				<div class="layui-form-item" style="color:red;">
+					<div class="layui-form-mid">
+						说明：<br />
+						1. 订单明细只允许在未支付或者已支付未发货的时候编辑。<br />
+						2. 点击“添加商品”按钮可添加1个或者多个商品到订单明细上。<br />
+						3. 添加商品，编辑商品和删除商品都是实时生效的，即使不点下面的“确定”按钮，所以请谨慎操作。<br />
+						4. 列上的商品单价、购买数量、商品优惠总金额可修改，直接点击即可修改，焦点离开，立即保存。<br />
+						5. 添加、编辑和商品商品之后，会更新订单主体表上的商品总价，商品总重量，商品优惠总金额三个字段，但是不会修改订单总价字段，需要自行修改。
+					</div>
+				</div>
+				{/if}
+			</div>
+			<!--收货人信息-->
+			<div class="layui-tab-item">
+				<div class="layui-form-item">
+					<label class="layui-form-label">收货方式</label>
+					<div class="layui-input-block">
+						<input type="radio"  lay-filter="order_delivery_type" name="delivery_type" value="1" title="快递" {if $order.store}{else/}checked=""{/if} >
+						<input type="radio"  lay-filter="order_delivery_type" name="delivery_type" value="2" title="门店自提"  {if $order.store}checked=""{else/}{/if}>
+					</div>
+				</div>
+				<div class="layui-form-item order_delivery">
+					<div class="layui-inline">
+						<label class="layui-form-label">收货人姓名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="ship_name" value="{$order.ship_name}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">收货人电话</label>
+						<div class="layui-input-inline">
+							<input type="text" name="ship_mobile" value="{$order.ship_mobile}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				<div class="layui-form-item order_delivery">
+					<label class="layui-form-label">收货地区</label>
+					<div class="layui-input-block">
+						{Jshop:area name='ship_area_id' class="select-address" lay-verify="required" value="$order.ship_area_id" }
+					</div>
+				</div>
+				<div class="layui-form-item order_delivery">
+					<label class="layui-form-label">详细地址</label>
+					<div class="layui-input-block">
+						<input type="text" name="ship_address" value="{$order.ship_address}" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item order_store">
+					<label class="layui-form-label">自提门店</label>
+					<div class="layui-input-block">
+						<select name="store_id">
+							{foreach $store_list as $vo}
+							<option value="{$vo.id}">{$vo.store_name}</option>
+							{/foreach}
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item order_store">
+					<div class="layui-inline">
+						<label class="layui-form-label">提货人姓名</label>
+						<div class="layui-input-inline">
+							<input type="text" name="tship_name" value="{$order.ship_name}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">提货人电话</label>
+						<div class="layui-input-inline">
+							<input type="text" name="tship_mobile" value="{$order.ship_mobile}" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--发票信息-->
+			<div class="layui-tab-item">
+				{if $order.pay_status == 1}
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票类型</label>
+						<div class="layui-input-block">
+							<input type="radio"  lay-filter="order_tax_type" name="tax_type" value="1" title="不开发票" {if $order['invoice']['type'] == 1 }checked=""{/if} />
+							<input type="radio"  lay-filter="order_tax_type" name="tax_type" value="3" title="企业"  {if $order['invoice']['type'] == 3 }checked=""{/if} />
+							<input type="radio"  lay-filter="order_tax_type" name="tax_type" value="2" title="个人"  {if $order['invoice']['type'] == 2 }checked=""{/if} />
+						</div>
+					</div>
+					<div class="layui-form-item tax_title">
+						<label class="layui-form-label">发票抬头</label>
+						<div class="layui-input-block">
+							<input type="text" name="tax_title" value="{$order.invoice.title}" autocomplete="off" placeholder="请输入发票抬头" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item tax_code">
+						<label class="layui-form-label">税号</label>
+						<div class="layui-input-inline seller-inline-5">
+							<input type="text" name="tax_code" value="{$order.invoice.tax_number}" autocomplete="off" placeholder="请输入公司税号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item tax_con">
+						<label class="layui-form-label">发票内容</label>
+						<div class="layui-form-mid">商品明细</div>
+					</div>
+				{else /}
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票类型</label>
+						<div class="layui-form-mid">
+							{:config('params.order.tax_type')[$order.invoice.type]}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票抬头</label>
+						<div class="layui-form-mid">
+							{$order.invoice.title}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">税号</label>
+						<div class="layui-form-mid">
+							{$order.invoice.tax_number}
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">发票内容</label>
+						<div class="layui-form-mid">商品明细</div>
+					</div>
+					<div class="layui-form-item" style="color:red;">
+						<label class="layui-form-label">说明</label>
+						<div class="layui-form-mid">已经支付过后的订单，发票信息请到 后台》财务管理》发票管理 里面进行修改</div>
+					</div>
+
+				{/if}
+			</div>
+			<!--订单备注-->
+			<div class="layui-tab-item">
+				<textarea name="mark" id="mark" class="layui-input" style="padding:10px;height:190px;">{$order.mark}</textarea>
+			</div>
 		</div>
 	</div>
-	<div class="layui-form-item" lay-size="sm">
-		<label class="layui-form-label">提货人名：</label>
-		<div class="layui-input-inline seller-inline-3">
-			<input type="text" value="{$order.ship_name}" name="ship_name" id="ship_name" class="layui-input">
-		</div>
-
-		<label class="layui-form-label">提货人电话：</label>
-		<div class="layui-input-inline seller-inline-4">
-			<input type="text" value="{$order.ship_mobile}" name="ship_mobile" id="ship_mobile" class="layui-input">
-		</div>
-	</div>
-	{else/}
-	<div class="layui-form-item" lay-size="sm">
-		<label class="layui-form-label">订单号：</label>
-		<div class="layui-form-mid seller-inline-3">{$order.order_id}</div>
-		<input type="hidden" id="order_id" value="{$order.order_id}">
-		<input type="hidden" id="edit_type" value="1">
-
-		<label class="layui-form-label">收货区域：</label>
-		<div class="layui-input-inline seller-inline-4 address-class">
-			{Jshop:area name='ship_area_id' class="select-address" value="$order.ship_area_id" /}
-		</div>
-	</div>
-	<div class="layui-form-item" lay-size="sm">
-		<label class="layui-form-label">收货人姓名：</label>
-		<div class="layui-input-inline seller-inline-3">
-			<input type="text" id="ship_name" value="{$order.ship_name}" class="layui-input">
-		</div>
-
-		<label class="layui-form-label">收货地址：</label>
-		<div class="layui-input-inline seller-inline-4">
-			<input type="text" id="ship_address" value="{$order.ship_address}" class="layui-input">
-		</div>
-	</div>
-	<div class="layui-form-item" lay-size="sm">
-		<label class="layui-form-label">收货人电话：</label>
-		<div class="layui-input-inline seller-inline-3">
-			<input type="text" id="ship_mobile" value="{$order.ship_mobile}" class="layui-input">
-		</div>
-
-		<label class="layui-form-label">订单邮费：</label>
-		<div class="layui-input-inline seller-inline-3">
-			<input type="number" id="cost_freight" value="{$order.cost_freight}" class="layui-input">
-		</div>
-	</div>
-
-	<div class="layui-form-item" lay-size="sm">
-		<label class="layui-form-label">订单总金额：</label>
-		<div class="layui-input-inline seller-inline-4">
-			<input type="number" id="order_amount" value="{$order.order_amount}" class="layui-input">
-		</div>
-	</div>
-	{/if}
-	{:jshopToken('order_edit')}
-	<button class="layui-btn layui-btn-fluid order-edit-btn">保存</button>
-</div>
+	{:jshopToken()}
+</form>
 
 <script>
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-	});
-	var old_cost_freight = parseFloat("{$order.cost_freight}");
-	var old_order_amount = parseFloat("{$order.order_amount}");
-	$("#cost_freight").on('input propertychange',function(){
-		var cost_freight = parseFloat($("#cost_freight").val());
-		var difference = old_cost_freight-cost_freight;
-		var order_amount = old_order_amount-difference;
-		order_amount = Math.round(order_amount * 100) / 100;
-		$("#order_amount").val(order_amount);
-	});
+	layui.use(['form', 'table'], function () {
+		layui.form.render();
+		layui.form.on('radio(order_delivery_type)', function(data){
+			if(data.value == 1){
+				$('.order_store').hide();
+				$('.order_delivery').show();
+			}else{
+				$('.order_store').show();
+				$('.order_delivery').hide();
+			}
+		});
+		
+		//订单明细表格渲染
+		var orderItemsTables = layui.table.render({
+			elem: '#order_edit_items'
+			,size: 'sm'
+			,url: "{:url('Order/editItemsList',['order_id'=>$order.order_id])}?_ajax=1"
+			,cols: [[ //标题栏
+				{field: 'name',width:140, title: '商品名称',templet:function(data){
+					var html = data.name;
+					if(data.addon){
+						html += data.addon;
+					}
+					return html;
+				}},
+				{if $order['status'] == 1 && $order['ship_status'] == 1}
+					{field: 'price',width:80,edit:'text', title: '商品单价'}
+					,{field: 'nums',width:80,edit:'text', title: '购买数量'}
+					,{field: 'amount',width:80, title: '商品总价'}
+					,{field: 'sn',width:140, title: '货品编码'}
+					,{field: 'bn',width:140, title: '商品编码'}
+					,{field: 'promotion_amount',width:120,edit:'text', title: '商品优惠总金额'}
+					,{field: 'weight',width:68, title: '总重量'}
+					,{field: 'operating', title: '操作', width:65, align: 'center',templet:function(data){
+						var html = '';
+						html += '<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>';
+						return html;
+					}}
+				{else /}
+					{field: 'price',width:80, title: '商品单价'}
+					,{field: 'nums',width:80, title: '购买数量'}
+					,{field: 'amount',width:80, title: '商品总价'}
+					,{field: 'sn',width:140, title: '货品编码'}
+					,{field: 'bn',width:140, title: '商品编码'}
+					,{field: 'promotion_amount',width:120,edit:'text', title: '商品优惠总金额'}
+					,{field: 'weight',width:68, title: '总重量'}
+				{/if}
+				
+				
+			]]
+			//,skin: 'line' //表格风格
+			,even: true
+			//,page: true //是否显示分页
+			//,limits: [5, 7, 10]
+			//,limit: 5 //每页默认显示的数量
+		});
+		//监听删除事件
+		layui.table.on('tool(order_edit_items)', function(obj){
+			console.log(obj);
+			switch(obj.event){
+				case 'delete':
+					layer.confirm('确定要删除此记录吗？', {
+						btn: ['确定','取消'] //按钮
+					}, function(index){
+						$.ajax({
+							type:"get",
+							url:"{:url('Order/editItemsDel')}",
+							data:"order_id={$order.order_id}&items_id="+obj.data.id,
+							success:function(re){
+								if (re.status) {
+									layer.msg("删除成功", { time: 400 }, function () {
+										orderItemsTables.reload();
+									});
+								} else {
+									layer.msg(re.msg);
+								}
+							}
+						});
+						//layer.close(index);
+						//orderItemsTables.reload();
+					}, function(){
+						//取消不做任何操作
+					});
+					break;
+			};
+		});
+		//监听单元格编辑
+		layui.table.on('edit(order_edit_items)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+			var old=$(this).prev().text();
+			var str = "";
+			switch(obj.field){
+				case 'nums':
+					str = "&nums="+obj.value;
+					break;
+				case 'price':
+					str = "&price="+obj.value;
+					break;
+				case 'promotion_amount':
+					str = "&promotion_amount="+obj.value;
+					break;
+			}
+			$.ajax({
+				type:"get",
+				url:"{:url('Order/editItemsEdit')}",
+				data:"order_id={$order.order_id}&items_id="+obj.data.id+str,
+				success:function(re){
+					if (re.status) {
+						orderItemsTables.reload();
+					} else {
+						layer.msg(re.msg, { time: 1000 }, function () {
+							switch (obj.field){
+								case 'nums':  obj.update({nums:old}) ;break;// 更新当前字段在缓存中的数据
+								case 'price': obj.update({price:old}) ;break;
+								case 'promotion_amount':  obj.update({promotion_amount:old}) ;break;
+							}
+						});
+					}
+				}
+			});
+		});
+		//添加商品
+		$('.orderedit_product_add').on('click', function () {
+			$.ajax({
+				type:"get",
+				url:"{:url('Index/tagSelectProducts',['type'=>'show','num'=>100])}",
+				data:"",
+				success:function(e){
+					layui.layer.open({
+						type: 1,
+						content: e,
+						area: ["800px", "600px"],
+						title:"选择货品",
+						btn: ["完成","取消"],
+						yes: function(index, layero){
+							if(Object.getOwnPropertyNames(ids).length <= 0){
+								layer.msg("请选择要添加的货品！");
+								return false;
+							}
+							var the_val = "";
+							for(var key in ids){
+								the_val += "," + key;
+							}
+							the_val = the_val.slice(1);
+							//ajax去添加到订单明细里
+							$.ajax({
+								type:"get",
+								url:"{:url('Order/editItemsAdd')}",
+								data:"order_id={$order.order_id}&ids="+the_val,
+								success:function(re){
+									if (re.status) {
+										layer.msg("添加成功", { time: 1000 }, function () {
+											orderItemsTables.reload();
+										});
+									} else {
+										layer.msg(re.msg);
+									}
+								}
+							});
+							layer.close(index);
+						}
+					});
+				}
+			});
+			
+			return false;
+        });
 
-
+		{if $order.store}
+			$('.order_store').show();
+			$('.order_delivery').hide();
+		{else /}
+			$('.order_store').hide();
+			$('.order_delivery').show();
+		{/if}
+			layui.form.on('radio(order_tax_type)', function(data){
+				if(data.value == 1){
+					$('.tax_title').hide();
+					$('.tax_code').hide();
+					$('.tax_con').hide();
+				}
+				if(data.value == 3){
+					$('.tax_title').show();
+					$('.tax_code').show();
+					$('.tax_con').show();
+				}
+				if(data.value == 2){
+					$('.tax_title').show();
+					$('.tax_code').hide();
+					$('.tax_con').show();
+				}
+			});
+			{if $order['invoice']['type'] == 1}
+				$('.tax_title').hide();
+				$('.tax_code').hide();
+				$('.tax_con').hide();
+			{/if}
+				{if $order['invoice']['type'] == 3}
+				$('.tax_title').show();
+				$('.tax_code').show();
+				$('.tax_con').show();
+			{/if}
+			{if $order['invoice']['type'] == 2}
+				$('.tax_title').show();
+				$('.tax_code').hide();
+				$('.tax_con').show();
+			{/if}
+	});
 </script>

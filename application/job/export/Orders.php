@@ -32,7 +32,7 @@ class Orders
         foreach ($header as $key => $val) {
             $order['header'][$key] = $val['desc'];
         }
-
+        $params['params'] = urldecode($params['params']);
         $filter = json_decode($params['params'], true);
 
         if (isset($filter['order_ids'])) {
@@ -74,7 +74,6 @@ class Orders
         }
 
         /*$job->release($delay); //$delay为延迟时间*/
-
     }
 
     public function failed($data)

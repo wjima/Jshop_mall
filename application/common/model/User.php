@@ -166,7 +166,8 @@ class User extends Common
                 if ($pinfo) {
                     $userData['pid'] = $pid;
                 } else {
-                    error_code(10014);
+                    //error_code(10014);
+                    $userData['pid'] = 0;
                 }
             }
 
@@ -195,6 +196,7 @@ class User extends Common
             }
             $userInfo = $this->where(array('id' => $user_id))->find();
             hook('newuserreg', $userInfo);
+            hook("adminmessage",array('user_id'=>$user_id,"code"=>"user_register","params"=>$userInfo));
         } else {
             //如果有这个账号的话，判断一下是不是传密码了，如果传密码了，就是注册，这里就有问题，因为已经注册过
             if (isset($data['password'])) {
@@ -382,7 +384,7 @@ class User extends Common
             $where[] = ['sex', 'eq', $post['sex']];
         }
         if (isset($post['id']) && $post['id'] != "") {
-            $where[] = ['id', 'eq', $post['id']];
+            $where[] = ['id', 'in', $post['id']];
         }
         if (isset($post['username']) && $post['username'] != "") {
             $where[] = ['username', 'like', '%' . $post['username'] . '%'];
@@ -475,7 +477,7 @@ class User extends Common
 
         if ($isPage) {
             $list        = $this->with(['grade', 'userWx'])->field($tableWhere['field'])->where($tableWhere['where'])->order($tableWhere['order'])->paginate($limit);
-            $re['sql'] = $this->getLastSql();
+            // $re['sql'] = $this->getLastSql();
             $data        = $this->tableFormat($list->getCollection());         //返回的数据格式化，并渲染成table所需要的最终的显示数据类型
             $re['count'] = $list->total();
         } else {
@@ -1069,7 +1071,7 @@ class User extends Common
     public function checkUserByMobile($mobile)
     {
         $where[] = ['mobile', 'eq', $mobile];
-        $where[] = ['status', 'eq', self::STATUS_NORMAL];
+        // $where[] = ['status', 'eq', self::STATUS_NORMAL];
         $res     = $this->field('id')->where($where)->find();
         return $res;
     }

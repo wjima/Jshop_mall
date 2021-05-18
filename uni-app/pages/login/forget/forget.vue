@@ -11,7 +11,8 @@
 				<view class="btn btn-g" v-if="!verification">{{ timer }} 秒后重新获取</view>
 			</view>
 			<view class="reg-item">
-				<input class="login-item-input" :password="true" placeholder-class="login-item-i-p fsz26" type="text" v-model="pwd" placeholder="请输入6-16位密码" />
+				<input class="login-item-input" :password="true" placeholder-class="login-item-i-p fsz26" 
+				type="text" v-model="pwd" placeholder="请输入6-16位密码" />
 			</view>
 			<view class="reg-item">
 				<input class="login-item-input" :password="true" placeholder-class="login-item-i-p fsz26" type="text" v-model="repwd" placeholder="请确认密码" />

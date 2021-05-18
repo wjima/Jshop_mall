@@ -279,7 +279,16 @@ export default {
 			this.getShipInfo();
 		}else{
 			//添加
-			this.pickerValue = this.region[0]+ " "+ this.region[1]+" "+this.region[2];
+			this.pickerValue = "请选择省市区";//this.region[0]+ " "+ this.region[1]+" "+this.region[2];
+		}
+		//没有地区信息时，再拉一次
+		if(!this.$db.get('areaList')){
+			//获取地区信息
+			this.$api.getAreaList({}, res => {
+				if (res.status) {
+					this.$db.set('areaList', res.data)
+				}
+			});
 		}
 	},
 	onBackPress() {

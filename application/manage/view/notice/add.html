@@ -1,4 +1,4 @@
-<div style="padding:30px;" class="layui-form seller-alone-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+<div style="padding:30px;" class="layui-form seller-alone-form" lay-filter="add_notice"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
 
     <div class="layui-form-item">
         <label class="layui-form-label"><i class="required-color">*</i>公告标题：</label>
@@ -21,7 +21,6 @@
         </div>
     </div>
     {:jshopToken('notice_add')}
-    <button class="layui-btn layui-btn-fluid add-save-btn" lay-submit lay-filter="add-notice">保存</button>
     <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
 </div>
 <script>

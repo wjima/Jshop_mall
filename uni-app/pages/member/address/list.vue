@@ -3,11 +3,11 @@
 		<view class="content-top" v-if="list.length">
 			<view class="uni-list-cell uni-list-cell-pd" v-for="(item, key) in list" :key="key">
 				<view class='cell-group min-cell-group'>
-					<view class='cell-item' @click="isSelect(item)">
-						<view class='cell-item-hd'>
+					<view class='cell-item'>
+						<view class='cell-item-hd' @click="isSelect(item)">
 							<view class='cell-hd-title'>{{item.name}} <text class="phone-num">{{item.mobile}}</text></view>
 						</view>
-						<view class='cell-item-ft' v-show="type != 'order'">
+						<view class='cell-item-ft'>
 							<image class='cell-ft-next icon' src='/static/image/compile.png' @click="toEdit(item.id)"></image>
 							<text class="cell-ft-text"></text>
 						</view>

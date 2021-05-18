@@ -1,8 +1,8 @@
 <template>
 	<view class="bargain">
 		<view class="shop-wrap">
-			<view class="shop-title">
-				<image :src="info.bargain_user.avatar" mode="" class="avatar"></image>
+			<view class="shop-title" v-if="info.bargain_user">
+				<image :src="info.bargain_user.avatar||''" mode="" class="avatar"></image>
 				{{ info.bargain_user.nickname || '' }}
 			</view>
 			<view class="shop-info" v-if="info.goods">
@@ -15,7 +15,7 @@
 						<text class="color-9">|</text>
 						<text class="color-9">已售:{{ info.sales_num || '0' }}</text>
 					</view>
-					<view class="time" v-show="info.lasttime && info.status_progress == 2">
+					<view class="time" v-show="info.lasttime && (info.status_progress == 1 ||info.status_progress == 2)">
 						<uni-countdown
 							:day="info.lasttime.day"
 							:hour="info.lasttime.hour"
@@ -54,7 +54,7 @@
 			<view v-if="info.friends_record && info.friends_record.list.length > 0">
 				<view v-for="(item, idx) in info.friends_record.list" :key="idx" class="tab-list">
 					<view class="user">
-						<image :src="item.avatar" mode="aspectFill" class="user-avatar"></image>
+						<image :src="item.avatar||''" mode="aspectFill" class="user-avatar"></image>
 						<view class="user-info">
 							<view class="user-name">{{ item.nickname || '' }}</view>
 							<view class="user-date">{{ item.ctime || '' }}</view>
@@ -69,12 +69,12 @@
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
 		<!--商品详情-->
-		<view class="tab tab-list-wrap" v-show="current == 1">
+		<view class="tab tab-list-wrap" v-if="current == 1">
 			<jshopContent :content="info.goods.intro" v-if="info.goods"></jshopContent>
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
 		<!--活动规则-->
-		<view class="tab tab-list-wrap" v-show="current == 2">
+		<view class="tab tab-list-wrap" v-if="current == 2">
 			<jshopContent :content="info.desc" v-if="info.desc"></jshopContent>
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
@@ -82,7 +82,7 @@
 			<view v-if="info.attendance_record && info.attendance_record.list.length > 0">
 				<view v-for="(item, idx) in info.attendance_record.list" :key="idx" class="tab-list">
 					<view class="user">
-						<image :src="item.avatar" mode="aspectFill" class="user-avatar"></image>
+						<image :src="item.avatar||''" mode="aspectFill" class="user-avatar"></image>
 						<view class="user-info">
 							<view class="user-name">{{ item.nickname || '' }}</view>
 							<view class="user-date">{{ item.ctime || '' }}</view>
@@ -93,7 +93,7 @@
 			<view class="comment-none" v-else><image class="comment-none-img" src="/static/image/order.png" mode=""></image></view>
 		</view>
 		<pop :popShow.sync="popShow" :price="bargain_price" />
-		<lvv-popup position="bottom" ref="share" v-if="record_id && record_id != 0">
+		<lvv-popup position="bottom" ref="share" v-if="info.goods && record_id && record_id != 0">
 			<!-- #ifdef H5 -->
 			<shareByH5
 				:goodsId="info.id"
@@ -164,7 +164,7 @@
 			></shareByApp>
 			<!-- #endif -->
 		</lvv-popup>
-		<view class="flot-btn" v-if="type == 2" @click="friendsAddBargain()">我也要砍</view>
+		<view class="flot-btn" v-if="(info.status_progress == 1 || info.status_progress == 2) && type == 2" @click="friendsAddBargain()">我也要砍</view>
 		<view class="flot-btn" v-if="type == 1 && info.status_progress == 1" @click="buyNow()">立即购买</view>
 	</view>
 </template>

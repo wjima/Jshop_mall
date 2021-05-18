@@ -319,21 +319,32 @@ class GoodsComment extends Common
                     'score' => $score,
                     'user_id' => $user_id,
                     'goods_id' => $item_info['goods_id'],
+                    'product_id' => $item_info['product_id'],   // 货品ID
                     'order_id' => $order_id,
                     'images' => $images,
                     'content' => htmlentities($v['textarea']),
+                    'name' => $item_info['name'],       // 商品名称
                     'addon' => $item_info['addon']
                 ];
-                $gid[] = $item_info['goods_id'];
+
+                if(isset($gid[$item_info['goods_id']])){
+                    $gid[$item_info['goods_id']] += 1;
+                }else{
+                    $gid[$item_info['goods_id']] = 1;
+                }
             }
             $this->saveAll($goods_data);
             //商品表更新评论数量
-            $goodsModel = new Goods();
-            $goodsModel->where([['id', 'in', $gid]])->setInc('comments_count');
+            foreach($gid as $goods_id=>$inc){
+                $goodsModel = new Goods();
+                $goodsModel->where('id',$goods_id)->setInc('comments_count',$inc);
+            }
             //修改评价状态
             $order_data['is_comment'] = 2;
             $orderModel->save($order_data, ['order_id' => $order_id]);
             Db::commit();
+            $orderLog = new OrderLog();
+            $orderLog->addLog($order_id, $user_id, $orderLog::LOG_TYPE_EVALUATION, '用户评价订单', $items);
             $return_data = [
                 'status' => true,
                 'msg' => '评价成功',
@@ -343,7 +354,7 @@ class GoodsComment extends Common
             Db::rollback();
             $return_data = [
                 'status' => false,
-                'msg' => error_code(13404,true,$e->getMessage()),
+                'msg' => $e->getMessage(),
                 'data' => $goods_data
             ];
         }
@@ -361,5 +372,107 @@ class GoodsComment extends Common
         $where[] = ['goods_id', 'eq', $goods_id];
         $num = $this->where($where)->count();
         return $num?$num:0;
+    }
+
+    
+    /**
+     * 返回layui的table所需要的格式
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    public function tableData($post)
+    {
+        if (isset($post['limit'])) {
+            $limit = $post['limit'];
+        } else {
+            $limit = config('paginate.list_rows');
+        }
+        if (isset($post['page'])) {
+            $page = $post['page'];
+        } else {
+            $page = 1;
+        }
+        $tableWhere = $this->tableWhere($post);
+        $list = $this
+            ->field($tableWhere['field'])
+            ->where($tableWhere['where'])
+            ->order($tableWhere['order'])
+            ->page($page, $limit)
+            ->select();
+        $count = $this
+            ->where($tableWhere['where'])
+            ->count();
+
+        $data = $this->tableFormat($list->toArray());
+
+        $re['code'] = 0;
+        $re['msg'] = '';
+        $re['count'] = $count;
+        $re['data'] = $data;
+
+        return $re;
+    }
+
+    /**
+     * 根据输入的查询条件，返回所需要的where
+     * @author sin
+     * @param $post
+     * @return mixed
+     */
+    protected function tableWhere($post)
+    {
+        $where = [];
+        if (isset($post['goods_id']) && $post['goods_id'] != "" && $post['goods_id'] != "0") {
+            $where[] = ['goods_id', '=',  $post['goods_id']];
+        }
+
+        if (isset($post['goods_name']) && $post['goods_name'] != "") {
+            $where[] = ['name', 'like',  '%' . $post['goods_name'] . '%'];
+        }
+        if (isset($post['order_id']) && $post['order_id'] != "") {
+            $where[] = ['order_id', 'like',  '%' . $post['order_id'] . '%'];
+        }
+        if (isset($post['status']) && $post['status'] != "") {
+            $where[] = ['display', '=',  $post['status'] ];
+        }
+        if (isset($post['mobile']) && $post['mobile'] != "") {
+            $userModel = new User();
+            $user_ids = $userModel->where('username|nickname|mobile', 'like', '%' . $post['mobile'] . '%')->column('id');
+            if ($user_ids) {
+                $where[] = ['user_id', 'in',  $user_ids];
+            }
+        }
+        if (!empty($post['date'])) {
+            $date_string = $post['date'];
+            $date_array = explode(' 到 ', urldecode($date_string));
+            $sdate = strtotime($date_array[0] . ' 00:00:00');
+            $edate = strtotime($date_array[1] . ' 23:59:59');
+            $where[] = ['ctime', ['>=', $sdate], ['<=', $edate], 'and'];
+        }
+        $result['where'] = $where;
+        $result['field'] = "*";
+        $result['order'] = "ctime desc";
+        return $result;
+    }
+    /**
+     * 根据查询结果，格式化数据
+     * @author sin
+     * @param $list //array格式的collection
+     * @return mixed
+     */
+    protected function tableFormat($list)
+    {
+        foreach ($list as $k => &$v) {
+            $imagesArr = explode(',', $v['images']);
+            foreach ($imagesArr as $kk => &$vv) {
+                $vv = _sImage($vv);
+            }
+
+            $v['images_url'] = $imagesArr;
+            $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);
+            $v['username'] = get_user_info($v['user_id'], 'showname');
+        }
+        return $list;
     }
 }

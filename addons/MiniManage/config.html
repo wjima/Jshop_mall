@@ -1,0 +1,60 @@
+
+<form class="layui-form" action="#" method="post">
+    <div style="padding: 30px;" class="layui-form layui-form-pane">
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
+                <label class="layui-form-label">签名：</label>
+                <div class="layui-input-inline seller-inline-7">
+                    <input type="text" name="setting[sign]" id="sign"
+                           readonly="readonly" placeholder=""  class="layui-input" >
+                </div>
+                <a href="javascript:;" layadmin-event="refresh" title="刷新" >
+                    <i class="layui-icon layui-icon-refresh-3" id="shuaxin" style="line-height: 40px"></i>
+                </a>
+
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">接口地址：</label>
+                <div class="layui-input-inline seller-inline-7">
+                    <input type="text" name="setting[yuming]" id="yuming"
+                           readonly="readonly" placeholder=""  class="layui-input" >
+                </div>
+            </div>
+        </div>
+        <div class="layui-tab-content">
+            使用说明请联系在线客服，或<a style="color:#FF7159" href="https://www.jihainet.com/?page=article_detail&type=12&aid=59" target="_blank">点击这里</a>
+        </div>
+
+    </div>
+
+
+    <script>
+        $(document).ready(function(){
+
+            $.get("{:get_addon_url('MiniManage://Index/sign')}",function(data){
+                if(data.status){
+                    $("#sign").val(data.data["sign"])
+                    $("#yuming").val(data.data["yuming"])
+                }
+            });
+        });
+        $("#shuaxin").click(function () {
+            $.get("{:get_addon_url('MiniManage://Index/sign')}?type=1", function (data) {
+                if (data.status) {
+                    $("#sign").val(data.data["sign"])
+                }
+            });
+        });
+
+        layui.use( ['form', 'layedit', 'laydate','element'], function () {
+            //监听提交
+            var $ = layui.jquery
+                , element = layui.element
+                ,layedit = layui.layedit
+                ,laydate = layui.laydate
+                ,form = layui.form;
+
+
+        });
+    </script>
+</form>

@@ -139,7 +139,9 @@
                     field: 'operating', title: '操作', width: 140, align: 'center', templet: function (data) {
                         var html = '';
                         html += '<a class="layui-btn layui-btn-xs option-view layui-btn-primary" data-id="' + data.reship_id + '">明细</a>';
-                        if (data.status === 2) {
+                        if (data.status === 1) {
+                            html += '<a class="layui-btn layui-btn-xs option-reship" data-id="' + data.reship_id + '">退货</a>';
+                        }else if (data.status === 2) {
                             html += '<a class="layui-btn layui-btn-xs option-audit" data-id="' + data.reship_id + '">确认收货</a>';
                         }
                         return html;
@@ -167,6 +169,38 @@
                     layer.msg(e.msg);
                 }
             });
+        });
+        $(document).on('click', '.option-reship', function () {
+            let reship_id = $(this).attr('data-id');
+            JsGet("{:url('billReship/reship')}?reship_id=" + reship_id, function(e){
+                if (e.status) {
+                    layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: setpage(800, 600), //宽高
+                        title: '填写退货物流信息',
+                        btn: ['确认', '取消'],
+                        yes: function (index, layero) {
+                            var formData=layui.form.val('reship_data');
+                            formData['reship_id'] = reship_id;
+                            JsPost("{:url('billReship/reship')}", formData, function (res) {
+                                if (res.status) {
+                                    layer.msg('填写退货信息成功', { time: 1000 }, function () {
+                                        layer.closeAll();
+                                        layui.table.reload('billReship');
+                                    });
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            });
+                        }
+                    });
+
+                } else {
+                    layer.msg(e.msg);
+                }
+            });
+            return false;
         });
         //查看操作
         $(document).on('click', '.option-view', function () {

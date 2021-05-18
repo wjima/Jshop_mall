@@ -158,6 +158,9 @@
 			this.storeCode = store;
 			this.getDistribution(store);
 			this.getGoods();
+			if(!options.self){
+				uni.hideHomeButton();
+			}
 		},
 		mounted() {
 			// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE
@@ -271,7 +274,7 @@
                 let data = {
                     page: 4,
                     params: {
-                        store: this.info.store
+                        store: this.storeCode
                     },
                     type: 3,//海报
                 }
@@ -326,6 +329,14 @@
                 this.$api.share(data, res => {
                     this.shareUrl = res.data
                 });
+            }
+		},
+        watch:{
+            storeCode: {
+                handler () {
+                    this.getShareUrl();
+                },
+                deep: true
             }
         },
 		//上拉加载

@@ -71,15 +71,16 @@ class User extends Api
         return $userModel->smsLogin($data, 2, $platform);
     }
 
-    public function bindMobile(){
+    public function bindMobile()
+    {
         $userModel = new UserModel();
-        if (!input('?param.mobile')){
+        if (!input('?param.mobile')) {
             return error_code(11051);
         }
         if (!input('?param.code')) {
             return error_code(10013);
         }
-        return $userModel->bindMobile($this->userId,input('param.mobile'), input('param.code'));
+        return $userModel->bindMobile($this->userId, input('param.mobile'), input('param.code'));
     }
 
 
@@ -135,7 +136,8 @@ class User extends Api
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                return error_code(10014);
+                //return error_code(10014);
+                $pid = 0;
             }
         } else {
             $pid = 0;
@@ -223,16 +225,16 @@ class User extends Api
     }
 
 
-//    /**
-//     * 注册，此接口迟早要废弃，建议直接使用smsLogin接口
-//     * @return array
-//     */
-//    public function reg()
-//    {
-//        $userModel = new UserModel();
-//        $data      = input('post.');
-//        return $userModel->smsLogin($data, 2);
-//    }
+    //    /**
+    //     * 注册，此接口迟早要废弃，建议直接使用smsLogin接口
+    //     * @return array
+    //     */
+    //    public function reg()
+    //    {
+    //        $userModel = new UserModel();
+    //        $data      = input('post.');
+    //        return $userModel->smsLogin($data, 2);
+    //    }
 
 
     /**
@@ -251,14 +253,15 @@ class User extends Api
 
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
         $invitecode = Request::param('invitecode', false);
-        if($invitecode && $invitecode != '') {
+        if ($invitecode && $invitecode != '') {
             $userModel = new UserModel();
             $pid = $userModel->getUserIdByShareCode($invitecode);
             $pinfo = $userModel->where(['id' => $pid])->find();
             if ($pinfo) {
                 $pid = $pinfo['id'];
             } else {
-                return error_code(10014);
+                $pid = 0;
+                //return error_code(10014);
             }
         } else {
             $pid = 0;
@@ -480,44 +483,44 @@ class User extends Api
     // }
 
 
-//     /**
-//      * 废弃，所有收货地址新增编辑都走   editShip 方法     
-//      * H5 添加收货地址
-//      * @return array
-//      * @throws \think\Exception
-//      * @throws \think\db\exception\DataNotFoundException
-//      * @throws \think\db\exception\ModelNotFoundException
-//      * @throws \think\exception\DbException
-//      * @throws \think\exception\PDOException
-//      */
-//     public function vueSaveUserShip()
-//     {
-//         $data['user_id'] = $this->userId;
-//         $data['area_id'] = input('param.area_id');
-//         $data['address'] = input('param.address');
-//         $data['name'] = input('param.name');
-//         $data['mobile'] = input('param.mobile');
-//         $data['is_def'] = input('param.is_def');
-//         $model = new UserShip();
-//         return $model->vueSaveShip($data);
-// //        if($result)
-// //        {
-// //            $return_data = [
-// //                'status' => true,
-// //                'msg' => '存储收货地址成功',
-// //                'data' => $result
-// //            ];
-// //        }
-// //        else
-// //        {
-// //            $return_data = [
-// //                'status' => false,
-// //                'msg' => '存储收货地址失败',
-// //                'data' => $result
-// //            ];
-// //        }
-// //        return $return_data;
-//     }
+    //     /**
+    //      * 废弃，所有收货地址新增编辑都走   editShip 方法     
+    //      * H5 添加收货地址
+    //      * @return array
+    //      * @throws \think\Exception
+    //      * @throws \think\db\exception\DataNotFoundException
+    //      * @throws \think\db\exception\ModelNotFoundException
+    //      * @throws \think\exception\DbException
+    //      * @throws \think\exception\PDOException
+    //      */
+    //     public function vueSaveUserShip()
+    //     {
+    //         $data['user_id'] = $this->userId;
+    //         $data['area_id'] = input('param.area_id');
+    //         $data['address'] = input('param.address');
+    //         $data['name'] = input('param.name');
+    //         $data['mobile'] = input('param.mobile');
+    //         $data['is_def'] = input('param.is_def');
+    //         $model = new UserShip();
+    //         return $model->vueSaveShip($data);
+    // //        if($result)
+    // //        {
+    // //            $return_data = [
+    // //                'status' => true,
+    // //                'msg' => '存储收货地址成功',
+    // //                'data' => $result
+    // //            ];
+    // //        }
+    // //        else
+    // //        {
+    // //            $return_data = [
+    // //                'status' => false,
+    // //                'msg' => '存储收货地址失败',
+    // //                'data' => $result
+    // //            ];
+    // //        }
+    // //        return $return_data;
+    //     }
 
 
     /**
@@ -678,7 +681,7 @@ class User extends Api
         } else {
             $res = [
                 'status' => false,
-                'msg' => error_code(10025,true),
+                'msg' => error_code(10025, true),
                 'data' => $area_id
             ];
         }
@@ -702,8 +705,8 @@ class User extends Api
             return error_code(10051);
         }
 
-        $token = input('token', '');//token值 会员登录后传
-        $user_id = getUserIdByToken($token);//获取user_id
+        $token = input('token', ''); //token值 会员登录后传
+        $user_id = getUserIdByToken($token); //获取user_id
 
         //支付的时候，有一些特殊的参数需要传递到支付里面，这里就是干这个事情的,key=>value格式的一维数组
         $data = input('param.');
@@ -950,19 +953,19 @@ class User extends Api
      */
     public function editPwd()
     {
-        if(!input('?param.newpwd')){
-            return error_code(111013);
+        if (!input('?param.newpwd')) {
+            return error_code(11013);
         }
-        if(!input('?param.repwd')){
+        if (!input('?param.repwd')) {
             return error_code(11014);
         }
 
-        if(input('param.newpwd') != input('param.repwd')){
+        if (input('param.newpwd') != input('param.repwd')) {
             return error_code(11025);
         }
 
         $userModel = new userModel();
-        return $userModel->changePassword($this->userId,input('param.newpwd'),input('param.pwd',""));
+        return $userModel->changePassword($this->userId, input('param.newpwd'), input('param.pwd', ""));
     }
 
 
@@ -972,25 +975,25 @@ class User extends Api
      */
     public function forgetPwd()
     {
-        if(!input('?param.mobile')){
+        if (!input('?param.mobile')) {
             return error_code(11051);
         }
-        if(!input('?param.code')){
+        if (!input('?param.code')) {
             return error_code(10013);
         }
-        if(!input('?param.newpwd')){
-            return error_code(111013);
+        if (!input('?param.newpwd')) {
+            return error_code(11013);
         }
-        if(!input('?param.repwd')){
+        if (!input('?param.repwd')) {
             return error_code(11014);
         }
 
-        if(input('param.newpwd') != input('param.repwd')){
+        if (input('param.newpwd') != input('param.repwd')) {
             return error_code(11025);
         }
 
         $userModel = new userModel();
-        return $userModel->forgetPassword(input('param.mobile'),input('param.code'),input('param.newpwd'));
+        return $userModel->forgetPassword(input('param.mobile'), input('param.code'), input('param.newpwd'));
     }
 
 
@@ -1049,7 +1052,7 @@ class User extends Api
      */
     public function cash()
     {
-        $money = input('param.money/f','0','remove_xss');
+        $money = input('param.money/f', '0', 'remove_xss');
         $bankcard_id = input('param.cardId');
         if (!$money) return error_code(11018);
         if (!$bankcard_id) return error_code(11017);
@@ -1264,7 +1267,7 @@ class User extends Api
         }
         $page = input('param.page');
         $url = input('param.url');
-        $params = input('param.params', []);//json_decode(input('param.params', ""), true);
+        $params = input('param.params', []); //json_decode(input('param.params', ""), true);
         $type = input('param.type');
         $client = input('param.client');
         $share = new Share();
@@ -1282,7 +1285,7 @@ class User extends Api
         }
         $share = new UrlShare();
         $re = $share->de_url(input('param.code'));
-        if(!$re['status']){
+        if (!$re['status']) {
             return $re;
         }
 
@@ -1315,7 +1318,7 @@ class User extends Api
             return error_code(10003);
         }
         $data = input('param.');
-//        $userWxModel = new UserWx();
+        //        $userWxModel = new UserWx();
         $uniapp = new Uniapp();
 
         //如果新用户不需要手机号码登陆，但是有推荐人的话，校验推荐人信息
@@ -1326,7 +1329,8 @@ class User extends Api
             if ($pinfo) {
                 $data['pid'] = $pinfo['id'];
             } else {
-                return error_code(10014);
+                $data['pid'] = 0;
+                //return error_code(10014);
             }
         } else {
             $data['pid'] = 0;
@@ -1401,4 +1405,54 @@ class User extends Api
         $ttApp = new Ttapp();
         return $ttApp->codeToInfo($code, $user_info);
     }
+
+
+    /**
+     * 收货地址地图经纬度逆向解析
+     */
+    public function addressMap()
+    {
+        $key      = input('key');
+        $location = input('location');
+        $poi      = input('get_poi');
+        $url      = 'https://apis.map.qq.com/ws/geocoder/v1/?location=' . $location . '&key=' . $key . '&get_poi=' . $poi;
+        $data     = $this->map_curl($url);
+        echo json_encode($data, 320);
+        exit();
+    }
+
+    /***
+     * 地图关键词搜索
+     */
+    public function mapSearch()
+    {
+        $key        = input('key');
+        $keyword    = input('keyword');
+        $boundary   = input('boundary');
+        $orderby    = input('orderby', '_distance');
+        $page_size  = input('page_size', 20);
+        $page_index = input('page_index', 1);
+        $url        = 'https://apis.map.qq.com/ws/place/v1/search?keyword=' . urlencode($keyword) . '&key=' . $key . '&boundary=' . $boundary . '&page_size=' . $page_size . '&page_index=' . $page_index . '&orderby=' . $orderby;
+        $data       = $this->map_curl($url);
+        echo json_encode($data, 320);
+        exit();
+    }
+
+    /**
+     * 收货地址地图curl方法，增加来源页面
+     * @param $url
+     * @return mixed
+     */
+    private function map_curl($url)
+    {
+        $ch = curl_init(); //初始化
+        curl_setopt($ch, CURLOPT_URL, $url); //你要访问的页面
+        curl_setopt($ch, CURLOPT_REFERER, $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST']); //伪造来路页面
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //是否显示内容
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $output = json_decode($output, true);
+        return $output;
+    }
+
 }

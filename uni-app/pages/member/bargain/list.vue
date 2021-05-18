@@ -9,7 +9,7 @@
 							<view class="list-title">{{ item.name }}</view>
 							<view class="count-down" v-if="item.status == 1 && item.lasttime">
 								<text class="count-down-text">倒计时</text>
-								<uniCountdown :show-colon="false" splitor-color="#868686" color="#FF7159" :day="10" />
+								<uniCountdown :show-colon="false" splitor-color="#868686" color="#FF7159" :day="item.lasttime.day" :hour="item.lasttime.hour" :minute="item.lasttime.minute" :second="item.lasttime.second"/>
 							</view>
 							<view class="red-price">
 								<text class="price-txt">已砍至</text>
@@ -22,7 +22,7 @@
 				<view class="footer-button">
 					<text class="txt" v-if="item.status == 1">活动进行中</text>
 					<text class="txt" v-if="item.status == 2">砍价成功</text>
-					<text class="txt" v-if="item.status == 3">活动已成交</text>
+					<text class="txt" v-if="item.status == 3">活动已生成订单</text>
 					<text class="txt" v-if="item.status == 4">活动结束</text>
 					<text class="txt" v-if="item.status == 5">活动已取消</text>
 					<view class="btn-wrap">

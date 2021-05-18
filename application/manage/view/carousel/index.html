@@ -71,20 +71,33 @@
 
         //添加
         $(document).on('click','.add',function(){
-            window.location.href = "{:url('Carousel/add')}";
-        });
-
-        form.on('submit(add)', function(data){
-            JsPost("{:url('Carousel/add')}",{data:data.field},function(res){
-                if(res.status){
-                    layer.close(window.box);
-                    layer.msg(res.msg, {time:1300},function(){
-                        table.reload('carousel');
-                    });
-                }else{
-                    layer.msg(res.msg);
-                }
-            });
+            // window.location.href = "{:url('Carousel/add')}";
+            JsGet("{:url('Carousel/add')}", function (e) {
+                    // if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e,
+                            area: setpage(600, 500),
+                            title: '添加广告',
+                            btn: ['保存', '关闭'],
+                            yes: function () {
+                                var formData = form.val("add_carouset");
+                                JsPost("{:url('Carousel/add')}", formData, function (res) {
+                                    if (res.status) {
+                                        layer.msg(res.msg, { time: 1300 }, function () {
+                                            layer.closeAll();
+                                            table.reload('carousel');
+                                        });
+                                    } else {
+                                        layer.msg(res.msg);
+                                    }
+                                })
+                            }
+                        })
+                    // } else {
+                    //     layer.msg(e.msg);
+                    // }
+                })
         });
 
         form.on('submit(edit)',function(data){
@@ -115,7 +128,33 @@
                     })
                 });
             } else if(layEvent === 'edit'){ //编辑
-                window.location.href = "{:url('Carousel/edit')}?id="+data.id;
+                // window.location.href = "{:url('Carousel/edit')}?id="+data.id;
+                JsGet("{:url('Carousel/edit')}?id=" + data.id, function (e) {
+                    // if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e,
+                            area: setpage(600, 500),
+                            title: '编辑广告',
+                            btn: ['保存', '关闭'],
+                            yes: function (index) {
+                                var formData = form.val("edit_carouset");
+                                JsPost("{:url('Carousel/edit')}", formData, function (res) {
+                                    if (res.status) {
+                                        layer.msg(res.msg, { time: 1300 }, function () {
+                                            layer.close(index);
+                                            table.reload('carousel');
+                                        });
+                                    } else {
+                                        layer.msg(res.msg);
+                                    }
+                                })
+                            }
+                        })
+                    // } else {
+                    //     layer.msg(e.msg);
+                    // }
+                })
             }
         });
 

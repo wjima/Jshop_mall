@@ -12,6 +12,7 @@
                 <select name="filter">
                     <option value="nums">销量</option>
                     <option value="amount">销售额</option>
+                    <option value="rnums">退货量</option>
                 </select>
             </div>
             <label class="layui-form-label">升降序：</label>
@@ -66,15 +67,14 @@
             cellMinWidth: '80',
             id:'table',
             url: "{:url('goods')}",
-            page: 'true',
+            page: true,
+            even: true,
             limit:'20',
             cols: [[ //表头
                 {field: 'id',title:'排名',align:'center',width:80},
                 {field: 'nums', title: '销量',align:'center',width:80},
                 {field: 'amount', title: '销售额',align:'center',width:120},
-                {field:'image_url', width:100,title:'缩略图', align: 'center',templet: function(data){
-                        return '<a href="javascript:void(0);" onclick=viewImage("'+data.image_url+'")><image style="max-width:30px;max-height:30px;" src="'+data.image_url+'"/></a>';
-                }},
+                {field: 'rnums', title: '退货量',align:'center',width:80},
                 {field: 'name', title: '商品名称',align:'center'},
                 {field: 'addon', title: '规格', align:'center'},
                 {field: 'sn', title: '货号',align:'center'}

@@ -1,9 +1,13 @@
 <?php
+/***
+ * 一个操作最多只能有3个订阅消息，所以定义的时候，请约束数量
+ */
 return [
     'template' => [
         'title' => '模板配置',
         'value' => [
             'order' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '下单通知',
                 'data' => [
                     [
@@ -32,7 +36,8 @@ return [
                     ]
                 ]
             ],
-            'cancel' => [
+            'remind' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '催付通知',
                 'data' => [
                     [
@@ -53,7 +58,30 @@ return [
                     ]
                 ]
             ],
+            'cancel'=>[
+                'type'=>'order',//哪个地方使用
+                'title' => '取消订单',
+                'data' => [
+                    [
+                        'title' => '模板ID',
+                        'code' => 'template_id'
+                    ],
+                    [
+                        'title' => '订单编号',
+                        'code' => 'order_id'
+                    ],
+                    [
+                        'title' => '下单时间',
+                        'code' => 'ctime'
+                    ],
+                    [
+                        'title' => '取消原因',
+                        'code' => 'reason'
+                    ],
+                ]
+            ],
             'pay' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '支付通知',
                 'data' => [
                     [
@@ -75,6 +103,7 @@ return [
                 ]
             ],
             'ship' => [
+                'type'=>'order',//哪个地方使用
                 'title' => '发货通知',
                 'data' => [
                     [
@@ -82,16 +111,21 @@ return [
                         'code' => 'template_id'
                     ],
                     [
-                        'title' => '快递公司',
-                        'code' => 'ship_name'
+                        'title' => '订单编号',
+                        'code' => 'order_id'
                     ],
                     [
-                        'title' => '快递编号',
+                        'title' => '快递公司',
+                        'code' => 'logistics_name'
+                    ],
+                    [
+                        'title' => '快递单号',
                         'code' => 'logi_no'
                     ]
                 ]
             ],
             'after_sale' => [
+                'type'=>'after',//申请售后时使用
                 'title' => '售后通知',
                 'data' => [
                     [
@@ -117,6 +151,7 @@ return [
                 ]
             ],
             'refund' => [
+                'type'=>'after',//申请售后时使用
                 'title' => '退款通知',
                 'data' => [
                     [

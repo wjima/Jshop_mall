@@ -67,7 +67,7 @@ class Distribution extends Addons
         if(!$pinfo){
             return;
         }
-        $balanceModel->change($pinfo['id'], $balanceModel::TYPE_DISTRIBUTION, $order_info['order_amount']*$config['level1'],$order_id);
+        $balanceModel->change($pinfo['id'], $balanceModel::TYPE_DISTRIBUTION, floatval($order_info['order_amount']) * floatval($config['level1']), $order_id);
         //去给次推返利
         if($pinfo['pid'] == '0'){
             return;
@@ -84,7 +84,7 @@ class Distribution extends Addons
         if(!$ppinfo){
             return;
         }
-        $balanceModel->change($ppinfo['id'], $balanceModel::TYPE_DISTRIBUTION, $order_info['order_amount']*$config['level2'],$order_id);
+        $balanceModel->change($ppinfo['id'], $balanceModel::TYPE_DISTRIBUTION, floatval($order_info['order_amount']) * floatval($config['level2']), $order_id);
         return;
 
     }

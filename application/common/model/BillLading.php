@@ -439,17 +439,7 @@ class BillLading extends Common
                 'id' => 'ctime',
                 'desc' => '下单时间',
 
-            ],
-            [
-                'id' => 'ptime',
-                'desc' => '收货电话',
-
-            ],
-            [
-                'id' => 'ctime',
-                'desc' => '创建时间',
-
-            ],
+            ]
         ];
     }
     /**

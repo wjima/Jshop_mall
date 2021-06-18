@@ -7,6 +7,9 @@ use app\common\model\UserGrade;
 use myxland\addons\library\AddonController;
 use think\Container;
 use think\facade\Session;
+use app\common\model\ManageRoleOperationRel;
+use app\common\model\Operation;
+use Request;
 
 class Index extends AddonController
 {
@@ -25,6 +28,26 @@ class Index extends AddonController
         if (!session('?manage')) {
             cookie('redirect_url', Container::get('request')->url(), 3600);
             $this->redirect('manage/common/login');
+        }
+
+        $operationModel = new Operation();
+
+        //判断当前是否有权限操作
+        $mrorModel = new ManageRoleOperationRel();
+        $permRe    = $mrorModel->checkPerm(session('manage.id'), $operationModel::MENU_MANAGE, $this->controller, $this->action,$this->addon);
+        if (!$permRe['status']) {
+            if (Request::isAjax()) {
+                $err = [
+                    'status' => false,
+                    'data'   => '',
+                    'msg'    => $permRe['msg']
+                ];
+                echo json_encode($err);
+                die();
+                //return $permRe;
+            } else {
+                $this->error($permRe['msg']);
+            }
         }
     }
 

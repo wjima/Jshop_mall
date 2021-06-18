@@ -28,7 +28,7 @@ class WechatAppletsMessage extends Addons
     public $info = [
         'name'          => 'WechatAppletsMessage',
         'title'         => '微信小程序订阅消息',
-        'description'   => '微信小程序订阅消息配置',
+        'description'   => '微信小程序订阅消息配置，安装后记得开启消息配置里面的微信消息哦',
         'status'        => 0,
         'author'        => 'keinx,mark',
         'version'       => '2.0',
@@ -150,7 +150,7 @@ class WechatAppletsMessage extends Addons
             case 'aftersales_pass':
                 $this->aftersalesTip($params, $template_id);
                 break;
-            case 'refund':
+            case 'refund_success':
                 $this->refundTip($params, $template_id);
                 break;
         }
@@ -429,7 +429,7 @@ class WechatAppletsMessage extends Addons
         $user_id = $params['params']['user_id'];
         $info    = $params['params']['params'];
         $data    = [
-            'id'            => [
+            'source_id'            => [
                 'value' => $info['source_id']
             ],
             'aftersales_id' => [
@@ -439,7 +439,7 @@ class WechatAppletsMessage extends Addons
                 'value' => $info['money']
             ],
             'payment_code'  => [
-                'value' => $info['payment_code']
+                'value' => config('params.payment_type')[$info['payment_code']]
             ],
             'ctime'         => [
                 'value' => getTime($info['ctime'])

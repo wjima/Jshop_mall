@@ -221,8 +221,12 @@ class Bargain extends Common
             //            $result['msg'] = '参数丢失';
             return error_code(10051);
         }
-        $info       = $this->field('id,name,intro,desc,sales_num,goods_id,max_goods_nums,start_price,end_price,etime')->get($bargain_id);
-        $goodsModel = new Goods();
+        $goodsModel         = new Goods();
+        $logModel           = new BargainLog();
+        $bargainRecordModel = new BargainRecord();
+        $userModel          = new User();
+
+        $info = $this->field('id,name,intro,desc,sales_num,goods_id,max_goods_nums,start_price,end_price,etime')->get($bargain_id);
 
         $goods = $goodsModel->getGoodsDetial($info['goods_id']);
         if (!$goods['status']) {
@@ -231,16 +235,14 @@ class Bargain extends Common
         }
         $info['goods'] = $goods['data'];
 
-        $logModel = new BargainLog();
-        $aWhere   = $fWhere = [];
-
-        $bargainRecordModel   = new BargainRecord();
+        $aWhere = $fWhere = [];
         $aWhere['bargain_id'] = $bargain_id;
         $attendance_record    = $bargainRecordModel->getList('id,bargain_id,user_id,ctime,status,etime,stime', $aWhere, ['ctime' => 'desc'], 1, 50); //todo 参与活动记录要拆分开
 
         $info['attendance_record'] = $attendance_record['data'];
         $aWhere['id']              = $record_id;
 
+        $info['sales_num'] = $bargainRecordModel->where([['bargain_id', '=', $bargain_id]])->whereNotNull('order_id')->count();
         //亲友团
         if ($type == self::TYPE_SELF) {
             $aWhere['user_id'] = $user_id;
@@ -269,12 +271,11 @@ class Bargain extends Common
         $info['status_progress']  = $record['status'];
         $info['current_price']    = $record['price'];
 
-
         //活动数量
         if ($info['max_goods_nums'] == 0) {
             $info['max_goods_nums'] = $goods['data']['product']['stock'];
         }
-        $userModel            = new User();
+
         $bargain_user         = $userModel->getUserInfo($record['user_id']);
         $info['bargain_user'] = $bargain_user['data'];
         $result['status']     = true;

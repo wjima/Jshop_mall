@@ -691,16 +691,55 @@ class Order extends Common
     }
 
     //平摊优惠，计算一下订单的实际价格
-    private function avePrice(&$orderInfo){
-        foreach($orderInfo['items'] as &$v){
-            // $v['ave_price'] = round(($v['amount'] - $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount'])) / $v['nums'],2);
-            if (!$orderInfo['goods_amount'] || $orderInfo['goods_amount'] == 0) {
-                $order_pmt = 0;
+    private function avePrice(&$orderInfo)
+    {
+        $count     = count($orderInfo['items']);
+        $total_pmt = 0;//累计优惠
+        $total_order_pmt = $orderInfo['order_pmt']+$orderInfo['point_money'];//所有订单优惠，+$orderInfo['coupon_pmt']
+        foreach ($orderInfo['items'] as $key => &$v) {
+            if ($count - 1 == $key) {//最后一次
+                $order_pmt = $total_order_pmt - $total_pmt;
+
+                $ave_amount = round(($v['amount']-$order_pmt),2);
+                $v['ave_price']  = round($ave_amount/ $v['nums'], 2);
+                $v['ave_amount'] = $ave_amount;
             } else {
-                $order_pmt = $orderInfo['order_pmt'] * ($v['amount'] / $orderInfo['goods_amount']);
+                if (!$orderInfo['goods_amount'] || $orderInfo['goods_amount'] == 0) {
+                    $order_pmt = 0;
+                } else {
+                    $order_pmt = round($total_order_pmt * ($v['amount'] / $orderInfo['goods_amount']),2);
+                }
+                $ave_amount = round(($v['amount'] - $order_pmt), 2);
+                $total_pmt += $order_pmt;
+                $v['ave_price']  = round($ave_amount / $v['nums'], 2);
+                $v['ave_amount'] = $ave_amount;
             }
-            $v['ave_price'] = round(($v['amount'] - $order_pmt) / $v['nums'], 2);
-        
+        }
+    }
+
+    private function avePriceItem($orderInfo,&$items = [])
+    {
+        $count     = count($items);
+        $total_pmt = 0;//累计优惠
+        $total_order_pmt = $orderInfo['order_pmt']+$orderInfo['point_money'];//所有订单优惠，+$orderInfo['coupon_pmt']
+        foreach ($items as $key => &$v) {
+            if ($count - 1 == $key) {//最后一次
+                $order_pmt = $total_order_pmt - $total_pmt;
+
+                $ave_amount = round(($v['amount']-$order_pmt),2);
+                $v['ave_price']  = round($ave_amount/ $v['nums'], 2);
+                $v['ave_amount'] = $ave_amount;
+            } else {
+                if (!$orderInfo['goods_amount'] || $orderInfo['goods_amount'] == 0) {
+                    $order_pmt = 0;
+                } else {
+                    $order_pmt = round($total_order_pmt * ($v['amount'] / $orderInfo['goods_amount']),2);
+                }
+                $ave_amount = round(($v['amount'] - $order_pmt), 2);
+                $total_pmt += $order_pmt;
+                $v['ave_price']  = round($ave_amount / $v['nums'], 2);
+                $v['ave_amount'] = $ave_amount;
+            }
         }
     }
 
@@ -1490,7 +1529,6 @@ class Order extends Common
             $items = $order_re['data'];        //订单明细
         }
 
-
         //以下值不是通过购物车得来的，是直接赋值的，就写这里吧，不写formatOrder里了。
         $order['memo'] = $memo;
         $order['source'] = $source;
@@ -1680,6 +1718,8 @@ class Order extends Common
         if (!$items) {
             return error_code(10000);       //判断订单明细为空的不能下单
         }
+        //平摊商品价格,计算实际单价
+        $this->avePriceItem($order,$items);
         return [
             'status' => true,
             'data' => $items,           //订单主体表通过引用直接返回值，订单明细通过这里返回值
@@ -1711,7 +1751,8 @@ class Order extends Common
             $item['sn'] = $v['products']['sn'];
             $item['bn'] = $v['products']['bn'];
             if($v['type'] == Cart::TYPE_GIVEAWAY){
-                $item['name'] =self::GIVEAWAY_STR.$v['products']['name'];
+                $item['name'] = self::GIVEAWAY_STR.$v['products']['name'];
+                $item['is_gift'] = 1;//是赠品，标记一下
             }else{
                 $item['name'] = $v['products']['name'];
             }

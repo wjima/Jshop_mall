@@ -1,0 +1,388 @@
+<style>
+
+</style>
+<form class="layui-form seller-alone-form" action="" style="min-height:600px;">
+    <input type="hidden" id="id" name="id" value="{$gradeInfo.id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">等级名称：</label>
+        <div class="layui-input-block" style="line-height: 36px;">
+           {$gradeInfo.name}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">默认分销等级：</label>
+        <div class="layui-input-inline seller-inline-12">
+            <input type="radio" name="is_default" value="1" title="是" lay-filter="defaultgrade"  {eq name="$gradeInfo['is_default']" value="1" }checked{/eq} >
+            <input type="radio" name="is_default" value="2" title="否" lay-filter="defaultgrade" {eq name="$gradeInfo['is_default']" value="2" }checked{/eq} {if condition="!$gradeInfo['is_default']"}checked{/if}>
+        </div>
+        <div class="layui-form-mid layui-word-aux">当前等级是否默认分销商等级</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">自动升级：</label>
+        <div class="layui-input-inline seller-inline-12">
+            <input type="radio" name="upgrade" value="1" lay-filter="upgrade"   title="是"  {eq name="$gradeInfo['upgrade']" value="1" }checked{/eq} >
+            <input type="radio" name="upgrade" value="2" lay-filter="upgrade" title="否" {eq name="$gradeInfo['upgrade']" value="2" }checked{/eq} {if condition="!$gradeInfo['upgrade']"}checked{/if}>
+        </div>
+        <div class="layui-form-mid layui-word-aux">开启后，可根据升级条件自动升级</div>
+    </div>
+    {if ($gradeInfo['is_default'] && $gradeInfo['is_default']=='2') || $gradeInfo['upgrade'] && $gradeInfo['upgrade']=='1' }
+    <div class="layui-form-item upper-condition">
+        <label class="layui-form-label">
+            升级条件：
+        </label>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="conditionAdd" >添加条件</button>
+            <table id="condition" lay-filter="condition"></table>
+        </div>
+    </div>
+    {elseif ($gradeInfo['is_default'] && $gradeInfo['is_default']=='1') || $gradeInfo['upgrade'] && $gradeInfo['upgrade']=='2'}
+    <div class="layui-form-item upper-condition" style="display: none">
+        <label class="layui-form-label">
+            升级条件：
+        </label>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="conditionAdd" >添加条件</button>
+            <table id="condition" lay-filter="condition"></table>
+        </div>
+    </div>
+    {else}
+    <div class="layui-form-item upper-condition">
+        <label class="layui-form-label">
+            升级条件：
+        </label>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="conditionAdd" >添加条件</button>
+            <table id="condition" lay-filter="condition"></table>
+        </div>
+    </div>
+    {/if}
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            佣金设置：
+        </label>
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-submit lay-filter="resultAdd" >添加佣金</button>
+            <table id="result" lay-filter="result"></table>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            {:jshopToken()}
+            <button class="layui-btn" lay-submit lay-filter="distribution">提交</button>
+            <a href="{:get_addon_url('DistributionCenter://Index/grade')}" class="layui-btn layui-btn-primary">返回</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    layui.use(['form', 'table'], function(){
+        var form = layui.form
+                ,layer = layui.layer;
+        //提交
+        form.on('submit(distribution)', function(data){
+            $.ajax({
+                url:"{:get_addon_url('DistributionCenter://Index/editGrade')}",
+                type:'post',
+                data:data.field,
+                success:function(res){
+                    if(res.status == true){
+                        layer.msg('保存成功', {
+                            time: 2000
+                        }, function(){
+                            window.location.href="{:get_addon_url('DistributionCenter://Index/grade')}";
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            },"json");
+            return false;
+        });
+        //升级条件表格渲染
+        var conditionTables = layui.table.render({
+            elem: '#condition'
+            ,size: 'sm'
+            ,url: "{:get_addon_url('DistributionCenter://Index/conditionList',['id'=>$gradeInfo.id])}?_ajax=1"
+            ,cols: [[ //标题栏
+                {field: 'code',width:140, title: '条件代码'},
+                {field: 'name',width:140, title: '条件名称'}
+                ,{field: 'params', title: '参数'}
+                ,{field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-edit" data-grade_id="' + data.grade_id + '" data-id="' + data.id + '">编辑</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-del" data-grade_id="' + data.grade_id + '" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }}
+            ]]
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+
+        //添加升级条件
+        form.on('submit(conditionAdd)', function(data){
+            conditionAdd(function(condition_code){
+                conditionEdit('','{$gradeInfo.id}',condition_code,function(){
+                    layer.msg('添加成功');
+                    //table刷新即可
+                    conditionTables.reload();
+                });
+            });
+
+            return false;
+        });
+//升级条件编辑
+        $(document).on('click','.option-edit',function(){
+            conditionEdit($(this).attr('data-id'),$(this).attr('data-grade_id'),'',function(){
+                layer.msg('条件修改成功');
+                conditionTables.reload();
+            });
+        });
+//升级条件删除
+        $(document).on('click','.option-del',function(){
+            $.ajax({
+                type:'post',
+                url: "{:get_addon_url('DistributionCenter://Index/conditionDel')}",
+                data: 'grade_id=' + $(this).attr('data-grade_id') +  '&id='+$(this).attr('data-id'),
+                success:function(res){
+                    if(res.status){
+                        layer.msg('删除成功');
+                        conditionTables.reload();
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+        });
+
+//佣金设置表格渲染
+        var resultTables = layui.table.render({
+            elem: '#result'
+            ,size: 'sm'
+            ,url: "{:get_addon_url('DistributionCenter://Index/resultList',['id'=>$gradeInfo.id])}?_ajax=1"
+            ,cols: [[ //标题栏
+                {field: 'code',width:140, title: '佣金代码'},
+                {field: 'name',width:140, title: '佣金名称'}
+                ,{field: 'params', title: '参数'}
+                ,{field: 'operating', title: '操作', width:120, align: 'center',templet:function(data){
+                    var html = '';
+                    html += '<a  class="layui-btn layui-btn-xs option-result-edit" data-grade_id="' + data.grade_id + '" data-id="' + data.id + '">编辑</a>';
+                    html += '<a  class="layui-btn layui-btn-xs option-result-del" data-grade_id="' + data.grade_id + '" data-id="' + data.id + '">删除</a>';
+                    return html;
+                }}
+            ]]
+            //,skin: 'line' //表格风格
+            ,even: true
+            //,page: true //是否显示分页
+            //,limits: [5, 7, 10]
+            //,limit: 5 //每页默认显示的数量
+        });
+
+//添加佣金设置
+        form.on('submit(resultAdd)', function(data){
+            resultAdd(function(result_code) {
+                resultEdit('','{$gradeInfo.id}', result_code, function () {
+                    layer.msg('添加成功');
+                    //table刷新即可
+                    resultTables.reload();
+                });
+            });
+            return false;
+        });
+
+//佣金设置编辑
+        $(document).on('click','.option-result-edit',function(){
+            resultEdit($(this).attr('data-id'),$(this).attr('data-grade_id'),'',function(){
+                layer.msg('结果修改成功');
+                resultTables.reload();
+            });
+        });
+//佣金设置删除
+        $(document).on('click','.option-result-del',function(){
+            $.ajax({
+                type:'post',
+                url: "{:get_addon_url('DistributionCenter://Index/resultDel')}",
+                data: 'grade_id=' + $(this).attr('data-grade_id') +  '&id='+$(this).attr('data-id'),
+                success:function(res){
+                    if(res.status){
+                        layer.msg('删除成功');
+                        resultTables.reload();
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+        });
+
+        form.on('radio(upgrade)', function(data){
+            if (data.value == 2) {
+                $(".upper-condition").hide();
+            }else{
+                $(".upper-condition").show();
+            }
+        });
+
+        form.on('radio(defaultgrade)', function(data){
+            if (data.value == 1) {
+                $(".upper-condition").hide();
+            }else{
+                $(".upper-condition").show();
+            }
+        });
+
+
+    });
+
+    //选择升级条件
+    function conditionAdd(callback){
+        JsGet("{:get_addon_url('DistributionCenter://Index/conditionAdd')}",function(e){
+            if(e.status){
+                window.box = layer.open({
+                    type: 1,
+                    content: e.data,//
+                    area: ['400px', '500px'],
+                    title:'选择升级条件',
+                    btn: ['下一步','取消'],
+                    yes: function(index, layero){
+                        if($('#condition_code').val() == ''){
+                            layer.msg('请选择升级条件');
+                            return false;
+                        }
+                        layer.close(index);
+                        callback($('#condition_code').val());
+                    }
+                });
+            }else{
+                layer.msg(e.msg);
+            }
+        });
+    }
+    /**
+     * 升级条件的显示和编辑
+     * @param id                //升级条件id，当设置此参数的时候，说明是编辑此条件
+     * @param grade_id      //促销id，当是新增的时候，需要这样穿
+     * @param condition_code    //升级条件类型，当时新增升级条件的时候，需要传
+     * @param callback        //回调
+     */
+    function conditionEdit(id,grade_id,condition_code,callback){
+        var str = '';
+        if(id == ''){
+            str += 'grade_id='+grade_id+'&condition_code='+ condition_code;
+        }else{
+            str += 'grade_id='+grade_id+'&id='+id;
+        }
+        JsGet("{:get_addon_url('DistributionCenter://Index/conditionEdit')}?"+str,function(e){
+            if(e.status){
+                layer.open({
+                    type: 1,
+                    content: e.data,
+                    area: ['600px', '400px'],
+                    title:'设置升级条件',
+                    btn: ['完成','取消'],
+                    yes: function(index, layero){
+                        $.ajax({
+                            type:'post',
+                            url: "{:get_addon_url('DistributionCenter://Index/conditionEdit')}",
+                            data: $('#conditionEdit').serialize(),
+                            success:function(res){
+                                if(res.status){
+                                    layer.close(index);
+                                    callback();
+                                }else{
+                                    layer.msg(res.msg);
+                                }
+                            }
+                        });
+                    }
+                });
+            }else{
+                layer.msg(e.msg);
+            }
+        })
+    }
+    //////////////////////华丽丽的分割线/////////////////////////////////////////////////
+    //选择佣金设置
+    function resultAdd(callback){
+        $.ajax({
+            type:'get',
+            url: "{:get_addon_url('DistributionCenter://Index/resultAdd')}",
+            data:'',
+            success:function(e){
+                if(e.status){
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,//
+                        area: ['400px', '500px'],
+                        title:'选择佣金设置',
+                        btn: ['下一步','取消'],
+                        yes: function(index, layero){
+                            if($('#result_code').val() == ''){
+                                layer.msg('请选择佣金设置');
+                                return false;
+                            }
+                            layer.close(index);
+                            callback($('#result_code').val());
+//
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            }
+        });
+    }
+    /**
+     * 佣金设置的显示和编辑
+     * @param id            //佣金设置id，当设置此参数的时候，说明是编辑此结果
+     * @param grade_id      //促销id，当是新增的时候，需要这样穿
+     * @param result_code   //佣金设置类型，当时新增佣金设置的时候，需要传
+     * @param callback      //回调
+     */
+    function resultEdit(id,grade_id,result_code,callback){
+        var str = '';
+        if(id == ''){
+            str += 'grade_id='+grade_id+'&result_code='+ result_code;
+        }else{
+            str += 'grade_id='+grade_id+'&id='+id;
+        }
+        $.ajax({
+            type:'get',
+            url: "{:get_addon_url('DistributionCenter://Index/resultEdit')}",
+            data:str,
+            success:function(e){
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        content: e.data,//
+                        area: ['600px', '400px'],
+                        title:'设置佣金设置',
+                        btn: ['完成','取消'],
+                        yes: function(index, layero){
+                            $.ajax({
+                                type:'post',
+                                url: "{:get_addon_url('DistributionCenter://Index/resultEdit')}",
+                                data: $('#resultEdit').serialize(),
+                                success:function(res){
+                                    if(res.status){
+                                        layer.close(index);
+                                        callback();
+                                    }else{
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            }
+        });
+
+    }
+
+
+</script>

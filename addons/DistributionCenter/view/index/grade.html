@@ -1,0 +1,60 @@
+<style>
+    @media screen and (max-width: 500px) {
+
+        .layui-layer.layui-layer-page {
+            width: 100% !important;
+            overflow:hidden!important;
+            left: 0 !important;
+        }
+
+        .layui-layer-title {
+            width: 100% !important;
+            box-sizing: border-box;
+        }
+
+        .layui-layer-content {
+            width: 100% !important;
+        }
+    }
+</style>
+<div class="warning-msg">
+    <div class="warning-msg-content">
+        <p>分销等级请先维护<a href="javascript:;" lay-href="{:url('manage/user/grade')}">会员等级</a>然后刷新本页面。编号越大，等级越高</p>
+    </div>
+</div>
+<div class="table-body">
+    <table id="userTable" lay-filter="test"></table>
+</div>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'table'], function () {
+        var userTables = layui.table.render({
+            elem: '#userTable',
+            height: 'full-220',
+            cellMinWidth: '80',
+            page: 'true',
+            limit: '20',
+            url: "{:get_addon_url('DistributionCenter://Index/grade')}?_ajax=1",
+            id: 'userTable',
+            cols: [[
+                { field: 'id', width: 100, title: '编号' },
+                { field: 'name', width: 100, title: '等级名称' },
+                { field: 'is_def', title: '是否默认' },
+                {
+                    field: 'operating', title: '操作', width: 250, align: 'center', templet: function (data) {
+                        var html = '';
+                        html += '<a  class="layui-btn layui-btn-xs option-edit" data-id="' + data.id + '">升级及佣金设置</a>';
+                        return html;
+                    }
+                },
+            ]]
+        });
+
+
+        //编辑
+        $(document).on('click', '.option-edit', function () {
+            var id = $(this).attr('data-id');
+            window.location.href = '{:get_addon_url("DistributionCenter://Index/editGrade")}?id=' + id;
+        });
+    });
+</script>

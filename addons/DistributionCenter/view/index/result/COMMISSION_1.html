@@ -1,0 +1,42 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="resultEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="grade_id" value="{$grade_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">结果名称：</label>
+        <div class="layui-form-mid">一级佣金</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型：</label>
+        <div class="layui-input-block">
+            <input type="radio"  name="params[commission_type]" value="1" title="百分比"  {eq name="$params['commission_type']" value="1" }checked{/eq} {if condition="!$params['commission_type']"}checked {/if}>
+            <input type="radio"  name="params[commission_type]" value="2" title="固定金额" {eq name="$params['commission_type']" value="2" }checked{/eq}>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">佣金值：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input name="params[discount]" id="discount" autocomplete="off" value="{$params.discount}" placeholder="" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">百分比时，请设置1-100的数字</div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-form-mid layui-word-aux" style="margin-left: 105px;color: red !important;">类型为固定金额时，佣金值和订单金额无关</div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+        $("#discount").change(function () {
+            var commission_type = $("input[name='params[commission_type]']:checked").val();
+            if (commission_type == 1) {
+                var val = parseFloat($(this).val());
+                if (val > 100) {
+                    layer.msg("佣金值超出范围");
+                    $(this).val('');
+                    return false;
+                }
+            }
+        });
+    });
+</script>

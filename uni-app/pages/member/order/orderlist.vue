@@ -47,6 +47,10 @@
 						</view>
 					</view>
 					<view class='order-list-button'>
+						
+						<button class='btn btn-circle btn-w again' hover-class="btn-hover"
+						@click="buyAgain(item.items)" style="width: initial;"> 再次购买 </button>
+						
 						<button class='btn btn-circle btn-g' hover-class="btn-hover" @click="orderDetail(item.order_id)">查看详情</button>
 						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status === 1" @click="toPay(item.order_id)">立即支付</button>
 						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status >= 2 && item.ship_status >= 3 && item.confirm === 1" @click="tackDelivery(index)">确认收货</button>
@@ -115,6 +119,31 @@ export default {
 		}
 	},
 	methods: {
+		// 再次购买
+		buyAgain(val) {
+			let cart = []
+			let _this = this;
+			for(let i of val) {
+				cart.push({"product_id": i.product_id, "nums": i.nums})
+			}
+			this.$api.batchsetcart({cart}, res =>{
+				if(res.status)  {
+					this.$common.successToShow(res.msg, () => {
+						let newData = '';
+						for (let key in res.data.ids) {
+								newData += ',' + res.data.ids[key];
+						}
+						if (newData.substr(0, 1) == ',') {
+							newData = newData.substr(1);
+						}
+						_this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(newData));
+					})
+				} else {
+					this.$common.errorToShow(res.msg)
+				}
+			})
+			console.log(val);
+		},
 		// 初始化数据并获取订单列表
 		initData (page = 1) {
 			this.page = page
@@ -265,6 +294,10 @@ export default {
 	font-size: 22upx;
 	color: #333;
 }
+.btn.again {
+	margin-right: 20rpx;
+}
+
 .order-list-button{
 	width: 100%;
 	background-color: #fff;

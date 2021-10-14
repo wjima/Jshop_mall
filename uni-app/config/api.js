@@ -94,7 +94,8 @@ const methodsToken = [
 	'bargain.getuserbargainlog',
 	'bargain.canclebargain',
 	'api.hb.WelfarePro',
-	'api.coupon.WelfarePro'
+	'api.coupon.WelfarePro',
+	'cart.batchsetcart',
 ];
 
 const post = (method, data, callback,complete) => {
@@ -899,3 +900,6 @@ export const getShareInfo = (data, callback) => post('weixinshare.share', data, 
 
 // 获取首页配置
 export const getHomePageConfig = (data, callback) => post('pages.gethomepageconfig', data, callback);
+
+// 批量加入购物车
+export const batchsetcart = (data, callback) => post('cart.batchsetcart', data, callback);

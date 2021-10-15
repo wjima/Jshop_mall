@@ -97,7 +97,7 @@ class GoodsBrowsing extends Common
         $list = $this::with('goods')
             ->field($field)
             ->where($where)
-            ->group('goods_id')
+            ->group('goods_id,id')
             ->limit(($page-1) * $limit, $limit)
             ->order('ctime desc')
             ->select();

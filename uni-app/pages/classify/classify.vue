@@ -1,7 +1,20 @@
 <template>
 	<view class="classify">
+		
+		
+		<view class='search' v-if="cate_style == 3">
+			<view class='search-c' v-bind:class="$store.state.searchStyle" @click="goSearch">
+				<image class='icon search-icon' src='/static/image/zoom.png'></image>
+				<input class='search-input' placeholder-class='search-input-p'
+				disabled="true"
+				 placeholder='请输入关键字搜索'  ></input>
+			</view>
+		</view>
+		
+		
 		<!-- 二级小图 -->
-		<view class="goods-box" v-if="cate_style == 3">
+		<view class="goods-box level1-3" v-if="cate_style == 3">
+			
 			<view class="goods-list">
 				<scroll-view scroll-y="true">
 					<view class="goods-li" :class="{ active: index == ins }" @click="active(index)" v-for="(tab, index) in beans" :key="index">
@@ -82,6 +95,9 @@ export default {
 		}
 	},
 	methods: {
+		goSearch() {
+			this.$common.navigateTo('/pages/index/search')
+		},
 		//切换样式 请求分类数据
 		active(index) {
 			this.ins = index;
@@ -171,6 +187,7 @@ export default {
 </script>
 
 <style>
+
 .classify {
 	/*  #ifdef  H5  */
 	height: calc(100vh - 94px);
@@ -277,5 +294,9 @@ export default {
 .level1-b .goods-item-img {
 	width: 100%;
 	height: 222upx;
+}
+
+.goods-box.level1-3{
+	height: calc(100vh - 150px);
 }
 </style>

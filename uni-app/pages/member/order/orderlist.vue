@@ -47,6 +47,10 @@
 						</view>
 					</view>
 					<view class='order-list-button'>
+						
+						<button class='btn btn-circle btn-w again' hover-class="btn-hover"
+						@click="buyAgain(item.items)" style="width: initial;"> 再次购买 </button>
+						
 						<button class='btn btn-circle btn-g' hover-class="btn-hover" @click="orderDetail(item.order_id)">查看详情</button>
 						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status === 1" @click="toPay(item.order_id)">立即支付</button>
 						<button class='btn btn-circle btn-w' hover-class="btn-hover" v-if="item.status === 1 && item.pay_status >= 2 && item.ship_status >= 3 && item.confirm === 1" @click="tackDelivery(index)">确认收货</button>
@@ -86,12 +90,14 @@ export default {
 			loadStatus: 'more',
 			status: [0, 1, 2, 3, 4]	,// 订单状态 0全部 1待付款 2待发货 3待收货 4待评价
 			isReload: false, // 页面是否刷新?重载
+			isBuyAgain:false, //再次购买点击状态
 		}
 	},
 	onLoad () {
 		this.initData()
 	},
 	onShow () {
+		this.isBuyAgain = false
 		// #ifdef MP-ALIPAY || MP-TOUTIAO
 		let order_user_ship = this.$db.get('order_user_ship', true);
 		if (order_user_ship) {
@@ -115,6 +121,38 @@ export default {
 		}
 	},
 	methods: {
+		// 再次购买
+		buyAgain(val) {
+			// 防止重复点击
+			if(!this.isBuyAgain){
+				this.isBuyAgain = true
+			}else{
+				return
+			}
+			
+			let cart = []
+			let _this = this;
+			for(let i of val) {
+				cart.push({"product_id": i.product_id, "nums": i.nums})
+			}
+			this.$api.batchsetcart({cart}, res =>{
+				if(res.status)  {
+					this.$common.successToShow(res.msg, () => {
+						let newData = '';
+						for (let key in res.data.ids) {
+								newData += ',' + res.data.ids[key];
+						}
+						if (newData.substr(0, 1) == ',') {
+							newData = newData.substr(1);
+						}
+						_this.$common.navigateTo('/pages/goods/place-order/index?cart_ids=' + JSON.stringify(newData));
+					})
+				} else {
+					this.$common.errorToShow(res.msg)
+				}
+			})
+			console.log(val);
+		},
 		// 初始化数据并获取订单列表
 		initData (page = 1) {
 			this.page = page
@@ -265,6 +303,10 @@ export default {
 	font-size: 22upx;
 	color: #333;
 }
+.btn.again {
+	margin-right: 20rpx;
+}
+
 .order-list-button{
 	width: 100%;
 	background-color: #fff;

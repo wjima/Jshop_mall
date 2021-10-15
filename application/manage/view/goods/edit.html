@@ -200,6 +200,7 @@
 
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;"> <legend>商品详情</legend></fieldset>
     {:hook('editgoodsview',['id'=>$data.id])}
+    {:hook('editgoodsdistribution',['id'=>$data.id])}
     <div class="layui-form-item">
         <label class="layui-form-label">会员价：</label>
         <div class="layui-input-inline grade_price">

@@ -181,5 +181,27 @@ return [
                 ]
             ]
         ]
+    ],
+    'api' => [
+        'title' => '插件对外的接口都放到这里，接口请求的时候，会来此判断是否存在此控制器和方法,类似/config/api/api.php',
+        'value' => [
+            'api' => [      //控制器名称，可以随便起名，不过此控制器集成的基类一定要注意，不要写错了
+                'code'   => 'Api',
+                'method' => [
+                    'closetip' => [
+                        'code'     => 'closetip',
+                        'is_login' => true
+                    ],
+                    'tmpl' => [
+                        'code'     => 'tmpl',
+                        'is_login' => true
+                    ],
+                    'settip' => [
+                        'code'     => 'settip',
+                        'is_login' => true
+                    ],
+                ]
+            ]
+        ]
     ]
 ];

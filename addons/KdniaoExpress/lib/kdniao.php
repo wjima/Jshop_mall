@@ -9,8 +9,8 @@ class kdniao
 
     private $apiKey = '';//加密私钥，快递鸟提供
     private $ebusinessid = ''; //电商ID
-    const DEVREQURL = 'http://testapi.kdniao.com:8081/api/Eorderservice'; //测试地址
-    const PROREQURL = 'http://api.kdniao.com/api/Eorderservice'; //正式地址
+    const DEVREQURL = 'http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json'; //测试地址
+    const PROREQURL = 'http://api.kdniao.com/api/EOrderService'; //正式地址
     const IPSERVICEURL = 'http://www.kdniao.com/External/GetIp.aspx';//获取ip地址
     const PRINTURL = 'http://www.kdniao.com/External/PrintOrder.aspx';//打印订单地址
     const DEVSEARCHURL = 'http://sandboxapi.kdniao.com:8080/kdniaosandbox/gateway/exterfaceInvoke.json';//即时查询测试地址
@@ -166,7 +166,7 @@ class kdniao
         $request_data = json_encode($request_data, JSON_UNESCAPED_UNICODE);
         $data_sign    = $this->encrypt($this->get_ip() . $request_data, $this->apiKey);
         //组装表单
-        $form = '<form id="form1" method="POST" action="' . self::PRINTURL . '"><input type="text" name="RequestData" value=\'' . $request_data . '\'/><input type="text" name="EBusinessID" value="' . $this->ebusinessid . '"/><input type="text" name="DataSign" value="' . $data_sign . '"/><input type="text" name="IsPriview" value="' . $is_priview . '"/></form><script>form1.submit();</script>';
+        $form = '<form id="form1" method="POST" action="' . self::PRINTURL . '"><input type="text" name="RequestData" value=\'' . $request_data . '\'/><input type="text" name="EBusinessID" value="' . $this->ebusinessid . '"/><input type="text" name="DataSign" value="' . $data_sign . '"/><input type="text" name="IsPreview" value="' . $is_priview . '"/><script>form1.submit();</script></form>';
         print_r($form);
         exit();
     }
@@ -247,9 +247,12 @@ class kdniao
             }
         }
         $requestData = json_encode($requestData, JSON_UNESCAPED_UNICODE);
-        $datas       = array(
+
+        $requesttype = getAddonsConfigVal('KdniaoExpress', 'requesttype');
+
+        $datas = array(
             'EBusinessID' => $this->ebusinessid,
-            'RequestType' => '1002',// 使用快递鸟付费查询请改为 8001
+            'RequestType' => $requesttype ? $requesttype : '1002',//8001
             'RequestData' => urlencode($requestData),
             'DataType'    => '2',
         );

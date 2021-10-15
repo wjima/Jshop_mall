@@ -68,12 +68,13 @@ class StockControl extends Addons
     {
         $addonModel = new addonsModel();
         $setting    = $addonModel->getSetting($this->info['name']);
-        if(isset($setting['menu'])){
+        if (isset($setting['menu'])) {
             return $setting['menu'];
         }
         return true;
     }
-    public function apiAddonsConf($obj){
+    public function apiAddonsConf($obj)
+    {
         $obj->data[$this->info['name']] = true;
         return true;
     }
@@ -84,4 +85,8 @@ class StockControl extends Addons
         return $this->fetch('config');
     }
 
+    public function afterShip($delivery_id)
+    {
+        return true;
+    }
 }

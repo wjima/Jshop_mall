@@ -25,6 +25,16 @@
         </div>
         <div class="layui-tab-content">
             <div class="layui-form-item">
+                <label class="layui-form-label">指令类型：</label>
+                <div class="layui-input-inline seller-inline-2">
+                    <input type="text" name="setting[requesttype]" required lay-verify="required" placeholder=""
+                           autocomplete="off" value="{$config.requesttype}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">轨迹查询：免费的为1002，收费的为8001</div>
+            </div>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-form-item">
                 <label class="layui-form-label">打印机名称：</label>
                 <div class="layui-input-block">
                     <input type="text" name="setting[print_name]" required lay-verify="required" placeholder=""
@@ -64,7 +74,7 @@
         </div>
         <div class="layui-tab-content" >
             <div class="layui-form-item" style="text-align: center">
-                快递鸟申请地址：<a href="http://www.kdniao.com" target="_blank">点击去申请</a>
+                快递鸟申请地址：<a href="http://www.kdniao.com/reg?from=gxwhzn" target="_blank">点击去申请</a>
             </div>
         </div>
     </div>

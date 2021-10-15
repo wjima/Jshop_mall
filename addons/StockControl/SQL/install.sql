@@ -18,5 +18,6 @@ CREATE TABLE `jshop_stock_log` (
   `bn` varchar(30) DEFAULT NULL COMMENT '商品编码',
   `goods_name` varchar(200) DEFAULT NULL COMMENT '商品名称',
   `spes_desc` text COMMENT '货品明细序列号存储',
+  `remnant_stock` int(11) DEFAULT '0' NOT NULL COMMENT '剩余库存',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='库存操作详情表';

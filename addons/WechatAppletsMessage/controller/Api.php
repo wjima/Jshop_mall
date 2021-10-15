@@ -9,8 +9,6 @@
 namespace addons\WechatAppletsMessage\controller;
 use addons\WechatAppletsMessage\model\UserWxmsgSubscription;
 use addons\WechatAppletsMessage\model\UserWxmsgSubscriptionSwitch;
-use app\common\model\UserToken;
-use myxland\addons\library\AddonController;
 use think\facade\Request;
 
 
@@ -19,45 +17,8 @@ use think\facade\Request;
  * Class Api
  * @package addons\WechatAppletsMessage\controller
  */
-class Api extends AddonController
+class Api extends \app\common\controller\Api
 {
-    protected $userId = 0;
-
-    /**
-     * initialize
-     * @return array|mixed|void
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
-     */
-    protected function initialize()
-    {
-        parent::initialize();
-        //解决跨域问题
-        if($_SERVER['REQUEST_METHOD'] == 'OPTIONS')
-        {
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
-            header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
-            exit;
-        }
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
-        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH');
-
-        $userTokenModel = new UserToken();
-        $token = Request::param('token');
-        $result = $userTokenModel->checkToken($token);
-        if(!$result['status'])
-        {
-            return error_code(14007);
-        }
-        else
-        {
-            $this->userId = $result['data']['user_id'];
-        }
-    }
-
 
     /**
      * 判断是否需要显示订阅提醒 废弃！！！

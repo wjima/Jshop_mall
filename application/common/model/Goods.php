@@ -576,7 +576,7 @@ class Goods extends Common
      */
     public function getStock($product)
     {
-        return $product['stock'] - $product['freeze_stock'];
+        return ($product['stock'] - $product['freeze_stock']) > 0 ? $product['stock'] - $product['freeze_stock'] : 0;
     }
 
     /**

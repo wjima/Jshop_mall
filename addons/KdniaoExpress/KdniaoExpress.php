@@ -22,7 +22,7 @@ class KdniaoExpress extends Addons
         'description'  => '快递鸟快递查询以及订单打印插件，请勿和其它打印插件一起使用。',    // 插件简介
         'status'       => 0,    // 状态
         'author'       => 'mark',
-        'version'      => '0.4',
+        'version'      => '0.5',
         'dialog_width' => '600px',
     ];
 
@@ -59,7 +59,7 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
           `order_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单号',
           `shipper_code` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '快递公司编码',
           `logistic_code` varchar(400) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '快递单号',
-          `print_template` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '面单打印模板内容(html格式)',
+          `print_template` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '面单打印模板内容(html格式)',
           `ctime` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT '创建时间',
           `utime` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT '更新时间',
           PRIMARY KEY (`id`) USING BTREE,
@@ -116,6 +116,20 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
     {
         $this->assign('config', $params);
         return $this->fetch('config');
+    }
+
+    /**
+     * 实现的menu钩子方法
+     * @return mixed
+     */
+    public function menu($params)
+    {
+        $addonModel = new addonsModel();
+        $setting    = $addonModel->getSetting($this->info['name']);
+        if(isset($setting['menu'])){
+            return $setting['menu'];
+        }
+        return true;
     }
 
     /**
@@ -218,9 +232,10 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
         $AppKey            = $setting['apikey'];//加密私钥，快递鸟提供
         $kdniao            = new kdniao($ebusinessid, $AppKey);
         $kdniao->setNotice($setting['is_notice']);
+
         if ($params['bt'] == 3 && !$print_template) {
-            $this->showError("请先获取单号");
-            return;
+            $return['msg'] = '请先获取单号';
+            return $return;
         }
 
         if ($print_template && ($params['bt'] == '1' || $params['bt'] == '3')) {

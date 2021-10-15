@@ -86,7 +86,8 @@ class Stock extends Common
             'goods_name' => $products['goods']['name'],
             'sn' => $products['sn'],
             'bn' => $products['goods']['bn'],
-            'spes_desc' => $products['spes_desc']
+            'spes_desc' => $products['spes_desc'],
+            'remnant_stock' => $stock,    // 剩余库存
         ];
         try {
             Db::startTrans();
@@ -208,7 +209,9 @@ class Stock extends Common
                     'goods_name' => $product['goods']['name'],
                     'sn' => $product['sn'],
                     'bn' => $product['goods']['bn'],
-                    'spes_desc' => $product['spes_desc']
+                    'spes_desc' => $product['spes_desc'],
+                    'remnant_stock' => $stock
+
                 ];
             } else {
                 return '请检查第' . ($k + 1) . '个货品或数量是否正确';
@@ -355,6 +358,7 @@ class Stock extends Common
                     from jshop_bill_delivery_items	di
                     join jshop_bill_delivery d
                     on d.delivery_id = di.delivery_id
+                    group by di.id
                     union
                     select ri.name goods_name,ri.bn,ri.sn,ri.addon spes_desc,ri.nums,r.utime ctime,r.reship_id as relation_id,5 type
                     from jshop_bill_reship_items	ri

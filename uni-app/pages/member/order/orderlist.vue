@@ -90,12 +90,14 @@ export default {
 			loadStatus: 'more',
 			status: [0, 1, 2, 3, 4]	,// 订单状态 0全部 1待付款 2待发货 3待收货 4待评价
 			isReload: false, // 页面是否刷新?重载
+			isBuyAgain:false, //再次购买点击状态
 		}
 	},
 	onLoad () {
 		this.initData()
 	},
 	onShow () {
+		this.isBuyAgain = false
 		// #ifdef MP-ALIPAY || MP-TOUTIAO
 		let order_user_ship = this.$db.get('order_user_ship', true);
 		if (order_user_ship) {
@@ -121,6 +123,13 @@ export default {
 	methods: {
 		// 再次购买
 		buyAgain(val) {
+			// 防止重复点击
+			if(!this.isBuyAgain){
+				this.isBuyAgain = true
+			}else{
+				return
+			}
+			
 			let cart = []
 			let _this = this;
 			for(let i of val) {

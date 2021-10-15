@@ -1,0 +1,29 @@
+<form style="padding:30px;" class="layui-form layui-form-pane" id="conditionEdit">
+    <input type="hidden" name="code" value="{$code}" />
+    <input type="hidden" name="grade_id" value="{$grade_id}" />
+    <input type="hidden" name="id" value="{$id}" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">条件名称：</label>
+        <div class="layui-form-mid">指定用户等级</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><i class="required-color">*</i>请选择：</label>
+        <div class="layui-input-block">
+            {volist name="gradeList" id="vo"}
+                <input type="radio" name="params[grade]"  lay-skin="primary" title="{$vo.name}{if condition='$vo.is_def eq 1'} (默) {/if}" {if condition="isset($params[$vo['id']])"}checked=""{/if} >
+            {/volist}
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">数量：</label>
+        <div class="layui-input-inline seller-inline-2">
+            <input name="params[num]" lay-verify="title" autocomplete="off" value="{$params.num}" placeholder="数量" class="layui-input" type="text">
+        </div>
+        <div class="layui-form-mid layui-word-aux">下线指定等级达到多少数量，升级</div>
+    </div>
+</form>
+<script>
+    layui.use('form', function(){
+        layui.form.render();
+    });
+</script>

@@ -1,0 +1,117 @@
+<form class="layui-form seller-form"  action="" >
+<div class="layui-form-item">
+    <div class="layui-input-inline ">
+        <input type="text" name="name" required placeholder="姓名" class="layui-input">
+    </div>
+
+    <div class="layui-input-inline ">
+        <input type="text" name="mobile" required placeholder="手机号" class="layui-input">
+    </div>
+
+    <div class="layui-input-inline ">
+        <select name="verify">
+            <option value="">审核状态</option>
+            <option value="2">待审核</option>
+            <option value="1">审核通过</option>
+            <option value="3">审核拒绝</option>
+        </select>
+    </div>
+    
+    <div class="layui-input-inline seller-inline-2">
+        <button lay-submit lay-filter="distribution-search" class="layui-btn layui-btn-primary layui-btn-sm"><i
+                class="layui-icon layui-icon-search"></i></button>
+    </div>
+</div>
+
+</form>
+<div class="table-body">
+    <table id="distributionTable" lay-filter="distri"></table>
+</div>
+
+<script>
+    layui.use(['table','form','layer','laydate'],function() {
+        var layer = layui.layer, table = layui.table, form = layui.form;
+        //执行渲染
+        table.render({
+            elem: '#distributionTable', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-220',
+            cellMinWidth: '80',
+            page: 'true',
+            limit: '20',
+            id: 'distributionTable',
+            url: "{:get_addon_url('DistributionCenter://Index/distribution')}",
+            cols: [[
+                {type: 'numbers'},
+                {field: 'name', title: '姓名', align: 'center'},
+                {field: 'grade_name', title: '分销商等级', width: 200, align: 'center'},
+                {field: 'mobile', title: '手机号', align: 'center'},
+                {field: 'user_mobile', title: '注册手机号', align: 'center'},
+                {field: 'weixin', sort: true, title: '微信', align: 'center',},
+                {field: 'qq', sort: true, title: 'QQ', align: 'center',},
+                {field: 'verify', sort: true, title: '审核状态', align: 'center',},
+                {field: 'verify_time', sort: true, title: '审核时间', align: 'center',},
+                {field: 'ctime', sort: true, title: '创建时间', align: 'center',},
+                {field: 'utime', sort: true, title: '更新时间', align: 'center',},
+                {fixed: 'right', title: '操作', toolbar: '#distributionTableBar'}
+            ]]
+        });
+        form.on('submit(distribution-search)', function(data){
+            layui.table.reload('distributionTable', {
+                where: data.field
+                ,page: {
+                    curr: 1
+                }
+            });
+            return false;
+        });
+        //监听工具条
+        table.on('tool(distri)', function(obj){
+            var data = obj.data;
+            var layEvent = obj.event;
+            if(layEvent === 'del'){
+                layer.confirm('真的要删除么',{icon: 3}, function(index){
+                    JsPost("{:get_addon_url('DistributionCenter://Index/delDistribution')}",{id:data.id},function(res){
+                        if(res.status){
+                            obj.del();
+                            layer.close(index);
+                        }
+                        layer.msg(res.msg);
+                    })
+                });
+            } else if(layEvent === 'edit'){ //弹窗
+                JsPost("{:get_addon_url('DistributionCenter://Index/editDistribution')}",{id:data.id},function(res){
+                    if(res.status){
+                        window.box = layer.open({
+                            type: 1,
+                            content: res.data,
+                            area: ['700px', '420px'],
+                            title: '审核分销商',
+                            btn: ['确定', '取消'],
+                            zIndex: 1800,
+                            yes: function () {
+                                var data = $("#editDistribution").serializeArray();
+                                JsPost('{:get_addon_url("DistributionCenter://Index/doEditDistribution")}', data, function(e){
+                                    if (e.status) {
+                                        layer.close(window.box);
+                                        layer.msg(e.msg, { time: 1300 }, function () {
+                                            layui.table.reload('distributionTable');
+                                        });
+                                    } else {
+                                        layer.msg(e.msg);
+                                    }
+                                });
+                            }
+                        });
+                    }else{
+                        layer.msg(res.msg);
+                    }
+                })
+                return false;
+            }
+        });
+    });
+</script>
+<script type="text/html" id="distributionTableBar">
+    <a class="layui-btn layui-btn-jshop" lay-event="edit" title="编辑"><i class="iconfont">&#xe6e4;</i></a>
+    <a class="layui-btn layui-btn-jshop" lay-event="del" title="删除"><i class="iconfont">&#xe654;</i></a>
+</script>

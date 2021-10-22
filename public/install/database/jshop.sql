@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2021-05-11 14:39:50
+-- Generation Time: 2021-10-14 14:14:23
 -- 服务器版本： 5.5.57-log
 -- PHP Version: 7.0.19
 
@@ -4641,16 +4641,7 @@ CREATE TABLE IF NOT EXISTS `jshop_images_group` (
   `id` int(10) unsigned NOT NULL,
   `name` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '分组名称',
   `show` tinyint(1) unsigned DEFAULT '1' COMMENT '是否显示，1显示，2不显示'
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='图片分组表';
-
---
--- 转存表中的数据 `jshop_images_group`
---
-
-INSERT INTO `jshop_images_group` (`id`, `name`, `show`) VALUES
-(1, '头像', 2),
-(2, '海报', 2),
-(3, '二维码', 2);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='图片分组表';
 
 -- --------------------------------------------------------
 
@@ -6730,6 +6721,8 @@ CREATE TABLE IF NOT EXISTS `jshop_order_items` (
   `bn` varchar(30) DEFAULT NULL COMMENT '商品编码',
   `name` varchar(200) DEFAULT NULL COMMENT '商品名称',
   `price` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '货品价格单价',
+  `ave_amount` decimal(20,2) DEFAULT NULL COMMENT '货品实际总金额',
+  `ave_price` decimal(20,2) DEFAULT NULL COMMENT '货品实际单价',
   `costprice` decimal(10,2) unsigned DEFAULT '0.00' COMMENT '货品成本价单价',
   `mktprice` decimal(10,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '市场价',
   `image_url` varchar(100) NOT NULL COMMENT '图片',
@@ -6739,6 +6732,7 @@ CREATE TABLE IF NOT EXISTS `jshop_order_items` (
   `promotion_list` varchar(5000) NOT NULL COMMENT '促销信息',
   `weight` decimal(10,2) DEFAULT NULL COMMENT '总重量',
   `sendnums` smallint(5) unsigned DEFAULT NULL COMMENT '发货数量',
+  `is_gift` tinyint(1) unsigned DEFAULT '2' COMMENT '是否赠品，1赠品，2不是赠品',
   `addon` text COMMENT '货品明细序列号存储',
   `utime` bigint(12) unsigned DEFAULT NULL COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='订单明细表';
@@ -8260,7 +8254,7 @@ ALTER TABLE `jshop_ietask`
 -- AUTO_INCREMENT for table `jshop_images_group`
 --
 ALTER TABLE `jshop_images_group`
-  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+  MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `jshop_invoice`
 --

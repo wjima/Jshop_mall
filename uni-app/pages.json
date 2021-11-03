@@ -27,6 +27,12 @@
 	  }
 	},
 	{
+	  "path": "pages/free/index",
+	  "style": {
+	    "navigationBarTitleText": "免单"
+	  }
+	},
+	{
 	  "path": "pages/bargain/details",
 	  "style": {
 	    "navigationBarTitleText": "商品详情"

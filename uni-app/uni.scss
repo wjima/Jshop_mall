@@ -86,13 +86,3 @@ $fz12: 24upx;
 $fz16: 32upx;
 $fz18: 36upx;
 $fz20: 40upx;
-
-
-@mixin ellNum($num: 2) {
-	word-break: break-all;
-	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: $num;
-	overflow: hidden;
-}

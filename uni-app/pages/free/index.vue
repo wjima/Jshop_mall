@@ -11,7 +11,18 @@
 				</view>
 			</view>
 		</view>
-		<image class="free-3" src="../../static/images/free/free-3.png" mode="widthFix"></image>
+		<view class="bot-tips">
+			<image class="free-3" src="../../static/images/free/free-3.png" mode="widthFix"></image>
+			
+			<view class="bot-content">
+				<view class="title">活动规则</view>
+				<view class="bot-item-wrap">
+					<view class="item">活动期间购买三个商品，支付时最便宜的免单</view>
+					<view class="item">三个商品的总值≥200元</view>
+				</view>
+			</view>
+			
+		</view>
 	</view>
 </template>
 
@@ -29,6 +40,9 @@
 	.free-2 {
 		position: relative;
 	}
+	// .bot-content {
+	// 	position: relative;
+	// }
 	.free-2-wrap {
 		position: relative;
 		.goods-list {

@@ -68,6 +68,12 @@
         "navigationBarTitleText": "购物车"
       }
     },
+	{
+	  "path": "pages/cart/index/free",
+	  "style": {
+	    "navigationBarTitleText": "购物车"
+	  }
+	},
     {
       "path": "pages/member/index/index",
       "style": {

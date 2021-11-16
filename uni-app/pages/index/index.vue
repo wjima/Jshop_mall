@@ -1,7 +1,7 @@
 <template>
 	<view class="content" style="padding-top: 0upx;">
 		<jshop :jdata="pageData"></jshop>
-		<jihaiCopyright v-if="copy"></jihaiCopyright>
+		<jihaiCopyright ></jihaiCopyright>
 		<!-- #ifdef H5 || APP-PLUS-NVUE || APP-PLUS -->
 		<view class="service" @click="showChat()">
 			<image class="icon" src="/static/image/seller-content.png" mode=""></image>

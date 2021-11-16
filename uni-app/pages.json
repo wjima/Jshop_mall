@@ -27,6 +27,12 @@
 	  }
 	},
 	{
+	  "path": "pages/free/index",
+	  "style": {
+		"navigationBarTitleText": "免单"
+	  }
+	},
+	{
 	  "path": "pages/bargain/details",
 	  "style": {
 	    "navigationBarTitleText": "商品详情"
@@ -62,6 +68,12 @@
         "navigationBarTitleText": "购物车"
       }
     },
+	{
+	  "path": "pages/cart/index/free",
+	  "style": {
+	    "navigationBarTitleText": "购物车"
+	  }
+	},
     {
       "path": "pages/member/index/index",
       "style": {

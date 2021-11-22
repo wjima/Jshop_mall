@@ -246,24 +246,25 @@ class Api extends \app\common\controller\Api
             return json($this->config["result"]);
         }
         $order_id = input('param.order_id');
-        $model = new Order();
-        $result = $model->getOrderInfoByOrderID($order_id);
+        $model = new \app\common\model\Order();
+        $resultinfo = $model->getOrderInfoByOrderID($order_id);
         $items = [];
-        foreach ($result["items"] as $k => $v) {
+        foreach ($resultinfo["items"] as $k => $v) {
             $items[$v["product_id"]] = $v["nums"];
         }
-        $billDeliveryModel = new BillDelivery();
+        $billDeliveryModel = new \app\common\model\BillDelivery();
         $result = $billDeliveryModel->ship(
             $order_id,
             input('param.logi_code'),
             input('param.logi_no'),
             $items,
-            input('param.store_id', 0),
+            $resultinfo["store_id"],
             input('param.ship_name', ""),
             input('param.ship_mobile', ""),
             input('param.ship_area_id', 0),
             input('param.ship_address', ""),
-            input('param.memo', "")
+            input('param.memo', ""),
+            input('seller_id')
         );
         return json($result);
     }

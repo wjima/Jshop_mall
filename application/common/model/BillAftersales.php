@@ -1257,16 +1257,15 @@ class BillAftersales extends Common
             }
 
             //如果订单是已完成，但是订单的未发货商品还有的话，需要解冻库存
-            if (isset($order_data['status']) && $order_data['status'] == $orderModel::ORDER_STATUS_COMPLETE) {
-                $goodsModel = new Goods();
-                foreach ($order['items'] as $k => $v) {
-                    $nums = $v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']);       //还未发货的数量
-                    if ($nums > 0
-                    ) {
-                        $goodsModel->changeStock($v['product_id'], 'refund', $nums);
-                    }
-                }
-            }
+//            if (isset($order_data['status']) && $order_data['status'] == $orderModel::ORDER_STATUS_COMPLETE) {
+//                $goodsModel = new Goods();
+//                foreach ($order['items'] as $k => $v) {
+//                    $nums = $v['nums'] - $v['sendnums'] - ($v['reship_nums'] - $v['reship_nums_ed']);       //还未发货的数量
+//                    if ($nums > 0) {
+//                        $goodsModel->changeStock($v['product_id'], 'refund', $nums);
+//                    }
+//                }
+//            }
             if (isset($order_data)) {
                 $orderModel->where(['order_id' => $order_id, 'status' => $orderModel::ORDER_STATUS_NORMAL])->data($order_data)->update();
             }

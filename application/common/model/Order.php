@@ -64,6 +64,7 @@ class Order extends Common
     const ORDER_TYPE_SKILL = 4;           //订单类型，4秒杀
     const ORDER_TYPE_LOTTERY = 5;           //订单类型，5抽奖订单
     const ORDER_TYPE_BARGAIN = 6;           //订单类型，6砍价订单
+    const ORDER_TYPE_COMBO = 8;           //订单类型，8免单活动订单
 
     const GIVEAWAY_STR = "[赠品]";         // 订单明细商品名称上的赠品的文字,在前端订单待评价列表和评价页面，会直接比对这个字段，如果是赠品的话，不显示。
 
@@ -835,7 +836,7 @@ class Order extends Common
             case self::ALL_PENDING_DELIVERY: //待发货
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
-                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_NO],
+                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_YES],
                     [$table_name . 'ship_status', 'in', self::SHIP_STATUS_NO . ',' . self::SHIP_STATUS_PARTIAL_YES]
                 ];
                 break;
@@ -1412,6 +1413,7 @@ class Order extends Common
                 sendMessage($order['user_id'], 'seller_order_notice', $order);//给卖家发消息
                 //订单支付完成后的钩子
                 Hook('orderpayed', $order_id);
+                Hook('orderpayedafter', $order);
             }
         }
 
@@ -1613,6 +1615,8 @@ class Order extends Common
                         return error_code(13231);
                     }
                     break;
+                case self::ORDER_TYPE_COMBO:
+                    break;
                 default:
                     Db::rollback();
                     return error_code(10000);
@@ -1767,6 +1771,8 @@ class Order extends Common
             $item['weight'] = bcmul($v['weight'], $v['nums'], 2);
             $item['sendnums'] = 0;
             $item['addon'] = $v['products']['spes_desc'];
+            // 是否免单商品
+            $item['is_free'] = $v['products']['is_free'];
             if (isset($v['products']['promotion_list'])) {
                 $item['promotion_list'] = json_encode($v['products']['promotion_list']);
             }

@@ -442,6 +442,11 @@
 			},
 			// 申请售后
 			customerService(id) {
+				// 免单订单
+				if(this.orderInfo.order_type == 8){
+					this.$common.errorToShow('免单订单不支持售后！')
+					return
+				}
 				this.$common.navigateTo('../after_sale/index?order_id=' + id);
 			},
 			//快递信息

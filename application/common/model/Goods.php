@@ -602,7 +602,8 @@ class Goods extends Common
         $where        = [];
         $where[]      = ['id', 'eq', $product_id];
         $product      = $productModel->where($where)->field('goods_id')->find();
-        switch ($type) {
+
+        switch($type) {
             case 'order': //下单
                 $exp     = Db::raw('IF(stock < freeze_stock, 0, stock - freeze_stock)-' . $num . '>=0');
                 $where[] = [0, 'exp', $exp];
@@ -620,7 +621,6 @@ class Goods extends Common
                 }
                 break;
             case 'refund': //退款
-                //$this->where(['id' => $product['goods_id']])->setDec('buy_count', $num);
                 $res = $productModel->where($where)->setDec('freeze_stock', $num);
                 break;
             case 'return': //退货

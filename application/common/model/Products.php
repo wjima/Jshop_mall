@@ -87,7 +87,7 @@ class Products extends Common
         }
         $goodsModel = new Goods();
 
-        $goods = $goodsModel->where(['id' => $product['goods_id']])->field('name,image_id,bn,marketable,spes_desc')->find(); //后期调整
+        $goods = $goodsModel->where(['id' => $product['goods_id']])->field('name,image_id,bn,marketable,spes_desc,is_combo')->find(); //后期调整
         //判断如果没有商品，就返回false
         if (!($goods)) {
             return error_code(12700);
@@ -103,6 +103,7 @@ class Products extends Common
         }
         $product['total_stock'] = $product['stock']; //原始总库存
         $product['stock']       = $goodsModel->getStock($product);
+        $product['is_combo'] = $goods['is_combo'];
 
         $priceData = $goodsModel->getPrice($product, $user_id);
 

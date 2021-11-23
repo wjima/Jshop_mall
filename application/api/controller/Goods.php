@@ -143,6 +143,11 @@ class Goods extends Api
         if (input('?param.where')) {
             $postWhere = json_decode(input('param.where'), true);
 
+            //套餐商品
+            if(isset($postWhere['is_combo']) && $postWhere['is_combo']){
+                $where[] = ['g.is_combo', 'eq', $postWhere['is_combo']];
+            }
+
             //判断商品搜索,
             if (isset($postWhere['search_name']) && $postWhere['search_name']) {
                 $where[] = ['g.name|g.bn|g.brief', 'LIKE', '%' . $postWhere['search_name'] . '%'];

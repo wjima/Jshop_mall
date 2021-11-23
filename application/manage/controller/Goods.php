@@ -306,6 +306,7 @@ class Goods extends Manage
         array_push($data, ['goods_id' => $goods_id]);
         hook('addgoodsafter', $data);//添加商品后增加钩子
         hook('addgoodsafterdistribution', $data);//添加商品后增加钩子
+        hook('addgoodsafterfreepackage', $data);//添加商品后增加钩子
         $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;
@@ -928,6 +929,7 @@ class Goods extends Manage
         $goodsModel->commit();
         hook('editgoodsafter', $data);//编辑商品后增加钩子
         hook('editgoodsafterdistribution', $data);//编辑商品后增加钩子
+        hook('editgoodsafterfreepackage', $data);//编辑商品后增加钩子
         $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;

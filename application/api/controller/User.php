@@ -338,6 +338,7 @@ class User extends Api
             // $result['msg'] = error_code(10013, true);
             return error_code(10013);
         }
+
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toAdd($this->userId, input("param.goods_id"));
     }

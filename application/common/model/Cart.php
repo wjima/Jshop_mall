@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace app\common\model;
 
+use addons\FreePackage\model\FreePackage;
 use addons\KdniaoExpress\lib\kdniao;
 use think\Db;
 
@@ -26,6 +27,7 @@ class Cart extends Common
     const TYPE_SKILL = 4;      //秒杀模式
     const TYPE_BARGAIN = 6;      //砍价模式
     const TYPE_GIVEAWAY = 7;        //赠品，在cart表里不会存在，但是会在计算促销过之后，动态的加上去
+    const TYPE_COMBO = 8;        //套餐，套餐内最低价的商品免单
 
     /**
      * 关联货品
@@ -139,7 +141,13 @@ class Cart extends Common
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
-
+            case self::TYPE_COMBO:  // 商品套餐活动
+                $num_type = 2;
+                if($nums > 1){
+                    $result['msg']    = '套餐商品每个货品只能添加一件！';
+                    return $result;
+                }
+                break;
             default:
                 return error_code(10000);
         }
@@ -224,7 +232,6 @@ class Cart extends Common
             $where[] = ['id', 'in',$ids];
         }
         $list    = $this->where($where)->select();
-
         if (!$list->isEmpty()) {
             $list = $list->toArray();
         }
@@ -288,6 +295,19 @@ class Cart extends Common
                     return $result;
                 }
                 break;
+            case self::TYPE_COMBO:
+                //套餐
+                $combo_status = get_addons_status('freepackage');
+                if(!$combo_status){
+                    return error_code(10711);   // 请先安装插件
+                }
+                $packageModel = new FreePackage();
+                $result       = $packageModel->comboInfo($list, $userId);
+                if (!$result['status']) {
+                    return $result;
+                }
+
+                break;
             default:
                 return error_code(10000);
         }
@@ -338,6 +358,9 @@ class Cart extends Common
             ],
             'msg'    => ""
         ];
+
+//        $order_type = 8;// 套餐
+
         $cartList = $this->getList($userId, $ids, $order_type, $display);
         if (!$cartList['status']) {
             $result['msg'] = $cartList['msg'];

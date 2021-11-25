@@ -22,7 +22,7 @@
 					<image class="title-icon icon2" src="../../static/images/free/title-icon.png" mode=""></image>
 					</view>
 				<view class="bot-item-wrap">
-					<view class="item"> <text>1</text> {{goodsConfig.combo_desc || ''}}</view>
+					<view class="item"> {{goodsConfig.combo_desc || ''}}</view>
 					<!-- <view class="item"> <text>2</text> 三个商品的总值≥200元</view> -->
 				</view>
 			</view>
@@ -167,17 +167,16 @@
 			z-index: 2;
 			width: 100%;
 			height: 100%;
-			padding:130rpx 48rpx;
-			display: flex;
-			flex-wrap: wrap;
+			padding:108rpx 48rpx;
 			.goods-item {
+				float: left;
 				border-radius: 8rpx;
 				overflow: hidden;
 				background: #FFFFFF;
 				width: 208rpx;
-				height: 340rpx;
+				height: 330rpx;
 				margin-left: 14rpx;
-				margin-bottom: 24rpx;
+				margin-bottom: 16rpx;
 				&:nth-child(3n-2) {
 					margin-left: 0;
 				}

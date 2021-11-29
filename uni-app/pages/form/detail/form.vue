@@ -337,10 +337,10 @@
 			}
 			this.formId = id
 			this.$db.set('formId', id)
-			this.getFormDetail()
 		},
 		onShow() {
-			
+			this.showPage = true
+			this.getFormDetail()
 		},
 		methods: {
 			// 省市区联动初始化
@@ -380,8 +380,12 @@
 				var that = this
 				this.$api.getFormDetial(data, res => {
 					if (res.status) {
-						this.form = res.data
-						this.originForm = res.data
+						// this.$set(this.$data, 'originForm', res.data)
+						this.form = JSON.parse(JSON.stringify(res.data)) 
+						this.originForm = JSON.parse(JSON.stringify(res.data)) 
+						
+						// this.$set(this.form, 'head_type_value_url', res.data.head_type_value_url)
+						
 						if (res.data.type == '1' || res.data.type == '2') {
 							if (res.data.type == '1') {
 								//订单

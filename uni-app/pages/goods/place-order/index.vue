@@ -128,7 +128,7 @@
 				</view>
 
 				<!-- 商户开启积分 并且用户有积分情况下，免单订单不可使用 -->
-				<view class="cell-item add-title-item right-img" v-if="isOpenPoint === 1 && userPointNums > 0 && params.order_type != 8">
+				<view class="cell-item add-title-item right-img" v-if="isOpenPoint === 1 && userPointNums > 0">
 					<view class="cell-item-bd" style="margin-left:0 ;">
 						<view class="cell-bd-view">积分抵扣</view>
 						<view class="cell-bd-view" style="margin-bottom: 4rpx;">
@@ -903,11 +903,6 @@ export default {
 		},
 		// 是否使用积分
 		changePointHandle() {
-			// 免单商品
-			if(this.params.order_type == 8){
-				this.$common.errorToShow('免单订单不可使用积分！');
-				return
-			}
 			if (this.userPointNums > 0) {
 				this.isUsePoint = !this.isUsePoint;
 				this.params.point = this.isUsePoint ? this.canUsePoint : 0;

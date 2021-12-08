@@ -548,7 +548,7 @@ class Order extends Common
         }
 
         //获取该状态截止时间
-        switch ($order_info['text_status']) {
+        switch ($order_info['status']) {
             case self::ALL_PENDING_PAYMENT: //待付款
                 $cancel = getSetting('order_cancel_time') * 86400;
                 $ctime = $order_info['ctime'];

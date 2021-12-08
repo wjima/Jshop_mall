@@ -396,6 +396,13 @@ class Cart extends Common
 
                 //算订单总价格
                 $result['data']['amount'] = bcadd($result['data']['amount'], $result['data']['list'][$k]['products']['amount'], 2);
+
+                // 若为免单订单需要在这里减去免单商品的价格
+                if($order_type == self::TYPE_COMBO && $v['products']['is_free'] == 1){
+                    $result['data']['amount'] = bcsub($result['data']['amount'], $v['products']['amount'], 2);
+                    $result['data']['order_pmt'] = bcadd($result['data']['order_pmt'], $v['products']['amount'], 2);
+                }
+
                 //计算总重量
                 $result['data']['weight'] = bcadd($result['data']['weight'], bcmul($v['weight'], $v['nums'], 2), 2);
             }

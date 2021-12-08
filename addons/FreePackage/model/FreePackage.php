@@ -39,8 +39,8 @@ class FreePackage extends Common
     protected function tableWhere($post)
     {
         $where = [];
-        if (isset($post['name']) && $post['name'] != "") {
-            $where[] = ['name', 'like', '%' . $post['name'] . '%'];
+        if (isset($post['order_id']) && $post['order_id'] != "") {
+            $where[] = ['order_id', 'eq', $post['order_id']];
         }
         if (isset($post['status']) && $post['status'] != "") {
             $where[] = ['status', 'eq', $post['status']];
@@ -97,9 +97,10 @@ class FreePackage extends Common
         $nums = 0;
         foreach($list as $v){
             if($v['is_select'] == 1){   // 计算数量
-                $nums =+ $nums + 1;
+                $nums =+ $nums + $v['nums'];
             }
         }
+
         // 验证活动规定最少商品数量
         if($settings['combo_num'] > $nums){
             $result['msg'] = "套餐活动最少".$settings['combo_num']."件起购！";
@@ -115,11 +116,11 @@ class FreePackage extends Common
             }
         }
 
-        $list[$small]['products']['is_free'] = 0;// 标识免单商品
-
-        $list[$small]['products']['price'] = 0;
-        $list[$small]['products']['amount'] = 0;
-        $list[$small]['products']['is_free'] = 1;
+        $list[$small]['products']['promotion_list'] = [
+            '免单商品'
+        ];
+        $list[$small]['products']['amount'] = $list[$small]['products']['price'];
+        $list[$small]['products']['is_free'] = 1;// 标识免单商品
 
 
         $result['status'] = true;

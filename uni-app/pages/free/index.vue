@@ -33,13 +33,75 @@
 			<image src="/static/images/free/cart.png" mode=""></image>
 			<text class="big" >{{nums}}</text>
 		</view>
+		
+		<!-- 弹出层 -->
+		<lvv-popup position="bottom" ref="lvvpopref">
+			<view style="width: 100%;max-height: 804upx;background: #FFFFFF;position: absolute;left:0;bottom: 0;">
+				<view class="pop-c">
+					<view class="pop-t" style="padding: 26rpx;">
+						<view class='goods-img'>
+							<image :src='product.image_path' mode='aspectFill'></image>
+						</view>
+						<view class='goods-information'>
+							<view class='pop-goods-name' style="margin-bottom: 6rpx;">{{ product.name || ''}}</view>
+							<view class='pop-goods-price red-price' style="margin-bottom: 6rpx;">￥ {{ product.price || ''}}</view>
+							<view class="fsz24 color-9">
+								库存{{ product.stock || ''}}
+							</view>
+						</view>
+						<view class='close-btn' @click="toclose()">
+							<image src='/static/image/close.png'></image>
+						</view>
+					</view>
+					<scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
+						<spec :spesData="defaultSpesDesc" ref="spec" @changeSpes="changeSpes"></spec>
+						<view class="goods-number">
+							<text class="pop-m-title">数量</text>
+							<view class="pop-m-bd-in">
+								<uni-number-box :min="minNums" :max="product.stock" 
+								:value="buyNum" @change="bindChange"></uni-number-box>
+							</view>
+						</view>
+					</scroll-view>
+					<view class="pop-b">
+						<button class='btn btn-square btn-b btn-all' hover-class="btn-hover2" @click="clickHandle()"
+						 :disabled='submitStatus'
+						 :loading='submitStatus' v-if="product.stock">确定</button>
+						<button class='btn btn-square btn-g btn-all' v-else>已售罄</button>
+					</view>
+				</view>
+			</view>
+		</lvv-popup>
+		<!-- 弹出层end -->
+		
+		
 	</view>
 </template>
 
 <script>
+	import specs from '@/components/spec/specs.vue';
 	export default {
+		components: {
+			specs
+		},
+		computed: {
+			minNums() {
+				if(this.product.stock == 0) {
+					this.buyNum = 0
+					return 0
+				} else {
+					return this.product.stock > this.minBuyNum ? this.minBuyNum : this.product.stock;
+				}
+			},
+			defaultSpesDesc() {
+				return this.product.default_spes_desc;
+			}
+		},
 		data() {
 			return {
+				submitStatus: false,
+				buyNum: 1, // 选定的购买数量
+				minBuyNum: 1, // 最小可购买数量
 				form: {
 					page: 1,
 					limit: 12,
@@ -49,7 +111,8 @@
 				},
 				goods: [],
 				goodsConfig: {},
-				nums: 0
+				nums: 0,
+				product: {},
 			}
 		},
 		mounted() {
@@ -58,6 +121,39 @@
 			this.getCartNums()
 		},
 		methods: {
+			bindChange(val) {
+				this.buyNum = val;
+			},
+			toclose() {
+				this.$refs.lvvpopref.close();
+			},
+			// 切换商品规格
+			changeSpes(obj) {
+				let index = obj.v;
+				let key = obj.k;
+			
+				let userToken = this.$db.get('userToken');
+				let tmp_default_spes_desc = JSON.parse(this.product.default_spes_desc);
+				if (tmp_default_spes_desc[index][key].hasOwnProperty('product_id') && tmp_default_spes_desc[index][key].product_id) {
+					// this.$refs.spec.changeSpecData();
+					this.$api.getProductInfo({
+						id: tmp_default_spes_desc[index][key].product_id,
+						token: userToken
+					}, res => {
+						if (res.status == true) {
+							// 切换规格判断可购买数量
+							this.buyNum = res.data.stock > this.minBuyNum ? this.minBuyNum : res.data.stock;
+							this.product = this.spesClassHandle(res.data);
+						}
+					});
+					uni.showLoading({
+						title: '加载中'
+					});
+					setTimeout(function() {
+						uni.hideLoading();
+					}, 1000);
+				}
+			},
 			listConfig() {
 				this.$api.freePackage({}, res => {
 					if(res.status) {
@@ -72,10 +168,34 @@
 					}
 				})
 			},
-			cartAdd(val) {
+			
+			// 多规格样式统一处理
+			spesClassHandle(products) {
+				// 判断是否是多规格 (是否有默认规格)
+				if (products.hasOwnProperty('default_spes_desc')) {
+					let spes = products.default_spes_desc;
+					for (let key in spes) {
+						for (let i in spes[key]) {
+							if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
+								this.$set(spes[key][i], 'cla', 'pop-m-item selected');
+							} else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
+								this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
+							} else {
+								this.$set(spes[key][i], 'cla', 'pop-m-item none');
+							}
+						}
+					}
+					spes = JSON.stringify(spes).replace(/\./g,'====');
+					/* spes = JSON.stringify(spes) */
+					products.default_spes_desc = spes;
+				}
+				return products;
+			},
+			
+			clickHandle(){
 				this.$api.addCart({
 					nums: 1,
-					product_id: val.product.id,
+					product_id:this.product.id,
 					order_type: 8
 				}, res => {
 					this.getCartNums()
@@ -84,6 +204,10 @@
 						icon: 'none'
 					})
 				})
+			},
+			cartAdd(val) {
+				this.product = this.spesClassHandle(val.product);
+				this.$refs.lvvpopref.show()
 			},
 			getCartNums() {
 				this.$api.GetcartidsFreePackage({}, res => {
@@ -266,5 +390,116 @@
 				margin-right: 16rpx;
 			}
 		}
+	}
+	
+	
+	.pop-t {
+		position: relative;
+		padding: 30upx 26upx;
+		border-bottom: 2upx solid #f3f3f3;
+	}
+	
+	.goods-img {
+		width: 160upx;
+		height: 160upx;
+		position: absolute;
+		top: -20upx;
+		background-color: #fff;
+		border-radius: 6upx;
+		border: 2upx solid #fff;
+	
+	}
+	
+	.goods-img image {
+		height: 100%;
+		width: 100%;
+	}
+	
+	.goods-information {
+		width: 420upx;
+		display: inline-block;
+		margin-left: 180upx;
+	}
+	
+	.pop-goods-name {
+		width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		display: block;
+		font-size: 24upx;
+		margin-bottom: 20upx;
+	}
+	
+	.pop-goods-price {
+		font-size: 30upx;
+	}
+	
+	.close-btn {
+		width: 40upx;
+		height: 40upx;
+		border-radius: 50%;
+		display: inline-block;
+		position: absolute;
+		right: 30upx;
+	}
+	
+	.close-btn image {
+		width: 100%;
+		height: 100%;
+	}
+	
+	.pop-m {
+		font-size: 28upx;
+		margin-bottom: 90upx;
+	}
+	
+	.goods-specs,
+	.goods-number {
+		padding: 26upx;
+		border-top: 1px solid #f3f3f3;
+	}
+	
+	.goods-specs:first-child {
+		border: none;
+	}
+	
+	.pop-m-title {
+		margin-right: 10upx;
+		color: #666;
+	}
+	
+	.pop-m-bd {
+		overflow: hidden;
+		margin-top: 10upx;
+	}
+	
+	.pop-m-item {
+		display: inline-block;
+		float: left;
+		padding: 6upx 16upx;
+		background-color: #fff;
+		color: #333;
+		margin-right: 16upx;
+		margin-bottom: 10upx;
+	}
+	
+	.selected {
+		border: 2upx solid #333;
+		background-color: #333;
+		color: #fff;
+	}
+	
+	.not-selected {
+		border: 2upx solid #ccc;
+	}
+	
+	.none {
+		border: 2upx dashed #ccc;
+		color: #888;
+	}
+	
+	.pop-m-bd-in {
+		display: inline-block;
 	}
 </style>

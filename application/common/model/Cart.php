@@ -142,11 +142,6 @@ class Cart extends Common
                 unset($cat_info);
                 break;
             case self::TYPE_COMBO:  // 商品套餐活动
-                $num_type = 2;
-                if($nums > 1){
-                    $result['msg']    = '套餐商品每个货品只能添加一件！';
-                    return $result;
-                }
                 break;
             default:
                 return error_code(10000);
@@ -358,8 +353,6 @@ class Cart extends Common
             ],
             'msg'    => ""
         ];
-
-//        $order_type = 8;// 套餐
 
         $cartList = $this->getList($userId, $ids, $order_type, $display);
         if (!$cartList['status']) {

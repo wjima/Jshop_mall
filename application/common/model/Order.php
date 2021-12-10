@@ -836,7 +836,7 @@ class Order extends Common
             case self::ALL_PENDING_DELIVERY: //待发货
                 $where = [
                     [$table_name . 'status', 'eq', self::ORDER_STATUS_NORMAL],
-                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_YES],
+                    [$table_name . 'pay_status', 'neq', self::PAY_STATUS_NO],
                     [$table_name . 'ship_status', 'in', self::SHIP_STATUS_NO . ',' . self::SHIP_STATUS_PARTIAL_YES]
                 ];
                 break;

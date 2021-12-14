@@ -53,7 +53,7 @@
 							<image src='/static/image/close.png'></image>
 						</view>
 					</view>
-					<scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
+					<!-- <scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
 						<spec :spesData="defaultSpesDesc" ref="spec" @changeSpes="changeSpes"></spec>
 						<view class="goods-number">
 							<text class="pop-m-title">数量</text>
@@ -62,7 +62,7 @@
 								:value="buyNum" @change="bindChange"></uni-number-box>
 							</view>
 						</view>
-					</scroll-view>
+					</scroll-view> -->
 					<view class="pop-b">
 						<button class='btn btn-square btn-b btn-all' hover-class="btn-hover2" @click="clickHandle()"
 						 :disabled='submitStatus'
@@ -74,11 +74,66 @@
 		</lvv-popup>
 		<!-- 弹出层end -->
 		
+		<lvv-popup position="center" ref="spes" class="spes-content">
+			<view class="content">
+				<specs ref :spesData="defaultSpesDesc" :product="product" ref="spec"
+				 @changeSpes="changeSpes" @clickHandle="clickHandle"></specs>
+			</view>
+		</lvv-popup>
+		
+		
+		
+		<lvv-popup ref="cart" position="bottom">
+			<view class="cart-lvv">
+				<view class="top">
+					<view class="top-l">
+						<image src="/static/image/cart_black.png" mode="" style="vertical-align: top;"></image>
+						<text>已选商品</text>
+					</view>
+					<view class="top-l" @click="delList">
+						<image src="/static/image/del.png" mode=""></image>
+						<text class="color-9">删除</text>
+					</view>
+				</view>
+				<scroll-view scroll-y="true" style="max-height: 560upx;">
+				<view class="goodsList" v-for="(goods,i) in cartLists" :key="goods.id">
+					<view class="goods-l">
+						<view class="name two-line">
+							{{goods.products.name}}
+						</view>
+						<view class="spec" v-if="goods.default_spes_desc">
+							- 规格({{goods.default_spes_desc}})
+						</view>
+					</view>
+					<view class="goods-r column-c">
+						<view class="price">
+							￥{{goods.products.price}}
+						</view>
+						<uni-number-box :value="goods.buy_count" @change.self="bindChange($event,goods)"
+						 :step="1" :has-border="true"
+						 :width="62" :size="100" class="nums"></uni-number-box>
+		
+					</view>
+				</view>
+				</scroll-view>
+			</view>
+		</lvv-popup>
+		
 		
 	</view>
 </template>
 
 <script>
+	
+	const delay = (function() {
+		let timer = 0
+		return function(callback, ms) {
+			clearTimeout(timer)
+			timer = setTimeout(callback, ms)
+		}
+	})()
+	
+	
 	import specs from '@/components/spec/specs.vue';
 	export default {
 		components: {
@@ -113,6 +168,8 @@
 				goodsConfig: {},
 				nums: 0,
 				product: {},
+				cartLists: [],
+				ids: ''
 			}
 		},
 		mounted() {
@@ -121,9 +178,87 @@
 			this.getCartNums()
 		},
 		methods: {
-			bindChange(val) {
-				this.buyNum = val;
+			getCartList() {
+				const _this = this
+				let data = {
+					ids: this.ids,
+					display: 'all',
+					order_type: 8
+				};
+				this.$api.cartList(data, function(res) {
+					if (res.status) {
+						_this.cartLists = res.data.list
+					} else {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+					}
+				});
 			},
+			//购物车数量调整
+			bindChange(value, e) {
+				delay(() => {
+					let _this = this;
+					let id = e.products.id;
+					let num = value;
+					let cartData = _this.cartLists;
+					let changeSelected = false;
+					for (let key in cartData) {
+						if (cartData[key].product_id == id) {
+							if (num <= cartData[key].products.stock) {
+								cartData[key].nums = num;
+								changeSelected = true;
+							}
+							break;
+						}
+					}
+					if (changeSelected) {
+						_this.cartData = cartData;
+						// _this.cartId = id;
+						// _this.cartNum = num;
+						
+						console.log('e.id', e.id);
+						_this.$common.throttle(_this.setCartNum(e.id, num), _this, 350);
+					}
+					return false;
+				}, 500)
+			
+			},
+			
+			
+			// //数量减一操作
+			// bindCartNumberOperation: function() {
+			// 	let _this = this;
+			// 	_this.setCartNum(_this.cartId, _this.cartNum);
+			// },
+			
+			//设置购物车数量
+			setCartNum: function(id, nums) {
+				let _this = this;
+				let data = {
+					id: id,
+					nums: nums,
+				};
+				_this.$api.setCartNum(data, function(res) {
+					if (_this.cartIds.indexOf(id) > -1) {
+						//_this.getCartData();
+						if (res.status) {
+							// _this.$nextTick(function() {
+							// 	_this.showHandle(res.data, false);
+							// });
+						} else {
+							_this.$common.errorToShow(res.msg);
+						}
+					} else {
+						// _this.$nextTick(function() {
+						// 	_this.showHandle(res.data, false);
+						// });
+					}
+				});
+			},
+			
+			
 			toclose() {
 				this.$refs.lvvpopref.close();
 			},
@@ -172,7 +307,7 @@
 			// 多规格样式统一处理
 			spesClassHandle(products) {
 				// 判断是否是多规格 (是否有默认规格)
-				if (products.hasOwnProperty('default_spes_desc')) {
+				if (products.hasOwnProperty('default_spes_desc') && typeof(products.default_spes_desc) != 'string') {
 					let spes = products.default_spes_desc;
 					for (let key in spes) {
 						for (let i in spes[key]) {
@@ -186,18 +321,19 @@
 						}
 					}
 					spes = JSON.stringify(spes).replace(/\./g,'====');
-					/* spes = JSON.stringify(spes) */
 					products.default_spes_desc = spes;
 				}
 				return products;
 			},
 			
-			clickHandle(){
+			clickHandle(obj){
+				let {nums, id: product_id} = obj
 				this.$api.addCart({
-					nums: 1,
-					product_id:this.product.id,
+					nums,
+					product_id,
 					order_type: 8
 				}, res => {
+					this.$refs.spes.close()
 					this.getCartNums()
 					uni.showToast({
 						title: res.msg,
@@ -207,13 +343,15 @@
 			},
 			cartAdd(val) {
 				this.product = this.spesClassHandle(val.product);
-				this.$refs.lvvpopref.show()
+				this.$refs.spes.show()
 			},
 			getCartNums() {
 				this.$api.GetcartidsFreePackage({}, res => {
 					if(res.status) {
 						if(res.data.length != 0) {
+							this.ids = res.data
 							this.nums = res.data.split(',').length
+							this.getCartList()
 							if(this.nums >99) {
 								this.nums = '99+'
 							}
@@ -222,10 +360,7 @@
 				})
 			},
 			toCart() {
-				uni.setStorageSync('order_type', 8)
-				uni.navigateTo({
-					url:'../cart/index/free'
-				})
+				this.$refs.cart.show()
 			}
 		}
 	}
@@ -502,4 +637,102 @@
 	.pop-m-bd-in {
 		display: inline-block;
 	}
-</style>
+	
+	
+	.spes-content {
+		z-index: 100;
+		.lvv-popup {
+			z-index: 100;
+		}
+		.content {
+			width: 80%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+	}
+	
+	
+	.cart-lvv {
+		width: 100%;
+		bottom: 50px;
+		/* #ifdef MP-ALIPAY */
+		bottom: 0;
+		/* #endif */
+		height: 300rpx;
+		background: #ffffff;
+		position: absolute;
+		left: 0;
+		padding-bottom: 158rpx;
+		border-radius: 16rpx 16rpx 0 0;
+		min-height: 850rpx;
+	
+		.top {
+			display: flex;
+			justify-content: space-between;
+			padding: 30rpx;
+			border-bottom: 2rpx solid #f2f2f2;
+	
+			.top-l {
+				image {
+					width: 36rpx;
+					height: 36rpx;
+					vertical-align: bottom;
+					margin-right: 4rpx;
+				}
+	
+				text {
+					color: #1A1600;
+					font-size: 32rpx;
+				}
+			}
+		}
+	
+		.goodsList {
+			padding: 30rpx;
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 2rpx solid #fafafa;
+	
+			&:last-child {
+				border: none;
+			}
+	
+			.goods-l {
+				width: 50%;
+				display: flex;
+				align-items: center;
+				.name {
+					font-size: 28rpx;
+					color: #1A1600;
+					font-weight: 700;
+				}
+	
+				.spec {
+					font-size: 24rpx;
+					color: #1A1600;
+					margin-top: 24rpx;
+				}
+			}
+	
+			.goods-r {
+				width: 45%;
+				display: flex;
+				justify-content: space-between;
+	
+				.price {
+					font-size: 32rpx;
+					color: #1A1600;
+					font-weight: 700;
+				}
+	
+				.nums {
+					width: 160rpx;
+					height: 60rpx;
+					border-radius: 100rpx;
+				}
+			}
+		}
+	}
+  </style>

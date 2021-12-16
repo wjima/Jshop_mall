@@ -105,8 +105,6 @@
 			// 关闭
 			close() {
 				this.$emit('toclose');
-				this.nums = 1;
-				this.submitStatus = false;
 			},
 		}
 	}
@@ -297,5 +295,14 @@
 			background-color: #da3324!important;
 			color: #fff!important;
 		}
+	}
+	
+	
+	/deep/ .uni-numbox__minus {
+		line-height: 44rpx !important;
+	}
+	/deep/ .uni-numbox__plus {
+		line-height: 25px !important;
+	    margin-top: -1px;
 	}
 </style>

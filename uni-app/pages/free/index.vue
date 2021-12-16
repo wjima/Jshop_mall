@@ -29,10 +29,10 @@
 			
 		</view>
 		
-		<view class="fast-cart" @click="toCart" v-if="nums">
+		<!-- <view class="fast-cart" @click="toCart" v-if="nums">
 			<image src="/static/images/free/cart.png" mode=""></image>
 			<text class="big" >{{nums}}</text>
-		</view>
+		</view> -->
 		
 		<!-- 弹出层 -->
 		<lvv-popup position="bottom" ref="lvvpopref">
@@ -53,7 +53,7 @@
 							<image src='/static/image/close.png'></image>
 						</view>
 					</view>
-					<scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
+					<!-- <scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
 						<spec :spesData="defaultSpesDesc" ref="spec" @changeSpes="changeSpes"></spec>
 						<view class="goods-number">
 							<text class="pop-m-title">数量</text>
@@ -62,7 +62,7 @@
 								:value="buyNum" @change="bindChange"></uni-number-box>
 							</view>
 						</view>
-					</scroll-view>
+					</scroll-view> -->
 					<view class="pop-b">
 						<button class='btn btn-square btn-b btn-all' hover-class="btn-hover2" @click="clickHandle()"
 						 :disabled='submitStatus'
@@ -74,11 +74,63 @@
 		</lvv-popup>
 		<!-- 弹出层end -->
 		
+		<lvv-popup position="center" ref="spes" class="spes-content" >
+			<view class="content">
+				<specs ref :spesData="defaultSpesDesc" :product="product" ref="spec"
+				 @changeSpes="changeSpes" @clickHandle="clickHandle" @toclose="toclose"></specs>
+			</view>
+		</lvv-popup>
 		
+		
+		
+		
+		<lvv-popup ref="cart" position="bottom">
+			<view class="cart-lvv">
+				<scroll-view scroll-y="true" style="max-height: 560upx;">
+				<view class="goodsList" v-for="(goods,i) in cartLists" :key="goods.id">
+					<view class="goods-l">
+						<view class="name two-line">
+							({{goods.products.spes_desc || ''}}){{goods.products.name}}
+						</view>
+						<view class="spec" v-if="goods.default_spes_desc">
+							- 规格({{goods.default_spes_desc}})
+						</view>
+					</view>
+					<view class="goods-r column-c">
+						<view class="price">
+							￥{{goods.products.price}}
+						</view>
+						<uni-number-box :value="goods.nums" @change.self="bindChange($event,goods)"
+						 :step="1" :has-border="true"
+						 :width="62" :size="100" class="nums"></uni-number-box>
+		
+					</view>
+				</view>
+				</scroll-view>
+			</view>
+		</lvv-popup>
+		<!-- 底部 -->
+		<view class="cart-bottom"  v-if="numsCart">
+			<view class="cart" id="cart" @click="toCart">
+				<image src="/static/images/free/cart.png" mode=""></image>
+				 <text  v-if="ids">  {{numsCart}}  </text>
+			</view>
+			<view class="submit" @click="goCart" > 去支付</view>
+		</view>
 	</view>
 </template>
 
 <script>
+	
+	const delay = (function() {
+		let timer = 0
+		return function(callback, ms) {
+			clearTimeout(timer)
+			timer = setTimeout(callback, ms)
+		}
+	})()
+	
+	
 	import specs from '@/components/spec/specs.vue';
 	export default {
 		components: {
@@ -113,6 +165,12 @@
 				goodsConfig: {},
 				nums: 0,
 				product: {},
+				cartLists: [],
+				ids: '',
+				cartData: {},
+				numsCart:0,
+				cartId: 0,
+				cartNum: 0
 			}
 		},
 		mounted() {
@@ -121,11 +179,129 @@
 			this.getCartNums()
 		},
 		methods: {
-			bindChange(val) {
-				this.buyNum = val;
+			toclose( ) {
+				console.log(123123);
+				this.$refs.spes.close()
 			},
-			toclose() {
-				this.$refs.lvvpopref.close();
+			goCart() {
+				const _this = this
+				_this.$common.navigateTo('/pages/goods/place-order/index?order_type=8&cart_ids=' + JSON.stringify(this.ids));
+			},
+			getCartList() {
+				const _this = this
+				let data = {
+					ids: this.ids,
+					display: 'all',
+					order_type: 8
+				};
+				this.$api.cartList(data, function(res) {
+					_this.cartLists = res.data.list
+					
+					if( res.data.list.length ) {
+						let nums = 0
+						for(let i of res.data.list) {
+							nums += i.nums
+						}
+						_this.numsCart = nums
+					} else {
+						_this.numsCart = 0
+						_this.$refs.cart.close()
+					}
+					
+					if (res.status) {
+						
+						
+					} else {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+					}
+				});
+			},
+			// 删除购物车
+			delList(ids) {
+				let _this = this;
+				let data = {
+					ids,
+					order_type: 8
+				};
+				_this.$api.removeCart(data, function(res) {
+					if (res.status) {
+						_this.getCartList()
+						_this.$common.successToShow(res.msg);
+					}
+					// _this.setNumsData();
+				});
+			},
+			
+			
+			//购物车数量调整
+			bindChange(value, e) {
+				delay(() => {
+					let _this = this;
+					let id = e.products.id;
+					let num = value;
+					console.log('num', num);
+					if(num == 0) {
+						this.delList(e.id)
+						return
+					}
+					let cartData = _this.cartLists;
+					let changeSelected = false;
+					for (let key in cartData) {
+						if (cartData[key].product_id == id) {
+							if (num <= cartData[key].products.stock) {
+								cartData[key].nums = num;
+								changeSelected = true;
+							}
+							break;
+						}
+					}
+					if (changeSelected) {
+						_this.cartData = cartData;
+						
+						_this.cartId = e.id;
+						_this.cartNum = num;
+						
+						
+						_this.$common.throttle(_this.bindCartNumberOperation, _this, 350);
+					}
+					return false;
+				}, 500)
+			
+			},
+			
+			//数量减一操作
+			bindCartNumberOperation: function() {
+				let _this = this;
+				_this.setCartNum(_this.cartId, _this.cartNum);
+			},
+			
+			
+			//设置购物车数量
+			setCartNum: function(id, nums) {
+				let _this = this;
+				let data = {
+					id: id,
+					nums: nums,
+					ids: this.ids,
+					order_type: 8
+				};
+				_this.$api.setCartNum(data, function(res) {
+						if (res.status) {
+							_this.cartData = res.data
+							_this.cartLists = res.data.list
+							
+							let nums = 0
+							for(let i of res.data.list) {
+								nums += i.nums
+							}
+							_this.numsCart = nums
+						} else {
+							_this.$common.errorToShow(res.msg);
+						}
+				});
 			},
 			// 切换商品规格
 			changeSpes(obj) {
@@ -172,7 +348,7 @@
 			// 多规格样式统一处理
 			spesClassHandle(products) {
 				// 判断是否是多规格 (是否有默认规格)
-				if (products.hasOwnProperty('default_spes_desc')) {
+				if (products.hasOwnProperty('default_spes_desc') && typeof(products.default_spes_desc) != 'string') {
 					let spes = products.default_spes_desc;
 					for (let key in spes) {
 						for (let i in spes[key]) {
@@ -186,18 +362,19 @@
 						}
 					}
 					spes = JSON.stringify(spes).replace(/\./g,'====');
-					/* spes = JSON.stringify(spes) */
 					products.default_spes_desc = spes;
 				}
 				return products;
 			},
 			
-			clickHandle(){
+			clickHandle(obj){
+				let {nums, id: product_id} = obj
 				this.$api.addCart({
-					nums: 1,
-					product_id:this.product.id,
+					nums,
+					product_id,
 					order_type: 8
 				}, res => {
+					this.$refs.spes.close()
 					this.getCartNums()
 					uni.showToast({
 						title: res.msg,
@@ -207,13 +384,15 @@
 			},
 			cartAdd(val) {
 				this.product = this.spesClassHandle(val.product);
-				this.$refs.lvvpopref.show()
+				this.$refs.spes.show()
 			},
 			getCartNums() {
 				this.$api.GetcartidsFreePackage({}, res => {
 					if(res.status) {
 						if(res.data.length != 0) {
+							this.ids = res.data
 							this.nums = res.data.split(',').length
+							this.getCartList()
 							if(this.nums >99) {
 								this.nums = '99+'
 							}
@@ -222,10 +401,7 @@
 				})
 			},
 			toCart() {
-				uni.setStorageSync('order_type', 8)
-				uni.navigateTo({
-					url:'../cart/index/free'
-				})
+				this.$refs.cart.show()
 			}
 		}
 	}
@@ -502,4 +678,215 @@
 	.pop-m-bd-in {
 		display: inline-block;
 	}
-</style>
+	
+	
+	.spes-content {
+		z-index: 100;
+		.lvv-popup {
+			z-index: 100;
+		}
+		.content {
+			width: 80%;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+	}
+	
+	
+	.cart-lvv {
+		width: 100%;
+		bottom: 0;
+		/* #ifdef MP-ALIPAY */
+		bottom: 0;
+		/* #endif */
+		height: 300rpx;
+		background: #ffffff;
+		position: absolute;
+		left: 0;
+		padding-bottom: 158rpx;
+		border-radius: 16rpx 16rpx 0 0;
+		min-height: 850rpx;
+	
+		.top {
+			display: flex;
+			justify-content: space-between;
+			padding: 30rpx;
+			border-bottom: 2rpx solid #f2f2f2;
+	
+			.top-l {
+				image {
+					width: 36rpx;
+					height: 36rpx;
+					vertical-align: bottom;
+					margin-right: 4rpx;
+				}
+	
+				text {
+					color: #1A1600;
+					font-size: 32rpx;
+				}
+			}
+		}
+	
+		.goodsList {
+			padding: 30rpx;
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 2rpx solid #fafafa;
+	
+			&:last-child {
+				border: none;
+			}
+	
+			.goods-l {
+				width: 50%;
+				display: flex;
+				align-items: center;
+				.name {
+					font-size: 28rpx;
+					color: #1A1600;
+					font-weight: 700;
+				}
+	
+				.spec {
+					font-size: 24rpx;
+					color: #1A1600;
+					margin-top: 24rpx;
+				}
+			}
+	
+			.goods-r {
+				width: 45%;
+				display: flex;
+				justify-content: space-between;
+	
+				.price {
+					font-size: 32rpx;
+					color: #1A1600;
+					font-weight: 700;
+					line-height: 60rpx;
+				}
+	
+				.nums {
+					width: 160rpx;
+					height: 60rpx;
+					border-radius: 100rpx;
+				}
+			}
+		}
+	}
+	
+	.bot-buy {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+	}
+	
+	
+	.cart-bottom {
+		bottom: 0;
+		z-index: 99;
+		height: 120rpx;
+		width: 100%;
+		position: fixed;
+		overflow: hidden;
+		background: #FFFFFF;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		
+		.sleep {
+			width: 100%;
+			height: 100%;
+			background: #888888;
+			text-align: center;
+			line-height: 120rpx;
+			color: #FFFFFF;
+		}
+		.cart {
+			position: relative;
+			margin-left: 84rpx;
+			image {
+				width: 60rpx;
+				height: 60rpx;
+			}
+			text {
+				display: inline-block;
+				position: absolute;
+				right: -10rpx;
+				min-width: 30rpx;
+				height: 30rpx;
+				line-height: 30rpx;
+				text-align: center;
+				background: #FE4E00;
+				border-radius: 50%;
+				color: #FFFFFF;
+				&.big {
+					padding: 4rpx 8rpx;
+					border-radius: 20rpx;
+					right: -20rpx;
+				}
+				
+			}
+		}
+		.cart-bgi {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	
+		.cart-icon {
+			width: 100rpx;
+			height: 100rpx;
+			position: absolute;
+			top: 20rpx;
+			left: 54rpx;
+		}
+	
+		.cart-nums {
+			width: 48rpx;
+			height: 48rpx;
+			background-color: #4712AD;
+			border-radius: 50%;
+			position: absolute;
+			top: 0;
+			left: 124rpx;
+			text-align: center;
+			line-height: 48rpx;
+			font-size: 32rpx;
+			color: #fff;
+			&.more {
+				width: initial;
+				padding: 0 10rpx;
+				border-radius: 12rpx;
+			}
+		}
+	
+		.cart-price {
+			position: absolute;
+			top: 50%;
+			left: 170rpx;
+			font-size: 28rpx;
+			color: #fff;
+		}
+		.submit {
+			margin-right: 40rpx;
+			font-size: 24rpx;
+			font-weight: bold;
+			color: #1A1600;
+			width: 510rpx;
+			height: 84rpx;
+			text-align: center;
+			line-height: 84rpx;
+			background: #FED700;
+			border-radius: 100rpx;
+			
+		}
+	}
+	
+	
+  </style>

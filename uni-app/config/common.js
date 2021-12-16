@@ -362,7 +362,7 @@ function rmoney(s) {
 }
 
 function throttle(fn, context, delay) {
-	clearTimeout(fn.timeoutId)
+	fn && fn.timeoutId && clearTimeout(fn.timeoutId)
 	fn.timeoutId = setTimeout(function() {
 		fn.call(context)
 	}, delay)

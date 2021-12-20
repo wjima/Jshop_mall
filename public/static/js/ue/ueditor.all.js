@@ -51,8 +51,8 @@
                  * @example
                  * ```javascript
                  * if ( UE.browser.ie ) {
-         *     console.log( '当前浏览器是IE' );
-         * }
+                 *     console.log( '当前浏览器是IE' );
+                 * }
                  * ```
                  */
                 ie		:  /(msie\s|trident.*rv:)([\w.]+)/.test(agent),
@@ -62,8 +62,8 @@
                  * @example
                  * ```javascript
                  * if ( UE.browser.opera ) {
-         *     console.log( '当前浏览器是Opera' );
-         * }
+                 *     console.log( '当前浏览器是Opera' );
+                 * }
                  * ```
                  */
                 opera	: ( !!opera && opera.version ),
@@ -73,8 +73,8 @@
                  * @example
                  * ```javascript
                  * if ( UE.browser.webkit ) {
-         *     console.log( '当前浏览器是webkit内核浏览器' );
-         * }
+                 *     console.log( '当前浏览器是webkit内核浏览器' );
+                 * }
                  * ```
                  */
                 webkit	: ( agent.indexOf( ' applewebkit/' ) > -1 ),
@@ -84,8 +84,8 @@
                  * @example
                  * ```javascript
                  * if ( UE.browser.mac ) {
-         *     console.log( '当前浏览器运行在mac平台下' );
-         * }
+                 *     console.log( '当前浏览器运行在mac平台下' );
+                 * }
                  * ```
                  */
                 mac	: ( agent.indexOf( 'macintosh' ) > -1 ),
@@ -95,8 +95,8 @@
                  * @example
                  * ```javascript
                  * if ( UE.browser.quirks ) {
-         *     console.log( '当前浏览器运行处于“怪异模式”' );
-         * }
+                 *     console.log( '当前浏览器运行处于“怪异模式”' );
+                 * }
                  * ```
                  */
                 quirks : ( document.compatMode == 'BackCompat' )
@@ -107,8 +107,8 @@
          * @example
          * ```javascript
          * if ( UE.browser.gecko ) {
-    *     console.log( '当前浏览器内核是gecko内核' );
-    * }
+         *     console.log( '当前浏览器内核是gecko内核' );
+         * }
          * ```
          */
         browser.gecko =( navigator.product == 'Gecko' && !browser.webkit && !browser.opera && !browser.ie);
@@ -137,8 +137,8 @@
              * @example
              * ```javascript
              * if ( UE.browser.ie9Compat ) {
-         *     console.log( '当前浏览器运行在IE9兼容模式下' );
-         * }
+             *     console.log( '当前浏览器运行在IE9兼容模式下' );
+             * }
              * ```
              */
             browser.ie9Compat = document.documentMode == 9;
@@ -149,8 +149,8 @@
              * @example
              * ```javascript
              * if ( UE.browser.ie8 ) {
-         *     console.log( '当前浏览器是IE8浏览器' );
-         * }
+             *     console.log( '当前浏览器是IE8浏览器' );
+             * }
              * ```
              */
             browser.ie8 = !!document.documentMode;
@@ -161,8 +161,8 @@
              * @example
              * ```javascript
              * if ( UE.browser.ie8Compat ) {
-         *     console.log( '当前浏览器运行在IE8兼容模式下' );
-         * }
+             *     console.log( '当前浏览器运行在IE8兼容模式下' );
+             * }
              * ```
              */
             browser.ie8Compat = document.documentMode == 8;
@@ -173,12 +173,12 @@
              * @example
              * ```javascript
              * if ( UE.browser.ie7Compat ) {
-         *     console.log( '当前浏览器运行在IE7兼容模式下' );
-         * }
+             *     console.log( '当前浏览器运行在IE7兼容模式下' );
+             * }
              * ```
              */
             browser.ie7Compat = ( ( version == 7 && !document.documentMode )
-            || document.documentMode == 7 );
+                || document.documentMode == 7 );
 
             /**
              * @property { boolean } ie6Compat 检测浏览器模式是否为 IE6 模式 或者怪异模式
@@ -186,8 +186,8 @@
              * @example
              * ```javascript
              * if ( UE.browser.ie6Compat ) {
-         *     console.log( '当前浏览器运行在IE6模式或者怪异模式下' );
-         * }
+             *     console.log( '当前浏览器运行在IE6模式或者怪异模式下' );
+             * }
              * ```
              */
             browser.ie6Compat = ( version < 7 || browser.quirks );
@@ -218,8 +218,8 @@
          * @example
          * ```javascript
          * if ( UE.browser.chrome ) {
-     *     console.log( '当前浏览器是Chrome' );
-     * }
+         *     console.log( '当前浏览器是Chrome' );
+         * }
          * ```
          */
         if (/chrome\/(\d+\.\d)/i.test(agent)) {
@@ -232,8 +232,8 @@
          * @example
          * ```javascript
          * if ( UE.browser.safari ) {
-     *     console.log( '当前浏览器是Safari' );
-     * }
+         *     console.log( '当前浏览器是Safari' );
+         * }
          * ```
          */
         if(/(\d+\.\d)?(?:\.\d)?\s+safari\/?(\d+\.\d+)?/i.test(agent) && !/chrome/i.test(agent)){
@@ -269,8 +269,8 @@
          * @example
          * ```javascript
          * if ( UE.browser.isCompatible ) {
-     *     console.log( '浏览器与UEditor能够良好兼容' );
-     * }
+         *     console.log( '浏览器与UEditor能够良好兼容' );
+         * }
          * ```
          */
         browser.isCompatible =
@@ -313,16 +313,16 @@
          * @example
          * ```javascript
          * var demoObj = {
-     *     key1: 1,
-     *     key2: 2
-     * };
+         *     key1: 1,
+         *     key2: 2
+         * };
          *
          * //output: key1: 1, key2: 2
          * UE.utils.each( demoObj, funciton ( value, key ) {
-     *
-     *     console.log( key + ":" + value );
-     *
-     * } );
+         *
+         *     console.log( key + ":" + value );
+         *
+         * } );
          * ```
          */
 
@@ -337,10 +337,10 @@
          *
          * //output: 0: DIV, 1: DIV ...
          * UE.utils.each( divs, funciton ( value, key ) {
-     *
-     *     console.log( key + ":" + value.tagName );
-     *
-     * } );
+         *
+         *     console.log( key + ":" + value.tagName );
+         *
+         * } );
          * ```
          */
         each : function(obj, iterator, context) {
@@ -483,18 +483,18 @@
          * @example
          * ```javascript
          * function SuperClass(){
-     *     this.name = "小李";
-     * }
+         *     this.name = "小李";
+         * }
          *
          * SuperClass.prototype = {
-     *     hello:function(str){
-     *         console.log(this.name + str);
-     *     }
-     * }
+         *     hello:function(str){
+         *         console.log(this.name + str);
+         *     }
+         * }
          *
          * function SubClass(){
-     *     this.name = "小张";
-     * }
+         *     this.name = "小张";
+         * }
          *
          * UE.utils.inherits(SubClass,SuperClass);
          *
@@ -524,8 +524,8 @@
          *     newTest = null;
          *
          * function test () {
-     *     console.log( this.name );
-     * }
+         *     console.log( this.name );
+         * }
          *
          * newTest = UE.utils.bind( test, { name: 'object' } );
          *
@@ -556,8 +556,8 @@
          * var start = 0;
          *
          * function test(){
-     *     console.log( new Date() - start );
-     * }
+         *     console.log( new Date() - start );
+         * }
          *
          * var testDefer = UE.utils.defer( test, 1000 );
          * //
@@ -582,8 +582,8 @@
          * ```javascript
          *
          * function test(){
-     *     console.log(1);
-     * }
+         *     console.log(1);
+         * }
          *
          * var testDefer = UE.utils.defer( test, 1000, true );
          *
@@ -837,8 +837,8 @@
 
             return function (cssName) {
                 return cache[cssName] || (cache[cssName] = cssName.toLowerCase().replace(/-./g, function (match) {
-                        return match.charAt(1).toUpperCase();
-                    }));
+                    return match.charAt(1).toUpperCase();
+                }));
             };
         }(),
 
@@ -851,11 +851,11 @@
          * ```javascript
          *
          * UE.utils.loadFile( document, {
-     *     src:"test.js",
-     *     tag:"script",
-     *     type:"text/javascript",
-     *     defer:"defer"
-     * } );
+         *     src:"test.js",
+         *     tag:"script",
+         *     type:"text/javascript",
+         *     defer:"defer"
+         * } );
          *
          * ```
          */
@@ -872,13 +872,13 @@
          * ```javascript
          *
          * UE.utils.loadFile( document, {
-     *     src:"test.js",
-     *     tag:"script",
-     *     type:"text/javascript",
-     *     defer:"defer"
-     * }, function () {
-     *     console.log('加载成功');
-     * } );
+         *     src:"test.js",
+         *     tag:"script",
+         *     type:"text/javascript",
+         *     defer:"defer"
+         * }, function () {
+         *     console.log('加载成功');
+         * } );
          *
          * ```
          */
@@ -1134,10 +1134,10 @@
          * ```javascript
          *
          * UE.utils.domReady( function () {
-     *
-     *     console.log('123');
-     *
-     * } );
+         *
+         *     console.log('123');
+         *
+         * } );
          *
          * ```
          */
@@ -1306,7 +1306,7 @@
                 a.href = a.href;
             }
             return !(a.protocol == location.protocol && a.hostname == location.hostname &&
-            (a.port == location.port || (a.port == '80' && location.port == '') || (a.port == '' && location.port == '80')));
+                (a.port == location.port || (a.port == '80' && location.port == '') || (a.port == '' && location.port == '80')));
         },
         clearEmptyAttrs : function(obj){
             for(var p in obj){
@@ -1546,16 +1546,16 @@
          * @example
          * ```javascript
          * editor.addListener('selectionchange',function(){
-     *      console.log("选区已经变化！");
-     * })
+         *      console.log("选区已经变化！");
+         * })
          * editor.addListener('beforegetcontent aftergetcontent',function(type){
-     *         if(type == 'beforegetcontent'){
-     *             //do something
-     *         }else{
-     *             //do something
-     *         }
-     *         console.log(this.getContent) // this是注册的事件的编辑器实例
-     * })
+         *         if(type == 'beforegetcontent'){
+         *             //do something
+         *         }else{
+         *             //do something
+         *         }
+         *         console.log(this.getContent) // this是注册的事件的编辑器实例
+         * })
          * ```
          * @see UE.EventBase:fireEvent(String)
          */
@@ -1615,10 +1615,10 @@
          * ```javascript
          *
          * editor.addListener( "selectionchange", function ( type, arg1, arg2 ) {
-     *
-     *     console.log( arg1 + " " + arg2 );
-     *
-     * } );
+         *
+         *     console.log( arg1 + " " + arg2 );
+         *
+         * } );
          *
          * //触发selectionchange事件， 会执行上面的事件监听器
          * //output: Hello World
@@ -1667,7 +1667,7 @@
         var allListeners;
         type = type.toLowerCase();
         return ( ( allListeners = ( obj.__allListeners || force && ( obj.__allListeners = {} ) ) )
-        && ( allListeners[type] || force && ( allListeners[type] = [] ) ) );
+            && ( allListeners[type] || force && ( allListeners[type] = [] ) ) );
     }
 
 
@@ -1941,39 +1941,39 @@
          * var position = UE.dom.domUtils.getPosition( document.documentElement, document.body );
          *
          * switch ( position ) {
-     *
-     *      //0
-     *      case UE.dom.domUtils.POSITION_IDENTICAL:
-     *          console.log('元素相同');
-     *          break;
-     *      //1
-     *      case UE.dom.domUtils.POSITION_DISCONNECTED:
-     *          console.log('两个节点在不同的文档中');
-     *          break;
-     *      //2
-     *      case UE.dom.domUtils.POSITION_FOLLOWING:
-     *          console.log('节点A在节点B之后');
-     *          break;
-     *      //4
-     *      case UE.dom.domUtils.POSITION_PRECEDING;
-     *          console.log('节点A在节点B之前');
-     *          break;
-     *      //8
-     *      case UE.dom.domUtils.POSITION_IS_CONTAINED:
-     *          console.log('节点A被节点B包含');
-     *          break;
-     *      case 10:
-     *          console.log('节点A被节点B包含且节点A在节点B之后');
-     *          break;
-     *      //16
-     *      case UE.dom.domUtils.POSITION_CONTAINS:
-     *          console.log('节点A包含节点B');
-     *          break;
-     *      case 20:
-     *          console.log('节点A包含节点B且节点A在节点B之前');
-     *          break;
-     *
-     * }
+         *
+         *      //0
+         *      case UE.dom.domUtils.POSITION_IDENTICAL:
+         *          console.log('元素相同');
+         *          break;
+         *      //1
+         *      case UE.dom.domUtils.POSITION_DISCONNECTED:
+         *          console.log('两个节点在不同的文档中');
+         *          break;
+         *      //2
+         *      case UE.dom.domUtils.POSITION_FOLLOWING:
+         *          console.log('节点A在节点B之后');
+         *          break;
+         *      //4
+         *      case UE.dom.domUtils.POSITION_PRECEDING;
+         *          console.log('节点A在节点B之前');
+         *          break;
+         *      //8
+         *      case UE.dom.domUtils.POSITION_IS_CONTAINED:
+         *          console.log('节点A被节点B包含');
+         *          break;
+         *      case 10:
+         *          console.log('节点A被节点B包含且节点A在节点B之后');
+         *          break;
+         *      //16
+         *      case UE.dom.domUtils.POSITION_CONTAINS:
+         *          console.log('节点A包含节点B');
+         *          break;
+         *      case 20:
+         *          console.log('节点A包含节点B且节点A在节点B之前');
+         *          break;
+         *
+         * }
          * ```
          */
         getPosition:function (nodeA, nodeB) {
@@ -2107,11 +2107,11 @@
          * @example
          * ```javascript
          * var filterNode = UE.dom.domUtils.findParent( document.body.firstChild, function ( node ) {
-     *
-     *     //由于查找的终点是body节点， 所以永远也不会匹配当前过滤器的条件， 即这里永远会返回false
-     *     return node.tagName === "HTML";
-     *
-     * } );
+         *
+         *     //由于查找的终点是body节点， 所以永远也不会匹配当前过滤器的条件， 即这里永远会返回false
+         *     return node.tagName === "HTML";
+         *
+         * } );
          *
          * //output: true
          * console.log( filterNode === null );
@@ -2142,11 +2142,11 @@
          *
          *          //output: DIV, BODY
          *          var filterNode = UE.dom.domUtils.findParent( document.getElementById( "test" ), function ( node ) {
-     *
-     *              console.log( node.tagName );
-     *              return false;
-     *
-     *          }, true );
+         *
+         *              console.log( node.tagName );
+         *              return false;
+         *
+         *          }, true );
          *
          *      </script>
          * </body>
@@ -2471,7 +2471,7 @@
                 var tmpNode;
                 while (next && !domUtils.isBookmarkNode(next) && (domUtils.isEmptyInlineElement(next)
                     //这里不能把空格算进来会吧空格干掉，出现文字间的空格丢掉了
-                || !new RegExp('[^\t\n\r' + domUtils.fillChar + ']').test(next.nodeValue) )) {
+                    || !new RegExp('[^\t\n\r' + domUtils.fillChar + ']').test(next.nodeValue) )) {
                     tmpNode = next[dir];
                     domUtils.remove(next);
                     next = tmpNode;
@@ -2563,8 +2563,8 @@
          * @example
          * ```javascript
          * UE.dom.domUtils.on(document.body,"click",function(e){
-     *     //e为事件对象，this为被点击元素对戏那个
-     * });
+         *     //e为事件对象，this为被点击元素对戏那个
+         * });
          * ```
          */
 
@@ -2577,8 +2577,8 @@
          * @example
          * ```javascript
          * UE.dom.domUtils.on(document.body,["click","mousedown"],function(evt){
-     *     //evt为事件对象，this为被点击元素对象
-     * });
+         *     //evt为事件对象，this为被点击元素对象
+         * });
          * ```
          */
         on:function (element, type, handler) {
@@ -2622,8 +2622,8 @@
          * @example
          * ```javascript
          * UE.dom.domUtils.un(document.body,"click",function(evt){
-     *     //evt为事件对象，this为被点击元素对象
-     * });
+         *     //evt为事件对象，this为被点击元素对象
+         * });
          * ```
          */
 
@@ -2636,8 +2636,8 @@
          * @example
          * ```javascript
          * UE.dom.domUtils.un(document.body, ["click","mousedown"],function(evt){
-     *     //evt为事件对象，this为被点击元素对象
-     * });
+         *     //evt为事件对象，this为被点击元素对象
+         * });
          * ```
          */
         un:function (element, type, handler) {
@@ -3277,8 +3277,8 @@
          * @example
          * ```javascript
          * var ele = UE.dom.domUtils.createElement( document, 'div', {
-     *     id: 'test'
-     * } );
+         *     id: 'test'
+         * } );
          *
          * //output: DIV
          * console.log( ele.tagName );
@@ -3304,8 +3304,8 @@
          * <script>
          *
          *     var testNode = UE.dom.domUtils.setAttributes( document.getElementById( "test" ), {
-     *         id: 'demo'
-     *     } );
+         *         id: 'demo'
+         *     } );
          *
          *     //output: demo
          *     console.log( testNode.id );
@@ -3349,8 +3349,8 @@
          * ```html
          * <style type="text/css">
          *      #test {
-     *          font-size: 15px;
-     *      }
+         *          font-size: 15px;
+         *      }
          * </style>
          *
          * <span id="test"></span>
@@ -3685,8 +3685,8 @@
          *      console.log( testNode.style.color );
          *
          *      UE.dom.domUtils.setStyles( testNode, {
-     *          'color': 'red'
-     *      } );
+         *          'color': 'red'
+         *      } );
          *      //output: "red"
          *      console.log( testNode.style.color );
          *
@@ -3747,10 +3747,10 @@
          *
          *     //output: 1
          *     console.log( UE.dom.domUtils.getChildCount( document.getElementById("test"), function ( node ) {
-     *
-     *         return node.nodeType === 1;
-     *
-     *     } ) );
+         *
+         *         return node.nodeType === 1;
+         *
+         *     } ) );
          *
          * </script>
          * ```
@@ -3758,8 +3758,8 @@
         getChildCount:function (node, fn) {
             var count = 0, first = node.firstChild;
             fn = fn || function () {
-                    return 1;
-                };
+                return 1;
+            };
             while (first) {
                 if (fn(first)) {
                     count++;
@@ -3781,8 +3781,8 @@
          */
         isEmptyNode:function (node) {
             return !node.firstChild || domUtils.getChildCount(node, function (node) {
-                    return  !domUtils.isBr(node) && !domUtils.isBookmarkNode(node) && !domUtils.isWhitespace(node)
-                }) == 0
+                return  !domUtils.isBr(node) && !domUtils.isBookmarkNode(node) && !domUtils.isWhitespace(node)
+            }) == 0
         },
         clearSelectedArr:function (nodes) {
             var node;
@@ -3966,9 +3966,9 @@
          *     var testNode = document.getElementById("test");
          *
          *     UE.dom.domUtils.setViewportOffset( testNode, {
-     *         left: 200,
-     *         top: 50
-     *     } );
+         *         left: 200,
+         *         top: 50
+         *     } );
          *
          *     //output: top: 300px; left: 100px; position: absolute;
          *     console.log( testNode.style.cssText );
@@ -4164,8 +4164,8 @@
          *
          * //output: null
          * console.log( UE.dom.domUtils.filterNodeList( divNodes, function ( node ) {
-     *     return node.tagName.toLowerCase() !== 'div';
-     * } ) );
+         *     return node.tagName.toLowerCase() !== 'div';
+         * } ) );
          * ```
          */
 
@@ -4203,15 +4203,15 @@
          * console.log( divNodes.length );
          *
          * var nodes = UE.dom.domUtils.filterNodeList( divNodes, function ( node ) {
-     *     return node.tagName.toLowerCase() === 'div';
-     * }, true );
+         *     return node.tagName.toLowerCase() === 'div';
+         * }, true );
          *
          * //output: 3
          * console.log( nodes.length );
          *
          * var node = UE.dom.domUtils.filterNodeList( divNodes, function ( node ) {
-     *     return node.tagName.toLowerCase() === 'div';
-     * }, false );
+         *     return node.tagName.toLowerCase() === 'div';
+         * }, false );
          *
          * //output: div
          * console.log( node.nodeName );
@@ -4489,7 +4489,7 @@
                         domUtils.remove(fillData);
                         while (tmpNode && domUtils.isEmptyInlineElement(tmpNode) &&
                             //safari的contains有bug
-                        (browser.safari ? !(domUtils.getPosition(tmpNode,excludeNode) & domUtils.POSITION_CONTAINS) : !tmpNode.contains(excludeNode))
+                            (browser.safari ? !(domUtils.getPosition(tmpNode,excludeNode) & domUtils.POSITION_CONTAINS) : !tmpNode.contains(excludeNode))
                             ) {
                             fillData = tmpNode.parentNode;
                             domUtils.remove(tmpNode);
@@ -5467,14 +5467,14 @@
             adjustmentBoundary:function () {
                 if (!this.collapsed) {
                     while (!domUtils.isBody(this.startContainer) &&
-                    this.startOffset == this.startContainer[this.startContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length &&
-                    this.startContainer[this.startContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length
+                        this.startOffset == this.startContainer[this.startContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length &&
+                        this.startContainer[this.startContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length
                         ) {
 
                         this.setStartAfter(this.startContainer);
                     }
                     while (!domUtils.isBody(this.endContainer) && !this.endOffset &&
-                    this.endContainer[this.endContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length
+                        this.endContainer[this.endContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length
                         ) {
                         this.setEndBefore(this.endContainer);
                     }
@@ -6043,12 +6043,12 @@
              *     console.log( range.cloneContents() );
              *
              *     range.traversal( function ( node ) {
-         *
-         *         if ( node.nodeType === 1 ) {
-         *             node.className = "test";
-         *         }
-         *
-         *     } );
+             *
+             *         if ( node.nodeType === 1 ) {
+             *             node.className = "test";
+             *         }
+             *
+             *     } );
              *
              *     //output: <span class="test"></span><a class="test"></a>
              *     console.log( range.cloneContents() );
@@ -6087,12 +6087,12 @@
              *     console.log( range.cloneContents() );
              *
              *     range.traversal( function ( node ) {
-         *
-         *         node.className = "test";
-         *
-         *     }, function ( node ) {
-         *          return node.nodeType === 1;
-         *     } );
+             *
+             *         node.className = "test";
+             *
+             *     }, function ( node ) {
+             *          return node.nodeType === 1;
+             *     } );
              *
              *     //output: <span class="test"></span><a class="test"></a>
              *     console.log( range.cloneContents() );
@@ -6182,8 +6182,8 @@
             distance = testRange.text.replace( /(\r\n|\r)/g, '\n' ).length;
             if ( !distance ) {
                 return  dtd.$empty[child.tagName] || dtd.$nonChild[child.tagName] ?
-                {container:parent, offset:getIndex( child ) + (position > 0 ? 0 : 1)} :
-                {container:child, offset:position > 0 ? 0 : child.childNodes.length}
+                    {container:parent, offset:getIndex( child ) + (position > 0 ? 0 : 1)} :
+                    {container:child, offset:position > 0 ? 0 : child.childNodes.length}
             }
             while ( distance > 0 ) {
                 try {
@@ -6595,8 +6595,8 @@
          * @example
          * ```javascript
          * editor.addListener( 'ready', function( editor ) {
-     *     editor.execCommand( 'focus' ); //编辑器家在完成后，让编辑器拿到焦点
-     * } );
+         *     editor.execCommand( 'focus' ); //编辑器家在完成后，让编辑器拿到焦点
+         * } );
          * ```
          */
         /**
@@ -6686,8 +6686,8 @@
          * @example
          * ```javascript
          * editor.addListener( 'selectionchange', function( editor ) {
-     *     console.log('选区发生改变');
-     * }
+         *     console.log('选区发生改变');
+         * }
          */
         /**
          * 在所有selectionchange的监听函数执行之前，会触发该事件
@@ -6783,8 +6783,8 @@
              * @example
              * ```javascript
              * editor.ready( function( editor ) {
-         *     editor.setContent('初始化完毕');
-         * } );
+             *     editor.setContent('初始化完毕');
+             * } );
              * ```
              * @see UE.Editor.event:ready
              */
@@ -6817,8 +6817,8 @@
              * @example
              * ```javascript
              * editor.setOpt( {
-         *     'initContent': '欢迎使用编辑器'
-         * } );
+             *     'initContent': '欢迎使用编辑器'
+             * } );
              * ```
              */
             setOpt: function (key, val) {
@@ -6907,21 +6907,21 @@
                     }
 
                     container.style.width = /%$/.test(options.initialFrameWidth) ?  '100%' : options.initialFrameWidth-
-                    getStyleValue("padding-left")- getStyleValue("padding-right") +'px';
+                        getStyleValue("padding-left")- getStyleValue("padding-right") +'px';
                     container.style.height = /%$/.test(options.initialFrameHeight) ?  '100%' : options.initialFrameHeight -
-                    getStyleValue("padding-top")- getStyleValue("padding-bottom") +'px';
+                        getStyleValue("padding-top")- getStyleValue("padding-bottom") +'px';
 
                     container.style.zIndex = options.zIndex;
 
                     var html = ( ie && browser.version < 9  ? '' : '<!DOCTYPE html>') +
                         '<html xmlns=\'http://www.w3.org/1999/xhtml\' class=\'view\' ><head>' +
                         '<style type=\'text/css\'>' +
-                            //设置四周的留边
+                        //设置四周的留边
                         '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;}\n' +
-                            //设置默认字体和字号
-                            //font-family不能呢随便改，在safari下fillchar会有解析问题
+                        //设置默认字体和字号
+                        //font-family不能呢随便改，在safari下fillchar会有解析问题
                         'body{margin:8px;font-family:sans-serif;font-size:16px;}' +
-                            //设置段落间距
+                        //设置段落间距
                         'p{margin:5px 0;}</style>' +
                         ( options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '' ) +
                         (options.initialStyle ? '<style>' + options.initialStyle + '</style>' : '') +
@@ -6937,7 +6937,7 @@
                         //先注释掉了，加的原因忘记了，但开启会直接导致全屏模式下内容多时不会出现滚动条
 //                    scrolling :'no',
                         src: 'javascript:void(function(){document.open();' + (options.customDomain && document.domain != location.hostname ?  'document.domain="' + document.domain + '";' : '') +
-                        'document.write("' + html + '");document.close();}())'
+                            'document.write("' + html + '");document.close();}())'
                     }));
                     container.style.overflow = 'hidden';
                     //解决如果是给定的百分比，会导致高度算不对的问题
@@ -7140,9 +7140,9 @@
              * @example
              * ```javascript
              * editor.addshortcutkey({
-         *     "Bold" : "ctrl+66",//^B
-         *     "Italic" : "ctrl+73", //^I
-         * });
+             *     "Bold" : "ctrl+66",//^B
+             *     "Italic" : "ctrl+73", //^I
+             * });
              * ```
              */
             /**
@@ -7223,8 +7223,8 @@
              * ```javascript
              * // editor 是一个编辑器的实例
              * var content = editor.getContent( function ( editor ) {
-         *      return editor.body.innerHTML === '欢迎使用UEditor'; //返回空字符串
-         * } );
+             *      return editor.body.innerHTML === '欢迎使用UEditor'; //返回空字符串
+             * } );
              * ```
              */
             getContent: function (cmd, fn,notSetCursor,ignoreBlank,formatter) {
@@ -7942,10 +7942,10 @@
              * @example
              * ```javascript
              * editor.addInputRule(function(root){
-         *   $.each(root.getNodesByTagName('div'),function(i,node){
-         *       node.tagName="p";
-         *   });
-         * });
+             *   $.each(root.getNodesByTagName('div'),function(i,node){
+             *       node.tagName="p";
+             *   });
+             * });
              * ```
              */
             addInputRule: function (rule) {
@@ -7976,10 +7976,10 @@
              * @example
              * ```javascript
              * editor.addOutputRule(function(root){
-         *   $.each(root.getNodesByTagName('p'),function(i,node){
-         *       node.tagName="div";
-         *   });
-         * });
+             *   $.each(root.getNodesByTagName('p'),function(i,node){
+             *       node.tagName="div";
+             *   });
+             * });
              * ```
              */
             addOutputRule: function (rule) {
@@ -8193,9 +8193,9 @@
 
         function doAjax(url, ajaxOptions) {
             var xhr = creatAjaxRequest(),
-            //是否超时
+                //是否超时
                 timeIsOut = false,
-            //默认参数
+                //默认参数
                 defaultAjaxOptions = {
                     method:"POST",
                     timeout:5000,
@@ -8337,32 +8337,32 @@
              * ```javascript
              * //向sayhello.php发起一个异步的Ajax GET请求, 请求超时时间为10s， 请求完成后执行相应的回调。
              * UE.ajax.requeset( 'sayhello.php', {
-         *
-         *     //请求方法。可选值： 'GET', 'POST'，默认值是'POST'
-         *     method: 'GET',
-         *
-         *     //超时时间。 默认为5000， 单位是ms
-         *     timeout: 10000,
-         *
-         *     //是否是异步请求。 true为异步请求， false为同步请求
-         *     async: true,
-         *
-         *     //请求携带的数据。如果请求为GET请求， data会经过stringify后附加到请求url之后。
-         *     data: {
-         *         name: 'ueditor'
-         *     },
-         *
-         *     //请求成功后的回调， 该回调接受当前的XMLHttpRequest对象作为参数。
-         *     onsuccess: function ( xhr ) {
-         *         console.log( xhr.responseText );
-         *     },
-         *
-         *     //请求失败或者超时后的回调。
-         *     onerror: function ( xhr ) {
-         *          alert( 'Ajax请求失败' );
-         *     }
-         *
-         * } );
+             *
+             *     //请求方法。可选值： 'GET', 'POST'，默认值是'POST'
+             *     method: 'GET',
+             *
+             *     //超时时间。 默认为5000， 单位是ms
+             *     timeout: 10000,
+             *
+             *     //是否是异步请求。 true为异步请求， false为同步请求
+             *     async: true,
+             *
+             *     //请求携带的数据。如果请求为GET请求， data会经过stringify后附加到请求url之后。
+             *     data: {
+             *         name: 'ueditor'
+             *     },
+             *
+             *     //请求成功后的回调， 该回调接受当前的XMLHttpRequest对象作为参数。
+             *     onsuccess: function ( xhr ) {
+             *         console.log( xhr.responseText );
+             *     },
+             *
+             *     //请求失败或者超时后的回调。
+             *     onerror: function ( xhr ) {
+             *          alert( 'Ajax请求失败' );
+             *     }
+             *
+             * } );
              * ```
              */
 
@@ -8377,11 +8377,11 @@
              *
              * //向sayhello.php发起一个异步的Ajax POST请求, 请求超时时间为5s， 请求完成后不执行任何回调。
              * UE.ajax.requeset( 'sayhello.php', {
-         *
-         *     //请求的地址， 该项是必须的。
-         *     url: 'sayhello.php'
-         *
-         * } );
+             *
+             *     //请求的地址， 该项是必须的。
+             *     url: 'sayhello.php'
+             *
+             * } );
              * ```
              */
             request:function(url, opts) {
@@ -8626,10 +8626,10 @@
          * @example
          * ```javascript
          * var node = new uNode({
-     *     type:'element',
-     *     tagName:'span',
-     *     attrs:{style:'font-size:14px;'}
-     * }
+         *     type:'element',
+         *     tagName:'span',
+         *     attrs:{style:'font-size:14px;'}
+         * }
          * ```
          */
         var uNode = UE.uNode = function (obj) {
@@ -8733,8 +8733,8 @@
                     //这里边的\"做转换，要不用innerHTML直接被截断了，属性src
                     //有可能做的不够
                     attrhtml.push(a + (attrs[a] !== undefined ? '="' + (notTransAttrs[a] ? utils.html(attrs[a]).replace(/["]/g, function (a) {
-                            return '&quot;'
-                        }) : utils.unhtml(attrs[a])) + '"' : ''))
+                        return '&quot;'
+                    }) : utils.unhtml(attrs[a])) + '"' : ''))
                 }
                 attrhtml = attrhtml.join(' ');
             }
@@ -9338,8 +9338,8 @@
              * @example
              * ```javascript
              * traversal(node, function(){
-         *     console.log(node.type);
-         * });
+             *     console.log(node.type);
+             * });
              * ```
              */
             traversal:function(fn){
@@ -10472,22 +10472,22 @@
     UE.plugins['autotypeset'] = function(){
 
         this.setOpt({'autotypeset': {
-            mergeEmptyline: true,           //合并空行
-            removeClass: true,              //去掉冗余的class
-            removeEmptyline: false,         //去掉空行
-            textAlign:"left",               //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
-            imageBlockLine: 'center',       //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
-            pasteFilter: false,             //根据规则过滤没事粘贴进来的内容
-            clearFontSize: false,           //去掉所有的内嵌字号，使用编辑器默认的字号
-            clearFontFamily: false,         //去掉所有的内嵌字体，使用编辑器默认的字体
-            removeEmptyNode: false,         // 去掉空节点
-            //可以去掉的标签
-            removeTagNames: utils.extend({div:1},dtd.$removeEmpty),
-            indent: false,                  // 行首缩进
-            indentValue : '2em',            //行首缩进的大小
-            bdc2sb: false,
-            tobdc: false
-        }});
+                mergeEmptyline: true,           //合并空行
+                removeClass: true,              //去掉冗余的class
+                removeEmptyline: false,         //去掉空行
+                textAlign:"left",               //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+                imageBlockLine: 'center',       //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+                pasteFilter: false,             //根据规则过滤没事粘贴进来的内容
+                clearFontSize: false,           //去掉所有的内嵌字号，使用编辑器默认的字号
+                clearFontFamily: false,         //去掉所有的内嵌字体，使用编辑器默认的字体
+                removeEmptyNode: false,         // 去掉空节点
+                //可以去掉的标签
+                removeTagNames: utils.extend({div:1},dtd.$removeEmpty),
+                indent: false,                  // 行首缩进
+                indentValue : '2em',            //行首缩进的大小
+                bdc2sb: false,
+                tobdc: false
+            }});
 
         var me = this,
             opt = me.options.autotypeset,
@@ -10976,8 +10976,8 @@
                             tmpNode = pN;
                             if (tmpNode.tagName == 'P' && domUtils.getStyle(tmpNode, 'text-align') == 'center') {
                                 if (!domUtils.isBody(tmpNode) && domUtils.getChildCount(tmpNode, function (node) {
-                                        return !domUtils.isBr(node) && !domUtils.isWhitespace(node);
-                                    }) == 1) {
+                                    return !domUtils.isBr(node) && !domUtils.isWhitespace(node);
+                                }) == 1) {
                                     pre = tmpNode.previousSibling;
                                     next = tmpNode.nextSibling;
                                     if (pre && next && pre.nodeType == 1 && next.nodeType == 1 && pre.tagName == next.tagName && domUtils.isBlockElm(pre)) {
@@ -11089,22 +11089,22 @@
      * @example
      * ```javascript
      * editor.execCommand( 'insertimage', {
- *     src:'a/b/c.jpg',
- *     width:'100',
- *     height:'100'
- * } );
+     *     src:'a/b/c.jpg',
+     *     width:'100',
+     *     height:'100'
+     * } );
      * ```
      * @example
      * ```javascript
      * editor.execCommand( 'insertimage', [{
- *     src:'a/b/c.jpg',
- *     width:'100',
- *     height:'100'
- * },{
- *     src:'a/b/d.jpg',
- *     width:'100',
- *     height:'100'
- * }] );
+     *     src:'a/b/c.jpg',
+     *     width:'100',
+     *     height:'100'
+     * },{
+     *     src:'a/b/d.jpg',
+     *     width:'100',
+     *     height:'100'
+     * }] );
      * ```
      */
 
@@ -11490,8 +11490,8 @@
             var parent;
             while(parent = node.parentNode){
                 if(parent.tagName == 'SPAN' && domUtils.getChildCount(parent,function(child){
-                        return !domUtils.isBookmarkNode(child) && !domUtils.isBr(child)
-                    }) == 1) {
+                    return !domUtils.isBookmarkNode(child) && !domUtils.isBr(child)
+                }) == 1) {
                     parent.style.cssText += node.style.cssText;
                     domUtils.remove(node,true);
                     node = parent;
@@ -11676,8 +11676,8 @@
                 UE.commands[cmd] = {
                     execCommand: function (cmdName, value) {
                         value = value || (this.queryCommandState(cmdName) ? 'none' : cmdName == 'underline' ? 'underline' :
-                                cmdName == 'fontborder' ? '1px solid #000' :
-                                    'line-through');
+                            cmdName == 'fontborder' ? '1px solid #000' :
+                                'line-through');
                         var me = this,
                             range = this.selection.getRange(),
                             text;
@@ -11860,10 +11860,10 @@
      * @example
      * ```javascript
      * editor.execCommand( 'link', '{
- *     url:'ueditor.baidu.com',
- *     title:'ueditor',
- *     target:'_blank'
- * }' );
+     *     url:'ueditor.baidu.com',
+     *     title:'ueditor',
+     *     target:'_blank'
+     * }' );
      * ```
      */
     /**
@@ -12267,8 +12267,8 @@
      * @example
      * ```javascript
      * editor.execCommand( 'blockquote',{
- *     style: "color: red;"
- * } );
+     *     style: "color: red;"
+     * } );
      * ```
      */
 
@@ -12623,8 +12623,8 @@
      * @example
      * ```javascript
      * editor.execCommand( 'Paragraph','h1','{
- *     class:'test'
- * }' );
+     *     class:'test'
+     * }' );
      * ```
      */
 
@@ -13858,7 +13858,7 @@
             var me = this;
             domUtils.on(me.body,"keyup",function(evt){
                 var code = evt.keyCode||evt.which,
-                //忽略的按键,ctr,alt,shift,方向键
+                    //忽略的按键,ctr,alt,shift,方向键
                     ignores = {"16":1,"18":1,"20":1,"37":1,"38":1,"39":1,"40":1};
                 if(code in ignores) return;
                 clearTimeout(timer);
@@ -14539,7 +14539,7 @@
             }
             var range = this.selection.getRange(),
                 bk = range.createBookmark(),
-            //创建剪贴的容器div
+                //创建剪贴的容器div
                 pastebin = doc.createElement('div');
             pastebin.id = 'baidu_pastebin';
             // Safari 要求div必须有内容，才能粘贴内容进来
@@ -14549,7 +14549,7 @@
             //bk.start.innerHTML = '&nbsp;';
             bk.start.style.display = '';
             pastebin.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;left:-1000px;white-space:nowrap;top:" +
-                    //要在现在光标平行的位置加入，否则会出现跳动的问题
+                //要在现在光标平行的位置加入，否则会出现跳动的问题
                 domUtils.getXY(bk.start).y + 'px';
 
             range.selectNodeContents(pastebin).select(true);
@@ -14590,18 +14590,18 @@
                 }
                 attrs = attrs.replace(/([\w\-]*?)\s*=\s*(("([^"]*)")|('([^']*)')|([^\s>]+))/gi, function (str, atr, val) {
                     if ({
-                            'src': 1,
-                            'href': 1,
-                            'name': 1
-                        }[atr.toLowerCase()]) {
+                        'src': 1,
+                        'href': 1,
+                        'name': 1
+                    }[atr.toLowerCase()]) {
                         return atr + '=' + val + ' '
                     }
                     return ''
                 });
                 if ({
-                        'span': 1,
-                        'div': 1
-                    }[tagName]) {
+                    'span': 1,
+                    'div': 1
+                }[tagName]) {
                     return ''
                 } else {
 
@@ -14782,7 +14782,7 @@
                 me.__hasEnterExecCommand = false;
                 var rng = me.selection.getRange();
                 while (!domUtils.isBody(rng.startContainer) && !rng.startOffset &&
-                rng.startContainer[rng.startContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length
+                    rng.startContainer[rng.startContainer.nodeType == 3 ? 'nodeValue' : 'childNodes'].length
                     ) {
                     rng.setStartBefore(rng.startContainer);
                 }
@@ -17661,7 +17661,7 @@
                     }else {
                         var ext = url.substr(url.lastIndexOf('.') + 1);
                         "ogv" == ext && (ext = "ogg");
-                        str = '<video' + (id ? ' id="' + id + '"':'')+' class="' + classname.trim() + ' video-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '" poster="' + posterUrl + '"/></video><p><br></p>';
+                        str = '<video' + (id ? ' id="' + id + '"':'')+' class="' + classname.trim() + ' video-j-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '" poster="' + posterUrl + '"/></video><p><br></p>';
                     }
                     break;
                 case 'video':
@@ -17671,7 +17671,7 @@
                         str = '<audio' + (id ? ' id="' + id + '"' : '') + ' class=" audio-js" ' + (align ? ' style="float:' + align + '"': '') +
                             ' controls preload="none" width="' + width + '" height="' + height + '" src="' + url + '" poster="' + posterUrl + '">" /></audio>';
                     }else{
-                        str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname.trim() + ' video-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '"  poster="' + posterUrl + '"/></video><p><br></p>';
+                        str = '<video' + (id ? ' id="' + id + '"' : '') + ' class="' + classname.trim() + ' video-j-js" ' + (align ? ' style="float:' + align + '"' : '') + ' controls meta="none" width="' + width + '" height="' + height + '" src="' + url + '" data-setup="{}" poster="' + posterUrl + '">' + '<source src="' + url + '" type="video/' + ext + '"  poster="' + posterUrl + '"/></video><p><br></p>';
                     }
 
                     break
@@ -17710,12 +17710,12 @@
          * ```javascript
          *
          * var videoAttr = {
-     *      //视频地址
-     *      url: 'http://www.youku.com/xxx',
-     *      //视频宽高值， 单位px
-     *      width: 200,
-     *      height: 100
-     * };
+         *      //视频地址
+         *      url: 'http://www.youku.com/xxx',
+         *      //视频宽高值， 单位px
+         *      width: 200,
+         *      height: 100
+         * };
          *
          * //editor 是编辑器实例
          * //向编辑器插入单个视频
@@ -17733,19 +17733,19 @@
          * ```javascript
          *
          * var videoAttr1 = {
-     *      //视频地址
-     *      url: 'http://www.youku.com/xxx',
-     *      //视频宽高值， 单位px
-     *      width: 200,
-     *      height: 100
-     * },
+         *      //视频地址
+         *      url: 'http://www.youku.com/xxx',
+         *      //视频宽高值， 单位px
+         *      width: 200,
+         *      height: 100
+         * },
          * videoAttr2 = {
-     *      //视频地址
-     *      url: 'http://www.youku.com/xxx',
-     *      //视频宽高值， 单位px
-     *      width: 200,
-     *      height: 100
-     * }
+         *      //视频地址
+         *      url: 'http://www.youku.com/xxx',
+         *      //视频宽高值， 单位px
+         *      width: 200,
+         *      height: 100
+         * }
          *
          * //editor 是编辑器实例
          * //该方法将会向编辑器内插入两个视频
@@ -17772,7 +17772,7 @@
                 var html = [],id = 'tmpVedio', cl;
                 for(var i=0,vi,len = videoObjs.length;i<len;i++){
                     vi = videoObjs[i];
-                    cl = (type == 'upload' ? 'edui-upload-video video-js vjs-default-skin':'edui-faked');
+                    cl = (type == 'upload' ? 'edui-upload-video video-j-js vjs-default-skin':'edui-faked');
                     html.push(creatInsertStr( vi.url, vi.width || 420, vi.height || 280, id + i, null, cl, 'embed',vi.posterUrl));
                 }
                 me.execCommand("inserthtml",html.join(""),true);
@@ -18992,8 +18992,8 @@
                 var range = this.selection.getRange(),
                     start = range.startContainer,
                     firstParentBlock = domUtils.findParent(start, function (node) {
-                            return domUtils.isBlockElm(node);
-                        }, true) || me.body;
+                        return domUtils.isBlockElm(node);
+                    }, true) || me.body;
 
                 var defaultValue = getDefaultValue(me),
                     tableWidth = firstParentBlock.offsetWidth,
@@ -19886,21 +19886,21 @@
     UE.plugins['table'] = function () {
         var me = this,
             tabTimer = null,
-        //拖动计时器
+            //拖动计时器
             tableDragTimer = null,
-        //双击计时器
+            //双击计时器
             tableResizeTimer = null,
-        //单元格最小宽度
+            //单元格最小宽度
             cellMinWidth = 5,
             isInResizeBuffer = false,
-        //单元格边框大小
+            //单元格边框大小
             cellBorderWidth = 5,
-        //鼠标偏移距离
+            //鼠标偏移距离
             offsetOfTableCell = 10,
-        //记录在有限时间内的点击状态， 共有3个取值， 0, 1, 2。 0代表未初始化， 1代表单击了1次，2代表2次
+            //记录在有限时间内的点击状态， 共有3个取值， 0, 1, 2。 0代表未初始化， 1代表单击了1次，2代表2次
             singleClickState = 0,
             userActionStatus = null,
-        //双击允许的时间范围
+            //双击允许的时间范围
             dblclickTime = 360,
             UT = UE.UETable,
             getUETable = function (tdOrTable) {
@@ -19948,7 +19948,7 @@
             dragTd = null;    //发生拖动的目标td
 
         var mousedown = false,
-        //todo 判断混乱模式
+            //todo 判断混乱模式
             needIEHack = true;
 
         me.setOpt({
@@ -19995,7 +19995,7 @@
                 //选中的td上的样式
                 '.selectTdClass{background-color:#edf5fa !important}' +
                 'table.noBorderTable td,table.noBorderTable th,table.noBorderTable caption{border:1px dashed #ddd !important}' +
-                    //插入的表格的默认样式
+                //插入的表格的默认样式
                 'table{margin-bottom:10px;border-collapse:collapse;display:table;}' +
                 'td,th{padding: 5px 10px;border: 1px solid #DDD;}' +
                 'caption{border:1px dashed #DDD;border-bottom:0;padding:3px;text-align:center;}' +
@@ -20027,6 +20027,14 @@
 
                     var caption = domUtils.findParentByTagName(me.selection.getStart(), 'caption', true),
                         range = me.selection.getRange();
+                    //增加视频删除
+                    var child = range.startContainer;
+                    if (child != null) {
+                        if (child.tagName == "video") {
+                            domUtils.remove(child);
+                        }
+                    }
+
                     if (range.collapsed && caption && isEmptyBlock(caption)) {
                         me.fireEvent('saveScene');
                         var table = caption.parentNode;
@@ -21397,7 +21405,7 @@
             var ut = getUETable(td);
             if (ut) {
                 var cells = ut.getSameEndPosCells(td, "y"),
-                //备份需要连带变化的td的原始高度，否则后期无法获取正确的值
+                    //备份需要连带变化的td的原始高度，否则后期无法获取正确的值
                     backHeight = cells[0] ? cells[0].offsetHeight : 0;
                 for (var i = 0, cell; cell = cells[i++];) {
                     setCellHeight(cell, changeValue, backHeight);
@@ -21535,7 +21543,7 @@
         function getTableCellWidth( cell ) {
 
             var width = 0,
-            //偏移纠正量
+                //偏移纠正量
                 offset = 0,
                 width = cell.offsetWidth - getTabcellSpace();
 
@@ -21943,346 +21951,346 @@
         var lang = me.getLang( "contextMenu" ),
             menu,
             items = me.options.contextMenu || [
-                    {label:lang['selectall'], cmdName:'selectall'},
-                    {
-                        label:lang.cleardoc,
-                        cmdName:'cleardoc',
-                        exec:function () {
-                            if ( confirm( lang.confirmclear ) ) {
-                                this.execCommand( 'cleardoc' );
+                {label:lang['selectall'], cmdName:'selectall'},
+                {
+                    label:lang.cleardoc,
+                    cmdName:'cleardoc',
+                    exec:function () {
+                        if ( confirm( lang.confirmclear ) ) {
+                            this.execCommand( 'cleardoc' );
+                        }
+                    }
+                },
+                '-',
+                {
+                    label:lang.unlink,
+                    cmdName:'unlink'
+                },
+                '-',
+                {
+                    group:lang.paragraph,
+                    icon:'justifyjustify',
+                    subMenu:[
+                        {
+                            label:lang.justifyleft,
+                            cmdName:'justify',
+                            value:'left'
+                        },
+                        {
+                            label:lang.justifyright,
+                            cmdName:'justify',
+                            value:'right'
+                        },
+                        {
+                            label:lang.justifycenter,
+                            cmdName:'justify',
+                            value:'center'
+                        },
+                        {
+                            label:lang.justifyjustify,
+                            cmdName:'justify',
+                            value:'justify'
+                        }
+                    ]
+                },
+                '-',
+                {
+                    group:lang.table,
+                    icon:'table',
+                    subMenu:[
+                        {
+                            label:lang.inserttable,
+                            cmdName:'inserttable'
+                        },
+                        {
+                            label:lang.deletetable,
+                            cmdName:'deletetable'
+                        },
+                        '-',
+                        {
+                            label:lang.deleterow,
+                            cmdName:'deleterow'
+                        },
+                        {
+                            label:lang.deletecol,
+                            cmdName:'deletecol'
+                        },
+                        {
+                            label:lang.insertcol,
+                            cmdName:'insertcol'
+                        },
+                        {
+                            label:lang.insertcolnext,
+                            cmdName:'insertcolnext'
+                        },
+                        {
+                            label:lang.insertrow,
+                            cmdName:'insertrow'
+                        },
+                        {
+                            label:lang.insertrownext,
+                            cmdName:'insertrownext'
+                        },
+                        '-',
+                        {
+                            label:lang.insertcaption,
+                            cmdName:'insertcaption'
+                        },
+                        {
+                            label:lang.deletecaption,
+                            cmdName:'deletecaption'
+                        },
+                        {
+                            label:lang.inserttitle,
+                            cmdName:'inserttitle'
+                        },
+                        {
+                            label:lang.deletetitle,
+                            cmdName:'deletetitle'
+                        },
+                        {
+                            label:lang.inserttitlecol,
+                            cmdName:'inserttitlecol'
+                        },
+                        {
+                            label:lang.deletetitlecol,
+                            cmdName:'deletetitlecol'
+                        },
+                        '-',
+                        {
+                            label:lang.mergecells,
+                            cmdName:'mergecells'
+                        },
+                        {
+                            label:lang.mergeright,
+                            cmdName:'mergeright'
+                        },
+                        {
+                            label:lang.mergedown,
+                            cmdName:'mergedown'
+                        },
+                        '-',
+                        {
+                            label:lang.splittorows,
+                            cmdName:'splittorows'
+                        },
+                        {
+                            label:lang.splittocols,
+                            cmdName:'splittocols'
+                        },
+                        {
+                            label:lang.splittocells,
+                            cmdName:'splittocells'
+                        },
+                        '-',
+                        {
+                            label:lang.averageDiseRow,
+                            cmdName:'averagedistributerow'
+                        },
+                        {
+                            label:lang.averageDisCol,
+                            cmdName:'averagedistributecol'
+                        },
+                        '-',
+                        {
+                            label:lang.edittd,
+                            cmdName:'edittd',
+                            exec:function () {
+                                if ( UE.ui['edittd'] ) {
+                                    new UE.ui['edittd']( this );
+                                }
+                                this.getDialog('edittd').open();
+                            }
+                        },
+                        {
+                            label:lang.edittable,
+                            cmdName:'edittable',
+                            exec:function () {
+                                if ( UE.ui['edittable'] ) {
+                                    new UE.ui['edittable']( this );
+                                }
+                                this.getDialog('edittable').open();
+                            }
+                        },
+                        {
+                            label:lang.setbordervisible,
+                            cmdName:'setbordervisible'
+                        }
+                    ]
+                },
+                {
+                    group:lang.tablesort,
+                    icon:'tablesort',
+                    subMenu:[
+                        {
+                            label:lang.enablesort,
+                            cmdName:'enablesort'
+                        },
+                        {
+                            label:lang.disablesort,
+                            cmdName:'disablesort'
+                        },
+                        '-',
+                        {
+                            label:lang.reversecurrent,
+                            cmdName:'sorttable',
+                            value:'reversecurrent'
+                        },
+                        {
+                            label:lang.orderbyasc,
+                            cmdName:'sorttable',
+                            value:'orderbyasc'
+                        },
+                        {
+                            label:lang.reversebyasc,
+                            cmdName:'sorttable',
+                            value:'reversebyasc'
+                        },
+                        {
+                            label:lang.orderbynum,
+                            cmdName:'sorttable',
+                            value:'orderbynum'
+                        },
+                        {
+                            label:lang.reversebynum,
+                            cmdName:'sorttable',
+                            value:'reversebynum'
+                        }
+                    ]
+                },
+                {
+                    group:lang.borderbk,
+                    icon:'borderBack',
+                    subMenu:[
+                        {
+                            label:lang.setcolor,
+                            cmdName:"interlacetable",
+                            exec:function(){
+                                this.execCommand("interlacetable");
+                            }
+                        },
+                        {
+                            label:lang.unsetcolor,
+                            cmdName:"uninterlacetable",
+                            exec:function(){
+                                this.execCommand("uninterlacetable");
+                            }
+                        },
+                        {
+                            label:lang.setbackground,
+                            cmdName:"settablebackground",
+                            exec:function(){
+                                this.execCommand("settablebackground",{repeat:true,colorList:["#bbb","#ccc"]});
+                            }
+                        },
+                        {
+                            label:lang.unsetbackground,
+                            cmdName:"cleartablebackground",
+                            exec:function(){
+                                this.execCommand("cleartablebackground");
+                            }
+                        },
+                        {
+                            label:lang.redandblue,
+                            cmdName:"settablebackground",
+                            exec:function(){
+                                this.execCommand("settablebackground",{repeat:true,colorList:["red","blue"]});
+                            }
+                        },
+                        {
+                            label:lang.threecolorgradient,
+                            cmdName:"settablebackground",
+                            exec:function(){
+                                this.execCommand("settablebackground",{repeat:true,colorList:["#aaa","#bbb","#ccc"]});
                             }
                         }
-                    },
-                    '-',
-                    {
-                        label:lang.unlink,
-                        cmdName:'unlink'
-                    },
-                    '-',
-                    {
-                        group:lang.paragraph,
-                        icon:'justifyjustify',
-                        subMenu:[
-                            {
-                                label:lang.justifyleft,
-                                cmdName:'justify',
-                                value:'left'
-                            },
-                            {
-                                label:lang.justifyright,
-                                cmdName:'justify',
-                                value:'right'
-                            },
-                            {
-                                label:lang.justifycenter,
-                                cmdName:'justify',
-                                value:'center'
-                            },
-                            {
-                                label:lang.justifyjustify,
-                                cmdName:'justify',
-                                value:'justify'
-                            }
-                        ]
-                    },
-                    '-',
-                    {
-                        group:lang.table,
-                        icon:'table',
-                        subMenu:[
-                            {
-                                label:lang.inserttable,
-                                cmdName:'inserttable'
-                            },
-                            {
-                                label:lang.deletetable,
-                                cmdName:'deletetable'
-                            },
-                            '-',
-                            {
-                                label:lang.deleterow,
-                                cmdName:'deleterow'
-                            },
-                            {
-                                label:lang.deletecol,
-                                cmdName:'deletecol'
-                            },
-                            {
-                                label:lang.insertcol,
-                                cmdName:'insertcol'
-                            },
-                            {
-                                label:lang.insertcolnext,
-                                cmdName:'insertcolnext'
-                            },
-                            {
-                                label:lang.insertrow,
-                                cmdName:'insertrow'
-                            },
-                            {
-                                label:lang.insertrownext,
-                                cmdName:'insertrownext'
-                            },
-                            '-',
-                            {
-                                label:lang.insertcaption,
-                                cmdName:'insertcaption'
-                            },
-                            {
-                                label:lang.deletecaption,
-                                cmdName:'deletecaption'
-                            },
-                            {
-                                label:lang.inserttitle,
-                                cmdName:'inserttitle'
-                            },
-                            {
-                                label:lang.deletetitle,
-                                cmdName:'deletetitle'
-                            },
-                            {
-                                label:lang.inserttitlecol,
-                                cmdName:'inserttitlecol'
-                            },
-                            {
-                                label:lang.deletetitlecol,
-                                cmdName:'deletetitlecol'
-                            },
-                            '-',
-                            {
-                                label:lang.mergecells,
-                                cmdName:'mergecells'
-                            },
-                            {
-                                label:lang.mergeright,
-                                cmdName:'mergeright'
-                            },
-                            {
-                                label:lang.mergedown,
-                                cmdName:'mergedown'
-                            },
-                            '-',
-                            {
-                                label:lang.splittorows,
-                                cmdName:'splittorows'
-                            },
-                            {
-                                label:lang.splittocols,
-                                cmdName:'splittocols'
-                            },
-                            {
-                                label:lang.splittocells,
-                                cmdName:'splittocells'
-                            },
-                            '-',
-                            {
-                                label:lang.averageDiseRow,
-                                cmdName:'averagedistributerow'
-                            },
-                            {
-                                label:lang.averageDisCol,
-                                cmdName:'averagedistributecol'
-                            },
-                            '-',
-                            {
-                                label:lang.edittd,
-                                cmdName:'edittd',
-                                exec:function () {
-                                    if ( UE.ui['edittd'] ) {
-                                        new UE.ui['edittd']( this );
-                                    }
-                                    this.getDialog('edittd').open();
-                                }
-                            },
-                            {
-                                label:lang.edittable,
-                                cmdName:'edittable',
-                                exec:function () {
-                                    if ( UE.ui['edittable'] ) {
-                                        new UE.ui['edittable']( this );
-                                    }
-                                    this.getDialog('edittable').open();
-                                }
-                            },
-                            {
-                                label:lang.setbordervisible,
-                                cmdName:'setbordervisible'
-                            }
-                        ]
-                    },
-                    {
-                        group:lang.tablesort,
-                        icon:'tablesort',
-                        subMenu:[
-                            {
-                                label:lang.enablesort,
-                                cmdName:'enablesort'
-                            },
-                            {
-                                label:lang.disablesort,
-                                cmdName:'disablesort'
-                            },
-                            '-',
-                            {
-                                label:lang.reversecurrent,
-                                cmdName:'sorttable',
-                                value:'reversecurrent'
-                            },
-                            {
-                                label:lang.orderbyasc,
-                                cmdName:'sorttable',
-                                value:'orderbyasc'
-                            },
-                            {
-                                label:lang.reversebyasc,
-                                cmdName:'sorttable',
-                                value:'reversebyasc'
-                            },
-                            {
-                                label:lang.orderbynum,
-                                cmdName:'sorttable',
-                                value:'orderbynum'
-                            },
-                            {
-                                label:lang.reversebynum,
-                                cmdName:'sorttable',
-                                value:'reversebynum'
-                            }
-                        ]
-                    },
-                    {
-                        group:lang.borderbk,
-                        icon:'borderBack',
-                        subMenu:[
-                            {
-                                label:lang.setcolor,
-                                cmdName:"interlacetable",
-                                exec:function(){
-                                    this.execCommand("interlacetable");
-                                }
-                            },
-                            {
-                                label:lang.unsetcolor,
-                                cmdName:"uninterlacetable",
-                                exec:function(){
-                                    this.execCommand("uninterlacetable");
-                                }
-                            },
-                            {
-                                label:lang.setbackground,
-                                cmdName:"settablebackground",
-                                exec:function(){
-                                    this.execCommand("settablebackground",{repeat:true,colorList:["#bbb","#ccc"]});
-                                }
-                            },
-                            {
-                                label:lang.unsetbackground,
-                                cmdName:"cleartablebackground",
-                                exec:function(){
-                                    this.execCommand("cleartablebackground");
-                                }
-                            },
-                            {
-                                label:lang.redandblue,
-                                cmdName:"settablebackground",
-                                exec:function(){
-                                    this.execCommand("settablebackground",{repeat:true,colorList:["red","blue"]});
-                                }
-                            },
-                            {
-                                label:lang.threecolorgradient,
-                                cmdName:"settablebackground",
-                                exec:function(){
-                                    this.execCommand("settablebackground",{repeat:true,colorList:["#aaa","#bbb","#ccc"]});
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        group:lang.aligntd,
-                        icon:'aligntd',
-                        subMenu:[
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'left',vAlign:'top'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'center',vAlign:'top'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'right',vAlign:'top'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'left',vAlign:'middle'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'center',vAlign:'middle'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'right',vAlign:'middle'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'left',vAlign:'bottom'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'center',vAlign:'bottom'}
-                            },
-                            {
-                                cmdName:'cellalignment',
-                                value:{align:'right',vAlign:'bottom'}
-                            }
-                        ]
-                    },
-                    {
-                        group:lang.aligntable,
-                        icon:'aligntable',
-                        subMenu:[
-                            {
-                                cmdName:'tablealignment',
-                                className: 'left',
-                                label:lang.tableleft,
-                                value:"left"
-                            },
-                            {
-                                cmdName:'tablealignment',
-                                className: 'center',
-                                label:lang.tablecenter,
-                                value:"center"
-                            },
-                            {
-                                cmdName:'tablealignment',
-                                className: 'right',
-                                label:lang.tableright,
-                                value:"right"
-                            }
-                        ]
-                    },
-                    '-',
-                    {
-                        label:lang.insertparagraphbefore,
-                        cmdName:'insertparagraph',
-                        value:true
-                    },
-                    {
-                        label:lang.insertparagraphafter,
-                        cmdName:'insertparagraph'
-                    },
-                    {
-                        label:lang['copy'],
-                        cmdName:'copy'
-                    },
-                    {
-                        label:lang['paste'],
-                        cmdName:'paste'
-                    }
-                ];
+                    ]
+                },
+                {
+                    group:lang.aligntd,
+                    icon:'aligntd',
+                    subMenu:[
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'left',vAlign:'top'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'center',vAlign:'top'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'right',vAlign:'top'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'left',vAlign:'middle'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'center',vAlign:'middle'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'right',vAlign:'middle'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'left',vAlign:'bottom'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'center',vAlign:'bottom'}
+                        },
+                        {
+                            cmdName:'cellalignment',
+                            value:{align:'right',vAlign:'bottom'}
+                        }
+                    ]
+                },
+                {
+                    group:lang.aligntable,
+                    icon:'aligntable',
+                    subMenu:[
+                        {
+                            cmdName:'tablealignment',
+                            className: 'left',
+                            label:lang.tableleft,
+                            value:"left"
+                        },
+                        {
+                            cmdName:'tablealignment',
+                            className: 'center',
+                            label:lang.tablecenter,
+                            value:"center"
+                        },
+                        {
+                            cmdName:'tablealignment',
+                            className: 'right',
+                            label:lang.tableright,
+                            value:"right"
+                        }
+                    ]
+                },
+                '-',
+                {
+                    label:lang.insertparagraphbefore,
+                    cmdName:'insertparagraph',
+                    value:true
+                },
+                {
+                    label:lang.insertparagraphafter,
+                    cmdName:'insertparagraph'
+                },
+                {
+                    label:lang['copy'],
+                    cmdName:'copy'
+                },
+                {
+                    label:lang['paste'],
+                    cmdName:'paste'
+                }
+            ];
         if ( !items.length ) {
             return;
         }
@@ -23055,11 +23063,11 @@
     UE.plugins['customstyle'] = function() {
         var me = this;
         me.setOpt({ 'customstyle':[
-            {tag:'h1',name:'tc', style:'font-size:32px;font-weight:bold;border-bottom:#ccc 2px solid;padding:0 4px 0 0;text-align:center;margin:0 0 20px 0;'},
-            {tag:'h1',name:'tl', style:'font-size:32px;font-weight:bold;border-bottom:#ccc 2px solid;padding:0 4px 0 0;text-align:left;margin:0 0 10px 0;'},
-            {tag:'span',name:'im', style:'font-size:16px;font-style:italic;font-weight:bold;line-height:18px;'},
-            {tag:'span',name:'hi', style:'font-size:16px;font-style:italic;font-weight:bold;color:rgb(51, 153, 204);line-height:18px;'}
-        ]});
+                {tag:'h1',name:'tc', style:'font-size:32px;font-weight:bold;border-bottom:#ccc 2px solid;padding:0 4px 0 0;text-align:center;margin:0 0 20px 0;'},
+                {tag:'h1',name:'tl', style:'font-size:32px;font-weight:bold;border-bottom:#ccc 2px solid;padding:0 4px 0 0;text-align:left;margin:0 0 10px 0;'},
+                {tag:'span',name:'im', style:'font-size:16px;font-style:italic;font-weight:bold;line-height:18px;'},
+                {tag:'span',name:'hi', style:'font-size:16px;font-style:italic;font-weight:bold;color:rgb(51, 153, 204);line-height:18px;'}
+            ]});
         me.commands['customstyle'] = {
             execCommand : function(cmdName, obj) {
                 var me = this,
@@ -23463,12 +23471,12 @@
      * //editor是编辑器实例
      * //在编辑器里插入一个“植物大战僵尸”的APP
      * editor.execCommand( 'webapp' , {
- *     title: '植物大战僵尸',
- *     width: 560,
- *     height: 465,
- *     logo: '应用展示的图片',
- *     url: '百度应用的地址'
- * } );
+     *     title: '植物大战僵尸',
+     *     width: 560,
+     *     height: 465,
+     *     logo: '应用展示的图片',
+     *     url: '百度应用的地址'
+     * } );
      * ```
      */
 
@@ -23520,17 +23528,17 @@
         var me = this;
         function createInsertStr(obj,toEmbed){
             return  !toEmbed ?
-            '<img title="'+obj.title+'" width="' + obj.width + '" height="' + obj.height + '"' +
-            ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif" _logo_url="'+obj.logo+'" style="background:url(' + obj.logo
-            +') no-repeat center center; border:1px solid gray;" class="edui-faked-webapp" _url="' + obj.url + '" ' +
-            (obj.align && !obj.cssfloat? 'align="' + obj.align + '"' : '') +
-            (obj.cssfloat ? 'style="float:' + obj.cssfloat + '"' : '') +
-            '/>'
+                '<img title="'+obj.title+'" width="' + obj.width + '" height="' + obj.height + '"' +
+                ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif" _logo_url="'+obj.logo+'" style="background:url(' + obj.logo
+                +') no-repeat center center; border:1px solid gray;" class="edui-faked-webapp" _url="' + obj.url + '" ' +
+                (obj.align && !obj.cssfloat? 'align="' + obj.align + '"' : '') +
+                (obj.cssfloat ? 'style="float:' + obj.cssfloat + '"' : '') +
+                '/>'
                 :
-            '<iframe class="edui-faked-webapp" title="'+obj.title+'" ' +
-            (obj.align && !obj.cssfloat? 'align="' + obj.align + '"' : '') +
-            (obj.cssfloat ? 'style="float:' + obj.cssfloat + '"' : '') +
-            'width="' + obj.width + '" height="' + obj.height + '"  scrolling="no" frameborder="0" src="' + obj.url + '" logo_url = "'+obj.logo+'"></iframe>'
+                '<iframe class="edui-faked-webapp" title="'+obj.title+'" ' +
+                (obj.align && !obj.cssfloat? 'align="' + obj.align + '"' : '') +
+                (obj.cssfloat ? 'style="float:' + obj.cssfloat + '"' : '') +
+                'width="' + obj.width + '" height="' + obj.height + '"  scrolling="no" frameborder="0" src="' + obj.url + '" logo_url = "'+obj.logo+'"></iframe>'
 
         }
         return {
@@ -23583,12 +23591,12 @@
                  * //editor是编辑器实例
                  * //在编辑器里插入一个“植物大战僵尸”的APP
                  * editor.execCommand( 'webapp' , {
-             *     title: '植物大战僵尸',
-             *     width: 560,
-             *     height: 465,
-             *     logo: '应用展示的图片',
-             *     url: '百度应用的地址'
-             * } );
+                 *     title: '植物大战僵尸',
+                 *     width: 560,
+                 *     height: 465,
+                 *     logo: '应用展示的图片',
+                 *     url: '百度应用的地址'
+                 * } );
                  * ```
                  */
                 'webapp':{
@@ -23662,16 +23670,16 @@
         var me = this;
         function creatInsertStr(url,width,height,align,cssfloat,toEmbed){
             return  !toEmbed ?
-            '<img ' +
-            (align && !cssfloat? 'align="' + align + '"' : '') +
-            (cssfloat ? 'style="float:' + cssfloat + '"' : '') +
-            ' width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-music"' +
-            ' src="'+me.options.langPath+me.options.lang+'/images/music.png" />'
+                '<img ' +
+                (align && !cssfloat? 'align="' + align + '"' : '') +
+                (cssfloat ? 'style="float:' + cssfloat + '"' : '') +
+                ' width="'+ width +'" height="' + height + '" _url="'+url+'" class="edui-faked-music"' +
+                ' src="'+me.options.langPath+me.options.lang+'/images/music.png" />'
                 :
-            '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
-            ' src="' + url + '" width="' + width  + '" height="' + height  + '" '+ (align && !cssfloat? 'align="' + align + '"' : '') +
-            (cssfloat ? 'style="float:' + cssfloat + '"' : '') +
-            ' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >';
+                '<embed type="application/x-shockwave-flash" class="edui-faked-music" pluginspage="http://www.macromedia.com/go/getflashplayer"' +
+                ' src="' + url + '" width="' + width  + '" height="' + height  + '" '+ (align && !cssfloat? 'align="' + align + '"' : '') +
+                (cssfloat ? 'style="float:' + cssfloat + '"' : '') +
+                ' wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true" >';
         }
         return {
             outputRule: function(root){
@@ -23710,11 +23718,11 @@
                  * //editor是编辑器实例
                  * //在编辑器里插入一个“植物大战僵尸”的APP
                  * editor.execCommand( 'music' , {
-             *     width: 400,
-             *     height: 95,
-             *     align: "center",
-             *     url: "音乐地址"
-             * } );
+                 *     width: 400,
+                 *     height: 95,
+                 *     align: "center",
+                 *     url: "音乐地址"
+                 * } );
                  * ```
                  */
                 'music':{
@@ -23919,11 +23927,11 @@
     UE.plugin.register('autosave', function (){
 
         var me = this,
-        //无限循环保护
+            //无限循环保护
             lastSaveTime = new Date(),
-        //最小保存间隔时间
+            //最小保存间隔时间
             MIN_TIME = 20,
-        //auto save key
+            //auto save key
             saveKey = null;
 
         function save ( editor ) {
@@ -23947,8 +23955,8 @@
             saveData = me.body.innerHTML;
 
             if ( editor.fireEvent( "beforeautosave", {
-                    content: saveData
-                } ) === false ) {
+                content: saveData
+            } ) === false ) {
                 return;
             }
 
@@ -24704,8 +24712,8 @@
                  * @example
                  * ```javascript
                  * editor.execCommand('serverparam', function(editor){
-             *     return {'key': 'value'};
-             * });
+                 *     return {'key': 'value'};
+                 * });
                  * editor.queryCommandValue('serverparam'); //返回对象 {'key': 'value'}
                  * ```
                  */
@@ -25057,9 +25065,9 @@
             },
             contains: function (elA, elB){
                 return elA && elB && (elA === elB ? false : (
-                        elA.contains ? elA.contains(elB) :
+                    elA.contains ? elA.contains(elB) :
                         elA.compareDocumentPosition(elB) & 16
-                    ));
+                ));
             },
             startDrag: function (evt, callbacks,doc){
                 var doc = doc || document;
@@ -25628,13 +25636,13 @@
         utils.inherits(ColorPicker, UIBase);
 
         var COLORS = (
-        'ffffff,000000,eeece1,1f497d,4f81bd,c0504d,9bbb59,8064a2,4bacc6,f79646,' +
-        'f2f2f2,7f7f7f,ddd9c3,c6d9f0,dbe5f1,f2dcdb,ebf1dd,e5e0ec,dbeef3,fdeada,' +
-        'd8d8d8,595959,c4bd97,8db3e2,b8cce4,e5b9b7,d7e3bc,ccc1d9,b7dde8,fbd5b5,' +
-        'bfbfbf,3f3f3f,938953,548dd4,95b3d7,d99694,c3d69b,b2a2c7,92cddc,fac08f,' +
-        'a5a5a5,262626,494429,17365d,366092,953734,76923c,5f497a,31859b,e36c09,' +
-        '7f7f7f,0c0c0c,1d1b10,0f243e,244061,632423,4f6128,3f3151,205867,974806,' +
-        'c00000,ff0000,ffc000,ffff00,92d050,00b050,00b0f0,0070c0,002060,7030a0,').split(',');
+            'ffffff,000000,eeece1,1f497d,4f81bd,c0504d,9bbb59,8064a2,4bacc6,f79646,' +
+            'f2f2f2,7f7f7f,ddd9c3,c6d9f0,dbe5f1,f2dcdb,ebf1dd,e5e0ec,dbeef3,fdeada,' +
+            'd8d8d8,595959,c4bd97,8db3e2,b8cce4,e5b9b7,d7e3bc,ccc1d9,b7dde8,fbd5b5,' +
+            'bfbfbf,3f3f3f,938953,548dd4,95b3d7,d99694,c3d69b,b2a2c7,92cddc,fac08f,' +
+            'a5a5a5,262626,494429,17365d,366092,953734,76923c,5f497a,31859b,e36c09,' +
+            '7f7f7f,0c0c0c,1d1b10,0f243e,244061,632423,4f6128,3f3151,205867,974806,' +
+            'c00000,ff0000,ffc000,ffff00,92d050,00b050,00b0f0,0070c0,002060,7030a0,').split(',');
 
         function genColorPicker(noColorText,editor){
             var html = '<div id="##" class="edui-colorpicker %%">' +
@@ -25650,14 +25658,14 @@
                     html += '</tr>'+(i==60?'<tr style="border-bottom: 1px solid #ddd;font-size: 13px;line-height: 25px;color:#39C;"><td colspan="10">'+editor.getLang("standardColor")+'</td></tr>':'')+'<tr'+(i==60?' class="edui-colorpicker-tablefirstrow"':'')+'>';
                 }
                 html += i<70 ? '<td style="padding: 0 2px;"><a hidefocus title="'+COLORS[i]+'" onclick="return false;" href="javascript:" unselectable="on" class="edui-box edui-colorpicker-colorcell"' +
-                ' data-color="#'+ COLORS[i] +'"'+
-                ' style="background-color:#'+ COLORS[i] +';border:solid #ccc;'+
-                (i<10 || i>=60?'border-width:1px;':
-                    i>=10&&i<20?'border-width:1px 1px 0 1px;':
+                    ' data-color="#'+ COLORS[i] +'"'+
+                    ' style="background-color:#'+ COLORS[i] +';border:solid #ccc;'+
+                    (i<10 || i>=60?'border-width:1px;':
+                        i>=10&&i<20?'border-width:1px 1px 0 1px;':
 
-                        'border-width:0 1px 0 1px;')+
-                '"' +
-                '></a></td>':'';
+                            'border-width:0 1px 0 1px;')+
+                    '"' +
+                    '></a></td>':'';
             }
             html += '</tr></table></div>';
             return html;
@@ -25760,11 +25768,11 @@
         var TPL_STATEFUL = 'onmousedown="$$.Stateful_onMouseDown(event, this);"' +
             ' onmouseup="$$.Stateful_onMouseUp(event, this);"' +
             ( browser.ie ? (
-            ' onmouseenter="$$.Stateful_onMouseEnter(event, this);"' +
-            ' onmouseleave="$$.Stateful_onMouseLeave(event, this);"' )
+                ' onmouseenter="$$.Stateful_onMouseEnter(event, this);"' +
+                ' onmouseleave="$$.Stateful_onMouseLeave(event, this);"' )
                 : (
-            ' onmouseover="$$.Stateful_onMouseOver(event, this);"' +
-            ' onmouseout="$$.Stateful_onMouseOut(event, this);"' ));
+                    ' onmouseover="$$.Stateful_onMouseOver(event, this);"' +
+                    ' onmouseout="$$.Stateful_onMouseOut(event, this);"' ));
 
         baidu.editor.ui.Stateful = {
             alwalysHoverable: false,
@@ -29026,9 +29034,9 @@
                 return '<div id="##" class="%%">' +
                     '<div id="##_toolbarbox" class="%%-toolbarbox">' +
                     (this.toolbars.length ?
-                    '<div id="##_toolbarboxouter" class="%%-toolbarboxouter"><div class="%%-toolbarboxinner">' +
-                    this.renderToolbarBoxHtml() +
-                    '</div></div>' : '') +
+                        '<div id="##_toolbarboxouter" class="%%-toolbarboxouter"><div class="%%-toolbarboxinner">' +
+                        this.renderToolbarBoxHtml() +
+                        '</div></div>' : '') +
                     '<div id="##_toolbarmsg" class="%%-toolbarmsg" style="display:none;">' +
                     '<div id = "##_upload_dialog" class="%%-toolbarmsg-upload" onclick="$$.showWordImageDialog();">' + this.editor.getLang("clickToUpload") + '</div>' +
                     '<div class="%%-toolbarmsg-close" onclick="$$.hideToolbarMsg();">x</div>' +
@@ -29039,7 +29047,7 @@
                     '</div>' +
                     '<div id="##_iframeholder" class="%%-iframeholder">' +
                     '</div>' +
-                        //modify wdcount by matao
+                    //modify wdcount by matao
                     '<div id="##_bottombar" class="%%-bottomContainer"><table><tr>' +
                     '<td id="##_elementpath" class="%%-bottombar"></td>' +
                     '<td id="##_wordcount" class="%%-wordcount"></td>' +
@@ -29455,8 +29463,8 @@
          * * ''opt'' 编辑器的可选参数
          * @example
          *  UE.getEditor('containerId',{onready:function(){//创建一个编辑器实例
-     *      this.setContent('hello')
-     *  }});
+         *      this.setContent('hello')
+         *  }});
          *  UE.getEditor('containerId'); //返回刚创建的实例
          *
          */

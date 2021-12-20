@@ -235,7 +235,7 @@ class Form extends Api
         $return_data['data']['money'] = $money;
 
         Db::commit();
-
+        Hook('form_submit_after', $formData);
         $return_data['msg']    = $form['data']['return_msg'] ? $form['data']['return_msg'] : $form['data']['button_name'] . '成功';
         $return_data['status'] = true;
         return $return_data;

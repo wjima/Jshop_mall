@@ -1973,7 +1973,7 @@ hr {
 	font-size: 14px;
 	border: none;
 	border-radius: 2px;
-	cursor: pointer
+	cursor: pointer;
 }
 
 .layui-btn:hover {

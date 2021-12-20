@@ -1893,6 +1893,7 @@ class Order extends Common
 
         $order_info = $this->field('order_id,pay_status,status,ctime,order_type')
             ->where($where)
+            ->limit(50)
             ->select();
 
         $result = true;
@@ -2400,5 +2401,24 @@ class Order extends Common
         }
         $aftersalesModel = new BillAftersales();
         return $aftersalesModel->toAdd($order['user_id'],$order_id,$type,[],[],'后台创建售后单',0);
+    }
+
+
+    // 检查订单支付状态
+    public function checkOrderStatus($order_id)
+    {
+        $result = [
+            'status' => true,
+            'smg'    => '',
+            'data'   => []
+        ];
+        $res    = $this->where('order_id', $order_id)->value('pay_status');
+        if ($res == self::PAY_STATUS_YES) {
+            // 支付失败，该订单已支付
+            return error_code(13008);
+        } else if ($res == self::PAY_STATUS_NO) {
+            return $result;
+        }
+        return $result;
     }
 }

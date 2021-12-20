@@ -663,4 +663,41 @@ class Cart extends Common
 
         return $return;
     }
+
+
+    /**
+     * 批量加入购物车
+     *
+     * @Author WGG 1490100895@qq.com
+     * @DateTime 2021-01-29
+     * @param int $user_id
+     * @param array $data
+     * @return void
+     */
+    public function batchAdd($user_id, $data)
+    {
+        try {
+            Db::startTrans();
+            $cat_ids = [];
+            foreach ($data as $product_id => $num) {
+                if (!$product_id || !$num) throw new Exception("请选择货品及购买数量");
+                $res = $this->add($user_id, $product_id, $num, 2);
+                if (!$res['status']) throw new Exception($res['msg']);
+                $cat_ids[] = $res['data'];
+            }
+            Db::commit();
+            return [
+                'status' => true,
+                'data'   => implode(",", $cat_ids),
+                'msg'    => ''
+            ];
+        } catch (Exception $e) {
+            Db::rollback();
+            return [
+                'status' => false,
+                'data'   => '',
+                'msg'    => $e->getMessage()
+            ];
+        }
+    }
 }

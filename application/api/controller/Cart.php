@@ -191,7 +191,21 @@ class Cart extends Api
         $input = Request::param('cart/a');
         return $model->batchSetCart($this->userId, $input);
     }
-
+    
+/**
+ * 批量加入购物车
+ *
+ * @Author WGG 1490100895@qq.com
+ * @DateTime 2021-01-29
+ * @return void
+ */
+    public function batchAdd()
+    {
+        if (!input("?param.data")) {
+            return error_code(14011);
+        }
+        return $this->cartModel->batchAdd($this->userId, input('data/a'));
+    }
     /**
      * 获取全部购物车列表
      * @return array

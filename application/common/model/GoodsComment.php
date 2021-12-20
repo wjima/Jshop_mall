@@ -48,14 +48,20 @@ class GoodsComment extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($goods_id, $page = 1, $limit = 10, $display = 'all')
+    public function getList($goods_id, $page = 1, $limit = 10, $display = 'all',$order = 'ctime')
     {
         $where[] = ['goods_id', 'eq', $goods_id];
         if ($display != 'all') {
             $where[] = ['display', 'eq', $display];
         }
+        if ($order == 'score') {
+            $order = "score desc";
+        } else {
+            $order = "ctime desc";
+        }
         $res = $this::with('user')->where($where)
             ->order('ctime desc')
+            ->order($order)
             ->page($page, $limit)
             ->select();
         foreach ($res as $k => $v) {

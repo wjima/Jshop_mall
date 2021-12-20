@@ -255,7 +255,7 @@ class BillReship extends Common
                 $list[$k]['status_name'] = config('params.bill_reship')['status'][$v['status']];
             }
             if($v['user_id']) {
-                $list[$k]['user_id'] = get_user_info($v['user_id'], 'nickname');
+                $list[$k]['user_id'] = get_user_info($v['user_id'], 'showname');
             }
 
             if(isset($v['ctime']) && $v['ctime']) {
@@ -450,7 +450,7 @@ class BillReship extends Common
                     $list[$k]['status_name'] = config('params.bill_reship')['status'][$v['status']];
                 }
                 if($v['user_id']) {
-                    $list[$k]['user_id'] = format_mobile(get_user_info($v['user_id']));
+                    $list[$k]['user_id'] = get_user_info($v['user_id'], 'showname');
                 }
 
                 if(isset($v['ctime']) && $v['ctime']) {

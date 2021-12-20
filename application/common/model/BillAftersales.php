@@ -1038,7 +1038,7 @@ class BillAftersales extends Common
                     $list[$k]['status_name'] = config('params.bill_aftersales')['status'][$v['status']];
                 }
                 if ($v['user_id']) {
-                    $list[$k]['user_id'] = format_mobile(get_user_info($v['user_id']));
+                    $list[$k]['user_id'] = get_user_info($v['user_id'], 'showname');
                 }
 
                 if ($v['ctime']) {

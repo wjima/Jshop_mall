@@ -129,7 +129,7 @@ class BillPayments extends Common
                 $list[$k]['status'] = config('params.bill_payments')['status'][$v['status']];
             }
             if($v['user_id']) {
-                $list[$k]['user_id'] = get_user_info($v['user_id'], 'nickname');
+                $list[$k]['user_id'] = get_user_info($v['user_id']);
             }
             if($v['payment_code']) {
                 $list[$k]['payment_code'] = config('params.payment_type')[$v['payment_code']];
@@ -532,7 +532,7 @@ class BillPayments extends Common
             ],
             [
                 'id' => 'user_id',
-                'desc' => '用户',
+                'desc' => '手机号码',
             ],
             [
                 'id' => 'money',

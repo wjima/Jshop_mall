@@ -223,22 +223,57 @@ class Store extends Common
     }
 
 
-    /**
+    /***
      * 获取默认店铺
-     * @return array
+     * @param string $longitude 经度
+     * @param string $latitude 维度
+     * @return array|mixed|string
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getDefaultStore()
+    public function getDefaultStore($longitude = '', $latitude = '')
     {
         $return = error_code(10025);
-        $return['data'] = $this->order('ctime desc')->find();
-        if($return['data'])
-        {
-            $return['data']['all_address'] = get_area($return['data']['area_id']).$return['data']['address'];
-            $return['status'] = true;
-            $return['msg'] = '获取成功';
+        if (!$longitude || !$latitude) {
+
+            $return['data'] = $this->order('ctime desc')->find();
+            if ($return['data']) {
+                $return['data']['all_address'] = get_area($return['data']['area_id']) . $return['data']['address'];
+                $return['status']              = true;
+                $return['msg']                 = '获取成功';
+            }
+        } else {
+            if ($longitude && $latitude) {
+                //距离计算
+                $sqrt = 'SQRT(POW(SIN((' . $latitude . '*PI()/180-`latitude`*PI()/180)/2),2)+COS(' . $latitude . '*PI()/180)*COS(`latitude`*PI()/180)*POW(SIN((' . $longitude . '*PI()/180-`longitude`*PI()/180)/2),2))';
+                //查询结果排序
+                $prefix = config('database.prefix');
+                $sql    = "select `id`,`store_name`,`area_id`,`longitude`,`latitude`,`mobile`,`linkman`,`address`,`distance` from (select * ,ROUND(6378.138*2*ASIN($sqrt)*1000) AS 'distance' from  " . $prefix . "store" . "   order by 'distance' desc ) as a  ORDER BY `distance` asc limit 0,1";
+
+                $res = Db::query($sql);
+
+                $return['data'] = $res[0];
+                if ($return['data']) {
+                    $return['data']['all_address'] = get_area($return['data']['area_id']) . $return['data']['address'];
+                    if ($longitude && $latitude) {
+
+                        if ($return['data']['distance']) {
+                            $return['data']['distance_c'] = bcdiv($return['data']['distance'], 1000, 2);
+                            if ($return['data']['distance'] >= 1000) {
+                                $return['data']['distance'] = bcdiv($return['data']['distance'], 1000, 2) . 'km';
+                            } else {
+                                $return['data']['distance'] = $return['data']['distance'] . 'm';
+                            }
+                        } else {
+                            $return['data']['distance_c'] = '100';
+                            $return['data']['distance']   = '未知';
+                        }
+                    }
+                    $return['status'] = true;
+                    $return['msg']    = '获取成功';
+                }
+            }
         }
         return $return;
     }

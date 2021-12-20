@@ -1,0 +1,159 @@
+<form class="layui-form seller-form" action="">
+    <div class="layui-form-item">
+
+        <div class="layui-input-inline seller-inline-4">
+            <input type="text" name="logi_code" lay-verify="title" placeholder="物流公司编码" autocomplete="off"
+                   class="layui-input">
+        </div>
+
+        <div class="layui-input-inline seller-inline-2">
+            <button  lay-submit lay-filter="logistics-search" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon layui-icon-search"></i></button>
+        </div>
+        <div class="layui-input-right">
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm add-logistics"><i class="iconfont">&#xe6e2;</i>
+                添加</button>
+        </div>
+    </div>
+</form>
+<div class="table-body">
+    <table id="logiTable" lay-filter="logiTable"></table>
+</div>
+
+<script src="__STATIC_JS__jshop.js"></script>
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont2.css" media="all">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.css">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/style/admin.css" media="all">
+<link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.seller.css">
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__style.css"/>
+<script src="__STATIC_JS__jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC_LIB__layuiadmin/layui/layui.js"></script>
+
+<script>
+    layui.use(['table', 'form', 'layer', 'laydate'], function () {
+        var layer = layui.layer, table = layui.table, form = layui.form, date = layui.laydate;
+        //执行渲染
+        table.render({
+            elem: '#logiTable', //指定原始表格元素选择器（推荐id选择器）
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: true,
+            even: true,
+            limit: '20',
+            id: 'logiTable',
+            url: "{:get_addon_url('KdniaoExpress://Order/faceSheet')}",
+            cols: [[ //标题栏
+                { field: 'id', sort: true, title: 'ID', width: 90, align: 'center' },
+                { width: 140, title: '操作', align: 'center', toolbar: '#logisticsBar' },
+                { field: 'logi_name', title: '物流公司名称', align: 'center' },
+                { field: 'logi_code', title: '物流公司编码', align: 'center' },
+                { field: 'customer_name', title: '快递公司账号', align: 'center' },
+                { field: 'send_site', title: '物流网点地址', align: 'center' },
+                { field: 'template_size', title: '快递单模板', align: 'center' },
+            ]] //设置表头
+        });
+        //search
+        date.render({
+            elem: '#utime',
+            range: '~',
+            trigger: 'click' //自动弹出控件的事件，采用click弹出
+        });
+        form.on('submit(logistics-search)', function (data) {
+            layui.table.reload('logiTable', {
+                where: data.field
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        //layui弹出层
+        $(document).on('click', '.add-logistics', function () {
+            JsGet("{:get_addon_url('KdniaoExpress://Order/faceSheetAdd')}", function (e) {
+                if (e.status) {
+                    window.box = layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: setpage(500, 500),
+                        title: '添加物流信息',
+                        btn: ['保存', '关闭'],
+                        yes: function (index) {
+                            var formData = form.val('add_logistic');
+                            JsPost("{:get_addon_url('KdniaoExpress://Order/faceSheetAdd')}", formData, function (res) {
+                                if (res.status == true) {
+                                    layer.msg(res.msg, { icon: 6, time: 1300 }, function () {
+                                        layer.close(window.box);
+                                        table.reload('logiTable');
+                                    });
+                                } else {
+                                    layer.msg(res.msg, { icon: 5, time: 1300 });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    layer.msg(e.msg);
+                }
+            });
+        });
+
+
+        //监听工具条
+        table.on('tool(logiTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if (layEvent === 'del') { //删除
+                layer.confirm('真的要删除么', { icon: 3 }, function (index) {
+                    JsPost("{:get_addon_url('KdniaoExpress://Order/faceSheetDel')}", { id: data.id }, function (res) {
+                        if (res.status == true) {
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            layer.close(index);//向服务端发送删除指令
+                            layer.msg("删除成功", { icon: 6 });
+                        } else {
+                            layer.msg("删除成功", { icon: 5 });
+                        }
+                    });
+                });
+            } else if (layEvent === 'edit') { //编辑
+                //do something
+                JsGet("{:get_addon_url('KdniaoExpress://Order/faceSheetEdit')}?id=" + data.id, function (e) {
+                    if (e.status) {
+                        window.box = layer.open({
+                            type: 1,
+                            content: e.data,
+                            area: setpage(500, 500),
+                            title: '修改物流公司',
+                            maxmin: true,
+                            btn: ['保存', '关闭'],
+                            yes: function (index) {
+                                var formData = form.val('add_logistic');
+                                JsPost("{:get_addon_url('KdniaoExpress://Order/faceSheetEdit')}", formData, function (res) {
+                                    if (res.status == true) {
+                                        layer.msg(res.msg, { icon: 6, time: 1300 }, function () {
+                                            Object.assign(data, formData);
+                                            obj.update(data);
+                                            layer.close(index);
+                                            table.reload('logiTable');
+                                        });
+
+                                    } else {
+                                        layer.msg(res.msg, { icon: 5, time: 1300 });
+                                    }
+                                });
+                            }
+                        })
+                    } else {
+                        layer.msg(e.msg);
+                    }
+                });
+            }
+        });
+
+    })
+</script>
+<script type="text/html" id="logisticsBar">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" title="编辑">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" title="删除" lay-event="del">删除</a>
+</script>

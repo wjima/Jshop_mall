@@ -65,6 +65,18 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
           PRIMARY KEY (`id`) USING BTREE,
           INDEX `order_id`(`order_id`) USING BTREE
         ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Compact;";
+
+        //电子面单表
+        $sql .= "CREATE TABLE IF NOT EXISTS `" . config('database.prefix') . "face_sheet` (
+          `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+          `logi_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '物流公司编码',
+          `customer_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快递公司账号',
+          `customer_pwd` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快递公司密码',
+          `send_site` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快递公司网点地址',
+          `template_size` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '快递单模板',
+          PRIMARY KEY (`id`) USING BTREE
+        ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '电子面单账户表' ROW_FORMAT = Dynamic;";
+
         $list = explode(';', $sql);
 
         for ($i = 0; $i < count($list); $i++) {
@@ -84,6 +96,7 @@ INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `log
         $db  = new Db();
         $sql = "truncate table " . config('database.prefix') . "logistics;";
         $sql .= 'DROP TABLE IF EXISTS  ' . config('database.prefix') . 'print_express ;';
+        $sql .= 'DROP TABLE IF EXISTS  ' . config('database.prefix') . 'face_sheet ;';
         // 还原快递100公司编码
         $sql .= 'INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `logi_code`, `sort`) VALUES (1000, \'顺丰速运\', \'shunfeng\', 100);
 INSERT INTO `' . config('database.prefix') . 'logistics`(`id`, `logi_name`, `logi_code`, `sort`) VALUES (1001, \'百世快递\', \'huitongkuaidi\', 100);

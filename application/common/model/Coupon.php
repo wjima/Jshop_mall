@@ -532,9 +532,16 @@ class Coupon extends Common
             $result['msg'] = '没有此优惠券活动';
             return $result;
         }
+        //算开始时间
+//        if($info['stime'] < time()){
+//            $starttime = time();
+//        }else{
+//            $starttime = $info['stime'];
+//        }
+        $starttime = $info['stime'];
         $params = json_decode($info['params'],true);
         if(isset($params['term_day']) && $params['term_day'] > 0){
-            $endtime = time();
+            $endtime = $starttime;          //起始时间就是开始时间
             $endtime = $endtime + $params['term_day'] * 60*60*24;
             //如果结算之后的时间大于优惠券结束的时间了，那就以优惠券的时间为准
             if($info['etime'] < $endtime){
@@ -557,7 +564,8 @@ class Coupon extends Common
             $data[] = [
                 'coupon_code' => $this->getCouponNumber($promotion_id),
                 'promotion_id' => $promotion_id,
-                'endtime' => $endtime
+                'endtime' => $endtime,
+                'ctime' => $starttime
             ];
         }
         $re = $this->saveAll($data);

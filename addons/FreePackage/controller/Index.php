@@ -58,6 +58,11 @@ class Index extends AddonController
 
     // 基础设置
     public function setting(){
+        $result = [
+            'status' => true,
+            'data'   => [],
+            'msg'    => '保存成功'
+        ];
         $addonModel = new \app\common\model\Addons();
         $config     = $addonModel->getSetting('FreePackage');
 
@@ -73,12 +78,16 @@ class Index extends AddonController
             if ($config) {
                 $uData['setting'] = array_merge($setting, $params);//todo 所有插件列表上面的配置，都要以setting为name
             }
+
+            // 限制活动说明字数
+            if(isset($uData['setting']['combo_desc']) && $uData['setting']['combo_desc']){
+                if(strlen($uData['setting']['combo_desc']) > 240){
+                    $result['status'] = false;
+                    $result['msg'] = '活动说明长度最多只能为80个字';
+                }
+            }
+
             $addonModel->doSetting($uData, 'FreePackage');
-            $result = [
-                'status' => true,
-                'data'   => [],
-                'msg'    => '保存成功'
-            ];
             Cache::clear();
             return $result;
         } else {

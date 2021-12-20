@@ -74,6 +74,17 @@ return [
                 'perm_type' => '3',
                 'sort' => 100,
                 'addons' => 'KdniaoExpress',
+            ],
+            [
+                'id' => 'KdniaoExpress_5',
+                'parent_id' => 'KdniaoExpress_1',
+                'parent_menu_id' => '244',
+                'name' => '电子面单管理',
+                'code' => 'FaceSheet',
+                'type' => 'a',
+                'perm_type' => '1',
+                'sort' => 100,
+                'addons' => 'KdniaoExpress',
             ]
         ]
     ],

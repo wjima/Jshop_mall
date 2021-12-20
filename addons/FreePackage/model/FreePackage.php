@@ -130,6 +130,9 @@ class FreePackage extends Common
 
     // 添加日志
     public function setLog($order){
+        if($order['order_type'] != 8){
+           return true;
+        }
         $data = [];
         $data['user_id'] = $order['user_id'];
         $data['order_id'] = $order['order_id'];

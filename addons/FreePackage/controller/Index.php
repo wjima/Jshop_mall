@@ -74,17 +74,25 @@ class Index extends AddonController
             }
             unset($params['validate_form']);
             unset($params['route']);
-            $uData = $config;
-            if ($config) {
-                $uData['setting'] = array_merge($setting, $params);//todo 所有插件列表上面的配置，都要以setting为name
+
+            if(isset($params['combo_num']) && $params['combo_num'] < 3){
+                $result['status'] = false;
+                $result['msg'] = '套餐最低数量为3件！';
+                return $result;
             }
 
             // 限制活动说明字数
-            if(isset($uData['setting']['combo_desc']) && $uData['setting']['combo_desc']){
-                if(strlen($uData['setting']['combo_desc']) > 240){
+            if(isset($params['combo_desc']) && $params['combo_desc']){
+                if(strlen($params['combo_desc']) > 240){
                     $result['status'] = false;
                     $result['msg'] = '活动说明长度最多只能为80个字';
+                    return $result;
                 }
+            }
+
+            $uData = $config;
+            if ($config) {
+                $uData['setting'] = array_merge($setting, $params);//todo 所有插件列表上面的配置，都要以setting为name
             }
 
             $addonModel->doSetting($uData, 'FreePackage');

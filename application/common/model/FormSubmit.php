@@ -40,7 +40,7 @@ class FormSubmit extends common
             $list[$key]['ctime']      = ($value['ctime'] > 0) ? date('Y-m-d H:i:s', $value['ctime']) : '';
             $list[$key]['utime']      = ($value['utime'] > 0) ? date('Y-m-d H:i:s', $value['utime']) : '';
             if ($value['user_id']) {
-                $list[$key]['user_name'] = get_user_info($value['user_id'], 'nickname');
+                $list[$key]['user_name'] = get_user_info($value['user_id'], 'showname');
             } else {
                 $list[$key]['user_name'] = '';
             }

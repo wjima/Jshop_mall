@@ -92,7 +92,7 @@ class Jshop extends TagLib
         $id       = !empty($tag['id']) ? $tag['id'] : '_editor';
         $name     = !empty($tag['name']) ? $tag['name'] : '';
         $style    = !empty($tag['style']) ? $tag['style'] : '';
-        $value    = !empty($tag['value']) ? $tag['value'] : config('jshop.default_image'); //todo 默认图片
+        $value    = !empty($tag['value']) ? $tag['value'] : _sImage(getSetting('shop_default_image')); //todo 默认图片
         $type     = !empty($tag['type']) ? $tag['type'] : '';
         $num      = !empty($tag['num']) ? $tag['num'] : 1;
         $width    = !empty($tag['width']) ? $tag['width'] : '90px';
@@ -373,7 +373,7 @@ class Jshop extends TagLib
                                 layui.layer.open({
                                     type: 1,
                                     content: e,
-                                    area: ["800px", "600px"],
+                                    area: ["800px", "80vh"],
                                     title:"选择品牌",
                                     btn: ["完成","取消"],
                                     yes: function(index, layero){
@@ -625,7 +625,7 @@ class Jshop extends TagLib
                                 layui.layer.open({
                                     type: 1,
                                     content: e,
-                                    area: ["800px", "600px"],
+                                    area: ["800px", "73vh"],
                                     title:"选择货品",
                                     btn: ["完成","取消"],
                                     yes: function(index, layero){
@@ -647,7 +647,9 @@ class Jshop extends TagLib
                                             $("#' . $time . '_list").append(\'<li><span id="\'+key+\'"  >×</span>\'+ids[key].name +\' \' + spes_desc +\'</li>\');
                                             the_val += "," + key;
                                         }
+                                        $("#' . $time . '").focus();
                                         $("#' . $time . '").val(the_val.slice(1));
+                                        $("#' . $time . '").blur();
                                         layer.close(index);
                                     }
                                 });
@@ -823,7 +825,7 @@ goodscat' . $id . '();
                                 layui.layer.open({
                                     type: 1,
                                     content: e,
-                                    area: ["800px", "600px"],
+                                    area: ["800px", "80vh"],
                                     title:"选择公告",
                                     btn: ["完成","取消"],
                                     yes: function(index, layero){
@@ -965,7 +967,7 @@ goodscat' . $id . '();
                                 layui.layer.open({
                                     type: 1,
                                     content: e,
-                                    area: ["800px", "635px"],
+                                    area: ["800px", "80vh"],
                                     title:"选择商品",
                                     btn: ["完成","取消"],
                                     yes: function(index, layero){
@@ -1104,7 +1106,7 @@ goodscat' . $id . '();
                                 layui.layer.open({
                                     type: 1,
                                     content: e,
-                                    area: ["800px", "600px"],
+                                    area: ["800px", "80vh"],
                                     title:"选择拼团商品",
                                     btn: ["完成","取消"],
                                     yes: function(index, layero){
@@ -1245,7 +1247,7 @@ goodscat' . $id . '();
                             layui.layer.open({
                                 type: 1,
                                 content: e,
-                                area: ["800px", "600px"],
+                                area: ["800px", "80vh"],
                                 title:"选择用户",
                                 btn: ["完成","取消"],
                                 yes: function(index, layero){
@@ -1271,10 +1273,9 @@ goodscat' . $id . '();
                                         the_val += "," + key;
                                         }
                                     }
-
-
-                                  
+                                    $("#' . $time . '").focus();
                                     $("#' . $time . '").val(the_val.slice(1));
+                                    $("#' . $time . '").blur();
                                     layer.close(index);
                                 }
                             });

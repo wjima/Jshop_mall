@@ -476,6 +476,10 @@ export default {
 			if(data.coupon_code=="-1"){
 				delete data.coupon_code
 			}
+			
+			if(data.order_type == 8){
+				data['params'] = JSON.stringify({ is_order: 1 }); //砍价信息
+			}
 
 			this.$api.cartList(data, res => {
 				if (res.status) {

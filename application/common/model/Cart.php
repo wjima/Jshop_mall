@@ -209,12 +209,13 @@ class Cart extends Common
      * @param $userId //用户id
      * @param $ids //购物车信息
      * @param int $type //购物车类型
+     * @param array $params 扩展字段信息，传数组
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($userId, $ids, $type = 1, $display = false)
+    public function getList($userId, $ids, $type = 1, $display = false, $params = [])
     {
         $result  = array(
             'status' => false,
@@ -291,17 +292,18 @@ class Cart extends Common
                 }
                 break;
             case self::TYPE_COMBO:
-                //套餐
-                $combo_status = get_addons_status('freepackage');
-                if(!$combo_status){
-                    return error_code(10711);   // 请先安装插件
+                //套餐 下单再走验证，购物车选购页面不限制
+                if(isset($params['is_order']) && $params['is_order'] == 1 ){
+                    $combo_status = get_addons_status('freepackage');
+                    if(!$combo_status){
+                        return error_code(10711);   // 请先安装插件
+                    }
+                    $packageModel = new FreePackage();
+                    $result       = $packageModel->comboInfo($list, $userId);
+                    if (!$result['status']) {
+                        return $result;
+                    }
                 }
-                $packageModel = new FreePackage();
-                $result       = $packageModel->comboInfo($list, $userId);
-                if (!$result['status']) {
-                    return $result;
-                }
-
                 break;
             default:
                 return error_code(10000);
@@ -354,7 +356,7 @@ class Cart extends Common
             'msg'    => ""
         ];
 
-        $cartList = $this->getList($userId, $ids, $order_type, $display);
+        $cartList = $this->getList($userId, $ids, $order_type, $display, $params);
         if (!$cartList['status']) {
             $result['msg'] = $cartList['msg'];
             return $result;

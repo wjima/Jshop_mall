@@ -99,7 +99,7 @@ function get_sn($type)
 {
     switch ($type) {
         case 1:         //订单编号
-            $str = $type . substr(msectime() . rand(0, 9), 1);
+            $str = date('mdHis').mt_rand(10000, 99999);
             break;
         case 2:         //支付单编号
             $str = $type . substr(msectime() . rand(0, 9), 1);
@@ -309,20 +309,31 @@ function get_user_info($user_id, $field = 'mobile')
     if (!$user_id) {
         return "";
     }
-    $user = app\common\model\User::get($user_id);
+    $field_type = $field;
+    if($field == 'showname'){
+        $field = '*';
+    }
+    //用户增加缓存
+    $user = \app\common\model\User::where('id','=',$user_id)->field($field)->find();
     if ($user) {
-        if ($field == 'nickname') {
+        if ($field_type == 'nickname') {
             $nickname = $user['nickname'];
-            if ($nickname == '') {
+            if ($nickname == '' && isset($user['mobile'])) {
                 $nickname = format_mobile($user['mobile']);
             }
             return $nickname;
-        }elseif($field == 'showname'){
-            $str = $user['mobile'];
-            if($user['username']){
-                $str .= "(".$user['username'].")";
-            }
+        }elseif($field_type == 'showname'){
+            $str = $user['nickname'];
+            $str .= "(".$user['id'].")";
             return $str;
+        }elseif($field_type == '*'){
+            $user['avatar'] = _sImage($user['avatar']);
+            $user->hidden(['password']);
+            return $user;
+        }else if(stripos($field,',') != false){
+            if(isset($user['avatar']))$user['avatar'] = _sImage($user['avatar']);
+            $user->hidden(['password']);
+            return $user;
         } else {
             return $user->$field;
         }

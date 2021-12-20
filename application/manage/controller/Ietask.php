@@ -45,7 +45,7 @@ class Ietask extends Manage
     {
         $result     = error_code(10039);
         $taskname   = input('taskname/s', '');
-        $filter     = input('filter/s', '');
+        $filter     = input('filter/s', '','safe_filter');
         $job        = input('model/s', '');
         if (empty($taskname)) {
             return error_code(10045);

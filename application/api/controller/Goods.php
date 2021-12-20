@@ -140,8 +140,8 @@ class Goods extends Api
         $class_name['data']  = '';
         $where  = [];
         $whereRaw = ' 1=1 '; //扩展sql
-        if (input('?param.where')) {
-            $postWhere = json_decode(input('param.where'), true);
+        if (input('?param.where','','safe_filter')) {
+            $postWhere = json_decode(input('param.where','','safe_filter'), true);
 
             //套餐商品
             if(isset($postWhere['is_combo']) && $postWhere['is_combo']){
@@ -517,8 +517,8 @@ class Goods extends Api
         $filter      = []; //过滤条件
         $class_name['data']  = '';
         $whereRaw = '1 = 1';
-        if (input('?param.where')) {
-            $postWhere = json_decode(input('param.where'), true);
+        if (input('?param.where','','safe_filter')) {
+            $postWhere = json_decode(input('param.where','','safe_filter'), true);
             //判断商品搜索,
             if (isset($postWhere['search_name']) && $postWhere['search_name']) {
                 $where[] = ['g.name|g.bn|g.brief', 'LIKE', '%' . $postWhere['search_name'] . '%'];

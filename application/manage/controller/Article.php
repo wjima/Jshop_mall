@@ -43,7 +43,7 @@ class Article extends Manage
     {
         if (Request::isPost()) {
             $article = new articleModel();
-            return $article->addData(input('param.'));
+            return $article->addData(input('param.','','safe_filter'));
         }
         $articleTypeModel = new articleTypeModel();
         return $this->fetch('add', ['list' => $articleTypeModel->getTree()]);
@@ -63,7 +63,17 @@ class Article extends Manage
     {
         $articleModel = new articleModel();
         if (Request::isPost()) {
-            return $articleModel->saveData(input('param.'));
+            $data = [
+                'id'      => input('post.id'),
+                'type_id' => input('post.type_id'),
+                'title'   => input('post.title'),
+                'brief'   => input('post.brief'),
+                'cover'   => input('post.cover'),
+                'content' => input('post.content', '', 'safe_filter'),
+                'is_pub'  => input('post.is_pub'),
+                'sort'    => input('post.sort'),
+            ];
+            return $articleModel->saveData($data);
         }
         $info = $articleModel->with('articleType')->where('id', input('param.id/d'))->find();
         if (!$info) {

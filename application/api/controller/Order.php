@@ -208,7 +208,7 @@ class Order extends Api
         $tax['tax_name'] = input('param.tax_name', '');
         $tax['tax_code'] = input('param.tax_code', '');
         $order_type = input('param.order_type', '1');                        //订单类型，1是普通订单，2是拼团订单
-        $params     = json_decode(input('param.params', ""), true);               //订单参数，跟type有关系，json格式。`
+        $params     = json_decode(input('param.params', "","safe_filter"), true);               //订单参数，跟type有关系，json格式。`
         $model = new orderModel();
         return $model->toAdd($this->userId, $order_type, $cart_ids, $delivery, $memo, $point, $coupon_code, $formId, $source, $tax, $params);
     }

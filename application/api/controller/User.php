@@ -1268,7 +1268,7 @@ class User extends Api
         }
         $page = input('param.page');
         $url = input('param.url');
-        $params = input('param.params', []); //json_decode(input('param.params', ""), true);
+        $params = input('param.params', [],'safe_filter'); //json_decode(input('param.params', ""), true);
         $type = input('param.type');
         $client = input('param.client');
         $share = new Share();

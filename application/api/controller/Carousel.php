@@ -10,6 +10,7 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\CarouselSeat;
 use app\common\model\Carousel as CarouselModel;
+use think\facade\Cache;
 use think\facade\Request;
 
 /**
@@ -27,7 +28,12 @@ class Carousel extends Api
     public function carouselSeatList()
     {
         $carouselSeatModel = new CarouselSeat();
-        return $carouselSeatModel->getOptionsList(input('page/d',1), input('limit/d',5));
+        $page = input('page/d',1);
+        $limit = input('limit/d',5);
+        if(!Cache::has("jshop_carouselseatlist".'_'.$page.'_'.$limit)){
+            Cache::set("jshop_carouselseatlist".'_'.$page.'_'.$limit,$carouselSeatModel->getOptionsList($page,$limit),3600*5);
+        }
+        return Cache::get("jshop_carouselseatlist".'_'.$page.'_'.$limit);
     }
 
 
@@ -41,9 +47,15 @@ class Carousel extends Api
     public function getList()
     {
         $code = input('code/s', '');
+        $page = input('page/d',1);
+        $limit = input('limit/d',5);
         if (!$code) return error_code(10051);
-        $carouselModel = new CarouselModel();
-        return $carouselModel->getCarouselList($code, input('page/d',1), input('limit/d',5));
+        if(!Cache::has("jshop_carousel_getlist".'_'.$code.'_'.$page.'_'.$limit)){
+            $carouselModel = new CarouselModel();
+            Cache::set("jshop_carousel_getlist".'_'.$code.'_'.$page.'_'.$limit,$carouselModel->getCarouselList($code, $page, $limit),3600*5);
+        }
+        return Cache::get("jshop_carousel_getlist".'_'.$code.'_'.$page.'_'.$limit);
+
     }
 
 
@@ -61,7 +73,11 @@ class Carousel extends Api
         {
             return error_code(10051);
         }
-        $carouselModel = new CarouselModel();
-        return $carouselModel->getCarouselLists($codes);
+        if(!Cache::has("jshop_getcarousellists".'_'.$codes)){
+            $carouselModel = new CarouselModel();
+            Cache::set("jshop_getcarousellists".'_'.$codes,$carouselModel->getCarouselLists($codes),3600*5);
+        }
+        return Cache::get("jshop_getcarousellists".'_'.$codes);
+
     }
 }

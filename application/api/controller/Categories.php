@@ -9,6 +9,7 @@
 namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\GoodsCat;
+use think\facade\Cache;
 use think\facade\Request;
 
 
@@ -33,20 +34,24 @@ class Categories extends Api
      */
     public function getTopCat()
     {
-        $model = new GoodsCat();
-        $data = $model->getChildClass();
         $return = array(
             'status' => false,
             'msg' => '',
             'data' => array(),
         );
-        if($data)
-        {
-            $return['status'] = true;
-            $return['data'] = $data;
+        if (!Cache::has("jshop_categories_gettopcat")) {
+            $model = new GoodsCat();
+            $data = $model->getChildClass();
+            if ($data) {
+                $return['status'] = true;
+                $return['data'] = $data;
+            } else {
+                // $return['msg'] = error_code(12001,true);
+                return error_code((12001));
+            }
+            Cache::set("jshop_categories_gettopcat", $return, 3600 * 5);
         } else {
-            // $return['msg'] = error_code(12001,true);
-            return error_code((12001));
+            $return = Cache::get("jshop_categories_gettopcat");
         }
         return $return;
     }
@@ -61,20 +66,24 @@ class Categories extends Api
      */
     public function getChildCat()
     {
-        $parent_id = input('parent_id');
-        $model = new GoodsCat();
-        $data = $model->getChildClass($parent_id);
         $return = array(
             'status' => false,
             'msg' => '',
             'data' => array(),
         );
-        if($data)
-        {
-            $return['status'] = true;
-            $return['data'] = $data;
+        $parent_id = input('parent_id');
+        if (!Cache::has("jshop_categories_getchildcat" . "_" . $parent_id)) {
+            $model = new GoodsCat();
+            $data = $model->getChildClass($parent_id);
+            if ($data) {
+                $return['status'] = true;
+                $return['data'] = $data;
+            } else {
+                return error_code((12001));
+            }
+            Cache::set("jshop_categories_getchildcat" . "_" . $parent_id, $return, 3600 * 5);
         } else {
-            return error_code((12001));
+            $return = Cache::get("jshop_categories_getchildcat" . "_" . $parent_id);
         }
         return $return;
     }
@@ -89,21 +98,25 @@ class Categories extends Api
      */
     public function getAllCat()
     {
-        $backstage = input('backstage', '2');
-        $show      = ($backstage == '2') ? false : true;
-        $model     = new GoodsCat();
-        $data      = $model->getAllCat(false, $show);
-        $return    = array(
+        $return = array(
             'status' => false,
-            'msg'    => '',
-            'data'   => array(),
+            'msg' => '',
+            'data' => array(),
         );
-        if($data)
-        {
-            $return['status'] = true;
-            $return['data']   = $data;
+        $backstage = input('backstage', '2');
+        if (!Cache::has("jshop_categories_getallcat" . '_' . $backstage)) {
+            $show = ($backstage == '2') ? false : true;
+            $model = new GoodsCat();
+            $data = $model->getAllCat(false, $show);
+            if ($data) {
+                $return['status'] = true;
+                $return['data'] = $data;
+            } else {
+                return error_code((12001));
+            }
+            Cache::set("jshop_categories_getallcat" . '_' . $backstage, $return, 3600 * 5);
         } else {
-            return error_code((12001));
+            $return = Cache::get("jshop_categories_getallcat" . '_' . $backstage);
         }
         return $return;
     }
@@ -120,6 +133,9 @@ class Categories extends Api
     {
         $model = new GoodsCat();
         $id = Request::param('id');
-        return $model->getNameById($id);
+        if (!Cache::has("jshop_categories_getname" . '_' . $id)) {
+            Cache::set("jshop_categories_getname" . '_' . $id, $model->getNameById($id), 3600 * 5);
+        }
+        return Cache::get("jshop_categories_getname" . '_' . $id);
     }
 }

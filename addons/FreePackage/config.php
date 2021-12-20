@@ -42,7 +42,7 @@ return [
         'title' => '分销设置',
         'value' => [
             'combo_status'    => '2',
-            'combo_num'    => '1',
+            'combo_num'    => '3',
             'combo_desc'             => '活动说明！',
         ]
     ],

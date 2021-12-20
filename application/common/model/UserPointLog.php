@@ -2,6 +2,7 @@
 namespace app\common\model;
 
 use think\Db;
+use think\facade\Cache;
 
 /**
  * 用户积分记录表
@@ -88,39 +89,45 @@ class UserPointLog extends Common
      */
     public function sign($user_id)
     {
-        $return = [
+        $return   = [
             'status' => false,
             'msg'    => '',
             'data'   => 0
         ];
+        $lock_key = 'user_sign_' . $user_id;//防止高并发重复签到问题
+        if (!Cache::has($lock_key)) {
+            Cache::set($lock_key, '1', 3);
 
-        //判断是否已经签到
-        $res = $this->isSign($user_id);
-        if ($res['status']) {
-            return error_code(11602);
-        }
+            //判断是否已经签到
+            $res = $this->isSign($user_id);
+            if ($res['status']) {
+                return error_code(11602);
+            }
 
-        //获取店铺签到积分设置
-        $sign_point_type = getSetting('sign_point_type'); //签到积分奖励类型
+            //获取店铺签到积分设置
+            $sign_point_type = getSetting('sign_point_type'); //签到积分奖励类型
 
-        //判断是固定积分计算还是随机积分计算
-        if ($sign_point_type == self::SIGN_RANDOM_POINT) {
-            //随机计算
-            $point = $this->signRandomPointCalculation();
+            //判断是固定积分计算还是随机积分计算
+            if ($sign_point_type == self::SIGN_RANDOM_POINT) {
+                //随机计算
+                $point = $this->signRandomPointCalculation();
+            } else {
+                //固定计算
+                $point = $this->signFixedPointCalculation($user_id);
+            }
+            $return['data'] = $point;
+
+            //插入数据库
+            $result        = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得' . $point . '个积分');
+            $return['msg'] = $result['msg'];
+            if ($result['status']) {
+                Cache::rm($lock_key);
+                $return['status'] = true;
+                $return['msg']    = '签到成功';
+            }
         } else {
-            //固定计算
-            $point = $this->signFixedPointCalculation($user_id);
+            $result['msg'] = '请勿重复签到';
         }
-        $return['data'] = $point;
-
-        //插入数据库
-        $result        = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得' . $point . '个积分');
-        $return['msg'] = $result['msg'];
-        if ($result['status']) {
-            $return['status'] = true;
-            $return['msg'] = '签到成功';
-        }
-
         return $return;
     }
 

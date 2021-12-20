@@ -34,7 +34,6 @@ class FreePackage extends Addons
     {
         $db = new Db();
 
-//        $sql = '';
         $sql = file_get_contents(ADDON_PATH . 'FreePackage/SQL/install.sql');
         $sql = str_replace("`jshop_", '`' . config('database.prefix'), $sql);
 
@@ -54,7 +53,6 @@ class FreePackage extends Addons
     public function uninstall()
     {
         $db = new Db();
-//        $sql = '';
         $sql = file_get_contents(ADDON_PATH . 'FreePackage/SQL/uninstall.sql');
         $sql = str_replace("`jshop_", '`' . config('database.prefix'), $sql);
         $list = explode(';', $sql);

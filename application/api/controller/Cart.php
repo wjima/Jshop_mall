@@ -51,7 +51,7 @@ class Cart extends Api
         }
         $type      = input('param.type', 1);          //1是累加，2是覆盖
         $cart_type = input('param.order_type', 1);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
-        $params    = json_decode(input('param.params', '{}'), true);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
+        $params    = json_decode(input('param.params', '{}','safe_filter'), true);        //购物车类型，1是普通流程，2是拼团，这里是特例，其他地方都是type，这里是cart_type ，因为type被占住了。
 
         return $this->cartModel->add($this->userId, input('product_id'), input('nums'), $type, $cart_type, $params);
     }
@@ -98,7 +98,7 @@ class Cart extends Api
         $point = Request::param('point', 0);
         $coupon_code = Request::param('coupon_code', '');
         $receipt_type = Request::param('receipt_type', 1);      //配送方式是否包邮   1=快递配送（要去算运费）生成订单记录快递方式  2=门店自提（不需要计算运费）生成订单记录门店自提信息
-        $params = Request::param('params', '');//购物车扩展信息,json对象，传团购秒杀id或其他信息
+        $params = Request::param('params', '','safe_filter');//购物车扩展信息,json对象，传团购秒杀id或其他信息
         if($receipt_type == 1){
             $free_freight = false;
         }else{

@@ -83,12 +83,19 @@
 		"navigationBarTitleText": "个人中心"
       }
     },
+	
     {
-      "path": "pages/member/coupon/index",
+      "path": "pages/member/pagesign/index/index",
       "style": {
-        "navigationBarTitleText": "我的优惠券"
+        "navigationBarTitleText": "签到"
       }
     },
+	{
+	  "path": "pages/member/coupon/index",
+	  "style": {
+	    "navigationBarTitleText": "我的优惠券"
+	  }
+	},
     {
       "path": "pages/member/balance/index",
       "style": {

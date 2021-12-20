@@ -97,6 +97,7 @@ const methodsToken = [
 	'api.hb.WelfarePro',
 	'api.coupon.WelfarePro',
 	'cart.batchsetcart',
+	"user.getsigninfo"
 ];
 
 const post = (method, data, callback,complete) => {
@@ -910,4 +911,10 @@ export const freePackage = (data, callback) => post('api.setting.FreePackage', d
 
 // 获取购物车套餐商品货品id
 export const GetcartidsFreePackage = (data, callback) => post('api.getcartids.FreePackage', data, callback);
-	
+
+// 商城端签到日志
+export const getsigninfo = (data, callback) => post('user.getsigninfo', data, callback);
+
+// 获取奖励描述
+export const rewarddesc = (data, callback) => post('common.rewarddesc', data, callback);
+

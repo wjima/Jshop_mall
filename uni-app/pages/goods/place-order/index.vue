@@ -955,6 +955,11 @@ export default {
 				data.coupon_code=this.params.coupon_code
 			}
 			data['order_type'] = this.params.order_type; //订单类型
+			
+			if(data.order_type == 8){
+				data['params'] = JSON.stringify({ is_order: 1 }); //砍价信息
+			}
+		
 			if (this.team_id != 0) {
 				data['params'] = JSON.stringify({ team_id: this.team_id }); //团id
 			}

@@ -636,6 +636,10 @@
 		border-top: 1px solid #f3f3f3;
 	}
 	
+	.bot-tips{
+		height: 255px;
+	}
+	
 	.goods-specs:first-child {
 		border: none;
 	}

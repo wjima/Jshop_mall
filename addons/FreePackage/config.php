@@ -6,7 +6,7 @@ return [
             [
                 'id' => 'goods_menu_1',
                 'parent_id' => '2',
-                'parent_menu_id' => '0',
+                'parent_menu_id' => '356',
                 'name' => '商品免单管理',
                 'type' => 'c',
                 'code' => 'index',

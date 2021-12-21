@@ -67,7 +67,7 @@ class UserTocash extends Common
         }
 
         // 保留两位
-        $cateMoney = bcsub($cateMoney, 0, 2);
+        $cateMoney = round($cateMoney,2);
 
         $data['user_id'] = $user_id;
         $data['money'] = bcsub($money, $cateMoney, 2);

@@ -76,7 +76,7 @@
 		
 		<lvv-popup position="center" ref="spes" class="spes-content" >
 			<view class="content">
-				<specs :spesData="defaultSpesDesc" :product="product" ref="spec"
+				<specs ref :spesData="defaultSpesDesc" :product="product" ref="spec"
 				 @changeSpes="changeSpes" @clickHandle="clickHandle" @toclose="toclose"></specs>
 			</view>
 		</lvv-popup>
@@ -90,8 +90,7 @@
 				<view class="goodsList" v-for="(goods,i) in cartLists" :key="goods.id">
 					<view class="goods-l">
 						<view class="name two-line">
-							<text v-if="goods.products && goods.products.spes_desc"> ({{goods.products.spes_desc || ''}})  </text>
-							{{goods.products.name}}
+							({{goods.products.spes_desc || ''}}){{goods.products.name}}
 						</view>
 						<view class="spec" v-if="goods.default_spes_desc">
 							- 规格({{goods.default_spes_desc}})
@@ -181,6 +180,7 @@
 		},
 		methods: {
 			toclose( ) {
+				console.log(123123);
 				this.$refs.spes.close()
 			},
 			goCart() {
@@ -374,19 +374,17 @@
 					product_id,
 					order_type: 8
 				}, res => {
-					this.$common.errorToShow(res.msg, () => {
-						this.$refs.spes.close()
-						this.getCartNums()
+					this.$refs.spes.close()
+					this.getCartNums()
+					uni.showToast({
+						title: res.msg,
+						icon: 'none'
 					})
 				})
 			},
 			cartAdd(val) {
-				this.$refs.spec.nums = 1
-				setTimeout(() =>{
-					this.product = this.spesClassHandle(val.product);
-					this.$refs.spes.show()
-				}, 200)
-				
+				this.product = this.spesClassHandle(val.product);
+				this.$refs.spes.show()
 			},
 			getCartNums() {
 				this.$api.GetcartidsFreePackage({}, res => {
@@ -410,7 +408,6 @@
 </script>
 
 <style lang="scss" scoped>
-	
 	.fast-cart {
 		position: fixed;
 		right: 0;
@@ -521,9 +518,8 @@
 	.bot{
 		&-tips {
 			width: 750rpx;
-			height: 560rpx;
+			height: 412rpx;
 			position: relative;
-			padding-bottom: 200rpx;
 		}
 		&-content {
 			position: absolute;
@@ -556,7 +552,6 @@
 				color: #333333;
 				display: flex;
 				margin-bottom: 16rpx;
-				@include ellNum(4);
 			}
 			text {
 				display: inline-block;

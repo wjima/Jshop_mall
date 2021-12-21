@@ -33,7 +33,6 @@
 				</view>
 				<view class="cartNum">
 					<uni-number-box :min="1" :value="nums" @change.self="change($event,product)"
-					:max="product.stock"
 					 :step="1" :has-border="true" :width="62" :size="100" class="cartNum"></uni-number-box>
 				</view>
 			</view>
@@ -101,6 +100,7 @@
 			},
 			addToCart() {
 				this.$emit('clickHandle', {id: this.product.id, nums: this.nums})
+				
 			},
 			// 关闭
 			close() {

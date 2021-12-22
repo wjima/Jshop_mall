@@ -17653,7 +17653,7 @@
             var str;
             switch (type) {
                 case 'image':
-                    str = '<img ' + (id ? 'id="' + id + '"' : '') + ' width="' + width + '" height="' + height + '" _url="' + url + '" class="' + classname.replace(/\bvideo-js\b/, '').trim()  + '"' + ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif" style="background:url(' + me.options.UEDITOR_HOME_URL + 'themes/default/images/videologo.gif) no-repeat center center; border:1px solid gray;' + (align ? 'float:' + align + ';' : '') + '" />'
+                    str = '<img ' + (id ? 'id="' + id + '"' : '') + ' width="' + width + '" height="' + height + '" _url="' + url + '" class="' + classname.replace(/\bvideo-j-js\b/, '').trim()  + '"' + ' src="' + me.options.UEDITOR_HOME_URL + 'themes/default/images/spacer.gif" style="background:url(' + me.options.UEDITOR_HOME_URL + 'themes/default/images/videologo.gif) no-repeat center center; border:1px solid gray;' + (align ? 'float:' + align + ';' : '') + '" />'
                     break;
                 case 'embed':
                     if (utils.html(url) && -1 != utils.html(url).indexOf(".swf")){
@@ -20034,7 +20034,6 @@
                             domUtils.remove(child);
                         }
                     }
-
                     if (range.collapsed && caption && isEmptyBlock(caption)) {
                         me.fireEvent('saveScene');
                         var table = caption.parentNode;

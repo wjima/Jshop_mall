@@ -20,7 +20,7 @@ class FreePackage extends Addons
     public $info = [
         'name' => 'FreePackage',    // 插件标识
         'title' => '免费套餐',    // 插件名称
-        'description' => '添加组合商品，随机免单一件',    // 插件简介
+        'description' => '设置免单商品，价格最低免单',    // 插件简介
         'status' => 0,    // 状态
         'author' => 'fx',
         'version' => '1.0'

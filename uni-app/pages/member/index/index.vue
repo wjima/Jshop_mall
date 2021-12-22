@@ -725,7 +725,7 @@
 		color: #FFF;
 		.sign {
 			display: inline-block;
-			padding: 10rpx 20rpx;
+			padding: 10rpx 26rpx;
 			background: #FF7159;
 			color: #FFFFFF;
 			border-radius: 40rpx;

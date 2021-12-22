@@ -18,7 +18,7 @@
                 <select name="logi_code" id="logi_code" lay-search>
                     <option value="">搜索选择快递公司</option>
                     {foreach name=":model('addons\KdniaoExpress\model\FaceSheet')->getList()" id="v"}
-                    <option value="{$v['logi_code']}" {if $v['logi_code'] == $ship['logi_code']}selected{/if}>{$v['logi_name']}</option>
+                    <option value="{$v['logi_code']}" {if $v['logi_code'] == $ship['logi_code']}selected{/if}>{$v['logi_name']}（{$v['customer_name']}）</option>
                     {/foreach}
                 </select>
                 <input type="hidden" name="order_id" value="{$order_id}">

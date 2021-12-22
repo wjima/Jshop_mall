@@ -1,29 +1,30 @@
 <form class="layui-form seller-form" action="">
     <div class="layui-form-item">
-
-        <div class="layui-input-inline seller-inline-4">
-            <input type="text" name="logi_code" lay-verify="title" placeholder="物流公司编码" autocomplete="off"
-                   class="layui-input">
+        <div class="layui-inline">
+            <label class="layui-form-label">物流编码：</label>
+            <div class="layui-input-inline seller-inline-4">
+                <input type="text" name="logi_code" lay-verify="title" placeholder="物流公司编码" autocomplete="off" class="layui-input">
+            </div>
         </div>
 
-        <div class="layui-input-inline seller-inline-2">
-            <button  lay-submit lay-filter="logistics-search" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon layui-icon-search"></i></button>
-        </div>
-        <div class="layui-input-right">
-            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm add-logistics"><i class="iconfont">&#xe6e2;</i>
-                添加</button>
+        <div class="layui-inline">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="logistics-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+            <button type="button" class="layui-btn layui-btn-sm add-logistics"><i class="layui-icon">&#xe608;</i> 添加</button>
         </div>
     </div>
+
 </form>
 <div class="table-body">
     <table id="logiTable" lay-filter="logiTable"></table>
 </div>
 
 <script src="__STATIC_JS__jshop.js"></script>
+<link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont.css" media="all">
 <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont2.css" media="all">
 <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.css">
 <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/style/admin.css" media="all">
 <link rel="stylesheet" href="__STATIC_LIB__layuiadmin/layui/css/layui.seller.css">
+
 <link rel="stylesheet" type="text/css" href="__STATIC_CSS__style.css"/>
 <script src="__STATIC_JS__jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="__STATIC_LIB__layuiadmin/layui/layui.js"></script>

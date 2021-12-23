@@ -75,8 +75,8 @@
 		<!-- 弹出层end -->
 		
 		<lvv-popup position="center" ref="spes" class="spes-content" >
-			<view class="content">
-				<specs v-if="product.id" :spesData="defaultSpesDesc" :product="product" ref="spec"
+			<view class="content" >
+				<specs  v-if="product.id " :spesData="defaultSpesDesc" :product="product" ref="spec"
 				 @changeSpes="changeSpes" @clickHandle="clickHandle" @toclose="toclose"></specs>
 			</view>
 		</lvv-popup>

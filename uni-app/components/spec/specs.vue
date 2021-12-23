@@ -14,7 +14,7 @@
 			</view>
 			<scroll-view scroll-y="true" style="max-height: 450upx;">
 				<view class="spes-list">
-					<view class="spes-item" v-for="(item, index) in specList" :key="index">
+					<view class="spes-item" v-for="(item, index) in specList()" :key="index">
 						<view class="name">
 							{{ index }}
 						</view>
@@ -52,7 +52,7 @@
 		},
 		data() {
 			return {
-				specList: {},
+				// specList: {},
 				submitStatus: false,
 				cartlist:[],
 				nums:1
@@ -72,22 +72,32 @@
 			},
 		},
 		watch: {
-			spesData: function(val) {
-				if (typeof val == 'object') {
-					this.specList = val;
-				} else {
-					if(val) {
-						let d = JSON.parse(val);
-						this.specList = d;
-					}
+			// spesData: function(val) {
+			// 	if (typeof val == 'object') {
+			// 		this.specList = val;
+			// 	} else {
+			// 		if(val) {
+			// 			let d = JSON.parse(val);
+			// 			this.specList = d;
+			// 		}
 					
-				}
-			}
+			// 	}
+			// }
 		},
 		mounted() {
 			// console.log("p",this.product);
 		},
 		methods: {
+			specList() {
+				if (typeof this.spesData == 'object') {
+					return this.spesData;
+				} else {
+					if( this.spesData) {
+						return JSON.parse(this.spesData);
+					}
+					
+				}
+			},
 			specChangeSpes(v, k) {
 				let newData = {
 					v: v,

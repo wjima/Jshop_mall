@@ -3,7 +3,7 @@
 		<view class="top">
 			<view class="top-t">
 				<view class="pro-img">
-					<image :src="product.image_path" mode=""></image>
+					<image  :src="product.image_path || ''" mode="" ></image>
 				</view>
 				<view class="close" @click="close">
 					<image src="/static/image/close.png" mode=""></image>
@@ -76,8 +76,11 @@
 				if (typeof val == 'object') {
 					this.specList = val;
 				} else {
-					let d = JSON.parse(val);
-					this.specList = d;
+					if(val) {
+						let d = JSON.parse(val);
+						this.specList = d;
+					}
+					
 				}
 			}
 		},
@@ -90,7 +93,6 @@
 					v: v,
 					k: k
 				}
-				console.log(v, k);
 				this.$emit("changeSpes", newData);
 			},
 			// 加减数量
@@ -100,7 +102,6 @@
 			},
 			addToCart() {
 				this.$emit('clickHandle', {id: this.product.id, nums: this.nums})
-				
 			},
 			// 关闭
 			close() {

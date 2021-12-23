@@ -182,7 +182,7 @@
 				this.$refs.spes.close()
 				setTimeout(() => {
 					this.product = {}
-				},1000)
+				},50)
 			},
 			goCart() {
 				const _this = this
@@ -384,6 +384,9 @@
 				})
 			},
 			cartAdd(val) {
+				
+				
+				console.log('val.product', val.product);
 				this.product = this.spesClassHandle(val.product);
 				this.$refs.spes.show()
 			},

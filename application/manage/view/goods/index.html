@@ -1,27 +1,27 @@
 <style type="text/css">
-	.layui-card-body{
-		background-color: #fff;
-		padding: 10px;
-		margin-top: 10px;
-		border: 1px solid #e6e6e6;
-	}
+    .layui-card-body{
+        background-color: #fff;
+        padding: 10px;
+        margin-top: 10px;
+        border: 1px solid #e6e6e6;
+    }
 
-	.layui-tab-card>.layui-tab-title{
-		background-color: #f9f9f9;
-		border-bottom: none;
-	}
-	.layui-tab-content{
-		padding: 0;
-	}
-	.layui-table, .layui-table-view{
-		margin: 0;
-	}
+    .layui-tab-card>.layui-tab-title{
+        background-color: #f9f9f9;
+        border-bottom: none;
+    }
+    .layui-tab-content{
+        padding: 0;
+    }
+    .layui-table, .layui-table-view{
+        margin: 0;
+    }
     .layui-margin-10{
         margin:10px ;
     }
-	.layui-layer-page .layui-layer-content{
-		overflow: initial;
-	}
+    .layui-layer-page .layui-layer-content{
+        overflow: initial;
+    }
     /*.layui-table-cell {
         height: auto;
         text-overflow: inherit;
@@ -50,11 +50,11 @@
         <div class="layui-inline">
             <label class="layui-form-label">上架状态：</label>
             <div class="layui-input-inline seller-inline-2">
-                    <select name="marketable" id="marketable">
-                        <option value="">全部</option>
-                        <option value="1">上架</option>
-                        <option value="2">下架</option>
-                    </select>
+                <select name="marketable" id="marketable">
+                    <option value="">全部</option>
+                    <option value="1">上架</option>
+                    <option value="2">下架</option>
+                </select>
             </div>
         </div>
 
@@ -84,7 +84,7 @@
             </div>
         </div>
         <div class="layui-inline">
-                <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="import-goods"><i class="layui-icon"></i>导入商品</button>
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="import-goods"><i class="layui-icon"></i>导入商品</button>
         </div>
         <div class="layui-inline">
             <button class="layui-btn layui-btn-sm"  lay-submit lay-filter="export-goods"><i class="iconfont icon-msnui-cloud-download" style="font-size: 20px !important;"></i>导出</button>
@@ -96,8 +96,8 @@
 </form>
 
 <div class="layui-card-body">
-	<div class="layui-tab layui-tab-card" lay-filter="goods-tab" style="margin:0;">
-		<ul class="layui-tab-title">
+    <div class="layui-tab layui-tab-card" lay-filter="goods-tab" style="margin:0;">
+        <ul class="layui-tab-title">
             <li class="layui-this" lay-id="all">全部商品<span class="layui-badge layui-bg-gray">{$statics.totalGoods|default=0}</span></li>
             <li lay-id="up">上架商品<span class="layui-badge layui-bg-green">{$statics.totalMarketableUp|default=0}</span></li>
             <li lay-id="down">下架商品<span class="layui-badge layui-bg-black">{$statics.totalMarketableDown|default=0}</span></li>
@@ -106,7 +106,7 @@
         <div class="layui-tab-content" >
             <table id="goodsTable" lay-filter="goodsTable"></table>
         </div>
-	</div>
+    </div>
 </div>
 
 
@@ -163,31 +163,31 @@
             cols: [[
                 {type:'checkbox'},
                 {field:'id', width:90, title:'ID', align: 'center'},
-                {field:'operating',width:180,title:'操作', align: 'center',templet:function(data){
-                    var html = '';
-                    html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
-                    html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
-                    html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'user/comment\')}?goods_id=' + data.id + '">查看评价</a>';
-                    return html;
-                }},
-              /*  {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
-                {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},*/
-                {field:'bn', width:150,title:'商品编码', align: 'left'},
+                {field:'operating',width:300,title:'操作', align: 'center',templet:function(data){
+                        var html = '';
+                        html += '<a class="layui-btn layui-btn-xs edit-class" data-id="' + data.id + '">编辑</a>';
+                        html += '<a class="layui-btn layui-btn-danger layui-btn-xs del-class" data-name="'+data.name+'" data-id="' + data.id + '">删除</a>';
+                        html += '<a class="layui-btn layui-btn-xs comment-class" href="{:url(\'user/comment\')}?goods_id=' + data.id + '">查看评价</a>';
+                        html += '<a class="layui-btn layui-btn-danger layui-btn-xs preview-class" data-id="' + data.id + '">预览详情</a>';
+                        return html;
+                    }},
+                /*  {field:'state',sort: true,title:'热门',width:80,align:'center',templet: '#hot', unresize: true},
+                  {field:'state',sort: true,title:'推荐',width:80,align:'center',templet: '#rec', unresize: true},*/
                 {field:'marketable', width:100,title:'上下架', align: 'center',templet: "#is_able", unresize: true},
                 {field:'image', width:100,title:'缩略图', align: 'center',templet: function(data){
-                    return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
-                }},
+                        return '<a href="javascript:void(0);" onclick=viewImage("'+data.image+'")><image style="max-width:30px;max-height:30px;" src="'+data.image+'"/></a>';
+                    }},
                 {field:'name', minWidth:250,title:'名称', align: 'center'},
                 {field:'bn', minWidth:200,title:'商品编码', align: 'center'},
                 {field:'brand_name', width:100,title:'品牌', align: 'center'},
                 {field:'stock', width:100,title:'库存', align: 'center'},
                 {field:'sort', edit: 'text', width:80,title:'排序', align: 'center',templet: function (data) {
-                    var html = '<a class="link-hot option-show sort" data-id="' + data.sort + '">' + data.sort + '</a>';
-                    return html;
-                }},
+                        var html = '<a class="link-hot option-show sort" data-id="' + data.sort + '">' + data.sort + '</a>';
+                        return html;
+                    }},
                 {field:'label_ids', width:120,title:'标签', align: 'center',templet:function (data) {
-                    return getLabel(data.label_ids);
-                }},
+                        return getLabel(data.label_ids);
+                    }},
                 {field:'price', width:100,title:'销售价', align: 'center', templet:function(data){return '￥'+data.price}},
                 {field:'costprice', width:100,title:'成本价', align: 'center', templet:function(data){return '￥'+data.costprice}},
                 {field:'mktprice', width:100,title:'市场价', align: 'center', templet:function(data){return '￥'+data.mktprice}},
@@ -266,13 +266,13 @@
                     data.push({'name':'model','value':'Goods'});
 
                     JsPost("{:url('Ietask/export')}",data,function(res){
-                                layer.msg(res.msg, {time:1500}, function(){
-                                    if(res.status){
-                                        table.reload();
-                                        layer.closeAll();
-                                    }
-                                });
-                            }
+                            layer.msg(res.msg, {time:1500}, function(){
+                                if(res.status){
+                                    table.reload();
+                                    layer.closeAll();
+                                }
+                            });
+                        }
                     );
                 },btn2:function () {
                     layer.closeAll();
@@ -408,14 +408,14 @@
         //上下架操作
         function marketable(data,type) {
             layer.confirm('是否确定该操作？', {
-                title:'提示',
-                btn: ['是','否'] //按钮
-            }, function(){
-                JsPost("{:url('Goods/batchMarketable')}",{'ids':data,'type':type},function(res){
-                        layer.msg(res.msg);
-                        table.reload();
-                    }
-                );
+                    title:'提示',
+                    btn: ['是','否'] //按钮
+                }, function(){
+                    JsPost("{:url('Goods/batchMarketable')}",{'ids':data,'type':type},function(res){
+                            layer.msg(res.msg);
+                            table.reload();
+                        }
+                    );
                 }
                 , function(){
                     layer.closeAll();
@@ -610,6 +610,20 @@
             title: '提示', btn: ['确认', '取消'] //按钮
         }, function(){
             delClass(id);
+        });
+    });
+    
+    //预览商品
+    $(document).on('click', '.preview-class', function () {
+        var id = $(this).attr('data-id');
+        var url = window.location.protocol + "//" + window.location.host + "/wap/pages/goods/index/index?id=" + id;
+        layer.open({
+            type: 2,
+            title: '商品详情预览',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['400px', '90%'],
+            content: [url, 'no']
         });
     });
 

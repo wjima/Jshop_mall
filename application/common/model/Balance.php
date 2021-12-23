@@ -55,7 +55,7 @@ class Balance extends Common
         {
             //取用户实际余额
             $userModel = new User();
-            $userInfo = $userModel::withTrashed()->where([ 'id' => $user_id ])->find();
+            $userInfo = $userModel->where([ 'id' => $user_id ])->find();
             if(!$userInfo)
             {
                 return error_code(11004);
@@ -365,7 +365,7 @@ class Balance extends Common
             ],
             [
                 'id' => 'user_id',
-                'desc' => '用户',
+                'desc' => '手机号码',
                 'modify'=>'convertString'
             ],
             [
@@ -378,7 +378,7 @@ class Balance extends Common
             ],
             [
                 'id' => 'source_id',
-                'desc' => '外部ID',
+                'desc' => '对象ID',
                 'modify'=>'convertString'
             ],
             [
@@ -392,7 +392,7 @@ class Balance extends Common
             ],
             [
                 'id' => 'ctime',
-                'desc' => '变更时间'
+                'desc' => '变动时间'
             ]
         ];
     }

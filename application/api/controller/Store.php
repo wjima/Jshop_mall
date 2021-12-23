@@ -7,6 +7,7 @@
 // | Author: keinx <keinx@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\api\controller;
+
 use app\common\controller\Api;
 use app\common\model\BillLading;
 use app\common\model\Clerk;
@@ -28,12 +29,12 @@ class Store extends Api
      */
     public function getStoreSwitch()
     {
-        $return = [
+        $return         = [
             'status' => true,
-            'msg' => '获取成功',
-            'data' => 2
+            'msg'    => '获取成功',
+            'data'   => 2
         ];
-        $settingModel = new Setting();
+        $settingModel   = new Setting();
         $return['data'] = $settingModel->getValue('store_switch');
         return $return;
     }
@@ -48,8 +49,10 @@ class Store extends Api
      */
     public function getDefaultStore()
     {
-        $model = new Model();
-        return $model->getDefaultStore();
+        $model     = new Model();
+        $longitude = Request::param('longitude', false);
+        $latitude  = Request::param('latitude', false);
+        return $model->getDefaultStore($longitude, $latitude);
     }
 
 
@@ -62,10 +65,10 @@ class Store extends Api
      */
     public function getStoreList()
     {
-        $model = new Model();
-        $key = Request::param('key', '');
+        $model     = new Model();
+        $key       = Request::param('key', '');
         $longitude = Request::param('longitude', false);
-        $latitude = Request::param('latitude', false);
+        $latitude  = Request::param('latitude', false);
         return $model->getAllStoreList($key, $longitude, $latitude);
     }
 
@@ -107,7 +110,7 @@ class Store extends Api
      */
     public function ladingInfo()
     {
-        $key = Request::param('key');
+        $key   = Request::param('key');
         $model = new BillLading();
         return $model->getInfo($key, $this->userId);
     }
@@ -120,7 +123,7 @@ class Store extends Api
     public function lading()
     {
         $lading_ids = Request::param('lading_ids');
-        $model = new BillLading();
+        $model      = new BillLading();
         return $model->ladingOperating($lading_ids, $this->userId);
     }
 
@@ -135,7 +138,7 @@ class Store extends Api
     public function ladingDel()
     {
         $lading_id = Request::param('lading_id');
-        $model = new BillLading();
+        $model     = new BillLading();
         return $model->del($lading_id, $this->userId);
     }
 
@@ -147,19 +150,17 @@ class Store extends Api
     public function getInviteQRCode()
     {
         $invite = Request::param('invite', 0);
-        $type = Request::param('type', 'index');
-        $goods = Request::param('goods', 0);
-        $page = 'pages/index/index';
-        if($type == 'goods')
-        {
+        $type   = Request::param('type', 'index');
+        $goods  = Request::param('goods', 0);
+        $page   = 'pages/index/index';
+        if ($type == 'goods') {
             $page = 'pages/goods/detail/detail';
         }
-        $wx = new Wx();
-        $wx_appid = getSetting('wx_appid');
+        $wx            = new Wx();
+        $wx_appid      = getSetting('wx_appid');
         $wx_app_secret = getSetting('wx_app_secret');
-        $accessToken = $wx->getAccessToken($wx_appid, $wx_app_secret);
-        if($accessToken)
-        {
+        $accessToken   = $wx->getAccessToken($wx_appid, $wx_app_secret);
+        if ($accessToken) {
             $style['width'] = 300;
             return $wx->getParameterQRCode($accessToken, $page, $invite, $goods, $style, $wx_appid);
         } else {
@@ -176,10 +177,10 @@ class Store extends Api
     {
         $recommend_keys = getSetting('recommend_keys');
         $recommend_keys = explode(' ', $recommend_keys);
-        $result = [
+        $result         = [
             'status' => true,
-            'msg' => '获取成功',
-            'data' => $recommend_keys
+            'msg'    => '获取成功',
+            'data'   => $recommend_keys
         ];
         return $result;
     }

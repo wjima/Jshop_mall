@@ -32,6 +32,7 @@ use org\login\Wxofficial;
 use org\Poster;
 use org\Share;
 use org\share\UrlShare;
+use think\facade\Cache;
 use think\facade\Request;
 
 /**
@@ -338,6 +339,7 @@ class User extends Api
             // $result['msg'] = error_code(10013, true);
             return error_code(10013);
         }
+
         $goodsBrowsingModel = new GoodsBrowsing();
         return $goodsBrowsingModel->toAdd($this->userId, input("param.goods_id"));
     }
@@ -715,7 +717,16 @@ class User extends Api
         } else {
             $params = $data['params'];
         }
-
+        // 验证订单支付状态
+        $billPaymentsModel = new BillPayments();
+        if(input("param.payment_type") == $billPaymentsModel::TYPE_ORDER){
+            $orderModel = new \app\common\model\Order();
+            $res = $orderModel->checkOrderStatus(input("param.ids"));
+            if(!$res['status']){
+                $res['status'] = true;
+                return $res;
+            }
+        }
         $billPaymentsModel = new BillPayments();
         //生成支付单,并发起支付
         return $billPaymentsModel->pay(input('param.ids'), input('param.payment_code'), $user_id, input('param.payment_type'), $params);
@@ -1267,7 +1278,7 @@ class User extends Api
         }
         $page = input('param.page');
         $url = input('param.url');
-        $params = input('param.params', []); //json_decode(input('param.params', ""), true);
+        $params = input('param.params', [],'safe_filter'); //json_decode(input('param.params', ""), true);
         $type = input('param.type');
         $client = input('param.client');
         $share = new Share();

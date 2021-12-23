@@ -40,6 +40,17 @@ function jumpToLogin(method) {
 				pagePath = '/pages/index/index';
 			}
 		}
+		
+		if (page.route.indexOf('pages/form/detail/form') !== -1) {
+			//商品详情页
+			if (page.id) {
+				pagePath = '/' + page.route + '?id=' + page.id;
+			} else {
+				pagePath = '/pages/index/index';
+			}
+		}
+		
+		
 		if (page.route.indexOf('pages/goods/index/group') !== -1) {
 			//团购秒杀详情页
 			if (page.goodsId && page.groupId) {
@@ -351,7 +362,7 @@ function rmoney(s) {
 }
 
 function throttle(fn, context, delay) {
-	clearTimeout(fn.timeoutId)
+	fn && fn.timeoutId && clearTimeout(fn.timeoutId)
 	fn.timeoutId = setTimeout(function() {
 		fn.call(context)
 	}, delay)

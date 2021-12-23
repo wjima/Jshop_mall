@@ -8,6 +8,7 @@ use app\common\model\GoodsCat;
 use app\common\model\GoodsComment;
 use app\common\model\GoodsExtendCat;
 use think\Db;
+use think\facade\Cache;
 use think\facade\Request;
 use app\common\model\Goods as GoodsModel;
 use app\common\model\Products;
@@ -25,7 +26,7 @@ class Goods extends Api
 {
     //商品允许出现字段，允许出现的字段跟查询的字段不太一样，允许查询的只能不能有：album、isfav、product、image_url
     private $goodsAllowedFields = [
-        'id', 'bn', 'name', 'brief', 'price', 'mktprice', 'image_id', 'goods_cat_id', 'goods_type_id', 'brand_id', 'label_ids', 'is_nomal_virtual', 'marketable', 'stock', 'weight', 'unit', 'intro', 'spes_desc', 'comments_count', 'view_count', 'buy_count', 'uptime', 'downtime', 'sort', 'is_hot', 'is_recommend', 'ctime', 'utime', 'params'
+        'id', 'bn', 'name', 'brief', 'price', 'mktprice', 'image_id', 'video_id', 'goods_cat_id', 'goods_type_id', 'brand_id', 'label_ids', 'is_nomal_virtual', 'marketable', 'stock', 'weight', 'unit', 'intro', 'spes_desc', 'comments_count', 'view_count', 'buy_count', 'uptime', 'downtime', 'sort', 'is_hot', 'is_recommend', 'ctime', 'utime', 'params'
     ];
     //货品允许字段
     private $productAllowedFields = [
@@ -140,8 +141,13 @@ class Goods extends Api
         $class_name['data']  = '';
         $where  = [];
         $whereRaw = ' 1=1 '; //扩展sql
-        if (input('?param.where')) {
-            $postWhere = json_decode(input('param.where'), true);
+        if (input('?param.where','','safe_filter')) {
+            $postWhere = json_decode(input('param.where','','safe_filter'), true);
+
+            //套餐商品
+            if(isset($postWhere['is_combo']) && $postWhere['is_combo']){
+                $where[] = ['g.is_combo', 'eq', $postWhere['is_combo']];
+            }
 
             //判断商品搜索,
             if (isset($postWhere['search_name']) && $postWhere['search_name']) {
@@ -455,11 +461,12 @@ class Goods extends Api
         $goods_id = input('goods_id');
         $page     = input('page', 1);
         $limit    = input('limit', 10);
+        $order    = input('order');
         if (empty($goods_id)) {
             return error_code(13403);
         }
         $model = new GoodsComment();
-        $res   = $model->getList($goods_id, $page, $limit, 1);
+        $res   = $model->getList($goods_id, $page, $limit, 1, $order);
         return $res;
     }
 
@@ -512,8 +519,8 @@ class Goods extends Api
         $filter      = []; //过滤条件
         $class_name['data']  = '';
         $whereRaw = '1 = 1';
-        if (input('?param.where')) {
-            $postWhere = json_decode(input('param.where'), true);
+        if (input('?param.where','','safe_filter')) {
+            $postWhere = json_decode(input('param.where','','safe_filter'), true);
             //判断商品搜索,
             if (isset($postWhere['search_name']) && $postWhere['search_name']) {
                 $where[] = ['g.name|g.bn|g.brief', 'LIKE', '%' . $postWhere['search_name'] . '%'];

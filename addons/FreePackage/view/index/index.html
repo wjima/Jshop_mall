@@ -1,0 +1,155 @@
+<form class="layui-form seller-form" action="">
+	<div class="layui-form-item">
+
+		<div class="layui-input-inline">
+			<input type="text" name="order_id" placeholder="订单号" autocomplete="off" class="layui-input">
+		</div>
+
+		<div class="layui-input-inline seller-inline-2">
+			<button lay-submit lay-filter="*" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon layui-icon-search"></i></button>
+		</div>
+
+	</div>
+</form>
+<div class="table-body">
+	<table id="packageTable" lay-filter="test"></table>
+</div>
+<script>
+    var table;
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form;
+		//时间插件
+		layui.laydate.render({
+			elem: '#date',
+			range: '到',
+			format: 'yyyy-MM-dd',
+			trigger: 'click' //自动弹出控件的事件，采用click弹出
+		});
+        table = layui.table.render({
+            elem: '#packageTable',
+            height: 'full-99',
+            cellMinWidth: '80',
+            page: 'true',
+            limit:'20',
+            url: "{:get_addon_url('FreePackage://index/index')}?_ajax=1&sn={$sn}",
+            id:'packageTable',
+            cols: [[
+                { field: 'id', title: 'ID', width:90, align: 'center' },{
+                    field: 'option', title: '操作', templet: function (d) {
+						var html = '<a class="layui-btn layui-btn-primary layui-btn-xs view-order" data-id="' + d.order_id +'" >查看</a>';
+						// html += '<a class="layui-btn layui-btn-jshop del" data-id="' + d.id + '" title="删除"><i class="iconfont"">&#xe654;</i></a>';
+                        return html;
+                    }, align: 'center', width: 130
+                },
+				{field:'mobile', title:'客户手机号',  align: 'center'},
+				{field:'order_id', title:'订单号',  align: 'center'},
+				{field:'order_amount', title:'订单金额', align: 'center'},
+				// {field:'status_text', width:200,title:'状态', align: 'center'},
+				{field:'ctime', width:200,title:'添加时间', align: 'center'},
+				{field:'utime', width:200,title:'更新时间', align: 'center'},
+            ]]
+        });
+        layui.form.on('submit(*)', function(data){
+            layui.table.reload('packageTable', {
+                where: data.field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //查看订单
+        $(document).on('click', '.view-order', function () {
+            var id = $(this).attr('data-id');
+            JsGet("{:get_addon_url('FreePackage://index/view')}?id="+id, function(e){
+                if(e.status){
+                    window_box = parent.layer.open({
+                        type: 1,
+                        title: '订单详情',
+                        area: setpage(800,600), //宽高
+                        content: e.data,
+                        moveOut: true
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            });
+        });
+
+        // 添加套装
+        $(document).on('click', '.add', function () {
+            JsGet("{:get_addon_url('FreePackage://index/add')}", function (e) {
+                if (e.status) {
+                    layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: ['800px','700px'],
+                        title: '添加套餐',
+                        btn: ['保存', '关闭'],
+                        yes: function (index) {
+                            var formData = form.val("add_freepackage");
+                            JsPost("{:get_addon_url('FreePackage://index/add')}", formData, function (res) {
+                                if (res.status) {
+                                    layer.close(index);
+                                    layer.msg('添加成功', { time: 1300 }, function () {
+                                        table.reload('packageTable');
+                                    });
+                                } else {
+                                    layer.msg(res.msg);
+                                }
+                            })
+                        }
+                    });
+                } else {
+                    layer.msg(e.msg);
+                }
+            })
+        });
+
+        //编辑
+        $(document).on('click', '.edit', function () {
+            var id = $(this).attr('data-id');
+            JsGet("{:get_addon_url('FreePackage://index/edit')}?id="+id, function(e){
+                if(e.status){
+                    layer.open({
+                        type: 1,
+                        content: e.data,
+                        area: setpage(900,650),
+                        title: '编辑用户',
+                        btn: ['确定', '取消'],
+                        zIndex: 1800,
+                        yes: function (index) {
+                            var data = form.val("edit_package");
+                            JsPost("{:get_addon_url('FreePackage://index/edit')}", data, function(e){
+                                if (e.status) {
+                                    layer.close(index);
+                                    layer.msg(e.msg, { time: 1300 }, function () {
+                                        layui.table.reload('packageTable');
+                                    });
+                                } else {
+                                    layer.msg(e.msg);
+                                }
+                            });
+                        }
+                    });
+                }else{
+                    layer.msg(e.msg);
+                }
+            });
+        });
+
+        $(document).on('click', '.del', function () {
+            var id = $(this).attr('data-id');
+            JsGet("{:get_addon_url('FreePackage://index/del')}?id="+id, function(e){
+                layer.msg(e.msg);
+                if (e.status) {
+                    layui.table.reload('packageTable');
+                } else {
+                    layer.msg(e.msg);
+                }
+            });
+        });
+
+    });
+</script>

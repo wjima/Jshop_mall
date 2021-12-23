@@ -9,6 +9,7 @@
 
 namespace app\common\model;
 
+use think\facade\Cache;
 use think\model\concern\SoftDelete;
 use think\Validate;
 
@@ -96,6 +97,7 @@ class Article extends Common
                 $result['msg'] = error_code(10004,true);
             }
         }
+        Cache::clear();
         return $result;
     }
 
@@ -121,6 +123,7 @@ class Article extends Common
                 $result['msg'] = error_code(10004,true);
             }
         }
+        Cache::clear();
         return $result;
     }
 
@@ -301,7 +304,8 @@ class Article extends Common
 
         if(!empty($data))
         {
-            $data['content'] = clearHtml($data['content'], ['width', 'height']);//清除文章中宽高
+            //$data['content'] = clearHtml($data['content'], ['width', 'height']);//清除文章中宽高
+            $data['content'] = str_replace("clear: both;", "", $data['content']);
             $data['content'] = str_replace("<img", "<img style='max-width: 100%'", $data['content']);
             $typeModel = new ArticleType();
             $data['article_type'] = $typeModel->getArticleTypeFather($data['type_id']);

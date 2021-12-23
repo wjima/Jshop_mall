@@ -2,6 +2,7 @@
 namespace app\common\model;
 
 use think\Db;
+use think\facade\Cache;
 
 /**
  * 用户积分记录表
@@ -88,38 +89,45 @@ class UserPointLog extends Common
      */
     public function sign($user_id)
     {
-        $return = [
+        $return   = [
             'status' => false,
             'msg'    => '',
             'data'   => 0
         ];
+        $lock_key = 'user_sign_' . $user_id;//防止高并发重复签到问题
+        if (!Cache::has($lock_key)) {
+            Cache::set($lock_key, '1', 3);
 
-        //判断是否已经签到
-        $res = $this->isSign($user_id);
-        if ($res['status']) {
-            return error_code(11602);
-        }
+            //判断是否已经签到
+            $res = $this->isSign($user_id);
+            if ($res['status']) {
+                return error_code(11602);
+            }
 
-        //获取店铺签到积分设置
-        $sign_point_type = getSetting('sign_point_type'); //签到积分奖励类型
+            //获取店铺签到积分设置
+            $sign_point_type = getSetting('sign_point_type'); //签到积分奖励类型
 
-        //判断是固定积分计算还是随机积分计算
-        if ($sign_point_type == self::SIGN_RANDOM_POINT) {
-            //随机计算
-            $point = $this->signRandomPointCalculation();
+            //判断是固定积分计算还是随机积分计算
+            if ($sign_point_type == self::SIGN_RANDOM_POINT) {
+                //随机计算
+                $point = $this->signRandomPointCalculation();
+            } else {
+                //固定计算
+                $point = $this->signFixedPointCalculation($user_id);
+            }
+            $return['data'] = $point;
+
+            //插入数据库
+            $result        = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得' . $point . '个积分');
+            $return['msg'] = $result['msg'];
+            if ($result['status']) {
+                Cache::rm($lock_key);
+                $return['status'] = true;
+                $return['msg']    = '签到成功';
+            }
         } else {
-            //固定计算
-            $point = $this->signFixedPointCalculation($user_id);
+            $result['msg'] = '请勿重复签到';
         }
-        $return['data'] = $point;
-
-        //插入数据库
-        $result        = $this->setPoint($user_id, $point, self::POINT_TYPE_SIGN, '积分签到，获得' . $point . '个积分');
-        $return['msg'] = $result['msg'];
-        if ($result['status']) {
-            $return['status'] = true;
-        }
-
         return $return;
     }
 
@@ -443,7 +451,7 @@ class UserPointLog extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getSignInfo($user_id)
+    public function getSignInfo($user_id, $time = 0)
     {
         $return = [
             'status' => true,
@@ -454,7 +462,10 @@ class UserPointLog extends Common
                 'total'      => 0, //累计签到
                 'continuous' => 0, //连续签到
                 'next'       => 0, //下次签到奖励积分
-                'rule'       => [] //签到规则
+                'rule'       => [], //签到规则
+                'omission'       => 0, //漏签天数
+                'signday'       => [], //签到日期
+                'point'       => 0 //积分
             ]
         ];
 
@@ -479,9 +490,18 @@ class UserPointLog extends Common
             }
         }
         $fasi       = array_reverse($asi);
-        $continuous = $this->continuousSignCalculation($fasi);
+//        $continuous = $this->continuousSignCalculation($fasi);
+        if(!$time){
+            $time = time();
+        }else{
+            $time = strtotime(date("Y-m-d H:i:s",mktime(23, 59 , 59,date("m"),1,date("Y"))));
+        }
+        $endtime = strtotime(date("Y-m-01 H:i:s",mktime(00, 00 , 00,date("m"),1,date("Y"))));
+        $continuous = $this->continuousSignCalculation($user_id,$time,$endtime);
+        $omission = $this->omissionSignCalculation($user_id,$time,$endtime);
         $next       = $this->nextSignCalculation($fasi);
         $rule       = $this->getSignRule();
+        $signday    = $this->getsignday($user_id,$time);
 
         $return['data']['isSign']     = $isSign;
         $return['data']['asi']        = $asi;
@@ -489,19 +509,118 @@ class UserPointLog extends Common
         $return['data']['continuous'] = $continuous;
         $return['data']['next']       = $next;
         $return['data']['rule']       = $rule;
+        $return['data']['omission']   = $omission;
+        $return['data']['signday']   = $signday["count"];
+        $return['data']['point']   = $signday["point"];
         return $return;
+    }
+
+    /**
+     * 获取签到日期数据
+     * @param $user_id
+     * @param $seller_id
+     * @param $date
+     * @return array
+     */
+    public function getsignday($user_id,$date){
+        $stime=mktime(0,0,0,date('m'),1,date('Y'));
+        $etime=mktime(23,59,59,date('m'),date('t'),date('Y'));
+
+        $where = [];
+        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
+        $where[] = ['ctime', ['EGT',$stime ],['ELT',$etime],'and'];
+        $where[] = ['user_id', 'eq', $user_id];
+        $count = $this->where($where)->column("ctime");
+        foreach ($count as $k=>$v){
+            $count[$k] = date('Y-m-d',$v);
+        }
+        $point = $this->where($where)->sum("num");
+        $data = [
+            "point" => $point,
+            "count" => $count
+        ];
+        return $data;
+    }
+
+    /**
+     * 获取用户签到漏签次数
+     * @param $user_id
+     * @param string $date
+     * @param int $frequency
+     * @return int
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function omissionSignCalculation($user_id, $date,$endtime, $frequency = 0){
+        if(!$date){
+            $date = strtotime("-1 day",time());
+        }
+        //计算本月内的
+        if($date < $endtime){
+            return $frequency;
+        }
+
+        $where = [];
+        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
+        $where[] = ['ctime', ['EGT',strtotime(date('Y-m-d 00:00:00',$date)) ],['ELT',strtotime(date('Y-m-d 23:59:59',$date))],'and'];
+        $where[] = ['user_id', 'eq', $user_id];
+        $info = $this->where($where)->find();
+        if(!$info){
+            $frequency += 1;
+        }
+        $date = strtotime("-1 day",$date);
+        return $this->omissionSignCalculation($user_id, $date,$endtime, $frequency);
     }
 
 
     /**
-     * 连续签到计算
-     * @param $fasi
+     * 获取用户连续签到次数
+     * @param $user_id
+     * @param $date
+     * @param $endtime
+     * @param int $frequency
      * @return int
      */
-    public function continuousSignCalculation($fasi)
+    public function continuousSignCalculation($user_id, $date, $endtime, $frequency = 0)
     {
         //todo::连续签到时长计算
-        return 0;
+        if(!$date){
+            $date = time();
+        }
+        //计算本月内的
+        if($date < $endtime){
+            return $frequency;
+        }
+
+        $where = [];
+        $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
+        $where[] = ['user_id', 'eq', $user_id];
+        $where[] = ['ctime', ['EGT',strtotime(date('Y-m-d 00:00:00',$date)) ],['ELT',strtotime(date('Y-m-d 23:59:59',$date))],'and'];
+        $res = $this->where($where)->select();
+        // 先查询今天是否签到，如果没签到而且是查询第一次 就从昨天开始查询
+        if(!$res && $frequency == 0){
+            $date = strtotime("-1 day",time());
+            $where = [];
+            $where[] = ['type', 'eq', self::POINT_TYPE_SIGN];
+            $where[] = ['ctime', ['EGT',strtotime(date('Y-m-d 00:00:00',$date)) ],['ELT',strtotime(date('Y-m-d 23:59:59',$date))],'and'];
+            $where[] = ['user_id', 'eq', $user_id];
+            $r = $this->where($where)->find();
+            if(!$r){
+                return 0;
+            }
+            $frequency = $frequency + 1;
+            $date = date("Y-m-d",strtotime("-2 day",strtotime($date." 23:59:59")));
+            return $this->continuousSignCalculation($user_id, $date,$endtime, $frequency);
+        }
+        if(count($res) < 1){
+            return $frequency;
+        }
+        $frequency = $frequency + 1;
+
+        $date = strtotime("-1 day",$date);
+
+        return $this->continuousSignCalculation($user_id, $date,$endtime,$frequency);
     }
 
 

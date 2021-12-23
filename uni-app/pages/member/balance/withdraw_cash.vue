@@ -45,7 +45,7 @@
 				</view>
 				<view class='cell-item'>
 					<view class='cell-item-bd withdrawcash-input'>
-						<text>￥</text><input type="number" focus v-model="money"/>
+						<text>￥</text><input type="number" @input="inputNumber" :maxlength="maxlength" focus v-model="money"/>
 					</view>
 				</view>
 				<view class='cell-item'>
@@ -73,7 +73,8 @@ export default {
 			isError: false, // 当提现金额大于可用余额 显示错误提示
             isSubmit: false, // 提现点击
 			money: '', // 用户输入的提现金额
-			submitStatus: false
+			submitStatus: false,
+			maxlength: 10    //默认一个长度 
 		}
 	},
 	onLoad () {
@@ -119,6 +120,19 @@ export default {
 		}
 	},
 	methods: {
+		inputNumber: function(e) {
+			let value = e.detail.value;
+			let dot = value.indexOf('.');   //包含小数点
+			let reg = /^[0-9]+$/;   //正整数
+			if (dot > -1) {   
+				this.maxlength = dot + 3;   //长度是小数点后两位
+				if (value.length > dot + 3) {
+				}
+			}
+			if (reg.test(value)) {   //如果是正整数不包含小数点
+				this.maxlength = 10;
+			}
+		},
 		// 获取我的默认银行卡信息
 		userBankCard () {
 			this.$api.getDefaultBankCard({}, res => {

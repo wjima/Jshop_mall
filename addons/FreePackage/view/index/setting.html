@@ -1,0 +1,88 @@
+<style>
+    .layui-form-item label {
+        width: 120px;
+    }
+</style>
+<div class="layui-card" style="padding:10px;">
+    {:jshopToken()}
+    <div class="layui-tab" lay-filter="setting">
+        <ul class="layui-tab-title">
+            <li lay-id="base" class="layui-this">基础设置</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form seller-alone-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">免单活动状态：</label>
+                        <div class="layui-input-inline seller-inline-12">
+                            <input type="radio" name="combo_status" value="1" title="开启"  {eq name="$data['combo_status']" value="1" }checked{/eq} >
+                            <input type="radio" name="combo_status" value="2" title="关闭" {eq name="$data['combo_status']" value="2" }checked{/eq} {if condition="!$data['combo_status']"}checked{/if}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">免单设置最低数量：</label>
+                        <div class="layui-input-inline seller-inline-9">
+                            <input type="number" name="combo_num" class="layui-input" value="{$data['combo_num']}" autocomplete="off">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"></div>
+                    </div>
+
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">活动说明：</label>
+                        <div class="layui-input-inline seller-inline-9">
+                            <textarea placeholder="请输入内容" name="combo_desc"  class="layui-textarea">{$data['combo_desc']}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">&nbsp;</label>
+                        <div class="layui-input-block">
+                            <button class="layui-btn layui-btn-sm" lay-submit="" lay-filter="save" style="height: 37px;padding: 0 27px;font-size: 14px;">保存</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+</div>
+</div>
+</div>
+
+<script>
+    layui.use(['form', 'element'], function() {
+        var form = layui.form, element = layui.element;
+
+        //显示当前tab
+        if (location.hash) {
+            element.tabChange('setting', location.hash.replace(/^#/, ''));
+        }
+        element.on('tab(setting)', function () {
+            var othis = $(this), layid = othis.attr('lay-id');
+            if (layid) {
+                location.hash = layid;
+            }
+        });
+
+        //保存商品
+        form.on('submit(save)', function(data) {
+            formData = data.field;
+            if (!formData) {
+                layer.msg('请先完善数据', {
+                    time: 1300
+                });
+                return false;
+            }
+            JsPost('{:get_addon_url("FreePackage://Index/setting")}',formData,function(e){
+                if (e.status === true) {
+                    layer.msg('保存成功');
+                } else {
+                    layer.msg(e.msg, {
+                        time: 1300
+                    });
+                }
+            });
+            return false;
+        });
+
+    });
+</script>

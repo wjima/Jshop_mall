@@ -1,6 +1,7 @@
 <?php
 namespace addons\KdniaoExpress\lib;
 
+use addons\KdniaoExpress\model\FaceSheet;
 use app\common\model\BillDelivery;
 use org\Curl;
 
@@ -60,7 +61,7 @@ class kdniao
         $sender           = [];
         $sender["Name"]   = getSetting('reship_name');
         $sender["Mobile"] = getSetting('reship_mobile');
-        $senderAreaId     = getSetting('reship_area_id');
+        $senderAreaId     = getSetting('reship_area_id') ? getSetting('reship_area_id') : [];
         if (!$senderAreaId) {
             $return['msg'] = '请先配置退货信息';
             return $return;
@@ -102,12 +103,17 @@ class kdniao
         $eorder["Receiver"]  = $receiver;
         $eorder["Commodity"] = $commodity;
 
-        if ($order['logi_code'] == 'HTKY') {//快递公司编码，例如HTKY
-            $eorder["CustomerName"] = "";//快递公司账号
-            $eorder["CustomerPwd"]  = "";//快递公司密码
-            $eorder["SendSite"]     = "";//快递公司网点地址
-            $eorder['TemplateSize'] = '';//快递单模板
+        $faceSheetModel = new FaceSheet();
+        $faceSheet = $faceSheetModel->where(['logi_code'=>$order['logi_code']])->find();
+        if(!$faceSheet){
+            $return['msg'] = '请配置电子面单！';
+            return $return;
         }
+
+        $eorder["CustomerName"] = $faceSheet['customer_name'];//快递公司账号
+        $eorder["CustomerPwd"]  = $faceSheet['customer_pwd'];//快递公司密码
+        $eorder["SendSite"]     = $faceSheet['send_site'];//快递公司网点地址
+        $eorder['TemplateSize'] = $faceSheet['template_size'];//快递单模板
 
         $jsonParam = json_encode($eorder, JSON_UNESCAPED_UNICODE);
 

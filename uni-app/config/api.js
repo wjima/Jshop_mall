@@ -5,6 +5,7 @@ import * as common from './common.js' //引入common
 import * as db from './db.js' //引入common
 // 需要登陆的，都写到这里，否则就是不需要登陆的接口
 const methodsToken = [
+	'api.getcartids.FreePackage',
 	'user.info',
 	'user.editinfo',
 	'user.changeavatar',
@@ -96,6 +97,7 @@ const methodsToken = [
 	'api.hb.WelfarePro',
 	'api.coupon.WelfarePro',
 	'cart.batchsetcart',
+	"user.getsigninfo"
 ];
 
 const post = (method, data, callback,complete) => {
@@ -903,3 +905,16 @@ export const getHomePageConfig = (data, callback) => post('pages.gethomepageconf
 
 // 批量加入购物车
 export const batchsetcart = (data, callback) => post('cart.batchsetcart', data, callback);
+
+// 获取套餐配置信息
+export const freePackage = (data, callback) => post('api.setting.FreePackage', data, callback);
+
+// 获取购物车套餐商品货品id
+export const GetcartidsFreePackage = (data, callback) => post('api.getcartids.FreePackage', data, callback);
+
+// 商城端签到日志
+export const getsigninfo = (data, callback) => post('user.getsigninfo', data, callback);
+
+// 获取奖励描述
+export const rewarddesc = (data, callback) => post('common.rewarddesc', data, callback);
+

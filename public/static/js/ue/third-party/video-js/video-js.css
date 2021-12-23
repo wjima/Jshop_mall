@@ -8,7 +8,7 @@ Create your own skin at http://designer.videojs.com
 The main class name for all skin-specific styles. To make your own skin,
 replace all occurances of 'vjs-default-skin' with a new name. Then add your new
 skin name to your video tag instead of the default skin.
-e.g. <video class="video-js my-skin-name">
+e.g. <video class="video-j-js my-skin-name">
 */
 .vjs-default-skin {
   color: #cccccc;
@@ -626,7 +626,7 @@ and sets the width and height of the video.
 positioning, use another containing element. Otherwise you risk messing up
 control positioning and full window mode. **
 */
-.video-js {
+.video-j-js {
   background-color: #000;
   position: relative;
   padding: 0;
@@ -659,7 +659,7 @@ control positioning and full window mode. **
 }
 /* Playback technology elements expand to the width/height of the containing div
     <video> or <object> */
-.video-js .vjs-tech {
+.video-j-js .vjs-tech {
   position: absolute;
   top: 0;
   left: 0;
@@ -668,7 +668,7 @@ control positioning and full window mode. **
 }
 /* Fix for Firefox 9 fullscreen (only if it is enabled). Not needed when
    checking fullScreenEnabled. */
-.video-js:-moz-full-screen {
+.video-j-js:-moz-full-screen {
   position: absolute;
 }
 /* Fullscreen Styles */
@@ -679,7 +679,7 @@ body.vjs-full-window {
   /* Fix for IE6 full-window. http://www.cssplay.co.uk/layouts/fixed.html */
   overflow-y: auto;
 }
-.video-js.vjs-fullscreen {
+.video-j-js.vjs-fullscreen {
   position: fixed;
   overflow: hidden;
   z-index: 1000;
@@ -692,11 +692,11 @@ body.vjs-full-window {
   /* IE6 full-window (underscore hack) */
   _position: absolute;
 }
-.video-js:-webkit-full-screen {
+.video-j-js:-webkit-full-screen {
   width: 100% !important;
   height: 100% !important;
 }
-.video-js.vjs-fullscreen.vjs-user-inactive {
+.video-j-js.vjs-fullscreen.vjs-user-inactive {
   cursor: none;
 }
 /* Poster Styles */
@@ -719,12 +719,12 @@ body.vjs-full-window {
   width: 100%;
 }
 /* Hide the poster when native controls are used otherwise it covers them */
-.video-js.vjs-using-native-controls .vjs-poster {
+.video-j-js.vjs-using-native-controls .vjs-poster {
   display: none;
 }
 /* Text Track Styles */
 /* Overall track holder for both captions and subtitles */
-.video-js .vjs-text-track-display {
+.video-j-js .vjs-text-track-display {
   text-align: center;
   position: absolute;
   bottom: 4em;
@@ -733,7 +733,7 @@ body.vjs-full-window {
   right: 1em;
 }
 /* Individual tracks */
-.video-js .vjs-text-track {
+.video-j-js .vjs-text-track {
   display: none;
   font-size: 1.4em;
   text-align: center;
@@ -743,10 +743,10 @@ body.vjs-full-window {
   background-color: #000000;
   background-color: rgba(0, 0, 0, 0.5);
 }
-.video-js .vjs-subtitles {
+.video-j-js .vjs-subtitles {
   color: #ffffff /* Subtitles are white */;
 }
-.video-js .vjs-captions {
+.video-j-js .vjs-captions {
   color: #ffcc66 /* Captions are yellow */;
 }
 .vjs-tt-cue {
@@ -763,4 +763,4 @@ body.vjs-full-window {
 }
 /* -----------------------------------------------------------------------------
 The original source of this file lives at
-https://github.com/videojs/video.js/blob/master/src/css/video-js.less */
+https://github.com/videojs/video.js/blob/master/src/css/video-j-js.less */

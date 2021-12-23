@@ -9,6 +9,7 @@
 namespace app\api\controller;
 use app\common\model\Brand as BrandModel;
 use app\common\controller\Api;
+use think\facade\Cache;
 
 /**
  * 品牌
@@ -36,19 +37,22 @@ class Brand extends Api
         $page = input('param.page', 1);
         $limit = input('param.limit', 10);
         $brandModel = new BrandModel;
-        $list = $brandModel->field($field)->order($order)->page($page, $limit)->select();
-        $count  = $brandModel->field($field)->count();
-        if(!$list->isEmpty())
-        {
-            foreach((array)$list as &$v)
-            {
-                $v['logo'] = _sImage($v['logo']);
+        if (!Cache::has("jshop_brandlist" . '_' . $page . '_' . $limit)) {
+            $list["list"] = $brandModel->field($field)->order($order)->page($page, $limit)->select();
+            $count["count"] = $brandModel->field($field)->count();
+            if (!$list->isEmpty()) {
+                foreach ((array)$list as &$v) {
+                    $v['logo'] = _sImage($v['logo']);
+                }
             }
+            $result['data'] = [
+                'list' => $list,
+                'count' => $count
+            ];
+            Cache::set("jshop_brandlist" . '_' . $page . '_' . $limit, $result, 3600 * 5);
+        } else {
+            $result = Cache::get("jshop_brandlist" . '_' . $page . '_' . $limit);
         }
-        $result['data'] = [
-            'list' => $list,
-            'count' => $count
-        ];
         return $result;
     }
 }

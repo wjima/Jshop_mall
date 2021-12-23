@@ -79,7 +79,7 @@ class Pages extends Manage
             'msg'    => '保存成功',
             'data'   => [],
         ];
-        $data            = input('post.data/s', '');
+        $data            = input('post.data/s', '','safe_filter');
         $code            = input('post.pageCode/s', 'mobile_home');
         $pagesItemsModel = new PagesItems();
         $res             = $pagesItemsModel->saveItems($data, $code);

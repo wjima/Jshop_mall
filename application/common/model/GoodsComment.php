@@ -2,6 +2,7 @@
 namespace app\common\model;
 
 use think\Db;
+use think\facade\Cache;
 
 /**
  * 商品评价表
@@ -47,14 +48,20 @@ class GoodsComment extends Common
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($goods_id, $page = 1, $limit = 10, $display = 'all')
+    public function getList($goods_id, $page = 1, $limit = 10, $display = 'all',$order = 'ctime')
     {
         $where[] = ['goods_id', 'eq', $goods_id];
         if ($display != 'all') {
             $where[] = ['display', 'eq', $display];
         }
+        if ($order == 'score') {
+            $order = "score desc";
+        } else {
+            $order = "ctime desc";
+        }
         $res = $this::with('user')->where($where)
             ->order('ctime desc')
+            ->order($order)
             ->page($page, $limit)
             ->select();
         foreach ($res as $k => $v) {
@@ -271,92 +278,97 @@ class GoodsComment extends Common
      */
     public function addComment($order_id, $items, $user_id)
     {
-        $orderModel = new Order();
-        $orderItemsModel = new OrderItems();
+        $lock_key = 'user_add_comment_' . $user_id;//防止高并发重复问题
+        if (!Cache::has($lock_key)) {
+            Cache::set($lock_key, '1', 3);
 
-        //判断这个订单是否可以评价
-        $res = $orderModel->isOrderComment($order_id, $user_id);
-        if(!$res['status'])
-        {
-            //已经评价或者存在问题
-            return $res;
-        }
+            $orderModel      = new Order();
+            $orderItemsModel = new OrderItems();
+
+            //判断这个订单是否可以评价
+            $res = $orderModel->isOrderComment($order_id, $user_id);
+            if (!$res['status']) {
+                Cache::rm($lock_key);
+                //已经评价或者存在问题
+                return $res;
+            }
+
+            Db::startTrans();
+            try {
+                //插入商品评价
+                $goods_data = $gid = [];
+                foreach ($items as $k => $v) {
+                    //判断此条记录是否是此订单下面的
+                    $item_info = $orderItemsModel->where(['id' => $k, 'order_id' => $order_id])->find();
+                    if (!$item_info) {
+                        continue;       //说明没有此条记录，就不需要评论了
+                    }
+
+                    //如果是赠品，就跳过
+                    if (strstr($item_info['name'], $orderModel::GIVEAWAY_STR) !== false) {
+                        continue;
+                    }
 
 
-        Db::startTrans();
-        try{
-            //插入商品评价
-            $goods_data = $gid = [];
-            foreach($items as $k => $v)
-            {
-                //判断此条记录是否是此订单下面的
-                $item_info = $orderItemsModel->where(['id'=>$k,'order_id'=>$order_id])->find();
-                if(!$item_info){
-                    continue;       //说明没有此条记录，就不需要评论了
-                }
+                    $score = 5;
+                    if ($v['score'] >= 1 && $v['score'] <= 5) {
+                        $score = $v['score'];
+                    }
+                    $images = '';
+                    if ($v['images']) {
+                        foreach ($v['images'] as $kk => $vv) {
+                            $images .= $vv['id'] . ',';
+                        }
+                    }
+                    $images       = rtrim($images, ",");
+                    $goods_data[] = [
+                        'comment_id' => 0,
+                        'score'      => $score,
+                        'user_id'    => $user_id,
+                        'goods_id'   => $item_info['goods_id'],
+                        'product_id' => $item_info['product_id'],   // 货品ID
+                        'order_id'   => $order_id,
+                        'images'     => $images,
+                        'content'    => htmlentities($v['textarea']),
+                        'name'       => $item_info['name'],       // 商品名称
+                        'addon'      => $item_info['addon']
+                    ];
 
-                //如果是赠品，就跳过
-                if(strstr($item_info['name'],$orderModel::GIVEAWAY_STR) !== false){
-                    continue;
-                }
-
-
-                $score = 5;
-                if($v['score'] >= 1 &&   $v['score'] <= 5){
-                    $score = $v['score'];
-                }
-                $images = '';
-                if ($v['images'])
-                {
-                    foreach($v['images'] as $kk => $vv)
-                    {
-                        $images .= $vv['id'].',';
+                    if (isset($gid[$item_info['goods_id']])) {
+                        $gid[$item_info['goods_id']] += 1;
+                    } else {
+                        $gid[$item_info['goods_id']] = 1;
                     }
                 }
-                $images = rtrim($images, ",");
-                $goods_data[] = [
-                    'comment_id' => 0,
-                    'score' => $score,
-                    'user_id' => $user_id,
-                    'goods_id' => $item_info['goods_id'],
-                    'product_id' => $item_info['product_id'],   // 货品ID
-                    'order_id' => $order_id,
-                    'images' => $images,
-                    'content' => htmlentities($v['textarea']),
-                    'name' => $item_info['name'],       // 商品名称
-                    'addon' => $item_info['addon']
-                ];
-
-                if(isset($gid[$item_info['goods_id']])){
-                    $gid[$item_info['goods_id']] += 1;
-                }else{
-                    $gid[$item_info['goods_id']] = 1;
+                $this->saveAll($goods_data);
+                //商品表更新评论数量
+                foreach ($gid as $goods_id => $inc) {
+                    $goodsModel = new Goods();
+                    $goodsModel->where('id', $goods_id)->setInc('comments_count', $inc);
                 }
+                //修改评价状态
+                $order_data['is_comment'] = 2;
+                $orderModel->save($order_data, ['order_id' => $order_id]);
+                Db::commit();
+                $orderLog = new OrderLog();
+                $orderLog->addLog($order_id, $user_id, $orderLog::LOG_TYPE_EVALUATION, '用户评价订单', $items);
+                $return_data = [
+                    'status' => true,
+                    'msg'    => '评价成功',
+                    'data'   => []
+                ];
+                Cache::rm($lock_key);
+            } catch (\Exception $e) {
+                Cache::rm($lock_key);
+                Db::rollback();
+                $return_data = [
+                    'status' => false,
+                    'msg'    => $e->getMessage(),
+                    'data'   => $goods_data
+                ];
             }
-            $this->saveAll($goods_data);
-            //商品表更新评论数量
-            foreach($gid as $goods_id=>$inc){
-                $goodsModel = new Goods();
-                $goodsModel->where('id',$goods_id)->setInc('comments_count',$inc);
-            }
-            //修改评价状态
-            $order_data['is_comment'] = 2;
-            $orderModel->save($order_data, ['order_id' => $order_id]);
-            Db::commit();
-            $orderLog = new OrderLog();
-            $orderLog->addLog($order_id, $user_id, $orderLog::LOG_TYPE_EVALUATION, '用户评价订单', $items);
-            $return_data = [
-                'status' => true,
-                'msg' => '评价成功',
-                'data' => []
-            ];
-        }catch(\Exception $e){
-            Db::rollback();
-            $return_data = [
-                'status' => false,
-                'msg' => $e->getMessage(),
-                'data' => $goods_data
-            ];
+        } else {
+            $return_data['msg'] = '请勿重复提交';
         }
         return $return_data;
     }

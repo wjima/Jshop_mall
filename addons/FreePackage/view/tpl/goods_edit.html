@@ -1,0 +1,11 @@
+<div class="layui-form-item">
+    <div class="layui-inline">
+        <label class="layui-form-label"><i class="required-color">*</i>参与免单：</label>
+        <div class="layui-input-inline">
+            <select name="freepackage[is_combo]" lay-verify="required" lay-search>
+                <option value="1" {if 1 == $is_combo} selected {/if}>是</option>
+                <option value="2" {if 2 == $is_combo} selected {/if}>否</option>
+            </select>
+        </div>
+    </div>
+</div>

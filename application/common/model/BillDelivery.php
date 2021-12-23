@@ -310,7 +310,7 @@ class BillDelivery extends Common
             ->field('d.*,r.order_id')
             ->join('bill_delivery_order_rel r', 'd.delivery_id = r.delivery_id')
             ->where($where)
-            ->group('r.delivery_id')
+            ->group('r.delivery_id,r.order_id')
             ->order('ctime desc')
             ->page($page, $limit)
             ->select();
@@ -407,6 +407,10 @@ class BillDelivery extends Common
                 'id' => 'order_id',
                 'desc' => '订单号',
                 'modify' => 'convertString'
+            ],
+            [
+                'id' => 'username',
+                'desc' => '用户名',
             ],
             [
                 'id' => 'logi_name',
@@ -541,6 +545,11 @@ class BillDelivery extends Common
                 ->count();
 
             foreach ($res as $k => &$v) {
+                if(isset($v['user_id']) && $v['user_id']){
+                    $v['username'] = get_user_info($v['user_id'], 'nickname');
+                }else{
+                    $v['username'] = '';
+                }
                 $v['logi_name'] = get_logi_info($v['logi_code']);
                 $v['ship_address'] = get_area($v['ship_area_id']) . '- ' . $v['ship_address'];
                 $v['ctime'] = date('Y-m-d H:i:s', $v['ctime']);

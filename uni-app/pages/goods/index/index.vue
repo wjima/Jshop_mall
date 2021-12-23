@@ -619,6 +619,7 @@
 				// 判断是否是多规格 (是否有默认规格)
 				if (products.hasOwnProperty('default_spes_desc')) {
 					let spes = products.default_spes_desc;
+					console.log(spes)
 					for (let key in spes) {
 						for (let i in spes[key]) {
 							if (spes[key][i].hasOwnProperty('is_default') && spes[key][i].is_default === true) {
@@ -626,6 +627,7 @@
 							} else if (spes[key][i].hasOwnProperty('product_id') && spes[key][i].product_id) {
 								this.$set(spes[key][i], 'cla', 'pop-m-item not-selected');
 							} else {
+								
 								this.$set(spes[key][i], 'cla', 'pop-m-item none');
 							}
 						}

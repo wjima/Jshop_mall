@@ -10,9 +10,11 @@
 						<view class="cart-checkbox-item">
 							<label class="uni-list-cell uni-list-cell-pd">
 								<view class="cart-checkbox-c">
-									<checkbox :value='item.id' :checked="item.checked" color="#FF7159" v-if="item.disabled" :disabled="item.disabled"
+									<checkbox :value='item.id' :checked="item.checked"
+									 color="#FF7159" v-if="item.disabled" :disabled="item.disabled || orderInfo.order_type == 8"
 									 class="checkboxNo" />
-									<checkbox :value='item.id' :checked="item.checked" color="#FF7159" v-else />
+									<checkbox :value='item.id' :checked="item.checked"
+									 :disabled="orderInfo.order_type == 8" color="#FF7159" v-else />
 								</view>
 								<view class="img-list-item">
 									<image class="img-list-item-l little-img have-none" :src="item.image_url" mode="aspectFill"></image>
@@ -42,7 +44,9 @@
 												</view>
 												<view class="goods-salesvolume" v-if="!item.disabled">
 													<label>可退数：</label>
-													<input type="number" v-model="item.returnNums" @focus="onFocus(item,key)" @blur="updateNum(item,key)"
+													<input type="number" v-model="item.returnNums" 
+													:disabled="orderInfo.order_type == 8"
+													@focus="onFocus(item,key)" @blur="updateNum(item,key)"
 													 class="inputStyle" ref="input" @click.stop />
 												</view>
 											</view>
@@ -87,7 +91,8 @@
 							<view class='cell-hd-title'>退款金额</view>
 						</view>
 						<view class='cell-item-ft'>
-							<input type="digit" class='cell-bd-input red-price' v-model="refund" @focus="refundFocus" ref="refund"></input>
+							<input type="digit" class='cell-bd-input red-price' disabled
+							 v-model="refund" @focus="refundFocus" ref="refund"></input>
 						</view>
 
 					</view>
@@ -156,7 +161,8 @@ export default {
 			submitStatus: false,
 			checkedItems:[],//当前选中的商品
 			isFlag: true,
-			cost_freight:0//运费
+			cost_freight:0,//运费
+			orderInfo: {}
         }
     },
 	components: { jhlable },
@@ -195,6 +201,8 @@ export default {
 			}
 			this.$api.orderDetail(data, res => {
 				if (res.status) {
+					
+					this.orderInfo  = res.data
 					//如果不是未支付的，已取消的，已完成的状态，就都可以售后
 					if (res.data.text_status != 1 && res.data.text_status != 6 && res.data.text_status != 7){
 						//判断是已付款未发货，如果是，就禁用退货
@@ -218,7 +226,21 @@ export default {
 							//this.item_ids = this.item_ids.concat({ id: res.data.items[i].id, nums: returnNums });
 							res.data.items[i].returnNums=returnNums			
 							res.data.items[i].returnStatus=returnStatus	
-							res.data.items[i].checked = false;
+							// res.data.items[i].checked = false;
+							
+							console.log('res.data.order_type' ,res.data.order_type);
+							if(res.data.order_type === 8) {
+								res.data.items[i].checked = true;
+								this.checkedItems.push(res.data.items[i].id)
+								
+								this.item_ids.push({
+									nums: res.data.items[i].returnNums,
+									id: res.data.items[i].id,
+								})
+							} else {
+								res.data.items[i].checked = false;
+							}
+							
 							if(res.data.items[i].returnNums>0){
 								res.data.items[i].disabled = false;
 							}else{
@@ -227,7 +249,11 @@ export default {
 						}		
 						this.items = res.data.items;
 	
-						this.refund = this.$common.moneySum((res.data.order_amount - res.data.refunded),0);
+						if(res.data.order_type == 8) {
+							 this.refund = res.data.order_amount
+						} else {
+							this.refund = this.$common.moneySum((res.data.order_amount - res.data.refunded),0);
+						}
 						//this.refund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.maxRefund = this.$common.formatMoney((res.data.order_amount - res.data.refunded), 2, '');
 						this.cost_freight = res.data.cost_freight;//运费
@@ -325,8 +351,33 @@ export default {
 		
 		//计算要退货的商品数量
 		getReturnData(){
+			// let nums = 0;
+			// this.item_ids = [];
+			// for (var i = 0; i < this.checkedItems.length; i++) {
+			// 	let k = this.checkedItems[i];
+			// 	for(var j = 0; j < this.items.length; j++){
+			// 		if(this.items[j].id == k) {
+			// 			if(this.items[j].nums >= this.items[j].reship_nums) {
+							
+			// 				nums = this.items[j].nums - this.items[j].reship_nums;
+			// 				if (nums>=this.items[j].returnNums) {
+			// 					nums = this.items[j].returnNums
+			// 					this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+			// 				} else {
+			// 					this.$common.errorToShow("您填写的数量不对！")
+			// 					return ;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
+			
+			
 			let nums = 0;
 			this.item_ids = [];
+			let total_refund = 0;//最退款金额
+			
+			let checkNums = 0
 			for (var i = 0; i < this.checkedItems.length; i++) {
 				let k = this.checkedItems[i];
 				for(var j = 0; j < this.items.length; j++){
@@ -336,14 +387,43 @@ export default {
 							nums = this.items[j].nums - this.items[j].reship_nums;
 							if (nums>=this.items[j].returnNums) {
 								nums = this.items[j].returnNums
+								
+								checkNums += nums
+								
 								this.item_ids = this.item_ids.concat({ id: k, nums: nums });
+								console.log('nums', nums, this.items[j], nums, (this.items[j].nums - this.items[j].reship_nums));
+								if(nums == (this.items[j].nums - this.items[j].reship_nums)){
+									
+									
+									total_refund +=	(this.items[j].ave_amount	*	100 
+									- this.items[j].reship_nums	*	this.items[j].ave_price	*	100)	/	100;
+								}else {
+									
+									total_refund += (this.items[j].ave_price*nums*100)/100;
+								}
+								
+								
 							} else {
 								this.$common.errorToShow("您填写的数量不对！")
 								return ;
 							}
 						}
+						
+						
+						
 					}
 				}
+			}
+			
+			if(checkNums + this.reshipNumsAll == this.buyNums) {
+				
+				if(this.reSult.cost_freight_status == 1) {
+					this.refund = total_refund.toFixed(2);
+				} else {
+					this.refund = (Number(total_refund)  + Number(this.cost_freight)) .toFixed(2);
+				}
+			} else {
+				this.refund = total_refund.toFixed(2);
 			}
 		},
 
@@ -391,6 +471,10 @@ export default {
 			// #ifdef MP-WEIXIN
 			data['formId'] = e.detail.formId;
 			// #endif
+			
+			if(this.orderInfo.order_type == 8) {
+				data.order_type = 8
+			}
 			this.$api.addAfterSales(data, res => {
 				if(res.status){
 					this.$common.successToShow('提交成功', ress => {

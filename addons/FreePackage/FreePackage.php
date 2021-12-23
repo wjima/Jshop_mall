@@ -5,6 +5,7 @@ namespace addons\FreePackage;    // 注意命名空间规范
 use addons\WelfarePro\model\WelfareproCoupon;
 use addons\WelfarePro\model\WelfareproCouponLog;
 use addons\WelfarePro\model\WelfareproHb;
+use app\common\model\Cart;
 use app\common\model\Goods;
 use app\common\model\User;
 use myxland\addons\Addons;
@@ -147,6 +148,9 @@ class FreePackage extends Addons
             $GoodsModel = new Goods();
             $GoodsModel->where("id", $goods_id)->update($data);
         }
+
+        $cartModel = new Cart();
+        $cartModel->where(['product_id'=>$goods['product']['id']])->delete();
         return true;
     }
 

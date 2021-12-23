@@ -12,15 +12,15 @@ use app\common\model\Addons as addonsModel;
 use think\Db;
 
 /**
- * 领红包和领优惠券功能
+ * 商品免单插件
  */
 class FreePackage extends Addons
 {
     // 该插件的基础信息
     public $info = [
         'name' => 'FreePackage',    // 插件标识
-        'title' => '免费套餐',    // 插件名称
-        'description' => '设置免单商品，价格最低免单',    // 插件简介
+        'title' => '免单营销插件',    // 插件名称
+        'description' => '商品大于等于3件，价格最低免单',    // 插件简介
         'status' => 0,    // 状态
         'author' => 'fx',
         'version' => '1.0'

@@ -41,9 +41,9 @@ return [
     'setting' => [
         'title' => '分销设置',
         'value' => [
-            'combo_status'    => '2',
-            'combo_num'    => '3',
-            'combo_desc'             => '活动说明！',
+            'combo_status'  => '2',
+            'combo_num' => '3',
+            'combo_desc'    => '商品满3件免1件，价格最低免单！',
         ]
     ],
     'api' => [

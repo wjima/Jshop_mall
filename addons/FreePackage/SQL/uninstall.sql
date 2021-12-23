@@ -1,5 +1,3 @@
-alter table jshop_goods drop column is_combo;
-
 alter table jshop_order_items drop column is_free;
 
 DROP TABLE `jshop_free_package`;

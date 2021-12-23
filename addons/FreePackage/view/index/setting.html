@@ -13,15 +13,15 @@
             <div class="layui-tab-item layui-show">
                 <form class="layui-form seller-alone-form" action="" method="post">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">套餐活动状态：</label>
+                        <label class="layui-form-label">免单活动状态：</label>
                         <div class="layui-input-inline seller-inline-12">
-                            <input type="radio" name="combo_status" value="1" title="是"  {eq name="$data['combo_status']" value="1" }checked{/eq} >
-                            <input type="radio" name="combo_status" value="2" title="否" {eq name="$data['combo_status']" value="2" }checked{/eq} {if condition="!$data['combo_status']"}checked{/if}>
+                            <input type="radio" name="combo_status" value="1" title="开启"  {eq name="$data['combo_status']" value="1" }checked{/eq} >
+                            <input type="radio" name="combo_status" value="2" title="关闭" {eq name="$data['combo_status']" value="2" }checked{/eq} {if condition="!$data['combo_status']"}checked{/if}>
                         </div>
                     </div>
 
                     <div class="layui-form-item layui-form-text">
-                        <label class="layui-form-label">套餐最低数量：</label>
+                        <label class="layui-form-label">免单设置最低数量：</label>
                         <div class="layui-input-inline seller-inline-9">
                             <input type="number" name="combo_num" class="layui-input" value="{$data['combo_num']}" autocomplete="off">
                         </div>

@@ -54,7 +54,6 @@ class FreePackage extends Common
     protected function tableFormat($list)
     {
         foreach ($list as $k => &$v) {
-            $v['username'] = get_user_info($v['user_id'], 'username');
             $v['ctime'] = getTime($v['ctime']);
             $v['utime'] = getTime($v['utime']);
 //            $v['status_text'] = $v['status'] == self::STATUS_OPEN ? '开启' : '关闭';

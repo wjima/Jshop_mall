@@ -76,12 +76,10 @@
 		
 		<lvv-popup position="center" ref="spes" class="spes-content" >
 			<view class="content">
-				<specs ref :spesData="defaultSpesDesc" :product="product" ref="spec"
+				<specs v-if="product.id" :spesData="defaultSpesDesc" :product="product" ref="spec"
 				 @changeSpes="changeSpes" @clickHandle="clickHandle" @toclose="toclose"></specs>
 			</view>
 		</lvv-popup>
-		
-		
 		
 		
 		<lvv-popup ref="cart" position="bottom">
@@ -90,7 +88,7 @@
 				<view class="goodsList" v-for="(goods,i) in cartLists" :key="goods.id">
 					<view class="goods-l">
 						<view class="name two-line">
-							({{goods.products.spes_desc || ''}}){{goods.products.name}}
+							<text v-if="goods.products && goods.products.spes_desc">({{goods.products.spes_desc || ''}})</text> {{goods.products.name}}
 						</view>
 						<view class="spec" v-if="goods.default_spes_desc">
 							- 规格({{goods.default_spes_desc}})
@@ -173,15 +171,18 @@
 				cartNum: 0
 			}
 		},
-		mounted() {
+		onShow() {
 			this.getGoodsList()
 			this.listConfig()
 			this.getCartNums()
+			this.getCartList()
 		},
 		methods: {
 			toclose( ) {
-				console.log(123123);
 				this.$refs.spes.close()
+				setTimeout(() => {
+					this.product = {}
+				},1000)
 			},
 			goCart() {
 				const _this = this
@@ -881,12 +882,12 @@
 			margin-right: 40rpx;
 			font-size: 24rpx;
 			font-weight: bold;
-			color: #1A1600;
+			color: #FFFFFF;
 			width: 510rpx;
 			height: 84rpx;
 			text-align: center;
 			line-height: 84rpx;
-			background: #FED700;
+			background: #FE4E00;
 			border-radius: 100rpx;
 			
 		}

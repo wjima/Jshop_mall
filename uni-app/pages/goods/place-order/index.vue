@@ -923,6 +923,11 @@ export default {
 		// 去支付
 		toPay(e) {
             const _this = this
+			
+			if(this.products.length == 0) {
+				this.$common.errorToShow('未知错误');
+				return false
+			}
 			if (this.submitStatus) {
 				return false;
 			}

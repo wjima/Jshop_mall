@@ -8,6 +8,8 @@
 // +----------------------------------------------------------------------
 namespace app\common\model;
 use app\common\model\Promotion;
+use think\Db;
+use think\facade\Cache;
 
 class Coupon extends Common
 {
@@ -51,38 +53,51 @@ class Coupon extends Common
     public function addData($user_id,$promotion_id)
     {
         $result = error_code(15021);
-        //取优惠券的结束时间
-        $promotionModel = new Promotion();
-        $where[] = ['status', '=', 1];
-        $where[] = ['type', '=',2];
-        $where[] = ['id','=', $promotion_id];
-        $info = $promotionModel->where($where)->find();
-        if(!$info){
-            return $result;
-        }
-        $params = json_decode($info['params'],true);
-        if(isset($params['term_day']) && $params['term_day'] > 0){
-            $endtime = time();
-            $endtime = $endtime + $params['term_day'] * 60*60*24;
-            //如果计算之后的时间大于优惠券结束的时间了，那就以优惠券的时间为准
-            if ($info['etime'] < $endtime) {
-                $endtime = 0;           //就写0吧。
-            }
-        }else{
-            $endtime = 0;
-        }
-        $data = [
-            'coupon_code' => $this->generate_promotion_code()[0],
-            'promotion_id' => $promotion_id,
-            'user_id' => $user_id,
-            'endtime' => $endtime
-        ];
-        if($this->allowField(true)->save($data))
-        {
-            $result['status'] = true;
-            $result['msg'] = '领取成功';
-        }
+        $lock_key = 'coupon_'.$user_id.'_'.$promotion_id;
 
+        if(!Cache::has($lock_key)){//防止高并发重复领取问题
+            Cache::set($lock_key,'1',3);
+            Db::startTrans();
+            //取优惠券的结束时间
+            $promotionModel = new Promotion();
+            $where[] = ['status', '=', 1];
+            $where[] = ['type', '=',2];
+            $where[] = ['id','=', $promotion_id];
+            $info = $promotionModel->where($where)->find();
+            if(!$info){
+                Db::rollback();
+                return $result;
+            }
+            $params = json_decode($info['params'],true);
+            if(isset($params['term_day']) && $params['term_day'] > 0){
+                $endtime = time();
+                $endtime = $endtime + $params['term_day'] * 60*60*24;
+                //如果计算之后的时间大于优惠券结束的时间了，那就以优惠券的时间为准
+                if ($info['etime'] < $endtime) {
+                    $endtime = 0;           //就写0吧。
+                }
+            }else{
+                $endtime = 0;
+            }
+            $data = [
+                'coupon_code' => $this->generate_promotion_code()[0],
+                'promotion_id' => $promotion_id,
+                'user_id' => $user_id,
+                'endtime' => $endtime
+            ];
+            if($this->allowField(true)->save($data))
+            {
+                Cache::rm($lock_key);
+                $result['status'] = true;
+                $result['msg'] = '领取成功';
+            }else{
+                Db::rollback();
+                return $result;
+            }
+            Db::commit();
+        }else{
+            $result['msg'] = '请勿重复领取';
+        }
         return $result;
     }
 
@@ -517,9 +532,16 @@ class Coupon extends Common
             $result['msg'] = '没有此优惠券活动';
             return $result;
         }
+        //算开始时间
+//        if($info['stime'] < time()){
+//            $starttime = time();
+//        }else{
+//            $starttime = $info['stime'];
+//        }
+        $starttime = $info['stime'];
         $params = json_decode($info['params'],true);
         if(isset($params['term_day']) && $params['term_day'] > 0){
-            $endtime = time();
+            $endtime = $starttime;          //起始时间就是开始时间
             $endtime = $endtime + $params['term_day'] * 60*60*24;
             //如果结算之后的时间大于优惠券结束的时间了，那就以优惠券的时间为准
             if($info['etime'] < $endtime){
@@ -542,7 +564,8 @@ class Coupon extends Common
             $data[] = [
                 'coupon_code' => $this->getCouponNumber($promotion_id),
                 'promotion_id' => $promotion_id,
-                'endtime' => $endtime
+                'endtime' => $endtime,
+                'ctime' => $starttime
             ];
         }
         $re = $this->saveAll($data);

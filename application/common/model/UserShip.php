@@ -2,6 +2,8 @@
 
 namespace app\common\model;
 
+use think\facade\Cache;
+
 /**
  * 用户收货地址
  * Class UserShip
@@ -208,76 +210,87 @@ class UserShip extends Common
     {
         $result = [
             'status' => false,
-            'data' => '',
-            'msg' => ''
+            'data'   => '',
+            'msg'    => ''
         ];
 
+        $lock_key = 'user_edit_ship_' . $user_id;//防止高并发重复签到问题
+        if (!Cache::has($lock_key)) {
+            Cache::set($lock_key, '1', 3);
 
-        // 收货地址验证
-        $checkStatus = $this->checkData($data);
+            // 收货地址验证
+            $checkStatus = $this->checkData($data);
 
-        if (!$checkStatus['status']) {
-            return $checkStatus;
-        }
-        if ($data['address']) {
-            $character = ["\r\n", "\n", "\r","\t","+","\\"];
-            $data['address'] = str_replace($character, '', $data['address']);
-        }
+            if (!$checkStatus['status']) {
+                return $checkStatus;
+            }
+            if ($data['address']) {
+                $character       = ["\r\n", "\n", "\r", "\t", "+", "\\"];
+                $data['address'] = str_replace($character, '', $data['address']);
+            }
 
-        $ship_data = [
-            'user_id' => $user_id,
-            'area_id' => $data['area_id'],
-            'address' => htmlentities($data['address']),
-            'name' => htmlentities($data['name']),
-            'mobile' => $data['mobile'],
-            'utime' => time(),
-            'is_def' => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO
-        ];
+            $ship_data = [
+                'user_id' => $user_id,
+                'area_id' => $data['area_id'],
+                'address' => htmlentities($data['address']),
+                'name'    => htmlentities($data['name']),
+                'mobile'  => $data['mobile'],
+                'utime'   => time(),
+                'is_def'  => $data['is_def'] ? $data['is_def'] : self::SHIP_DEFAULT_NO
+            ];
 
-        if (isset($data['id'])) {
-            //编辑
-            $where[] = ['id', 'eq', $data['id']];
-            $where[] = ['user_id', 'eq', $user_id];
-            $oldData = $this->where($where)->find();
-            if ($oldData) {
+            if (isset($data['id'])) {
+                //编辑
+                $where[] = ['id', 'eq', $data['id']];
+                $where[] = ['user_id', 'eq', $user_id];
+                $oldData = $this->where($where)->find();
+                if ($oldData) {
+                    if ($data['is_def'] == self::SHIP_DEFAULT) {
+                        $where1[] = ['user_id', 'eq', $user_id];
+                        $where1[] = ['is_def', 'eq', self::SHIP_DEFAULT];
+                        $defData  = $this->where($where1)->select();
+                        foreach ($defData as $k => $v) {
+                            $this->where('id', $v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                        }
+                    }
+                    if ($this->allowField(true)->save($ship_data, ['id' => $data['id'], 'user_id' => $user_id])) {
+                        $result['status'] = true;
+                        $result['msg']    = '成功';
+                        Cache::rm($lock_key);
+                    } else {
+                        Cache::rm($lock_key);
+                        return error_code(10004);
+                    }
+                } else {
+                    Cache::rm($lock_key);
+                    return error_code(11062);
+                }
+            } else {
+                //新增
+                //如果设置的地址是默认的
                 if ($data['is_def'] == self::SHIP_DEFAULT) {
-                    $where1[] = ['user_id', 'eq', $user_id];
-                    $where1[] = ['is_def', 'eq', self::SHIP_DEFAULT];
-                    $defData = $this->where($where1)->select();
-                    foreach ($defData as $k => $v) {
-                        $this->where('id', $v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                    //查找该用户是否有默认的地址
+                    $defData = $this->where(['user_id' => $user_id, 'is_def' => self::SHIP_DEFAULT])->select();
+                    if (count($defData) > 0) {
+                        foreach ($defData as $k => $v) {
+                            $this->where('id', $v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
+                        }
                     }
                 }
-                if ($this->allowField(true)->save($ship_data, ['id' => $data['id'], 'user_id' => $user_id])) {
+
+                if ($this->allowField(true)->save($ship_data)) {
                     $result['status'] = true;
-                    $result['msg'] = '成功';
+                    $result['msg']    = '成功';
+                    $result['data']   = $this->id;
+                    Cache::rm($lock_key);
                 } else {
+                    Cache::rm($lock_key);
                     return error_code(10004);
                 }
-            } else {
-                return error_code(11062);
             }
         } else {
-            //新增
-            //如果设置的地址是默认的
-            if ($data['is_def'] == self::SHIP_DEFAULT) {
-                //查找该用户是否有默认的地址
-                $defData = $this->where(['user_id' => $user_id, 'is_def' => self::SHIP_DEFAULT])->select();
-                if (count($defData) > 0) {
-                    foreach ($defData as $k => $v) {
-                        $this->where('id', $v['id'])->update(['is_def' => self::SHIP_DEFAULT_NO]);
-                    }
-                }
-            }
-
-            if ($this->allowField(true)->save($ship_data)) {
-                $result['status'] = true;
-                $result['msg'] = '成功';
-            } else {
-                return error_code(10004);
-            }
+            $result['msg'] = '请勿重复提交';
         }
-
         return $result;
     }
 

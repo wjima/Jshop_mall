@@ -27,7 +27,7 @@ class Logistics extends Common
     {
         $where = [];
         if(isset($post['name']) && $post['name']){
-            $where[] = ['logi_name','=',$post['name']];
+            $where[] = ['logi_name', 'like', '%'.$post['name'].'%'];
         }
         if(isset($post['code']) && $post['code']){
             $where[] = ['logi_code','=',$post['code']];

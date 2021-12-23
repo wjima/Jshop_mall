@@ -1,0 +1,194 @@
+<style>
+    .layui-form-label{
+        width: 100px;
+        padding: 5px 15px;
+    }
+    .layui-form-mid{
+        padding: 5px 0 !important;
+    }
+    .seller-alone-form{
+        overflow-y: auto;
+        height:100%;
+        box-sizing: border-box;
+    }
+</style>
+<div class="layui-form seller-alone-form">
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">基本信息</li>
+            <li>商品信息</li>
+        </ul>
+        <div class="layui-tab-content">
+
+            <!--订单信息-->
+            <div class="layui-tab-item layui-show">
+                <!--订单信息-->
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend style="font-size:14px;">订单信息</legend>
+                </fieldset>
+                <div class="layui-form-item" lay-size="sm">
+                    <label class="layui-form-label">订单号：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.order_id}</div>
+
+                    <label class="layui-form-label">订单总金额：</label>
+                    <div class="layui-form-mid seller-inline-2">￥{$order.order_amount}元</div>
+
+                    <label class="layui-form-label">支付状态：</label>
+                    <div class="layui-form-mid seller-inline-2">{:config('params.order.pay_status')[$order.pay_status]}</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">发货状态：</label>
+                    <div class="layui-form-mid seller-inline-2">{:config('params.order.ship_status')[$order.ship_status]}</div>
+
+                    <label class="layui-form-label">订单状态：</label>
+                    <div class="layui-form-mid seller-inline-2">{:config('params.order.status')[$order.status]}</div>
+
+                    <label class="layui-form-label">已支付金额：</label>
+                    <div class="layui-form-mid seller-inline-2">￥{$order.payed}元</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">支付方式：</label>
+                    <div class="layui-form-mid seller-inline-2">{:config('params.payment_type')[$order.payment_code]}</div>
+
+                    <label class="layui-form-label">配送费用：</label>
+                    <div class="layui-form-mid seller-inline-2">￥{$order.cost_freight}元</div>
+
+                    <label class="layui-form-label">商品总价：</label>
+                    <div class="layui-form-mid seller-inline-2">￥{$order.goods_amount}</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">下单人：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.username}</div>
+
+                    <label class="layui-form-label">下单来源：</label>
+                    <div class="layui-form-mid seller-inline-2">{:config('params.order.source')[$order.source]}</div>
+
+                    <label class="layui-form-label">下单时间：</label>
+                    <div class="layui-form-mid seller-inline-2" style="width: auto">{:date('Y-m-d H:i:s', $order.ctime)}</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">收货状态：</label>
+                    <div class="layui-form-mid seller-inline-2">{:config('params.order.confirm')[$order.confirm]}</div>
+                </div>
+
+                <!--收货人信息-->
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend style="font-size:14px;">收货人信息</legend>
+                </fieldset>
+                {if $order.store}
+                <div class="layui-form-item">
+                    <label class="layui-form-label">自提店铺名：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.store.store_name}</div>
+
+                    <label class="layui-form-label">店铺地址：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.store.all_address}</div>
+
+                    <label class="layui-form-label">店铺联系人：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.store.linkman}</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">店铺联系电话：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.store.mobile}</div>
+
+                    <label class="layui-form-label">提货人名：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.ship_name}</div>
+
+                    <label class="layui-form-label">提货人电话：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.ship_mobile}</div>
+                </div>
+                {else/}
+                <div class="layui-form-item">
+                    <label class="layui-form-label">收货时间：</label>
+                    <div class="layui-form-mid seller-inline-2">{if $order.confirm == 2}{:date('Y-m-d H:i:s', $order.confirm_time)}{else/}未收货{/if}</div>
+
+                    <label class="layui-form-label">收货人姓名：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.ship_name}</div>
+
+                    <label class="layui-form-label">收货人电话：</label>
+                    <div class="layui-form-mid seller-inline-2">{$order.ship_mobile}</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">收货地址：</label>
+                    <div class="layui-form-mid seller-inline-9">{$order.ship_area_name} - {$order.ship_address}</div>
+                </div>
+                {/if}
+
+                <!--买家备注-->
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend style="font-size:14px;">买家备注</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">买家备注：</label>
+                    <div class="layui-form-mid seller-inline-9">{$order.memo}</div>
+                </div>
+            </div>
+
+            <!--商品详情-->
+            <div class="layui-tab-item">
+                <fieldset class="layui-elem-field layui-field-title"">
+                <legend style="font-size:14px;">商品信息</legend>
+                </fieldset>
+                <table class="layui-table" lay-size="sm">
+                    <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>商品单价</th>
+                        <th width="24">购买<br />数量</th>
+                        <th>商品总价</th>
+                        <th>货品编码</th>
+                        <th>商品编码</th>
+                        {:hook('orderviewinfo', ['type'=>'title'])}
+                        <th>商品总重量</th>
+                        <th>是否免单</th>
+                        <th>11111</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach $order.items as $key=>$vo}
+                    <tr>
+                        <td>{$vo.name} {notempty name="vo.addon"}- {$vo.addon} {/notempty}</td>
+                        <td>{$vo.price}</td>
+                        <td>{$vo.nums}</td>
+                        <td>{$vo.amount}</td>
+                        <td>{$vo.sn}</td>
+                        <td>{$vo.bn}</td>
+                        {:hook('orderviewinfo', ['type'=>'value', 'id'=>$vo.goods_id])}
+                        <td>{$vo.weight}</td>
+                        <td>{if $vo.is_free}是{else/}否{/if}</td>
+                        <td>{$vo.is_free}</td>
+                    </tr>
+                    {/foreach}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    layui.use('form', function() {
+        var form = layui.form;
+        form.render();
+
+
+    });
+    function saveMark() {
+        //保存卖家备注
+        var mark = $("#mark").val();
+        var id = $("#mark-order-id").val();
+
+        if (mark.length > 500) {
+            layer.msg('备注内容不能大于500字');
+        } else {
+            JsPost('{:url("order/saveMark")}', {
+                'mark': mark,
+                'id': id
+            }, function (e) {
+                layer.msg(e.msg, { time: 1300 }, function () {
+                    // layer.close(window_box);
+                });
+            });
+        }
+
+    }
+</script>

@@ -14,6 +14,7 @@ use app\common\model\BillReship;
 use app\common\model\InvoiceRecord;
 use app\common\model\Order as orderModel;
 use app\common\model\Ship;
+use think\facade\Cache;
 use think\facade\Request;
 
 /**
@@ -148,6 +149,11 @@ class Order extends Api
      */
     public function create()
     {
+        $return_data = [
+            'status' => false,
+            'msg'    => '创建失败成功',
+            'data'   => []
+        ];
         $delivery['type'] = input('param.receipt_type', 1);          //收货方式,1普通收货地址，2门店自提
         if($delivery['type'] == 1)
         {
@@ -208,9 +214,18 @@ class Order extends Api
         $tax['tax_name'] = input('param.tax_name', '');
         $tax['tax_code'] = input('param.tax_code', '');
         $order_type = input('param.order_type', '1');                        //订单类型，1是普通订单，2是拼团订单
-        $params     = json_decode(input('param.params', ""), true);               //订单参数，跟type有关系，json格式。`
+        $params     = json_decode(input('param.params', "","safe_filter"), true);               //订单参数，跟type有关系，json格式。`
         $model = new orderModel();
-        return $model->toAdd($this->userId, $order_type, $cart_ids, $delivery, $memo, $point, $coupon_code, $formId, $source, $tax, $params);
+
+        $lock_key = 'user_add_order_' . $this->userId;//防止高并发重复问题
+        if (!Cache::has($lock_key)) {
+            Cache::set($lock_key, '1', 2);
+            $orderRes = $model->toAdd($this->userId, $order_type, $cart_ids, $delivery, $memo, $point, $coupon_code, $formId, $source, $tax, $params);
+            Cache::rm($lock_key);
+            return $orderRes;
+        }else{
+            return $return_data;
+        }
     }
 
 

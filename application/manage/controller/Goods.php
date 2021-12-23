@@ -306,6 +306,7 @@ class Goods extends Manage
         array_push($data, ['goods_id' => $goods_id]);
         hook('addgoodsafter', $data);//添加商品后增加钩子
         hook('addgoodsafterdistribution', $data);//添加商品后增加钩子
+        hook('addgoodsafterfreepackage', $data);//添加商品后增加钩子
         $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;
@@ -336,7 +337,7 @@ class Goods extends Manage
             $data['goods']['bn'] = $bn;
         }
         $data['goods']['brief']        = input('post.goods.brief', '');
-        $data['goods']['intro']        = input('post.goods.intro', '');
+        $data['goods']['intro']        = input('post.goods.intro', '','safe_filter');
         $data['goods']['price']        = input('post.goods.price', '');
         $data['goods']['costprice']    = input('post.goods.costprice', '');
         $data['goods']['mktprice']     = input('post.goods.mktprice', '');
@@ -347,8 +348,8 @@ class Goods extends Manage
         $data['goods']['is_recommend'] = input('post.goods.is_recommend', '2');
         $data['goods']['is_hot']       = input('post.goods.is_hot', '2');
         $open_spec                     = input('post.open_spec', 0);
-        $specdesc                      = input('post.spec/a', []);
-        $new_spec                      = input('post.goods.new_spec/a', []);//自定义规格
+        $specdesc                      = input('post.spec/a', [],'safe_filter');
+        $new_spec                      = input('post.goods.new_spec/a', [],'safe_filter');//自定义规格
         $data['extend_cat']            = input('post.goods_cat_extend_id/a', []);//商品扩展分类
         if ($specdesc && $open_spec) {
             if (count($specdesc) == 1) {//优化只一个规格的情况
@@ -928,6 +929,7 @@ class Goods extends Manage
         $goodsModel->commit();
         hook('editgoodsafter', $data);//编辑商品后增加钩子
         hook('editgoodsafterdistribution', $data);//编辑商品后增加钩子
+        hook('editgoodsafterfreepackage', $data);//编辑商品后增加钩子
         $result['msg']    = '保存成功';
         $result['status'] = true;
         return $result;

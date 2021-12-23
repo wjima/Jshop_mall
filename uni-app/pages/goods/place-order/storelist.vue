@@ -23,7 +23,7 @@
 						<text class="cell-bd-text">地址：{{item.all_address|| ''}}</text>
 					</view>
 				</view>
-				<view class='cell-item-ft'>
+				<view class='cell-item-ft' @click.stop="openLocation(item)">
 					<image class='cell-ft-next icon' src='/static/image/location.png'></image>
 					<text class="cell-ft-text color-9">{{item.distance|| ''}}</text>
 				</view>
@@ -46,6 +46,22 @@
 			this.getStoreList();
 		},
 		methods: {
+			//打开导航
+			openLocation(item){
+				if(item.coordinate.length>1){
+					uni.openLocation({
+						latitude: parseFloat(item.latitude),
+						longitude: parseFloat(item.longitude),
+						name:item.store_name,
+						address:item.all_address,
+						success: function () {
+							console.log('success');
+						}
+					});
+				}else{
+					this.$common.errorToShow("门店信息不全，无法导航")
+				}
+			},
 			//门店搜索
 			storeSearch(){
 				this.getStoreList();

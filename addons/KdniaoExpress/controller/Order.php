@@ -8,6 +8,8 @@
 namespace addons\KdniaoExpress\controller;
 
 use addons\KdniaoExpress\KdniaoExpress;
+use addons\KdniaoExpress\model\FaceSheet;
+use app\common\model\Logistics;
 use myxland\addons\library\AddonController;
 use think\facade\Session;
 use app\common\model\ManageRoleOperationRel;
@@ -122,5 +124,106 @@ class Order extends AddonController
         }
         $kdniaoExpress = new KdniaoExpress();
         $kdniaoExpress->printExpress($ids);
+    }
+
+    /**
+     * 电子面单列表
+     */
+    public function faceSheet(){
+        if($this->request->isAjax()){
+            $faceSheet = new FaceSheet();
+            return $faceSheet->tableData(input());
+        }
+        return $this->fetch();
+    }
+
+    /**
+     * 添加电子面单
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function faceSheetAdd(){
+        $return_data = [
+            'status' => true,
+            'msg'    => '成功',
+            'data'   => ''
+        ];
+        $this->view->engine->layout(false);
+        if($this->request->isPost())
+        {
+            $faceSheet = new FaceSheet();
+            return $faceSheet->faceSheetSave(input());
+        }
+        $logisticsModel = new Logistics();
+        $logiList = $logisticsModel->order('sort asc')->select();
+
+        $this->assign('logiList', $logiList);
+
+        $return_data['data'] = $this->fetch('facesheet_add');
+        return $return_data;
+    }
+
+    /**
+     * 编辑电子面单
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function faceSheetEdit(){
+        $return_data = [
+            'status' => true,
+            'msg'    => '成功',
+            'data'   => ''
+        ];
+        $this->view->engine->layout(false);
+
+        $id = input('id');
+        $faceSheet = new FaceSheet();
+
+        if($this->request->isPost())
+        {
+            return $faceSheet->faceSheetSave(input());
+        }
+
+        $info = $faceSheet->where(['id'=>$id])->find();
+        if($info){
+            $info['logi_name'] = get_logi_info($info['logi_code'], 'logi_name');
+        }
+
+        $logisticsModel = new Logistics();
+        $logiList = $logisticsModel->order('sort asc')->select();
+
+        $this->assign('info', $info);
+        $this->assign('logiList', $logiList);
+
+        $return_data['data'] = $this->fetch('facesheet_add');
+        return $return_data;
+    }
+
+
+    /**
+     * 删除电子面单
+     * @return array|mixed
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function faceSheetDel()
+    {
+        $return_data = error_code(10023);
+        $faceSheet = new FaceSheet();
+        $id = input('post.id/d',0);
+        if(!$id)
+        {
+            return $return_data;
+        }
+        if($faceSheet->where(['id'=>$id])->delete())
+        {
+            $return_data['msg'] = '删除成功';
+            $return_data['status'] = true;
+        }
+        return $return_data;
     }
 }

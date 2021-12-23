@@ -11,6 +11,7 @@ use app\common\controller\Api;
 use app\common\model\ArticleType;
 use app\common\model\Article;
 use app\common\model\WeixinMediaMessage;
+use think\facade\Cache;
 use think\facade\Request;
 
 
@@ -31,7 +32,10 @@ class Articles extends Api
     public function getArticleType()
     {
         $articleType = new ArticleType();
-        return $articleType->articleTypeList();
+        if (!Cache::has("jshop_article_getarticletype")) {
+            Cache::set("jshop_article_getarticletype", $articleType->articleTypeList(), 3600 * 5);
+        }
+        return Cache::get("jshop_article_getarticletype");
     }
 
 
@@ -44,12 +48,14 @@ class Articles extends Api
      */
     public function getArticleList()
     {
-        $article = new Article();
         $type_id = Request::param('type_id', 0);
         $page = Request::param('page', 1);
         $limit = Request::param('limit', 10);
-
-        return $article->articleList($type_id, $page, $limit);
+        if (!Cache::has("jshop_article_getarticlelist" .'_'. $limit . "_" . $page . "_" . $type_id)) {
+            $article = new Article();
+            Cache::set("jshop_article_getarticlelist". "_" . $limit . "_" . $page . "_" . $type_id, $article->articleList($type_id, $page, $limit), 3600 * 5);
+        }
+        return Cache::get("jshop_article_getarticlelist" .'_'. $limit . "_" . $page . "_" . $type_id);
     }
 
 
@@ -63,9 +69,12 @@ class Articles extends Api
     public function getArticleDetail()
     {
         $article_id = Request::param('article_id', 0);
-        if(!$article_id) return error_code(10051);
+        if (!$article_id) return error_code(10051);
         $article = new Article();
-        return $article->articleDetail($article_id);
+        if (!Cache::has("jshop_article_getarticledetail" . "_" . $article_id)) {
+            Cache::set("jshop_article_getarticledetail". "_" . $article_id, $article->articleDetail($article_id), 3600 * 5);
+        }
+        return Cache::get("jshop_article_getarticledetail". "_" . $article_id);
     }
 
 

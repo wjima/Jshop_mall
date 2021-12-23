@@ -61,6 +61,16 @@ class UserTocash extends Common
             return error_code(11016);
         }
 
+        // 当手续费低于0.01，当0.01计算
+        if($cateMoney != 0 && $cateMoney < 0.01){
+            $cateMoney = 0.01;
+        }
+
+        // 保留两位
+        $cateMoney = round($cateMoney, 0, 2);
+
+        $money = bcsub($money, $cateMoney, 2);
+
         $data['user_id'] = $user_id;
         $data['money'] = $money;
         $data['account_bank'] = $bankcardsInfo['account_bank'];

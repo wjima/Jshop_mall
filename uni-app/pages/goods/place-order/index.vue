@@ -85,7 +85,7 @@
 								<text class="gift" v-if="item.type == 7">[赠品]</text>
 								{{ item.products.name || '' }}
 							</view>
-							<view class="goods-price" v-if="item.type != 7">￥{{ item.products.price || '' }}</view>
+							<view class="goods-price" v-if="item.type != 7">￥{{ item.products.price || '0.00' }}</view>
 						</view>
 						<view class="romotion-tip" v-if="item.type != 7 && item.products.promotion_list1.length">
 							<!-- <view class="romotion-tip-item" :class="v.type !== 2 ? 'bg-gray' : ''" v-for="(v, k) in item.products.promotion_list"
@@ -117,7 +117,8 @@
 						</view>
 					</view>
 				</view>
-				<view class="cell-item">
+				<!-- 免单订单不可使用 -->
+				<view class="cell-item" v-if="params.order_type != 8">
 					<view class="cell-item-hd">
 						<view class="cell-hd-title" style="min-width: 100rpx;">优惠券</view>
 					</view>
@@ -126,7 +127,7 @@
 					</view>
 				</view>
 
-				<!-- 商户开启积分 并且用户有积分情况下 -->
+				<!-- 商户开启积分 并且用户有积分情况下，免单订单不可使用 -->
 				<view class="cell-item add-title-item right-img" v-if="isOpenPoint === 1 && userPointNums > 0">
 					<view class="cell-item-bd" style="margin-left:0 ;">
 						<view class="cell-bd-view">积分抵扣</view>
@@ -474,6 +475,10 @@ export default {
 			data['receipt_type'] = this.receiptType; // 区分订单类型  1快递订单 2门店自提订单
 			if(data.coupon_code=="-1"){
 				delete data.coupon_code
+			}
+			
+			if(data.order_type == 8){
+				data['params'] = JSON.stringify({ is_order: 1 }); //砍价信息
 			}
 
 			this.$api.cartList(data, res => {
@@ -918,6 +923,11 @@ export default {
 		// 去支付
 		toPay(e) {
             const _this = this
+			
+			if(this.products.length == 0) {
+				this.$common.errorToShow('未知错误');
+				return false
+			}
 			if (this.submitStatus) {
 				return false;
 			}
@@ -950,6 +960,11 @@ export default {
 				data.coupon_code=this.params.coupon_code
 			}
 			data['order_type'] = this.params.order_type; //订单类型
+			
+			if(data.order_type == 8){
+				data['params'] = JSON.stringify({ is_order: 1 }); //砍价信息
+			}
+		
 			if (this.team_id != 0) {
 				data['params'] = JSON.stringify({ team_id: this.team_id }); //团id
 			}

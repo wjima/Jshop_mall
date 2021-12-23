@@ -64,6 +64,7 @@ class Order extends Common
     const ORDER_TYPE_SKILL = 4;           //订单类型，4秒杀
     const ORDER_TYPE_LOTTERY = 5;           //订单类型，5抽奖订单
     const ORDER_TYPE_BARGAIN = 6;           //订单类型，6砍价订单
+    const ORDER_TYPE_COMBO = 8;           //订单类型，8免单活动订单
 
     const GIVEAWAY_STR = "[赠品]";         // 订单明细商品名称上的赠品的文字,在前端订单待评价列表和评价页面，会直接比对这个字段，如果是赠品的话，不显示。
 
@@ -547,7 +548,7 @@ class Order extends Common
         }
 
         //获取该状态截止时间
-        switch ($order_info['text_status']) {
+        switch ($order_info['status']) {
             case self::ALL_PENDING_PAYMENT: //待付款
                 $cancel = getSetting('order_cancel_time') * 86400;
                 $ctime = $order_info['ctime'];
@@ -1412,6 +1413,7 @@ class Order extends Common
                 sendMessage($order['user_id'], 'seller_order_notice', $order);//给卖家发消息
                 //订单支付完成后的钩子
                 Hook('orderpayed', $order_id);
+                Hook('orderpayedafter', $order);
             }
         }
 
@@ -1613,6 +1615,8 @@ class Order extends Common
                         return error_code(13231);
                     }
                     break;
+                case self::ORDER_TYPE_COMBO:
+                    break;
                 default:
                     Db::rollback();
                     return error_code(10000);
@@ -1767,6 +1771,8 @@ class Order extends Common
             $item['weight'] = bcmul($v['weight'], $v['nums'], 2);
             $item['sendnums'] = 0;
             $item['addon'] = $v['products']['spes_desc'];
+            // 是否免单商品
+            $item['is_free'] = $v['products']['is_free'];
             if (isset($v['products']['promotion_list'])) {
                 $item['promotion_list'] = json_encode($v['products']['promotion_list']);
             }
@@ -1887,6 +1893,7 @@ class Order extends Common
 
         $order_info = $this->field('order_id,pay_status,status,ctime,order_type')
             ->where($where)
+            ->limit(50)
             ->select();
 
         $result = true;
@@ -2394,5 +2401,24 @@ class Order extends Common
         }
         $aftersalesModel = new BillAftersales();
         return $aftersalesModel->toAdd($order['user_id'],$order_id,$type,[],[],'后台创建售后单',0);
+    }
+
+
+    // 检查订单支付状态
+    public function checkOrderStatus($order_id)
+    {
+        $result = [
+            'status' => true,
+            'smg'    => '',
+            'data'   => []
+        ];
+        $res    = $this->where('order_id', $order_id)->value('pay_status');
+        if ($res == self::PAY_STATUS_YES) {
+            // 支付失败，该订单已支付
+            return error_code(13008);
+        } else if ($res == self::PAY_STATUS_NO) {
+            return $result;
+        }
+        return $result;
     }
 }

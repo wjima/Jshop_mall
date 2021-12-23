@@ -9,6 +9,7 @@
 namespace app\api\controller;
 use app\common\model\Notice as NoticeModel;
 use app\common\controller\Api;
+use think\facade\Cache;
 
 /**
  * 公告
@@ -42,11 +43,15 @@ class Notice extends Api
         //获取当前页
         $page = input('param.page',1);
         //获取公告类型
-        $type   = input('param.type',1);
-        $data = $noticeModel->getNoticeList($type, $order, $orderType, $page, $pageSize);
-
-        if($data) {
-            $result['data'] = $data;
+        $type = input('param.type', 1);
+        if (!Cache::has("jshop_notice_noticelist" . '_' . $order . '_' . $orderType . '_' . $pageSize . '_' . $page)) {
+            $data = $noticeModel->getNoticeList($type, $order, $orderType, $page, $pageSize);
+            if ($data) {
+                $result['data'] = $data;
+            }
+            Cache::set("jshop_notice_noticelist" . '_' . $order . '_' . $orderType . '_' . $pageSize . '_' . $page, $result, 3600 * 5);
+        } else {
+            $result = Cache::get("jshop_notice_noticelist" . '_' . $order . '_' . $orderType . '_' . $pageSize . '_' . $page, $result);
         }
         return $result;
     }

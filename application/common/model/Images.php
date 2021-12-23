@@ -118,7 +118,7 @@ class Images extends Common
         }
         if ($remote) {
             $savepath = '/static/uploads/images' . get_date_dir() . '/';
-            $filename = md5(time()) . '.png';
+            $filename = md5(substr(msectime() . rand(0, 9), 1)) . '.png';
             $data     = $this->getImage($url, $savepath, $filename);
             if ($data['error'] != 0) {
 //                $return_data['msg'] = '图片保存失败';

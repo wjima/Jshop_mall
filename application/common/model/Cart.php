@@ -8,6 +8,7 @@
 // +----------------------------------------------------------------------
 namespace app\common\model;
 
+use addons\FreePackage\model\FreePackage;
 use addons\KdniaoExpress\lib\kdniao;
 use think\Db;
 
@@ -26,6 +27,7 @@ class Cart extends Common
     const TYPE_SKILL = 4;      //秒杀模式
     const TYPE_BARGAIN = 6;      //砍价模式
     const TYPE_GIVEAWAY = 7;        //赠品，在cart表里不会存在，但是会在计算促销过之后，动态的加上去
+    const TYPE_COMBO = 8;        //套餐，套餐内最低价的商品免单
 
     /**
      * 关联货品
@@ -139,7 +141,8 @@ class Cart extends Common
                 $this->where($delWhere)->delete();
                 unset($cat_info);
                 break;
-
+            case self::TYPE_COMBO:  // 商品套餐活动
+                break;
             default:
                 return error_code(10000);
         }
@@ -206,12 +209,13 @@ class Cart extends Common
      * @param $userId //用户id
      * @param $ids //购物车信息
      * @param int $type //购物车类型
+     * @param array $params 扩展字段信息，传数组
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($userId, $ids, $type = 1, $display = false)
+    public function getList($userId, $ids, $type = 1, $display = false, $params = [])
     {
         $result  = array(
             'status' => false,
@@ -224,7 +228,6 @@ class Cart extends Common
             $where[] = ['id', 'in',$ids];
         }
         $list    = $this->where($where)->select();
-
         if (!$list->isEmpty()) {
             $list = $list->toArray();
         }
@@ -288,6 +291,20 @@ class Cart extends Common
                     return $result;
                 }
                 break;
+            case self::TYPE_COMBO:
+                //套餐 下单再走验证，购物车选购页面不限制
+                if(isset($params['is_order']) && $params['is_order'] == 1 ){
+                    $combo_status = get_addons_status('freepackage');
+                    if(!$combo_status){
+                        return error_code(10711);   // 请先安装插件
+                    }
+                    $packageModel = new FreePackage();
+                    $result       = $packageModel->comboInfo($list, $userId);
+                    if (!$result['status']) {
+                        return $result;
+                    }
+                }
+                break;
             default:
                 return error_code(10000);
         }
@@ -338,7 +355,8 @@ class Cart extends Common
             ],
             'msg'    => ""
         ];
-        $cartList = $this->getList($userId, $ids, $order_type, $display);
+
+        $cartList = $this->getList($userId, $ids, $order_type, $display, $params);
         if (!$cartList['status']) {
             $result['msg'] = $cartList['msg'];
             return $result;
@@ -373,6 +391,13 @@ class Cart extends Common
 
                 //算订单总价格
                 $result['data']['amount'] = bcadd($result['data']['amount'], $result['data']['list'][$k]['products']['amount'], 2);
+
+                // 若为免单订单需要在这里减去免单商品的价格
+                if($order_type == self::TYPE_COMBO && $v['products']['is_free'] == 1){
+                    $result['data']['amount'] = bcsub($result['data']['amount'], $v['products']['amount'], 2);
+                    $result['data']['order_pmt'] = bcadd($result['data']['order_pmt'], $v['products']['amount'], 2);
+                }
+
                 //计算总重量
                 $result['data']['weight'] = bcadd($result['data']['weight'], bcmul($v['weight'], $v['nums'], 2), 2);
             }
@@ -637,5 +662,42 @@ class Cart extends Common
         }
 
         return $return;
+    }
+
+
+    /**
+     * 批量加入购物车
+     *
+     * @Author WGG 1490100895@qq.com
+     * @DateTime 2021-01-29
+     * @param int $user_id
+     * @param array $data
+     * @return void
+     */
+    public function batchAdd($user_id, $data)
+    {
+        try {
+            Db::startTrans();
+            $cat_ids = [];
+            foreach ($data as $product_id => $num) {
+                if (!$product_id || !$num) throw new Exception("请选择货品及购买数量");
+                $res = $this->add($user_id, $product_id, $num, 2);
+                if (!$res['status']) throw new Exception($res['msg']);
+                $cat_ids[] = $res['data'];
+            }
+            Db::commit();
+            return [
+                'status' => true,
+                'data'   => implode(",", $cat_ids),
+                'msg'    => ''
+            ];
+        } catch (Exception $e) {
+            Db::rollback();
+            return [
+                'status' => false,
+                'data'   => '',
+                'msg'    => $e->getMessage()
+            ];
+        }
     }
 }

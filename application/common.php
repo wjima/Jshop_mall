@@ -99,7 +99,7 @@ function get_sn($type)
 {
     switch ($type) {
         case 1:         //订单编号
-            $str = $type . substr(msectime() . rand(0, 9), 1);
+            $str = date('mdHis').mt_rand(10000, 99999);
             break;
         case 2:         //支付单编号
             $str = $type . substr(msectime() . rand(0, 9), 1);
@@ -309,20 +309,31 @@ function get_user_info($user_id, $field = 'mobile')
     if (!$user_id) {
         return "";
     }
-    $user = app\common\model\User::get($user_id);
+    $field_type = $field;
+    if($field == 'showname'){
+        $field = '*';
+    }
+    //用户增加缓存
+    $user = \app\common\model\User::where('id','=',$user_id)->field($field)->find();
     if ($user) {
-        if ($field == 'nickname') {
+        if ($field_type == 'nickname') {
             $nickname = $user['nickname'];
-            if ($nickname == '') {
+            if ($nickname == '' && isset($user['mobile'])) {
                 $nickname = format_mobile($user['mobile']);
             }
             return $nickname;
-        }elseif($field == 'showname'){
-            $str = $user['mobile'];
-            if($user['username']){
-                $str .= "(".$user['username'].")";
-            }
+        }elseif($field_type == 'showname'){
+            $str = $user['nickname'];
+            $str .= "(".$user['id'].")";
             return $str;
+        }elseif($field_type == '*'){
+            $user['avatar'] = _sImage($user['avatar']);
+            $user->hidden(['password']);
+            return $user;
+        }else if(stripos($field,',') != false){
+            if(isset($user['avatar']))$user['avatar'] = _sImage($user['avatar']);
+            $user->hidden(['password']);
+            return $user;
         } else {
             return $user->$field;
         }
@@ -1707,72 +1718,61 @@ function alphaID($in, $to_num = false, $pad_up = false)
 
 
 /**
- * 过滤XSS攻击
+ * 去除XSS（跨站脚本攻击）的函数(高效率)
+ * @param $val 需要过滤值
+ * @param null $opt 操作动作
+ * @return string
+ * @Auth leyangjun
  */
 function remove_xss($val)
 {
-
-    if (is_array($val)) {
-        foreach ($val as $k => $v) {
-            $val[$k] = remove_xss($v);
+    if(!$val){
+        return $val;
+    }
+    if(is_array($val)){
+        foreach((array)$val as $key=>$value){
+            $val[$key] = remove_xss($value);
         }
+    }else{
+        $val = strip_tags($val);
+        $val = htmlspecialchars($val, ENT_QUOTES);
     }
-
-    $sqlstring = array('select', 'insert', 'and', 'or', 'update', 'delete', '\'', '\/\*', '\*', '\.\.\/', '\.\/', 'union', 'into', 'load_file', 'outfile');
-    $val       = str_ireplace($sqlstring, '', $val);
-    // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed
-    // this prevents some character re-spacing such as <java\0script>
-    // note that you have to handle splits with \n, \r, and \t later since they *are* allowed in some inputs
-    $val = preg_replace('/([\x00-\x08,\x0b-\x0c,\x0e-\x19])/', '', $val);
-
-    // straight replacements, the user should never need these since they're normal characters
-    // this prevents like <IMG SRC=@avascript:alert('XSS')>
-    $search = 'abcdefghijklmnopqrstuvwxyz';
-    $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $search .= '1234567890!@#$%^&*()';
-    $search .= '~`";:?+/={}[]-_|\'\\';
-    for ($i = 0; $i < strlen($search); $i++) {
-        // ;? matches the ;, which is optional
-        // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
-
-        // @ @ search for the hex values
-        $val = preg_replace('/(&#[xX]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', $search[$i], $val); // with a ;
-        // @ @ 0{0,7} matches '0' zero to seven times
-        $val = preg_replace('/(&#0{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val); // with a ;
-    }
-
-    // now the only remaining whitespace attacks are \t, \n, and \r
-    $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
-    $ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload');
-
-    $ra    = array_merge($ra1, $ra2);
-    $found = true; // keep replacing as long as the previous round replaced something
-    while ($found == true) {
-        $val_before = $val;
-        for ($i = 0; $i < sizeof($ra); $i++) {
-            $pattern = '/';
-            for ($j = 0; $j < strlen($ra[$i]); $j++) {
-                if ($j > 0) {
-                    $pattern .= '(';
-                    $pattern .= '(&#[xX]0{0,8}([9ab]);)';
-                    $pattern .= '|';
-                    $pattern .= '|(&#0{0,8}([9|10|13]);)';
-                    $pattern .= ')*';
-                }
-                $pattern .= $ra[$i][$j];
-            }
-            $pattern .= '/i';
-            $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2); // add in <> to nerf the tag
-            $val         = preg_replace($pattern, $replacement, $val); // filter out the hex tags
-            if ($val_before == $val) {
-                // no replacements were made, so exit the loop
-                $found = false;
-            }
-        }
-    }
-
     return $val;
 }
+
+
+/**
+ * 对内容进行安全处理
+ * @param string|array $string 要处理的字符串或者数组
+ * @param $string $flags 指定标记
+ */
+function safe_filter($string, $flags = null) {
+    if(is_array($string)) {
+        foreach($string as $key => $val) {
+            $string[$key] = safe_filter($val, $flags);
+        }
+    } else {
+        if($flags === null) {
+            $string = str_replace(array('&', '"', '<', '>'), array('&', '"', '<', '>'), $string);
+            if(strpos($string, '&#') !== false) {
+                $string = preg_replace('/&((#(\d{3,5}|x[a-fA-F0-9]{4}));)/', '&\\1', $string);
+            }
+        } else {
+            if(PHP_VERSION < '5.4.0') {
+                $string = htmlspecialchars($string, $flags);
+            } else {
+                if(strtolower(CHARSET) == 'utf-8') {
+                    $charset = 'UTF-8';
+                } else {
+                    $charset = 'ISO-8859-1';
+                }
+                $string = htmlspecialchars($string, $flags, $charset);
+            }
+        }
+    }
+    return $string;
+}
+
 
 /**
  * 检查文字

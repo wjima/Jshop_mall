@@ -274,7 +274,7 @@ export default {
 	text-align: center;
 	color: #666;
 	font-size: 26upx;
-	height: 1rem;
+	height: 2rem;
 	overflow: hidden;
 }
 .level1-s .goods-content,

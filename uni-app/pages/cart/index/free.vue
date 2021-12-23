@@ -33,7 +33,7 @@
 									<view class="goods-name list-goods-name" @click="goodsDetail(item.products.goods_id)">
 									<text class="gift" v-if="item.type == 7">[赠品]</text>{{ item.products.name }}
 										</view>
-									<view class="goods-price red-price" v-show="item.type != 7">￥{{ item.products.price }}</view>
+									<view class="goods-price red-price" v-show="item.type != 7">￥{{ item.products.price || '0.00'}}</view>
 								</view>
 								<view class="romotion-tip" v-if="item.products.promotion_list">
 									<!-- <view class="romotion-tip-item" v-for="(v, k) in item.products.promotion_list" :key="k" :class="v.type !== 2 ? 'bg-gray' : ''">
@@ -142,7 +142,7 @@
 					if(res.status) {
 						_this.cartIds = res.data
 						if(res.data.length) {
-							_this.getCartData(); //获取购物车数据
+							_this.getCartData(res.data); //获取购物车数据
 						} else {
 							uni.showToast({
 								title: '购物车还未添加商品~~~',
@@ -187,14 +187,19 @@
 			},
 
 			//获取购物车数据
-			getCartData: function() {
+			getCartData: function(cartIdsAll) {
 				let _this = this;
-				let cartIds = _this.arrayToStr(_this.cartIds);
+				let cartIds = '';
+				if(cartIdsAll){
+					cartIds = _this.arrayToStr(cartIdsAll);
+				}else{
+					cartIds = _this.arrayToStr(_this.cartIds);
+				}
+			
 				let data = {
 					ids: cartIds,
 					display: 'all'
 				};
-				
 				data.order_type = 8
 				this.$api.cartList(data, function(res) {
 					if (res.status) {

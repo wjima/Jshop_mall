@@ -1,0 +1,53 @@
+<div style="padding: 30px;" class="layui-form layui-form-pane" lay-filter="add_logistic"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <div class="layui-form-item">
+        <label class="layui-form-label"  style="width: 125px"><i class="required-color">*</i>物流公司：</label>
+
+        <div class="layui-input-inline seller-inline-5">
+
+            <select name="logi_code" id="type" lay-verify="required" lay-search style="z-index: 5">
+                <option value="">请选择物流公司</option>
+                {volist name='logiList' id='vo'}
+                <option value="{$vo.logi_code}" {if $vo.logi_code == $info.logi_code}selected{/if}>{$vo.logi_name} ({$vo.logi_code})</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    <input type="hidden" name="id" value="{$info.id}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 125px">物流公司账号：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="customer_name" value="{$info.customer_name}" required lay-verify="required" placeholder="请输入物流公司账号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label" style="width: 125px">物流公司密码：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="customer_pwd" value="{$info.customer_pwd}" required lay-verify="required" placeholder="请输入物流公司密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"  style="width: 125px">物流网点地址：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="send_site" value="{$info.send_site}" required lay-verify="required" placeholder="快递公司网点地址" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label"  style="width: 125px">快递单模板：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" name="template_size" value="{$info.template_size}" required lay-verify="required" placeholder="快递单模板" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    {:jshopToken('logistics_add')}
+    <!-- 更多表单结构排版请移步文档左侧【页面元素-表单】一项阅览 -->
+</div>
+<script>
+    layui.use('form', function(){
+        //监听提交
+        layui.form.render();
+    });
+</script>

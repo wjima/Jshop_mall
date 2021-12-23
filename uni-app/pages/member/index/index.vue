@@ -9,8 +9,9 @@
 					<image class='user-head-img' mode="aspectFill" :src='userInfo.avatar'></image>
 					<view class='user-name'>{{ userInfo.nickname }}</view>
 					<view class="fz12 grade" v-if="userInfo.grade_name">
-						{{userInfo.grade_name}}
+						{{userInfo.grade_name}} <navigator class="sign" url="../pagesign/index/index">签到</navigator>  
 					</view>
+					
 				</template>
 				<template v-else>
 					<!-- #ifdef H5 || APP-PLUS -->
@@ -722,6 +723,14 @@
 
 	.grade {
 		color: #FFF;
+		.sign {
+			display: inline-block;
+			padding: 10rpx 26rpx;
+			background: #FF7159;
+			color: #FFFFFF;
+			border-radius: 40rpx;
+			margin-left: 10rpx;
+		}
 	}
 
 	.member-grid {

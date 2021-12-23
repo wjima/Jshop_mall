@@ -9,6 +9,7 @@
 
 namespace app\common\model;
 
+use think\facade\Cache;
 use think\model\concern\SoftDelete;
 use think\Validate;
 
@@ -96,6 +97,7 @@ class Article extends Common
                 $result['msg'] = error_code(10004,true);
             }
         }
+        Cache::clear();
         return $result;
     }
 

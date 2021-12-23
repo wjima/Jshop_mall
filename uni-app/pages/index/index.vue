@@ -3,7 +3,7 @@
 		<jshop :jdata="pageData"></jshop>
 		<jihaiCopyright ></jihaiCopyright>
 		<!-- #ifdef H5 || APP-PLUS-NVUE || APP-PLUS -->
-		<view class="service" @click="showChat()">
+		<view class="service" @click="showChat()" v-if="config.ent_id">
 			<image class="icon" src="/static/image/seller-content.png" mode=""></image>
 		</view>
 		<!-- #endif -->

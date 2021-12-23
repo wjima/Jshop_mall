@@ -728,7 +728,7 @@
 			padding: 10rpx 26rpx;
 			background: #FF7159;
 			color: #FFFFFF;
-			border-radius: 40rpx;
+			border-radius: 10rpx;
 			margin-left: 10rpx;
 		}
 	}

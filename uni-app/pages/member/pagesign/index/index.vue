@@ -37,7 +37,7 @@
 				</view>
 				<view class="logs-r">
 					<view class="nums n3">{{pageInfo.omission || 0}}</view>
-					<view class="txt">漏签天数</view>
+					<view class="txt">最近漏签</view>
 				</view>
 			</view>
 		</view>

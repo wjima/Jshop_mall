@@ -1,9 +1,9 @@
 <template>
     <view class="calendar-wrapper">
         <view class="header" v-if="headerBar">
-			<image class="pre" @click="changeMonth('pre')" src="../../static/images/arrow.png" mode=""></image>
+			<image class="pre" @click="changeMonth('pre')" :src="`${baseUrl}static/images/pagesign/arrow.png`" mode=""></image>
             <view>{{y+'年'+formatNum(m)+'月'}}</view>
-			<image class="next" @click="changeMonth('next')" src="../../static/images/arrow.png" mode=""></image>
+			<image class="next" @click="changeMonth('next')" :src="`${baseUrl}static/images/pagesign/arrow.png`" mode=""></image>
         </view>
         <view class="week">
             <view class="week-day" v-for="(item, index) in weekDay" :key="index">{{ item }}</view>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import {apiBaseUrl} from '@/config/config.js';
 export default {
     name: 'ren-calendar',
     props: {
@@ -76,7 +77,8 @@ export default {
             dates: [], // 当前月的日期数据
             positionTop: 0,
             monthOpen: true,
-            choose: ''
+            choose: '',
+			baseUrl: apiBaseUrl
         };
     },
     created() {

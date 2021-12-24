@@ -8,9 +8,10 @@
 				<template v-if="hasLogin">
 					<image class='user-head-img' mode="aspectFill" :src='userInfo.avatar'></image>
 					<view class='user-name'>{{ userInfo.nickname }}</view>
-					<view class="fz12 grade" v-if="userInfo.grade_name">
-						{{userInfo.grade_name}} <navigator class="sign" url="../pagesign/index/index">签到</navigator>  
+					<view class="fz12 grade" v-if="userInfo.id">
+						{{userInfo.grade_name||''}}<navigator class="sign" url="../pagesign/index/index">签到</navigator>  
 					</view>
+					
 					
 				</template>
 				<template v-else>

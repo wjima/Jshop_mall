@@ -1772,7 +1772,7 @@ class Order extends Common
             $item['sendnums'] = 0;
             $item['addon'] = $v['products']['spes_desc'];
             // 是否免单商品
-            $item['is_free'] = $v['products']['is_free'];
+            $item['is_free'] = $v['products']['is_free'] ? $v['products']['is_free'] : 0;
             if (isset($v['products']['promotion_list'])) {
                 $item['promotion_list'] = json_encode($v['products']['promotion_list']);
             }

@@ -1,7 +1,6 @@
 <template>
 	<view class="classify">
 		
-		
 		<view class='search' v-if="cate_style == 3">
 			<view class='search-c' v-bind:class="$store.state.searchStyle" @click="goSearch">
 				<image class='icon search-icon' src='/static/image/zoom.png'></image>
@@ -71,6 +70,8 @@
 				</scroll-view>
 			</view>
 		</view>
+		
+		<jh-tabbar></jh-tabbar>
 	</view>
 </template>
 

@@ -241,7 +241,8 @@
 		</view>
 
 		<!-- 其他功能菜单end -->
-		<jihaiCopyright></jihaiCopyright>
+		<jihaiCopyright />
+		<jh-tabbar />
 	</view>
 </template>
 

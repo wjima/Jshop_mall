@@ -20,6 +20,7 @@
 		<!-- 头条客服 -->
 		<!-- #endif -->
 		<red-bag v-if="redBagShow" @click="handleGet"></red-bag>
+		<jh-tabbar />
 	</view>
 </template>
 <script>

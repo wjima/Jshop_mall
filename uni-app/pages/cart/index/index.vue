@@ -114,8 +114,11 @@
 	import {
 		debounce
 	} from '@/config/common.js'
+	
+	import base from '@/common/base.js';
 	export default {
 		mixins: [goods],
+		extends: base,
 		data() {
 			return {
 				startX: 0, //开始坐标

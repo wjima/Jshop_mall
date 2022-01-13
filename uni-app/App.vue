@@ -13,7 +13,13 @@
 				}
 				// #endif
 			})
-
+				
+				
+			uni.setNavigationBarColor({
+				frontColor: '#ffffff',
+				backgroundColor: '#1AAD19'
+			})
+			
 			//获取地区信息
 			this.$api.getAreaList({}, res => {
 				if (res.status) {

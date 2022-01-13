@@ -79,8 +79,10 @@
 var _this;
 import { mapGetters } from 'vuex';
 import { goods } from '@/config/mixins.js';
+import base from '@/common/base.js';
 export default {
 	mixins: [goods],
+	extends: base,
 	data() {
 		return {
 			dataList: null,

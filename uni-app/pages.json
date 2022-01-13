@@ -529,6 +529,15 @@
 		// 		"navigationBarTitleText": "拼团列表"
 		// 	}
 		// }
+        ,{
+            "path" : "pages/member/setting/colorset",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "主题色配置",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

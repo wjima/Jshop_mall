@@ -169,9 +169,6 @@ class Tools
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_TIMEOUT, 30);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        if(defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
-            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        }
         list($content, $status) = array(curl_exec($curl), curl_getinfo($curl), curl_close($curl));
         return (intval($status["http_code"]) === 200) ? $content : false;
     }
@@ -191,9 +188,6 @@ class Tools
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_POST, true);
-        if(defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
-            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        }
         curl_setopt($curl, CURLOPT_POSTFIELDS, self::_buildPost($data));
         list($content, $status) = array(curl_exec($curl), curl_getinfo($curl), curl_close($curl));
         return (intval($status["http_code"]) === 200) ? $content : false;
@@ -226,9 +220,6 @@ class Tools
             curl_setopt($curl, CURLOPT_SSLKEY, $ssl_key);
         }
         curl_setopt($curl, CURLOPT_POST, true);
-        if(defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
-            curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        }
         curl_setopt($curl, CURLOPT_POSTFIELDS, self::_buildPost($data));
         list($content, $status) = array(curl_exec($curl), curl_getinfo($curl), curl_close($curl));
         return (intval($status["http_code"]) === 200) ? $content : false;

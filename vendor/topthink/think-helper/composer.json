@@ -1,6 +1,6 @@
 {
     "name": "topthink/think-helper",
-    "description": "The ThinkPHP5 Helper Package",
+    "description": "The ThinkPHP6 Helper Package",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "think\\helper\\": "src"
+            "think\\": "src"
         },
         "files": [
             "src/helper.php"

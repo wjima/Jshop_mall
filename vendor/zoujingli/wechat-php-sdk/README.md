@@ -13,8 +13,10 @@
 
 此`SDK`已历经数个线上项目验证与考验，可靠性与稳定性极高，欢迎`fork`或`star`此项目。
 
-# 新微信开发工具推荐
-WeChatDeveloper：https://github.com/zoujingli/WeChatDeveloper
+## 新微信开发工具推荐
+* 微信服务号、微信小程序、微信支付、支付宝支付
+* Gitee 仓库 WeChatDevloper: https://gitee.com/zoujingli/WeChatDeveloper
+* Github 仓库 WeChatDeveloper：https://github.com/zoujingli/WeChatDeveloper
 
 **微信SDK开发帮助及交流**
 --
@@ -28,7 +30,7 @@ WeChatDeveloper：https://github.com/zoujingli/WeChatDeveloper
 
 **若对您有帮助，可以赞助并支持下作者哦，谢谢！**
 --
-![](http://plugs.ctolog.com/pay.png)
+![](http://static.thinkadmin.top/pay.png)
 
 
 **官方接口文档链接**

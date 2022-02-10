@@ -16,7 +16,7 @@
 return [
 
     // 应用调试模式
-    'app_debug'              => true,
+    'app_debug'              => false,
     // 应用Trace
     'app_trace'              => false,
     // 应用模式状态
@@ -103,11 +103,11 @@ return [
     'request_cache_expire'   => null,
 
     // 默认跳转页面对应的模板文件
-    'dispatch_success_tmpl'  => ROOT_PATH . '/config/tpl/dispatch_jump.tpl',
-    'dispatch_error_tmpl'    => ROOT_PATH . '/config/tpl/dispatch_jump.tpl',
+    'dispatch_success_tmpl'  => ROOT_PATH . 'config/tpl/dispatch_jump.tpl',
+    'dispatch_error_tmpl'    => ROOT_PATH . 'config/tpl/dispatch_jump.tpl',
 
     // 异常页面的模板文件
-    'exception_tmpl'         => ROOT_PATH . '/config/tpl/think_exception.tpl',
+    'exception_tmpl'         => ROOT_PATH . 'config/tpl/think_exception.tpl',
 
     // 错误显示信息,非调试模式有效
     'error_message'          => '页面出错啦！请联系管理员',

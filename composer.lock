@@ -1,0 +1,640 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "77186669a498865ec3b565b48deb4338",
+    "packages": [
+        {
+            "name": "apfelbox/php-file-download",
+            "version": "v2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/apfelbox/PHP-File-Download.git",
+                "reference": "01b0461e02e7514ccb8804cee9260e0b61e04069"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/apfelbox/PHP-File-Download/zipball/01b0461e02e7514ccb8804cee9260e0b61e04069",
+                "reference": "01b0461e02e7514ccb8804cee9260e0b61e04069",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "skyzyx/mimetypes": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Apfelbox\\FileDownload\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jannik Zschiesche",
+                    "email": "hello@apfelbox.net",
+                    "homepage": "http://apfelbox.net"
+                }
+            ],
+            "description": "A library to help with creating downloads for files in PHP",
+            "homepage": "https://github.com/apfelbox/PHP-File-Download",
+            "keywords": [
+                "download"
+            ],
+            "support": {
+                "issues": "https://github.com/apfelbox/PHP-File-Download/issues",
+                "source": "https://github.com/apfelbox/PHP-File-Download/tree/master"
+            },
+            "time": "2014-02-10T17:12:20+00:00"
+        },
+        {
+            "name": "firephp/firephp-core",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firephp/firephp-core.git",
+                "reference": "fabad0f2503f9577fe8dd2cb1d1c7cd73ed2aacf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firephp/firephp-core/zipball/fabad0f2503f9577fe8dd2cb1d1c7cd73ed2aacf",
+                "reference": "fabad0f2503f9577fe8dd2cb1d1c7cd73ed2aacf",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/FirePHPCore/FirePHP.class.php",
+                    "lib/FirePHPCore/fb.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Dorn",
+                    "email": "christoph@christophdorn.com",
+                    "homepage": "http://christophdorn.com"
+                }
+            ],
+            "description": "Traditional FirePHPCore library for sending PHP variables to the browser.",
+            "homepage": "https://github.com/firephp/firephp-core",
+            "support": {
+                "forum": "http://groups.google.com/group/firephp-dev",
+                "issues": "https://github.com/firephp/firephp-core/issues",
+                "source": "https://github.com/firephp/firephp-core"
+            },
+            "time": "2013-04-23T15:28:20+00:00"
+        },
+        {
+            "name": "myxland/think-addons",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myxland/think-addons.git",
+                "reference": "3cfa9b9ec698ae51a147b60536fe17225053fa22"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myxland/think-addons/zipball/3cfa9b9ec698ae51a147b60536fe17225053fa22",
+                "reference": "3cfa9b9ec698ae51a147b60536fe17225053fa22",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0",
+                "topthink/think-helper": ">=1.0.4",
+                "topthink/think-installer": ">=1.0.10"
+            },
+            "default-branch": true,
+            "type": "think-extend",
+            "autoload": {
+                "psr-4": {
+                    "myxland\\addons\\": "src/"
+                },
+                "files": [
+                    "src/helper.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "HWJ",
+                    "email": "myxland@gmail.com"
+                }
+            ],
+            "description": "Thinkphp 5.1 Addons Library",
+            "support": {
+                "issues": "https://github.com/myxland/think-addons/issues",
+                "source": "https://github.com/myxland/think-addons/tree/master"
+            },
+            "time": "2018-01-15T11:59:48+00:00"
+        },
+        {
+            "name": "skyzyx/mimetypes",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/skyzyx/mimetypes.git",
+                "reference": "bf8a41a13b187812fd9e71caaeee5c97ea4f0221"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/skyzyx/mimetypes/zipball/bf8a41a13b187812fd9e71caaeee5c97ea4f0221",
+                "reference": "bf8a41a13b187812fd9e71caaeee5c97ea4f0221",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "dflydev/apache-mime-types": "1.0.*@dev",
+                "twig/twig": "1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Skyzyx\\Components\\Mimetypes": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Parman",
+                    "homepage": "http://ryanparman.com",
+                    "role": "Vanity Developer"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "http://github.com/skyzyx/mimetypes/contributors"
+                }
+            ],
+            "description": "Creates a JSON document containing a thorough list of file extensions => mime types as provided by the Apache httpd project.",
+            "homepage": "http://github.com/skyzyx/mimetypes",
+            "keywords": [
+                "dictionary",
+                "map",
+                "mime",
+                "mimetype"
+            ],
+            "support": {
+                "issues": "https://github.com/skyzyx/mimetypes/issues",
+                "source": "https://github.com/skyzyx/mimetypes/tree/master"
+            },
+            "time": "2013-03-31T11:50:02+00:00"
+        },
+        {
+            "name": "topthink/framework",
+            "version": "v5.1.41",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/framework.git",
+                "reference": "7137741a323a4a60cfca334507cd1812fac91bb2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/framework/zipball/7137741a323a4a60cfca334507cd1812fac91bb2",
+                "reference": "7137741a323a4a60cfca334507cd1812fac91bb2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0",
+                "topthink/think-installer": "2.*"
+            },
+            "require-dev": {
+                "johnkary/phpunit-speedtrap": "^1.0",
+                "mikey179/vfsstream": "~1.6",
+                "phpdocumentor/reflection-docblock": "^2.0",
+                "phploc/phploc": "2.*",
+                "phpunit/phpunit": "^5.0|^6.0",
+                "sebastian/phpcpd": "2.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "think-framework",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "liu21st",
+                    "email": "liu21st@gmail.com"
+                },
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "description": "the new thinkphp framework",
+            "homepage": "http://thinkphp.cn/",
+            "keywords": [
+                "framework",
+                "orm",
+                "thinkphp"
+            ],
+            "support": {
+                "issues": "https://github.com/top-think/framework/issues",
+                "source": "https://github.com/top-think/framework/tree/v5.1.41"
+            },
+            "time": "2021-01-11T02:51:29+00:00"
+        },
+        {
+            "name": "topthink/think-captcha",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-captcha.git",
+                "reference": "54c8a51552f99ff9ea89ea9c272383a8f738ceee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-captcha/zipball/54c8a51552f99ff9ea89ea9c272383a8f738ceee",
+                "reference": "54c8a51552f99ff9ea89ea9c272383a8f738ceee",
+                "shasum": ""
+            },
+            "require": {
+                "topthink/framework": "5.1.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "think\\captcha\\": "src/"
+                },
+                "files": [
+                    "src/helper.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "description": "captcha package for thinkphp5",
+            "support": {
+                "issues": "https://github.com/top-think/think-captcha/issues",
+                "source": "https://github.com/top-think/think-captcha/tree/2.0"
+            },
+            "time": "2017-12-31T16:37:49+00:00"
+        },
+        {
+            "name": "topthink/think-helper",
+            "version": "v3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-helper.git",
+                "reference": "92c24d1057118dada3ca18232cd18ef38a831ad6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-helper/zipball/92c24d1057118dada3ca18232cd18ef38a831ad6",
+                "reference": "92c24d1057118dada3ca18232cd18ef38a831ad6",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "think\\": "src"
+                },
+                "files": [
+                    "src/helper.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "description": "The ThinkPHP6 Helper Package",
+            "support": {
+                "issues": "https://github.com/top-think/think-helper/issues",
+                "source": "https://github.com/top-think/think-helper/tree/v3.1.1"
+            },
+            "time": "2019-07-10T08:52:50+00:00"
+        },
+        {
+            "name": "topthink/think-installer",
+            "version": "v2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-installer.git",
+                "reference": "38ba647706e35d6704b5d370c06f8a160b635f88"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-installer/zipball/38ba647706e35d6704b5d370c06f8a160b635f88",
+                "reference": "38ba647706e35d6704b5d370c06f8a160b635f88",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0||^2.0"
+            },
+            "require-dev": {
+                "composer/composer": "^1.0||^2.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "think\\composer\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "think\\composer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "support": {
+                "issues": "https://github.com/top-think/think-installer/issues",
+                "source": "https://github.com/top-think/think-installer/tree/v2.0.5"
+            },
+            "time": "2021-01-14T12:12:14+00:00"
+        },
+        {
+            "name": "topthink/think-queue",
+            "version": "v2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-queue.git",
+                "reference": "d9b8f38c7af8ad770257b0d7db711ce8b12a6969"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-queue/zipball/d9b8f38c7af8ad770257b0d7db711ce8b12a6969",
+                "reference": "d9b8f38c7af8ad770257b0d7db711ce8b12a6969",
+                "shasum": ""
+            },
+            "require": {
+                "topthink/framework": "5.1.*",
+                "topthink/think-helper": ">=1.0.4",
+                "topthink/think-installer": "^2.0"
+            },
+            "type": "think-extend",
+            "extra": {
+                "think-config": {
+                    "queue": "src/config.php"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "think\\": "src"
+                },
+                "files": [
+                    "src/common.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "yunwuxin",
+                    "email": "448901948@qq.com"
+                }
+            ],
+            "description": "The ThinkPHP5 Queue Package",
+            "support": {
+                "issues": "https://github.com/top-think/think-queue/issues",
+                "source": "https://github.com/top-think/think-queue/tree/2.0"
+            },
+            "time": "2018-05-11T06:55:55+00:00"
+        },
+        {
+            "name": "topthink/think-worker",
+            "version": "v2.0.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/top-think/think-worker.git",
+                "reference": "bee4408caf10a48df6a91e17f5b64f72a25bf1f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/top-think/think-worker/zipball/bee4408caf10a48df6a91e17f5b64f72a25bf1f8",
+                "reference": "bee4408caf10a48df6a91e17f5b64f72a25bf1f8",
+                "shasum": ""
+            },
+            "require": {
+                "topthink/framework": "^5.1.18",
+                "topthink/think-installer": "^2.0",
+                "workerman/gateway-worker": "^3.0.0",
+                "workerman/workerman": "^3.3.0"
+            },
+            "type": "think-extend",
+            "extra": {
+                "think-config": {
+                    "worker": "src/config/worker.php",
+                    "worker_server": "src/config/server.php",
+                    "gateway_worker": "src/config/gateway.php"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "think\\worker\\": "src"
+                },
+                "files": [
+                    "src/command.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "liu21st",
+                    "email": "liu21st@gmail.com"
+                }
+            ],
+            "description": "workerman extend for thinkphp5.1",
+            "support": {
+                "issues": "https://github.com/top-think/think-worker/issues",
+                "source": "https://github.com/top-think/think-worker/tree/2.0"
+            },
+            "time": "2018-09-14T05:56:22+00:00"
+        },
+        {
+            "name": "workerman/gateway-worker",
+            "version": "v3.0.22",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/walkor/GatewayWorker.git",
+                "reference": "a615036c482d11f68b693998575e804752ef9068"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/walkor/GatewayWorker/zipball/a615036c482d11f68b693998575e804752ef9068",
+                "reference": "a615036c482d11f68b693998575e804752ef9068",
+                "shasum": ""
+            },
+            "require": {
+                "workerman/workerman": ">=3.5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GatewayWorker\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "homepage": "http://www.workerman.net",
+            "keywords": [
+                "communication",
+                "distributed"
+            ],
+            "support": {
+                "issues": "https://github.com/walkor/GatewayWorker/issues",
+                "source": "https://github.com/walkor/GatewayWorker/tree/v3.0.22"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/walkor",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/walkor",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2021-12-23T13:13:09+00:00"
+        },
+        {
+            "name": "workerman/workerman",
+            "version": "v3.5.31",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/walkor/Workerman.git",
+                "reference": "b73ddc45b3c7299f330923a2bde23ca6e974fd96"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/walkor/Workerman/zipball/b73ddc45b3c7299f330923a2bde23ca6e974fd96",
+                "reference": "b73ddc45b3c7299f330923a2bde23ca6e974fd96",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "suggest": {
+                "ext-event": "For better performance. "
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Workerman\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "walkor",
+                    "email": "walkor@workerman.net",
+                    "homepage": "http://www.workerman.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An asynchronous event driven PHP framework for easily building fast, scalable network applications.",
+            "homepage": "http://www.workerman.net",
+            "keywords": [
+                "asynchronous",
+                "event-loop"
+            ],
+            "support": {
+                "email": "walkor@workerman.net",
+                "forum": "http://wenda.workerman.net/",
+                "issues": "https://github.com/walkor/workerman/issues",
+                "source": "https://github.com/walkor/workerman",
+                "wiki": "http://doc.workerman.net/"
+            },
+            "time": "2020-08-24T03:49:23+00:00"
+        },
+        {
+            "name": "zoujingli/wechat-php-sdk",
+            "version": "v1.3.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zoujingli/wechat-php-sdk.git",
+                "reference": "d37d0c1919ede2ee54e65100ac3792e947b1e0ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zoujingli/wechat-php-sdk/zipball/d37d0c1919ede2ee54e65100ac3792e947b1e0ef",
+                "reference": "d37d0c1919ede2ee54e65100ac3792e947b1e0ef",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "php": ">=5.3.3"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Wechat\\": "./Wechat"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "WeChat development of SDK",
+            "homepage": "http://www.kancloud.cn/zoujingli/wechat-php-sdk",
+            "keywords": [
+                "wechat-php-sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/zoujingli/wechat-php-sdk/issues",
+                "source": "https://github.com/zoujingli/wechat-php-sdk/tree/v1.3.18"
+            },
+            "time": "2019-10-10T09:42:15+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "myxland/think-addons": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=5.6.0"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
+}

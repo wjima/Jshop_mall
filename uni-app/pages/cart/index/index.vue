@@ -1,6 +1,5 @@
 <template>
 	<view>
-		
 	<view class="content" v-if="cartData.list && cartData.list.length > 0">
 		<view class="content-top">
 			<view class="cell-group margin-cell-group">
@@ -92,7 +91,7 @@
 		<image class="cart-none-img" src="/static/image/car.png" mode=""></image>
 		<view class="cart-none-t">购物车快饿瘪了 T.T</view>
 		<view class="cart-none-m">快给我挑点宝贝吧</view>
-		<navigator class="cart-none-b" url="../../index/index" hover-class="btn-hover" open-type="switchTab">去逛逛</navigator>
+		<navigator class="cart-none-b" url="/pages/index/index" hover-class="btn-hover" open-type="switchTab">去逛逛</navigator>
 	</view>
 	<jh-tabbar />
 	

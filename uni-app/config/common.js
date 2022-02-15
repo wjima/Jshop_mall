@@ -156,6 +156,9 @@ function jumpToLogin(method) {
 						animationDuration: 200,
 						complete() {
 							uni.hideLoading()
+						},
+						success(){
+							
 						}
 					})
 				}, 500)

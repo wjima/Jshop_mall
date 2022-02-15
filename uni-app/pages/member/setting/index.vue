@@ -42,16 +42,6 @@
 						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
 					</view>
 				</view>
-				
-				
-				<view class='cell-item' @click="navigateToHandle('./colorset')">
-					<view class='cell-item-hd'>
-						<view class='cell-hd-title'>主题色配置</view>
-					</view>
-					<view class='cell-item-ft'>
-						<image class='cell-ft-next icon' src='/static/image/right.png'></image>
-					</view>
-				</view>
 				<view class='cell-item' @click="logOff">
 					<view class='cell-item-hd'>
 						<view class='cell-hd-title'>退出</view>

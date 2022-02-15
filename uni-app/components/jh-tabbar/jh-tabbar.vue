@@ -21,7 +21,7 @@
 			return {
 				current: 0,
 				taBbarList: [
-					{ 	
+					/* { 	
 						"type": 0, 
 						"icon": '/static/image/index_gray.png', 
 						"selectIcon": '/static/image/index_black.png',
@@ -55,13 +55,27 @@
 						"pType": ''
 					},
 					
-				],
+				 */],
 				currentPage: ''
 			}
 		},
 		mounted() {
 			this.currentPage = getCurrentPages()[getCurrentPages().length - 1].route
+			console.log(this.$store.state.config);
+			if(this.$store.state.config && this.$store.state.config.front_menu){
+				let front_menu = this.$store.state.config.front_menu;
+				for(let i in front_menu) {
+					this.taBbarList.push({
+						"type": 0,
+						"icon": front_menu[i].icon_url,
+						"selectIcon": front_menu[i].selecticon_url,
+						"url":  front_menu[i].url,
+						"name":front_menu[i].name,
+						"pType": front_menu[i].ptype,
+					});
+				}
 			
+			}
 			for(let i in this.taBbarList) {
 				if(this.taBbarList[i].url.indexOf(this.currentPage) > -1) {
 					this.current = i

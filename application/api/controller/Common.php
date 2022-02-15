@@ -11,6 +11,7 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\Area;
 use app\common\controller\Base;
+use app\common\model\PagesMenu;
 use think\facade\Cache;
 use think\facade\Hook;
 
@@ -87,6 +88,7 @@ class Common extends Api
      */
     public function jshopConf()
     {
+
         if (!Cache::has("jshop_jshopconf")) {
             $config = getMultipleSetting('shop_logo,shop_name,shop_desc,store_switch,cate_style,cate_type,tocash_money_low,tocash_money_rate,tocash_money_rate,point_switch,statistics_code,recommend_keys,invoice_switch,goods_stocks_warn,shop_default_image,shop_mobile,show_inviter,share_title,share_desc,share_image,about_article_id,ent_id,user_agreement_id,privacy_policy_id,goods_show_word1,goods_show_word2,shop_beian');
 
@@ -134,6 +136,11 @@ class Common extends Api
                 $goods_show_word[] = $config['goods_show_word2'];
             }
             $conf['goods_show_word'] = $goods_show_word;
+            
+            $pagesMenuModel = new PagesMenu();
+            $front_menu = $pagesMenuModel->getMenu();
+            $conf['front_menu'] = $front_menu;
+
             Cache::set("jshop_jshopconf", $conf, 3600 * 12);
         } else {
             $conf = Cache::get("jshop_jshopconf");

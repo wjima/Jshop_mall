@@ -10,6 +10,7 @@ namespace app\Manage\controller;
 
 use app\common\model\Brand;
 use app\common\model\GoodsCat;
+use app\common\model\PagesMenu;
 use app\common\model\PagesItems;
 use Request;
 use app\common\controller\Manage;
@@ -98,7 +99,6 @@ class Pages extends Manage
 
         if (\think\facade\Request::isPost()) {
             $pagesModel = new \app\common\model\Pages();
-
             return $pagesModel->addData(input('param.'));
         }
 
@@ -146,4 +146,118 @@ class Pages extends Manage
         Cache::clear();
         return $result;
     }
+
+    /***
+     * 底部菜单
+     * @return mixed
+     */
+    public function setMenu(){
+        $pageMenu = new PagesMenu();
+        $menu       = $pageMenu->getMenu();
+        $this->assign('weixin_menu', $menu);
+        return $this->fetch();
+    }
+
+
+    /**
+     * 编辑菜单项
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function editMenu()
+    {
+        $result = [
+            'status' => false,
+            'data'   => '',
+            'msg'    => '', //参数错误
+        ];
+        $this->view->engine->layout(false);
+        $id  = input('id/d');
+        $pid = input('pid/d');
+        if (!$id) {
+            return error_code(10051);
+        }
+        $PageMenu = new PagesMenu();
+        $menu     = $PageMenu->where(['menu_id' => $id, 'pid' => $pid])->find();
+        if ($menu) {
+            $menu['params'] = json_decode($menu['params'], true);
+        }
+
+        $this->assign('id', $id);
+        $this->assign('pid', $pid);//父级菜单ID
+        $this->assign('menu', $menu);
+        $result['status'] = true;
+        $result['msg']    = '成功';
+        $result['data']   = $this->fetch('edit_menu');
+        return $result;
+    }
+
+
+    /**
+     * 保存菜单
+     * @return array
+     */
+    public function doEditMenu()
+    {
+        $result   = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '',
+        ];
+        $data     = input('param.');
+        $PageMenu = new PagesMenu();
+        $res      = $PageMenu->toSave($data);
+        return $res;
+    }
+
+
+    /**
+     * 删除菜单
+     * @return array
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function deleteMenu()
+    {
+        $result = [
+            'status' => false,
+            'data'   => [],
+            'msg'    => '',//参数错误
+        ];
+        $id     = input('id/d', 0);
+        $pid    = input('pid/d', 0);
+        if (!$id) {
+            return error_code(10051);
+        }
+        $pageMenu = new PagesMenu();
+        $info     = $pageMenu->where(['pid' => $pid, 'menu_id' => $id])->find();
+        //无此菜单时，前台直接删除
+        if (!$info) {
+            $result['status'] = true;
+            $result['msg']    = '删除成功';
+            return $result;
+        }
+        // 当删除父节点菜单时，检查是否有子节点
+        if ($pid == 0) {
+            $nums = $pageMenu->where(['pid' => $id])->count();
+            if ($nums > 0) {
+                $result['msg'] = error_code(11100, true);
+                return $result;
+            }
+        }
+        $res = $pageMenu->where(['pid' => $pid, 'menu_id' => $id])->delete();
+        if (!$res) {
+            $result['msg'] = error_code(10023, true);
+            return $result;
+        }
+        $result['status'] = true;
+        $result['msg']    = '删除成功';
+        return $result;
+    }
+
 }

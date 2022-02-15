@@ -6,7 +6,7 @@ export default {
     },
     mounted() {
         const self = this;
-        self.changeNavigationBarColor()
+        //self.changeNavigationBarColor()
     },
     methods: {
         //打开页面，传递参数
@@ -28,7 +28,7 @@ export default {
             eventChannel.emit('callbackFromOpenedPage', data);
         },
         //设置导航栏背景色
-        changeNavigationBarColor() {
+        /* changeNavigationBarColor() {
             const self = this;
             let navBgColor = '';
             let fontColor = '#ffffff';
@@ -45,9 +45,9 @@ export default {
             }
             console.log("navBgColor",navBgColor);
             self.filtrateColor(fontColor,navBgColor)
-        },
+        }, */
         //处理主题的颜色
-        filtrateColor(fontColor,navBgColor){
+        /* filtrateColor(fontColor,navBgColor){
             let white = ['#FFFFFF','#EEEEEE','#CCCCCC','#999999','#ffffcc','#ffff99','#ffff66','#ffcccc'];
             white.find(function(value) {  //淡色背景，需要把字体改为黑色
                 if(value === navBgColor) {
@@ -57,7 +57,7 @@ export default {
                 frontColor: fontColor,
                 backgroundColor:navBgColor
             });
-        },
+        }, */
         //设置字体
         getRootFontSize(){
             const self = this;

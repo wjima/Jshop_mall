@@ -22,7 +22,7 @@ const store = new Vuex.Store({
     mutations: {
 		// 皮肤更换
 		skinPeeler(state,skin = []){
-			console.log('skin', skin);
+			//console.log('skin', skin);
 			// 将皮肤配置JSON转为以 ; 分割的字符串（style 值）
 			let style = skin.map((item,index)=>{
 				return `${item.name}:${item.value}`

@@ -207,6 +207,11 @@ class Pages extends Manage
             'msg'    => '',
         ];
         $data     = input('param.');
+        $validate = new \app\common\validate\PagesMenu();
+        if (!$validate->check($data)) {
+            $result['msg'] = $validate->getError();
+            return $result;
+        }
         $PageMenu = new PagesMenu();
         $res      = $PageMenu->toSave($data);
         return $res;

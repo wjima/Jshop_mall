@@ -85,7 +85,7 @@ export default {
 				return;
 			}
 			if (val.pType == 'switch') {
-				uni.switchTab({
+				uni.redirectTo({
 					url: val.url
 				});
 			} else if (val.pType == 'navigateTo') {

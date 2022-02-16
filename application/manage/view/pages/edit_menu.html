@@ -12,7 +12,7 @@
         <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>动作类型：</label>
         <div class="layui-input-inline seller-inline-5">
             <select name="ptype" >
-                <option value="switch" {if condition="$menu.ptype eq 'switch' "}selected = "" {/if} >一级页面跳转</option>
+                <option value="redirectTo" {if condition="$menu.ptype eq 'redirectTo' "}selected = "" {/if} >一级页面跳转</option>
                 <option value="navigateTo" {if condition="$menu.ptype eq 'navigateTo' "}selected = "" {/if} >二级页面跳转</option>
             </select>
         </div>

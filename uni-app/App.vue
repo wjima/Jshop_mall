@@ -1,11 +1,6 @@
 <script>
 export default {
 	onLaunch() {
-		uni.setNavigationBarColor({
-			frontColor: '#ffffff',
-			backgroundColor: '#1AAD19'
-		})
-
 		// #ifdef APP-PLUS || APP-PLUS-NVUE
 		this.checkVersion()
 		// #endif

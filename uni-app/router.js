@@ -34,6 +34,7 @@ const getConfig = async function(to, from, next) {
 		systemStatus = data[1].statusCode;
 		store.commit('config', data[1].data)
 	}
+	//console.log('systemStatus',systemStatus);
 	if (systemStatus === 200) { // 已经登录
 		next();
 	} else {
@@ -57,7 +58,7 @@ router.beforeEach((to, from, next) => {
 	if (appOnLaunch === 1) { //第一次启动
 		getConfig(to, from, next);
 	} else {
-		//console.log('跳转前')
+		console.log('跳转前')
 		next();
 	}
 });

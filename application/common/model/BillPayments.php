@@ -316,7 +316,7 @@ class BillPayments extends Common
                     //给用户做充值
                     $balance = new Balance();
                     foreach ($billPaymentRelList as $k => $v) {
-                        $balance->change($v['source_id'], $balance::TYPE_RECHARGE, $v['money'], $v['payment_id']);
+                        $balance->change($billPaymentInfo['user_id'], $balance::TYPE_RECHARGE, $v['money'], $v['payment_id']);
                     }
                 }elseif($billPaymentInfo['type'] == self::TYPE_FORM_PAY || $billPaymentInfo['type'] == self::TYPE_FORM_ORDER ){
                     //form表单支付

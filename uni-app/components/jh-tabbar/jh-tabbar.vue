@@ -84,7 +84,7 @@ export default {
 			if (val.url.indexOf(this.currentPage) > -1) {
 				return;
 			}
-			if (val.pType == 'switch') {
+			if (val.pType == 'redirectTo') {
 				uni.redirectTo({
 					url: val.url
 				});

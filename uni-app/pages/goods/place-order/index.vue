@@ -478,7 +478,7 @@ export default {
 			}
 			
 			if(data.order_type == 8){
-				data['params'] = JSON.stringify({ is_order: 1 }); //砍价信息
+				data['params'] = JSON.stringify({ is_order: 1 });
 			}
 
 			this.$api.cartList(data, res => {
@@ -962,7 +962,7 @@ export default {
 			data['order_type'] = this.params.order_type; //订单类型
 			
 			if(data.order_type == 8){
-				data['params'] = JSON.stringify({ is_order: 1 }); //砍价信息
+				data['params'] = JSON.stringify({ is_order: 1 });
 			}
 		
 			if (this.team_id != 0) {

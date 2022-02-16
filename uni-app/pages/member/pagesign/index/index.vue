@@ -2,20 +2,21 @@
 	<view>
 		<view class="dashboard-wrap">
 			<view class="circle-wrap">
-				<image src="../../pagesign/static/images/circle.png" mode=""></image>
+				<image :src="`${baseUrl}static/images/pagesign/circle.png`" mode=""></image>
 				<view class="circle-p circle-t">每日签到</view>
 				<view class="circle-p circle-num">+10</view>
 				<view class="circle-p circle-btn" @click="sign">{{pageInfo.isSign ? '已签到' : '签到' }}</view>
 			</view>
 			<view class="help" @click="popToggle">
-				<image src="../../pagesign/static/images/help.png" mode=""></image>
+				<image :src="`${baseUrl}static/images/pagesign/help.png`" mode=""></image>
 			</view>
 		</view>
+		<!-- style="{height:height+'px',padding:jdata.params.margin+'px'}" -->
 		
 		<view class="logs-sign">
 			<view class="logs-item">
 				<view class="logs-icon">
-					<image src="../../pagesign/static/images/total1.png" mode=""></image>
+					<image :src="`${baseUrl}static/images/pagesign/total1.png`" mode=""></image>
 				</view>
 				<view class="logs-r">
 					<view class="nums n1">{{pageInfo.point || 0}}</view>
@@ -24,7 +25,8 @@
 			</view>
 			<view class="logs-item">
 				<view class="logs-icon">
-					<image src="../../pagesign/static/images/total2.png" mode=""></image>
+					<image :src="`${baseUrl}static/images/pagesign/total2.png`" mode=""></image>
+					<!-- <image src="../../pagesign/static/images/total2.png" mode=""></image> -->
 				</view>
 				<view class="logs-r">
 					<view class="nums n2">{{pageInfo.continuous || 0}}</view>
@@ -33,7 +35,8 @@
 			</view>
 			<view class="logs-item">
 				<view class="logs-icon">
-					<image src="../../pagesign/static/images/total3.png" mode=""></image>
+					<image :src="`${baseUrl}static/images/pagesign/total3.png`" mode=""></image>
+					<!-- <image src="../../pagesign/static/images/total3.png" mode=""></image> -->
 				</view>
 				<view class="logs-r">
 					<view class="nums n3">{{pageInfo.omission || 0}}</view>
@@ -54,6 +57,7 @@
 </template>
 
 <script>
+	import {apiBaseUrl} from '@/config/config.js';
 	import renCalendar from '@/pages/member/pagesign/components/ren-calendar/ren-calendar.vue'
 	export default {
 		components: {
@@ -65,7 +69,8 @@
 				today: '',
 				nowToday: '',
 				pageInfo: {},
-				text: ""
+				text: "",
+				baseUrl:apiBaseUrl
 			}
 		},
 		onShow() {

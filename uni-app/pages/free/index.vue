@@ -1,25 +1,25 @@
 <template>
 	<view>
-		<image class="free-1" src="../../static/images/free/free-1.png" mode="widthFix"></image>
+		<image class="free-1" :src="`${baseUrl}static/images/free/free-1.png`" mode="widthFix"></image>
 		<view class="free-2-wrap">
-			<image class="free-2" src="../../static/images/free/free-2.png" mode="widthFix"></image>
+			<image class="free-2" :src="`${baseUrl}static/images/free/free-2.png`" mode="widthFix"></image>
 			<view class="goods-list">
 				<view class="goods-item" v-for="item in goods" :key="item.id">
 					<image class="goods-main-pic" :src="item.image_url" mode="aspectFill"></image>
 					<view class="title">{{item.name|| ""}}</view>
-					<view class="price-wrap"><text class="price">￥{{item.product.price ||' 0.00'}}</text> <image class="cart" src="../../static/images/free/free-cart.png" mode=""
+					<view class="price-wrap"><text class="price">￥{{item.product.price ||' 0.00'}}</text> <image class="cart" :src="`${baseUrl}static/images/free/free-cart.png`" mode=""
 					@click="cartAdd(item)"></image> </view>
 				</view>
 			</view>
 		</view>
-		<view class="bot-tips">
-			<image class="free-3" src="../../static/images/free/free-3.png" mode="widthFix"></image>
+		<view class="bot-tips" :class="{'bot-tips-height' : numsCart > 0}">
+			<image class="free-3" :src="`${baseUrl}static/images/free/free-3.png`" mode="widthFix"></image>
 			
 			<view class="bot-content">
 				<view class="title">
-					<image class="title-icon" src="../../static/images/free/title-icon.png" mode=""></image>
+					<image class="title-icon" :src="`${baseUrl}static/images/free/title-icon.png`" mode=""></image>
 					活动规则
-					<image class="title-icon icon2" src="../../static/images/free/title-icon.png" mode=""></image>
+					<image class="title-icon icon2" :src="`${baseUrl}static/images/free/title-icon.png`" mode=""></image>
 					</view>
 				<view class="bot-item-wrap">
 					<view class="item"> {{goodsConfig.combo_desc || ''}}</view>
@@ -30,7 +30,7 @@
 		</view>
 		
 		<!-- <view class="fast-cart" @click="toCart" v-if="nums">
-			<image src="/static/images/free/cart.png" mode=""></image>
+			<image src="`${baseUrl}static/images/free/cart.png`" mode=""></image>
 			<text class="big" >{{nums}}</text>
 		</view> -->
 		
@@ -50,7 +50,7 @@
 							</view>
 						</view>
 						<view class='close-btn' @click="toclose()">
-							<image src='/static/image/close.png'></image>
+							<image :src="`${baseUrl}static/images/free/close.png`"></image>
 						</view>
 					</view>
 					<!-- <scroll-view class="pop-m" scroll-y="true" style="max-height: 560upx;">
@@ -110,7 +110,7 @@
 		<!-- 底部 -->
 		<view class="cart-bottom"  v-if="numsCart">
 			<view class="cart" id="cart" @click="toCart">
-				<image src="/static/images/free/cart.png" mode=""></image>
+				<image :src="`${baseUrl}static/images/free/cart.png`" mode=""></image>
 				 <text  v-if="ids">  {{numsCart}}  </text>
 			</view>
 			<view class="submit" @click="goCart" > 去支付</view>
@@ -128,7 +128,7 @@
 		}
 	})()
 	
-	
+	import {apiBaseUrl} from '@/config/config.js';
 	import specs from '@/components/spec/specs.vue';
 	export default {
 		components: {
@@ -168,7 +168,8 @@
 				cartData: {},
 				numsCart:0,
 				cartId: 0,
-				cartNum: 0
+				cartNum: 0,
+				baseUrl:apiBaseUrl
 			}
 		},
 		onShow() {
@@ -206,6 +207,7 @@
 						_this.numsCart = nums
 					} else {
 						_this.numsCart = 0
+						
 						_this.$refs.cart.close()
 					}
 					
@@ -640,7 +642,7 @@
 		border-top: 1px solid #f3f3f3;
 	}
 	
-	.bot-tips{
+	.bot-tips-height{
 		height: 255px;
 	}
 	

@@ -11,7 +11,6 @@
 					<view class="fz12 grade" v-if="userInfo.grade_name">
 						{{userInfo.grade_name}} <navigator class="sign" url="/pages/member/pagesign/index/index">签到</navigator>  
 					</view>
-					
 				</template>
 				<template v-else>
 					<!-- #ifdef H5 || APP-PLUS -->

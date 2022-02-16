@@ -58,7 +58,6 @@ export default {
 	},
 	mounted() {
 		this.currentPage = getCurrentPages()[getCurrentPages().length - 1].route;
-		console.log(this.$store.state.config);
 		if (this.$store.state.config && this.$store.state.config.front_menu) {
 			let front_menu = this.$store.state.config.front_menu;
 			for (let i in front_menu) {
@@ -89,12 +88,12 @@ export default {
 				uni.switchTab({
 					url: val.url
 				});
-			} else if (val.pType == 'redirectTo') {
-				uni.redirectTo({
+			} else if (val.pType == 'navigateTo') {
+				uni.navigateTo({
 					url: val.url
 				});
 			} else {
-				uni.navigateTo({
+				uni.redirectTo({
 					url: val.url
 				});
 			}

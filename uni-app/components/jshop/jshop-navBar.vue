@@ -33,15 +33,12 @@
 		},
 		methods: {
 			showSliderInfo(type, val) {
-				console.log(val)
 				if (!val) {
 					return;
 				}
-				console.log("11")
-				
 				if (type == 1) {
 					if (val.indexOf('http') != -1) {
-						this.$common.navigateTo('/pages/webview/index?src=' + val);
+						this.$common.navigateTo('/pages/webview/index?src=' + encodeURIComponent(val));
 						return;
 						/* uni.navigateTo({
 							url: '/pages/webview/index.vue?src=' + val

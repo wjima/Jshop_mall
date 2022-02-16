@@ -1,21 +1,55 @@
 <template>
-	<view>
-		<web-view :src="url"></web-view>
-	</view>
+	<view><web-view :src="url" @message="eventMessage" @onPostMessage="eventPostMessage"></web-view></view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return{
-				url:''
+export default {
+	data() {
+		return {
+			url: ''
+		};
+	},
+	onLoad(options) {
+		//encodeURIComponent
+		// #ifdef MP
+		let url = decodeURIComponent(decodeURIComponent(options.src));
+		// #endif
+
+		// #ifndef MP
+		let url = decodeURIComponent(options.src);
+		// #endif
+		let login = this.$common.getQueryString('login', url);
+		let token = '';
+		//检查登录状态
+		if (login == 'true') {
+			let userToken = this.$db.get('userToken');
+			if (!userToken) {
+				this.$common.jumpToLogin();
+			} else {
+				if (url.indexOf('?') > -1) {
+					url = url + '&userToken=' + userToken;
+				} else {
+					url = url + '?userToken=' + userToken;
+				}
 			}
-		},
-		onLoad(options) {
-			this.url = options.url
 		}
+		this.url = url;
+	},
+	methods: {
+		eventMessage(e) {
+			console.log('eventMessage', e);
+		},
+		eventPostMessage(e) {
+			console.log('eventPostMessage', e.detail.data);
+		}
+	},
+	onShow(){
+		this.url = this.url;
+	},
+	onBackPress(options) {
+	    console.log('from:' + options.from)
 	}
+};
 </script>
 
-<style>
-</style>
+<style></style>

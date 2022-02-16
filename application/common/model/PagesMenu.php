@@ -7,6 +7,8 @@
 // | Author: mark <jima@jihainet.com>
 // +----------------------------------------------------------------------
 namespace app\common\model;
+use think\facade\Cache;
+
 class PagesMenu extends Common
 {
     /**
@@ -29,6 +31,7 @@ class PagesMenu extends Common
         }
         $result['status'] = true;
         $result['msg']    = '保存成功';
+        Cache::clear(); //TODO 如果开启其他缓存，记得这里要配置缓存配置信息
         return $result;
     }
 

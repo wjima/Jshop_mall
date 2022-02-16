@@ -255,6 +255,7 @@ class Pages extends Manage
             $result['msg'] = error_code(10023, true);
             return $result;
         }
+        Cache::clear(); //TODO 如果开启其他缓存，记得这里要配置缓存配置信息
         $result['status'] = true;
         $result['msg']    = '删除成功';
         return $result;

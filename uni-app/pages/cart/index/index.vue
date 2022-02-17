@@ -622,7 +622,7 @@
 		bottom: 50px;
 		/*  #endif  */
 		/*  #ifndef  H5  */
-		bottom: 0;
+		bottom: 100upx;
 		/*  #endif  */
 		z-index: 99;
 		height: 90upx;

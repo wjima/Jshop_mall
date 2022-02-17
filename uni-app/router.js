@@ -42,14 +42,32 @@ const getConfig = async function(to, from, next) {
 	}
 }
 
+
 const router = createRouter({
 	platform: process.env.VUE_APP_PLATFORM,
-	routes: [...ROUTES]
+	routes: [...ROUTES],
+	//debugger: true,
+	beforeProxyHooks: { //2.0.8版本生效，如果有bug，需要还原至2.0.7
+		onLoad: function(options, next, router) {
+			let query = {};
+			//url参数还原
+			Object.keys(router.currentRoute.query).forEach(function(key) {
+				query[key] = decodeURIComponent(router.currentRoute.query[key]);
+			});
+			next([query]);
+		},
+		onShow: function(options, next, router) {
+			const args = options || router.currentRoute.query;
+			next([args]);
+		}
+	}
 });
 
 //全局路由前置守卫
 router.beforeEach((to, from, next) => {
 	appOnLaunch++;
+	//to.fullPath = decodeURI(to.fullPath);
+
 	let userToken = uni.getStorageSync('userToken');
 	let setArea = uni.getStorageSync('setArea');
 	if (userToken && !setArea) {
@@ -58,12 +76,14 @@ router.beforeEach((to, from, next) => {
 	if (appOnLaunch === 1) { //第一次启动
 		getConfig(to, from, next);
 	} else {
-		console.log('跳转前')
+		console.log(to);
 		next();
+		//next();
 	}
 });
 // 全局路由后置守卫
 router.afterEach((to, from) => {
+
 	//console.log('跳转结束')
 })
 

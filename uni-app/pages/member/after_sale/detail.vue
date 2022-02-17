@@ -224,7 +224,7 @@ export default {
 			});
 		},
 		repeat() {
-			this.$common.navigateTo('../after_sale/index?order_id='+this.order_id);
+			this.$common.navigateTo('/pages/member/after_sale/index?order_id='+this.order_id);
 		},
 		// 图片点击放大
 		clickImg (img) {

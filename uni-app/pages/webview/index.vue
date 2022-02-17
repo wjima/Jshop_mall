@@ -10,14 +10,7 @@ export default {
 		};
 	},
 	onLoad(options) {
-		//encodeURIComponent
-		// #ifdef MP
-		let url = decodeURIComponent(decodeURIComponent(options.src));
-		// #endif
-
-		// #ifndef MP
 		let url = decodeURIComponent(options.src);
-		// #endif
 		let login = this.$common.getQueryString('login', url);
 		let token = '';
 		//检查登录状态

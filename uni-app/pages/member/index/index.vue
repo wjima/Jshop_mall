@@ -610,7 +610,7 @@
 					}
 					return
 				}
-				this.$common.navigateTo('../after_sale/list')
+				this.$common.navigateTo('/pages/member/after_sale/list')
 			},
 			//在线客服,只有手机号的，请自己替换为手机号
 			showChat() {

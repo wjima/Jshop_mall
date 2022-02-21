@@ -147,7 +147,7 @@
 		onShow: function() {
 			if (this.$store.state.config.distribution_store == '2') {
 				//跳转到首页
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/index/index'
 				});
 			}

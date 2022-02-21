@@ -105,7 +105,7 @@ export default {
 		let _this = this;
 		let userToken = _this.$db.get('userToken');
 		if (userToken) {
-			uni.switchTab({
+			uni.navigateTo({
 				url: '/pages/member/index/index'
 			});
 			return true;

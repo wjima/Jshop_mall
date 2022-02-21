@@ -409,7 +409,7 @@
 								showCancel: false,
 								success: function(res) {
 									if (res.confirm) {
-										uni.switchTab({
+										uni.navigateTo({
 											url: '../../index/index'
 										})
 									}
@@ -574,7 +574,7 @@
 							// that.$common.successToShow(res.msg)
 							//跳转首页
 							setTimeout(function() {
-								wx.switchTab({
+								wx.navigateTo({
 									url: '../../index/index'
 								})
 							}, 1500)

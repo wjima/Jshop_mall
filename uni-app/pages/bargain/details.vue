@@ -456,7 +456,7 @@
 						delta: 1
 					});
 				} else {
-					uni.switchTab({
+					uni.navigateTo({
 						url: '/pages/index/index'
 					});
 				}
@@ -691,7 +691,7 @@
 			},
 			// 购物车页面跳转
 			redirectCart() {
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/cart/index/index'
 				});
 			},
@@ -702,7 +702,7 @@
 			},
 			trigger(e) {
 				this.content[e.index].active = !e.item.active;
-				uni.switchTab({
+				uni.navigateTo({
 					url: e.item.url
 				})
 			},

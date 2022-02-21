@@ -94,7 +94,7 @@
 		},
 		onShow() {
 			if (this.$db.get('userToken')) {
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/index/index'
 				});
 			}

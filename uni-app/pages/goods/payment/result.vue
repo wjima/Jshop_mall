@@ -83,7 +83,7 @@ export default {
 			} else if (this.paymentInfo.type === 2) {
 				this.$common.redirectTo('/pages/member/balance/details');
 			} else if (this.paymentInfo.type === 5 || this.paymentInfo.type === 6) {
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/index/index'
 				});
 			}

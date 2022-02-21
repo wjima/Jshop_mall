@@ -516,7 +516,7 @@
 						delta: 1
 					});
 				} else {
-					uni.switchTab({
+					uni.navigateTo({
 						url: '/pages/index/index'
 					});
 				}

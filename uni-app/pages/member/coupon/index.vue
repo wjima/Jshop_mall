@@ -120,7 +120,7 @@
 			},
 			//跳转首页
 			goIndex() {
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/index/index'
 				});
 			}

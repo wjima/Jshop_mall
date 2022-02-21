@@ -144,7 +144,7 @@ export default {
 				} else {
 					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP
 					if (val == '/pages/index/index' || val == '/pages/classify/classify' || val == '/pages/cart/index/index' || val == '/pages/member/index/index') {
-						uni.switchTab({
+						uni.navigateTo({
 							url: val
 						});
 						return;

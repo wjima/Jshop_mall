@@ -434,22 +434,26 @@ function isInArray(arr, value) {
  * 统一跳转
  */
 function navigateTo(url) {
-	uni.navigateTo({
-		url: url,
-		animationType: 'pop-in',
-		animationDuration: 300
-	})
+	setTimeout(() => {
+		uni.navigateTo({
+			url: url,
+			animationType: 'pop-in',
+			animationDuration: 300
+		})
+	},500)
 }
 
 /**
  *  关闭当前页面并跳转
  */
 function redirectTo(url) {
-	uni.redirectTo({
-		url: url,
-		animationType: 'pop-in',
-		animationDuration: 300
-	})
+	setTimeout(() => {
+		uni.redirectTo({
+			url: url,
+			animationType: 'pop-in',
+			animationDuration: 300
+		})
+	},500)
 }
 
 /**

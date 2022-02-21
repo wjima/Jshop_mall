@@ -5,6 +5,7 @@ use app\common\model\PintuanGoods;
 use app\common\model\PintuanRule;
 use app\common\model\Promotion;
 use app\common\model\PromotionResult;
+use think\facade\Request;
 
 /**
  * Class PosterShare
@@ -361,6 +362,7 @@ class PosterShare extends QrShare implements BaseShare
                 return $re;
             }
             $qr_re = $this->getQr($url, $code, $client);
+
             if (!$qr_re['status']) {
                 return $qr_re;
             }
@@ -383,10 +385,10 @@ class PosterShare extends QrShare implements BaseShare
      */
     private function mark($data, $url, $filename)
     {
+
         $folder = "static".DS."poster";
         is_dir("static/poster/") OR mkdir($folder, 0777, true);
         $file_url = $folder.DS.$filename.".png";
-
         if (!isset($this->c['page_'.$data['page']])) {
             return false;
         }
@@ -402,6 +404,7 @@ class PosterShare extends QrShare implements BaseShare
             $this->c['page_'.$data['page']]['poster_bcolor'][2]
         );
         imagefill($poster, 0, 0, $back_color);
+
         switch ($data['page']) {
             case 1:
                 $this->data1($data, $url);
@@ -433,6 +436,7 @@ class PosterShare extends QrShare implements BaseShare
             default:
                 return false;
         }
+
         //添加图片
         foreach ($this->c['page_'.$data['page']]['image'] as $image) {
             $this->addimg(
@@ -677,6 +681,12 @@ class PosterShare extends QrShare implements BaseShare
      */
     private function getimg($url, $dst_w, $dst_h, $radius)
     {
+        //区分本地图片还是网络图片
+        if (stripos($url, $_SERVER['HTTP_HOST']) !== false) {
+            $site_url = Request::root(true);
+            $url      = ROOT_PATH . 'public' . str_replace($site_url, '', $url);
+        }
+
         //计算尺寸和宽高比
         $size = $this->getimgsize($url, $dst_w, $dst_h);
         if (!$size) {

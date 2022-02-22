@@ -16,6 +16,5 @@ uni-app/unpackage/
 themes/pc/node_modules/*
 public/static/poster/*
 public/static/qrcode/*
-uni-app/node_modules/
 .DS_Store
 pc/node_modules/*

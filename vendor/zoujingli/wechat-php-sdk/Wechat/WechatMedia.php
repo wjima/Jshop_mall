@@ -117,9 +117,6 @@ class WechatMedia extends Common
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($oCurl, CURLOPT_SSLVERSION, 1);
         }
-        if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')) {
-            curl_setopt($oCurl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-        }
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
         $sContent = curl_exec($oCurl);

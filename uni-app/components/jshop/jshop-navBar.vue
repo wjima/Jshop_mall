@@ -33,21 +33,16 @@
 		},
 		methods: {
 			showSliderInfo(type, val) {
-				console.log(val)
 				if (!val) {
 					return;
 				}
-				console.log("11")
 				if (type == 1) {
 					if (val.indexOf('http') != -1) {
-						// #ifdef H5 
-						window.location.href = val
-						// #endif
-						// #ifndef H5
-						uni.navigateTo({
+						this.$common.navigateTo('/pages/webview/index?src=' + encodeURIComponent(val));
+						return;
+						/* uni.navigateTo({
 							url: '/pages/webview/index.vue?src=' + val
-						})
-						// #endif
+						}) */
 					} else {
 						// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP
 						if (val == '/pages/index/index' || val == '/pages/classify/classify' || val == '/pages/cart/index/index' || val == '/pages/member/index/index') {

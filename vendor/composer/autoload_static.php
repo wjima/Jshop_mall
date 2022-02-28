@@ -11,12 +11,13 @@ class ComposerStaticInitd7a1a5f41e2fb6148a8b8c876faba931
         '1a97f75693790a971bff284d69bc93a2' => __DIR__ . '/..' . '/myxland/think-addons/src/helper.php',
         '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
         'cc56288302d9df745d97c934d6a6e5f0' => __DIR__ . '/..' . '/topthink/think-queue/src/common.php',
+        'ffc1d7141d4fcbaeb47a6929f0811ed1' => __DIR__ . '/..' . '/topthink/think-worker/src/command.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         't' => 
         array (
-            'think\\helper\\' => 13,
+            'think\\worker\\' => 13,
             'think\\composer\\' => 15,
             'think\\captcha\\' => 14,
             'think\\' => 6,
@@ -31,7 +32,12 @@ class ComposerStaticInitd7a1a5f41e2fb6148a8b8c876faba931
         ),
         'W' => 
         array (
+            'Workerman\\' => 10,
             'Wechat\\' => 7,
+        ),
+        'G' => 
+        array (
+            'GatewayWorker\\' => 14,
         ),
         'A' => 
         array (
@@ -40,9 +46,9 @@ class ComposerStaticInitd7a1a5f41e2fb6148a8b8c876faba931
     );
 
     public static $prefixDirsPsr4 = array (
-        'think\\helper\\' => 
+        'think\\worker\\' => 
         array (
-            0 => __DIR__ . '/..' . '/topthink/think-helper/src',
+            0 => __DIR__ . '/..' . '/topthink/think-worker/src',
         ),
         'think\\composer\\' => 
         array (
@@ -55,6 +61,7 @@ class ComposerStaticInitd7a1a5f41e2fb6148a8b8c876faba931
         'think\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-queue/src',
+            1 => __DIR__ . '/..' . '/topthink/think-helper/src',
         ),
         'myxland\\addons\\' => 
         array (
@@ -64,9 +71,17 @@ class ComposerStaticInitd7a1a5f41e2fb6148a8b8c876faba931
         array (
             0 => __DIR__ . '/../..' . '/application',
         ),
+        'Workerman\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/workerman',
+        ),
         'Wechat\\' => 
         array (
             0 => __DIR__ . '/..' . '/zoujingli/wechat-php-sdk/Wechat',
+        ),
+        'GatewayWorker\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/gateway-worker/src',
         ),
         'Apfelbox\\FileDownload\\' => 
         array (
@@ -85,6 +100,7 @@ class ComposerStaticInitd7a1a5f41e2fb6148a8b8c876faba931
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FB' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
         'FirePHP' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
     );

@@ -1,4 +1,5 @@
 <template>
+	<view>
 	<view class="content" v-if="cartData.list && cartData.list.length > 0">
 		<view class="content-top">
 			<view class="cell-group margin-cell-group">
@@ -90,7 +91,10 @@
 		<image class="cart-none-img" src="/static/image/car.png" mode=""></image>
 		<view class="cart-none-t">购物车快饿瘪了 T.T</view>
 		<view class="cart-none-m">快给我挑点宝贝吧</view>
-		<navigator class="cart-none-b" url="../../index/index" hover-class="btn-hover" open-type="switchTab">去逛逛</navigator>
+		<navigator class="cart-none-b" url="/pages/index/index" hover-class="btn-hover" open-type="navigateTo">去逛逛</navigator>
+	</view>
+	<jh-tabbar />
+	
 	</view>
 </template>
 
@@ -109,8 +113,11 @@
 	import {
 		debounce
 	} from '@/config/common.js'
+	
+	import base from '@/common/base.js';
 	export default {
 		mixins: [goods],
+		extends: base,
 		data() {
 			return {
 				startX: 0, //开始坐标
@@ -615,7 +622,7 @@
 		bottom: 50px;
 		/*  #endif  */
 		/*  #ifndef  H5  */
-		bottom: 0;
+		bottom: 100upx;
 		/*  #endif  */
 		z-index: 99;
 		height: 90upx;

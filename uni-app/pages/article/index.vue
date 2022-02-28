@@ -37,7 +37,7 @@ export default {
 
 		if (!this.idType && !this.id) {
 			this.$common.errorToShow('请求出错', res => {
-				uni.switchTab({
+				uni.navigateTo({
 					url: '/pages/index/index'
 				});
 			});

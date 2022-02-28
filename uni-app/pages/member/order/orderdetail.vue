@@ -442,7 +442,7 @@
 			},
 			// 申请售后
 			customerService(id) {
-				this.$common.navigateTo('../after_sale/index?order_id=' + id);
+				this.$common.navigateTo('/pages/member/after_sale/index?order_id=' + id);
 			},
 			//快递信息
 			logistics(key) {
@@ -455,14 +455,14 @@
 			showCustomerService(info) {
 				//console.log(info)
 				if (info.aftersalesItem.length==1) {
-					this.$common.navigateTo('../after_sale/detail?aftersales_id=' + info.bill_aftersales_id);
+					this.$common.navigateTo('/pages/member/after_sale/detail?aftersales_id=' + info.bill_aftersales_id);
 				} else if (info.aftersalesItem.length>1){
-					this.$common.navigateTo('../after_sale/list?order_id=' + info.order_id);
+					this.$common.navigateTo('/pages/member/after_sale/list?order_id=' + info.order_id);
 				}
 			},
 			goInvition() {
 				uni.navigateTo({
-					url: './invitation_group?order_id=' + this.orderInfo.order_id + '&close_time=' + this.teamInfo.close_time
+					url: '/pages/member/order/invitation_group?order_id=' + this.orderInfo.order_id + '&close_time=' + this.teamInfo.close_time
 				})
 			},
 			//拼团信息

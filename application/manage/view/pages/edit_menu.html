@@ -1,0 +1,52 @@
+<form class="layui-form seller-alone-form" method="post" action="{:url('Page/doEditMenu')}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>菜单名称：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <input type="text" required lay-verify="required" name="name" value="{$menu.name}" class="layui-input" placeholder="字数不超过5个汉字或10个字母" class="layui-input">
+            <input type="hidden" name="menu_id" value="{$id}">
+            <input type="hidden" name="pid" value="{$pid}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label seller-inline-2"><i class="required-color">*</i>动作类型：</label>
+        <div class="layui-input-inline seller-inline-5">
+            <select name="ptype" >
+                <option value="redirectTo" {if condition="$menu.ptype eq 'redirectTo' "}selected = "" {/if} >一级页面跳转</option>
+                <option value="navigateTo" {if condition="$menu.ptype eq 'navigateTo' "}selected = "" {/if} >二级页面跳转</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="action-type view">
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">跳转地址：</label>
+            <div class="layui-input-inline seller-inline-5">
+                <input type="text"  name="params[url]" value="{$menu.params.url}" class="layui-input" placeholder="/pages/index/index" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="action-type view">
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">选中图标：</label>
+            <div class="layui-input-inline seller-inline-5">
+                {Jshop:image id='selecticon' name="selecticon"  value="$menu['selecticon']"/}
+            </div>
+        </div>
+    </div>
+    <div class="action-type view">
+        <div class="layui-form-item">
+            <label class="layui-form-label seller-inline-2">未选中图标：</label>
+            <div class="layui-input-inline seller-inline-5">
+                {Jshop:image id='icon' name="icon"  value="$menu['icon']"/}
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            {:jshopToken('edit_menu')}
+            <button class="layui-btn" lay-submit="" lay-filter="save-menu">保存</button>
+        </div>
+    </div>
+</form>

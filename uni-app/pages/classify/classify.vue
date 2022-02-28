@@ -1,7 +1,6 @@
 <template>
 	<view class="classify">
 		
-		
 		<view class='search' v-if="cate_style == 3">
 			<view class='search-c' v-bind:class="$store.state.searchStyle" @click="goSearch">
 				<image class='icon search-icon' src='/static/image/zoom.png'></image>
@@ -71,6 +70,8 @@
 				</scroll-view>
 			</view>
 		</view>
+		
+		<jh-tabbar></jh-tabbar>
 	</view>
 </template>
 
@@ -78,8 +79,10 @@
 var _this;
 import { mapGetters } from 'vuex';
 import { goods } from '@/config/mixins.js';
+import base from '@/common/base.js';
 export default {
 	mixins: [goods],
+	extends: base,
 	data() {
 		return {
 			dataList: null,
@@ -141,7 +144,7 @@ export default {
 				} else {
 					// #ifdef H5 || APP-PLUS || APP-PLUS-NVUE || MP
 					if (val == '/pages/index/index' || val == '/pages/classify/classify' || val == '/pages/cart/index/index' || val == '/pages/member/index/index') {
-						uni.switchTab({
+						uni.navigateTo({
 							url: val
 						});
 						return;

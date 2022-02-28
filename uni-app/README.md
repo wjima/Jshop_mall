@@ -22,3 +22,6 @@ switchTab
 ### APP升级说明
 manifest.json 文件源码中的 versionName（应用版本名称） 设置的就是当前APP的版本号
 后台APP更新插件设置的版本号大于 versionName（应用版本名称）时，APP打开时会提示更新APP
+
+安装uni-simple-router需要指定版本
+npm install --save uni-simple-router@2.0.7

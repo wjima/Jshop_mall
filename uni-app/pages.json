@@ -528,7 +528,8 @@
 		//     "style" : {
 		// 		"navigationBarTitleText": "拼团列表"
 		// 	}
-		// }
+		// }  
+        //}
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
@@ -536,37 +537,37 @@
     "navigationBarBackgroundColor": "#fff",
     "backgroundColor": "#F8F8F8"
   },
-  "tabBar": {
-    "color": "#999",
-    "selectedColor": "#333",
-    "backgroundColor": "#fff",
-    "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "static/image/index_gray.png",
-        "selectedIconPath": "static/image/index_black.png"
-      },
-      {
-        "pagePath": "pages/classify/classify",
-        "text": "分类",
-        "iconPath": "static/image/classify_gray.png",
-        "selectedIconPath": "static/image/classify_black.png"
-      },
-      {
-        "pagePath": "pages/cart/index/index",
-        "text": "购物车",
-        "iconPath": "static/image/cart_gray.png",
-        "selectedIconPath": "static/image/cart_black.png"
-      },
-      {
-        "pagePath": "pages/member/index/index",
-        "text": "我的",
-        "iconPath": "static/image/user_gray.png",
-        "selectedIconPath": "static/image/user_black.png"
-      }
-    ]
-  },
+  // "tabBar": {
+  //   "color": "#999",
+  //   "selectedColor": "#333",
+  //   "backgroundColor": "#fff",
+  //   "list": [
+  //     {
+  //       "pagePath": "pages/index/index",
+  //       "text": "首页",
+  //       "iconPath": "static/image/index_gray.png",
+  //       "selectedIconPath": "static/image/index_black.png"
+  //     },
+  //     {
+  //       "pagePath": "pages/classify/classify",
+  //       "text": "分类",
+  //       "iconPath": "static/image/classify_gray.png",
+  //       "selectedIconPath": "static/image/classify_black.png"
+  //     },
+  //     {
+  //       "pagePath": "pages/cart/index/index",
+  //       "text": "购物车",
+  //       "iconPath": "static/image/cart_gray.png",
+  //       "selectedIconPath": "static/image/cart_black.png"
+  //     },
+  //     {
+  //       "pagePath": "pages/member/index/index",
+  //       "text": "我的",
+  //       "iconPath": "static/image/user_gray.png",
+  //       "selectedIconPath": "static/image/user_black.png"
+  //     }
+  //   ]
+  // },
   "condition": {
     //模式配置，仅开发期间生效
     "current": 0, //当前激活的模式(list 的索引项)

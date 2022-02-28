@@ -1,0 +1,245 @@
+<style>
+    .we-body-ul .active{
+        border: 1px solid #20a53a;
+    }
+</style>
+<div class="warning-msg">
+    <div class="warning-msg-content">
+        1、请先底部菜单+号，添加菜单->点击保存。<br/>
+        2、菜单名称长度请勿超过5个字。<br/>
+        3、带参数的动作类型请选择二级页面跳转。<br/>
+        4、保存后，手机关闭后台小程序，然后重新打开小程序即可。或点击右上角的三个点，点击重新进入即可。
+    </div>
+
+</div>
+<div class="wechat-content">
+    <div class="wechat-body">
+        <div class="wechat-body-l">
+            <div class="we-body-c we-body-tabbar">
+                <div class="we-body-bot">
+                    <ul class="we-body-ul">
+                        {empty name="$weixin_menu"}
+                        <li class="we-body-li addfirst">+</li>
+                        {else/}
+                        {volist name="weixin_menu" id="item"}
+                        <li id="li-first-{$item.menu_id}" data-id="{$item.menu_id}" data-pid="{$item.pid}"><span>{$item.name}</span></li>
+                        {/volist}
+                        {if count($weixin_menu)<5 }
+                        <li class="we-body-li addfirst">+</li>
+                        {/if}
+                        {/empty}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="wechat-body-r" style="display: none">
+            <div >
+                <h3 class="we-body-r-head">菜单名称<a href="javascript:void(0);" onclick="delete_menu_node()" data-id="0" data-pid="0" id="edit-menu">删除</a></h3>
+                <div class="we-body-r-c" id="edit-menu-content">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <blockquote class="layui-elem-quote" style="margin-top: 30px;">
+       标准版前端页面地址
+    </blockquote>
+    <table class="layui-table" lay-size="sm">
+        <colgroup>
+            <col width="150">
+            <col width="200">
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>地址</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>首页</td>
+            <td>/pages/index/index</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>分类页</td>
+            <td>/pages/classify/classify</td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td>购物车页</td>
+            <td>/pages/cart/index/index</td>
+        </tr>
+
+        <tr>
+            <td>4</td>
+            <td>个人中心页</td>
+            <td>/pages/member/index/index</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>商品列表页</td>
+            <td>/pages/classify/index</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>自定义页面</td>
+            <td>/pages/index/custom</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>砍价详情页</td>
+            <td>/pages/bargain/index</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>砍价列表</td>
+            <td>/pages/bargain/list</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>免单首页</td>
+            <td>/pages/free/index</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>商品详情页</td>
+            <td>/pages/bargain/details</td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>搜索页</td>
+            <td>/pages/index/search</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    var form = '';
+    layui.use(['form', 'laytpl'], function () {
+        form = layui.form;
+
+        //保存菜单
+        form.on('submit(save-menu)', function (data) {
+            var formData = data.field;
+            JsPost("{:url('manage/pages/doEditMenu')}", formData, function (res) {
+                layer.msg(res.msg);
+                if (res.status) {
+                    if (formData.pid == "0") {
+                        $("#li-first-" + formData.menu_id).children('span').text(formData.name);
+                    } else {
+                        $("#li-first-" + formData.pid).find('#item-li-' + formData.menu_id + '-' + formData.pid).text(formData.name);
+                    }
+                }
+            });
+            return false;
+        });
+    });
+    //删除菜单
+    function delete_menu_node() {
+        var id = $("#edit-menu").attr('data-id');
+        var pid = $("#edit-menu").attr('data-pid');
+        JsPost("{:url('manage/pages/deleteMenu')}", {id: id, pid: pid}, function (res) {
+            if (res.status) {
+                $(".wechat-body-r").hide();
+                if (pid != 0) {
+                    var pul = $("#item-li-" + id + '-' + pid).parent();
+                    $("#item-li-" + id + '-' + pid).remove();
+                    if (pul.find('.addchild').length <= 0 && pul.length < 5) {
+                        pul.append('<li class="we-body-list addchild">+</li>');
+                    }
+                } else {
+                    $("#li-first-" + id).remove();
+                    var len = $(".we-body-ul").children('li').length;
+                    if (len < 3 && $(".we-body-ul").find('addfirst').length <= 0) {
+                        $(".we-body-ul").append('<li class="we-body-li addfirst">+</li>');
+                    }
+                }
+            } else {
+                layer.msg(res.msg);
+            }
+        });
+    }
+
+    //添加或选中菜单
+    $(".we-body-c").on('click', 'li', function () {
+        $(".wechat-body-r").show();
+        $(".we-body-c").find('li').removeClass('active');
+
+        if ($(this).hasClass('addchild')) {
+            var len = $(this).parent().children().length;
+            var lastId = $(this).parent().children().first().attr('data-id');
+            if (len < 6) {
+                if (typeof lastId == 'undefined') {
+                    lastId = 0;
+                }
+                var id = parseInt(lastId) + 1;
+                var pid = $(this).parent().parent().parent().attr('data-id');
+                $("#edit-menu").attr("data-id", id);
+                $("#edit-menu").attr("data-pid", pid);
+
+                JsPost("{:url('manage/pages/editMenu')}", {id: id, pid: pid}, function (res) {
+                    $("#edit-menu-content").html(res.data);
+                    form.render();
+                });
+                $(this).parent().prepend("<li class='we-body-list active ' id='item-li-" + id + "-" + pid + "' data-id='" + id + "' data-pid='" + pid + "' >二级菜单</li>");
+
+            }
+            if (len == 5) {
+                $(this).remove();
+            }
+            return false;
+        } else if ($(this).hasClass('addfirst')) {
+            var uls = $(".we-body-ul");
+            var lis = $(".we-body-ul>li");
+            var lastId = uls.children().eq(-2).attr('data-id');
+            var len = uls.children().length;
+            if (len < 6) {
+                if (typeof lastId == 'undefined') {
+                    lastId = 1;
+                }
+                var id = parseInt(lastId) + 1;
+                $("#edit-menu").attr("data-id", id);
+                $("#edit-menu").attr("data-pid", 0);
+                JsPost("{:url('manage/pages/editMenu')}", {id: id, pid: 0}, function (res) {
+                    $("#edit-menu-content").html(res.data);
+                    form.render();
+                });
+                $(this).before("<li id='li-first-" + id + "' class='active' data-id='" + id + "' data-pid='0'><span>菜单</span></li>");
+            }
+            if (len == 5) {
+                $(this).remove();
+            }
+        } else {
+            var id = $(this).attr('data-id');
+            var pid = $(this).attr('data-pid');
+
+            $("#edit-menu").attr("data-id", id);
+            $("#edit-menu").attr("data-pid", pid);
+
+            $(this).addClass('active');
+            if (typeof id != "undefined") {
+                JsPost("{:url('manage/pages/editMenu')}", {id: id, pid: pid}, function (res) {
+                    $("#edit-menu-content").html(res.data);
+                    form.render();
+                });
+            }
+            return false;
+        }
+    });
+
+    //更新菜单
+    $("#update-menu").click(function () {
+        JsGet("{:url('manage/pages/updateMenu')}", function (res) {
+            if(res.status){
+                layer.msg(res.msg);
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+    })
+</script>

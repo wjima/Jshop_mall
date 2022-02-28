@@ -113,7 +113,7 @@ export default {
 
 		//查看详情
 		showOrder(aftersales_id) {
-			this.$common.navigateTo('detail?aftersales_id=' + aftersales_id);
+			this.$common.navigateTo('/pages/member/after_sale/detail?aftersales_id=' + aftersales_id);
 		}
 	},
 }

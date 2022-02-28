@@ -13,23 +13,24 @@ $_REQUEST = remove_xss($_REQUEST);
 
 //配置信息
 $config = array(
-    'version'     => 'v2.7.0',        //版本号
-    'indexPage'   => 'step1',         //用户协议
-    'checkPage'   => 'step2',         //环境检测
-    'createPage'  => 'step3',         //数据库配置
-    'importPage'  => 'step4',         //默认管理信息和演示数据
-    'endPage'     => 'step5-1',       //安装成功页面
-    'errorPage'   => 'step5-2',       //安装失败页面
-    'sqlDir'      => './database/',   //数据库所在目录
-    'prefix'      => 'jshop_',        //默认表前缀
-    'sqlName'     => 'jshop',         //数据库文件名称
-    'demoData'    => 'demo',          //演示数据文件名称
-    'databaseUrl' => '../../config/database.php',     //database.php文件地址
-    'account'     => 'admin',         //默认账号
-    'password'    => '123456',         //默认密码
+    'version'          => 'v2.7.0',        //版本号
+    'indexPage'        => 'step1',         //用户协议
+    'checkPage'        => 'step2',         //环境检测
+    'createPage'       => 'step3',         //数据库配置
+    'importPage'       => 'step4',         //默认管理信息和演示数据
+    'endPage'          => 'step5-1',       //安装成功页面
+    'errorPage'        => 'step5-2',       //安装失败页面
+    'sqlDir'           => './database/',   //数据库所在目录
+    'prefix'           => 'jshop_',        //默认表前缀
+    'sqlName'          => 'jshop',         //数据库文件名称
+    'frontMenuSqlName' => 'front_menu',    //数据库文件名称
+    'demoData'         => 'demo',          //演示数据文件名称
+    'databaseUrl'      => '../../config/database.php',     //database.php文件地址
+    'account'          => 'admin',         //默认账号
+    'password'         => '123456',         //默认密码
     //'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
-    'limit'       => '50',   //安装时多少条数据一次翻页
-    'h5ConfigUrl' => '../wap/static/config.js',       //h5的config.js文件地址
+    'limit'            => '50',   //安装时多少条数据一次翻页
+    'h5ConfigUrl'      => '../wap/static/config.js',       //h5的config.js文件地址
 );
 
 
@@ -181,6 +182,20 @@ if ($get == $config['endPage']) {
             $password     = md5(md5($_POST['admin_password']) . $time);
             $add_user_sql = "INSERT INTO `" . $db['DB_PREFIX'] . "manage` (`id`, `username`, `password`, `mobile`, `avatar`, `nickname`, `ctime`, `utime`, `status`) VALUES (13, '" . $account . "', '" . $password . "', '', NULL, NULL, " . $time . ", " . $time . ", 1);";
             $link->query($add_user_sql);
+
+            /**插入前端模板菜单**/
+            $sqlPath   = $config['sqlDir'] . $config['frontMenuSqlName'] . '.sql';
+            $sql_str   = file_get_contents($sqlPath);
+            $http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+            $url       = $http_type . $_SERVER['HTTP_HOST'];
+            $sql_str   = str_replace('http://www.b2c.com', $url, $sql_str);
+            //修改表前缀
+            $sql_array = preg_split("/;[\r\n]+/", str_replace($config['prefix'], $db['DB_PREFIX'], $sql_str));
+            foreach ($sql_array as $k => $v) {
+                if (!empty($v)) {
+                    $link->query($v);
+                }
+            }
 
             $return['data']['page']      = 1;
             $return['data']['totalPage'] = 1000;//临时给一个随便默认值

@@ -8,11 +8,9 @@
 				<template v-if="hasLogin">
 					<image class='user-head-img' mode="aspectFill" :src='userInfo.avatar'></image>
 					<view class='user-name'>{{ userInfo.nickname }}</view>
-					<view class="fz12 grade" v-if="userInfo.id">
-						{{userInfo.grade_name||''}}<navigator class="sign" url="../pagesign/index/index">签到</navigator>  
+					<view class="fz12 grade" v-if="userInfo.grade_name">
+						{{userInfo.grade_name}} <navigator class="sign" url="/pages/member/pagesign/index/index">签到</navigator>  
 					</view>
-					
-					
 				</template>
 				<template v-else>
 					<!-- #ifdef H5 || APP-PLUS -->
@@ -49,7 +47,7 @@
 
 		<!-- 订单列表信息 -->
 		<view class='cell-group'>
-			<view class='cell-item right-img' @click="orderNavigateHandle('../order/orderlist')">
+			<view class='cell-item right-img' @click="orderNavigateHandle('/pages/member/order/orderlist')">
 				<view class='cell-item-hd'>
 					<image class='cell-hd-icon' src='/static/image/userorder.png'></image>
 					<view class='cell-hd-title'>我的订单</view>
@@ -61,7 +59,7 @@
 		</view>
 
 		<view class='member-grid'>
-			<view class='member-item' v-for="(item, index) in orderItems" :key="index" @click="orderNavigateHandle('../order/orderlist', index + 1)">
+			<view class='member-item' v-for="(item, index) in orderItems" :key="index" @click="orderNavigateHandle('/pages/member/order/orderlist', index + 1)">
 				<view class="badge color-f" v-if="item.nums">{{ item.nums }}</view>
 				<image class='member-item-icon' :src='item.icon'></image>
 				<text class='member-item-text'>{{ item.name }}</text>
@@ -242,7 +240,8 @@
 		</view>
 
 		<!-- 其他功能菜单end -->
-		<jihaiCopyright></jihaiCopyright>
+		<jihaiCopyright />
+		<jh-tabbar />
 	</view>
 </template>
 
@@ -301,50 +300,50 @@
 					distribution: {
 						name: '分销中心',
 						icon: '/static/image/distribution.png',
-						router: '../distribution/user',
+						router: '/pages/member/distribution/user',
 						unshowItem: false
 					},
 					coupon: {
 						name: '我的优惠券',
 						icon: '/static/image/ic-me-coupon.png',
-						router: '../coupon/index',
+						router: '/pages/member/coupon/index',
 						unshowItem: false,
 						nums: 0
 					},
 					balance: {
 						name: '我的余额',
 						icon: '/static/image/ic-me-balance.png',
-						router: '../balance/index',
+						router: '/pages/member/balance/index',
 						unshowItem: false
 					},
 					invoice: {
 						name: '我的发票',
 						icon: '/static/image/ic-me-invoice.png',
-						router: '../invoice/index',
+						router: '/pages/member/invoice/index',
 						unshowItem: false
 					},
 					integral: {
 						name: '我的积分',
 						icon: '/static/image/integral.png',
-						router: '../integral/index',
+						router: '/pages/member/integral/index',
 						unshowItem: false
 					},
 					address: {
 						name: '地址管理',
 						icon: '/static/image/me-ic-site.png',
-						router: '../address/list',
+						router: '/pages/member/address/list',
 						unshowItem: false
 					},
 					collection: {
 						name: '我的收藏',
 						icon: '/static/image/ic-me-collect.png',
-						router: '../collection/index',
+						router: '/pages/member/collection/index',
 						unshowItem: false
 					},
 					history: {
 						name: '我的足迹',
 						icon: '/static/image/ic-me-track.png',
-						router: '../history/index',
+						router: '/pages/member/history/index',
 						unshowItem: false
 					},
 
@@ -352,32 +351,32 @@
 				clerk: [{
 						name: '提货单列表',
 						icon: '/static/image/ic-me-take.png',
-						router: '../take_delivery/list'
+						router: '/pages/member/take_delivery/list'
 
 					},
 					{
 						name: '提货单核销',
 						icon: '/static/image/me-ic-about.png',
-						router: '../take_delivery/index'
+						router: '/pages/member/take_delivery/index'
 					}
 				],
 				order: {
 					bargain: {
 						name: '砍价记录',
 						icon: '/static/image/me-ic-sendout.png',
-						router: '../bargain/list',
+						router: '/pages/member/bargain/list',
 						unshowItem: false
 					},
 					invite: {
 						name: '邀请好友',
 						icon: '/static/image/ic-me-invite.png',
-						router: '../invite/index',
+						router: '/pages/member/invite/index',
 						unshowItem: true
 					},
 					setting: {
 						name: '系统设置',
 						icon: '/static/image/me-ic-set.png',
-						router: '../setting/index',
+						router: '/pages/member/setting/index',
 						unshowItem: false
 					}
 				},
@@ -518,7 +517,7 @@
 				})
 			},
 			toLogin() {
-				this.$common.navigateTo('../../login/login/index1')
+				this.$common.navigateTo('/pages/login/login/index1')
 			},
 			initData() {
 				// 获取用户信息
@@ -611,7 +610,7 @@
 					}
 					return
 				}
-				this.$common.navigateTo('../after_sale/list')
+				this.$common.navigateTo('/pages/member/after_sale/list')
 			},
 			//在线客服,只有手机号的，请自己替换为手机号
 			showChat() {

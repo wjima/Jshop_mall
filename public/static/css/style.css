@@ -368,7 +368,7 @@
     position: relative;
 }
 
-.we-body-c, .we-body-tabbar {
+.we-body-c.we-body-tabbar {
     width: 340px;
     height: 600px;
     background: url(../images/model-title.png) no-repeat;

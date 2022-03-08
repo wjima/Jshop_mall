@@ -99,7 +99,7 @@ function get_sn($type)
 {
     switch ($type) {
         case 1:         //订单编号
-            $str = date('mdHis').mt_rand(10000, 99999);
+            $str = 'S'.date('mdHis').mt_rand(1000, 9999);
             break;
         case 2:         //支付单编号
             $str = $type . substr(msectime() . rand(0, 9), 1);
@@ -1718,7 +1718,7 @@ function alphaID($in, $to_num = false, $pad_up = false)
 
 
 /**
- * 去除XSS（跨站脚本攻击）的函数(高效率)
+ * 去除空格，todo 之前安全过滤有问题，暂时还原为处理空格
  * @param $val 需要过滤值
  * @param null $opt 操作动作
  * @return string
@@ -1734,8 +1734,8 @@ function remove_xss($val)
             $val[$key] = remove_xss($value);
         }
     }else{
-        $val = strip_tags($val);
-        $val = htmlspecialchars($val, ENT_QUOTES);
+        $val = trim($val);
+        //$val = htmlspecialchars($val, ENT_QUOTES);
     }
     return $val;
 }

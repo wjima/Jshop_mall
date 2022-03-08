@@ -47,7 +47,7 @@ class Ship extends Manage
                 $continueunit_area_price = input('continueunit_area_price/a', []);
                 foreach ($area_id as $key => $val) {
                     if ($val) {
-                        $val = htmlspecialchars_decode($val);
+                        //$val = htmlspecialchars_decode($val);
                         $area_data                                 = json_decode($val, true);
                         $areaids                                   = $this->getAreaIds($area_data);//取出所有id
                         $area_fee[$key]['area_value']              = $val;
@@ -121,7 +121,7 @@ class Ship extends Manage
 
                 foreach ($area_id as $key => $val) {
                     if ($val) {
-                        $val = htmlspecialchars_decode($val);
+                        //$val = htmlspecialchars_decode($val);
                         $area_data                                 = json_decode($val, true);
                         $areaids                                   = $this->getAreaIds($area_data);//取出所有id
                         $area_fee[$key]['area_value']              = $val;

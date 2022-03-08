@@ -26,8 +26,6 @@ ADD COLUMN `is_main` tinyint(1) UNSIGNED NULL DEFAULT 2 COMMENT '是否首页' A
 UPDATE `jshop_pages` SET `is_main` = 1 WHERE `code` = 'mobile_home';
 
 
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (589, 238, '第三方账号', 'userwx', 'a', 238, 1, 100);
-INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (590, 238, '第三方账号删除', 'userwxdel', 'a', 238, 2, 100);
 INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (591, 296, '订单编辑-订单明细显示', 'edititemslist', 'a', 299, 3, 100);
 INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (592, 296, '订单编辑-订单明细添加', 'edititemsadd', 'a', 299, 3, 100);
 INSERT INTO `jshop_operation`(`id`, `parent_id`, `name`, `code`, `type`, `parent_menu_id`, `perm_type`, `sort`) VALUES (593, 296, '订单编辑-订单明细删除', 'edititemsdel', 'a', 299, 3, 100);

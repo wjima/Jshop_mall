@@ -1,23 +1,24 @@
-<form class="layui-form seller-form" action="">
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label">物流编码：</label>
-            <div class="layui-input-inline seller-inline-4">
-                <input type="text" name="logi_code" lay-verify="title" placeholder="物流公司编码" autocomplete="off" class="layui-input">
+<div class="layui-fluid">
+    <form class="layui-form seller-form" action="">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">物流编码：</label>
+                <div class="layui-input-inline seller-inline-4">
+                    <input type="text" name="logi_code" lay-verify="title" placeholder="物流公司编码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="logistics-search"><i class="iconfont icon-chaxun"></i>筛选</button>
+                <button type="button" class="layui-btn layui-btn-sm add-logistics"><i class="layui-icon">&#xe608;</i> 添加</button>
             </div>
         </div>
 
-        <div class="layui-inline">
-            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="logistics-search"><i class="iconfont icon-chaxun"></i>筛选</button>
-            <button type="button" class="layui-btn layui-btn-sm add-logistics"><i class="layui-icon">&#xe608;</i> 添加</button>
-        </div>
+    </form>
+    <div class="table-body">
+        <table id="logiTable" lay-filter="logiTable"></table>
     </div>
-
-</form>
-<div class="table-body">
-    <table id="logiTable" lay-filter="logiTable"></table>
 </div>
-
 <script src="__STATIC_JS__jshop.js"></script>
 <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont.css" media="all">
 <link rel="stylesheet" type="text/css" href="__STATIC_CSS__iconfont2.css" media="all">

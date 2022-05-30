@@ -1734,8 +1734,8 @@ function remove_xss($val)
             $val[$key] = remove_xss($value);
         }
     }else{
-        $val = trim($val);
-        //$val = htmlspecialchars($val, ENT_QUOTES);
+        $val = strip_tags($val);
+        $val = htmlspecialchars($val, ENT_QUOTES);
     }
     return $val;
 }
@@ -1831,4 +1831,28 @@ function del_dir_and_file($dirName,$subdir = true)
         closedir($handle);
         if (!$subdir) @rmdir($dirName);
     }
+}
+
+/**
+ * 图片转换为base64编码
+ * @param $imageId
+ * @return string
+ * @throws \think\db\exception\DataNotFoundException
+ * @throws \think\db\exception\ModelNotFoundException
+ * @throws \think\exception\DbException
+ */
+function convertBase64($imageId)
+{
+    //区分本地图片还是网络图片
+    $url = _sImage($imageId);
+    if (stripos($url, $_SERVER['HTTP_HOST']) !== false) {
+        $site_url = \think\facade\Request::root(true);
+        $url      = ROOT_PATH . 'public' . str_replace($site_url, '', $url);
+    }
+    $img_string = @file_get_contents($url);
+    $base64     = base64_encode($img_string);
+    $fileInfo   = getimagesize($url);
+    $mime       = isset($fileInfo['mime']) ? $fileInfo['mime'] : 'image/png';
+    $base64Data = 'data:' . $mime . ';base64,' . $base64;
+    return $base64Data;
 }

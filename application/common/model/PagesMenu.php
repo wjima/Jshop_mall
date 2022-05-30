@@ -50,8 +50,8 @@ class PagesMenu extends Common
                 if (!$value['child']->isEmpty()) {
                     $value['child'] = $value['child']->toArray();
                 }
-                $value['icon_url']       = _sImage($value['icon']);
-                $value['selecticon_url'] = _sImage($value['selecticon']);
+                $value['icon_url']       = convertBase64($value['icon']);//对图片进行base64编码转换，避免前端菜单闪烁
+                $value['selecticon_url'] = convertBase64($value['selecticon']);
                 $params                  = json_decode($value['params'], true);
                 $value['url']            = $params['url'];
                 $menu[$key]              = $value;

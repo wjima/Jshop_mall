@@ -10,11 +10,11 @@
 
 namespace think;
 
-define('ROOT_PATH',dirname(__FILE__));
+error_reporting(0);//错误等级
 define('DS',DIRECTORY_SEPARATOR);
+define('ROOT_PATH',dirname(__FILE__).DS);
 define('CRONTAB',TRUE);
-error_reporting(0);              //错误等级
-define('ADDON_PATH', ROOT_PATH .DIRECTORY_SEPARATOR. 'addons'   . DIRECTORY_SEPARATOR);
+define('ADDON_PATH', ROOT_PATH . 'addons'   . DS);
 
 // 加载基础文件
 require __DIR__ . '/thinkphp/base.php';

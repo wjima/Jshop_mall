@@ -25,7 +25,7 @@
 					</view>
 
 					<view class='cell-item-bd'>
-						<input :value="pickerValue" readonly   @focus="showThreePicker"></input>
+						<input :value="pickerValue" readonly   @focus="showThreePicker" placeholder-class="area-select fsz26" class="area-select fsz26"></input>
 						<area-picker ref="areaPicker" :areaId="areaId" :defaultIndex="defaultIndex"  @onConfirm="onConfirm" class="fsz26"></area-picker>
 					</view>
 					
@@ -326,4 +326,7 @@ input{
 	font-size: 24upx;
 }
 /* #endif */
+.area-select{
+	
+}
 </style>

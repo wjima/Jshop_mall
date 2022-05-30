@@ -57,7 +57,7 @@
 				</view>
 				<view class="cell-item-ft"><image class="cell-ft-next icon" src="/static/image/right.png"></image></view>
 			</view>
-			<view class="cell-item" @click="createPoster()">
+			<view class="cell-item" @click="createPoster()" v-if="info.store">
 				<view class="cell-item-hd">
 					<image class="cell-hd-icon" src="/static/image/extension.png"></image>
 					<view class="cell-hd-title">我要推广</view>
@@ -101,27 +101,27 @@ export default {
 				invite: {
 					name: '我的邀请',
 					icon: '/static/image/ic-me-invite.png',
-					router: '../invite/list'
+					router: '/pages/member/invite/list'
 				},
 				order: {
 					name: '推广订单',
 					icon: '/static/image/extension_order.png',
-					router: './order'
+					router: '/pages/member/distribution/order'
 				},
 				balance: {
 					name: '我的佣金',
 					icon: '/static/image/ic-me-balance.png',
-					router: '../balance/details?status=5'
+					router: '/pages/member/balance/details?status=5'
 				},
 				my_store: {
 					name: '我的店铺',
 					icon: '/static/image/my_store.png',
-					router: './my_store'
+					router: '/pages/member/distribution/my_store'
 				},
 				store_setting: {
 					name: '店铺设置',
 					icon: '/static/image/me-ic-set.png',
-					router: './store_setting'
+					router: '/pages/member/distribution/store_setting'
 				}
 			},
 			info: {}, //分销商信息

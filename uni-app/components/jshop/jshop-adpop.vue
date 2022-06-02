@@ -190,7 +190,7 @@
 	max-height: 1000rpx;
 }
 .close-btn{
-	width: 80rpx;
-	height: 80rpx;
+	width: 60rpx;
+	height: 60rpx;
 }
 </style>

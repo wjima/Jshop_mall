@@ -1649,7 +1649,7 @@ function alphaID($in, $to_num = false, $pad_up = false)
     }
     $passKey = filectime(ROOT_PATH . '/config/install.lock');
 
-    $index = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $index = "abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if ($passKey !== null) {
         // Although this function's purpose is to just make the
         // ID short - and not so much secure,

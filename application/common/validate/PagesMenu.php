@@ -15,7 +15,7 @@ class PagesMenu extends Validate
 
     protected $rule = [
         'name'       => 'require|max:10',
-        'ptype'      => 'require|in:switch,navigateTo',
+        'ptype'      => 'require|in:redirectTo,navigateTo',
         'params'     => 'require',
         'selecticon' => 'require',
         'icon'       => 'require',

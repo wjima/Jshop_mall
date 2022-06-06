@@ -1735,7 +1735,7 @@ function remove_xss($val)
         }
     }else{
         $val = strip_tags($val);
-        $val = htmlspecialchars($val, ENT_QUOTES);
+        //$val = htmlspecialchars($val, ENT_QUOTES);
     }
     return $val;
 }
